@@ -5,32 +5,33 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.ParadoxDataExpression.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 interface ParadoxDataExpression : ParadoxExpression {
-	val type: ParadoxDataType
+	val type: ParadoxType
 	
 	companion object Resolver
 }
 
-fun ParadoxDataExpression.isParameterized() = type == ParadoxDataType.StringType && text.isParameterized()
+fun ParadoxDataExpression.isParameterized() = type == ParadoxType.String && text.isParameterized()
 
 class ParadoxDataExpressionImpl(
 	override val text: String,
-	override val type: ParadoxDataType,
+	override val type: ParadoxType,
 	override val quoted: Boolean,
 	override val isKey: Boolean?
 ) : AbstractExpression(text), ParadoxDataExpression
 
 object BlockParadoxDataExpression: AbstractExpression(PlsConstants.blockFolder), ParadoxDataExpression {
-	override val type: ParadoxDataType = ParadoxDataType.BlockType
+	override val type: ParadoxType = ParadoxType.Block
 	override val text: String  = PlsConstants.blockFolder
 	override val quoted: Boolean = false
 	override val isKey: Boolean = false
 }
 
 object UnknownParadoxDataExpression: AbstractExpression(PlsConstants.unknownString), ParadoxDataExpression {
-	override val type: ParadoxDataType = ParadoxDataType.UnknownType
+	override val type: ParadoxType = ParadoxType.Unknown
 	override val text: String  = PlsConstants.unknownString
 	override val quoted: Boolean = false
 	override val isKey: Boolean = false
@@ -46,7 +47,7 @@ fun Resolver.resolve(element: ParadoxScriptExpressionElement, matchOptions: Int 
 			}
 			ParadoxDataExpressionImpl(valueElement.value, valueElement.type, valueElement.text.isLeftQuoted(), false)
 		}
-		element.type == ParadoxDataType.BlockType -> {
+		element.type == ParadoxType.Block -> {
 			BlockParadoxDataExpression
 		}
 		else -> {
@@ -57,13 +58,13 @@ fun Resolver.resolve(element: ParadoxScriptExpressionElement, matchOptions: Int 
 }
 
 fun Resolver.resolve(value: String, isQuoted: Boolean, isKey: Boolean? = null): ParadoxDataExpression {
-	val expressionType = ParadoxDataType.resolve(value)
+	val expressionType = ParadoxType.resolve(value)
 	return ParadoxDataExpressionImpl(value, expressionType, isQuoted, isKey)
 }
 
 fun Resolver.resolve(text: String, isKey: Boolean? = null): ParadoxDataExpression {
 	val value = text.unquote()
-	val expressionType = ParadoxDataType.resolve(text)
+	val expressionType = ParadoxType.resolve(text)
 	val quoted = text.isLeftQuoted()
 	return ParadoxDataExpressionImpl(value, expressionType, quoted, isKey)
 }

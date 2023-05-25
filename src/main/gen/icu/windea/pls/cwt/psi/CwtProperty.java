@@ -1,14 +1,13 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
-import java.util.List;
+import com.intellij.navigation.*;
+import com.intellij.psi.*;
+import com.intellij.psi.search.*;
+import icu.windea.pls.lang.model.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.config.config.CwtSeparator;
-import javax.swing.Icon;
+
+import javax.swing.*;
 
 public interface CwtProperty extends CwtNamedElement {
 
@@ -34,7 +33,7 @@ public interface CwtProperty extends CwtNamedElement {
   String getValue();
 
   @NotNull
-  CwtSeparator getSeparatorType();
+  CwtSeparatorType getSeparatorType();
 
   @NotNull
   ItemPresentation getPresentation();

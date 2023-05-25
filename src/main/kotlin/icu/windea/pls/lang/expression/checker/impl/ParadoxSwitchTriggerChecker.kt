@@ -14,7 +14,7 @@ class ParadoxSwitchTriggerChecker : ParadoxIncorrectExpressionChecker {
         private val SWITCH_KEYS = arrayOf("alias[effect:switch]", "alias[trigger:switch]", "alias[effect:inverted_switch]", "alias[effect:inverted_switch]")
     }
     
-    override fun check(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>, holder: ProblemsHolder) {
+    override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         //switch = {...}中判定的应当是一个simple_trigger
         if(element !is ParadoxScriptString && element !is ParadoxScriptScriptedVariableReference) return
         if(config !is CwtValueConfig || config.value != "alias_keys_field[trigger]") return

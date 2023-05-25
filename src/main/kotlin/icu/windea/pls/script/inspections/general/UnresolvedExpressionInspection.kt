@@ -158,7 +158,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         return true
                     }
                     
-                    private fun isIgnored(config: CwtDataConfig<*>): Boolean {
+                    private fun isIgnored(config: CwtMemberConfig<*>): Boolean {
                         return config.expression.type.isPathReferenceType()
                     }
                 })

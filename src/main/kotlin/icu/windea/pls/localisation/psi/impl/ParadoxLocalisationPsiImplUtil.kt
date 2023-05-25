@@ -13,7 +13,6 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
@@ -227,8 +226,8 @@ object ParadoxLocalisationPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxLocalisationScriptedVariableReference): ParadoxDataType {
-        return element.reference?.resolve()?.type ?: ParadoxDataType.UnknownType
+    fun getType(element: ParadoxLocalisationScriptedVariableReference): ParadoxType {
+        return element.reference?.resolve()?.type ?: ParadoxType.Unknown
     }
     
     @JvmStatic

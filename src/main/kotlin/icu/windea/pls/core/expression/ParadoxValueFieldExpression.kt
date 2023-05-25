@@ -12,6 +12,7 @@ import icu.windea.pls.core.expression.ParadoxValueFieldExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import kotlin.collections.mapNotNullTo
 
 /**
@@ -240,7 +241,7 @@ class ParadoxValueFieldExpressionImpl(
 fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxValueFieldExpression? {
     //skip if text represents an int or float
     val type = ParadoxDataExpression.resolve(text).type
-    if(type == ParadoxDataType.IntType || type == ParadoxDataType.FloatType) return null
+    if(type == ParadoxType.Int || type == ParadoxType.Float) return null
     
     val nodes = SmartList<ParadoxExpressionNode>()
     val offset = textRange.startOffset

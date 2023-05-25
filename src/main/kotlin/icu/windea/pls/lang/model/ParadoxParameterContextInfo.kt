@@ -80,7 +80,7 @@ class ParadoxParameterInfo(
     /**
      * 获取此参数对应的脚本表达式所对应的CWT规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
      */
-    val expressionConfigs: List<CwtDataConfig<*>> by lazy {
+    val expressionConfigs: List<CwtMemberConfig<*>> by lazy {
         val parent = element?.parent
         when {
             parent is ParadoxScriptPropertyKey -> ParadoxConfigHandler.getConfigs(parent)

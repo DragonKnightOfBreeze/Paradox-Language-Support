@@ -1,7 +1,7 @@
 package icu.windea.pls.core.psi
 
 import com.intellij.psi.*
-import icu.windea.pls.core.expression.*
+import icu.windea.pls.lang.model.*
 
 interface ParadoxParameter : ParadoxTypedElement, NavigatablePsiElement {
 	override fun getName(): String?
@@ -10,5 +10,5 @@ interface ParadoxParameter : ParadoxTypedElement, NavigatablePsiElement {
 	
 	val defaultValue: String? get() = null
 	
-	override val type: ParadoxDataType get() = ParadoxDataType.ParameterType
+	override val type: ParadoxType get() = ParadoxType.Parameter
 }

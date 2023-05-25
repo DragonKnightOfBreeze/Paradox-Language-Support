@@ -317,7 +317,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         if(pathReferenceExpressionSupport != null) {
             val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
             val fileExtensions = when(config) {
-                is CwtDataConfig<*> -> ParadoxFilePathHandler.getFileExtensionOptionValues(config)
+                is CwtMemberConfig<*> -> ParadoxFilePathHandler.getFileExtensionOptionValues(config)
                 else -> emptySet()
             }
             //仅提示匹配file_extensions选项指定的扩展名的，如果存在
@@ -553,7 +553,7 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptConstantLikeExpressi
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         return when {
             config is CwtPropertyConfig && config.inlineableConfig is CwtSingleAliasConfig -> config.pointer.element
-            config is CwtDataConfig<*> -> config.resolved().pointer.element
+            config is CwtMemberConfig<*> -> config.resolved().pointer.element
             else -> config.pointer.element
         }
     }

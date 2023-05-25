@@ -1,21 +1,18 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
+import com.intellij.navigation.*;
+import com.intellij.psi.*;
+import com.intellij.psi.search.*;
+import icu.windea.pls.lang.model.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLiteralValue;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.core.expression.ParadoxDataType;
 
 public interface ParadoxScriptBoolean extends ParadoxScriptValue, PsiLiteralValue {
 
   boolean getBooleanValue();
 
   @NotNull
-  ParadoxDataType getType();
+  ParadoxType getType();
 
   @NotNull
   ItemPresentation getPresentation();

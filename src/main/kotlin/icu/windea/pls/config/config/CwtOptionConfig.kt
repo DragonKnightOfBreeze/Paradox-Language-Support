@@ -2,20 +2,15 @@ package icu.windea.pls.config.config
 
 import com.intellij.psi.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.model.*
 
 data class CwtOptionConfig(
-	override val pointer: SmartPsiElementPointer<CwtOption>, //NOTE 未使用
+	override val pointer: SmartPsiElementPointer<CwtOption>, //NOTE 目前并未使用，因此直接传入emptyPointer()就行
 	override val info: CwtConfigGroupInfo,
-	val key: String,
-	val value: String,
-	val booleanValue: Boolean? = null,
-	val intValue: Int? = null,
-	val floatValue: Float? = null,
-	val stringValue: String? = null,
-	val options: List<CwtOptionConfig>? = null,
-	val optionValues: List<CwtOptionValueConfig>? = null,
-	val separatorType: CwtSeparator = CwtSeparator.EQUAL
-) : CwtConfig<CwtOption> {
-	//val stringValues = values?.mapNotNull { it.stringValue }
-	//val stringValueOrValues = stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue }
-}
+	override val key: String,
+	override val value: String,
+	override val valueType: CwtType = CwtType.String,
+	override val separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
+	override val options: List<CwtOptionConfig>? = null,
+	override val optionValues: List<CwtOptionValueConfig>? = null
+) : CwtConfig<CwtOption>, CwtPropertyAware, CwtOptionsAware

@@ -36,7 +36,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                 doCheck(element, position, configs, expression)
             }
             
-            private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement, configs: List<CwtDataConfig<*>>, expression: String) {
+            private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement, configs: List<CwtMemberConfig<*>>, expression: String) {
                 if(skipCheck(element, configs)) return
                 val isKey = position is ParadoxScriptPropertyKey
                 val description = when {
@@ -46,7 +46,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                 holder.registerProblem(position, description)
             }
             
-            private fun skipCheck(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Boolean {
+            private fun skipCheck(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Boolean {
                 //子句可以精确匹配多个子句规则时，适用此检查
                 if(configs.isEmpty()) return true
                 if(configs.size == 1) return true
@@ -58,11 +58,11 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                 return false
             }
             
-            private fun isOverriddenConfigs(configs: List<CwtDataConfig<*>>): Boolean {
+            private fun isOverriddenConfigs(configs: List<CwtMemberConfig<*>>): Boolean {
                 return configs.any { it.memberConfig.castOrNull<CwtPropertyConfig>()?.overriddenProvider != null }
             }
             
-            private fun filterConfigs(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): List<CwtDataConfig<*>> {
+            private fun filterConfigs(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
                 val configsToCheck = configs.filter { config ->
                     val childConfigs = config.configs
                     childConfigs != null && configs.any { config0 ->

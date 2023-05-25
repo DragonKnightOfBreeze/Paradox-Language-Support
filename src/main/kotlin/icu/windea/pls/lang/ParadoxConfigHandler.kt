@@ -55,7 +55,7 @@ object ParadoxConfigHandler {
         return propertyConfig.valueExpression.type == CwtDataType.SingleAliasRight
     }
     
-    fun isComplexEnum(config: CwtDataConfig<*>): Boolean {
+    fun isComplexEnum(config: CwtMemberConfig<*>): Boolean {
         return config.expression.type == CwtDataType.EnumValue
             && config.expression.value?.let { config.info.configGroup.complexEnums[it] } != null
     }
@@ -159,14 +159,14 @@ object ParadoxConfigHandler {
     fun getEntryName(config: CwtConfig<*>): String? {
         return when {
             config is CwtPropertyConfig -> config.key
-            config is CwtValueConfig && config.propertyConfig != null -> getEntryName(config.propertyConfig)
+            config is CwtValueConfig && config.propertyConfig != null -> getEntryName(config.propertyConfig!!)
             config is CwtValueConfig -> null
             config is CwtAliasConfig -> config.subName
             else -> null
         }
     }
     
-    fun getEntryConfigs(config: CwtConfig<*>): List<CwtDataConfig<*>> {
+    fun getEntryConfigs(config: CwtConfig<*>): List<CwtMemberConfig<*>> {
         val configGroup = config.info.configGroup
         return when {
             config is CwtPropertyConfig -> {
@@ -175,7 +175,7 @@ object ParadoxConfigHandler {
                     ?: config.toSingletonList()
             }
             config is CwtValueConfig && config.propertyConfig != null -> {
-                getEntryConfigs(config.propertyConfig)
+                getEntryConfigs(config.propertyConfig!!)
             }
             config is CwtValueConfig -> {
                 config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filterIsInstance<CwtValueConfig>()
@@ -195,7 +195,7 @@ object ParadoxConfigHandler {
     
     val inBlockKeysKey = Key.create<Set<String>>("cwt.config.inBlockKeys")
     
-    fun getInBlockKeys(config: CwtDataConfig<*>): Set<String> {
+    fun getInBlockKeys(config: CwtMemberConfig<*>): Set<String> {
         return config.getOrPutUserData(inBlockKeysKey) {
             val keys = caseInsensitiveStringSet()
             config.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.add(it.key) }
@@ -1248,7 +1248,7 @@ object ParadoxConfigHandler {
     //endregion
     
     //region Get Methods
-    fun getConfigs(element: PsiElement, allowDefinition: Boolean = element is ParadoxScriptValue, orDefault: Boolean = true, matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtDataConfig<*>> {
+    fun getConfigs(element: PsiElement, allowDefinition: Boolean = element is ParadoxScriptValue, orDefault: Boolean = true, matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtMemberConfig<*>> {
         return when {
             element is ParadoxScriptDefinitionElement -> getPropertyConfigs(element, allowDefinition, orDefault, matchOptions)
             element is ParadoxScriptPropertyKey -> getPropertyConfigs(element, allowDefinition, orDefault, matchOptions)
@@ -1265,7 +1265,7 @@ object ParadoxConfigHandler {
         return doGetConfigsFromCache(element, CwtValueConfig::class.java, allowDefinition, orDefault, matchOptions)
     }
     
-    private fun <T : CwtDataConfig<*>> doGetConfigsFromCache(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchOptions: Int): List<T> {
+    private fun <T : CwtMemberConfig<*>> doGetConfigsFromCache(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchOptions: Int): List<T> {
         val configsMap = doGetConfigsCacheFromCache(element) ?: return emptyList()
         val cacheKey = buildString {
             when(configType) {
@@ -1292,7 +1292,7 @@ object ParadoxConfigHandler {
         }
     }
     
-    private fun <T : CwtDataConfig<*>> doGetConfigs(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchOptions: Int): List<T> {
+    private fun <T : CwtMemberConfig<*>> doGetConfigs(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchOptions: Int): List<T> {
         //当输入的元素是key或property时，输入的规则类型必须是property
         val result = when(configType) {
             CwtPropertyConfig::class.java -> {
@@ -1455,7 +1455,7 @@ object ParadoxConfigHandler {
     /**
      * 得到指定的[element]的作为值的子句中的子属性/值的出现次数信息。（先合并子规则）
      */
-    fun getChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Map<CwtDataExpression, Occurrence> {
+    fun getChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
         if(configs.isEmpty()) return emptyMap()
         val childConfigs = configs.flatMap { it.configs.orEmpty() }
         if(childConfigs.isEmpty()) return emptyMap()
@@ -1476,7 +1476,7 @@ object ParadoxConfigHandler {
         }
     }
     
-    private fun doGetChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Map<CwtDataExpression, Occurrence> {
+    private fun doGetChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
         if(configs.isEmpty()) return emptyMap()
         val configGroup = configs.first().info.configGroup
         //这里需要先按优先级排序
@@ -1501,7 +1501,7 @@ object ParadoxConfigHandler {
                 data is ParadoxScriptValue -> ParadoxDataExpression.resolve(data)
                 else -> return@p true
             }
-            val isParameterized = expression.type == ParadoxDataType.StringType && expression.text.isParameterized()
+            val isParameterized = expression.type == ParadoxType.String && expression.text.isParameterized()
             //may contain parameter -> can't and should not get occurrences
             if(isParameterized) {
                 occurrenceMap.clear()

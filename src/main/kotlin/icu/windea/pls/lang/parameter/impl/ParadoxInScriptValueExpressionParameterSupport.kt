@@ -20,12 +20,12 @@ class ParadoxInScriptValueExpressionParameterSupport : ParadoxDefinitionParamete
     override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
         var expressionElement: ParadoxScriptStringExpressionElement? = null
         var text: String? = null
-        var expressionElementConfig: CwtDataConfig<*>? = null
+        var expressionElementConfig: CwtMemberConfig<*>? = null
         var completionOffset = -1
         when(from) {
             //extraArgs: config, completionOffset
             ParadoxParameterContextReferenceInfo.From.Argument -> {
-                val config = extraArgs.getOrNull(0)?.castOrNull<CwtDataConfig<*>>() ?: return null
+                val config = extraArgs.getOrNull(0)?.castOrNull<CwtMemberConfig<*>>() ?: return null
                 completionOffset = extraArgs.getOrNull(1)?.castOrNull<Int>() ?: -1
                 expressionElement = when {
                     element is ParadoxScriptProperty -> element.propertyKey
@@ -39,7 +39,7 @@ class ParadoxInScriptValueExpressionParameterSupport : ParadoxDefinitionParamete
             }
             //extraArgs: contextConfig
             ParadoxParameterContextReferenceInfo.From.ContextReference -> {
-                val contextConfig = extraArgs.getOrNull(0)?.castOrNull<CwtDataConfig<*>>() ?: return null
+                val contextConfig = extraArgs.getOrNull(0)?.castOrNull<CwtMemberConfig<*>>() ?: return null
                 expressionElement = when {
                     element is ParadoxScriptProperty -> element.propertyKey
                     element is ParadoxScriptStringExpressionElement -> element

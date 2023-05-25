@@ -32,7 +32,7 @@ data class CwtDeclarationConfig(
             runReadAction {
                 val r = doGetMergedConfig(configContext)
                 CwtDeclarationConfigInjector.handleDeclarationMergedConfig(r, configContext, configContext.injectors)
-                r.putUserData(CwtDataConfig.Keys.configContextKey, configContext)
+                r.putUserData(CwtMemberConfig.Keys.configContextKey, configContext)
                 r
             }
         }
@@ -62,4 +62,4 @@ data class CwtDeclarationConfig(
     }
 }
 
-val CwtDataConfig.Keys.configContextKey by lazy { Key.create<CwtConfigContext>("cwt.config.context") }
+val CwtMemberConfig.Keys.configContextKey by lazy { Key.create<CwtConfigContext>("cwt.config.context") }

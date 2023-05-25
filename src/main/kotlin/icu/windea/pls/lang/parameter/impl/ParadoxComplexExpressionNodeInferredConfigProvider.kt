@@ -57,7 +57,7 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
         return result
     }
     
-    private fun getConfigFromNode(expressionElement: ParadoxScriptStringExpressionElement, expressionConfig: CwtDataConfig<*>, node: ParadoxExpressionNode): CwtValueConfig? {
+    private fun getConfigFromNode(expressionElement: ParadoxScriptStringExpressionElement, expressionConfig: CwtMemberConfig<*>, node: ParadoxExpressionNode): CwtValueConfig? {
         return when {
             node is ParadoxDataExpressionNode -> {
                 node.linkConfigs.firstNotNullOfOrNull { it.expression?.let { e -> CwtValueConfig(emptyPointer(), it.info, e.expressionString) } }

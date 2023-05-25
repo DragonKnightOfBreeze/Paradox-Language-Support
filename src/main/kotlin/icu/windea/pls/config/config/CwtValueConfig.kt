@@ -4,27 +4,23 @@ import com.intellij.psi.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.model.*
 
 data class CwtValueConfig(
     override val pointer: SmartPsiElementPointer<CwtValue>,
     override val info: CwtConfigGroupInfo,
     override val value: String,
-    override val booleanValue: Boolean? = null,
-    override val intValue: Int? = null,
-    override val floatValue: Float? = null,
-    override val stringValue: String? = null,
-    override val configs: List<CwtDataConfig<*>>? = null,
-    override val documentation: String? = null,
+    override val valueType: CwtType = CwtType.String,
+    override val configs: List<CwtMemberConfig<*>>? = null,
     override val options: List<CwtOptionConfig>? = null,
     override val optionValues: List<CwtOptionValueConfig>? = null,
-    val propertyConfig: CwtPropertyConfig? = null,
-) : CwtDataConfig<CwtValue>() {
+    override val documentation: String? = null,
+) : CwtMemberConfig<CwtValue>(), CwtValueAware{
     companion object {
         val Empty = CwtValueConfig(emptyPointer(), CwtConfigGroupInfo(""), "")
     }
     
-    //val stringValues by lazy { values?.mapNotNull { it.stringValue } }
-    //val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
+    @Volatile var propertyConfig: CwtPropertyConfig? = null
     
     val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
     
@@ -37,6 +33,6 @@ data class CwtValueConfig(
     override fun toString(): String {
         return value
     }
-    
-    val isTagConfig = optionValues?.any { it.stringValue == "tag" } == true
 }
+
+val CwtValueConfig.isTagConfig get() = findOptionValue("tag") != null

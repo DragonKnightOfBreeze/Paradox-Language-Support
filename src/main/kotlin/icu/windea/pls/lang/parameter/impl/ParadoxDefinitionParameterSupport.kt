@@ -44,7 +44,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         when(from) {
             //extraArgs: config, completionOffset
             ParadoxParameterContextReferenceInfo.From.Argument -> {
-                val config = extraArgs.getOrNull(0)?.castOrNull<CwtDataConfig<*>>() ?: return null
+                val config = extraArgs.getOrNull(0)?.castOrNull<CwtMemberConfig<*>>() ?: return null
                 completionOffset = extraArgs.getOrNull(1)?.castOrNull<Int>() ?: -1
                 //infer context config
                 contextConfig = config.castOrNull<CwtPropertyConfig>()?.parent?.castOrNull<CwtPropertyConfig>() ?: return null
@@ -124,7 +124,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, vararg extraArgs: Any?): ParadoxParameterElement? {
         //extraArgs: config
-        val config = extraArgs.getOrNull(0)?.castOrNull<CwtDataConfig<*>>() ?: return null
+        val config = extraArgs.getOrNull(0)?.castOrNull<CwtMemberConfig<*>>() ?: return null
         if(config !is CwtPropertyConfig || config.expression.type != CwtDataType.Parameter) return null
         //infer context config
         val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parent?.castOrNull<CwtPropertyConfig>() ?: return null

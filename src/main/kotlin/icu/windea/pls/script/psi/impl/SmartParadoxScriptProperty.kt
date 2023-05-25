@@ -2,7 +2,6 @@ package icu.windea.pls.script.psi.impl
 
 import com.intellij.lang.*
 import com.intellij.psi.stubs.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
@@ -13,7 +12,7 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 	
 	@Volatile private var _name: String? = null
 	@Volatile private var _value: String? = null
-	@Volatile private var _valueType: ParadoxDataType? = null
+	@Volatile private var _valueType: ParadoxType? = null
 	@Volatile private var _parameters: Map<String, ParadoxParameterInfo>? = null
 	
 	override fun getName(): String {
@@ -24,7 +23,7 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 		return _value ?: super.getValue().also { _value = it }
 	}
 	
-	override val type: ParadoxDataType?
+	override val type: ParadoxType?
 		get() = _valueType ?: super.type.also { _valueType = it }
 	
 	override fun subtreeChanged() {

@@ -72,7 +72,7 @@ object ParadoxEventHandler {
      */
     fun getTypes(project: Project, gameType: ParadoxGameType): Set<String> {
         val eventConfig = getCwtConfig(project).get(gameType).types["event"] ?: return emptySet()
-        return eventConfig.config.getOrPutUserData(CwtDataConfig.Keys.eventEventTypesKey) {
+        return eventConfig.config.getOrPutUserData(CwtMemberConfig.Keys.eventEventTypesKey) {
             eventConfig.subtypes.mapNotNullTo(mutableSetOf()) { (k, v) -> if(v.config.findOption("group")?.stringValue == "event_type") k else null }
         }
     }
@@ -130,7 +130,7 @@ object ParadoxEventHandler {
                 }
             }
             
-            private fun isEventConfig(config: CwtDataConfig<*>): Boolean {
+            private fun isEventConfig(config: CwtMemberConfig<*>): Boolean {
                 return config.expression.type == CwtDataType.Definition
                     && config.expression.value?.substringBefore('.') == "event"
             }
@@ -140,6 +140,6 @@ object ParadoxEventHandler {
 }
 
 val PlsKeys.cachedEventInvocationsKey by lazy { Key.create<CachedValue<Set<String>>>("paradox.cached.event.invocations") }
-val CwtDataConfig.Keys.eventEventTypesKey by lazy { Key.create<Set<String>>("paradox.event.types") }
+val CwtMemberConfig.Keys.eventEventTypesKey by lazy { Key.create<Set<String>>("paradox.event.types") }
 val ParadoxDefinitionInfo.Keys.eventEventTypeKey by lazy { Key.create<String>("paradox.event.type") }
 val ParadoxDefinitionInfo.Keys.eventEventScopeKey by lazy { Key.create<String>("paradox.event.scope") }

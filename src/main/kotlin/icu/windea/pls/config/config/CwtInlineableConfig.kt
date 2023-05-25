@@ -4,5 +4,5 @@ import com.intellij.psi.*
 
 interface CwtInlineableConfig<out T: PsiElement>: CwtConfig<T> {
 	val name: String
-	val config: CwtDataConfig<T>
+	val config: CwtMemberConfig<T>
 }

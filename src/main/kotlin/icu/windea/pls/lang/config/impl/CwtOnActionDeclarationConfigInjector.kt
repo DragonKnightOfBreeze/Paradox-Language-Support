@@ -51,7 +51,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
         declarationConfig.processDescendants p@{ c ->
             val cs = c.configs ?: return@p true
             cs as MutableList
-            val ccs = SmartList<CwtDataConfig<*>>()
+            val ccs = SmartList<CwtMemberConfig<*>>()
             var i = -1
             for((index, cc) in cs.withIndex()) {
                 when(cc) {
@@ -62,7 +62,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
                             for(expression in expressions) {
                                 val keyArg = if(isKey) expression else cc.key
                                 val valueArg = if(isValue) expression else cc.stringValue.orEmpty()
-                                val cc0 = cc.copy(key = keyArg, value = valueArg, stringValue = valueArg).also { it.parent = cc.parent }
+                                val cc0 = cc.copy(key = keyArg, value = valueArg).also { it.parent = cc.parent }
                                 ccs.add(cc0)
                                 i = index
                             }
@@ -72,7 +72,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
                     is CwtValueConfig -> {
                         if(cc.stringValue == "<event>") {
                             for(expression in expressions) {
-                                val cc0 = cc.copy(pointer = emptyPointer(), value = expression, stringValue = expression).also { it.parent = cc.parent }
+                                val cc0 = cc.copy(pointer = emptyPointer(), value = expression).also { it.parent = cc.parent }
                                 ccs.add(cc0)
                                 i = index
                             }

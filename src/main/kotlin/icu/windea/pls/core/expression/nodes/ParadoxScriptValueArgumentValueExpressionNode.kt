@@ -9,9 +9,9 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
@@ -29,7 +29,7 @@ class ParadoxScriptValueArgumentValueExpressionNode(
 	}
 	
 	override fun getAttributesKey(): TextAttributesKey {
-		val type = ParadoxDataType.resolve(text)
+		val type = ParadoxType.resolve(text)
 		return when {
 			type.isBooleanType() -> ParadoxScriptAttributesKeys.KEYWORD_KEY
 			type.isFloatType() -> ParadoxScriptAttributesKeys.NUMBER_KEY

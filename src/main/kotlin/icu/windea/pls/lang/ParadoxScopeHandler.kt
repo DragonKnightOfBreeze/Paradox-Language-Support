@@ -131,7 +131,7 @@ object ParadoxScopeHandler {
         return false
     }
     
-    private fun isScopeContextSupportedAsRoot(config: CwtDataConfig<*>, configGroup: CwtConfigGroup): Boolean {
+    private fun isScopeContextSupportedAsRoot(config: CwtMemberConfig<*>, configGroup: CwtConfigGroup): Boolean {
         val properties = config.properties ?: return false
         return properties.any {
             val aliasName = when {
@@ -142,7 +142,7 @@ object ParadoxScopeHandler {
         }
     }
     
-    private fun isScopeContextSupportedAsChild(config: CwtDataConfig<*>, configGroup: CwtConfigGroup): Boolean {
+    private fun isScopeContextSupportedAsChild(config: CwtMemberConfig<*>, configGroup: CwtConfigGroup): Boolean {
         var currentConfig = config
         while(true) {
             if(currentConfig is CwtPropertyConfig) {

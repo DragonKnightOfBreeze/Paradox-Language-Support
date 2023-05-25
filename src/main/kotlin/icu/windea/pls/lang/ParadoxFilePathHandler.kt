@@ -9,7 +9,7 @@ import kotlin.collections.mapNotNullTo
 object ParadoxFilePathHandler {
     val fileExtensionsKey = Key.create<Set<String>>("paradox.filePath.fileExtensions")
     
-    fun getFileExtensionOptionValues(config: CwtDataConfig<*>) : Set<String> {
+    fun getFileExtensionOptionValues(config: CwtMemberConfig<*>) : Set<String> {
         return config.getOrPutUserData(fileExtensionsKey) {
             val option = config.options?.find { it.key == "file_extensions" }
             option?.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue }
