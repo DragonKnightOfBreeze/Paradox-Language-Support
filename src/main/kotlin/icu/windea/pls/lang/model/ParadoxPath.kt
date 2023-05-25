@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.model
 
 import com.google.common.cache.*
-import icu.windea.pls.*
+import com.intellij.util.*
 import icu.windea.pls.core.*
 
 /**
@@ -52,11 +52,13 @@ interface ParadoxPath : Iterable<String> {
 class ParadoxPathImpl(
 	override val path: String
 ) : ParadoxPath {
-	override val subPaths = path.split('/')
-	override val parent = path.substringBeforeLast('/', "")
-	override val root = path.substringBefore('/', "")
-	override val fileName = subPaths.lastOrNull().orEmpty()
-	override val fileExtension = fileName.substringAfterLast('.', "")
+	//intern to optimize memory
+	
+	override val subPaths = path.splitToSequence('/').mapTo(SmartList()) { it.intern() }
+	override val parent = path.substringBeforeLast('/', "").intern()
+	override val root = path.substringBefore('/', "").intern()
+	override val fileName = subPaths.lastOrNull().orEmpty().intern()
+	override val fileExtension = fileName.substringAfterLast('.', "").intern()
 	override val length = subPaths.size
 	
 	override fun equals(other: Any?): Boolean {
