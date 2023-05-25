@@ -4,6 +4,7 @@ import com.intellij.codeInspection.reference.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.inject.*
+import icu.windea.pls.inject.annotations.*
 
 /**
  * 如果可行，让代码检查页面中的按目录分组选项按照相对于游戏或模组根目录的路径分组，而非简单地按照目录名分组。

@@ -6,7 +6,6 @@ import com.intellij.lang.ParserDefinition.SpaceRequirements.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.impl.*
 
 class ParadoxScriptParserDefinition : ParserDefinition {
     companion object {
@@ -26,12 +25,7 @@ class ParadoxScriptParserDefinition : ParserDefinition {
     }
     
     override fun createElement(node: ASTNode): PsiElement {
-        return when(node.elementType) {
-            PROPERTY -> SmartParadoxScriptProperty(node)
-            PROPERTY_KEY -> SmartParadoxScriptPropertyKey(node)
-            STRING -> SmartParadoxScriptString(node)
-            else -> Factory.createElement(node)
-        }
+        return Factory.createElement(node)
     }
     
     override fun createParser(project: Project?): ParadoxScriptParser {

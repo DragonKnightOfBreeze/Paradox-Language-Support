@@ -3,6 +3,7 @@ package icu.windea.pls.inject.injectors
 import com.intellij.openapi.util.text.*
 import com.intellij.util.text.*
 import icu.windea.pls.inject.*
+import icu.windea.pls.inject.annotations.*
 
 /**
  * 重写IDE低层检查字符串是否是标识符的代码逻辑，以便兼容本地化文件中的本地化图标引用（`£unity£`），从而可以正确地查找引用。

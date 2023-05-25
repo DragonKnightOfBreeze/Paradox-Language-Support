@@ -1,5 +1,6 @@
 <idea-plugin>
   <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.codeInjectorSupport" interface="icu.windea.pls.inject.support.CodeInjectorSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.codeInjector" interface="icu.windea.pls.inject.CodeInjector" dynamic="true"/>
   </extensionPoints>
 
@@ -7,11 +8,23 @@
     <!--suppress PluginXmlValidity -->
     <applicationService serviceImplementation="icu.windea.pls.inject.CodeInjectorService" preload="true"/>
   </extensions>
+  .
+  <extensions defaultExtensionNs="icu.windea.pls">
+    <codeInjectorSupport implementation="icu.windea.pls.inject.support.FieldCacheCodeInjectorSupport"/>
+  </extensions>
   
   <extensions defaultExtensionNs="icu.windea.pls">
     <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.LowLevelSearchUtilCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.IfsUtilCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.RefManagerImplCodeInjector"/>
+    
+    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptPropertyCodeInjector"/>-->
+    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptPropertyKeyCodeInjector"/>-->
+    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptBooleanCodeInjector"/>-->
+    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptIntCodeInjector"/>-->
+    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptFloatCodeInjector"/>-->
+    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptStringCodeInjector"/>-->
+    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptColorCodeInjector"/>-->
   </extensions>
 </idea-plugin>

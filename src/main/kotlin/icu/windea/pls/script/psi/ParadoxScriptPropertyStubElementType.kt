@@ -17,7 +17,7 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     override fun getExternalId() = externalId
     
     override fun createPsi(stub: ParadoxScriptPropertyStub): ParadoxScriptProperty {
-        return SmartParadoxScriptProperty(stub, this)
+        return ParadoxScriptPropertyImpl(stub, this)
     }
     
     override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub {

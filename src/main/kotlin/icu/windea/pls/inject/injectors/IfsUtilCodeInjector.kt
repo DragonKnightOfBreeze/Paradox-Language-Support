@@ -6,6 +6,7 @@ import com.intellij.reference.*
 import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.inject.*
+import icu.windea.pls.inject.annotations.*
 import icu.windea.pls.tool.*
 import org.intellij.images.editor.*
 import org.intellij.images.vfs.*
