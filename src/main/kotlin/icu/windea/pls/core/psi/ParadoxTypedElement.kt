@@ -1,7 +1,7 @@
 package icu.windea.pls.core.psi
 
 import com.intellij.psi.*
-import icu.windea.pls.core.expression.*
+import icu.windea.pls.lang.model.*
 
 /**
  * @property type 脚本表达式的类型。基于PSI元素的类型。
@@ -9,7 +9,7 @@ import icu.windea.pls.core.expression.*
  * @property configExpression 对应的规则表达式。基于CWT规则。
  */
 interface ParadoxTypedElement : PsiElement {
-	val type: ParadoxDataType? get() = null
+	val type: ParadoxType? get() = null
 	val expression: String? get() = null
 	val configExpression: String? get() = null
 }

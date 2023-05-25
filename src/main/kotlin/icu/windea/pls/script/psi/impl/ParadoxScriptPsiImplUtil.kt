@@ -11,12 +11,12 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.color.impl.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -109,7 +109,7 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptScriptedVariable): ParadoxDataType? {
+    fun getType(element: ParadoxScriptScriptedVariable): ParadoxType? {
         return element.scriptedVariableValue?.type
     }
     
@@ -213,7 +213,7 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptProperty): ParadoxDataType? {
+    fun getType(element: ParadoxScriptProperty): ParadoxType? {
         return element.propertyValue?.type
     }
     
@@ -275,8 +275,8 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptPropertyKey): ParadoxDataType {
-        return ParadoxDataType.resolve(element.value)
+    fun getType(element: ParadoxScriptPropertyKey): ParadoxType {
+        return ParadoxType.resolve(element.value)
     }
     
     @JvmStatic
@@ -333,8 +333,8 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptScriptedVariableReference): ParadoxDataType {
-        return element.reference?.resolve()?.type ?: ParadoxDataType.UnknownType
+    fun getType(element: ParadoxScriptScriptedVariableReference): ParadoxType {
+        return element.reference?.resolve()?.type ?: ParadoxType.UnknownType
     }
     
     @JvmStatic
@@ -372,8 +372,8 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptValue): ParadoxDataType {
-        return ParadoxDataType.UnknownType
+    fun getType(element: ParadoxScriptValue): ParadoxType {
+        return ParadoxType.UnknownType
     }
     
     @JvmStatic
@@ -395,8 +395,8 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptBoolean): ParadoxDataType {
-        return ParadoxDataType.BooleanType
+    fun getType(element: ParadoxScriptBoolean): ParadoxType {
+        return ParadoxType.BooleanType
     }
     //endregion
     
@@ -407,8 +407,8 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptInt): ParadoxDataType {
-        return ParadoxDataType.IntType
+    fun getType(element: ParadoxScriptInt): ParadoxType {
+        return ParadoxType.IntType
     }
     //endregion
     
@@ -419,8 +419,8 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptFloat): ParadoxDataType {
-        return ParadoxDataType.FloatType
+    fun getType(element: ParadoxScriptFloat): ParadoxType {
+        return ParadoxType.FloatType
     }
     //endregion
     
@@ -448,8 +448,8 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptString): ParadoxDataType {
-        return ParadoxDataType.StringType
+    fun getType(element: ParadoxScriptString): ParadoxType {
+        return ParadoxType.StringType
     }
     
     @JvmStatic
@@ -485,8 +485,8 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptColor): ParadoxDataType {
-        return ParadoxDataType.ColorType
+    fun getType(element: ParadoxScriptColor): ParadoxType {
+        return ParadoxType.ColorType
     }
     //endregion
     
@@ -547,8 +547,8 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptBlock): ParadoxDataType {
-        return ParadoxDataType.BlockType
+    fun getType(element: ParadoxScriptBlock): ParadoxType {
+        return ParadoxType.BlockType
     }
     
     @JvmStatic
@@ -662,8 +662,8 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptInlineMath): ParadoxDataType {
-        return ParadoxDataType.InlineMathType
+    fun getType(element: ParadoxScriptInlineMath): ParadoxType {
+        return ParadoxType.InlineMathType
     }
     
     @JvmStatic
@@ -679,8 +679,8 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptInlineMathNumber): ParadoxDataType {
-        return ParadoxDataType.resolve(element.text)
+    fun getType(element: ParadoxScriptInlineMathNumber): ParadoxType {
+        return ParadoxType.resolve(element.text)
     }
     
     @JvmStatic
@@ -725,8 +725,8 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptInlineMathScriptedVariableReference): ParadoxDataType {
-        return element.reference?.resolve()?.type ?: ParadoxDataType.UnknownType
+    fun getType(element: ParadoxScriptInlineMathScriptedVariableReference): ParadoxType {
+        return element.reference?.resolve()?.type ?: ParadoxType.UnknownType
     }
     
     @JvmStatic

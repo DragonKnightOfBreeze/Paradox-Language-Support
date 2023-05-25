@@ -14,29 +14,26 @@ inline fun <T: Collection<*>> T?.takeIfNotEmpty() = this?.takeIf { it.isNotEmpty
 @Suppress("NOTHING_TO_INLINE")
 inline fun <T: Map<*, *>> T?.takeIfNotEmpty() = this?.takeIf { it.isNotEmpty() }
 
-fun <T> Collection<T>.toListOrThis(): List<T> {
-	return when(this) {
-		is List -> this
-		else -> this.toList()
-	}
-}
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> Collection<T>.toListOrThis(): List<T> = if(this is List) this else this.toList()
 
-fun <T> Collection<T>.toSetOrThis(): Set<T> {
-	return when(this) {
-		is Set -> this
-		else -> this.toSet()
-	}
-}
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> Collection<T>.toSetOrThis(): Set<T> = if(this is Set) this else this.toSet()
 
-fun <T> List<T>.asMutable() = this as MutableList<T>
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> List<T>.asMutable(): MutableList<T> = this as MutableList<T>
 
-fun <T> Set<T>.asMutable() = this as MutableSet<T>
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> Set<T>.asMutable(): MutableSet<T> = this as MutableSet<T>
 
-fun <T> MutableList<T>.synced(): MutableList<T> = Collections.synchronizedList(this)
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> MutableList<T>.synced(): MutableList<T> = Collections.synchronizedList(this)
 
-fun <T> MutableSet<T>.synced(): MutableSet<T> = Collections.synchronizedSet(this)
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> MutableSet<T>.synced(): MutableSet<T> = Collections.synchronizedSet(this)
 
-fun <K,V> MutableMap<K,V>.synced(): MutableMap<K,V> = Collections.synchronizedMap(this)
+@Suppress("NOTHING_TO_INLINE")
+inline fun <K,V> MutableMap<K,V>.synced(): MutableMap<K,V> = Collections.synchronizedMap(this)
 
 inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()
 

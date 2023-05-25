@@ -6,7 +6,9 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.model.*
 import java.lang.invoke.*
 import java.util.*
 
@@ -199,87 +201,95 @@ object CwtConfigResolver {
     }
     
     private fun resolveOption(option: CwtOption, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionConfig? {
-        val key = option.name
         val optionValue = option.optionValue ?: return null
-        var booleanValue: Boolean? = null
-        var intValue: Int? = null
-        var floatValue: Float? = null
-        var stringValue: String? = null
+        val key = option.name
+        val value = optionValue.value
+        val valueType: CwtType
+        val separatorType = option.separatorType
         var options: List<CwtOptionConfig>? = null
         var optionValues: List<CwtOptionValueConfig>? = null
-        val separatorType = option.separatorType
         when {
-            optionValue is CwtBoolean -> booleanValue = optionValue.booleanValue
-            optionValue is CwtInt -> intValue = optionValue.intValue
-            optionValue is CwtFloat -> floatValue = optionValue.floatValue
-            optionValue is CwtString -> stringValue = optionValue.stringValue
-            optionValue is CwtBlock -> when {
-                optionValue.isEmpty -> {
-                    options = emptyList()
-                    optionValues = emptyList()
-                }
-                else -> {
-                    options = SmartList()
-                    optionValues = SmartList()
-                    optionValue.processChild {
-                        when {
-                            it is CwtOption -> resolveOption(it, file, fileConfig)?.addTo(options).let { true }
-                            it is CwtValue -> resolveOptionValue(it, file, fileConfig).addTo(optionValues).let { true }
-                            else -> true
+            optionValue is CwtBoolean -> {
+                valueType = CwtType.Boolean
+            }
+            optionValue is CwtInt -> {
+                valueType = CwtType.Int
+            }
+            optionValue is CwtFloat -> {
+                valueType = CwtType.Float
+            }
+            optionValue is CwtString -> {
+                valueType = CwtType.String
+            }
+            optionValue is CwtBlock -> {
+                valueType = CwtType.Block
+                optionValue.forEachChild f@{
+                    when {
+                        it is CwtOption -> {
+                            val resolved = resolveOption(it, file, fileConfig)
+                            if(resolved == null) return@f
+                            if(options == null) options = SmartList()
+                            options!!.asMutable().add(resolved)
+                        }
+                        it is CwtValue -> {
+                            val resolved = resolveOptionValue(it, file, fileConfig)
+                            if(optionValues == null) optionValues = SmartList()
+                            optionValues!!.asMutable().add(resolved)
                         }
                     }
                 }
+                if(options == null) options = emptyList()
+                if(optionValues == null) optionValues = emptyList()
+            }
+            else -> {
+                valueType = CwtType.Unknown
             }
         }
-        return CwtOptionConfig(
-            emptyPointer(), fileConfig.info, key, optionValue.value,
-            booleanValue, intValue, floatValue, stringValue, options, optionValues, separatorType
-        )
+        return CwtOptionConfig(emptyPointer(), fileConfig.info, key, value, valueType, separatorType, options, optionValues)
     }
     
-    private fun resolveOptionValue(option: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionValueConfig {
-        var booleanValue: Boolean? = null
-        var intValue: Int? = null
-        var floatValue: Float? = null
-        var stringValue: String? = null
+    private fun resolveOptionValue(optionValue: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionValueConfig {
+        val value = optionValue.value
+        val valueType: CwtType
         var options: List<CwtOptionConfig>? = null
         var optionValues: List<CwtOptionValueConfig>? = null
         when {
-            option is CwtBoolean -> {
-                booleanValue = option.booleanValue
+            optionValue is CwtBoolean -> {
+                valueType = CwtType.Boolean
             }
-            option is CwtInt -> {
-                intValue = option.intValue
+            optionValue is CwtInt -> {
+                valueType = CwtType.Int
             }
-            option is CwtFloat -> {
-                floatValue = option.floatValue
+            optionValue is CwtFloat -> {
+                valueType = CwtType.Float
             }
-            option is CwtString -> {
-                stringValue = option.stringValue
+            optionValue is CwtString -> {
+                valueType = CwtType.String
             }
-            option is CwtBlock -> {
-                when {
-                    option.isEmpty -> {
-                        options = emptyList()
-                        optionValues = emptyList()
-                    }
-                    else -> {
-                        options = SmartList()
-                        optionValues = SmartList()
-                        option.processChild {
-                            when {
-                                it is CwtOption -> resolveOption(it, file, fileConfig)?.addTo(options).let { true }
-                                it is CwtValue -> resolveOptionValue(it, file, fileConfig).addTo(optionValues).let { true }
-                                else -> true
-                            }
+            optionValue is CwtBlock -> {
+                valueType = CwtType.Block
+                optionValue.forEachChild f@{
+                    when {
+                        it is CwtOption -> {
+                            val resolved = resolveOption(it, file, fileConfig)
+                            if(resolved == null) return@f
+                            if(options == null) options = SmartList()
+                            options!!.asMutable().add(resolved)
+                        }
+                        it is CwtValue -> {
+                            val resolved = resolveOptionValue(it, file, fileConfig)
+                            if(optionValues == null) optionValues = SmartList()
+                            optionValues!!.asMutable().add(resolved)
                         }
                     }
                 }
+                if(options == null) options = emptyList()
+                if(optionValues == null) optionValues = emptyList()
+            }
+            else -> {
+                valueType = CwtType.Unknown
             }
         }
-        return CwtOptionValueConfig(
-            emptyPointer(), fileConfig.info, option.value,
-            booleanValue, intValue, floatValue, stringValue, options, optionValues
-        )
+        return CwtOptionValueConfig(emptyPointer(), fileConfig.info, value, valueType, options, optionValues)
     }
 }

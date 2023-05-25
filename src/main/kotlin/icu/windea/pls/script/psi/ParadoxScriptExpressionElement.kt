@@ -1,8 +1,8 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.model.*
 
 /**
  * @see ParadoxScriptPropertyKey
@@ -15,5 +15,5 @@ interface ParadoxScriptExpressionElement: ParadoxTypedElement, NavigatablePsiEle
 	
 	fun setValue(value: String): ParadoxScriptExpressionElement
 	
-	override val type: ParadoxDataType
+	override val type: ParadoxType
 }

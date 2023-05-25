@@ -3,11 +3,10 @@ package icu.windea.pls.script.psi;
 
 import java.util.List;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.core.expression.ParadoxDataType;
+import icu.windea.pls.lang.model.ParadoxType;
 
 public interface ParadoxScriptInlineMath extends ParadoxScriptValue {
 
@@ -21,7 +20,7 @@ public interface ParadoxScriptInlineMath extends ParadoxScriptValue {
   String getValue();
 
   @NotNull
-  ParadoxDataType getType();
+  ParadoxType getType();
 
   @NotNull
   String getExpression();

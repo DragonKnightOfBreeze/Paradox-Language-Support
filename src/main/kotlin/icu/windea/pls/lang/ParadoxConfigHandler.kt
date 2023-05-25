@@ -1501,7 +1501,7 @@ object ParadoxConfigHandler {
                 data is ParadoxScriptValue -> ParadoxDataExpression.resolve(data)
                 else -> return@p true
             }
-            val isParameterized = expression.type == ParadoxDataType.StringType && expression.text.isParameterized()
+            val isParameterized = expression.type == ParadoxType.StringType && expression.text.isParameterized()
             //may contain parameter -> can't and should not get occurrences
             if(isParameterized) {
                 occurrenceMap.clear()

@@ -19,6 +19,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 
@@ -151,7 +152,7 @@ object ParadoxConfigMatcher {
         when {
             dataType == CwtDataType.Block -> {
                 if(expression.isKey != false) return false
-                if(expression.type != ParadoxDataType.BlockType) return true
+                if(expression.type != ParadoxType.BlockType) return true
                 if(config !is CwtDataConfig) return Result.NotMatch
                 return Result.LazyExactMatch {
                     matchesScriptExpressionInBlock(element, config)
@@ -162,7 +163,7 @@ object ParadoxConfigMatcher {
             }
             dataType == CwtDataType.Int -> {
                 //quoted number (e.g. "1") -> ok according to vanilla game files
-                if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) {
+                if(expression.type.isIntType() || ParadoxType.resolve(expression.text).isIntType()) {
                     val (min, max) = configExpression.extraValue<Tuple2<Int?, Int?>>() ?: return true
                     return Result.LazyExactMatch p@{
                         val value = expression.text.toIntOrNull() ?: return@p true
@@ -173,7 +174,7 @@ object ParadoxConfigMatcher {
             }
             dataType == CwtDataType.Float -> {
                 //quoted number (e.g. "1") -> ok according to vanilla game files
-                if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) {
+                if(expression.type.isFloatType() || ParadoxType.resolve(expression.text).isFloatType()) {
                     val (min, max) = configExpression.extraValue<Tuple2<Float?, Float?>>() ?: return true
                     return Result.LazyExactMatch p@{
                         val value = expression.text.toFloatOrNull() ?: return@p true
@@ -185,7 +186,7 @@ object ParadoxConfigMatcher {
             dataType == CwtDataType.Scalar -> {
                 return when {
                     expression.isKey == true -> true //key -> ok
-                    expression.type == ParadoxDataType.ParameterType -> true //parameter -> ok
+                    expression.type == ParadoxType.ParameterType -> true //parameter -> ok
                     expression.type.isBooleanType() -> true //boolean -> sadly, also ok for compatibility
                     expression.type.isIntType() -> true //number -> ok according to vanilla game files
                     expression.type.isFloatType() -> true //number -> ok according to vanilla game files
@@ -198,11 +199,11 @@ object ParadoxConfigMatcher {
             }
             dataType == CwtDataType.PercentageField -> {
                 if(!expression.type.isStringType()) return false
-                return ParadoxDataType.isPercentageField(expression.text)
+                return ParadoxType.isPercentageField(expression.text)
             }
             dataType == CwtDataType.DateField -> {
                 if(!expression.type.isStringType()) return false
-                return ParadoxDataType.isDateField(expression.text)
+                return ParadoxType.isDateField(expression.text)
             }
             dataType == CwtDataType.Localisation -> {
                 if(!expression.type.isStringType()) return false
@@ -235,7 +236,7 @@ object ParadoxConfigMatcher {
             }
             dataType == CwtDataType.Definition -> {
                 //注意这里可能是一个整数，例如，对于<technology_tier>
-                if(!expression.type.isStringType() && expression.type != ParadoxDataType.IntType) return false
+                if(!expression.type.isStringType() && expression.type != ParadoxType.IntType) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 return getDefinitionMatchResult(element, expression, configExpression, project)
             }
@@ -277,9 +278,9 @@ object ParadoxConfigMatcher {
             dataType.isValueFieldType() -> {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
                 if(dataType == CwtDataType.ValueField) {
-                    if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) return true
+                    if(expression.type.isFloatType() || ParadoxType.resolve(expression.text).isFloatType()) return true
                 } else if(dataType == CwtDataType.IntValueField) {
-                    if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
+                    if(expression.type.isIntType() || ParadoxType.resolve(expression.text).isIntType()) return true
                 }
                 if(expression.quoted) return false //不允许用引号括起
                 if(!expression.type.isStringType()) return false
@@ -291,9 +292,9 @@ object ParadoxConfigMatcher {
             dataType.isVariableFieldType() -> {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
                 if(dataType == CwtDataType.VariableField) {
-                    if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.text).isFloatType()) return true
+                    if(expression.type.isFloatType() || ParadoxType.resolve(expression.text).isFloatType()) return true
                 } else if(dataType == CwtDataType.IntVariableField) {
-                    if(expression.type.isIntType() || ParadoxDataType.resolve(expression.text).isIntType()) return true
+                    if(expression.type.isIntType() || ParadoxType.resolve(expression.text).isIntType()) return true
                 }
                 if(expression.quoted) return false //不允许用引号括起
                 if(!expression.type.isStringType()) return false
@@ -311,7 +312,7 @@ object ParadoxConfigMatcher {
                 return expression.type.isStringLikeType()
             }
             dataType == CwtDataType.ParameterValue -> {
-                return expression.type != ParadoxDataType.BlockType
+                return expression.type != ParadoxType.BlockType
             }
             dataType == CwtDataType.LocalisationParameter -> {
                 //匹配本地化参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）

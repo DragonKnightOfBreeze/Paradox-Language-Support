@@ -23,9 +23,6 @@ data class CwtValueConfig(
         val Empty = CwtValueConfig(emptyPointer(), CwtConfigGroupInfo(""), "")
     }
     
-    //val stringValues by lazy { values?.mapNotNull { it.stringValue } }
-    //val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
-    
     val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
     
     override val expression: CwtValueExpression get() = valueExpression
@@ -34,9 +31,7 @@ data class CwtValueConfig(
     
     override fun resolvedOrNull(): CwtValueConfig? = inlineableConfig?.config?.castOrNull<CwtValueConfig>()
     
-    override fun toString(): String {
-        return value
-    }
-    
-    val isTagConfig = optionValues?.any { it.stringValue == "tag" } == true
+    override fun toString(): String = value
 }
+
+val CwtValueConfig.isTagConfig: Boolean get() = optionValues?.any { it.stringValue == "tag" } == true

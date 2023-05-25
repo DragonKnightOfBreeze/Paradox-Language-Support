@@ -24,24 +24,22 @@ data class CwtPropertyConfig(
 		val Empty = CwtPropertyConfig(emptyPointer(), CwtConfigGroupInfo(""), "", "")
 	}
 	
-	//val stringValues by lazy { values?.mapNotNull { it.stringValue } }
-	//val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
-	
 	val keyExpression: CwtKeyExpression = CwtKeyExpression.resolve(key)
 	val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
 	
 	override val expression: CwtKeyExpression get() = keyExpression
 	
-	val valueConfig = run {
+	//use lazy property to optimize memory
+	val valueConfig by lazy {
 		val valuePointer = when {
 			pointer == emptyPointer<CwtValue>() -> emptyPointer()
 			else -> {
 				val resolvedPointer = resolved().pointer
-				val resolvedFile = resolvedPointer.containingFile ?: return@run null
+				val resolvedFile = resolvedPointer.containingFile ?: return@lazy null
 				resolvedPointer.element?.propertyValue?.createPointer(resolvedFile)
 			}
 		}
-		if(valuePointer == null) return@run null
+		if(valuePointer == null) return@lazy null
 		CwtValueConfig(
 			valuePointer, info, value, booleanValue, intValue, floatValue, stringValue,
 			configs, documentation, options, optionValues, this
@@ -52,8 +50,6 @@ data class CwtPropertyConfig(
 	
 	override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>()
 	
-	override fun toString(): String {
-		return "$key ${separatorType.text} $value"
-	}
-	
+	override fun toString(): String = "$key ${separatorType.text} $value"
 }
+
