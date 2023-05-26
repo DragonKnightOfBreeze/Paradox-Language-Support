@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.model
 
 import com.google.common.cache.*
+import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 
@@ -67,9 +68,12 @@ interface ParadoxElementPath : Iterable<Tuple3<String, Boolean, Boolean>> {
 class ParadoxElementPathImpl(
     override val path: String
 ) : ParadoxElementPath {
-    override val subPaths: List<String> = buildList {
+    //intern to optimize memory
+    
+    override val subPaths: List<String> = run {
         //optimized
-        val builder = StringBuilder();
+        val result = SmartList<String>()
+        val builder = StringBuilder()
         var escape = false
         path.forEach { c ->
             when {
@@ -77,7 +81,7 @@ class ParadoxElementPathImpl(
                     escape = true
                 }
                 c == '/' && !escape -> {
-                    add(builder.toString())
+                    result.add(builder.toString())
                     builder.clear()
                 }
                 else -> {
@@ -86,12 +90,13 @@ class ParadoxElementPathImpl(
                 }
             }
         }
-        if(builder.isNotEmpty()) add(builder.toString())
+        if(builder.isNotEmpty()) result.add(builder.toString().intern())
+        result
+    }
+    override val subPathInfos: List<Tuple3<String, Boolean, Boolean>> = subPaths.mapTo(SmartList()) {
+        tupleOf(it.unquote().intern(), it.isLeftQuoted(), it != "-")
     }
     override val length = subPaths.size
-    override val subPathInfos: List<Tuple3<String, Boolean, Boolean>> = subPaths.map {
-        tupleOf(it.unquote(), it.isLeftQuoted(), it != "-")
-    }
     override val isParameterized = length != 0 && this.subPaths.any { it.isParameterized() }
     
     override fun equals(other: Any?): Boolean {

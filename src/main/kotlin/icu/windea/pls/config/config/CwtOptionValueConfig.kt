@@ -5,10 +5,10 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.model.*
 
 data class CwtOptionValueConfig(
-    override val pointer: SmartPsiElementPointer<CwtValue>, //NOTE 目前不会用到，因此始终传入emptyPointer()以优化性能
+    override val pointer: SmartPsiElementPointer<CwtValue>, //NOTE 目前并未使用，因此直接传入emptyPointer()就行
     override val info: CwtConfigGroupInfo,
-    val value: String,
-    val valueType: CwtType,
-    val options: List<CwtOptionConfig>? = null,
-    val optionValues: List<CwtOptionValueConfig>? = null,
-) : CwtConfig<CwtValue>
+    override val value: String,
+    override val valueType: CwtType = CwtType.String,
+    override val options: List<CwtOptionConfig>? = null,
+    override val optionValues: List<CwtOptionValueConfig>? = null
+) : CwtConfig<CwtValue>, CwtValueAware, CwtOptionsAware

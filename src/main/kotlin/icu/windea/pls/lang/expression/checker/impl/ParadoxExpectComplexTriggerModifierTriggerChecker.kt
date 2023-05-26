@@ -15,7 +15,7 @@ class ParadoxExpectComplexTriggerModifierTriggerChecker : ParadoxIncorrectExpres
         
     }
     
-    override fun check(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>, holder: ProblemsHolder) {
+    override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         //complex_trigger_modifier = {...}中判定的应当是一个simple_trigger
         if(element !is ParadoxScriptString && element !is ParadoxScriptScriptedVariableReference) return
         if(config !is CwtValueConfig || config.value != "alias_keys_field[trigger]") return

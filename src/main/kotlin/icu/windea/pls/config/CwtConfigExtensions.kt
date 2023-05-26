@@ -14,7 +14,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
-inline fun CwtDataConfig<*>.processParent(inline: Boolean = false, processor: (CwtDataConfig<*>) -> Boolean): Boolean {
+inline fun CwtMemberConfig<*>.processParent(inline: Boolean = false, processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
     var parent = this.parent
     while(parent != null) {
         val result = processor(parent)
@@ -28,11 +28,11 @@ inline fun CwtDataConfig<*>.processParent(inline: Boolean = false, processor: (C
     return true
 }
 
-fun CwtDataConfig<*>.processDescendants(processor: (CwtDataConfig<*>) -> Boolean): Boolean {
+fun CwtMemberConfig<*>.processDescendants(processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
     return doProcessDescendants(processor)
 }
 
-private fun CwtDataConfig<*>.doProcessDescendants(processor: (CwtDataConfig<*>) -> Boolean): Boolean {
+private fun CwtMemberConfig<*>.doProcessDescendants(processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
     processor(this).also { if(!it) return false }
     this.configs?.process { it.doProcessDescendants(processor) }?.also { if(!it) return false }
     return true

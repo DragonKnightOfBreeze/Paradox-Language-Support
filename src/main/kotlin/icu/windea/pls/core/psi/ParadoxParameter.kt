@@ -10,5 +10,5 @@ interface ParadoxParameter : ParadoxTypedElement, NavigatablePsiElement {
 	
 	val defaultValue: String? get() = null
 	
-	override val type: ParadoxType get() = ParadoxType.ParameterType
+	override val type: ParadoxType get() = ParadoxType.Parameter
 }

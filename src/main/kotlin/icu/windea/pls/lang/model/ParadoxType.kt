@@ -3,79 +3,96 @@ package icu.windea.pls.lang.model
 import java.text.*
 
 enum class ParadoxType(
-	val id: String,
-	val text: String
+	val id: kotlin.String,
+	val text: kotlin.String
 ) {
-	UnknownType("unknown", "(unknown)"),
-	BooleanType("boolean", "boolean"),
-	IntType("int", "int"),
-	FloatType("float", "float"),
-	StringType("string", "string"),
-	ColorType("color", "color"),
-	BlockType("block", "block"),
-	ParameterType("parameter", "parameter"),
-	InlineMathType("inline_math", "inline math");
+	Unknown("unknown", "(unknown)"),
+	Boolean("boolean", "boolean"),
+	Int("int", "int"),
+	Float("float", "float"),
+	String("string", "string"),
+	Color("color", "color"),
+	Block("block", "block"),
+	Parameter("parameter", "parameter"),
+	InlineMath("inline_math", "inline math");
 	
-	override fun toString(): String {
+	override fun toString(): kotlin.String {
 		return text
 	}
 	
-	fun isBooleanType() = this == BooleanType
+	fun isBooleanType(): kotlin.Boolean {
+		return this == Boolean
+	}
 	
-	fun isIntType() = this == UnknownType || this == IntType || this == ParameterType || this == InlineMathType
+	fun isIntType(): kotlin.Boolean {
+		return this == Unknown || this == Int || this == Parameter || this == InlineMath
+	}
 	
-	fun isFloatType() = this == UnknownType || this == IntType || this == FloatType || this == ParameterType || this == InlineMathType
+	fun isFloatType(): kotlin.Boolean {
+		return this == Unknown || this == Int || this == Float || this == Parameter || this == InlineMath
+	}
 	
-	fun isNumberType() = this == UnknownType || this == IntType || this == FloatType || this == ParameterType || this == InlineMathType
+	fun isNumberType(): kotlin.Boolean {
+		return this == Unknown || this == Int || this == Float || this == Parameter || this == InlineMath
+	}
 	
-	fun isStringType() = this == UnknownType || this == StringType || this == ParameterType
+	fun isStringType(): kotlin.Boolean {
+		return this == Unknown || this == String || this == Parameter
+	}
 	
-	fun isStringLikeType() = this == UnknownType || this == StringType || this == ParameterType
-		|| this == IntType || this == FloatType
+	fun isStringLikeType(): kotlin.Boolean {
+		return this == Unknown || this == String || this == Parameter || this == Int || this == Float
+	}
 	
-	fun isColorType() = this == ColorType
+	fun isColorType(): kotlin.Boolean {
+		return this == Color
+	}
 	
-	fun isBlockLikeType() = this == BlockType || this == ColorType || this == InlineMathType
+	fun isBlockLikeType(): kotlin.Boolean {
+		return this == Block || this == Color || this == InlineMath
+	}
 	
-	fun canBeScriptedVariableValue() = this == BooleanType || this == IntType || this == FloatType || this == StringType
+	fun canBeScriptedVariableValue(): kotlin.Boolean {
+		return this == Boolean || this == Int || this == Float || this == String
+	}
 	
 	companion object {
-		fun resolve(expression: String): ParadoxType {
+		fun resolve(expression: kotlin.String): ParadoxType {
 			return when {
-				isBooleanYesNo(expression) -> BooleanType
-				isInt(expression) -> IntType
-				isFloat(expression) -> FloatType
-				else -> StringType
+				isBooleanYesNo(expression) -> Boolean
+				isInt(expression) -> Int
+				isFloat(expression) -> Float
+				else -> String
 			}
 		}
 		
-		fun isBooleanYesNo(expression: String): Boolean {
+		fun isBooleanYesNo(expression: kotlin.String): kotlin.Boolean {
 			return expression == "yes" || expression == "no"
 		}
 		
-		fun isInt(expression: String): Boolean {
+		fun isInt(expression: kotlin.String): kotlin.Boolean {
 			return expression.toIntOrNull() != null
 		}
 		
-		fun isFloat(expression: String): Boolean {
+		fun isFloat(expression: kotlin.String): kotlin.Boolean {
 			return expression.toFloatOrNull() != null
 		}
 		
 		private val isPercentageFieldRegex = """[1-9]?[0-9]+%""".toRegex()
 		
-		fun isPercentageField(expression: String): Boolean {
+		fun isPercentageField(expression: kotlin.String): kotlin.Boolean {
 			return expression.matches(isPercentageFieldRegex)
 		}
 		
 		private val isColorFieldRegex = """(?:rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d. \t]*}""".toRegex()
 		
-		fun isColorField(expression: String): Boolean {
+		fun isColorField(expression: kotlin.String): kotlin.Boolean {
 			return expression.matches(isColorFieldRegex)
 		}
 		
 		private val threadLocalDateFormat by lazy { ThreadLocal.withInitial { SimpleDateFormat("yyyy.MM.dd") } }
 		
-		fun isDateField(expression: String): Boolean {
+		fun isDateField(expression: kotlin.String): kotlin.Boolean {
 			return try {
 				threadLocalDateFormat.get().parse(expression)
 				true

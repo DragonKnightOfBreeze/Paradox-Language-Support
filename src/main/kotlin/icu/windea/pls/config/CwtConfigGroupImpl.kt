@@ -2,7 +2,7 @@ package icu.windea.pls.config
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
@@ -15,8 +15,12 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
+import kotlin.Pair
+import kotlin.collections.component1
+import kotlin.collections.component2
 import kotlin.collections.isNullOrEmpty
 import kotlin.collections.mapNotNullTo
+import kotlin.collections.set
 
 class CwtConfigGroupImpl(
 	override val project: Project,
@@ -248,9 +252,7 @@ class CwtConfigGroupImpl(
 						prop.key == "example" -> example = prop.stringValue
 						prop.key == "variables" -> variables = prop.properties?.let {
 							buildMap {
-								it.forEach { p ->
-									if(p.stringValue != null) put(p.key, p.stringValue)
-								}
+								it.forEach { p -> put(p.key, p.value) }
 							}
 						}
 						prop.key == "expression" -> expression = prop.stringValue
@@ -654,7 +656,7 @@ class CwtConfigGroupImpl(
 						val set = caseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
 						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
-						val o = option.separatorType == CwtSeparator.EQUAL
+						val o = option.separatorType == CwtSeparatorType.EQUAL
 						typeKeyFilter = set reverseIf o
 					}
 					"type_key_regex" -> {
@@ -701,7 +703,7 @@ class CwtConfigGroupImpl(
 						val set = caseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
 						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
-						val o = option.separatorType == CwtSeparator.EQUAL
+						val o = option.separatorType == CwtSeparatorType.EQUAL
 						typeKeyFilter = set reverseIf o
 					}
 					"type_key_regex" -> {

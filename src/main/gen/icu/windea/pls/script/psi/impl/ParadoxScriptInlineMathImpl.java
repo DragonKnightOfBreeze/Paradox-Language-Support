@@ -1,16 +1,16 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.lang.*;
+import com.intellij.navigation.*;
+import com.intellij.psi.*;
+import com.intellij.psi.search.*;
+import com.intellij.psi.util.*;
+import icu.windea.pls.lang.model.*;
 import icu.windea.pls.script.psi.*;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.lang.model.ParadoxType;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
 
 public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implements ParadoxScriptInlineMath {
 

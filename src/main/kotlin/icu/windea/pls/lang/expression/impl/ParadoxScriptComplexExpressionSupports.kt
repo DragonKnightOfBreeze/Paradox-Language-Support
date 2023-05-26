@@ -25,7 +25,7 @@ class ParadoxScriptValueSetExpressionSupport : ParadoxScriptExpressionSupport() 
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         //not key/value or quoted -> only value set value name, no scope info
-        if(config !is CwtDataConfig<*> || expression.isLeftQuoted()) {
+        if(config !is CwtMemberConfig<*> || expression.isLeftQuoted()) {
             val valueSetName = config.expression?.value ?: return
             val attributesKey = when(valueSetName) {
                 "variable" -> ParadoxScriptAttributesKeys.VARIABLE_KEY
@@ -66,7 +66,7 @@ class ParadoxScriptValueSetExpressionSupport : ParadoxScriptExpressionSupport() 
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         //not key/value or quoted -> only value set value name, no scope info
-        if(context.config !is CwtDataConfig<*> || context.quoted) {
+        if(context.config !is CwtMemberConfig<*> || context.quoted) {
             ParadoxConfigHandler.completeValueSetValue(context, result)
             return
         }

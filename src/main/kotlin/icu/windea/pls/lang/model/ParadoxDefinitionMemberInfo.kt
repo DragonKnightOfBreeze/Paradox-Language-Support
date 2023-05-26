@@ -28,15 +28,15 @@ class ParadoxDefinitionMemberInfo(
     val isDefinition = element is ParadoxScriptDefinitionElement && elementPath.isEmpty()
     val isParameterized = elementPath.isParameterized
     
-    private val cache: MutableMap<String, List<CwtDataConfig<*>>> = ConcurrentHashMap()
+    private val cache: MutableMap<String, List<CwtMemberConfig<*>>> = ConcurrentHashMap()
     
     /**
      * 对应的配置列表。
      */
-    fun getConfigs(matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtDataConfig<*>> {
+    fun getConfigs(matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtMemberConfig<*>> {
         var cacheKey = "$matchOptions"
         //这里需要特别处理缓存的键
-        val configContext = definitionInfo.getDeclaration(matchOptions)?.getUserData(CwtDataConfig.Keys.configContextKey)
+        val configContext = definitionInfo.getDeclaration(matchOptions)?.getUserData(CwtMemberConfig.Keys.configContextKey)
         if(configContext != null) {
             cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
         }
@@ -46,10 +46,10 @@ class ParadoxDefinitionMemberInfo(
     /**
      * 对应的子配置列表。（得到的是合并后的规则列表，且过滤重复的）
      */
-    fun getChildConfigs(matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtDataConfig<*>> {
+    fun getChildConfigs(matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtMemberConfig<*>> {
         var cacheKey = "child#$matchOptions"
         //这里需要特别处理缓存的键
-        val configContext = definitionInfo.getDeclaration(matchOptions)?.getUserData(CwtDataConfig.Keys.configContextKey)
+        val configContext = definitionInfo.getDeclaration(matchOptions)?.getUserData(CwtMemberConfig.Keys.configContextKey)
         if(configContext != null) {
             cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
         }
@@ -60,7 +60,7 @@ class ParadoxDefinitionMemberInfo(
 /**
  * 根据路径解析对应的属性/值配置列表。
  */
-private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMemberInfo: ParadoxDefinitionMemberInfo, matchOptions: Int): List<CwtDataConfig<*>> {
+private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMemberInfo: ParadoxDefinitionMemberInfo, matchOptions: Int): List<CwtMemberConfig<*>> {
     val element = definitionMemberInfo.element
     //基于keyExpression，valueExpression可能不同
     val declaration = definitionInfo.getDeclaration(matchOptions) ?: return emptyList()
@@ -69,7 +69,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
     if(elementPath.isParameterized) return emptyList()
     if(elementPath.isEmpty()) return declaration.toSingletonList()
     
-    var result: List<CwtDataConfig<*>> = declaration.toSingletonList()
+    var result: List<CwtMemberConfig<*>> = declaration.toSingletonList()
     
     var inlinedByInlineConfig = false
     
@@ -81,7 +81,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
         //如果整个过程中的某个key匹配内联规则的名字（如，inline_script），则内联此内联规则
         
         val expression = ParadoxDataExpression.resolve(key, isQuoted, true)
-        val nextResult = SmartList<CwtDataConfig<*>>()
+        val nextResult = SmartList<CwtMemberConfig<*>>()
         result.forEachFast f2@{ parentConfig ->
             ProgressManager.checkCanceled()
             
@@ -109,7 +109,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
         //如过结果不为空且结果中存在需要重载的规则，则全部替换成重载后的规则
         run {
             if(result.isEmpty()) return@run
-            val optimizedResult = SmartList<CwtDataConfig<*>>()
+            val optimizedResult = SmartList<CwtMemberConfig<*>>()
             result.forEachFast { config ->
                 val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, config)
                 if(overriddenConfigs.isNotNullOrEmpty()) {
@@ -129,7 +129,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
         //如果结果不唯一且结果中存在按常量字符串匹配的规则，则仅选用那些规则
         run {
             if(result.size <= 1) return@run
-            val optimizedResult = SmartList<CwtDataConfig<*>>()
+            val optimizedResult = SmartList<CwtMemberConfig<*>>()
             result.forEachFast { config ->
                 if(config.expression.type == CwtDataType.Constant) optimizedResult.add(config)
             }
@@ -146,7 +146,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
 /**
  * 根据路径解析对应的子属性规则列表。（得到的是合并后的规则列表，且过滤重复的）
  */
-private fun doGetChildConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMemberInfo: ParadoxDefinitionMemberInfo, matchOptions: Int): List<CwtDataConfig<*>> {
+private fun doGetChildConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMemberInfo: ParadoxDefinitionMemberInfo, matchOptions: Int): List<CwtMemberConfig<*>> {
     //基于上一级keyExpression，keyExpression一定唯一
     val declaration = definitionInfo.getDeclaration(matchOptions) ?: return emptyList()
     if(declaration.configs.isNullOrEmpty()) return emptyList()
@@ -160,7 +160,7 @@ private fun doGetChildConfigs(definitionInfo: ParadoxDefinitionInfo, definitionM
         else -> {
             //打平propertyConfigs中的每一个properties
             val configs = doGetConfigs(definitionInfo, definitionMemberInfo, matchOptions)
-            val result = SmartList<CwtDataConfig<*>>()
+            val result = SmartList<CwtMemberConfig<*>>()
             configs.forEachFast { config ->
                 val childConfigs = config.configs
                 if(childConfigs.isNotNullOrEmpty()) result.addAll(childConfigs)

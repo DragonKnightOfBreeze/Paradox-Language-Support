@@ -47,7 +47,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
         element.definitionType?.let { return it.escapeXml() }
         element.configExpression?.let { return it.escapeXml() }
         element.type?.let { return it.text.escapeXml() }
-        return ParadoxType.UnknownType.text
+        return ParadoxType.Unknown.text
     }
     
     /**

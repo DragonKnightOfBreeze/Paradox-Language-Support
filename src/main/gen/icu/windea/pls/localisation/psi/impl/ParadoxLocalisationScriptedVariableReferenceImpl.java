@@ -5,6 +5,13 @@ import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.extapi.psi.*;
+import com.intellij.lang.*;
+import com.intellij.navigation.*;
+import com.intellij.psi.*;
+import com.intellij.psi.search.*;
+import icu.windea.pls.core.references.*;
+import icu.windea.pls.lang.model.*;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -12,6 +19,9 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.lang.model.ParadoxType;
 import icu.windea.pls.core.references.ParadoxScriptedVariablePsiReference;
 import javax.swing.Icon;
+import org.jetbrains.annotations.*;
+
+import javax.swing.*;
 
 public class ParadoxLocalisationScriptedVariableReferenceImpl extends ASTWrapperPsiElement implements ParadoxLocalisationScriptedVariableReference {
 

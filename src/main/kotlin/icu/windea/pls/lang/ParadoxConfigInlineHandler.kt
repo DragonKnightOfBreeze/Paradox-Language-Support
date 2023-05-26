@@ -12,8 +12,7 @@ object ParadoxConfigInlineHandler {
         KEY_TO_KEY, KEY_TO_VALUE, VALUE_TO_KEY, VALUE_TO_VALUE
     }
     
-    @Suppress("KotlinConstantConditions") 
-    fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtDataConfig<*>, mode: Mode) : CwtPropertyConfig? {
+    fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, mode: Mode) : CwtPropertyConfig? {
         val inlined = config.copy(
              key = when(mode) {
                  Mode.KEY_TO_KEY -> if(otherConfig is CwtPropertyConfig) otherConfig.key else return null
@@ -24,26 +23,6 @@ object ParadoxConfigInlineHandler {
                 Mode.VALUE_TO_VALUE -> otherConfig.value
                 Mode.KEY_TO_VALUE -> if(otherConfig is CwtPropertyConfig) otherConfig.key else return null
                 else -> config.value
-            },
-            booleanValue = when(mode) {
-                Mode.KEY_TO_VALUE -> null
-                Mode.VALUE_TO_VALUE -> otherConfig.booleanValue
-                else -> config.booleanValue
-            },
-            intValue = when(mode) {
-                Mode.KEY_TO_VALUE -> null
-                Mode.VALUE_TO_VALUE -> otherConfig.intValue
-                else -> config.intValue
-            },
-            floatValue = when(mode) {
-                Mode.KEY_TO_VALUE -> null
-                Mode.VALUE_TO_VALUE -> otherConfig.floatValue
-                else -> config.floatValue
-            },
-            stringValue = when(mode) {
-                Mode.KEY_TO_VALUE -> if(otherConfig is CwtPropertyConfig) otherConfig.key else return null
-                Mode.VALUE_TO_VALUE -> otherConfig.stringValue
-                else -> config.stringValue
             },
             configs = when(mode) {
                 Mode.KEY_TO_VALUE -> null
@@ -64,10 +43,6 @@ object ParadoxConfigInlineHandler {
         val inlined = config.copy(
             key = aliasConfig.subName,
             value = other.value,
-            booleanValue = other.booleanValue,
-            intValue = other.intValue,
-            floatValue = other.floatValue,
-            stringValue = other.stringValue,
             configs = other.deepCopyConfigs(),
             documentation = other.documentation,
             options =  other.options,
@@ -103,10 +78,6 @@ object ParadoxConfigInlineHandler {
         val other = singleAliasConfig.config
         val inlined = config.copy(
             value = other.value,
-            booleanValue = other.booleanValue,
-            intValue = other.intValue,
-            floatValue = other.floatValue,
-            stringValue = other.stringValue,
             configs = other.deepCopyConfigs(),
             documentation = config.documentation ?: other.documentation,
             options = config.options,
@@ -118,7 +89,7 @@ object ParadoxConfigInlineHandler {
         return inlined
     }
     
-    fun inlineFromInlineConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: SmartList<CwtDataConfig<*>>): Boolean {
+    fun inlineFromInlineConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: SmartList<CwtMemberConfig<*>>): Boolean {
         //内联特定的规则：inline_script
         val configGroup = config.info.configGroup
         val inlineConfigs = configGroup.inlineConfigGroup[key]
@@ -129,7 +100,7 @@ object ParadoxConfigInlineHandler {
         return true
     }
     
-    fun inlineFromAliasConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtDataConfig<*>>, matchOptions: Int) {
+    fun inlineFromAliasConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>, matchOptions: Int) {
         //内联类型为single_alias_right或alias_match_left的规则
         run {
             val configGroup = config.info.configGroup

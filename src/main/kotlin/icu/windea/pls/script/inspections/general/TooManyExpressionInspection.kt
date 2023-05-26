@@ -55,7 +55,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 doCheck(element, position, configs)
             }
     
-            private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement, configs: List<CwtDataConfig<*>>) {
+            private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement, configs: List<CwtMemberConfig<*>>) {
                 if(skipCheck(element, configs)) return
                 val occurrenceMap = ParadoxConfigHandler.getChildOccurrenceMap(element, configs)
                 if(occurrenceMap.isEmpty()) return
@@ -67,7 +67,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 }
             }
     
-            private fun skipCheck(element: ParadoxScriptMemberElement, configs: List<CwtDataConfig<*>>): Boolean {
+            private fun skipCheck(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Boolean {
                 //子句不为空且可以精确匹配多个子句规则时，不适用此检查
                 if(configs.isEmpty()) return true
                 if(configs.size == 1) return false
@@ -76,7 +76,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 return true
             }
             
-            private fun getOverriddenProvider(configs: List<CwtDataConfig<*>>): ParadoxOverriddenConfigProvider? {
+            private fun getOverriddenProvider(configs: List<CwtMemberConfig<*>>): ParadoxOverriddenConfigProvider? {
                 configs.forEach { c1 ->
                     c1.overriddenProvider?.let { return it }
                     val pc1 = c1.castOrNull<CwtValueConfig>()?.propertyConfig

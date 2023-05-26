@@ -20,7 +20,7 @@ class ParadoxSwitchCaseOverriddenConfigProvider: ParadoxOverriddenConfigProvider
     }
     
     @Suppress("UNCHECKED_CAST")
-    override fun <T : CwtDataConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
+    override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
         //重置switch = {...}和inverted_switch = {...}中对应的CWT规则为scalar的属性的键对应的CWT规则
         //兼容使用内联或者使用封装变量的情况
         if(config !is CwtPropertyConfig) return null

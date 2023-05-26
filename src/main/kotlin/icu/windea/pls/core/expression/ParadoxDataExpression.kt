@@ -14,7 +14,7 @@ interface ParadoxDataExpression : ParadoxExpression {
 	companion object Resolver
 }
 
-fun ParadoxDataExpression.isParameterized() = type == ParadoxType.StringType && text.isParameterized()
+fun ParadoxDataExpression.isParameterized() = type == ParadoxType.String && text.isParameterized()
 
 class ParadoxDataExpressionImpl(
 	override val text: String,
@@ -24,14 +24,14 @@ class ParadoxDataExpressionImpl(
 ) : AbstractExpression(text), ParadoxDataExpression
 
 object BlockParadoxDataExpression: AbstractExpression(PlsConstants.blockFolder), ParadoxDataExpression {
-	override val type: ParadoxType = ParadoxType.BlockType
+	override val type: ParadoxType = ParadoxType.Block
 	override val text: String  = PlsConstants.blockFolder
 	override val quoted: Boolean = false
 	override val isKey: Boolean = false
 }
 
 object UnknownParadoxDataExpression: AbstractExpression(PlsConstants.unknownString), ParadoxDataExpression {
-	override val type: ParadoxType = ParadoxType.UnknownType
+	override val type: ParadoxType = ParadoxType.Unknown
 	override val text: String  = PlsConstants.unknownString
 	override val quoted: Boolean = false
 	override val isKey: Boolean = false
@@ -47,7 +47,7 @@ fun Resolver.resolve(element: ParadoxScriptExpressionElement, matchOptions: Int 
 			}
 			ParadoxDataExpressionImpl(valueElement.value, valueElement.type, valueElement.text.isLeftQuoted(), false)
 		}
-		element.type == ParadoxType.BlockType -> {
+		element.type == ParadoxType.Block -> {
 			BlockParadoxDataExpression
 		}
 		else -> {

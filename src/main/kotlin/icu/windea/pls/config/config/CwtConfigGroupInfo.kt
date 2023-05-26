@@ -21,7 +21,7 @@ data class CwtConfigGroupInfo(
     val aliasNamesSupportScope = mutableSetOf<String>()
     
     //$parameter = xxx
-    val parameterConfigs = mutableListOf<CwtDataConfig<*>>()
+    val parameterConfigs = mutableListOf<CwtMemberConfig<*>>()
     
     fun acceptConfigExpression(configExpression: CwtDataExpression, config: CwtConfig<*>?) {
         when(configExpression.type) {

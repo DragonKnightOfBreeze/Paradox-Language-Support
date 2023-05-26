@@ -8,5 +8,5 @@ interface ParadoxConditionParameter: ParadoxTypedElement, NavigatablePsiElement 
 	
 	fun setName(name: String): ParadoxConditionParameter
 	
-	override val type: ParadoxType get() = ParadoxType.ParameterType
+	override val type: ParadoxType get() = ParadoxType.Parameter
 }

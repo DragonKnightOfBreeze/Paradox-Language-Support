@@ -100,7 +100,7 @@ object ParadoxLocalisationParameterHandler {
         return result
     }
     
-    private fun isMatchedProperty(element: PsiElement, config: CwtDataConfig<*>): Boolean {
+    private fun isMatchedProperty(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         if(element is ParadoxScriptProperty) {
             val configs = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
             if(configs.any { it pointerEquals config }) {
@@ -110,13 +110,13 @@ object ParadoxLocalisationParameterHandler {
         return false
     }
     
-    private fun isLocalisationConfig(element: PsiElement, config: CwtDataConfig<*>): Boolean {
+    private fun isLocalisationConfig(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         if(config !is CwtPropertyConfig) return false
         val dataType = config.valueExpression.type
         return dataType == CwtDataType.Localisation || (dataType == CwtDataType.InlineLocalisation && !element.text.isLeftQuoted())
     }
     
-    private fun isParameterConfig(element: PsiElement, config: CwtDataConfig<*>): Boolean {
+    private fun isParameterConfig(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         if(config !is CwtPropertyConfig) return false
         val dataType = config.keyExpression.type
         return dataType == CwtDataType.LocalisationParameter

@@ -46,7 +46,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                 }
             }
             
-            private fun getSupportedScopes(element: ParadoxScriptMemberElement, config: CwtDataConfig<*>): Set<String>? {
+            private fun getSupportedScopes(element: ParadoxScriptMemberElement, config: CwtMemberConfig<*>): Set<String>? {
                 if(config.expression.type == CwtDataType.AliasKeysField) {
                     val configGroup = config.info.configGroup
                     val aliasName = config.expression.value ?: return null

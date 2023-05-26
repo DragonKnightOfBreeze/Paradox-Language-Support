@@ -152,8 +152,8 @@ object ParadoxConfigMatcher {
         when {
             dataType == CwtDataType.Block -> {
                 if(expression.isKey != false) return false
-                if(expression.type != ParadoxType.BlockType) return true
-                if(config !is CwtDataConfig) return Result.NotMatch
+                if(expression.type != ParadoxType.Block) return true
+                if(config !is CwtMemberConfig) return Result.NotMatch
                 return Result.LazyExactMatch {
                     matchesScriptExpressionInBlock(element, config)
                 }
@@ -186,7 +186,7 @@ object ParadoxConfigMatcher {
             dataType == CwtDataType.Scalar -> {
                 return when {
                     expression.isKey == true -> true //key -> ok
-                    expression.type == ParadoxType.ParameterType -> true //parameter -> ok
+                    expression.type == ParadoxType.Parameter -> true //parameter -> ok
                     expression.type.isBooleanType() -> true //boolean -> sadly, also ok for compatibility
                     expression.type.isIntType() -> true //number -> ok according to vanilla game files
                     expression.type.isFloatType() -> true //number -> ok according to vanilla game files
@@ -236,7 +236,7 @@ object ParadoxConfigMatcher {
             }
             dataType == CwtDataType.Definition -> {
                 //注意这里可能是一个整数，例如，对于<technology_tier>
-                if(!expression.type.isStringType() && expression.type != ParadoxType.IntType) return false
+                if(!expression.type.isStringType() && expression.type != ParadoxType.Int) return false
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 return getDefinitionMatchResult(element, expression, configExpression, project)
             }
@@ -312,7 +312,7 @@ object ParadoxConfigMatcher {
                 return expression.type.isStringLikeType()
             }
             dataType == CwtDataType.ParameterValue -> {
-                return expression.type != ParadoxType.BlockType
+                return expression.type != ParadoxType.Block
             }
             dataType == CwtDataType.LocalisationParameter -> {
                 //匹配本地化参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
@@ -367,7 +367,7 @@ object ParadoxConfigMatcher {
         }
     }
     
-    private fun matchesScriptExpressionInBlock(element: PsiElement, config: CwtDataConfig<*>): Boolean {
+    private fun matchesScriptExpressionInBlock(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         val block = when {
             element is ParadoxScriptProperty -> element.propertyValue()
             element is ParadoxScriptBlock -> element

@@ -1,17 +1,13 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
 import icu.windea.pls.cwt.psi.*;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.config.config.CwtSeparator;
-import javax.swing.Icon;
+import icu.windea.pls.lang.model.*;
+import org.jetbrains.annotations.*;
+
+import javax.swing.*;
 
 public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
 
@@ -73,7 +69,7 @@ public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
 
   @Override
   @NotNull
-  public CwtSeparator getSeparatorType() {
+  public CwtSeparatorType getSeparatorType() {
     return CwtPsiImplUtil.getSeparatorType(this);
   }
 

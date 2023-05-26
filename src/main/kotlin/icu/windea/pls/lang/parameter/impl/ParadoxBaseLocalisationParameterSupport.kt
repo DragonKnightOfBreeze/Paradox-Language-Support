@@ -37,7 +37,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
     
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, vararg extraArgs: Any?): ParadoxParameterElement? {
         //extraArgs: config
-        val config = extraArgs.getOrNull(0)?.castOrNull<CwtDataConfig<*>>() ?: return null
+        val config = extraArgs.getOrNull(0)?.castOrNull<CwtMemberConfig<*>>() ?: return null
         if(config !is CwtPropertyConfig || config.expression.type != CwtDataType.Parameter) return null
         val localisationReferenceElement = ParadoxLocalisationParameterHandler.getLocalisationReferenceElement(element, config)
         if(localisationReferenceElement == null) return null

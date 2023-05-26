@@ -254,14 +254,14 @@ private fun applyKeyAndValueInsertHandler(c: InsertionContext, context: Processi
 fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
     context: ProcessingContext,
     builder: LookupElementBuilder,
-    entryConfigs: List<CwtDataConfig<*>>,
+    entryConfigs: List<CwtMemberConfig<*>>,
     callback: LookupElementBuilder.() -> LookupElement = { this }
 ) {
     //如果补全位置所在的子句为空或者都不精确匹配，显示对话框时默认列出的属性/值应该有数种情况，因此这里需要传入entryConfigs
     
     //目前默认列出并且仅允许选择直接的作为常量字符串的key（不包括通过alias内联的常量字符串）
     val file = context.originalFile ?: return
-    val constantConfigGroupList = mutableListOf<Map<CwtDataExpression, List<CwtDataConfig<*>>>>()
+    val constantConfigGroupList = mutableListOf<Map<CwtDataExpression, List<CwtMemberConfig<*>>>>()
     val hasRemainList = mutableListOf<Boolean>()
     for(entry in entryConfigs) {
         val constantConfigGroup = entry.configs
@@ -376,7 +376,7 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
     addElement(resultLookupElement.callback())
 }
 
-private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtDataConfig<*>>>): List<ElementDescriptor> {
+private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtMemberConfig<*>>>): List<ElementDescriptor> {
     val descriptors = mutableListOf<ElementDescriptor>()
     for((expression, constantConfigs) in constantConfigGroup) {
         when(expression) {

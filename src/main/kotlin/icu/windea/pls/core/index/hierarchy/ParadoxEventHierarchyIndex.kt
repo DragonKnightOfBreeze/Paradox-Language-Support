@@ -118,7 +118,7 @@ object ParadoxEventHierarchyIndex {
                 if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }
             
-            private fun isEventDefinitionConfig(config: CwtDataConfig<*>): Boolean {
+            private fun isEventDefinitionConfig(config: CwtMemberConfig<*>): Boolean {
                 return config.expression.type == CwtDataType.Definition && config.expression.value.let { it != null && (it == "event" || it.startsWith("event")) }
             }
         })

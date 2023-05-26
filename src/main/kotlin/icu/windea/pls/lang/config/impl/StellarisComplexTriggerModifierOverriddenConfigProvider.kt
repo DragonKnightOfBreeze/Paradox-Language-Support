@@ -26,7 +26,7 @@ class StellarisComplexTriggerModifierOverriddenConfigProvider : ParadoxOverridde
     }
     
     @Suppress("UNCHECKED_CAST")
-    override fun <T : CwtDataConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
+    override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
         //重载complex_trigger_modifier = {...}中属性parameters的值对应的CWT规则
         //兼容使用内联或者使用封装变量的情况
         if(config !is CwtPropertyConfig) return null
@@ -52,7 +52,7 @@ class StellarisComplexTriggerModifierOverriddenConfigProvider : ParadoxOverridde
         return resultConfigs as List<T>
     }
     
-    override fun skipMissingExpressionCheck(configs: List<CwtDataConfig<*>>, configExpression: CwtDataExpression): Boolean {
+    override fun skipMissingExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression): Boolean {
         val isDirectChild = configs.any { it.castOrNull<CwtValueConfig>()?.propertyConfig?.overriddenProvider != null }
         if(isDirectChild) {
             if(configExpression.expressionString in SKIP_MISSING_CHECK_KEYS) return true

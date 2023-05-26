@@ -73,7 +73,7 @@ object ParadoxInlineScriptHandler {
         return ParadoxInlineScriptInfo(expression, elementOffset, gameType)
     }
     
-    private fun getExpressionLocation(it: CwtDataConfig<*>): String? {
+    private fun getExpressionLocation(it: CwtMemberConfig<*>): String? {
         return it.options?.find { it.key == "inline_script_expression" }?.stringValue
     }
     
@@ -158,7 +158,7 @@ object ParadoxInlineScriptHandler {
         var element: ParadoxScriptProperty? = null
         var hasConflict = false
         var hasRecursion = false
-        val configs: MutableList<CwtDataConfig<*>> = mutableListOf()
+        val configs: MutableList<CwtMemberConfig<*>> = mutableListOf()
         withRecursionGuard("icu.windea.pls.lang.ParadoxInlineScriptHandler.doGetInlineScriptUsageInfo") {
             stackTrace.addLast(fileInfo.pathToEntry.path)
             val selector = inlineScriptSelector(project, file)

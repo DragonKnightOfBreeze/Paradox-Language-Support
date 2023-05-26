@@ -32,7 +32,7 @@ class ParadoxScriptConfigAwareInspectionSuppressor : InspectionSuppressor {
                 for(config in configs) {
                     //检查对应的规则
                     val configToUse = when {
-                        config is CwtValueConfig && config.propertyConfig != null -> config.propertyConfig
+                        config is CwtValueConfig && config.propertyConfig != null -> config.propertyConfig!!
                         else -> config
                     }
                     if(isSuppressed(configToUse, toolId)) return true
@@ -52,7 +52,7 @@ class ParadoxScriptConfigAwareInspectionSuppressor : InspectionSuppressor {
         return false
     }
     
-    private fun isSuppressed(config: CwtDataConfig<*>, toolId: String): Boolean {
+    private fun isSuppressed(config: CwtMemberConfig<*>, toolId: String): Boolean {
         //基于"## suppress TOOL_ID"，跳过对应的代码检查
         if(config.options?.any { it.key == "suppress" && it.stringValue == toolId } == true) return true
         return false

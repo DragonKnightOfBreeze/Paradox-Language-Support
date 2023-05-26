@@ -26,7 +26,7 @@ class StellarisComplexTriggerModifierOverriddenScopeContextProvider : ParadoxOve
     }
     
     @Suppress("KotlinConstantConditions")
-    override fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtDataConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
+    override fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
         //重载complex_trigger_modifier = {...}中属性trigger和parameters的值对应的作用域上下文
         //兼容trigger_scope的值对应的作用域与当前作用域上下文不匹配的情况
         if(config !is CwtPropertyConfig) return null
