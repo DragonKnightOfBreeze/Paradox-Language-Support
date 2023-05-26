@@ -19,7 +19,7 @@ data class ValueDescriptor(
 
 data class PropertyDescriptor(
     override var name: String = "",
-    var separator: ParadoxSeparator = ParadoxSeparator.EQUAL,
+    var separator: ParadoxSeparatorType = ParadoxSeparatorType.EQUAL,
     var value: String = "",
     val constantValues: List<String> = emptyList()
 ) : ElementDescriptor {

@@ -119,7 +119,7 @@ object CwtConfigResolver {
         }
         val documentation = getDocumentation(documentationLines, html)
         
-        val config = CwtPropertyConfig(pointer, fileConfig.info, key, value, valueType, separatorType, configs, options, optionValues, documentation)
+        val config = CwtPropertyConfig(pointer, fileConfig.info, key, value, valueType.id, separatorType.id, configs, options, optionValues, documentation)
         fileConfig.info.acceptConfigExpression(config.keyExpression, config)
         fileConfig.info.acceptConfigExpression(config.valueExpression, config)
         configs?.forEach { it.parent = config }
@@ -204,7 +204,7 @@ object CwtConfigResolver {
         }
         val documentation = getDocumentation(documentationLines, html)
         
-        val config = CwtValueConfig(pointer, fileConfig.info, value, valueType, configs, options, optionValues, documentation)
+        val config = CwtValueConfig(pointer, fileConfig.info, value, valueType.id, configs, options, optionValues, documentation)
         fileConfig.info.acceptConfigExpression(config.valueExpression, config)
         configs?.forEach { it.parent = config }
         return config
@@ -263,12 +263,12 @@ object CwtConfigResolver {
         }
         
         //use cache if possible to optimize memory
-        if(valueType != CwtType.Block) {
-            return optionConfigCache.getOrPut("${valueType.ordinal}#${key}#${value}") {
-                CwtOptionConfig(emptyPointer(), fileConfig.info, key, value, valueType, separatorType, options, optionValues)
+        if(options == null || optionValues == null) {
+            return optionConfigCache.getOrPut("${valueType.id}#${separatorType.id}#${key}#${value}") {
+                CwtOptionConfig(emptyPointer(), fileConfig.info, key, value, valueType.id, separatorType.id, options, optionValues)
             }
         }
-        return CwtOptionConfig(emptyPointer(), fileConfig.info, key, value, valueType, separatorType, options, optionValues)
+        return CwtOptionConfig(emptyPointer(), fileConfig.info, key, value, valueType.id, separatorType.id, options, optionValues)
     }
     
     private val optionValueConfigCache = CacheBuilder.newBuilder().buildCache<String, CwtOptionValueConfig>()
@@ -317,11 +317,11 @@ object CwtConfigResolver {
         }
         
         //use cache if possible to optimize memory
-        if(valueType != CwtType.Block) {
-            return optionValueConfigCache.getOrPut("${valueType.ordinal}#${value}") {
-                CwtOptionValueConfig(emptyPointer(), fileConfig.info, value, valueType, options, optionValues)
+        if(options == null || optionValues == null) {
+            return optionValueConfigCache.getOrPut("${valueType.id}#${value}") {
+                CwtOptionValueConfig(emptyPointer(), fileConfig.info, value, valueType.id, options, optionValues)
             }
         }
-        return CwtOptionValueConfig(emptyPointer(), fileConfig.info, value, valueType, options, optionValues)
+        return CwtOptionValueConfig(emptyPointer(), fileConfig.info, value, valueType.id, options, optionValues)
     }
 }

@@ -50,7 +50,7 @@ class ElementsListTable(
     override fun getRowEditor(row: Int): JBTableRowEditor {
         return object : JBTableRowEditor() {
             private var nameComboBox: ComboBox<String>? = null
-            private var separatorComboBox: ComboBox<ParadoxSeparator>? = null
+            private var separatorComboBox: ComboBox<ParadoxSeparatorType>? = null
             private var valueComboBox: ComboBox<String>? = null
             
             override fun prepareEditor(table: JTable, row: Int) {
@@ -76,7 +76,7 @@ class ElementsListTable(
                         }
                         is ElementsTableModel.SeparatorColumn -> {
                             if(item is PropertyDescriptor) {
-                                val separatorComboBox = ComboBox(ParadoxSeparator.values())
+                                val separatorComboBox = ComboBox(ParadoxSeparatorType.values())
                                 separatorComboBox.selectedItem = item.separator
                                 configureSeparatorComboBox(separatorComboBox)
                                 this.separatorComboBox = separatorComboBox
@@ -107,7 +107,7 @@ class ElementsListTable(
                 nameComboBox.maximumRowCount = 20
             }
             
-            private fun configureSeparatorComboBox(separatorComboBox: ComboBox<ParadoxSeparator>) {
+            private fun configureSeparatorComboBox(separatorComboBox: ComboBox<ParadoxSeparatorType>) {
                 separatorComboBox.setMinimumAndPreferredWidth(80)
             }
             

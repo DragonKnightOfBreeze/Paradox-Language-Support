@@ -51,19 +51,19 @@ class ElementsTableModel(
         }
     }
     
-    class SeparatorColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, ParadoxSeparator>(PlsBundle.message("ui.table.element.column.name.separator")) {
+    class SeparatorColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, ParadoxSeparatorType>(PlsBundle.message("ui.table.element.column.name.separator")) {
         override fun isCellEditable(item: ElementDescriptor): Boolean {
             return item is PropertyDescriptor
         }
         
-        override fun valueOf(item: ElementDescriptor): ParadoxSeparator? {
+        override fun valueOf(item: ElementDescriptor): ParadoxSeparatorType? {
             return when(item) {
                 is ValueDescriptor -> null
                 is PropertyDescriptor -> item.separator
             }
         }
         
-        override fun setValue(item: ElementDescriptor, value: ParadoxSeparator) {
+        override fun setValue(item: ElementDescriptor, value: ParadoxSeparatorType) {
             when(item) {
                 is ValueDescriptor -> pass()
                 is PropertyDescriptor -> item.separator = value
@@ -73,14 +73,14 @@ class ElementsTableModel(
         override fun getRenderer(item: ElementDescriptor): TableCellRenderer? {
             return when(item) {
                 is ValueDescriptor -> null
-                is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparator.values())
+                is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparatorType.values())
             }
         }
         
         override fun getEditor(item: ElementDescriptor): TableCellEditor? {
             return when(item) {
                 is ValueDescriptor -> null
-                is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparator.values())
+                is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparatorType.values())
             }
         }
     }

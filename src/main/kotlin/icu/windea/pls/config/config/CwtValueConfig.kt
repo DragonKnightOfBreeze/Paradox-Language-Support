@@ -10,7 +10,7 @@ data class CwtValueConfig(
     override val pointer: SmartPsiElementPointer<CwtValue>,
     override val info: CwtConfigGroupInfo,
     override val value: String,
-    override val valueType: CwtType = CwtType.String,
+    override val valueTypeId: Byte = CwtType.String.id,
     override val configs: List<CwtMemberConfig<*>>? = null,
     override val options: List<CwtOptionConfig>? = null,
     override val optionValues: List<CwtOptionValueConfig>? = null,

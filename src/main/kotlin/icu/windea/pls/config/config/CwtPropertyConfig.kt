@@ -11,8 +11,8 @@ data class CwtPropertyConfig(
     override val info: CwtConfigGroupInfo,
     override val key: String,
     override val value: String,
-    override val valueType: CwtType = CwtType.String,
-    override val separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
+    override val valueTypeId: Byte = CwtType.String.id,
+    override val separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
     override val configs: List<CwtMemberConfig<*>>? = null,
     override val options: List<CwtOptionConfig>? = null,
     override val optionValues: List<CwtOptionValueConfig>? = null,
@@ -37,7 +37,7 @@ data class CwtPropertyConfig(
             }
         }
         if(valuePointer == null) return@lazy null
-        CwtValueConfig(valuePointer, info, value, valueType, configs, options, optionValues, documentation).also { it.propertyConfig = this }
+        CwtValueConfig(valuePointer, info, value, valueType.id, configs, options, optionValues, documentation).also { it.propertyConfig = this }
     }
     
     override fun resolved(): CwtPropertyConfig = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>() ?: this

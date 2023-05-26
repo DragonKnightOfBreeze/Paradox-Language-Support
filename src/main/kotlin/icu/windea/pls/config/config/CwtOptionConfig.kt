@@ -9,8 +9,8 @@ data class CwtOptionConfig(
 	override val info: CwtConfigGroupInfo,
 	override val key: String,
 	override val value: String,
-	override val valueType: CwtType = CwtType.String,
-	override val separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
+	override val valueTypeId: Byte = CwtType.String.id,
+	override val separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
 	override val options: List<CwtOptionConfig>? = null,
 	override val optionValues: List<CwtOptionValueConfig>? = null
 ) : CwtConfig<CwtOption>, CwtPropertyAware, CwtOptionsAware
