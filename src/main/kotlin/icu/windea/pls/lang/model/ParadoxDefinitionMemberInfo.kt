@@ -74,20 +74,18 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
     var inlinedByInlineConfig = false
     
     val configGroup = definitionMemberInfo.configGroup
-    elementPath.subPathInfos.forEachFast f1@{ info ->
-        val (key, isQuoted, isKey) = info
-        
+    elementPath.subPaths.forEachFast f1@{ (_, subPath, isQuoted, isKey) ->
         //如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
         //如果整个过程中的某个key匹配内联规则的名字（如，inline_script），则内联此内联规则
         
-        val expression = ParadoxDataExpression.resolve(key, isQuoted, true)
+        val expression = ParadoxDataExpression.resolve(subPath, isQuoted, true)
         val nextResult = SmartList<CwtMemberConfig<*>>()
         result.forEachFast f2@{ parentConfig ->
             ProgressManager.checkCanceled()
             
             //处理内联规则
             if(!inlinedByInlineConfig && isKey && parentConfig is CwtPropertyConfig) {
-                inlinedByInlineConfig = ParadoxConfigInlineHandler.inlineFromInlineConfig(element, key, isQuoted, parentConfig, nextResult)
+                inlinedByInlineConfig = ParadoxConfigInlineHandler.inlineFromInlineConfig(element, subPath, isQuoted, parentConfig, nextResult)
                 if(inlinedByInlineConfig) return@f2
             }
             
@@ -96,7 +94,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
             configs.forEachFast f3@{ config ->
                 if(isKey && config is CwtPropertyConfig) {
                     if(ParadoxConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) {
-                        ParadoxConfigInlineHandler.inlineFromAliasConfig(element, key, isQuoted, config, nextResult, matchOptions)
+                        ParadoxConfigInlineHandler.inlineFromAliasConfig(element, subPath, isQuoted, config, nextResult, matchOptions)
                     }
                 } else if(!isKey && config is CwtValueConfig) {
                     nextResult.add(config)

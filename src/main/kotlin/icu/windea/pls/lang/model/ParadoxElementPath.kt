@@ -4,6 +4,7 @@ import com.google.common.cache.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.model.ParadoxElementPath.*
 
 /**
  * 定义或定义属性相对于所属文件或定义的路径。保留大小写。
@@ -18,10 +19,9 @@ import icu.windea.pls.core.collections.*
  * @property path 使用"/"分割的路径（保留括起的双引号）。
  * @property isParameterized 路径中是否带有参数（即使无法解析或者语法错误）。
  */
-interface ParadoxElementPath : Iterable<Tuple3<String, Boolean, Boolean>> {
+interface ParadoxElementPath : Iterable<Info> {
     val path: String
-    val subPaths: List<String>
-    val subPathInfos: List<Tuple3<String, Boolean, Boolean>> //(unquotedSubPath, quoted, isKey)
+    val subPaths: List<Info>
     val length: Int
     val isParameterized: Boolean
     
@@ -29,7 +29,7 @@ interface ParadoxElementPath : Iterable<Tuple3<String, Boolean, Boolean>> {
     
     fun isNotEmpty(): Boolean = length != 0
     
-    override fun iterator(): Iterator<Tuple3<String, Boolean, Boolean>> = this.subPathInfos.iterator()
+    override fun iterator(): Iterator<Info> = this.subPaths.iterator()
     
     override fun equals(other: Any?): Boolean
     
@@ -63,6 +63,23 @@ interface ParadoxElementPath : Iterable<Tuple3<String, Boolean, Boolean>> {
             return cache[path]
         }
     }
+    
+    data class Info(
+        val rawSubPath: String,
+        val subPath: String,
+        val isQuoted: Boolean,
+        val isKey: Boolean,
+    ) {
+        companion object Resolver {
+            private val cache: LoadingCache<String, Info> = CacheBuilder.newBuilder().buildCache {
+                Info(it.intern(), it.unquote().intern(), it.isLeftQuoted(), it != "-")
+            }
+            
+            fun resolve(path: String): Info {
+                return cache[path]
+            }
+        }
+    }
 }
 
 class ParadoxElementPathImpl(
@@ -70,9 +87,9 @@ class ParadoxElementPathImpl(
 ) : ParadoxElementPath {
     //intern to optimize memory
     
-    override val subPaths: List<String> = run {
+    override val subPaths: List<Info> = run {
         //optimized
-        val result = SmartList<String>()
+        val result = SmartList<Info>()
         val builder = StringBuilder()
         var escape = false
         path.forEach { c ->
@@ -81,7 +98,7 @@ class ParadoxElementPathImpl(
                     escape = true
                 }
                 c == '/' && !escape -> {
-                    result.add(builder.toString().intern())
+                    result.add(Info.resolve(builder.toString()))
                     builder.clear()
                 }
                 else -> {
@@ -90,14 +107,13 @@ class ParadoxElementPathImpl(
                 }
             }
         }
-        if(builder.isNotEmpty()) result.add(builder.toString().intern())
+        if(builder.isNotEmpty()) {
+            result.add(Info.resolve(builder.toString()))
+        }
         result
     }
-    override val subPathInfos: List<Tuple3<String, Boolean, Boolean>> = subPaths.mapTo(SmartList()) {
-        tupleOf(it.unquote().intern(), it.isLeftQuoted(), it != "-")
-    }
     override val length = subPaths.size
-    override val isParameterized = length != 0 && subPaths.any { it.isParameterized() }
+    override val isParameterized = length != 0 && subPaths.any { it.subPath.isParameterized() }
     
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxElementPath && path == other.path
@@ -114,8 +130,7 @@ class ParadoxElementPathImpl(
 
 object EmptyParadoxElementPath : ParadoxElementPath {
     override val path: String = ""
-    override val subPaths: List<String> = emptyList()
-    override val subPathInfos: List<Tuple3<String, Boolean, Boolean>> = emptyList()
+    override val subPaths: List<Info> = emptyList()
     override val length: Int = 0
     override val isParameterized: Boolean = false
     
@@ -140,8 +155,8 @@ object EmptyParadoxElementPath : ParadoxElementPath {
  */
 fun ParadoxElementPath.relativeTo(other: List<String>, ignoreCase: Boolean = true, useAnyWildcard: Boolean = true): String? {
     if(this.length > other.size) return null
-    for((index, subPathInfo) in this.subPathInfos.withIndex()) {
-        val thisPath = subPathInfo.first
+    for((index, subPathInfo) in this.subPaths.withIndex()) {
+        val thisPath = subPathInfo.subPath
         val otherPath = other[index]
         if(useAnyWildcard && otherPath == "any") continue
         if(!thisPath.equals(otherPath, ignoreCase)) return null
@@ -162,7 +177,7 @@ fun ParadoxElementPath.matchEntire(other: List<String>, ignoreCase: Boolean = tr
     if(thisLength < 0 || thisLength != otherLength) return false //路径过短或路径长度不一致
     for((index, otherPath) in other.withIndex()) {
         if(useAnyWildcard && otherPath == "any") continue
-        val thisPath = subPathInfos[index].first
+        val thisPath = subPaths[index].subPath
         if(!thisPath.equals(otherPath, ignoreCase)) return false
     }
     return true
