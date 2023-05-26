@@ -66,6 +66,6 @@ object ParadoxColorHandler {
     }
     
     private fun getColorType(configToGetOption: CwtMemberConfig<*>): String? {
-        return configToGetOption.options?.find { it.key == "color_type" }?.stringValue
+        return configToGetOption.findOption { it.key == "color_type" }?.stringValue
     }
 }

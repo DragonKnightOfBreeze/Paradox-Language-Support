@@ -54,7 +54,7 @@ class ParadoxScriptConfigAwareInspectionSuppressor : InspectionSuppressor {
     
     private fun isSuppressed(config: CwtMemberConfig<*>, toolId: String): Boolean {
         //基于"## suppress TOOL_ID"，跳过对应的代码检查
-        if(config.options?.any { it.key == "suppress" && it.stringValue == toolId } == true) return true
+        if(config.findOption { it.key == "suppress" && it.stringValue == toolId } != null) return true
         return false
     }
     

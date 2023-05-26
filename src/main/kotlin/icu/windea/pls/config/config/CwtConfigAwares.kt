@@ -24,15 +24,27 @@ interface CwtPropertyAware : CwtValueAware {
 }
 
 interface CwtOptionsAware {
-    val options: List<CwtOptionConfig>?
-    val optionValues: List<CwtOptionValueConfig>?
+    val options: List<CwtOptionMemberConfig<*>>?
 }
 
-fun CwtOptionsAware.findOption(key: String): CwtOptionConfig? = options?.find { it.key == key }
+@Suppress("NOTHING_TO_INLINE")
+inline fun CwtOptionsAware.findOption(key: String): CwtOptionConfig? = options?.find { it is CwtOptionConfig && it.key == key }?.cast()
 
-fun CwtOptionsAware.findOptions(key: String): List<CwtOptionConfig> = options?.filter { it.key == key }.orEmpty()
+inline fun CwtOptionsAware.findOption(predicate: (CwtOptionConfig) -> Boolean): CwtOptionConfig? = options?.find { it is CwtOptionConfig && predicate(it) }?.cast()
 
-fun CwtOptionsAware.findOptionValue(value: String): CwtOptionValueConfig? = optionValues?.find { it.value == value }
+@Suppress("NOTHING_TO_INLINE")
+inline fun CwtOptionsAware.findOptions(key: String): List<CwtOptionConfig>? = options?.filter { it is CwtOptionConfig && it.key == key }?.cast()
+
+inline fun CwtOptionsAware.findOptions(predicate: (CwtOptionConfig) -> Boolean): List<CwtOptionConfig> = options?.filter { it is CwtOptionConfig && predicate(it) }.orEmpty().cast()
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun CwtOptionsAware.findOptions(): List<CwtOptionConfig>? = options?.filterIsInstance<CwtOptionConfig>()
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun CwtOptionsAware.findOptionValue(value: String): CwtOptionValueConfig? = options?.find { it is CwtOptionValueConfig && it.value == value }?.cast()
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun CwtOptionsAware.findOptionValues(): List<CwtOptionValueConfig>? = options?.filterIsInstance<CwtOptionValueConfig>()
 
 interface CwtDocumentationAware {
     val documentation: String?

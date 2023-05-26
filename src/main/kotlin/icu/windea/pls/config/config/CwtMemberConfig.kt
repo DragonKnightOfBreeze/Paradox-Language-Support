@@ -132,7 +132,8 @@ val CwtMemberConfig<*>.cardinalityMaxDefine
 
 val CwtMemberConfig<*>.hasScopeOption
     get() = getOrPutUserData(CwtMemberConfig.Keys.hasScopeOption) action@{
-        options?.any { it.key == "replace_scope" || it.key == "replace_scopes" || it.key == "push_scope" || it.key == "scope" || it.key == "scopes" } ?: false
+        val option = findOption { it.key == "replace_scope" || it.key == "replace_scopes" || it.key == "push_scope" || it.key == "scope" || it.key == "scopes" }
+        option != null
     }
 val CwtMemberConfig<*>.scopeContext
     get() = getOrPutUserData(CwtMemberConfig.Keys.scopeContext, ParadoxScopeContext.EMPTY) action@{
@@ -145,9 +146,9 @@ val CwtMemberConfig<*>.scopeContext
 // * a subtype config (e.g. "subtype[xxx] = { ... }")
 val CwtMemberConfig<*>.replaceScopes
     get() = getOrPutUserData(CwtMemberConfig.Keys.replaceScopes, emptyMap()) action@{
-        val option = options?.find { it.key == "replace_scope" || it.key == "replace_scopes" }
+        val option = findOption { it.key == "replace_scope" || it.key == "replace_scopes" }
         if(option == null) return@action null
-        val options = option.options ?: return@action null
+        val options = option.findOptions() ?: return@action null
         options.associateBy({ it.key.lowercase() }, { it.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) } })
     }
 //may on:
@@ -156,18 +157,16 @@ val CwtMemberConfig<*>.replaceScopes
 // * a subtype config (e.g. "subtype[xxx] = { ... }")
 val CwtMemberConfig<*>.pushScope
     get() = getOrPutUserData(CwtMemberConfig.Keys.pushScope, "") action@{
-        val option = options?.find { it.key == "push_scope" }
-        option?.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) }
+        val option = findOption { it.key == "push_scope" }
+        option?.getOptionValue()?.let { v -> ParadoxScopeHandler.getScopeId(v) }
     }
 //may on:
 // * a config expression in declaration config
 val CwtMemberConfig<*>.supportedScopes
     get() = getOrPutUserData(CwtMemberConfig.Keys.supportedScopes) action@{
-        val option = options?.find { it.key == "scope" || it.key == "scopes" }
-        buildSet {
-            option?.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
-            option?.optionValues?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
-        }.ifEmpty { ParadoxScopeHandler.anyScopeIdSet }
+        val option = findOption { it.key == "scope" || it.key == "scopes" }
+        val r = option?.getOptionValueOrValues()?.mapTo(mutableSetOf()) { ParadoxScopeHandler.getScopeId(it) }
+        if(r.isNullOrEmpty()) ParadoxScopeHandler.anyScopeIdSet else r
     }
 
 fun <T : PsiElement> CwtMemberConfig<T>.toOccurrence(contextElement: PsiElement, project: Project): Occurrence {

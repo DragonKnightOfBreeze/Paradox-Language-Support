@@ -646,16 +646,14 @@ class CwtConfigGroupImpl(
 		val options = propertyConfig.options
 		if(!options.isNullOrEmpty()) {
 			for(option in options) {
+				if(option !is CwtOptionConfig) continue
 				val key = option.key
 				when(key) {
 					"type_key_filter" -> {
 						//值可能是string也可能是stringArray
-						val value = option.stringValue
-						val values = option.optionValues
-						if(value == null && values == null) continue
+						val values = option.getOptionValueOrValues() ?: continue
 						val set = caseInsensitiveStringSet() //忽略大小写
-						if(value != null) set.add(value)
-						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
+						set.addAll(values)
 						val o = option.separatorType == CwtSeparatorType.EQUAL
 						typeKeyFilter = set reverseIf o
 					}
@@ -664,7 +662,7 @@ class CwtConfigGroupImpl(
 					}
 					"starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
 					"graph_related_types" -> {
-						graphRelatedTypes = option.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+						graphRelatedTypes = option.getOptionValues()
 					}
 				}
 			}
@@ -693,16 +691,15 @@ class CwtConfigGroupImpl(
 		val options = propertyConfig.options
 		if(!options.isNullOrEmpty()) {
 			for(option in options) {
+				if(option !is CwtOptionConfig) continue
 				val key = option.key
 				when(key) {
 					"type_key_filter" -> {
 						//值可能是string也可能是stringArray
-						val value = option.stringValue
-						val values = option.optionValues
-						if(value == null && values == null) continue
+						val values = option.getOptionValueOrValues()
+						if(values == null) continue
 						val set = caseInsensitiveStringSet() //忽略大小写
-						if(value != null) set.add(value)
-						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
+						set.addAll(values)
 						val o = option.separatorType == CwtSeparatorType.EQUAL
 						typeKeyFilter = set reverseIf o
 					}
@@ -713,7 +710,7 @@ class CwtConfigGroupImpl(
 					"push_scope" -> pushScope = option.stringValue ?: continue
 					"display_name" -> displayName = option.stringValue ?: continue
 					"abbreviation" -> abbreviation = option.stringValue ?: continue
-					"only_if_not" -> onlyIfNot = option.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: continue
+					"only_if_not" -> onlyIfNot = option.getOptionValueOrValues() ?: continue
 				}
 			}
 		}
@@ -726,19 +723,8 @@ class CwtConfigGroupImpl(
 	
 	private fun resolveLocationConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocationConfig? {
 		val expression = propertyConfig.stringValue ?: return null
-		var required = false
-		var primary = false
-		val optionValues = propertyConfig.optionValues
-		if(!optionValues.isNullOrEmpty()) {
-			for(optionValue in optionValues) {
-				val value = optionValue.stringValue ?: continue
-				when(value) {
-					"required" -> required = true
-					"primary" -> primary = true
-					//"optional" -> pass() //忽略（默认就是required = false）
-				}
-			}
-		}
+		val required = propertyConfig.findOptionValue("required") != null
+		val primary = propertyConfig.findOptionValue("primary") != null
 		return CwtLocationConfig(propertyConfig.pointer, propertyConfig.info, name, expression, required, primary)
 	}
 	

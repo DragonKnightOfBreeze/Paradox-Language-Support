@@ -28,8 +28,7 @@ object StellarisScriptedModifierHandler {
     fun getModifierCategoryOptionValues(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
         val valueConfig = enumConfig.valueConfigMap.getValue(finalValue)
         return valueConfig.getOrPutUserData(StellarisEconomicCategoryHandler.modifierCategoriesKey, emptySet()) {
-            valueConfig.options?.find { it.key == "modifier_categories" }
-                ?.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+            valueConfig.findOption("modifier_categories")?.getOptionValues()
         }
     }
 }

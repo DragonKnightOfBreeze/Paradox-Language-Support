@@ -45,8 +45,7 @@ object ParadoxConfigInlineHandler {
             value = other.value,
             configs = other.deepCopyConfigs(),
             documentation = other.documentation,
-            options =  other.options,
-            optionValues =  other.optionValues,
+            options =  other.options
         )
         inlined.parent = config.parent
         inlined.configs?.forEach { it.parent = inlined }
@@ -80,8 +79,7 @@ object ParadoxConfigInlineHandler {
             value = other.value,
             configs = other.deepCopyConfigs(),
             documentation = config.documentation ?: other.documentation,
-            options = config.options,
-            optionValues = config.optionValues
+            options = config.options
         )
         inlined.parent = config.parent
         inlined.configs?.forEach { it.parent = inlined }

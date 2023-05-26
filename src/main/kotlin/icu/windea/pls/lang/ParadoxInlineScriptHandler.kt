@@ -74,7 +74,7 @@ object ParadoxInlineScriptHandler {
     }
     
     private fun getExpressionLocation(it: CwtMemberConfig<*>): String? {
-        return it.options?.find { it.key == "inline_script_expression" }?.stringValue
+        return it.findOption { it.key == "inline_script_expression" }?.stringValue
     }
     
     fun getExpressionFromInlineConfig(propertyValue: ParadoxScriptValue, inlineConfig: CwtInlineConfig): String? {

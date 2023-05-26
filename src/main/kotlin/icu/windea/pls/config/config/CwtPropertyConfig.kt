@@ -25,11 +25,10 @@ sealed interface CwtPropertyConfig : CwtMemberConfig<CwtProperty>, CwtPropertyAw
             valueTypeId: @EnumId(CwtType::class) Byte = CwtType.String.id,
             separatorTypeId: @EnumId(CwtSeparatorType::class) Byte = CwtSeparatorType.EQUAL.id,
             configs: List<CwtMemberConfig<*>>? = null,
-            options: List<CwtOptionConfig>? = null,
-            optionValues: List<CwtOptionValueConfig>? = null,
+            options: List<CwtOptionMemberConfig<*>>? = null,
             documentation: String? = null
         ): CwtPropertyConfig {
-            return CwtPropertyConfigImpls.ImplA(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, optionValues, documentation)
+            return CwtPropertyConfigImpls.ImplA(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
         }
     }
 }
@@ -42,11 +41,10 @@ fun CwtPropertyConfig.copy(
     valueTypeId: @EnumId(CwtType::class) Byte = this.valueTypeId,
     separatorTypeId: @EnumId(CwtSeparatorType::class) Byte = this.separatorTypeId,
     configs: List<CwtMemberConfig<*>>? = this.configs,
-    options: List<CwtOptionConfig>? = this.options,
-    optionValues: List<CwtOptionValueConfig>? = this.optionValues,
+    options: List<CwtOptionMemberConfig<*>>? = this.options,
     documentation: String? = this.documentation
 ): CwtPropertyConfig {
-    return CwtPropertyConfig.resolve(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, optionValues, documentation)
+    return CwtPropertyConfig.resolve(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
 }
 
 fun CwtPropertyConfig.copyDelegated(
@@ -69,7 +67,7 @@ fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
             resolvedPointer.element?.propertyValue?.createPointer(resolvedFile)
         }
     } ?: return null
-    return CwtValueConfig.resolve(valuePointer, info, value, valueType.id, configs, options, optionValues, documentation, this)
+    return CwtValueConfig.resolve(valuePointer, info, value, valueType.id, configs, options, documentation, this)
 }
 
 private object CwtPropertyConfigImpls {
@@ -83,8 +81,7 @@ private object CwtPropertyConfigImpls {
         override val valueTypeId: Byte = CwtType.String.id,
         override val separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
         override val configs: List<CwtMemberConfig<*>>? = null,
-        override val options: List<CwtOptionConfig>? = null,
-        override val optionValues: List<CwtOptionValueConfig>? = null,
+        override val options: List<CwtOptionMemberConfig<*>>? = null,
         override val documentation: String? = null,
     ) : UserDataHolderBase(), CwtPropertyConfig {
         @Volatile override var parent: CwtMemberConfig<*>? = null

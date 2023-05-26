@@ -22,15 +22,14 @@ sealed interface CwtValueConfig : CwtMemberConfig<CwtValue>, CwtValueAware {
             value: String,
             valueTypeId: @EnumId(CwtType::class) Byte = CwtType.String.id,
             configs: List<CwtMemberConfig<*>>? = null,
-            options: List<CwtOptionConfig>? = null,
-            optionValues: List<CwtOptionValueConfig>? = null,
+            options: List<CwtOptionMemberConfig<*>>? = null,
             documentation: String? = null,
             propertyConfig: CwtPropertyConfig? = null
         ): CwtValueConfig {
             return if(propertyConfig == null) {
-                CwtValueConfigImpls.ImplA(pointer, info, value, valueTypeId, configs, options, optionValues, documentation)
+                CwtValueConfigImpls.ImplA(pointer, info, value, valueTypeId, configs, options, documentation)
             } else {
-                CwtValueConfigImpls.ImplB(pointer, info, value, valueTypeId, configs, options, optionValues, documentation, propertyConfig)
+                CwtValueConfigImpls.ImplB(pointer, info, value, valueTypeId, configs, options, documentation, propertyConfig)
             }
         }
     }
@@ -42,11 +41,10 @@ fun CwtValueConfig.copy(
     value: String = this.value,
     valueTypeId: @EnumId(CwtType::class) Byte = this.valueTypeId,
     configs: List<CwtMemberConfig<*>>? = this.configs,
-    options: List<CwtOptionConfig>? = this.options,
-    optionValues: List<CwtOptionValueConfig>? = this.optionValues,
+    options: List<CwtOptionMemberConfig<*>>? = this.options,
     documentation: String? = this.documentation
 ): CwtValueConfig {
-    return CwtValueConfig.resolve(pointer, info, value, valueTypeId, configs, options, optionValues, documentation)
+    return CwtValueConfig.resolve(pointer, info, value, valueTypeId, configs, options, documentation)
 }
 
 fun CwtValueConfig.copyDelegated(
@@ -79,8 +77,7 @@ private object CwtValueConfigImpls {
         override val value: String,
         override val valueTypeId: Byte = CwtType.String.id,
         override val configs: List<CwtMemberConfig<*>>? = null,
-        override val options: List<CwtOptionConfig>? = null,
-        override val optionValues: List<CwtOptionValueConfig>? = null,
+        override val options: List<CwtOptionMemberConfig<*>>? = null,
         override val documentation: String? = null,
     ) : Impl(), CwtValueConfig {
         @Volatile override var parent: CwtMemberConfig<*>? = null
@@ -100,8 +97,7 @@ private object CwtValueConfigImpls {
         override val value: String,
         override val valueTypeId: Byte = CwtType.String.id,
         override val configs: List<CwtMemberConfig<*>>? = null,
-        override val options: List<CwtOptionConfig>? = null,
-        override val optionValues: List<CwtOptionValueConfig>? = null,
+        override val options: List<CwtOptionMemberConfig<*>>? = null,
         override val documentation: String? = null,
         override val propertyConfig: CwtPropertyConfig? = null,
     ) : Impl(), CwtValueConfig {
@@ -120,8 +116,7 @@ private object CwtValueConfigImpls {
         override val info: CwtConfigGroupInfo,
         override val value: String,
         override val valueTypeId: Byte = CwtType.String.id,
-        override val options: List<CwtOptionConfig>? = null,
-        override val optionValues: List<CwtOptionValueConfig>? = null,
+        override val options: List<CwtOptionMemberConfig<*>>? = null,
         override val documentation: String? = null,
     ) : Impl(), CwtValueConfig {
         @Volatile override var parent: CwtMemberConfig<*>? = null
@@ -141,8 +136,7 @@ private object CwtValueConfigImpls {
         override val info: CwtConfigGroupInfo,
         override val value: String,
         override val valueTypeId: Byte = CwtType.String.id,
-        override val options: List<CwtOptionConfig>? = null,
-        override val optionValues: List<CwtOptionValueConfig>? = null,
+        override val options: List<CwtOptionMemberConfig<*>>? = null,
         override val documentation: String? = null,
         override val propertyConfig: CwtPropertyConfig? = null,
     ) : Impl(), CwtValueConfig {

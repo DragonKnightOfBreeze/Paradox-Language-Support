@@ -47,8 +47,7 @@ object CwtConfigResolver {
         var configs: List<CwtMemberConfig<*>>? = null
         var documentationLines: LinkedList<String>? = null
         var html = false
-        var options: LinkedList<CwtOptionConfig>? = null
-        var optionValues: LinkedList<CwtOptionValueConfig>? = null
+        var options: LinkedList<CwtOptionMemberConfig<*>>? = null
         
         when {
             valueElement is CwtBoolean -> {
@@ -107,9 +106,9 @@ object CwtConfigResolver {
                         options.addFirst(resolved)
                     } else {
                         val optionValue = current.value ?: continue
-                        if(optionValues == null) optionValues = LinkedList()
+                        if(options == null) options = LinkedList()
                         val resolved = resolveOptionValue(optionValue, file, fileConfig)
-                        optionValues.addFirst(resolved)
+                        options.addFirst(resolved)
                     }
                 }
                 current is PsiWhiteSpace || current is PsiComment -> continue
@@ -118,7 +117,7 @@ object CwtConfigResolver {
         }
         val documentation = getDocumentation(documentationLines, html)
         
-        val config = CwtPropertyConfig.resolve(pointer, fileConfig.info, key, value, valueType.id, separatorType.id, configs, options, optionValues, documentation)
+        val config = CwtPropertyConfig.resolve(pointer, fileConfig.info, key, value, valueType.id, separatorType.id, configs, options, documentation)
         fileConfig.info.acceptConfigExpression(config.keyExpression, config)
         fileConfig.info.acceptConfigExpression(config.valueExpression, config)
         configs?.forEach { it.parent = config }
@@ -132,8 +131,7 @@ object CwtConfigResolver {
         var configs: List<CwtMemberConfig<*>>? = null
         var documentationLines: LinkedList<String>? = null
         var html = false
-        var options: LinkedList<CwtOptionConfig>? = null
-        var optionValues: LinkedList<CwtOptionValueConfig>? = null
+        var options: LinkedList<CwtOptionMemberConfig<*>>? = null
         
         when {
             valueElement is CwtBoolean -> {
@@ -192,9 +190,9 @@ object CwtConfigResolver {
                         options.addFirst(resolved)
                     } else {
                         val optionValue = current.value ?: continue
-                        if(optionValues == null) optionValues = LinkedList()
+                        if(options == null) options = LinkedList()
                         val resolved = resolveOptionValue(optionValue, file, fileConfig)
-                        optionValues.addFirst(resolved)
+                        options.addFirst(resolved)
                     }
                 }
                 current is PsiWhiteSpace || current is PsiComment -> continue
@@ -203,7 +201,7 @@ object CwtConfigResolver {
         }
         val documentation = getDocumentation(documentationLines, html)
         
-        val config = CwtValueConfig.resolve(pointer, fileConfig.info, value, valueType.id, configs, options, optionValues, documentation)
+        val config = CwtValueConfig.resolve(pointer, fileConfig.info, value, valueType.id, configs, options, documentation)
         fileConfig.info.acceptConfigExpression(config.valueExpression, config)
         configs?.forEach { it.parent = config }
         return config
@@ -219,8 +217,7 @@ object CwtConfigResolver {
         val value = optionValueElement.value.intern() //intern to optimize memory
         val valueType: CwtType
         val separatorType = optionElement.separatorType
-        var options: List<CwtOptionConfig>? = null
-        var optionValues: List<CwtOptionValueConfig>? = null
+        var options: List<CwtOptionMemberConfig<*>>? = null
         
         when {
             optionValueElement is CwtBoolean -> {
@@ -246,27 +243,25 @@ object CwtConfigResolver {
                         }
                         it is CwtValue -> {
                             val resolved = resolveOptionValue(it, file, fileConfig)
-                            if(optionValues == null) optionValues = SmartList()
-                            optionValues!!.asMutable().add(resolved)
+                            if(options == null) options = SmartList()
+                            options!!.asMutable().add(resolved)
                         }
                     }
                 }
                 if(options == null) options = emptyList()
-                if(optionValues == null) optionValues = emptyList()
             }
             else -> {
                 valueType = CwtType.Unknown
             }
         }
         
-        return CwtOptionConfig.resolve(emptyPointer(), fileConfig.info, key, value, valueType.id, separatorType.id, options, optionValues)
+        return CwtOptionConfig.resolve(emptyPointer(), fileConfig.info, key, value, valueType.id, separatorType.id, options)
     }
     
     private fun resolveOptionValue(optionValueElement: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionValueConfig {
         val value = optionValueElement.value.intern() //intern to optimize memory
         val valueType: CwtType
-        var options: List<CwtOptionConfig>? = null
-        var optionValues: List<CwtOptionValueConfig>? = null
+        var options: List<CwtOptionMemberConfig<*>>? = null
         
         when {
             optionValueElement is CwtBoolean -> {
@@ -292,19 +287,18 @@ object CwtConfigResolver {
                         }
                         it is CwtValue -> {
                             val resolved = resolveOptionValue(it, file, fileConfig)
-                            if(optionValues == null) optionValues = SmartList()
-                            optionValues!!.asMutable().add(resolved)
+                            if(options == null) options = SmartList()
+                            options!!.asMutable().add(resolved)
                         }
                     }
                 }
                 if(options == null) options = emptyList()
-                if(optionValues == null) optionValues = emptyList()
             }
             else -> {
                 valueType = CwtType.Unknown
             }
         }
         
-        return CwtOptionValueConfig.resolve(emptyPointer(), fileConfig.info, value, valueType.id, options, optionValues)
+        return CwtOptionValueConfig.resolve(emptyPointer(), fileConfig.info, value, valueType.id, options)
     }
 }

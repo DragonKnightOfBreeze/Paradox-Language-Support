@@ -10,9 +10,8 @@ class CwtOptionValueConfig private constructor(
     override val info: CwtConfigGroupInfo,
     override val value: String,
     override val valueTypeId: Byte = CwtType.String.id,
-    override val options: List<CwtOptionConfig>? = null,
-    override val optionValues: List<CwtOptionValueConfig>? = null
-) : CwtConfig<CwtValue>, CwtValueAware, CwtOptionsAware {
+    override val options: List<CwtOptionMemberConfig<*>>? = null,
+) : CwtOptionMemberConfig<CwtValue>, CwtValueAware {
     companion object Resolver {
         private val cache = ConcurrentHashMap<String, CwtOptionValueConfig>()
         
@@ -21,17 +20,16 @@ class CwtOptionValueConfig private constructor(
             info: CwtConfigGroupInfo,
             value: String,
             valueTypeId: Byte = CwtType.String.id,
-            options: List<CwtOptionConfig>? = null,
-            optionValues: List<CwtOptionValueConfig>? = null
+            options: List<CwtOptionMemberConfig<*>>? = null,
         ): CwtOptionValueConfig {
             //use cache if possible to optimize memory
-            if(options == null || optionValues == null) {
+            if(options.isNullOrEmpty()) {
                 val cacheKey = "${valueTypeId}#${value}"
                 return cache.getOrPut(cacheKey) {
-                    CwtOptionValueConfig(pointer, info, value, valueTypeId, options, optionValues)
+                    CwtOptionValueConfig(pointer, info, value, valueTypeId, options)
                 }
             }
-            return CwtOptionValueConfig(pointer, info, value, valueTypeId, options, optionValues)
+            return CwtOptionValueConfig(pointer, info, value, valueTypeId, options)
         }
     }
 }
