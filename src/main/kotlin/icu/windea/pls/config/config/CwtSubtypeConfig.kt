@@ -14,7 +14,7 @@ import icu.windea.pls.cwt.psi.*
  * @property abbreviation (option) abbreviation: string
  * @property onlyIfNot (option) only_if_not: string[]
  */
-data class CwtSubtypeConfig(
+class CwtSubtypeConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigGroupInfo,
 	val config: CwtPropertyConfig,

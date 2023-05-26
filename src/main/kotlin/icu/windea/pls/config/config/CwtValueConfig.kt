@@ -6,7 +6,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.model.*
 
-data class CwtValueConfig(
+class CwtValueConfig(
     override val pointer: SmartPsiElementPointer<CwtValue>,
     override val info: CwtConfigGroupInfo,
     override val value: String,

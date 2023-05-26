@@ -29,37 +29,12 @@ private val validValueTypes = arrayOf(
  * @property propertyName 属性名（表达式文本以"#"开始时，为"#"之后和可能的"|"之前的子字符串，可以为空字符串）。
  * @property extraPropertyNames 额外的属性名（表达式文本以"#"开始且之后包含"|"时，为"|"之后的按","分割的子字符串）。
  */
-class CwtImageLocationExpression(
+class CwtImageLocationExpression private constructor(
     expressionString: String,
     val placeholder: String? = null,
     val propertyName: String? = null,
     val extraPropertyNames: List<String>? = null
 ) : AbstractExpression(expressionString), CwtExpression {
-    companion object Resolver {
-        val EmptyExpression = CwtImageLocationExpression("")
-        
-        val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtImageLocationExpression> { doResolve(it) } }
-        
-        fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
-        
-        private fun doResolve(expressionString: String) = when {
-            expressionString.isEmpty() -> EmptyExpression
-            expressionString.startsWith('#') -> {
-                val pipeIndex = expressionString.indexOf('|', 1)
-                if(pipeIndex == -1) {
-                    val propertyName = expressionString.substring(1).intern()
-                    CwtImageLocationExpression(expressionString, null, propertyName)
-                } else {
-                    val propertyName = expressionString.substring(1, pipeIndex).intern()
-                    val extraPropertyNames = expressionString.substring(pipeIndex + 1)
-                        .splitToSequence(',').mapTo(SmartList()) { it.drop(1) }
-                    CwtImageLocationExpression(expressionString, null, propertyName, extraPropertyNames)
-                }
-            }
-            else -> CwtImageLocationExpression(expressionString, expressionString, null, null)
-        }
-    }
-    
     operator fun component1() = placeholder
     
     operator fun component2() = propertyName
@@ -204,6 +179,35 @@ class CwtImageLocationExpression(
             }
         } else {
             return null //不期望的结果
+        }
+    }
+    
+    companion object Resolver {
+        val EmptyExpression = CwtImageLocationExpression("")
+        
+        private val cache = CacheBuilder.newBuilder().buildCache<String, CwtImageLocationExpression> { doResolve(it) }
+        
+        fun resolve(expressionString: String): CwtImageLocationExpression? {
+            return cache.get(expressionString)
+        }
+        
+        private fun doResolve(expressionString: String): CwtImageLocationExpression {
+            return when {
+                expressionString.isEmpty() -> EmptyExpression
+                expressionString.startsWith('#') -> {
+                    val pipeIndex = expressionString.indexOf('|', 1)
+                    if(pipeIndex == -1) {
+                        val propertyName = expressionString.substring(1).intern()
+                        CwtImageLocationExpression(expressionString, null, propertyName)
+                    } else {
+                        val propertyName = expressionString.substring(1, pipeIndex).intern()
+                        val extraPropertyNames = expressionString.substring(pipeIndex + 1)
+                            .splitToSequence(',').mapTo(SmartList()) { it.drop(1) }
+                        CwtImageLocationExpression(expressionString, null, propertyName, extraPropertyNames)
+                    }
+                }
+                else -> CwtImageLocationExpression(expressionString, expressionString, null, null)
+            }
         }
     }
 }

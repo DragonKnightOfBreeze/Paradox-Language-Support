@@ -9,7 +9,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.config.*
 
-data class CwtDeclarationConfig(
+class CwtDeclarationConfig(
     override val pointer: SmartPsiElementPointer<CwtProperty>,
     override val info: CwtConfigGroupInfo,
     val name: String,

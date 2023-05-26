@@ -262,13 +262,7 @@ object CwtConfigResolver {
             }
         }
         
-        //use cache if possible to optimize memory
-        if(options == null || optionValues == null) {
-            return optionConfigCache.getOrPut("${valueType.id}#${separatorType.id}#${key}#${value}") {
-                CwtOptionConfig(emptyPointer(), fileConfig.info, key, value, valueType.id, separatorType.id, options, optionValues)
-            }
-        }
-        return CwtOptionConfig(emptyPointer(), fileConfig.info, key, value, valueType.id, separatorType.id, options, optionValues)
+        return CwtOptionConfig.resolve(emptyPointer(), fileConfig.info, key, value, valueType.id, separatorType.id, options, optionValues)
     }
     
     private val optionValueConfigCache = CacheBuilder.newBuilder().buildCache<String, CwtOptionValueConfig>()
@@ -316,12 +310,6 @@ object CwtConfigResolver {
             }
         }
         
-        //use cache if possible to optimize memory
-        if(options == null || optionValues == null) {
-            return optionValueConfigCache.getOrPut("${valueType.id}#${value}") {
-                CwtOptionValueConfig(emptyPointer(), fileConfig.info, value, valueType.id, options, optionValues)
-            }
-        }
-        return CwtOptionValueConfig(emptyPointer(), fileConfig.info, value, valueType.id, options, optionValues)
+        return CwtOptionValueConfig.resolve(emptyPointer(), fileConfig.info, value, valueType.id, options, optionValues)
     }
 }

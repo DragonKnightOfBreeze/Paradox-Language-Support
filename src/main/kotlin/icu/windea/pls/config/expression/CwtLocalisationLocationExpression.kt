@@ -30,23 +30,6 @@ class CwtLocalisationLocationExpression(
     val placeholder: String? = null,
     val propertyName: String? = null
 ) : AbstractExpression(expressionString), CwtExpression {
-    companion object Resolver {
-        val EmptyExpression = CwtLocalisationLocationExpression("", "")
-        
-        val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) } }
-        
-        fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
-        
-        private fun doResolve(expressionString: String) = when {
-            expressionString.isEmpty() -> EmptyExpression
-            expressionString.startsWith('#') -> {
-                val propertyName = expressionString.substring(1).intern()
-                CwtLocalisationLocationExpression(expressionString, null, propertyName)
-            }
-            else -> CwtLocalisationLocationExpression(expressionString, expressionString)
-        }
-    }
-    
     operator fun component1() = placeholder
     
     operator fun component2() = propertyName
@@ -120,6 +103,27 @@ class CwtLocalisationLocationExpression(
             return ResolveAllResult(key, localisations)
         } else {
             return null //不期望的结果
+        }
+    }
+    
+    companion object Resolver {
+        val EmptyExpression = CwtLocalisationLocationExpression("", "")
+        
+        private val cache = CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) }
+        
+        fun resolve(expressionString: String): CwtLocalisationLocationExpression? {
+            return cache.get(expressionString)
+        }
+        
+        private fun doResolve(expressionString: String): CwtLocalisationLocationExpression {
+            return when {
+                expressionString.isEmpty() -> EmptyExpression
+                expressionString.startsWith('#') -> {
+                    val propertyName = expressionString.substring(1).intern()
+                    CwtLocalisationLocationExpression(expressionString, null, propertyName)
+                }
+                else -> CwtLocalisationLocationExpression(expressionString, expressionString)
+            }
         }
     }
 }

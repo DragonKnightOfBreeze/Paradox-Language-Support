@@ -25,7 +25,7 @@ import icu.windea.pls.cwt.psi.*
  * @property localisation (property*) localisation: localisationInfo
  * @property images (property*) images: imagesInfo
  */
-data class CwtTypeConfig(
+class CwtTypeConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigGroupInfo,
 	val config: CwtPropertyConfig,
