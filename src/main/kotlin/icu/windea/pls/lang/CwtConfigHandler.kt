@@ -176,38 +176,38 @@ object CwtConfigHandler {
         return when(t1) {
             CwtDataType.Int -> {
                 when(t2) {
-                    CwtDataType.Int, CwtDataType.Float, CwtDataType.ValueField, CwtDataType.IntValueField, CwtDataType.VariableField, CwtDataType.IntVariableField -> CwtValueConfig(config.pointer, config.info, "int")
+                    CwtDataType.Int, CwtDataType.Float, CwtDataType.ValueField, CwtDataType.IntValueField, CwtDataType.VariableField, CwtDataType.IntVariableField -> CwtValueConfig.resolve(config.pointer, config.info, "int")
                     else -> null
                 }
             }
             CwtDataType.Float -> {
                 when(t2) {
-                    CwtDataType.Float, CwtDataType.ValueField, CwtDataType.VariableField ->CwtValueConfig(config.pointer, config.info, "float")
+                    CwtDataType.Float, CwtDataType.ValueField, CwtDataType.VariableField ->CwtValueConfig.resolve(config.pointer, config.info, "float")
                     else -> null
                 }
             }
             CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> {
                 when {
-                    t2 == CwtDataType.ScopeField -> CwtValueConfig(config.pointer, config.info, config.value)
-                    t2 == CwtDataType.Scope && otherConfig.expression.value == "any" -> CwtValueConfig(config.pointer, config.info, config.value)
+                    t2 == CwtDataType.ScopeField -> CwtValueConfig.resolve(config.pointer, config.info, config.value)
+                    t2 == CwtDataType.Scope && otherConfig.expression.value == "any" -> CwtValueConfig.resolve(config.pointer, config.info, config.value)
                     else -> null
                 }
             }
             CwtDataType.VariableField -> {
                 when(t2) {
-                    CwtDataType.VariableField, CwtDataType.ValueField -> CwtValueConfig(config.pointer, config.info, "variable_field")
+                    CwtDataType.VariableField, CwtDataType.ValueField -> CwtValueConfig.resolve(config.pointer, config.info, "variable_field")
                     else -> null
                 }
             }
             CwtDataType.IntVariableField -> {
                 when(t2) {
-                    CwtDataType.IntVariableField, CwtDataType.ValueField, CwtDataType.IntValueField -> CwtValueConfig(config.pointer, config.info, "int_variable_field")
+                    CwtDataType.IntVariableField, CwtDataType.ValueField, CwtDataType.IntValueField -> CwtValueConfig.resolve(config.pointer, config.info, "int_variable_field")
                     else -> null
                 }
             }
             CwtDataType.IntValueField -> {
                 when(t2) {
-                    CwtDataType.ValueField, CwtDataType.IntValueField -> CwtValueConfig(config.pointer, config.info, "int_value_field")
+                    CwtDataType.ValueField, CwtDataType.IntValueField -> CwtValueConfig.resolve(config.pointer, config.info, "int_value_field")
                     else -> null
                 }
             }

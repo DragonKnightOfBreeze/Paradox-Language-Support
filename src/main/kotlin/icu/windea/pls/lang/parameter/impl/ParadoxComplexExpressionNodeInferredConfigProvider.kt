@@ -60,19 +60,19 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
     private fun getConfigFromNode(expressionElement: ParadoxScriptStringExpressionElement, expressionConfig: CwtMemberConfig<*>, node: ParadoxExpressionNode): CwtValueConfig? {
         return when {
             node is ParadoxDataExpressionNode -> {
-                node.linkConfigs.firstNotNullOfOrNull { it.expression?.let { e -> CwtValueConfig(emptyPointer(), it.info, e.expressionString) } }
+                node.linkConfigs.firstNotNullOfOrNull { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), it.info, e.expressionString) } }
             }
             node is ParadoxValueSetValueExpressionNode -> {
-                node.configs.firstOrNull()?.let { it.expression?.let { e -> CwtValueConfig(emptyPointer(), it.info, e.expressionString) } }
+                node.configs.firstOrNull()?.let { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), it.info, e.expressionString) } }
             }
             node is ParadoxScriptValueExpressionNode -> {
-                node.config.let { it.expression?.let { e -> CwtValueConfig(emptyPointer(), it.info, e.expressionString) } }
+                node.config.let { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), it.info, e.expressionString) } }
             }
             node is ParadoxScopeFieldExpressionNode -> {
-                expressionConfig.let { CwtValueConfig(emptyPointer(), it.info, "scope_field") } //scope field node
+                expressionConfig.let { CwtValueConfig.resolve(emptyPointer(), it.info, "scope_field") } //scope field node
             }
             node is ParadoxValueFieldExpressionNode -> {
-                expressionConfig.let { CwtValueConfig(emptyPointer(), it.info, "value_field") } //value field node 
+                expressionConfig.let { CwtValueConfig.resolve(emptyPointer(), it.info, "value_field") } //value field node 
             }
             node is ParadoxScriptValueArgumentValueExpressionNode -> {
                 val argumentNode = node.argumentNode ?: return null

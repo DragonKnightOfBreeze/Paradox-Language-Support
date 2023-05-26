@@ -154,7 +154,7 @@ private fun doGetChildConfigs(definitionInfo: ParadoxDefinitionInfo, definitionM
     //parentPath可以对应property或者value
     return when {
         //这里的属性路径可以为空，这时得到的就是顶级属性列表（定义的代码块类型的值中的属性列表）
-        elementPath.isEmpty() -> declaration.configs
+        elementPath.isEmpty() -> declaration.configs.orEmpty()
         else -> {
             //打平propertyConfigs中的每一个properties
             val configs = doGetConfigs(definitionInfo, definitionMemberInfo, matchOptions)

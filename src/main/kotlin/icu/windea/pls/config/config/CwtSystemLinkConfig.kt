@@ -7,7 +7,7 @@ import icu.windea.pls.cwt.psi.*
 //EXTENDED BY PLS
 
 class CwtSystemLinkConfig(
-	override val pointer: SmartPsiElementPointer<CwtProperty>,
+	override val pointer: SmartPsiElementPointer<out CwtProperty>,
 	override val info: CwtConfigGroupInfo,
 	val id: String,
 	val baseId: String,

@@ -9,7 +9,7 @@ import icu.windea.pls.lang.*
  * @property supportedScopes supported_scopes: string | string[]
  */
 class CwtModifierCategoryConfig(
-	override val pointer: SmartPsiElementPointer<CwtProperty>,
+	override val pointer: SmartPsiElementPointer<out CwtProperty>,
 	override val info: CwtConfigGroupInfo,
 	val name: String,
 	val internalId: String? = null,

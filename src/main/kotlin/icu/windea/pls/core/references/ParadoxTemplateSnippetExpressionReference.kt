@@ -21,7 +21,7 @@ class ParadoxTemplateSnippetExpressionReference(
 ) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
     val project by lazy { configGroup.project }
     
-    val config = CwtValueConfig(emptyPointer(), configGroup.info, configExpression.expressionString)
+    val config = CwtValueConfig.resolve(emptyPointer(), configGroup.info, configExpression.expressionString)
     
     override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
        throw IncorrectOperationException() // cannot rename

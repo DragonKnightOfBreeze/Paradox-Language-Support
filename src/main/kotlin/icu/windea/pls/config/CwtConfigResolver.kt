@@ -203,7 +203,7 @@ object CwtConfigResolver {
         }
         val documentation = getDocumentation(documentationLines, html)
         
-        val config = CwtValueConfig(pointer, fileConfig.info, value, valueType.id, configs, options, optionValues, documentation)
+        val config = CwtValueConfig.resolve(pointer, fileConfig.info, value, valueType.id, configs, options, optionValues, documentation)
         fileConfig.info.acceptConfigExpression(config.valueExpression, config)
         configs?.forEach { it.parent = config }
         return config

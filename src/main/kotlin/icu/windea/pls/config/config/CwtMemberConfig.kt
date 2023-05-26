@@ -13,97 +13,88 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.model.*
 
-sealed class CwtMemberConfig<out T : PsiElement> : UserDataHolderBase(), CwtConfig<T>, CwtValueAware, CwtOptionsAware, CwtDocumentationAware {
-    abstract val configs: List<CwtMemberConfig<*>>?
+sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig<T>, CwtValueAware, CwtOptionsAware, CwtDocumentationAware {
+    val configs: List<CwtMemberConfig<*>>?
     
-    @Volatile var parent: CwtMemberConfig<*>? = null
+    var parent: CwtMemberConfig<*>?
+    var inlineableConfig: CwtInlineableConfig<@UnsafeVariance T>?
     
-    abstract override val expression: CwtDataExpression
+    val values: List<CwtValueConfig>?
+    val properties: List<CwtPropertyConfig>?
     
-    val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
-    val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
-    
-    val isBlock: Boolean get() = configs != null
-    
-    var inlineableConfig: CwtInlineableConfig<@UnsafeVariance T>? = null
+    override val expression: CwtDataExpression
     
     override fun resolved(): CwtMemberConfig<T> = inlineableConfig?.config?.castOrNull<CwtMemberConfig<T>>() ?: this
     
     override fun resolvedOrNull(): CwtMemberConfig<T>? = inlineableConfig?.config?.castOrNull<CwtMemberConfig<T>>()
     
-    override fun toString(): String {
-        return super.toString()
-    }
-    
-    /**
-     * 深拷贝。
-     */
-    fun deepCopyConfigs(): List<CwtMemberConfig<*>>? {
-        return configs?.mapFast { config ->
-            when(config) {
-                is CwtPropertyConfig -> config.copy(configs = config.deepCopyConfigs()).also { it.parent = config.parent }
-                is CwtValueConfig -> config.copy(configs = config.deepCopyConfigs()).also { it.parent = config.parent }
-            }
-        }
-    }
-    
-    /**
-     * 深拷贝 + 根据定义的名字、类型、子类型进行合并。
-     */
-    fun deepMergeConfigs(configContext: CwtConfigContext): List<CwtMemberConfig<*>> {
-        //因为之后可能需要对得到的声明规则进行注入，需要保证当注入式所有规则列表都是可变的
-        
-        val mergedConfigs: MutableList<CwtMemberConfig<*>>? = if(configs != null) SmartList() else null
-        configs?.forEachFast { config ->
-            val childConfigList = config.deepMergeConfigs(configContext)
-            if(childConfigList.isNotEmpty()) {
-                for(childConfig in childConfigList) {
-                    mergedConfigs?.add(childConfig)
-                }
-            }
-        }
-        when(this) {
-            is CwtValueConfig -> {
-                val mergedConfig = copy(configs = mergedConfigs).also { it.parent = parent }
-                if(configContext.injectors.isNotEmpty()) return SmartList(mergedConfig)
-                return mergedConfig.toSingletonList()
-            }
-            is CwtPropertyConfig -> {
-                val subtypeExpression = key.removeSurroundingOrNull("subtype[", "]")
-                if(subtypeExpression == null) {
-                    val mergedConfig = copy(configs = mergedConfigs).also { it.parent = parent }
-                    if(configContext.injectors.isNotEmpty()) return SmartList(mergedConfig)
-                    return mergedConfig.toSingletonList()
-                } else {
-                    val subtypes = configContext.definitionSubtypes
-                    if(subtypes == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
-                        if(configContext.injectors.isNotEmpty()) return mergedConfigs ?: SmartList()
-                        return mergedConfigs.orEmpty()
-                    } else {
-                        if(configContext.injectors.isNotEmpty()) return SmartList()
-                        return emptyList()
-                    }
-                }
-            }
-        }
-    }
-    
     object Keys
 }
 
-val CwtMemberConfig<*>.isRoot
+val <T : PsiElement> CwtMemberConfig<T>.isBlock: Boolean
+    get() = configs != null
+
+val CwtMemberConfig<*>.isRoot: Boolean
     get() = when {
         this is CwtPropertyConfig -> this.parent == null
         this is CwtValueConfig -> this.parent == null && this.propertyConfig == null
         else -> false
     }
 
-val CwtMemberConfig<*>.memberConfig
+val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<PsiElement>
     get() = when {
         this is CwtPropertyConfig -> this
         this is CwtValueConfig -> propertyConfig ?: this
         else -> this
     }
+
+fun <T : PsiElement> CwtMemberConfig<T>.deepCopyConfigs(): List<CwtMemberConfig<*>>? {
+    if(configs.isNullOrEmpty()) return configs
+    return configs?.mapFast { config ->
+        when(config) {
+            is CwtPropertyConfig -> config.copyDelegated(config.parent, config.deepCopyConfigs())
+            is CwtValueConfig -> config.copyDelegated(config.parent, config.deepCopyConfigs())
+        }
+    }
+}
+
+fun <T : PsiElement> CwtMemberConfig<T>.deepMergeConfigs(configContext: CwtConfigContext): List<CwtMemberConfig<*>> {
+    //因为之后可能需要对得到的声明规则进行注入，需要保证当注入时所有规则列表都是可变的
+    
+    val mergedConfigs: MutableList<CwtMemberConfig<*>>? = if(configs != null) SmartList() else null
+    configs?.forEachFast { config ->
+        val childConfigList = config.deepMergeConfigs(configContext)
+        if(childConfigList.isNotEmpty()) {
+            for(childConfig in childConfigList) {
+                mergedConfigs?.add(childConfig)
+            }
+        }
+    }
+    when(this) {
+        is CwtValueConfig -> {
+            val mergedConfig = this.copyDelegated(parent, mergedConfigs)
+            if(configContext.injectors.isNotEmpty()) return SmartList(mergedConfig)
+            return mergedConfig.toSingletonList()
+        }
+        is CwtPropertyConfig -> {
+            val subtypeExpression = key.removeSurroundingOrNull("subtype[", "]")
+            if(subtypeExpression == null) {
+                val mergedConfig = this.copyDelegated(parent, mergedConfigs)
+                if(configContext.injectors.isNotEmpty()) return SmartList(mergedConfig)
+                return mergedConfig.toSingletonList()
+            } else {
+                val subtypes = configContext.definitionSubtypes
+                if(subtypes == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
+                    if(configContext.injectors.isNotEmpty()) return mergedConfigs ?: SmartList()
+                    return mergedConfigs.orEmpty()
+                } else {
+                    if(configContext.injectors.isNotEmpty()) return SmartList()
+                    return emptyList()
+                }
+            }
+        }
+    }
+}
 
 val CwtMemberConfig.Keys.cardinality by lazy { Key.create<CwtCardinalityExpression>("paradox.cwtDataConfig.cardinality") }
 val CwtMemberConfig.Keys.cardinalityMinDefine by lazy { Key.create<String>("paradox.cwtDataConfig.cardinalityMinDefine") }
@@ -119,7 +110,7 @@ val CwtMemberConfig.Keys.supportedScopes by lazy { Key.create<Set<String>>("para
 // * a config expression in subtype structure config
 val CwtMemberConfig<*>.cardinality
     get() = getOrPutUserData(CwtMemberConfig.Keys.cardinality, CwtCardinalityExpression.EmptyExpression) action@{
-        val option = options?.find { it.key == "cardinality" }
+        val option = findOption("cardinality")
         if(option == null) {
             //如果没有注明且类型是常量，则推断为 1..1
             if(expression.type == Constant) {
@@ -130,12 +121,12 @@ val CwtMemberConfig<*>.cardinality
     }
 val CwtMemberConfig<*>.cardinalityMinDefine
     get() = getOrPutUserData(CwtMemberConfig.Keys.cardinalityMinDefine, "") action@{
-        val option = options?.find { it.key == "cardinality_min_define" }
+        val option = findOption("cardinality_min_define")
         option?.stringValue
     }
 val CwtMemberConfig<*>.cardinalityMaxDefine
     get() = getOrPutUserData(CwtMemberConfig.Keys.cardinalityMaxDefine, "") action@{
-        val option = options?.find { it.key == "cardinality_max_define" }
+        val option = findOption("cardinality_max_define")
         option?.stringValue
     }
 

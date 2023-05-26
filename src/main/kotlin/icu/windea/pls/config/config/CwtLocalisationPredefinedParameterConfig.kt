@@ -8,7 +8,7 @@ import javax.swing.*
 //EXTENDED BY PLS
 
 class CwtLocalisationPredefinedParameterConfig(
-	override val pointer: SmartPsiElementPointer<CwtProperty>,
+	override val pointer: SmartPsiElementPointer<out CwtProperty>,
 	override val info: CwtConfigGroupInfo,
 	val id: String,
 	val mockValue: String,

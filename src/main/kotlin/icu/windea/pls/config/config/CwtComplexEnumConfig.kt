@@ -13,7 +13,7 @@ import icu.windea.pls.cwt.psi.*
  * @property nameConfig (property) name: block 描述如何获取枚举名。将`enum_name`对应的key/value作为枚举名。
  */
 class CwtComplexEnumConfig(
-    override val pointer: SmartPsiElementPointer<CwtProperty>,
+    override val pointer: SmartPsiElementPointer<out CwtProperty>,
     override val info: CwtConfigGroupInfo,
     val name: String,
     val path: Set<String>,

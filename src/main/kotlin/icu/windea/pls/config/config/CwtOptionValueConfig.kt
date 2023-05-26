@@ -6,7 +6,7 @@ import icu.windea.pls.lang.model.*
 import java.util.concurrent.*
 
 class CwtOptionValueConfig private constructor(
-    override val pointer: SmartPsiElementPointer<CwtValue>, //NOTE 目前并未使用，因此直接传入emptyPointer()即可
+    override val pointer: SmartPsiElementPointer<out CwtValue>, //NOTE 目前并未使用，因此直接传入emptyPointer()即可
     override val info: CwtConfigGroupInfo,
     override val value: String,
     override val valueTypeId: Byte = CwtType.String.id,
@@ -17,7 +17,7 @@ class CwtOptionValueConfig private constructor(
         private val cache = ConcurrentHashMap<String, CwtOptionValueConfig>()
         
         fun resolve(
-            pointer: SmartPsiElementPointer<CwtValue>,
+            pointer: SmartPsiElementPointer<out CwtValue>,
             info: CwtConfigGroupInfo,
             value: String,
             valueTypeId: Byte = CwtType.String.id,

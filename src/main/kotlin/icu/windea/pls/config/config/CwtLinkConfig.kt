@@ -15,7 +15,7 @@ import icu.windea.pls.cwt.psi.*
  * @property outputScope output_scope: string? - 为null时表示会传递scope
  */
 class CwtLinkConfig(
-	override val pointer: SmartPsiElementPointer<CwtProperty>,
+	override val pointer: SmartPsiElementPointer<out CwtProperty>,
 	override val info: CwtConfigGroupInfo,
 	val config: CwtPropertyConfig,
 	val name: String,

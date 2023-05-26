@@ -5,7 +5,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtModifierConfig(
-	override val pointer: SmartPsiElementPointer<CwtProperty>,
+	override val pointer: SmartPsiElementPointer<out CwtProperty>,
 	override val info: CwtConfigGroupInfo,
 	val config: CwtPropertyConfig,
 	val name: String, //template name, not actual modifier name!

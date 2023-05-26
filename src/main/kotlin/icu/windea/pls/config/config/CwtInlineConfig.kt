@@ -4,7 +4,7 @@ import com.intellij.psi.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtInlineConfig(
-    override val pointer: SmartPsiElementPointer<CwtProperty>,
+    override val pointer: SmartPsiElementPointer<out CwtProperty>,
     override val info: CwtConfigGroupInfo,
     override val config: CwtPropertyConfig,
     override val name: String

@@ -10,7 +10,7 @@ import icu.windea.pls.cwt.psi.*
  * @property primary (option) primary
  */
 class CwtLocationConfig(
-	override val pointer: SmartPsiElementPointer<CwtProperty>,
+	override val pointer: SmartPsiElementPointer<out CwtProperty>,
 	override val info: CwtConfigGroupInfo,
 	val key: String,
 	val value: String,
