@@ -6,14 +6,12 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
-import kotlin.collections.mapNotNullTo
 
 private val validValueTypes = arrayOf(
     CwtDataType.FilePath,
@@ -49,10 +47,10 @@ class CwtImageLocationExpression(
             expressionString.startsWith('#') -> {
                 val pipeIndex = expressionString.indexOf('|', 1)
                 if(pipeIndex == -1) {
-                    val propertyName = expressionString.substring(1)
+                    val propertyName = expressionString.substring(1).intern()
                     CwtImageLocationExpression(expressionString, null, propertyName)
                 } else {
-                    val propertyName = expressionString.substring(1, pipeIndex)
+                    val propertyName = expressionString.substring(1, pipeIndex).intern()
                     val extraPropertyNames = expressionString.substring(pipeIndex + 1)
                         .splitToSequence(',').mapTo(SmartList()) { it.drop(1) }
                     CwtImageLocationExpression(expressionString, null, propertyName, extraPropertyNames)

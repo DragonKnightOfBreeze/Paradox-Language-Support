@@ -55,8 +55,7 @@ enum class CwtDataType {
     
     fun isIntType() = this == Int || this == IntValueField || this == IntVariableField
     
-    fun isFloatType() = this == Int || this == Float || this == ValueField || this == IntValueField
-        || this == VariableField || this == IntVariableField
+    fun isFloatType() = this == Int || this == Float || this == ValueField || this == IntValueField || this == VariableField || this == IntVariableField
     
     fun isPathReferenceType() = this == AbsoluteFilePath || this == FileName || this == FilePath || this == Icon
     

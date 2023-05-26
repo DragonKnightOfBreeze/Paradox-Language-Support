@@ -23,8 +23,8 @@ open class CwtSimpleTemplateExpression(
 				val i = expressionString.indexOf('$')
 				if(i == -1) CwtSimpleTemplateExpression(expressionString, expressionString, "")
 				else {
-					val prefix = expressionString.substring(0, i)
-					val suffix = expressionString.substring(i + 1)
+					val prefix = expressionString.substring(0, i).intern()
+					val suffix = expressionString.substring(i + 1).intern()
 					CwtSimpleTemplateExpression(expressionString, prefix, suffix)
 				}
 			}

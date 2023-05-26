@@ -40,7 +40,7 @@ class CwtLocalisationLocationExpression(
         private fun doResolve(expressionString: String) = when {
             expressionString.isEmpty() -> EmptyExpression
             expressionString.startsWith('#') -> {
-                val propertyName = expressionString.substring(1)
+                val propertyName = expressionString.substring(1).intern()
                 CwtLocalisationLocationExpression(expressionString, null, propertyName)
             }
             else -> CwtLocalisationLocationExpression(expressionString, expressionString)
