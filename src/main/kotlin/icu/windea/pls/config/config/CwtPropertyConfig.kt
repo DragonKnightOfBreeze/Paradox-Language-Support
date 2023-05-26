@@ -29,7 +29,7 @@ sealed interface CwtPropertyConfig : CwtMemberConfig<CwtProperty>, CwtPropertyAw
             documentation: String? = null
         ): CwtPropertyConfig {
             if(configs.isNullOrEmpty()) {
-                return CwtPropertyConfigImpls.ImplB(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
+                return CwtPropertyConfigImpls.ImplB(pointer, info, key, value, valueTypeId, separatorTypeId, options, documentation)
             } else {
                 return CwtPropertyConfigImpls.ImplA(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
             }
