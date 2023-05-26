@@ -6,7 +6,6 @@ import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.navigation.*
 import javax.swing.*
@@ -14,8 +13,6 @@ import javax.swing.*
 class ParadoxScriptFile(
 	viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxScriptDefinitionElement {
-	@Volatile private var _parameterMap: Map<String, ParadoxParameterInfo>? = null
-	
 	override val block get() = findChild<ParadoxScriptRootBlock>()
 	
 	override fun getIcon(flags: Int): Icon? {
@@ -36,11 +33,6 @@ class ParadoxScriptFile(
 	
 	override fun isEquivalentTo(another: PsiElement?): Boolean {
 		return super.isEquivalentTo(another) || (another is ParadoxScriptFile && fileInfo == another.fileInfo)
-	}
-	
-	override fun subtreeChanged() {
-		_parameterMap = null
-		super.subtreeChanged()
 	}
 }
 
