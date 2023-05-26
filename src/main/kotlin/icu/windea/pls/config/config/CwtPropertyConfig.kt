@@ -28,7 +28,11 @@ sealed interface CwtPropertyConfig : CwtMemberConfig<CwtProperty>, CwtPropertyAw
             options: List<CwtOptionMemberConfig<*>>? = null,
             documentation: String? = null
         ): CwtPropertyConfig {
-            return CwtPropertyConfigImpls.ImplA(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
+            if(configs.isNullOrEmpty()) {
+                return CwtPropertyConfigImpls.ImplB(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
+            } else {
+                return CwtPropertyConfigImpls.ImplA(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
+            }
         }
     }
 }
@@ -71,6 +75,14 @@ fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
 }
 
 private object CwtPropertyConfigImpls {
+    sealed class Impl : UserDataHolderBase(), CwtPropertyConfig {
+        override val expression: CwtKeyExpression get() = keyExpression
+        
+        override fun resolved(): CwtPropertyConfig = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>() ?: this
+        override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>()
+        override fun toString(): String = "$key ${separatorType.text} $value"
+    }
+    
     //memory usage: 12 + 15 * 4 + 2 = 74b => 80b
     
     class ImplA(
@@ -83,21 +95,38 @@ private object CwtPropertyConfigImpls {
         override val configs: List<CwtMemberConfig<*>>? = null,
         override val options: List<CwtOptionMemberConfig<*>>? = null,
         override val documentation: String? = null,
-    ) : UserDataHolderBase(), CwtPropertyConfig {
+    ) : Impl(), CwtPropertyConfig {
         @Volatile override var parent: CwtMemberConfig<*>? = null
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
         
         override val valueConfig = getValueConfig()
-        
         override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
         override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
         override val keyExpression: CwtKeyExpression = CwtKeyExpression.resolve(key)
         override val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
-        override val expression: CwtKeyExpression get() = keyExpression
+    }
+    
+    //memory usage: 12 + 12 * 4 + 2 = 62b => 64b
+    
+    class ImplB(
+        override val pointer: SmartPsiElementPointer<out CwtProperty>,
+        override val info: CwtConfigGroupInfo,
+        override val key: String,
+        override val value: String,
+        override val valueTypeId: Byte = CwtType.String.id,
+        override val separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
+        override val options: List<CwtOptionMemberConfig<*>>? = null,
+        override val documentation: String? = null,
+    ) : Impl(), CwtPropertyConfig {
+        @Volatile override var parent: CwtMemberConfig<*>? = null
+        @Volatile override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
         
-        override fun resolved(): CwtPropertyConfig = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>() ?: this
-        override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>()
-        override fun toString(): String = "$key ${separatorType.text} $value"
+        override val valueConfig = getValueConfig()
+        override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+        override val values: List<CwtValueConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+        override val properties: List<CwtPropertyConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+        override val keyExpression: CwtKeyExpression = CwtKeyExpression.resolve(key)
+        override val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
     }
     
     //memory usage: 12 + 2 * 4 = 20b => 24b

@@ -27,9 +27,17 @@ sealed interface CwtValueConfig : CwtMemberConfig<CwtValue>, CwtValueAware {
             propertyConfig: CwtPropertyConfig? = null
         ): CwtValueConfig {
             return if(propertyConfig == null) {
-                CwtValueConfigImpls.ImplA(pointer, info, value, valueTypeId, configs, options, documentation)
+                if(configs.isNullOrEmpty()) {
+                    CwtValueConfigImpls.ImplB(pointer, info, value, valueTypeId, options, documentation)
+                } else {
+                    CwtValueConfigImpls.ImplA(pointer, info, value, valueTypeId, configs, options, documentation)
+                }
             } else {
-                CwtValueConfigImpls.ImplB(pointer, info, value, valueTypeId, configs, options, documentation, propertyConfig)
+                if(configs.isNullOrEmpty()) {
+                    CwtValueConfigImpls.ImplD(pointer, info, value, valueTypeId, options, documentation, propertyConfig)
+                } else {
+                    CwtValueConfigImpls.ImplC(pointer, info, value, valueTypeId, configs, options, documentation, propertyConfig)
+                }
             }
         }
     }
@@ -89,29 +97,9 @@ private object CwtValueConfigImpls {
         override val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
     }
     
-    //memory usage: 12 + 13 * 4 + 1 = 65b => 72b
-    
-    class ImplB(
-        override val pointer: SmartPsiElementPointer<out CwtValue>,
-        override val info: CwtConfigGroupInfo,
-        override val value: String,
-        override val valueTypeId: Byte = CwtType.String.id,
-        override val configs: List<CwtMemberConfig<*>>? = null,
-        override val options: List<CwtOptionMemberConfig<*>>? = null,
-        override val documentation: String? = null,
-        override val propertyConfig: CwtPropertyConfig? = null,
-    ) : Impl(), CwtValueConfig {
-        @Volatile override var parent: CwtMemberConfig<*>? = null
-        @Volatile override var inlineableConfig: CwtInlineableConfig<CwtValue>?  = null
-        
-        override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
-        override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
-        override val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
-    }
-    
     //memory usage: 12 + 9 * 4 + 1 = 49b => 56b
     
-    class ImplC(
+    class ImplB(
         override val pointer: SmartPsiElementPointer<out CwtValue>,
         override val info: CwtConfigGroupInfo,
         override val value: String,
@@ -126,6 +114,26 @@ private object CwtValueConfigImpls {
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val values: List<CwtValueConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val properties: List<CwtPropertyConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+        override val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
+    }
+    
+    //memory usage: 12 + 13 * 4 + 1 = 65b => 72b
+    
+    class ImplC(
+        override val pointer: SmartPsiElementPointer<out CwtValue>,
+        override val info: CwtConfigGroupInfo,
+        override val value: String,
+        override val valueTypeId: Byte = CwtType.String.id,
+        override val configs: List<CwtMemberConfig<*>>? = null,
+        override val options: List<CwtOptionMemberConfig<*>>? = null,
+        override val documentation: String? = null,
+        override val propertyConfig: CwtPropertyConfig? = null,
+    ) : Impl(), CwtValueConfig {
+        @Volatile override var parent: CwtMemberConfig<*>? = null
+        @Volatile override var inlineableConfig: CwtInlineableConfig<CwtValue>?  = null
+        
+        override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
+        override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
         override val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
     }
     
