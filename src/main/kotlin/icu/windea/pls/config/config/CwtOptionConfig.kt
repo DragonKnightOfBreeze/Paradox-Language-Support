@@ -10,10 +10,10 @@ class CwtOptionConfig private constructor(
 	override val info: CwtConfigGroupInfo,
 	override val key: String,
 	override val value: String,
-	override val valueTypeId: Byte,
-	override val separatorTypeId: Byte,
-	override val options: List<CwtOptionConfig>?,
-	override val optionValues: List<CwtOptionValueConfig>?
+	override val valueTypeId: Byte = CwtType.String.id,
+	override val separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
+	override val options: List<CwtOptionConfig>? = null,
+	override val optionValues: List<CwtOptionValueConfig>? = null
 ) : CwtConfig<CwtOption>, CwtPropertyAware, CwtOptionsAware {
 	companion object Resolver{
 		private val cache = ConcurrentHashMap<String, CwtOptionConfig>()

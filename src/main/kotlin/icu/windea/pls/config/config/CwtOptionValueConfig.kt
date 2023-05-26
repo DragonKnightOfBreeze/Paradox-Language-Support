@@ -9,11 +9,11 @@ class CwtOptionValueConfig private constructor(
     override val pointer: SmartPsiElementPointer<CwtValue>, //NOTE 目前并未使用，因此直接传入emptyPointer()即可
     override val info: CwtConfigGroupInfo,
     override val value: String,
-    override val valueTypeId: Byte,
-    override val options: List<CwtOptionConfig>?,
-    override val optionValues: List<CwtOptionValueConfig>?
+    override val valueTypeId: Byte = CwtType.String.id,
+    override val options: List<CwtOptionConfig>? = null,
+    override val optionValues: List<CwtOptionValueConfig>? = null
 ) : CwtConfig<CwtValue>, CwtValueAware, CwtOptionsAware {
-    companion object Resolver{
+    companion object Resolver {
         private val cache = ConcurrentHashMap<String, CwtOptionValueConfig>()
         
         fun resolve(

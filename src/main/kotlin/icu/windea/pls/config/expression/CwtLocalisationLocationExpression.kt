@@ -111,7 +111,7 @@ class CwtLocalisationLocationExpression(
         
         private val cache = CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) }
         
-        fun resolve(expressionString: String): CwtLocalisationLocationExpression? {
+        fun resolve(expressionString: String): CwtLocalisationLocationExpression {
             return cache.get(expressionString)
         }
         

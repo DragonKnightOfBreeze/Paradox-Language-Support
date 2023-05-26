@@ -21,7 +21,7 @@ class CwtKeyExpression private constructor(
         
         private val cache = CacheBuilder.newBuilder().buildCache<String, CwtKeyExpression> { doResolve(it) }
         
-        fun resolve(expressionString: String): CwtKeyExpression? {
+        fun resolve(expressionString: String): CwtKeyExpression {
             return cache.get(expressionString)
         }
         

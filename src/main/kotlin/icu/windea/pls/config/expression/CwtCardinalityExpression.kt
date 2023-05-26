@@ -22,7 +22,7 @@ class CwtCardinalityExpression private constructor(
     expressionString: String,
     val min: Int,
     val max: Int?,
-    val relaxMin: Boolean = false
+    val relaxMin: Boolean
 ) : AbstractExpression(expressionString), CwtExpression {
     operator fun component1() = min
     
@@ -39,7 +39,7 @@ class CwtCardinalityExpression private constructor(
         
         private val cache = CacheBuilder.newBuilder().buildCache<String, CwtCardinalityExpression> { doResolve(it) }
         
-        fun resolve(expressionString: String): CwtCardinalityExpression? {
+        fun resolve(expressionString: String): CwtCardinalityExpression {
             return cache.get(expressionString)
         }
         

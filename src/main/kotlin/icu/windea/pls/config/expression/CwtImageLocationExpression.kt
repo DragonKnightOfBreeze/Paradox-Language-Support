@@ -187,7 +187,7 @@ class CwtImageLocationExpression private constructor(
         
         private val cache = CacheBuilder.newBuilder().buildCache<String, CwtImageLocationExpression> { doResolve(it) }
         
-        fun resolve(expressionString: String): CwtImageLocationExpression? {
+        fun resolve(expressionString: String): CwtImageLocationExpression {
             return cache.get(expressionString)
         }
         

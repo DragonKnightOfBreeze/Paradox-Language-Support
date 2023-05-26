@@ -24,7 +24,7 @@ class CwtValueExpression private constructor(
         
         private val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtValueExpression> { doResolve(it) } }
         
-        fun resolve(expressionString: String): CwtValueExpression? {
+        fun resolve(expressionString: String): CwtValueExpression {
             return cache.get(expressionString)
         }
         

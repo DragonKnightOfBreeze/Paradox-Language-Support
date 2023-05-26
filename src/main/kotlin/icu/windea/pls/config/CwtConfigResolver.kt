@@ -1,6 +1,5 @@
 package icu.windea.pls.config
 
-import com.google.common.cache.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.psi.*
 import com.intellij.util.*
@@ -119,7 +118,7 @@ object CwtConfigResolver {
         }
         val documentation = getDocumentation(documentationLines, html)
         
-        val config = CwtPropertyConfig(pointer, fileConfig.info, key, value, valueType.id, separatorType.id, configs, options, optionValues, documentation)
+        val config = CwtPropertyConfig.resolve(pointer, fileConfig.info, key, value, valueType.id, separatorType.id, configs, options, optionValues, documentation)
         fileConfig.info.acceptConfigExpression(config.keyExpression, config)
         fileConfig.info.acceptConfigExpression(config.valueExpression, config)
         configs?.forEach { it.parent = config }
@@ -210,8 +209,6 @@ object CwtConfigResolver {
         return config
     }
     
-    private val optionConfigCache = CacheBuilder.newBuilder().buildCache<String, CwtOptionConfig>()
-    
     private fun resolveOption(optionElement: CwtOption, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionConfig? {
         val optionValueElement = optionElement.optionValue
         if(optionValueElement == null) {
@@ -264,8 +261,6 @@ object CwtConfigResolver {
         
         return CwtOptionConfig.resolve(emptyPointer(), fileConfig.info, key, value, valueType.id, separatorType.id, options, optionValues)
     }
-    
-    private val optionValueConfigCache = CacheBuilder.newBuilder().buildCache<String, CwtOptionValueConfig>()
     
     private fun resolveOptionValue(optionValueElement: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionValueConfig {
         val value = optionValueElement.value.intern() //intern to optimize memory

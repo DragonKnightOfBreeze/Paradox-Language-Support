@@ -15,7 +15,7 @@ open class CwtSimpleTemplateExpression(
         
         // $_desc
         
-        fun resolve(expressionString: String): CwtSimpleTemplateExpression? {
+        fun resolve(expressionString: String): CwtSimpleTemplateExpression {
             return cache.get(expressionString)
         }
         

@@ -166,7 +166,7 @@ object ParadoxParameterHandler {
                 if(modificationCount == modificationTracker.modificationCount) {
                     val resolved = cached.getUserData(inferredConfigKey)
                     if(resolved != null) {
-                        return resolved.takeIf { it !== CwtValueConfig.Empty }
+                        return resolved.takeIf { it !== CwtValueConfig.EmptyConfig }
                     }
                 }
             }
@@ -178,7 +178,7 @@ object ParadoxParameterHandler {
         if(ep != null) {
             val modificationTracker = ep.getModificationTracker(parameterElement)
             if(modificationTracker != null) {
-                parameterElement.putUserData(inferredConfigKey, resolved ?: CwtValueConfig.Empty)
+                parameterElement.putUserData(inferredConfigKey, resolved ?: CwtValueConfig.EmptyConfig)
                 parameterElement.putUserData(parameterModificationTrackerKey, modificationTracker)
                 parameterElement.putUserData(parameterModificationCountKey, modificationTracker.modificationCount)
                 parameterCache.put(cacheKey, parameterElement)
