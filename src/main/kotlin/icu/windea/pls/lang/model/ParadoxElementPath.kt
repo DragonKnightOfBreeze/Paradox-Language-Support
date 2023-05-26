@@ -81,7 +81,7 @@ class ParadoxElementPathImpl(
                     escape = true
                 }
                 c == '/' && !escape -> {
-                    result.add(builder.toString())
+                    result.add(builder.toString().intern())
                     builder.clear()
                 }
                 else -> {
@@ -97,7 +97,7 @@ class ParadoxElementPathImpl(
         tupleOf(it.unquote().intern(), it.isLeftQuoted(), it != "-")
     }
     override val length = subPaths.size
-    override val isParameterized = length != 0 && this.subPaths.any { it.isParameterized() }
+    override val isParameterized = length != 0 && subPaths.any { it.isParameterized() }
     
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxElementPath && path == other.path
