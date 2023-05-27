@@ -26,5 +26,17 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptFloatCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptStringCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptColorCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptConditionParameterCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptParameterCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptInlineMathParameterCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationLocaleCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationPropertyCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationPropertyKeyCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationStringCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationPropertyReferenceCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationIconCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationCommandScopeCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationCommandFieldCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationConceptNameCodeInjector"/>
   </extensions>
 </idea-plugin>

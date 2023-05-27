@@ -32,3 +32,51 @@ class ParadoxScriptStringCodeInjector : BaseCodeInjector()
 @InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptColorImpl", pluginId = "icu.windea.pls")
 @FieldCacheMethods(methods = ["getText", "getValue", "getColorType", "getColorArgs"], cleanupMethod = "subtreeChanged")
 class ParadoxScriptColorCodeInjector : BaseCodeInjector()
+
+@InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptParameterConditionParameterImpl", pluginId = "icu.windea.pls")
+@FieldCacheMethods(methods = ["getText", "getValue"], cleanupMethod = "subtreeChanged")
+class ParadoxScriptConditionParameterCodeInjector : BaseCodeInjector()
+
+@InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptParameterImpl", pluginId = "icu.windea.pls")
+@FieldCacheMethods(methods = ["getText", "getValue"], cleanupMethod = "subtreeChanged")
+class ParadoxScriptParameterCodeInjector : BaseCodeInjector()
+
+@InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptInlineMathParameterImpl", pluginId = "icu.windea.pls")
+@FieldCacheMethods(methods = ["getText", "getValue"], cleanupMethod = "subtreeChanged")
+class ParadoxScriptInlineMathParameterCodeInjector : BaseCodeInjector()
+
+@InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationLocaleImpl", pluginId = "icu.windea.pls")
+@FieldCacheMethods(methods = ["getText", "getValue"], cleanupMethod = "subtreeChanged")
+class ParadoxLocalisationLocaleCodeInjector : BaseCodeInjector()
+
+@InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyImpl", pluginId = "icu.windea.pls")
+@FieldCacheMethods(methods = ["getText", "getValue", "getName"], cleanupMethod = "subtreeChanged")
+class ParadoxLocalisationPropertyCodeInjector : BaseCodeInjector()
+
+@InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyKeyImpl", pluginId = "icu.windea.pls")
+@FieldCacheMethods(methods = ["getText", "getValue"], cleanupMethod = "subtreeChanged")
+class ParadoxLocalisationPropertyKeyCodeInjector : BaseCodeInjector()
+
+@InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStringImpl", pluginId = "icu.windea.pls")
+@FieldCacheMethods(methods = ["getText"], cleanupMethod = "subtreeChanged")
+class ParadoxLocalisationStringCodeInjector : BaseCodeInjector()
+
+@InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyReferenceImpl", pluginId = "icu.windea.pls")
+@FieldCacheMethods(methods = ["getText", "getName"], cleanupMethod = "subtreeChanged")
+class ParadoxLocalisationPropertyReferenceCodeInjector : BaseCodeInjector()
+
+@InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationIconImpl", pluginId = "icu.windea.pls")
+@FieldCacheMethods(methods = ["getText", "getName"], cleanupMethod = "subtreeChanged")
+class ParadoxLocalisationIconCodeInjector : BaseCodeInjector()
+
+@InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationCommandScopeImpl", pluginId = "icu.windea.pls")
+@FieldCacheMethods(methods = ["getText", "getName"], cleanupMethod = "subtreeChanged")
+class ParadoxLocalisationCommandScopeCodeInjector : BaseCodeInjector()
+
+@InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationCommandFieldImpl", pluginId = "icu.windea.pls")
+@FieldCacheMethods(methods = ["getText", "getName"], cleanupMethod = "subtreeChanged")
+class ParadoxLocalisationCommandFieldCodeInjector : BaseCodeInjector()
+
+@InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationConceptNameImpl", pluginId = "icu.windea.pls")
+@FieldCacheMethods(methods = ["getText", "getName"], cleanupMethod = "subtreeChanged")
+class ParadoxLocalisationConceptNameCodeInjector : BaseCodeInjector()
