@@ -72,7 +72,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
                 val parameterElement = when {
                     element is ParadoxScriptValue && element.isPropertyValue() -> {
                         val propertyKey = element.propertyKey ?: return@run
-                        val propertyConfig = ParadoxConfigResolver.getConfigs(propertyKey, element is ParadoxScriptValue, true, ParadoxConfigMatcher.Options.Default).firstOrNull() ?: return@run
+                        val propertyConfig = ParadoxConfigResolver.getConfigs(propertyKey, true, true, ParadoxConfigMatcher.Options.Default).firstOrNull() ?: return@run
                         ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return@run
                     }
                     element is ParadoxParameter -> {
