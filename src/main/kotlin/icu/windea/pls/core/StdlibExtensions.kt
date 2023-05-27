@@ -459,10 +459,10 @@ private fun String.doMatchGlobFileName(pattern: String, ignoreCase: Boolean): Bo
 /**
  * 判断当前路径是否匹配另一个ANT路径通配符。使用"."匹配单个子路径中的单个字符，使用"*"匹配单个子路径中的任意个字符，使用"**"匹配任意个字符。
  */
-fun String.matchesAntPath(pattern: String, ignoreCase: Boolean = false): Boolean {
+fun String.matchesAntPath(pattern: String, ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
     if(pattern.isEmpty()) return false
     if(pattern == "**" || pattern == "/**") return true
-    return pattern.split(';').any { doMatchAntPath(it.trim(), ignoreCase) }
+    return pattern.split(';').any { doMatchAntPath(it.trim(), ignoreCase, trimSeparator) }
 }
 
 private val antPatternToRegexCache = CacheBuilder.newBuilder().buildCache<String, Regex> {
@@ -490,9 +490,9 @@ private val antPatternToRegexCache = CacheBuilder.newBuilder().buildCache<String
     }.toRegex()
 }
 
-private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean): Boolean {
-    val usedPath = this.trim('/').let { if(ignoreCase) it.lowercase() else it }
-    val usedPattern = pattern.trim('/').let { if(ignoreCase) it.lowercase() else it }
+private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean, trimSeparator: Boolean): Boolean {
+    val usedPath = this.let { if(trimSeparator) it.trimFast('/') else it } .let { if(ignoreCase) it.lowercase() else it }
+    val usedPattern = pattern.let { if(trimSeparator) it.trimFast('/') else it } .let { if(ignoreCase) it.lowercase() else it }
     val regex = antPatternToRegexCache.get(usedPattern)
     return usedPath.matches(regex)
 }
@@ -505,8 +505,8 @@ private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean): Boolean
  */
 fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolean = false, ignoreCase: Boolean = false): Boolean {
     //optimized
-    val path = this.trimFast('/')
-    val otherPath = other.trimFast('/')
+    val path = this
+    val otherPath = other
     if(path.length > otherPath.length) return false
     if(path.equals(otherPath.take(path.length), ignoreCase)) {
         if(path.length == other.length) return acceptSelf
@@ -580,8 +580,6 @@ fun Path.create(): Path {
 }
 
 fun Boolean.toInt() = if(this) 1 else 0
-
-fun Boolean.toIntString() = if(this) "1" else "0"
 
 fun Any?.toStringOrEmpty() = this?.toString() ?: ""
 

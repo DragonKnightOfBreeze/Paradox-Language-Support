@@ -73,14 +73,6 @@ fun <K, V> Map<K, V>.findOrNull(predicate: (Map.Entry<K, V>) -> Boolean): V? {
 }
 
 
-inline fun <T, R : Any, C : MutableCollection<in R>> Iterable<T>.mapNotNullTo(destination: C, transform: (T) -> R?): C {
-	for(item in this) {
-		val result = transform(item)
-		if(result != null) destination.add(result)
-	}
-	return destination
-}
-
 inline fun <T, reified R> Array<out T>.mapToArray(transform: (T) -> R): Array<R> {
 	return Array(size) { transform(this[it]) }
 }

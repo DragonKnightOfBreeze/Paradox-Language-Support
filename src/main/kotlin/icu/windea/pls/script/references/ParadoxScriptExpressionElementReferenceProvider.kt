@@ -5,6 +5,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
@@ -57,7 +58,7 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
         if(sourceReference is PsiReferencesAware) {
             val references = sourceReference.getReferences()
             if(references.isNotNullOrEmpty()) {
-                for(reference in references) {
+                references.forEachFast { reference ->
                     doCollectReferences(reference, result)
                 }
                 return

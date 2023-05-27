@@ -195,7 +195,11 @@ object ParadoxConfigHandler {
     fun getInBlockKeys(config: CwtMemberConfig<*>): Set<String> {
         return config.getOrPutUserData(inBlockKeysKey) {
             val keys = caseInsensitiveStringSet()
-            config.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.add(it.key) }
+            config.configs?.forEach { 
+                if(it is CwtPropertyConfig && isInBlockKey(it)) {
+                    keys.add(it.key)
+                }
+            }
             when(config) {
                 is CwtPropertyConfig -> {
                     val propertyConfig = config

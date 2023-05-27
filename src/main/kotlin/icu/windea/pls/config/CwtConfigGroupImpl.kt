@@ -558,7 +558,7 @@ class CwtConfigGroupImpl(
 				when(key) {
 					"base_type" -> baseType = prop.stringValue
 					//这里的path一般"game/"开始，这里需要忽略
-					"path" -> path = prop.stringValue?.removePrefix("game")?.trimStart('/') ?: continue
+					"path" -> path = prop.stringValue?.removePrefix("game")?.trim('/') ?: continue
 					"path_strict" -> pathStrict = prop.booleanValue ?: continue
 					"path_file" -> pathFile = prop.stringValue ?: continue
 					"path_extension" -> pathExtension = prop.stringValue ?: continue
@@ -766,7 +766,7 @@ class CwtConfigGroupImpl(
 		for(prop in props) {
 			when(prop.key) {
 				//这里的path一般"game/"开始，这里需要忽略
-				"path" -> prop.stringValue?.removePrefix("game")?.trimStart('/')?.let { path.add(it) }
+				"path" -> prop.stringValue?.removePrefix("game")?.trim('/')?.let { path.add(it) }
 				"path_file" -> pathFile = prop.stringValue
 				"path_strict" -> pathStrict = prop.booleanValue ?: false
 				"start_from_root" -> startFromRoot = prop.booleanValue ?: false
