@@ -498,9 +498,9 @@ private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean, trimSepa
 
 /**
  * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。使用"/"作为路径分隔符。
- * @param acceptSelf 是否接受路径完全一致的情况，默认为`true`。当使用文件路径匹配目录路径时，考虑设为`false`。
+ * @param acceptSelf 是否接受路径完全一致的情况。当使用文件路径匹配目录路径时，考虑设为`false`。
  * @param strict 是否严格匹配（相同或是其直接父路径）。
- * @param ignoreCase 是否忽略大小写。默认为`true`。
+ * @param ignoreCase 是否忽略大小写。
  */
 fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolean = false, ignoreCase: Boolean = false): Boolean {
     //不要尝试在这里忽略大小写，这会带来可观的性能消耗
