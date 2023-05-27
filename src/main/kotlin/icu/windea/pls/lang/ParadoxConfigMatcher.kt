@@ -458,28 +458,29 @@ object ParadoxConfigMatcher {
         val textRange = TextRange.create(0, expression.text.length)
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
         if(scopeFieldExpression == null) return Result.NotMatch
-        return Result.LazyScopeAwareExactMatch p@{
-            when(configExpression.type) {
-                CwtDataType.ScopeField -> {
-                    return@p true
-                }
-                CwtDataType.Scope -> {
-                    val expectedScope = configExpression.value ?: return@p true
+        when(configExpression.type) {
+            CwtDataType.ScopeField -> return Result.ExactMatch
+            CwtDataType.Scope -> {
+                val expectedScope = configExpression.value ?: return Result.ExactMatch
+                return Result.LazyScopeAwareExactMatch p@{
                     val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
                     val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return@p true
                     val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
                     if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return@p true
+                    false
                 }
-                CwtDataType.ScopeGroup -> {
-                    val expectedScopeGroup = configExpression.value ?: return@p true
+            }
+            CwtDataType.ScopeGroup -> {
+                val expectedScopeGroup = configExpression.value ?: return Result.ExactMatch
+                return Result.LazyScopeAwareExactMatch p@{
                     val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
                     val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return@p true
                     val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
                     if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return@p true
+                    false
                 }
-                else -> {}
             }
-            false
+            else -> return Result.NotMatch
         }
     }
     
