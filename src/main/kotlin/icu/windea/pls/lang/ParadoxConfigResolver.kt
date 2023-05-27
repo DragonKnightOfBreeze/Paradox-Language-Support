@@ -73,56 +73,40 @@ object ParadoxConfigResolver {
             else -> throw UnsupportedOperationException()
         }
         
-        //如果无法匹配value，则取第一个
-        val configs = definitionMemberInfo.getConfigs(matchOptions)
+        //得到所有待匹配的结果
+        val configs = definitionMemberInfo.getConfigs(matchOptions).filterIsInstance<CwtPropertyConfig>()
+        
+        //未填写属性的值 - 匹配所有
+        if(expression == null) return configs
+        
+        //得到所有可能匹配的结果
+        ProgressManager.checkCanceled()
         val configGroup = definitionMemberInfo.configGroup
-        val resultConfigs = SmartList<CwtPropertyConfig>()
-        run {
-            //不完整的属性 - 不匹配值
-            if(expression == null) {
-                for(config in configs) {
-                    if(config !is CwtPropertyConfig) continue
-                    resultConfigs.add(config)
-                }
-                return@run
-            }
-            //得到匹配结果
-            val matchResults = SmartList<ParadoxConfigMatcher.Result>()
-            configs.forEachFast f@{ config ->
-                if(config !is CwtPropertyConfig) return@f
-                matchResults.add(ParadoxConfigMatcher.matches(memberElement, expression, config.valueExpression, config, configGroup, matchOptions))
-            }
-            run m@{
-                
-            }
-            //过滤得到最终的匹配结果
-            //精确匹配
-            for(config in configs) {
-                if(config !is CwtPropertyConfig) continue
-                ProgressManager.checkCanceled()
-                if(ParadoxConfigMatcher.matches(memberElement, expression, config.valueExpression, config, configGroup, matchOptions).get(matchOptions)) {
-                    resultConfigs.add(config)
-                }
-            }
-            //精确匹配无结果 - 不精确匹配
-            if(resultConfigs.isEmpty()) {
-                val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
-                for(config in configs) {
-                    if(config !is CwtPropertyConfig) continue
-                    ProgressManager.checkCanceled()
-                    val configExpression = config.valueExpression
-                    if(!ParadoxConfigHandler.requireNotExactMatch(configExpression)) continue
-                    if(ParadoxConfigMatcher.matches(memberElement, expression, configExpression, config, configGroup, newMatchOptions).get(newMatchOptions)) {
-                        resultConfigs.add(config)
-                    }
-                }
-            }
-            //仍然无结果 - 判断是否使用默认值
-            if(orDefault && resultConfigs.isEmpty()) {
-                configs.forEachFast { it.castOrNull<CwtPropertyConfig>()?.let<CwtPropertyConfig, Unit> { c -> resultConfigs.add(c) } }
-            }
+        val matchResultValues = SmartList<ParadoxConfigMatcher.ResultValue<CwtPropertyConfig>>()
+        configs.forEach f@{ config ->
+            val matchResult = ParadoxConfigMatcher.matches(memberElement, expression, config.valueExpression, config, configGroup, matchOptions)
+            if(matchResult == ParadoxConfigMatcher.Result.NotMatch) return@f
+            matchResultValues.add(ParadoxConfigMatcher.ResultValue(config, matchResult))
         }
-        return resultConfigs
+        //如果无结果且需要使用默认值，则返回所有可能匹配的规则
+        if(matchResultValues.isEmpty() && orDefault) return configs
+        
+        val resultConfigs = SmartList<CwtPropertyConfig>()
+        
+        //尝试直接精确匹配
+        matchResultValues.mapNotNullTo(resultConfigs) { (c, r) -> if(r == ParadoxConfigMatcher.Result.ExactMatch) c else null }
+        if(resultConfigs.isNotEmpty()) return resultConfigs
+        //尝试精确匹配
+        matchResultValues.mapNotNullTo(SmartList()) { (c, r) -> if(r.get(matchOptions)) c else null }
+        if(resultConfigs.isNotEmpty()) return resultConfigs
+        //尝试不精确匹配
+        val relaxMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
+        matchResultValues.mapNotNullTo(SmartList()) { (c, r) -> if(r.get(relaxMatchOptions)) c else null }
+        if(resultConfigs.isNotEmpty()) return resultConfigs
+        //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则
+        if(orDefault) return configs
+        
+        return emptyList()
     }
     
     private fun doGetValueConfigs(element: PsiElement, allowDefinition: Boolean, orDefault: Boolean, matchOptions: Int): List<CwtValueConfig> {
@@ -139,78 +123,75 @@ object ParadoxConfigResolver {
                 val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
                 if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
                 
+                val configs = definitionMemberInfo.getConfigs(matchOptions).filterIsInstance<CwtPropertyConfig>()
+                if(configs.isEmpty()) return emptyList()
+                
+                //得到所有可能匹配的结果
                 ProgressManager.checkCanceled()
-                val configs = definitionMemberInfo.getConfigs(matchOptions)
                 val configGroup = definitionMemberInfo.configGroup
-                val resultConfigs = SmartList<CwtValueConfig>()
-                run {
-                    //精确匹配
-                    for(config in configs) {
-                        if(config !is CwtPropertyConfig) continue
-                        ProgressManager.checkCanceled()
-                        val valueConfig = config.valueConfig ?: continue
-                        if(ParadoxConfigMatcher.matches(valueElement, expression, valueConfig.expression, config, configGroup, matchOptions).get(matchOptions)) {
-                            resultConfigs.add(valueConfig)
-                        }
-                    }
-                    //精确匹配无结果 - 不精确匹配
-                    if(resultConfigs.isEmpty()) {
-                        val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
-                        for(config in configs) {
-                            if(config !is CwtPropertyConfig) continue
-                            ProgressManager.checkCanceled()
-                            val valueConfig = config.valueConfig ?: continue
-                            val configExpression = valueConfig.expression
-                            if(!ParadoxConfigHandler.requireNotExactMatch(configExpression)) continue
-                            if(ParadoxConfigMatcher.matches(valueElement, expression, configExpression, config, configGroup, newMatchOptions).get(newMatchOptions)) {
-                                resultConfigs.add(valueConfig)
-                            }
-                        }
-                    }
-                    //仍然无结果 - 判断是否使用默认值
-                    if(orDefault && resultConfigs.isEmpty()) {
-                        configs.forEachFast { it.castOrNull<CwtPropertyConfig>()?.valueConfig?.let<CwtValueConfig, Unit> { c -> resultConfigs.add(c) } }
-                    }
+                val matchResultValues = SmartList<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
+                configs.forEach f@{ config ->
+                    val valueConfig = config.valueConfig ?: return@f
+                    val matchResult = ParadoxConfigMatcher.matches(valueElement, expression, valueConfig.expression, config, configGroup, matchOptions)
+                    if(matchResult == ParadoxConfigMatcher.Result.NotMatch) return@f
+                    matchResultValues.add(ParadoxConfigMatcher.ResultValue(valueConfig, matchResult))
                 }
-                return resultConfigs
+                //如果无结果且需要使用默认值，则返回所有可能匹配的规则
+                if(matchResultValues.isEmpty() && orDefault) return configs.mapNotNullTo(SmartList()) { it.valueConfig }
+                
+                val resultConfigs = SmartList<CwtValueConfig>()
+                
+                //尝试直接精确匹配
+                matchResultValues.mapNotNullTo(resultConfigs) { (c, r) -> if(r == ParadoxConfigMatcher.Result.ExactMatch) c else null }
+                if(resultConfigs.isNotEmpty()) return resultConfigs
+                //尝试精确匹配
+                matchResultValues.mapNotNullTo(SmartList()) { (c, r) -> if(r.get(matchOptions)) c else null }
+                if(resultConfigs.isNotEmpty()) return resultConfigs
+                //尝试不精确匹配
+                val relaxMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
+                matchResultValues.mapNotNullTo(SmartList()) { (c, r) -> if(r.get(relaxMatchOptions)) c else null }
+                if(resultConfigs.isNotEmpty()) return resultConfigs
+                //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则
+                if(orDefault) return configs.mapNotNullTo(SmartList()) { it.valueConfig }
+                
+                return emptyList()
             }
             //如果value是blockElement中的value
             is ParadoxScriptBlockElement -> {
                 val property = parent.parent as? ParadoxScriptDefinitionElement ?: return emptyList()
                 val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
                 
-                val childConfigs = definitionMemberInfo.getChildConfigs(matchOptions)
-                if(childConfigs.isEmpty()) return emptyList()
+                val configs = definitionMemberInfo.getChildConfigs(matchOptions).filterIsInstance<CwtValueConfig>()
+                if(configs.isEmpty()) return emptyList()
+                
+                //得到所有可能匹配的结果
+                ProgressManager.checkCanceled()
                 val configGroup = definitionMemberInfo.configGroup
-                val resultConfigs = SmartList<CwtValueConfig>()
-                run {
-                    for(childConfig in childConfigs) {
-                        if(childConfig !is CwtValueConfig) continue
-                        ProgressManager.checkCanceled()
-                        //精确匹配
-                        if(ParadoxConfigMatcher.matches(valueElement, expression, childConfig.valueExpression, childConfig, configGroup, matchOptions).get(matchOptions)) {
-                            resultConfigs.add(childConfig)
-                        }
-                    }
-                    //精确匹配无结果 - 不精确匹配
-                    if(resultConfigs.isEmpty()) {
-                        val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
-                        for(childConfig in childConfigs) {
-                            if(childConfig !is CwtValueConfig) continue
-                            ProgressManager.checkCanceled()
-                            val configExpression = childConfig.valueExpression
-                            if(!ParadoxConfigHandler.requireNotExactMatch(configExpression)) continue
-                            if(ParadoxConfigMatcher.matches(valueElement, expression, configExpression, childConfig, configGroup, newMatchOptions).get(newMatchOptions)) {
-                                resultConfigs.add(childConfig)
-                            }
-                        }
-                    }
-                    //仍然无结果 - 判断是否使用默认值
-                    if(orDefault && resultConfigs.isEmpty()) {
-                        childConfigs.singleOrNull { it is CwtValueConfig }?.cast<CwtValueConfig>()?.let { resultConfigs.add(it) }
-                    }
+                val matchResultValues = SmartList<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
+                configs.forEach f@{ config ->
+                    val matchResult = ParadoxConfigMatcher.matches(valueElement, expression, config.valueExpression, config, configGroup, matchOptions)
+                    if(matchResult == ParadoxConfigMatcher.Result.NotMatch) return@f
+                    matchResultValues.add(ParadoxConfigMatcher.ResultValue(config, matchResult))
                 }
-                return resultConfigs
+                //如果无结果且需要使用默认值，则返回所有可能匹配的规则
+                if(matchResultValues.isEmpty() && orDefault) return configs
+                
+                val resultConfigs = SmartList<CwtValueConfig>()
+                
+                //尝试直接精确匹配
+                matchResultValues.mapNotNullTo(resultConfigs) { (c, r) -> if(r == ParadoxConfigMatcher.Result.ExactMatch) c else null }
+                if(resultConfigs.isNotEmpty()) return resultConfigs
+                //尝试精确匹配
+                matchResultValues.mapNotNullTo(SmartList()) { (c, r) -> if(r.get(matchOptions)) c else null }
+                if(resultConfigs.isNotEmpty()) return resultConfigs
+                //尝试不精确匹配
+                val relaxMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
+                matchResultValues.mapNotNullTo(SmartList()) { (c, r) -> if(r.get(relaxMatchOptions)) c else null }
+                if(resultConfigs.isNotEmpty()) return resultConfigs
+                //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则
+                if(orDefault) return configs
+                
+                return emptyList()
             }
             else -> return emptyList()
         }

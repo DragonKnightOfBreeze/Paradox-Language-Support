@@ -34,11 +34,16 @@ class ParadoxDefinitionMemberInfo(
      * 对应的配置列表。
      */
     fun getConfigs(matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtMemberConfig<*>> {
-        var cacheKey = "$matchOptions"
         //这里需要特别处理缓存的键
-        val configContext = definitionInfo.getDeclaration(matchOptions)?.getUserData(CwtMemberConfig.Keys.configContextKey)
-        if(configContext != null) {
-            cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
+        val cacheKey = buildString { 
+            append(matchOptions)
+            val configContext = definitionInfo.getDeclaration(matchOptions)?.getUserData(CwtMemberConfig.Keys.configContextKey)
+            if(configContext != null) {
+                val cacheKeyFromInjectors = CwtDeclarationConfigInjector.getCacheKey(configContext, configContext.injectors)
+                if(cacheKeyFromInjectors != null) { 
+                    append('#').append(cacheKeyFromInjectors)
+                }
+            }
         }
         return cache.computeIfAbsent(cacheKey) { doGetConfigs(definitionInfo, this, matchOptions) }
     }
@@ -47,11 +52,17 @@ class ParadoxDefinitionMemberInfo(
      * 对应的子配置列表。（得到的是合并后的规则列表，且过滤重复的）
      */
     fun getChildConfigs(matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtMemberConfig<*>> {
-        var cacheKey = "child#$matchOptions"
         //这里需要特别处理缓存的键
-        val configContext = definitionInfo.getDeclaration(matchOptions)?.getUserData(CwtMemberConfig.Keys.configContextKey)
-        if(configContext != null) {
-            cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
+        val cacheKey = buildString {
+            append("child#")
+            append(matchOptions)
+            val configContext = definitionInfo.getDeclaration(matchOptions)?.getUserData(CwtMemberConfig.Keys.configContextKey)
+            if(configContext != null) {
+                val cacheKeyFromInjectors = CwtDeclarationConfigInjector.getCacheKey(configContext, configContext.injectors)
+                if(cacheKeyFromInjectors != null) {
+                    append('#').append(cacheKeyFromInjectors)
+                }
+            }
         }
         return cache.computeIfAbsent(cacheKey) { doGetChildConfigs(definitionInfo, this, matchOptions) }
     }
