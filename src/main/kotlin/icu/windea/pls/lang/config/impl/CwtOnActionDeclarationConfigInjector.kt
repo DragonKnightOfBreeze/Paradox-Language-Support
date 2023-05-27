@@ -28,7 +28,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
     override fun getCacheKey(configContext: CwtConfigContext): String? {
         val config = configContext.getUserData(configKey)
         if(config == null) return null
-        return "@on_action#${configContext.matchOptions}"
+        return "@on_action#${configContext.definitionName}#${configContext.matchOptions}"
     }
     
     //override fun getDeclarationMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig? {

@@ -27,7 +27,7 @@ class CwtGameRuleDeclarationConfigInjector : CwtDeclarationConfigInjector {
         val config = configContext.getUserData(configKey)
         if(config == null) return null
         if(doGetDeclarationMergedConfig(config) == null) return null
-        return "@game_rule#${configContext.matchOptions}"
+        return "@game_rule#${configContext.definitionName}#${configContext.matchOptions}"
     }
     
     override fun getDeclarationMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig? {
