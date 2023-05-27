@@ -506,15 +506,13 @@ private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean, trimSepa
 @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolean = false): Boolean {
     //这个方法的执行速度应当非常非常快
-    //不要尝试在这里忽略大小写，这会带来可观的性能消耗
-    //不要尝试在这里去除位于路径首尾的分隔符，这会带来可观的性能消耗
-    
     //optimized
-    if(this.length > other.length) return false
-    if((other as java.lang.String).startsWith(this, 0)) {
-        if(this.length == other.length) return acceptSelf
-        if(other[this.length] != '/') return false
-        if(strict && (other as java.lang.String).indexOf(47, this.length + 1) != -1) return false //47 -> '/'
+    val path = this.trimFast('/')
+    if(path.length > other.length) return false
+    if((other as java.lang.String).startsWith(path, 0)) {
+        if(path.length == other.length) return acceptSelf
+        if(other[path.length] != '/') return false
+        if(strict && (other as java.lang.String).indexOf(47, path.length + 1) != -1) return false //47 -> '/'
         return true
     }
     return false
