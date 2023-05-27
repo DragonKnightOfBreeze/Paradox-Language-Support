@@ -3,7 +3,6 @@
 package icu.windea.pls.core
 
 import com.google.common.cache.*
-import com.intellij.util.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
 import java.io.*
@@ -504,7 +503,8 @@ private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean, trimSepa
  * @param ignoreCase 是否忽略大小写。默认为`true`。
  */
 fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolean = false, ignoreCase: Boolean = false): Boolean {
-    //不要尝试在这里去除 
+    //不要尝试在这里忽略大小写，这会带来可观的性能消耗
+    //不要尝试在这里去除位于路径首尾的分隔符，这会带来可观的性能消耗
     
     //optimized
     val path = this
