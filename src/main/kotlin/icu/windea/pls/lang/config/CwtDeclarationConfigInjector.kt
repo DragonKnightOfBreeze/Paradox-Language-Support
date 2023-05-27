@@ -18,7 +18,7 @@ interface CwtDeclarationConfigInjector {
     /**
      * 得到需要的声明规则缓存的键.
      */
-    fun getCacheKey(rawCacheKey: String, configContext: CwtConfigContext): String? = null
+    fun getCacheKey(configContext: CwtConfigContext): String? = null
     
     /**
      * 替代默认实现，使用另外的逻辑获取合并后的声明规则。
@@ -58,12 +58,12 @@ interface CwtDeclarationConfigInjector {
             }
         }
         
-        fun getCacheKey(rawCacheKey: String, configContext: CwtConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList): String? {
+        fun getCacheKey(configContext: CwtConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList): String? {
             if(injectors.isEmpty()) return null
             val gameType = configContext.configGroup.gameType
             return injectors.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
-                ep.getCacheKey(rawCacheKey, configContext)
+                ep.getCacheKey(configContext)
             }
         }
     }

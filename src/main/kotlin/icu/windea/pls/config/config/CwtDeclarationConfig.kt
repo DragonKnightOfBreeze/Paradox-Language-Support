@@ -4,8 +4,9 @@ import com.google.common.cache.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.config.*
 
@@ -17,6 +18,21 @@ class CwtDeclarationConfig(
 ) : CwtConfig<CwtProperty> {
     private val mergedConfigCache: Cache<String, CwtPropertyConfig> by lazy { CacheBuilder.newBuilder().buildCache() }
     
+    private val subtypesToDistinctCache by lazy {
+        val result = sortedSetOf<String>()
+        propertyConfig.processDescendants {
+            if(it is CwtPropertyConfig) {
+                val subtypeExpression = it.key.removeSurroundingOrNull("subtype[", "]")
+                if(subtypeExpression != null) {
+                    val resolved = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression)
+                    resolved.subtypes.forEach { (_, subtype) -> result.add(subtype) }
+                }
+            }
+            true
+        }
+        result
+    }
+    
     /**
      * 得到根据子类型列表进行合并后的配置。
      */
@@ -24,10 +40,7 @@ class CwtDeclarationConfig(
         //定义的值不为代码块的情况
         if(!propertyConfig.isBlock) return propertyConfig
         
-        val (_, _, _, subtypes, _, matchOptions) = configContext
-        var cacheKey = getRawCacheKey(subtypes, matchOptions)
-        cacheKey = CwtDeclarationConfigInjector.getCacheKey(cacheKey, configContext, configContext.injectors) ?: cacheKey
-        
+        val cacheKey = getCacheKey(configContext)
         return mergedConfigCache.getOrPut(cacheKey) {
             runReadAction {
                 val r = doGetMergedConfig(configContext)
@@ -38,17 +51,22 @@ class CwtDeclarationConfig(
         }
     }
     
-    private fun getRawCacheKey(subtypes: List<String>?, matchOptions: Int): String {
+    private fun getCacheKey(configContext: CwtConfigContext): String {
+        val cacheKeyFromInjectors = CwtDeclarationConfigInjector.getCacheKey(configContext, configContext.injectors)
+        if(cacheKeyFromInjectors != null) return cacheKeyFromInjectors
+        
         //optimized
         return buildString {
-            if(subtypes != null) {
+            if(configContext.definitionSubtypes != null) {
                 var isFirst = true
-                subtypes.sorted().forEachFast { s ->
-                    if(isFirst) isFirst = false else append('.')
-                    append(s)
+                subtypesToDistinctCache.forEach { s ->
+                    if(configContext.definitionSubtypes.contains(s)) {
+                        if(isFirst) isFirst = false else append('.')
+                        append(s)
+                    }
                 }
             }
-            append('#').append(matchOptions)
+            append('#').append(configContext.matchOptions)
         }
     }
     

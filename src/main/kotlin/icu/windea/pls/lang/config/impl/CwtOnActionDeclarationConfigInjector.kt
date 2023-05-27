@@ -25,10 +25,10 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
         return false
     }
     
-    override fun getCacheKey(rawCacheKey: String, configContext: CwtConfigContext): String? {
+    override fun getCacheKey(configContext: CwtConfigContext): String? {
         val config = configContext.getUserData(configKey)
         if(config == null) return null
-        return "${configContext.definitionName}#${rawCacheKey}"
+        return "@on_action#${configContext.matchOptions}"
     }
     
     //override fun getDeclarationMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig? {
@@ -41,7 +41,8 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
     //}
     
     override fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtConfigContext) {
-        val config = configContext.getUserData(configKey) ?: return
+        val config = configContext.getUserData(configKey)
+        if(config == null) return
         val expressions = buildList {
             if(configContext.configGroup.types.get("event")?.subtypes?.containsKey("scopeless") == true) {
                 add("<event.scopeless>")

@@ -59,7 +59,7 @@ fun CwtValueConfig.copyDelegated(
     parent: CwtMemberConfig<*>? = null,
     configs: List<CwtMemberConfig<*>>? = null
 ): CwtValueConfig {
-    return if(configs == null) {
+    return if(configs.isNullOrEmpty()) {
         CwtValueConfigImpls.DelegateA(this, parent)
     } else {
         CwtValueConfigImpls.DelegateB(this, parent, configs)

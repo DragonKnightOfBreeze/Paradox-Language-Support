@@ -23,15 +23,16 @@ class CwtGameRuleDeclarationConfigInjector : CwtDeclarationConfigInjector {
         return false
     }
     
-    override fun getCacheKey(rawCacheKey: String, configContext: CwtConfigContext): String? {
+    override fun getCacheKey(configContext: CwtConfigContext): String? {
         val config = configContext.getUserData(configKey)
         if(config == null) return null
-        if(doGetDeclarationMergedConfig(config) == null) return rawCacheKey
-        return "${configContext.definitionName}#${rawCacheKey}"
+        if(doGetDeclarationMergedConfig(config) == null) return null
+        return "@game_rule#${configContext.matchOptions}"
     }
     
     override fun getDeclarationMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig? {
-        val config = configContext.getUserData(configKey) ?: return null
+        val config = configContext.getUserData(configKey)
+        if(config == null) return null
         return doGetDeclarationMergedConfig(config)
     }
     
