@@ -27,11 +27,11 @@ object ParadoxConfigMatcher {
     object Options {
         /**默认的匹配方式，先尝试通过[Result.ExactMatch]进行匹配，然后再尝试通过其他匹配方式进行匹配。*/
         const val Default = 0x00
-        /** 对于[Result.LazyExactMatch]，匹配结果直接返回true。 */
+        /** 对于[Result.LazySimpleMatch]和[Result.LazyBlockAwareMatch]，匹配结果直接返回true。 */
         const val Relax = 0x01
-        /** 对于[Result.LazyIndexAwareExactMatch]，匹配结果直接返回true。 */
+        /** 对于[Result.LazyIndexAwareMatch]，匹配结果直接返回true。 */
         const val SkipIndex = 0x02
-        /** 对于[Result.LazyScopeAwareExactMatch]，匹配结果直接返回true。 */
+        /** 对于[Result.LazyScopeAwareMatch]，匹配结果直接返回true。 */
         const val SkipScope = 0x04
         /** 对于最终匹配得到的那个结果，不需要再次判断是否精确匹配。 */
         const val Fast = 0x08
@@ -52,17 +52,24 @@ object ParadoxConfigMatcher {
             override fun get(options: Int) = true
         }
         
-        class LazyExactMatch(predicate: () -> Boolean) : Result() {
+        sealed class LazyMatch: Result()
+        
+        class LazySimpleMatch(predicate: () -> Boolean) : LazyMatch() {
             private val result by lazy { predicate() }
             override fun get(options: Int) = if(BitUtil.isSet(options, Options.Relax)) true else result
         }
         
-        class LazyIndexAwareExactMatch(predicate: () -> Boolean) : Result() {
+        class LazyBlockAwareMatch(predicate: () -> Boolean) : LazyMatch() {
+            private val result by lazy { predicate() }
+            override fun get(options: Int) = if(BitUtil.isSet(options, Options.Relax)) true else result
+        }
+        
+        class LazyIndexAwareMatch(predicate: () -> Boolean) : LazyMatch() {
             private val result by lazy { predicate() }
             override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipIndex)) true else result
         }
         
-        class LazyScopeAwareExactMatch(predicate: () -> Boolean) : Result() {
+        class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch() {
             private val result by lazy { predicate() }
             override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipScope)) true else result
         }
@@ -138,7 +145,7 @@ object ParadoxConfigMatcher {
                 if(expression.isKey != false) return false
                 if(expression.type != ParadoxType.Block) return true
                 if(config !is CwtMemberConfig) return Result.NotMatch
-                return Result.LazyExactMatch {
+                return Result.LazyBlockAwareMatch {
                     matchesScriptExpressionInBlock(element, config)
                 }
             }
@@ -149,7 +156,7 @@ object ParadoxConfigMatcher {
                 //quoted number (e.g. "1") -> ok according to vanilla game files
                 if(expression.type.isIntType() || ParadoxType.resolve(expression.text).isIntType()) {
                     val (min, max) = configExpression.extraValue<Tuple2<Int?, Int?>>() ?: return true
-                    return Result.LazyExactMatch p@{
+                    return Result.LazySimpleMatch p@{
                         val value = expression.text.toIntOrNull() ?: return@p true
                         (min == null || min <= value) && (max == null || max >= value)
                     }
@@ -160,7 +167,7 @@ object ParadoxConfigMatcher {
                 //quoted number (e.g. "1") -> ok according to vanilla game files
                 if(expression.type.isFloatType() || ParadoxType.resolve(expression.text).isFloatType()) {
                     val (min, max) = configExpression.extraValue<Tuple2<Float?, Float?>>() ?: return true
-                    return Result.LazyExactMatch p@{
+                    return Result.LazySimpleMatch p@{
                         val value = expression.text.toFloatOrNull() ?: return@p true
                         (min == null || min <= value) && (max == null || max >= value)
                     }
@@ -376,7 +383,7 @@ object ParadoxConfigMatcher {
         ProgressManager.checkCanceled()
         val rootFile = selectRootFile(element) ?: return Result.NotMatch //TODO 1.0.3 考虑优化性能
         val cache = configMatchResultCache.get(rootFile)
-        return cache.getOrPut(cacheKey) { Result.LazyIndexAwareExactMatch(predicate) }
+        return cache.getOrPut(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
     }
     
     private fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {
@@ -425,7 +432,7 @@ object ParadoxConfigMatcher {
                 ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
             }
         }
-        return Result.LazyIndexAwareExactMatch {
+        return Result.LazyIndexAwareMatch {
             val selector = complexEnumValueSelector(project, element).withSearchScopeType(searchScope)
             ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
         }
@@ -462,7 +469,7 @@ object ParadoxConfigMatcher {
             CwtDataType.ScopeField -> return Result.ExactMatch
             CwtDataType.Scope -> {
                 val expectedScope = configExpression.value ?: return Result.ExactMatch
-                return Result.LazyScopeAwareExactMatch p@{
+                return Result.LazyScopeAwareMatch p@{
                     val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
                     val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return@p true
                     val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
@@ -472,7 +479,7 @@ object ParadoxConfigMatcher {
             }
             CwtDataType.ScopeGroup -> {
                 val expectedScopeGroup = configExpression.value ?: return Result.ExactMatch
-                return Result.LazyScopeAwareExactMatch p@{
+                return Result.LazyScopeAwareMatch p@{
                     val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
                     val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return@p true
                     val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)

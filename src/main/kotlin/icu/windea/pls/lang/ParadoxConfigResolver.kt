@@ -169,36 +169,65 @@ object ParadoxConfigResolver {
         }
     }
     
-    private fun <T: CwtConfig<*>> doGetFinalResultValues(
-        finalMatchResultValues: MutableList<ParadoxConfigMatcher.ResultValue<T>>,
-        matchResultValues: List<ParadoxConfigMatcher.ResultValue<T>>,
+    private fun <T : CwtConfig<*>> doGetFinalResultValues(
+        result: MutableList<ParadoxConfigMatcher.ResultValue<T>>,
+        matchResultValues: MutableList<ParadoxConfigMatcher.ResultValue<T>>,
         matchOptions: Int
     ) {
         //* 首先尝试直接的精确匹配，如果有结果，则直接返回
-        //* 然后
+        //* 然后，如果有多个需要检查子句/作用域上下文的匹配，则分别对它们进行进一步匹配，保留匹配的所有结果或者第一个结果（如果没有多个，直接认为是匹配的）
+        //* 然后，进行进一步的匹配 （如果没有匹配结果，将不需要访问索引的匹配认为是匹配的）
         
-        val skipScopeMatchOptions = matchOptions or ParadoxConfigMatcher.Options.SkipScope
-        val relaxMatchOptions = skipScopeMatchOptions or ParadoxConfigMatcher.Options.Relax
+        matchResultValues.filterFastTo(result) { v -> v.result == ParadoxConfigMatcher.Result.ExactMatch }
+        if(result.isNotEmpty()) return
         
-        //尝试直接精确匹配
-        matchResultValues.filterFastTo(finalMatchResultValues) { (_, r) -> 
-            r == ParadoxConfigMatcher.Result.ExactMatch
+        var firstBlockAwareResult: ParadoxConfigMatcher.ResultValue<T>? = null
+        var firstBlockAwareResultIndex = -1
+        var firstScopeAwareResult: ParadoxConfigMatcher.ResultValue<T>? = null
+        var firstScopeAwareResultIndex = -1
+        for(i in matchResultValues.lastIndex..0) {
+            val v = matchResultValues[i]
+            if(v.result is ParadoxConfigMatcher.Result.LazyBlockAwareMatch) {
+                if(firstBlockAwareResult == null) {
+                    firstBlockAwareResult = v
+                    firstBlockAwareResultIndex = i
+                } else {
+                    if(firstBlockAwareResultIndex != -1) {
+                        val r = firstBlockAwareResult.result.get(matchOptions)
+                        if(!r) matchResultValues.removeAt(firstBlockAwareResultIndex)
+                        firstBlockAwareResultIndex = -1
+                    }
+                    val r = v.result.get(matchOptions)
+                    if(!r) matchResultValues.removeAt(i)
+                }
+            } else if(v.result is ParadoxConfigMatcher.Result.LazyScopeAwareMatch) {
+                if(firstScopeAwareResult == null) {
+                    firstScopeAwareResult = v
+                    firstScopeAwareResultIndex = i
+                } else {
+                    if(firstScopeAwareResultIndex != -1) {
+                        val r = firstScopeAwareResult.result.get(matchOptions)
+                        if(!r) matchResultValues.removeAt(firstScopeAwareResultIndex)
+                        firstScopeAwareResultIndex = -1
+                    }
+                    val r = v.result.get(matchOptions)
+                    if(!r) matchResultValues.removeAt(i)
+                }
+            }
         }
-        if(finalMatchResultValues.isEmpty()) {
-            //尝试精确匹配
-            matchResultValues.filterFastTo(finalMatchResultValues) { (_, r) -> r.get(skipScopeMatchOptions) }
-        }
-        if(finalMatchResultValues.isEmpty()) {
-            //尝试不精确匹配
-            matchResultValues.filterFastTo(finalMatchResultValues) { (_, r) -> r.get(relaxMatchOptions) }
-        }
         
-        if(finalMatchResultValues.isEmpty()) return
+        matchResultValues.filterFastTo(result) p@{ v ->
+            if(v.result is ParadoxConfigMatcher.Result.LazyBlockAwareMatch) return@p true
+            if(v.result is ParadoxConfigMatcher.Result.LazyScopeAwareMatch) return@p true
+            v.result.get(matchOptions)
+        }
+        if(result.isNotEmpty()) return
         
-        //如果结果中有多个基于作用域的匹配，需要进一步匹配（否则直接使用那一个，优化性能）
-        val multiScopeMatch = finalMatchResultValues.count { (_, r) -> r is ParadoxConfigMatcher.Result.LazyScopeAwareExactMatch } > 1
-        if(multiScopeMatch) {
-            finalMatchResultValues.removeIf { (_, r) -> r is ParadoxConfigMatcher.Result.LazyScopeAwareExactMatch && !r.get(matchOptions) }
+        matchResultValues.filterFastTo(result) p@{ v ->
+            if(v.result is ParadoxConfigMatcher.Result.LazyBlockAwareMatch) return@p true
+            if(v.result is ParadoxConfigMatcher.Result.LazyScopeAwareMatch) return@p true
+            if(v.result is ParadoxConfigMatcher.Result.LazySimpleMatch) return@p true
+            v.result.get(matchOptions)
         }
     }
     
