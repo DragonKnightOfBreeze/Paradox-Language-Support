@@ -19,12 +19,12 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.IfsUtilCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.RefManagerImplCodeInjector"/>
     
-    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptPropertyCodeInjector"/>-->
-    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptPropertyKeyCodeInjector"/>-->
-    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptBooleanCodeInjector"/>-->
-    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptIntCodeInjector"/>-->
-    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptFloatCodeInjector"/>-->
-    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptStringCodeInjector"/>-->
-    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptColorCodeInjector"/>-->
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptPropertyCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptPropertyKeyCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptBooleanCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptIntCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptFloatCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptStringCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptColorCodeInjector"/>
   </extensions>
 </idea-plugin>

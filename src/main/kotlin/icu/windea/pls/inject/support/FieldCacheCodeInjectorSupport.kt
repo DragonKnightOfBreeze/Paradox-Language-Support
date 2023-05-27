@@ -15,24 +15,45 @@ class FieldCacheCodeInjectorSupport : CodeInjectorSupport() {
         val fieldCacheMethods = codeInjector::class.findAnnotation<FieldCacheMethods>() ?: return
         val methodNames = fieldCacheMethods.methods
         val fieldPrefix = fieldCacheMethods.fieldPrefix
-        val cleanUpMethodName = fieldCacheMethods.cleanUpMethod
+        val cleanupMethodName = fieldCacheMethods.cleanupMethod
         if(methodNames.isEmpty()) return
-        val cleanUpMethod = targetClass.methods.find { it.name == cleanUpMethodName }
-        if(cleanUpMethod == null) {
-            thisLogger().warn("Clean up method ${cleanUpMethodName}() is not found in ${targetClass.name}")
-            return
+        var cleanupMethod = targetClass.declaredMethods.find { it.name == cleanupMethodName }
+        if(cleanupMethod == null) {
+            val superCleanUpMethod = targetClass.methods.find { it.name == cleanupMethodName }
+            if(superCleanUpMethod != null) {
+                val m = CtMethod(superCleanUpMethod, targetClass, null)
+                m.setBody("{ return super.${superCleanUpMethod.name}(\$\$); }")
+                targetClass.addMethod(m)
+                cleanupMethod = m
+            } else {
+                thisLogger().warn("Clean up method ${cleanupMethodName}() is not found in ${targetClass.name}")
+                return
+            }
         }
         
         val finalMethodNames = mutableSetOf<String>()
         for(methodName in methodNames) {
-            val method = targetClass.declaredMethods.find { it.name == methodName && it.parameterTypes.isEmpty() }
+            var method = targetClass.declaredMethods.find { it.name == methodName && it.parameterTypes.isEmpty() }
             if(method == null) {
-                thisLogger().warn("Method ${methodName}() is not found in ${targetClass.name}")
-                continue
+                val superMethod = targetClass.methods.find { it.name == methodName && it.parameterTypes.isEmpty() }
+                if(superMethod != null) {
+                    val m = CtMethod(superMethod, targetClass, null)
+                    m.setBody("{ return super.${superMethod.name}(\$\$); }")
+                    targetClass.addMethod(m)
+                    method = m
+                } else {
+                    thisLogger().warn("Method ${methodName}() is not found in ${targetClass.name}")
+                    continue
+                }
             }
+            
             val returnType = method.returnType
             if(returnType == null || returnType == CtClass.voidType) {
                 thisLogger().warn("Method ${methodName}() returns nothing")
+                continue
+            }
+            if(returnType.isPrimitive) {
+                thisLogger().warn("Method ${methodName}() returns a primitive value")
                 continue
             }
             
@@ -48,6 +69,6 @@ class FieldCacheCodeInjectorSupport : CodeInjectorSupport() {
         
         val s = finalMethodNames.joinToString("\n") { methodName -> "${fieldPrefix}${methodName} = null;" }
         val code = "{\n$s\n}"
-        cleanUpMethod.insertBefore(code)
+        cleanupMethod.insertBefore(code)
     }
 }
