@@ -56,7 +56,6 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                         if(gameType != null && gameType != selectGameType(file)) return@pp true
                         consumer.process(file)
                     }
-                    true
                 }, scope, null)
             }
         }
