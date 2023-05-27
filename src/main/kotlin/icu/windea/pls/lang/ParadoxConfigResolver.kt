@@ -185,7 +185,7 @@ object ParadoxConfigResolver {
         var firstBlockAwareResultIndex = -1
         var firstScopeAwareResult: ParadoxConfigMatcher.ResultValue<T>? = null
         var firstScopeAwareResultIndex = -1
-        for(i in matchResultValues.lastIndex..0) {
+        for(i in matchResultValues.lastIndex downTo 0) {
             val v = matchResultValues[i]
             if(v.result is ParadoxConfigMatcher.Result.LazyBlockAwareMatch) {
                 if(firstBlockAwareResult == null) {
