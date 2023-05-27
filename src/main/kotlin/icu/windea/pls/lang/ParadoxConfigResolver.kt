@@ -92,16 +92,7 @@ object ParadoxConfigResolver {
         if(matchResultValues.isEmpty() && orDefault) return configs
         
         val resultConfigs = SmartList<CwtPropertyConfig>()
-        
-        //尝试直接精确匹配
-        matchResultValues.mapNotNullTo(resultConfigs) { (c, r) -> if(r == ParadoxConfigMatcher.Result.ExactMatch) c else null }
-        if(resultConfigs.isNotEmpty()) return resultConfigs
-        //尝试精确匹配
-        matchResultValues.mapNotNullTo(resultConfigs) { (c, r) -> if(r.get(matchOptions)) c else null }
-        if(resultConfigs.isNotEmpty()) return resultConfigs
-        //尝试不精确匹配
-        val relaxMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
-        matchResultValues.mapNotNullTo(resultConfigs) { (c, r) -> if(r.get(relaxMatchOptions)) c else null }
+        doGetResultConfigs(resultConfigs, matchResultValues, matchOptions)
         if(resultConfigs.isNotEmpty()) return resultConfigs
         //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则
         if(orDefault) return configs
@@ -140,16 +131,7 @@ object ParadoxConfigResolver {
                 if(matchResultValues.isEmpty() && orDefault) return configs.mapNotNullTo(SmartList()) { it.valueConfig }
                 
                 val resultConfigs = SmartList<CwtValueConfig>()
-                
-                //尝试直接精确匹配
-                matchResultValues.mapNotNullTo(resultConfigs) { (c, r) -> if(r == ParadoxConfigMatcher.Result.ExactMatch) c else null }
-                if(resultConfigs.isNotEmpty()) return resultConfigs
-                //尝试精确匹配
-                matchResultValues.mapNotNullTo(resultConfigs) { (c, r) -> if(r.get(matchOptions)) c else null }
-                if(resultConfigs.isNotEmpty()) return resultConfigs
-                //尝试不精确匹配
-                val relaxMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
-                matchResultValues.mapNotNullTo(resultConfigs) { (c, r) -> if(r.get(relaxMatchOptions)) c else null }
+                doGetResultConfigs(resultConfigs, matchResultValues, matchOptions)
                 if(resultConfigs.isNotEmpty()) return resultConfigs
                 //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则
                 if(orDefault) return configs.mapNotNullTo(resultConfigs) { it.valueConfig }
@@ -177,24 +159,28 @@ object ParadoxConfigResolver {
                 if(matchResultValues.isEmpty() && orDefault) return configs
                 
                 val resultConfigs = SmartList<CwtValueConfig>()
-                
-                //尝试直接精确匹配
-                matchResultValues.mapNotNullTo(resultConfigs) { (c, r) -> if(r == ParadoxConfigMatcher.Result.ExactMatch) c else null }
+                doGetResultConfigs(resultConfigs, matchResultValues, matchOptions)
                 if(resultConfigs.isNotEmpty()) return resultConfigs
-                //尝试精确匹配
-                matchResultValues.mapNotNullTo(resultConfigs) { (c, r) -> if(r.get(matchOptions)) c else null }
-                if(resultConfigs.isNotEmpty()) return resultConfigs
-                //尝试不精确匹配
-                val relaxMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
-                matchResultValues.mapNotNullTo(resultConfigs) { (c, r) -> if(r.get(relaxMatchOptions)) c else null }
-                if(resultConfigs.isNotEmpty()) return resultConfigs
-                //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则
                 if(orDefault) return configs
                 
                 return emptyList()
             }
             else -> return emptyList()
         }
+    }
+    
+    private fun <T: CwtConfig<*>> doGetResultConfigs(resultConfigs: SmartList<T>, matchResultValues: List<ParadoxConfigMatcher.ResultValue<T>>, matchOptions: Int): Boolean {
+        //尝试直接精确匹配
+        matchResultValues.mapNotNullTo(resultConfigs) { (c, r) -> if(r == ParadoxConfigMatcher.Result.ExactMatch) c else null }
+        if(resultConfigs.isNotEmpty()) return true
+        //尝试精确匹配
+        matchResultValues.mapNotNullTo(resultConfigs) { (c, r) -> if(r.get(matchOptions)) c else null }
+        if(resultConfigs.isNotEmpty()) return true
+        //尝试不精确匹配
+        val relaxMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
+        matchResultValues.mapNotNullTo(resultConfigs) { (c, r) -> if(r.get(relaxMatchOptions)) c else null }
+        if(resultConfigs.isNotEmpty()) return true
+        return false
     }
     
     //兼容需要考虑内联的情况（如内联脚本）
