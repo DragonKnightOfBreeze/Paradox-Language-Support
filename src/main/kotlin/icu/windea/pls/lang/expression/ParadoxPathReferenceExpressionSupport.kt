@@ -18,7 +18,7 @@ abstract class ParadoxPathReferenceExpressionSupport {
     /**
      * 判断指定的文件路径表达式是否匹配另一个相对于游戏或模组目录根路径的路径。
      */
-    abstract fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean = false): Boolean
+    abstract fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean
     
     /**
      * 根据指定的文件路径表达式，从精确路径中提取出需要的作为值的字符串。即脚本文件中使用的路径表达式。

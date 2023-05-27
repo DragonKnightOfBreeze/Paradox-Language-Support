@@ -174,6 +174,9 @@ object ParadoxConfigResolver {
         matchResultValues: List<ParadoxConfigMatcher.ResultValue<T>>,
         matchOptions: Int
     ) {
+        //* 首先尝试直接的精确匹配，如果有结果，则直接返回
+        //* 然后
+        
         val skipScopeMatchOptions = matchOptions or ParadoxConfigMatcher.Options.SkipScope
         val relaxMatchOptions = skipScopeMatchOptions or ParadoxConfigMatcher.Options.Relax
         

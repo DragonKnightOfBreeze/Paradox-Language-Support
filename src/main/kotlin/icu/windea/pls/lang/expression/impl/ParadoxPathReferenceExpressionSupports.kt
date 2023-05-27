@@ -14,9 +14,9 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
         return configExpression.type == CwtDataType.Icon
     }
     
-    override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean): Boolean {
+    override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean {
         val expression = configExpression.value ?: return false
-        return expression.matchesPath(filePath, ignoreCase) && filePath.endsWith(".dds", true)
+        return expression.matchesPath(filePath) && filePath.endsWith(".dds", true)
     }
     
     override fun extract(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean): String? {
@@ -47,7 +47,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
     
     //filepath[./] - 匹配相对于脚本文件所在目录的路径
     
-    override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean): Boolean {
+    override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean {
         var expression = configExpression.value ?: return true
         val expressionRel = expression.removePrefixOrNull("./")
         if(expressionRel != null) {
@@ -57,13 +57,13 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         val index = expression.lastIndexOf(',') //","应当最多出现一次
         if(index == -1) {
             //匹配父路径
-            return expression.matchesPath(filePath, ignoreCase)
+            return expression.matchesPath(filePath)
         } else {
             //匹配父路径+文件名前缀+扩展名
             val parentAndFileNamePrefix = expression.substring(0, index)
-            if(!filePath.startsWith(parentAndFileNamePrefix, ignoreCase)) return false
+            if(!filePath.startsWith(parentAndFileNamePrefix)) return false
             val fileNameSuffix = expression.substring(index + 1)
-            return filePath.endsWith(fileNameSuffix, ignoreCase)
+            return filePath.endsWith(fileNameSuffix)
         }
     }
     
@@ -134,9 +134,9 @@ class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpression
     //filename - filePath需要是文件名
     //filename[foo/bar] - filePath需要是文件名且该文件需要位于目录foo/bar或其子目录下
     
-    override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean): Boolean {
+    override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean {
         val expression = configExpression.value ?: return true
-        return expression.matchesPath(filePath, ignoreCase)
+        return expression.matchesPath(filePath)
     }
     
     override fun extract(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean): String {

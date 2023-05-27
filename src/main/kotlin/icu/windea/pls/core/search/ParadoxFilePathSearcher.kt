@@ -23,7 +23,6 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         if(SearchScope.isEmptyScope(scope)) return
         val filePath = queryParameters.filePath?.trimEnd('/')
         val configExpression = queryParameters.configExpression
-        val ignoreCase = queryParameters.ignoreCase
         val project = queryParameters.project
         val gameType = queryParameters.selector.gameType
         val contextElement = queryParameters.selector.file?.toPsiFile(project)
@@ -46,7 +45,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 if(filePath == null) {
                     val keys = mutableSetOf<String>()
                     FileBasedIndex.getInstance().processAllKeys(ParadoxFilePathIndex.NAME, p@{ p ->
-                        if(!support.matches(configExpression, contextElement, p, ignoreCase)) return@p true
+                        if(!support.matches(configExpression, contextElement, p)) return@p true
                         keys.add(p)
                     }, scope, null)
                     FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) { 
@@ -64,7 +63,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                     val resolvedFileName = support.resolveFileName(configExpression, filePath)
                     FilenameIndex.processFilesByName(resolvedFileName, true, scope) p@{
                         val p = it.fileInfo?.path?.path ?: return@p true
-                        if(!support.matches(configExpression, contextElement, p, ignoreCase)) return@p true
+                        if(!support.matches(configExpression, contextElement, p)) return@p true
                         processFile(it, project, gameType, consumer)
                     }
                 }
