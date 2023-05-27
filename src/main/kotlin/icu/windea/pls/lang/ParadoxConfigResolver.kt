@@ -3,7 +3,6 @@ package icu.windea.pls.lang
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -171,7 +170,7 @@ object ParadoxConfigResolver {
     }
     
     private fun <T: CwtConfig<*>> doGetFinalResultValues(
-        finalMatchResultValues: mutableListOf<ParadoxConfigMatcher.ResultValue<T>>,
+        finalMatchResultValues: MutableList<ParadoxConfigMatcher.ResultValue<T>>,
         matchResultValues: List<ParadoxConfigMatcher.ResultValue<T>>,
         matchOptions: Int
     ) {

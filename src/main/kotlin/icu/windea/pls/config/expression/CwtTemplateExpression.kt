@@ -1,7 +1,6 @@
 package icu.windea.pls.config.expression
 
 import com.google.common.cache.*
-import com.intellij.util.*
 import icu.windea.pls.core.*
 
 class CwtTemplateExpression(
@@ -27,7 +26,7 @@ class CwtTemplateExpression(
             return when {
                 expressionString.isEmpty() -> EmptyExpression
                 else -> {
-                    var snippets: mutableListOf<CwtDataExpression>? = null
+                    var snippets: MutableList<CwtDataExpression>? = null
                     var startIndex = 0
                     var i1: Int
                     var i2: Int

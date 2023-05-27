@@ -285,7 +285,7 @@ object ParadoxConfigHandler {
     }
     
     fun setParameterRanges(element: ParadoxScriptStringExpressionElement): List<TextRange> {
-        var parameterRanges: mutableListOf<TextRange>? = null
+        var parameterRanges: MutableList<TextRange>? = null
         element.processChild { parameter ->
             if(parameter is ParadoxParameter) {
                 if(parameterRanges == null) parameterRanges = mutableListOf()

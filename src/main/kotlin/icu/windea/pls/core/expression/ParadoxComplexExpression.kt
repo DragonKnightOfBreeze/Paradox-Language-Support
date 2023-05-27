@@ -55,7 +55,7 @@ fun ParadoxComplexExpression.getReferences(element: ParadoxScriptStringExpressio
 	return references.toTypedArray()
 }
 
-private fun ParadoxExpressionNode.doGetReferences(element: ParadoxScriptStringExpressionElement, references: mutableListOf<PsiReference>) {
+private fun ParadoxExpressionNode.doGetReferences(element: ParadoxScriptStringExpressionElement, references: MutableList<PsiReference>) {
 	val reference = this.getReference(element)
 	if(reference != null) {
 		references.add(reference)
