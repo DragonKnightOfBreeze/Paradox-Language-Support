@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.model
 
 import com.intellij.openapi.progress.*
-import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
@@ -90,7 +89,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
         //如果整个过程中的某个key匹配内联规则的名字（如，inline_script），则内联此内联规则
         
         val expression = ParadoxDataExpression.resolve(subPath, isQuoted, true)
-        val nextResult = SmartList<CwtMemberConfig<*>>()
+        val nextResult = mutableListOf<CwtMemberConfig<*>>()
         result.forEachFast f2@{ parentConfig ->
             ProgressManager.checkCanceled()
             
@@ -118,7 +117,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
         //如过结果不为空且结果中存在需要重载的规则，则全部替换成重载后的规则
         run {
             if(result.isEmpty()) return@run
-            val optimizedResult = SmartList<CwtMemberConfig<*>>()
+            val optimizedResult = mutableListOf<CwtMemberConfig<*>>()
             result.forEachFast { config ->
                 val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, config)
                 if(overriddenConfigs.isNotNullOrEmpty()) {
@@ -138,7 +137,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
         //如果结果不唯一且结果中存在按常量字符串匹配的规则，则仅选用那些规则
         run {
             if(result.size <= 1) return@run
-            val optimizedResult = SmartList<CwtMemberConfig<*>>()
+            val optimizedResult = mutableListOf<CwtMemberConfig<*>>()
             result.forEachFast { config ->
                 if(config.expression.type == CwtDataType.Constant) optimizedResult.add(config)
             }
@@ -169,7 +168,7 @@ private fun doGetChildConfigs(definitionInfo: ParadoxDefinitionInfo, definitionM
         else -> {
             //打平propertyConfigs中的每一个properties
             val configs = doGetConfigs(definitionInfo, definitionMemberInfo, matchOptions)
-            val result = SmartList<CwtMemberConfig<*>>()
+            val result = mutableListOf<CwtMemberConfig<*>>()
             configs.forEachFast { config ->
                 val childConfigs = config.configs
                 if(childConfigs.isNotNullOrEmpty()) result.addAll(childConfigs)

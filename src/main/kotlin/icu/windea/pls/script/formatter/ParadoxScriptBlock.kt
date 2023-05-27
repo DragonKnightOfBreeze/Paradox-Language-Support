@@ -7,7 +7,6 @@ import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
 import com.intellij.psi.formatter.common.*
 import com.intellij.psi.tree.*
-import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.codeStyle.*
@@ -59,7 +58,7 @@ class ParadoxScriptBlock(
     private val spacingBuilder = createSpacingBuilder(settings)
     
     override fun buildChildren(): List<Block> {
-        val children = SmartList<Block>()
+        val children = mutableListOf<Block>()
         myNode.processChild { node -> node.takeUnless(TokenType.WHITE_SPACE)?.let { ParadoxScriptBlock(it, settings) }?.addTo(children).let { true } }
         return children
     }

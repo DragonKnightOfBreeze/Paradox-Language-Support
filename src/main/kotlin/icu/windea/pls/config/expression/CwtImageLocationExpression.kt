@@ -3,7 +3,6 @@ package icu.windea.pls.config.expression
 import com.google.common.cache.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
@@ -202,7 +201,7 @@ class CwtImageLocationExpression private constructor(
                     } else {
                         val propertyName = expressionString.substring(1, pipeIndex).intern()
                         val extraPropertyNames = expressionString.substring(pipeIndex + 1)
-                            .splitToSequence(',').mapTo(SmartList()) { it.drop(1) }
+                            .splitToSequence(',').mapTo(mutableListOf()) { it.drop(1) }
                         CwtImageLocationExpression(expressionString, null, propertyName, extraPropertyNames)
                     }
                 }

@@ -3,7 +3,6 @@ package icu.windea.pls.core.navigation
 import com.intellij.navigation.*
 import com.intellij.openapi.util.NlsContexts.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
@@ -31,7 +30,7 @@ class ParadoxGotoRelatedItem(element: PsiElement, @Separator group: String) : Go
     
     companion object {
         fun createItems(elements: Collection<PsiElement>, @Separator group: String): List<ParadoxGotoRelatedItem> {
-            return elements.mapTo(SmartList()) { ParadoxGotoRelatedItem(it, group) }
+            return elements.mapTo(mutableListOf()) { ParadoxGotoRelatedItem(it, group) }
         }
     }
 }

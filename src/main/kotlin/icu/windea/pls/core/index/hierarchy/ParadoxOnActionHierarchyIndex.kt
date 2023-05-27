@@ -3,7 +3,6 @@ package icu.windea.pls.core.index.hierarchy
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
@@ -22,7 +21,7 @@ object ParadoxOnActionHierarchyIndex {
     private const val VERSION = 22 //1.0.0
     
     class Data(
-        val onActionInfos: MutableList<OnActionInfo> = SmartList()
+        val onActionInfos: MutableList<OnActionInfo> = mutableListOf()
     ) {
         val eventToOnActionsMap by lazy {
             buildMap<String, Set<String>> {
@@ -38,7 +37,7 @@ object ParadoxOnActionHierarchyIndex {
     
     class OnActionInfo(
         val name: String,
-        val eventInvocationInfos: MutableList<EventInvocationInfo> = SmartList()
+        val eventInvocationInfos: MutableList<EventInvocationInfo> = mutableListOf()
     )
     
     @JvmInline

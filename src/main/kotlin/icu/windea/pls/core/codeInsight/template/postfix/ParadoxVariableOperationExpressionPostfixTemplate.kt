@@ -5,7 +5,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.setting.*
 import icu.windea.pls.core.*
@@ -37,7 +36,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         if(configs.isEmpty()) return emptyList()
         val configGroup = configs.first().info.configGroup
         val expression = ParadoxDataExpression.resolve(setting.id, false, true)
-        val configsToMatch = configs.flatMapTo(SmartList()) { it.configs.orEmpty() }
+        val configsToMatch = configs.flatMapTo(mutableListOf()) { it.configs.orEmpty() }
         val matchType = ParadoxConfigMatcher.Options.Fast
         val matched = ParadoxConfigMatcher.find(configsToMatch, matchType) m@{ config ->
             if(config !is CwtPropertyConfig) return@m null

@@ -57,7 +57,7 @@ class ParadoxScriptValueExpressionImpl(
 	
 	override fun validate(): List<ParadoxExpressionError> {
 		var malformed = false
-		val errors = SmartList<ParadoxExpressionError>()
+		val errors = mutableListOf<ParadoxExpressionError>()
 		var pipeCount = 0
 		var lastIsParameter = false
 		for((index, node) in nodes.withIndex()) {
@@ -164,7 +164,7 @@ class ParadoxScriptValueExpressionImpl(
 }
 
 fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, configGroup: CwtConfigGroup, isKey: Boolean? = null): ParadoxScriptValueExpression {
-	val nodes = SmartList<ParadoxExpressionNode>()
+	val nodes = mutableListOf<ParadoxExpressionNode>()
 	val offset = textRange.startOffset
 	var n = 0
 	var scriptValueNode: ParadoxScriptValueExpressionNode? = null

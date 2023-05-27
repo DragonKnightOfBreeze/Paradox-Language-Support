@@ -1,7 +1,6 @@
 package icu.windea.pls.tool.script
 
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
@@ -17,7 +16,7 @@ object ParadoxScriptDataValueResolver {
     }
     
     private fun resolveBlock(block: ParadoxScriptBlockElement, conditional: Boolean = false, inline: Boolean = false): List<Entry<String?, Any>> {
-        val result: MutableList<Entry<String?, Any>> = SmartList()
+        val result: MutableList<Entry<String?, Any>> = mutableListOf()
         block.processData(conditional, inline) p@{ e ->
             when {
                 e is ParadoxScriptValue -> resolveValue(e)?.let { result.add(Entry(null, it)) }

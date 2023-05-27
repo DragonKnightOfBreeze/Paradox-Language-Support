@@ -47,7 +47,7 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
     
     private fun collectReferences(reference: PsiReference): Array<out PsiReference> {
         if(reference is PsiReferencesAware) {
-            val result = SmartList<PsiReference>()
+            val result = mutableListOf<PsiReference>()
             doCollectReferences(reference, result)
             return result.toTypedArray()
         }

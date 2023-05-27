@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config
 
-import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
@@ -34,7 +33,7 @@ data class CwtConfigGroupInfo(
             CwtDataType.Template -> {
                 val templateExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
                 for(referenceExpression in templateExpression.referenceExpressions) {
-                    templateExpressions.getOrPut(referenceExpression) { SmartList() }
+                    templateExpressions.getOrPut(referenceExpression) { mutableListOf() }
                         .add(templateExpression)
                 }
             }

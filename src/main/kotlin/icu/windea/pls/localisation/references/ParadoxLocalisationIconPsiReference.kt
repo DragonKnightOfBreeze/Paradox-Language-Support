@@ -5,14 +5,12 @@ package icu.windea.pls.localisation.references
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
-import com.intellij.util.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.localisation.psi.*
-import kotlin.collections.mapNotNullTo
 
 /**
  * 本地化图标的PSI引用。
@@ -89,7 +87,7 @@ class ParadoxLocalisationIconPsiReference(
 		val fileSelector = fileSelector(project, element).contextSensitive()
 		val ddsFileExpression = CwtValueExpression.resolve("icon[gfx/interface/icons/]")
 		val ddsFiles = ParadoxFilePathSearch.search(iconName, ddsFileExpression, fileSelector).findAll()
-		if(ddsFiles.isNotEmpty()) return ddsFiles.mapNotNullTo(SmartList()) { it.toPsiFile(project) }.mapToArray { PsiElementResolveResult(it) }
+		if(ddsFiles.isNotEmpty()) return ddsFiles.mapNotNullTo(mutableListOf()) { it.toPsiFile(project) }.mapToArray { PsiElementResolveResult(it) }
 		//如果上述方式都无法解析，则作为生成的图标处理（解析为其他类型的定义）
 		//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
 		val jobName = iconName.removePrefixOrNull("job_")

@@ -1,7 +1,6 @@
 package icu.windea.pls.tool.script
 
 import com.intellij.openapi.util.*
-import com.intellij.util.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptDataImpl(
@@ -15,10 +14,10 @@ class ParadoxScriptDataImpl(
         for(data in children) {
             val dataKey = data.key
             if(dataKey == null) {
-                map.getOrPut(null) { SmartList() }.add(data)
+                map.getOrPut(null) { mutableListOf() }.add(data)
             } else {
                 val k = dataKey.name.lowercase()
-                map.getOrPut(k) { SmartList() }.add(data)
+                map.getOrPut(k) { mutableListOf() }.add(data)
             }
         }
         map

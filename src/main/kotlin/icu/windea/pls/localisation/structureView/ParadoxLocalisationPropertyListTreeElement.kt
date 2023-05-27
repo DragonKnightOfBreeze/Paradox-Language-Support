@@ -2,7 +2,6 @@ package icu.windea.pls.localisation.structureView
 
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
@@ -12,7 +11,7 @@ class ParadoxLocalisationPropertyListTreeElement(
 ) : PsiTreeElementBase<ParadoxLocalisationPropertyList>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
 		val element = element ?: return emptyList()
-		val result = SmartList<StructureViewTreeElement>()
+		val result = mutableListOf<StructureViewTreeElement>()
 		element.processChildrenOfType<ParadoxLocalisationProperty> { ParadoxLocalisationPropertyTreeElement(it).addTo(result) }
 		return result
 	}

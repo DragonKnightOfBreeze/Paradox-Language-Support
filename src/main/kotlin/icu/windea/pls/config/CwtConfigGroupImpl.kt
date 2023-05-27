@@ -506,7 +506,7 @@ class CwtConfigGroupImpl(
 						//	continue
 						//} 
 						val map = aliasGroups.getOrPut(aliasName) { mutableMapOf() }
-						val list = map.getOrPut(aliasSubName) { SmartList() }
+						val list = map.getOrPut(aliasSubName) { mutableListOf() }
 						list.add(aliasConfig)
 						
 					}
@@ -514,7 +514,7 @@ class CwtConfigGroupImpl(
 					val inlineConfigName = key.removeSurroundingOrNull("inline[", "]")
 					if(inlineConfigName != null) {
 						val inlineConfig = resolveInlineConfig(property, inlineConfigName)
-						val list = inlineConfigGroup.getOrPut(inlineConfigName) { SmartList() }
+						val list = inlineConfigGroup.getOrPut(inlineConfigName) { mutableListOf() }
 						list.add(inlineConfig)
 					}
 					
@@ -572,11 +572,11 @@ class CwtConfigGroupImpl(
 						val list = prop.stringValue?.let { listOf(it) }
 							?: prop.values?.mapNotNull { it.stringValue }
 							?: continue
-						if(skipRootKey == null) skipRootKey = SmartList()
+						if(skipRootKey == null) skipRootKey = mutableListOf()
 						skipRootKey.add(list) //出于一点点的性能考虑，这里保留大小写，后面匹配路径时会忽略掉
 					}
 					"localisation" -> {
-						val configs: MutableList<Pair<String?, CwtLocationConfig>> = SmartList()
+						val configs: MutableList<Pair<String?, CwtLocationConfig>> = mutableListOf()
 						val propPointer = prop.pointer
 						val propProps = prop.properties ?: continue
 						for(p in propProps) {
@@ -595,7 +595,7 @@ class CwtConfigGroupImpl(
 						localisation = CwtTypeLocalisationConfig(propPointer, propertyConfig.info, configs)
 					}
 					"images" -> {
-						val configs: MutableList<Pair<String?, CwtLocationConfig>> = SmartList()
+						val configs: MutableList<Pair<String?, CwtLocationConfig>> = mutableListOf()
 						val propPointer = prop.pointer
 						val propProps = prop.properties ?: continue
 						for(p in propProps) {

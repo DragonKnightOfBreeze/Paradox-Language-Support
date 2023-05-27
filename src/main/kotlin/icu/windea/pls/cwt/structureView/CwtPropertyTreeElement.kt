@@ -2,7 +2,6 @@ package icu.windea.pls.cwt.structureView
 
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
-import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
@@ -14,7 +13,7 @@ class CwtPropertyTreeElement(
 		val value = element.propertyValue ?: return emptyList()
 		if(value !is CwtBlock) return emptyList()
 		//允许混合value和property
-		val result: MutableList<StructureViewTreeElement> = SmartList()
+		val result: MutableList<StructureViewTreeElement> = mutableListOf()
 		value.forEachChild { 
 			when{
 				it is CwtValue -> result.add(CwtValueTreeElement(it))

@@ -1,7 +1,6 @@
 package icu.windea.pls.tool.script
 
 import com.intellij.openapi.util.*
-import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
@@ -41,7 +40,7 @@ fun InternalExtensionsHolder.getValueOfType(value: ParadoxScriptValue?, type: KT
         kClass == String::class -> value.stringValue()
         kClass == Color::class -> value.colorValue()
         kClass.isSubclassOf(List::class) -> value.castOrNull<ParadoxScriptBlock>()?.valueList
-            ?.mapNotNullTo(SmartList()) t@{
+            ?.mapNotNullTo(mutableListOf()) t@{
                 val elementType = type.arguments.first().type ?: return@t null
                 getValueOfType(it, elementType)
             }

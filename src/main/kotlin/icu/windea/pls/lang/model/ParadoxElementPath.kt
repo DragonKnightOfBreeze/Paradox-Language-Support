@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.model
 
 import com.google.common.cache.*
-import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.model.ParadoxElementPath.*
@@ -89,7 +88,7 @@ class ParadoxElementPathImpl(
     
     override val subPaths: List<Info> = run {
         //optimized
-        val result = SmartList<Info>()
+        val result = mutableListOf<Info>()
         val builder = StringBuilder()
         var escape = false
         path.forEach { c ->

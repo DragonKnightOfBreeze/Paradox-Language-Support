@@ -6,7 +6,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
@@ -39,7 +38,7 @@ object ParadoxLocalisationTextInlayRenderer {
     
     fun render(element: ParadoxLocalisationProperty, factory: PresentationFactory, editor: Editor, truncateLimit: Int, iconHeightLimit: Int): InlayPresentation? {
         //虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白
-        val context = Context(editor, factory, SmartList())
+        val context = Context(editor, factory, mutableListOf())
         context.truncateLimit = truncateLimit
         context.iconHeightLimit = iconHeightLimit
         context.guardStack.addLast(element.name)
@@ -111,7 +110,7 @@ object ParadoxLocalisationTextInlayRenderer {
                     context.guardStack.addLast(resolvedName)
                     try {
                         val oldBuilder = context.builder
-                        context.builder = SmartList()
+                        context.builder = mutableListOf()
                         renderTo(resolved, context)
                         val newBuilder = context.builder
                         context.builder = oldBuilder
@@ -177,7 +176,7 @@ object ParadoxLocalisationTextInlayRenderer {
                 else -> null
             }
             if(richTextList != null) {
-                val newBuilder = SmartList<InlayPresentation>()
+                val newBuilder = mutableListOf<InlayPresentation>()
                 val oldBuilder = context.builder
                 context.builder = newBuilder
                 var continueProcess = true
@@ -229,7 +228,7 @@ object ParadoxLocalisationTextInlayRenderer {
         val colorConfig = element.colorConfig
         val textAttributesKey = if(colorConfig != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(colorConfig.color) else null
         val oldBuilder = context.builder
-        context.builder = SmartList()
+        context.builder = mutableListOf()
         var continueProcess = true
         for(richText in richTextList) {
             ProgressManager.checkCanceled()

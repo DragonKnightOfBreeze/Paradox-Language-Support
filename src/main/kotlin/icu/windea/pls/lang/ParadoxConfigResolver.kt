@@ -82,7 +82,7 @@ object ParadoxConfigResolver {
         //得到所有可能匹配的结果
         ProgressManager.checkCanceled()
         val configGroup = definitionMemberInfo.configGroup
-        val matchResultValues = SmartList<ParadoxConfigMatcher.ResultValue<CwtPropertyConfig>>()
+        val matchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtPropertyConfig>>()
         configs.forEachFast f@{ config ->
             val matchResult = ParadoxConfigMatcher.matches(memberElement, expression, config.valueExpression, config, configGroup, matchOptions)
             if(matchResult == ParadoxConfigMatcher.Result.NotMatch) return@f
@@ -91,7 +91,7 @@ object ParadoxConfigResolver {
         //如果无结果且需要使用默认值，则返回所有可能匹配的规则
         if(matchResultValues.isEmpty() && orDefault) return configs
         
-        val finalMatchResultValues = SmartList<ParadoxConfigMatcher.ResultValue<CwtPropertyConfig>>()
+        val finalMatchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtPropertyConfig>>()
         doGetFinalResultValues(finalMatchResultValues, matchResultValues, matchOptions)
         if(finalMatchResultValues.isNotEmpty()) return finalMatchResultValues.mapFast { it.value }
         //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则
@@ -120,7 +120,7 @@ object ParadoxConfigResolver {
                 //得到所有可能匹配的结果
                 ProgressManager.checkCanceled()
                 val configGroup = definitionMemberInfo.configGroup
-                val matchResultValues = SmartList<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
+                val matchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
                 configs.forEachFast f@{ config ->
                     val valueConfig = config.valueConfig ?: return@f
                     val matchResult = ParadoxConfigMatcher.matches(valueElement, expression, valueConfig.expression, config, configGroup, matchOptions)
@@ -130,7 +130,7 @@ object ParadoxConfigResolver {
                 //如果无结果且需要使用默认值，则返回所有可能匹配的规则
                 if(matchResultValues.isEmpty() && orDefault) return configs.mapNotNullFast { it.valueConfig }
                 
-                val finalMatchResultValues = SmartList<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
+                val finalMatchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
                 doGetFinalResultValues(finalMatchResultValues, matchResultValues, matchOptions)
                 if(finalMatchResultValues.isNotEmpty()) return finalMatchResultValues.mapFast { it.value }
                 //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则
@@ -149,7 +149,7 @@ object ParadoxConfigResolver {
                 //得到所有可能匹配的结果
                 ProgressManager.checkCanceled()
                 val configGroup = definitionMemberInfo.configGroup
-                val matchResultValues = SmartList<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
+                val matchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
                 configs.forEachFast f@{ config ->
                     val matchResult = ParadoxConfigMatcher.matches(valueElement, expression, config.valueExpression, config, configGroup, matchOptions)
                     if(matchResult == ParadoxConfigMatcher.Result.NotMatch) return@f
@@ -158,7 +158,7 @@ object ParadoxConfigResolver {
                 //如果无结果且需要使用默认值，则返回所有可能匹配的规则
                 if(matchResultValues.isEmpty() && orDefault) return configs
                 
-                val finalMatchResultValues = SmartList<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
+                val finalMatchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
                 doGetFinalResultValues(finalMatchResultValues, matchResultValues, matchOptions)
                 if(finalMatchResultValues.isNotEmpty()) return finalMatchResultValues.mapFast { it.value }
                 //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则
@@ -171,7 +171,7 @@ object ParadoxConfigResolver {
     }
     
     private fun <T: CwtConfig<*>> doGetFinalResultValues(
-        finalMatchResultValues: SmartList<ParadoxConfigMatcher.ResultValue<T>>,
+        finalMatchResultValues: mutableListOf<ParadoxConfigMatcher.ResultValue<T>>,
         matchResultValues: List<ParadoxConfigMatcher.ResultValue<T>>,
         matchOptions: Int
     ) {

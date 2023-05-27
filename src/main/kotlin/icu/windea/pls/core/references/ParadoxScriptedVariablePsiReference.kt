@@ -3,7 +3,6 @@ package icu.windea.pls.core.references
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
-import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
@@ -44,7 +43,7 @@ class ParadoxScriptedVariablePsiReference(
         //首先尝试从当前文件中查找引用，然后从全局范围中查找引用
         val element = element
         val name = element.name ?: return ResolveResult.EMPTY_ARRAY
-        val result = SmartList<ParadoxScriptScriptedVariable>()
+        val result = mutableListOf<ParadoxScriptScriptedVariable>()
         val selector = scriptedVariableSelector(project, element).contextSensitive()
         ParadoxLocalScriptedVariableSearch.search(name, selector).processQueryAsync {
             result.add(it)

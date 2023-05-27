@@ -46,7 +46,7 @@ class ParadoxVariableFieldExpressionImpl(
     override val variableNode: ParadoxDataExpressionNode = nodes.last().cast()
     
     override fun validate(): List<ParadoxExpressionError> {
-        val errors = SmartList<ParadoxExpressionError>()
+        val errors = mutableListOf<ParadoxExpressionError>()
         var malformed = false
         for((index, node) in nodes.withIndex()) {
             val isLast = index == nodes.lastIndex
@@ -193,7 +193,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
     val type = ParadoxDataExpression.resolve(text).type
     if(type == ParadoxType.Int || type == ParadoxType.Float) return null
     
-    val nodes = SmartList<ParadoxExpressionNode>()
+    val nodes = mutableListOf<ParadoxExpressionNode>()
     val offset = textRange.startOffset
     var isLast = false
     var index: Int

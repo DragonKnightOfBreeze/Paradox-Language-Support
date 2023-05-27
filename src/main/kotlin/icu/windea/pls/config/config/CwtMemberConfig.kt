@@ -3,7 +3,6 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.expression.CwtDataType.*
 import icu.windea.pls.core.*
@@ -61,7 +60,7 @@ fun <T : PsiElement> CwtMemberConfig<T>.deepCopyConfigs(): List<CwtMemberConfig<
 fun <T : PsiElement> CwtMemberConfig<T>.deepMergeConfigs(configContext: CwtConfigContext): List<CwtMemberConfig<*>> {
     //因为之后可能需要对得到的声明规则进行注入，需要保证当注入时所有规则列表都是可变的
     
-    val mergedConfigs: MutableList<CwtMemberConfig<*>>? = if(configs != null) SmartList() else null
+    val mergedConfigs: MutableList<CwtMemberConfig<*>>? = if(configs != null) mutableListOf() else null
     configs?.forEachFast { config ->
         val childConfigList = config.deepMergeConfigs(configContext)
         if(childConfigList.isNotEmpty()) {
@@ -73,22 +72,22 @@ fun <T : PsiElement> CwtMemberConfig<T>.deepMergeConfigs(configContext: CwtConfi
     when(this) {
         is CwtValueConfig -> {
             val mergedConfig = this.copyDelegated(parent, mergedConfigs)
-            if(configContext.injectors.isNotEmpty()) return SmartList(mergedConfig)
+            if(configContext.injectors.isNotEmpty()) return mutableListOf(mergedConfig)
             return mergedConfig.toSingletonList()
         }
         is CwtPropertyConfig -> {
             val subtypeExpression = key.removeSurroundingOrNull("subtype[", "]")
             if(subtypeExpression == null) {
                 val mergedConfig = this.copyDelegated(parent, mergedConfigs)
-                if(configContext.injectors.isNotEmpty()) return SmartList(mergedConfig)
+                if(configContext.injectors.isNotEmpty()) return mutableListOf(mergedConfig)
                 return mergedConfig.toSingletonList()
             } else {
                 val subtypes = configContext.definitionSubtypes
                 if(subtypes == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
-                    if(configContext.injectors.isNotEmpty()) return mergedConfigs ?: SmartList()
+                    if(configContext.injectors.isNotEmpty()) return mergedConfigs ?: mutableListOf()
                     return mergedConfigs.orEmpty()
                 } else {
-                    if(configContext.injectors.isNotEmpty()) return SmartList()
+                    if(configContext.injectors.isNotEmpty()) return mutableListOf()
                     return emptyList()
                 }
             }

@@ -3,7 +3,6 @@ package icu.windea.pls.lang.config.impl
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
@@ -37,7 +36,7 @@ class ParadoxSwitchCaseOverriddenConfigProvider: ParadoxOverriddenConfigProvider
         if(CwtValueExpression.resolve(triggerName).type != CwtDataType.Constant) return null //must be predefined trigger
         val configGroup = config.info.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.takeIfNotEmpty() ?: return null
-        val resultConfigs = SmartList<CwtPropertyConfig>()
+        val resultConfigs = mutableListOf<CwtPropertyConfig>()
         for(resultTriggerConfig in resultTriggerConfigs) {
             if(resultTriggerConfig.config.isBlock) continue //not simple trigger, skip
             val inlined = ParadoxConfigInlineHandler.inlineWithConfig(config, resultTriggerConfig.config, ParadoxConfigInlineHandler.Mode.VALUE_TO_KEY) ?: continue

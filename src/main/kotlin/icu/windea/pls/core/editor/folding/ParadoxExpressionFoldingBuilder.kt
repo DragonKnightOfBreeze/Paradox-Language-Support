@@ -4,7 +4,6 @@ import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.setting.*
 import icu.windea.pls.core.annotations.*
@@ -75,7 +74,7 @@ abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
                 var startOffset = rootRange.startOffset
                 val endOffset = rootRange.endOffset
                 var valueRange: TextRange? = null
-                val descriptors = SmartList<FoldingDescriptor>()
+                val descriptors = mutableListOf<FoldingDescriptor>()
                 val list = setting.placeholder.split('$')
                 val keys = setting.key?.toSingletonList() ?: setting.keys ?: emptyList()
                 for((index, s) in list.withIndex()) {

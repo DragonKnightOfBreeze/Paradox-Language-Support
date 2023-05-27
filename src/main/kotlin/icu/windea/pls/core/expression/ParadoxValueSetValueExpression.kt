@@ -55,7 +55,7 @@ class ParadoxValueSetValueExpressionImpl(
 	override val scopeFieldExpression: ParadoxScopeFieldExpression? = nodes.getOrNull(2)?.cast()
 	
 	override fun validate(): List<ParadoxExpressionError> {
-		val errors = SmartList<ParadoxExpressionError>()
+		val errors = mutableListOf<ParadoxExpressionError>()
 		var malformed = false
 		for(node in nodes) {
 			when(node) {
@@ -139,7 +139,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, c
 }
 
 fun Resolver.resolve(text: String, textRange: TextRange, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxValueSetValueExpression? {
-	val nodes = SmartList<ParadoxExpressionNode>()
+	val nodes = mutableListOf<ParadoxExpressionNode>()
 	val offset = textRange.startOffset
 	var atIndex = text.indexOf('@')
 	run {

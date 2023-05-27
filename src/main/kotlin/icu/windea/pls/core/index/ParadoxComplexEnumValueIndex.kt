@@ -3,7 +3,6 @@ package icu.windea.pls.core.index
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
@@ -23,13 +22,13 @@ object ParadoxComplexEnumValueIndex {
     private const val VERSION = 25 //1.0.2
     
     class Data(
-        val complexEnumValueInfoList: MutableList<ParadoxComplexEnumValueInfo> = SmartList()
+        val complexEnumValueInfoList: MutableList<ParadoxComplexEnumValueInfo> = mutableListOf()
     ) {
         val complexEnumValueInfoGroup by lazy {
             buildMap<String, Map<String, List<ParadoxComplexEnumValueInfo>>> {
                 complexEnumValueInfoList.forEachFast { info ->
                     val map = getOrPut(info.enumName) { mutableMapOf() } as MutableMap
-                    val list = map.getOrPut(info.name) { SmartList() } as MutableList
+                    val list = map.getOrPut(info.name) { mutableListOf() } as MutableList
                     list.add(info)
                 }
             }

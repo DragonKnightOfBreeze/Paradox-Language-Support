@@ -85,7 +85,7 @@ class ConvertDdsToPngAction : DumbAwareAction() {
         try {
             val title = PlsBundle.message("dds.command.convertDdsToPng.name")
             val choice = if(files.size > 1 || files[0].isDirectory) intArrayOf(-1) else null
-            val added = SmartList<PsiFile>()
+            val added = mutableListOf<PsiFile>()
             saveToDirectory(files, newName, targetDirectory, choice, title, added)
             
         } catch(e: Exception) {

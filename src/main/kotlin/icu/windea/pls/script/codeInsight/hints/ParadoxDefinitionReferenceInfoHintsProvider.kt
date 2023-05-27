@@ -4,7 +4,6 @@ import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
@@ -60,7 +59,7 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<N
     }
     
     private fun PresentationFactory.doCollect(definitionInfo: ParadoxDefinitionInfo): InlayPresentation {
-        val presentations: MutableList<InlayPresentation> = SmartList()
+        val presentations: MutableList<InlayPresentation> = mutableListOf()
         //省略definitionName
         presentations.add(smallText(": "))
         val typeConfig = definitionInfo.typeConfig

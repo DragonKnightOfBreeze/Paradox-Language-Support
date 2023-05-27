@@ -54,7 +54,7 @@ class ParadoxScopeFieldExpressionImpl(
 	override val scopeNodes: List<ParadoxScopeFieldExpressionNode> = nodes.filterIsInstance<ParadoxScopeFieldExpressionNode>()
 	
 	override fun validate(): List<ParadoxExpressionError> {
-		val errors = SmartList<ParadoxExpressionError>()
+		val errors = mutableListOf<ParadoxExpressionError>()
 		var malformed = false
 		for((index, node) in nodes.withIndex()) {
 			val isLast = index == nodes.lastIndex
@@ -183,7 +183,7 @@ class ParadoxScopeFieldExpressionImpl(
 }
 
 fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxScopeFieldExpression? {
-	val nodes = SmartList<ParadoxExpressionNode>()
+	val nodes = mutableListOf<ParadoxExpressionNode>()
 	val offset = textRange.startOffset
 	var index: Int
 	var dotIndex = -1

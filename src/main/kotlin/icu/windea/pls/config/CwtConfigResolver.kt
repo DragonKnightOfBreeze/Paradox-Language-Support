@@ -2,7 +2,6 @@ package icu.windea.pls.config
 
 import com.intellij.openapi.diagnostic.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
@@ -20,8 +19,8 @@ object CwtConfigResolver {
     
     fun resolve(file: CwtFile, info: CwtConfigGroupInfo): CwtFileConfig {
         val rootBlock = file.block
-        val properties = SmartList<CwtPropertyConfig>()
-        val values = SmartList<CwtValueConfig>()
+        val properties = mutableListOf<CwtPropertyConfig>()
+        val values = mutableListOf<CwtValueConfig>()
         val fileConfig = CwtFileConfig(file.createPointer(), info, properties, values, file.name)
         rootBlock?.processChild {
             when {
@@ -68,12 +67,12 @@ object CwtConfigResolver {
                     when {
                         it is CwtProperty -> {
                             val resolved = resolveProperty(it, file, fileConfig) ?: return@f
-                            if(configs == null) configs = SmartList()
+                            if(configs == null) configs = mutableListOf()
                             configs!!.asMutable().add(resolved)
                         }
                         it is CwtValue -> {
                             val resolved = resolveValue(it, file, fileConfig)
-                            if(configs == null) configs = SmartList()
+                            if(configs == null) configs = mutableListOf()
                             configs!!.asMutable().add(resolved)
                         }
                     }
@@ -152,12 +151,12 @@ object CwtConfigResolver {
                     when {
                         it is CwtProperty -> {
                             val resolved = resolveProperty(it, file, fileConfig) ?: return@f
-                            if(configs == null) configs = SmartList()
+                            if(configs == null) configs = mutableListOf()
                             configs!!.asMutable().add(resolved)
                         }
                         it is CwtValue -> {
                             val resolved = resolveValue(it, file, fileConfig)
-                            if(configs == null) configs = SmartList()
+                            if(configs == null) configs = mutableListOf()
                             configs!!.asMutable().add(resolved)
                         }
                     }
@@ -238,12 +237,12 @@ object CwtConfigResolver {
                     when {
                         it is CwtOption -> {
                             val resolved = resolveOption(it, file, fileConfig) ?: return@f
-                            if(options == null) options = SmartList()
+                            if(options == null) options = mutableListOf()
                             options!!.asMutable().add(resolved)
                         }
                         it is CwtValue -> {
                             val resolved = resolveOptionValue(it, file, fileConfig)
-                            if(options == null) options = SmartList()
+                            if(options == null) options = mutableListOf()
                             options!!.asMutable().add(resolved)
                         }
                     }
@@ -282,12 +281,12 @@ object CwtConfigResolver {
                     when {
                         it is CwtOption -> {
                             val resolved = resolveOption(it, file, fileConfig) ?: return@f
-                            if(options == null) options = SmartList()
+                            if(options == null) options = mutableListOf()
                             options!!.asMutable().add(resolved)
                         }
                         it is CwtValue -> {
                             val resolved = resolveOptionValue(it, file, fileConfig)
-                            if(options == null) options = SmartList()
+                            if(options == null) options = mutableListOf()
                             options!!.asMutable().add(resolved)
                         }
                     }

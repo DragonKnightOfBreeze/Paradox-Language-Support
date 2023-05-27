@@ -50,12 +50,12 @@ private fun ParadoxExpressionNode.doProcessAllLeafNodes(processor: Processor<Par
 }
 
 fun ParadoxComplexExpression.getReferences(element: ParadoxScriptStringExpressionElement): Array<PsiReference> {
-	val references = SmartList<PsiReference>()
+	val references = mutableListOf<PsiReference>()
 	this.doGetReferences(element, references)
 	return references.toTypedArray()
 }
 
-private fun ParadoxExpressionNode.doGetReferences(element: ParadoxScriptStringExpressionElement, references: SmartList<PsiReference>) {
+private fun ParadoxExpressionNode.doGetReferences(element: ParadoxScriptStringExpressionElement, references: mutableListOf<PsiReference>) {
 	val reference = this.getReference(element)
 	if(reference != null) {
 		references.add(reference)

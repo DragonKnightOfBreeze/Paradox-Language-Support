@@ -2,7 +2,6 @@ package icu.windea.pls.script.structureView
 
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
@@ -14,7 +13,7 @@ class ParadoxScriptPropertyTreeElement(element: ParadoxScriptProperty) : PsiTree
 		val element = element ?: return emptyList()
 		val parent = element.propertyValue<ParadoxScriptBlock>() ?: return emptyList()
 		//允许混合value和property
-		val result: MutableList<StructureViewTreeElement> = SmartList()
+		val result: MutableList<StructureViewTreeElement> = mutableListOf()
 		parent.forEachChild {
 			when {
 				it is ParadoxScriptScriptedVariable -> result.add(ParadoxScriptVariableTreeElement(it))

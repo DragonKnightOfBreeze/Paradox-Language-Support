@@ -27,7 +27,7 @@ class CwtTemplateExpression(
             return when {
                 expressionString.isEmpty() -> EmptyExpression
                 else -> {
-                    var snippets: SmartList<CwtDataExpression>? = null
+                    var snippets: mutableListOf<CwtDataExpression>? = null
                     var startIndex = 0
                     var i1: Int
                     var i2: Int
@@ -44,10 +44,10 @@ class CwtTemplateExpression(
                                 val nextIndex = i2 + 1
                                 if(i1 == 0 && nextIndex == expressionString.length) return EmptyExpression
                                 if(startIndex != i1) {
-                                    if(snippets == null) snippets = SmartList()
+                                    if(snippets == null) snippets = mutableListOf()
                                     snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
                                 }
-                                if(snippets == null) snippets = SmartList()
+                                if(snippets == null) snippets = mutableListOf()
                                 snippets.add(CwtValueExpression.resolve(expressionString.substring(i1, nextIndex)))
                                 startIndex = nextIndex
                                 continue
@@ -59,10 +59,10 @@ class CwtTemplateExpression(
                                 val nextIndex = i2 + 1
                                 if(i1 == 0 && nextIndex == expressionString.length) return EmptyExpression
                                 if(startIndex != i1) {
-                                    if(snippets == null) snippets = SmartList()
+                                    if(snippets == null) snippets = mutableListOf()
                                     snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
                                 }
-                                if(snippets == null) snippets = SmartList()
+                                if(snippets == null) snippets = mutableListOf()
                                 snippets.add(CwtValueExpression.resolve(expressionString.substring(i1, nextIndex)))
                                 startIndex = nextIndex
                                 continue
@@ -76,10 +76,10 @@ class CwtTemplateExpression(
                             val nextIndex = i2 + 1
                             if(i1 == 0 && nextIndex == expressionString.length) return EmptyExpression
                             if(startIndex != i1) {
-                                if(snippets == null) snippets = SmartList()
+                                if(snippets == null) snippets = mutableListOf()
                                 snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
                             }
-                            if(snippets == null) snippets = SmartList()
+                            if(snippets == null) snippets = mutableListOf()
                             snippets.add(CwtValueExpression.resolve(expressionString.substring(i1, nextIndex)))
                             startIndex = nextIndex
                             continue

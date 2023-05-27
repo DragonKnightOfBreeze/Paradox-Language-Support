@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.model
 
 import com.intellij.openapi.util.*
-import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
@@ -68,7 +67,7 @@ class ParadoxDefinitionInfo(
     
     val localisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
         val mergedLocalisationConfig = typeConfig.localisation?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
-        val result = SmartList<ParadoxDefinitionRelatedLocalisationInfo>()
+        val result = mutableListOf<ParadoxDefinitionRelatedLocalisationInfo>()
         //从已有的cwt规则
         for(config in mergedLocalisationConfig) {
             val locationExpression = CwtLocalisationLocationExpression.resolve(config.value)
@@ -80,7 +79,7 @@ class ParadoxDefinitionInfo(
     
     val images: List<ParadoxDefinitionRelatedImageInfo> by lazy {
         val mergedImagesConfig = typeConfig.images?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
-        val result = SmartList<ParadoxDefinitionRelatedImageInfo>()
+        val result = mutableListOf<ParadoxDefinitionRelatedImageInfo>()
         //从已有的cwt规则
         for(config in mergedImagesConfig) {
             val locationExpression = CwtImageLocationExpression.resolve(config.value)
@@ -124,7 +123,7 @@ class ParadoxDefinitionInfo(
     
     private fun doGetSubtypeConfigs(matchOptions: Int): List<CwtSubtypeConfig> {
         val subtypesConfig = typeConfig.subtypes
-        val result = SmartList<CwtSubtypeConfig>()
+        val result = mutableListOf<CwtSubtypeConfig>()
         for(subtypeConfig in subtypesConfig.values) {
             if(ParadoxDefinitionHandler.matchesSubtype(element, subtypeConfig, rootKey, configGroup, result, matchOptions)) {
                 result.add(subtypeConfig)

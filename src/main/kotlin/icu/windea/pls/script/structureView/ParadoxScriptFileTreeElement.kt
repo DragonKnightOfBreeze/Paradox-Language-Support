@@ -2,7 +2,6 @@ package icu.windea.pls.script.structureView
 
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
-import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -17,7 +16,7 @@ class ParadoxScriptFileTreeElement(
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
 		val element = element ?: return emptyList()
 		val rootBlock = element.block ?: return emptyList()
-		val result = SmartList<StructureViewTreeElement>()
+		val result = mutableListOf<StructureViewTreeElement>()
 		rootBlock.forEachChild {
 			when {
 				it is ParadoxScriptScriptedVariable -> result.add(ParadoxScriptVariableTreeElement(it))

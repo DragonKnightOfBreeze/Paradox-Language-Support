@@ -101,7 +101,7 @@ object CwtTemplateExpressionHandler {
         val regex = toRegex(configExpression)
         val matchResult = regex.matchEntire(expressionString) ?: return emptyList()
         if(configExpression.referenceExpressions.size != matchResult.groups.size - 1) return emptyList()
-        val references = SmartList<ParadoxTemplateSnippetExpressionReference>()
+        val references = mutableListOf<ParadoxTemplateSnippetExpressionReference>()
         var i = 1
         for(snippetExpression in snippetExpressions) {
             ProgressManager.checkCanceled()

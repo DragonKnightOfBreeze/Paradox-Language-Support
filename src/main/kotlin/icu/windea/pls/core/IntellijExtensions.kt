@@ -537,7 +537,7 @@ fun <T : PsiElement> PsiFile.findElementsBetween(startOffset: Int, endOffset: In
     val startRoot = findElementAt(startOffset, true, rootTransform) ?: return emptyList()
     val endRoot = findElementAt(endOffset, true, rootTransform) ?: return emptyList()
     val root = if(startRoot.isAncestor(endRoot)) startRoot else endRoot
-    val elements = SmartList<T>()
+    val elements = mutableListOf<T>()
     root.processChild {
         val textRange = it.textRange
         if(textRange.endOffset > startOffset && textRange.startOffset < endOffset) {
@@ -556,7 +556,7 @@ fun PsiFile.findAllElementsBetween(startOffset: Int, endOffset: Int, rootTransfo
     val startRoot = findElementAt(startOffset, true, rootTransform) ?: return emptyList()
     val endRoot = findElementAt(endOffset, true, rootTransform) ?: return emptyList()
     val root = if(startRoot.isAncestor(endRoot)) startRoot else endRoot
-    val elements = SmartList<PsiElement>()
+    val elements = mutableListOf<PsiElement>()
     root.processChild {
         val textRange = it.textRange
         if(textRange.endOffset > startOffset) {
@@ -697,7 +697,7 @@ inline fun <reified T> PsiElement.findChildrenOfType(forward: Boolean = true, pr
     var child: PsiElement? = if(forward) this.firstChild else this.lastChild
     while(child != null) {
         if(child is T && predicate(child)) {
-            if(result == null) result = SmartList()
+            if(result == null) result = mutableListOf()
             result.add(child)
         }
         child = if(forward) child.nextSibling else child.prevSibling

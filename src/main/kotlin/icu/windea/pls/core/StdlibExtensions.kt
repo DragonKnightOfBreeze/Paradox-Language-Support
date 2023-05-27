@@ -259,7 +259,7 @@ fun String.isRightQuoted(): Boolean {
 }
 
 fun String.toCommaDelimitedStringList(): MutableList<String> {
-    return this.splitToSequence(',').mapNotNullTo(SmartList()) { it.trim().takeIfNotEmpty() }
+    return this.splitToSequence(',').mapNotNullTo(mutableListOf()) { it.trim().takeIfNotEmpty() }
 }
 
 fun String.toCommaDelimitedStringSet(): MutableSet<String> {
@@ -399,7 +399,7 @@ fun CharSequence.indicesOf(char: Char, startIndex: Int = 0, ignoreCase: Boolean 
     var indices: MutableList<Int>? = null
     var lastIndex = indexOf(char, startIndex, ignoreCase)
     while(lastIndex != -1) {
-        if(indices == null) indices = SmartList()
+        if(indices == null) indices = mutableListOf()
         indices.add(lastIndex)
         lastIndex = indexOf(char, lastIndex + 1, ignoreCase)
     }
@@ -504,6 +504,8 @@ private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean, trimSepa
  * @param ignoreCase 是否忽略大小写。默认为`true`。
  */
 fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolean = false, ignoreCase: Boolean = false): Boolean {
+    //不要尝试在这里去除 
+    
     //optimized
     val path = this
     val otherPath = other

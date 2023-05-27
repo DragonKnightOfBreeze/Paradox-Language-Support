@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.model
 
 import com.google.common.cache.*
-import com.intellij.util.*
 import icu.windea.pls.core.*
 
 /**
@@ -54,7 +53,7 @@ class ParadoxPathImpl(
 ) : ParadoxPath {
 	//intern to optimize memory
 	
-	override val subPaths = path.splitToSequence('/').mapTo(SmartList()) { it.intern() }
+	override val subPaths = path.splitToSequence('/').mapTo(mutableListOf()) { it.intern() }
 	override val parent = path.substringBeforeLast('/', "").intern()
 	override val root = path.substringBefore('/', "").intern()
 	override val fileName = subPaths.lastOrNull().orEmpty().intern()

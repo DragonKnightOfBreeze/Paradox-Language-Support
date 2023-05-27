@@ -5,7 +5,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
@@ -27,7 +26,7 @@ object ParadoxScriptedVariableHandler {
     }
     
     private fun doGetLocalScriptedVariables(file: ParadoxScriptFile): List<SmartPsiElementPointer<ParadoxScriptScriptedVariable>> {
-        val result = SmartList<SmartPsiElementPointer<ParadoxScriptScriptedVariable>>()
+        val result = mutableListOf<SmartPsiElementPointer<ParadoxScriptScriptedVariable>>()
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxScriptScriptedVariable) {

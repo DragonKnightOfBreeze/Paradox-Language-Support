@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.config.impl
 
 import com.intellij.openapi.util.*
-import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
@@ -52,7 +51,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
         declarationConfig.processDescendants p@{ c ->
             val cs = c.configs ?: return@p true
             cs as MutableList
-            val ccs = SmartList<CwtMemberConfig<*>>()
+            val ccs = mutableListOf<CwtMemberConfig<*>>()
             var i = -1
             for((index, cc) in cs.withIndex()) {
                 when(cc) {

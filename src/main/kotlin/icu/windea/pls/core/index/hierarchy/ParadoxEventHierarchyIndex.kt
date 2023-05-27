@@ -3,7 +3,6 @@ package icu.windea.pls.core.index.hierarchy
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
@@ -22,7 +21,7 @@ object ParadoxEventHierarchyIndex {
     private const val VERSION = 22 //1.0.0
     
     class Data(
-        val eventInfos: MutableList<EventInfo> = SmartList()
+        val eventInfos: MutableList<EventInfo> = mutableListOf()
     ) {
         val eventToEventInfosMap by lazy {
             buildMap<String, Set<EventInfo>> {
@@ -40,7 +39,7 @@ object ParadoxEventHierarchyIndex {
         val name: String,
         val type: String?,
         val scope: String?,
-        val eventInvocationInfos: MutableList<EventInvocationInfo> = SmartList()
+        val eventInvocationInfos: MutableList<EventInvocationInfo> = mutableListOf()
     )
     
     @JvmInline

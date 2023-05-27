@@ -1,7 +1,6 @@
 package icu.windea.pls.core.expression.nodes
 
 import com.intellij.openapi.util.*
-import com.intellij.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.expression.*
@@ -19,7 +18,7 @@ class ParadoxValueLinkDataSourceExpressionNode (
 		fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxValueLinkDataSourceExpressionNode {
 			//text may contain parameters
 			//child node can be valueSetValueExpression / scriptValueExpression
-			val nodes = SmartList<ParadoxExpressionNode>()
+			val nodes = mutableListOf<ParadoxExpressionNode>()
 			//if(nodes.isEmpty()) {
 			//	val scopeFieldConfig = linkConfigs.find { it.expression?.type?.isScopeFieldType() == true }
 			//	if(scopeFieldConfig != null) {

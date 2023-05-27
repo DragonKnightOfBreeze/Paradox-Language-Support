@@ -285,10 +285,10 @@ object ParadoxConfigHandler {
     }
     
     fun setParameterRanges(element: ParadoxScriptStringExpressionElement): List<TextRange> {
-        var parameterRanges: SmartList<TextRange>? = null
+        var parameterRanges: mutableListOf<TextRange>? = null
         element.processChild { parameter ->
             if(parameter is ParadoxParameter) {
-                if(parameterRanges == null) parameterRanges = SmartList()
+                if(parameterRanges == null) parameterRanges = mutableListOf()
                 parameterRanges?.add(parameter.textRange)
             }
             true
@@ -372,7 +372,7 @@ object ParadoxConfigHandler {
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.Relax
         val parentConfigs = ParadoxConfigResolver.getConfigs(definitionElement, allowDefinition = true, matchOptions = matchOptions)
-        val configs = SmartList<CwtPropertyConfig>()
+        val configs = mutableListOf<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
                 if(c2 is CwtPropertyConfig) {
@@ -418,7 +418,7 @@ object ParadoxConfigHandler {
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.Relax
         val parentConfigs = ParadoxConfigResolver.getConfigs(memberElement, allowDefinition = true, matchOptions = matchOptions)
-        val configs = SmartList<CwtValueConfig>()
+        val configs = mutableListOf<CwtValueConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
                 if(c2 is CwtValueConfig) {
@@ -518,11 +518,11 @@ object ParadoxConfigHandler {
                 if(skipRootKeyConfig == null || skipRootKeyConfig.isEmpty()) {
                     if(elementPath.isEmpty()) {
                         typeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
-                            infoMap.getOrPut(it) { SmartList() }.add(typeConfig to null)
+                            infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
                         }
                         typeConfig.subtypes.values.forEach { subtypeConfig ->
                             subtypeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
-                                infoMap.getOrPut(it) { SmartList() }.add(typeConfig to subtypeConfig)
+                                infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
                             }
                         }
                     }
@@ -531,15 +531,15 @@ object ParadoxConfigHandler {
                         val relative = elementPath.relativeTo(skipConfig) ?: continue
                         if(relative.isEmpty()) {
                             typeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
-                                infoMap.getOrPut(it) { SmartList() }.add(typeConfig to null)
+                                infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
                             }
                             typeConfig.subtypes.values.forEach { subtypeConfig ->
                                 subtypeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
-                                    infoMap.getOrPut(it) { SmartList() }.add(typeConfig to subtypeConfig)
+                                    infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
                                 }
                             }
                         } else {
-                            infoMap.getOrPut(relative) { SmartList() }
+                            infoMap.getOrPut(relative) { mutableListOf() }
                         }
                         break
                     }

@@ -1,7 +1,6 @@
 package icu.windea.pls.core.expression.nodes
 
 import com.intellij.openapi.util.*
-import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.collections.*
@@ -17,7 +16,7 @@ class ParadoxValueLinkFromDataExpressionNode (
 	
 	companion object Resolver {
 		fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxValueLinkFromDataExpressionNode? {
-			val nodes = SmartList<ParadoxExpressionNode>()
+			val nodes = mutableListOf<ParadoxExpressionNode>()
 			val offset = textRange.startOffset
 			val linkConfigs = configGroup.linksAsValueWithPrefixSorted
 				.filter { it.prefix != null && text.startsWith(it.prefix) }

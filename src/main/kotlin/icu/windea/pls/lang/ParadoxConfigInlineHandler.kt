@@ -87,7 +87,7 @@ object ParadoxConfigInlineHandler {
         return inlined
     }
     
-    fun inlineFromInlineConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: SmartList<CwtMemberConfig<*>>): Boolean {
+    fun inlineFromInlineConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: mutableListOf<CwtMemberConfig<*>>): Boolean {
         //内联特定的规则：inline_script
         val configGroup = config.info.configGroup
         val inlineConfigs = configGroup.inlineConfigGroup[key]

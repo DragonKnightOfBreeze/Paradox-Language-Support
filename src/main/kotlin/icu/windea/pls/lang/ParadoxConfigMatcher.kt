@@ -78,7 +78,7 @@ object ParadoxConfigMatcher {
             val r = matcher(v)
             if(r == null || r == Result.NotMatch) continue
             if(r == Result.ExactMatch && fast) return v
-            if(tempResults == null) tempResults = SmartList()
+            if(tempResults == null) tempResults = mutableListOf()
             tempResults.add(ResultValue(v, r))
         }
         if(tempResults.isNullOrEmpty()) return null
@@ -95,12 +95,12 @@ object ParadoxConfigMatcher {
             val r = matcher(v)
             if(r == null || r == Result.NotMatch) continue
             if(r == Result.ExactMatch && fast) return v.toSingletonList()
-            if(tempResults == null) tempResults = SmartList()
+            if(tempResults == null) tempResults = mutableListOf()
             tempResults.add(ResultValue(v, r))
         }
         if(tempResults.isNullOrEmpty()) return emptyList()
         if(tempResults.size == 1 && fast) return tempResults[0].value.toSingletonList()
-        val result = SmartList<T>()
+        val result = mutableListOf<T>()
         tempResults.forEachFast { (v, r) -> if(r.get(options)) result.add(v) }
         return result
     }

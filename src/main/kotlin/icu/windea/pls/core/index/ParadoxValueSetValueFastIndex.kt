@@ -3,7 +3,6 @@ package icu.windea.pls.core.index
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
@@ -51,7 +50,7 @@ object ParadoxValueSetValueFastIndex {
             repeat(valueSetValueInfoGroupSize) {
                 val valueSetName = IOUtil.readUTF(storage)
                 val valueSetValueInfoListSize = storage.readInt()
-                val valueSetValueInfoList = SmartList<ParadoxValueSetValueInfo>()
+                val valueSetValueInfoList = mutableListOf<ParadoxValueSetValueInfo>()
                 data.valueSetValueInfoGroup[valueSetName] = valueSetValueInfoList
                 repeat(valueSetValueInfoListSize) {
                     val valueSetValueInfo = run {
@@ -118,7 +117,7 @@ object ParadoxValueSetValueFastIndex {
     
     private fun handleValueSetValueElement(data: Data, element: ParadoxValueSetValueElement) {
         element.valueSetNames.forEach { valueSetName ->
-            val valueSetValueInfoList = data.valueSetValueInfoGroup.getOrPut(valueSetName) { SmartList() }
+            val valueSetValueInfoList = data.valueSetValueInfoGroup.getOrPut(valueSetName) { mutableListOf() }
             val valueSetValueInfo = ParadoxValueSetValueInfo(element.name, valueSetName, element.readWriteAccess, -1, element.gameType)
             valueSetValueInfoList.add(valueSetValueInfo)
         }

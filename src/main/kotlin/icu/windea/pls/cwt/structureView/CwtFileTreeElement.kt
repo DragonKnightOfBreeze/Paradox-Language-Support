@@ -2,7 +2,6 @@ package icu.windea.pls.cwt.structureView
 
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
-import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
@@ -12,7 +11,7 @@ class CwtFileTreeElement(
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
 		val element = element ?: return emptyList()
 		val rootBlock = element.block ?: return emptyList()
-		val result = SmartList<StructureViewTreeElement>()
+		val result = mutableListOf<StructureViewTreeElement>()
 		rootBlock.forEachChild {
 			when(it){
 				is CwtProperty -> result.add(CwtPropertyTreeElement(it))

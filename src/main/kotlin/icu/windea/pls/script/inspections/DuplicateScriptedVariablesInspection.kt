@@ -8,7 +8,6 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
@@ -32,7 +31,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 			override fun visitElement(element: PsiElement) {
 				if(element is ParadoxScriptScriptedVariable) {
 					val name = element.name ?: return
-					variableGroup.getOrPut(name) { SmartList() }.add(element)
+					variableGroup.getOrPut(name) { mutableListOf() }.add(element)
 					return
 				}
 				if(element is ParadoxScriptInlineMath) {

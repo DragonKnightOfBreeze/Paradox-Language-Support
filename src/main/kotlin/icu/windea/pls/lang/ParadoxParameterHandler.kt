@@ -77,7 +77,7 @@ object ParadoxParameterHandler {
                 val defaultValue = element.defaultValue
                 val conditionalStack = if(fileConditionStack.isEmpty()) null else LinkedList(fileConditionStack)
                 val info = ParadoxParameterInfo(element.createPointer(file), name, defaultValue, conditionalStack)
-                parameters.getOrPut(name) { SmartList() }.add(info)
+                parameters.getOrPut(name) { mutableListOf() }.add(info)
                 //不需要继续向下遍历
             }
             
