@@ -22,7 +22,8 @@ class ParadoxValueSetValueElement(
     val readWriteAccess: ReadWriteAccessDetector.Access,
     val gameType: ParadoxGameType,
     private val project: Project,
-) : ParadoxFakePsiElement(parent) { constructor(parent: PsiElement, name: String, valueSetName: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)
+) : ParadoxFakePsiElement(parent) {
+    constructor(parent: PsiElement, name: String, valueSetName: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)
         : this(parent, name, setOf(valueSetName), readWriteAccess, gameType, project)
     
     constructor(parent: PsiElement, info: ParadoxValueSetValueInfo, project: Project)

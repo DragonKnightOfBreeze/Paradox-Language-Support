@@ -171,8 +171,10 @@ object CwtConfigHandler {
     }
     
     fun doMergeValueConfig(config: CwtValueConfig, otherConfig: CwtValueConfig): CwtValueConfig? {
-        val t1 = config.expression.type
-        val t2 = otherConfig.expression.type
+        val e1 = config.expression
+        val e2 = otherConfig.expression
+        val t1 = e1.type
+        val t2 = e2.type
         return when(t1) {
             CwtDataType.Int -> {
                 when(t2) {
@@ -182,16 +184,24 @@ object CwtConfigHandler {
             }
             CwtDataType.Float -> {
                 when(t2) {
-                    CwtDataType.Float, CwtDataType.ValueField, CwtDataType.VariableField ->CwtValueConfig.resolve(config.pointer, config.info, "float")
+                    CwtDataType.Float, CwtDataType.ValueField, CwtDataType.VariableField -> CwtValueConfig.resolve(config.pointer, config.info, "float")
                     else -> null
                 }
             }
             CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> {
                 when {
                     t2 == CwtDataType.ScopeField -> CwtValueConfig.resolve(config.pointer, config.info, config.value)
-                    t2 == CwtDataType.Scope && otherConfig.expression.value == "any" -> CwtValueConfig.resolve(config.pointer, config.info, config.value)
+                    t2 == CwtDataType.Scope && e2.value == "any" -> CwtValueConfig.resolve(config.pointer, config.info, config.value)
                     else -> null
                 }
+            }
+            CwtDataType.Value -> {
+                if(t2 == CwtDataType.ValueSet && e1.value == e2.value) return CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]")
+                null
+            }
+            CwtDataType.ValueSet -> {
+                if(t2 == CwtDataType.Value && e1.value == e2.value) return CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]")
+                null
             }
             CwtDataType.VariableField -> {
                 when(t2) {
