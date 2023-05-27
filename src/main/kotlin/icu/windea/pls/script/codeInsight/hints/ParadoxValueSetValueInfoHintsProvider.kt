@@ -28,7 +28,7 @@ class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSetti
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
 		if(element !is ParadoxScriptStringExpressionElement) return true
 		if(!element.isExpression()) return true
-		val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return true
+        val config = ParadoxConfigResolver.getConfigs(element, element is ParadoxScriptValue, true, ParadoxConfigMatcher.Options.Default).firstOrNull() ?: return true
 		val type = config.expression.type
 		if(type == CwtDataType.Value || type == CwtDataType.ValueSet) {
 			val valueSetName = config.expression.value ?: return true

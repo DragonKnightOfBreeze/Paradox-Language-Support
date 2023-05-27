@@ -184,7 +184,7 @@ object ParadoxInlineScriptHandler {
                     //尝试检查内联脚本定义所在的规则的上下文是否匹配
                     if(hasConflict) return@p false
                     ProgressManager.checkCanceled()
-                    val eConfigs = ParadoxConfigHandler.getConfigs(p)
+                    val eConfigs = ParadoxConfigResolver.getConfigs(p, p is ParadoxScriptValue, true, Options.Default)
                     if(eConfigs.isNotEmpty()) {
                         val configsToAdd = eConfigs.mapNotNull { it.parent }
                         if(configs.isEmpty()) {

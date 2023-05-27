@@ -58,14 +58,14 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if(propertyKey.isParameterized()) return false
                         val definitionMemberInfo = element.definitionMemberInfo
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
-                        val configs = ParadoxConfigHandler.getPropertyConfigs(element)
+                        val configs = ParadoxConfigResolver.getPropertyConfigs(element, false, true, ParadoxConfigMatcher.Options.Default)
                         if(configs.isEmpty()) {
                             //这里使用合并后的子规则，即使parentProperty可以精确匹配
                             //优先使用重载后的规则
                             val expect = if(showExpectInfo) {
                                 val allConfigs = buildList {
                                     val childConfigs = element.findParentProperty()?.definitionMemberInfo?.getChildConfigs()
-                                    childConfigs?.forEach { 
+                                    childConfigs?.forEach {
                                         val c = it
                                         val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, c)
                                         if(overriddenConfigs.isNotNullOrEmpty()) {
@@ -112,7 +112,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if(element is ParadoxScriptScriptedVariableReference && element.isParameterized()) return false
                         val definitionMemberInfo = element.definitionMemberInfo
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
-                        val configs = ParadoxConfigHandler.getValueConfigs(element, orDefault = false)
+                        val configs = ParadoxConfigResolver.getValueConfigs(element, orDefault = false, matchOptions = ParadoxConfigMatcher.Options.Default)
                         if(configs.isEmpty()) {
                             val expect = if(showExpectInfo) {
                                 //优先使用重载后的规则

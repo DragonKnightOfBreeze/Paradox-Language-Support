@@ -59,7 +59,7 @@ object ParadoxColorHandler {
     }
     
     fun getColorType(element: PsiElement): String? {
-        val configToGetOption = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
+        val configToGetOption = ParadoxConfigResolver.getConfigs(element, allowDefinition = true, matchOptions = ParadoxConfigMatcher.Options.Default)
             .firstOrNull()
         if(configToGetOption == null) return null
         return getColorType(configToGetOption)

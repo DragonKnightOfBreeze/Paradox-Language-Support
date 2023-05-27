@@ -31,15 +31,15 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 ProgressManager.checkCanceled()
                 if(element is ParadoxScriptBlock) visitBlock(element)
             }
-    
+            
             override fun visitFile(file: PsiFile) {
                 if(file !is ParadoxScriptFile) return
                 //忽略可能的脚本片段入口
                 if(ParadoxScriptMemberElementInlineSupport.canLink(file)) return super.visitFile(file)
-                val configs = ParadoxConfigHandler.getConfigs(file, allowDefinition = true)
+                val configs = ParadoxConfigResolver.getConfigs(file, allowDefinition = true, matchOptions = ParadoxConfigMatcher.Options.Default)
                 doCheck(file, file, configs)
             }
-    
+            
             private fun visitBlock(element: ParadoxScriptBlock) {
                 //skip checking property if its property key may contain parameters
                 //position: (in property) property key / (standalone) left curly brace
@@ -51,13 +51,13 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                     ?.also { if(it.isParameterized()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
-                val configs = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
+                val configs = ParadoxConfigResolver.getConfigs(element, allowDefinition = true, matchOptions = ParadoxConfigMatcher.Options.Default)
                 doCheck(element, position, configs)
             }
-    
+            
             private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement, configs: List<CwtMemberConfig<*>>) {
                 if(skipCheck(element, configs)) return
-                val occurrenceMap = ParadoxConfigHandler.getChildOccurrenceMap(element, configs)
+                val occurrenceMap = ParadoxConfigResolver.getChildOccurrenceMap(element, configs)
                 if(occurrenceMap.isEmpty()) return
                 val overriddenProvider = getOverriddenProvider(configs)
                 occurrenceMap.forEach { (configExpression, occurrence) ->

@@ -27,7 +27,7 @@ class ParadoxScriptConfigAwareInspectionSuppressor : InspectionSuppressor {
         }
         
         if(element is ParadoxScriptProperty || (element is ParadoxScriptExpressionElement && element.isExpression())) {
-            val configs = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
+            val configs = ParadoxConfigResolver.getConfigs(element, allowDefinition = true, matchOptions = ParadoxConfigMatcher.Options.Default)
             if(configs.isNotEmpty()) {
                 for(config in configs) {
                     //检查对应的规则

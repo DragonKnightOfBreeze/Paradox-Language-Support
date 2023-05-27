@@ -20,7 +20,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
                 //忽略可能包含参数的表达式
                 if(element.isParameterized()) return
                 //得到完全匹配的CWT规则
-                val config = ParadoxConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return
+                val config = ParadoxConfigResolver.getConfigs(element, orDefault = false, matchOptions = ParadoxConfigMatcher.Options.Default).firstOrNull() ?: return
                 val configExpression = config.expression
                 val dataType = configExpression.type
                 if(dataType == CwtDataType.AbsoluteFilePath) return

@@ -11,7 +11,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import com.intellij.util.*
 import com.intellij.util.text.*
 import icons.*
@@ -35,14 +34,12 @@ import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
-import java.util.concurrent.*
 
 /**
  * CWT规则的处理器。
  *
  * 提供基于CWT规则实现的匹配、校验、代码提示、引用解析等功能。
  */
-@Suppress("UNCHECKED_CAST")
 object ParadoxConfigHandler {
     //region Common Methods
     
@@ -370,7 +367,7 @@ object ParadoxConfigHandler {
         val configGroup = definitionMemberInfo.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.Relax
-        val parentConfigs = getConfigs(definitionElement, allowDefinition = true, matchOptions = matchOptions)
+        val parentConfigs = ParadoxConfigResolver.getConfigs(definitionElement, allowDefinition = true, matchOptions = matchOptions)
         val configs = SmartList<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
@@ -380,7 +377,7 @@ object ParadoxConfigHandler {
             }
         }
         if(configs.isEmpty()) return
-        val occurrenceMap = getChildOccurrenceMap(definitionElement, parentConfigs)
+        val occurrenceMap = ParadoxConfigResolver.getChildOccurrenceMap(definitionElement, parentConfigs)
         
         context.isKey = true
         context.configGroup = configGroup
@@ -416,7 +413,7 @@ object ParadoxConfigHandler {
         val configGroup = definitionMemberInfo.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.Relax
-        val parentConfigs = getConfigs(memberElement, allowDefinition = true, matchOptions = matchOptions)
+        val parentConfigs = ParadoxConfigResolver.getConfigs(memberElement, allowDefinition = true, matchOptions = matchOptions)
         val configs = SmartList<CwtValueConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
@@ -426,7 +423,7 @@ object ParadoxConfigHandler {
             }
         }
         if(configs.isEmpty()) return
-        val occurrenceMap = getChildOccurrenceMap(memberElement, parentConfigs)
+        val occurrenceMap = ParadoxConfigResolver.getChildOccurrenceMap(memberElement, parentConfigs)
         
         context.isKey = false
         context.configGroup = configGroup
@@ -1245,281 +1242,5 @@ object ParadoxConfigHandler {
         resolved.putUserData(PlsKeys.cwtConfigKey, commandConfig)
         return resolved
     }
-    //endregion
-    
-    //region Get Methods
-    fun getConfigs(element: PsiElement, allowDefinition: Boolean = element is ParadoxScriptValue, orDefault: Boolean = true, matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtMemberConfig<*>> {
-        return when {
-            element is ParadoxScriptDefinitionElement -> getPropertyConfigs(element, allowDefinition, orDefault, matchOptions)
-            element is ParadoxScriptPropertyKey -> getPropertyConfigs(element, allowDefinition, orDefault, matchOptions)
-            element is ParadoxScriptValue -> getValueConfigs(element, allowDefinition, orDefault, matchOptions)
-            else -> emptyList()
-        }
-    }
-    
-    fun getPropertyConfigs(element: PsiElement, allowDefinition: Boolean = false, orDefault: Boolean = true, matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtPropertyConfig> {
-        return doGetConfigsFromCache(element, CwtPropertyConfig::class.java, allowDefinition, orDefault, matchOptions)
-    }
-    
-    fun getValueConfigs(element: PsiElement, allowDefinition: Boolean = true, orDefault: Boolean = true, matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtValueConfig> {
-        return doGetConfigsFromCache(element, CwtValueConfig::class.java, allowDefinition, orDefault, matchOptions)
-    }
-    
-    private fun <T : CwtMemberConfig<*>> doGetConfigsFromCache(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchOptions: Int): List<T> {
-        val configsMap = doGetConfigsCacheFromCache(element) ?: return emptyList()
-        val cacheKey = buildString {
-            when(configType) {
-                CwtPropertyConfig::class.java -> append("property")
-                CwtValueConfig::class.java -> append("value")
-                else -> throw UnsupportedOperationException()
-            }
-            if(configType == CwtPropertyConfig::class.java) {
-                append("#").append(allowDefinition.toIntString())
-            }
-            append("#").append(orDefault.toIntString())
-            append("#").append(matchOptions)
-        }
-        return configsMap.getOrPut(cacheKey) { doGetConfigs(element, configType, allowDefinition, orDefault, matchOptions) } as List<T>
-    }
-    
-    private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtConfig<*>>>? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsCacheKey) {
-            val value = ConcurrentHashMap<String, List<CwtConfig<*>>>()
-            //invalidated on file modification or ScriptFileTracker
-            val file = element.containingFile
-            val tracker = ParadoxPsiModificationTracker.getInstance(file.project).ScriptFileTracker
-            CachedValueProvider.Result.create(value, file, tracker)
-        }
-    }
-    
-    private fun <T : CwtMemberConfig<*>> doGetConfigs(element: PsiElement, configType: Class<T>, allowDefinition: Boolean, orDefault: Boolean, matchOptions: Int): List<T> {
-        //当输入的元素是key或property时，输入的规则类型必须是property
-        val result = when(configType) {
-            CwtPropertyConfig::class.java -> {
-                val memberElement = when {
-                    element is ParadoxScriptDefinitionElement -> element
-                    element is ParadoxScriptPropertyKey -> element.parent as? ParadoxScriptProperty ?: return emptyList()
-                    else -> throw UnsupportedOperationException()
-                }
-                val definitionMemberInfo = memberElement.definitionMemberInfo ?: return emptyList()
-                if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
-                
-                val expression = when {
-                    element is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxDataExpression.resolve(it, matchOptions) }
-                    element is ParadoxScriptFile -> BlockParadoxDataExpression
-                    element is ParadoxScriptPropertyKey -> element.propertyValue?.let { ParadoxDataExpression.resolve(it, matchOptions) }
-                    else -> throw UnsupportedOperationException()
-                }
-                
-                //如果无法匹配value，则取第一个
-                val configs = definitionMemberInfo.getConfigs(matchOptions)
-                val configGroup = definitionMemberInfo.configGroup
-                val resultConfigs = SmartList<CwtPropertyConfig>()
-                run {
-                    //不完整的属性 - 不匹配值
-                    if(expression == null) {
-                        for(config in configs) {
-                            if(config !is CwtPropertyConfig) continue
-                            resultConfigs.add(config)
-                        }
-                        return@run
-                    }
-                    //精确匹配
-                    for(config in configs) {
-                        if(config !is CwtPropertyConfig) continue
-                        ProgressManager.checkCanceled()
-                        if(ParadoxConfigMatcher.matches(memberElement, expression, config.valueExpression, config, configGroup, matchOptions).get(matchOptions)) {
-                            resultConfigs.add(config)
-                        }
-                    }
-                    //精确匹配无结果 - 不精确匹配
-                    if(resultConfigs.isEmpty()) {
-                        val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
-                        for(config in configs) {
-                            if(config !is CwtPropertyConfig) continue
-                            ProgressManager.checkCanceled()
-                            val configExpression = config.valueExpression
-                            if(!requireNotExactMatch(configExpression)) continue
-                            if(ParadoxConfigMatcher.matches(memberElement, expression, configExpression, config, configGroup, newMatchOptions).get(newMatchOptions)) {
-                                resultConfigs.add(config)
-                            }
-                        }
-                    }
-                    //仍然无结果 - 判断是否使用默认值
-                    if(orDefault && resultConfigs.isEmpty()) {
-                        configs.forEach { it.castOrNull<CwtPropertyConfig>()?.let<CwtPropertyConfig, Unit> { c -> resultConfigs.add(c) } }
-                    }
-                }
-                resultConfigs as List<T>
-            }
-            CwtValueConfig::class.java -> {
-                val valueElement = when {
-                    element is ParadoxScriptValue -> element
-                    else -> throw UnsupportedOperationException()
-                }
-                val expression = ParadoxDataExpression.resolve(valueElement, matchOptions)
-                val parent = element.parent
-                when(parent) {
-                    //如果value是property的value
-                    is ParadoxScriptProperty -> {
-                        val property = parent
-                        val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
-                        if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
-                        
-                        ProgressManager.checkCanceled()
-                        val configs = definitionMemberInfo.getConfigs(matchOptions)
-                        val configGroup = definitionMemberInfo.configGroup
-                        val resultConfigs = SmartList<CwtValueConfig>()
-                        run {
-                            //精确匹配
-                            for(config in configs) {
-                                if(config !is CwtPropertyConfig) continue
-                                ProgressManager.checkCanceled()
-                                val valueConfig = config.valueConfig ?: continue
-                                if(ParadoxConfigMatcher.matches(valueElement, expression, valueConfig.expression, config, configGroup, matchOptions).get(matchOptions)) {
-                                    resultConfigs.add(valueConfig)
-                                }
-                            }
-                            //精确匹配无结果 - 不精确匹配
-                            if(resultConfigs.isEmpty()) {
-                                val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
-                                for(config in configs) {
-                                    if(config !is CwtPropertyConfig) continue
-                                    ProgressManager.checkCanceled()
-                                    val valueConfig = config.valueConfig ?: continue
-                                    val configExpression = valueConfig.expression
-                                    if(!requireNotExactMatch(configExpression)) continue
-                                    if(ParadoxConfigMatcher.matches(valueElement, expression, configExpression, config, configGroup, newMatchOptions).get(newMatchOptions)) {
-                                        resultConfigs.add(valueConfig)
-                                    }
-                                }
-                            }
-                            //仍然无结果 - 判断是否使用默认值
-                            if(orDefault && resultConfigs.isEmpty()) {
-                                configs.forEach { it.castOrNull<CwtPropertyConfig>()?.valueConfig?.let<CwtValueConfig, Unit> { c -> resultConfigs.add(c) } }
-                            }
-                        }
-                        resultConfigs as List<T>
-                    }
-                    //如果value是blockElement中的value
-                    is ParadoxScriptBlockElement -> {
-                        val property = parent.parent as? ParadoxScriptDefinitionElement ?: return emptyList()
-                        val definitionMemberInfo = property.definitionMemberInfo ?: return emptyList()
-                        
-                        val childConfigs = definitionMemberInfo.getChildConfigs(matchOptions)
-                        if(childConfigs.isEmpty()) return emptyList()
-                        val configGroup = definitionMemberInfo.configGroup
-                        val resultConfigs = SmartList<CwtValueConfig>()
-                        run {
-                            for(childConfig in childConfigs) {
-                                if(childConfig !is CwtValueConfig) continue
-                                ProgressManager.checkCanceled()
-                                //精确匹配
-                                if(ParadoxConfigMatcher.matches(valueElement, expression, childConfig.valueExpression, childConfig, configGroup, matchOptions).get(matchOptions)) {
-                                    resultConfigs.add(childConfig)
-                                }
-                            }
-                            //精确匹配无结果 - 不精确匹配
-                            if(resultConfigs.isEmpty()) {
-                                val newMatchOptions = matchOptions or ParadoxConfigMatcher.Options.Relax
-                                for(childConfig in childConfigs) {
-                                    if(childConfig !is CwtValueConfig) continue
-                                    ProgressManager.checkCanceled()
-                                    val configExpression = childConfig.valueExpression
-                                    if(!requireNotExactMatch(configExpression)) continue
-                                    if(ParadoxConfigMatcher.matches(valueElement, expression, configExpression, childConfig, configGroup, newMatchOptions).get(newMatchOptions)) {
-                                        resultConfigs.add(childConfig)
-                                    }
-                                }
-                            }
-                            //仍然无结果 - 判断是否使用默认值
-                            if(orDefault && resultConfigs.isEmpty()) {
-                                childConfigs.singleOrNull { it is CwtValueConfig }?.cast<CwtValueConfig>()?.let { resultConfigs.add(it) }
-                            }
-                        }
-                        resultConfigs as List<T>
-                    }
-                    else -> return emptyList()
-                }
-            }
-            else -> throw UnsupportedOperationException()
-        }
-        ////如果得到的规则有多个且全是block规则，按照子句中的规则个数，将多的排在前面
-        //if(result.size > 1 && result.all { it.configs != null }) return result.sortedByDescending { it.configs?.size ?: 0 }
-        return result
-    }
-    
-    //DONE 兼容需要考虑内联的情况（如内联脚本）
-    //DONE 这里需要兼容匹配key的子句规则有多个的情况 - 匹配任意则使用匹配的首个规则，空子句或者都不匹配则使用合并的规则
-    
-    /**
-     * 得到指定的[element]的作为值的子句中的子属性/值的出现次数信息。（先合并子规则）
-     */
-    fun getChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
-        if(configs.isEmpty()) return emptyMap()
-        val childConfigs = configs.flatMap { it.configs.orEmpty() }
-        if(childConfigs.isEmpty()) return emptyMap()
-        
-        val childOccurrenceMap = doGetChildOccurrenceMapCacheFromCache(element) ?: return emptyMap()
-        //NOTE cacheKey基于childConfigs即可，key相同而value不同的规则，上面的cardinality应当保证是一样的 
-        val cacheKey = childConfigs.joinToString(" ")
-        return childOccurrenceMap.getOrPut(cacheKey) { doGetChildOccurrenceMap(element, configs) }
-    }
-    
-    private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMemberElement): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedChildOccurrenceMapCacheKey) {
-            val value = ConcurrentHashMap<String, Map<CwtDataExpression, Occurrence>>()
-            //invalidated on file modification or ScriptFileTracker
-            val file = element.containingFile
-            val tracker = ParadoxPsiModificationTracker.getInstance(file.project).ScriptFileTracker
-            CachedValueProvider.Result.create(value, file, tracker)
-        }
-    }
-    
-    private fun doGetChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
-        if(configs.isEmpty()) return emptyMap()
-        val configGroup = configs.first().info.configGroup
-        //这里需要先按优先级排序
-        val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority(configGroup) { it.expression }
-        if(childConfigs.isEmpty()) return emptyMap()
-        val project = configGroup.project
-        val blockElement = when {
-            element is ParadoxScriptDefinitionElement -> element.block
-            element is ParadoxScriptBlockElement -> element
-            else -> null
-        }
-        if(blockElement == null) return emptyMap()
-        val occurrenceMap = mutableMapOf<CwtDataExpression, Occurrence>()
-        for(childConfig in childConfigs) {
-            occurrenceMap.put(childConfig.expression, childConfig.toOccurrence(element, project))
-        }
-        ProgressManager.checkCanceled()
-        //注意这里需要考虑内联和可选的情况
-        blockElement.processData(conditional = true, inline = true) p@{ data ->
-            val expression = when {
-                data is ParadoxScriptProperty -> ParadoxDataExpression.resolve(data.propertyKey)
-                data is ParadoxScriptValue -> ParadoxDataExpression.resolve(data)
-                else -> return@p true
-            }
-            val isParameterized = expression.type == ParadoxType.String && expression.text.isParameterized()
-            //may contain parameter -> can't and should not get occurrences
-            if(isParameterized) {
-                occurrenceMap.clear()
-                return@p true
-            }
-            val matched = childConfigs.find { childConfig ->
-                if(childConfig is CwtPropertyConfig && data !is ParadoxScriptProperty) return@find false
-                if(childConfig is CwtValueConfig && data !is ParadoxScriptValue) return@find false
-                ParadoxConfigMatcher.matches(data, expression, childConfig.expression, childConfig, configGroup).get()
-            }
-            if(matched == null) return@p true
-            val occurrence = occurrenceMap[matched.expression]
-            if(occurrence == null) return@p true
-            occurrence.actual += 1
-            true
-        }
-        return occurrenceMap
-    }
-    
     //endregion
 }

@@ -44,7 +44,7 @@ object ParadoxLocalisationParameterHandler {
                 ProgressManager.checkCanceled()
                 val localisationReferenceElement = reference.element
                 if(localisationReferenceElement is ParadoxScriptString) {
-                    val valueConfigs = ParadoxConfigHandler.getValueConfigs(localisationReferenceElement)
+                    val valueConfigs = ParadoxConfigResolver.getValueConfigs(localisationReferenceElement, true, true, ParadoxConfigMatcher.Options.Default)
                     val valueConfig = valueConfigs.firstOrNull() ?: return@p true
                     val config = valueConfig.propertyConfig ?: return@p true
                     val parameterPropertyElements = findParameterPropertiesFromLocalisationProperty(localisationReferenceElement, config)
@@ -102,7 +102,7 @@ object ParadoxLocalisationParameterHandler {
     
     private fun isMatchedProperty(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         if(element is ParadoxScriptProperty) {
-            val configs = ParadoxConfigHandler.getConfigs(element, allowDefinition = true)
+            val configs = ParadoxConfigResolver.getConfigs(element, allowDefinition = true, matchOptions = ParadoxConfigMatcher.Options.Default)
             if(configs.any { it pointerEquals config }) {
                 return true
             }

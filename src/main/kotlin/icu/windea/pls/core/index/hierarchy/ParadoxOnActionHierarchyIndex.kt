@@ -99,7 +99,7 @@ object ParadoxOnActionHierarchyIndex {
                         val expression = element.value
                         if(expression.isParameterized()) return@run
                         val matchOptions = Options.SkipIndex or Options.SkipScope
-                        val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = matchOptions)
+                        val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = matchOptions)
                         if(configs.any { isEventDefinitionConfig(it) }) {
                             val eventInvocationInfo = EventInvocationInfo(expression)
                             currentOnActionInfo?.eventInvocationInfos?.add(eventInvocationInfo)
