@@ -31,7 +31,7 @@ class ParadoxScopeLinkDataSourceExpressionNode (
 				val configs = linkConfigs.filter { it.dataSource?.type == CwtDataType.Value }
 				if(configs.isNotEmpty()) {
 					val configGroup = linkConfigs.first().info.configGroup
-					val node = ParadoxValueSetValueExpression.resolve(text, textRange, configs, configGroup)
+					val node = ParadoxValueSetValueExpression.resolve(text, textRange, configs, configGroup)!!
 					nodes.add(node)
 				}
 				//val offset = textRange.startOffset
