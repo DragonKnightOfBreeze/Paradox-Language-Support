@@ -11,6 +11,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.expression.*
+import icu.windea.pls.lang.model.*
 
 /**
  * 文件路径的查询器。
@@ -27,41 +28,51 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         val gameType = queryParameters.selector.gameType
         val contextElement = queryParameters.selector.file?.toPsiFile(project)
         
-        val pathReferenceExpressionSupport = if(configExpression != null) ParadoxPathReferenceExpressionSupport.get(configExpression) else null
-        
         DumbService.getInstance(project).runReadActionInSmartMode action@{
-            if(configExpression == null || pathReferenceExpressionSupport?.matchEntire(configExpression, contextElement) == true) {
-                val keys = if(filePath != null) {
-                    getFilePathInfos(filePath, queryParameters)
+            if(configExpression == null) {
+                if(filePath == null) {
+                    val keys = FileBasedIndex.getInstance().getAllKeys(ParadoxFilePathIndex.NAME, project)
+                    FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null){
+                        processFile(it, project, gameType, consumer)
+                    }
                 } else {
-                    FileBasedIndex.getInstance().getAllKeys(ParadoxFilePathIndex.NAME, project)
-                }
-                FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) p@{ file ->
-                    ProgressManager.checkCanceled()
-                    //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析，从而导致无法从file获取gameType
-                    file.toPsiFile(project) ?: return@p true
-                    if(gameType != null && gameType != selectGameType(file)) return@p true
-                    consumer.process(file)
+                    val keys = getFilePaths(filePath, queryParameters)
+                    FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) {
+                        processFile(it, project, gameType, consumer)
+                    }
                 }
             } else {
-                if(pathReferenceExpressionSupport == null) return@action
-                FileBasedIndex.getInstance().processAllKeys(ParadoxFilePathIndex.NAME, p@{ p ->
-                    if(filePath != null && pathReferenceExpressionSupport.extract(configExpression, contextElement, p, ignoreCase) != filePath) return@p true
-                    if(!pathReferenceExpressionSupport.matches(configExpression, contextElement, p, ignoreCase)) return@p true
-                    val keys = setOf(p)
-                    FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) pp@{ file ->
-                        ProgressManager.checkCanceled()
-                        //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析，从而导致无法从file获取gameType
-                        file.toPsiFile(project) ?: return@pp true
-                        if(gameType != null && gameType != selectGameType(file)) return@pp true
-                        consumer.process(file)
+                val support = ParadoxPathReferenceExpressionSupport.get(configExpression) ?: return@action
+                if(filePath == null) {
+                    val keys = mutableSetOf<String>()
+                    FileBasedIndex.getInstance().processAllKeys(ParadoxFilePathIndex.NAME, p@{ p ->
+                        if(!support.matches(configExpression, contextElement, p, ignoreCase)) return@p true
+                        keys.add(p)
+                    }, scope, null)
+                    FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) { 
+                        processFile(it, project, gameType, consumer)
                     }
-                }, scope, null)
+                } else {
+                    val resolvedPath = support.resolvePath(configExpression, filePath)
+                    if(resolvedPath != null) {
+                        val keys = setOf(resolvedPath)
+                        FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null){
+                            processFile(it, project, gameType, consumer)
+                        }
+                        return@action
+                    } 
+                    val resolvedFileName = support.resolveFileName(configExpression, filePath)
+                    FilenameIndex.processFilesByName(resolvedFileName, true, scope) p@{
+                        val p = it.fileInfo?.path?.path ?: return@p true
+                        if(!support.matches(configExpression, contextElement, p, ignoreCase)) return@p true
+                        processFile(it, project, gameType, consumer)
+                    }
+                }
             }
         }
     }
     
-    private fun getFilePathInfos(filePath: String, queryParameters: ParadoxFilePathSearch.SearchParameters): Set<String> {
+    private fun getFilePaths(filePath: String, queryParameters: ParadoxFilePathSearch.SearchParameters): Set<String> {
         if(queryParameters.ignoreLocale) {
             return getFilePathsIgnoreLocale(filePath) ?: setOf(filePath)
         } else {
@@ -92,5 +103,13 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         result.add(filePath)
         localeStrings.forEach { result.add(filePath.replace(usedLocaleString, it)) }
         return result
+    }
+    
+    private fun processFile(file: VirtualFile, project: Project, gameType: ParadoxGameType?, consumer: Processor<in VirtualFile>): Boolean {
+        ProgressManager.checkCanceled()
+        //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析，从而导致无法从file获取gameType
+        file.toPsiFile(project) ?: return true
+        if(gameType != null && gameType != selectGameType(file)) return true
+        return consumer.process(file)
     }
 }
