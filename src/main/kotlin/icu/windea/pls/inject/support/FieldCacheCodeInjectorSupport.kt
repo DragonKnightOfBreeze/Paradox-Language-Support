@@ -52,14 +52,11 @@ class FieldCacheCodeInjectorSupport : CodeInjectorSupport() {
                 thisLogger().warn("Method ${methodName}() returns nothing")
                 continue
             }
-            if(returnType.isPrimitive) {
-                thisLogger().warn("Method ${methodName}() returns a primitive value")
-                continue
-            }
             
             finalMethodNames.add(methodName)
             val fieldName = fieldPrefix + methodName
-            val field = CtField.make("public volatile ${returnType.name} ${fieldName} = null;", targetClass)
+            val returnTypeName = if(returnType is CtPrimitiveType) returnType.wrapperName else returnType.name
+            val field = CtField.make("public volatile ${returnTypeName} ${fieldName} = null;", targetClass)
             targetClass.addField(field)
             val code1 = "{ if(${fieldName} != null) { return ${fieldName}; } }"
             method.insertBefore(code1)
