@@ -100,8 +100,8 @@ private object CwtPropertyConfigImpls {
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
         
         override val valueConfig = getValueConfig()
-        override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
-        override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
+        override val values: List<CwtValueConfig>? = configs?.filterIsInstance<CwtValueConfig>()
+        override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstance<CwtPropertyConfig>()
         override val keyExpression: CwtKeyExpression = CwtKeyExpression.resolve(key)
         override val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
     }
@@ -129,21 +129,24 @@ private object CwtPropertyConfigImpls {
         override val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
     }
     
-    //memory usage: 12 + 2 * 4 = 20b => 24b
+    //memory usage: 12 + 3 * 4 = 24b => 24b
     
     class DelegateA(
         delegate: CwtPropertyConfig,
         override var parent: CwtMemberConfig<*>?,
-    ) : CwtPropertyConfig by delegate
+    ) : CwtPropertyConfig by delegate {
+        override val valueConfig = getValueConfig()
+    }
     
-    //memory usage: 12 + 4 * 4 = 28b => 32b
+    //memory usage: 12 + 6 * 4 = 36b => 40b
     
     class DelegateB(
         delegate: CwtPropertyConfig,
         override var parent: CwtMemberConfig<*>?,
         override val configs: List<CwtMemberConfig<*>>? = null,
     ) : CwtPropertyConfig by delegate {
-        override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
-        override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
+        override val valueConfig = getValueConfig()
+        override val values: List<CwtValueConfig>? = configs?.filterIsInstance<CwtValueConfig>()
+        override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstance<CwtPropertyConfig>()
     }
 }

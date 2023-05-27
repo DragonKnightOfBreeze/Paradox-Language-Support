@@ -1,6 +1,5 @@
 package icu.windea.pls.lang
 
-import com.intellij.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
@@ -36,6 +35,21 @@ object ParadoxConfigInlineHandler {
     }
     
     /**
+     * 将指定的[inlineConfig]内联作为子节点并返回。如果需要拷贝，则进行深拷贝。
+     */
+    fun inlineWithInlineConfig(config: CwtPropertyConfig, inlineConfig: CwtInlineConfig) : CwtPropertyConfig{
+        val other = inlineConfig.config
+        val inlined = other.copy(
+            key = config.key,
+            configs = other.deepCopyConfigs()
+        )
+        inlined.parent = config
+        inlined.configs?.forEach { it.parent = inlined }
+        inlined.inlineableConfig = inlineConfig
+        return inlined
+    }
+    
+    /**
      * 从[aliasConfig]内联规则：key改为取[aliasConfig]的subName，value改为取[aliasConfig]的的value，如果需要拷贝，则进行深拷贝。
      */
     fun inlineWithAliasConfig(config: CwtPropertyConfig, aliasConfig: CwtAliasConfig): CwtPropertyConfig {
@@ -50,21 +64,6 @@ object ParadoxConfigInlineHandler {
         inlined.parent = config.parent
         inlined.configs?.forEach { it.parent = inlined }
         inlined.inlineableConfig = aliasConfig
-        return inlined
-    }
-    
-    /**
-     * 将指定的[inlineConfig]内联作为子节点并返回。如果需要拷贝，则进行深拷贝。
-     */
-    fun inlineWithInlineConfig(config: CwtPropertyConfig, inlineConfig: CwtInlineConfig) : CwtPropertyConfig{
-        val other = inlineConfig.config
-        val inlined = other.copy(
-            key = config.key,
-            configs = other.deepCopyConfigs()
-        )
-        inlined.parent = config
-        inlined.configs?.forEach { it.parent = inlined }
-        inlined.inlineableConfig = inlineConfig
         return inlined
     }
     
