@@ -99,9 +99,8 @@ fun ParadoxElementPath.matchEntire(other: List<String>, ignoreCase: Boolean = tr
 //intern to optimize memory
 
 class ParadoxElementPathImplA(
-    path: String
+    override val path: String
 ) : ParadoxElementPath {
-    override val path: String = path
     override val rawSubPaths: List<String> = doGetRawSubPaths()
     override val subPaths: List<Info> = rawSubPaths.map { Info.resolve(it) }
     override val length: Int = subPaths.size
@@ -139,10 +138,9 @@ class ParadoxElementPathImplA(
 }
 
 class ParadoxElementPathImplB(
-    rawSubPaths: List<String>
+    override val rawSubPaths: List<String>
 ) : ParadoxElementPath {
     override val path: String = doGetPath()
-    override val rawSubPaths = rawSubPaths
     override val subPaths: List<Info> = rawSubPaths.map { Info.resolve(it) }
     override val length: Int = subPaths.size
     override val isParameterized: Boolean = length != 0 && subPaths.any { it.subPath.isParameterized() }
