@@ -14,19 +14,19 @@ class ParadoxScriptPropertyCodeInjector : BaseCodeInjector()
 class ParadoxScriptPropertyKeyCodeInjector : BaseCodeInjector()
 
 @InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptBooleanImpl", pluginId = "icu.windea.pls")
-@FieldCacheMethods(methods = ["getText", "getValue", "getBooleanValue"], cleanupMethod = "subtreeChanged")
+@FieldCacheMethods(methods = ["getText", "getValue"], cleanupMethod = "subtreeChanged")
 class ParadoxScriptBooleanCodeInjector : BaseCodeInjector()
 
 @InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptIntImpl", pluginId = "icu.windea.pls")
-@FieldCacheMethods(methods = ["getText", "getValue", "getIntValue"], cleanupMethod = "subtreeChanged")
+@FieldCacheMethods(methods = ["getText", "getValue"], cleanupMethod = "subtreeChanged")
 class ParadoxScriptIntCodeInjector : BaseCodeInjector()
 
 @InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptFloatImpl", pluginId = "icu.windea.pls")
-@FieldCacheMethods(methods = ["getText", "getValue", "getFloatValue"], cleanupMethod = "subtreeChanged")
+@FieldCacheMethods(methods = ["getText", "getValue"], cleanupMethod = "subtreeChanged")
 class ParadoxScriptFloatCodeInjector : BaseCodeInjector()
 
 @InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptStringImpl", pluginId = "icu.windea.pls")
-@FieldCacheMethods(methods = ["getText", "getValue", "getStringValue"], cleanupMethod = "subtreeChanged")
+@FieldCacheMethods(methods = ["getText", "getValue"], cleanupMethod = "subtreeChanged")
 class ParadoxScriptStringCodeInjector : BaseCodeInjector()
 
 @InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptColorImpl", pluginId = "icu.windea.pls")

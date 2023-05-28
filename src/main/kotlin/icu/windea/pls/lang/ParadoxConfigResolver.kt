@@ -50,7 +50,7 @@ object ParadoxConfigResolver {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsCacheKey) {
             val value = ConcurrentHashMap<String, List<CwtConfig<*>>>()
             //invalidated on file modification or ScriptFileTracker
-            val file = element.containingFile
+            val file = element.containingFile //perf 0% 48%
             val tracker = ParadoxPsiModificationTracker.getInstance(file.project).ScriptFileTracker
             CachedValueProvider.Result.create(value, file, tracker)
         }
