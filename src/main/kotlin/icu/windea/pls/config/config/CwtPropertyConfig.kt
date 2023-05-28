@@ -64,7 +64,7 @@ fun CwtPropertyConfig.copyDelegated(
 
 fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
     val valuePointer = when {
-        pointer == emptyPointer<CwtValue>() -> emptyPointer()
+        pointer === emptyPointer<CwtValue>() -> emptyPointer()
         else -> {
             val resolvedPointer = resolved().pointer
             val resolvedFile = resolvedPointer.containingFile ?: return null
@@ -98,7 +98,7 @@ private object CwtPropertyConfigImpls {
         @Volatile override var parent: CwtMemberConfig<*>? = null
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
         
-        override val valueConfig = getValueConfig()
+        override val valueConfig: CwtValueConfig? by lazy { getValueConfig() }
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val values: List<CwtValueConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val properties: List<CwtPropertyConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
@@ -122,7 +122,7 @@ private object CwtPropertyConfigImpls {
         @Volatile override var parent: CwtMemberConfig<*>? = null
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
         
-        override val valueConfig = getValueConfig()
+        override val valueConfig: CwtValueConfig? by lazy { getValueConfig() }
         override val values: List<CwtValueConfig>? = configs?.filterIsInstance<CwtValueConfig>()
         override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstance<CwtPropertyConfig>()
         override val keyExpression: CwtKeyExpression = CwtKeyExpression.resolve(key)
@@ -135,7 +135,7 @@ private object CwtPropertyConfigImpls {
         delegate: CwtPropertyConfig,
         override var parent: CwtMemberConfig<*>?,
     ) : CwtPropertyConfig by delegate {
-        override val valueConfig = getValueConfig()
+        override val valueConfig: CwtValueConfig? by lazy { getValueConfig() }
     }
     
     //memory usage: 12 + 6 * 4 = 36b => 40b
@@ -145,7 +145,7 @@ private object CwtPropertyConfigImpls {
         override var parent: CwtMemberConfig<*>?,
         override val configs: List<CwtMemberConfig<*>>? = null,
     ) : CwtPropertyConfig by delegate {
-        override val valueConfig = getValueConfig()
+        override val valueConfig: CwtValueConfig? by lazy { getValueConfig() }
         override val values: List<CwtValueConfig>? = configs?.filterIsInstance<CwtValueConfig>()
         override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstance<CwtPropertyConfig>()
     }

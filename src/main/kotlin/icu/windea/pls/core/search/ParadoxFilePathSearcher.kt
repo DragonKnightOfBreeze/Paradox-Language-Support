@@ -106,7 +106,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
     
     private fun processFile(file: VirtualFile, project: Project, gameType: ParadoxGameType?, consumer: Processor<in VirtualFile>): Boolean {
         ProgressManager.checkCanceled()
-        //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析，从而导致无法从file获取gameType
+        //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
         file.toPsiFile(project) ?: return true
         if(gameType != null && gameType != selectGameType(file)) return true
         return consumer.process(file)
