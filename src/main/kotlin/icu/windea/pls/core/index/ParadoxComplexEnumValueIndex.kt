@@ -15,7 +15,7 @@ import java.io.*
 class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<ParadoxComplexEnumValueInfo>>() { 
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxComplexEnumValueInfo>>("paradox.complexEnumValue.index")
-        private const val VERSION = 25 //1.0.2
+        private const val VERSION = 26 //1.0.4
 
         fun getData(file: VirtualFile, project: Project): Map<String, List<ParadoxComplexEnumValueInfo>> {
             return FileBasedIndex.getInstance().getFileData(NAME, file, project)

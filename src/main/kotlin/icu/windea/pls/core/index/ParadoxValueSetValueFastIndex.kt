@@ -21,7 +21,7 @@ import java.io.*
 class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<ParadoxValueSetValueInfo>>() {
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxValueSetValueInfo>>("paradox.valueSetValue.fast.index")
-        private const val VERSION = 25 //1.0.2
+        private const val VERSION = 26 //1.0.4
         
         fun getData(file: VirtualFile, project: Project): Map<String, List<ParadoxValueSetValueInfo>> {
             return FileBasedIndex.getInstance().getFileData(NAME, file, project)
