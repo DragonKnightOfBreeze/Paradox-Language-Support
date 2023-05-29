@@ -19,6 +19,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
@@ -64,12 +65,12 @@ object ParadoxConfigMatcher {
         }
         
         class LazyIndexAwareMatch(predicate: () -> Boolean) : LazyMatch() {
-            private val result by lazy { preventException { predicate() } }
+            private val result by lazy { predicate() }.catching { onMatchException(it) }
             override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipIndex)) true else result
         }
         
         class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch() {
-            private val result by lazy { preventException { predicate() } }
+            private val result by lazy { predicate() }.catching { onMatchException(it) }
             override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipScope)) true else result
         }
     }
@@ -490,18 +491,14 @@ object ParadoxConfigMatcher {
         }
     }
     
-    inline fun preventException(predicate: () -> Boolean): Boolean {
+    private fun onMatchException(e: Throwable): Boolean {
         //进一步匹配CWT规则时需要防止出现某些异常（如索引异常）
-        try {
-            return predicate()
-        } catch(e: Exception) {
-            thisLogger().info(e)
-            //java.lang.Throwable: Indexing process should not rely on non-indexed file data. -> 直接认为匹配
-            //com.intellij.openapi.project.IndexNotReadyException -> 直接认为匹配
-            //com.intellij.openapi.progress.ProcessCanceledException -> 直接认为匹配
-            //其他情况 -> 也直接认为匹配
-            return true
-        }
+        thisLogger().info(e)
+        //java.lang.Throwable: Indexing process should not rely on non-indexed file data. -> 直接认为匹配
+        //com.intellij.openapi.project.IndexNotReadyException -> 直接认为匹配
+        //com.intellij.openapi.progress.ProcessCanceledException -> 直接认为匹配
+        //其他情况 -> 也直接认为匹配
+        return true
     }
     
     class Listener : PsiModificationTracker.Listener {
