@@ -35,7 +35,7 @@ Usage:
 
 * Open your mod root directory through the IDE. (It needs to directly contain the mod descriptor file `descriptor.mod`)
 * Open the mod descriptor file, click the mod settings button in the floating toolbar (or editor right-click menu) at the top right of the editor, and configure the game type, game directory, and additional mod dependencies of the mod.
-* Click the OK button to complete the configuration, and then wait for the IDE to complete indexing. (It will be fast)
+* Click the OK button to complete the configuration, and then wait for the IDE to complete indexing.
 * Start your mod programming journey!
 
 Tips:
