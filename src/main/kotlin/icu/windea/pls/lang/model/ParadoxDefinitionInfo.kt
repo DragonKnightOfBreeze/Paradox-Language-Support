@@ -112,7 +112,7 @@ class ParadoxDefinitionInfo(
     val project get() = configGroup.project
     
     fun getSubtypeConfigs(matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtSubtypeConfig> {
-        return subtypeConfigsCache.getOrPut(matchOptions) { doGetSubtypeConfigs(matchOptions) }
+        return subtypeConfigsCache.computeIfAbsent(matchOptions) { doGetSubtypeConfigs(matchOptions) }
     }
     
     private val subtypeConfigsCache = ConcurrentHashMap<Int, List<CwtSubtypeConfig>>()
@@ -129,7 +129,7 @@ class ParadoxDefinitionInfo(
     }
     
     fun getDeclaration(matchOptions: Int = ParadoxConfigMatcher.Options.Default): CwtPropertyConfig? {
-        return declarationConfigsCache.getOrPut(matchOptions) { doGetDeclaration(matchOptions) }
+        return declarationConfigsCache.computeIfAbsent(matchOptions) { doGetDeclaration(matchOptions) }
     }
     
     private val declarationConfigsCache = ConcurrentHashMap<Int, CwtPropertyConfig?>()
