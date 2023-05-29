@@ -42,7 +42,8 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                     if(valueSetValueInfoList.isNullOrEmpty()) return@f
                     valueSetValueInfoList.forEachFast { info ->
                         if(name == null || name == info.name) {
-                            consumer.process(info)
+                            val r = consumer.process(info)
+                            if(!r) return@p false
                         }
                     }
                 }
@@ -55,7 +56,8 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                 //    if(valueSetValueInfoList.isNullOrEmpty()) return@f
                 //    valueSetValueInfoList.forEachFast { info ->
                 //        if(name == null || name == info.name) {
-                //            consumer.process(info)
+                //            val r = consumer.process(info)
+                //            if(!r) return@p false
                 //        }
                 //    }
                 //}
@@ -72,13 +74,15 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                 //    if(name == null) {
                 //        valueSetValueInfos.values.forEach { infos ->
                 //            infos.forEachFast { info ->
-                //                consumer.process(info)
+                //                val r = consumer.process(info)
+                //                if(!r) return@p false
                 //            }
                 //        }
                 //    } else {
                 //        val infos = valueSetValueInfos[name] ?: return@f
                 //        infos.forEachFast { info ->
-                //            consumer.process(info)
+                //            val r = consumer.process(info)
+                //            if(!r) return@p false
                 //        }
                 //    }
                 //}

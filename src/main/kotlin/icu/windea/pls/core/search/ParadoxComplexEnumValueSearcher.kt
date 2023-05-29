@@ -9,7 +9,6 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
-import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.tool.*
@@ -28,8 +27,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         val selector = queryParameters.selector
         val targetGameType = selector.gameType ?: return
         
-        val distinctInFile = selector.selectors.findIsInstance<ParadoxWithSearchScopeTypeSelector<*>>()
-            ?.searchScopeType?.distinctInFile() ?: true
+        //val distinctInFile = selector.selectors.findIsInstance<ParadoxWithSearchScopeTypeSelector<*>>()?.searchScopeType?.distinctInFile() ?: true
         
         DumbService.getInstance(project).runReadActionInSmartMode action@{
             doProcessFiles(scope) p@{ file ->
@@ -37,26 +35,39 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
                 if(ParadoxFileManager.isLightFile(file)) return@p true
                 if(selectGameType(file) != targetGameType) return@p true //check game type at file level
                 
-                val data = ParadoxComplexEnumValueLazyIndex.getData(file, project)
-                //use distinct data if possible to optimize performance
-                val complexEnumValueInfos = when {
-                    distinctInFile -> data.distinctComplexEnumValueInfoGroup[enumName]
-                    else -> data.complexEnumValueInfoGroup[enumName]
+                val data = ParadoxComplexEnumValueIndex.getData(file, project)
+                if(data.isEmpty()) return@p true
+                val complexEnumValueInfoList = data[enumName]
+                if(complexEnumValueInfoList.isNullOrEmpty()) return@p true
+                complexEnumValueInfoList.forEachFast { info ->
+                    if(name == null || name == info.name) {
+                        val r = consumer.process(info)
+                        if(!r) return@p false
+                    }
                 }
-                if(complexEnumValueInfos.isNullOrEmpty()) return@p true
                 
-                if(name == null) {
-                    complexEnumValueInfos.values.forEach { infos ->
-                        infos.forEachFast { info ->
-                            consumer.process(info)
-                        }
-                    }
-                } else {
-                    val infos = complexEnumValueInfos[name] ?: return@p true
-                    infos.forEachFast { info ->
-                        consumer.process(info)
-                    }
-                }
+                //val data = ParadoxComplexEnumValueLazyIndex.getData(file, project)
+                ////use distinct data if possible to optimize performance
+                //val complexEnumValueInfos = when {
+                //    distinctInFile -> data.distinctComplexEnumValueInfoGroup[enumName]
+                //    else -> data.complexEnumValueInfoGroup[enumName]
+                //}
+                //if(complexEnumValueInfos.isNullOrEmpty()) return@p true
+                //
+                //if(name == null) {
+                //    complexEnumValueInfos.values.forEach { infos ->
+                //        infos.forEachFast { info ->
+                //            val r = consumer.process(info)
+                //            if(!r) return@p false
+                //        }
+                //    }
+                //} else {
+                //    val infos = complexEnumValueInfos[name] ?: return@p true
+                //    infos.forEachFast { info ->
+                //        val r = consumer.process(info)
+                //        if(!r) return@p false
+                //    }
+                //}
                 
                 true
             }
