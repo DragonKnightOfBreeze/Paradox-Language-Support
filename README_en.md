@@ -14,12 +14,12 @@ IDEA plugin: Support for Paradox language.
 Features:
 
 * Supports script language (mainly `*.txt` files) and localization language (`*.yml` files),  
-  providing many language features such as syntax parsing, reference resolution, quick documentation, code navigation, code checking, code completion, inline hints, live templates, code hierarchy, diagram, diff, etc.  
+  providing many language features such as syntax parsing, reference resolving, quick documentation, code navigation, code inspection, code completion, inlay hints, live templates, code hierarchy, diagram, diff, etc.  
   It also provides quite comprehensive support for most advanced features of script language, such as parameters, scopes, inline scripts and various complex expressions.
 * Supports CWT language (`*.cwt` files), providing basic language features.
 * Supports viewing DDS images directly in the IDE, providing some useful editor features including converting to PNG images.
-* Automatically recognizes the game directory (containing the launcher configuration file `launcher-settings.json`) and mod directory (containing the mod descriptor file `descriptor.mod`).
-* Renders related localized text and DDS images, as well as prompts some useful information including scope information and parameter information, through ways such as quick documentation and inline hints.
+* Automatically recognizes the game directory (containing the launcher settings file `launcher-settings.json`) and mod directory (containing the mod descriptor file `descriptor.mod`).
+* Renders related localisation text and DDS images, as well as prompts some useful information including scope information and parameter information, through ways such as quick documentation and inlay hints.
 
 This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode). These rule files are currently built into the plugin with some modifications and extensions.
 
@@ -34,7 +34,7 @@ If you encounter any problems during use, feel free to provide feedback via Gith
 Usage:
 
 * Open your mod root directory through the IDE. (It needs to directly contain the mod descriptor file `descriptor.mod`)
-* Open the mod descriptor file, click the mod configuration button in the floating toolbar (or editor right-click menu) at the top right of the editor, and configure the game type, game directory, and additional mod dependencies of the mod.
+* Open the mod descriptor file, click the mod settings button in the floating toolbar (or editor right-click menu) at the top right of the editor, and configure the game type, game directory, and additional mod dependencies of the mod.
 * Click the OK button to complete the configuration, and then wait for the IDE to complete indexing. (It will be fast)
 * Start your mod programming journey!
 
@@ -53,7 +53,7 @@ Tips:
   * Click `Navigate > Definition Hierarchy` to open the definition hierarchy window, to view the definition implementation relationship of a specific definition type.
   * Click `Navigate > Call Hierarchy` to open the call hierarchy window, to view the call relationship of definitions, localizations, scripted variables, etc.
 * To change the global configuration of the plugin, refer to the following method:
-  * Click `Settings > Languages & Frameworks > Paradox Language Support` to open the configuration page for the plugin.
+  * Click `Settings > Languages & Frameworks > Paradox Language Support` to open the settings page for the plugin.
 * To change the configuration of mod types, game directories, mod dependencies, etc., open the Mod Configuration dialog using one of the following methods:
   * Click the blue gear icon in the editor floating toolbar located in the upper right corner of the page.
   * In the editor, open the context menu and click `Paradox Language Support > Open Mod Settings...`.

@@ -2,12 +2,12 @@
 <p>Features:</p>
 <ul>
 <li>Supports script language (mainly <code>*.txt</code> files) and localization language (<code>*.yml</code> files),
-providing many language features such as syntax parsing, reference resolution, quick documentation, code navigation, code checking, code completion, inline hints, live templates, code hierarchy, diagram, diff, etc. 
+providing many language features such as syntax parsing, reference resolving, quick documentation, code navigation, code inspection, code completion, inlay hints, live templates, code hierarchy, diagram, diff, etc. 
 It also provides quite comprehensive support for most advanced features of script language, such as parameters, scopes, inline scripts and various complex expressions.</li>
 <li>Supports CWT language (<code>*.cwt</code> files), providing basic language features.</li>
 <li>Supports viewing DDS images directly in the IDE, providing some useful editor features including converting to PNG images.</li>
-<li>Automatically recognizes the game directory (containing the launcher configuration file <code>launcher-settings.json</code>) and mod directory (containing the mod descriptor file <code>descriptor.mod</code>).</li>
-<li>Renders related localized text and DDS images, as well as prompts some useful information including scope information and parameter information, through ways such as quick documentation and inline hints.</li>
+<li>Automatically recognizes the game directory (containing the launcher settings file <code>launcher-settings.json</code>) and mod directory (containing the mod descriptor file <code>descriptor.mod</code>).</li>
+<li>Renders related localisation text and DDS images, as well as prompts some useful information including scope information and parameter information, through ways such as quick documentation and inlay hints.</li>
 </ul>
 <p>This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>. These rule files are currently built into the plugin with some modifications and extensions.</p>
 <p>If <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a> is also installed, this plugin can provide some <a href="https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md">additional features</a>.</p>
