@@ -1,5 +1,7 @@
 package icu.windea.pls.lang.model
 
+import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import java.text.*
 
 enum class ParadoxType(
@@ -40,12 +42,12 @@ enum class ParadoxType(
 		return this == Unknown || this == String || this == Parameter
 	}
 	
-	fun isStringLikeType(): kotlin.Boolean {
-		return this == Unknown || this == String || this == Parameter || this == Int || this == Float
-	}
-	
 	fun isColorType(): kotlin.Boolean {
 		return this == Color
+	}
+	
+	fun isStringLikeType(): kotlin.Boolean {
+		return this == Unknown || this == String || this == Parameter || this == Int || this == Float
 	}
 	
 	fun isBlockLikeType(): kotlin.Boolean {
@@ -71,11 +73,32 @@ enum class ParadoxType(
 		}
 		
 		fun isInt(expression: kotlin.String): kotlin.Boolean {
-			return expression.toIntOrNull() != null
+			//return expression.toIntOrNull() != null
+			
+			//use handwrite implementation to optimize memory and restrict validation
+			//can be: 0, 1, 01
+			expression.forEachFast f@{ c ->
+				if(c.isExactDigit()) return@f
+				return false
+			}
+			return true
 		}
 		
 		fun isFloat(expression: kotlin.String): kotlin.Boolean {
-			return expression.toFloatOrNull() != null
+			//return expression.toFloatOrNull() != null
+			
+			//use handwrite implementation to optimize memory and restrict validation
+			//can be: 0, 1, 01, 0.0, 1.0, 01.0, .0
+			var containsDot = false
+			expression.forEachFast f@{ c ->
+				if(c.isExactDigit()) return@f
+				if(c == '.') {
+					if(containsDot) return false else containsDot = true
+					return@f
+				}
+				return false
+			}
+			return true
 		}
 		
 		private val isPercentageFieldRegex = """[1-9]?[0-9]+%""".toRegex()

@@ -316,7 +316,7 @@ object ParadoxDefinitionHandler {
         //这里不能基于内联后的声明结构，否则可能会导致SOE
         //也不要参数条件表达式中的声明结构判断，
         val childValueConfigs = propertyConfig.values.orEmpty()
-        val blockElement = definitionElement.block
+        val blockElement = definitionElement.block //TODO 1.0.4+ 显著影响性能，考虑优化？
         if(childValueConfigs.isNotEmpty()) {
             //匹配值列表
             if(!doMatchValues(definitionElement, blockElement, childValueConfigs, configGroup, matchOptions)) return false //继续匹配

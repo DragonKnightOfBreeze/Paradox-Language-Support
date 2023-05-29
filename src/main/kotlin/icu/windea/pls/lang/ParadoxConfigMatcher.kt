@@ -381,7 +381,7 @@ object ParadoxConfigMatcher {
     
     private fun getCachedResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
         ProgressManager.checkCanceled()
-        val rootFile = selectRootFile(element) ?: return Result.NotMatch //TODO 1.0.3 考虑优化性能
+        val rootFile = selectRootFile(element) ?: return Result.NotMatch //TODO 1.0.3+ 考虑优化性能
         val cache = configMatchResultCache.get(rootFile)
         return cache.getOrPut(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
     }
