@@ -76,8 +76,13 @@ enum class ParadoxType(
 			//return expression.toIntOrNull() != null
 			
 			//use handwrite implementation to optimize memory and restrict validation
-			//can be: 0, 1, 01
+			//can be: 0, 1, 01, -1
+			var isFirst = true
 			expression.forEachFast f@{ c ->
+				if(isFirst) {
+					isFirst = false
+					if(c == '+' || c == '-') return@f
+				}
 				if(c.isExactDigit()) return@f
 				return false
 			}
@@ -88,9 +93,14 @@ enum class ParadoxType(
 			//return expression.toFloatOrNull() != null
 			
 			//use handwrite implementation to optimize memory and restrict validation
-			//can be: 0, 1, 01, 0.0, 1.0, 01.0, .0
+			//can be: 0, 1, 01, -1, 0.0, 1.0, 01.0, .0
+			var isFirst = true
 			var containsDot = false
 			expression.forEachFast f@{ c ->
+				if(isFirst) {
+					isFirst = false
+					if(c == '+' || c == '-') return@f
+				}
 				if(c.isExactDigit()) return@f
 				if(c == '.') {
 					if(containsDot) return false else containsDot = true
