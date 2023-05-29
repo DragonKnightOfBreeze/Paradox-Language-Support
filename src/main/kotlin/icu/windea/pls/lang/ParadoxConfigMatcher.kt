@@ -495,9 +495,11 @@ object ParadoxConfigMatcher {
         try {
             return predicate()
         } catch(e: Exception) {
-            thisLogger().warn(e)
+            thisLogger().info(e)
             //java.lang.Throwable: Indexing process should not rely on non-indexed file data. -> 直接认为匹配
-            //其他情况 -> 尚未发现，也直接认为匹配
+            //com.intellij.openapi.project.IndexNotReadyException -> 直接认为匹配
+            //com.intellij.openapi.progress.ProcessCanceledException -> 直接认为匹配
+            //其他情况 -> 也直接认为匹配
             return true
         }
     }
