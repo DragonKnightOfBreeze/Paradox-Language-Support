@@ -508,11 +508,13 @@ fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolea
     //这个方法的执行速度应当非常非常快
     //optimized
     val path = this.trimFast('/')
-    if(path.length > other.length) return false
+    val length = path.length
+    val otherLength = other.length
+    if(length > otherLength) return false
     if((other as java.lang.String).startsWith(path, 0)) {
-        if(path.length == other.length) return acceptSelf
-        if(other[path.length] != '/') return false
-        if(strict && (other as java.lang.String).indexOf(47, path.length + 1) != -1) return false //47 -> '/'
+        if(length == otherLength) return acceptSelf
+        if(other[length] != '/') return false
+        if(strict && (other as java.lang.String).indexOf(47, length + 1) != -1) return false //47 -> '/'
         return true
     }
     return false

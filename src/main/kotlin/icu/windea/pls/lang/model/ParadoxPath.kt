@@ -57,16 +57,14 @@ fun ParadoxPath.canBeSyncedLocalisationPath(): Boolean {
 	return root == "localisation_synced" || root == "localization_synced"
 }
 
-//intern to optimize memory
-
 class ParadoxPathImplA(
 	override val path: String
 ) : ParadoxPath {
-	override val subPaths: List<String> = path.splitToSequence('/').mapTo(mutableListOf()) { it.intern() }
-	override val parent: String = path.substringBeforeLast('/', "").intern()
-	override val root: String = path.substringBefore('/', "").intern()
-	override val fileName: String = subPaths.lastOrNull().orEmpty().intern()
-	override val fileExtension: String = fileName.substringAfterLast('.', "").intern()
+	override val subPaths: List<String> = path.splitToSequence('/').toList()
+	override val parent: String = path.substringBeforeLast('/', "")
+	override val root: String = path.substringBefore('/', "")
+	override val fileName: String = subPaths.lastOrNull().orEmpty()
+	override val fileExtension: String = fileName.substringAfterLast('.', "")
 	override val length: Int = subPaths.size
 	
 	override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path
@@ -78,10 +76,10 @@ class ParadoxPathImplB(
 	override val subPaths: List<String>
 ) : ParadoxPath {
 	override val path: String = subPaths.joinToString("/")
-	override val parent: String = path.substringBeforeLast('/', "").intern()
-	override val root: String = path.substringBefore('/', "").intern()
-	override val fileName: String = subPaths.lastOrNull().orEmpty().intern()
-	override val fileExtension: String = fileName.substringAfterLast('.', "").intern()
+	override val parent: String = path.substringBeforeLast('/', "")
+	override val root: String = path.substringBefore('/', "")
+	override val fileName: String = subPaths.lastOrNull().orEmpty()
+	override val fileExtension: String = fileName.substringAfterLast('.', "")
 	override val length: Int = subPaths.size
 	
 	override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path

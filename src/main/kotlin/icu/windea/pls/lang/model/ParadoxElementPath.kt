@@ -54,7 +54,7 @@ interface ParadoxElementPath : Iterable<Info> {
     ) {
         companion object Resolver {
             fun resolve(path: String): Info {
-                return Info(path.intern(), path.unquote().intern(), path.isLeftQuoted(), path != "-")
+                return Info(path, path.unquote(), path.isLeftQuoted(), path != "-")
             }
         }
     }
@@ -95,8 +95,6 @@ fun ParadoxElementPath.matchEntire(other: List<String>, ignoreCase: Boolean = tr
     }
     return true
 }
-
-//intern to optimize memory
 
 class ParadoxElementPathImplA(
     override val path: String
