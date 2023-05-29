@@ -61,7 +61,13 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
         if(stub is ParadoxScriptFileStub) {
             dataStream.writeName(stub.name)
             dataStream.writeName(stub.type)
-            //dataStream.writeName(stub.subtypes.toCommaDelimitedString())
+            val subtypes = stub.subtypes
+            if(subtypes == null) {
+                dataStream.writeInt(-1)
+            } else {
+                dataStream.writeInt(subtypes.size)
+                subtypes.forEach { subtype -> dataStream.writeName(subtype) }
+            }
             dataStream.writeName(stub.gameType?.id)
         }
         super.serialize(stub, dataStream)
@@ -70,10 +76,10 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): PsiFileStub<*> {
         val name = dataStream.readNameString().orEmpty()
         val type = dataStream.readNameString().orEmpty()
-        //val subtypes = dataStream.readNameString()?.toCommaDelimitedStringList().orEmpty()
+        val subtypesSize = dataStream.readInt()
+        val subtypes = if(subtypesSize == -1) null else MutableList(subtypesSize) { dataStream.readNameString().orEmpty() }
         val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
-        //return ParadoxScriptFileStubImpl(null, name, type, subtypes, gameType)
-        return ParadoxScriptFileStubImpl(null, name, type, gameType)
+        return ParadoxScriptFileStubImpl(null, name, type, subtypes, gameType)
     }
     
     class Builder : LightStubBuilder() {
@@ -96,7 +102,7 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
         }
         
         override fun skipChildProcessingWhenBuildingStubs(tree: LighterAST, parent: LighterASTNode, node: LighterASTNode): Boolean {
-            //需要包括scripted_variable, property, key/string (作为：complexEnum, valueSetValue)
+            //需要包括scripted_variable, property
             val type = node.tokenType
             val parentType = parent.tokenType
             return when {
