@@ -19,17 +19,16 @@ import kotlin.collections.component2
  */
 class ParadoxDefinitionInfo(
     name0: String?, // null -> lazy get
+    typeConfig0: CwtTypeConfig,
+    subtypeConfigs0: List<CwtSubtypeConfig>?, //null -> lazy get
     val rootKey: String,
-    val typeConfig: CwtTypeConfig,
     val elementPath: ParadoxElementPath,
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
     val element: ParadoxScriptDefinitionElement,
     //element直接作为属性的话可能会有些问题，不过这个缓存会在所在脚本文件变更时被清除，应当问题不大
-    //element不能转为SmartPsiElementPointer然后作为属性，这会导致与ParadoxDefinitionMemberSInfo.element引发递归异常
+    //element不能转为SmartPsiElementPointer然后作为属性，这会导致与ParadoxDefinitionMemberInfo.element引发递归异常
 ): UserDataHolderBase() {
-    val type: String = typeConfig.name
-    
     //NOTE 部分属性需要使用懒加载
     
     val name: String by lazy {
@@ -37,36 +36,34 @@ class ParadoxDefinitionInfo(
         if(name0 != null) return@lazy name0
         
         //name_from_file = yes -> 返回不包含扩展名的文件名，即rootKey
-        val nameFromFileConfig = typeConfig.nameFromFile
+        val nameFromFileConfig = typeConfig0.nameFromFile
         if(nameFromFileConfig) return@lazy rootKey
         //name_field = xxx -> 返回对应名字（xxx）的property的stringValue，如果不存在则为匿名
-        val nameField = typeConfig.nameField
+        val nameField = typeConfig0.nameField
         if(nameField != null) {
             val nameProperty = element.findProperty(nameField)
             return@lazy nameProperty?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
         }
-        //否则直接返回rootKey
+        //直接返回rootKey
         rootKey
     }
     
-    val subtypes: List<String> by lazy {
-        subtypeConfigs.map { it.name }
-    }
+    val type: String = typeConfig0.name
     
-    val subtypeConfigs: List<CwtSubtypeConfig> by lazy { getSubtypeConfigs() }
+    val typeConfig: CwtTypeConfig by lazy { typeConfig0 }
     
-    val types: List<String> by lazy {
-        mutableListOf(type).apply { addAll(subtypes) }
-    }
+    val subtypes: List<String> by lazy { subtypeConfigs.map { it.name } }
     
-    val typesText: String by lazy {
-        types.joinToString(", ")
-    }
+    val subtypeConfigs: List<CwtSubtypeConfig> by lazy { subtypeConfigs0 ?: getSubtypeConfigs() }
+    
+    val types: List<String> by lazy { mutableListOf(type).apply { addAll(subtypes) } }
+    
+    val typesText: String by lazy { types.joinToString(", ") }
     
     val declaration: CwtPropertyConfig? by lazy { getDeclaration() }
     
     val localisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
-        val mergedLocalisationConfig = typeConfig.localisation?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
+        val mergedLocalisationConfig = typeConfig0.localisation?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
         val result = mutableListOf<ParadoxDefinitionRelatedLocalisationInfo>()
         //从已有的cwt规则
         for(config in mergedLocalisationConfig) {
@@ -78,7 +75,7 @@ class ParadoxDefinitionInfo(
     }
     
     val images: List<ParadoxDefinitionRelatedImageInfo> by lazy {
-        val mergedImagesConfig = typeConfig.images?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
+        val mergedImagesConfig = typeConfig0.images?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
         val result = mutableListOf<ParadoxDefinitionRelatedImageInfo>()
         //从已有的cwt规则
         for(config in mergedImagesConfig) {
@@ -113,7 +110,6 @@ class ParadoxDefinitionInfo(
     val declarationConfig get() = configGroup.declarations.get(type)
     
     val project get() = configGroup.project
-    
     
     fun getSubtypeConfigs(matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtSubtypeConfig> {
         return subtypeConfigsCache.getOrPut(matchOptions) { doGetSubtypeConfigs(matchOptions) }

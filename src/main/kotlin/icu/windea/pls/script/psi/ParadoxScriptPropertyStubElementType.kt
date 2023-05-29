@@ -29,7 +29,7 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     }
     
     private fun createDefaultStub(parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-        return ParadoxScriptPropertyStubImpl(parentStub, "", "", "", EmptyParadoxElementPath, null)
+        return ParadoxScriptPropertyStubImpl(parentStub, "", "", null, "", EmptyParadoxElementPath, null)
     }
     
     override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -51,7 +51,13 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     override fun serialize(stub: ParadoxScriptPropertyStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name)
         dataStream.writeName(stub.type)
-        //dataStream.writeName(stub.subtypes.toCommaDelimitedString())
+        val subtypes = stub.subtypes
+        if(subtypes == null) {
+            dataStream.writeInt(-1)
+        } else {
+            dataStream.writeInt(subtypes.size)
+            subtypes.forEach { subtype -> dataStream.writeName(subtype) }
+        }
         dataStream.writeName(stub.rootKey)
         dataStream.writeName(stub.elementPath.path)
         dataStream.writeName(stub.gameType?.id)
@@ -60,11 +66,11 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
         val name = dataStream.readNameString().orEmpty()
         val type = dataStream.readNameString().orEmpty()
-        //val subtypes = dataStream.readNameString()?.toCommaDelimitedStringList().orEmpty()
+        val subtypesSize = dataStream.readInt()
+        val subtypes = if(subtypesSize == -1) null else MutableList(subtypesSize) { dataStream.readNameString().orEmpty() }
         val rootKey = dataStream.readNameString().orEmpty()
         val elementPath = dataStream.readNameString().orEmpty().let { ParadoxElementPath.resolve(it) }
         val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
-        //return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
-        return ParadoxScriptPropertyStubImpl(parentStub, name, type, rootKey, elementPath, gameType)
+        return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
     }
 }

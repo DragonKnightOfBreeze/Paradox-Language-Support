@@ -6,7 +6,7 @@ import icu.windea.pls.lang.model.*
 interface ParadoxScriptDefinitionElementStub<T : ParadoxScriptDefinitionElement> : StubElement<T> {
 	val name: String
 	val type: String
-	//val subtypes: List<String>
+	val subtypes: List<String>? //null -> 无法在索引时获取（需要访问定义索引）
 	val rootKey: String
 	val elementPath: ParadoxElementPath
 	val gameType: ParadoxGameType?
