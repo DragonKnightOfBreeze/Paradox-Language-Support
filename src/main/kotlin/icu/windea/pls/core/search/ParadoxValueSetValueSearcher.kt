@@ -35,11 +35,10 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                 if(ParadoxFileManager.isLightFile(file)) return@p true
                 if(selectGameType(file) != targetGameType) return@p true //check game type at file level
                 
-                val data = ParadoxValueSetValueFastIndex.getData(file, project)
-                val valueSetValueInfoGroup = data.valueSetValueInfoGroup
-                if(valueSetValueInfoGroup.isEmpty()) return@p true
+                val data = ParadoxValueSetValueFastFileIndex.getData(file, project)
+                if(data.isEmpty()) return@p true
                 valueSetNames.forEach f@{ valueSetName ->
-                    val valueSetValueInfoList = valueSetValueInfoGroup[valueSetName]
+                    val valueSetValueInfoList = data[valueSetName]
                     if(valueSetValueInfoList.isNullOrEmpty()) return@f
                     valueSetValueInfoList.forEachFast { info ->
                         if(name == null || name == info.name) {
@@ -47,6 +46,19 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                         }
                     }
                 }
+                
+                //val data = ParadoxValueSetValueFastIndex.getData(file, project)
+                //val valueSetValueInfoGroup = data.valueSetValueInfoGroup
+                //if(valueSetValueInfoGroup.isEmpty()) return@p true
+                //valueSetNames.forEach f@{ valueSetName ->
+                //    val valueSetValueInfoList = valueSetValueInfoGroup[valueSetName]
+                //    if(valueSetValueInfoList.isNullOrEmpty()) return@f
+                //    valueSetValueInfoList.forEachFast { info ->
+                //        if(name == null || name == info.name) {
+                //            consumer.process(info)
+                //        }
+                //    }
+                //}
                 
                 //val data = ParadoxValueSetValueIndex.getData(file, project) //perf: 49% 86%
                 ////use distinct data if possible to optimize performance

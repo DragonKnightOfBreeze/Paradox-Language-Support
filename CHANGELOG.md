@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.4
+
+* [ ] 尝试优化性能：如果可行，可以直接在索引时获取定义的子类型
+* [X] 尝试优化性能：`ParadoxValueSetValueFastIndex` - 改为使用`FileBasedIndex`（在项目启动时就完成索引，避免之后卡住文件解析和代码检查）
+
 ## 1.0.3
 
 * [X] 尝试优化内存占用

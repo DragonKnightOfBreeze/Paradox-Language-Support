@@ -56,10 +56,6 @@ class ParadoxDirectoryFilePathIndex : ScalarIndexExtension<ParadoxFilePathInfo>(
                 val gameType = storage.readByte().toGameType()
                 return ParadoxFilePathInfo(path, gameType)
             }
-            
-            private fun ParadoxGameType.toByte() = this.ordinal
-            
-            private fun Byte.toGameType() = ParadoxGameType.values[this.toInt()]
         }
     }
     

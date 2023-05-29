@@ -116,3 +116,4 @@ object ParadoxValueSetValueIndex {
         return gist.getFileData(project, file)
     }
 }
+
