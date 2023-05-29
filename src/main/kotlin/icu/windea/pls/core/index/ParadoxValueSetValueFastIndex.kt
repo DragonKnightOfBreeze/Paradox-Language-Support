@@ -15,6 +15,9 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
+//这个索引不会保存同一文件中重复的ParadoxValueSetValueInfo
+//这个索引不会保存ParadoxValueSetValueInfo.elementOffset
+
 class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<ParadoxValueSetValueInfo>>() {
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxValueSetValueInfo>>("paradox.valueSetValue.fast.index")
