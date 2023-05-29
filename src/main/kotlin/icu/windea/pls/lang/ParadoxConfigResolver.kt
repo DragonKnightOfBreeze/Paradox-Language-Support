@@ -49,10 +49,10 @@ object ParadoxConfigResolver {
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtConfig<*>>>? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsCacheKey) {
             val value = ConcurrentHashMap<String, List<CwtConfig<*>>>()
-            //invalidated on file modification or ScriptFileTracker
-            val file = element.containingFile //perf 0% 48%
-            val tracker = ParadoxPsiModificationTracker.getInstance(file.project).ScriptFileTracker
-            CachedValueProvider.Result.create(value, file, tracker)
+            //invalidated on ScriptFileTracker
+            //to optimize performance, do not invoke file.containingFile here
+            val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
+            CachedValueProvider.Result.create(value, tracker)
         }
     }
     
@@ -251,10 +251,10 @@ object ParadoxConfigResolver {
     private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMemberElement): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedChildOccurrenceMapCacheKey) {
             val value = ConcurrentHashMap<String, Map<CwtDataExpression, Occurrence>>()
-            //invalidated on file modification or ScriptFileTracker
-            val file = element.containingFile
-            val tracker = ParadoxPsiModificationTracker.getInstance(file.project).ScriptFileTracker
-            CachedValueProvider.Result.create(value, file, tracker)
+            //invalidated on ScriptFileTracker
+            //to optimize performance, do not invoke file.containingFile here
+            val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
+            CachedValueProvider.Result.create(value, tracker)
         }
     }
     
