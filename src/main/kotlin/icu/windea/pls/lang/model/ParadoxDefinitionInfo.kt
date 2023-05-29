@@ -32,7 +32,7 @@ class ParadoxDefinitionInfo(
     //NOTE 部分属性需要使用懒加载
     
     val name: String by lazy {
-        //NOTE 这里不处理内联的情况
+        //NOTE 这里不处理需要内联的情况
         if(name0 != null) return@lazy name0
         
         //name_from_file = yes -> 返回不包含扩展名的文件名，即rootKey

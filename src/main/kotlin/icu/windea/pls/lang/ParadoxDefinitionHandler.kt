@@ -165,11 +165,12 @@ object ParadoxDefinitionHandler {
         rootKey: String,
         configGroup: CwtConfigGroup
     ): Boolean {
-       return matchesType(element,
-           { it?.castOrNull<ParadoxScriptDefinitionElement>()?.elementType },
-           { it?.castOrNull<ParadoxScriptProperty>()?.propertyValue },
-           typeConfig, path, elementPath, rootKey, configGroup
-       )
+        return matchesType(
+            element,
+            { it?.castOrNull<ParadoxScriptDefinitionElement>()?.elementType },
+            { it?.castOrNull<ParadoxScriptProperty>()?.propertyValue },
+            typeConfig, path, elementPath, rootKey, configGroup
+        )
     }
     
     fun matchesType(
@@ -181,7 +182,8 @@ object ParadoxDefinitionHandler {
         rootKey: String,
         configGroup: CwtConfigGroup
     ): Boolean {
-        return matchesType(node,
+        return matchesType(
+            node,
             { it?.castOrNull<LighterASTNode>()?.tokenType },
             { it?.castOrNull<LighterASTNode>()?.firstChild(tree, ParadoxScriptTokenSets.VALUES) },
             typeConfig, path, elementPath, rootKey, configGroup
@@ -275,6 +277,42 @@ object ParadoxDefinitionHandler {
         return true
     }
     
+    fun matchesSubtypeFast(
+        subtypeConfig: CwtSubtypeConfig,
+        rootKey: String,
+        configGroup: CwtConfigGroup,
+        subtypes: MutableList<CwtSubtypeConfig>
+    ): Boolean? {
+        //如果only_if_not存在，且已经匹配指定的任意子类型，则不匹配
+        val onlyIfNotConfig = subtypeConfig.onlyIfNot
+        if(!onlyIfNotConfig.isNullOrEmpty()) {
+            val matchesAny = subtypes.any { it.name in onlyIfNotConfig }
+            if(matchesAny) return false
+        }
+        //如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
+        val startsWithConfig = subtypeConfig.startsWith
+        if(!startsWithConfig.isNullOrEmpty()) {
+            val result = rootKey.startsWith(startsWithConfig, false)
+            if(!result) return false
+        }
+        //如果type_key_regex存在，则要求type_key匹配
+        val typeKeyRegexConfig = subtypeConfig.typeKeyRegex
+        if(typeKeyRegexConfig != null) {
+            val result = typeKeyRegexConfig.matches(rootKey)
+            if(!result) return false
+        }
+        //如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
+        val typeKeyFilterConfig = subtypeConfig.typeKeyFilter
+        if(typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
+            val filterResult = typeKeyFilterConfig.where { it.contains(rootKey) }
+            if(!filterResult) return false
+        }
+        //根据config对property进行内容匹配
+        val elementConfig = subtypeConfig.config
+        if(elementConfig.configs.isNullOrEmpty()) return true
+        return null //需要进一步匹配
+    }
+    
     fun matchesSubtype(
         element: ParadoxScriptDefinitionElement,
         subtypeConfig: CwtSubtypeConfig,
@@ -309,6 +347,7 @@ object ParadoxDefinitionHandler {
         }
         //根据config对property进行内容匹配
         val elementConfig = subtypeConfig.config
+        if(elementConfig.configs.isNullOrEmpty()) return true
         return doMatchDefinition(element, elementConfig, configGroup, matchOptions)
     }
     
@@ -316,7 +355,7 @@ object ParadoxDefinitionHandler {
         //这里不能基于内联后的声明结构，否则可能会导致SOE
         //也不要参数条件表达式中的声明结构判断，
         val childValueConfigs = propertyConfig.values.orEmpty()
-        val blockElement = definitionElement.block //TODO 1.0.4+ 显著影响性能，考虑优化？
+        val blockElement = definitionElement.block
         if(childValueConfigs.isNotEmpty()) {
             //匹配值列表
             if(!doMatchValues(definitionElement, blockElement, childValueConfigs, configGroup, matchOptions)) return false //继续匹配
@@ -488,26 +527,41 @@ object ParadoxDefinitionHandler {
         val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
         for(typeConfig in configGroup.types.values) {
             if(matchesType(node, tree, typeConfig, path, elementPath, rootKey, configGroup)) {
-                //NOTE 这里不处理内联的情况
-                val name = when {
-                    typeConfig.nameFromFile -> rootKey
-                    typeConfig.nameField == "" -> {
-                        getValueFromNode(node, tree).orAnonymous()
-                    }
-                    typeConfig.nameField != null -> {
-                        node.firstChild(tree, BLOCK)
-                            ?.firstChild(tree) { it.tokenType == PROPERTY && getNameFromNode(it, tree)?.equals(typeConfig.nameField, true) == true }
-                            ?.let { getValueFromNode(it, tree) }
-                            .orAnonymous()
-                    }
-                    else -> rootKey
-                }
+                //NOTE 这里不处理需要内联的情况
+                val name = doGetNameWhenCreateStub(typeConfig, rootKey, node, tree)
                 val type = typeConfig.name
-                //val subtypes = runCatching { definitionInfo.subtypes }.getOrNull() //如果无法在索引时获取，之后再懒加载
-                return ParadoxScriptPropertyStubImpl(parentStub, name, type, null, rootKey, elementPath, gameType)
+                val subtypes = doGetSubtypesWhenCreateStub(typeConfig, rootKey, configGroup) //如果无法在索引时获取，之后再懒加载
+                return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
             }
         }
         return null
+    }
+    
+    private fun doGetNameWhenCreateStub(typeConfig: CwtTypeConfig, rootKey: String, node: LighterASTNode, tree: LighterAST): String {
+        return when {
+            typeConfig.nameFromFile -> rootKey
+            typeConfig.nameField == "" -> {
+                getValueFromNode(node, tree).orEmpty()
+            }
+            typeConfig.nameField != null -> {
+                node.firstChild(tree, BLOCK)
+                    ?.firstChild(tree) { it.tokenType == PROPERTY && getNameFromNode(it, tree)?.equals(typeConfig.nameField, true) == true }
+                    ?.let { getValueFromNode(it, tree) }
+                    .orEmpty()
+            }
+            else -> rootKey
+        }
+    }
+    
+    private fun doGetSubtypesWhenCreateStub(typeConfig: CwtTypeConfig, rootKey: String, configGroup: CwtConfigGroup): List<String>? {
+        val subtypesConfig = typeConfig.subtypes
+        val result = mutableListOf<CwtSubtypeConfig>()
+        for(subtypeConfig in subtypesConfig.values) {
+            if(matchesSubtypeFast(subtypeConfig, rootKey, configGroup, result) ?: return null) {
+                result.add(subtypeConfig)
+            }
+        }
+        return result.map { it.name }
     }
     
     private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {

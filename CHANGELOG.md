@@ -2,7 +2,7 @@
 
 ## 1.0.4
 
-* [X] 尝试优化性能：如果可行，可以直接在索引时获取定义的子类型 - 由于使用LightAST时难以直接在索引时获取，因此这项优化效果不大
+* [X] 尝试优化性能：如果可行，可以直接在索引时获取定义的子类型
 * [X] 尝试优化性能：`ParadoxValueSetValueFastIndex` - 改为使用`FileBasedIndex`（在项目启动时就完成索引，避免之后卡住文件解析和代码检查）
 * [X] 尝试优化性能：`ParadoxComplexEnumValueIndex` - 改为使用`FileBasedIndex`（在项目启动时就完成索引，避免之后卡住文件解析和代码检查）
 
