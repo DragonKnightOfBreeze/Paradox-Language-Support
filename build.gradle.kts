@@ -118,6 +118,8 @@ tasks {
 		include("**/*Test.class")
 	}
 	jar {
+		//排除特定的class文件
+		exclude("icu.windea.pls.dev")
 		//添加项目文档和许可证
 		from("README.md", "README_en.md", "LICENSE")
 		//添加CWT配置文件

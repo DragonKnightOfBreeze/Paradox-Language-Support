@@ -2,6 +2,7 @@ package icu.windea.pls.lang
 
 import com.google.common.cache.*
 import com.intellij.openapi.application.*
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -9,7 +10,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
-import com.intellij.util.concurrency.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -21,7 +21,6 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
-import java.util.concurrent.*
 
 object ParadoxConfigMatcher {
     object Options {
@@ -52,7 +51,7 @@ object ParadoxConfigMatcher {
             override fun get(options: Int) = true
         }
         
-        sealed class LazyMatch: Result()
+        sealed class LazyMatch : Result()
         
         class LazySimpleMatch(predicate: () -> Boolean) : LazyMatch() {
             private val result by lazy { predicate() }
@@ -65,12 +64,12 @@ object ParadoxConfigMatcher {
         }
         
         class LazyIndexAwareMatch(predicate: () -> Boolean) : LazyMatch() {
-            private val result by lazy { predicate() }
+            private val result by lazy { preventException { predicate() } }
             override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipIndex)) true else result
         }
         
         class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch() {
-            private val result by lazy { predicate() }
+            private val result by lazy { preventException { predicate() } }
             override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipScope)) true else result
         }
     }
@@ -438,27 +437,10 @@ object ParadoxConfigMatcher {
         }
     }
     
-    private val valueSetValueIndexStatusKey = Key.create<Boolean>("paradox.valueSetValue.index.status")
-    
     @Suppress("UNUSED_PARAMETER")
     private fun getValueSetValueMatchResult(element: PsiElement, name: String, valueSetName: String, project: Project): Result {
         //总是认为匹配
-        val cacheKey = "vsv"
-        return getCachedResult(element, cacheKey) {
-            //ParadoxValueSetValueIndex - 此索引目前仅用于进行代码补全，因此这里需要确保索引数据已加载
-            if(project.getUserData(valueSetValueIndexStatusKey) != true) {
-                synchronized(project) {
-                    if(project.getUserData(valueSetValueIndexStatusKey) != true) {
-                        project.putUserData(valueSetValueIndexStatusKey, true)
-                        ReadAction.nonBlocking(Callable {
-                            val selector = valueSetValueSelector(project, element)
-                            ParadoxValueSetValueSearch.search("", selector).findAll()
-                        }).inSmartMode(project).submit(AppExecutorUtil.getAppExecutorService())
-                    }
-                }
-            }
-            true
-        }
+        return Result.ExactMatch
     }
     
     private fun getScopeFieldMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
@@ -505,6 +487,18 @@ object ParadoxConfigMatcher {
         val cacheKey = "t#${template}#${exp}"
         return getCachedResult(element, cacheKey) {
             CwtTemplateExpression.resolve(template).matches(exp, element, configGroup)
+        }
+    }
+    
+    inline fun preventException(predicate: () -> Boolean): Boolean {
+        //进一步匹配CWT规则时需要防止出现某些异常（如索引异常）
+        try {
+            return predicate()
+        } catch(e: Exception) {
+            thisLogger().warn(e)
+            //java.lang.Throwable: Indexing process should not rely on non-indexed file data. -> 直接认为匹配
+            //其他情况 -> 尚未发现，也直接认为匹配
+            return true
         }
     }
     

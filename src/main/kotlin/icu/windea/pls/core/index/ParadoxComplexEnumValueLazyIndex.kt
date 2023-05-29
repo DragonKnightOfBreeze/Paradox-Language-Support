@@ -17,7 +17,7 @@ import java.io.*
 //这里应当使用Gist，因为可能需要在索引中访问其他索引
 //这里不能使用PsiFileGist，否则可能会出现应当可以解析但有时无法解析的情况
 
-object ParadoxComplexEnumValueIndex {
+object ParadoxComplexEnumValueLazyIndex {
     private const val ID = "paradox.complexEnumValue.index"
     private const val VERSION = 25 //1.0.2
     

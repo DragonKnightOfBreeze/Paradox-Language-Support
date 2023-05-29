@@ -35,7 +35,7 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                 if(ParadoxFileManager.isLightFile(file)) return@p true
                 if(selectGameType(file) != targetGameType) return@p true //check game type at file level
                 
-                val data = ParadoxValueSetValueFastFileIndex.getData(file, project)
+                val data = ParadoxValueSetValueFastIndex.getData(file, project)
                 if(data.isEmpty()) return@p true
                 valueSetNames.forEach f@{ valueSetName ->
                     val valueSetValueInfoList = data[valueSetName]
@@ -47,7 +47,7 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                     }
                 }
                 
-                //val data = ParadoxValueSetValueFastIndex.getData(file, project)
+                //val data = ParadoxValueSetValueFastLazyIndex.getData(file, project)
                 //val valueSetValueInfoGroup = data.valueSetValueInfoGroup
                 //if(valueSetValueInfoGroup.isEmpty()) return@p true
                 //valueSetNames.forEach f@{ valueSetName ->
@@ -60,7 +60,7 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                 //    }
                 //}
                 
-                //val data = ParadoxValueSetValueIndex.getData(file, project) //perf: 49% 86%
+                //val data = ParadoxValueSetValueLazyIndex.getData(file, project) //perf: 49% 86%
                 ////use distinct data if possible to optimize performance
                 //valueSetNames.forEach f@{ valueSetName ->
                 //    val valueSetValueInfos = when {

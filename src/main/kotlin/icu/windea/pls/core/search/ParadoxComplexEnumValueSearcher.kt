@@ -37,7 +37,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
                 if(ParadoxFileManager.isLightFile(file)) return@p true
                 if(selectGameType(file) != targetGameType) return@p true //check game type at file level
                 
-                val data = ParadoxComplexEnumValueIndex.getData(file, project)
+                val data = ParadoxComplexEnumValueLazyIndex.getData(file, project)
                 //use distinct data if possible to optimize performance
                 val complexEnumValueInfos = when {
                     distinctInFile -> data.distinctComplexEnumValueInfoGroup[enumName]
