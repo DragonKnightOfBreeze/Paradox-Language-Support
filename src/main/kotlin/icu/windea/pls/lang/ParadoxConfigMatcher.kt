@@ -143,8 +143,8 @@ object ParadoxConfigMatcher {
         when {
             dataType == CwtDataType.Block -> {
                 if(expression.isKey != false) return false
-                if(expression.type != ParadoxType.Block) return true
-                if(config !is CwtMemberConfig) return Result.NotMatch
+                if(expression.type != ParadoxType.Block) return false
+                if(config !is CwtMemberConfig) return false
                 return Result.LazyBlockAwareMatch {
                     matchesScriptExpressionInBlock(element, config)
                 }
