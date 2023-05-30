@@ -6,6 +6,7 @@
 * [X] 尝试优化性能：`ParadoxValueSetValueFastIndex` - 改为使用`FileBasedIndex`（在项目启动时就完成索引，避免之后卡住文件解析和代码检查）
 * [X] 尝试优化性能：`ParadoxComplexEnumValueIndex` - 改为使用`FileBasedIndex`（在项目启动时就完成索引，避免之后卡住文件解析和代码检查）
 * [X] 修复 #25 空指针
+* [X] 更新CWT规则文件以适配Stellaris 3.8.3
 
 ## 1.0.3
 
