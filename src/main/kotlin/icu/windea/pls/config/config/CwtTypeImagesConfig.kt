@@ -11,7 +11,7 @@ class CwtTypeImagesConfig(
 	override val info: CwtConfigGroupInfo,
 	val configs: List<Pair<String?, CwtLocationConfig>> //(subtypeExpression, locationConfig)
 ) : CwtConfig<CwtProperty> {
-	private val mergesConfigCache: Cache<String, List<CwtLocationConfig>> by lazy { CacheBuilder.newBuilder().buildCache() }
+	private val mergesConfigCache: Cache<String, List<CwtLocationConfig>> = CacheBuilder.newBuilder().buildCache()
 	
 	/**
 	 * 得到根据子类型列表进行合并后的配置。

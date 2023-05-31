@@ -74,7 +74,7 @@ object CaseInsensitiveStringHashingStrategy : Hash.Strategy<String?> {
     }
     
     override fun equals(s1: String?, s2: String?): Boolean {
-        return s1 === s2 || s1 != null && s1.equals(s2, ignoreCase = true)
+        return s1.equals(s2, ignoreCase = true)
     }
 }
 

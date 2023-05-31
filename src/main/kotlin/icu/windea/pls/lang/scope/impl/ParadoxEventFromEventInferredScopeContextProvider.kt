@@ -12,7 +12,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.hierarchy.impl.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.psi.*
@@ -81,7 +80,7 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
                     if(eventName != thisEventName) return@f
                     val containingEventName = info.definitionName
                     withCheckRecursion(containingEventName) {
-                        val newRefScope = info.getUserData(ParadoxEventInEventDefinitionHierarchySupport.containingEventScopeKey)
+                        val newRefScope = info.containingEventScope
                         val oldRefScope = scopeContextMap.get(toRef)
                         if(oldRefScope == null) {
                             scopeContextMap.put(toRef, newRefScope)

@@ -13,10 +13,10 @@ class CwtGameRuleDeclarationConfigInjector : CwtDeclarationConfigInjector {
     //某些game_rule的声明规则需要重载
     
     override fun supports(configContext: CwtConfigContext): Boolean {
-        val (_, name, type, _, configGroup, _) = configContext
-        if(type == "game_rule") {
-            if(name == null) return false
-            val config = configGroup.gameRules.get(name)
+        val configGroup = configContext.configGroup
+        if(configContext.definitionType == "game_rule") {
+            if(configContext.definitionName == null) return false
+            val config = configGroup.gameRules.get(configContext.definitionName)
             configContext.putUserData(configKey, config)
             return config != null
         }

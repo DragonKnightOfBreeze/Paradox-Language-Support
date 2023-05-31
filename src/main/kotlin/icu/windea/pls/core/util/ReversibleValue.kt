@@ -15,7 +15,7 @@ inline fun <T> ReversibleValue<T>.takeIfTrue() = if(operator) value else null
 @Suppress("NOTHING_TO_INLINE")
 inline fun <T> ReversibleValue<T>.takeIfFalse() = if(operator) null else value
 
-inline fun <T> ReversibleValue<T>.where(predicate: (T) -> Boolean) = if(operator) predicate(value) else !predicate(value)
+inline fun <T> ReversibleValue<T>.where(predicate: (T) -> Boolean) = predicate(value).let { if(operator) it else !it }
 
 fun ReversibleValue(value: String): ReversibleValue<String> {
     return if(value.startsWith('!')) ReversibleValue(false, value.drop(1)) else ReversibleValue(true, value)
