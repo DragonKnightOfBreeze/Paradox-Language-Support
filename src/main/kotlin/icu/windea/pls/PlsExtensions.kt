@@ -246,8 +246,10 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
 private fun selectLocaleFromFile(from: PsiFile): CwtLocalisationLocaleConfig? {
     //这里改为使用索引以优化性能（尽可能地避免访问PSI）
     val indexKey = ParadoxFileLocaleIndex.NAME
-    val localeId = FileBasedIndex.getInstance().getFileData(indexKey, from.virtualFile, from.project).keys.singleOrNull() ?: return null
-    return getCwtConfig(from.project).core.localisationLocales.get(localeId)
+    val virtualFile = from.virtualFile ?: return null
+    val project = from.project
+    val localeId = FileBasedIndex.getInstance().getFileData(indexKey, virtualFile, project).keys.singleOrNull() ?: return null
+    return getCwtConfig(project).core.localisationLocales.get(localeId)
 }
 //endregion
 
