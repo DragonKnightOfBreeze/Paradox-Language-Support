@@ -47,7 +47,7 @@ interface ParadoxDefinitionInferredScopeContextProvider {
                 }
             }
             val resultMap = map ?: return null
-            val result = ParadoxScopeContext.resolve(resultMap).copyAsInferred()
+            val result = ParadoxScopeContext.resolve(resultMap)?.copyAsInferred()
             return result
         }
         
