@@ -16,8 +16,8 @@ class CwtDeclarationConfig(
     val name: String,
     val propertyConfig: CwtPropertyConfig, //definitionName = ...
 ) : CwtConfig<CwtProperty> {
-    //use week values to optimize memory
-    private val mergedConfigCache: Cache<String, CwtPropertyConfig> = CacheBuilder.newBuilder().weakValues().buildCache()
+    //use soft values to optimize memory
+    private val mergedConfigCache: Cache<String, CwtPropertyConfig> = CacheBuilder.newBuilder().softValues().buildCache()
     
     private val subtypesToDistinctCache by lazy {
         val result = sortedSetOf<String>()
