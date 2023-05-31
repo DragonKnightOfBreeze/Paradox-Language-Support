@@ -244,11 +244,11 @@
       </action>
       <action id="Pls.Diff.CompareDefinitions" class="icu.windea.pls.core.diff.actions.CompareDefinitionsAction"
               icon="AllIcons.Actions.Diff">
-        <keyboard-shortcut keymap="$default" first-keystroke="control shift alt o"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control shift alt d"/>
       </action>
       <action id="Pls.Diff.CompareLocalisations" class="icu.windea.pls.core.diff.actions.CompareLocalisationsAction"
               icon="AllIcons.Actions.Diff">
-        <keyboard-shortcut keymap="$default" first-keystroke="control shift alt o"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control shift alt l"/>
       </action>
       <add-to-group group-id="EditorContextBarMenu" anchor="last"/>
     </group>

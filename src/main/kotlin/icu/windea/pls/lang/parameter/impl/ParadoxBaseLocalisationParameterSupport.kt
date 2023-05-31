@@ -5,7 +5,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
@@ -16,6 +15,19 @@ import icu.windea.pls.script.psi.*
 class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupport {
     companion object {
         @JvmField val localisationNameKey = Key.create<String>("paradox.parameterElement.localisationName")
+    }
+    
+    override fun resolveParameter(localisationElement: ParadoxLocalisationProperty, name: String): ParadoxParameterElement? {
+        val parameterName = name
+        val localisationName = localisationElement.name
+        val file = localisationElement.containingFile
+        val gameType = selectGameType(file) ?: return null
+        val project = file.project
+        val contextKey = "localisation#$localisationName#$parameterName"
+        val readWriteAccess = ReadWriteAccessDetector.Access.Read
+        val resolved = ParadoxParameterElement(localisationElement, parameterName, localisationName, contextKey, readWriteAccess, gameType, project)
+        resolved.putUserData(localisationNameKey, localisationName)
+        return resolved
     }
     
     override fun resolveParameter(element: ParadoxLocalisationPropertyReference): ParadoxParameterElement? {

@@ -1,11 +1,14 @@
 package icu.windea.pls.lang
 
+import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
+import icons.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
@@ -14,6 +17,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.hierarchy.impl.*
+import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -43,7 +47,7 @@ object ParadoxLocalisationParameterHandler {
         val result = mutableSetOf<String>().synced()
         val targetLocalisationName = element.name
         val selector = definitionHierarchySelector(element.project, element)
-        ParadoxDefinitionHierarchyHandler.processQuery(selector) p@{ file, fileData ->
+        ParadoxDefinitionHierarchyHandler.processQuery(selector) p@{ _, fileData ->
             val infos = fileData.get(ParadoxLocalisationParameterDefinitionHierarchySupport.ID) ?: return@p true
             infos.forEachFast { info ->
                 val localisationName = info.getUserData(ParadoxLocalisationParameterDefinitionHierarchySupport.localisationKey)
@@ -143,5 +147,20 @@ object ParadoxLocalisationParameterHandler {
         if(config !is CwtPropertyConfig) return false
         val dataType = config.keyExpression.type
         return dataType == CwtDataType.LocalisationParameter
+    }
+    
+    fun completeParameters(localisation: ParadoxLocalisationProperty, result: CompletionResultSet) {
+        val localisationName = localisation.name
+        val localisationIcon = localisation.icon
+        val parameterNames = getParameterNames(localisation)
+        if(parameterNames.isNotEmpty()) {
+            for(parameterName in parameterNames) {
+                val parameter = ParadoxLocalisationParameterSupport.resolveParameter(localisation, parameterName) ?: continue
+                val lookupElement = LookupElementBuilder.create(parameter, parameterName)
+                    .withIcon(PlsIcons.Parameter)
+                    .withTypeText(localisationName, localisationIcon, true)
+                result.addElement(lookupElement)
+            }
+        }
     }
 }

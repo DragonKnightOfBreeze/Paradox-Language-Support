@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.quickfix.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.highlighter.ParadoxLocalisationAttributesKeys as Keys
@@ -56,14 +57,15 @@ class ParadoxLocalisationAnnotator : Annotator {
     
     private fun annotatePropertyReference(element: ParadoxLocalisationPropertyReference, holder: AnnotationHolder) {
         //颜色高亮
-        val colorConfig = element.colorConfig
-        if(colorConfig != null) {
-            val location = element.propertyReferenceParameter
-            if(location != null) {
-                val range = location.textRange
-                val attributesKey = Keys.getColorKey(colorConfig.color) ?: return
-                holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
-            }
+        val location = element.propertyReferenceParameter
+        if(location != null) {
+            val text = location.text
+            val colorId = text.find { it.isExactLetter() } ?: return
+            val colorConfig = ParadoxTextColorHandler.getInfo(colorId.toString(), element.project, element) ?: return
+            val attributesKey = Keys.getColorKey(colorConfig.color) ?: return
+            val colorIdOffset = location.startOffset + text.indexOf(colorId)
+            val range = TextRange.create(colorIdOffset, colorIdOffset + 1)
+            holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
         }
     }
     

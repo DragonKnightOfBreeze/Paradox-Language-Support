@@ -92,7 +92,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         //如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
         val color = element.colorConfig?.color
         if(color != null) {
-            context.builder.append("<span style=\"color: >").append(color.toHex()).append("\">")
+            context.builder.append("<span style=\"color: #").append(color.toHex()).append("\">")
         }
         val resolved = element.reference?.resolve()
             ?: element.scriptedVariableReference?.reference?.resolve()

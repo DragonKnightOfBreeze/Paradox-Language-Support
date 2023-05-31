@@ -3,12 +3,14 @@ package icu.windea.pls.localisation.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 
@@ -24,6 +26,12 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
         val project = parameters.originalFile.project
         
         //不提示predefined_parameter
+        
+        //提示parameter
+        val localisation = parameters.position.parentOfType<ParadoxLocalisationProperty>()
+        if(localisation != null) {
+            ParadoxLocalisationParameterHandler.completeParameters(localisation, result)
+        }
         
         //因为这里的提示结果可能有上千条，按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnAnyPrefixChange()

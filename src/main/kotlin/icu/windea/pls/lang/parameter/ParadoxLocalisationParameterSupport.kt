@@ -12,6 +12,8 @@ import icu.windea.pls.script.psi.*
  * @see ParadoxParameterElement
  */
 interface ParadoxLocalisationParameterSupport {
+    fun resolveParameter(localisationElement: ParadoxLocalisationProperty, name: String) : ParadoxParameterElement?
+    
     fun resolveParameter(element: ParadoxLocalisationPropertyReference): ParadoxParameterElement?
     
     /**
@@ -27,6 +29,12 @@ interface ParadoxLocalisationParameterSupport {
     
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxLocalisationParameterSupport>("icu.windea.pls.localisationParameterSupport")
+        
+        fun resolveParameter(localisationElement: ParadoxLocalisationProperty, name: String): ParadoxParameterElement? {
+            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
+                ep.resolveParameter(localisationElement, name)
+            }
+        }
         
         fun resolveParameter(element: ParadoxLocalisationPropertyReference): ParadoxParameterElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
