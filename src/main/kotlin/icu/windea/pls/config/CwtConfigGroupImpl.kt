@@ -167,6 +167,9 @@ class CwtConfigGroupImpl(
 		"game_rule",
 		"on_action", //也支持，其中调用的事件的类型要匹配
 	)
+	override val definitionTypesIndirectSupportScope: Set<String> = mutableSetOf(
+		"event" //事件
+	)
 	override val definitionTypesSkipCheckSystemLink: MutableSet<String> = mutableSetOf(
 		"event",
 		"scripted_trigger",

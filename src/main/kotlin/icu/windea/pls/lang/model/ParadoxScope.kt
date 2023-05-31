@@ -42,3 +42,4 @@ sealed class ParadoxScope private constructor(val id: String) {
         }
     }
 }
+

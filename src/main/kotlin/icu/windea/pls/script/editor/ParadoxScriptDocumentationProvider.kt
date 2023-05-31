@@ -301,7 +301,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         val show = getSettings().documentation.showScopeContext
         if(!show) return
         if(sections == null) return
-        if(!ParadoxScopeHandler.isScopeContextSupported(element)) return
+        if(!ParadoxScopeHandler.isScopeContextSupported(element, indirect = true)) return
         val scopeContext = ParadoxScopeHandler.getScopeContext(element)
         if(scopeContext == null) return
         val contextElement = element

@@ -351,7 +351,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         if(!show) return
         if(sections == null) return
         val memberElement = referenceElement.parentOfType<ParadoxScriptMemberElement>(true) ?: return
-        if(!ParadoxScopeHandler.isScopeContextSupported(memberElement)) return
+        if(!ParadoxScopeHandler.isScopeContextSupported(memberElement, indirect = true)) return
         val scopeContext = ParadoxScopeHandler.getScopeContext(memberElement)
         if(scopeContext == null) return
         //TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了

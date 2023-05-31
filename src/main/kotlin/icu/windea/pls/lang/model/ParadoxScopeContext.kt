@@ -5,7 +5,9 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.scope.*
 
-class ParadoxScopeContext private constructor(val scope: ParadoxScope): UserDataHolderBase() {
+class ParadoxScopeContext private constructor(
+    @Volatile var scope: ParadoxScope
+) : UserDataHolderBase() {
     @Volatile var root: ParadoxScopeContext? = null
     @Volatile var prev: ParadoxScopeContext? = null
     @Volatile var from: ParadoxScopeContext? = null

@@ -1,7 +1,7 @@
 package icu.windea.pls.config
 
 import com.intellij.openapi.project.*
-import com.intellij.openapi.util.UserDataHolder
+import com.intellij.openapi.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.setting.*
@@ -85,10 +85,12 @@ interface CwtConfigGroup: UserDataHolder {
 	val linksAsValueWithoutPrefixSorted: List<CwtLinkConfig>
 	val linksAsVariable: List<CwtLinkConfig>
 	
-	//必定支持作用域上下文的CWT别名规则
+	//必定支持作用域的CWT别名规则
 	val aliasNamesSupportScope: Set<String>
-	//必定支持作用域上下文的定义类型
+	//必定支持作用域的定义类型
 	val definitionTypesSupportScope: Set<String>
+	//必定间接支持作用域的定义类型
+	val definitionTypesIndirectSupportScope: Set<String> 
 	//不需要检查系统作用域切换的定义类型（应当是固定的，不允许在检查选项中配置）
 	val definitionTypesSkipCheckSystemLink: Set<String>
 	//支持参数的定义类型
