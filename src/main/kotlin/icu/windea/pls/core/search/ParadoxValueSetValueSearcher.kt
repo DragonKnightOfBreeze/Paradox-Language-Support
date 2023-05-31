@@ -3,16 +3,13 @@ package icu.windea.pls.core.search
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
+import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.script.*
-import icu.windea.pls.tool.*
 
 /**
  * 值集值的查询器。
@@ -27,17 +24,15 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
         val valueSetNames = queryParameters.valueSetNames
         val project = queryParameters.project
         val selector = queryParameters.selector
-        val targetGameType = selector.gameType ?: return
+        val gameType = selector.gameType ?: return
         
-        DumbService.getInstance(project).runReadActionInSmartMode action@{ //perf: 58% 100%
-            doProcessFiles(scope) p@{ file ->
+        DumbService.getInstance(project).runReadActionInSmartMode action@{
+            FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxValueSetValueFastIndex.NAME, valueSetNames, scope, null, null) p@{ file ->
                 ProgressManager.checkCanceled()
-                if(selectGameType(file) != targetGameType) return@p true //check game type at file level
-                
-                val data = ParadoxValueSetValueFastIndex.getData(file, project)
-                if(data.isEmpty()) return@p true
+                if(selectGameType(file) != gameType) return@p true //check game type at file level
+                val fileData = FileBasedIndex.getInstance().getFileData(ParadoxValueSetValueFastIndex.NAME, file, project)
                 valueSetNames.forEach f@{ valueSetName ->
-                    val valueSetValueInfoList = data[valueSetName]
+                    val valueSetValueInfoList = fileData[valueSetName]
                     if(valueSetValueInfoList.isNullOrEmpty()) return@f
                     valueSetValueInfoList.forEachFast { info ->
                         if(name == null || name == info.name) {
@@ -46,56 +41,9 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                         }
                     }
                 }
-                
-                //val data = ParadoxValueSetValueFastLazyIndex.getData(file, project)
-                //val valueSetValueInfoGroup = data.valueSetValueInfoGroup
-                //if(valueSetValueInfoGroup.isEmpty()) return@p true
-                //valueSetNames.forEach f@{ valueSetName ->
-                //    val valueSetValueInfoList = valueSetValueInfoGroup[valueSetName]
-                //    if(valueSetValueInfoList.isNullOrEmpty()) return@f
-                //    valueSetValueInfoList.forEachFast { info ->
-                //        if(name == null || name == info.name) {
-                //            val r = consumer.process(info)
-                //            if(!r) return@p false
-                //        }
-                //    }
-                //}
-                
-                //val data = ParadoxValueSetValueLazyIndex.getData(file, project) //perf: 49% 86%
-                ////use distinct data if possible to optimize performance
-                //valueSetNames.forEach f@{ valueSetName ->
-                //    val valueSetValueInfos = when {
-                //        distinctInFile -> data.distinctValueSetValueInfoGroup[valueSetName] //perf: 8% 100%
-                //        else -> data.valueSetValueInfoGroup[valueSetName]
-                //    }
-                //    if(valueSetValueInfos.isNullOrEmpty()) return@f
-                //    
-                //    if(name == null) {
-                //        valueSetValueInfos.values.forEach { infos ->
-                //            infos.forEachFast { info ->
-                //                val r = consumer.process(info)
-                //                if(!r) return@p false
-                //            }
-                //        }
-                //    } else {
-                //        val infos = valueSetValueInfos[name] ?: return@f
-                //        infos.forEachFast { info ->
-                //            val r = consumer.process(info)
-                //            if(!r) return@p false
-                //        }
-                //    }
-                //}
-                
                 true
             }
         }
-    }
-    
-    private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>) {
-        ProgressManager.checkCanceled()
-        FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
-        ProgressManager.checkCanceled()
-        FileTypeIndex.processFiles(ParadoxLocalisationFileType, processor, scope)
     }
 }
 

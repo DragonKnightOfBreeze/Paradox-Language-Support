@@ -7,13 +7,13 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
+import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
-import icu.windea.pls.tool.*
 
 /**
  * 内联脚本调用的查询器。
@@ -29,12 +29,12 @@ class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptInfo, P
         val gameType = selector.gameType
         
         DumbService.getInstance(project).runReadActionInSmartMode action@{
-            doProcessFiles(scope) p@{ file ->
+            FileBasedIndex.getInstance().processValues(ParadoxInlineScriptIndex.NAME, expression, null, p@{ file, value ->
                 ProgressManager.checkCanceled()
-                val psiFile = file.toPsiFile(project) ?: return@p true //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
+                //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
+                val psiFile = file.toPsiFile(project) ?: return@p true
                 if(selectGameType(file) != gameType) return@p true //check game type at file level
-                
-                val inlineScriptInfos = ParadoxInlineScriptIndex.getData(expression, file, project)
+                val inlineScriptInfos = value
                 if(inlineScriptInfos.isNullOrEmpty()) return@p true
                 inlineScriptInfos.forEachFast { info ->
                     if(gameType == info.gameType) {
@@ -42,7 +42,7 @@ class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptInfo, P
                     }
                 }
                 true
-            }
+            }, scope)
         }
     }
     

@@ -3,14 +3,13 @@ package icu.windea.pls.core.search
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
+import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.script.*
 
 /**
  * 复杂枚举值的查询器。
@@ -29,51 +28,19 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         //val distinctInFile = selector.selectors.findIsInstance<ParadoxWithSearchScopeTypeSelector<*>>()?.searchScopeType?.distinctInFile() ?: true
         
         DumbService.getInstance(project).runReadActionInSmartMode action@{
-            doProcessFiles(scope) p@{ file ->
+            FileBasedIndex.getInstance().processValues(ParadoxComplexEnumValueIndex.NAME, enumName, null, p@{ file, value->
                 ProgressManager.checkCanceled()
                 if(selectGameType(file) != gameType) return@p true //check game type at file level
-                
-                val data = ParadoxComplexEnumValueIndex.getData(file, project)
-                if(data.isEmpty()) return@p true
-                val complexEnumValueInfoList = data[enumName]
-                if(complexEnumValueInfoList.isNullOrEmpty()) return@p true
+                val complexEnumValueInfoList = value
+                if(complexEnumValueInfoList.isEmpty()) return@p true
                 complexEnumValueInfoList.forEachFast { info ->
                     if(name == null || name == info.name) {
                         val r = consumer.process(info)
                         if(!r) return@p false
                     }
                 }
-                
-                //val data = ParadoxComplexEnumValueLazyIndex.getData(file, project)
-                ////use distinct data if possible to optimize performance
-                //val complexEnumValueInfos = when {
-                //    distinctInFile -> data.distinctComplexEnumValueInfoGroup[enumName]
-                //    else -> data.complexEnumValueInfoGroup[enumName]
-                //}
-                //if(complexEnumValueInfos.isNullOrEmpty()) return@p true
-                //
-                //if(name == null) {
-                //    complexEnumValueInfos.values.forEach { infos ->
-                //        infos.forEachFast { info ->
-                //            val r = consumer.process(info)
-                //            if(!r) return@p false
-                //        }
-                //    }
-                //} else {
-                //    val infos = complexEnumValueInfos[name] ?: return@p true
-                //    infos.forEachFast { info ->
-                //        val r = consumer.process(info)
-                //        if(!r) return@p false
-                //    }
-                //}
-                
                 true
-            }
+            }, scope)
         }
-    }
-    
-    private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>) {
-        ProgressManager.checkCanceled()
-        FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
     }
 }
