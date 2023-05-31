@@ -19,7 +19,7 @@ object ParadoxDefinitionHierarchyHandler {
         ProgressManager.checkCanceled()
         if(SearchScope.isEmptyScope(scope)) return true
         
-        FileBasedIndex.getInstance().processValues(ParadoxDefinitionHierarchyIndex.NAME, supportId, null, processor, scope)
+        return FileBasedIndex.getInstance().processValues(ParadoxDefinitionHierarchyIndex.NAME, supportId, null, processor, scope)
     }
 }
 
