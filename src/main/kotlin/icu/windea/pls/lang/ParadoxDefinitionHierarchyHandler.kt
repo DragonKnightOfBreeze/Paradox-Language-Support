@@ -23,7 +23,7 @@ object ParadoxDefinitionHierarchyHandler {
     }
 }
 
-inline  fun ParadoxDefinitionHierarchyHandler.processEventsInOnAction(
+inline fun ParadoxDefinitionHierarchyHandler.processEventsInOnAction(
     gameType: ParadoxGameType,
     scope: GlobalSearchScope,
     crossinline processor: ParadoxEventsInOnActionHierarchyContext.(file: VirtualFile, infos: List<ParadoxDefinitionHierarchyInfo>) -> Boolean
@@ -50,7 +50,7 @@ inline fun ParadoxDefinitionHierarchyHandler.processEventsInEvent(
 }
 
 object ParadoxEventsInEventHierarchyContext {
-    val ParadoxDefinitionHierarchyInfo.containingEventScope by ParadoxEventInEventDefinitionHierarchySupport.containingEventScopeKey 
+    val ParadoxDefinitionHierarchyInfo.containingEventScope by ParadoxEventInEventDefinitionHierarchySupport.containingEventScopeKey
 }
 
 inline fun ParadoxDefinitionHierarchyHandler.processLocalisationParameters(
@@ -72,11 +72,11 @@ object ParadoxLocalisationParameterHierarchyContext {
 inline fun ParadoxDefinitionHierarchyHandler.processInferredScopeContextAwareDefinitions(
     gameType: ParadoxGameType,
     scope: GlobalSearchScope,
-    crossinline processor: (file: VirtualFile, infos: List<ParadoxDefinitionHierarchyInfo>) -> Boolean
+    crossinline processor: ParadoxLocalisationParameterHierarchyContext.(file: VirtualFile, infos: List<ParadoxDefinitionHierarchyInfo>) -> Boolean
 ): Boolean {
     val supportId = ParadoxInferredScopeContextAwareDefinitionHierarchySupport.ID
     return processQuery(supportId, scope) p@{ file, value ->
         if(selectGameType(file) != gameType) return@p true //check game type at file level
-        processor(file, value)
+        ParadoxLocalisationParameterHierarchyContext.processor(file, value)
     }
 }
