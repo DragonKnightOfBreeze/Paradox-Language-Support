@@ -34,3 +34,4 @@ class ParadoxInlineScriptSearch: ExtensibleQueryFactory<ParadoxInlineScriptInfo,
         }
     }
 }
+

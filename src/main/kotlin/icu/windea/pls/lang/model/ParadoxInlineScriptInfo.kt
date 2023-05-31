@@ -2,7 +2,6 @@ package icu.windea.pls.lang.model
 
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -14,8 +13,8 @@ import icu.windea.pls.script.psi.*
  */
 data class ParadoxInlineScriptInfo(
     val expression: String,
-    val elementOffset: Int,
-    val gameType: ParadoxGameType
-) {
-    @Volatile var file: PsiFile? = null
+    override val elementOffset: Int,
+    override val gameType: ParadoxGameType
+) : ParadoxExpressionInfo {
+    @Volatile override var file: PsiFile? = null
 }

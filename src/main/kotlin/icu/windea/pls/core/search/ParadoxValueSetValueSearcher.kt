@@ -32,7 +32,6 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
         DumbService.getInstance(project).runReadActionInSmartMode action@{ //perf: 58% 100%
             doProcessFiles(scope) p@{ file ->
                 ProgressManager.checkCanceled()
-                if(ParadoxFileManager.isLightFile(file)) return@p true
                 if(selectGameType(file) != targetGameType) return@p true //check game type at file level
                 
                 val data = ParadoxValueSetValueFastIndex.getData(file, project)

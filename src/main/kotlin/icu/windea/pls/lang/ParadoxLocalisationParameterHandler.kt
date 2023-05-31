@@ -12,6 +12,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
+import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.lang.hierarchy.impl.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -33,11 +35,31 @@ object ParadoxLocalisationParameterHandler {
         }
     }
     
-    private fun doGetParameters(element: ParadoxLocalisationProperty): Set<String>? {
+    private fun doGetParameters(element: ParadoxLocalisationProperty): Set<String> {
+        return doGetParametersFromDefinitionHierarchyIndex(element)
+    }
+    
+    private fun doGetParametersFromDefinitionHierarchyIndex(element: ParadoxLocalisationProperty): MutableSet<String> {
+        val result = mutableSetOf<String>().synced()
+        val targetLocalisationName = element.name
+        val selector = definitionHierarchySelector(element.project, element)
+        ParadoxDefinitionHierarchyHandler.processQuery(selector) p@{ file, fileData ->
+            val infos = fileData.get(ParadoxLocalisationParameterDefinitionHierarchySupport.ID) ?: return@p true
+            infos.forEachFast { info ->
+                val localisationName = info.getUserData(ParadoxLocalisationParameterDefinitionHierarchySupport.localisationKey)
+                if(localisationName == targetLocalisationName) result.add(info.expression)
+            }
+            true
+        }
+        return result
+    }
+    
+    @Deprecated("Use doGetParametersFromDefinitionHierarchyIndex()")
+    private fun doGetParametersFromReferenceSearch(element: ParadoxLocalisationProperty): Set<String> {
         val result = mutableSetOf<String>().synced()
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(element) }
             ?.withFileTypes(ParadoxScriptFileType)
-            ?: return null
+            ?: return emptySet()
         ProgressManager.checkCanceled()
         ProgressManager.getInstance().runProcess({
             ReferencesSearch.search(element, searchScope).processQueryAsync p@{ reference ->
@@ -58,7 +80,8 @@ object ParadoxLocalisationParameterHandler {
         return result
     }
     
-    fun getLocalisationReferenceElement(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): ParadoxScriptString? {
+    fun getLocalisationReferenceElement(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>): ParadoxScriptString? {
+        if(config !is CwtPropertyConfig || config.expression.type != CwtDataType.LocalisationParameter) return null
         val localisationReferencePropertyElement = findLocalisationPropertyFromParameterProperty(element, config)
         return localisationReferencePropertyElement?.propertyValue?.castOrNull()
     }

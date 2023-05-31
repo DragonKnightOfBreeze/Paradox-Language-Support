@@ -7,6 +7,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
@@ -30,9 +31,9 @@ class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptInfo, P
         DumbService.getInstance(project).runReadActionInSmartMode action@{
             doProcessFiles(scope) p@{ file ->
                 ProgressManager.checkCanceled()
-                //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
-                val psiFile = file.toPsiFile(project) ?: return@p true
-                if(ParadoxFileManager.isLightFile(file)) return@p true
+                val psiFile = file.toPsiFile(project) ?: return@p true //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
+                if(selectGameType(file) != gameType) return@p true //check game type at file level
+                
                 val inlineScriptInfos = ParadoxInlineScriptIndex.getData(expression, file, project)
                 if(inlineScriptInfos.isNullOrEmpty()) return@p true
                 inlineScriptInfos.forEachFast { info ->

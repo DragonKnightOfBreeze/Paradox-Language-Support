@@ -10,9 +10,11 @@ data class ParadoxValueSetValueInfo(
     val name: String,
     val valueSetName: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
-    val elementOffset: Int,
-    val gameType: ParadoxGameType
-) {
+    override val elementOffset: Int,
+    override val gameType: ParadoxGameType
+) : ParadoxExpressionInfo {
+    override val file: PsiFile? get() = null //unused yet
+    
     fun getConfig(project: Project): CwtEnumConfig? {
         return getCwtConfig(project).get(gameType).values[valueSetName]
     }

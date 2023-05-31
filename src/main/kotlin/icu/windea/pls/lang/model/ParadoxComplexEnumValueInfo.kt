@@ -12,8 +12,8 @@ data class ParadoxComplexEnumValueInfo(
     val readWriteAccess: ReadWriteAccessDetector.Access,
     override val elementOffset: Int,
     override val gameType: ParadoxGameType
-) : ParadoxElementInfo {
-    @Volatile override var file: PsiFile? = null
+) : ParadoxExpressionInfo {
+    override val file: PsiFile? get() = null //unused yet
     
     fun getConfig(project: Project): CwtComplexEnumConfig? {
         return getCwtConfig(project).get(gameType).complexEnums[enumName]

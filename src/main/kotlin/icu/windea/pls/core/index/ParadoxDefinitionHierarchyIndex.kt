@@ -1,7 +1,6 @@
 package icu.windea.pls.core.index
 
 import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.indexing.*
@@ -10,7 +9,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.ParadoxDefinitionHierarchyIndex.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.hierarchy.*
 import icu.windea.pls.lang.model.*
@@ -21,41 +19,28 @@ import java.util.*
 
 /**
  * 用于索引定义声明中的定义引用、参数引用、本地化参数引用等。
- * 
+ *
  * @see ParadoxDefinitionHierarchySupport
  */
-class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<ContextInfo>>() {
+class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<ParadoxDefinitionHierarchyInfo>>() {
     companion object {
-        @JvmField val NAME = ID.create<String, List<ContextInfo>>("paradox.definition.hierarchy.index")
+        @JvmField val NAME = ID.create<String, List<ParadoxDefinitionHierarchyInfo>>("paradox.definition.hierarchy.index")
         private const val VERSION = 27 //1.0.5
         
-        fun getData(file: VirtualFile, project: Project): Map<String, List<ContextInfo>> {
+        fun getData(file: VirtualFile, project: Project): Map<String, List<ParadoxDefinitionHierarchyInfo>> {
             return FileBasedIndex.getInstance().getFileData(NAME, file, project)
         }
     }
-    
-    data class ContextInfo(
-        val supportId: String,
-        val expression: String,
-        val configExpression: CwtDataExpression,
-        val definitionInfo: DefinitionInfo
-    ) : UserDataHolderBase()
-    
-    data class DefinitionInfo(
-        val name: String,
-        val type: String,
-        val subtypes: List<String>
-    )
     
     override fun getName() = NAME
     
     override fun getVersion() = VERSION
     
-    override fun getIndexer(): DataIndexer<String, List<ContextInfo>, FileContent> {
+    override fun getIndexer(): DataIndexer<String, List<ParadoxDefinitionHierarchyInfo>, FileContent> {
         return DataIndexer { inputData ->
             val file = inputData.psiFile
             val definitionInfoStack = LinkedList<ParadoxDefinitionInfo>()
-            buildMap {
+            buildMap<String, MutableList<ParadoxDefinitionHierarchyInfo>> {
                 file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
                     override fun visitElement(element: PsiElement) {
                         if(element is ParadoxScriptDefinitionElement) {
@@ -97,39 +82,37 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Con
         return EnumeratorStringDescriptor.INSTANCE
     }
     
-    override fun getValueExternalizer(): DataExternalizer<List<ContextInfo>> {
-        return object : DataExternalizer<List<ContextInfo>> {
-            override fun save(storage: DataOutput, value: List<ContextInfo>) {
-                storage.writeList(value) { contextInfo ->
-                    storage.writeString(contextInfo.supportId)
-                    storage.writeString(contextInfo.expression)
-                    storage.writeBoolean(contextInfo.configExpression is CwtKeyExpression)
-                    storage.writeString(contextInfo.configExpression.expressionString)
-                    run {
-                        storage.writeString(contextInfo.definitionInfo.name)
-                        storage.writeString(contextInfo.definitionInfo.type)
-                        storage.writeInt(contextInfo.definitionInfo.subtypes.size)
-                        storage.writeList(contextInfo.definitionInfo.subtypes) { subtype ->
-                            storage.writeString(subtype)
-                        }
+    override fun getValueExternalizer(): DataExternalizer<List<ParadoxDefinitionHierarchyInfo>> {
+        return object : DataExternalizer<List<ParadoxDefinitionHierarchyInfo>> {
+            override fun save(storage: DataOutput, value: List<ParadoxDefinitionHierarchyInfo>) {
+                storage.writeList(value) { info ->
+                    storage.writeString(info.supportId)
+                    storage.writeString(info.expression)
+                    storage.writeBoolean(info.configExpression is CwtKeyExpression)
+                    storage.writeString(info.configExpression.expressionString)
+                    storage.writeString(info.definitionName)
+                    storage.writeString(info.definitionType)
+                    storage.writeList(info.definitionSubtypes) { subtype ->
+                        storage.writeString(subtype)
                     }
-                    ParadoxDefinitionHierarchySupport.saveData(storage, contextInfo)
+                    storage.writeInt(info.elementOffset)
+                    storage.writeByte(info.gameType.toByte())
+                    ParadoxDefinitionHierarchySupport.saveData(storage, info)
                 }
             }
             
-            override fun read(storage: DataInput): List<ContextInfo> {
+            override fun read(storage: DataInput): List<ParadoxDefinitionHierarchyInfo> {
                 return storage.readList {
                     val supportId = storage.readString()
                     val expression = storage.readString()
                     val flag = storage.readBoolean()
                     val configExpression = storage.readString().let { if(flag) CwtKeyExpression.resolve(it) else CwtValueExpression.resolve(it) }
-                    val definitionInfo = run {
-                        val name = storage.readString()
-                        val type = storage.readString()
-                        val subtypes = storage.readList { storage.readString() }
-                        DefinitionInfo(name, type, subtypes)
-                    }
-                    val contextInfo = ContextInfo(supportId, expression, configExpression, definitionInfo)
+                    val definitionName = storage.readString()
+                    val definitionType = storage.readString()
+                    val definitionSubtypes = storage.readList { storage.readString() }
+                    val elementOffset = storage.readInt()
+                    val gameType = storage.readByte().toGameType()
+                    val contextInfo = ParadoxDefinitionHierarchyInfo(supportId, expression, configExpression, definitionName, definitionType, definitionSubtypes, elementOffset, gameType)
                     ParadoxDefinitionHierarchySupport.readData(storage, contextInfo)
                     contextInfo
                 }

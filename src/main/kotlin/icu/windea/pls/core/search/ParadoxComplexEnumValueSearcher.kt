@@ -11,7 +11,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
-import icu.windea.pls.tool.*
 
 /**
  * 复杂枚举值的查询器。
@@ -25,15 +24,14 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         val enumName = queryParameters.enumName
         val project = queryParameters.project
         val selector = queryParameters.selector
-        val targetGameType = selector.gameType ?: return
+        val gameType = selector.gameType ?: return
         
         //val distinctInFile = selector.selectors.findIsInstance<ParadoxWithSearchScopeTypeSelector<*>>()?.searchScopeType?.distinctInFile() ?: true
         
         DumbService.getInstance(project).runReadActionInSmartMode action@{
             doProcessFiles(scope) p@{ file ->
                 ProgressManager.checkCanceled()
-                if(ParadoxFileManager.isLightFile(file)) return@p true
-                if(selectGameType(file) != targetGameType) return@p true //check game type at file level
+                if(selectGameType(file) != gameType) return@p true //check game type at file level
                 
                 val data = ParadoxComplexEnumValueIndex.getData(file, project)
                 if(data.isEmpty()) return@p true

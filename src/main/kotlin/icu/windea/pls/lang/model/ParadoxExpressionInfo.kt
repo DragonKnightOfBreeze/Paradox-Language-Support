@@ -10,8 +10,8 @@ import icu.windea.pls.script.psi.*
  * @property gameType 对应的游戏类型。
  * @property file 对应的文件。使用[QueryExecutor]进行查询时才能获取。
  */
-interface ParadoxElementInfo {
+interface ParadoxExpressionInfo {
     val elementOffset: Int
     val gameType: ParadoxGameType
-    var file: PsiFile?
+    val file: PsiFile?
 }
