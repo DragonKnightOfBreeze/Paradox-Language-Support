@@ -42,14 +42,13 @@ object ParadoxLocalisationParameterHandler {
     }
     
     private fun doGetParametersFromDefinitionHierarchyIndex(element: ParadoxLocalisationProperty): Set<String> {
-        val project = element.project
         val gameType = selectGameType(element) ?: return emptySet()
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(element) }
             ?.withFileTypes(ParadoxScriptFileType)
             ?: return emptySet()
         val targetLocalisationName = element.name
         val result = mutableSetOf<String>().synced()
-        ParadoxDefinitionHierarchyHandler.processLocalisationParameters(gameType, project, searchScope) p@{ _, infos ->
+        ParadoxDefinitionHierarchyHandler.processLocalisationParameters(gameType, searchScope) p@{ _, infos ->
             infos.forEachFast { info ->
                 val localisationName = info.getUserData(ParadoxLocalisationParameterDefinitionHierarchySupport.localisationNameKey)
                 if(localisationName == targetLocalisationName) result.add(info.expression)

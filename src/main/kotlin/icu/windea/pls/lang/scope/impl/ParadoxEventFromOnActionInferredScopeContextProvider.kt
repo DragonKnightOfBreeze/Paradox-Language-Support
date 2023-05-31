@@ -68,7 +68,7 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
     ): Boolean {
         val gameType = configGroup.gameType ?: return true
         val project = configGroup.project
-        return ParadoxDefinitionHierarchyHandler.processEventsInOnAction(gameType, project, searchScope) p@{ file, infos ->
+        return ParadoxDefinitionHierarchyHandler.processEventsInOnAction(gameType, searchScope) p@{ file, infos ->
             val psiFile = file.toPsiFile(project) ?: return@p true
             infos.forEachFast f@{ info ->
                 val eventName = info.expression

@@ -71,12 +71,11 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
         depth: Int = 1
     ): Boolean {
         val gameType = configGroup.gameType ?: return true
-        val project = configGroup.project
         return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxEventFromEventInferredScopeContextProvider.doProcessQuery") {
             if(depth == 1) stackTrace.addLast(thisEventName) 
             
             val toRef = "from".repeat(depth)
-            ParadoxDefinitionHierarchyHandler.processEventsInEvent(gameType, project, searchScope) p@{ _, infos ->
+            ParadoxDefinitionHierarchyHandler.processEventsInEvent(gameType, searchScope) p@{ _, infos ->
                 infos.forEachFast f@{ info ->
                     val eventName = info.expression
                     if(eventName != thisEventName) return@f
