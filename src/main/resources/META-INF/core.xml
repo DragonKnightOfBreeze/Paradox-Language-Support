@@ -68,6 +68,7 @@
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxInlineScriptIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxComplexEnumValueIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxValueSetValueFastIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionHierarchyIndex"/>
     
     <searchScopesProvider implementation="icu.windea.pls.core.search.ParadoxSearchScopeProvider"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxScriptedVariableImplementationsSearch"/>

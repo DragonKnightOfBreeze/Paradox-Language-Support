@@ -6,33 +6,34 @@ import com.intellij.psi.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<ParadoxComplexEnumValueInfo>>() { 
+class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<ParadoxComplexEnumValueInfo>>() {
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxComplexEnumValueInfo>>("paradox.complexEnumValue.index")
-        private const val VERSION = 26 //1.0.4
-
+        private const val VERSION = 27 //1.0.5
+        
         fun getData(file: VirtualFile, project: Project): Map<String, List<ParadoxComplexEnumValueInfo>> {
             return FileBasedIndex.getInstance().getFileData(NAME, file, project)
         }
     }
-
+    
     override fun getName() = NAME
-
+    
     override fun getVersion() = VERSION
-
+    
     override fun getIndexer(): DataIndexer<String, List<ParadoxComplexEnumValueInfo>, FileContent> {
         return DataIndexer { inputData ->
             val file = inputData.psiFile
             buildMap {
                 file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
                     override fun visitElement(element: PsiElement) {
-                        if(element is ParadoxScriptStringExpressionElement) {
+                        if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
                             val info = ParadoxComplexEnumValueHandler.getInfo(element)
                             if(info != null) {
                                 val list = getOrPut(info.enumName) { mutableListOf() } as MutableList
@@ -45,18 +46,17 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
             }
         }
     }
-
+    
     override fun getKeyDescriptor(): KeyDescriptor<String> {
         return EnumeratorStringDescriptor.INSTANCE
     }
-
+    
     override fun getValueExternalizer(): DataExternalizer<List<ParadoxComplexEnumValueInfo>> {
         return object : DataExternalizer<List<ParadoxComplexEnumValueInfo>> {
             override fun save(storage: DataOutput, value: List<ParadoxComplexEnumValueInfo>) {
-                storage.writeInt(value.size)
-                value.forEach { valueSetValueInfo ->
-                    IOUtil.writeUTF(storage, valueSetValueInfo.name)
-                    IOUtil.writeUTF(storage, valueSetValueInfo.enumName)
+                storage.writeList(value) { valueSetValueInfo ->
+                    storage.writeString(valueSetValueInfo.name)
+                    storage.writeString(valueSetValueInfo.enumName)
                     storage.writeByte(valueSetValueInfo.readWriteAccess.toByte())
                     storage.writeInt(valueSetValueInfo.elementOffset)
                     storage.writeByte(valueSetValueInfo.gameType.toByte())
@@ -64,10 +64,9 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
             }
             
             override fun read(storage: DataInput): List<ParadoxComplexEnumValueInfo> {
-                val size = storage.readInt()
-                return MutableList(size) {
-                    val name = IOUtil.readUTF(storage)
-                    val enumName = IOUtil.readUTF(storage)
+                return storage.readList {
+                    val name = storage.readString()
+                    val enumName = storage.readString()
                     val readWriteAccess = storage.readByte().toReadWriteAccess()
                     val elementOffset = storage.readInt()
                     val gameType = storage.readByte().toGameType()

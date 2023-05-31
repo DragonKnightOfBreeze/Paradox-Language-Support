@@ -22,7 +22,7 @@ import java.io.*
 @Deprecated("Use ParadoxValueSetValueFastIndex")
 object ParadoxValueSetValueLazyIndex {
     private const val ID = "paradox.valueSetValue.index"
-    private const val VERSION = 25 //1.0.2
+    private const val VERSION = 27 //1.0.5
     
     class Data(
         val valueSetValueInfoList: MutableList<ParadoxValueSetValueInfo> = mutableListOf()
@@ -45,9 +45,9 @@ object ParadoxValueSetValueLazyIndex {
     
     private val valueExternalizer: DataExternalizer<Data> = object : DataExternalizer<Data> {
         override fun save(storage: DataOutput, value: Data) {
-            DataInputOutputUtil.writeSeq(storage, value.valueSetValueInfoList) {
-                IOUtil.writeUTF(storage, it.name)
-                IOUtil.writeUTF(storage, it.valueSetName)
+            storage.writeList(value.valueSetValueInfoList) {
+                storage.writeString(it.name)
+                storage.writeString(it.valueSetName)
                 storage.writeByte(it.readWriteAccess.toByte())
                 storage.writeInt(it.elementOffset)
                 storage.writeByte(it.gameType.toByte())
@@ -55,9 +55,9 @@ object ParadoxValueSetValueLazyIndex {
         }
         
         override fun read(storage: DataInput): Data {
-            val valueSetValueInfos = DataInputOutputUtil.readSeq(storage) {
-                val name = IOUtil.readUTF(storage)
-                val valueSetName = IOUtil.readUTF(storage)
+            val valueSetValueInfos = storage.readList {
+                val name = storage.readString()
+                val valueSetName = storage.readString()
                 val readWriteAccess = storage.readByte().toReadWriteAccess()
                 val elementOffset = storage.readInt()
                 val gameType = storage.readByte().toGameType()

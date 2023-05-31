@@ -22,7 +22,7 @@ import java.io.*
 @Deprecated("Use ParadoxValueSetValueFastIndex")
 object ParadoxValueSetValueFastLazyIndex {
     private const val ID = "paradox.valueSetValue.fast.index"
-    private const val VERSION = 25 //1.0.2
+    private const val VERSION = 27 //1.0.5
     
     class Data(
         val valueSetValueInfoGroup: MutableMap<String, MutableList<ParadoxValueSetValueInfo>> = mutableMapOf()
@@ -34,10 +34,10 @@ object ParadoxValueSetValueFastLazyIndex {
         override fun save(storage: DataOutput, value: Data) {
             storage.writeInt(value.valueSetValueInfoGroup.size)
             value.valueSetValueInfoGroup.forEach { (valueSetName, valueSetValueInfoList) -> 
-                IOUtil.writeUTF(storage, valueSetName)
+                storage.writeString(valueSetName)
                 storage.writeInt(valueSetValueInfoList.size)
                 valueSetValueInfoList.forEachFast { valueSetValueInfo ->
-                    IOUtil.writeUTF(storage, valueSetValueInfo.name)
+                    storage.writeString(valueSetValueInfo.name)
                     storage.writeByte(valueSetValueInfo.readWriteAccess.toByte())
                     storage.writeInt(valueSetValueInfo.elementOffset)
                     storage.writeByte(valueSetValueInfo.gameType.toByte())
@@ -49,13 +49,13 @@ object ParadoxValueSetValueFastLazyIndex {
             val valueSetValueInfoGroupSize = storage.readInt()
             val data = Data()
             repeat(valueSetValueInfoGroupSize) {
-                val valueSetName = IOUtil.readUTF(storage)
+                val valueSetName = storage.readString()
                 val valueSetValueInfoListSize = storage.readInt()
                 val valueSetValueInfoList = mutableListOf<ParadoxValueSetValueInfo>()
                 data.valueSetValueInfoGroup[valueSetName] = valueSetValueInfoList
                 repeat(valueSetValueInfoListSize) {
                     val valueSetValueInfo = run {
-                        val name = IOUtil.readUTF(storage)
+                        val name = storage.readString()
                         val readWriteAccess = storage.readByte().toReadWriteAccess()
                         val elementOffset = storage.readInt()
                         val gameType = storage.readByte().toGameType()

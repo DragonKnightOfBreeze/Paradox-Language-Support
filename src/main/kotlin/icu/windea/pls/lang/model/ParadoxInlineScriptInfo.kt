@@ -12,7 +12,6 @@ import icu.windea.pls.script.psi.*
  * @property gameType 对应的游戏类型。
  * @property file 对应的文件。使用[QueryExecutor]进行查询时才能获取。
  */
-@WithGameType(ParadoxGameType.Stellaris)
 data class ParadoxInlineScriptInfo(
     val expression: String,
     val elementOffset: Int,

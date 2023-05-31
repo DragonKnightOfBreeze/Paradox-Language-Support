@@ -7,7 +7,6 @@ import icu.windea.pls.script.psi.*
 /**
  * 内联脚本的使用信息。
  */
-@WithGameType(ParadoxGameType.Stellaris)
 data class ParadoxInlineScriptUsageInfo(
     val pointer: SmartPsiElementPointer<ParadoxScriptProperty>,
     val hasConflict: Boolean,

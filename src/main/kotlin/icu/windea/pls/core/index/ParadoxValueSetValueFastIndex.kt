@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.model.*
@@ -21,7 +22,7 @@ import java.io.*
 class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<ParadoxValueSetValueInfo>>() {
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxValueSetValueInfo>>("paradox.valueSetValue.fast.index")
-        private const val VERSION = 26 //1.0.4
+        private const val VERSION = 27 //1.0.5
         
         fun getData(file: VirtualFile, project: Project): Map<String, List<ParadoxValueSetValueInfo>> {
             return FileBasedIndex.getInstance().getFileData(NAME, file, project)
@@ -40,7 +41,7 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
                 if(file.fileType == ParadoxScriptFileType) {
                     file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
                         override fun visitElement(element: PsiElement) {
-                            if(element is ParadoxScriptStringExpressionElement) {
+                            if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
                                 element.references.forEachFast { reference ->
                                     if(reference.canResolveValueSetValue()) {
                                         val resolved = reference?.resolve()
@@ -95,10 +96,9 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
     override fun getValueExternalizer(): DataExternalizer<List<ParadoxValueSetValueInfo>> {
         return object : DataExternalizer<List<ParadoxValueSetValueInfo>> {
             override fun save(storage: DataOutput, value: List<ParadoxValueSetValueInfo>) {
-                storage.writeInt(value.size)
-                value.forEach { valueSetValueInfo ->
-                    IOUtil.writeUTF(storage, valueSetValueInfo.name)
-                    IOUtil.writeUTF(storage, valueSetValueInfo.valueSetName)
+                storage.writeList(value) { valueSetValueInfo ->
+                    storage.writeString(valueSetValueInfo.name)
+                    storage.writeString(valueSetValueInfo.valueSetName)
                     storage.writeByte(valueSetValueInfo.readWriteAccess.toByte())
                     storage.writeInt(valueSetValueInfo.elementOffset)
                     storage.writeByte(valueSetValueInfo.gameType.toByte())
@@ -106,10 +106,9 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
             }
             
             override fun read(storage: DataInput): List<ParadoxValueSetValueInfo> {
-                val size = storage.readInt()
-                return MutableList(size) {
-                    val name = IOUtil.readUTF(storage)
-                    val valueSetName = IOUtil.readUTF(storage)
+                return storage.readList {
+                    val name = storage.readString()
+                    val valueSetName = storage.readString()
                     val readWriteAccess = storage.readByte().toReadWriteAccess()
                     val elementOffset = storage.readInt()
                     val gameType = storage.readByte().toGameType()

@@ -19,7 +19,7 @@ import java.io.*
 @Deprecated("Use ParadoxComplexEnumValueFastIndex")
 object ParadoxComplexEnumValueLazyIndex {
     private const val ID = "paradox.complexEnumValue.index"
-    private const val VERSION = 25 //1.0.2
+    private const val VERSION = 27 //1.0.5
     
     class Data(
         val complexEnumValueInfoList: MutableList<ParadoxComplexEnumValueInfo> = mutableListOf()
@@ -42,9 +42,9 @@ object ParadoxComplexEnumValueLazyIndex {
     
     private val valueExternalizer: DataExternalizer<Data> = object : DataExternalizer<Data> {
         override fun save(storage: DataOutput, value: Data) {
-            DataInputOutputUtil.writeSeq(storage, value.complexEnumValueInfoList) {
-                IOUtil.writeUTF(storage, it.name)
-                IOUtil.writeUTF(storage, it.enumName)
+            storage.writeList(value.complexEnumValueInfoList) {
+                storage.writeString(it.name)
+                storage.writeString( it.enumName)
                 storage.writeByte(it.readWriteAccess.toByte())
                 storage.writeInt(it.elementOffset)
                 storage.writeByte(it.gameType.toByte())
@@ -52,9 +52,9 @@ object ParadoxComplexEnumValueLazyIndex {
         }
         
         override fun read(storage: DataInput): Data {
-            val complexEnumValueInfos = DataInputOutputUtil.readSeq(storage) {
-                val name = IOUtil.readUTF(storage)
-                val enumName = IOUtil.readUTF(storage)
+            val complexEnumValueInfos = storage.readList {
+                val name = storage.readString()
+                val enumName = storage.readString()
                 val readWriteAccess = storage.readByte().toReadWriteAccess()
                 val elementOffset = storage.readInt()
                 val gameType = storage.readByte().toGameType()

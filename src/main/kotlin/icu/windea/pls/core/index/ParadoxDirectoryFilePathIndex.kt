@@ -4,6 +4,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
 import java.io.*
 import java.util.*
@@ -47,12 +48,12 @@ class ParadoxDirectoryFilePathIndex : ScalarIndexExtension<ParadoxFilePathInfo>(
             }
             
             override fun save(storage: DataOutput, value: ParadoxFilePathInfo) {
-                IOUtil.writeUTF(storage, value.path)
+                storage.writeString(value.path)
                 storage.writeByte(value.gameType.toByte())
             }
             
             override fun read(storage: DataInput): ParadoxFilePathInfo {
-                val path = IOUtil.readUTF(storage)
+                val path = storage.readString()
                 val gameType = storage.readByte().toGameType()
                 return ParadoxFilePathInfo(path, gameType)
             }

@@ -34,7 +34,7 @@ fun ParadoxScriptValue.isBlockValue(): Boolean {
 fun ParadoxScriptExpressionElement.isExpression(): Boolean {
 	return when {
 		this is ParadoxScriptPropertyKey -> true
-		this is ParadoxScriptValue && (this.isPropertyValue() || this.isBlockValue()) -> true
+		this is ParadoxScriptValue && this.parent.let { it is ParadoxScriptProperty || it is ParadoxScriptBlockElement } -> true
 		else -> false
 	}
 }

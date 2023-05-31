@@ -36,6 +36,7 @@ import com.intellij.refactoring.actions.BaseRefactoringAction.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
+import com.intellij.util.io.*
 import com.intellij.util.xmlb.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
@@ -842,6 +843,25 @@ fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
 //endregion
 
 //region Index Extensions
+@Suppress("NOTHING_TO_INLINE")
+inline fun DataInput.readString(): String{
+    return IOUtil.readUTF(this)
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun DataOutput.writeString(value: String) {
+    IOUtil.writeUTF(this, value)
+} 
+
+inline fun <T> DataInput.readList(action: () -> T): MutableList<T> {
+    return MutableList(DataInputOutputUtil.readINT(this)) { action() }
+}
+
+inline fun <T> DataOutput.writeList(collection: List<T>, action: (T) -> Unit) {
+    DataInputOutputUtil.writeINT(this, collection.size)
+    collection.forEachFast { action(it) }
+}
+
 val StubBasedPsiElementBase<*>.containingFileStub: PsiFileStub<*>?
     get() {
         val stub = this.greenStub ?: return null

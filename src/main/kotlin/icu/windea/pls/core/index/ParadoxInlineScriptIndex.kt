@@ -6,17 +6,17 @@ import com.intellij.psi.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
 import java.io.*
 
 class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInlineScriptInfo>>() {
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxInlineScriptInfo>>("paradox.inlineScript.index")
-        private const val VERSION = 22 //1.0.0
+        private const val VERSION = 27 //1.0.5
         
         fun getData(expression: String, file: VirtualFile, project: Project): List<ParadoxInlineScriptInfo>? {
             return FileBasedIndex.getInstance().getFileData(NAME, file, project).get(expression)
@@ -54,16 +54,16 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
     override fun getValueExternalizer(): DataExternalizer<List<ParadoxInlineScriptInfo>> {
         return object : DataExternalizer<List<ParadoxInlineScriptInfo>> {
             override fun save(storage: DataOutput, value: List<ParadoxInlineScriptInfo>) {
-                DataInputOutputUtil.writeSeq(storage, value) {
-                    IOUtil.writeUTF(storage, it.expression)
-                    storage.writeInt(it.elementOffset)
-                    storage.writeByte(it.gameType.toByte())
+                storage.writeList(value) { inlineScriptInfo ->
+                    storage.writeString(inlineScriptInfo.expression)
+                    storage.writeInt(inlineScriptInfo.elementOffset)
+                    storage.writeByte(inlineScriptInfo.gameType.toByte())
                 }
             }
             
             override fun read(storage: DataInput): List<ParadoxInlineScriptInfo> {
-                return DataInputOutputUtil.readSeq(storage) {
-                    val expression = IOUtil.readUTF(storage)
+                return storage.readList {
+                    val expression = storage.readString()
                     val elementOffset = storage.readInt()
                     val gameType = storage.readByte().toGameType()
                     ParadoxInlineScriptInfo(expression, elementOffset, gameType)
