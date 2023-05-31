@@ -884,7 +884,6 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
     crossinline action: (T) -> Boolean
 ): Boolean {
     if(DumbService.isDumb(project)) return true
-    
     return StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
         ProgressManager.checkCanceled()
         action(element)
