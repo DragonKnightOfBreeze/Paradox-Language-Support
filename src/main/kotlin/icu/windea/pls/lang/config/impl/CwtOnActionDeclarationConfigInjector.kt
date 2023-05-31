@@ -42,7 +42,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
     override fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtConfigContext) {
         val config = configContext.getUserData(configKey)
         if(config == null) return
-        val expressions = buildList {
+        val expressions = buildSet {
             if(configContext.configGroup.types.get("event")?.subtypes?.containsKey("scopeless") == true) {
                 add("<event.scopeless>")
             }

@@ -54,7 +54,7 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
                             //这里element作为定义的引用时也可能是ParadoxScriptInt，目前不需要考虑这种情况，因此忽略
                             if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
                                 val matchOptions = ParadoxConfigMatcher.Options.SkipScope //这里不需要检测作用域是否匹配
-                                val configs = ParadoxConfigResolver.getConfigs(element, orDefault = true, matchOptions = matchOptions)
+                                val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = matchOptions)
                                 if(configs.isNotEmpty()) {
                                     configs.forEachFast { config ->
                                         ParadoxDefinitionHierarchySupport.indexData(this@buildMap, element, config, definitionInfo)
