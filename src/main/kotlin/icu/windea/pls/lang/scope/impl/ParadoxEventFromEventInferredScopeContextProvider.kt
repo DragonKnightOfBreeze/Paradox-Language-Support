@@ -18,9 +18,10 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 如果某个`event`在另一个`event`中被调用，
- * 则将此另一个`event`的root作用域推断为此`event`的from作用域，
- * 此调用此另一个`event`的`event`的root作用域推断为此`event`的fromfrom作用域，依此类推直到fromfromfromfrom作用域。
+ * 如果某个event在另一个event中被调用，
+ * 则将此另一个event的root作用域推断为此event的from作用域，
+ * 将调用此另一个event的event的root作用域推断为此event的fromfrom作用域，
+ * 依此类推直到fromfromfromfrom作用域。
  */
 class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     companion object {

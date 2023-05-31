@@ -3,19 +3,17 @@ package icu.windea.pls.lang
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.application.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
 import icons.*
+import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
-import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.hierarchy.impl.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.localisation.psi.*
@@ -43,12 +41,15 @@ object ParadoxLocalisationParameterHandler {
         return doGetParametersFromDefinitionHierarchyIndex(element)
     }
     
-    private fun doGetParametersFromDefinitionHierarchyIndex(element: ParadoxLocalisationProperty): MutableSet<String> {
-        val result = mutableSetOf<String>().synced()
+    private fun doGetParametersFromDefinitionHierarchyIndex(element: ParadoxLocalisationProperty): Set<String> {
+        val project = element.project
+        val gameType = selectGameType(element) ?: return emptySet()
+        val searchScope = runReadAction { ParadoxSearchScope.fromElement(element) }
+            ?.withFileTypes(ParadoxScriptFileType)
+            ?: return emptySet()
         val targetLocalisationName = element.name
-        val selector = definitionHierarchySelector(element.project, element)
-        ParadoxDefinitionHierarchyHandler.processQuery(selector) p@{ _, fileData ->
-            val infos = fileData.get(ParadoxLocalisationParameterDefinitionHierarchySupport.ID) ?: return@p true
+        val result = mutableSetOf<String>().synced()
+        ParadoxDefinitionHierarchyHandler.processLocalisationParameters(gameType, project, searchScope) p@{ _, infos ->
             infos.forEachFast { info ->
                 val localisationName = info.getUserData(ParadoxLocalisationParameterDefinitionHierarchySupport.localisationKey)
                 if(localisationName == targetLocalisationName) result.add(info.expression)

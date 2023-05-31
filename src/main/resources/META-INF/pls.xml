@@ -50,8 +50,8 @@
     <incorrectExpressionChecker implementation="icu.windea.pls.lang.expression.checker.impl.ParadoxExpectComplexTriggerModifierTriggerChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.lang.expression.checker.impl.ParadoxSwitchTriggerChecker"/>
     
-    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxEventInOnActionHierarchySupport"/>
-    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxEventInEventHierarchySupport"/>
+    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxEventInOnActionDefinitionHierarchySupport"/>
+    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxEventInEventDefinitionHierarchySupport"/>
     <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxLocalisationParameterDefinitionHierarchySupport"/>
     
     <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.ParadoxBaseTypeInheritSupport"/>

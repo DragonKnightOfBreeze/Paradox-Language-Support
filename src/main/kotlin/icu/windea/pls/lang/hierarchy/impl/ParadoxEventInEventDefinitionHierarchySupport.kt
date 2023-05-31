@@ -8,7 +8,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-class ParadoxEventInEventHierarchySupport: ParadoxDefinitionHierarchySupport {
+class ParadoxEventInEventDefinitionHierarchySupport: ParadoxDefinitionHierarchySupport {
     companion object {
         const val ID = "event.in.event"
     }
