@@ -119,7 +119,7 @@ class ParadoxElementPathImplA(
                     escape = true
                 }
                 c == '/' && !escape -> {
-                    result.add(builder.toString())
+                    result.add(builder.toString().intern())
                     builder.clear()
                 }
                 else -> {
@@ -129,15 +129,16 @@ class ParadoxElementPathImplA(
             }
         }
         if(builder.isNotEmpty()) {
-            result.add(builder.toString())
+            result.add(builder.toString().intern())
         }
         return result
     }
 }
 
 class ParadoxElementPathImplB(
-    override val rawSubPaths: List<String>
+    rawSubPaths: List<String>
 ) : ParadoxElementPath {
+    override val rawSubPaths = rawSubPaths.mapTo(mutableListOf()) { it.intern() }
     override val path: String = doGetPath()
     override val subPaths: List<Info> = rawSubPaths.map { Info.resolve(it) }
     override val length: Int = subPaths.size

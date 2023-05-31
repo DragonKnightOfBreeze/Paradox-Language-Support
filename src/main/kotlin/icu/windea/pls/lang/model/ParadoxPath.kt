@@ -60,7 +60,7 @@ fun ParadoxPath.canBeSyncedLocalisationPath(): Boolean {
 class ParadoxPathImplA(
 	override val path: String
 ) : ParadoxPath {
-	override val subPaths: List<String> = path.splitToSequence('/').toList()
+	override val subPaths: List<String> = path.splitToSequence('/').mapTo(mutableListOf()) { it.intern() }
 	override val parent: String = path.substringBeforeLast('/', "")
 	override val root: String = path.substringBefore('/', "")
 	override val fileName: String = subPaths.lastOrNull().orEmpty()
@@ -73,8 +73,9 @@ class ParadoxPathImplA(
 }
 
 class ParadoxPathImplB(
-	override val subPaths: List<String>
+	subPaths: List<String>
 ) : ParadoxPath {
+	override val subPaths: List<String> = subPaths.mapTo(mutableListOf()) { it.intern() }
 	override val path: String = subPaths.joinToString("/")
 	override val parent: String = path.substringBeforeLast('/', "")
 	override val root: String = path.substringBefore('/', "")

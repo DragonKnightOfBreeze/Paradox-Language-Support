@@ -19,35 +19,37 @@ object ParadoxDefinitionHierarchyHandler {
         ProgressManager.checkCanceled()
         if(SearchScope.isEmptyScope(scope)) return true
         
-        return FileBasedIndex.getInstance().processValues(ParadoxDefinitionHierarchyIndex.NAME, supportId, null, processor, scope)
+        FileBasedIndex.getInstance().processValues(ParadoxDefinitionHierarchyIndex.NAME, supportId, null, processor, scope)
     }
 }
 
 inline  fun ParadoxDefinitionHierarchyHandler.processEventsInOnAction(
     gameType: ParadoxGameType,
     scope: GlobalSearchScope,
-    crossinline processor: (file: VirtualFile, infos: List<ParadoxDefinitionHierarchyInfo>) -> Boolean
+    crossinline processor: ParadoxEventsInOnActionHierarchyContext.(file: VirtualFile, infos: List<ParadoxDefinitionHierarchyInfo>) -> Boolean
 ): Boolean {
     val supportId = ParadoxEventInOnActionDefinitionHierarchySupport.ID
     return processQuery(supportId, scope) p@{ file, value ->
         if(selectGameType(file) != gameType) return@p true //check game type at file level
-        processor(file, value)
+        ParadoxEventsInOnActionHierarchyContext.processor(file, value)
     }
 }
+
+object ParadoxEventsInOnActionHierarchyContext
 
 inline fun ParadoxDefinitionHierarchyHandler.processEventsInEvent(
     gameType: ParadoxGameType,
     scope: GlobalSearchScope,
-    crossinline processor: ParadoxEventsInEventsHierarchyContext.(file: VirtualFile, infos: List<ParadoxDefinitionHierarchyInfo>) -> Boolean
+    crossinline processor: ParadoxEventsInEventHierarchyContext.(file: VirtualFile, infos: List<ParadoxDefinitionHierarchyInfo>) -> Boolean
 ): Boolean {
     val supportId = ParadoxEventInEventDefinitionHierarchySupport.ID
     return processQuery(supportId, scope) p@{ file, value ->
         if(selectGameType(file) != gameType) return@p true //check game type at file level
-        ParadoxEventsInEventsHierarchyContext.processor(file, value)
+        ParadoxEventsInEventHierarchyContext.processor(file, value)
     }
 }
 
-object ParadoxEventsInEventsHierarchyContext {
+object ParadoxEventsInEventHierarchyContext {
     val ParadoxDefinitionHierarchyInfo.containingEventScope by ParadoxEventInEventDefinitionHierarchySupport.containingEventScopeKey 
 }
 
@@ -65,4 +67,16 @@ inline fun ParadoxDefinitionHierarchyHandler.processLocalisationParameters(
 
 object ParadoxLocalisationParameterHierarchyContext {
     val ParadoxDefinitionHierarchyInfo.localisationName by ParadoxLocalisationParameterDefinitionHierarchySupport.localisationNameKey
+}
+
+inline fun ParadoxDefinitionHierarchyHandler.processInferredScopeContextAwareDefinitions(
+    gameType: ParadoxGameType,
+    scope: GlobalSearchScope,
+    crossinline processor: (file: VirtualFile, infos: List<ParadoxDefinitionHierarchyInfo>) -> Boolean
+): Boolean {
+    val supportId = ParadoxInferredScopeContextAwareDefinitionHierarchySupport.ID
+    return processQuery(supportId, scope) p@{ file, value ->
+        if(selectGameType(file) != gameType) return@p true //check game type at file level
+        processor(file, value)
+    }
 }

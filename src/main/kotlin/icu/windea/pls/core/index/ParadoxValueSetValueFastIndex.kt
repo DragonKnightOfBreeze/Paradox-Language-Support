@@ -84,7 +84,8 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
     private fun handleValueSetValueElement(map: MutableMap<String, List<ParadoxValueSetValueInfo>>, element: ParadoxValueSetValueElement) {
         element.valueSetNames.forEach { valueSetName ->
             val valueSetValueInfoList = map.getOrPut(valueSetName) { mutableListOf() } as MutableList
-            val valueSetValueInfo = ParadoxValueSetValueInfo(element.name, valueSetName, element.readWriteAccess, -1, element.gameType)
+            //elementOffset is unused yet
+            val valueSetValueInfo = ParadoxValueSetValueInfo(element.name, valueSetName, element.readWriteAccess, -1 /*element.startOffset*/, element.gameType)
             valueSetValueInfoList.add(valueSetValueInfo)
         }
     }

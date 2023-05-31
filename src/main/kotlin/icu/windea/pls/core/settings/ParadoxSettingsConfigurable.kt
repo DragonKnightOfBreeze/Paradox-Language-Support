@@ -235,6 +235,13 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.inlineScriptConfig.tooltip") }
                         .onApply { doRefreshInlineScripts() }
                 }
+                //scopeContext
+                row {
+                    checkBox(PlsBundle.message("settings.inference.scopeContext"))
+                        .bindSelected(settings.inference::scopeContext)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContext.tooltip") }
+                        .onApply { ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker.incModificationCount() }
+                }
                 //eventScopeContextFromEvent
                 row {
                     checkBox(PlsBundle.message("settings.inference.eventScopeContextFromEvent"))

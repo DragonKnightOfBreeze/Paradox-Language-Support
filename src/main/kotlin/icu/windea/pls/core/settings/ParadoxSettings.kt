@@ -98,6 +98,7 @@ class ParadoxSettingsState : BaseState() {
     /**
      * @property argumentValueConfig 是否推断参数值对应的脚本表达式，以便为其提供高级语言功能支持。
      * @property inlineScriptConfig 是否推断内联脚本的使用位置，以便为其提供高级语言功能支持。
+     * @property scopeContext 是否基于scripted_trigger、scripted_effect等的调用推断它们的作用域上下文。
      * @property eventScopeContextFromEvent 是否基于在其他事件中的调用推断事件的作用域上下文。
      * @property eventScopeContextFromOnAction 是否基于在on_action中的调用推断事件的作用域上下文。
      */
@@ -105,6 +106,7 @@ class ParadoxSettingsState : BaseState() {
     class InferenceState : BaseState() {
         var argumentValueConfig by property(true)
         var inlineScriptConfig by property(true)
+        var scopeContext by property(true)
         var eventScopeContextFromEvent by property(true)
         var eventScopeContextFromOnAction by property(true)
     }

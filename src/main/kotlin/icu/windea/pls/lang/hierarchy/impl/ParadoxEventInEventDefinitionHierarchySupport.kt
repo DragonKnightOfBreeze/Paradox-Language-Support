@@ -10,7 +10,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-class ParadoxEventInEventDefinitionHierarchySupport: ParadoxDefinitionHierarchySupport {
+class ParadoxEventInEventDefinitionHierarchySupport : ParadoxDefinitionHierarchySupport {
     companion object {
         const val ID = "event.in.event"
         
@@ -18,15 +18,17 @@ class ParadoxEventInEventDefinitionHierarchySupport: ParadoxDefinitionHierarchyS
         val containingEventScopeKey = Key.create<String>("paradox.definition.hierarchy.event.in.event.containingEventScope")
     }
     
-    override val id: String = ID
+    override val id: String get() = ID
     
     override fun indexData(fileData: MutableMap<String, MutableList<ParadoxDefinitionHierarchyInfo>>, element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo) {
         if(definitionInfo.type != "event") return
         val configExpression = config.expression
         if(configExpression.type != CwtDataType.Definition) return
-        if(configExpression.value?.substringBefore('.') != "event") return
+        val definitionType = configExpression.value?.substringBefore('.') ?: return
+        if(definitionType != "event") return
         
-        val info = ParadoxDefinitionHierarchyInfo(id, element.value, config.expression, definitionInfo.name, definitionInfo.type, definitionInfo.subtypes, element.startOffset, definitionInfo.gameType)
+        //elementOffset is unused yet by this support
+        val info = ParadoxDefinitionHierarchyInfo(id, element.value, config.expression, definitionInfo.name, definitionInfo.type, definitionInfo.subtypes, -1 /*element.startOffset*/, definitionInfo.gameType)
         info.putUserData(containingEventScopeKey, ParadoxEventHandler.getScope(definitionInfo).orEmpty())
         fileData.getOrPut(id) { mutableListOf() }.add(info)
         //TODO 需要带上可能的作用域映射信息

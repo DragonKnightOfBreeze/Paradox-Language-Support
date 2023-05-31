@@ -24,7 +24,8 @@ class ParadoxLocalisationParameterDefinitionHierarchySupport: ParadoxDefinitionH
         
         val localisationReferenceElement = ParadoxLocalisationParameterHandler.getLocalisationReferenceElement(element, config) ?: return
         val localisationName = localisationReferenceElement.name
-        val info = ParadoxDefinitionHierarchyInfo(id, element.value, config.expression, definitionInfo.name, definitionInfo.type, definitionInfo.subtypes, element.startOffset, definitionInfo.gameType)
+        //elementOffset is unused yet by this support
+        val info = ParadoxDefinitionHierarchyInfo(id, element.value, config.expression, definitionInfo.name, definitionInfo.type, definitionInfo.subtypes, -1 /*element.startOffset*/, definitionInfo.gameType)
         info.putUserData(localisationNameKey, localisationName)
         fileData.getOrPut(id) { mutableListOf() }.add(info)
     }

@@ -24,7 +24,7 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     companion object {
-        val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.fromEvent")
+        val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.fromEvent")
     }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
@@ -101,12 +101,10 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
     }
     
     override fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        val eventId = definitionInfo.name
-        return PlsBundle.message("script.annotator.scopeContext.2", eventId)
+        return PlsBundle.message("script.annotator.scopeContext.2", definitionInfo.name)
     }
     
     override fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        val eventId = definitionInfo.name
-        return PlsBundle.message("script.annotator.scopeContext.2.conflict", eventId)
+        return PlsBundle.message("script.annotator.scopeContext.2.conflict", definitionInfo.name)
     }
 }

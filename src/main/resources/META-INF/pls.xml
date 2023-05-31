@@ -53,6 +53,7 @@
     <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxEventInOnActionDefinitionHierarchySupport"/>
     <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxEventInEventDefinitionHierarchySupport"/>
     <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxLocalisationParameterDefinitionHierarchySupport"/>
+    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxInferredScopeContextAwareDefinitionHierarchySupport"/>
     
     <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.ParadoxBaseTypeInheritSupport"/>
     <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.StellarisEventInheritSupport"/>
@@ -104,6 +105,7 @@
     <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxGameRuleScopeContextProvider"/>
     <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxOnActionScopeContextProvider"/>
 
+    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxBaseDefinitionInferredScopeContextProvider"/>
     <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxEventFromEventInferredScopeContextProvider"/>
     <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxEventFromOnActionInferredScopeContextProvider"/>
     
