@@ -69,14 +69,13 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
         val gameType = configGroup.gameType ?: return true
         val project = configGroup.project
         return ParadoxDefinitionHierarchyHandler.processEventsInOnAction(gameType, searchScope) p@{ file, infos ->
-            val psiFile by lazy { file.toPsiFile(project) }
+            val psiFile = file.toPsiFile(project)?: return@p true
             infos.forEachFast f@{ info ->
                 val eventName = info.expression
                 if(eventName != thisEventName) return@f
                 val containingOnActionName = info.definitionName
                 //这里使用psiFile作为contextElement
-                val finalPsiFile = psiFile ?: return@p true
-                val config = configGroup.onActions.getByTemplate(containingOnActionName, finalPsiFile, configGroup)
+                val config = configGroup.onActions.getByTemplate(containingOnActionName, psiFile, configGroup)
                 if(config == null) return@f //missing
                 if(config.eventType != thisEventType) return@f //invalid (mismatch)
                 val map = config.config.replaceScopes ?: return@f

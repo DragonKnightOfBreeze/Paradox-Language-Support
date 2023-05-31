@@ -65,14 +65,13 @@ class ParadoxBaseDefinitionInferredScopeContextProvider: ParadoxDefinitionInferr
         return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxBaseDefinitionInferredScopeContextProvider.doProcessQuery") {
             withCheckRecursion(definitionInfo.name + "@" + definitionInfo.type) {
                 ParadoxDefinitionHierarchyHandler.processInferredScopeContextAwareDefinitions(gameType, searchScope) p@{ file, infos ->
-                    val psiFile by lazy { file.toPsiFile(project) }
+                    val psiFile = file.toPsiFile(project)?: return@p true
                     infos.forEachFast f@{ info ->
                         val n = info.expression
                         if(n != definitionInfo.name) return@f //matches definition name
                         val t = info.configExpression.value?.substringBefore('.')
                         if(t != definitionInfo.type) return@f //matches definition type
-                        val finalPsiFile = psiFile ?: return@p true
-                        val e = finalPsiFile.findElementAt(info.elementOffset) ?: return@f
+                        val e = psiFile.findElementAt(info.elementOffset) ?: return@f
                         val m = e.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@f
                         val scopeContext = ParadoxScopeHandler.getScopeContext(m) ?: return@f
                         //TODO 这里其实可以推断更加精确的作用域上下文
