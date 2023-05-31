@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "icu.windea"
-version = "1.0.4"
+version = "1.0.5"
 
 intellij {
 	pluginName.set("Paradox Language Support")
@@ -57,6 +57,8 @@ dependencies {
 	//Javassist
 	implementation("org.javassist:javassist:3.29.2-GA")
 	
+	//Sqlite
+	testImplementation("org.xerial:sqlite-jdbc:3.40.1.0")
 	//Byte Buddy
 	testImplementation("net.bytebuddy:byte-buddy:1.14.2")
 	//Javassist

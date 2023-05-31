@@ -5,7 +5,7 @@ class CatchableLazy<T>(val delegate: Lazy<T>, val catchingAction: (Throwable) ->
         get() {
             return try {
                 delegate.value
-            } catch(e: Exception) {
+            } catch(e: Throwable) {
                 catchingAction(e)
             }
         }
