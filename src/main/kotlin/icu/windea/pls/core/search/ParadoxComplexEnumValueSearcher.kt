@@ -7,6 +7,7 @@ import com.intellij.psi.search.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.model.*
@@ -30,6 +31,8 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         DumbService.getInstance(project).runReadActionInSmartMode action@{
             FileBasedIndex.getInstance().processValues(ParadoxComplexEnumValueIndex.NAME, enumName, null, p@{ file, value->
                 ProgressManager.checkCanceled()
+                //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
+                file.toPsiFile(project) ?: return@p true
                 if(selectGameType(file) != gameType) return@p true //check game type at file level
                 val complexEnumValueInfoList = value
                 if(complexEnumValueInfoList.isEmpty()) return@p true
