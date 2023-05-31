@@ -53,45 +53,46 @@ class ParadoxBaseDefinitionInferredScopeContextProvider: ParadoxDefinitionInferr
         return ParadoxScopeContextInferenceInfo(resultScopeContextMap, hasConflict)
     }
     
-    private fun doProcessQuery(definitionInfo: ParadoxDefinitionInfo, searchScope: GlobalSearchScope, scopeContextMap: MutableMap<String, String?>, configGroup: CwtConfigGroup): Boolean {
+    private fun doProcessQuery(
+        definitionInfo: ParadoxDefinitionInfo,
+        searchScope: GlobalSearchScope,
+        scopeContextMap: MutableMap<String, String?>,
+        configGroup: CwtConfigGroup
+    ): Boolean {
         val gameType = configGroup.gameType ?: return true
         val project = configGroup.project
-        return ParadoxDefinitionHierarchyHandler.processInferredScopeContextAwareDefinitions(gameType, searchScope) p@{ file, infos ->
-            val psiFile by lazy { file.toPsiFile(project) }
-            infos.forEachFast f@{ info ->
-                val n = info.expression
-                if(n != definitionInfo.name) return@p true //matches definition name
-                val t = info.configExpression.value?.substringBefore('.')
-                if(t != definitionInfo.type) return@p true //matches definition type
-                val finalPsiFile = psiFile ?: return@p true
-                val e = finalPsiFile.findElementAt(info.elementOffset) ?: return@p true
-                val m = e.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
-                val scopeContext = ParadoxScopeHandler.getScopeContext(m) ?: return@p true
-                val map = with(scopeContext) {
-                    //TODO 这里其实可以推断更加精确的作用域上下文
-                    buildMap {
-                        put("this", scope.id)
-                        root?.let { put("root", it.scope.id) }
-                        from?.let { put("from", it.scope.id) }
-                        from?.from?.let { put("fromfrom", it.scope.id) }
-                        from?.from?.from?.let { put("fromfromfrom", it.scope.id) }
-                        from?.from?.from?.from?.let { put("fromfromfromfrom", it.scope.id) }
+        
+        return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxBaseDefinitionInferredScopeContextProvider.doProcessQuery") {
+            withCheckRecursion(definitionInfo.name + "@" + definitionInfo.type) {
+                ParadoxDefinitionHierarchyHandler.processInferredScopeContextAwareDefinitions(gameType, searchScope) p@{ file, infos ->
+                    val psiFile by lazy { file.toPsiFile(project) }
+                    infos.forEachFast f@{ info ->
+                        val n = info.expression
+                        if(n != definitionInfo.name) return@p true //matches definition name
+                        val t = info.configExpression.value?.substringBefore('.')
+                        if(t != definitionInfo.type) return@p true //matches definition type
+                        val finalPsiFile = psiFile ?: return@p true
+                        val e = finalPsiFile.findElementAt(info.elementOffset) ?: return@p true
+                        val m = e.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
+                        val scopeContext = ParadoxScopeHandler.getScopeContext(m) ?: return@p true
+                        //TODO 这里其实可以推断更加精确的作用域上下文
+                        val map = scopeContext.detailMap.mapValues { (_, v) -> v.id }
+                        if(scopeContextMap.isEmpty()) {
+                            val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map)
+                            if(mergedMap != null) {
+                                scopeContextMap.clear()
+                                scopeContextMap.putAll(mergedMap)
+                            } else {
+                                return@p false
+                            }
+                        } else {
+                            scopeContextMap.putAll(map)
+                        }
                     }
-                }
-                if(scopeContextMap.isEmpty()) {
-                    val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map)
-                    if(mergedMap != null) {
-                        scopeContextMap.clear()
-                        scopeContextMap.putAll(mergedMap)
-                    } else {
-                        return@p false
-                    }
-                } else {
-                    scopeContextMap.putAll(map)
+                    true
                 }
             }
-            true
-        }
+        } ?: false
     }
     
     override fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {

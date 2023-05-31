@@ -438,6 +438,9 @@ object ParadoxScopeHandler {
         doMergeScopeContextMap(result, map, otherMap, "this", true).let { if(!it) return null }
         doMergeScopeContextMap(result, map, otherMap, "root", true).let { if(!it) return null }
         doMergeScopeContextMap(result, map, otherMap, "prev", false)
+        doMergeScopeContextMap(result, map, otherMap, "prevprev", false)
+        doMergeScopeContextMap(result, map, otherMap, "prevprevprev", false)
+        doMergeScopeContextMap(result, map, otherMap, "prevprevprevprev", false)
         doMergeScopeContextMap(result, map, otherMap, "from", false)
         doMergeScopeContextMap(result, map, otherMap, "fromfrom", false)
         doMergeScopeContextMap(result, map, otherMap, "fromfromfrom", false)
