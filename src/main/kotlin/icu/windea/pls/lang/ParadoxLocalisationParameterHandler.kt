@@ -58,32 +58,6 @@ object ParadoxLocalisationParameterHandler {
         return result
     }
     
-    @Deprecated("Use doGetParametersFromDefinitionHierarchyIndex()")
-    private fun doGetParametersFromReferenceSearch(element: ParadoxLocalisationProperty): Set<String> {
-        val result = mutableSetOf<String>().synced()
-        val searchScope = runReadAction { ParadoxSearchScope.fromElement(element) }
-            ?.withFileTypes(ParadoxScriptFileType)
-            ?: return emptySet()
-        ProgressManager.checkCanceled()
-        ProgressManager.getInstance().runProcess({
-            ReferencesSearch.search(element, searchScope).processQueryAsync p@{ reference ->
-                ProgressManager.checkCanceled()
-                val localisationReferenceElement = reference.element
-                if(localisationReferenceElement is ParadoxScriptString) {
-                    val valueConfigs = ParadoxConfigResolver.getValueConfigs(localisationReferenceElement, true, true, ParadoxConfigMatcher.Options.Default)
-                    val valueConfig = valueConfigs.firstOrNull() ?: return@p true
-                    val config = valueConfig.propertyConfig ?: return@p true
-                    val parameterPropertyElements = findParameterPropertiesFromLocalisationProperty(localisationReferenceElement, config)
-                    for(parameterPropertyElement in parameterPropertyElements) {
-                        result.add(parameterPropertyElement.name)
-                    }
-                }
-                true
-            }
-        }, EmptyProgressIndicator())
-        return result
-    }
-    
     fun getLocalisationReferenceElement(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>): ParadoxScriptString? {
         if(config !is CwtPropertyConfig || config.expression.type != CwtDataType.LocalisationParameter) return null
         val localisationReferencePropertyElement = findLocalisationPropertyFromParameterProperty(element, config)
