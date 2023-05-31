@@ -13,7 +13,7 @@ class ParadoxLocalisationParameterDefinitionHierarchySupport: ParadoxDefinitionH
     companion object {
         const val ID = "localisationParameter"
         
-        val localisationKey = Key.create<String>("paradox.definition.hierarchy.localisationParameter.localisation")
+        val localisationNameKey = Key.create<String>("paradox.definition.hierarchy.localisationParameter.localisationName")
     }
     
     override val id: String = ID
@@ -25,15 +25,15 @@ class ParadoxLocalisationParameterDefinitionHierarchySupport: ParadoxDefinitionH
         val localisationReferenceElement = ParadoxLocalisationParameterHandler.getLocalisationReferenceElement(element, config) ?: return
         val localisationName = localisationReferenceElement.name
         val info = ParadoxDefinitionHierarchyInfo(id, element.value, config.expression, definitionInfo.name, definitionInfo.type, definitionInfo.subtypes, element.startOffset, definitionInfo.gameType)
-        info.putUserData(localisationKey, localisationName)
+        info.putUserData(localisationNameKey, localisationName)
         fileData.getOrPut(id) { mutableListOf() }.add(info)
     }
     
     override fun saveData(storage: DataOutput, data: ParadoxDefinitionHierarchyInfo) {
-        storage.writeString(data.getUserData(localisationKey).orEmpty())
+        storage.writeString(data.getUserData(localisationNameKey).orEmpty())
     }
     
     override fun readData(storage: DataInput, data: ParadoxDefinitionHierarchyInfo) {
-        data.putUserData(localisationKey, storage.readString()) 
+        storage.readString().takeIfNotEmpty()?.let { data.putUserData(localisationNameKey, it) }
     }
 }

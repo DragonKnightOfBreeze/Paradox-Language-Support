@@ -51,7 +51,7 @@ object ParadoxLocalisationParameterHandler {
         val result = mutableSetOf<String>().synced()
         ParadoxDefinitionHierarchyHandler.processLocalisationParameters(gameType, project, searchScope) p@{ _, infos ->
             infos.forEachFast { info ->
-                val localisationName = info.getUserData(ParadoxLocalisationParameterDefinitionHierarchySupport.localisationKey)
+                val localisationName = info.getUserData(ParadoxLocalisationParameterDefinitionHierarchySupport.localisationNameKey)
                 if(localisationName == targetLocalisationName) result.add(info.expression)
             }
             true

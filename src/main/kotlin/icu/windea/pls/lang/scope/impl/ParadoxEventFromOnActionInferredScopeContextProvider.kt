@@ -3,6 +3,7 @@ package icu.windea.pls.lang.scope.impl
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
+import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
@@ -48,39 +49,50 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
             ?.withFilePath("common/on_actions", "txt")
             ?: return null
         val configGroup = definitionInfo.configGroup
-        val gameType = configGroup.gameType ?: return null
-        val project = configGroup.project
         val thisEventName = definitionInfo.name
         val thisEventType = ParadoxEventHandler.getType(definitionInfo)
-        var scopeContextMap: Map<String, String?>? = null
+        val scopeContextMap = mutableMapOf<String, String?>()
         var hasConflict = false
-        val r = ParadoxDefinitionHierarchyHandler.processEventsInOnAction(gameType, project, searchScope) p@{ file, infos ->
+        val r = doProcessQuery(thisEventName, thisEventType, searchScope, scopeContextMap, configGroup)
+        if(!r) hasConflict = true
+        val resultScopeContextMap = scopeContextMap.takeIfNotEmpty() ?: return null
+        return ParadoxScopeContextInferenceInfo(resultScopeContextMap, hasConflict)
+    }
+    
+    private fun doProcessQuery(
+        thisEventName: String,
+        thisEventType: String?,
+        searchScope: GlobalSearchScope,
+        scopeContextMap: MutableMap<String, String?>,
+        configGroup: CwtConfigGroup
+    ): Boolean {
+        val gameType = configGroup.gameType ?: return true
+        val project = configGroup.project
+        return ParadoxDefinitionHierarchyHandler.processEventsInOnAction(gameType, project, searchScope) p@{ file, infos ->
             val psiFile = file.toPsiFile(project) ?: return@p true
             infos.forEachFast f@{ info ->
                 val eventName = info.expression
                 if(eventName != thisEventName) return@f
-                val onActionName = info.definitionName
+                val containingOnActionName = info.definitionName
                 //这里使用psiFile作为contextElement
-                val config = configGroup.onActions.getByTemplate(onActionName, psiFile, configGroup)
+                val config = configGroup.onActions.getByTemplate(containingOnActionName, psiFile, configGroup)
                 if(config == null) return@f //missing
                 if(config.eventType != thisEventType) return@f //invalid (mismatch)
                 val map = config.config.replaceScopes ?: return@f
-                if(scopeContextMap != null) {
-                    val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap!!, map)
+                if(scopeContextMap.isEmpty()) {
+                    val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map)
                     if(mergedMap != null) {
-                        scopeContextMap = mergedMap
+                        scopeContextMap.clear()
+                        scopeContextMap.putAll(mergedMap)
                     } else {
                         return@p false
                     }
                 } else {
-                    scopeContextMap = map
+                    scopeContextMap.putAll(map)
                 }
             }
             true
         }
-        if(!r) hasConflict = true
-        val resultScopeContextMap = scopeContextMap ?: return null
-        return ParadoxScopeContextInferenceInfo(resultScopeContextMap, hasConflict)
     }
     
     override fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {

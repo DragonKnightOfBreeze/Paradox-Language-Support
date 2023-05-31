@@ -8,13 +8,13 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.index.hierarchy.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.hierarchy.impl.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.scope.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -64,25 +64,25 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
     }
     
     private fun doProcessQuery(
-        eventName: String,
+        thisEventName: String,
         searchScope: GlobalSearchScope,
         scopeContextMap: MutableMap<String, String?>,
         configGroup: CwtConfigGroup,
         depth: Int = 1
     ): Boolean {
+        val gameType = configGroup.gameType ?: return true
         val project = configGroup.project
         return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxEventFromEventInferredScopeContextProvider.doProcessQuery") {
-            if(depth == 1) stackTrace.addLast(eventName) 
+            if(depth == 1) stackTrace.addLast(thisEventName) 
             
             val toRef = "from".repeat(depth)
-            ProgressManager.checkCanceled()
-            FileTypeIndex.processFiles(ParadoxScriptFileType, p@{ file ->
-                ProgressManager.checkCanceled()
-                val data = ParadoxEventHierarchyIndex.getData(file, project) ?: return@p true
-                val eventInfos = data.eventToEventInfosMap[eventName] ?: return@p true
-                eventInfos.forEach { eventInfo ->
-                    withCheckRecursion(eventInfo.name) {
-                        val newRefScope = eventInfo.scope
+            ParadoxDefinitionHierarchyHandler.processEventsInEvent(gameType, project, searchScope) p@{ _, infos ->
+                infos.forEachFast f@{ info ->
+                    val eventName = info.expression
+                    if(eventName != thisEventName) return@f
+                    val containingEventName = info.definitionName
+                    withCheckRecursion(containingEventName) {
+                        val newRefScope = info.getUserData(ParadoxEventInEventDefinitionHierarchySupport.containingEventScopeKey)
                         val oldRefScope = scopeContextMap.get(toRef)
                         if(oldRefScope == null) {
                             scopeContextMap.put(toRef, newRefScope)
@@ -94,11 +94,11 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
                             scopeContextMap.put(toRef, refScope)
                         }
                         if(depth >= 4) return@p true
-                        doProcessQuery(eventInfo.name, searchScope, scopeContextMap, configGroup)
-                    } ?: return@p false
+                        doProcessQuery(containingEventName, searchScope, scopeContextMap, configGroup)
+                    }
                 }
                 true
-            }, searchScope)
+            }
         } ?: false
     }
     

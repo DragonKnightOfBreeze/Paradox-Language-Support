@@ -10,6 +10,8 @@ import icu.windea.pls.script.psi.*
 class ParadoxEventInOnActionDefinitionHierarchySupport: ParadoxDefinitionHierarchySupport {
     companion object {
         const val ID = "event.in.onAction"
+        
+        //val containingOnActionNameKey = Key.create<String>("paradox.definition.hierarchy.event.in.event.containingOnActionName") //definitionName
     }
     
     override val id: String = ID
