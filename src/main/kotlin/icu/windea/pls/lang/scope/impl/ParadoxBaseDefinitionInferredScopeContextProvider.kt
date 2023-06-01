@@ -8,6 +8,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
@@ -19,6 +20,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 推断scripted_trigger、scripted_effect等的作用域上下文（仅限this和root）。
  */
+@SlowApi
 class ParadoxBaseDefinitionInferredScopeContextProvider: ParadoxDefinitionInferredScopeContextProvider {
     companion object {
         val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo")

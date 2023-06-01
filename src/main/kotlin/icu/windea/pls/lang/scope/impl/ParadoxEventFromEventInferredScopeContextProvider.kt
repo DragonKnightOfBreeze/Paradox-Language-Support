@@ -8,7 +8,9 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.*
@@ -22,6 +24,7 @@ import icu.windea.pls.script.psi.*
  * 将调用此另一个event的event的root作用域推断为此event的fromfrom作用域，
  * 依此类推直到fromfromfromfrom作用域。
  */
+@SlowApi
 class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     companion object {
         val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.fromEvent")
@@ -74,12 +77,43 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
             if(depth == 1) stackTrace.addLast(thisEventName) 
             
             val toRef = "from".repeat(depth)
-            ParadoxDefinitionHierarchyHandler.processEventsInEvent(gameType, searchScope) p@{ _, infos ->
+            ParadoxDefinitionHierarchyHandler.processEventsInEvent(gameType, searchScope) p@{ file, infos ->
                 infos.forEachFast f@{ info ->
                     val eventName = info.expression
                     if(eventName != thisEventName) return@f
                     val containingEventName = info.definitionName
                     withCheckRecursion(containingEventName) {
+                        val scopesElementOffset = info.scopesElementOffset
+                        if(scopesElementOffset != -1) {
+                            //从scopes = { ... }中推断
+                            val psiFile = file.toPsiFile(configGroup.project) ?: return@p false
+                            val scopesElement = psiFile.findElementAt(scopesElementOffset)?.parentOfType<ParadoxScriptProperty>() ?: return@p false
+                            val scopesBlockElement = scopesElement.block ?: return@p false
+                            val scopeContextOfScopesElement = ParadoxScopeHandler.getScopeContext(scopesElement)
+                            scopesBlockElement.processProperty(inline = true) pp@{
+                                if(scopeContextOfScopesElement == null) {
+                                    val n = it.name.lowercase()
+                                    if(configGroup.systemLinks.get(n)?.baseId != "from") return@pp true
+                                    scopeContextMap.put(n, ParadoxScopeHandler.anyScopeId)
+                                    return@pp true
+                                }
+                                
+                                val pv = it.propertyValue ?: return@pp true
+                                val scopeField = pv.text
+                                if(scopeField.isLeftQuoted()) return@pp true
+                                val textRange = TextRange.create(0, scopeField.length)
+                                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup, true) ?: return@pp true
+                                val scopeContextOfEachScope = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, scopeContextOfScopesElement)
+                                
+                                val n = it.name.lowercase()
+                                if(configGroup.systemLinks.get(n)?.baseId != "from") return@pp true
+                                scopeContextMap.put(n, scopeContextOfEachScope.scope.id)
+                                
+                                true
+                            }
+                            return@f
+                        }
+                        
                         val newRefScope = info.containingEventScope
                         val oldRefScope = scopeContextMap.get(toRef)
                         if(oldRefScope == null) {
