@@ -24,29 +24,25 @@ object ParadoxDefinitionMemberHandler {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionMemberInfoKey) {
             ProgressManager.checkCanceled()
             val file = element.containingFile
-            val value = resolveInfoDownUp(element)
+            val value = doGetInfoDownUp(element)
             //invalidated on file modification or ScriptFileTracker
             val tracker = ParadoxPsiModificationTracker.getInstance(file.project).ScriptFileTracker
             CachedValueProvider.Result.create(value, file, tracker)
         }
     }
     
-    //fun resolveInfoUpDown(element: LighterASTNode): ParadoxDefinitionMemberInfo? {
-    //	TODO()
-    //}
-    
-    fun resolveInfoDownUp(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
+    private fun doGetInfoDownUp(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
         //element: ParadoxScriptPropertyKey | ParadoxScriptValue
         //这里输入的element本身可以是定义，这时elementPath会是空字符串
         val (elementPath, definition) = ParadoxElementPathHandler.getFromDefinitionWithDefinition(element, true) ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
         val gameType = definitionInfo.gameType
-        beforeResolveDefinitionMemberInfo(definition, definitionInfo, configGroup)
+        handleDefinitionMemberInfo(definition, definitionInfo, configGroup)
         return ParadoxDefinitionMemberInfo(elementPath, gameType, definitionInfo, configGroup, element)
     }
     
-    private fun beforeResolveDefinitionMemberInfo(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, configGroup: CwtConfigGroup) {
+    private fun handleDefinitionMemberInfo(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, configGroup: CwtConfigGroup) {
         //bind missing declaration config for swap types
         val definitionType = definitionInfo.type
         if(!configGroup.declarations.containsKey(definitionType)) {

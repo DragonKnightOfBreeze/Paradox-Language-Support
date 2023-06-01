@@ -39,10 +39,10 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
             buildMap {
                 val keys = mutableSetOf<String>()
                 if(file.fileType == ParadoxScriptFileType) {
-                    file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+                    file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() { //perf: 97.9%
                         override fun visitElement(element: PsiElement) {
                             if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
-                                element.references.forEachFast { reference ->
+                                element.references.forEachFast { reference -> //perf: 96%
                                     if(reference.canResolveValueSetValue()) {
                                         val resolved = reference?.resolve()
                                         if(resolved is ParadoxValueSetValueElement) {
@@ -56,7 +56,7 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
                         }
                     })
                 } else {
-                    file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+                    file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() { //perf: 2.1%
                         override fun visitElement(element: PsiElement) {
                             if(element is ParadoxLocalisationCommandIdentifier) {
                                 element.references.forEachFast { reference ->

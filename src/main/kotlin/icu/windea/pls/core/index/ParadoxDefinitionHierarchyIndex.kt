@@ -45,7 +45,7 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
                 file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
                     override fun visitElement(element: PsiElement) {
                         if(element is ParadoxScriptDefinitionElement) {
-                            val definitionInfo = element.definitionInfo
+                            val definitionInfo = element.definitionInfo //perf: 2.6%
                             if(definitionInfo != null) {
                                 definitionInfoStack.addLast(definitionInfo)
                             }
@@ -54,7 +54,7 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
                         if(definitionInfo != null) {
                             //这里element作为定义的引用时也可能是ParadoxScriptInt，目前不需要考虑这种情况，因此忽略
                             if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
-                                val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = matchOptions)
+                                val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = matchOptions) //perf: 82.3%
                                 if(configs.isNotEmpty()) {
                                     configs.forEachFast { config ->
                                         ParadoxDefinitionHierarchySupport.indexData(this@buildMap, element, config, definitionInfo)

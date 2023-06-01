@@ -32,18 +32,18 @@ object StellarisEconomicCategoryHandler {
     fun getInfo(definition: ParadoxScriptDefinitionElement): StellarisEconomicCategoryInfo? {
         ProgressManager.checkCanceled()
         if(selectGameType(definition) != ParadoxGameType.Stellaris) return null
-        return getInfoFromCache(definition)
+        return doGetInfoFromCache(definition)
     }
     
-    private fun getInfoFromCache(definition: ParadoxScriptDefinitionElement): StellarisEconomicCategoryInfo? {
+    private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): StellarisEconomicCategoryInfo? {
         if(definition !is ParadoxScriptProperty) return null
         return CachedValuesManager.getCachedValue(definition, cachedEconomicCategoryInfoKey) {
-            val value = resolveInfo(definition)
+            val value = doGetInfo(definition)
             CachedValueProvider.Result.create(value, definition)
         }
     }
     
-    private fun resolveInfo(definition: ParadoxScriptProperty): StellarisEconomicCategoryInfo? {
+    private fun doGetInfo(definition: ParadoxScriptProperty): StellarisEconomicCategoryInfo? {
         //这种写法可能存在一定性能问题，但是问题不大
         //兼容继承的mult修正
         try {

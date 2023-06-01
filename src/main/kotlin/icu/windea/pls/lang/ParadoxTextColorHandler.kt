@@ -15,17 +15,17 @@ object ParadoxTextColorHandler {
         val selector = definitionSelector(project, contextElement).contextSensitive()
         val definition = ParadoxDefinitionSearch.search(name, "textcolor", selector).find()
         if(definition == null) return null
-        return getInfoFromCache(definition)
+        return doGetInfoFromCache(definition)
     }
     
-    private fun getInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
+    private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
         return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedTextColorInfoKey) {
-            val value = resolveInfo(definition)
+            val value = doGetInfo(definition)
             CachedValueProvider.Result.create(value, definition)
         }
     }
     
-    private fun resolveInfo(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
+    private fun doGetInfo(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
         if(definition !is ParadoxScriptProperty) return null
         //要求输入的name必须是单个字母或数字
         val name = definition.name
@@ -40,7 +40,7 @@ object ParadoxTextColorHandler {
         val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
         val definitions = ParadoxDefinitionSearch.search("textcolor", selector).findAll()
         if(definitions.isEmpty()) return emptyList()
-        return definitions.mapNotNull { definition -> getInfoFromCache(definition) } //it.name == it.definitionInfo.name
+        return definitions.mapNotNull { definition -> doGetInfoFromCache(definition) } //it.name == it.definitionInfo.name
     }
 }
 

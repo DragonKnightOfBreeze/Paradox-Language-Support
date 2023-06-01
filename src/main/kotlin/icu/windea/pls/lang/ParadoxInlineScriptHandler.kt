@@ -35,20 +35,20 @@ object ParadoxInlineScriptHandler {
     fun getInfo(element: ParadoxScriptProperty): ParadoxInlineScriptInfo? {
         val name = element.name.lowercase()
         if(name != inlineScriptName) return null
-        return getInfoFromCache(element)
+        return doGetInfoFromCache(element)
     }
     
-    private fun getInfoFromCache(element: ParadoxScriptProperty): ParadoxInlineScriptInfo? {
+    private fun doGetInfoFromCache(element: ParadoxScriptProperty): ParadoxInlineScriptInfo? {
         return CachedValuesManager.getCachedValue(element, cachedInlineScriptInfoKey) {
             ProgressManager.checkCanceled()
             val file = element.containingFile
-            val value = resolveInfo(element, file)
+            val value = doGetInfo(element, file)
             //invalidated on file modification
             CachedValueProvider.Result.create(value, file)
         }
     }
     
-    private fun resolveInfo(element: ParadoxScriptProperty, file: PsiFile = element.containingFile): ParadoxInlineScriptInfo? {
+    private fun doGetInfo(element: ParadoxScriptProperty, file: PsiFile = element.containingFile): ParadoxInlineScriptInfo? {
         //这里不能调用ParadoxConfigHandler.getConfigs，因为需要处理内联的情况，会导致StackOverflow
         
         val fileInfo = file.fileInfo ?: return null
