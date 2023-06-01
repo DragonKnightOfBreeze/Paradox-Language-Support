@@ -105,7 +105,7 @@ object ParadoxElementPathHandler {
             when {
                 current is ParadoxScriptDefinitionElement -> {
                     if(flag) {
-                        if(ParadoxDefinitionHandler.isDefinition(current)) {
+                        if(current.definitionInfo != null) {
                             definition = current
                             break
                         }
