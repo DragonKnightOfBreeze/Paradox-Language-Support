@@ -25,7 +25,6 @@ class StellarisComplexTriggerModifierOverriddenScopeContextProvider : ParadoxOve
         private val COMPLEX_TRIGGER_MODIFIER_KEYS = arrayOf("alias[modifier_rule:complex_trigger_modifier]", "alias[modifier_rule_with_loc:complex_trigger_modifier]")
     }
     
-    @Suppress("KotlinConstantConditions")
     override fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
         //重载complex_trigger_modifier = {...}中属性trigger和parameters的值对应的作用域上下文
         //兼容trigger_scope的值对应的作用域与当前作用域上下文不匹配的情况

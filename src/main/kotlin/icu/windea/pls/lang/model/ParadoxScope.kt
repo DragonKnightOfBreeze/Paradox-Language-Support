@@ -43,3 +43,4 @@ sealed class ParadoxScope private constructor(val id: String) {
     }
 }
 
+fun ParadoxScope?.isUnsure() = this == null || this == ParadoxScope.AnyScope || this == ParadoxScope.UnknownScope
