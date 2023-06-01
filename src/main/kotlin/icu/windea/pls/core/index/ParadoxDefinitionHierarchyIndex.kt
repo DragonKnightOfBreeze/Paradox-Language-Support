@@ -37,8 +37,7 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
     override fun getVersion() = VERSION
     
     override fun getIndexer(): DataIndexer<String, List<ParadoxDefinitionHierarchyInfo>, FileContent> {
-        val matchOptions = ParadoxConfigMatcher.Options.SkipIndex or ParadoxConfigMatcher.Options.SkipScope
-        return DataIndexer { inputData ->
+        return DataIndexer { inputData -> //perf: 12000ms for indexing
             val file = inputData.psiFile
             val definitionInfoStack = LinkedList<ParadoxDefinitionInfo>()
             buildMap<String, MutableList<ParadoxDefinitionHierarchyInfo>> {
@@ -54,6 +53,7 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
                         if(definitionInfo != null) {
                             //这里element作为定义的引用时也可能是ParadoxScriptInt，目前不需要考虑这种情况，因此忽略
                             if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
+                                val matchOptions = ParadoxConfigMatcher.Options.SkipIndex or ParadoxConfigMatcher.Options.SkipScope
                                 val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = matchOptions) //perf: 82.3%
                                 if(configs.isNotEmpty()) {
                                     configs.forEachFast { config ->

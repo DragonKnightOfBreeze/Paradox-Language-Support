@@ -30,12 +30,12 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
     override fun getVersion() = VERSION
     
     override fun getIndexer(): DataIndexer<String, List<ParadoxValueSetValueInfo>, FileContent> {
-        return DataIndexer { inputData ->
+        return DataIndexer { inputData -> //perf: 148000ms+ for indexing
             val file = inputData.psiFile
-            buildMap {
+            buildMap { 
                 val keys = mutableSetOf<String>()
                 if(file.fileType == ParadoxScriptFileType) {
-                    file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() { //perf: 97.9%
+                    file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() { //perf: 95%
                         override fun visitElement(element: PsiElement) {
                             if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
                                 val infos = ParadoxValueSetValueHandler.getInfos(element)
@@ -45,7 +45,7 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
                         }
                     })
                 } else {
-                    file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() { //perf: 2.1%
+                    file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() { //perf: 5%
                         override fun visitElement(element: PsiElement) {
                             if(element is ParadoxLocalisationCommandIdentifier) {
                                 val infos = ParadoxValueSetValueHandler.getInfos(element)

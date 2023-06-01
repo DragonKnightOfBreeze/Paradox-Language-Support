@@ -22,7 +22,7 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
     override fun getVersion() = VERSION
     
     override fun getIndexer(): DataIndexer<String, List<ParadoxComplexEnumValueInfo>, FileContent> {
-        return DataIndexer { inputData ->
+        return DataIndexer { inputData -> //perf: 15000ms for indexing
             val file = inputData.psiFile
             buildMap {
                 file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {

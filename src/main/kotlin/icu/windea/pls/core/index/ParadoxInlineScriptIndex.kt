@@ -24,7 +24,7 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
     override fun getVersion() = VERSION
     
     override fun getIndexer(): DataIndexer<String, List<ParadoxInlineScriptInfo>, FileContent> {
-        return DataIndexer { inputData ->
+        return DataIndexer { inputData -> //perf: 20000ms for indexing
             val file = inputData.psiFile
             buildMap {
                 file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
