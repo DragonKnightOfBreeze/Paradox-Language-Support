@@ -228,6 +228,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         file: VirtualFile?, //umlFile   
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
-        override fun getModificationTracker() = ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker("common/events:txt")
+        override fun getModificationTracker() = ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker("events:txt")
     }
 }

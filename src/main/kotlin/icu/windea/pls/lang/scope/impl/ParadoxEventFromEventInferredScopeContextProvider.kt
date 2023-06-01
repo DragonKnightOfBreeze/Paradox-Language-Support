@@ -43,7 +43,7 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
             val tracker0 = ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker
-            val tracker = ParadoxPsiModificationTracker.getInstance(definition.project).ScriptFileTracker("common/events:txt")
+            val tracker = ParadoxPsiModificationTracker.getInstance(definition.project).ScriptFileTracker("events:txt")
             CachedValueProvider.Result.create(value, tracker0, tracker)
         }
     }
