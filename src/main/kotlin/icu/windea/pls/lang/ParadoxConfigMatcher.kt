@@ -381,11 +381,12 @@ object ParadoxConfigMatcher {
         return actualKeys.any { it in keys }
     }
     
+    
     private val configMatchResultCache = CacheBuilder.newBuilder().buildCache<VirtualFile, Cache<String, Result>> { CacheBuilder.newBuilder().buildCache() }
     
     private fun getCachedResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
         ProgressManager.checkCanceled()
-        val rootFile = selectRootFile(element) ?: return Result.NotMatch //TODO 1.0.3+ 考虑优化性能
+        val rootFile = selectRootFile(element) ?: return Result.NotMatch //TODO 1.0.3+ 可以考虑优化性能，但是影响不大
         val cache = configMatchResultCache.get(rootFile)
         return cache.getOrPut(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
     }

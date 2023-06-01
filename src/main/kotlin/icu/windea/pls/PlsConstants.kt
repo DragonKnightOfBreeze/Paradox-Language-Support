@@ -2,6 +2,7 @@ package icu.windea.pls
 
 import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.util.*
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icons.*

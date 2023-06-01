@@ -170,7 +170,7 @@ inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, action: () -> T): T 
     return newValue
 }
 
-inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, nullValue: T, action: () -> T): T? {
+inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, nullValue: T, action: () -> T?): T? {
     val data = this.getUserData(key)
     if(data != null) return data.takeUnless { it == nullValue }
     val newValue = action()

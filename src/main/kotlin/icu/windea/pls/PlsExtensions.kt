@@ -183,12 +183,7 @@ tailrec fun selectRootFile(from: Any?): VirtualFile? {
     return when {
         from == null -> null
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameRootFile
-        from is PsiDirectory -> from.fileInfo?.rootInfo?.gameRootFile
-        from is PsiFile -> from.originalFile.fileInfo?.rootInfo?.gameRootFile
-        from is StubBasedPsiElementBase<*> -> selectRootFile(from.containingFileStub?.psi ?: from.containingFile)
-        from is PsiElement -> selectRootFile(from.containingFile)
-        from is ParadoxExpressionInfo -> selectRootFile(from.file)
-        else -> null
+        else -> selectRootFile(selectFile(from))
     }
 }
 
@@ -213,11 +208,10 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
         from is PsiDirectory -> from.fileInfo?.rootInfo?.gameType
         from is PsiFile -> from.fileInfo?.rootInfo?.gameType
         from is ParadoxScriptScriptedVariable -> runCatching { from.stub }.getOrNull()?.gameType
-            ?: selectGameType(from.containingFile) //直接转到containingFile，避免不必要的文件解析
+            ?: selectGameType(from.containingFile)
         from is ParadoxScriptDefinitionElement -> runCatching { from.getStub() }.getOrNull()?.gameType
-            ?: from.definitionInfo?.gameType
-            ?: selectGameType(from.containingFile) //直接转到containingFile，避免不必要的文件解析
-        from is StubBasedPsiElementBase<*> -> selectGameType(from.containingFile) //直接转到containingFile，避免不必要的文件解析
+            ?: selectGameType(from.containingFile)
+        from is StubBasedPsiElementBase<*> -> selectGameType(from.containingFile)
         from is PsiElement -> selectGameType(from.parent)
         from is ParadoxExpressionInfo -> selectGameType(from.file)
         else -> null
@@ -230,26 +224,28 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
         from is CwtLocalisationLocaleConfig -> from
         from is VirtualFile -> from.getUserData(PlsKeys.injectedLocaleConfigKey)
         from is PsiFile -> from.virtualFile?.getUserData(PlsKeys.injectedLocaleConfigKey)
-            ?: selectLocaleFromFile(from)
-        from is ParadoxLocalisationLocale -> from.name
-            .let { getCwtConfig(from.project).core.localisationLocales.get(it) } //这里需要传入project
+            ?: selectLocaleFromPsiFile(from)
+        from is ParadoxLocalisationLocale -> from.name.toLocale(from)
         from is ParadoxLocalisationPropertyList -> selectLocale(from.locale)
-        from is ParadoxLocalisationProperty -> runCatching { from.stub }.getOrNull()?.locale
-            ?.let { getCwtConfig().core.localisationLocales.get(it) } //这里不需要传入project
-            ?: selectLocale(from.containingFile) //直接转到containingFile，避免不必要的文件解析
-        from is StubBasedPsiElementBase<*> && from.language == ParadoxLocalisationLanguage -> selectLocale(from.containingFile) //直接转到containingFile，避免不必要的文件解析
+        from is ParadoxLocalisationProperty -> runCatching { from.stub }.getOrNull()?.locale?.toLocale(from)
+            ?: selectLocale(from.containingFile)
+        from is StubBasedPsiElementBase<*> && from.language == ParadoxLocalisationLanguage -> selectLocale(from.containingFile)
         from is PsiElement && from.language == ParadoxLocalisationLanguage -> selectLocale(from.parent)
         else -> preferredParadoxLocale()
     }
 }
 
-private fun selectLocaleFromFile(from: PsiFile): CwtLocalisationLocaleConfig? {
+private fun selectLocaleFromPsiFile(from: PsiFile): CwtLocalisationLocaleConfig? {
     //这里改为使用索引以优化性能（尽可能地避免访问PSI）
     val indexKey = ParadoxFileLocaleIndex.NAME
     val virtualFile = from.virtualFile ?: return null
     val project = from.project
     val localeId = FileBasedIndex.getInstance().getFileData(indexKey, virtualFile, project).keys.singleOrNull() ?: return null
     return getCwtConfig(project).core.localisationLocales.get(localeId)
+}
+
+private fun String.toLocale(from: PsiElement): CwtLocalisationLocaleConfig? {
+    return getCwtConfig(from.project).core.localisationLocales.get(this)
 }
 //endregion
 

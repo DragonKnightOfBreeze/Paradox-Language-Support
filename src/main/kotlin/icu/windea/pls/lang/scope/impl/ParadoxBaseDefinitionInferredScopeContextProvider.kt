@@ -75,7 +75,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider: ParadoxDefinitionInferr
                         val e = psiFile.findElementAt(info.elementOffset) ?: return@f
                         val m = e.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@f
                         val scopeContext = ParadoxScopeHandler.getScopeContext(m) ?: return@f
-                        //TODO 这里其实可以推断更加精确的作用域上下文
+                        //TODO 1.0.5+ 这里其实可以推断更加精确的作用域上下文
                         val map = scopeContext.detailMap.mapValues { (_, v) -> v.id }
                         if(scopeContextMap.isEmpty()) {
                             val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map)
