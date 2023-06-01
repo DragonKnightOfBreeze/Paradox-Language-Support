@@ -417,7 +417,7 @@ object ParadoxScopeHandler {
     
     fun mergeScopeContext(scopeContext: ParadoxScopeContext?, otherScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
         if(scopeContext != null && otherScopeContext != null) {
-            if(scopeContext.scope.let { it == null || it == ParadoxScope.AnyScope || it == ParadoxScope.UnknownScope }) {
+            if(scopeContext.scope.let { it == ParadoxScope.AnyScope || it == ParadoxScope.UnknownScope }) {
                 scopeContext.scope = otherScopeContext.scope
             }
             if(scopeContext.root == null) {

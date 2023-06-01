@@ -28,13 +28,13 @@ fun ParadoxScriptValue.isPropertyValue(): Boolean {
 }
 
 fun ParadoxScriptValue.isBlockValue(): Boolean {
-	return parent is ParadoxScriptBlockElement
+	return parent.let { it is ParadoxScriptBlockElement || it is ParadoxScriptParameterCondition }
 }
 
 fun ParadoxScriptExpressionElement.isExpression(): Boolean {
 	return when {
 		this is ParadoxScriptPropertyKey -> true
-		this is ParadoxScriptValue && this.parent.let { it is ParadoxScriptProperty || it is ParadoxScriptBlockElement } -> true
+		this is ParadoxScriptValue && parent.let { it is ParadoxScriptProperty || it is ParadoxScriptBlockElement || it is ParadoxScriptParameterCondition } -> true
 		else -> false
 	}
 }
