@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     companion object {
-        val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.fromOnAction")
+        val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.from.onAction")
     }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
@@ -45,14 +45,14 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
     private fun doGetScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
         ProgressManager.checkCanceled()
         val definitionInfo = definition.definitionInfo ?: return null
-        //optimize search scope
-        val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
-            ?.withFilePath("common/on_actions", "txt")
-            ?: return null
         val configGroup = definitionInfo.configGroup
         val thisEventName = definitionInfo.name
         val thisEventType = ParadoxEventHandler.getType(definitionInfo)
         val scopeContextMap = mutableMapOf<String, String?>()
+        //optimize search scope
+        val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
+            ?.withFilePath("common/on_actions", "txt")
+            ?: return null
         var hasConflict = false
         val r = doProcessQuery(thisEventName, thisEventType, searchScope, scopeContextMap, configGroup)
         if(!r) hasConflict = true
