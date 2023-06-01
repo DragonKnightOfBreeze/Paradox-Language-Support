@@ -106,9 +106,9 @@ class ParadoxSettingsState : BaseState() {
     class InferenceState : BaseState() {
         var argumentValueConfig by property(true)
         var inlineScriptConfig by property(true)
-        var scopeContext by property(true)
-        var eventScopeContextFromEvent by property(true)
-        var eventScopeContextFromOnAction by property(true)
+        var scopeContext by property(false)
+        var eventScopeContextFromEvent by property(false)
+        var eventScopeContextFromOnAction by property(false)
     }
     
     @Tag("hierarchy")
