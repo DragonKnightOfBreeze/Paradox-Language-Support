@@ -513,7 +513,7 @@ object ParadoxConfigHandler {
         val path = fileInfo.pathToEntry //这里使用pathToEntry
         val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
         for(typeConfig in configGroup.types.values) {
-            if(ParadoxDefinitionHandler.matchesTypeWithUnknownDeclaration(typeConfig, path, null, null)) {
+            if(ParadoxDefinitionHandler.matchesTypeWithUnknownDeclaration(path, null, null, typeConfig)) {
                 val skipRootKeyConfig = typeConfig.skipRootKey
                 if(skipRootKeyConfig == null || skipRootKeyConfig.isEmpty()) {
                     if(elementPath.isEmpty()) {

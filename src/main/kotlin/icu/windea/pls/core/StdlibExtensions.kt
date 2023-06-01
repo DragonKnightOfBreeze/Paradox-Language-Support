@@ -582,6 +582,14 @@ fun Path.create(): Path {
     return this
 }
 
+fun Boolean.toByte() = if(this) 1.toByte() else 0.toByte()
+
+fun Byte.toBoolean() = if(this == 0.toByte()) false else true
+
+fun Boolean?.toByte() = if(this == null) 2.toByte() else toByte()
+
+fun Byte.toBooleanOrNull() = if(this == 2.toByte()) null else toBoolean()
+
 fun Boolean.toInt() = if(this) 1 else 0
 
 fun Any?.toStringOrEmpty() = this?.toString() ?: ""

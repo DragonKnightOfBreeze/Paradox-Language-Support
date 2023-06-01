@@ -31,6 +31,7 @@ interface CwtConfigGroup: UserDataHolder {
 	//typeExpression - modifierSimpleName - modifierConfig
 	//job - job_$_add - <config>
 	val typeToModifiersMap: Map<String, Map<String, CwtModifierConfig>>
+	
 	val declarations: MutableMap<String, CwtDeclarationConfig>
 	
 	val values: Map<String, CwtEnumConfig>
@@ -54,7 +55,6 @@ interface CwtConfigGroup: UserDataHolder {
 	val scopeAliasMap: Map<@CaseInsensitive String, CwtScopeConfig>
 	val scopeGroups: Map<String, CwtScopeGroupConfig>
 	
-	//同名的single_alias可以有多个
 	val singleAliases: Map<String, CwtSingleAliasConfig>
 	//同名的alias可以有多个
 	val aliasGroups: Map<String, Map<String, List<CwtAliasConfig>>>

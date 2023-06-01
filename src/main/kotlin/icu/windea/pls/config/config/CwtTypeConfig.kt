@@ -4,6 +4,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.cwt.psi.*
+import it.unimi.dsi.fastutil.objects.*
 
 /**
  * @property baseType (property) path: string
@@ -52,5 +53,5 @@ class CwtTypeConfig(
 	val possibleRootKeys = caseInsensitiveStringSet().apply { 
 		typeKeyFilter?.takeIfTrue()?.let { addAll(it) }
 		subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeIfTrue()?.let { addAll(it) } }
-	} 
+	}
 }

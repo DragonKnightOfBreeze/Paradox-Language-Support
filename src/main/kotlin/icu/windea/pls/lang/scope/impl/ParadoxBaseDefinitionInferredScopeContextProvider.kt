@@ -62,6 +62,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider: ParadoxDefinitionInferr
         val gameType = configGroup.gameType ?: return true
         val project = configGroup.project
         
+        //TODO 1.0.5+ 应当缩小递归推断的层数
         return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxBaseDefinitionInferredScopeContextProvider.doProcessQuery") {
             withCheckRecursion(definitionInfo.name + "@" + definitionInfo.type) {
                 ParadoxDefinitionHierarchyHandler.processInferredScopeContextAwareDefinitions(gameType, searchScope) p@{ file, infos ->

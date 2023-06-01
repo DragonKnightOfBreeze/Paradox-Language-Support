@@ -51,6 +51,7 @@ class CwtConfigGroupImpl(
 		map
 	}
 	override val typeToModifiersMap: MutableMap<String, MutableMap<String, CwtModifierConfig>> = mutableMapOf()
+	
 	override val declarations: MutableMap<String, CwtDeclarationConfig> = mutableMapOf()
 	
 	override val values: MutableMap<String, CwtEnumConfig> = mutableMapOf()

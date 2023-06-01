@@ -64,34 +64,122 @@ object ParadoxDefinitionHandler {
         
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.pathToEntry //这里使用pathToEntry
-        val elementPath = ParadoxElementPathHandler.getFromFile(element, PlsConstants.maxDefinitionDepth) ?: return null
+        val elementPath = ParadoxElementPathHandler.getFromFile(element, PlsConstants.maxDefinitionDepth)
+        if(elementPath == null) return null
         val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
         val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
-        for(typeConfig in configGroup.types.values) {
-            if(matchesType(element, typeConfig, path, elementPath, rootKey, configGroup)) {
-                ProgressManager.checkCanceled()
-                return ParadoxDefinitionInfo(null, typeConfig, null, rootKey, elementPath, gameType, configGroup, element)
-            }
-        }
-        ProgressManager.checkCanceled()
-        return null
+        val typeConfig = getMatchedTypeConfig(element, path, elementPath, rootKey, configGroup)
+        if(typeConfig == null) return null
+        return ParadoxDefinitionInfo(null, typeConfig, null, rootKey, elementPath, gameType, configGroup, element)
     }
     
-    fun matchesTypeFast(
-        typeConfig: CwtTypeConfig,
+    fun getMatchedTypeConfig(
+        element: ParadoxScriptDefinitionElement,
         path: ParadoxPath,
         elementPath: ParadoxElementPath,
         rootKey: String,
         configGroup: CwtConfigGroup
-    ): Boolean? {
-        return doMatchesTypeFast(typeConfig, path, elementPath, rootKey)
+    ): CwtTypeConfig? {
+        for(typeConfig in configGroup.types.values) {
+            if(matchesType(element, path, elementPath, rootKey, typeConfig, configGroup)) {
+                return typeConfig
+            }
+        }
+        return null
     }
     
-    private fun doMatchesTypeFast(
-        typeConfig: CwtTypeConfig,
+    fun getMatchedTypeConfig(
+        node: LighterASTNode,
+        tree: LighterAST,
         path: ParadoxPath,
         elementPath: ParadoxElementPath,
-        rootKey: String
+        rootKey: String,
+        configGroup: CwtConfigGroup
+    ): CwtTypeConfig? {
+        for(typeConfig in configGroup.types.values) {
+            if(matchesType(node, tree, path, elementPath, rootKey, typeConfig, configGroup)) {
+                return typeConfig
+            }
+        }
+        return null
+    }
+    
+    private fun getTypeMatchKey(path: ParadoxPath, elementPath: ParadoxElementPath, rootKey: String, configGroup: CwtConfigGroup): String {
+        return "${configGroup.gameType.id}\n${path}\n${elementPath}\n${rootKey}"
+    }
+    
+    fun matchesType(
+        element: ParadoxScriptDefinitionElement,
+        path: ParadoxPath,
+        elementPath: ParadoxElementPath,
+        rootKey: String,
+        typeConfig: CwtTypeConfig,
+        configGroup: CwtConfigGroup
+    ): Boolean {
+        //判断definition是否需要是scriptFile还是scriptProperty
+        val nameFromFileConfig = typeConfig.nameFromFile
+        if(nameFromFileConfig) {
+            if(element !is ParadoxScriptFile) return false
+        } else {
+            if(element !is ParadoxScriptProperty) return false
+        }
+        
+        val fastResult = matchesTypeFast(path, elementPath, rootKey, typeConfig, configGroup)
+        if(fastResult != null) return fastResult
+        
+        //判断definition的propertyValue是否需要是block
+        val declarationConfig = configGroup.declarations[typeConfig.name]?.propertyConfig
+        //当进行代码补全时需要特殊处理
+        val propertyValue = element.castOrNull<ParadoxScriptProperty>()?.propertyValue
+        val isBlock = propertyValue?.let { it is ParadoxScriptBlock }
+        if(declarationConfig != null && isBlock != null) {
+            val isBlockConfig = declarationConfig.valueExpression.type == CwtDataType.Block
+            if(isBlockConfig != isBlock) return false
+        }
+        
+        return true
+    }
+    
+    fun matchesType(
+        node: LighterASTNode,
+        tree: LighterAST,
+        path: ParadoxPath,
+        elementPath: ParadoxElementPath,
+        rootKey: String,
+        typeConfig: CwtTypeConfig,
+        configGroup: CwtConfigGroup
+    ): Boolean {
+        //判断definition是否需要是scriptFile还是scriptProperty
+        val elementType = node.tokenType
+        val nameFromFileConfig = typeConfig.nameFromFile
+        if(nameFromFileConfig) {
+            if(elementType != ParadoxScriptStubElementTypes.FILE) return false
+        } else {
+            if(elementType != PROPERTY) return false
+        }
+        
+        val fastResult = matchesTypeFast(path, elementPath, rootKey, typeConfig, configGroup)
+        if(fastResult != null) return fastResult
+        
+        //判断definition的propertyValue是否需要是block
+        val declarationConfig = configGroup.declarations[typeConfig.name]?.propertyConfig
+        //当进行代码补全时需要特殊处理
+        val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES)
+        val isBlock = propertyValue?.tokenType?.let { it == BLOCK }
+        if(declarationConfig != null && isBlock != null) {
+            val isBlockConfig = declarationConfig.valueExpression.type == CwtDataType.Block
+            if(isBlockConfig != isBlock) return false
+        }
+        
+        return true
+    }
+    
+    fun matchesTypeFast(
+        path: ParadoxPath,
+        elementPath: ParadoxElementPath,
+        rootKey: String,
+        typeConfig: CwtTypeConfig,
+        configGroup: CwtConfigGroup
     ): Boolean? {
         //判断path是否匹配
         val pathConfig = typeConfig.path ?: return false
@@ -149,77 +237,11 @@ object ParadoxDefinitionHandler {
         return null //需要进一步匹配
     }
     
-    fun matchesType(
-        element: ParadoxScriptDefinitionElement,
-        typeConfig: CwtTypeConfig,
-        path: ParadoxPath,
-        elementPath: ParadoxElementPath,
-        rootKey: String,
-        configGroup: CwtConfigGroup
-    ): Boolean {
-        //判断definition是否需要是scriptFile还是scriptProperty
-        val nameFromFileConfig = typeConfig.nameFromFile
-        if(nameFromFileConfig) {
-            if(element !is ParadoxScriptFile) return false
-        } else {
-            if(element !is ParadoxScriptProperty) return false
-        }
-        
-        val fastResult = matchesTypeFast(typeConfig, path, elementPath, rootKey, configGroup)
-        if(fastResult != null) return fastResult
-        
-        //判断definition的propertyValue是否需要是block
-        val declarationConfig = configGroup.declarations[typeConfig.name]?.propertyConfig
-        //当进行代码补全时需要特殊处理
-        val propertyValue = element.castOrNull<ParadoxScriptProperty>()?.propertyValue
-        val isBlock = propertyValue?.let { it is ParadoxScriptBlock }
-        if(declarationConfig != null && isBlock != null) {
-            val isBlockConfig = declarationConfig.valueExpression.type == CwtDataType.Block
-            if(isBlockConfig != isBlock) return false
-        }
-        
-        return true
-    }
-    
-    fun matchesType(
-        node: LighterASTNode,
-        tree: LighterAST,
-        typeConfig: CwtTypeConfig,
-        path: ParadoxPath,
-        elementPath: ParadoxElementPath,
-        rootKey: String,
-        configGroup: CwtConfigGroup
-    ): Boolean {
-        //判断definition是否需要是scriptFile还是scriptProperty
-        val elementType = node.tokenType
-        val nameFromFileConfig = typeConfig.nameFromFile
-        if(nameFromFileConfig) {
-            if(elementType != ParadoxScriptStubElementTypes.FILE) return false
-        } else {
-            if(elementType != PROPERTY) return false
-        }
-        
-        val fastResult = matchesTypeFast(typeConfig, path, elementPath, rootKey, configGroup)
-        if(fastResult != null) return fastResult
-        
-        //判断definition的propertyValue是否需要是block
-        val declarationConfig = configGroup.declarations[typeConfig.name]?.propertyConfig
-        //当进行代码补全时需要特殊处理
-        val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES)
-        val isBlock = propertyValue?.tokenType?.let { it == BLOCK }
-        if(declarationConfig != null && isBlock != null) {
-            val isBlockConfig = declarationConfig.valueExpression.type == CwtDataType.Block
-            if(isBlockConfig != isBlock) return false
-        }
-        
-        return true
-    }
-    
     fun matchesTypeWithUnknownDeclaration(
-        typeConfig: CwtTypeConfig,
         path: ParadoxPath,
         elementPath: ParadoxElementPath?,
-        rootKey: String?
+        rootKey: String?,
+        typeConfig: CwtTypeConfig
     ): Boolean {
         //判断element是否需要是scriptFile还是scriptProperty
         val nameFromFileConfig = typeConfig.nameFromFile
@@ -287,20 +309,33 @@ object ParadoxDefinitionHandler {
         return true
     }
     
-    fun matchesSubtypeFast(
-        subtypeConfig: CwtSubtypeConfig,
+    fun matchesSubtype(
+        element: ParadoxScriptDefinitionElement,
         rootKey: String,
+        subtypeConfig: CwtSubtypeConfig,
+        subtypeConfigs: MutableList<CwtSubtypeConfig>,
         configGroup: CwtConfigGroup,
-        subtypes: MutableList<CwtSubtypeConfig>
-    ): Boolean? {
-        return doMatchesSubtypeFast(subtypeConfig, subtypes, rootKey)
+        matchOptions: Int = ParadoxConfigMatcher.Options.Default
+    ): Boolean {
+        val fastResult = matchesSubtypeFast(rootKey, subtypeConfig, subtypeConfigs, configGroup)
+        if(fastResult != null) return fastResult
+        
+        //根据config对property进行内容匹配
+        val elementConfig = subtypeConfig.config
+        if(elementConfig.configs.isNullOrEmpty()) return true
+        return doMatchDefinition(element, elementConfig, configGroup, matchOptions)
     }
     
-    private fun doMatchesSubtypeFast(subtypeConfig: CwtSubtypeConfig, subtypes: MutableList<CwtSubtypeConfig>, rootKey: String): Boolean? {
+    fun matchesSubtypeFast(
+        rootKey: String,
+        subtypeConfig: CwtSubtypeConfig,
+        subtypeConfigs: MutableList<CwtSubtypeConfig>,
+        configGroup: CwtConfigGroup
+    ): Boolean? {
         //如果only_if_not存在，且已经匹配指定的任意子类型，则不匹配
         val onlyIfNotConfig = subtypeConfig.onlyIfNot
         if(!onlyIfNotConfig.isNullOrEmpty()) {
-            val matchesAny = subtypes.any { it.name in onlyIfNotConfig }
+            val matchesAny = subtypeConfigs.any { it.name in onlyIfNotConfig }
             if(matchesAny) return false
         }
         //如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
@@ -327,28 +362,11 @@ object ParadoxDefinitionHandler {
         return null //需要进一步匹配
     }
     
-    fun matchesSubtype(
-        element: ParadoxScriptDefinitionElement,
-        subtypeConfig: CwtSubtypeConfig,
-        rootKey: String,
-        configGroup: CwtConfigGroup,
-        subtypes: MutableList<CwtSubtypeConfig>,
-        matchOptions: Int = ParadoxConfigMatcher.Options.Default
-    ): Boolean {
-        val fastResult = matchesSubtypeFast(subtypeConfig, rootKey, configGroup, subtypes)
-        if(fastResult != null) return fastResult
-        
-        //根据config对property进行内容匹配
-        val elementConfig = subtypeConfig.config
-        if(elementConfig.configs.isNullOrEmpty()) return true
-        return doMatchDefinition(element, elementConfig, configGroup, matchOptions)
-    }
-    
     private fun doMatchDefinition(
         definitionElement: ParadoxScriptDefinitionElement,
         propertyConfig: CwtPropertyConfig,
         configGroup: CwtConfigGroup,
-        matchOptions: Int = ParadoxConfigMatcher.Options.Default
+        matchOptions: Int
     ): Boolean {
         //这里不能基于内联后的声明结构，否则可能会导致SOE
         //也不要参数条件表达式中的声明结构判断，
@@ -553,16 +571,13 @@ object ParadoxDefinitionHandler {
         val path = fileInfo.pathToEntry //这里使用pathToEntry
         val elementPath = ParadoxElementPathHandler.getFromFile(node, tree, file) ?: return null
         val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
-        for(typeConfig in configGroup.types.values) {
-            if(matchesType(node, tree, typeConfig, path, elementPath, rootKey, configGroup)) {
-                //NOTE 这里不处理需要内联的情况
-                val name = doGetNameWhenCreateStub(typeConfig, rootKey, node, tree)
-                val type = typeConfig.name
-                val subtypes = doGetSubtypesWhenCreateStub(typeConfig, rootKey, configGroup) //如果无法在索引时获取，之后再懒加载
-                return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
-            }
-        }
-        return null
+        val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
+        if(typeConfig == null) return null
+        //NOTE 这里不处理需要内联的情况
+        val name = doGetNameWhenCreateStub(typeConfig, rootKey, node, tree)
+        val type = typeConfig.name
+        val subtypes = doGetSubtypesWhenCreateStub(typeConfig, rootKey, configGroup) //如果无法在索引时获取，之后再懒加载
+        return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
     }
     
     private fun doGetNameWhenCreateStub(typeConfig: CwtTypeConfig, rootKey: String, node: LighterASTNode, tree: LighterAST): String {
@@ -585,7 +600,7 @@ object ParadoxDefinitionHandler {
         val subtypesConfig = typeConfig.subtypes
         val result = mutableListOf<CwtSubtypeConfig>()
         for(subtypeConfig in subtypesConfig.values) {
-            if(matchesSubtypeFast(subtypeConfig, rootKey, configGroup, result) ?: return null) {
+            if(matchesSubtypeFast(rootKey, subtypeConfig, result, configGroup) ?: return null) {
                 result.add(subtypeConfig)
             }
         }

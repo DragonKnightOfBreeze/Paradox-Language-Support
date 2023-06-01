@@ -70,7 +70,6 @@ object ParadoxComplexEnumValueHandler {
     
     fun matchesComplexEnum(complexEnumConfig: CwtComplexEnumConfig, element: ParadoxScriptStringExpressionElement): Boolean {
         for(enumNameConfig in complexEnumConfig.enumNameConfigs) {
-            ProgressManager.checkCanceled()
             if(doMatchEnumName(complexEnumConfig, enumNameConfig, element)) return true
         }
         return false
