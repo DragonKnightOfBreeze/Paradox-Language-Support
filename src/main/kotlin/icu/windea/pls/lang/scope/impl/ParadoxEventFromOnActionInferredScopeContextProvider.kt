@@ -43,6 +43,7 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
     }
     
     private fun doGetScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
+        ProgressManager.checkCanceled()
         val definitionInfo = definition.definitionInfo ?: return null
         //optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
@@ -79,7 +80,7 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
                 if(config == null) return@f //missing
                 if(config.eventType != thisEventType) return@f //invalid (mismatch)
                 val map = config.config.replaceScopes ?: return@f
-                if(scopeContextMap.isEmpty()) {
+                if(scopeContextMap.isNotEmpty()) {
                     val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map)
                     if(mergedMap != null) {
                         scopeContextMap.clear()

@@ -69,6 +69,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider: ParadoxDefinitionInferr
         scopeContextMap: MutableMap<String, String?>,
         configGroup: CwtConfigGroup
     ): Boolean {
+        ProgressManager.checkCanceled()
         val gameType = configGroup.gameType ?: return true
         val project = configGroup.project
         
@@ -91,7 +92,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider: ParadoxDefinitionInferr
                             }
                         }
                         //val map = scopeContext.detailMap.mapValues { (_, v) -> v.id }
-                        if(scopeContextMap.isEmpty()) {
+                        if(scopeContextMap.isNotEmpty()) {
                             val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map)
                             if(mergedMap != null) {
                                 scopeContextMap.clear()

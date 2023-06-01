@@ -74,6 +74,7 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
         configGroup: CwtConfigGroup,
         depth: Int = 1
     ): Boolean {
+        ProgressManager.checkCanceled()
         val gameType = configGroup.gameType ?: return true
         return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxEventFromEventInferredScopeContextProvider.doProcessQuery") {
             if(depth == 1) stackTrace.addLast(thisEventName) 
@@ -88,15 +89,19 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
                         val scopesElementOffset = info.scopesElementOffset!!
                         if(scopesElementOffset != -1) {
                             //从scopes = { ... }中推断
+                            ProgressManager.checkCanceled()
                             val psiFile = file.toPsiFile(configGroup.project) ?: return@p false
                             val scopesElement = psiFile.findElementAt(scopesElementOffset)?.parentOfType<ParadoxScriptProperty>() ?: return@p false
                             val scopesBlockElement = scopesElement.block ?: return@p false
                             val scopeContextOfScopesElement = ParadoxScopeHandler.getScopeContext(scopesElement)
+                            val map = mutableMapOf<String, String?>()
                             scopesBlockElement.processProperty(inline = true) pp@{
+                                ProgressManager.checkCanceled()
+                                val n = it.name.lowercase()
+                                if(configGroup.systemLinks.get(n)?.baseId?.lowercase() != "from") return@pp true
+                                
                                 if(scopeContextOfScopesElement == null) {
-                                    val n = it.name.lowercase()
-                                    if(configGroup.systemLinks.get(n)?.baseId != "from") return@pp true
-                                    scopeContextMap.put(n, ParadoxScopeHandler.anyScopeId)
+                                    map.put(n, ParadoxScopeHandler.anyScopeId)
                                     return@pp true
                                 }
                                 
@@ -106,13 +111,23 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
                                 val textRange = TextRange.create(0, scopeField.length)
                                 val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup, true) ?: return@pp true
                                 val scopeContextOfEachScope = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, scopeContextOfScopesElement)
-                                
-                                val n = it.name.lowercase()
-                                if(configGroup.systemLinks.get(n)?.baseId != "from") return@pp true
-                                scopeContextMap.put(n, scopeContextOfEachScope.scope.id)
+                                map.put(n, scopeContextOfEachScope.scope.id)
                                 
                                 true
                             }
+                            
+                            if(scopeContextMap.isNotEmpty()) {
+                                val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map)
+                                if(mergedMap != null) {
+                                    scopeContextMap.clear()
+                                    scopeContextMap.putAll(mergedMap)
+                                } else {
+                                    return@p false
+                                }
+                            } else {
+                                scopeContextMap.putAll(map)
+                            }
+                            
                             return@f
                         }
                         

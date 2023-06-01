@@ -313,7 +313,7 @@ object ParadoxScopeHandler {
             }
             is ParadoxSystemLinkExpressionNode -> {
                 doGetScopeContextBySystemLinkNode(scopeNode, inputScopeContext, inExpression)
-                    ?: getUnknownScopeContext(inputScopeContext, scopeNode.config.baseId.equals("from", true))
+                    ?: getUnknownScopeContext(inputScopeContext, scopeNode.config.baseId.lowercase() == "from")
             }
             is ParadoxParameterizedScopeFieldExpressionNode -> getAnyScopeContext()
             //error
