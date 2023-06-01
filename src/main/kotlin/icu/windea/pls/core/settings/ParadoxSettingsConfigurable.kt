@@ -242,18 +242,18 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContext.tooltip") }
                         .onApply { ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker.incModificationCount() }
                 }
-                //eventScopeContextFromEvent
-                row {
-                    checkBox(PlsBundle.message("settings.inference.eventScopeContextFromEvent"))
-                        .bindSelected(settings.inference::eventScopeContextFromEvent)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContextFromEvent.tooltip") }
-                        .onApply { ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker.incModificationCount() }
-                }
                 //eventScopeContextFromOnAction
                 row {
                     checkBox(PlsBundle.message("settings.inference.eventScopeContextFromOnAction"))
                         .bindSelected(settings.inference::eventScopeContextFromOnAction)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContextFromOnAction.tooltip") }
+                        .onApply { ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker.incModificationCount() }
+                }
+                //eventScopeContextFromEvent
+                row {
+                    checkBox(PlsBundle.message("settings.inference.eventScopeContextFromEvent"))
+                        .bindSelected(settings.inference::eventScopeContextFromEffect)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContextFromEvent.tooltip") }
                         .onApply { ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker.incModificationCount() }
                 }
             }
