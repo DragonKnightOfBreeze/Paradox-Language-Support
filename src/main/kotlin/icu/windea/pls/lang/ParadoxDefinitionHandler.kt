@@ -157,9 +157,6 @@ object ParadoxDefinitionHandler {
         rootKey: String,
         configGroup: CwtConfigGroup
     ): Boolean {
-        val fastResult = matchesTypeFast(typeConfig, path, elementPath, rootKey, configGroup)
-        if(fastResult != null) return fastResult
-        
         //判断definition是否需要是scriptFile还是scriptProperty
         val nameFromFileConfig = typeConfig.nameFromFile
         if(nameFromFileConfig) {
@@ -167,6 +164,9 @@ object ParadoxDefinitionHandler {
         } else {
             if(element !is ParadoxScriptProperty) return false
         }
+        
+        val fastResult = matchesTypeFast(typeConfig, path, elementPath, rootKey, configGroup)
+        if(fastResult != null) return fastResult
         
         //判断definition的propertyValue是否需要是block
         val declarationConfig = configGroup.declarations[typeConfig.name]?.propertyConfig
@@ -190,9 +190,6 @@ object ParadoxDefinitionHandler {
         rootKey: String,
         configGroup: CwtConfigGroup
     ): Boolean {
-        val fastResult = matchesTypeFast(typeConfig, path, elementPath, rootKey, configGroup)
-        if(fastResult != null) return fastResult
-        
         //判断definition是否需要是scriptFile还是scriptProperty
         val elementType = node.tokenType
         val nameFromFileConfig = typeConfig.nameFromFile
@@ -201,6 +198,9 @@ object ParadoxDefinitionHandler {
         } else {
             if(elementType != PROPERTY) return false
         }
+        
+        val fastResult = matchesTypeFast(typeConfig, path, elementPath, rootKey, configGroup)
+        if(fastResult != null) return fastResult
         
         //判断definition的propertyValue是否需要是block
         val declarationConfig = configGroup.declarations[typeConfig.name]?.propertyConfig
