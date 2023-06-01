@@ -502,12 +502,13 @@ private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean, trimSepa
  * @param other 另一个路径。
  * @param acceptSelf 是否接受路径完全一致的情况。
  * @param strict 是否严格匹配（相同或是其直接父路径）。
+ * @param trim 是否需要事先去除当前路径首位的路径分隔符.
  */
 @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolean = false): Boolean {
+fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolean = false, trim: Boolean = false): Boolean {
     //这个方法的执行速度应当非常非常快
     //optimized
-    val path = this.trimFast('/')
+    val path = if(trim) this.trimFast('/') else this
     val length = path.length
     val otherLength = other.length
     if(length > otherLength) return false

@@ -104,10 +104,6 @@ object ParadoxDefinitionHandler {
         return null
     }
     
-    private fun getTypeMatchKey(path: ParadoxPath, elementPath: ParadoxElementPath, rootKey: String, configGroup: CwtConfigGroup): String {
-        return "${configGroup.gameType.id}\n${path}\n${elementPath}\n${rootKey}"
-    }
-    
     fun matchesType(
         element: ParadoxScriptDefinitionElement,
         path: ParadoxPath,

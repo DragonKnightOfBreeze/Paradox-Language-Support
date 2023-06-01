@@ -16,7 +16,7 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
     
     override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean {
         val expression = configExpression.value ?: return false
-        return expression.matchesPath(filePath) && filePath.endsWith(".dds", true)
+        return expression.matchesPath(filePath, trim = true) && filePath.endsWith(".dds", true)
     }
     
     override fun extract(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean): String? {
@@ -57,7 +57,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         val index = expression.lastIndexOf(',') //","应当最多出现一次
         if(index == -1) {
             //匹配父路径
-            return expression.matchesPath(filePath)
+            return expression.matchesPath(filePath, trim = true)
         } else {
             //匹配父路径+文件名前缀+扩展名
             val parentAndFileNamePrefix = expression.substring(0, index)
@@ -136,7 +136,7 @@ class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpression
     
     override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean {
         val expression = configExpression.value ?: return true
-        return expression.matchesPath(filePath)
+        return expression.matchesPath(filePath, trim = true)
     }
     
     override fun extract(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean): String {
