@@ -560,11 +560,12 @@ class CwtConfigGroupImpl(
 				val key = prop.key
 				when(key) {
 					"base_type" -> baseType = prop.stringValue
-					//这里的path一般"game/"开始，这里需要忽略
+					//这里的path一般以"game/"开始，需要去除
 					"path" -> path = prop.stringValue?.removePrefix("game")?.trim('/') ?: continue
 					"path_strict" -> pathStrict = prop.booleanValue ?: continue
 					"path_file" -> pathFile = prop.stringValue ?: continue
-					"path_extension" -> pathExtension = prop.stringValue ?: continue
+					//这里的path_extension一般以"."开始，需要去除
+					"path_extension" -> pathExtension = prop.stringValue?.removePrefix(".") ?: continue
 					"name_field" -> nameField = prop.stringValue ?: continue
 					"name_from_file" -> nameFromFile = prop.booleanValue ?: continue
 					"type_per_file" -> typePerFile = prop.booleanValue ?: continue
