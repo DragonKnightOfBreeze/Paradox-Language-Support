@@ -22,7 +22,7 @@ class ParadoxEventInOnActionDefinitionHierarchySupport: ParadoxDefinitionHierarc
         val definitionType = configExpression.value?.substringBefore('.') ?: return
         if(definitionType != "event") return
         
-        //elementOffset is unused yet by this support
+        //elementOffset has not been used yet by this support
         val info = ParadoxDefinitionHierarchyInfo(id, element.value, config.expression, definitionInfo.name, definitionInfo.type, definitionInfo.subtypes, -1 /*element.startOffset*/, definitionInfo.gameType)
         fileData.getOrPut(id) { mutableListOf() }.add(info)
     }

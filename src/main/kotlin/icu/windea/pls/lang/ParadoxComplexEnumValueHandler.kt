@@ -7,7 +7,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
@@ -45,11 +44,6 @@ object ParadoxComplexEnumValueHandler {
         val path = fileInfo.pathToEntry //这里使用pathToEntry
         val gameType = fileInfo.rootInfo.gameType
         val configGroup = getCwtConfig(project).get(gameType)
-        return doResolveInfo(element, path, configGroup)
-    }
-    
-    private fun doResolveInfo(element: ParadoxScriptStringExpressionElement, path: ParadoxPath, configGroup: CwtConfigGroup): ParadoxComplexEnumValueInfo? {
-        val gameType = configGroup.gameType ?: return null
         for(complexEnumConfig in configGroup.complexEnums.values) {
             ProgressManager.checkCanceled()
             if(matchesComplexEnumByPath(complexEnumConfig, path)) {

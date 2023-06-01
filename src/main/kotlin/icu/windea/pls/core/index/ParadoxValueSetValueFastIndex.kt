@@ -8,7 +8,7 @@ import com.intellij.util.io.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
@@ -23,10 +23,6 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxValueSetValueInfo>>("paradox.valueSetValue.fast.index")
         private const val VERSION = 27 //1.0.5
-        
-        fun getData(file: VirtualFile, project: Project): Map<String, List<ParadoxValueSetValueInfo>> {
-            return FileBasedIndex.getInstance().getFileData(NAME, file, project)
-        }
     }
     
     override fun getName() = NAME
@@ -42,15 +38,8 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
                     file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() { //perf: 97.9%
                         override fun visitElement(element: PsiElement) {
                             if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
-                                element.references.forEachFast { reference -> //perf: 96%
-                                    if(reference.canResolveValueSetValue()) {
-                                        val resolved = reference?.resolve()
-                                        if(resolved is ParadoxValueSetValueElement) {
-                                            val key = getKeyToDistinct(resolved)
-                                            if(keys.add(key)) handleValueSetValueElement(this@buildMap, resolved)
-                                        }
-                                    }
-                                }
+                                val infos = ParadoxValueSetValueHandler.getInfos(element)
+                                addInfos(infos, keys)
                             }
                             if(element.isExpressionOrMemberContext()) super.visitElement(element)
                         }
@@ -59,15 +48,8 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
                     file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() { //perf: 2.1%
                         override fun visitElement(element: PsiElement) {
                             if(element is ParadoxLocalisationCommandIdentifier) {
-                                element.references.forEachFast { reference ->
-                                    if(reference.canResolveValueSetValue()) {
-                                        val resolved = reference?.resolve()
-                                        if(resolved is ParadoxValueSetValueElement) {
-                                            val key = getKeyToDistinct(resolved)
-                                            if(keys.add(key)) handleValueSetValueElement(this@buildMap, resolved)
-                                        }
-                                    }
-                                }
+                                val infos = ParadoxValueSetValueHandler.getInfos(element)
+                                addInfos(infos, keys)
                             }
                             if(element.isRichTextContext()) super.visitElement(element)
                         }
@@ -77,16 +59,13 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
         }
     }
     
-    private fun getKeyToDistinct(element: ParadoxValueSetValueElement): String {
-        return element.valueSetNames.joinToString(",") + "@" + element.name + "@" + element.readWriteAccess.ordinal
-    }
-    
-    private fun handleValueSetValueElement(map: MutableMap<String, List<ParadoxValueSetValueInfo>>, element: ParadoxValueSetValueElement) {
-        element.valueSetNames.forEach { valueSetName ->
-            val valueSetValueInfoList = map.getOrPut(valueSetName) { mutableListOf() } as MutableList
-            //elementOffset is unused yet
-            val valueSetValueInfo = ParadoxValueSetValueInfo(element.name, valueSetName, element.readWriteAccess, -1 /*element.startOffset*/, element.gameType)
-            valueSetValueInfoList.add(valueSetValueInfo)
+    private fun MutableMap<String, List<ParadoxValueSetValueInfo>>.addInfos(infos: List<ParadoxValueSetValueInfo>, keys: MutableSet<String>) {
+        infos.forEachFast { info ->
+            val key = info.valueSetName + "@" + info.name + "@" + info.readWriteAccess.ordinal
+            if(keys.add(key)) {
+                val map = getOrPut(info.valueSetName) { mutableListOf() } as MutableList
+                map.add(info)
+            }
         }
     }
     

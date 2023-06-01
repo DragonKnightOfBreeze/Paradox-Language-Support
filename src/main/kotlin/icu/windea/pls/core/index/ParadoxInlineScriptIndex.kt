@@ -17,10 +17,6 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxInlineScriptInfo>>("paradox.inlineScript.index")
         private const val VERSION = 27 //1.0.5
-        
-        fun getData(expression: String, file: VirtualFile, project: Project): List<ParadoxInlineScriptInfo>? {
-            return FileBasedIndex.getInstance().getFileData(NAME, file, project).get(expression)
-        }
     }
     
     override fun getName() = NAME
