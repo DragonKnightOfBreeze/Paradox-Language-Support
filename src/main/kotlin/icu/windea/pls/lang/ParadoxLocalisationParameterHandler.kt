@@ -14,7 +14,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
-import icu.windea.pls.lang.hierarchy.impl.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
@@ -50,7 +49,7 @@ object ParadoxLocalisationParameterHandler {
         val result = mutableSetOf<String>().synced()
         ParadoxDefinitionHierarchyHandler.processLocalisationParameters(gameType, searchScope) p@{ _, infos ->
             infos.forEachFast { info ->
-                val localisationName = info.localisationName
+                val localisationName = info.localisationName!!
                 if(localisationName == targetLocalisationName) result.add(info.expression)
             }
             true

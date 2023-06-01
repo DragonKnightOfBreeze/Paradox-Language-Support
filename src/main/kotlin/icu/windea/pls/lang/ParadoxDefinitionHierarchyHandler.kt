@@ -50,8 +50,8 @@ inline fun ParadoxDefinitionHierarchyHandler.processEventsInEvent(
 }
 
 object ParadoxEventsInEventHierarchyContext {
-    val ParadoxDefinitionHierarchyInfo.containingEventScope: String by ParadoxEventInEventDefinitionHierarchySupport.containingEventScopeKey
-    val ParadoxDefinitionHierarchyInfo.scopesElementOffset: Int by ParadoxEventInEventDefinitionHierarchySupport.scopesElementOffsetKey
+    val ParadoxDefinitionHierarchyInfo.containingEventScope: String? by ParadoxEventInEventDefinitionHierarchySupport.containingEventScopeKey
+    val ParadoxDefinitionHierarchyInfo.scopesElementOffset: Int? by ParadoxEventInEventDefinitionHierarchySupport.scopesElementOffsetKey
 }
 
 inline fun ParadoxDefinitionHierarchyHandler.processLocalisationParameters(
@@ -67,7 +67,7 @@ inline fun ParadoxDefinitionHierarchyHandler.processLocalisationParameters(
 }
 
 object ParadoxLocalisationParameterHierarchyContext {
-    val ParadoxDefinitionHierarchyInfo.localisationName: String by ParadoxLocalisationParameterDefinitionHierarchySupport.localisationNameKey
+    val ParadoxDefinitionHierarchyInfo.localisationName: String? by ParadoxLocalisationParameterDefinitionHierarchySupport.localisationNameKey
 }
 
 inline fun ParadoxDefinitionHierarchyHandler.processInferredScopeContextAwareDefinitions(

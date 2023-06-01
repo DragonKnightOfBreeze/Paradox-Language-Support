@@ -23,6 +23,8 @@ import icu.windea.pls.script.psi.*
  * 则将此另一个event的root作用域推断为此event的from作用域，
  * 将调用此另一个event的event的root作用域推断为此event的fromfrom作用域，
  * 依此类推直到fromfromfromfrom作用域。
+ * 如果有声明scopes = { from = ... }，则将此event的from作用域推断为这个声明中from对应的作用域，
+ * 依此类推直到fromfromfromfrom作用域。
  */
 @SlowApi
 class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
@@ -83,7 +85,7 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
                     if(eventName != thisEventName) return@f
                     val containingEventName = info.definitionName
                     withCheckRecursion(containingEventName) {
-                        val scopesElementOffset = info.scopesElementOffset
+                        val scopesElementOffset = info.scopesElementOffset!!
                         if(scopesElementOffset != -1) {
                             //从scopes = { ... }中推断
                             val psiFile = file.toPsiFile(configGroup.project) ?: return@p false
@@ -114,7 +116,7 @@ class ParadoxEventFromEventInferredScopeContextProvider : ParadoxDefinitionInfer
                             return@f
                         }
                         
-                        val newRefScope = info.containingEventScope
+                        val newRefScope = info.containingEventScope!!
                         val oldRefScope = scopeContextMap.get(toRef)
                         if(oldRefScope == null) {
                             scopeContextMap.put(toRef, newRefScope)
