@@ -5,15 +5,14 @@ import com.intellij.ide.actions.CreateDirectoryCompletionContributor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
 
 /**
- * 在游戏目录或模组根目录下创建目录时，可以提示目录名称。
- * 
- * @see icu.windea.pls.core.index.ParadoxDirectoryFilePathIndex
+ * 在游戏目录或模组根目录下（或其子目录下）创建目录时，可以提示目录名称。
  */
 class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionContributor {
     val defaultVariants = setOf(
@@ -34,30 +33,27 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         if(DumbService.isDumb(directory.project)) return emptySet()
         
         val fileInfo = directory.fileInfo ?: return emptySet()
-        val contextPath = fileInfo.pathToEntry.path //use pathToEntry here
-        val contextGameType = fileInfo.rootInfo.gameType
-        val pathPrefix = if(contextPath.isEmpty()) "" else "$contextPath/"
+        val path = fileInfo.pathToEntry.path //use pathToEntry here
+        val gameType = fileInfo.rootInfo.gameType
+        val pathPrefix = if(path.isEmpty()) "" else "$path/"
         val result = sortedSetOf<String>()
-        if(contextPath.isEmpty()) {
-            result.addAll(defaultVariants)
-        }
+        if(path.isEmpty()) result.addAll(defaultVariants)
         val project = directory.project
-        //为了优化性能，使用另外的ParadoxDirectoryFilePathIndex而非ParadoxFilePathIndex
+        val scope = GlobalSearchScope.allScope(project)
         ProgressManager.checkCanceled()
-        val name = ParadoxDirectoryFilePathIndex.NAME
-        FileBasedIndex.getInstance().processAllKeys(name, p@{ (path, gameType) ->
-            if(contextGameType != gameType) return@p true
-            
-            val p = path.removePrefixOrNull(pathPrefix)
-            if(!p.isNullOrEmpty()) {
-                result.add(p)
-            }
+        val name = ParadoxFilePathIndex.NAME
+        FileBasedIndex.getInstance().processAllKeys(name, p@{ key ->
+            FileBasedIndex.getInstance().processValues(name, key, null, pp@{ _, info ->
+                if(info.gameType != gameType) return@pp true
+                if(!info.included) return@pp true
+                val p = info.directory.removePrefixOrNull(pathPrefix)
+                if(p.isNotNullOrEmpty()) result.add(p)
+                true
+            }, scope)
             true
         }, project)
         return result.map { it.toVariant() }
     }
-    
-
     
     private fun String.toVariant() = Variant(this, null)
 }

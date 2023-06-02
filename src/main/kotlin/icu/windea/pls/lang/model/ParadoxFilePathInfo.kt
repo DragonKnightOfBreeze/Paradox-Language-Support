@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.model
 
 data class ParadoxFilePathInfo(
-    val path: String,
+    val directory: String,
     val gameType: ParadoxGameType,
+    val included: Boolean
 )
