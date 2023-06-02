@@ -42,7 +42,7 @@ class ParadoxEventInEffectDefinitionHierarchySupport : ParadoxDefinitionHierarch
             ?.memberConfig
             ?.takeIf { it is CwtPropertyConfig && it.key == "id" }
             ?.parent
-            ?.takeIf { it.inlineableConfig?.castOrNull<CwtAliasConfig>()?.let { c -> c.name == "effect" } }
+            ?.takeIf { it.inlineableConfig?.castOrNull<CwtAliasConfig>()?.let { c -> c.name == "effect" } ?: false }
         if(effectConfig == null) return null
         val scopesConfig = effectConfig.configs
             ?.find { it is CwtPropertyConfig && it.key == "scopes" }
