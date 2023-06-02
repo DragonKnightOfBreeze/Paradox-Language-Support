@@ -48,8 +48,8 @@ object ParadoxLocalisationParameterHandler {
         val targetLocalisationName = element.name
         val result = mutableSetOf<String>().synced()
         ParadoxDefinitionHierarchyHandler.processLocalisationParameters(element.project, gameType, searchScope) p@{ _, infos ->
-            infos.forEachFast { info ->
-                val localisationName = info.localisationName!!
+            infos.forEachFast f@{ info ->
+                val localisationName = info.localisationName ?: return@f
                 if(localisationName == targetLocalisationName) result.add(info.expression)
             }
             true

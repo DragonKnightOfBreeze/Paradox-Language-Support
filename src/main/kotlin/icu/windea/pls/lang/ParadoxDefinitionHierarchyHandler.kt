@@ -69,15 +69,15 @@ inline fun ParadoxDefinitionHierarchyHandler.processOnActionsInEffect(
     project: Project,
     gameType: ParadoxGameType,
     scope: GlobalSearchScope,
-    crossinline processor: ParadoxEventInEffectHierarchyContext.(file: VirtualFile, infos: List<ParadoxDefinitionHierarchyInfo>) -> Boolean
+    crossinline processor: ParadoxOnActionInEffectHierarchyContext.(file: VirtualFile, infos: List<ParadoxDefinitionHierarchyInfo>) -> Boolean
 ): Boolean {
     val supportId = ParadoxOnActionInEffectDefinitionHierarchySupport.ID
     return processQuery(project, supportId, gameType, scope) p@{ file, value ->
-        ParadoxEventInEffectHierarchyContext.processor(file, value)
+        ParadoxOnActionInEffectHierarchyContext.processor(file, value)
     }
 }
 
-object ParadoxOnActionsInEffectHierarchyContext {
+object ParadoxOnActionInEffectHierarchyContext {
     val ParadoxDefinitionHierarchyInfo.containingEventScope: String? by ParadoxOnActionInEffectDefinitionHierarchySupport.containingEventScopeKey
     val ParadoxDefinitionHierarchyInfo.scopesElementOffset: Int? by ParadoxOnActionInEffectDefinitionHierarchySupport.scopesElementOffsetKey
 }
