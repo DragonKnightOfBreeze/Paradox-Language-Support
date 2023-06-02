@@ -79,12 +79,13 @@ class ParadoxOnActionFromEffectInferredScopeContextProvider : ParadoxDefinitionI
         depth: Int = 1
     ): Boolean {
         ProgressManager.checkCanceled()
+        val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
         return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxOnActionFromEffectInferredScopeContextProvider.doProcessQuery") {
             if(depth == 1) stackTrace.addLast(thisEventName)
             
             val toRef = "from".repeat(depth)
-            ParadoxDefinitionHierarchyHandler.processEventsInEffect(gameType, searchScope) p@{ file, infos ->
+            ParadoxDefinitionHierarchyHandler.processOnActionsInEffect(project, gameType, searchScope) p@{ file, infos ->
                 infos.forEachFast f@{ info ->
                     val eventName = info.expression
                     if(eventName != thisEventName) return@f
@@ -94,7 +95,7 @@ class ParadoxOnActionFromEffectInferredScopeContextProvider : ParadoxDefinitionI
                         if(scopesElementOffset != -1) {
                             //从scopes = { ... }中推断
                             ProgressManager.checkCanceled()
-                            val psiFile = file.toPsiFile(configGroup.project) ?: return@p false
+                            val psiFile = file.toPsiFile(project) ?: return@p false
                             val scopesElement = psiFile.findElementAt(scopesElementOffset)?.parentOfType<ParadoxScriptProperty>() ?: return@p false
                             val scopesBlockElement = scopesElement.block ?: return@p false
                             val scopeContextOfScopesElement = ParadoxScopeHandler.getScopeContext(scopesElement)

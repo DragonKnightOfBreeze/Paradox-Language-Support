@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.*
  * 推断scripted_trigger、scripted_effect等的作用域上下文（仅限this和root）。
  */
 @SlowApi
-class ParadoxBaseDefinitionInferredScopeContextProvider: ParadoxDefinitionInferredScopeContextProvider {
+class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     companion object {
         val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo")
         
@@ -70,13 +70,12 @@ class ParadoxBaseDefinitionInferredScopeContextProvider: ParadoxDefinitionInferr
         configGroup: CwtConfigGroup
     ): Boolean {
         ProgressManager.checkCanceled()
-        val gameType = configGroup.gameType ?: return true
         val project = configGroup.project
-        
+        val gameType = configGroup.gameType ?: return true
         return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxBaseDefinitionInferredScopeContextProvider.doProcessQuery") {
             withCheckRecursion(definitionInfo.name + "@" + definitionInfo.type) {
-                ParadoxDefinitionHierarchyHandler.processInferredScopeContextAwareDefinitions(gameType, searchScope) p@{ file, infos ->
-                    val psiFile = file.toPsiFile(project)?: return@p true
+                ParadoxDefinitionHierarchyHandler.processInferredScopeContextAwareDefinitions(project, gameType, searchScope) p@{ file, infos ->
+                    val psiFile = file.toPsiFile(project) ?: return@p true
                     infos.forEachFast f@{ info ->
                         val n = info.expression
                         if(n != definitionInfo.name) return@f //matches definition name
@@ -86,7 +85,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider: ParadoxDefinitionInferr
                         val m = e.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@f
                         val scopeContext = ParadoxScopeHandler.getScopeContext(m) ?: return@f
                         val map = with(scopeContext) {
-                            buildMap { 
+                            buildMap {
                                 put("this", scope.id)
                                 root?.let { put("root", it.scope.id) }
                             }

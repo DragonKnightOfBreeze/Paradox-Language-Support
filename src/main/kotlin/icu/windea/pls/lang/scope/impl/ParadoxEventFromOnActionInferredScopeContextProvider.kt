@@ -67,9 +67,10 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
         scopeContextMap: MutableMap<String, String?>,
         configGroup: CwtConfigGroup
     ): Boolean {
-        val gameType = configGroup.gameType ?: return true
+        ProgressManager.checkCanceled()
         val project = configGroup.project
-        return ParadoxDefinitionHierarchyHandler.processEventsInOnAction(gameType, searchScope) p@{ file, infos ->
+        val gameType = configGroup.gameType ?: return true
+        return ParadoxDefinitionHierarchyHandler.processEventsInOnAction(project, gameType, searchScope) p@{ file, infos ->
             val psiFile = file.toPsiFile(project)?: return@p true
             infos.forEachFast f@{ info ->
                 val eventName = info.expression
