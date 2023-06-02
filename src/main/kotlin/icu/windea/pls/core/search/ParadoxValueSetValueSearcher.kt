@@ -33,7 +33,7 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                 ProgressManager.checkCanceled()
                 if(selectGameType(file) != gameType) return@p true //check game type at file level
                 
-                val fileData = ParadoxValueSetValueIndex.getFileData(file, project).valueSetValueInfoGroup
+                val fileData = ParadoxValueSetValueFastIndex.getFileData(file, project).valueSetValueInfoGroup
                 if(fileData.isEmpty()) return@p true
                 valueSetNames.forEach f@{ valueSetName ->
                     val valueSetValueInfoList = fileData[valueSetName]
@@ -52,8 +52,8 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
     }
     
     private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>) {
+        FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope).also { if(!it) return }
         ProgressManager.checkCanceled()
-        FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
         FileTypeIndex.processFiles(ParadoxLocalisationFileType, processor, scope)
     }
 }

@@ -25,6 +25,7 @@ object ParadoxDefinitionHierarchyHandler {
         return FileTypeIndex.processFiles(ParadoxScriptFileType, p@{ file ->
             ProgressManager.checkCanceled()
             if(selectGameType(file) != gameType) return@p true //check game type at file level
+            
             val fileData = ParadoxDefinitionHierarchyIndex.getFileData(file, project)
             val infos = fileData.definitionHierarchyInfoGroup.get(supportId)
             if(infos.isNullOrEmpty()) return@p true

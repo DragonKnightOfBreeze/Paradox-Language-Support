@@ -48,7 +48,6 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
     }
     
     private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>) {
-        ProgressManager.checkCanceled()
         FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
     }
 }

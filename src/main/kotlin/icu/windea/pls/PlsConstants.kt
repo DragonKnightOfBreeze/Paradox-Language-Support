@@ -2,7 +2,6 @@ package icu.windea.pls
 
 import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icons.*
@@ -27,8 +26,6 @@ object PlsConstants {
     
     const val dummyIdentifier = "windea"
     
-    //val eraseMarker = TextAttributes()
-    
     val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
     
     val scriptFileExtensions = arrayOf("txt", "gfx", "gui", "asset", "dlc", "settings")
@@ -37,8 +34,6 @@ object PlsConstants {
     
     const val launcherSettingsFileName = "launcher-settings.json"
     const val descriptorFileName = "descriptor.mod"
-    
-    //val separatorChars = charArrayOf('=', '<', '>', '!')
     
     const val ellipsis = "..."
     //const val commentFolder = "#..."
@@ -56,6 +51,10 @@ object PlsConstants {
     const val maxDefinitionDepth = 4
     //在提示信息中最多显示的键的个数
     const val keysTruncateLimit = 5
+    
+    const val lazyIndexThreadPoolSize = 4
+    
+    //val eraseMarker = TextAttributes()
     
     val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
 }

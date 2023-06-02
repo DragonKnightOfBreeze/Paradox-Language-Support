@@ -3,6 +3,7 @@ package icu.windea.pls.core.index.lazy
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.util.concurrency.*
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
@@ -26,6 +27,8 @@ import java.io.*
 object ParadoxValueSetValueIndex {
     private const val ID = "paradox.valueSetValue.index"
     private const val VERSION = 27 //1.0.5
+    
+    val executor by lazy { AppExecutorUtil.createBoundedApplicationPoolExecutor("ParadoxValueSetValueIndex Pool", PlsConstants.lazyIndexThreadPoolSize) }
     
     fun getFileData(file: VirtualFile, project: Project): Data {
         return gist.getFileData(project, file)
