@@ -3,14 +3,15 @@ package icu.windea.pls.core.search
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
-import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.ParadoxValueSetValueFastIndex
 import icu.windea.pls.core.index.lazy.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.localisation.*
+import icu.windea.pls.script.*
 
 /**
  * 值集值的查询器。
@@ -28,7 +29,7 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
         val gameType = selector.gameType ?: return
         
         DumbService.getInstance(project).runReadActionInSmartMode action@{
-            FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxValueSetValueFastIndex.NAME, valueSetNames, scope, null, null) p@{ file ->
+            doProcessFiles(scope) p@{ file ->
                 ProgressManager.checkCanceled()
                 if(selectGameType(file) != gameType) return@p true //check game type at file level
                 
@@ -48,6 +49,12 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                 true
             }
         }
+    }
+    
+    private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>) {
+        ProgressManager.checkCanceled()
+        FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
+        FileTypeIndex.processFiles(ParadoxLocalisationFileType, processor, scope)
     }
 }
 
