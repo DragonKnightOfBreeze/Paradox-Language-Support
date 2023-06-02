@@ -94,3 +94,4 @@ object ParadoxComplexEnumValueIndex {
         return false
     }
 }
+

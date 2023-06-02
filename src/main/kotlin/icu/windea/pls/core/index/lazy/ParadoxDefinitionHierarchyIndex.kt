@@ -18,6 +18,11 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 import java.util.*
 
+/**
+ * 用于索引定义声明中的定义引用、参数引用、本地化参数引用等。
+ *
+ * @see ParadoxDefinitionHierarchySupport
+ */
 object ParadoxDefinitionHierarchyIndex {
     private const val ID = "paradox.definition.hierarchy.index"
     private const val VERSION = 27 //1.0.5
@@ -97,7 +102,7 @@ object ParadoxDefinitionHierarchyIndex {
                 if(definitionInfo != null) {
                     //这里element作为定义的引用时也可能是ParadoxScriptInt，目前不需要考虑这种情况，因此忽略
                     if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
-                        val matchOptions = ParadoxConfigMatcher.Options.SkipIndex or ParadoxConfigMatcher.Options.SkipScope
+                        val matchOptions = ParadoxConfigMatcher.Options.SkipScope
                         val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = matchOptions) //perf: 82.3%
                         if(configs.isNotEmpty()) {
                             configs.forEachFast { config ->

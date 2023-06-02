@@ -31,9 +31,9 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
                 ProgressManager.checkCanceled()
                 if(selectGameType(file) != gameType) return@p true //check game type at file level
                 
-                val data = ParadoxComplexEnumValueIndex.getFileData(file, project).complexEnumValueInfoGroup
-                if(data.isEmpty()) return@p true
-                val complexEnumValueInfoList = data[enumName]
+                val fileData = ParadoxComplexEnumValueIndex.getFileData(file, project).complexEnumValueInfoGroup
+                if(fileData.isEmpty()) return@p true
+                val complexEnumValueInfoList = fileData[enumName]
                 if(complexEnumValueInfoList.isNullOrEmpty()) return@p true
                 complexEnumValueInfoList.forEachFast { info ->
                     if(name == null || name == info.name) {

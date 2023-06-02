@@ -34,7 +34,7 @@ object ParadoxValueSetValueHandler {
     private fun doGetInfo(element: ParadoxScriptStringExpressionElement): List<ParadoxValueSetValueInfo> {
         val isKey = element is ParadoxScriptPropertyKey
         
-        val matchOptions = ParadoxConfigMatcher.Options.SkipIndex or ParadoxConfigMatcher.Options.SkipScope
+        val matchOptions = ParadoxConfigMatcher.Options.SkipScope
         val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = matchOptions)
         if(configs.isEmpty()) return emptyList()
         

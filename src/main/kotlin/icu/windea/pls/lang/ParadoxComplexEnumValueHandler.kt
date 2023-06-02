@@ -45,7 +45,6 @@ object ParadoxComplexEnumValueHandler {
         val gameType = fileInfo.rootInfo.gameType
         val configGroup = getCwtConfig(project).get(gameType)
         for(complexEnumConfig in configGroup.complexEnums.values) {
-            ProgressManager.checkCanceled()
             if(matchesComplexEnumByPath(complexEnumConfig, path)) {
                 if(matchesComplexEnum(complexEnumConfig, element)) {
                     val name = getName(element.value) ?: continue

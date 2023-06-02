@@ -8,7 +8,8 @@ import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.*
+import icu.windea.pls.core.index.ParadoxValueSetValueFastIndex
+import icu.windea.pls.core.index.lazy.*
 import icu.windea.pls.lang.model.*
 
 /**
@@ -30,7 +31,9 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
             FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxValueSetValueFastIndex.NAME, valueSetNames, scope, null, null) p@{ file ->
                 ProgressManager.checkCanceled()
                 if(selectGameType(file) != gameType) return@p true //check game type at file level
-                val fileData = FileBasedIndex.getInstance().getFileData(ParadoxValueSetValueFastIndex.NAME, file, project)
+                
+                val fileData = ParadoxValueSetValueIndex.getFileData(file, project).valueSetValueInfoGroup
+                if(fileData.isEmpty()) return@p true
                 valueSetNames.forEach f@{ valueSetName ->
                     val valueSetValueInfoList = fileData[valueSetName]
                     if(valueSetValueInfoList.isNullOrEmpty()) return@f
@@ -41,6 +44,7 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
                         }
                     }
                 }
+                
                 true
             }
         }
