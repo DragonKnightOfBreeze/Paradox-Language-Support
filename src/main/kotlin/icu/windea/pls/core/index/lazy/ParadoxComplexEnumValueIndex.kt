@@ -15,6 +15,9 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
+/**
+ * 用于索引复杂枚举值。
+ */
 object ParadoxComplexEnumValueIndex {
     private const val ID = "paradox.complexEnumValue.index"
     private const val VERSION = 27 //1.0.5

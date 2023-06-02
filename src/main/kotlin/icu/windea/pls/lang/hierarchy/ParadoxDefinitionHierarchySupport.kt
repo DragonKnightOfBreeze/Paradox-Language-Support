@@ -16,7 +16,7 @@ import java.io.*
 interface ParadoxDefinitionHierarchySupport {
     val id: String
     
-    fun indexData(fileData: MutableMap<String, MutableList<ParadoxDefinitionHierarchyInfo>>, element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo)
+    fun indexData(fileData: MutableList<ParadoxDefinitionHierarchyInfo>, element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo)
     
     fun saveData(storage: DataOutput, data: ParadoxDefinitionHierarchyInfo) {}
     
@@ -25,7 +25,7 @@ interface ParadoxDefinitionHierarchySupport {
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName.create<ParadoxDefinitionHierarchySupport>("icu.windea.pls.definitionHierarchySupport")
         
-        fun indexData(fileData: MutableMap<String, MutableList<ParadoxDefinitionHierarchyInfo>>, element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo) {
+        fun indexData(fileData: MutableList<ParadoxDefinitionHierarchyInfo>, element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo) {
             EP_NAME.extensionList.forEachFast { ep ->
                 ep.indexData(fileData, element, config, definitionInfo)
             }
