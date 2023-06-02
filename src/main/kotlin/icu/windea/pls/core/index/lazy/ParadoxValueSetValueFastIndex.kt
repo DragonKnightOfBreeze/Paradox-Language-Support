@@ -18,6 +18,7 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
+//这个索引的索引速度可能非常慢，考虑并发索引
 //这个索引不会保存同一文件中重复的ParadoxValueSetValueInfo
 //这个索引不会保存ParadoxValueSetValueInfo.elementOffset
 
@@ -28,7 +29,7 @@ object ParadoxValueSetValueFastIndex {
     private const val ID = "paradox.valueSetValue.fast.index"
     private const val VERSION = 27 //1.0.5
     
-    val executor by lazy { AppExecutorUtil.createBoundedApplicationPoolExecutor("ParadoxValueSetValueFastIndex Pool", PlsConstants.lazyIndexThreadPoolSize) }
+    val executor by lazy { AppExecutorUtil.createBoundedApplicationPoolExecutor("ParadoxValueSetValueFastIndex Pool", 4) }
     
     fun getFileData(file: VirtualFile, project: Project): Data {
         return gist.getFileData(project, file)

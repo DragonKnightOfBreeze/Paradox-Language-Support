@@ -52,8 +52,6 @@ object PlsConstants {
     //在提示信息中最多显示的键的个数
     const val keysTruncateLimit = 5
     
-    const val lazyIndexThreadPoolSize = 4
-    
     //val eraseMarker = TextAttributes()
     
     val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)

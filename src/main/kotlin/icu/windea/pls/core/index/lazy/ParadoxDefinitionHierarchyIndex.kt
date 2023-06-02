@@ -28,7 +28,7 @@ object ParadoxDefinitionHierarchyIndex {
     private const val ID = "paradox.definition.hierarchy.index"
     private const val VERSION = 27 //1.0.5
     
-    val executor by lazy { AppExecutorUtil.createBoundedApplicationPoolExecutor("ParadoxDefinitionHierarchyIndex Pool", PlsConstants.lazyIndexThreadPoolSize) }
+    val executor by lazy { AppExecutorUtil.createBoundedApplicationPoolExecutor("ParadoxDefinitionHierarchyIndex Pool", 4) }
     
     fun getFileData(file: VirtualFile, project: Project): Data {
         return gist.getFileData(project, file)
