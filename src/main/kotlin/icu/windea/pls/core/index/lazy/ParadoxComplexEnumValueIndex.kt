@@ -1,4 +1,4 @@
-package icu.windea.pls.core.index
+package icu.windea.pls.core.index.lazy
 
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
@@ -8,33 +8,31 @@ import com.intellij.util.io.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-//这里不能使用PsiFileGist，否则可能会出现应当可以解析但有时无法解析的情况
-
-@Deprecated("Use ParadoxComplexEnumValueFastIndex")
-object ParadoxComplexEnumValueLazyIndex {
+object ParadoxComplexEnumValueIndex {
     private const val ID = "paradox.complexEnumValue.index"
     private const val VERSION = 27 //1.0.5
+    
+    fun getFileData(file: VirtualFile, project: Project): Data {
+        return gist.getFileData(project, file)
+    }
     
     class Data(
         val complexEnumValueInfoList: MutableList<ParadoxComplexEnumValueInfo> = mutableListOf()
     ) {
         val complexEnumValueInfoGroup by lazy {
-            buildMap<String, Map<String, List<ParadoxComplexEnumValueInfo>>> {
-                complexEnumValueInfoList.forEachFast { info ->
-                    val map = getOrPut(info.enumName) { mutableMapOf() } as MutableMap
-                    val list = map.getOrPut(info.name) { mutableListOf() } as MutableList
-                    list.add(info)
-                }
+            val group = mutableMapOf<String, List<ParadoxComplexEnumValueInfo>>()
+            complexEnumValueInfoList.forEachFast { info ->
+                val list = group.getOrPut(info.enumName) { mutableListOf() } as MutableList
+                list.add(info)
             }
-        }
-        val distinctComplexEnumValueInfoGroup by lazy {
-            complexEnumValueInfoGroup.mapValues { (_, v1) -> v1.mapValues { (_, v2) -> v2.distinctBy { it.readWriteAccess } } }
+            group
         }
     }
     
@@ -42,17 +40,17 @@ object ParadoxComplexEnumValueLazyIndex {
     
     private val valueExternalizer: DataExternalizer<Data> = object : DataExternalizer<Data> {
         override fun save(storage: DataOutput, value: Data) {
-            storage.writeList(value.complexEnumValueInfoList) {
-                storage.writeString(it.name)
-                storage.writeString( it.enumName)
-                storage.writeByte(it.readWriteAccess.toByte())
-                storage.writeInt(it.elementOffset)
-                storage.writeByte(it.gameType.toByte())
+            storage.writeList(value.complexEnumValueInfoList) { complexEnumValueInfo ->
+                storage.writeString(complexEnumValueInfo.name)
+                storage.writeString( complexEnumValueInfo.enumName)
+                storage.writeByte(complexEnumValueInfo.readWriteAccess.toByte())
+                storage.writeInt(complexEnumValueInfo.elementOffset)
+                storage.writeByte(complexEnumValueInfo.gameType.toByte())
             }
         }
         
         override fun read(storage: DataInput): Data {
-            val complexEnumValueInfos = storage.readList {
+            val complexEnumValueInfoList = storage.readList {
                 val name = storage.readString()
                 val enumName = storage.readString()
                 val readWriteAccess = storage.readByte().toReadWriteAccess()
@@ -60,13 +58,12 @@ object ParadoxComplexEnumValueLazyIndex {
                 val gameType = storage.readByte().toGameType()
                 ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, elementOffset, gameType)
             }
-            if(complexEnumValueInfos.isEmpty()) return EmptyData
-            return Data(complexEnumValueInfos)
+            if(complexEnumValueInfoList.isEmpty()) return EmptyData
+            return Data(complexEnumValueInfoList)
         }
     }
     
     private val gist: VirtualFileGist<Data> = GistManager.getInstance().newVirtualFileGist(ID, VERSION, valueExternalizer) builder@{ project, file ->
-        if(file.fileInfo == null) return@builder EmptyData
         if(file.fileType != ParadoxScriptFileType) return@builder EmptyData
         if(!matchesPath(file, project)) return@builder EmptyData
         val psiFile = file.toPsiFile(project) ?: return@builder EmptyData
@@ -75,7 +72,7 @@ object ParadoxComplexEnumValueLazyIndex {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxScriptStringExpressionElement) {
                     val info = ParadoxComplexEnumValueHandler.getInfo(element)
-                    if(info != null) data.complexEnumValueInfoList += info
+                    if(info != null) data.complexEnumValueInfoList.add(info)
                 }
                 if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }
@@ -92,9 +89,5 @@ object ParadoxComplexEnumValueLazyIndex {
             if(ParadoxComplexEnumValueHandler.matchesComplexEnumByPath(config, path)) return true
         }
         return false
-    }
-    
-    fun getData(file: VirtualFile, project: Project): Data {
-        return gist.getFileData(project, file)
     }
 }
