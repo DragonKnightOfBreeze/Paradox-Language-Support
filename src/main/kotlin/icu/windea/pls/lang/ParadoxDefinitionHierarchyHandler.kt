@@ -36,10 +36,12 @@ object ParadoxDefinitionHierarchyHandler {
     }
     
     private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
-        //use parallel processor to optimize performance
-        val parallelProcessor = ParallelProcessor(processor, ParadoxComplexEnumValueIndex.executorService)
-        FileTypeIndex.processFiles(ParadoxScriptFileType, parallelProcessor, scope)
-        return parallelProcessor.getResult()
+        return FileTypeIndex.processFiles(ParadoxScriptFileType, parallelProcessor, scope)
+        
+        ////use parallel processor to optimize performance
+        //val parallelProcessor = ParallelProcessor(processor, ParadoxComplexEnumValueIndex.executorService)
+        //FileTypeIndex.processFiles(ParadoxScriptFileType, parallelProcessor, scope)
+        //return parallelProcessor.getResult()
     }
 }
 

@@ -9,7 +9,6 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.lazy.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
@@ -53,11 +52,15 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
     }
     
     private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
-        //use parallel processor to optimize performance
-        val parallelProcessor = ParallelProcessor(processor, ParadoxValueSetValueFastIndex.executorService)
-        FileTypeIndex.processFiles(ParadoxScriptFileType, parallelProcessor, scope)
-        FileTypeIndex.processFiles(ParadoxLocalisationFileType, parallelProcessor, scope)
-        return parallelProcessor.getResult()
+        FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope).let { if(!it) return false }
+        FileTypeIndex.processFiles(ParadoxLocalisationFileType, processor, scope).let { if(!it) return false }
+        return true
+        
+        ////use parallel processor to optimize performance
+        //val parallelProcessor = ParallelProcessor(processor, ParadoxValueSetValueFastIndex.executorService)
+        //FileTypeIndex.processFiles(ParadoxScriptFileType, parallelProcessor, scope)
+        //FileTypeIndex.processFiles(ParadoxLocalisationFileType, parallelProcessor, scope)
+        //return parallelProcessor.getResult()
     }
 }
 
