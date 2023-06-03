@@ -23,7 +23,7 @@ object ParadoxComplexEnumValueIndex {
     private const val ID = "paradox.complexEnumValue.index"
     private const val VERSION = 27 //1.0.5
     
-    val executor by lazy { AppExecutorUtil.createBoundedApplicationPoolExecutor("ParadoxComplexEnumValueIndex Pool", 4) }
+    val executorService by lazy { AppExecutorUtil.createBoundedApplicationPoolExecutor("ParadoxComplexEnumValueIndex Pool", 4) }
     
     fun getFileData(file: VirtualFile, project: Project): Data {
         return gist.getFileData(project, file)

@@ -29,7 +29,7 @@ object ParadoxValueSetValueIndex {
     private const val ID = "paradox.valueSetValue.index"
     private const val VERSION = 27 //1.0.5
     
-    val executor by lazy { AppExecutorUtil.createBoundedApplicationPoolExecutor("ParadoxValueSetValueIndex Pool", 4) }
+    val executorService by lazy { AppExecutorUtil.createBoundedApplicationPoolExecutor("ParadoxValueSetValueIndex Pool", 4) }
     
     fun getFileData(file: VirtualFile, project: Project): Data {
         return gist.getFileData(project, file)

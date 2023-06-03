@@ -4,9 +4,11 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.lazy.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.hierarchy.impl.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
@@ -22,7 +24,7 @@ object ParadoxDefinitionHierarchyHandler {
         ProgressManager.checkCanceled()
         if(SearchScope.isEmptyScope(scope)) return true
         
-        return FileTypeIndex.processFiles(ParadoxScriptFileType, p@{ file ->
+        return doProcessFiles(scope) p@{ file ->
             ProgressManager.checkCanceled()
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
@@ -30,7 +32,14 @@ object ParadoxDefinitionHierarchyHandler {
             val infos = fileData.definitionHierarchyInfoGroup.get(supportId)
             if(infos.isNullOrEmpty()) return@p true
             processor(file, infos)
-        }, scope)
+        }
+    }
+    
+    private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
+        //use parallel processor to optimize performance
+        val parallelProcessor = ParallelProcessor(processor, ParadoxComplexEnumValueIndex.executorService)
+        FileTypeIndex.processFiles(ParadoxScriptFileType, parallelProcessor, scope)
+        return parallelProcessor.getResult()
     }
 }
 
