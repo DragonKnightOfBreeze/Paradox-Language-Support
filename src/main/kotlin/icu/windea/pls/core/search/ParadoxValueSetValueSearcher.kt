@@ -51,10 +51,16 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
         }
     }
     
-    private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>) {
-        FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope).also { if(!it) return }
-        ProgressManager.checkCanceled()
-        FileTypeIndex.processFiles(ParadoxLocalisationFileType, processor, scope)
+    private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
+        FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope).let { if(!it) return false }
+        FileTypeIndex.processFiles(ParadoxLocalisationFileType, processor, scope).let { if(!it) return false }
+        return true
+        
+        ////use parallel processor to optimize performance
+        //val parallelProcessor = ParallelProcessor(processor, ParadoxValueSetValueFastIndex.executorService)
+        //FileTypeIndex.processFiles(ParadoxScriptFileType, parallelProcessor, scope)
+        //FileTypeIndex.processFiles(ParadoxLocalisationFileType, parallelProcessor, scope)
+        //return parallelProcessor.getResult()
     }
 }
 

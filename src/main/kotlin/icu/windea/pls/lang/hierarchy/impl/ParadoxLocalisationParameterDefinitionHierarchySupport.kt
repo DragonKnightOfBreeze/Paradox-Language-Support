@@ -23,7 +23,9 @@ class ParadoxLocalisationParameterDefinitionHierarchySupport: ParadoxDefinitionH
         //if(configExpression.type != CwtDataType.LocalisationParameter) return
         
         val localisationReferenceElement = ParadoxLocalisationParameterHandler.getLocalisationReferenceElement(element, config) ?: return
-        val localisationName = localisationReferenceElement.name
+        val localisationName = localisationReferenceElement.name.takeIfNotEmpty()
+        if(localisationName == null) return
+        
         //elementOffset has not been used yet by this support
         val info = ParadoxDefinitionHierarchyInfo(id, element.value, config.expression, definitionInfo.name, definitionInfo.type, definitionInfo.subtypes, -1 /*element.startOffset*/, definitionInfo.gameType)
         info.putUserData(localisationNameKey, localisationName)

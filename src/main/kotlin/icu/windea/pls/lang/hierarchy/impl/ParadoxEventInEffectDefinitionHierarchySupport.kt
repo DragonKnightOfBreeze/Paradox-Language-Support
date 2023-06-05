@@ -27,12 +27,13 @@ class ParadoxEventInEffectDefinitionHierarchySupport : ParadoxDefinitionHierarch
         if(definitionType != "event") return
         
         val containingEventScope = if(definitionInfo.type == "event") ParadoxEventHandler.getScope(definitionInfo) else null
-        val scopesElementOffset = getScopesElementOffset(element, config) ?: return
+        val scopesElementOffset = getScopesElementOffset(element, config)
+        if(scopesElementOffset == null) return
         
         //elementOffset has not been used yet by this support
         val info = ParadoxDefinitionHierarchyInfo(id, element.value, config.expression, definitionInfo.name, definitionInfo.type, definitionInfo.subtypes, -1 /*element.startOffset*/, definitionInfo.gameType)
-        info.putUserData(containingEventScopeKey, containingEventScope.orEmpty())
-        info.putUserData(scopesElementOffsetKey, scopesElementOffset)
+        containingEventScope?.takeIfNotEmpty()?.let { info.putUserData(containingEventScopeKey, it) }
+        scopesElementOffset.let { info.putUserData(scopesElementOffsetKey, it) }
         fileData.add(info)
     }
     

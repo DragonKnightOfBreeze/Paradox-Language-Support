@@ -33,7 +33,7 @@ class ParadoxOnActionFromEffectInferredScopeContextProvider : ParadoxDefinitionI
     }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if(!getSettings().inference.eventScopeContextFromEffect) return null
+        if(!getSettings().inference.onActionScopeContextFromEffect) return null
         if(definitionInfo.type != "on_action") return null
         return doGetScopeContextFromCache(definition)
     }
@@ -90,7 +90,7 @@ class ParadoxOnActionFromEffectInferredScopeContextProvider : ParadoxDefinitionI
                     if(eventName != thisEventName) return@f
                     val containingEventName = info.definitionName
                     withCheckRecursion(containingEventName) {
-                        val scopesElementOffset = info.scopesElementOffset!!
+                        val scopesElementOffset = info.scopesElementOffset ?: -1
                         if(scopesElementOffset != -1) {
                             //从scopes = { ... }中推断
                             ProgressManager.checkCanceled()
@@ -135,8 +135,8 @@ class ParadoxOnActionFromEffectInferredScopeContextProvider : ParadoxDefinitionI
                             return@f
                         }
                         
-                        val containingEventScope = info.containingEventScope!!
-                        if(containingEventScope.isNotEmpty()) {
+                        val containingEventScope = info.containingEventScope
+                        if(containingEventScope != null) {
                             val newRefScope = containingEventScope
                             val oldRefScope = scopeContextMap.get(toRef)
                             if(oldRefScope == null) {

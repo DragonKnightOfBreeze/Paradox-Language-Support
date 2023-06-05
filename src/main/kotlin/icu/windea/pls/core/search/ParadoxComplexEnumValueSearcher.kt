@@ -47,7 +47,12 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         }
     }
     
-    private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>) {
-        FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
+    private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
+        return FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
+        
+        ////use parallel processor to optimize performance
+        //val parallelProcessor = ParallelProcessor(processor, ParadoxComplexEnumValueIndex.executorService)
+        //return FileTypeIndex.processFiles(ParadoxScriptFileType, parallelProcessor, scope)
+        //return parallelProcessor.getResult()
     }
 }

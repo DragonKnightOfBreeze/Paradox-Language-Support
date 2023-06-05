@@ -249,11 +249,18 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContextFromOnAction.tooltip") }
                         .onApply { ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker.incModificationCount() }
                 }
-                //eventScopeContextFromEvent
+                //eventScopeContextFromEffect
                 row {
-                    checkBox(PlsBundle.message("settings.inference.eventScopeContextFromEvent"))
+                    checkBox(PlsBundle.message("settings.inference.eventScopeContextFromEffect"))
                         .bindSelected(settings.inference::eventScopeContextFromEffect)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContextFromEvent.tooltip") }
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContextFromEffect.tooltip") }
+                        .onApply { ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker.incModificationCount() }
+                }
+                //onActionScopeContextFromEffect
+                row {
+                    checkBox(PlsBundle.message("settings.inference.onActionScopeContextFromEffect"))
+                        .bindSelected(settings.inference::onActionScopeContextFromEffect)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.onActionScopeContextFromEffect.tooltip") }
                         .onApply { ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker.incModificationCount() }
                 }
             }
