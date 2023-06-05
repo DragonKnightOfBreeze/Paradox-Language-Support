@@ -7,7 +7,7 @@ import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.index.lazy.*
+import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.hierarchy.impl.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
@@ -28,7 +28,7 @@ object ParadoxDefinitionHierarchyHandler {
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
             val fileData = ParadoxDefinitionHierarchyIndex.getFileData(file, project)
-            val infos = fileData.definitionHierarchyInfoGroup.get(supportId)
+            val infos = fileData.get(supportId)
             if(infos.isNullOrEmpty()) return@p true
             processor(file, infos)
         }

@@ -23,7 +23,6 @@ object ParadoxComplexEnumValueHandler {
     }
     
     fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
-        if(!element.isExpression()) return null
         if(element.isParameterized()) return null //排除可能带参数的情况
         return doGetInfoFromCache(element)
     }

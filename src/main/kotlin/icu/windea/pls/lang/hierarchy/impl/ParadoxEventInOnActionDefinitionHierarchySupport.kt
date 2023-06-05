@@ -13,7 +13,7 @@ class ParadoxEventInOnActionDefinitionHierarchySupport: ParadoxDefinitionHierarc
     
     override val id: String get() = ID
     
-    override fun indexData(fileData: MutableList<ParadoxDefinitionHierarchyInfo>, element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo) {
+    override fun indexData(fileData: MutableMap<String, List<ParadoxDefinitionHierarchyInfo>>, element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo) {
         if(definitionInfo.type != "on_action") return
         val configExpression = config.expression
         if(configExpression.type != CwtDataType.Definition) return
@@ -22,6 +22,7 @@ class ParadoxEventInOnActionDefinitionHierarchySupport: ParadoxDefinitionHierarc
         
         //elementOffset has not been used yet by this support
         val info = ParadoxDefinitionHierarchyInfo(id, element.value, config.expression, definitionInfo.name, definitionInfo.type, definitionInfo.subtypes, -1 /*element.startOffset*/, definitionInfo.gameType)
-        fileData.add(info)
+        val list = fileData.getOrPut(id) { mutableListOf() } as MutableList
+        list.add(info)
     }
 }

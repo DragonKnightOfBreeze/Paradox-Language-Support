@@ -8,7 +8,7 @@ import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.lazy.*
+import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 
@@ -31,7 +31,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
                 ProgressManager.checkCanceled()
                 if(selectGameType(file) != gameType) return@p true //check game type at file level
                 
-                val fileData = ParadoxComplexEnumValueIndex.getFileData(file, project).complexEnumValueInfoGroup
+                val fileData = ParadoxComplexEnumValueIndex.getFileData(file, project)
                 if(fileData.isEmpty()) return@p true
                 val complexEnumValueInfoList = fileData[enumName]
                 if(complexEnumValueInfoList.isNullOrEmpty()) return@p true
@@ -49,10 +49,5 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
     
     private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
         return FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
-        
-        ////use parallel processor to optimize performance
-        //val parallelProcessor = ParallelProcessor(processor, ParadoxComplexEnumValueIndex.executorService)
-        //return FileTypeIndex.processFiles(ParadoxScriptFileType, parallelProcessor, scope)
-        //return parallelProcessor.getResult()
     }
 }

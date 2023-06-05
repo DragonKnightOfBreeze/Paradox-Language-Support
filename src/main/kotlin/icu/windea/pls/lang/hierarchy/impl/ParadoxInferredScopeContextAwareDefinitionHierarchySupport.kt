@@ -16,13 +16,14 @@ class ParadoxInferredScopeContextAwareDefinitionHierarchySupport: ParadoxDefinit
     
     override val id: String get() = ID
     
-    override fun indexData(fileData: MutableList<ParadoxDefinitionHierarchyInfo>, element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo) {
+    override fun indexData(fileData: MutableMap<String, List<ParadoxDefinitionHierarchyInfo>>, element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo) {
         val configExpression = config.expression
         if(configExpression.type != CwtDataType.Definition) return
         val definitionType = configExpression.value?.substringBefore('.') ?: return
         if(definitionType !in DEFINITION_TYPES) return
         
         val info = ParadoxDefinitionHierarchyInfo(id, element.value, config.expression, definitionInfo.name, definitionInfo.type, definitionInfo.subtypes, element.startOffset, definitionInfo.gameType)
-        fileData.add(info)
+        val list = fileData.getOrPut(id) { mutableListOf() } as MutableList
+        list.add(info)
     }
 }
