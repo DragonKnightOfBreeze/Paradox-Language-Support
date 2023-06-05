@@ -8,7 +8,6 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.lazy.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.hierarchy.impl.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
@@ -36,7 +35,7 @@ object ParadoxDefinitionHierarchyHandler {
     }
     
     private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
-        return FileTypeIndex.processFiles(ParadoxScriptFileType, parallelProcessor, scope)
+        return FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
         
         ////use parallel processor to optimize performance
         //val parallelProcessor = ParallelProcessor(processor, ParadoxComplexEnumValueIndex.executorService)
@@ -49,15 +48,13 @@ inline fun ParadoxDefinitionHierarchyHandler.processEventsInOnAction(
     project: Project,
     gameType: ParadoxGameType,
     scope: GlobalSearchScope,
-    crossinline processor: ParadoxEventInOnActionHierarchyContext.(file: VirtualFile, infos: List<ParadoxDefinitionHierarchyInfo>) -> Boolean
+    crossinline processor: (file: VirtualFile, infos: List<ParadoxDefinitionHierarchyInfo>) -> Boolean
 ): Boolean {
     val supportId = ParadoxEventInOnActionDefinitionHierarchySupport.ID
     return processQuery(project, supportId, gameType, scope) p@{ file, value ->
-        ParadoxEventInOnActionHierarchyContext.processor(file, value)
+        processor(file, value)
     }
 }
-
-object ParadoxEventInOnActionHierarchyContext
 
 inline fun ParadoxDefinitionHierarchyHandler.processEventsInEffect(
     project: Project,
@@ -113,10 +110,10 @@ inline fun ParadoxDefinitionHierarchyHandler.processInferredScopeContextAwareDef
     project: Project,
     gameType: ParadoxGameType,
     scope: GlobalSearchScope,
-    crossinline processor: ParadoxLocalisationParameterHierarchyContext.(file: VirtualFile, infos: List<ParadoxDefinitionHierarchyInfo>) -> Boolean
+    crossinline processor: (file: VirtualFile, infos: List<ParadoxDefinitionHierarchyInfo>) -> Boolean
 ): Boolean {
     val supportId = ParadoxInferredScopeContextAwareDefinitionHierarchySupport.ID
     return processQuery(project, supportId, gameType, scope) p@{ file, value ->
-        ParadoxLocalisationParameterHierarchyContext.processor(file, value)
+        processor(file, value)
     }
 }

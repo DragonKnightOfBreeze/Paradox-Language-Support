@@ -18,9 +18,10 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-//这个索引的索引速度可能非常慢，考虑并发索引
+//这个索引的索引速度可能非常慢
 //这个索引不会保存同一文件中重复的ParadoxValueSetValueInfo
 //这个索引不会保存ParadoxValueSetValueInfo.elementOffset
+//这个索引兼容需要内联的情况
 
 /**
  * 用于索引值集值。

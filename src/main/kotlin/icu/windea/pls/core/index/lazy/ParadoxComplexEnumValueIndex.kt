@@ -16,6 +16,8 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
+//这个索引不兼容需要内联的情况
+
 /**
  * 用于索引复杂枚举值。
  */
