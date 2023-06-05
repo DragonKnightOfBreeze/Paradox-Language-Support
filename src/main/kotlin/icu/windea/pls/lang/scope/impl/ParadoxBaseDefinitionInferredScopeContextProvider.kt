@@ -25,7 +25,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     companion object {
         val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo")
         
-        val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect", "static_modifier")
+        val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect")
     }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {

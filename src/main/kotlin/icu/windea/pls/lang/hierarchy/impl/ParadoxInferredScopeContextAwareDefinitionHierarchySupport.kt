@@ -11,7 +11,7 @@ class ParadoxInferredScopeContextAwareDefinitionHierarchySupport: ParadoxDefinit
     companion object {
         const val ID = "inferredScopeContextAware"
         
-        val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect", "static_modifier")
+        val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect")
     }
     
     override val id: String get() = ID
