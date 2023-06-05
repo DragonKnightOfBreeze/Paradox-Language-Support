@@ -174,26 +174,27 @@ object ParadoxCoreHandler {
         var currentFile = if(isLightFile) VfsUtil.findFile(currentFilePath, false) else file
         while(true) {
             val rootInfo = if(currentFile == null) null else resolveRootInfo(currentFile)
-            if(rootInfo != null) {
-                //filePath.relative(rootPath)
-                val path = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimStart('/'))
-                val entry = resolveEntry(path, rootInfo)
-                val pathToEntry = if(entry == null) path else ParadoxPath.resolve(path.path.removePrefix("$entry/"))
-                val fileType = ParadoxFileType.resolve(file, pathToEntry)
-                val cachedFileInfo = file.getUserData(PlsKeys.fileInfoKey)
-                if(cachedFileInfo != null && cachedFileInfo.path == path && cachedFileInfo.pathToEntry == pathToEntry
-                    && cachedFileInfo.fileType == fileType && cachedFileInfo.rootInfo == rootInfo) {
-                    return cachedFileInfo
-                }
-                val fileInfo = ParadoxFileInfo(fileName, path, entry, pathToEntry, fileType, rootInfo)
-                runCatching { file.putUserData(PlsKeys.fileInfoKey, fileInfo) }
-                return fileInfo
-            }
+            if(rootInfo != null) return doResolveFileInfo(file, filePath, fileName, rootInfo)
             currentFilePath = currentFilePath.parent ?: break
             currentFile = currentFile?.parent ?: if(isLightFile) VfsUtil.findFile(currentFilePath, false) else break
         }
         runCatching { file.putUserData(PlsKeys.fileInfoKey, null) }
         return null
+    }
+    
+    private fun doResolveFileInfo(file: VirtualFile, filePath: String, fileName: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
+        val path = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimStart('/'))
+        val entry = resolveEntry(path, rootInfo)
+        val pathToEntry = if(entry == null) path else ParadoxPath.resolve(path.path.removePrefix("$entry/"))
+        val fileType = ParadoxFileType.resolve(file, pathToEntry)
+        val cachedFileInfo = file.getUserData(PlsKeys.fileInfoKey)
+        if(cachedFileInfo != null && cachedFileInfo.path == path && cachedFileInfo.pathToEntry == pathToEntry
+            && cachedFileInfo.fileType == fileType && cachedFileInfo.rootInfo == rootInfo) {
+            return cachedFileInfo
+        }
+        val fileInfo = ParadoxFileInfo(fileName, path, entry, pathToEntry, fileType, rootInfo)
+        runCatching { file.putUserData(PlsKeys.fileInfoKey, fileInfo) }
+        return fileInfo
     }
     
     fun resolveFileInfo(filePath: FilePath): ParadoxFileInfo? {
@@ -204,19 +205,20 @@ object ParadoxCoreHandler {
         var currentFile = VfsUtil.findFile(currentFilePath, false)
         while(true) {
             val rootInfo = if(currentFile == null) null else resolveRootInfo(currentFile)
-            if(rootInfo != null) {
-                //filePath.relative(rootPath)
-                val path = ParadoxPath.resolve(filePath.path.removePrefix(rootInfo.rootFile.path).trimStart('/'))
-                val entry = resolveEntry(path, rootInfo)
-                val pathToEntry = if(entry == null) path else ParadoxPath.resolve(path.path.removePrefix("$entry/"))
-                val fileType = ParadoxFileType.resolve(filePath, pathToEntry)
-                val fileInfo = ParadoxFileInfo(fileName, path, entry, pathToEntry, fileType, rootInfo)
-                return fileInfo
-            }
+            if(rootInfo != null) return doResolveFileInfo(filePath, fileName, rootInfo)
             currentFilePath = currentFilePath.parent ?: break
             currentFile = VfsUtil.findFile(currentFilePath, false)
         }
         return null
+    }
+    
+    private fun doResolveFileInfo(filePath: FilePath, fileName: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo {
+        val path = ParadoxPath.resolve(filePath.path.removePrefix(rootInfo.rootFile.path).trimStart('/'))
+        val entry = resolveEntry(path, rootInfo)
+        val pathToEntry = if(entry == null) path else ParadoxPath.resolve(path.path.removePrefix("$entry/"))
+        val fileType = ParadoxFileType.resolve(filePath, pathToEntry)
+        val fileInfo = ParadoxFileInfo(fileName, path, entry, pathToEntry, fileType, rootInfo)
+        return fileInfo
     }
     
     private fun resolveEntry(path: ParadoxPath, rootInfo: ParadoxRootInfo): String? {
