@@ -159,7 +159,7 @@ object ParadoxCoreHandler {
         return ParadoxModDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
     }
     
-    fun resolveFileInfo(file: VirtualFile, filePath: String): ParadoxFileInfo? {
+    fun resolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
         //在获取fileInfo之前，如果未解析，需要先解析
         if(file is StubVirtualFile || !file.isValid) return null
         
@@ -170,6 +170,7 @@ object ParadoxCoreHandler {
         //这里不能直接获取file.parent，需要基于filePath尝试获取parent，因为file可能是内存文件
         val isLightFile = ParadoxFileManager.isLightFile(file)
         val fileName = file.name
+        val filePath = file.path
         var currentFilePath = filePath.toPath()
         var currentFile = if(isLightFile) VfsUtil.findFile(currentFilePath, false) else file
         while(true) {
