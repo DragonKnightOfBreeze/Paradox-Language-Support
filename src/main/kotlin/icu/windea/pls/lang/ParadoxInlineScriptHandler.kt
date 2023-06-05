@@ -17,7 +17,6 @@ import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxInlineScriptHandler {
@@ -27,10 +26,6 @@ object ParadoxInlineScriptHandler {
     
     val cachedInlineScriptInfoKey = Key.create<CachedValue<ParadoxInlineScriptInfo>>("paradox.cached.inlineScriptInfo")
     val cachedInlineScriptUsageInfoKey = Key.create<CachedValue<ParadoxInlineScriptUsageInfo>>("paradox.cached.inlineScriptUsageInfo")
-    
-    fun isGameTypeSupported(gameType: ParadoxGameType): Boolean {
-        return gameType == ParadoxGameType.Stellaris
-    }
     
     fun getInfo(element: ParadoxScriptProperty): ParadoxInlineScriptInfo? {
         val name = element.name.lowercase()
@@ -53,8 +48,6 @@ object ParadoxInlineScriptHandler {
         
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
-        if(!isGameTypeSupported(gameType)) return null
-        
         val project = file.project
         val configGroup = getCwtConfig(project).get(gameType)
         val inlineConfigs = configGroup.inlineConfigGroup[inlineScriptName] ?: return null
@@ -109,17 +102,12 @@ object ParadoxInlineScriptHandler {
     }
     
     fun getInlineScriptExpression(file: VirtualFile): String? {
-        if(file.fileType != ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
-        val gameType = fileInfo.rootInfo.gameType
-        if(!isGameTypeSupported(gameType)) return null
         return doGetInlineScriptExpression(fileInfo)
     }
     
     fun getInlineScriptExpression(file: ParadoxScriptFile): String? {
         val fileInfo = file.fileInfo ?: return null
-        val gameType = fileInfo.rootInfo.gameType
-        if(!isGameTypeSupported(gameType)) return null
         return doGetInlineScriptExpression(fileInfo)
     }
     
@@ -149,8 +137,6 @@ object ParadoxInlineScriptHandler {
     
     private fun doGetInlineScriptUsageInfo(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
         val fileInfo = file.fileInfo ?: return null
-        val gameType = fileInfo.rootInfo.gameType
-        if(!isGameTypeSupported(gameType)) return null
         val expression = getInlineScriptExpression(file) ?: return null
         val project = file.project
         var element: ParadoxScriptProperty? = null

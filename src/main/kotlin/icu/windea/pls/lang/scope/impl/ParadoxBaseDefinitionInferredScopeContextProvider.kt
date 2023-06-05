@@ -77,6 +77,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
                 ParadoxDefinitionHierarchyHandler.processInferredScopeContextAwareDefinitions(project, gameType, searchScope) p@{ file, infos ->
                     val psiFile = file.toPsiFile(project) ?: return@p true
                     infos.forEachFast f@{ info ->
+                        //TODO 1.0.6+ 这里对应的引用可能属于某个复杂表达式的一部分（目前不需要考虑兼容这种情况）
                         val n = info.expression
                         if(n != definitionInfo.name) return@f //matches definition name
                         val t = info.configExpression.value?.substringBefore('.')
