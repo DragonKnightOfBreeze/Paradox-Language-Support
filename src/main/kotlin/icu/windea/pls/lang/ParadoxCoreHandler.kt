@@ -34,7 +34,7 @@ object ParadoxCoreHandler {
         ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onRemove(rootInfo)
     }
     
-    fun getRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
+    fun getRootInfo(rootFile: VirtualFile, refresh: Boolean = true): ParadoxRootInfo? {
         if(!rootFile.isDirectory) return null
         if(!rootFile.isValid) return null
         
@@ -42,8 +42,10 @@ object ParadoxCoreHandler {
         val injectedRootInfo = rootFile.getUserData(PlsKeys.injectedRootInfoKey)
         if(injectedRootInfo != null) return injectedRootInfo
         
+        val rootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
+        if(!refresh) return rootInfo
         val rootInfoStatus = rootFile.getUserData(PlsKeys.rootInfoStatusKey)
-        if(rootInfoStatus != null) return rootFile.getUserData(PlsKeys.rootInfoKey)
+        if(rootInfoStatus != null) return rootInfo
         
         try {
             val newRootInfo = doGetRootInfo(rootFile)
@@ -143,12 +145,12 @@ object ParadoxCoreHandler {
         return ParadoxModDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
     }
     
-    fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
+    fun getFileInfo(element: PsiElement, refresh: Boolean = true): ParadoxFileInfo? {
         val file = selectFile(element) ?: return null
-        return getFileInfo(file)
+        return getFileInfo(file, refresh)
     }
     
-    fun getFileInfo(file: VirtualFile): ParadoxFileInfo? {
+    fun getFileInfo(file: VirtualFile, refresh: Boolean = true): ParadoxFileInfo? {
         if(!file.isValid) return null
         
         //首先尝试获取注入的fileInfo
@@ -156,6 +158,7 @@ object ParadoxCoreHandler {
         if(injectedFileInfo != null) return injectedFileInfo
         
         val fileInfo = file.getUserData(PlsKeys.fileInfoKey)
+        if(!refresh) return fileInfo
         if(fileInfo != null) {
             val rootFile = fileInfo.rootInfo.rootFile
             val rootInfo = getRootInfo(rootFile)

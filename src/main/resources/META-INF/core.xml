@@ -22,7 +22,8 @@
     <moduleRendererFactory implementation="icu.windea.pls.core.ParadoxModuleRenderFactory"/>
     
     <!--suppress PluginXmlValidity -->
-    <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider"/>
+    <!--make first to optimize performance (before JSLibraryOverrider)-->
+    <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider" order="first"/>
     <utf8BomOptionProvider implementation="icu.windea.pls.core.ParadoxUtf8BomOptionProvider"/>
     
     <registryKey key="run.convert.dds.to.png.under.progress" defaultValue="true" restartRequired="true"
