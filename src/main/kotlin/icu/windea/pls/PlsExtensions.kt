@@ -263,9 +263,9 @@ val Project.paradoxLibrary: ParadoxLibrary
 val VirtualFile.rootInfo: ParadoxRootInfo?
     get() = ParadoxCoreHandler.getRootInfo(this)
 val VirtualFile.fileInfo: ParadoxFileInfo?
-    get() = ParadoxCoreHandler.getFileInfo(this)
+    get() = ParadoxCoreHandler.getFileInfo(this, refresh = false)
 val PsiElement.fileInfo: ParadoxFileInfo?
-    get() = ParadoxCoreHandler.getFileInfo(this)
+    get() = ParadoxCoreHandler.getFileInfo(this, refresh = false)
 
 val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
     get() = ParadoxDefinitionHandler.getInfo(this)

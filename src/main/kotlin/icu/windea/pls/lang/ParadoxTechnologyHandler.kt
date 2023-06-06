@@ -10,7 +10,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
-sealed class ParadoxTechnologyHandler {
+object ParadoxTechnologyHandler {
     fun getTechnologies(selector: ParadoxDefinitionSelector): Set<ParadoxScriptDefinitionElement> {
         return ParadoxDefinitionSearch.search("technology", selector).findAll()
     }
@@ -27,10 +27,8 @@ sealed class ParadoxTechnologyHandler {
         return ParadoxDefinitionHandler.getPrimaryImage(definition)
     }
     
-    companion object INSTANCE: ParadoxTechnologyHandler()
-    
     @WithGameType(ParadoxGameType.Stellaris)
-    object Stellaris : ParadoxTechnologyHandler() {
+    object Stellaris {
         fun getTechnologyTiers(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
             val selector = definitionSelector(project, context).withGameType(ParadoxGameType.Stellaris).contextSensitive().distinctByName()
             return ParadoxDefinitionSearch.search("technology_tier", selector).findAll()

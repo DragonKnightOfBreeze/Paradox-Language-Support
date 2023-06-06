@@ -16,13 +16,13 @@ class ParadoxFilePathIconProvider: FilePathIconProvider {
 		val fileExtension = fileName.substringAfterLast('.', "")
 		val fileInfo = when {
 			fileName.equals(PlsConstants.descriptorFileName, true) -> {
-				ParadoxCoreHandler.resolveFileInfo(filePath)
+				ParadoxCoreHandler.getFileInfo(filePath)
 			}
 			fileExtension in PlsConstants.scriptFileExtensions -> {
-				ParadoxCoreHandler.resolveFileInfo(filePath)
+				ParadoxCoreHandler.getFileInfo(filePath)
 			}
 			fileExtension in PlsConstants.localisationFileExtensions -> {
-				ParadoxCoreHandler.resolveFileInfo(filePath)
+				ParadoxCoreHandler.getFileInfo(filePath)
 			}
 			else -> null
 		}

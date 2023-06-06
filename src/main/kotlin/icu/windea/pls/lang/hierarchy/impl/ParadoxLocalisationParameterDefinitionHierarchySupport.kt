@@ -18,7 +18,7 @@ class ParadoxLocalisationParameterDefinitionHierarchySupport: ParadoxDefinitionH
     
     override val id: String = ID
     
-    override fun indexData(fileData: MutableList<ParadoxDefinitionHierarchyInfo>, element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo) {
+    override fun indexData(fileData: MutableMap<String, List<ParadoxDefinitionHierarchyInfo>>, element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo) {
         //val configExpression = config.expression
         //if(configExpression.type != CwtDataType.LocalisationParameter) return
         
@@ -29,7 +29,8 @@ class ParadoxLocalisationParameterDefinitionHierarchySupport: ParadoxDefinitionH
         //elementOffset has not been used yet by this support
         val info = ParadoxDefinitionHierarchyInfo(id, element.value, config.expression, definitionInfo.name, definitionInfo.type, definitionInfo.subtypes, -1 /*element.startOffset*/, definitionInfo.gameType)
         info.putUserData(localisationNameKey, localisationName)
-        fileData.add(info)
+        val list = fileData.getOrPut(id) { mutableListOf() } as MutableList
+        list.add(info)
     }
     
     override fun saveData(storage: DataOutput, data: ParadoxDefinitionHierarchyInfo) {

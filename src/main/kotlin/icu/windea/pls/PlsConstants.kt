@@ -88,11 +88,12 @@ object PlsThreadLocals
 
 object PlsKeys {
     val libraryKey = Key.create<ParadoxLibrary>("paradox.library")
+    val rootInfoStatusKey = Key.create<Boolean>("paradox.rootInfo.status")
     val rootInfoKey = Key.create<ParadoxRootInfo>("paradox.rootInfo")
     val fileInfoKey = Key.create<ParadoxFileInfo>("paradox.fileInfo")
     
+    val injectedRootInfoKey = Key.create<ParadoxRootInfo>("paradox.injected.rootInfo") //用于为临时文件（VirtualFile）嵌入根目录信息
     val injectedFileInfoKey = Key.create<ParadoxFileInfo>("paradox.injected.fileInfo") //用于为临时文件（VirtualFile）嵌入文件信息
-    //val injectedFileTypeKey = Key.create<ParadoxFileType>("paradox.injected.fileType") //用于为临时文件（VirtualFile）嵌入文件类型
     val injectedLocaleConfigKey = Key.create<CwtLocalisationLocaleConfig>("paradox.injected.localeConfig") //用于为脚本文件（VirtualFile）嵌入语言区域
     //val injectedElementPathKey = Key.create<ParadoxElementPath>("paradox.injected.elementPath") //用于为脚本元素（VirtualFile）嵌入元素路径（相对于脚本文件）
     val injectedElementPathPrefixKey = Key.create<ParadoxElementPath>("paradox.injected.elementPathPrefix") //用于为脚本文件（VirtualFile）嵌入元素路径前缀

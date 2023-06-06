@@ -17,7 +17,7 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
         //if(text.isParameterized()) return PsiReference.EMPTY_ARRAY
         
         //尝试解析为复杂枚举值声明
-        if(element is ParadoxScriptStringExpressionElement) {
+        if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
             val complexEnumValueInfo = ParadoxComplexEnumValueHandler.getInfo(element) //perf: 2% 6%
             if(complexEnumValueInfo != null) {
                 val project = element.project

@@ -15,24 +15,23 @@ import icu.windea.pls.script.*
  */
 @Suppress("UnstableApiUsage")
 class ParadoxFileTypeOverrider : FileTypeOverrider {
-	//仅当从所在目录下找到launcher-settings.json或者descriptor.mod时
-	//才有可能将所在目录（以及子目录）下的文件识别为Paradox本地化文件和脚本文件
-	
-	override fun getOverriddenFileType(file: VirtualFile): FileType? {
-		val fileInfo = ParadoxCoreHandler.resolveFileInfo(file, file.path)
-		if(fileInfo == null) return null
-		return getFileType(fileInfo)
-	}
-	
-	private fun getFileType(fileInfo: ParadoxFileInfo): LanguageFileType? {
-		return when {
-			//模组描述符文件
-			fileInfo.fileType == ParadoxFileType.ParadoxScript -> ParadoxScriptFileType
-			//本地化文件
-			fileInfo.fileType == ParadoxFileType.ParadoxLocalisation -> ParadoxLocalisationFileType
-			//目录或者其他文件（如dds）
-			else -> null
-		}
-	}
+    //仅当从所在目录下找到launcher-settings.json或者descriptor.mod时
+    //才有可能将所在目录（以及子目录）下的文件自动识别为Paradox本地化文件和脚本文件
+    
+    override fun getOverriddenFileType(file: VirtualFile): FileType? {
+        val fileInfo = ParadoxCoreHandler.getFileInfo(file) ?: return null
+        return getFileType(fileInfo)
+    }
+    
+    private fun getFileType(fileInfo: ParadoxFileInfo): LanguageFileType? {
+        return when {
+            //脚本文件
+            fileInfo.fileType == ParadoxFileType.ParadoxScript -> ParadoxScriptFileType
+            //本地化文件
+            fileInfo.fileType == ParadoxFileType.ParadoxLocalisation -> ParadoxLocalisationFileType
+            //目录或者其他文件
+            else -> null
+        }
+    }
 }
 

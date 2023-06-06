@@ -6,9 +6,9 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileChooser.tree.*
 import com.intellij.openapi.vfs.*
 import com.intellij.ui.*
+import icu.windea.pls.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*
-import icu.windea.pls.lang.*
 
 /**
  * 渲染文件节点时，为游戏或模组根目录提供提供额外的信息文本。
@@ -26,7 +26,7 @@ class FileRenderCodeInjector : BaseCodeInjector() {
                 value is VirtualFile -> value
                 else -> return
             }
-            val rootInfo = ParadoxCoreHandler.resolveRootInfo(file)
+            val rootInfo = file.rootInfo
             if(rootInfo != null && rootInfo.rootFile == file) {
                 val comment = rootInfo.qualifiedName
                 renderer.append(" " + comment, SimpleTextAttributes.GRAYED_ATTRIBUTES)

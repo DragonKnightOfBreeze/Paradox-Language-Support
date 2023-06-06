@@ -235,13 +235,14 @@ fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
 /**
  * 向上得到第一个定义。
  * 可能为null，可能为自身。
- * @param link 是否处理需要连接定义成员的情况。注意连接前后的成员元素不会包括在查找结果内。
+ * @param link 是否处理需要连接定义成员的情况。注意连接后的成员元素不会包括在查找结果内。
  */
 fun PsiElement.findParentDefinition(link: Boolean = false): ParadoxScriptDefinitionElement? {
     if(language != ParadoxScriptLanguage) return null
     var current: PsiElement = this
-    while(current !is PsiFile) {
+    while(current !is PsiDirectory) {
         ProgressManager.checkCanceled()
+        if(current is ParadoxScriptDefinitionElement && current.definitionInfo != null) return current
         if(link && current is ParadoxScriptMemberElement) {
             val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current)
             if(linked != null) {
@@ -249,7 +250,6 @@ fun PsiElement.findParentDefinition(link: Boolean = false): ParadoxScriptDefinit
                 continue
             }
         }
-        if(current is ParadoxScriptDefinitionElement && current.definitionInfo != null) return current
         current = current.parent ?: break
     }
     return null

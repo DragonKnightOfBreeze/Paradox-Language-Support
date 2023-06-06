@@ -22,13 +22,14 @@
     <moduleRendererFactory implementation="icu.windea.pls.core.ParadoxModuleRenderFactory"/>
     
     <!--suppress PluginXmlValidity -->
-    <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider"/>
+    <!--make first to optimize performance (before JSLibraryOverrider)-->
+    <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider" order="first"/>
     <utf8BomOptionProvider implementation="icu.windea.pls.core.ParadoxUtf8BomOptionProvider"/>
     
     <registryKey key="run.convert.dds.to.png.under.progress" defaultValue="true" restartRequired="true"
                  description="Run convert DDS to PNG write action under progress, not to freeze the UI during long operations"/>
     
-    <vfs.asyncListener implementation="icu.windea.pls.core.listeners.ParadoxDescriptorFileListener"/>
+    <vfs.asyncListener implementation="icu.windea.pls.core.listeners.ParadoxCoreFileListener"/>
 
     <projectViewNodeDecorator implementation="icu.windea.pls.core.ParadoxProjectViewDecorator"/>
     
@@ -65,6 +66,9 @@
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFilePathIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFileLocaleIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxInlineScriptIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxComplexEnumValueIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxValueSetValueFastIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionHierarchyIndex"/>
     
     <searchScopesProvider implementation="icu.windea.pls.core.search.ParadoxSearchScopeProvider"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxScriptedVariableImplementationsSearch"/>

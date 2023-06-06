@@ -14,7 +14,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.listeners.*
 import icu.windea.pls.core.settings.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 
 class ParadoxModSettingsDialog(
@@ -139,7 +138,7 @@ class ParadoxModSettingsDialog(
             ?: return error(PlsBundle.message("mod.settings.gameDirectory.error.1"))
         val rootFile = VfsUtil.findFile(path, false)?.takeIf { it.exists() }
             ?: return error(PlsBundle.message("mod.settings.gameDirectory.error.2"))
-        val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile)
+        val rootInfo = rootFile.rootInfo
         if(rootInfo !is ParadoxGameRootInfo) {
             return error(PlsBundle.message("mod.settings.gameDirectory.error.3", gameType.description))
         }
@@ -154,7 +153,7 @@ class ParadoxModSettingsDialog(
     private fun doGetGameVersionFromGameDirectory(): String? {
         val gameDirectory = gameDirectory.takeIfNotEmpty() ?: return null
         val rootFile = gameDirectory.toVirtualFile(false)?.takeIf { it.exists() } ?: return null
-        val rootInfo = ParadoxCoreHandler.resolveRootInfo(rootFile)
+        val rootInfo = rootFile.rootInfo
         if(rootInfo !is ParadoxGameRootInfo) return null
         return rootInfo.launcherSettingsInfo.rawVersion
     }
