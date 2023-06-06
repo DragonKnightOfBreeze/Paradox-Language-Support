@@ -69,7 +69,7 @@ class ParadoxGameRootInfo(
     }
 }
 
-class ParadoxLauncherSettingsInfo(
+data class ParadoxLauncherSettingsInfo(
     val gameId: String,
     val version: String,
     val rawVersion: String,
@@ -117,7 +117,7 @@ class ParadoxModRootInfo(
     }
 }
 
-class ParadoxModDescriptorInfo(
+data class ParadoxModDescriptorInfo(
     val name: String,
     val version: String? = null,
     val picture: String? = null,

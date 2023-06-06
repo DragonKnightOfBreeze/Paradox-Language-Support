@@ -42,10 +42,8 @@ object ParadoxCoreHandler {
         val injectedRootInfo = rootFile.getUserData(PlsKeys.injectedRootInfoKey)
         if(injectedRootInfo != null) return injectedRootInfo
         
-        val rootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
-        
         val rootInfoStatus = rootFile.getUserData(PlsKeys.rootInfoStatusKey)
-        if(rootInfoStatus != null) return rootInfo
+        if(rootInfoStatus != null) return rootFile.getUserData(PlsKeys.rootInfoKey)
         
         try {
             val newRootInfo = doGetRootInfo(rootFile)
@@ -157,10 +155,8 @@ object ParadoxCoreHandler {
         val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfoKey)
         if(injectedFileInfo != null) return injectedFileInfo
         
-        val fileInfo = file.getUserData(PlsKeys.fileInfoKey)
-        
         val fileInfoStatus = file.getUserData(PlsKeys.fileInfoStatusKey)
-        if(fileInfoStatus != null) return fileInfo
+        if(fileInfoStatus != null) return file.getUserData(PlsKeys.fileInfoKey)
         
         //这里不能直接获取file.parent，需要基于filePath尝试获取parent，因为file可能是内存文件
         val isLightFile = ParadoxFileManager.isLightFile(file)
@@ -173,7 +169,7 @@ object ParadoxCoreHandler {
             if(rootInfo != null) {
                 val newFileInfo = doGetFileInfo(file, filePath, fileName, rootInfo)
                 file.tryPutUserData(PlsKeys.fileInfoStatusKey, true)
-                file.tryPutUserData(PlsKeys.fileInfoKey, fileInfo)
+                file.tryPutUserData(PlsKeys.fileInfoKey, newFileInfo)
                 return newFileInfo
             }
             currentFilePath = currentFilePath.parent ?: break
