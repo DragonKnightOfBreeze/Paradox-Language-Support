@@ -12,7 +12,6 @@ import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.core.tool.model.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 
 /**
@@ -56,7 +55,7 @@ class ParadoxFromLauncherJsonV3Importer : ParadoxModImporter {
                     val path = workshopDirPath.resolve(modSteamId)
                     if(!path.exists()) continue
                     val modDir = path.toVirtualFile(true) ?: continue
-                    val rootInfo = ParadoxCoreHandler.resolveRootInfo(modDir)
+                    val rootInfo = modDir.rootInfo
                     if(rootInfo == null) continue //NOTE 目前要求这里的模组目录下必须有模组描述符文件
                     val modPath = modDir.path
                     count++

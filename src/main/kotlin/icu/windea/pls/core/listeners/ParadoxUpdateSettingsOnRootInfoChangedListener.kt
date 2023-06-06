@@ -44,7 +44,7 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
         val descriptorInfo = rootInfo.descriptorInfo
         var modDescriptorSettings = settings.modDescriptorSettings.get(modDirectory)
         if(modDescriptorSettings != null) {
-            modDescriptorSettings.fromDescriptorInfo(descriptorInfo)
+            modDescriptorSettings.fromDescriptorInfo(descriptoqrInfo)
             modDescriptorSettings.modDirectory = rootInfo.rootFile.path
             settings.updateSettings()
         } else {

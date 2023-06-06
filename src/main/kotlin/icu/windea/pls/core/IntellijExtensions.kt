@@ -146,20 +146,28 @@ fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiE
 
 @Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
 inline fun <T> Query<T>.processQuery(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
-    if(onlyMostRelevant && this is ParadoxQuery<*,*>) {
+    if(onlyMostRelevant && this is ParadoxQuery<*, *>) {
         find()?.let { consumer.process(it as T) }
         return true
     }
     return forEach(consumer)
 }
 
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> Result<T>.cancelable() = onFailure { if(it is ProcessCanceledException) throw it }
+
 @Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
 inline fun <T> Query<T>.processQueryAsync(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
-    if(onlyMostRelevant && this is ParadoxQuery<*,*>) {
+    if(onlyMostRelevant && this is ParadoxQuery<*, *>) {
         find()?.let { consumer.process(it as T) }
         return true
     }
     return allowParallelProcessing().forEach(consumer)
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> UserDataHolder.tryPutUserData(key: Key<T>, value: T) {
+    runCatching { putUserData(key, value) }.cancelable()
 }
 
 inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, action: () -> T): T {
@@ -205,7 +213,7 @@ fun <T> ProcessingContext.getOrDefault(key: Key<T>): T {
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline operator fun <T> Key<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>) = thisRef.getOrDefault(this) 
+inline operator fun <T> Key<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>) = thisRef.getOrDefault(this)
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T) = thisRef.put(this, value)
 
@@ -844,14 +852,14 @@ fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
 
 //region Index Extensions
 @Suppress("NOTHING_TO_INLINE")
-inline fun DataInput.readString(): String{
+inline fun DataInput.readString(): String {
     return IOUtil.readUTF(this)
 }
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun DataOutput.writeString(value: String) {
     IOUtil.writeUTF(this, value)
-} 
+}
 
 inline fun <T> DataInput.readList(action: () -> T): MutableList<T> {
     return MutableList(DataInputOutputUtil.readINT(this)) { action() }
@@ -876,7 +884,7 @@ val StubBasedPsiElementBase<*>.containingFileStub: PsiFileStub<*>?
 val StubElement<*>.containingFileStub: PsiFileStub<*>
     get() {
         var current = this
-        while (current !is PsiFileStub<*>) {
+        while(current !is PsiFileStub<*>) {
             current = current.parentStub
         }
         return current

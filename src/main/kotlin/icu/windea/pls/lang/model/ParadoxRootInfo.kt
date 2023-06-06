@@ -20,6 +20,7 @@ sealed class ParadoxRootInfo {
     val gameEntry: String? by lazy { rootPath.relativize(gameRootPath).toString().takeIfNotEmpty() }
     
     abstract val qualifiedName: String
+    
     abstract val isAvailable: Boolean
     
     companion object {
@@ -55,6 +56,7 @@ class ParadoxGameRootInfo(
             append("@")
             append(launcherSettingsInfo.rawVersion)
         }
+    
     override val isAvailable: Boolean
         get() = launcherSettingsFile.isValid && launcherSettingsFile.name == PlsConstants.launcherSettingsFileName
     
@@ -102,6 +104,7 @@ class ParadoxModRootInfo(
             append(descriptorInfo.name)
             descriptorInfo.version?.let { version -> append("@").append(version) }
         }
+    
     override val isAvailable: Boolean
         get() = descriptorFile.isValid && descriptorFile.name == PlsConstants.descriptorFileName
     

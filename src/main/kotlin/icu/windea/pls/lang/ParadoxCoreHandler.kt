@@ -10,7 +10,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vcs.*
 import com.intellij.openapi.vfs.*
-import com.intellij.openapi.vfs.newvfs.impl.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
@@ -23,47 +22,52 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import icu.windea.pls.tool.script.*
-import java.lang.invoke.*
 
 object ParadoxCoreHandler {
-    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
+    fun onAddRootInfo(rootFile: VirtualFile, rootInfo: ParadoxRootInfo) {
+        if(ParadoxFileManager.isLightFile(rootFile)) return
+        ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
+    }
     
-    fun resolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        //在获取rootInfo之前，如果未解析，需要先解析
+    fun onRemoveRootInfo(rootFile: VirtualFile, rootInfo: ParadoxRootInfo) {
+        if(ParadoxFileManager.isLightFile(rootFile)) return
+        ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onRemove(rootInfo)
+    }
+    
+    fun getRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         if(!rootFile.isDirectory) return null
+        if(!rootFile.isValid) return null
+        
+        //首先尝试获取注入的rootInfo
+        val injectedRootInfo = rootFile.getUserData(PlsKeys.injectedRootInfoKey)
+        if(injectedRootInfo != null) return injectedRootInfo
+        
         val rootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
-        if(rootInfo != null && rootInfo.isAvailable) {
-            return rootInfo
-        }
-        if(rootInfo != null) {
-            onRemoveRootInfo(rootFile, rootInfo)
-        }
-        val resolvedRootInfo = try {
-            doResolveRootInfo(rootFile)
+        
+        val rootInfoStatus = rootFile.getUserData(PlsKeys.rootInfoStatusKey)
+        if(rootInfoStatus != null) return rootInfo
+        
+        try {
+            val newRootInfo = doGetRootInfo(rootFile)
+            if(newRootInfo != null) {
+                rootFile.tryPutUserData(PlsKeys.rootInfoStatusKey, true)
+                rootFile.tryPutUserData(PlsKeys.rootInfoKey, newRootInfo)
+                onAddRootInfo(rootFile, newRootInfo)
+            } else {
+                rootFile.putUserData(PlsKeys.rootInfoStatusKey, false)
+            }
+            rootFile.tryPutUserData(PlsKeys.rootInfoKey, newRootInfo)
+            return newRootInfo
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
-            logger.warn(e)
-            null
+            thisLogger().warn(e)
+            return null
         }
-        if(resolvedRootInfo != null) {
-            onAddRootInfo(rootFile, resolvedRootInfo)
-        }
-        runCatching {
-            rootFile.putUserData(PlsKeys.rootInfoKey, resolvedRootInfo)
-        }
-        return resolvedRootInfo
     }
     
-    fun getRootInfo(virtualFile: VirtualFile): ParadoxRootInfo? {
-        return virtualFile.getUserData(PlsKeys.rootInfoKey)
-    }
-    
-    private fun doResolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        if(rootFile is StubVirtualFile || !rootFile.isValid) return null
-        if(!rootFile.isDirectory) return null
-        
+    private fun doGetRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         // 尝试从此目录向下查找descriptor.mod
-        val descriptorFile = rootFile.findChild(PlsConstants.descriptorFileName)
+        val descriptorFile = getDescriptorFile(rootFile)
         if(descriptorFile != null) {
             val descriptorInfo = getDescriptorInfo(descriptorFile) ?: return null
             return ParadoxModRootInfo(rootFile, descriptorFile, descriptorInfo)
@@ -80,16 +84,6 @@ object ParadoxCoreHandler {
         return null
     }
     
-    private fun onAddRootInfo(rootFile: VirtualFile, rootInfo: ParadoxRootInfo) {
-        if(ParadoxFileManager.isLightFile(rootFile)) return
-        ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
-    }
-    
-    private fun onRemoveRootInfo(rootFile: VirtualFile, rootInfo: ParadoxRootInfo) {
-        if(ParadoxFileManager.isLightFile(rootFile)) return
-        ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onRemove(rootInfo)
-    }
-    
     private fun getLauncherSettingsFile(root: VirtualFile): VirtualFile? {
         //launcher-settings.json
         root.findChild(PlsConstants.launcherSettingsFileName)
@@ -101,23 +95,10 @@ object ParadoxCoreHandler {
             ?.takeIf { !it.isDirectory }
             ?.let { return it }
         return null
-        
-        //不能这样做 - 太慢了！
-        //var result: VirtualFile? = null
-        //VfsUtilCore.visitChildrenRecursively(root, object : VirtualFileVisitor<Void?>() {
-        //    override fun visitFileEx(file: VirtualFile): Result {
-        //        if(file.isDirectory) {
-        //            if(file.name.startsWith('.')) return SKIP_CHILDREN //skip .git, .idea, .vscode, etc.
-        //            return CONTINUE
-        //        }
-        //        if(file.name == PlsConstants.launcherSettingsFileName) {
-        //            result = file
-        //            return skipTo(root)
-        //        }
-        //        return CONTINUE
-        //    }
-        //})
-        //return result
+    }
+    
+    private fun getDescriptorFile(rootFile: VirtualFile): VirtualFile? {
+        return rootFile.findChild(PlsConstants.descriptorFileName)
     }
     
     fun getLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
@@ -127,7 +108,7 @@ object ParadoxCoreHandler {
                 doGetLauncherSettingsInfo(file)
             } catch(e: Exception) {
                 if(e is ProcessCanceledException) throw e
-                logger.warn(e)
+                thisLogger().warn(e)
                 null
             }
         }
@@ -139,9 +120,14 @@ object ParadoxCoreHandler {
     
     fun getDescriptorInfo(file: VirtualFile): ParadoxModDescriptorInfo? {
         //descriptor.mod
-        //see: descriptor.cwt
         return file.getOrPutUserData(PlsKeys.descriptorInfoKey) {
-            runReadAction { doGetDescriptorInfo(file) }
+            try {
+                runReadAction { doGetDescriptorInfo(file) }
+            } catch(e: Exception) {
+                if(e is ProcessCanceledException) throw e
+                thisLogger().warn(e)
+                null
+            }
         }
     }
     
@@ -159,13 +145,22 @@ object ParadoxCoreHandler {
         return ParadoxModDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
     }
     
-    fun resolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        //在获取fileInfo之前，如果未解析，需要先解析
-        if(file is StubVirtualFile || !file.isValid) return null
+    fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
+        val file = selectFile(element) ?: return null
+        return getFileInfo(file)
+    }
+    
+    fun getFileInfo(file: VirtualFile): ParadoxFileInfo? {
+        if(!file.isValid) return null
         
         //首先尝试获取注入的fileInfo
         val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfoKey)
         if(injectedFileInfo != null) return injectedFileInfo
+        
+        val fileInfo = file.getUserData(PlsKeys.fileInfoKey)
+        
+        val fileInfoStatus = file.getUserData(PlsKeys.fileInfoStatusKey)
+        if(fileInfoStatus != null) return fileInfo
         
         //这里不能直接获取file.parent，需要基于filePath尝试获取parent，因为file可能是内存文件
         val isLightFile = ParadoxFileManager.isLightFile(file)
@@ -174,46 +169,48 @@ object ParadoxCoreHandler {
         var currentFilePath = filePath.toPath()
         var currentFile = if(isLightFile) VfsUtil.findFile(currentFilePath, false) else file
         while(true) {
-            val rootInfo = if(currentFile == null) null else resolveRootInfo(currentFile)
-            if(rootInfo != null) return doResolveFileInfo(file, filePath, fileName, rootInfo)
+            val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
+            if(rootInfo != null) {
+                val newFileInfo = doGetFileInfo(file, filePath, fileName, rootInfo)
+                file.tryPutUserData(PlsKeys.fileInfoStatusKey, true)
+                file.tryPutUserData(PlsKeys.fileInfoKey, fileInfo)
+                return newFileInfo
+            }
             currentFilePath = currentFilePath.parent ?: break
             currentFile = currentFile?.parent ?: if(isLightFile) VfsUtil.findFile(currentFilePath, false) else break
         }
-        runCatching { file.putUserData(PlsKeys.fileInfoKey, null) }
+        file.tryPutUserData(PlsKeys.fileInfoStatusKey, false)
+        file.tryPutUserData(PlsKeys.fileInfoKey, null)
         return null
     }
     
-    private fun doResolveFileInfo(file: VirtualFile, filePath: String, fileName: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
+    private fun doGetFileInfo(file: VirtualFile, filePath: String, fileName: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo {
         val path = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimStart('/'))
         val entry = resolveEntry(path, rootInfo)
         val pathToEntry = if(entry == null) path else ParadoxPath.resolve(path.path.removePrefix("$entry/"))
         val fileType = ParadoxFileType.resolve(file, pathToEntry)
-        val cachedFileInfo = file.getUserData(PlsKeys.fileInfoKey)
-        if(cachedFileInfo != null && cachedFileInfo.path == path && cachedFileInfo.pathToEntry == pathToEntry
-            && cachedFileInfo.fileType == fileType && cachedFileInfo.rootInfo == rootInfo) {
-            return cachedFileInfo
-        }
         val fileInfo = ParadoxFileInfo(fileName, path, entry, pathToEntry, fileType, rootInfo)
-        runCatching { file.putUserData(PlsKeys.fileInfoKey, fileInfo) }
         return fileInfo
     }
     
-    fun resolveFileInfo(filePath: FilePath): ParadoxFileInfo? {
-        //在获取fileInfo之前，如果未解析，需要先解析
+    fun getFileInfo(filePath: FilePath): ParadoxFileInfo? {
         //直接尝试通过filePath获取fileInfo
         val fileName = filePath.name
         var currentFilePath = filePath.path.toPath()
         var currentFile = VfsUtil.findFile(currentFilePath, false)
         while(true) {
-            val rootInfo = if(currentFile == null) null else resolveRootInfo(currentFile)
-            if(rootInfo != null) return doResolveFileInfo(filePath, fileName, rootInfo)
+            val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
+            if(rootInfo != null) {
+                val newFileInfo = doGetFileInfo(filePath, fileName, rootInfo)
+                return newFileInfo
+            }
             currentFilePath = currentFilePath.parent ?: break
             currentFile = VfsUtil.findFile(currentFilePath, false)
         }
         return null
     }
     
-    private fun doResolveFileInfo(filePath: FilePath, fileName: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo {
+    private fun doGetFileInfo(filePath: FilePath, fileName: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo {
         val path = ParadoxPath.resolve(filePath.path.removePrefix(rootInfo.rootFile.path).trimStart('/'))
         val entry = resolveEntry(path, rootInfo)
         val pathToEntry = if(entry == null) path else ParadoxPath.resolve(path.path.removePrefix("$entry/"))
@@ -236,17 +233,6 @@ object ParadoxCoreHandler {
         return null
     }
     
-    fun getFileInfo(virtualFile: VirtualFile): ParadoxFileInfo? {
-        val injectedFileInfo = virtualFile.getUserData(PlsKeys.injectedFileInfoKey)
-        if(injectedFileInfo != null) return injectedFileInfo
-        
-        return virtualFile.getUserData(PlsKeys.fileInfoKey)
-    }
-    
-    fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
-        val file = selectFile(element) ?: return null
-        return getFileInfo(file)
-    }
     
     @RequiresWriteLock
     fun reparseFilesInRoot(rootFilePaths: Set<String>) {
@@ -310,7 +296,7 @@ object ParadoxCoreHandler {
             }
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
-            logger.warn(e.message)
+            thisLogger().warn(e.message)
         }
     }
 }
