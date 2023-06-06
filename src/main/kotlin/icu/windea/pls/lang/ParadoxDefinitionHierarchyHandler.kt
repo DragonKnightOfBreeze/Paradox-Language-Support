@@ -4,16 +4,35 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.index.lazy.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.lang.ParadoxConfigMatcher.Options
+import icu.windea.pls.lang.hierarchy.*
 import icu.windea.pls.lang.hierarchy.impl.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
+import icu.windea.pls.script.psi.*
 
 object ParadoxDefinitionHierarchyHandler {
+    fun indexData(
+        element: ParadoxScriptStringExpressionElement,
+        fileData: MutableMap<String, List<ParadoxDefinitionHierarchyInfo>>
+    ) {
+        val matchOptions = Options.SkipIndex or Options.SkipScope
+        val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = matchOptions)
+        if(configs.isEmpty()) return
+        val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
+        val definitionMemberInfo = memberElement.definitionMemberInfo ?: return
+        val definitionInfo = definitionMemberInfo.definitionInfo
+        configs.forEachFast { config ->
+            ParadoxDefinitionHierarchySupport.indexData(fileData, element, config, definitionInfo)
+        }
+    }
+    
     fun processQuery(
         project: Project,
         supportId: String,

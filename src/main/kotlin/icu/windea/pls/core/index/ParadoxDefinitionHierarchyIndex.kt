@@ -4,14 +4,12 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import com.intellij.util.gist.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.hierarchy.*
 import icu.windea.pls.lang.model.*
@@ -139,7 +137,7 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxDe
             if(definitionInfoStack.isNotEmpty()) {
                 //这里element作为定义的引用时也可能是ParadoxScriptInt，目前不需要考虑这种情况，因此忽略
                 if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
-                    visitExpression(element)
+                    ParadoxDefinitionHierarchyHandler.indexData(element, fileData)
                 }
             }
             if(element.isExpressionOrMemberContext()) super.visitElement(element)
@@ -149,18 +147,6 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxDe
             if(element.getUserData(markKey) == true) {
                 element.putUserData(markKey, null)
                 definitionInfoStack.removeLast()
-            }
-        }
-        
-        private fun visitExpression(element: ParadoxScriptStringExpressionElement) {
-            val matchOptions = ParadoxConfigMatcher.Options.SkipScope
-            val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = matchOptions)
-            if(configs.isEmpty()) return
-            val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
-            val definitionMemberInfo = memberElement.definitionMemberInfo ?: return
-            val definitionInfo = definitionMemberInfo.definitionInfo
-            configs.forEachFast { config ->
-                ParadoxDefinitionHierarchySupport.indexData(fileData, element, config, definitionInfo)
             }
         }
     })

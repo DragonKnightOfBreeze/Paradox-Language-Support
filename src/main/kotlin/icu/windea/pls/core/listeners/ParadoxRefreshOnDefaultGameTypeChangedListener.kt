@@ -15,7 +15,7 @@ class ParadoxRefreshOnDefaultGameTypeChangedListener : ParadoxDefaultGameTypeLis
                 if(modDirectory != null) modDirectories.add(modDirectory)
             }
         }
-        runWriteAction { ParadoxCoreHandler.reparseFilesInRoot(modDirectories) }
+        runWriteAction { ParadoxCoreHandler.reparseFilesByRootFilePaths(modDirectories) }
         
         //检查是否也需要强制刷新inlayHints - 不需要
     }

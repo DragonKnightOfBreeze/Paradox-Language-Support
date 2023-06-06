@@ -52,7 +52,7 @@ object ParadoxInlineScriptHandler {
         val configGroup = getCwtConfig(project).get(gameType)
         val inlineConfigs = configGroup.inlineConfigGroup[inlineScriptName] ?: return null
         val propertyValue = element.propertyValue ?: return null
-        val matchOptions = Options.Fast
+        val matchOptions = Options.SkipIndex or Options.SkipScope or Options.Fast
         val inlineConfig = ParadoxConfigMatcher.find(inlineConfigs, matchOptions) {
             val expression = ParadoxDataExpression.resolve(propertyValue, matchOptions)
             ParadoxConfigMatcher.matches(propertyValue, expression, it.config.valueExpression, it.config, configGroup)

@@ -141,7 +141,7 @@ class ParadoxSettingsState : BaseState() {
         var defaultDiffGroup by enum(DiffGroupStrategy.VsCopy)
     }
     
-    val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet().orEmpty() }
+    val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet(caseInsensitiveStringSet()).orEmpty() }
     
     val localeList by lazy {
         buildList {

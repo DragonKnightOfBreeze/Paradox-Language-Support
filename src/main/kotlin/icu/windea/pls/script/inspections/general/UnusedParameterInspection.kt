@@ -78,6 +78,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
                         val cachedStatus = statusMap[resolved]
                         val status = if(cachedStatus == null) {
                             ProgressManager.checkCanceled()
+                            //TODO 1.0.6+ 这里可以考虑进一步优化，直接查询ParadoxDefinitionHierarchyIndex
                             val r = ReferencesSearch.search(resolved, searchScope).processQueryAsync p@{
                                 ProgressManager.checkCanceled()
                                 val res = it.resolve()

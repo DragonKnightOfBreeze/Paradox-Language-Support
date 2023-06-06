@@ -44,7 +44,7 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
     override fun getIndexer(): DataIndexer<String, List<ParadoxValueSetValueInfo>, FileContent> {
         return DataIndexer { inputData ->
             val file = inputData.psiFile
-            buildMap { indexData(file, this, false) }
+            buildMap { indexData(file, this) }
         }
     }
     
@@ -103,17 +103,17 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
         private val gist = GistManager.getInstance().newVirtualFileGist(ID, VERSION, valueExternalizer) builder@{ project, file ->
             if(!filterFile(file, true)) return@builder emptyMap()
             val psiFile = file.toPsiFile(project) ?: return@builder emptyMap()
-            buildMap { indexData(psiFile, this, true) }
+            buildMap { indexData(psiFile, this) }
         }
     }
 }
 
 private val markKey = Key.create<Boolean>("paradox.definition.hierarchy.index.mark")
 
-private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxValueSetValueInfo>>, lazy: Boolean) {
+private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxValueSetValueInfo>>) {
     val keys = mutableSetOf<String>()
     if(file.fileType == ParadoxScriptFileType) {
-        file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() { //perf: 95%
+        file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
                     val infos = ParadoxValueSetValueHandler.getInfos(element)
@@ -123,7 +123,7 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxVa
             }
         })
     } else {
-        file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() { //perf: 5%
+        file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxLocalisationCommandIdentifier) {
                     val infos = ParadoxValueSetValueHandler.getInfos(element)

@@ -1,5 +1,7 @@
 package icu.windea.pls.lang.model
 
+import icu.windea.pls.core.*
+
 /**
  * 文件或目录相对于游戏或模组根路径的路径。保留大小写。
  *
@@ -15,7 +17,7 @@ interface ParadoxPath : Iterable<String> {
 	val parent: String
 	val root: String
 	val fileName: String
-	val fileExtension: String
+	val fileExtension: String?
 	val length: Int
 	
 	fun isEmpty(): Boolean = length == 0
@@ -42,7 +44,7 @@ interface ParadoxPath : Iterable<String> {
 }
 
 fun ParadoxPath.canBeScriptFilePath(): Boolean {
-	return length > 1 && !canBeLocalisationFilePath()
+	return !canBeLocalisationFilePath()
 }
 
 fun ParadoxPath.canBeLocalisationFilePath(): Boolean {
@@ -64,7 +66,7 @@ class ParadoxPathImplA(
 	override val parent: String = path.substringBeforeLast('/', "")
 	override val root: String = path.substringBefore('/', "")
 	override val fileName: String = subPaths.lastOrNull().orEmpty()
-	override val fileExtension: String = fileName.substringAfterLast('.', "")
+	override val fileExtension: String? = fileName.substringAfterLast('.', "").takeIfNotEmpty()
 	override val length: Int = subPaths.size
 	
 	override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path
@@ -80,7 +82,7 @@ class ParadoxPathImplB(
 	override val parent: String = path.substringBeforeLast('/', "")
 	override val root: String = path.substringBefore('/', "")
 	override val fileName: String = subPaths.lastOrNull().orEmpty()
-	override val fileExtension: String = fileName.substringAfterLast('.', "")
+	override val fileExtension: String? = fileName.substringAfterLast('.', "").takeIfNotEmpty()
 	override val length: Int = subPaths.size
 	
 	override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path
@@ -94,7 +96,7 @@ object EmptyParadoxPath : ParadoxPath {
 	override val parent: String = ""
 	override val root: String = ""
 	override val fileName: String = ""
-	override val fileExtension: String = ""
+	override val fileExtension: String? = null
 	override val length: Int = 0
 	
 	override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path

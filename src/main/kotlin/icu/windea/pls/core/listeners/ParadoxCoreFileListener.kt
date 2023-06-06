@@ -1,7 +1,9 @@
 package icu.windea.pls.core.listeners
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
@@ -25,23 +27,37 @@ class ParadoxCoreFileListener : AsyncFileListener {
                 }
                 run {
                     for(event in events) {
-                        if(event is VFileCreateEvent) {
-                            if(event.childName.equals(PlsConstants.descriptorFileName, true)) {
-                                clearRootInfo(event.parent)
+                        when(event) {
+                            is VFileCreateEvent -> {
+                                if(event.childName.equals(PlsConstants.descriptorFileName, true)) {
+                                    clearRootInfo(event.parent)
+                                }
                             }
-                        } else if(event is VFileDeleteEvent) {
-                            val file = event.file
-                            if(file.name.equals(PlsConstants.descriptorFileName, true)) {
-                                clearRootInfo(event.file)
+                            is VFileDeleteEvent -> {
+                                val file = event.file
+                                if(file.name.equals(PlsConstants.descriptorFileName, true)) {
+                                    clearRootInfo(file.parent)
+                                }
                             }
-                        } else if(event is VFileCopyEvent) {
-                            if(event.newChildName.equals(PlsConstants.descriptorFileName, true)) {
-                                clearRootInfo(event.newParent)
+                            is VFileCopyEvent -> {
+                                if(event.newChildName.equals(PlsConstants.descriptorFileName, true)) {
+                                    clearRootInfo(event.newParent)
+                                }
                             }
-                        } else if(event is VFileMoveEvent) {
-                            if(event.file.name.equals(PlsConstants.descriptorFileName, true)) {
-                                clearRootInfo(event.oldParent)
-                                clearRootInfo(event.newParent)
+                            is VFileMoveEvent -> {
+                                if(event.file.name.equals(PlsConstants.descriptorFileName, true)) {
+                                    clearRootInfo(event.oldParent)
+                                    clearRootInfo(event.newParent)
+                                }
+                            }
+                            is VFilePropertyChangeEvent -> {
+                                if(event.propertyName == VirtualFile.PROP_NAME) {
+                                    if(event.newValue.toString().equals(PlsConstants.descriptorFileName, true)) {
+                                        clearRootInfo(event.file.parent)
+                                    } else if(event.oldValue.toString().equals(PlsConstants.descriptorFileName, true)) {
+                                        clearRootInfo(event.file.parent)
+                                    }
+                                }
                             }
                         }
                     }
@@ -50,9 +66,14 @@ class ParadoxCoreFileListener : AsyncFileListener {
         }
     }
     
-    private fun clearRootInfo(rootFile: VirtualFile) {
+    private fun clearRootInfo(rootFile: VirtualFile?) {
+        if(rootFile == null) return
+        
         //清空根目录信息缓存
-        rootFile.putUserData(PlsKeys.rootInfoStatusKey, null)
+        rootFile.tryPutUserData(PlsKeys.rootInfoStatusKey, null)
+        
+        //重新解析所有项目的所有已打开的文件
+        runReadAction { FileContentUtil.reparseOpenedFiles() }
     }
     
     private fun updateDescriptorInfoAndSyncSettings(file: VirtualFile) {

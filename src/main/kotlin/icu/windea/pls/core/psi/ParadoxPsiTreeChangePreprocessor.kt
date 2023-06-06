@@ -17,7 +17,7 @@ class ParadoxPsiTreeChangePreprocessor: PsiTreeChangePreprocessor {
         if(file !is ParadoxScriptFile) return
         val fileInfo = file.fileInfo ?: return
         val filePath = fileInfo.pathToEntry.path
-        val fileExtension = fileInfo.pathToEntry.fileExtension.lowercase() //ignore case
+        val fileExtension = fileInfo.pathToEntry.fileExtension?.lowercase() //ignore case
         //注意这里需要先获取服务再获取trackers
         val trackers = ParadoxPsiModificationTracker.getInstance(file.project).ScriptFileTrackers.values
         for(tracker in trackers) {

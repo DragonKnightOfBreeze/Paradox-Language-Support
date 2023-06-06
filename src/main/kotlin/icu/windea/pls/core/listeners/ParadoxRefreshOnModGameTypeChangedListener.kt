@@ -18,7 +18,7 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
         //重新解析文件
         val modDirectories = mutableSetOf<String>()
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) } }
-        runWriteAction { ParadoxCoreHandler.reparseFilesInRoot(modDirectories) }
+        runWriteAction { ParadoxCoreHandler.reparseFilesByRootFilePaths(modDirectories) }
         
         //检查是否也需要强制刷新inlayHints - 不需要
     }

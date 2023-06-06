@@ -257,12 +257,12 @@ fun String.isRightQuoted(): Boolean {
     return length > 1 && endsWith('"') && get(length - 2) != '\\'
 }
 
-fun String.toCommaDelimitedStringList(): MutableList<String> {
-    return this.splitToSequence(',').mapNotNullTo(mutableListOf()) { it.trim().takeIfNotEmpty() }
+fun String.toCommaDelimitedStringList(destination: MutableList<String> = mutableListOf()): MutableList<String> {
+    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().takeIfNotEmpty() }
 }
 
-fun String.toCommaDelimitedStringSet(): MutableSet<String> {
-    return this.splitToSequence(',').mapNotNullTo(mutableSetOf()) { it.trim().takeIfNotEmpty() }
+fun String.toCommaDelimitedStringSet(destination: MutableSet<String> = mutableSetOf()): MutableSet<String> {
+    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().takeIfNotEmpty() }
 }
 
 fun Collection<String>.toCommaDelimitedString(): String {

@@ -12,6 +12,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -34,7 +35,7 @@ object ParadoxValueSetValueHandler {
     private fun doGetInfo(element: ParadoxScriptStringExpressionElement): List<ParadoxValueSetValueInfo> {
         val isKey = element is ParadoxScriptPropertyKey
         
-        val matchOptions = ParadoxConfigMatcher.Options.SkipScope
+        val matchOptions = Options.SkipIndex or Options.SkipScope
         val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = matchOptions)
         if(configs.isEmpty()) return emptyList()
         

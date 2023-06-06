@@ -55,12 +55,14 @@ object ParadoxCoreHandler {
                 onAddRootInfo(rootFile, newRootInfo)
             } else {
                 rootFile.putUserData(PlsKeys.rootInfoStatusKey, false)
+                if(rootInfo != null) onRemoveRootInfo(rootFile, rootInfo)
             }
             rootFile.tryPutUserData(PlsKeys.rootInfoKey, newRootInfo)
             return newRootInfo
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
             thisLogger().warn(e)
+            rootFile.tryPutUserData(PlsKeys.rootInfoStatusKey, null)
             return null
         }
     }
@@ -104,44 +106,32 @@ object ParadoxCoreHandler {
     fun getLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
         //launcher-settings.json
         return file.getOrPutUserData(PlsKeys.launcherSettingsInfoKey) {
-            try {
-                doGetLauncherSettingsInfo(file)
-            } catch(e: Exception) {
-                if(e is ProcessCanceledException) throw e
-                thisLogger().warn(e)
-                null
-            }
+            doGetLauncherSettingsInfo(file)
         }
     }
     
-    private fun doGetLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
+    private fun doGetLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo {
         return jsonMapper.readValue(file.inputStream)
     }
     
     fun getDescriptorInfo(file: VirtualFile): ParadoxModDescriptorInfo? {
         //descriptor.mod
         return file.getOrPutUserData(PlsKeys.descriptorInfoKey) {
-            try {
-                runReadAction { doGetDescriptorInfo(file) }
-            } catch(e: Exception) {
-                if(e is ProcessCanceledException) throw e
-                thisLogger().warn(e)
-                null
-            }
+            runReadAction { doGetDescriptorInfo(file) }
         }
     }
     
-    private fun doGetDescriptorInfo(file: VirtualFile): ParadoxModDescriptorInfo? {
+    private fun doGetDescriptorInfo(file: VirtualFile): ParadoxModDescriptorInfo {
         //val psiFile = file.toPsiFile<ParadoxScriptFile>(getDefaultProject()) ?: return null //会导致StackOverflowError
         val psiFile = ParadoxScriptElementFactory.createDummyFile(getDefaultProject(), file.inputStream.reader().readText())
-        val data = ParadoxScriptDataResolver.resolve(psiFile) ?: return null
-        val name = data.getData("name")?.value?.stringValue() ?: file.parent?.name ?: "" //如果没有name属性，则使用根目录名
-        val version = data.getData("version")?.value?.stringValue()
-        val picture = data.getData("picture")?.value?.stringValue()
-        val tags = data.getAllData("tags").mapNotNull { it.value?.stringValue() }.toSet()
-        val supportedVersion = data.getData("supported_version")?.value?.stringValue()
-        val remoteFileId = data.getData("remote_file_id")?.value?.stringValue()
-        val path = data.getData("path")?.value?.stringValue()
+        val data = ParadoxScriptDataResolver.resolve(psiFile)
+        val name = data?.getData("name")?.value?.stringValue() ?: file.parent?.name ?: "" //如果没有name属性，则使用根目录名
+        val version = data?.getData("version")?.value?.stringValue()
+        val picture = data?.getData("picture")?.value?.stringValue()
+        val tags = data?.getAllData("tags")?.mapNotNull { it.value?.stringValue() }?.toSet()
+        val supportedVersion = data?.getData("supported_version")?.value?.stringValue()
+        val remoteFileId = data?.getData("remote_file_id")?.value?.stringValue()
+        val path = data?.getData("path")?.value?.stringValue()
         return ParadoxModDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
     }
     
@@ -189,7 +179,7 @@ object ParadoxCoreHandler {
         val path = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimStart('/'))
         val entry = resolveEntry(path, rootInfo)
         val pathToEntry = if(entry == null) path else ParadoxPath.resolve(path.path.removePrefix("$entry/"))
-        val fileType = ParadoxFileType.resolve(file, pathToEntry)
+        val fileType = ParadoxFileType.resolve(file, pathToEntry, rootInfo)
         val fileInfo = ParadoxFileInfo(fileName, path, entry, pathToEntry, fileType, rootInfo)
         return fileInfo
     }
@@ -215,7 +205,7 @@ object ParadoxCoreHandler {
         val path = ParadoxPath.resolve(filePath.path.removePrefix(rootInfo.rootFile.path).trimStart('/'))
         val entry = resolveEntry(path, rootInfo)
         val pathToEntry = if(entry == null) path else ParadoxPath.resolve(path.path.removePrefix("$entry/"))
-        val fileType = ParadoxFileType.resolve(filePath, pathToEntry)
+        val fileType = ParadoxFileType.resolve(filePath, pathToEntry, rootInfo)
         val fileInfo = ParadoxFileInfo(fileName, path, entry, pathToEntry, fileType, rootInfo)
         return fileInfo
     }
@@ -236,13 +226,13 @@ object ParadoxCoreHandler {
     
     
     @RequiresWriteLock
-    fun reparseFilesInRoot(rootFilePaths: Set<String>) {
+    fun reparseFilesByRootFilePaths(rootFilePaths: Set<String>) {
         //重新解析指定的根目录中的所有文件，包括非脚本非本地化文件
         try {
             FileTypeManagerEx.getInstanceEx().makeFileTypesChange("Root of paradox files $rootFilePaths changed.") { }
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
-            //ignore
+            thisLogger().warn(e.message)
         } finally {
             //要求重新索引
             for(rootFilePath in rootFilePaths) {
@@ -259,14 +249,14 @@ object ParadoxCoreHandler {
         val files = mutableSetOf<VirtualFile>()
         try {
             val project = getTheOnlyOpenOrDefaultProject()
-            FilenameIndex.processFilesByNames(fileNames, true, GlobalSearchScope.allScope(project), null) { file ->
+            FilenameIndex.processFilesByNames(fileNames, false, GlobalSearchScope.allScope(project), null) { file ->
                 files.add(file)
                 true
             }
             FileContentUtil.reparseFiles(project, files, true)
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
-            //ignore
+            thisLogger().warn(e.message)
         } finally {
             //要求重新索引
             for(file in files) {
@@ -277,7 +267,7 @@ object ParadoxCoreHandler {
     
     @Suppress("UnstableApiUsage")
     fun refreshInlayHints(predicate: (VirtualFile, Project) -> Boolean = { _, _ -> true }) {
-        //当某些配置变更后，需要刷新内嵌提示
+        //刷新符合条件的所有项目的所有已打开的文件的内嵌提示
         //com.intellij.codeInsight.hints.VcsCodeAuthorInlayHintsProviderKt.refreshCodeAuthorInlayHints
         try {
             val openProjects = ProjectManager.getInstance().openProjects
