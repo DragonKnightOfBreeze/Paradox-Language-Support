@@ -14,11 +14,35 @@ class ParadoxCoreFileListener : AsyncFileListener {
     override fun prepareChange(events: MutableList<out VFileEvent>): AsyncFileListener.ChangeApplier {
         return object : AsyncFileListener.ChangeApplier {
             override fun afterVfsChange() {
-                for(event in events) {
-                    if(event is VFileContentChangeEvent) {
-                        val file = event.file
-                        if(file.name.equals(PlsConstants.descriptorFileName, true)) {
-                            updateDescriptorInfoAndSyncSettings(file)
+                run {
+                    for(event in events) {
+                        if(event is VFileContentChangeEvent) {
+                            if(event.file.name.equals(PlsConstants.descriptorFileName, true)) {
+                                updateDescriptorInfoAndSyncSettings(event.file)
+                            }
+                        }
+                    }
+                }
+                run {
+                    for(event in events) {
+                        if(event is VFileCreateEvent) {
+                            if(event.childName.equals(PlsConstants.descriptorFileName, true)) {
+                                clearRootInfo(event.parent)
+                            }
+                        } else if(event is VFileDeleteEvent) {
+                            val file = event.file
+                            if(file.name.equals(PlsConstants.descriptorFileName, true)) {
+                                clearRootInfo(event.file)
+                            }
+                        } else if(event is VFileCopyEvent) {
+                            if(event.newChildName.equals(PlsConstants.descriptorFileName, true)) {
+                                clearRootInfo(event.newParent)
+                            }
+                        } else if(event is VFileMoveEvent) {
+                            if(event.file.name.equals(PlsConstants.descriptorFileName, true)) {
+                                clearRootInfo(event.oldParent)
+                                clearRootInfo(event.newParent)
+                            }
                         }
                     }
                 }
@@ -26,18 +50,9 @@ class ParadoxCoreFileListener : AsyncFileListener {
         }
     }
     
-    private fun clearRootInfo(file: VirtualFile) {
+    private fun clearRootInfo(rootFile: VirtualFile) {
         //清空根目录信息缓存
-        var current = file
-        while(true) {
-            current.putUserData(PlsKeys.rootInfoStatusKey, null)
-            current = current.parent ?: break
-        }
-    }
-    
-    private fun clearFileInfo(file: VirtualFile) {
-        //清空文件信息缓存
-        file.putUserData(PlsKeys.fileInfoStatusKey, null)
+        rootFile.putUserData(PlsKeys.rootInfoStatusKey, null)
     }
     
     private fun updateDescriptorInfoAndSyncSettings(file: VirtualFile) {

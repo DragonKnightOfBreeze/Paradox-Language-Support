@@ -88,10 +88,9 @@ object PlsThreadLocals
 
 object PlsKeys {
     val libraryKey = Key.create<ParadoxLibrary>("paradox.library")
-    val rootInfoKey = Key.create<ParadoxRootInfo>("paradox.rootInfo")
     val rootInfoStatusKey = Key.create<Boolean>("paradox.rootInfo.status")
+    val rootInfoKey = Key.create<ParadoxRootInfo>("paradox.rootInfo")
     val fileInfoKey = Key.create<ParadoxFileInfo>("paradox.fileInfo")
-    val fileInfoStatusKey = Key.create<Boolean>("paradox.fileInfo.status")
     
     val injectedRootInfoKey = Key.create<ParadoxRootInfo>("paradox.injected.rootInfo") //用于为临时文件（VirtualFile）嵌入根目录信息
     val injectedFileInfoKey = Key.create<ParadoxFileInfo>("paradox.injected.fileInfo") //用于为临时文件（VirtualFile）嵌入文件信息
