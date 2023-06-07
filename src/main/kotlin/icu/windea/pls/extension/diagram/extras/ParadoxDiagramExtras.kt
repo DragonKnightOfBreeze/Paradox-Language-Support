@@ -36,7 +36,7 @@ open class ParadoxDiagramExtras(
             override fun createToolbarActions(builder: DiagramBuilder): DefaultActionGroup {
                 val actionGroup = super.createToolbarActions(builder)
                 //before first separator
-                val children = actionGroup.member("mySortedChildren") as MutableList<AnAction>
+                val children = actionGroup.property("mySortedChildren") as MutableList<AnAction>
                 val separatorIndex = children.indexOfFirst { it is SeparatorAction }
                 val index = if(separatorIndex == -1) children.size else separatorIndex
                 children.add(index, ParadoxDiagramScopeTypesActionGroup(builder))

@@ -19,7 +19,7 @@ class ChangeScopeTypeAction(
     val provider: HierarchyBrowserBaseEx,
     val settings: ParadoxHierarchyBrowserSettings
 ) : ComboBoxAction() {
-    val project = provider.member<HierarchyBrowserBase>("myProject") as Project
+    val project = provider.property<HierarchyBrowserBase>("myProject") as Project
     
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.EDT
@@ -32,7 +32,7 @@ class ChangeScopeTypeAction(
     }
     
     override fun createPopupActionGroup(button: JComponent, dataContext: DataContext): DefaultActionGroup {
-        val element = provider.member("hierarchyBase") as PsiElement
+        val element = provider.property("hierarchyBase") as PsiElement
         val group = DefaultActionGroup()
         for(scopeType in ParadoxSearchScopeTypes.getScopeTypes(project, element)) {
             group.add(MenuAction(scopeType))

@@ -25,8 +25,8 @@ class DiagramNodeItemComponentEx : DiagramNodeItemComponent() {
         val right = object : SimpleColoredComponent() {
             override fun getPreferredSize() = super.getPreferredSize().alsoIf(useComponent) { it.width = 0 }
         }
-        this.member<DiagramNodeItemComponent>("myLeft", left)
-        this.member<DiagramNodeItemComponent>("myRight", right)
+        this.property<DiagramNodeItemComponent>("myLeft", left)
+        this.property<DiagramNodeItemComponent>("myRight", right)
         removeAll()
         add(left, BorderLayout.WEST)
         add(right, BorderLayout.EAST)
