@@ -159,7 +159,7 @@ object ParadoxCoreHandler {
         val isLightFile = ParadoxFileManager.isLightFile(file)
         val fileName = file.name
         val filePath = file.path
-        var currentFilePath = filePath.toPath()
+        var currentFilePath = filePath.toPathOrNull() ?: return null
         var currentFile = if(isLightFile) VfsUtil.findFile(currentFilePath, false) else file
         while(true) {
             val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
@@ -187,7 +187,7 @@ object ParadoxCoreHandler {
     fun getFileInfo(filePath: FilePath): ParadoxFileInfo? {
         //直接尝试通过filePath获取fileInfo
         val fileName = filePath.name
-        var currentFilePath = filePath.path.toPath()
+        var currentFilePath = filePath.path.toPathOrNull() ?: return null
         var currentFile = VfsUtil.findFile(currentFilePath, false)
         while(true) {
             val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)

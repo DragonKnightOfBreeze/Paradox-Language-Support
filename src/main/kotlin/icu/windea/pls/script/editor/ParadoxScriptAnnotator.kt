@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.ParadoxConfigHandler.getParameterRanges
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.inspections.inference.*
 import icu.windea.pls.script.psi.*
@@ -109,8 +110,9 @@ class ParadoxScriptAnnotator : Annotator {
             if(element is ParadoxScriptStringExpressionElement) {
                 val elementText = element.text
                 if(elementText.contains('$')) {
+                    val parameterRanges = getParameterRanges(element)
                     //缓存参数文本范围
-                    val parameterRanges = ParadoxConfigHandler.setParameterRanges(element)
+                    element.putUserData(PlsKeys.parameterRangesKey, parameterRanges)
                     //如果参数直接作为整个脚本表达式，不需要进行额外的高亮
                     if(parameterRanges.singleOrNull()?.length == elementText.unquote().length) {
                         return

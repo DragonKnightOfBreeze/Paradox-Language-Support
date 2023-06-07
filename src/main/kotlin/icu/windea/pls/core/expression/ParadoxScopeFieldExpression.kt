@@ -183,13 +183,18 @@ class ParadoxScopeFieldExpressionImpl(
 }
 
 fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxScopeFieldExpression? {
+	val parameterRanges = ParadoxConfigHandler.getParameterRangesInExpression(text)
 	val nodes = mutableListOf<ParadoxExpressionNode>()
 	val offset = textRange.startOffset
 	var index: Int
 	var dotIndex = -1
-	while(dotIndex < text.length) {
+	val textLength = text.length
+	while(dotIndex < textLength) {
 		index = dotIndex + 1
 		dotIndex = text.indexOf('.', index)
+		if(dotIndex != -1 && parameterRanges.any { it.contains(dotIndex) }) continue //这里需要跳过参数文本
+		if(dotIndex != -1 && text.indexOf('@', index).let { it != -1 && dotIndex > it }) dotIndex = -1
+		if(dotIndex != -1 && text.indexOf('|', index).let { it != -1 && dotIndex > it }) dotIndex = -1
 		val dotNode = if(dotIndex != -1) {
 			val dotRange = TextRange.create(dotIndex + offset, dotIndex + 1 + offset)
 			ParadoxOperatorExpressionNode(".", dotRange)
@@ -197,7 +202,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 			null
 		}
 		if(dotIndex == -1) {
-			dotIndex = text.length
+			dotIndex = textLength
 		}
 		//resolve node
 		val nodeText = text.substring(index, dotIndex)

@@ -41,192 +41,6 @@ import icu.windea.pls.script.psi.*
  * 提供基于CWT规则实现的匹配、校验、代码提示、引用解析等功能。
  */
 object ParadoxConfigHandler {
-    //region Common Methods
-    
-    fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
-        return propertyConfig.keyExpression.type == CwtDataType.AliasName
-            && propertyConfig.valueExpression.type == CwtDataType.AliasMatchLeft
-    }
-    
-    fun isSingleAlias(propertyConfig: CwtPropertyConfig): Boolean {
-        return propertyConfig.valueExpression.type == CwtDataType.SingleAliasRight
-    }
-    
-    fun isComplexEnum(config: CwtMemberConfig<*>): Boolean {
-        return config.expression.type == CwtDataType.EnumValue
-            && config.expression.value?.let { config.info.configGroup.complexEnums[it] } != null
-    }
-    
-    @InferApi
-    fun getConfigGroupFromCwtFile(file: PsiFile, project: Project): CwtConfigGroup? {
-        val virtualFile = file.virtualFile ?: return null
-        val path = virtualFile.path
-        //这里的key可能是"core"，而这不是gameType
-        val key = path.substringAfter("config/cwt/", "").substringBefore("/", "")
-        if(key.isEmpty()) return null
-        return getCwtConfig(project).get(key)
-    }
-    
-    fun getAliasSubName(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): String? {
-        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
-        if(constKey != null) return constKey
-        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
-        val expression = ParadoxDataExpression.resolve(key, quoted, true)
-        return ParadoxConfigMatcher.find(keys, matchOptions) {
-            ParadoxConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchOptions)
-        }
-    }
-    
-    fun getAliasSubNames(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<String> {
-        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
-        if(constKey != null) return listOf(constKey)
-        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptyList()
-        val expression = ParadoxDataExpression.resolve(key, quoted, true)
-        return ParadoxConfigMatcher.findAll(keys, matchOptions) {
-            ParadoxConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchOptions)
-        }
-    }
-    
-    fun requireNotExactMatch(configExpression: CwtDataExpression): Boolean {
-        return when {
-            configExpression.type == CwtDataType.Block -> true
-            configExpression.type == CwtDataType.Int && configExpression.extraValue != null -> true
-            configExpression.type == CwtDataType.Float && configExpression.extraValue != null -> true
-            configExpression.type == CwtDataType.ColorField && configExpression.value != null -> true
-            configExpression.type == CwtDataType.Scope && configExpression.value != null -> true
-            configExpression.type == CwtDataType.ScopeGroup && configExpression.value != null -> true
-            else -> false
-        }
-    }
-    
-    fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Int {
-        return when(configExpression.type) {
-            CwtDataType.Block -> 100
-            CwtDataType.Bool -> 100
-            CwtDataType.Int -> 90
-            CwtDataType.Float -> 90
-            CwtDataType.Scalar -> 90
-            CwtDataType.ColorField -> 90
-            CwtDataType.PercentageField -> 90
-            CwtDataType.DateField -> 90
-            CwtDataType.Localisation -> 60
-            CwtDataType.SyncedLocalisation -> 60
-            CwtDataType.InlineLocalisation -> 60
-            CwtDataType.StellarisNameFormat -> 60
-            CwtDataType.AbsoluteFilePath -> 70
-            CwtDataType.Icon -> 70
-            CwtDataType.FilePath -> 70
-            CwtDataType.FileName -> 70
-            CwtDataType.Definition -> 70
-            CwtDataType.EnumValue -> {
-                val enumName = configExpression.value ?: return 0 //不期望匹配到
-                if(configGroup.enums.containsKey(enumName)) return 80
-                if(configGroup.complexEnums.containsKey(enumName)) return 45
-                return 0 //不期望匹配到，规则有误！
-            }
-            CwtDataType.Value -> {
-                val valueSetName = configExpression.value ?: return 0 //不期望匹配到
-                if(configGroup.values.containsKey(valueSetName)) return 80
-                return 40
-            }
-            CwtDataType.ValueSet -> 40
-            CwtDataType.ScopeField -> 50
-            CwtDataType.Scope -> 50
-            CwtDataType.ScopeGroup -> 50
-            CwtDataType.ValueField -> 45
-            CwtDataType.IntValueField -> 45
-            CwtDataType.VariableField -> 45
-            CwtDataType.IntVariableField -> 45
-            CwtDataType.Modifier -> 75 //higher than Definition
-            CwtDataType.Parameter -> 10
-            CwtDataType.ParameterValue -> 90 //same to Scalar
-            CwtDataType.LocalisationParameter -> 10
-            CwtDataType.ShaderEffect -> 85 // (80,90)
-            CwtDataType.SingleAliasRight -> 0 //不期望匹配到
-            CwtDataType.AliasName -> 0 //不期望匹配到
-            CwtDataType.AliasKeysField -> 0 //不期望匹配到
-            CwtDataType.AliasMatchLeft -> 0 //不期望匹配到
-            CwtDataType.Template -> 65
-            CwtDataType.Constant -> 100
-            CwtDataType.Any -> 1
-            CwtDataType.Other -> 0 //不期望匹配到
-        }
-    }
-    
-    fun getEntryName(config: CwtConfig<*>): String? {
-        return when {
-            config is CwtPropertyConfig -> config.key
-            config is CwtValueConfig && config.propertyConfig != null -> getEntryName(config.propertyConfig!!)
-            config is CwtValueConfig -> null
-            config is CwtAliasConfig -> config.subName
-            else -> null
-        }
-    }
-    
-    fun getEntryConfigs(config: CwtConfig<*>): List<CwtMemberConfig<*>> {
-        val configGroup = config.info.configGroup
-        return when {
-            config is CwtPropertyConfig -> {
-                config.inlineableConfig?.let { getEntryConfigs(it) }
-                    ?: config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }
-                    ?: config.toSingletonList()
-            }
-            config is CwtValueConfig && config.propertyConfig != null -> {
-                getEntryConfigs(config.propertyConfig!!)
-            }
-            config is CwtValueConfig -> {
-                config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filterIsInstance<CwtValueConfig>()
-                    ?: config.toSingletonList()
-            }
-            config is CwtSingleAliasConfig -> {
-                config.config.toSingletonListOrEmpty()
-            }
-            config is CwtAliasConfig -> {
-                configGroup.aliasGroups.get(config.name)?.get(config.subName)?.map { it.config }.orEmpty()
-            }
-            else -> {
-                emptyList()
-            }
-        }
-    }
-    
-    val inBlockKeysKey = Key.create<Set<String>>("cwt.config.inBlockKeys")
-    
-    fun getInBlockKeys(config: CwtMemberConfig<*>): Set<String> {
-        return config.getOrPutUserData(inBlockKeysKey) {
-            val keys = caseInsensitiveStringSet()
-            config.configs?.forEach { 
-                if(it is CwtPropertyConfig && isInBlockKey(it)) {
-                    keys.add(it.key)
-                }
-            }
-            when(config) {
-                is CwtPropertyConfig -> {
-                    val propertyConfig = config
-                    propertyConfig.parent?.configs?.forEach { c ->
-                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
-                            c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                        }
-                    }
-                }
-                is CwtValueConfig -> {
-                    val propertyConfig = config.propertyConfig
-                    propertyConfig?.parent?.configs?.forEach { c ->
-                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
-                            c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                        }
-                    }
-                }
-            }
-            return keys
-        }
-    }
-    
-    private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
-        return config.keyExpression.type == CwtDataType.Constant && config.cardinality?.isRequired() != false
-    }
-    //endregion
-    
     //region Handle Methods
     fun getExpressionText(element: ParadoxScriptExpressionElement, rangeInElement: TextRange? = null) : String {
         return when {
@@ -256,6 +70,36 @@ object ParadoxConfigHandler {
             }
         }
     }
+    
+    fun getParameterRanges(element: ParadoxScriptExpressionElement): List<TextRange> {
+        var parameterRanges: MutableList<TextRange>? = null
+        element.processChild { parameter ->
+            if(parameter is ParadoxParameter) {
+                if(parameterRanges == null) parameterRanges = mutableListOf()
+                parameterRanges?.add(parameter.textRange)
+            }
+            true
+        }
+        return parameterRanges.orEmpty()
+    }
+    
+    fun getParameterRangesInExpression(element: ParadoxScriptExpressionElement): List<TextRange> {
+        var parameterRanges: MutableList<TextRange>? = null
+        element.processChild { parameter ->
+            if(parameter is ParadoxParameter) {
+                if(parameterRanges == null) parameterRanges = mutableListOf()
+                parameterRanges?.add(parameter.textRangeInParent)
+            }
+            true
+        }
+        return parameterRanges.orEmpty()
+    }
+    
+    fun getParameterRangesInExpression(expression: String): List<TextRange> {
+        val indices = expression.indicesOf('$')
+        if(indices.size <= 1) return emptyList()
+        return indices.windowed(2, 2, false) { TextRange.create(it[0], it[1]) }
+    }
     //endregion
     
     //region Annotate Methods
@@ -271,7 +115,7 @@ object ParadoxConfigHandler {
             return
         }
         //进行特殊代码高亮时，可能需要跳过字符串表达式中的参数部分
-        val parameterRanges = getParameterRanges(element)
+        val parameterRanges = element.getUserData(PlsKeys.parameterRangesKey).orEmpty()
         if(parameterRanges.isEmpty()) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
         } else {
@@ -282,24 +126,6 @@ object ParadoxConfigHandler {
                 }
             }
         }
-    }
-    
-    fun setParameterRanges(element: ParadoxScriptStringExpressionElement): List<TextRange> {
-        var parameterRanges: MutableList<TextRange>? = null
-        element.processChild { parameter ->
-            if(parameter is ParadoxParameter) {
-                if(parameterRanges == null) parameterRanges = mutableListOf()
-                parameterRanges?.add(parameter.textRange)
-            }
-            true
-        }
-        val result = parameterRanges.orEmpty()
-        element.putUserData(PlsKeys.parameterRangesKey, result)
-        return result
-    }
-    
-    fun getParameterRanges(element: ParadoxScriptStringExpressionElement): List<TextRange> {
-        return element.getUserData(PlsKeys.parameterRangesKey).orEmpty()
     }
     
     fun annotateComplexExpression(element: ParadoxScriptExpressionElement, expression: ParadoxComplexExpression, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -1245,6 +1071,191 @@ object ParadoxConfigHandler {
         val resolved = commandConfig.pointer.element ?: return null
         resolved.putUserData(PlsKeys.cwtConfigKey, commandConfig)
         return resolved
+    }
+    //endregion
+    
+    //region Misc Methods
+    fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
+        return propertyConfig.keyExpression.type == CwtDataType.AliasName
+            && propertyConfig.valueExpression.type == CwtDataType.AliasMatchLeft
+    }
+    
+    fun isSingleAlias(propertyConfig: CwtPropertyConfig): Boolean {
+        return propertyConfig.valueExpression.type == CwtDataType.SingleAliasRight
+    }
+    
+    fun isComplexEnum(config: CwtMemberConfig<*>): Boolean {
+        return config.expression.type == CwtDataType.EnumValue
+            && config.expression.value?.let { config.info.configGroup.complexEnums[it] } != null
+    }
+    
+    @InferApi
+    fun getConfigGroupFromCwtFile(file: PsiFile, project: Project): CwtConfigGroup? {
+        val virtualFile = file.virtualFile ?: return null
+        val path = virtualFile.path
+        //这里的key可能是"core"，而这不是gameType
+        val key = path.substringAfter("config/cwt/", "").substringBefore("/", "")
+        if(key.isEmpty()) return null
+        return getCwtConfig(project).get(key)
+    }
+    
+    fun getAliasSubName(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): String? {
+        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
+        if(constKey != null) return constKey
+        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
+        val expression = ParadoxDataExpression.resolve(key, quoted, true)
+        return ParadoxConfigMatcher.find(keys, matchOptions) {
+            ParadoxConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchOptions)
+        }
+    }
+    
+    fun getAliasSubNames(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<String> {
+        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
+        if(constKey != null) return listOf(constKey)
+        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptyList()
+        val expression = ParadoxDataExpression.resolve(key, quoted, true)
+        return ParadoxConfigMatcher.findAll(keys, matchOptions) {
+            ParadoxConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchOptions)
+        }
+    }
+    
+    fun requireNotExactMatch(configExpression: CwtDataExpression): Boolean {
+        return when {
+            configExpression.type == CwtDataType.Block -> true
+            configExpression.type == CwtDataType.Int && configExpression.extraValue != null -> true
+            configExpression.type == CwtDataType.Float && configExpression.extraValue != null -> true
+            configExpression.type == CwtDataType.ColorField && configExpression.value != null -> true
+            configExpression.type == CwtDataType.Scope && configExpression.value != null -> true
+            configExpression.type == CwtDataType.ScopeGroup && configExpression.value != null -> true
+            else -> false
+        }
+    }
+    
+    fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Int {
+        return when(configExpression.type) {
+            CwtDataType.Block -> 100
+            CwtDataType.Bool -> 100
+            CwtDataType.Int -> 90
+            CwtDataType.Float -> 90
+            CwtDataType.Scalar -> 90
+            CwtDataType.ColorField -> 90
+            CwtDataType.PercentageField -> 90
+            CwtDataType.DateField -> 90
+            CwtDataType.Localisation -> 60
+            CwtDataType.SyncedLocalisation -> 60
+            CwtDataType.InlineLocalisation -> 60
+            CwtDataType.StellarisNameFormat -> 60
+            CwtDataType.AbsoluteFilePath -> 70
+            CwtDataType.Icon -> 70
+            CwtDataType.FilePath -> 70
+            CwtDataType.FileName -> 70
+            CwtDataType.Definition -> 70
+            CwtDataType.EnumValue -> {
+                val enumName = configExpression.value ?: return 0 //不期望匹配到
+                if(configGroup.enums.containsKey(enumName)) return 80
+                if(configGroup.complexEnums.containsKey(enumName)) return 45
+                return 0 //不期望匹配到，规则有误！
+            }
+            CwtDataType.Value -> {
+                val valueSetName = configExpression.value ?: return 0 //不期望匹配到
+                if(configGroup.values.containsKey(valueSetName)) return 80
+                return 40
+            }
+            CwtDataType.ValueSet -> 40
+            CwtDataType.ScopeField -> 50
+            CwtDataType.Scope -> 50
+            CwtDataType.ScopeGroup -> 50
+            CwtDataType.ValueField -> 45
+            CwtDataType.IntValueField -> 45
+            CwtDataType.VariableField -> 45
+            CwtDataType.IntVariableField -> 45
+            CwtDataType.Modifier -> 75 //higher than Definition
+            CwtDataType.Parameter -> 10
+            CwtDataType.ParameterValue -> 90 //same to Scalar
+            CwtDataType.LocalisationParameter -> 10
+            CwtDataType.ShaderEffect -> 85 // (80,90)
+            CwtDataType.SingleAliasRight -> 0 //不期望匹配到
+            CwtDataType.AliasName -> 0 //不期望匹配到
+            CwtDataType.AliasKeysField -> 0 //不期望匹配到
+            CwtDataType.AliasMatchLeft -> 0 //不期望匹配到
+            CwtDataType.Template -> 65
+            CwtDataType.Constant -> 100
+            CwtDataType.Any -> 1
+            CwtDataType.Other -> 0 //不期望匹配到
+        }
+    }
+    
+    fun getEntryName(config: CwtConfig<*>): String? {
+        return when {
+            config is CwtPropertyConfig -> config.key
+            config is CwtValueConfig && config.propertyConfig != null -> getEntryName(config.propertyConfig!!)
+            config is CwtValueConfig -> null
+            config is CwtAliasConfig -> config.subName
+            else -> null
+        }
+    }
+    
+    fun getEntryConfigs(config: CwtConfig<*>): List<CwtMemberConfig<*>> {
+        val configGroup = config.info.configGroup
+        return when {
+            config is CwtPropertyConfig -> {
+                config.inlineableConfig?.let { getEntryConfigs(it) }
+                    ?: config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }
+                    ?: config.toSingletonList()
+            }
+            config is CwtValueConfig && config.propertyConfig != null -> {
+                getEntryConfigs(config.propertyConfig!!)
+            }
+            config is CwtValueConfig -> {
+                config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filterIsInstance<CwtValueConfig>()
+                    ?: config.toSingletonList()
+            }
+            config is CwtSingleAliasConfig -> {
+                config.config.toSingletonListOrEmpty()
+            }
+            config is CwtAliasConfig -> {
+                configGroup.aliasGroups.get(config.name)?.get(config.subName)?.map { it.config }.orEmpty()
+            }
+            else -> {
+                emptyList()
+            }
+        }
+    }
+    
+    val inBlockKeysKey = Key.create<Set<String>>("cwt.config.inBlockKeys")
+    
+    fun getInBlockKeys(config: CwtMemberConfig<*>): Set<String> {
+        return config.getOrPutUserData(inBlockKeysKey) {
+            val keys = caseInsensitiveStringSet()
+            config.configs?.forEach {
+                if(it is CwtPropertyConfig && isInBlockKey(it)) {
+                    keys.add(it.key)
+                }
+            }
+            when(config) {
+                is CwtPropertyConfig -> {
+                    val propertyConfig = config
+                    propertyConfig.parent?.configs?.forEach { c ->
+                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
+                            c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
+                        }
+                    }
+                }
+                is CwtValueConfig -> {
+                    val propertyConfig = config.propertyConfig
+                    propertyConfig?.parent?.configs?.forEach { c ->
+                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
+                            c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
+                        }
+                    }
+                }
+            }
+            return keys
+        }
+    }
+    
+    private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
+        return config.keyExpression.type == CwtDataType.Constant && config.cardinality?.isRequired() != false
     }
     //endregion
 }
