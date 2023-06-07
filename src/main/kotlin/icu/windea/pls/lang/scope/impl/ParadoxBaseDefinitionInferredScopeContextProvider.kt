@@ -47,10 +47,6 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     private fun doGetScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
         val definitionInfo = definition.definitionInfo ?: return null
         
-        //skip if this and root scope of raw scope context is clear 
-        val rawScopeContext = ParadoxDefinitionScopeContextProvider.getScopeContext(definition, definitionInfo)
-        if(rawScopeContext != null && !rawScopeContext.scope.isUnsure() && !rawScopeContext.root?.scope.isUnsure()) return null
-        
         //optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?: return null

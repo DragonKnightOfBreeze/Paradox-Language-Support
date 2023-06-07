@@ -10,6 +10,7 @@ import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.model.*
 
@@ -106,7 +107,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
     
     private fun processFile(file: VirtualFile, project: Project, gameType: ParadoxGameType?, consumer: Processor<in VirtualFile>): Boolean {
         ProgressManager.checkCanceled()
-        file.toPsiFile(project) ?: return true //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
+        ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved
         if(gameType != null && selectGameType(file) != gameType) return true //check game type at file level
         return consumer.process(file)
     }

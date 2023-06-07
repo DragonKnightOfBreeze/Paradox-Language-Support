@@ -12,6 +12,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 
@@ -31,8 +32,7 @@ class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptInfo, P
         DumbService.getInstance(project).runReadActionInSmartMode action@{
             FileBasedIndex.getInstance().processValues(ParadoxInlineScriptIndex.NAME, expression, null, p@{ file, value ->
                 ProgressManager.checkCanceled()
-                //NOTE 这里需要先获取psiFile，否则fileInfo可能未被解析
-                val psiFile = file.toPsiFile(project) ?: return@p true
+                ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved
                 if(selectGameType(file) != gameType) return@p true //check game type at file level
                 val inlineScriptInfos = value
                 if(inlineScriptInfos.isNullOrEmpty()) return@p true
