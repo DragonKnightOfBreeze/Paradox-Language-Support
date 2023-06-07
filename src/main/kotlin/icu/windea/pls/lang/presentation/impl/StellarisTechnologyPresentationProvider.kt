@@ -84,7 +84,8 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
     
     private fun getCostLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: Data): JLabel? {
         val cost = definition.getData<Data>()?.cost ?: 0
-        return ParadoxLocalisationTextUIRenderer.render(cost.toString(), "G", definitionInfo.project, definition) //Green
+        val color = ParadoxTextColorHandler.getInfo("G", definitionInfo.project, definition)?.color //Green
+        return ParadoxLocalisationTextUIRenderer.render(cost.toString(), color)
     }
     
     private fun getIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: Data): Icon? {
