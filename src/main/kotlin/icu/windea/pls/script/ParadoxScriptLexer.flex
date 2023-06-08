@@ -127,9 +127,9 @@ CHECK_SCRIPTED_VARIABLE_REFERENCE={WILDCARD_SCRIPTED_VARIABLE_NAME_TOKEN}
 
 CHECK_PROPERTY_KEY=({WILDCARD_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_TOKEN})\s*[!=<>] //判断接下来是否是属性的键
 WILDCARD_KEY_TOKEN=[^#@={}\[\]\s\"][^#={}\[\]\s]*
-WILDCARD_QUOTED_PROPERTY_KEY_TOKEN=\"([^\"(\r\n\\]|\\.)*?\"?
+WILDCARD_QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
 PROPERTY_KEY_TOKEN=[^#@$={}\[\]\s\"][^#$={}\[\]\s]*
-QUOTED_PROPERTY_KEY_TOKEN=([^\"$(\r\n\\]|\\.)*?\"?
+QUOTED_PROPERTY_KEY_TOKEN=([^\"$\r\n\\]|\\.)+
 
 BOOLEAN_TOKEN=(yes)|(no)
 INT_NUMBER_TOKEN=[0-9]+ //leading zero is permitted
@@ -140,9 +140,9 @@ COLOR_TOKEN=(rgb|hsv)[ \t]*\{[\d.\s&&[^\r\n]]*}
 
 CHECK_STRING={WILDCARD_STRING_TOKEN}|{WILDCARD_QUOTED_STRING_TOKEN} //判断接下来是否是字符串
 WILDCARD_STRING_TOKEN=[^#@={}\[\]\s\"][^#={}\[\]\s]*
-WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
+WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\.)*?\"?
 STRING_TOKEN=[^#@$={}\[\]\s\"][^#$={}\[\]\s]*
-QUOTED_STRING_TOKEN=([^\"$\r\n\\]|\\.)*?\"?
+QUOTED_STRING_TOKEN=([^\"$\\]|\\.)+
 
 %%
 
@@ -466,15 +466,15 @@ QUOTED_STRING_TOKEN=([^\"$\r\n\\]|\\.)*?\"?
 <WAITING_QUOTED_KEY> {
   {EOL} {
       parameterPosition = ParameterPosition.NONE;
-	  quoted = false;
-	  yybegin(WAITING_QUOTED_KEY_END);
-	  return WHITE_SPACE;
+      quoted = false;
+      yybegin(WAITING_QUOTED_KEY_END);
+      return WHITE_SPACE;
   }
   "$" {
     yybegin(WAITING_PARAMETER); 
     return PARAMETER_START;
   }
-  {QUOTED_PROPERTY_KEY_TOKEN} {
+  \"|{QUOTED_PROPERTY_KEY_TOKEN}\"? {
 	boolean isQuoted = parameterPosition == ParameterPosition.QUOTED_KEY;
 	if(yycharat(yylength() -1) == '"') {
         parameterPosition = ParameterPosition.NONE;
@@ -535,20 +535,21 @@ QUOTED_STRING_TOKEN=([^\"$\r\n\\]|\\.)*?\"?
   }
 }
 <WAITING_QUOTED_STRING> {
-  {EOL} {
-	  if(valueStarted) {
-          parameterPosition = ParameterPosition.NONE;
-		  quoted = false;
-		  valueStarted = false;
-		  beginNextState();
-	  }
-	  return WHITE_SPACE;
-  }
+  //quoted multiline string is allowed
+  //{EOL} {
+  //    if(valueStarted) {
+  //        parameterPosition = ParameterPosition.NONE;
+  //        quoted = false;
+  //        valueStarted = false;
+  //        beginNextState();
+  //    }
+  //    return WHITE_SPACE;
+  //}
   "$" {
       yybegin(WAITING_PARAMETER); 
       return PARAMETER_START;
   }
-  {QUOTED_STRING_TOKEN} {
+  \"|{QUOTED_STRING_TOKEN}\"? {
 	  boolean isQuoted = parameterPosition == ParameterPosition.QUOTED_STRING;
       if(yycharat(yylength() -1) == '"') {
           parameterPosition = ParameterPosition.NONE;
