@@ -57,12 +57,6 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
         FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope).let { if(!it) return false }
         FileTypeIndex.processFiles(ParadoxLocalisationFileType, processor, scope).let { if(!it) return false }
         return true
-        
-        ////use parallel processor to optimize performance
-        //val parallelProcessor = ParallelProcessor(processor, ParadoxValueSetValueFastIndex.executorService)
-        //FileTypeIndex.processFiles(ParadoxScriptFileType, parallelProcessor, scope)
-        //FileTypeIndex.processFiles(ParadoxLocalisationFileType, parallelProcessor, scope)
-        //return parallelProcessor.getResult()
     }
 }
 

@@ -33,12 +33,12 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 if(filePath == null) {
                     val keys = FileBasedIndex.getInstance().getAllKeys(ParadoxFilePathIndex.NAME, project)
                     FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null){
-                        processFile(it, project, gameType, consumer)
+                        processFile(it, gameType, consumer)
                     }
                 } else {
                     val keys = getFilePaths(filePath, queryParameters)
                     FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) {
-                        processFile(it, project, gameType, consumer)
+                        processFile(it, gameType, consumer)
                     }
                 }
             } else {
@@ -50,14 +50,14 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                         keys.add(p)
                     }, scope, null)
                     FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) { 
-                        processFile(it, project, gameType, consumer)
+                        processFile(it, gameType, consumer)
                     }
                 } else {
                     val resolvedPath = support.resolvePath(configExpression, filePath)
                     if(resolvedPath != null) {
                         val keys = setOf(resolvedPath)
                         FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null){
-                            processFile(it, project, gameType, consumer)
+                            processFile(it, gameType, consumer)
                         }
                         return@action
                     } 
@@ -65,7 +65,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                     FilenameIndex.processFilesByName(resolvedFileName, true, scope) p@{
                         val p = it.fileInfo?.path?.path ?: return@p true
                         if(!support.matches(configExpression, contextElement, p)) return@p true
-                        processFile(it, project, gameType, consumer)
+                        processFile(it, gameType, consumer)
                     }
                 }
             }
@@ -105,9 +105,9 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         return result
     }
     
-    private fun processFile(file: VirtualFile, project: Project, gameType: ParadoxGameType?, consumer: Processor<in VirtualFile>): Boolean {
+    private fun processFile(file: VirtualFile, gameType: ParadoxGameType?, consumer: Processor<in VirtualFile>): Boolean {
         ProgressManager.checkCanceled()
-        ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved
+        ParadoxCoreHandler.getFileInfo(file) ?: return true //ensure file info is resolved
         if(gameType != null && selectGameType(file) != gameType) return true //check game type at file level
         return consumer.process(file)
     }
