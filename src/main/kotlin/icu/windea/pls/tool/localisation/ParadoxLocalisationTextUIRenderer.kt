@@ -2,6 +2,7 @@ package icu.windea.pls.tool.localisation
 
 import com.intellij.util.ui.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.*
 import javax.swing.*

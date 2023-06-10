@@ -1,6 +1,4 @@
-@file:Suppress("PackageDirectoryMismatch")
-
-package icu.windea.pls.core
+package icu.windea.pls.core.util
 
 interface Expression : CharSequence {
 	val expressionString: String

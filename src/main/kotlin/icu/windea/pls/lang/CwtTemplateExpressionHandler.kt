@@ -14,6 +14,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
 object CwtTemplateExpressionHandler {

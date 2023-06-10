@@ -3,7 +3,7 @@ package icu.windea.pls.core.ui
 import com.intellij.ui.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*
-import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import java.awt.*
 import javax.swing.*
 

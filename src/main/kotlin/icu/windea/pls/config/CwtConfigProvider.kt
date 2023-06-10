@@ -1,15 +1,10 @@
 package icu.windea.pls.config
 
-import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.*
 import java.lang.invoke.*
 
 /**

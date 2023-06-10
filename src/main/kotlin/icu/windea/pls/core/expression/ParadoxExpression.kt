@@ -1,6 +1,6 @@
 package icu.windea.pls.core.expression
 
-import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 
 interface ParadoxExpression : Expression {
 	val text: String

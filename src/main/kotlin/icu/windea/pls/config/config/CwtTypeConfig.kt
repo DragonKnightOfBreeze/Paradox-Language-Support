@@ -4,7 +4,6 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.cwt.psi.*
-import it.unimi.dsi.fastutil.objects.*
 
 /**
  * @property baseType (property) path: string

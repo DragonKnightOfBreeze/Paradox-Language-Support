@@ -2,11 +2,9 @@ package icu.windea.pls.lang.inline.impl
 
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.ParadoxInlineScriptHandler.getInlineScriptExpression
 import icu.windea.pls.lang.inline.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxInlineScriptScriptMemberElementInlineSupport : ParadoxScriptMemberElementInlineSupport {
@@ -41,7 +39,7 @@ class ParadoxInlineScriptScriptMemberElementInlineSupport : ParadoxScriptMemberE
                 val definitionMemberInfo = element.definitionMemberInfo
                 if(definitionMemberInfo == null) return@a2 null
                 val project = definitionMemberInfo.configGroup.project
-                ParadoxInlineScriptHandler.getInlineScript(expression, element, project)
+                ParadoxInlineScriptHandler.getInlineScriptFile(expression, element, project)
             }
         }
     }

@@ -1,7 +1,7 @@
 package icu.windea.pls.config.config
 
 import com.google.common.cache.*
-import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 
 /**
  * CWT规则的领。保留大小写。忽略括起的双引号。

@@ -6,6 +6,7 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import java.lang.invoke.*
 import java.nio.file.*
 import kotlin.io.path.*

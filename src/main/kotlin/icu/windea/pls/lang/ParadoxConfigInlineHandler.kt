@@ -3,6 +3,7 @@ package icu.windea.pls.lang
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -11,13 +12,13 @@ object ParadoxConfigInlineHandler {
         KEY_TO_KEY, KEY_TO_VALUE, VALUE_TO_KEY, VALUE_TO_VALUE
     }
     
-    fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, mode: Mode) : CwtPropertyConfig? {
+    fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, mode: Mode): CwtPropertyConfig? {
         val inlined = config.copy(
-             key = when(mode) {
-                 Mode.KEY_TO_KEY -> if(otherConfig is CwtPropertyConfig) otherConfig.key else return null
-                 Mode.VALUE_TO_KEY -> otherConfig.value
-                 else -> config.key
-             },
+            key = when(mode) {
+                Mode.KEY_TO_KEY -> if(otherConfig is CwtPropertyConfig) otherConfig.key else return null
+                Mode.VALUE_TO_KEY -> otherConfig.value
+                else -> config.key
+            },
             value = when(mode) {
                 Mode.VALUE_TO_VALUE -> otherConfig.value
                 Mode.KEY_TO_VALUE -> if(otherConfig is CwtPropertyConfig) otherConfig.key else return null
@@ -37,7 +38,7 @@ object ParadoxConfigInlineHandler {
     /**
      * 将指定的[inlineConfig]内联作为子节点并返回。如果需要拷贝，则进行深拷贝。
      */
-    fun inlineWithInlineConfig(config: CwtPropertyConfig, inlineConfig: CwtInlineConfig) : CwtPropertyConfig{
+    fun inlineWithInlineConfig(config: CwtPropertyConfig, inlineConfig: CwtInlineConfig): CwtPropertyConfig {
         val other = inlineConfig.config
         val inlined = other.copy(
             key = config.key,
@@ -59,7 +60,7 @@ object ParadoxConfigInlineHandler {
             value = other.value,
             configs = other.deepCopyConfigs(),
             documentation = other.documentation,
-            options =  other.options
+            options = other.options
         )
         inlined.parent = config.parent
         inlined.configs?.forEach { it.parent = inlined }
@@ -86,7 +87,7 @@ object ParadoxConfigInlineHandler {
         return inlined
     }
     
-    fun inlineFromInlineConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>): Boolean {
+    fun inlineByInlineConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>): Boolean {
         //内联特定的规则：inline_script
         val configGroup = config.info.configGroup
         val inlineConfigs = configGroup.inlineConfigGroup[key]
@@ -97,7 +98,7 @@ object ParadoxConfigInlineHandler {
         return true
     }
     
-    fun inlineFromAliasConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>, matchOptions: Int) {
+    fun inlineConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>, matchOptions: Int): Boolean {
         //内联类型为single_alias_right或alias_match_left的规则
         run {
             val configGroup = config.info.configGroup
@@ -107,7 +108,7 @@ object ParadoxConfigInlineHandler {
                     val singleAliasName = valueExpression.value ?: return@run
                     val singleAlias = configGroup.singleAliases[singleAliasName] ?: return@run
                     result.add(inlineWithSingleAliasConfig(config, singleAlias))
-                    return
+                    return true
                 }
                 CwtDataType.AliasMatchLeft -> {
                     val aliasName = valueExpression.value ?: return@run
@@ -125,11 +126,12 @@ object ParadoxConfigInlineHandler {
                             result.add(inlinedConfig)
                         }
                     }
-                    return
+                    return true
                 }
                 else -> pass()
             }
         }
         result.add(config)
+        return false
     }
 }

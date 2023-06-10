@@ -1,4 +1,4 @@
-package icu.windea.pls.core
+package icu.windea.pls.core.util
 
 import com.intellij.openapi.editor.colors.*
 import com.intellij.psi.*

@@ -1,4 +1,4 @@
-package icu.windea.pls.core
+package icu.windea.pls.core.util
 
 import com.fasterxml.jackson.core.*
 import com.fasterxml.jackson.databind.*

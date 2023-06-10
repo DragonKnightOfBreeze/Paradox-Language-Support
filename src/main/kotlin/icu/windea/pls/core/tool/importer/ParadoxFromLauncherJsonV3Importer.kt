@@ -12,6 +12,7 @@ import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.core.tool.model.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.model.*
 
 /**

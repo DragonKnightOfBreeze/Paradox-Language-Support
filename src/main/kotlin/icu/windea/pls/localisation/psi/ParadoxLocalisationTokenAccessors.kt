@@ -3,6 +3,7 @@ package icu.windea.pls.localisation.psi
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 val ParadoxLocalisationLocale.localeId: PsiElement get() = findChild(LOCALE_ID)!!

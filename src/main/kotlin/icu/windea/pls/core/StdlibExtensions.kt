@@ -5,6 +5,7 @@ package icu.windea.pls.core
 import com.google.common.cache.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
+import icu.windea.pls.core.util.*
 import java.io.*
 import java.net.*
 import java.nio.charset.*
@@ -228,25 +229,6 @@ fun Char.isExactIdentifierChar(): Boolean {
 
 fun String.isExactIdentifier(vararg extraChars: Char): Boolean {
     return this.all { it.isExactIdentifierChar() || it in extraChars }
-}
-
-fun String.isExactParameterizedIdentifier(vararg extraChars: Char): Boolean {
-    var isParameter = false
-    for(c in this) {
-        when {
-            c == '$' -> {
-                isParameter = !isParameter
-            }
-            isParameter -> {}
-            c.isExactIdentifierChar() || c in extraChars -> {}
-            else -> return false
-        }
-    }
-    return true
-}
-
-fun String.isParameterized(): Boolean {
-    return this.any { it == '$' }
 }
 
 fun String.isLeftQuoted(): Boolean {
@@ -656,4 +638,10 @@ inline fun <V, T> withPropertyValue(property: KMutableProperty0<V>, value: V, ac
     val result = action()
     property.set(oldValue)
     return result
+}
+
+typealias FloatRange = ClosedRange<Float>
+
+operator fun FloatRange.contains(element: Float?): Boolean {
+    return element != null && contains(element)
 }

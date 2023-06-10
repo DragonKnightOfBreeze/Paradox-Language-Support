@@ -154,7 +154,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val expression = element.getUserData(inlineScriptExpressionKey) ?: return false
         if(expression.isParameterized()) return false //skip if context name is parameterized
         val project = element.project
-        ParadoxInlineScriptHandler.processInlineScript(expression, element, project, onlyMostRelevant, processor)
+        ParadoxInlineScriptHandler.processInlineScriptFile(expression, element, project, onlyMostRelevant, processor)
         return true
     }
     
@@ -162,7 +162,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val expression = contextReferenceInfo.getUserData(inlineScriptExpressionKey) ?: return false
         if(expression.isParameterized()) return false //skip if context name is parameterized
         val project = contextReferenceInfo.project
-        ParadoxInlineScriptHandler.processInlineScript(expression, element, project, onlyMostRelevant, processor)
+        ParadoxInlineScriptHandler.processInlineScriptFile(expression, element, project, onlyMostRelevant, processor)
         return true
     }
     

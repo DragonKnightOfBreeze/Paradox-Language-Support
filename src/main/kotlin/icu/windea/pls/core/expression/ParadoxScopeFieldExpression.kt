@@ -10,6 +10,7 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.ParadoxScopeFieldExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 
 /**

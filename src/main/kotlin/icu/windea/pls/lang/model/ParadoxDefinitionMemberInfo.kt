@@ -81,8 +81,6 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
     
     var result: List<CwtMemberConfig<*>> = declaration.toSingletonList()
     
-    var inlinedByInlineConfig = false
-    
     val configGroup = definitionMemberInfo.configGroup
     elementPath.subPaths.forEachFast f1@{ (_, subPath, isQuoted, isKey) ->
         //如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
@@ -94,8 +92,8 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
             ProgressManager.checkCanceled()
             
             //处理内联规则
-            if(!inlinedByInlineConfig && isKey && parentConfig is CwtPropertyConfig) {
-                inlinedByInlineConfig = ParadoxConfigInlineHandler.inlineFromInlineConfig(element, subPath, isQuoted, parentConfig, nextResult)
+            if(isKey && parentConfig is CwtPropertyConfig) {
+                val inlinedByInlineConfig = ParadoxConfigInlineHandler.inlineByInlineConfig(element, subPath, isQuoted, parentConfig, nextResult)
                 if(inlinedByInlineConfig) return@f2
             }
             
@@ -104,7 +102,7 @@ private fun doGetConfigs(definitionInfo: ParadoxDefinitionInfo, definitionMember
             configs.forEachFast f3@{ config ->
                 if(isKey && config is CwtPropertyConfig) {
                     if(ParadoxConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) {
-                        ParadoxConfigInlineHandler.inlineFromAliasConfig(element, subPath, isQuoted, config, nextResult, matchOptions)
+                        ParadoxConfigInlineHandler.inlineConfig(element, subPath, isQuoted, config, nextResult, matchOptions)
                     }
                 } else if(!isKey && config is CwtValueConfig) {
                     nextResult.add(config)
