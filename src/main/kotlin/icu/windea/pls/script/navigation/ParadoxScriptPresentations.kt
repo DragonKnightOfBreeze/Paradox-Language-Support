@@ -2,7 +2,6 @@ package icu.windea.pls.script.navigation
 
 import icons.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*

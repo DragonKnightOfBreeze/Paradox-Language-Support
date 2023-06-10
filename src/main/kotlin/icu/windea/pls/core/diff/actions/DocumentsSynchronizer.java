@@ -1,18 +1,16 @@
 // Copyright 2000-2018 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package icu.windea.pls.core.diff.actions;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.diff.DiffBundle;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.event.DocumentEvent;
-import com.intellij.openapi.editor.event.DocumentListener;
-import com.intellij.openapi.project.Project;
-import com.intellij.util.concurrency.annotations.RequiresEdt;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.application.*;
+import com.intellij.openapi.command.*;
+import com.intellij.openapi.diff.*;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.editor.event.*;
+import com.intellij.openapi.project.*;
+import com.intellij.util.concurrency.annotations.*;
+import org.jetbrains.annotations.*;
 
-import java.beans.PropertyChangeListener;
+import java.beans.*;
 
 //com.intellij.diff.actions.DocumentsSynchronizer
 

@@ -1,7 +1,6 @@
 package icu.windea.pls.core.hierarchy.type
 
 import com.intellij.ide.hierarchy.*
-import com.intellij.openapi.actionSystem.*
 import icons.*
 import icu.windea.pls.*
 

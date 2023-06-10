@@ -3,8 +3,6 @@ package icu.windea.pls.dds
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.tool.*
-import org.intellij.images.editor.ImageDocument.*
-import org.intellij.images.vfs.*
 import kotlin.io.path.*
 
 //icu.windea.pls.tool.ParadoxDdsUrlResolver.doResolveByFile(com.intellij.openapi.vfs.VirtualFile)

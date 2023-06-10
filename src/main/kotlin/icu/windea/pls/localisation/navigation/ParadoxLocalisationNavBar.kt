@@ -4,7 +4,6 @@ import com.intellij.ide.navigationToolbar.*
 import com.intellij.lang.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import javax.swing.*

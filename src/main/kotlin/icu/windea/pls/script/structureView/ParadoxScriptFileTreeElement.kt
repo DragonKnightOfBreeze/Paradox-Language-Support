@@ -5,7 +5,6 @@ import com.intellij.ide.structureView.impl.common.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*

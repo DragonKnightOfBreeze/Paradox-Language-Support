@@ -18,21 +18,9 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import kotlin.collections.Map
-import kotlin.collections.MutableMap
-import kotlin.collections.Set
-import kotlin.collections.any
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.first
-import kotlin.collections.firstOrNull
-import kotlin.collections.forEach
-import kotlin.collections.isNullOrEmpty
-import kotlin.collections.mutableListOf
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
-import kotlin.collections.setOf
-import kotlin.collections.withIndex
 
 /**
  * 用于处理作用域。

@@ -8,13 +8,15 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.script.psi.*
+import kotlin.collections.joinToString
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
 
 /**
  * 值集值值（`some_flag`）被设置但未被使用的检查。

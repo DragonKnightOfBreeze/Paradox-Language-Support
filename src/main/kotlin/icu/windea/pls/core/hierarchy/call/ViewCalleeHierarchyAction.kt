@@ -2,7 +2,6 @@ package icu.windea.pls.core.hierarchy.call
 
 import com.intellij.icons.*
 import com.intellij.ide.hierarchy.*
-import com.intellij.openapi.actionSystem.*
 import icu.windea.pls.*
 
 class ViewCalleeHierarchyAction: ChangeHierarchyViewActionBase(

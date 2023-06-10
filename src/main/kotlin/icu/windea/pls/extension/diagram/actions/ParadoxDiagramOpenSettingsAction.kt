@@ -3,10 +3,9 @@ package icu.windea.pls.extension.diagram.actions
 import com.intellij.diagram.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.options.*
-import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
-import icu.windea.pls.extension.diagram.settings.*
 
 //com.intellij.uml.core.actions.DiagramOpenSettingsAction
 
