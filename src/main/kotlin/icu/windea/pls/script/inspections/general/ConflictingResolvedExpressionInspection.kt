@@ -28,7 +28,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                 val property = element.parent
                     ?.castOrNull<ParadoxScriptProperty>()
                 val position = property?.propertyKey
-                    ?.also { if(it.isParameterized()) return }
+                    ?.also { if(it.text.isParameterized()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
                 val expression = property?.expression ?: element.expression

@@ -46,12 +46,6 @@ fun ParadoxScriptExpressionElement.isValidExpression(matchOptions: Int = Paradox
 	return ParadoxConfigResolver.getConfigs(this, orDefault = false, matchOptions = matchOptions).size == 1
 }
 
-fun PsiElement.isParameterized(): Boolean {
-	//check cached text, rather than children
-	//key or string can be quoted`(but how to escape???)
-	return this.text.contains('$')
-}
-
 fun PsiElement.isExpressionOrMemberContext(): Boolean {
 	return this is ParadoxScriptDefinitionElement || this is ParadoxScriptBlockElement || this is ParadoxScriptParameterCondition
 }

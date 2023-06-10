@@ -48,7 +48,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                 //忽略可能的脚本片段入口
                 if(property != null && ParadoxScriptMemberElementInlineSupport.canLink(property)) return
                 val position = property?.propertyKey
-                    ?.also { if(it.isParameterized()) return }
+                    ?.also { if(it.text.isParameterized()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
                 val configs = ParadoxConfigResolver.getConfigs(element, allowDefinition = true, matchOptions = ParadoxConfigMatcher.Options.Default)

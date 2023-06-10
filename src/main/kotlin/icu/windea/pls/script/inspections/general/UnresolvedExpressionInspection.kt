@@ -55,7 +55,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if(!shouldCheck) return true
                         //skip checking property if property key may contain parameters
                         val propertyKey = element.propertyKey
-                        if(propertyKey.isParameterized()) return false
+                        if(propertyKey.text.isParameterized()) return false
                         val definitionMemberInfo = element.definitionMemberInfo
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
                         val configs = ParadoxConfigResolver.getPropertyConfigs(element, false, true, ParadoxConfigMatcher.Options.Default)
@@ -108,8 +108,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         }
                         if(!shouldCheck) return true
                         //skip checking value if it may contain parameters
-                        if(element is ParadoxScriptString && element.isParameterized()) return false
-                        if(element is ParadoxScriptScriptedVariableReference && element.isParameterized()) return false
+                        if(element is ParadoxScriptString && element.text.isParameterized()) return false
+                        if(element is ParadoxScriptScriptedVariableReference && element.text.isParameterized()) return false
                         val definitionMemberInfo = element.definitionMemberInfo
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
                         val configs = ParadoxConfigResolver.getValueConfigs(element, orDefault = false, matchOptions = ParadoxConfigMatcher.Options.Default)

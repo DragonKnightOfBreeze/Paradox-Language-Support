@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
@@ -18,7 +19,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
             private fun visitExpressionElement(element: ParadoxScriptString) {
                 ProgressManager.checkCanceled()
                 //忽略可能包含参数的表达式
-                if(element.isParameterized()) return
+                if(element.text.isParameterized()) return
                 //得到完全匹配的CWT规则
                 val config = ParadoxConfigResolver.getConfigs(element, orDefault = false, matchOptions = ParadoxConfigMatcher.Options.Default).firstOrNull() ?: return
                 val configExpression = config.expression

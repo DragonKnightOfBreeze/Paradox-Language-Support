@@ -23,7 +23,6 @@ object ParadoxComplexEnumValueHandler {
     }
     
     fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
-        if(element.isParameterized()) return null //排除可能带参数的情况
         return doGetInfoFromCache(element)
     }
     
@@ -38,6 +37,8 @@ object ParadoxComplexEnumValueHandler {
     }
     
     private fun doGetInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile = element.containingFile): ParadoxComplexEnumValueInfo? {
+        if(element.text.isParameterized()) return null //排除可能带参数的情况
+        if(element.text.isInlineUsage()) return null //排除是内联调用的情况
         val project = file.project
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.pathToEntry //这里使用pathToEntry
