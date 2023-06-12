@@ -1,6 +1,7 @@
 package icu.windea.pls.core.expression
 
 import com.intellij.openapi.progress.*
+import com.intellij.util.BitUtil
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.ParadoxDataExpression.*
@@ -40,16 +41,16 @@ object UnknownParadoxDataExpression: AbstractExpression(PlsConstants.unknownStri
 
 fun Resolver.resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = ParadoxConfigMatcher.Options.Default): ParadoxDataExpression {
 	return when {
+		element is ParadoxScriptBlock -> {
+			BlockParadoxDataExpression
+		}
 		element is ParadoxScriptScriptedVariableReference -> {
-			ProgressManager.checkCanceled() //这是必要的
+			ProgressManager.checkCanceled()
 			val valueElement = when {
-				matchOptions == ParadoxConfigMatcher.Options.SkipIndex -> return UnknownParadoxDataExpression
+				BitUtil.isSet(matchOptions, ParadoxConfigMatcher.Options.SkipIndex) -> return UnknownParadoxDataExpression
 				else -> element.referenceValue ?: return UnknownParadoxDataExpression
 			}
 			ParadoxDataExpressionImpl(valueElement.value, valueElement.type, valueElement.text.isLeftQuoted(), false)
-		}
-		element.type == ParadoxType.Block -> {
-			BlockParadoxDataExpression
 		}
 		else -> {
 			val isKey = element is ParadoxScriptPropertyKey
