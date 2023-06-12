@@ -24,7 +24,8 @@ class GenerateLocalisationsFix(
         if(startElement !is ParadoxScriptDefinitionElement) return
         val handler = GenerateLocalisationsHandler()
         file.putUserData(PlsKeys.generateLocalisationsContextKey, context)
-        return handler.invoke(project, editor, file)
+        handler.invoke(project, editor, file)
+        file.putUserData(PlsKeys.generateLocalisationsContextKey, null)
     }
     
     //true so that we can run MissingLocalisationInspection on mod files scope and generate all missing localisations

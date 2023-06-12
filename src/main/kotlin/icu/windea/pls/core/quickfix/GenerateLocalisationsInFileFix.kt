@@ -23,7 +23,8 @@ class GenerateLocalisationsInFileFix(
         if(editor == null) return
         val handler = GenerateLocalisationsInFileHandler()
         file.putUserData(PlsKeys.generateLocalisationsInFileContextKey, context)
-        return handler.invoke(project, editor, file)
+        handler.invoke(project, editor, file)
+        file.putUserData(PlsKeys.generateLocalisationsInFileContextKey, null)
     }
     
     //true so that we can run MissingLocalisationInspection on mod files scope and generate all missing localisations
