@@ -158,7 +158,7 @@ object ParadoxParameterHandler {
      */
     fun inferConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
         val cacheKey = parameterElement.contextKey + "@" + parameterElement.name
-        val parameterCache = parameterElement.project.getUserData(parameterCacheKey)!!
+        val parameterCache = selectRootFile(parameterElement.parent)?.getUserData(parameterCacheKey) ?: return null
         val cached = parameterCache.get(cacheKey)
         if(cached != null) {
             val modificationTracker = cached.getUserData(parameterModificationTrackerKey)

@@ -49,7 +49,7 @@ object ParadoxModifierHandler {
         //如果可以缓存，需要缓存解析结果
         
         val cacheKey = "${name}@${configGroup.gameType}"
-        val modifierCache = configGroup.project.getUserData(modifierCacheKey)!!
+        val modifierCache = selectRootFile(element)?.getUserData(modifierCacheKey) ?: return null
         val cached = modifierCache.get(cacheKey) //无法解析时不会缓存
         if(cached != null) {
             val modificationTracker = cached.getUserData(modifierModificationTrackerKey)
