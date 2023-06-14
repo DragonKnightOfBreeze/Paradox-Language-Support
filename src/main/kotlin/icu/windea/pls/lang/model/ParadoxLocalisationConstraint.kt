@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.model
 
 import com.intellij.psi.stubs.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.localisation.psi.*
 

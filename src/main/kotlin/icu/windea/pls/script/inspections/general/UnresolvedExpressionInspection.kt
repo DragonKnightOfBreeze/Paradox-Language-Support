@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 定义声明中无法解析的表达式的检查。
+ * 无法解析的表达式的检查。
  */
 class UnresolvedExpressionInspection : LocalInspectionTool() {
     @JvmField var showExpectInfo = true
