@@ -7,8 +7,6 @@ import com.intellij.psi.*
  * @see ParadoxScriptProperty
  */
 interface ParadoxScriptDefinitionElement : ParadoxScriptNamedElement, ParadoxScriptMemberElement {
-    fun getStub(): ParadoxScriptDefinitionElementStub<out ParadoxScriptDefinitionElement>?
-    
     /**
      * 注意：如果这个对象是定义，这里得到的是定义的顶级键名（rootKey），而不一定是定义的名字（definitionName）。
      */
@@ -30,3 +28,4 @@ interface ParadoxScriptDefinitionElement : ParadoxScriptNamedElement, ParadoxScr
             return buildList { block?.processProperty(conditional = true, inline = true) { add(it) } }
         }
 }
+

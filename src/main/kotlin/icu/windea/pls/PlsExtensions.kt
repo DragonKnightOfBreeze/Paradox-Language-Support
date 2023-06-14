@@ -208,9 +208,9 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
         from is PsiDirectory -> from.fileInfo?.rootInfo?.gameType
         from is PsiFile -> from.fileInfo?.rootInfo?.gameType
-        from is ParadoxScriptScriptedVariable -> runCatching { from.stub }.getOrNull()?.gameType
+        from is ParadoxScriptScriptedVariable -> runCatching { from.greenStub }.getOrNull()?.gameType
             ?: selectGameType(from.containingFile)
-        from is ParadoxScriptDefinitionElement -> runCatching { from.getStub() }.getOrNull()?.gameType
+        from is ParadoxScriptDefinitionElement -> runCatching { from.greenStub }.getOrNull()?.gameType
             ?: selectGameType(from.containingFile)
         from is StubBasedPsiElementBase<*> -> selectGameType(from.containingFile)
         from is PsiElement -> selectGameType(from.parent)
@@ -228,7 +228,7 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
             ?: selectLocaleFromPsiFile(from)
         from is ParadoxLocalisationLocale -> from.name.toLocale(from)
         from is ParadoxLocalisationPropertyList -> selectLocale(from.locale)
-        from is ParadoxLocalisationProperty -> runCatching { from.stub }.getOrNull()?.locale?.toLocale(from)
+        from is ParadoxLocalisationProperty -> runCatching { from.greenStub }.getOrNull()?.locale?.toLocale(from)
             ?: selectLocale(from.containingFile)
         from is StubBasedPsiElementBase<*> && from.language == ParadoxLocalisationLanguage -> selectLocale(from.containingFile)
         from is PsiElement && from.language == ParadoxLocalisationLanguage -> selectLocale(from.parent)

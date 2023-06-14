@@ -10,6 +10,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.impl.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 用于处理本地化信息。
@@ -18,7 +19,7 @@ import icu.windea.pls.localisation.psi.impl.*
 object ParadoxLocalisationHandler {
     fun getInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         //快速判断
-        if(runCatching { element.stub }.getOrNull()?.isValid() == false) return null
+        if(runCatching { element.greenStub }.getOrNull()?.isValid() == false) return null
         //从缓存中获取
         return doGetInfoFromCache(element)
     }
@@ -76,7 +77,7 @@ object ParadoxLocalisationHandler {
     }
     
     fun getInfoFromStub(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        val stub = runCatching { element.stub }.getOrNull() ?: return null
+        val stub = runCatching { element.greenStub }.getOrNull() ?: return null
         //if(!stub.isValid()) return null //这里不用再次判断
         val name = stub.name
         val category = stub.category
