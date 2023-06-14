@@ -29,7 +29,7 @@ import java.util.*
 class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<ParadoxDefinitionHierarchyInfo>>() {
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxDefinitionHierarchyInfo>>("paradox.definition.hierarchy.index")
-        private const val VERSION = 28 //1.0.6
+        private const val VERSION = 29 //1.0.7
         
         fun getFileData(file: VirtualFile, project: Project): Map<String, List<ParadoxDefinitionHierarchyInfo>> {
             val useLazyIndex = useLazyIndex(file)
@@ -75,7 +75,7 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
     
     object LazyIndex {
         private const val ID = "paradox.definition.hierarchy.index.lazy"
-        private const val VERSION = 28 //1.0.6
+        private const val VERSION = 29 //1.0.7
         
         fun getFileData(file: VirtualFile, project: Project): Map<String, List<ParadoxDefinitionHierarchyInfo>> {
             return gist.getFileData(project, file)
@@ -85,7 +85,7 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
             override fun save(storage: DataOutput, value: Map<String, List<ParadoxDefinitionHierarchyInfo>>) {
                 storage.writeInt(value.size)
                 value.forEach { (k, infos) ->
-                    storage.writeString(k)
+                    storage.writeUTF(k)
                     storage.writeList(infos) { info -> writeDefinitionHierarchyInfo(storage, info) }
                 }
             }
@@ -93,7 +93,7 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
             override fun read(storage: DataInput): Map<String, List<ParadoxDefinitionHierarchyInfo>> {
                 return buildMap {
                     repeat(storage.readInt()) {
-                        val k = storage.readString()
+                        val k = storage.readUTF()
                         val infos = storage.readList { readDefinitionHierarchyInfo(storage) }
                         put(k, infos)
                     }
@@ -153,14 +153,14 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxDe
 }
 
 private fun writeDefinitionHierarchyInfo(storage: DataOutput, info: ParadoxDefinitionHierarchyInfo) {
-    storage.writeString(info.supportId)
-    storage.writeString(info.expression)
+    storage.writeUTF(info.supportId)
+    storage.writeUTF(info.expression)
     storage.writeBoolean(info.configExpression is CwtKeyExpression)
-    storage.writeString(info.configExpression.expressionString)
-    storage.writeString(info.definitionName)
-    storage.writeString(info.definitionType)
+    storage.writeUTF(info.configExpression.expressionString)
+    storage.writeUTF(info.definitionName)
+    storage.writeUTF(info.definitionType)
     storage.writeList(info.definitionSubtypes) { subtype ->
-        storage.writeString(subtype)
+        storage.writeUTF(subtype)
     }
     storage.writeInt(info.elementOffset)
     storage.writeByte(info.gameType.toByte())
@@ -168,13 +168,13 @@ private fun writeDefinitionHierarchyInfo(storage: DataOutput, info: ParadoxDefin
 }
 
 private fun readDefinitionHierarchyInfo(storage: DataInput): ParadoxDefinitionHierarchyInfo {
-    val supportId = storage.readString()
-    val expression = storage.readString()
+    val supportId = storage.readUTF()
+    val expression = storage.readUTF()
     val flag = storage.readBoolean()
-    val configExpression = storage.readString().let { if(flag) CwtKeyExpression.resolve(it) else CwtValueExpression.resolve(it) }
-    val definitionName = storage.readString()
-    val definitionType = storage.readString()
-    val definitionSubtypes = storage.readList { storage.readString() }
+    val configExpression = storage.readUTF().let { if(flag) CwtKeyExpression.resolve(it) else CwtValueExpression.resolve(it) }
+    val definitionName = storage.readUTF()
+    val definitionType = storage.readUTF()
+    val definitionSubtypes = storage.readList { storage.readUTF() }
     val elementOffset = storage.readInt()
     val gameType = storage.readByte().toGameType()
     val contextInfo = ParadoxDefinitionHierarchyInfo(supportId, expression, configExpression, definitionName, definitionType, definitionSubtypes, elementOffset, gameType)

@@ -57,12 +57,12 @@ class ParadoxOnActionInEffectDefinitionHierarchySupport : ParadoxDefinitionHiera
     }
     
     override fun saveData(storage: DataOutput, data: ParadoxDefinitionHierarchyInfo) {
-        storage.writeString(data.getUserData(containingEventScopeKey).orEmpty())
+        storage.writeUTF(data.getUserData(containingEventScopeKey).orEmpty())
         storage.writeInt(data.getUserData(scopesElementOffsetKey) ?: -1)
     }
     
     override fun readData(storage: DataInput, data: ParadoxDefinitionHierarchyInfo) {
-        storage.readString().takeIfNotEmpty()?.let { data.putUserData(containingEventScopeKey, it) }
+        storage.readUTF().takeIfNotEmpty()?.let { data.putUserData(containingEventScopeKey, it) }
         storage.readInt().let { data.putUserData(scopesElementOffsetKey, it) }
     }
 }

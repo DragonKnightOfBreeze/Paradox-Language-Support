@@ -49,7 +49,7 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
         return object : DataExternalizer<List<ParadoxInlineScriptInfo>> {
             override fun save(storage: DataOutput, value: List<ParadoxInlineScriptInfo>) {
                 storage.writeList(value) { inlineScriptInfo ->
-                    storage.writeString(inlineScriptInfo.expression)
+                    storage.writeUTF(inlineScriptInfo.expression)
                     storage.writeInt(inlineScriptInfo.elementOffset)
                     storage.writeByte(inlineScriptInfo.gameType.toByte())
                 }
@@ -57,7 +57,7 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
             
             override fun read(storage: DataInput): List<ParadoxInlineScriptInfo> {
                 return storage.readList {
-                    val expression = storage.readString()
+                    val expression = storage.readUTF()
                     val elementOffset = storage.readInt()
                     val gameType = storage.readByte().toGameType()
                     ParadoxInlineScriptInfo(expression, elementOffset, gameType)

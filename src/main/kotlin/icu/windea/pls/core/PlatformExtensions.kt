@@ -851,17 +851,6 @@ fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
 }
 //endregion
 
-//region Index Extensions
-@Suppress("NOTHING_TO_INLINE")
-inline fun DataInput.readString(): String {
-    return IOUtil.readUTF(this)
-}
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun DataOutput.writeString(value: String) {
-    IOUtil.writeUTF(this, value)
-}
-
 inline fun <T> DataInput.readList(action: () -> T): MutableList<T> {
     return MutableList(DataInputOutputUtil.readINT(this)) { action() }
 }

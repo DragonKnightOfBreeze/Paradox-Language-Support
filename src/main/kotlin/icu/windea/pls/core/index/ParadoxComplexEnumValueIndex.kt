@@ -22,7 +22,7 @@ import java.io.*
 class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<ParadoxComplexEnumValueInfo>>() {
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxComplexEnumValueInfo>>("paradox.complexEnumValue.index")
-        private const val VERSION = 28 //1.0.6
+        private const val VERSION = 29 //1.0.7
         
         fun getFileData(file: VirtualFile, project: Project): Map<String, List<ParadoxComplexEnumValueInfo>> {
             return FileBasedIndex.getInstance().getFileData(NAME, file, project)
@@ -66,21 +66,21 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
     
     object LazyIndex {
         private const val ID = "paradox.complexEnumValue.index.lazy"
-        private const val VERSION = 28 //1.0.6
+        private const val VERSION = 29 //1.0.7
         
         private val valueExternalizer = object : DataExternalizer<Map<String, List<ParadoxComplexEnumValueInfo>>> {
             override fun save(storage: DataOutput, value: Map<String, List<ParadoxComplexEnumValueInfo>>) {
                 storage.writeInt(value.size)
                 value.forEach { (k, infos) ->
-                    storage.writeString(k)
+                    storage.writeUTF(k)
                     storage.writeList(infos) { info -> writeComplexEnumValueInfo(storage, info) }
                 }
             }
             
             override fun read(storage: DataInput): Map<String, List<ParadoxComplexEnumValueInfo>> {
-                return buildMap { 
+                return buildMap {
                     repeat(storage.readInt()) {
-                        val k = storage.readString()
+                        val k = storage.readUTF()
                         val infos = storage.readList { readComplexEnumValueInfo(storage) }
                         put(k, infos)
                     }
@@ -114,16 +114,16 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxCo
 }
 
 private fun writeComplexEnumValueInfo(storage: DataOutput, valueSetValueInfo: ParadoxComplexEnumValueInfo) {
-    storage.writeString(valueSetValueInfo.name)
-    storage.writeString(valueSetValueInfo.enumName)
+    storage.writeUTF(valueSetValueInfo.name)
+    storage.writeUTF(valueSetValueInfo.enumName)
     storage.writeByte(valueSetValueInfo.readWriteAccess.toByte())
     storage.writeInt(valueSetValueInfo.elementOffset)
     storage.writeByte(valueSetValueInfo.gameType.toByte())
 }
 
 private fun readComplexEnumValueInfo(storage: DataInput): ParadoxComplexEnumValueInfo {
-    val name = storage.readString()
-    val enumName = storage.readString()
+    val name = storage.readUTF()
+    val enumName = storage.readUTF()
     val readWriteAccess = storage.readByte().toReadWriteAccess()
     val elementOffset = storage.readInt()
     val gameType = storage.readByte().toGameType()

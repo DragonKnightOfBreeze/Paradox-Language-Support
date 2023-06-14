@@ -34,10 +34,10 @@ class ParadoxLocalisationParameterDefinitionHierarchySupport: ParadoxDefinitionH
     }
     
     override fun saveData(storage: DataOutput, data: ParadoxDefinitionHierarchyInfo) {
-        storage.writeString(data.getUserData(localisationNameKey).orEmpty())
+        storage.writeUTF(data.getUserData(localisationNameKey).orEmpty())
     }
     
     override fun readData(storage: DataInput, data: ParadoxDefinitionHierarchyInfo) {
-        storage.readString().takeIfNotEmpty()?.let { data.putUserData(localisationNameKey, it) }
+        storage.readUTF().takeIfNotEmpty()?.let { data.putUserData(localisationNameKey, it) }
     }
 }
