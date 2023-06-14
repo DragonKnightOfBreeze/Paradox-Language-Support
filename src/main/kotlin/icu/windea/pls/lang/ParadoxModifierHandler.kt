@@ -49,7 +49,8 @@ object ParadoxModifierHandler {
     fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierElement? {
         //如果可以缓存，需要缓存解析结果
         
-        val cacheKey = "${name}@${configGroup.gameType}"
+        val gameType = configGroup.gameType ?: return null
+        val cacheKey = "${name}@${gameType}"
         val modifierCache = selectRootFile(element)?.getUserData(modifierCacheKey) ?: return null
         val cached = modifierCache.get(cacheKey) //无法解析时不会缓存
         if(cached != null) {
@@ -57,7 +58,7 @@ object ParadoxModifierHandler {
             if(modificationTracker != null) {
                 val modificationCount = cached.getUserData(modifierModificationCountKey) ?: 0
                 if(modificationCount == modificationTracker.modificationCount) {
-                    val resolved = ParadoxModifierElement(element, name, cached.gameType, cached.project)
+                    val resolved = ParadoxModifierElement(element, name, gameType, configGroup.project)
                     cached.copyUserDataTo(resolved)
                     return resolved
                 }
