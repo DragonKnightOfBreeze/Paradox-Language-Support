@@ -39,7 +39,7 @@ object ParadoxDefinitionMemberHandler {
         val configGroup = definitionInfo.configGroup
         val gameType = definitionInfo.gameType
         handleDefinitionMemberInfo(definition, definitionInfo, configGroup)
-        return ParadoxDefinitionMemberInfo(elementPath, gameType, definitionInfo, configGroup, element)
+        return ParadoxDefinitionMemberInfo(elementPath, definitionInfo, gameType, configGroup, element)
     }
     
     private fun handleDefinitionMemberInfo(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, configGroup: CwtConfigGroup) {

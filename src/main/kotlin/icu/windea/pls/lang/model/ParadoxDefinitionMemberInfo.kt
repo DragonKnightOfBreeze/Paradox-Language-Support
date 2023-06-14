@@ -10,6 +10,7 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.script.psi.*
+import java.util.*
 import java.util.concurrent.*
 
 /**
@@ -17,8 +18,8 @@ import java.util.concurrent.*
  */
 class ParadoxDefinitionMemberInfo(
     val elementPath: ParadoxElementPath,
-    val gameType: ParadoxGameType,
     val definitionInfo: ParadoxDefinitionInfo,
+    val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
     val element: ParadoxScriptMemberElement
     //element直接作为属性的话可能会有些问题，不过这个缓存会在所在脚本文件变更时被清除，应当问题不大

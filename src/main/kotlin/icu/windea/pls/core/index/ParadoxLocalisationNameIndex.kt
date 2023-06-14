@@ -17,17 +17,6 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
     override fun getCacheSize() = CACHE_SIZE
     
     /**
-     * 用于过滤本地化索引。
-     */
-    enum class Constraint(
-        val indexKey: StubIndexKey<String, ParadoxLocalisationProperty>,
-        val ignoreCase: Boolean = false
-    ) {
-        Default(KEY),
-        Modifier(ModifierIndex.KEY, true)
-    }
-    
-    /**
      * 用于快速索引修正的名字和描述。它们是忽略大小写的。
      */
     class ModifierIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {

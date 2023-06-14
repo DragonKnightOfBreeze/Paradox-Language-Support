@@ -56,7 +56,7 @@ property ::= property_key COLON property_number? property_value {
   recoverWhile="#auto" 
   elementTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationStubElementTypes.getPropertyType"
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
-  stubClass="icu.windea.pls.localisation.psi.ParadoxLocalisationStub"
+  stubClass="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyStub"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
   methods=[
     getIcon getName setName getNameIdentifier getTextOffset getCategory getValue setValue

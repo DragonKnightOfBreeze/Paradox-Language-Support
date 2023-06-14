@@ -4,14 +4,15 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 
-class ParadoxLocalisationStubImpl(
+class ParadoxLocalisationPropertyStubImpl(
     parent: StubElement<*>,
     override val name: String,
+    override val text: String?,
     override val category: ParadoxLocalisationCategory,
     override val locale: String?,
     override val gameType: ParadoxGameType?
-) : StubBase<ParadoxLocalisationProperty>(parent, ParadoxLocalisationStubElementTypes.PROPERTY), ParadoxLocalisationStub {
+) : StubBase<ParadoxLocalisationProperty>(parent, ParadoxLocalisationStubElementTypes.PROPERTY), ParadoxLocalisationPropertyStub {
     override fun toString(): String {
-        return "ParadoxLocalisationStub(name=$name, category=$category, locale=$locale, gameType=$gameType)"
+        return "ParadoxLocalisationPropertyStub(name=$name,text=$text, category=$category, locale=$locale, gameType=$gameType)"
     }
 }
