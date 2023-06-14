@@ -28,6 +28,12 @@ class ParadoxLocalisationConceptNamePsiReference(
     
     //缓存解析结果以优化性能
     
+    private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationConceptNamePsiReference, ParadoxScriptDefinitionElement> {
+        override fun resolve(ref: ParadoxLocalisationConceptNamePsiReference, incompleteCode: Boolean): ParadoxScriptDefinitionElement? {
+            return ref.doResolve()
+        }
+    }
+    
     override fun resolve(): ParadoxScriptDefinitionElement? {
         return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
     }
@@ -36,11 +42,5 @@ class ParadoxLocalisationConceptNamePsiReference(
         val element = element
         val nameOrAlias = element.name
         return ParadoxGameConceptHandler.get(nameOrAlias, project, element)
-    }
-    
-    private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationConceptNamePsiReference, ParadoxScriptDefinitionElement> {
-        override fun resolve(ref: ParadoxLocalisationConceptNamePsiReference, incompleteCode: Boolean): ParadoxScriptDefinitionElement? {
-            return ref.doResolve()
-        }
     }
 }

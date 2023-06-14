@@ -21,8 +21,26 @@ class ParadoxScriptedVariablePsiReference(
         return element.setName(newElementName)
     }
     
+    //缓存解析结果以优化性能
+    
+    private object Resolver : ResolveCache.AbstractResolver<ParadoxScriptedVariablePsiReference, ParadoxScriptScriptedVariable> {
+        override fun resolve(ref: ParadoxScriptedVariablePsiReference, incompleteCode: Boolean): ParadoxScriptScriptedVariable? {
+            return ref.doResolve()
+        }
+    }
+    
+    private object MultiResolver : ResolveCache.PolyVariantResolver<ParadoxScriptedVariablePsiReference> {
+        override fun resolve(ref: ParadoxScriptedVariablePsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
+            return ref.doMultiResolve()
+        }
+    }
+    
     override fun resolve(): ParadoxScriptScriptedVariable? {
         return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
+    }
+    
+    override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+        return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
     }
     
     private fun doResolve(): ParadoxScriptScriptedVariable? {
@@ -33,10 +51,6 @@ class ParadoxScriptedVariablePsiReference(
         ParadoxLocalScriptedVariableSearch.search(name, selector).findFirst()?.let { return it }
         ParadoxGlobalScriptedVariableSearch.search(name, selector).find()?.let { return it }
         return null
-    }
-    
-    override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-        return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
     }
     
     private fun doMultiResolve(): Array<out ResolveResult> {
@@ -54,17 +68,5 @@ class ParadoxScriptedVariablePsiReference(
             true
         }
         return result.mapToArray { PsiElementResolveResult(it) }
-    }
-    
-    private object Resolver: ResolveCache.AbstractResolver<ParadoxScriptedVariablePsiReference, ParadoxScriptScriptedVariable> {
-        override fun resolve(ref: ParadoxScriptedVariablePsiReference, incompleteCode: Boolean): ParadoxScriptScriptedVariable? {
-            return ref.doResolve()
-        }
-    }
-    
-    private object MultiResolver: ResolveCache.PolyVariantResolver<ParadoxScriptedVariablePsiReference> {
-        override fun resolve(ref: ParadoxScriptedVariablePsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
-            return ref.doMultiResolve()
-        }
     }
 }

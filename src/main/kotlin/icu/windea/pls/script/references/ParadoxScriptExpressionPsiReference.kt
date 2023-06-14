@@ -39,30 +39,11 @@ class ParadoxScriptExpressionPsiReference(
 		return manager.areElementsEquivalent(resolved, element) || (resolved is ParadoxScriptProperty && manager.areElementsEquivalent(resolved.propertyKey, element))
 	}
 	
-	//缓存解析结果以优化性能
-	
 	override fun getReferences(): Array<out PsiReference>? {
 		return ParadoxConfigHandler.getReferences(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
 	}
 	
-	override fun resolve(): PsiElement? {
-		return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
-	}
-	
-	private fun doResolve(): PsiElement? {
-		//根据对应的expression进行解析
-		return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
-	}
-	
-	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-		return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
-	}
-	
-	private fun doMultiResolve(): Array<out ResolveResult> {
-		//根据对应的expression进行解析
-		return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
-			.mapToArray { PsiElementResolveResult(it) }
-	}
+	//缓存解析结果以优化性能
 	
 	private object Resolver: ResolveCache.AbstractResolver<ParadoxScriptExpressionPsiReference, PsiElement> {
 		override fun resolve(ref: ParadoxScriptExpressionPsiReference, incompleteCode: Boolean): PsiElement? {
@@ -74,6 +55,25 @@ class ParadoxScriptExpressionPsiReference(
 		override fun resolve(ref: ParadoxScriptExpressionPsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
 			return ref.doMultiResolve()
 		}
+	}
+	
+	override fun resolve(): PsiElement? {
+		return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
+	}
+	
+	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+		return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
+	}
+	
+	private fun doResolve(): PsiElement? {
+		//根据对应的expression进行解析
+		return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
+	}
+	
+	private fun doMultiResolve(): Array<out ResolveResult> {
+		//根据对应的expression进行解析
+		return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
+			.mapToArray { PsiElementResolveResult(it) }
 	}
 }
 

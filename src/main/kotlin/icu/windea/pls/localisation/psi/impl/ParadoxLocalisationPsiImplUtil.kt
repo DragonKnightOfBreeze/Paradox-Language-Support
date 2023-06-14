@@ -1,7 +1,6 @@
 package icu.windea.pls.localisation.psi.impl
 
 import com.intellij.navigation.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
@@ -244,8 +243,9 @@ object ParadoxLocalisationPsiImplUtil {
         //string / command / property reference
         val iconIdElement = element.iconId
         if(iconIdElement != null) return iconIdElement.text
-        val iconIdReferenceElement = element.iconIdReference ?: return null
-        return iconIdReferenceElement.reference?.resolve()?.castOrNull<ParadoxLocalisationProperty>()?.value
+        val iconIdReferenceElement = element.iconIdReference
+        val resolved = iconIdReferenceElement?.reference?.resolveLocalisation() //直接解析为本地化以优化性能
+        return resolved?.value
     }
     
     @JvmStatic

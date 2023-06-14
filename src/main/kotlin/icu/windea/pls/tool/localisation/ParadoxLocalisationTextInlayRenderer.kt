@@ -98,8 +98,8 @@ object ParadoxLocalisationTextInlayRenderer {
     private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context): Boolean = with(context.factory) {
         //如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
         val colorConfig = element.colorConfig
-        val resolved = element.scriptedVariableReference?.reference?.resolve()
-            ?: element.reference?.resolve()
+        val resolved = element.reference?.resolveLocalisation() //直接解析为本地化以优化性能
+            ?: element.scriptedVariableReference?.reference?.resolve()
         val presentation = when {
             resolved is ParadoxLocalisationProperty -> {
                 val resolvedName = resolved.name

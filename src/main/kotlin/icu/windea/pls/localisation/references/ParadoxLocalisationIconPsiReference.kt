@@ -35,8 +35,24 @@ class ParadoxLocalisationIconPsiReference(
 	
 	//缓存解析结果以优化性能
 	
+	private object Resolver: ResolveCache.AbstractResolver<ParadoxLocalisationIconPsiReference, PsiElement> {
+		override fun resolve(ref: ParadoxLocalisationIconPsiReference, incompleteCode: Boolean): PsiElement? {
+			return ref.doResolve()
+		}
+	}
+	
+	private object MultiResolver: ResolveCache.PolyVariantResolver<ParadoxLocalisationIconPsiReference> {
+		override fun resolve(ref: ParadoxLocalisationIconPsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
+			return ref.doMultiResolve()
+		}
+	}
+	
 	override fun resolve(): PsiElement? {
 		return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
+	}
+	
+	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+		return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
 	}
 	
 	private fun doResolve(): PsiElement? {
@@ -67,10 +83,6 @@ class ParadoxLocalisationIconPsiReference(
 		return null
 	}
 	
-	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-		return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
-	}
-	
 	private fun doMultiResolve(): Array<out ResolveResult> {
 		//根据spriteName和ddsFileName进行解析
 		val iconName = element.name ?: return ResolveResult.EMPTY_ARRAY
@@ -97,17 +109,5 @@ class ParadoxLocalisationIconPsiReference(
 			if(jobDefinitions.isNotEmpty()) return jobDefinitions.mapToArray { PsiElementResolveResult(it) }
 		}
 		return ResolveResult.EMPTY_ARRAY
-	}
-	
-	private object Resolver: ResolveCache.AbstractResolver<ParadoxLocalisationIconPsiReference, PsiElement> {
-		override fun resolve(ref: ParadoxLocalisationIconPsiReference, incompleteCode: Boolean): PsiElement? {
-			return ref.doResolve()
-		}
-	}
-	
-	private object MultiResolver: ResolveCache.PolyVariantResolver<ParadoxLocalisationIconPsiReference> {
-		override fun resolve(ref: ParadoxLocalisationIconPsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
-			return ref.doMultiResolve()
-		}
 	}
 }

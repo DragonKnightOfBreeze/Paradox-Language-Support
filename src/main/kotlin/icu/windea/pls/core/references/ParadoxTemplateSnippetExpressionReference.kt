@@ -29,25 +29,6 @@ class ParadoxTemplateSnippetExpressionReference(
     
     //缓存解析结果以优化性能
     
-    override fun resolve(): PsiElement? {
-        return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
-    }
-    
-    private fun doResolve(): PsiElement? {
-        val element = element
-        return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, configExpression, configGroup)
-    }
-    
-    override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-        return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
-    }
-    
-    private fun doMultiResolve(): Array<out ResolveResult> {
-        val element = element
-        return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, configExpression, configGroup)
-            .mapToArray { PsiElementResolveResult(it) }
-    }
-    
     private object Resolver: ResolveCache.AbstractResolver<ParadoxTemplateSnippetExpressionReference, PsiElement> {
         override fun resolve(ref: ParadoxTemplateSnippetExpressionReference, incompleteCode: Boolean): PsiElement? {
             return ref.doResolve()
@@ -58,5 +39,24 @@ class ParadoxTemplateSnippetExpressionReference(
         override fun resolve(ref: ParadoxTemplateSnippetExpressionReference, incompleteCode: Boolean): Array<out ResolveResult> {
             return ref.doMultiResolve()
         }
+    }
+    
+    override fun resolve(): PsiElement? {
+        return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
+    }
+    
+    override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+        return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
+    }
+    
+    private fun doResolve(): PsiElement? {
+        val element = element
+        return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, configExpression, configGroup)
+    }
+    
+    private fun doMultiResolve(): Array<out ResolveResult> {
+        val element = element
+        return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, configExpression, configGroup)
+            .mapToArray { PsiElementResolveResult(it) }
     }
 }

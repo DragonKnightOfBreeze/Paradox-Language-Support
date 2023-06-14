@@ -66,30 +66,7 @@ class ParadoxScriptValueArgumentValueExpressionNode(
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}
 		
-		override fun resolve(): PsiElement? {
-			if(!getSettings().inference.argumentValueConfig) return null
-			return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
-		}
-		
-		private fun doResolve(): PsiElement? {
-			//根据对应的expression进行解析
-			val parameterElement = parameterElementResolver() ?: return null
-			val config = ParadoxParameterHandler.inferConfig(parameterElement) ?: return null
-			return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
-		}
-		
-		override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-			if(!getSettings().inference.argumentValueConfig) return ResolveResult.EMPTY_ARRAY
-			return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
-		}
-		
-		private fun doMultiResolve(): Array<out ResolveResult> {
-			//根据对应的expression进行解析
-			val parameterElement = parameterElementResolver() ?: return ResolveResult.EMPTY_ARRAY
-			val config = ParadoxParameterHandler.inferConfig(parameterElement) ?: return ResolveResult.EMPTY_ARRAY
-			return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, false)
-				.mapToArray { PsiElementResolveResult(it) }
-		}
+		//缓存解析结果以优化性能
 		
 		private object Resolver: ResolveCache.AbstractResolver<Reference, PsiElement> {
 			override fun resolve(ref: Reference, incompleteCode: Boolean): PsiElement? {
@@ -101,6 +78,31 @@ class ParadoxScriptValueArgumentValueExpressionNode(
 			override fun resolve(ref: Reference, incompleteCode: Boolean): Array<out ResolveResult> {
 				return ref.doMultiResolve()
 			}
+		}
+		
+		override fun resolve(): PsiElement? {
+			if(!getSettings().inference.argumentValueConfig) return null
+			return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
+		}
+		
+		override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+			if(!getSettings().inference.argumentValueConfig) return ResolveResult.EMPTY_ARRAY
+			return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
+		}
+		
+		private fun doResolve(): PsiElement? {
+			//根据对应的expression进行解析
+			val parameterElement = parameterElementResolver() ?: return null
+			val config = ParadoxParameterHandler.inferConfig(parameterElement) ?: return null
+			return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
+		}
+		
+		private fun doMultiResolve(): Array<out ResolveResult> {
+			//根据对应的expression进行解析
+			val parameterElement = parameterElementResolver() ?: return ResolveResult.EMPTY_ARRAY
+			val config = ParadoxParameterHandler.inferConfig(parameterElement) ?: return ResolveResult.EMPTY_ARRAY
+			return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, false)
+				.mapToArray { PsiElementResolveResult(it) }
 		}
 	}
 }

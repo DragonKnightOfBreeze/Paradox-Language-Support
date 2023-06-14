@@ -31,8 +31,24 @@ class ParadoxLocalisationCommandFieldPsiReference(
 	
 	//缓存解析结果以优化性能
 	
+	private object Resolver: ResolveCache.AbstractResolver<ParadoxLocalisationCommandFieldPsiReference, PsiElement> {
+		override fun resolve(ref: ParadoxLocalisationCommandFieldPsiReference, incompleteCode: Boolean): PsiElement? {
+			return ref.doResolve()
+		}
+	}
+	
+	private object MultiResolver: ResolveCache.PolyVariantResolver<ParadoxLocalisationCommandFieldPsiReference> {
+		override fun resolve(ref: ParadoxLocalisationCommandFieldPsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
+			return ref.doMultiResolve()
+		}
+	}
+	
 	override fun resolve(): PsiElement? {
 		return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
+	}
+	
+	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+		return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
 	}
 	
 	private fun doResolve(): PsiElement? {
@@ -56,10 +72,6 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		
 		//尝试识别为value[variable]
 		return ParadoxValueSetValueElement(element, name, "variable", Access.Read, gameType, project)
-	}
-	
-	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-		return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
 	}
 	
 	private fun doMultiResolve(): Array<out ResolveResult> {
@@ -106,17 +118,5 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		
 		//尝试识别为value[variable]
 		return ParadoxScriptAttributesKeys.VARIABLE_KEY
-	}
-	
-	private object Resolver: ResolveCache.AbstractResolver<ParadoxLocalisationCommandFieldPsiReference, PsiElement> {
-		override fun resolve(ref: ParadoxLocalisationCommandFieldPsiReference, incompleteCode: Boolean): PsiElement? {
-			return ref.doResolve()
-		}
-	}
-	
-	private object MultiResolver: ResolveCache.PolyVariantResolver<ParadoxLocalisationCommandFieldPsiReference> {
-		override fun resolve(ref: ParadoxLocalisationCommandFieldPsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
-			return ref.doMultiResolve()
-		}
 	}
 }

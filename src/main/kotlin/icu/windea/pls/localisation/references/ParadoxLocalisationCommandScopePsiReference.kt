@@ -29,6 +29,12 @@ class ParadoxLocalisationCommandScopePsiReference(
     
     //缓存解析结果以优化性能
     
+    private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationCommandScopePsiReference, PsiElement> {
+        override fun resolve(ref: ParadoxLocalisationCommandScopePsiReference, incompleteCode: Boolean): PsiElement? {
+            return ref.doResolve()
+        }
+    }
+    
     override fun resolve(): PsiElement? {
         return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
     }
@@ -84,11 +90,5 @@ class ParadoxLocalisationCommandScopePsiReference(
         }
         
         return null
-    }
-    
-    private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationCommandScopePsiReference, PsiElement> {
-        override fun resolve(ref: ParadoxLocalisationCommandScopePsiReference, incompleteCode: Boolean): PsiElement? {
-            return ref.doResolve()
-        }
     }
 }

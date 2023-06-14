@@ -59,7 +59,7 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvid
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
         if(element !is ParadoxLocalisationPropertyReference) return true
         if(isIgnored(element)) return true
-        val resolved = element.reference?.resolve()
+        val resolved = element.reference?.resolveLocalisation() //直接解析为本地化以优化性能
         if(resolved is ParadoxLocalisationProperty) {
             val localisationInfo = resolved.localisationInfo
             if(localisationInfo != null) {

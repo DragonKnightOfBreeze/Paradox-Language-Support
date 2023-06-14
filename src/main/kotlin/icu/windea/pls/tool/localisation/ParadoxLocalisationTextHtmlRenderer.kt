@@ -94,7 +94,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         if(color != null) {
             context.builder.append("<span style=\"color: #").append(color.toHex()).append("\">")
         }
-        val resolved = element.reference?.resolve()
+        val resolved = element.reference?.resolveLocalisation() //直接解析为本地化以优化性能
             ?: element.scriptedVariableReference?.reference?.resolve()
         when {
             resolved is ParadoxLocalisationProperty -> {
