@@ -48,10 +48,9 @@ object ParadoxLocalisationHandler {
         val file = selectFile(psi) ?: return null
         val gameType = selectGameType(file) ?: return null
         val name = psi.name
-        val text = null //TODO
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
         val locale = selectLocale(file)?.id
-        return ParadoxLocalisationPropertyStubImpl(parentStub, name, text, category, locale, gameType)
+        return ParadoxLocalisationPropertyStubImpl(parentStub, name, category, locale, gameType)
     }
     
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub? {
@@ -59,10 +58,9 @@ object ParadoxLocalisationHandler {
         val file = selectFile(psi) ?: return null
         val gameType = selectGameType(file) ?: return null
         val name = getNameFromNode(node, tree) ?: return null
-        val text = null //TODO
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
         val locale = selectLocale(file)?.id
-        return ParadoxLocalisationPropertyStubImpl(parentStub, name, text, category, locale, gameType)
+        return ParadoxLocalisationPropertyStubImpl(parentStub, name, category, locale, gameType)
     }
     
     private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {
