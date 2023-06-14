@@ -1,7 +1,6 @@
 package icu.windea.pls.script.psi.impl
 
 import com.intellij.navigation.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.*
@@ -379,7 +378,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getConfigExpression(element: ParadoxScriptValue): String? {
-        val config = ParadoxConfigResolver.getValueConfigs(element, true, true, ParadoxConfigMatcher.Options.Default).firstOrNull() ?: return null
+        val config = ParadoxConfigResolver.getValueConfigs(element, true, ParadoxConfigMatcher.Options.Default).firstOrNull() ?: return null
         return config.value
     }
     //endregion

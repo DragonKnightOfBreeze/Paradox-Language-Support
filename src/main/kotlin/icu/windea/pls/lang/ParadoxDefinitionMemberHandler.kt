@@ -23,11 +23,11 @@ object ParadoxDefinitionMemberHandler {
     private fun doGetInfoFromCache(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionMemberInfoKey) {
             ProgressManager.checkCanceled()
-            val file = element.containingFile
             val value = doGetInfoDownUp(element)
-            //invalidated on file modification or ScriptFileTracker
-            val tracker = ParadoxPsiModificationTracker.getInstance(file.project).ScriptFileTracker
-            CachedValueProvider.Result.create(value, file, tracker)
+            //invalidated on ScriptFileTracker
+            //to optimize performance, do not invoke file.containingFile here
+            val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
+            CachedValueProvider.Result.create(value, tracker)
         }
     }
     
