@@ -11,6 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxModifierLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
@@ -66,17 +67,19 @@ class ParadoxModifierLocalizedNameHintsProvider: ParadoxScriptHintsProvider<Sett
         val config = ParadoxConfigResolver.getConfigs(element, element is ParadoxScriptValue, true, ParadoxConfigMatcher.Options.Default).firstOrNull() ?: return true
 		val type = config.expression.type
 		if(type == CwtDataType.Modifier) {
-			val name = element.value
-			val configGroup = config.info.configGroup
-			val project = configGroup.project
-			val key = ParadoxModifierHandler.getModifierNameKey(name)
-			val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale()).withModifierConstraint()
-			val localisation = ParadoxLocalisationSearch.search(key, selector).find() ?: return true
-			val presentation = doCollect(localisation, editor, settings)
-			val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
-			val endOffset = element.endOffset
-			sink.addInlineElement(endOffset, true, finalPresentation, false)
-		}
+            val name = element.value
+            val configGroup = config.info.configGroup
+            val project = configGroup.project
+            val key = ParadoxModifierHandler.getModifierNameKey(name)
+            val selector = localisationSelector(project, element).contextSensitive()
+				.preferLocale(preferredParadoxLocale())
+				.withConstraint(ParadoxLocalisationConstraint.Modifier)
+            val localisation = ParadoxLocalisationSearch.search(key, selector).find() ?: return true
+            val presentation = doCollect(localisation, editor, settings)
+            val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
+            val endOffset = element.endOffset
+            sink.addInlineElement(endOffset, true, finalPresentation, false)
+        }
 		return true
 	}
 	

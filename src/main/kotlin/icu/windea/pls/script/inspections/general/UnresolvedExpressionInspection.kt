@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 定义声明中无法解析的表达式的检查。
+ * 无法解析的表达式的检查。
  */
 class UnresolvedExpressionInspection : LocalInspectionTool() {
     @JvmField var showExpectInfo = true
@@ -58,14 +58,15 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if(propertyKey.text.isParameterized()) return false
                         val definitionMemberInfo = element.definitionMemberInfo
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
-                        val configs = ParadoxConfigResolver.getPropertyConfigs(element, false, true, ParadoxConfigMatcher.Options.Default)
+                        val configs = ParadoxConfigResolver.getPropertyConfigs(element, orDefault = true)
                         if(configs.isEmpty()) {
                             //这里使用合并后的子规则，即使parentProperty可以精确匹配
                             //优先使用重载后的规则
                             val expect = if(showExpectInfo) {
                                 val allConfigs = buildList {
-                                    val childConfigs = element.findParentProperty()?.definitionMemberInfo?.getChildConfigs()
-                                    childConfigs?.forEach {
+                                    val parentDefinitionMemberInfo = element.findParentProperty()?.definitionMemberInfo ?: return@buildList
+                                    val memberConfigs = ParadoxMemberConfigResolver.getChildConfigs(parentDefinitionMemberInfo)
+                                    memberConfigs.forEachFast {
                                         val c = it
                                         val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, c)
                                         if(overriddenConfigs.isNotNullOrEmpty()) {
@@ -112,12 +113,13 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if(element is ParadoxScriptScriptedVariableReference && element.text.isParameterized()) return false
                         val definitionMemberInfo = element.definitionMemberInfo
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
-                        val configs = ParadoxConfigResolver.getValueConfigs(element, orDefault = false, matchOptions = ParadoxConfigMatcher.Options.Default)
+                        val configs = ParadoxConfigResolver.getValueConfigs(element, orDefault = false)
                         if(configs.isEmpty()) {
                             val expect = if(showExpectInfo) {
                                 //优先使用重载后的规则
                                 val allConfigs = buildList {
-                                    definitionMemberInfo.getConfigs().forEach f@{
+                                    val memberConfigs = ParadoxMemberConfigResolver.getConfigs(definitionMemberInfo)
+                                    memberConfigs.forEachFast f@{
                                         val c = when {
                                             it is CwtPropertyConfig -> it.valueConfig
                                             it is CwtValueConfig -> it

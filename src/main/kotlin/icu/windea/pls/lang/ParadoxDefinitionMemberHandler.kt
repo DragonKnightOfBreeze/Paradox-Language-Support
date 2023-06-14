@@ -23,11 +23,11 @@ object ParadoxDefinitionMemberHandler {
     private fun doGetInfoFromCache(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionMemberInfoKey) {
             ProgressManager.checkCanceled()
-            val file = element.containingFile
             val value = doGetInfoDownUp(element)
-            //invalidated on file modification or ScriptFileTracker
-            val tracker = ParadoxPsiModificationTracker.getInstance(file.project).ScriptFileTracker
-            CachedValueProvider.Result.create(value, file, tracker)
+            //invalidated on ScriptFileTracker
+            //to optimize performance, do not invoke file.containingFile here
+            val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
+            CachedValueProvider.Result.create(value, tracker)
         }
     }
     
@@ -39,7 +39,7 @@ object ParadoxDefinitionMemberHandler {
         val configGroup = definitionInfo.configGroup
         val gameType = definitionInfo.gameType
         handleDefinitionMemberInfo(definition, definitionInfo, configGroup)
-        return ParadoxDefinitionMemberInfo(elementPath, gameType, definitionInfo, configGroup, element)
+        return ParadoxDefinitionMemberInfo(elementPath, definitionInfo, gameType, configGroup, element)
     }
     
     private fun handleDefinitionMemberInfo(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, configGroup: CwtConfigGroup) {

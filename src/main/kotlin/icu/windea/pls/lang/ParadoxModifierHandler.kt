@@ -16,6 +16,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*
@@ -112,10 +113,12 @@ object ParadoxModifierHandler {
         ProgressManager.checkCanceled()
         val nameKey = getModifierNameKey(name)
         val localizedNames = mutableSetOf<String>()
-        val selector = localisationSelector(project, contextElement).preferLocale(preferredParadoxLocale()).withModifierConstraint()
+        val selector = localisationSelector(project, contextElement)
+            .preferLocale(preferredParadoxLocale())
+            .withConstraint(ParadoxLocalisationConstraint.Modifier)
         ParadoxLocalisationSearch.search(nameKey, selector).processQueryAsync { localisation ->
             ProgressManager.checkCanceled()
-            val r = ParadoxLocalisationTextExtractor.extract(localisation).takeIfNotEmpty()
+            val r = ParadoxLocalisationTextRenderer.render(localisation).takeIfNotEmpty()
             if(r != null) localizedNames.add(r)
             true
         }

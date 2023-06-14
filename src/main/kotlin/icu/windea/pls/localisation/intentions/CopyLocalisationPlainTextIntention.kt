@@ -31,7 +31,7 @@ class CopyLocalisationPlainTextIntention : IntentionAction {
         if(editor == null || file == null) return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
-        val text = ParadoxLocalisationTextExtractor.extract(element)
+        val text = ParadoxLocalisationTextRenderer.render(element)
         CopyPasteManager.getInstance().setContents(StringSelection(text))
     }
     

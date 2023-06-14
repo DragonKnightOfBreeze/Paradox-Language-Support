@@ -170,12 +170,16 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         val project = configGroup.project
         val nameLocalisation = run {
             val key = ParadoxModifierHandler.getModifierNameKey(name)
-            val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale()).withModifierConstraint()
+            val selector = localisationSelector(project, contextElement).contextSensitive()
+                .preferLocale(preferredParadoxLocale())
+                .withConstraint(ParadoxLocalisationConstraint.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
         }
         val descLocalisation = run {
             val key = ParadoxModifierHandler.getModifierDescKey(name)
-            val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale()).withModifierConstraint()
+            val selector = localisationSelector(project, contextElement).contextSensitive()
+                .preferLocale(preferredParadoxLocale())
+                .withConstraint(ParadoxLocalisationConstraint.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
         }
         //如果没找到的话，不要在文档中显示相关信息

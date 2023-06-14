@@ -48,7 +48,7 @@ object ParadoxLocalisationTextHtmlRenderer {
     
     private fun renderTo(element: ParadoxLocalisationProperty, context: Context) {
         val richTextList = element.propertyValue?.richTextList
-        if(richTextList == null || richTextList.isEmpty()) return
+        if(richTextList.isNullOrEmpty()) return
         val color = context.color
         if(color != null) {
             context.colorStack.addLast(color)

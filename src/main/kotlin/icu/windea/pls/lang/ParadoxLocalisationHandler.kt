@@ -18,7 +18,7 @@ import icu.windea.pls.localisation.psi.impl.*
 object ParadoxLocalisationHandler {
     fun getInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         //快速判断
-        if(runCatching { element.stub }.getOrNull()?.isValid() == false) return null
+        if(runCatching { element.greenStub }.getOrNull()?.isValid() == false) return null
         //从缓存中获取
         return doGetInfoFromCache(element)
     }
@@ -38,29 +38,29 @@ object ParadoxLocalisationHandler {
         val name = element.name
         val file = element.containingFile.originalFile.virtualFile ?: return null
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
-        val gameType = selectGameType(file)
+        val gameType = selectGameType(file) ?: return null
         return ParadoxLocalisationInfo(name, category, gameType)
     }
     
     //stub methods
     
-    fun createStub(psi: ParadoxLocalisationProperty, parentStub: StubElement<*>): ParadoxLocalisationStub? {
+    fun createStub(psi: ParadoxLocalisationProperty, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub? {
         val file = selectFile(psi) ?: return null
         val gameType = selectGameType(file) ?: return null
         val name = psi.name
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
         val locale = selectLocale(file)?.id
-        return ParadoxLocalisationStubImpl(parentStub, name, category, locale, gameType)
+        return ParadoxLocalisationPropertyStubImpl(parentStub, name, category, locale, gameType)
     }
     
-    fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationStub? {
+    fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub? {
         val psi = parentStub.psi
         val file = selectFile(psi) ?: return null
         val gameType = selectGameType(file) ?: return null
         val name = getNameFromNode(node, tree) ?: return null
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
         val locale = selectLocale(file)?.id
-        return ParadoxLocalisationStubImpl(parentStub, name, category, locale, gameType)
+        return ParadoxLocalisationPropertyStubImpl(parentStub, name, category, locale, gameType)
     }
     
     private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {
@@ -76,7 +76,7 @@ object ParadoxLocalisationHandler {
     }
     
     fun getInfoFromStub(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        val stub = runCatching { element.stub }.getOrNull() ?: return null
+        val stub = runCatching { element.greenStub }.getOrNull() ?: return null
         //if(!stub.isValid()) return null //这里不用再次判断
         val name = stub.name
         val category = stub.category

@@ -110,6 +110,7 @@ object PlsKeys {
     val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("paradox.cached.localisationInfo")
     val cachedComplexEnumValueInfoKey = Key.create<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cached.complexEnumValueInfo")
     val cachedValueSetValueInfosKey = Key.create<CachedValue<List<ParadoxValueSetValueInfo>>>("paradox.cached.valueSetValueInfos")
+    val cachedMemberConfigsCacheKey = Key.create<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>("paradox.cached.memberConfigs.cache")
     val cachedConfigsCacheKey = Key.create<CachedValue<MutableMap<String, List<CwtConfig<*>>>>>("paradox.cached.configs.cache")
     val cachedChildOccurrenceMapCacheKey = Key.create<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>("paradox.cached.childOccurrenceMap.cache")
     val cachedScopeContextKey = Key.create<CachedValue<ParadoxScopeContext>>("paradox.cached.scopeContext")

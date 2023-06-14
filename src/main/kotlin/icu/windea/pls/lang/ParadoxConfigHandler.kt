@@ -284,7 +284,7 @@ object ParadoxConfigHandler {
         if(definitionMemberInfo == null) return
         
         val configGroup = definitionMemberInfo.configGroup
-        val configs = definitionMemberInfo.getConfigs()
+        val configs = ParadoxMemberConfigResolver.getConfigs(definitionMemberInfo)
         if(configs.isEmpty()) return
         
         context.isKey = false

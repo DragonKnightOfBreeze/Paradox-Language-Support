@@ -1,7 +1,6 @@
 package icu.windea.pls.script.psi.impl
 
 import com.intellij.navigation.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.*
@@ -72,10 +71,8 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getName(element: ParadoxScriptScriptedVariable): String? {
-        //注意：element.stub可能会导致ProcessCanceledException
         // 不包含作为前缀的"@"
-        ProgressManager.checkCanceled()
-        element.stub?.name?.let { return it }
+        element.greenStub?.name?.let { return it }
         return element.scriptedVariableName.name
     }
     
@@ -154,10 +151,8 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getName(element: ParadoxScriptProperty): String {
-        //注意：element.stub可能会导致ProcessCanceledException
         //注意：这里需要得到element.stub.rootKey，而非element.stub.name，因为这里需要的是PSI元素的名字而非定义的名字
-        ProgressManager.checkCanceled()
-        element.stub?.rootKey?.let { return it }
+        element.greenStub?.rootKey?.let { return it }
         return element.propertyKey.name
     }
     
@@ -383,7 +378,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getConfigExpression(element: ParadoxScriptValue): String? {
-        val config = ParadoxConfigResolver.getValueConfigs(element, true, true, ParadoxConfigMatcher.Options.Default).firstOrNull() ?: return null
+        val config = ParadoxConfigResolver.getValueConfigs(element, true, ParadoxConfigMatcher.Options.Default).firstOrNull() ?: return null
         return config.value
     }
     //endregion

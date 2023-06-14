@@ -23,10 +23,6 @@ class ParadoxScriptFile(
 	
 	override fun getFileType() = ParadoxScriptFileType
 	
-	override fun getStub(): ParadoxScriptFileStub? {
-		return super.getStub().castOrNull()
-	}
-	
 	override fun getPresentation(): ItemPresentation {
 		return ParadoxScriptFilePresentation(this)
 	}

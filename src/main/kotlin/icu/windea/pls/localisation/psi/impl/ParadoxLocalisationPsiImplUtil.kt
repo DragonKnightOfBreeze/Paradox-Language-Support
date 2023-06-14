@@ -81,9 +81,7 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getName(element: ParadoxLocalisationProperty): String {
-        //注意：element.stub可能会导致ProcessCanceledException
-        ProgressManager.checkCanceled()
-        element.stub?.name?.let { return it }
+        element.greenStub?.name?.let { return it }
         return element.propertyKey.propertyKeyId.text
     }
     
@@ -107,9 +105,7 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getCategory(element: ParadoxLocalisationProperty): ParadoxLocalisationCategory? {
-        //注意：element.stub可能会导致ProcessCanceledException
-        ProgressManager.checkCanceled()
-        element.stub?.category?.let { return it }
+        element.greenStub?.category?.let { return it }
         return element.localisationInfo?.category
     }
     
