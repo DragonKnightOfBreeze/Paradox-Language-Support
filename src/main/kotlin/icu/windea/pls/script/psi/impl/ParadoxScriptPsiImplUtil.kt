@@ -72,7 +72,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getName(element: ParadoxScriptScriptedVariable): String? {
         // 不包含作为前缀的"@"
-        element.greenStub?.name?.let { return it }
+        element.stub?.name?.let { return it }
         return element.scriptedVariableName.name
     }
     
@@ -152,7 +152,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getName(element: ParadoxScriptProperty): String {
         //注意：这里需要得到element.stub.rootKey，而非element.stub.name，因为这里需要的是PSI元素的名字而非定义的名字
-        element.greenStub?.rootKey?.let { return it }
+        element.stub?.rootKey?.let { return it }
         return element.propertyKey.name
     }
     

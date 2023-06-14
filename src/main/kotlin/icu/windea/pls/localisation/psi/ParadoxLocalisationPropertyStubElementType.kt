@@ -42,7 +42,6 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
     }
     
     override fun indexStub(stub: ParadoxLocalisationPropertyStub, sink: IndexSink) {
-        //根据分类索引localisation和localisation_synced的name
         if(stub.name.isNotEmpty() && stub.gameType != null) {
             when(stub.category) {
                 ParadoxLocalisationCategory.Localisation -> {
@@ -51,7 +50,7 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
                     ParadoxLocalisationConstraint.values.forEachFast { constraint -> 
                         if(constraint.predicate(stub.name)) {
                             val key = if(constraint.ignoreCase) stub.name.lowercase() else stub.name
-                            sink.occurrence(ParadoxLocalisationNameIndex.ModifierIndex.KEY, key)
+                            sink.occurrence(constraint.indexKey, key)
                         }
                     }
                 }

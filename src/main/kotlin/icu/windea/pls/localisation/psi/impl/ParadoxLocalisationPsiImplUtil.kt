@@ -81,7 +81,7 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getName(element: ParadoxLocalisationProperty): String {
-        element.greenStub?.name?.let { return it }
+        element.stub?.name?.let { return it }
         return element.propertyKey.propertyKeyId.text
     }
     
@@ -105,7 +105,7 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getCategory(element: ParadoxLocalisationProperty): ParadoxLocalisationCategory? {
-        element.greenStub?.category?.let { return it }
+        element.stub?.category?.let { return it }
         return element.localisationInfo?.category
     }
     

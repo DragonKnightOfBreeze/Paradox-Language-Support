@@ -1,5 +1,6 @@
 package icu.windea.pls.lang
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
@@ -30,7 +31,6 @@ object StellarisEconomicCategoryHandler {
      * 输入[definition]的定义类型应当保证是`economic_category`。
      */
     fun getInfo(definition: ParadoxScriptDefinitionElement): StellarisEconomicCategoryInfo? {
-        ProgressManager.checkCanceled()
         if(selectGameType(definition) != ParadoxGameType.Stellaris) return null
         return doGetInfoFromCache(definition)
     }
@@ -38,7 +38,8 @@ object StellarisEconomicCategoryHandler {
     private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): StellarisEconomicCategoryInfo? {
         if(definition !is ParadoxScriptProperty) return null
         return CachedValuesManager.getCachedValue(definition, cachedEconomicCategoryInfoKey) {
-            val value = doGetInfo(definition)
+            ProgressManager.checkCanceled()
+            val value = runReadAction { doGetInfo(definition) }
             CachedValueProvider.Result.create(value, definition)
         }
     }

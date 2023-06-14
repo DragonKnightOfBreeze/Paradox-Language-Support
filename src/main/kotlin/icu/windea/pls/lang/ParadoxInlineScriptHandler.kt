@@ -1,5 +1,6 @@
 package icu.windea.pls.lang
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -37,7 +38,7 @@ object ParadoxInlineScriptHandler {
         return CachedValuesManager.getCachedValue(element, cachedInlineScriptInfoKey) {
             ProgressManager.checkCanceled()
             val file = element.containingFile
-            val value = doGetInfo(element, file)
+            val value = runReadAction { doGetInfo(element, file) }
             //invalidated on file modification
             CachedValueProvider.Result.create(value, file)
         }
