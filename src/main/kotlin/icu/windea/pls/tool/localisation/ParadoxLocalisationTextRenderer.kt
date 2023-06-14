@@ -7,43 +7,47 @@ import icu.windea.pls.script.psi.*
 import java.util.*
 
 @Suppress("unused", "UNUSED_PARAMETER")
-object ParadoxLocalisationTextExtractor {
+object ParadoxLocalisationTextRenderer {
     class Context(
         var builder: StringBuilder
     ) {
         val guardStack = LinkedList<String>() //防止StackOverflow
     }
     
-    fun extract(element: ParadoxLocalisationProperty): String {
-        return buildString { extractTo(this, element) }
+    fun render(element: ParadoxLocalisationProperty): String {
+        return buildString { renderTo(this, element) }
     }
     
-    fun extractTo(builder: StringBuilder, element: ParadoxLocalisationProperty) {
+    fun renderTo(builder: StringBuilder, element: ParadoxLocalisationProperty) {
         val context = Context(builder)
         context.guardStack.addLast(element.name)
-        extractTo(element, context)
+        renderTo(element, context)
     }
     
-    private fun extractTo(element: ParadoxLocalisationProperty, context: Context) {
-        element.propertyValue?.richTextList?.forEach { extractTo(it, context) }
-    }
-    
-    private fun extractTo(element: ParadoxLocalisationRichText, context: Context) {
-        when(element) {
-            is ParadoxLocalisationString -> extractStringTo(element, context)
-            is ParadoxLocalisationEscape -> extractEscapeTo(element, context)
-            is ParadoxLocalisationPropertyReference -> extractPropertyReferenceTo(element, context)
-            is ParadoxLocalisationIcon -> extractIconTo(element, context)
-            is ParadoxLocalisationCommand -> extractCommandTo(element, context)
-            is ParadoxLocalisationColorfulText -> extractColorfulTextTo(element, context)
+    private fun renderTo(element: ParadoxLocalisationProperty, context: Context) {
+        val richTextList = element.propertyValue?.richTextList
+        if(richTextList.isNullOrEmpty()) return
+        for(richText in richTextList) {
+            renderTo(richText, context)
         }
     }
     
-    private fun extractStringTo(element: ParadoxLocalisationString, context: Context) {
+    private fun renderTo(element: ParadoxLocalisationRichText, context: Context) {
+        when(element) {
+            is ParadoxLocalisationString -> renderStringTo(element, context)
+            is ParadoxLocalisationEscape -> renderEscapeTo(element, context)
+            is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
+            is ParadoxLocalisationIcon -> renderIconTo(element, context)
+            is ParadoxLocalisationCommand -> renderCommandTo(element, context)
+            is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, context)
+        }
+    }
+    
+    private fun renderStringTo(element: ParadoxLocalisationString, context: Context) {
         context.builder.append(element.text)
     }
     
-    private fun extractEscapeTo(element: ParadoxLocalisationEscape, context: Context) {
+    private fun renderEscapeTo(element: ParadoxLocalisationEscape, context: Context) {
         val elementText = element.text
         when {
             elementText == "\\n" -> context.builder.append("\n")
@@ -52,7 +56,7 @@ object ParadoxLocalisationTextExtractor {
         }
     }
     
-    private fun extractPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {
+    private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {
 		val resolved = element.reference?.resolve()
 			?: element.scriptedVariableReference?.reference?.resolve()
 		when {
@@ -64,7 +68,7 @@ object ParadoxLocalisationTextExtractor {
 				} else {
                     context.guardStack.addLast(resolvedName)
                     try {
-                        extractTo(resolved, context)
+                        renderTo(resolved, context)
                     } finally {
                         context.guardStack.removeLast()
                     }
@@ -82,12 +86,12 @@ object ParadoxLocalisationTextExtractor {
 		}
     }
     
-    private fun extractIconTo(element: ParadoxLocalisationIcon, context: Context) {
+    private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context) {
         //NOTE 不提取到结果中
         //builder.append(":${element.name}:")
     }
     
-    private fun extractCommandTo(element: ParadoxLocalisationCommand, context: Context) {
+    private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
         val conceptName = element.conceptName
         if(conceptName != null) {
             //使用要显示的文本
@@ -99,7 +103,7 @@ object ParadoxLocalisationTextExtractor {
             }
             if(richTextList != null) {
                 for(v in richTextList) {
-                    extractTo(v, context)
+                    renderTo(v, context)
                 }
             } else {
                 context.builder.append(conceptName.text)
@@ -110,10 +114,10 @@ object ParadoxLocalisationTextExtractor {
         context.builder.append(element.text)
     }
     
-    private fun extractColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context) {
+    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context) {
         //直接渲染其中的文本
         for(v in element.richTextList) {
-            extractTo(v, context)
+            renderTo(v, context)
         }
     }
 }

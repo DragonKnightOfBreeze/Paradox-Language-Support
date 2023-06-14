@@ -62,7 +62,7 @@ class ParadoxScriptFileTreeElement(
 		val primaryLocalisation = ParadoxDefinitionHandler.getPrimaryLocalisation(element)
 		if(primaryLocalisation != null) {
 			//这里需要使用移除格式后的纯文本，这里返回的字符串不是HTML
-			val localizedName = ParadoxLocalisationTextExtractor.extract(primaryLocalisation)
+			val localizedName = ParadoxLocalisationTextRenderer.render(primaryLocalisation)
 			builder.append(" ").append(localizedName)
 		}
 		return builder.toString()

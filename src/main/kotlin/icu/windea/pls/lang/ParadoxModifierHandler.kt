@@ -118,7 +118,7 @@ object ParadoxModifierHandler {
             .withConstraint(ParadoxLocalisationConstraint.Modifier)
         ParadoxLocalisationSearch.search(nameKey, selector).processQueryAsync { localisation ->
             ProgressManager.checkCanceled()
-            val r = ParadoxLocalisationTextExtractor.extract(localisation).takeIfNotEmpty()
+            val r = ParadoxLocalisationTextRenderer.render(localisation).takeIfNotEmpty()
             if(r != null) localizedNames.add(r)
             true
         }
