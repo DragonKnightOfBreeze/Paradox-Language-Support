@@ -31,7 +31,7 @@ class ParadoxEventInEffectDefinitionHierarchySupport : ParadoxDefinitionHierarch
         if(scopesElementOffset == null) return
         
         //elementOffset has not been used yet by this support
-        val info = ParadoxDefinitionHierarchyInfo(id, element.value, config.expression, definitionInfo.name, definitionInfo.type, definitionInfo.subtypes, -1 /*element.startOffset*/, definitionInfo.gameType)
+        val info = ParadoxDefinitionHierarchyInfo(id, element.value, config, definitionInfo, -1 /*element.startOffset*/)
         containingEventScope?.takeIfNotEmpty()?.let { info.putUserData(containingEventScopeKey, it) }
         scopesElementOffset.let { info.putUserData(scopesElementOffsetKey, it) }
         val list = fileData.getOrPut(id) { mutableListOf() } as MutableList

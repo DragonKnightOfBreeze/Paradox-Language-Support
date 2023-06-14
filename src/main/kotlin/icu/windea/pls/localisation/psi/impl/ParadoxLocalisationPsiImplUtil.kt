@@ -161,6 +161,7 @@ object ParadoxLocalisationPsiImplUtil {
         return when {
             resolved is ParadoxLocalisationProperty -> PlsIcons.Localisation
             resolved is CwtProperty -> PlsIcons.PredefinedParameter
+            resolved is ParadoxParameterElement -> PlsIcons.Parameter
             else -> PlsIcons.LocalisationProperty
         }
     }

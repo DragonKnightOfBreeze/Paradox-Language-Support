@@ -22,7 +22,7 @@ class ParadoxInferredScopeContextAwareDefinitionHierarchySupport: ParadoxDefinit
         val definitionType = configExpression.value?.substringBefore('.') ?: return
         if(definitionType !in DEFINITION_TYPES) return
         
-        val info = ParadoxDefinitionHierarchyInfo(id, element.value, config.expression, definitionInfo.name, definitionInfo.type, definitionInfo.subtypes, element.startOffset, definitionInfo.gameType)
+        val info = ParadoxDefinitionHierarchyInfo(id, element.value, config, definitionInfo, element.startOffset)
         val list = fileData.getOrPut(id) { mutableListOf() } as MutableList
         list.add(info)
     }

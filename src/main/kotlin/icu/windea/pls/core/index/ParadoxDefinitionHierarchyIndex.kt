@@ -155,8 +155,8 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxDe
 private fun writeDefinitionHierarchyInfo(storage: DataOutput, info: ParadoxDefinitionHierarchyInfo) {
     storage.writeUTF(info.supportId)
     storage.writeUTF(info.expression)
-    storage.writeBoolean(info.configExpression is CwtKeyExpression)
-    storage.writeUTF(info.configExpression.expressionString)
+    storage.writeUTF(info.configExpression)
+    storage.writeBoolean(info.isKey)
     storage.writeUTF(info.definitionName)
     storage.writeUTF(info.definitionType)
     storage.writeList(info.definitionSubtypes) { subtype ->
@@ -170,14 +170,14 @@ private fun writeDefinitionHierarchyInfo(storage: DataOutput, info: ParadoxDefin
 private fun readDefinitionHierarchyInfo(storage: DataInput): ParadoxDefinitionHierarchyInfo {
     val supportId = storage.readUTF()
     val expression = storage.readUTF()
-    val flag = storage.readBoolean()
-    val configExpression = storage.readUTF().let { if(flag) CwtKeyExpression.resolve(it) else CwtValueExpression.resolve(it) }
+    val configExpression = storage.readUTF()
+    val isKey = storage.readBoolean()
     val definitionName = storage.readUTF()
     val definitionType = storage.readUTF()
     val definitionSubtypes = storage.readList { storage.readUTF() }
     val elementOffset = storage.readInt()
     val gameType = storage.readByte().toGameType()
-    val contextInfo = ParadoxDefinitionHierarchyInfo(supportId, expression, configExpression, definitionName, definitionType, definitionSubtypes, elementOffset, gameType)
+    val contextInfo = ParadoxDefinitionHierarchyInfo(supportId, expression, configExpression, isKey, definitionName, definitionType, definitionSubtypes, elementOffset, gameType)
     ParadoxDefinitionHierarchySupport.readData(storage, contextInfo)
     return contextInfo
 }

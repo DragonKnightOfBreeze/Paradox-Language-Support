@@ -23,7 +23,7 @@ class CwtValueExpression private constructor(
         val EmptyExpression = CwtValueExpression("", CwtDataType.Constant, "")
         val BlockExpression = CwtValueExpression("{...}", CwtDataType.Block, "{...}")
         
-        private val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtValueExpression> { doResolve(it) } }
+        private val cache = CacheBuilder.newBuilder().buildCache<String, CwtValueExpression> { doResolve(it) }
         
         fun resolve(expressionString: String): CwtValueExpression {
             return cache.get(expressionString)

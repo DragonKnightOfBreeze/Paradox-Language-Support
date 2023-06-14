@@ -76,7 +76,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
                         //TODO 1.0.6+ 这里对应的引用可能属于某个复杂表达式的一部分（目前不需要考虑兼容这种情况）
                         val n = info.expression
                         if(n != definitionInfo.name) return@f //matches definition name
-                        val t = info.configExpression.value?.substringBefore('.')
+                        val t = info.resolvedConfigExpression.value?.substringBefore('.')
                         if(t != definitionInfo.type) return@f //matches definition type
                         val e = psiFile.findElementAt(info.elementOffset) ?: return@f
                         val m = e.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@f
