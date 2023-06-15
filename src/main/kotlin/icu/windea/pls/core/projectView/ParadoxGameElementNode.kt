@@ -36,17 +36,17 @@ class ParadoxGameElementNode(
     }
     
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
-        //这里仅返回那些直接位于游戏或模组根目录中，且未被排除的子目录
         if(value == null) return emptyList()
         val selector = fileSelector(project).withGameType(value)
         val children = mutableListOf<AbstractTreeNode<*>>()
         val directoryNames = mutableSetOf<String>()
         ParadoxFilePathSearch.search(null, selector).processQuery p@{ file ->
-            val fileData = FileBasedIndex.getInstance().getFileData(ParadoxFilePathIndex.NAME, file, project)
-            if(!fileData.values.single().included) return@p true
             val fileInfo = file.fileInfo ?: return@p true
             if(fileInfo.pathToEntry.length != 1) return@p true
             if(file.isDirectory && directoryNames.add(file.name)) {
+                //直接位于游戏或模组目录中，且未被排除
+                val fileData = FileBasedIndex.getInstance().getFileData(ParadoxFilePathIndex.NAME, file, project)
+                if(!fileData.values.single().included) return@p true
                 val element = ParadoxDirectoryElement(project, fileInfo.pathToEntry, fileInfo.rootInfo.gameType)
                 val elementNode = ParadoxDirectoryElementNode(project, element, settings)
                 children.add(elementNode)

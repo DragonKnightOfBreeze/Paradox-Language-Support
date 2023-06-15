@@ -42,15 +42,17 @@ class ParadoxDirectoryElementNode(
         val children = mutableListOf<AbstractTreeNode<*>>()
         val directoryNames = mutableSetOf<String>()
         ParadoxFilePathSearch.search(null, selector).processQuery p@{ file ->
-            val fileData = FileBasedIndex.getInstance().getFileData(ParadoxFilePathIndex.NAME, file, project)
-            if(!fileData.values.single().included) return@p true
             val fileInfo = file.fileInfo ?: return@p true
             if(fileInfo.pathToEntry.parent != value.path.path) return@p true
             if(file.isDirectory && directoryNames.add(file.name)) {
+                //位于游戏或模组目录中，且未被排除
+                val fileData = FileBasedIndex.getInstance().getFileData(ParadoxFilePathIndex.NAME, file, project)
+                if(!fileData.values.single().included) return@p true
                 val element = ParadoxDirectoryElement(project, fileInfo.pathToEntry, fileInfo.rootInfo.gameType)
                 val elementNode = ParadoxDirectoryElementNode(project, element, settings)
                 children.add(elementNode)
             } else {
+                //位于游戏或模组目录中
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 val node = PsiFileNode(project, psiFile, settings)
                 children.add(node)
