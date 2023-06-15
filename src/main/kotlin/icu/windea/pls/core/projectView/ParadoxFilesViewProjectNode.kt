@@ -33,8 +33,6 @@ class ParadoxFilesViewProjectNode(
         return gameTypes.sortedBy { it.ordinal }.map { gameType -> ParadoxGameElementNode(project, gameType, settings) }
     }
     
-    
-    
     override fun createModuleGroup(module: Module): AbstractTreeNode<*> {
         return ProjectViewModuleNode(project, module, settings)
     }
