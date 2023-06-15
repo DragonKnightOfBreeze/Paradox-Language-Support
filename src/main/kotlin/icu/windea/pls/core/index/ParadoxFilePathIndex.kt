@@ -11,7 +11,7 @@ import java.util.*
 class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo>() {
     companion object {
         @JvmField val NAME = ID.create<String, ParadoxFilePathInfo>("paradox.file.path.index")
-        private const val VERSION = 27 //1.0.5
+        private const val VERSION = 30 //1.0.8
     }
     
     override fun getName() = NAME
@@ -56,14 +56,20 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
         return FileBasedIndex.InputFilter { it.fileInfo != null }
     }
     
+    override fun indexDirectories(): Boolean {
+        return true
+    }
+    
     override fun dependsOnFileContent(): Boolean {
         return false
     }
     
     private fun isIncluded(file: VirtualFile): Boolean {
-        val fileInfo = file.fileInfo ?: return false
-        val path = fileInfo.path.path
-        val extension = path.substringAfterLast('.')
+        if(file.fileInfo == null) return false
+        val fileName = file.name
+        if(fileName.startsWith('.')) return false //排除隐藏目录或文件
+        if(file.isDirectory) return true
+        val extension = fileName.substringAfterLast('.')
         if(extension.isEmpty()) return false
         return extension in PlsConstants.scriptFileExtensions
             || extension in PlsConstants.localisationFileExtensions
