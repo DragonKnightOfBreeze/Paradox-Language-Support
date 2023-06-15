@@ -30,7 +30,9 @@ class ParadoxFilesViewProjectNode(
             val rootFile = VfsUtil.findFile(rootPath.toPath(), true) ?: return@f
             val gameType = selectGameType(rootFile) ?: return@f
             if(projectFileIndex.isInContent(rootFile)) {
-                return listOf(ParadoxGameElementNode(project, gameType, settings))
+                val element = ParadoxGameElement(project, gameType, rootFile)
+                val elementNode = ParadoxGameElementNode(project, element, settings)
+                return listOf(elementNode)
             }
         }
         return emptyList()

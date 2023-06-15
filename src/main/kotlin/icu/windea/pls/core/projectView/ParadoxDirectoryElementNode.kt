@@ -38,7 +38,7 @@ class ParadoxDirectoryElementNode(
     
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
         if(value == null) return emptyList()
-        val selector = fileSelector(project).withGameType(value.gameType)
+        val selector = fileSelector(project, value.preferredRootFile).withGameType(value.gameType)
         val children = mutableListOf<AbstractTreeNode<*>>()
         val directoryNames = mutableSetOf<String>()
         ParadoxFilePathSearch.search(null, selector).processQuery p@{ file ->
@@ -48,7 +48,7 @@ class ParadoxDirectoryElementNode(
                 //位于游戏或模组目录中，且未被排除
                 val fileData = FileBasedIndex.getInstance().getFileData(ParadoxFilePathIndex.NAME, file, project)
                 if(!fileData.values.single().included) return@p true
-                val element = ParadoxDirectoryElement(project, fileInfo.pathToEntry, fileInfo.rootInfo.gameType)
+                val element = ParadoxDirectoryElement(project, fileInfo.pathToEntry, fileInfo.rootInfo.gameType, value.preferredRootFile)
                 val elementNode = ParadoxDirectoryElementNode(project, element, settings)
                 children.add(elementNode)
             } else {
@@ -64,7 +64,7 @@ class ParadoxDirectoryElementNode(
     
     override fun isValid(): Boolean {
         if(value == null) return false
-        val selector = fileSelector(project).withGameType(value.gameType)
+        val selector = fileSelector(project, value.preferredRootFile).withGameType(value.gameType)
         return ParadoxFilePathSearch.search(value.path.path, null, selector).findFirst() != null
     }
     

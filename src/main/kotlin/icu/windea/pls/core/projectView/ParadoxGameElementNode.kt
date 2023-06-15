@@ -12,13 +12,12 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
-import icu.windea.pls.lang.model.*
 
 class ParadoxGameElementNode(
     project: Project,
-    value: ParadoxGameType,
+    value: ParadoxGameElement,
     viewSettings: ViewSettings
-) : ProjectViewNode<ParadoxGameType>(project, value, viewSettings) {
+) : ProjectViewNode<ParadoxGameElement>(project, value, viewSettings) {
     override fun canRepresent(element: Any?): Boolean {
         return when {
             element is PsiDirectory -> element.fileInfo?.pathToEntry?.length == 0
@@ -30,14 +29,14 @@ class ParadoxGameElementNode(
     override fun contains(file: VirtualFile): Boolean {
         if(value == null) return false
         val fileInfo = file.fileInfo ?: return false
-        if(fileInfo.rootInfo.gameType != value) return false
+        if(fileInfo.rootInfo.gameType != value.gameType) return false
         if(fileInfo.pathToEntry.length != 1) return false
         return true
     }
     
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
         if(value == null) return emptyList()
-        val selector = fileSelector(project).withGameType(value)
+        val selector = fileSelector(project, value.preferredRootFile).withGameType(value.gameType)
         val children = mutableListOf<AbstractTreeNode<*>>()
         val directoryNames = mutableSetOf<String>()
         ParadoxFilePathSearch.search(null, selector).processQuery p@{ file ->
@@ -47,7 +46,7 @@ class ParadoxGameElementNode(
                 //直接位于游戏或模组目录中，且未被排除
                 val fileData = FileBasedIndex.getInstance().getFileData(ParadoxFilePathIndex.NAME, file, project)
                 if(!fileData.values.single().included) return@p true
-                val element = ParadoxDirectoryElement(project, fileInfo.pathToEntry, fileInfo.rootInfo.gameType)
+                val element = ParadoxDirectoryElement(project, fileInfo.pathToEntry, fileInfo.rootInfo.gameType, value.preferredRootFile)
                 val elementNode = ParadoxDirectoryElementNode(project, element, settings)
                 children.add(elementNode)
             }
@@ -59,12 +58,12 @@ class ParadoxGameElementNode(
     override fun update(presentation: PresentationData) {
         if(value == null) return
         presentation.setIcon(PlsIcons.GameDirectory)
-        presentation.presentableText = value.description
+        presentation.presentableText = value.gameType.description
     }
     
     override fun getTitle(): String? {
         if(value == null) return null
-        return value.description
+        return value.gameType.description
     }
     
     override fun isAlwaysShowPlus(): Boolean {

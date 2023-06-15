@@ -26,7 +26,7 @@ class ParadoxGameWithDependenciesSearchScope(
     override fun compare(file1: VirtualFile, file2: VirtualFile): Int {
         val order1 = getOrder(file1)
         val order2 = getOrder(file2)
-        return order1.compareTo(order2)
+        return order2.compareTo(order1)
     }
     
     private fun getOrder(file: VirtualFile) : Int {

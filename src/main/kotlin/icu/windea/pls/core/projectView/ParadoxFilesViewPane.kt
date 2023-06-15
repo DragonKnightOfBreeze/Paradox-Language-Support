@@ -32,17 +32,32 @@ class ParadoxFilesViewPane(project: Project) : AbstractProjectViewPaneWithAsyncS
     override fun getSelectedDirectories(objects: Array<out Any>): Array<PsiDirectory> {
         val directories = mutableListOf<PsiDirectory>()
         for(obj in objects) {
-            if(obj is ParadoxDirectoryElementNode) {
-                val directoryElement = obj.value
-                if(directoryElement != null) {
-                    val path = directoryElement.path.path
-                    val selector = fileSelector(myProject).withGameType(directoryElement.gameType)
-                    val files = ParadoxFilePathSearch.search(path, null, selector).findAll()
-                    files.forEach { file ->
-                        if(file.isDirectory) {
-                            val dir = file.toPsiDirectory(myProject)
-                            if(dir != null) {
-                                directories.add(dir)
+            when(obj) {
+                is ParadoxDirectoryElementNode -> {
+                    val directoryElement = obj.value
+                    if(directoryElement != null) {
+                        val path = directoryElement.path.path
+                        val preferredRootFile = directoryElement.preferredRootFile
+                        val selector = fileSelector(myProject, preferredRootFile).withGameType(directoryElement.gameType)
+                        val files = ParadoxFilePathSearch.search(path, null, selector).findAll()
+                        files.forEach { file ->
+                            if(file.isDirectory) {
+                                val dir = file.toPsiDirectory(myProject)
+                                if(dir != null) directories.add(dir)
+                            }
+                        }
+                    }
+                }
+                is ParadoxGameElementNode -> {
+                    val directoryElement = obj.value
+                    if(directoryElement != null) {
+                        val preferredRootFile = directoryElement.preferredRootFile
+                        val selector = fileSelector(myProject, preferredRootFile).withGameType(directoryElement.gameType)
+                        val files = ParadoxFilePathSearch.search("", null, selector).findAll()
+                        files.forEach { file ->
+                            if(file.isDirectory) {
+                                val dir = file.toPsiDirectory(myProject)
+                                if(dir != null) directories.add(dir)
                             }
                         }
                     }
