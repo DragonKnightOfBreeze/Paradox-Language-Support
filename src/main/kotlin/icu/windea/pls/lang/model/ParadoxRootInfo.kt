@@ -22,11 +22,6 @@ sealed class ParadoxRootInfo {
     abstract val qualifiedName: String
     
     abstract val isAvailable: Boolean
-    
-    companion object {
-        //rootPath - rootInfo
-        val values = mutableMapOf<String, ParadoxRootInfo>()
-    }
 }
 
 class ParadoxGameRootInfo(

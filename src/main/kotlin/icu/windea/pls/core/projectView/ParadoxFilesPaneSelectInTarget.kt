@@ -14,13 +14,13 @@ class ParadoxFilesPaneSelectInTarget(project: Project) : ProjectViewSelectInTarg
         if(vFile == null || !vFile.isValid) return false
         val fileInfo = vFile.fileInfo
         if(fileInfo == null) return false
-        if(vFile.isFile && fileInfo.pathToEntry.length == 1) return false //排除直接位于根目录下的文件
+        if(fileInfo.pathToEntry.length == 1 && vFile.isFile) return false //排除直接位于根目录下的文件
         return true
     }
     
     override fun getMinorViewId() = ParadoxFilesViewPane.ID
     
-    override fun getWeight() = StandardTargetWeights.PACKAGES_WEIGHT
+    override fun getWeight() = 100.0f //very low
     
     override fun toString() = PlsBundle.message("select.in.paradox.files")
 }

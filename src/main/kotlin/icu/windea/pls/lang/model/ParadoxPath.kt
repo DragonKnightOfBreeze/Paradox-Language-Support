@@ -34,10 +34,12 @@ interface ParadoxPath : Iterable<String> {
 	
 	companion object Resolver {
 		fun resolve(path: String): ParadoxPath {
+			if(path.isEmpty()) return EmptyParadoxPath
 			return ParadoxPathImplA(path)
 		}
 		
 		fun resolve(subPaths: List<String>): ParadoxPath {
+			if(subPaths.isEmpty()) return EmptyParadoxPath
 			return ParadoxPathImplB(subPaths)
 		}
 	}
