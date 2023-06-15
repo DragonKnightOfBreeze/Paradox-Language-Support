@@ -39,7 +39,7 @@ object ParadoxMemberConfigResolver {
         val definitionInfo = definitionMemberInfo.definitionInfo
         //这里需要特别处理缓存的键
         val cacheKey = buildString {
-            append("child#")
+            append('#')
             append(matchOptions)
             val configContext = definitionInfo.getDeclaration(matchOptions)?.getUserData(CwtMemberConfig.Keys.configContextKey)
             if(configContext != null) {

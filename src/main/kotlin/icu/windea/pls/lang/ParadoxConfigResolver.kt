@@ -29,7 +29,7 @@ object ParadoxConfigResolver {
     fun getPropertyConfigs(element: PsiElement, allowDefinition: Boolean = false, orDefault: Boolean = true, matchOptions: Int = Options.Default): List<CwtPropertyConfig> {
         val configsMap = doGetConfigsCacheFromCache(element) ?: return emptyList()
         val cacheKey = buildString {
-            append("property")
+            append('p')
             append('#').append(allowDefinition.toInt())
             append('#').append(orDefault.toInt())
             append('#').append(matchOptions)
@@ -40,7 +40,7 @@ object ParadoxConfigResolver {
     fun getValueConfigs(element: PsiElement, orDefault: Boolean = true, matchOptions: Int = Options.Default): List<CwtValueConfig> {
         val configsMap = doGetConfigsCacheFromCache(element) ?: return emptyList()
         val cacheKey = buildString {
-            append("value")
+            append('v')
             append('#').append(orDefault.toInt())
             append('#').append(matchOptions)
         }
