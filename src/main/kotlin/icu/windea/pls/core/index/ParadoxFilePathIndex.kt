@@ -12,6 +12,12 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
     companion object {
         @JvmField val NAME = ID.create<String, ParadoxFilePathInfo>("paradox.file.path.index")
         private const val VERSION = 30 //1.0.8
+        
+        val EXCLUDED_DIRECTORIES = listOf(
+            "_CommonRedist", "crash_reporter", "curated_save_games",
+            "pdx_browser", "pdx_launcher", "pdx_online_assets", "previewer_assets",
+            "jomini",
+        )
     }
     
     override fun getName() = NAME
@@ -36,7 +42,7 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
     
     
     override fun getValueExternalizer(): DataExternalizer<ParadoxFilePathInfo> {
-        return object: DataExternalizer<ParadoxFilePathInfo> {
+        return object : DataExternalizer<ParadoxFilePathInfo> {
             override fun save(storage: DataOutput, value: ParadoxFilePathInfo) {
                 storage.writeUTF(value.directory)
                 storage.writeByte(value.gameType.toByte())
@@ -66,9 +72,14 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
     
     private fun isIncluded(file: VirtualFile): Boolean {
         if(file.fileInfo == null) return false
+        val parent = file.parent
+        if(parent != null && parent.fileInfo != null && !isIncluded(parent)) return false
         val fileName = file.name
         if(fileName.startsWith('.')) return false //排除隐藏目录或文件
-        if(file.isDirectory) return true
+        if(file.isDirectory) {
+            if(fileName in EXCLUDED_DIRECTORIES) return false //排除一些特定的目录
+            return true
+        }
         val extension = fileName.substringAfterLast('.')
         if(extension.isEmpty()) return false
         return extension in PlsConstants.scriptFileExtensions

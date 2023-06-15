@@ -11,7 +11,7 @@ enum class ParadoxGameType(
     val gameSteamId: String,
     val entries: List<String> = emptyList(),
 ) {
-    Stellaris("stellaris", "Stellaris", "281990", listOf("pdx_launcher/game", "pdx_launcher/common")),
+    Stellaris("stellaris", "Stellaris", "281990", listOf("pdx_launcher/game", "pdx_launcher/common", "pdx_online_assets", "previewer_assets")),
     Ck2("ck2", "Crusader Kings II", "203770", listOf("jomini")),
     Ck3("ck3", "Crusader Kings III", "1158310", listOf("jomini")),
     Eu4("eu4", "Europa Universalis IV", "236850", listOf("jomini")),
