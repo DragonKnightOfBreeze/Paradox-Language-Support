@@ -5,6 +5,8 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiComment;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.tree.IElementType;
 
 public interface CwtDocumentationComment extends PsiComment {
@@ -14,5 +16,11 @@ public interface CwtDocumentationComment extends PsiComment {
 
   @NotNull
   IElementType getTokenType();
+
+  @NotNull
+  ItemPresentation getPresentation();
+
+  @NotNull
+  SearchScope getUseScope();
 
 }

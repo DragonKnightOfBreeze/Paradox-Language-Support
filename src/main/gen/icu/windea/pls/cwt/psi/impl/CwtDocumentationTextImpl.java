@@ -10,6 +10,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.cwt.psi.*;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.search.SearchScope;
 
 public class CwtDocumentationTextImpl extends ASTWrapperPsiElement implements CwtDocumentationText {
 
@@ -25,6 +27,18 @@ public class CwtDocumentationTextImpl extends ASTWrapperPsiElement implements Cw
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof CwtVisitor) accept((CwtVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return CwtPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return CwtPsiImplUtil.getUseScope(this);
   }
 
 }

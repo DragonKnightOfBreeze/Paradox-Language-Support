@@ -4,7 +4,9 @@ package icu.windea.pls.cwt.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
 public interface CwtBlock extends CwtValue, CwtBlockElement {
@@ -39,5 +41,11 @@ public interface CwtBlock extends CwtValue, CwtBlockElement {
 
   @NotNull
   List<PsiElement> getComponents();
+
+  @NotNull
+  ItemPresentation getPresentation();
+
+  @NotNull
+  SearchScope getUseScope();
 
 }

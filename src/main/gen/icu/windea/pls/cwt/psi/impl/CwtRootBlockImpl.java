@@ -10,6 +10,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.cwt.psi.*;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.search.SearchScope;
 
 public class CwtRootBlockImpl extends ASTWrapperPsiElement implements CwtRootBlock {
 
@@ -71,6 +73,18 @@ public class CwtRootBlockImpl extends ASTWrapperPsiElement implements CwtRootBlo
   @NotNull
   public List<PsiElement> getComponents() {
     return CwtPsiImplUtil.getComponents(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return CwtPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return CwtPsiImplUtil.getUseScope(this);
   }
 
 }

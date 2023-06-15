@@ -38,7 +38,7 @@ object CwtPsiImplUtil {
 		element.forEachChild {
 			if(it is CwtProperty || it is CwtValue) return true
 		}
-		return true
+		return false
 	}
 	
 	@JvmStatic
@@ -276,7 +276,7 @@ object CwtPsiImplUtil {
 		element.forEachChild {
 			if(it is CwtOption || it is CwtProperty || it is CwtValue) return true
 		}
-		return true
+		return false
 	}
 	
 	@JvmStatic

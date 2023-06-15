@@ -4,7 +4,9 @@ package icu.windea.pls.cwt.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
 public interface CwtOptionKey extends PsiElement {
@@ -17,5 +19,11 @@ public interface CwtOptionKey extends PsiElement {
 
   @NotNull
   String getValue();
+
+  @NotNull
+  ItemPresentation getPresentation();
+
+  @NotNull
+  SearchScope getUseScope();
 
 }

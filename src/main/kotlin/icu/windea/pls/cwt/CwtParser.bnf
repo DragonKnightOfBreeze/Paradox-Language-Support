@@ -1,14 +1,15 @@
 {
-	parserClass="icu.windea.pls.cwt.psi.CwtParser"
-	extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
-	psiClassPrefix="Cwt"
-	psiImplClassSuffix="Impl"
-	psiPackage="icu.windea.pls.cwt.psi"
-	psiImplPackage="icu.windea.pls.cwt.psi.impl"
-	elementTypeHolderClass="icu.windea.pls.cwt.psi.CwtElementTypes"
-	elementTypeClass="icu.windea.pls.cwt.psi.CwtElementType"
-	tokenTypeClass="icu.windea.pls.cwt.psi.CwtTokenType"
-	psiImplUtilClass="icu.windea.pls.cwt.psi.impl.CwtPsiImplUtil"
+  parserClass="icu.windea.pls.cwt.psi.CwtParser"
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+  psiClassPrefix="Cwt"
+  psiImplClassSuffix="Impl"
+  psiPackage="icu.windea.pls.cwt.psi"
+  psiImplPackage="icu.windea.pls.cwt.psi.impl"
+  elementTypeHolderClass="icu.windea.pls.cwt.psi.CwtElementTypes"
+  elementTypeClass="icu.windea.pls.cwt.psi.CwtElementType"
+  tokenTypeClass="icu.windea.pls.cwt.psi.CwtTokenType"
+  psiImplUtilClass="icu.windea.pls.cwt.psi.impl.CwtPsiImplUtil"
+  methods(".*")=[getPresentation getUseScope]
 }
 
 root ::= root_block ?
@@ -57,11 +58,11 @@ property ::= property_key property_separator value {
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
   methods=[
     propertyKey="property_key" propertyValue="value"
-    getIcon getName setName getNameIdentifier getValue getSeparatorType getPresentation getUseScope
+    getIcon getName setName getNameIdentifier getValue getSeparatorType
   ]
 }
 property_key ::= PROPERTY_KEY_TOKEN {
-  methods=[getIcon getName getValue setValue getPresentation getUseScope]
+  methods=[getIcon getName getValue setValue]
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "com.intellij.psi.NavigatablePsiElement"
@@ -73,7 +74,7 @@ value ::= boolean | int | float | string | block {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
   ]
-  methods=[getIcon getName getValue setValue getPresentation getUseScope]
+  methods=[getIcon getName getValue setValue]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value

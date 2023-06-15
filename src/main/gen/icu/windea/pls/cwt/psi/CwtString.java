@@ -5,7 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
 public interface CwtString extends CwtValue, CwtNamedElement, PsiLiteralValue {
@@ -30,5 +32,11 @@ public interface CwtString extends CwtValue, CwtNamedElement, PsiLiteralValue {
 
   @NotNull
   String getStringValue();
+
+  @NotNull
+  ItemPresentation getPresentation();
+
+  @NotNull
+  SearchScope getUseScope();
 
 }

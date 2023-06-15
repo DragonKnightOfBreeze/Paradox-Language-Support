@@ -10,7 +10,9 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.cwt.psi.*;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
 public class CwtOptionKeyImpl extends ASTWrapperPsiElement implements CwtOptionKey {
@@ -45,6 +47,18 @@ public class CwtOptionKeyImpl extends ASTWrapperPsiElement implements CwtOptionK
   @NotNull
   public String getValue() {
     return CwtPsiImplUtil.getValue(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return CwtPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return CwtPsiImplUtil.getUseScope(this);
   }
 
 }

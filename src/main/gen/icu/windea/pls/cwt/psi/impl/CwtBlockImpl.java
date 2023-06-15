@@ -9,7 +9,9 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import icu.windea.pls.cwt.psi.*;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
 public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
@@ -91,6 +93,18 @@ public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
   @NotNull
   public List<PsiElement> getComponents() {
     return CwtPsiImplUtil.getComponents(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return CwtPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
+  public SearchScope getUseScope() {
+    return CwtPsiImplUtil.getUseScope(this);
   }
 
 }
