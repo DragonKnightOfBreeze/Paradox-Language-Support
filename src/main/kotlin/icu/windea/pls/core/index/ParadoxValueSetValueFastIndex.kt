@@ -85,7 +85,7 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
             override fun save(storage: DataOutput, value: Map<String, List<ParadoxValueSetValueInfo>>) {
                 storage.writeInt(value.size)
                 value.forEach { (k, infos) ->
-                    storage.writeUTF(k)
+                    storage.writeUTFFast(k)
                     storage.writeInt(infos.size)
                     infos.forEachFast { info -> writeValueSetValueInfo(storage, info) }
                 }
@@ -94,7 +94,7 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
             override fun read(storage: DataInput): Map<String, List<ParadoxValueSetValueInfo>> {
                 return buildMap {
                     repeat(storage.readInt()) {
-                        val k = storage.readUTF()
+                        val k = storage.readUTFFast()
                         val infos = MutableList(storage.readInt()) { readValueSetValueInfo(storage) }
                         put(k, infos)
                     }
@@ -148,16 +148,16 @@ private fun MutableMap<String, List<ParadoxValueSetValueInfo>>.addInfos(infos: L
 }
 
 private fun writeValueSetValueInfo(storage: DataOutput, info: ParadoxValueSetValueInfo) {
-    storage.writeUTF(info.name)
-    storage.writeUTF(info.valueSetName)
+    storage.writeUTFFast(info.name)
+    storage.writeUTFFast(info.valueSetName)
     storage.writeByte(info.readWriteAccess.toByte())
     storage.writeInt(info.elementOffset)
     storage.writeByte(info.gameType.toByte())
 }
 
 private fun readValueSetValueInfo(storage: DataInput): ParadoxValueSetValueInfo {
-    val name = storage.readUTF()
-    val valueSetName = storage.readUTF()
+    val name = storage.readUTFFast()
+    val valueSetName = storage.readUTFFast()
     val readWriteAccess = storage.readByte().toReadWriteAccess()
     val elementOffset = storage.readInt()
     val gameType = storage.readByte().toGameType()

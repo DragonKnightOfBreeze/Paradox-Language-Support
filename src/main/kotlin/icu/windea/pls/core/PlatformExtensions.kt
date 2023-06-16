@@ -851,6 +851,12 @@ fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
 }
 //endregion
 
+@Suppress("NOTHING_TO_INLINE")
+inline fun DataInput.readUTFFast(): String = IOUtil.readUTF(this)
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun DataOutput.writeUTFFast(value: String) = IOUtil.writeUTF(this, value)
+
 val StubBasedPsiElementBase<*>.containingFileStub: PsiFileStub<*>?
     get() {
         val stub = this.greenStub ?: return null

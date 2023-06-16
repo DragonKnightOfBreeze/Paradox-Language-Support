@@ -4,6 +4,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
 import java.io.*
 import java.util.*
@@ -44,13 +45,13 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
     override fun getValueExternalizer(): DataExternalizer<ParadoxFilePathInfo> {
         return object : DataExternalizer<ParadoxFilePathInfo> {
             override fun save(storage: DataOutput, value: ParadoxFilePathInfo) {
-                storage.writeUTF(value.directory)
+                storage.writeUTFFast(value.directory)
                 storage.writeByte(value.gameType.toByte())
                 storage.writeBoolean(value.included)
             }
             
             override fun read(storage: DataInput): ParadoxFilePathInfo {
-                val path = storage.readUTF()
+                val path = storage.readUTFFast()
                 val gameType = storage.readByte().toGameType()
                 val included = storage.readBoolean()
                 return ParadoxFilePathInfo(path, gameType, included)

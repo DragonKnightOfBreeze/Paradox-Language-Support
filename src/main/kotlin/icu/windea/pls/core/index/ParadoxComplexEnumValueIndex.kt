@@ -74,7 +74,7 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
             override fun save(storage: DataOutput, value: Map<String, List<ParadoxComplexEnumValueInfo>>) {
                 storage.writeInt(value.size)
                 value.forEach { (k, infos) ->
-                    storage.writeUTF(k)
+                    storage.writeUTFFast(k)
                     storage.writeInt(infos.size)
                     infos.forEachFast { info -> writeComplexEnumValueInfo(storage, info) }
                 }
@@ -83,7 +83,7 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
             override fun read(storage: DataInput): Map<String, List<ParadoxComplexEnumValueInfo>> {
                 return buildMap {
                     repeat(storage.readInt()) {
-                        val k = storage.readUTF()
+                        val k = storage.readUTFFast()
                         val infos = MutableList(storage.readInt()) { readComplexEnumValueInfo(storage) }
                         put(k, infos)
                     }
@@ -117,16 +117,16 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxCo
 }
 
 private fun writeComplexEnumValueInfo(storage: DataOutput, valueSetValueInfo: ParadoxComplexEnumValueInfo) {
-    storage.writeUTF(valueSetValueInfo.name)
-    storage.writeUTF(valueSetValueInfo.enumName)
+    storage.writeUTFFast(valueSetValueInfo.name)
+    storage.writeUTFFast(valueSetValueInfo.enumName)
     storage.writeByte(valueSetValueInfo.readWriteAccess.toByte())
     storage.writeInt(valueSetValueInfo.elementOffset)
     storage.writeByte(valueSetValueInfo.gameType.toByte())
 }
 
 private fun readComplexEnumValueInfo(storage: DataInput): ParadoxComplexEnumValueInfo {
-    val name = storage.readUTF()
-    val enumName = storage.readUTF()
+    val name = storage.readUTFFast()
+    val enumName = storage.readUTFFast()
     val readWriteAccess = storage.readByte().toReadWriteAccess()
     val elementOffset = storage.readInt()
     val gameType = storage.readByte().toGameType()
