@@ -3,6 +3,7 @@ package icu.windea.pls.lang
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -17,24 +18,23 @@ import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 
 object ParadoxConfigResolver {
-    fun getConfigs(element: PsiElement, allowDefinition: Boolean = element is ParadoxScriptValue, orDefault: Boolean = true, matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
+    fun getConfigs(element: PsiElement, orDefault: Boolean = true, matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
         return when {
-            element is ParadoxScriptDefinitionElement -> getPropertyConfigs(element, allowDefinition, orDefault, matchOptions)
-            element is ParadoxScriptPropertyKey -> getPropertyConfigs(element, allowDefinition, orDefault, matchOptions)
+            element is ParadoxScriptDefinitionElement -> getPropertyConfigs(element, orDefault, matchOptions)
+            element is ParadoxScriptPropertyKey -> getPropertyConfigs(element, orDefault, matchOptions)
             element is ParadoxScriptValue -> getValueConfigs(element, orDefault, matchOptions)
             else -> throw UnsupportedOperationException()
         }
     }
     
-    fun getPropertyConfigs(element: PsiElement, allowDefinition: Boolean = false, orDefault: Boolean = true, matchOptions: Int = Options.Default): List<CwtPropertyConfig> {
+    fun getPropertyConfigs(element: PsiElement, orDefault: Boolean = true, matchOptions: Int = Options.Default): List<CwtPropertyConfig> {
         val configsMap = doGetConfigsCacheFromCache(element) ?: return emptyList()
         val cacheKey = buildString {
             append('p')
-            append('#').append(allowDefinition.toInt())
             append('#').append(orDefault.toInt())
             append('#').append(matchOptions)
         }
-        return configsMap.getOrPut(cacheKey) { doGetPropertyConfigs(element, allowDefinition, orDefault, matchOptions) }.cast()
+        return configsMap.getOrPut(cacheKey) { doGetPropertyConfigs(element, orDefault, matchOptions) }.cast()
     }
     
     fun getValueConfigs(element: PsiElement, orDefault: Boolean = true, matchOptions: Int = Options.Default): List<CwtValueConfig> {
@@ -57,14 +57,14 @@ object ParadoxConfigResolver {
         }
     }
     
-    private fun doGetPropertyConfigs(element: PsiElement, allowDefinition: Boolean, orDefault: Boolean, matchOptions: Int): List<CwtPropertyConfig> {
+    private fun doGetPropertyConfigs(element: PsiElement, orDefault: Boolean, matchOptions: Int): List<CwtPropertyConfig> {
         val memberElement = when {
             element is ParadoxScriptDefinitionElement -> element
             element is ParadoxScriptPropertyKey -> element.parent as? ParadoxScriptProperty ?: return emptyList()
             else -> throw UnsupportedOperationException()
         }
         val definitionMemberInfo = memberElement.definitionMemberInfo ?: return emptyList()
-        if(!allowDefinition && definitionMemberInfo.elementPath.isEmpty()) return emptyList()
+        if(definitionMemberInfo.elementPath.isEmpty() && !BitUtil.isSet(matchOptions, Options.AcceptDefinition)) return emptyList()
         
         val expression = when {
             element is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxDataExpression.resolve(it, matchOptions) }

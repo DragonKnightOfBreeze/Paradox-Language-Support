@@ -73,7 +73,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                         val name = e.name
                         if(!name.isExactIdentifier()) return
                         if(resolvedNames.contains(name)) return //不需要重复解析引用
-                        val configs = ParadoxConfigResolver.getConfigs(e, e is ParadoxScriptValue, true, ParadoxConfigMatcher.Options.Default)
+                        val configs = ParadoxConfigResolver.getConfigs(e)
                         val config = configs.firstOrNull() ?: return
                         val configExpression = config.expression
                         if(configExpression.type != CwtDataType.Definition) return

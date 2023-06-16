@@ -35,7 +35,7 @@ class StellarisComplexTriggerModifierOverriddenConfigProvider : ParadoxOverridde
         ProgressManager.checkCanceled()
         val complexTriggerModifierProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
             .filter { it.name.lowercase() == COMPLEX_TRIGGER_MODIFIER_NAME }
-            .find { ParadoxConfigResolver.getConfigs(it, it is ParadoxScriptValue, true, ParadoxConfigMatcher.Options.Default).any { c -> c.inlineableConfig == aliasConfig } }
+            .find { ParadoxConfigResolver.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
             ?: return null
         val triggerProperty = complexTriggerModifierProperty.findProperty(TRIGGER_KEY, inline = true) ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null

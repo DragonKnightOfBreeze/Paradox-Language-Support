@@ -123,7 +123,7 @@ object ParadoxEventHandler {
                 val value = element.value
                 if(result.contains(value)) return
                 if(!isValidEventId(value)) return //排除非法的事件ID
-                val configs = ParadoxConfigResolver.getConfigs(element, element is ParadoxScriptValue, true, ParadoxConfigMatcher.Options.Default)
+                val configs = ParadoxConfigResolver.getConfigs(element)
                 val isEventConfig = configs.any { isEventConfig(it) }
                 if(isEventConfig) {
                     result.add(value)

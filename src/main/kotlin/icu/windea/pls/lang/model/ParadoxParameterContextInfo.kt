@@ -8,8 +8,8 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.script.psi.*
 import java.util.*
 
@@ -62,11 +62,11 @@ class ParadoxParameterInfo(
         element?.textRangeInParent
     }
     
-    val isEntireExpression : Boolean by lazy {
+    val isEntireExpression: Boolean by lazy {
         val element = element
-        element != null 
+        element != null
             && element.prevSibling.let { it == null || it.text == "\"" }
-            && element.nextSibling.let  { it == null || it.text == "\"" }
+            && element.nextSibling.let { it == null || it.text == "\"" }
     }
     
     private fun doGetTemplateSnippet(it: PsiElement): String {
@@ -84,8 +84,8 @@ class ParadoxParameterInfo(
     val expressionConfigs: List<CwtMemberConfig<*>> by lazy {
         val parent = element?.parent
         when {
-            parent is ParadoxScriptPropertyKey -> ParadoxConfigResolver.getConfigs(parent, true, true, ParadoxConfigMatcher.Options.Default)
-            parent is ParadoxScriptString -> ParadoxConfigResolver.getConfigs(parent, true, true, ParadoxConfigMatcher.Options.Default)
+            parent is ParadoxScriptPropertyKey -> ParadoxConfigResolver.getConfigs(parent, matchOptions = Options.Default or Options.AcceptDefinition)
+            parent is ParadoxScriptString -> ParadoxConfigResolver.getConfigs(parent, matchOptions = Options.Default or Options.AcceptDefinition)
             else -> emptyList()
         }
     }

@@ -58,7 +58,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if(propertyKey.text.isParameterized()) return false
                         val definitionMemberInfo = element.definitionMemberInfo
                         if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
-                        val configs = ParadoxConfigResolver.getPropertyConfigs(element, orDefault = true)
+                        val configs = ParadoxConfigResolver.getPropertyConfigs(element)
                         if(configs.isEmpty()) {
                             //这里使用合并后的子规则，即使parentProperty可以精确匹配
                             //优先使用重载后的规则

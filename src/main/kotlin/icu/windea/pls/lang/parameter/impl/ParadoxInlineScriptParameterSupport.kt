@@ -61,7 +61,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
                 val parentProperties = parentBlock.parentsOfType<ParadoxScriptProperty>(withSelf = false)
                 for(prop in parentProperties) {
                     //infer context config
-                    val propConfig = ParadoxConfigResolver.getPropertyConfigs(prop, false, true, ParadoxConfigMatcher.Options.Default).firstOrNull() ?: continue
+                    val propConfig = ParadoxConfigResolver.getPropertyConfigs(prop).firstOrNull() ?: continue
                     val propInlineConfig = propConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptHandler.inlineScriptName } ?: continue
                     if(propInlineConfig.config.configs?.any { it is CwtPropertyConfig && it.expression.type == CwtDataType.Parameter } != true) continue
                     inlineConfig = propInlineConfig

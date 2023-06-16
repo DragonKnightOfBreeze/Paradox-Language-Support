@@ -152,7 +152,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 if(localeConfigs.isEmpty()) return
                 if(!checkForModifiers) return
-                val config = ParadoxConfigResolver.getConfigs(element, element is ParadoxScriptValue, true, ParadoxConfigMatcher.Options.Default).firstOrNull() ?: return
+                val config = ParadoxConfigResolver.getConfigs(element).firstOrNull() ?: return
                 if(config.expression.type != CwtDataType.Modifier) return
                 val name = element.value
                 val key = ParadoxModifierHandler.getModifierNameKey(name)

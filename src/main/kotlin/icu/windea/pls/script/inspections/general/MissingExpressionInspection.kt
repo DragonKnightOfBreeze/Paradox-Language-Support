@@ -10,6 +10,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.inline.*
 import icu.windea.pls.lang.model.*
@@ -36,7 +37,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                 if(file !is ParadoxScriptFile) return
                 //忽略可能的脚本片段入口
                 if(ParadoxScriptMemberElementInlineSupport.canLink(file)) return super.visitFile(file)
-                val configs = ParadoxConfigResolver.getConfigs(file, allowDefinition = true, matchOptions = ParadoxConfigMatcher.Options.Default)
+                val configs = ParadoxConfigResolver.getConfigs(file, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(file, file, configs)
             }
             
@@ -51,7 +52,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                     ?.also { if(it.text.isParameterized()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
-                val configs = ParadoxConfigResolver.getConfigs(element, allowDefinition = true, matchOptions = ParadoxConfigMatcher.Options.Default)
+                val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(element, position, configs)
             }
             

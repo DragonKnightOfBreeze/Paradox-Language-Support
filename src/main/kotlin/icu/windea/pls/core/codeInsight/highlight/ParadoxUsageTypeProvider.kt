@@ -30,7 +30,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
                     return ParadoxUsageType.COMPLEX_ENUM_VALUE
                 }
                 
-                val config = ParadoxConfigResolver.getConfigs(element, element is ParadoxScriptValue, true, ParadoxConfigMatcher.Options.Default).firstOrNull() ?: return null
+                val config = ParadoxConfigResolver.getConfigs(element).firstOrNull() ?: return null
                 val configExpression = config.expression
                 val type = configExpression.type
                 //in invocation expression

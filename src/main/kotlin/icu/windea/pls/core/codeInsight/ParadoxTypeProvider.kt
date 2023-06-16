@@ -9,6 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.localisation.psi.*
@@ -72,7 +73,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
                 val parameterElement = when {
                     element is ParadoxScriptValue && element.isPropertyValue() -> {
                         val propertyKey = element.propertyKey ?: return@run
-                        val propertyConfig = ParadoxConfigResolver.getConfigs(propertyKey, true, true, ParadoxConfigMatcher.Options.Default).firstOrNull() ?: return@run
+                        val propertyConfig = ParadoxConfigResolver.getConfigs(propertyKey, matchOptions = Options.Default or Options.AcceptDefinition).firstOrNull() ?: return@run
                         ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return@run
                     }
                     element is ParadoxParameter -> {

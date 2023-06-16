@@ -10,6 +10,7 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.script.psi.*
 
 /**
@@ -40,7 +41,7 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         val stringElement = element
         if(!stringElement.isBlockValue()) return
         val parentProperty = stringElement.findParentProperty() ?: return
-        val configs = ParadoxConfigResolver.getConfigs(parentProperty, allowDefinition = true, matchOptions = ParadoxConfigMatcher.Options.Default)
+        val configs = ParadoxConfigResolver.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
         if(configs.isEmpty()) return
         val configGroup = configs.first().info.configGroup
         context.configGroup = configGroup

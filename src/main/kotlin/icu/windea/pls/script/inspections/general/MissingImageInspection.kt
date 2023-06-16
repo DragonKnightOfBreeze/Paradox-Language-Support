@@ -113,7 +113,7 @@ class MissingImageInspection : LocalInspectionTool() {
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
                 if(!checkForModifiers) return
-                val config = ParadoxConfigResolver.getConfigs(element, element is ParadoxScriptValue, true, ParadoxConfigMatcher.Options.Default).firstOrNull() ?: return
+                val config = ParadoxConfigResolver.getConfigs(element).firstOrNull() ?: return
                 if(config.expression.type != CwtDataType.Modifier) return
                 val name = element.value
                 val iconPath = ParadoxModifierHandler.getModifierIconPath(name)

@@ -27,6 +27,7 @@ import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.data.impl.*
@@ -191,8 +192,8 @@ object ParadoxConfigHandler {
         
         val configGroup = definitionMemberInfo.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.Relax
-        val parentConfigs = ParadoxConfigResolver.getConfigs(definitionElement, allowDefinition = true, matchOptions = matchOptions)
+        val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
+        val parentConfigs = ParadoxConfigResolver.getConfigs(definitionElement, matchOptions = matchOptions)
         val configs = mutableListOf<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
@@ -237,8 +238,8 @@ object ParadoxConfigHandler {
         
         val configGroup = definitionMemberInfo.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchOptions = ParadoxConfigMatcher.Options.Default or ParadoxConfigMatcher.Options.Relax
-        val parentConfigs = ParadoxConfigResolver.getConfigs(memberElement, allowDefinition = true, matchOptions = matchOptions)
+        val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
+        val parentConfigs = ParadoxConfigResolver.getConfigs(memberElement, matchOptions = matchOptions)
         val configs = mutableListOf<CwtValueConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
@@ -1094,7 +1095,7 @@ object ParadoxConfigHandler {
         return getCwtConfig(project).get(key)
     }
     
-    fun getAliasSubName(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): String? {
+    fun getAliasSubName(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = Options.Default): String? {
         val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
         if(constKey != null) return constKey
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
@@ -1104,7 +1105,7 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun getAliasSubNames(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<String> {
+    fun getAliasSubNames(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = Options.Default): List<String> {
         val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
         if(constKey != null) return listOf(constKey)
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptyList()

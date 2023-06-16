@@ -12,6 +12,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.script.psi.*
 
 //com.intellij.testIntegration.GotoTestOrCodeHandler
@@ -29,7 +30,7 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
         //包括内联规则（例如alias，显示时使用特殊的别名图标）
         //如果对应，也包括一些相关的规则，如modifierConfig
         val isKey = location is ParadoxScriptPropertyKey
-        val configs = ParadoxConfigResolver.getConfigs(location, true, isKey, ParadoxConfigMatcher.Options.Default)
+        val configs = ParadoxConfigResolver.getConfigs(location, isKey, Options.Default or Options.AcceptDefinition)
         val targets = buildSet {
             for(config in configs) {
                 val configGroup = config.info.configGroup

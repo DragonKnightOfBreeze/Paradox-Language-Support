@@ -6,6 +6,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.script.psi.*
 
 //TODO 暂未使用，需要验证
@@ -27,7 +28,7 @@ class ParadoxScriptConfigAwareInspectionSuppressor : InspectionSuppressor {
         }
         
         if(element is ParadoxScriptProperty || (element is ParadoxScriptExpressionElement && element.isExpression())) {
-            val configs = ParadoxConfigResolver.getConfigs(element, allowDefinition = true, matchOptions = ParadoxConfigMatcher.Options.Default)
+            val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
             if(configs.isNotEmpty()) {
                 for(config in configs) {
                     //检查对应的规则

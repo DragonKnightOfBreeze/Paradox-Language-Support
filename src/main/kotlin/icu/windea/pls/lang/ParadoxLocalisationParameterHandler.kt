@@ -14,6 +14,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
+import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
@@ -102,7 +103,7 @@ object ParadoxLocalisationParameterHandler {
     
     private fun isMatchedProperty(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         if(element is ParadoxScriptProperty) {
-            val configs = ParadoxConfigResolver.getConfigs(element, allowDefinition = true, matchOptions = ParadoxConfigMatcher.Options.Default)
+            val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
             if(configs.any { it pointerEquals config }) {
                 return true
             }

@@ -71,7 +71,7 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
         if(element !is ParadoxScriptExpressionElement) return true
         if(element !is ParadoxScriptStringExpressionElement && element !is ParadoxScriptInt) return true
         if(!element.isExpression()) return true
-        val config = ParadoxConfigResolver.getConfigs(element, element is ParadoxScriptValue, true, ParadoxConfigMatcher.Options.Default).firstOrNull()
+        val config = ParadoxConfigResolver.getConfigs(element).firstOrNull()
             ?.takeIf { it.expression.type in expressionTypes }
             ?: return true
         val configGroup = config.info.configGroup
