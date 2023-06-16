@@ -35,11 +35,6 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
-/**
- * CWT规则的处理器。
- *
- * 提供基于CWT规则实现的匹配、校验、代码提示、引用解析等功能。
- */
 object ParadoxConfigHandler {
     //region Handle Methods
     fun getExpressionText(element: ParadoxScriptExpressionElement, rangeInElement: TextRange? = null) : String {

@@ -272,7 +272,7 @@ val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
     get() = ParadoxDefinitionHandler.getInfo(this)
 
 val ParadoxScriptMemberElement.definitionMemberInfo: ParadoxDefinitionMemberInfo?
-    get() = ParadoxDefinitionMemberHandler.getInfo(this)
+    get() = ParadoxMemberHandler.getDefinitionMemberInfo(this)
 
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
     get() = ParadoxLocalisationHandler.getInfo(this)

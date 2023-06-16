@@ -14,9 +14,6 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
-/**
- * 用于处理复杂枚举信息。
- */
 object ParadoxComplexEnumValueHandler {
     fun getInfo(element: ParadoxComplexEnumValueElement): ParadoxComplexEnumValueInfo {
         return ParadoxComplexEnumValueInfo(element.name, element.enumName, element.readWriteAccess, element.startOffset, element.gameType)

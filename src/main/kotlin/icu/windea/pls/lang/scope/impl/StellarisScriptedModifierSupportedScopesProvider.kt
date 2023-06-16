@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 class StellarisScriptedModifierSupportedScopesProvider : ParadoxDefinitionSupportedScopesProvider {
     override fun getSupportedScopes(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String>? {
         if(definitionInfo.type != "scripted_modifier") return null
-        val modifierCategory = StellarisScriptedModifierHandler.resolveModifierCategory(definition, definitionInfo) ?: return null
+        val modifierCategory = ParadoxScriptedModifierHandler.Stellaris.resolveModifierCategory(definition, definitionInfo) ?: return null
         return modifierCategory.getSupportedScopes()
     }
 }
