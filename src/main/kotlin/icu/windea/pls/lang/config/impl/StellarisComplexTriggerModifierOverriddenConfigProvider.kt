@@ -20,8 +20,6 @@ class StellarisComplexTriggerModifierOverriddenConfigProvider : ParadoxOverridde
         private const val PARAMETERS_KEY = "parameters"
         private const val COMPLEX_TRIGGER_MODIFIER_NAME = "complex_trigger_modifier"
         private val COMPLEX_TRIGGER_MODIFIER_KEYS = arrayOf("alias[modifier_rule:complex_trigger_modifier]", "alias[modifier_rule_with_loc:complex_trigger_modifier]")
-        
-        private val SKIP_MISSING_CHECK_KEYS = arrayOf("value", "count", "percentage")
     }
     
     @Suppress("UNCHECKED_CAST")
@@ -52,9 +50,21 @@ class StellarisComplexTriggerModifierOverriddenConfigProvider : ParadoxOverridde
     }
     
     override fun skipMissingExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression): Boolean {
-        val isDirectChild = configs.any { it.castOrNull<CwtValueConfig>()?.propertyConfig?.overriddenProvider != null }
-        if(isDirectChild) {
-            if(configExpression.expressionString in SKIP_MISSING_CHECK_KEYS) return true
+        // skip properties whose value config type is one of the following types:
+        // int / float / value_field / int_value_field / variable_field / int_variable_field
+        if(configExpression !is CwtKeyExpression) return false
+        configs.forEach { c1 ->
+            c1.configs?.forEach { c2 ->
+                if(c2 is CwtPropertyConfig && c2.expression == configExpression) {
+                    val valueExpression = c2.valueExpression
+                    when {
+                        valueExpression.type == CwtDataType.Int -> return true
+                        valueExpression.type == CwtDataType.Float -> return true
+                        valueExpression.type.isValueFieldType() -> return true
+                        valueExpression.type.isVariableFieldType() -> return true
+                    }
+                }
+            }
         }
         return false
     }

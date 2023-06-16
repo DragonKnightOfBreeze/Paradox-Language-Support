@@ -29,10 +29,10 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
         
         //尝试基于CWT规则进行解析
         run {
-            val configs = ParadoxConfigResolver.getConfigs(element, orDefault = false)
+            val isKey = element is ParadoxScriptPropertyKey
+            val configs = ParadoxConfigResolver.getConfigs(element, orDefault = isKey)
             val config = configs.firstOrNull() ?: return@run
             val textRange = ParadoxConfigHandler.getExpressionTextRange(element) //unquoted text
-            val isKey = element is ParadoxScriptPropertyKey
             val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
             return collectReferences(reference)
         }
