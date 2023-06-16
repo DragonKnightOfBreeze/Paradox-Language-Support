@@ -77,29 +77,32 @@ object ParadoxMemberConfigResolver {
         
         val configGroup = definitionMemberInfo.configGroup
         elementPath.subPaths.forEachFast f1@{ (_, subPath, isQuoted, isKey) ->
+            ProgressManager.checkCanceled()
+            
             //如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
             //如果整个过程中的某个key匹配内联规则的名字（如，inline_script），则内联此内联规则
             
             val expression = ParadoxDataExpression.resolve(subPath, isQuoted, true)
             val nextResult = mutableListOf<CwtMemberConfig<*>>()
-            result.forEachFast f2@{ parentConfig ->
-                ProgressManager.checkCanceled()
-                
-                //处理内联规则
-                if(isKey && parentConfig is CwtPropertyConfig) {
-                    val inlinedByInlineConfig = ParadoxConfigInlineHandler.inlineByInlineConfig(element, subPath, isQuoted, parentConfig, nextResult)
-                    if(inlinedByInlineConfig) return@f2
-                }
-                
-                val configs = parentConfig.configs
-                if(configs.isNullOrEmpty()) return@f2
-                configs.forEachFast f3@{ config ->
-                    if(isKey && config is CwtPropertyConfig) {
-                        if(ParadoxConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) {
-                            ParadoxConfigInlineHandler.inlineConfig(element, subPath, isQuoted, config, nextResult, matchOptions)
+            
+            run r1@{
+                result.forEachFast f2@{ parentConfig ->
+                    //处理内联规则
+                    if(isKey && parentConfig is CwtPropertyConfig) {
+                        val inlineStatus = ParadoxConfigInlineHandler.inlineByInlineConfig(element, subPath, isQuoted, parentConfig, nextResult)
+                        if(inlineStatus) return@r1
+                    }
+                    
+                    val configs = parentConfig.configs
+                    if(configs.isNullOrEmpty()) return@f2
+                    configs.forEachFast f3@{ config ->
+                        if(isKey && config is CwtPropertyConfig) {
+                            if(ParadoxConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) {
+                                ParadoxConfigInlineHandler.inlineByConfig(element, subPath, isQuoted, config, nextResult, matchOptions)
+                            }
+                        } else if(!isKey && config is CwtValueConfig) {
+                            nextResult.add(config)
                         }
-                    } else if(!isKey && config is CwtValueConfig) {
-                        nextResult.add(config)
                     }
                 }
             }

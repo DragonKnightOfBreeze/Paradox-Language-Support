@@ -3,7 +3,6 @@ package icu.windea.pls.lang
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -88,6 +87,8 @@ object ParadoxConfigInlineHandler {
     }
     
     fun inlineByInlineConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>): Boolean {
+        if(config.inlineableConfig is CwtInlineConfig) return false
+        
         //内联特定的规则：inline_script
         val configGroup = config.info.configGroup
         val inlineConfigs = configGroup.inlineConfigGroup[key]
@@ -98,7 +99,7 @@ object ParadoxConfigInlineHandler {
         return true
     }
     
-    fun inlineConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>, matchOptions: Int): Boolean {
+    fun inlineByConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>, matchOptions: Int): Boolean {
         //内联类型为single_alias_right或alias_match_left的规则
         run {
             val configGroup = config.info.configGroup

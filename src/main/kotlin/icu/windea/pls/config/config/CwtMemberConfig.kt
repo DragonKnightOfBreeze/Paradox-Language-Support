@@ -84,6 +84,9 @@ fun <T : PsiElement> CwtMemberConfig<T>.deepMergeConfigs(configContext: CwtConfi
             } else {
                 val subtypes = configContext.definitionSubtypes
                 if(subtypes == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
+                    mergedConfigs?.forEachFast { mergedConfig ->
+                        mergedConfig.parent = parent
+                    }
                     if(configContext.injectors.isNotEmpty()) return mergedConfigs ?: mutableListOf()
                     return mergedConfigs.orEmpty()
                 } else {
