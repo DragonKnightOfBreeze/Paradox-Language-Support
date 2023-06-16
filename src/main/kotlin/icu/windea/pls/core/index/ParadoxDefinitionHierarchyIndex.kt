@@ -219,7 +219,7 @@ private fun readDefinitionHierarchyInfo(storage: DataInput, previousInfo: Parado
     val isKey = storage.readOrReadFrom(previousInfo, { it.isKey }, { storage.readBoolean() })
     val definitionName = storage.readOrReadFrom(previousInfo, { it.definitionName }, { storage.readUTFFast() })
     val definitionType = storage.readOrReadFrom(previousInfo, { it.definitionType }, { storage.readUTFFast() })
-    val definitionSubtypes = storage.readOrReadFrom(previousInfo, { it.definitionSubtypes }, { storage.readList{ storage.readUTFFast() } })
+    val definitionSubtypes = storage.readOrReadFrom(previousInfo, { it.definitionSubtypes }, { storage.readList { storage.readUTFFast() } })
     val elementOffset = storage.readInt()
     val gameType = storage.readByte().toGameType()
     val contextInfo = ParadoxDefinitionHierarchyInfo(supportId, expression, configExpression, isKey, definitionName, definitionType, definitionSubtypes, elementOffset, gameType)

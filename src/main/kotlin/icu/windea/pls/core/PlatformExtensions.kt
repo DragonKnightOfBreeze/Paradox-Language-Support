@@ -860,7 +860,8 @@ inline fun <T, V> DataInput.readOrReadFrom(from: T?, selector: (T) -> V, readAct
 inline fun <T, V> DataOutput.writeOrWriteFrom(value: T, from: T?, selector: (T) -> V, writeAction: (V) -> Unit) {
     if(from == null) return writeAction(selector(value))
     if(selector(value) == selector(from)) return writeBoolean(true)
-    return writeAction(selector(value))
+    writeBoolean(false)
+    writeAction(selector(value))
 }
 
 @Suppress("NOTHING_TO_INLINE")
