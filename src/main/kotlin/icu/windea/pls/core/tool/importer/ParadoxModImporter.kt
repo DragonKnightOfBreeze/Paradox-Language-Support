@@ -14,7 +14,7 @@ interface ParadoxModImporter {
     fun execute(project: Project, tableView: TableView<ParadoxModDependencySettingsState>, tableModel: ParadoxModDependenciesTableModel)
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxModImporter>("icu.windea.pls.modImporter")
+        val EP_NAME = ExtensionPointName.create<ParadoxModImporter>("icu.windea.pls.modImporter")
     }
 }
 

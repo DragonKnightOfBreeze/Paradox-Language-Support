@@ -24,7 +24,7 @@ interface ParadoxScriptMemberElementInlineSupport {
     fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxScriptMemberElementInlineSupport>("icu.windea.pls.scriptMemberElementInlineSupport")
+        val EP_NAME = ExtensionPointName.create<ParadoxScriptMemberElementInlineSupport>("icu.windea.pls.scriptMemberElementInlineSupport")
         
         fun canLink(element: ParadoxScriptMemberElement): Boolean {
             return EP_NAME.extensionList.any { ep ->

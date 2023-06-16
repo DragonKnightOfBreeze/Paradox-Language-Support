@@ -31,7 +31,7 @@ interface ParadoxDefinitionInferredScopeContextProvider {
     fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String?
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxDefinitionInferredScopeContextProvider>("icu.windea.pls.definitionInferredScopeContextProvider")
+        val EP_NAME = ExtensionPointName.create<ParadoxDefinitionInferredScopeContextProvider>("icu.windea.pls.definitionInferredScopeContextProvider")
         
         fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
             val gameType = definitionInfo.gameType

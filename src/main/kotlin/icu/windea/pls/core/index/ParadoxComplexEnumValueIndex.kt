@@ -8,6 +8,7 @@ import com.intellij.util.indexing.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
@@ -22,7 +23,7 @@ import java.io.*
 class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<ParadoxComplexEnumValueInfo>>() {
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxComplexEnumValueInfo>>("paradox.complexEnumValue.index")
-        private const val VERSION = 29 //1.0.7
+        private const val VERSION = 30 //1.0.8
         
         fun getFileData(file: VirtualFile, project: Project): Map<String, List<ParadoxComplexEnumValueInfo>> {
             return FileBasedIndex.getInstance().getFileData(NAME, file, project)
@@ -47,11 +48,12 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
     override fun getValueExternalizer(): DataExternalizer<List<ParadoxComplexEnumValueInfo>> {
         return object : DataExternalizer<List<ParadoxComplexEnumValueInfo>> {
             override fun save(storage: DataOutput, value: List<ParadoxComplexEnumValueInfo>) {
-                storage.writeList(value) { info -> writeComplexEnumValueInfo(storage, info) }
+                storage.writeInt(value.size)
+                value.forEachFast { info -> writeComplexEnumValueInfo(storage, info) }
             }
             
             override fun read(storage: DataInput): List<ParadoxComplexEnumValueInfo> {
-                return storage.readList { readComplexEnumValueInfo(storage) }
+                return MutableList(storage.readInt()) { readComplexEnumValueInfo(storage) }
             }
         }
     }
@@ -66,14 +68,15 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
     
     object LazyIndex {
         private const val ID = "paradox.complexEnumValue.index.lazy"
-        private const val VERSION = 29 //1.0.7
+        private const val VERSION = 30 //1.0.8
         
         private val valueExternalizer = object : DataExternalizer<Map<String, List<ParadoxComplexEnumValueInfo>>> {
             override fun save(storage: DataOutput, value: Map<String, List<ParadoxComplexEnumValueInfo>>) {
                 storage.writeInt(value.size)
                 value.forEach { (k, infos) ->
                     storage.writeUTF(k)
-                    storage.writeList(infos) { info -> writeComplexEnumValueInfo(storage, info) }
+                    storage.writeInt(infos.size)
+                    infos.forEachFast { info -> writeComplexEnumValueInfo(storage, info) }
                 }
             }
             
@@ -81,7 +84,7 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
                 return buildMap {
                     repeat(storage.readInt()) {
                         val k = storage.readUTF()
-                        val infos = storage.readList { readComplexEnumValueInfo(storage) }
+                        val infos = MutableList(storage.readInt()) { readComplexEnumValueInfo(storage) }
                         put(k, infos)
                     }
                 }

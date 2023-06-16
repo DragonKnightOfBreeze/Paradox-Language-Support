@@ -16,7 +16,7 @@ interface ParadoxIncorrectExpressionChecker {
     fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder)
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxIncorrectExpressionChecker>("icu.windea.pls.incorrectExpressionChecker")
+        val EP_NAME = ExtensionPointName.create<ParadoxIncorrectExpressionChecker>("icu.windea.pls.incorrectExpressionChecker")
         
         fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
             val gameType = config.info.configGroup.gameType ?: return

@@ -26,7 +26,7 @@ interface ParadoxOverriddenConfigProvider {
     fun skipTooManyExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression) = false
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxOverriddenConfigProvider>("icu.windea.pls.overriddenConfigProvider")
+        val EP_NAME = ExtensionPointName.create<ParadoxOverriddenConfigProvider>("icu.windea.pls.overriddenConfigProvider")
         
         fun <T: CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
             val gameType = config.info.configGroup.gameType ?: return null

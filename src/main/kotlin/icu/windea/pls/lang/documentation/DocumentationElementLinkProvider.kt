@@ -23,7 +23,7 @@ interface DocumentationElementLinkProvider {
     fun create(element: PsiElement, plainLink: Boolean = true): String? = null
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<DocumentationElementLinkProvider>("icu.windea.pls.documentationElementLinkProvider")
+        val EP_NAME = ExtensionPointName.create<DocumentationElementLinkProvider>("icu.windea.pls.documentationElementLinkProvider")
         
         fun supports(link: String): Boolean {
             return EP_NAME.extensionList.any { ep ->

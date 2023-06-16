@@ -28,7 +28,7 @@ import java.io.*
 class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<ParadoxValueSetValueInfo>>() {
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxValueSetValueInfo>>("paradox.valueSetValue.fast.index")
-        private const val VERSION = 29 //1.0.7
+        private const val VERSION = 30 //1.0.8
         
         fun getFileData(file: VirtualFile, project: Project): Map<String, List<ParadoxValueSetValueInfo>> {
             val useLazyIndex = useLazyIndex(file)
@@ -55,11 +55,12 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
     override fun getValueExternalizer(): DataExternalizer<List<ParadoxValueSetValueInfo>> {
         return object : DataExternalizer<List<ParadoxValueSetValueInfo>> {
             override fun save(storage: DataOutput, value: List<ParadoxValueSetValueInfo>) {
-                storage.writeList(value) { info -> writeValueSetValueInfo(storage, info) }
+                storage.writeInt(value.size)
+                value.forEachFast { info -> writeValueSetValueInfo(storage, info) }
             }
             
             override fun read(storage: DataInput): List<ParadoxValueSetValueInfo> {
-                return storage.readList { readValueSetValueInfo(storage) }
+                return MutableList(storage.readInt()) { readValueSetValueInfo(storage) }
             }
         }
     }
@@ -74,7 +75,7 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
     
     object LazyIndex {
         private const val ID = "paradox.valueSetValue.fast.index.lazy"
-        private const val VERSION = 29 //1.0.7
+        private const val VERSION = 30 //1.0.8
         
         fun getFileData(file: VirtualFile, project: Project): Map<String, List<ParadoxValueSetValueInfo>> {
             return gist.getFileData(project, file)
@@ -85,7 +86,8 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
                 storage.writeInt(value.size)
                 value.forEach { (k, infos) ->
                     storage.writeUTF(k)
-                    storage.writeList(infos) { info -> writeValueSetValueInfo(storage, info) }
+                    storage.writeInt(infos.size)
+                    infos.forEachFast { info -> writeValueSetValueInfo(storage, info) }
                 }
             }
             
@@ -93,7 +95,7 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
                 return buildMap {
                     repeat(storage.readInt()) {
                         val k = storage.readUTF()
-                        val infos = storage.readList { readValueSetValueInfo(storage) }
+                        val infos = MutableList(storage.readInt()) { readValueSetValueInfo(storage) }
                         put(k, infos)
                     }
                 }

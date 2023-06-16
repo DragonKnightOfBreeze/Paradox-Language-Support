@@ -25,7 +25,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
 	) : ParadoxSearchParameters<VirtualFile>
 	
 	companion object {
-		@JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<VirtualFile, SearchParameters>>("icu.windea.pls.paradoxFilePathSearch")
+		val EP_NAME = ExtensionPointName.create<QueryExecutor<VirtualFile, SearchParameters>>("icu.windea.pls.paradoxFilePathSearch")
 		@JvmField val INSTANCE = ParadoxFilePathSearch()
 		
 		/**

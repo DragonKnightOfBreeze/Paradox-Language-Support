@@ -23,16 +23,18 @@ interface ParadoxDefinitionHierarchySupport {
     fun readData(storage: DataInput, data: ParadoxDefinitionHierarchyInfo) {}
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxDefinitionHierarchySupport>("icu.windea.pls.definitionHierarchySupport")
+        val EP_NAME = ExtensionPointName.create<ParadoxDefinitionHierarchySupport>("icu.windea.pls.definitionHierarchySupport")
+        
+        val extensionList by lazy { EP_NAME.extensionList }
         
         fun indexData(fileData: MutableMap<String, List<ParadoxDefinitionHierarchyInfo>>, element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo) {
-            EP_NAME.extensionList.forEachFast { ep ->
+            extensionList.forEachFast { ep ->
                 ep.indexData(fileData, element, config, definitionInfo)
             }
         }
         
         fun saveData(storage: DataOutput, data: ParadoxDefinitionHierarchyInfo) {
-            EP_NAME.extensionList.forEachFast { ep ->
+            extensionList.forEachFast { ep ->
                 if(ep.id == data.supportId) {
                     ep.saveData(storage, data)
                     return
@@ -41,7 +43,7 @@ interface ParadoxDefinitionHierarchySupport {
         }
         
         fun readData(storage: DataInput, data: ParadoxDefinitionHierarchyInfo) {
-            EP_NAME.extensionList.forEachFast { ep ->
+            extensionList.forEachFast { ep ->
                 if(ep.id == data.supportId) {
                     ep.readData(storage, data)
                     return

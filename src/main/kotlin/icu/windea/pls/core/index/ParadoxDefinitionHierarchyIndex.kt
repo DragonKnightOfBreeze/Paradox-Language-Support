@@ -8,8 +8,8 @@ import com.intellij.util.gist.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.hierarchy.*
 import icu.windea.pls.lang.model.*
@@ -29,7 +29,7 @@ import java.util.*
 class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<ParadoxDefinitionHierarchyInfo>>() {
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxDefinitionHierarchyInfo>>("paradox.definition.hierarchy.index")
-        private const val VERSION = 29 //1.0.7
+        private const val VERSION = 30 //1.0.8
         
         fun getFileData(file: VirtualFile, project: Project): Map<String, List<ParadoxDefinitionHierarchyInfo>> {
             val useLazyIndex = useLazyIndex(file)
@@ -56,11 +56,19 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
     override fun getValueExternalizer(): DataExternalizer<List<ParadoxDefinitionHierarchyInfo>> {
         return object : DataExternalizer<List<ParadoxDefinitionHierarchyInfo>> {
             override fun save(storage: DataOutput, value: List<ParadoxDefinitionHierarchyInfo>) {
-                storage.writeList(value) { info -> writeDefinitionHierarchyInfo(storage, info) }
+                val infos = value
+                val size = infos.size
+                storage.writeInt(size)
+                if(size == 0) return
+                storage.writeUTF(infos.first().supportId)
+                infos.forEachFast { info -> writeDefinitionHierarchyInfo(storage, info) }
             }
             
             override fun read(storage: DataInput): List<ParadoxDefinitionHierarchyInfo> {
-                return storage.readList { readDefinitionHierarchyInfo(storage) }
+                val size = storage.readInt()
+                if(size == 0) return emptyList()
+                val supportId = storage.readUTF()
+                return MutableList(size) { readDefinitionHierarchyInfo(storage, supportId) }
             }
         }
     }
@@ -75,7 +83,7 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
     
     object LazyIndex {
         private const val ID = "paradox.definition.hierarchy.index.lazy"
-        private const val VERSION = 29 //1.0.7
+        private const val VERSION = 30 //1.0.8
         
         fun getFileData(file: VirtualFile, project: Project): Map<String, List<ParadoxDefinitionHierarchyInfo>> {
             return gist.getFileData(project, file)
@@ -86,7 +94,12 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
                 storage.writeInt(value.size)
                 value.forEach { (k, infos) ->
                     storage.writeUTF(k)
-                    storage.writeList(infos) { info -> writeDefinitionHierarchyInfo(storage, info) }
+                    run {
+                        val size = infos.size
+                        storage.writeInt(size)
+                        if(size == 0) return@run
+                        infos.forEachFast { info -> writeDefinitionHierarchyInfo(storage, info) } 
+                    }
                 }
             }
             
@@ -94,7 +107,12 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
                 return buildMap {
                     repeat(storage.readInt()) {
                         val k = storage.readUTF()
-                        val infos = storage.readList { readDefinitionHierarchyInfo(storage) }
+                        val infos = run {
+                            val size = storage.readInt()
+                            if(size == 0) return@run emptyList()
+                            val supportId = k
+                            MutableList(size) { readDefinitionHierarchyInfo(storage, supportId) }
+                        }
                         put(k, infos)
                     }
                 }
@@ -153,28 +171,29 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxDe
 }
 
 private fun writeDefinitionHierarchyInfo(storage: DataOutput, info: ParadoxDefinitionHierarchyInfo) {
-    storage.writeUTF(info.supportId)
+    //storage.writeUTF(info.supportId)
     storage.writeUTF(info.expression)
     storage.writeUTF(info.configExpression)
     storage.writeBoolean(info.isKey)
     storage.writeUTF(info.definitionName)
     storage.writeUTF(info.definitionType)
-    storage.writeList(info.definitionSubtypes) { subtype ->
-        storage.writeUTF(subtype)
+    storage.writeInt(info.definitionSubtypes.size)
+    info.definitionSubtypes.forEachFast {
+        storage.writeUTF(it)
     }
     storage.writeInt(info.elementOffset)
     storage.writeByte(info.gameType.toByte())
     ParadoxDefinitionHierarchySupport.saveData(storage, info)
 }
 
-private fun readDefinitionHierarchyInfo(storage: DataInput): ParadoxDefinitionHierarchyInfo {
-    val supportId = storage.readUTF()
+private fun readDefinitionHierarchyInfo(storage: DataInput, supportId: String): ParadoxDefinitionHierarchyInfo {
+    //val supportId = storage.readUTF()
     val expression = storage.readUTF()
     val configExpression = storage.readUTF()
     val isKey = storage.readBoolean()
     val definitionName = storage.readUTF()
     val definitionType = storage.readUTF()
-    val definitionSubtypes = storage.readList { storage.readUTF() }
+    val definitionSubtypes = MutableList(storage.readInt()) { storage.readUTF() }
     val elementOffset = storage.readInt()
     val gameType = storage.readByte().toGameType()
     val contextInfo = ParadoxDefinitionHierarchyInfo(supportId, expression, configExpression, isKey, definitionName, definitionType, definitionSubtypes, elementOffset, gameType)

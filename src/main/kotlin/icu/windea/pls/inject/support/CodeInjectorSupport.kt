@@ -7,6 +7,6 @@ abstract class CodeInjectorSupport {
     abstract fun apply(codeInjector: CodeInjector)
     
     companion object {
-        @JvmField val EP_NAME = ExtensionPointName.create<CodeInjectorSupport>("icu.windea.pls.codeInjectorSupport")
+        val EP_NAME = ExtensionPointName.create<CodeInjectorSupport>("icu.windea.pls.codeInjectorSupport")
     }
 }

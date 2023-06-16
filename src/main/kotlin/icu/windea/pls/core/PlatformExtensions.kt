@@ -851,20 +851,6 @@ fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
 }
 //endregion
 
-inline fun <T> DataInput.readList(action: () -> T): MutableList<T> {
-    return MutableList(DataInputOutputUtil.readINT(this)) { action() }
-}
-
-inline fun <T> DataOutput.writeList(collection: Collection<T>, action: (T) -> Unit) {
-    DataInputOutputUtil.writeINT(this, collection.size)
-    collection.forEach { action(it) }
-}
-
-inline fun <T> DataOutput.writeList(collection: List<T>, action: (T) -> Unit) {
-    DataInputOutputUtil.writeINT(this, collection.size)
-    collection.forEachFast { action(it) }
-}
-
 val StubBasedPsiElementBase<*>.containingFileStub: PsiFileStub<*>?
     get() {
         val stub = this.greenStub ?: return null

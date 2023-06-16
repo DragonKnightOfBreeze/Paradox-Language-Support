@@ -54,7 +54,7 @@ interface ParadoxModifierSupport {
     fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean = false
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxModifierSupport>("icu.windea.pls.modifierSupport")
+        val EP_NAME = ExtensionPointName.create<ParadoxModifierSupport>("icu.windea.pls.modifierSupport")
         
         fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
             val gameType = configGroup.gameType

@@ -12,7 +12,7 @@ interface ParadoxDefinitionModifierProvider {
     fun getModifierCategories(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>?
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxDefinitionModifierProvider>("icu.windea.pls.definitionModifierProvider")
+        val EP_NAME = ExtensionPointName.create<ParadoxDefinitionModifierProvider>("icu.windea.pls.definitionModifierProvider")
         
         fun getModifierCategories(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>? {
             val gameType = definitionInfo.gameType

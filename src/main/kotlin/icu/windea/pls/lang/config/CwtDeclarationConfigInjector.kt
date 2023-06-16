@@ -38,7 +38,7 @@ interface CwtDeclarationConfigInjector {
     fun replaceConfigExpression(configExpression: String, configContext: CwtConfigContext): String? = null
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<CwtDeclarationConfigInjector>("icu.windea.pls.declarationConfigInjector")
+        val EP_NAME = ExtensionPointName.create<CwtDeclarationConfigInjector>("icu.windea.pls.declarationConfigInjector")
         
         fun getDeclarationMergedConfig(configContext: CwtConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList): CwtPropertyConfig? {
             if(injectors.isEmpty()) return null

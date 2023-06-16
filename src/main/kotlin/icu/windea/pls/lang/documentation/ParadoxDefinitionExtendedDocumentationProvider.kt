@@ -15,7 +15,7 @@ interface ParadoxDefinitionExtendedDocumentationProvider {
     fun getDocumentation(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String?
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxDefinitionExtendedDocumentationProvider>("icu.windea.pls.definitionExtendedDocumentationProvider")
+        val EP_NAME = ExtensionPointName.create<ParadoxDefinitionExtendedDocumentationProvider>("icu.windea.pls.definitionExtendedDocumentationProvider")
         
         fun buildDocumentation(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, action: (String) -> Unit) {
             val gameType = definitionInfo.gameType

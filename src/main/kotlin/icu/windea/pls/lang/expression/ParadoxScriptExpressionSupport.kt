@@ -41,7 +41,7 @@ abstract class ParadoxScriptExpressionSupport {
     }
     
     companion object INSTANCE {
-        @JvmField val EP_NAME = ExtensionPointName.create<ParadoxScriptExpressionSupport>("icu.windea.pls.scriptExpressionSupport")
+        val EP_NAME = ExtensionPointName.create<ParadoxScriptExpressionSupport>("icu.windea.pls.scriptExpressionSupport")
         
         //这里需要尝试避免SOE
         
