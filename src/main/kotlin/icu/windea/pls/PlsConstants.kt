@@ -97,9 +97,6 @@ object PlsKeys {
     val injectedLocaleConfigKey = Key.create<CwtLocalisationLocaleConfig>("paradox.injected.localeConfig") //用于为脚本文件（VirtualFile）嵌入语言区域
     val injectedElementPathPrefixKey = Key.create<ParadoxElementPath>("paradox.injected.elementPathPrefix") //用于为脚本文件（VirtualFile）嵌入元素路径前缀
     
-    val launcherSettingsInfoKey = Key.create<ParadoxLauncherSettingsInfo>("paradox.launcherSettingsInfo")
-    val descriptorInfoKey = Key.create<ParadoxModDescriptorInfo>("paradox.descriptorInfo")
-    
     val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cached.definitionInfo")
     val cachedDefinitionPrimaryLocalisationKeyKey = Key.create<CachedValue<String>>("paradox.cached.definition.primaryLocalisationKey")
     val cachedDefinitionPrimaryLocalisationKey = Key.create<CachedValue<ParadoxLocalisationProperty>>("paradox.cached.definition.primaryLocalisation")

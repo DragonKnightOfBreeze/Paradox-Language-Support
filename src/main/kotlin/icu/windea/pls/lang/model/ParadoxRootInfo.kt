@@ -20,14 +20,12 @@ sealed class ParadoxRootInfo {
     val gameEntry: String? by lazy { rootPath.relativize(gameRootPath).toString().takeIfNotEmpty() }
     
     abstract val qualifiedName: String
-    
-    abstract val isAvailable: Boolean
 }
 
 class ParadoxGameRootInfo(
     override val rootFile: VirtualFile,
     val launcherSettingsFile: VirtualFile,
-    var launcherSettingsInfo: ParadoxLauncherSettingsInfo
+    val launcherSettingsInfo: ParadoxLauncherSettingsInfo
 ) : ParadoxRootInfo() {
     override val gameType: ParadoxGameType = doGetGameType()
     override val gameRootFile: VirtualFile = doGetGameRootFile()
@@ -52,9 +50,6 @@ class ParadoxGameRootInfo(
             append(launcherSettingsInfo.rawVersion)
         }
     
-    override val isAvailable: Boolean
-        get() = launcherSettingsFile.isValid && launcherSettingsFile.name == PlsConstants.launcherSettingsFileName
-    
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxRootInfo && rootFile == other.rootFile
     }
@@ -77,9 +72,8 @@ data class ParadoxLauncherSettingsInfo(
 class ParadoxModRootInfo(
     override val rootFile: VirtualFile,
     val descriptorFile: VirtualFile,
-    var descriptorInfo: ParadoxModDescriptorInfo
+    val descriptorInfo: ParadoxModDescriptorInfo
 ) : ParadoxRootInfo() {
-    
     override val gameType: ParadoxGameType get() = doGetGameType()
     override val gameRootFile: VirtualFile get() = rootFile
     
@@ -99,9 +93,6 @@ class ParadoxModRootInfo(
             append(descriptorInfo.name)
             descriptorInfo.version?.let { version -> append("@").append(version) }
         }
-    
-    override val isAvailable: Boolean
-        get() = descriptorFile.isValid && descriptorFile.name == PlsConstants.descriptorFileName
     
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxRootInfo && rootFile == other.rootFile

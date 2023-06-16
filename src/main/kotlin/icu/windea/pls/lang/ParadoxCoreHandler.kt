@@ -106,8 +106,12 @@ object ParadoxCoreHandler {
     
     fun getLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
         //launcher-settings.json
-        return file.getOrPutUserData(PlsKeys.launcherSettingsInfoKey) {
-            doGetLauncherSettingsInfo(file)
+        try {
+            return doGetLauncherSettingsInfo(file)
+        } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
+            thisLogger().warn(e)
+            return null
         }
     }
     
@@ -117,8 +121,12 @@ object ParadoxCoreHandler {
     
     fun getDescriptorInfo(file: VirtualFile): ParadoxModDescriptorInfo? {
         //descriptor.mod
-        return file.getOrPutUserData(PlsKeys.descriptorInfoKey) {
-            runReadAction { doGetDescriptorInfo(file) }
+        try {
+            return runReadAction { doGetDescriptorInfo(file) }
+        } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
+            thisLogger().warn(e)
+            return null
         }
     }
     
@@ -264,6 +272,12 @@ object ParadoxCoreHandler {
                 FileBasedIndex.getInstance().requestReindex(file)
             }
         }
+    }
+    
+    @RequiresWriteLock
+    fun reparseOpenedFiles() {
+        //重新解析所有项目的所有已打开的文件
+        FileContentUtil.reparseOpenedFiles()
     }
     
     @Suppress("UnstableApiUsage")
