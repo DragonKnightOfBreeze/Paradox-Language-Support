@@ -23,7 +23,7 @@ import java.util.*
 
 /**
  * 用于索引定义声明中的定义引用、参数引用、本地化参数引用等。
- * 
+ *
  * @see ParadoxDefinitionHierarchySupport
  */
 class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<ParadoxDefinitionHierarchyInfo>>() {
@@ -60,15 +60,22 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
                 val size = infos.size
                 storage.writeInt(size)
                 if(size == 0) return
-                storage.writeUTFFast(infos.first().supportId)
-                infos.forEachFast { info -> writeDefinitionHierarchyInfo(storage, info) }
+                var previousInfo: ParadoxDefinitionHierarchyInfo? = null
+                infos.forEachFast { info ->
+                    writeDefinitionHierarchyInfo(storage, info, previousInfo)
+                    previousInfo = info
+                }
             }
             
             override fun read(storage: DataInput): List<ParadoxDefinitionHierarchyInfo> {
                 val size = storage.readInt()
                 if(size == 0) return emptyList()
-                val supportId = storage.readUTFFast()
-                return MutableList(size) { readDefinitionHierarchyInfo(storage, supportId) }
+                var previousInfo: ParadoxDefinitionHierarchyInfo? = null
+                return MutableList(size) {
+                    val info = readDefinitionHierarchyInfo(storage, previousInfo)
+                    previousInfo = info
+                    info
+                }
             }
         }
     }
@@ -98,7 +105,11 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
                         val size = infos.size
                         storage.writeInt(size)
                         if(size == 0) return@run
-                        infos.forEachFast { info -> writeDefinitionHierarchyInfo(storage, info) } 
+                        var previousInfo: ParadoxDefinitionHierarchyInfo? = null
+                        infos.forEachFast { info ->
+                            writeDefinitionHierarchyInfo(storage, info, previousInfo)
+                            previousInfo = info
+                        }
                     }
                 }
             }
@@ -110,8 +121,12 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
                         val infos = run {
                             val size = storage.readInt()
                             if(size == 0) return@run emptyList()
-                            val supportId = k
-                            MutableList(size) { readDefinitionHierarchyInfo(storage, supportId) }
+                            var previousInfo: ParadoxDefinitionHierarchyInfo? = null
+                            MutableList(size) {
+                                val info = readDefinitionHierarchyInfo(storage, previousInfo)
+                                previousInfo = info
+                                info
+                            }
                         }
                         put(k, infos)
                     }
@@ -127,11 +142,11 @@ class ParadoxDefinitionHierarchyIndex : FileBasedIndexExtension<String, List<Par
     }
 }
 
-private val markKey = Key.create<Boolean>("paradox.definition.hierarchy.index.mark") 
+private val markKey = Key.create<Boolean>("paradox.definition.hierarchy.index.mark")
 
 private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxDefinitionHierarchyInfo>>, lazy: Boolean) {
     file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
-        private val definitionInfoStack = LinkedList<ParadoxDefinitionInfo>() 
+        private val definitionInfoStack = LinkedList<ParadoxDefinitionInfo>()
         
         override fun visitElement(element: PsiElement) {
             if(lazy) {
@@ -150,7 +165,7 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxDe
                         definitionInfoStack.addLast(definitionInfo)
                     }
                 }
-            } 
+            }
             
             if(definitionInfoStack.isNotEmpty()) {
                 //这里element作为定义的引用时也可能是ParadoxScriptInt，目前不需要考虑这种情况，因此忽略
@@ -170,35 +185,59 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxDe
     })
 }
 
-private fun writeDefinitionHierarchyInfo(storage: DataOutput, info: ParadoxDefinitionHierarchyInfo) {
-    //storage.writeUTFFast(info.supportId)
-    storage.writeUTFFast(info.expression)
-    storage.writeUTFFast(info.configExpression)
-    storage.writeBoolean(info.isKey)
-    storage.writeUTFFast(info.definitionName)
-    storage.writeUTFFast(info.definitionType)
-    storage.writeInt(info.definitionSubtypes.size)
-    info.definitionSubtypes.forEachFast {
-        storage.writeUTFFast(it)
-    }
+//这个索引在通常情况下需要索引的数据可能非常多，需要采用一些特殊的优化方式减少实际需要索引的数据
+
+private fun writeDefinitionHierarchyInfo(storage: DataOutput, info: ParadoxDefinitionHierarchyInfo, previousInfo: ParadoxDefinitionHierarchyInfo?) {
+    storage.writeOrWriteFrom(info, previousInfo, { it.supportId }, { storage.writeUTFFast(it) })
+    storage.writeOrWriteFrom(info, previousInfo, { it.expression }, { storage.writeUTFFast(it) })
+    storage.writeOrWriteFrom(info, previousInfo, { it.configExpression }, { storage.writeUTFFast(it) })
+    storage.writeOrWriteFrom(info, previousInfo, { it.isKey }, { storage.writeBoolean(it) })
+    storage.writeOrWriteFrom(info, previousInfo, { it.definitionName }, { storage.writeUTFFast(it) })
+    storage.writeOrWriteFrom(info, previousInfo, { it.definitionType }, { storage.writeUTFFast(it) })
+    storage.writeOrWriteFrom(info, previousInfo, { it.definitionSubtypes }, { storage.writeList(it) { e -> storage.writeUTFFast(e) } })
     storage.writeInt(info.elementOffset)
     storage.writeByte(info.gameType.toByte())
     ParadoxDefinitionHierarchySupport.saveData(storage, info)
+    
+    //storage.writeUTFFast(info.supportId)
+    //storage.writeUTFFast(info.expression)
+    //storage.writeUTFFast(info.configExpression)
+    //storage.writeBoolean(info.isKey)
+    //storage.writeUTFFast(info.definitionName)
+    //storage.writeUTFFast(info.definitionType)
+    //storage.writeInt(info.definitionSubtypes.size)
+    //storage.writeList(info.definitionSubtypes) { storage.writeUTFFast(it) }
+    //storage.writeInt(info.elementOffset)
+    //storage.writeByte(info.gameType.toByte())
+    //ParadoxDefinitionHierarchySupport.saveData(storage, info)
 }
 
-private fun readDefinitionHierarchyInfo(storage: DataInput, supportId: String): ParadoxDefinitionHierarchyInfo {
-    //val supportId = storage.readUTFFast()
-    val expression = storage.readUTFFast()
-    val configExpression = storage.readUTFFast()
-    val isKey = storage.readBoolean()
-    val definitionName = storage.readUTFFast()
-    val definitionType = storage.readUTFFast()
-    val definitionSubtypes = MutableList(storage.readInt()) { storage.readUTFFast() }
+private fun readDefinitionHierarchyInfo(storage: DataInput, previousInfo: ParadoxDefinitionHierarchyInfo?): ParadoxDefinitionHierarchyInfo {
+    val supportId = storage.readOrReadFrom(previousInfo, { it.supportId }, { storage.readUTFFast() })
+    val expression = storage.readOrReadFrom(previousInfo, { it.expression }, { storage.readUTFFast() })
+    val configExpression = storage.readOrReadFrom(previousInfo, { it.configExpression }, { storage.readUTFFast() })
+    val isKey = storage.readOrReadFrom(previousInfo, { it.isKey }, { storage.readBoolean() })
+    val definitionName = storage.readOrReadFrom(previousInfo, { it.definitionName }, { storage.readUTFFast() })
+    val definitionType = storage.readOrReadFrom(previousInfo, { it.definitionType }, { storage.readUTFFast() })
+    val definitionSubtypes = storage.readOrReadFrom(previousInfo, { it.definitionSubtypes }, { storage.readList{ storage.readUTFFast() } })
     val elementOffset = storage.readInt()
     val gameType = storage.readByte().toGameType()
     val contextInfo = ParadoxDefinitionHierarchyInfo(supportId, expression, configExpression, isKey, definitionName, definitionType, definitionSubtypes, elementOffset, gameType)
     ParadoxDefinitionHierarchySupport.readData(storage, contextInfo)
     return contextInfo
+    
+    //val supportId = storage.readUTFFast()
+    //val expression = storage.readUTFFast()
+    //val configExpression = storage.readUTFFast()
+    //val isKey = storage.readBoolean()
+    //val definitionName = storage.readUTFFast()
+    //val definitionType = storage.readUTFFast()
+    //val definitionSubtypes = MutableList(storage.readInt()) { storage.readUTFFast() }
+    //val elementOffset = storage.readInt()
+    //val gameType = storage.readByte().toGameType()
+    //val contextInfo = ParadoxDefinitionHierarchyInfo(supportId, expression, configExpression, isKey, definitionName, definitionType, definitionSubtypes, elementOffset, gameType)
+    //ParadoxDefinitionHierarchySupport.readData(storage, contextInfo)
+    //return contextInfo
 }
 
 private fun filterFile(file: VirtualFile, lazy: Boolean): Boolean {

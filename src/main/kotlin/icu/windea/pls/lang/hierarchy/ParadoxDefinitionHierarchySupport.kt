@@ -25,6 +25,7 @@ interface ParadoxDefinitionHierarchySupport {
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxDefinitionHierarchySupport>("icu.windea.pls.definitionHierarchySupport")
         
+        //cache extensionList to optimize memory (currently only for this EP)
         val extensionList by lazy { EP_NAME.extensionList }
         
         fun indexData(fileData: MutableMap<String, List<ParadoxDefinitionHierarchyInfo>>, element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo) {

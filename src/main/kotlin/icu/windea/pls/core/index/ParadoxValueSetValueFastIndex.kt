@@ -55,12 +55,11 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
     override fun getValueExternalizer(): DataExternalizer<List<ParadoxValueSetValueInfo>> {
         return object : DataExternalizer<List<ParadoxValueSetValueInfo>> {
             override fun save(storage: DataOutput, value: List<ParadoxValueSetValueInfo>) {
-                storage.writeInt(value.size)
-                value.forEachFast { info -> writeValueSetValueInfo(storage, info) }
+                storage.writeList(value) { info -> writeValueSetValueInfo(storage, info) }
             }
             
             override fun read(storage: DataInput): List<ParadoxValueSetValueInfo> {
-                return MutableList(storage.readInt()) { readValueSetValueInfo(storage) }
+                return storage.readList { readValueSetValueInfo(storage) }
             }
         }
     }
@@ -86,8 +85,7 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
                 storage.writeInt(value.size)
                 value.forEach { (k, infos) ->
                     storage.writeUTFFast(k)
-                    storage.writeInt(infos.size)
-                    infos.forEachFast { info -> writeValueSetValueInfo(storage, info) }
+                    storage.writeList(infos) { info -> writeValueSetValueInfo(storage, info) }
                 }
             }
             
@@ -95,7 +93,7 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
                 return buildMap {
                     repeat(storage.readInt()) {
                         val k = storage.readUTFFast()
-                        val infos = MutableList(storage.readInt()) { readValueSetValueInfo(storage) }
+                        val infos = storage.readList { readValueSetValueInfo(storage) }
                         put(k, infos)
                     }
                 }

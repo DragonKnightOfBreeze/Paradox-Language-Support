@@ -851,11 +851,37 @@ fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
 }
 //endregion
 
+inline fun <T, V> DataInput.readOrReadFrom(from: T?, selector: (T) -> V, readAction: () -> V): V {
+    if(from == null) return readAction()
+    if(readBoolean()) return selector(from)
+    return readAction()
+}
+
+inline fun <T, V> DataOutput.writeOrWriteFrom(value: T, from: T?, selector: (T) -> V, writeAction: (V) -> Unit) {
+    if(from == null) return writeAction(selector(value))
+    if(selector(value) == selector(from)) return writeBoolean(true)
+    return writeAction(selector(value))
+}
+
 @Suppress("NOTHING_TO_INLINE")
 inline fun DataInput.readUTFFast(): String = IOUtil.readUTF(this)
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun DataOutput.writeUTFFast(value: String) = IOUtil.writeUTF(this, value)
+
+inline fun <T> DataInput.readList(action: () -> T): MutableList<T> {
+    return MutableList(DataInputOutputUtil.readINT(this)) { action() }
+}
+
+inline fun <T> DataOutput.writeList(collection: Collection<T>, action: (T) -> Unit) {
+    DataInputOutputUtil.writeINT(this, collection.size)
+    collection.forEach { action(it) }
+}
+
+inline fun <T> DataOutput.writeList(collection: List<T>, action: (T) -> Unit) {
+    DataInputOutputUtil.writeINT(this, collection.size)
+    collection.forEachFast { action(it) }
+}
 
 val StubBasedPsiElementBase<*>.containingFileStub: PsiFileStub<*>?
     get() {

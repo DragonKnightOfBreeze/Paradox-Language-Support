@@ -5,7 +5,6 @@ import com.intellij.util.indexing.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
@@ -49,8 +48,7 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
     override fun getValueExternalizer(): DataExternalizer<List<ParadoxInlineScriptInfo>> {
         return object : DataExternalizer<List<ParadoxInlineScriptInfo>> {
             override fun save(storage: DataOutput, value: List<ParadoxInlineScriptInfo>) {
-                storage.writeInt(value.size)
-                value.forEachFast { info ->
+                storage.writeList(value) { info ->
                     storage.writeUTFFast(info.expression)
                     storage.writeInt(info.elementOffset)
                     storage.writeByte(info.gameType.toByte())
@@ -58,7 +56,7 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
             }
             
             override fun read(storage: DataInput): List<ParadoxInlineScriptInfo> {
-                return MutableList(storage.readInt()) {
+                return storage.readList {
                     val expression = storage.readUTFFast()
                     val elementOffset = storage.readInt()
                     val gameType = storage.readByte().toGameType()

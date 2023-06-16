@@ -48,12 +48,11 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
     override fun getValueExternalizer(): DataExternalizer<List<ParadoxComplexEnumValueInfo>> {
         return object : DataExternalizer<List<ParadoxComplexEnumValueInfo>> {
             override fun save(storage: DataOutput, value: List<ParadoxComplexEnumValueInfo>) {
-                storage.writeInt(value.size)
-                value.forEachFast { info -> writeComplexEnumValueInfo(storage, info) }
+                storage.writeList(value) { info -> writeComplexEnumValueInfo(storage, info) }
             }
             
             override fun read(storage: DataInput): List<ParadoxComplexEnumValueInfo> {
-                return MutableList(storage.readInt()) { readComplexEnumValueInfo(storage) }
+                return storage.readList { readComplexEnumValueInfo(storage) }
             }
         }
     }
@@ -75,8 +74,7 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
                 storage.writeInt(value.size)
                 value.forEach { (k, infos) ->
                     storage.writeUTFFast(k)
-                    storage.writeInt(infos.size)
-                    infos.forEachFast { info -> writeComplexEnumValueInfo(storage, info) }
+                    storage.writeList(infos) { info -> writeComplexEnumValueInfo(storage, info) }
                 }
             }
             
@@ -84,7 +82,7 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
                 return buildMap {
                     repeat(storage.readInt()) {
                         val k = storage.readUTFFast()
-                        val infos = MutableList(storage.readInt()) { readComplexEnumValueInfo(storage) }
+                        val infos = storage.readList { readComplexEnumValueInfo(storage) }
                         put(k, infos)
                     }
                 }
