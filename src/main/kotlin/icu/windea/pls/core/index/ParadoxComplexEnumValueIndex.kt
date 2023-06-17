@@ -114,7 +114,9 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxCo
     })
     
     if(fileData.isEmpty()) return
-    fileData.forEach { (_, value) -> (value as MutableList).sortBy { it.name } }
+    fileData.forEach { (_, value) -> 
+        (value as MutableList).sortBy { it.name }
+    }
 }
 
 //尝试减少实际需要索引的数据量以优化性能

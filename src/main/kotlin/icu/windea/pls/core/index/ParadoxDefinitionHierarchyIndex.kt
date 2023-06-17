@@ -152,7 +152,9 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxDe
     })
     
     if(fileData.isEmpty()) return
-    fileData.forEach { (_, value) -> (value as MutableList).sortWith(compareBy({ it.definitionName + ":" + it.definitionType }, { it.configExpression }, { it.expression })) }
+    fileData.forEach { (_, value) ->
+        (value as MutableList).sortWith(compareBy({ it.definitionName + ":" + it.definitionType }, { it.configExpression }, { it.expression }))
+    }
 }
 
 //这个索引在通常情况下需要索引的数据可能非常多，需要进行优化

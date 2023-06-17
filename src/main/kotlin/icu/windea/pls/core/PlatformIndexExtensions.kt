@@ -23,36 +23,42 @@ inline fun <T, V> DataOutput.writeOrWriteFrom(value: T, from: T?, selector: (T) 
     writeAction(selector(value))
 }
 
-fun DataInput.readUTFWithCache(cache: MutableList<String>) : String {
-    val flag = readBoolean()
-    if(flag) {
-        val cacheIndex = readIntFast()
-        return cache[cacheIndex]
-    }
-    val result = readUTFFast()
-    cache.add(result)
-    return result
-}
+//@Suppress("NOTHING_TO_INLINE")
+//inline fun DataInput.readUTFWithCache(cache: MutableList<String>) : String {
+//    val flag = readBoolean()
+//    if(flag) {
+//        val cacheIndex = readIntFast()
+//        return cache[cacheIndex]
+//    }
+//    val result = readUTFFast()
+//    cache.add(result)
+//    return result
+//}
+//
+//@Suppress("NOTHING_TO_INLINE")
+//inline fun DataOutput.writeUTFWithCache(value: String, cache: MutableList<String>){
+//    val index = cache.indexOf(value)
+//    if(index != -1) {
+//        writeBoolean(true)
+//        writeIntFast(index)
+//    } else {
+//        writeBoolean(false)
+//        writeUTFFast(value)
+//        cache.add(value)
+//    }
+//}
 
-fun DataOutput.writeUTFWithCache(value: String, cache: MutableList<String>){
-    val index = cache.indexOf(value)
-    if(index != -1) {
-        writeBoolean(true)
-        writeIntFast(index)
-    } else {
-        writeBoolean(false)
-        writeUTFFast(value)
-        cache.add(value)
-    }
-}
+@Suppress("NOTHING_TO_INLINE")
+inline fun DataInput.readIntFast(): Int = DataInputOutputUtil.readINT(this)
 
-fun DataInput.readIntFast(): Int = DataInputOutputUtil.readINT(this)
+@Suppress("NOTHING_TO_INLINE")
+inline fun DataOutput.writeIntFast(value: Int) = DataInputOutputUtil.writeINT(this, value)
 
-fun DataOutput.writeIntFast(value: Int) = DataInputOutputUtil.writeINT(this, value)
+@Suppress("NOTHING_TO_INLINE")
+inline fun DataInput.readUTFFast(): String = IOUtil.readUTF(this)
 
-fun DataInput.readUTFFast(): String = IOUtil.readUTF(this)
-
-fun DataOutput.writeUTFFast(value: String) = IOUtil.writeUTF(this, value)
+@Suppress("NOTHING_TO_INLINE")
+inline fun DataOutput.writeUTFFast(value: String) = IOUtil.writeUTF(this, value)
 
 inline fun <T> DataInput.readList(action: () -> T): MutableList<T> {
     return MutableList(readIntFast()) { action() }

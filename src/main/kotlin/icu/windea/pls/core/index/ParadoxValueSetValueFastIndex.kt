@@ -135,7 +135,9 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxVa
     }
     
     if(fileData.isEmpty()) return
-    fileData.forEach { (_, value) -> (value as MutableList).sortBy { it.name } }
+    fileData.forEach { (_, value) -> 
+        (value as MutableList).sortBy { it.name }
+    }
 }
 
 //目前不需要追踪在文件中的位置，因此可以先进行去重
