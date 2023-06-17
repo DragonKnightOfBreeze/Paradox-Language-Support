@@ -18,9 +18,9 @@ interface ParadoxDefinitionHierarchySupport {
     
     fun indexData(fileData: MutableMap<String, List<ParadoxDefinitionHierarchyInfo>>, element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo)
     
-    fun saveData(storage: DataOutput, data: ParadoxDefinitionHierarchyInfo) {}
+    fun saveData(storage: DataOutput, info: ParadoxDefinitionHierarchyInfo, previousInfo: ParadoxDefinitionHierarchyInfo?) {}
     
-    fun readData(storage: DataInput, data: ParadoxDefinitionHierarchyInfo) {}
+    fun readData(storage: DataInput, data: ParadoxDefinitionHierarchyInfo, previousInfo: ParadoxDefinitionHierarchyInfo?) {}
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxDefinitionHierarchySupport>("icu.windea.pls.definitionHierarchySupport")
@@ -34,19 +34,19 @@ interface ParadoxDefinitionHierarchySupport {
             }
         }
         
-        fun saveData(storage: DataOutput, data: ParadoxDefinitionHierarchyInfo) {
+        fun saveData(storage: DataOutput, info: ParadoxDefinitionHierarchyInfo, previousInfo: ParadoxDefinitionHierarchyInfo?) {
             extensionList.forEachFast { ep ->
-                if(ep.id == data.supportId) {
-                    ep.saveData(storage, data)
+                if(ep.id == info.supportId) {
+                    ep.saveData(storage, info, previousInfo)
                     return
                 }
             }
         }
         
-        fun readData(storage: DataInput, data: ParadoxDefinitionHierarchyInfo) {
+        fun readData(storage: DataInput, info: ParadoxDefinitionHierarchyInfo, previousInfo: ParadoxDefinitionHierarchyInfo?) {
             extensionList.forEachFast { ep ->
-                if(ep.id == data.supportId) {
-                    ep.readData(storage, data)
+                if(ep.id == info.supportId) {
+                    ep.readData(storage, info, previousInfo)
                     return
                 }
             }

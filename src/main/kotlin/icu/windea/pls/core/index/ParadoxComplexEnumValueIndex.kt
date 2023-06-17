@@ -71,7 +71,7 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
         
         private val valueExternalizer = object : DataExternalizer<Map<String, List<ParadoxComplexEnumValueInfo>>> {
             override fun save(storage: DataOutput, value: Map<String, List<ParadoxComplexEnumValueInfo>>) {
-                storage.writeInt(value.size)
+                storage.writeIntFast(value.size)
                 value.forEach { (k, infos) ->
                     storage.writeUTFFast(k)
                     writeComplexEnumValueInfos(storage, infos)
@@ -80,7 +80,7 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
             
             override fun read(storage: DataInput): Map<String, List<ParadoxComplexEnumValueInfo>> {
                 return buildMap {
-                    repeat(storage.readInt()) {
+                    repeat(storage.readIntFast()) {
                         val k = storage.readUTFFast()
                         val infos = readComplexEnumValueInfos(storage)
                         put(k, infos)
@@ -120,35 +120,35 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxCo
 //尝试减少实际需要索引的数据量以优化性能
 
 private fun writeComplexEnumValueInfos(storage: DataOutput, value: List<ParadoxComplexEnumValueInfo>) {
-    if(value.isEmpty()) return storage.writeBoolean(true)
-    storage.writeBoolean(false)
+    val size = value.size
+    storage.writeIntFast(size)
+    if(size == 0) return
     val firstInfo = value.first()
     storage.writeUTFFast(firstInfo.enumName)
     storage.writeByte(firstInfo.gameType.toByte())
-    val infoGroup = value.groupBy { it.name }
-    storage.writeIntFast(infoGroup.size)
-    infoGroup.forEach { (name, infos) ->
-        storage.writeUTFFast(name)
-        storage.writeIntFast(infos.size)
-        infos.forEachFast { info ->
-            storage.writeByte(info.readWriteAccess.toByte())
-            storage.writeIntFast(info.elementOffset)
-        }
+    var previousInfo: ParadoxComplexEnumValueInfo? = null
+    value.forEachFast { info -> 
+        storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
+        storage.writeByte(info.readWriteAccess.toByte())
+        storage.writeIntFast(info.elementOffset)
+        previousInfo = info
     }
 }
 
 private fun readComplexEnumValueInfos(storage: DataInput): List<ParadoxComplexEnumValueInfo> {
-    if(storage.readBoolean()) return emptyList()
-    val result = mutableListOf<ParadoxComplexEnumValueInfo>()
+    val size = storage.readIntFast()
+    if(size == 0) return emptyList()
     val enumName = storage.readUTFFast()
     val gameType = storage.readByte().toGameType()
-    repeat(storage.readIntFast()) {
-        val name = storage.readUTFFast()
-        repeat(storage.readIntFast()) {
-            val readWriteAccess = storage.readByte().toReadWriteAccess()
-            val elementOffset = storage.readIntFast()
-            result += ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, elementOffset, gameType)
-        }
+    var previousInfo: ParadoxComplexEnumValueInfo? = null
+    val result = mutableListOf<ParadoxComplexEnumValueInfo>()
+    repeat(size) {
+        val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
+        val readWriteAccess = storage.readByte().toReadWriteAccess()
+        val elementOffset = storage.readIntFast()
+        val info = ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, elementOffset, gameType)
+        result += info
+        previousInfo = info
     }
     return result
 }
