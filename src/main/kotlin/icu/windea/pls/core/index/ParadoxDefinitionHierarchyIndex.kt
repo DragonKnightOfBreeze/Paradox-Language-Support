@@ -152,8 +152,8 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxDe
     })
     
     if(fileData.isEmpty()) return
-    fileData.forEach { (_, value) ->
-        (value as MutableList).sortWith(compareBy({ it.definitionName + ":" + it.definitionType }, { it.configExpression }, { it.expression }))
+    fileData.forEach { (supportId, value) ->
+        (value as MutableList).sortWith(compareBy({ it.definitionType + " " + it.definitionName }, { it.configExpression }, { it.expression }))
     }
 }
 
@@ -195,7 +195,7 @@ private fun readDefinitionHierarchyInfos(storage: DataInput): List<ParadoxDefini
         val isKey = storage.readBoolean()
         val definitionName = storage.readOrReadFrom(previousInfo, { it.definitionName }, { storage.readUTFFast() })
         val definitionType = storage.readOrReadFrom(previousInfo, { it.definitionType }, { storage.readUTFFast() })
-        val definitionSubtypes = storage.readOrReadFrom(previousInfo, { it.definitionSubtypes }, { storage.readList{ storage.readUTFFast() } })
+        val definitionSubtypes = storage.readOrReadFrom(previousInfo, { it.definitionSubtypes }, { storage.readList { storage.readUTFFast() } })
         val elementOffset = storage.readIntFast()
         val info = ParadoxDefinitionHierarchyInfo(supportId, expression, configExpression, isKey, definitionName, definitionType, definitionSubtypes, elementOffset, gameType)
         ParadoxDefinitionHierarchySupport.readData(storage, info, previousInfo)
