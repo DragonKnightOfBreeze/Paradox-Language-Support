@@ -2,7 +2,6 @@ package icu.windea.pls.core.search
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
@@ -29,27 +28,25 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
         val selector = queryParameters.selector
         val gameType = selector.gameType ?: return
         
-        DumbService.getInstance(project).runReadActionInSmartMode action@{
-            doProcessFiles(scope) p@{ file ->
-                ProgressManager.checkCanceled()
-                ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved
-                if(selectGameType(file) != gameType) return@p true //check game type at file level
-                
-                val fileData = ParadoxValueSetValueFastIndex.getFileData(file, project)
-                if(fileData.isEmpty()) return@p true
-                valueSetNames.forEach f@{ valueSetName ->
-                    val valueSetValueInfoList = fileData[valueSetName]
-                    if(valueSetValueInfoList.isNullOrEmpty()) return@f
-                    valueSetValueInfoList.forEachFast { info ->
-                        if(name == null || name == info.name) {
-                            val r = consumer.process(info)
-                            if(!r) return@p false
-                        }
+        doProcessFiles(scope) p@{ file ->
+            ProgressManager.checkCanceled()
+            ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved
+            if(selectGameType(file) != gameType) return@p true //check game type at file level
+            
+            val fileData = ParadoxValueSetValueFastIndex.getFileData(file, project)
+            if(fileData.isEmpty()) return@p true
+            valueSetNames.forEach f@{ valueSetName ->
+                val valueSetValueInfoList = fileData[valueSetName]
+                if(valueSetValueInfoList.isNullOrEmpty()) return@f
+                valueSetValueInfoList.forEachFast { info ->
+                    if(name == null || name == info.name) {
+                        val r = consumer.process(info)
+                        if(!r) return@p false
                     }
                 }
-                
-                true
             }
+            
+            true
         }
     }
     

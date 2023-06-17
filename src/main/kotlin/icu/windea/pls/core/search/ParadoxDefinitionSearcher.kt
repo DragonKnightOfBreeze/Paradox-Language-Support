@@ -25,30 +25,28 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         val typeExpression = queryParameters.typeExpression
         val project = queryParameters.project
         
-        DumbService.getInstance(project).runReadActionInSmartMode action@{
-            if(typeExpression == null) {
-                if(name == null) {
-                    //查找所有定义
-                    ParadoxDefinitionNameIndex.KEY.processAllElementsByKeys(project, scope) { _, it ->
-                        consumer.process(it)
-                    }
-                } else {
-                    //按照名字查找定义
-                    ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) {
-                        consumer.process(it)
-                    }
+        if(typeExpression == null) {
+            if(name == null) {
+                //查找所有定义
+                ParadoxDefinitionNameIndex.KEY.processAllElementsByKeys(project, scope) { _, it ->
+                    consumer.process(it)
                 }
             } else {
-                //按照类型表达式查找定义
-                doProcessQueryByTypeExpression(typeExpression, project, scope, name, consumer)
-                
-                //如果是切换类型，也要按照基础类型的类型表达式查找定义
-                val gameType = queryParameters.selector.gameType
-                val configGroup = getCwtConfig(project).get(gameType.id)
-                val baseTypeExpression = configGroup.typeToSwapTypeMap.get(typeExpression)
-                if(baseTypeExpression != null) {
-                    doProcessQueryByTypeExpression(baseTypeExpression, project, scope, name, consumer)
+                //按照名字查找定义
+                ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) {
+                    consumer.process(it)
                 }
+            }
+        } else {
+            //按照类型表达式查找定义
+            doProcessQueryByTypeExpression(typeExpression, project, scope, name, consumer)
+            
+            //如果是切换类型，也要按照基础类型的类型表达式查找定义
+            val gameType = queryParameters.selector.gameType
+            val configGroup = getCwtConfig(project).get(gameType.id)
+            val baseTypeExpression = configGroup.typeToSwapTypeMap.get(typeExpression)
+            if(baseTypeExpression != null) {
+                doProcessQueryByTypeExpression(baseTypeExpression, project, scope, name, consumer)
             }
         }
     }

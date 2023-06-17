@@ -2,7 +2,6 @@ package icu.windea.pls.core.search
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
@@ -28,45 +27,43 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         val gameType = queryParameters.selector.gameType
         val contextElement = queryParameters.selector.file?.toPsiFile(project)
         
-        DumbService.getInstance(project).runReadActionInSmartMode action@{
-            if(configExpression == null) {
-                if(filePath == null) {
-                    val keys = FileBasedIndex.getInstance().getAllKeys(ParadoxFilePathIndex.NAME, project)
-                    FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null){
-                        processFile(it, gameType, consumer)
-                    }
-                } else {
-                    val keys = getFilePaths(filePath, queryParameters)
+        if(configExpression == null) {
+            if(filePath == null) {
+                val keys = FileBasedIndex.getInstance().getAllKeys(ParadoxFilePathIndex.NAME, project)
+                FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) {
+                    processFile(it, gameType, consumer)
+                }
+            } else {
+                val keys = getFilePaths(filePath, queryParameters)
+                FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) {
+                    processFile(it, gameType, consumer)
+                }
+            }
+        } else {
+            val support = ParadoxPathReferenceExpressionSupport.get(configExpression) ?: return@action
+            if(filePath == null) {
+                val keys = mutableSetOf<String>()
+                FileBasedIndex.getInstance().processAllKeys(ParadoxFilePathIndex.NAME, p@{ p ->
+                    if(!support.matches(configExpression, contextElement, p)) return@p true
+                    keys.add(p)
+                }, scope, null)
+                FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) {
+                    processFile(it, gameType, consumer)
+                }
+            } else {
+                val resolvedPath = support.resolvePath(configExpression, filePath)
+                if(resolvedPath != null) {
+                    val keys = setOf(resolvedPath)
                     FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) {
                         processFile(it, gameType, consumer)
                     }
+                    return@action
                 }
-            } else {
-                val support = ParadoxPathReferenceExpressionSupport.get(configExpression) ?: return@action
-                if(filePath == null) {
-                    val keys = mutableSetOf<String>()
-                    FileBasedIndex.getInstance().processAllKeys(ParadoxFilePathIndex.NAME, p@{ p ->
-                        if(!support.matches(configExpression, contextElement, p)) return@p true
-                        keys.add(p)
-                    }, scope, null)
-                    FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) { 
-                        processFile(it, gameType, consumer)
-                    }
-                } else {
-                    val resolvedPath = support.resolvePath(configExpression, filePath)
-                    if(resolvedPath != null) {
-                        val keys = setOf(resolvedPath)
-                        FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null){
-                            processFile(it, gameType, consumer)
-                        }
-                        return@action
-                    } 
-                    val resolvedFileName = support.resolveFileName(configExpression, filePath)
-                    FilenameIndex.processFilesByName(resolvedFileName, true, scope) p@{
-                        val p = it.fileInfo?.path?.path ?: return@p true
-                        if(!support.matches(configExpression, contextElement, p)) return@p true
-                        processFile(it, gameType, consumer)
-                    }
+                val resolvedFileName = support.resolveFileName(configExpression, filePath)
+                FilenameIndex.processFilesByName(resolvedFileName, true, scope) p@{
+                    val p = it.fileInfo?.path?.path ?: return@p true
+                    if(!support.matches(configExpression, contextElement, p)) return@p true
+                    processFile(it, gameType, consumer)
                 }
             }
         }
