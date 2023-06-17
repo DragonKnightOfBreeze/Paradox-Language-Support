@@ -1,4 +1,4 @@
-package icu.windea.pls.core.intentions
+package icu.windea.pls.localisation.intentions
 
 import com.intellij.codeInsight.intention.*
 import com.intellij.codeInsight.intention.preview.*

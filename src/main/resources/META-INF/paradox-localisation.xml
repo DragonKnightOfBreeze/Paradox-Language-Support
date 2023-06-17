@@ -73,19 +73,19 @@
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>localisation.intention.category</categoryKey>
-      <className>icu.windea.pls.core.intentions.CopyLocalisationTextIntention</className>
+      <className>icu.windea.pls.localisation.intentions.CopyLocalisationTextIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>localisation.intention.category</categoryKey>
-      <className>icu.windea.pls.core.intentions.CopyLocalisationTextAsPlainIntention</className>
+      <className>icu.windea.pls.localisation.intentions.CopyLocalisationTextAsPlainIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>localisation.intention.category</categoryKey>
-      <className>icu.windea.pls.core.intentions.CopyLocalisationTextAsHtmlIntention</className>
+      <className>icu.windea.pls.localisation.intentions.CopyLocalisationTextAsHtmlIntention</className>
     </intentionAction>
   </extensions>
 

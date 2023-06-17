@@ -74,7 +74,7 @@ class ParadoxSettingsState : BaseState() {
     class CompletionState : BaseState() {
         var completeScriptedVariableNames by property(true)
         var completeDefinitionNames by property(true)
-        var completeLocalisationNames by property(false)
+        var completeLocalisationNames by property(true)
         var completeVariableNames by property(true)
         var completeWithValue by property(true)
         var completeWithClauseTemplate by property(true)
