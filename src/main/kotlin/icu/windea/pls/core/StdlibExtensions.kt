@@ -360,17 +360,21 @@ private val keywordDelimiters = charArrayOf('.', '_')
 fun String.matchesKeyword(keyword: String): Boolean {
     if(keyword.isEmpty()) return true
     
-    //IDEA低层如何匹配关键词：
+    //IDEA底层如何匹配关键词：
     //com.intellij.codeInsight.completion.PrefixMatcher.prefixMatches(java.lang.String)
     
     //这里如何匹配关键词：按顺序包含所有字符，忽略大小写
     var index = -1
     for(i in 0 until keyword.length) {
         val c = keyword[i]
-        var nextIndex = (this as java.lang.String).indexOf(c.lowercaseChar().code, index + 1)
-        if(nextIndex == -1) nextIndex = (this as java.lang.String).indexOf(c.uppercaseChar().code, index + 1)
-        if(nextIndex == -1) return false
-        index = nextIndex
+        val index1 = (this as java.lang.String).indexOf(c.lowercaseChar().code, index + 1)
+        val index2 = (this as java.lang.String).indexOf(c.uppercaseChar().code, index + 1)
+        when {
+            index1 == -1 && index2 == -1 -> return false
+            index1 == -1 -> index = index2
+            index2 == -1 -> index = index1
+            else -> index = min(index, index2)
+        }
     }
     
     return true

@@ -30,7 +30,7 @@ intellij {
 	plugins.add("java")
 	plugins.add("org.jetbrains.kotlin")
 }
- 
+
 grammarKit {
 	jflexRelease.set("1.7.0-2")
 }
@@ -57,6 +57,8 @@ dependencies {
 	//Javassist
 	implementation("org.javassist:javassist:3.29.2-GA")
 	
+	//JUnit
+	testImplementation("junit:junit:4.13.2")
 	//Sqlite
 	testImplementation("org.xerial:sqlite-jdbc:3.40.1.0")
 	//Byte Buddy

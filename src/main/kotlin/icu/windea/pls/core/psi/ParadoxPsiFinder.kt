@@ -6,6 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.references.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -86,10 +87,14 @@ object ParadoxPsiFinder {
             }
         }
         if(BitUtil.isSet(options, FindLocalisationOptions.BY_REFERENCE)) {
-            val referenceElement = file.findElementAt(offset) p@{
-                it.parentOfType<ParadoxLocalisationPropertyReference>()
-            }?.castOrNull<ParadoxLocalisationPropertyReference>()
-            val resolved = referenceElement?.reference?.resolveLocalisation()
+            val reference = file.findReferenceAt(offset) {
+                it.canResolveLocalisation()
+            }
+            val resolved = when {
+                reference == null -> null
+                reference is ParadoxLocalisationPropertyPsiReference -> reference.resolveLocalisation()
+                else -> reference.resolve()
+            }?.castOrNull<ParadoxLocalisationProperty?>()
             if(resolved != null) return resolved
         }
         return null
