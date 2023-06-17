@@ -384,6 +384,12 @@ inline fun VirtualFile.toPsiDirectory(project: Project): PsiDirectory? {
     return PsiManager.getInstance(project).findDirectory(this)
 }
 
+/** 将VirtualFile转化为指定类型的PsiFile或者PsiDirectory。 */
+@Suppress("NOTHING_TO_INLINE")
+inline fun VirtualFile.toPsiFileSystemItem(project: Project): PsiFileSystemItem? {
+    return if(this.isFile) PsiManager.getInstance(project).findFile(this) else PsiManager.getInstance(project).findDirectory(this)
+}
+
 /** 得到当前VirtualFile相对于指定的VirtualFile的路径。去除作为前缀的"/"。 */
 fun VirtualFile.relativePathTo(other: VirtualFile): String {
     return this.path.removePrefix(other.path).trimStart('/')

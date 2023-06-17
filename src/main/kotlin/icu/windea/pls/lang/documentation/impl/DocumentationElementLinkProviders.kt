@@ -289,13 +289,14 @@ class ParadoxFilePathLinkProvider: DocumentationElementLinkProvider {
     override val linkPrefix = LINK_PREFIX
     
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
+        //can be resolved to file or directory
         ProgressManager.checkCanceled()
         val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
         val filePath = remain
         val project = contextElement.project
         val selector = fileSelector(project, contextElement).contextSensitive()
             .withGameType(gameType)
-        return ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
+        return ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFileSystemItem(project)
     }
     
     override fun getUnresolvedMessage(link: String): String {
