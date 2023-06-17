@@ -10,7 +10,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vcs.*
 import com.intellij.openapi.vfs.*
-import com.intellij.openapi.vfs.newvfs.impl.StubVirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
@@ -37,9 +36,8 @@ object ParadoxCoreHandler {
     }
     
     fun getRootInfo(rootFile: VirtualFile, refresh: Boolean = true): ParadoxRootInfo? {
-        if(rootFile is StubVirtualFile) return null
         if(!rootFile.isDirectory) return null
-        if(!rootFile.isValid) return null
+        if(!runCatching { rootFile.isValid }.getOrDefault(true)) return null //注意这里可能会抛出异常
         
         //首先尝试获取注入的rootInfo
         val injectedRootInfo = rootFile.getUserData(PlsKeys.injectedRootInfoKey)
@@ -152,8 +150,7 @@ object ParadoxCoreHandler {
     }
     
     fun getFileInfo(file: VirtualFile, refresh: Boolean = true): ParadoxFileInfo? {
-        if(file is StubVirtualFile) return null
-        if(!file.isValid) return null
+        if(!runCatching { file.isValid }.getOrDefault(true)) return null //注意这里可能会抛出异常
         
         //首先尝试获取注入的fileInfo
         val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfoKey)
