@@ -26,7 +26,7 @@ import java.awt.datatransfer.*
 //cn.yiiguxing.plugin.translate.action.TranslateAndReplaceAction
 
 /**
- * 复制本地化到剪贴板并在这之前尝试将本地化文本翻译到指定的语言区域的意向。（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）
+ * 复制本地化到剪贴板并在这之前尝试将本地化文本翻译到指定的语言区域。（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */

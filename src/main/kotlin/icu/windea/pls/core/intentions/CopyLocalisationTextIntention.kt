@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.intentions
+package icu.windea.pls.core.intentions
 
 import com.intellij.codeInsight.intention.*
 import com.intellij.codeInsight.intention.preview.*
@@ -12,10 +12,10 @@ import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
 
 /**
- * 将本地化文本复制到剪贴板的意向。
+ * 复制本地化文本到剪贴板。（复制的是原始文本）
  */
 class CopyLocalisationTextIntention : IntentionAction {
-    override fun getText() = PlsBundle.message("localisation.intention.copyLocalisationText")
+    override fun getText() = PlsBundle.message("core.intention.copyLocalisationText")
     
     override fun getFamilyName() = text
     
@@ -35,7 +35,9 @@ class CopyLocalisationTextIntention : IntentionAction {
     }
     
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return ParadoxPsiFinder.findLocalisationProperty(file, offset, false)
+        val allOptions = ParadoxPsiFinder.FindLocalisationOptions
+        val options = allOptions.DEFAULT or allOptions.BY_REFERENCE
+        return ParadoxPsiFinder.findLocalisation(file, offset, options)
     }
     
     override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY

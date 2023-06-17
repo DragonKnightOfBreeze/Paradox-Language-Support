@@ -18,7 +18,7 @@ class ParadoxScriptGotoSuperActionHandler: PresentableCodeInsightActionHandler {
     private fun findSuperDefinition(editor: Editor, file: PsiFile): ParadoxScriptDefinitionElement? {
         val offset = editor.caretModel.offset
         val allOptions = ParadoxPsiFinder.FindDefinitionOptions
-        val options = allOptions.BY_ROOT_KEY or allOptions.BY_DEFINITION_NAME or allOptions.BY_REFERENCE
+        val options = allOptions.BY_ROOT_KEY or allOptions.BY_NAME or allOptions.BY_REFERENCE
         val definition = ParadoxPsiFinder.findDefinition(file, offset, options) ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val superDefinition = ParadoxDefinitionInheritSupport.getSuperDefinition(definition, definitionInfo) ?: return null

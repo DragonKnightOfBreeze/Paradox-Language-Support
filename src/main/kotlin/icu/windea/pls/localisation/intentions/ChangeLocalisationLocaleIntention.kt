@@ -14,7 +14,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.psi.*
 
 /**
- * 更改语言区域的意向。
+ * 更改语言区域。
  */
 class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH

@@ -15,7 +15,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 
 /**
- * 更改颜色的意向。
+ * 更改颜色。
  */
 class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH

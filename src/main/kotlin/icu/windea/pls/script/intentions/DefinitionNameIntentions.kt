@@ -52,7 +52,7 @@ abstract class DefinitionNameIntention : IntentionAction, PriorityAction, Iconab
 }
 
 /**
- * 为表示定义名称的字符串提供查找使用的功能的意向。
+ * 为表示定义名称的字符串提供查找使用的功能。
  * @see icu.windea.pls.core.search.usage.ParadoxDefinitionUsagesSearcher
  */
 class DefinitionNameFindUsagesIntention : DefinitionNameIntention() {
@@ -64,7 +64,7 @@ class DefinitionNameFindUsagesIntention : DefinitionNameIntention() {
 }
 
 /**
- * 为表示定义名称的字符串提供导航到实现的功能的意向。
+ * 为表示定义名称的字符串提供导航到实现的功能。
  * @see icu.windea.pls.core.search.implementation.ParadoxDefinitionImplementationsSearch
  */
 class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
@@ -80,7 +80,7 @@ class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
 }
 
 /**
- * 为表示定义名称的字符串提供导航到声明的功能的意向。
+ * 为表示定义名称的字符串提供导航到声明的功能。
  * @see icu.windea.pls.core.codeInsight.ParadoxTypeDeclarationProvider
  */
 class DefinitionNameGotoTypeDeclarationIntention : DefinitionNameIntention() {
