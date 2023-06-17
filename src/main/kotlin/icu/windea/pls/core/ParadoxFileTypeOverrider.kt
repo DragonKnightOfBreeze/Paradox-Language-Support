@@ -3,6 +3,7 @@ package icu.windea.pls.core
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.fileTypes.impl.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
@@ -20,7 +21,11 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
     //才有可能将所在目录（以及子目录）下的文件自动识别为Paradox本地化文件和脚本文件
     
     override fun getOverriddenFileType(file: VirtualFile): FileType? {
-        //不需要重载内存文件的文件类型
+        //首先尝试获取注入的fileInfo获取重置的文件类型
+        val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfoKey)
+        if(injectedFileInfo != null) return getFileType(injectedFileInfo)
+        
+        //不需要重载内存文件的文件类型（除非可以获取注入的fileInfo）
         if(ParadoxFileManager.isLightFile(file)) return null
         
         val fileInfo = ParadoxCoreHandler.getFileInfo(file) ?: return null
