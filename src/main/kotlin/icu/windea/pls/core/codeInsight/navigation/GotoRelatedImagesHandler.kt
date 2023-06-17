@@ -36,12 +36,12 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
             if(imageInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
             val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
             val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
-                //need read action here
-                runReadAction {
-                    for((_, locationExpression) in imageInfos) {
-                        ProgressManager.checkCanceled()
-                        val resolved = locationExpression.resolveAll(definition, definitionInfo, project) ?: continue
-                        if(resolved.files.isNotEmpty()) {
+                for((_, locationExpression) in imageInfos) {
+                    ProgressManager.checkCanceled()
+                    //need read action here
+                    runReadAction {
+                        val resolved = locationExpression.resolveAll(definition, definitionInfo, project)
+                        if(resolved != null && resolved.files.isNotEmpty()) {
                             targets.addAll(resolved.files)
                         }
                     }

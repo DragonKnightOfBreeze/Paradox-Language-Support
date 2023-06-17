@@ -36,13 +36,13 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             if(localisationInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
             val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
             val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
-                //need read action here
-                runReadAction {
-                    for((_, locationExpression) in localisationInfos) {
-                        ProgressManager.checkCanceled()
+                for((_, locationExpression) in localisationInfos) {
+                    ProgressManager.checkCanceled()
+                    //need read action here
+                    runReadAction {
                         val selector = localisationSelector(project, definition).contextSensitive().preferLocale(preferredParadoxLocale())
-                        val resolved = locationExpression.resolveAll(definition, definitionInfo, selector) ?: continue
-                        if(resolved.localisations.isNotEmpty()) {
+                        val resolved = locationExpression.resolveAll(definition, definitionInfo, selector)
+                        if(resolved != null && resolved.localisations.isNotEmpty()) {
                             targets.addAll(resolved.localisations)
                         }
                     }
