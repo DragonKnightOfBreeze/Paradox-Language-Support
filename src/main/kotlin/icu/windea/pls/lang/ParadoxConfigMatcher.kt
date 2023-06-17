@@ -500,11 +500,11 @@ object ParadoxConfigMatcher {
     }
     
     private fun onMatchException(e: Throwable): Boolean {
+        if(e is ProcessCanceledException) throw e
         //进一步匹配CWT规则时需要防止出现某些异常（如索引异常）
         thisLogger().warn(e)
         //java.lang.Throwable: Indexing process should not rely on non-indexed file data. -> 无法捕获这个异常
         //com.intellij.openapi.project.IndexNotReadyException -> 直接认为匹配
-        //com.intellij.openapi.progress.ProcessCanceledException -> 直接认为匹配
         //其他情况 -> 也直接认为匹配
         return true
     }

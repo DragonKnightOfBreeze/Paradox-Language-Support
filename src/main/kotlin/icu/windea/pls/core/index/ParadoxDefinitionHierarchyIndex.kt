@@ -150,14 +150,17 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxDe
             }
         }
     })
+    
+    if(fileData.isEmpty()) return
+    fileData.forEach { (_, value) -> (value as MutableList).sortWith(compareBy({ it.definitionName + ":" + it.definitionType }, { it.configExpression })) }
 }
 
 //这个索引在通常情况下需要索引的数据可能非常多，需要进行优化
 //尝试减少实际需要索引的数据量以优化性能
 
 private fun writeDefinitionHierarchyInfos(storage: DataOutput, value: List<ParadoxDefinitionHierarchyInfo>) {
-    if(value.isEmpty()) return storage.writeBoolean(false)
-    storage.writeBoolean(true)
+    if(value.isEmpty()) return storage.writeBoolean(true)
+    storage.writeBoolean(false)
     val firstInfo = value.first()
     storage.writeUTFFast(firstInfo.supportId)
     storage.writeByte(firstInfo.gameType.toByte())
@@ -183,7 +186,7 @@ private fun writeDefinitionHierarchyInfos(storage: DataOutput, value: List<Parad
 }
 
 private fun readDefinitionHierarchyInfos(storage: DataInput): List<ParadoxDefinitionHierarchyInfo> {
-    if(!storage.readBoolean()) return emptyList()
+    if(storage.readBoolean()) return emptyList()
     val result = mutableListOf<ParadoxDefinitionHierarchyInfo>()
     val supportId = storage.readUTFFast()
     val gameType = storage.readByte().toGameType()

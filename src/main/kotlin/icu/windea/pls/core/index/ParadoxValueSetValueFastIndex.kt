@@ -133,6 +133,9 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxVa
             }
         })
     }
+    
+    if(fileData.isEmpty()) return
+    fileData.forEach { (_, value) -> (value as MutableList).sortBy { it.name } }
 }
 
 //目前不需要追踪在文件中的位置，因此可以先进行去重
@@ -168,7 +171,7 @@ private fun writeValueSetValueInfos(storage: DataOutput, value: List<ParadoxValu
 }
 
 private fun readValueSetValueInfos(storage: DataInput): List<ParadoxValueSetValueInfo> {
-    if(!storage.readBoolean()) return emptyList()
+    if(storage.readBoolean()) return emptyList()
     val result = mutableListOf<ParadoxValueSetValueInfo>()
     val valueSetName = storage.readUTFFast()
     val gameType = storage.readByte().toGameType()
