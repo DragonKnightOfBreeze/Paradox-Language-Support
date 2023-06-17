@@ -55,11 +55,11 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
     override fun getValueExternalizer(): DataExternalizer<List<ParadoxValueSetValueInfo>> {
         return object : DataExternalizer<List<ParadoxValueSetValueInfo>> {
             override fun save(storage: DataOutput, value: List<ParadoxValueSetValueInfo>) {
-                storage.writeList(value) { info -> writeValueSetValueInfo(storage, info) }
+                writeValueSetValueInfos(storage, value)
             }
             
             override fun read(storage: DataInput): List<ParadoxValueSetValueInfo> {
-                return storage.readList { readValueSetValueInfo(storage) }
+                return readValueSetValueInfos(storage)
             }
         }
     }
@@ -85,7 +85,7 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
                 storage.writeInt(value.size)
                 value.forEach { (k, infos) ->
                     storage.writeUTFFast(k)
-                    storage.writeList(infos) { info -> writeValueSetValueInfo(storage, info) }
+                    writeValueSetValueInfos(storage, infos)
                 }
             }
             
@@ -93,7 +93,7 @@ class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<Parad
                 return buildMap {
                     repeat(storage.readInt()) {
                         val k = storage.readUTFFast()
-                        val infos = storage.readList { readValueSetValueInfo(storage) }
+                        val infos = readValueSetValueInfos(storage)
                         put(k, infos)
                     }
                 }
@@ -135,6 +135,8 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxVa
     }
 }
 
+//目前不需要追踪在文件中的位置，因此可以先进行去重
+
 private fun MutableMap<String, List<ParadoxValueSetValueInfo>>.addInfos(infos: List<ParadoxValueSetValueInfo>, keys: MutableSet<String>) {
     infos.forEachFast { info ->
         val key = info.valueSetName + "@" + info.name + "@" + info.readWriteAccess.ordinal
@@ -145,21 +147,40 @@ private fun MutableMap<String, List<ParadoxValueSetValueInfo>>.addInfos(infos: L
     }
 }
 
-private fun writeValueSetValueInfo(storage: DataOutput, info: ParadoxValueSetValueInfo) {
-    storage.writeUTFFast(info.name)
-    storage.writeUTFFast(info.valueSetName)
-    storage.writeByte(info.readWriteAccess.toByte())
-    storage.writeInt(info.elementOffset)
-    storage.writeByte(info.gameType.toByte())
+//尝试减少实际需要索引的数据量以优化性能
+
+private fun writeValueSetValueInfos(storage: DataOutput, value: List<ParadoxValueSetValueInfo>) {
+    if(value.isEmpty()) return storage.writeBoolean(true)
+    storage.writeBoolean(false)
+    val firstInfo = value.first()
+    storage.writeUTFFast(firstInfo.valueSetName)
+    storage.writeByte(firstInfo.gameType.toByte())
+    val infoGroup = value.groupBy { it.name }
+    storage.writeIntFast(infoGroup.size)
+    infoGroup.forEach { (name, infos) ->
+        storage.writeUTFFast(name)
+        storage.writeIntFast(infos.size)
+        infos.forEachFast { info ->
+            storage.writeByte(info.readWriteAccess.toByte())
+            storage.writeIntFast(info.elementOffset)
+        }
+    }
 }
 
-private fun readValueSetValueInfo(storage: DataInput): ParadoxValueSetValueInfo {
-    val name = storage.readUTFFast()
+private fun readValueSetValueInfos(storage: DataInput): List<ParadoxValueSetValueInfo> {
+    if(!storage.readBoolean()) return emptyList()
+    val result = mutableListOf<ParadoxValueSetValueInfo>()
     val valueSetName = storage.readUTFFast()
-    val readWriteAccess = storage.readByte().toReadWriteAccess()
-    val elementOffset = storage.readInt()
     val gameType = storage.readByte().toGameType()
-    return ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, elementOffset, gameType)
+    repeat(storage.readIntFast()) {
+        val name = storage.readUTFFast()
+        repeat(storage.readIntFast()) {
+            val readWriteAccess = storage.readByte().toReadWriteAccess()
+            val elementOffset = storage.readIntFast()
+            result += ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, elementOffset, gameType)
+        }
+    }
+    return result
 }
 
 private fun filterFile(file: VirtualFile, lazy: Boolean): Boolean {

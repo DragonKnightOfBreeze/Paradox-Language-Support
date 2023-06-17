@@ -864,25 +864,51 @@ inline fun <T, V> DataOutput.writeOrWriteFrom(value: T, from: T?, selector: (T) 
     writeAction(selector(value))
 }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun DataInput.readUTFFast(): String = IOUtil.readUTF(this)
+fun DataInput.readUTFWithCache(cache: MutableList<String>) : String {
+    val flag = readBoolean()
+    if(flag) {
+        val cacheIndex = readIntFast()
+        return cache[cacheIndex]
+    }
+    val result = readUTFFast()
+    cache.add(result)
+    return result
+}
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun DataOutput.writeUTFFast(value: String) = IOUtil.writeUTF(this, value)
+fun DataOutput.writeUTFWithCache(value: String, cache: MutableList<String>){
+    val index = cache.indexOf(value)
+    if(index != -1) {
+        writeBoolean(true)
+        writeIntFast(index)
+    } else {
+        writeBoolean(false)
+        writeUTFFast(value)
+        cache.add(value)
+    }
+}
+
+fun DataInput.readIntFast(): Int = DataInputOutputUtil.readINT(this)
+
+fun DataOutput.writeIntFast(value: Int) = DataInputOutputUtil.writeINT(this, value)
+
+fun DataInput.readUTFFast(): String = IOUtil.readUTF(this)
+
+fun DataOutput.writeUTFFast(value: String) = IOUtil.writeUTF(this, value)
 
 inline fun <T> DataInput.readList(action: () -> T): MutableList<T> {
-    return MutableList(DataInputOutputUtil.readINT(this)) { action() }
+    return MutableList(readIntFast()) { action() }
 }
 
 inline fun <T> DataOutput.writeList(collection: Collection<T>, action: (T) -> Unit) {
-    DataInputOutputUtil.writeINT(this, collection.size)
+    writeIntFast(collection.size)
     collection.forEach { action(it) }
 }
 
 inline fun <T> DataOutput.writeList(collection: List<T>, action: (T) -> Unit) {
-    DataInputOutputUtil.writeINT(this, collection.size)
+    writeIntFast(collection.size)
     collection.forEachFast { action(it) }
 }
+
 
 val StubBasedPsiElementBase<*>.containingFileStub: PsiFileStub<*>?
     get() {
