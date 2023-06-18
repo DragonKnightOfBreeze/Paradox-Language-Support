@@ -16,9 +16,48 @@ class ParadoxCoreFileListener : AsyncFileListener {
             override fun afterVfsChange() {
                 var reparseOpenedFiles = false
                 
-                run {
-                    for(event in events) {
-                        if(event is VFileContentChangeEvent) {
+                for(event in events) {
+                    when(event) {
+                        is VFileCreateEvent -> {
+                            if(event.childName.equals(PlsConstants.descriptorFileName, true)) {
+                                clearRootInfo(event.parent)
+                                reparseOpenedFiles = true
+                            }
+                        }
+                        is VFileDeleteEvent -> {
+                            clearFileInfo(event.file)
+                            if(event.file.name.equals(PlsConstants.descriptorFileName, true)) {
+                                clearRootInfo(event.file.parent)
+                                reparseOpenedFiles = true
+                            }
+                        }
+                        is VFileCopyEvent -> {
+                            if(event.newChildName.equals(PlsConstants.descriptorFileName, true)) {
+                                clearRootInfo(event.newParent)
+                                reparseOpenedFiles = true
+                            }
+                        }
+                        is VFileMoveEvent -> {
+                            clearFileInfo(event.file)
+                            if(event.file.name.equals(PlsConstants.descriptorFileName, true)) {
+                                clearRootInfo(event.oldParent)
+                                clearRootInfo(event.newParent)
+                                reparseOpenedFiles = true
+                            }
+                        }
+                        is VFilePropertyChangeEvent -> {
+                            if(event.propertyName == VirtualFile.PROP_NAME) {
+                                clearFileInfo(event.file)
+                                if(event.newValue.toString().equals(PlsConstants.descriptorFileName, true)) {
+                                    clearRootInfo(event.file.parent)
+                                    reparseOpenedFiles = true
+                                } else if(event.oldValue.toString().equals(PlsConstants.descriptorFileName, true)) {
+                                    clearRootInfo(event.file.parent)
+                                    reparseOpenedFiles = true
+                                }
+                            }
+                        }
+                        is VFileContentChangeEvent -> {
                             val fileName = event.file.name
                             if(fileName.equals(PlsConstants.descriptorFileName, true)) {
                                 val rootFile = event.file.fileInfo?.rootInfo?.rootFile
@@ -26,49 +65,6 @@ class ParadoxCoreFileListener : AsyncFileListener {
                             } else if(fileName.equals(PlsConstants.launcherSettingsFileName, true)) {
                                 val rootFile = event.file.fileInfo?.rootInfo?.rootFile
                                 clearRootInfo(rootFile)
-                            }
-                        }
-                    }
-                }
-                run {
-                    for(event in events) {
-                        when(event) {
-                            is VFileCreateEvent -> {
-                                if(event.childName.equals(PlsConstants.descriptorFileName, true)) {
-                                    clearRootInfo(event.parent)
-                                    reparseOpenedFiles = true
-                                }
-                            }
-                            is VFileDeleteEvent -> {
-                                val file = event.file
-                                if(file.name.equals(PlsConstants.descriptorFileName, true)) {
-                                    clearRootInfo(file.parent)
-                                    reparseOpenedFiles = true
-                                }
-                            }
-                            is VFileCopyEvent -> {
-                                if(event.newChildName.equals(PlsConstants.descriptorFileName, true)) {
-                                    clearRootInfo(event.newParent)
-                                    reparseOpenedFiles = true
-                                }
-                            }
-                            is VFileMoveEvent -> {
-                                if(event.file.name.equals(PlsConstants.descriptorFileName, true)) {
-                                    clearRootInfo(event.oldParent)
-                                    clearRootInfo(event.newParent)
-                                    reparseOpenedFiles = true
-                                }
-                            }
-                            is VFilePropertyChangeEvent -> {
-                                if(event.propertyName == VirtualFile.PROP_NAME) {
-                                    if(event.newValue.toString().equals(PlsConstants.descriptorFileName, true)) {
-                                        clearRootInfo(event.file.parent)
-                                        reparseOpenedFiles = true
-                                    } else if(event.oldValue.toString().equals(PlsConstants.descriptorFileName, true)) {
-                                        clearRootInfo(event.file.parent)
-                                        reparseOpenedFiles = true
-                                    }
-                                }
                             }
                         }
                     }
@@ -85,5 +81,10 @@ class ParadoxCoreFileListener : AsyncFileListener {
         if(rootFile == null) return
         //清空根目录信息缓存
         rootFile.tryPutUserData(PlsKeys.rootInfoStatusKey, null)
+    }
+    
+    private fun clearFileInfo(file: VirtualFile?) {
+        if(file == null) return
+        file.tryPutUserData(PlsKeys.fileInfoStatusKey, null)
     }
 }

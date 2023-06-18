@@ -55,7 +55,7 @@ object ParadoxCoreHandler {
                 rootFile.tryPutUserData(PlsKeys.rootInfoKey, newRootInfo)
                 onAddRootInfo(rootFile, newRootInfo)
             } else {
-                rootFile.putUserData(PlsKeys.rootInfoStatusKey, false)
+                rootFile.tryPutUserData(PlsKeys.rootInfoStatusKey, false)
                 if(rootInfo != null) onRemoveRootInfo(rootFile, rootInfo)
             }
             rootFile.tryPutUserData(PlsKeys.rootInfoKey, newRootInfo)
@@ -156,13 +156,11 @@ object ParadoxCoreHandler {
         val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfoKey)
         if(injectedFileInfo != null) return injectedFileInfo
         
+        
         val fileInfo = file.getUserData(PlsKeys.fileInfoKey)
         if(!refresh) return fileInfo
-        if(fileInfo != null) {
-            val rootFile = fileInfo.rootInfo.rootFile
-            val rootInfo = getRootInfo(rootFile)
-            if(rootInfo === fileInfo.rootInfo) return fileInfo
-        }
+        val fileInfoStatus = file.getUserData(PlsKeys.fileInfoStatusKey)
+        if(fileInfoStatus != null) return fileInfo
         
         //这里不能直接获取file.parent，需要基于filePath尝试获取parent，因为file可能是内存文件
         val isLightFile = ParadoxFileManager.isLightFile(file)
@@ -174,12 +172,14 @@ object ParadoxCoreHandler {
             val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
             if(rootInfo != null) {
                 val newFileInfo = doGetFileInfo(file, filePath, fileName, rootInfo)
+                file.tryPutUserData(PlsKeys.fileInfoStatusKey, true)
                 file.tryPutUserData(PlsKeys.fileInfoKey, newFileInfo)
                 return newFileInfo
             }
             currentFilePath = currentFilePath.parent ?: break
             currentFile = currentFile?.parent ?: if(isLightFile) VfsUtil.findFile(currentFilePath, false) else break
         }
+        file.tryPutUserData(PlsKeys.fileInfoStatusKey, false)
         file.tryPutUserData(PlsKeys.fileInfoKey, null)
         return null
     }

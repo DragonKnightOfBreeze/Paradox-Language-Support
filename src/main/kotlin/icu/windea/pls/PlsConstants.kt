@@ -90,6 +90,7 @@ object PlsKeys {
     val libraryKey = Key.create<ParadoxLibrary>("paradox.library")
     val rootInfoStatusKey = Key.create<Boolean>("paradox.rootInfo.status")
     val rootInfoKey = Key.create<ParadoxRootInfo>("paradox.rootInfo")
+    val fileInfoStatusKey = Key.create<Boolean>("paradox.fileInfo.status")
     val fileInfoKey = Key.create<ParadoxFileInfo>("paradox.fileInfo")
     
     val injectedRootInfoKey = Key.create<ParadoxRootInfo>("paradox.injected.rootInfo") //用于为临时文件（VirtualFile）嵌入根目录信息
