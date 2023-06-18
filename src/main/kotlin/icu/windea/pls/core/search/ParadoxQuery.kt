@@ -1,9 +1,9 @@
 package icu.windea.pls.core.search
 
 import com.intellij.util.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.lang.priority.*
 import java.util.concurrent.atomic.*
 
 /**
@@ -36,7 +36,17 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 	}
 	
 	fun find(): T? {
-		return findFirst() //TODO
+		val selector = searchParameters.selector
+		var result: T? = null
+		delegateProcessResults(original) {
+			if(selector.select(it)) {
+				result = it
+				false
+			} else {
+				true
+			}
+		}
+		return result ?: selector.defaultValue()
 	}
 	
 	override fun findFirst(): T? {
@@ -55,7 +65,10 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 	
 	override fun findAll(): Set<T> {
 		val selector = searchParameters.selector
-		val result = MutableSet(selector.comparator())
+		val priorityComparator = getPriorityComparator()
+		val selectorComparator = selector.comparator()
+		val comparator = if(selectorComparator != null) priorityComparator then selectorComparator else priorityComparator
+		val result = sortedSetOf(comparator)
 		delegateProcessResults(original) {
 			if(selector.selectAll(it)) {
 				result.add(it)
@@ -66,7 +79,6 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 	}
 	
 	override fun forEach(consumer: Processor<in T>): Boolean {
-		//这里不进行排序
 		val selector = searchParameters.selector
 		return delegateProcessResults(original) {
 			if(selector.selectAll(it)) {
@@ -75,6 +87,10 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 			}
 			true
 		}
+	}
+	
+	fun getPriorityComparator(): Comparator<T> {
+		return ParadoxPriorityProvider.getComparator(searchParameters)
 	}
 	
 	/**

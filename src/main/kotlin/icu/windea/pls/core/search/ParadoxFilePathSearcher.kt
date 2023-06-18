@@ -27,7 +27,6 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         val gameType = queryParameters.selector.gameType
         val contextElement = queryParameters.selector.file?.toPsiFile(project)
         
-        
         fun processFile(file: VirtualFile, consumer: Processor<in VirtualFile>): Boolean {
             ProgressManager.checkCanceled()
             ParadoxCoreHandler.getFileInfo(file) ?: return true //ensure file info is resolved here

@@ -39,27 +39,33 @@ class ParadoxDirectoryElementNode(
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
         if(value == null) return emptyList()
         val selector = fileSelector(project, value.preferredRootFile).withGameType(value.gameType)
-        val children = mutableListOf<AbstractTreeNode<*>>()
         val directoryNames = mutableSetOf<String>()
-        ParadoxFilePathSearch.search(null, selector).processQuery p@{ file ->
+        val query = ParadoxFilePathSearch.search(null, selector)
+        val files = sortedSetOf(query.getPriorityComparator()) //按照覆盖顺序进行排序
+        query.processQuery p@{ file ->
             val fileInfo = file.fileInfo ?: return@p true
             if(fileInfo.pathToEntry.parent != value.path.path) return@p true
             if(file.isDirectory && directoryNames.add(file.name)) {
                 //位于游戏或模组目录中，且未被排除
                 val fileData = FileBasedIndex.getInstance().getFileData(ParadoxFilePathIndex.NAME, file, project)
                 if(!fileData.values.single().included) return@p true
-                val element = ParadoxDirectoryElement(project, fileInfo.pathToEntry, fileInfo.rootInfo.gameType, value.preferredRootFile)
-                val elementNode = ParadoxDirectoryElementNode(project, element, settings)
-                children.add(elementNode)
+                files.add(file)
             } else {
                 //位于游戏或模组目录中
-                val psiFile = file.toPsiFile(project) ?: return@p true
-                val node = PsiFileNode(project, psiFile, settings)
-                children.add(node)
+                files.add(file)
             }
             true
         }
-        return children
+        return files.mapNotNull { file ->
+            if(file.isDirectory) {
+                val fileInfo = file.fileInfo ?: return@mapNotNull null
+                val element = ParadoxDirectoryElement(project, fileInfo.pathToEntry, fileInfo.rootInfo.gameType, value.preferredRootFile)
+                ParadoxDirectoryElementNode(project, element, settings)
+            } else {
+                val psiFile = file.toPsiFile(project) ?: return@mapNotNull null
+                PsiFileNode(project, psiFile, settings)
+            }
+        }
     }
     
     override fun isValid(): Boolean {
