@@ -45,8 +45,9 @@ class ParadoxDirectoryElementNode(
         query.processQuery p@{ file ->
             val fileInfo = file.fileInfo ?: return@p true
             if(fileInfo.pathToEntry.parent != value.path.path) return@p true
-            if(file.isDirectory && directoryNames.add(file.name)) {
+            if(file.isDirectory) {
                 //位于游戏或模组目录中，且未被排除
+                if(!directoryNames.add(file.name)) return@p true
                 val fileData = FileBasedIndex.getInstance().getFileData(ParadoxFilePathIndex.NAME, file, project)
                 if(!fileData.values.single().included) return@p true
                 files.add(file)
