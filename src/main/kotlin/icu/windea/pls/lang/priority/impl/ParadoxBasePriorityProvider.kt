@@ -13,6 +13,15 @@ class ParadoxBasePriorityProvider : ParadoxPriorityProvider() {
         "common/on_actions"
     )
     
+    override fun getPriority(target: Any): ParadoxPriority? {
+        val filePath = getFilePath(target) ?: return null
+        return when {
+            filePath in FIOS_PATHS -> ParadoxPriority.FIOS
+            filePath in ORDERED_PATHS -> ParadoxPriority.ORDERED
+            else -> null
+        }
+    }
+    
     override fun getPriority(searchParameters: ParadoxSearchParameters<*>): ParadoxPriority? {
         val filePath = getFilePath(searchParameters) ?: return null
         return when {
