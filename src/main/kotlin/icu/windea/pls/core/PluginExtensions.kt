@@ -4,7 +4,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 
-fun String.isExactParameterizedIdentifier(vararg extraChars: Char): Boolean {
+fun String.isParameterizedExactIdentifier(vararg extraChars: Char): Boolean {
     var isParameter = false
     for(c in this) {
         when {

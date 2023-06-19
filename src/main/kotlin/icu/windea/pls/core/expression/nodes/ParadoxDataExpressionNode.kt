@@ -3,6 +3,7 @@ package icu.windea.pls.core.expression.nodes
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
@@ -10,7 +11,9 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expression.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxDataExpressionNode(
@@ -59,7 +62,13 @@ class ParadoxDataExpressionNode(
         val project = linkConfigs.first().config.info.configGroup.project
         
         override fun handleElementRename(newElementName: String): PsiElement {
-            return element.setValue(rangeInElement.replace(element.value, newElementName))
+            val resolved = element.resolved()
+            return when {
+                resolved == null -> element.setValue(rangeInElement.replace(element.value, newElementName))
+                resolved.language == CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
+                resolved.language.isParadoxLanguage() -> element.setValue(rangeInElement.replace(element.value, newElementName))
+                else -> throw IncorrectOperationException()
+            }
         }
         
         override fun getReferences(): Array<out PsiReference>? {

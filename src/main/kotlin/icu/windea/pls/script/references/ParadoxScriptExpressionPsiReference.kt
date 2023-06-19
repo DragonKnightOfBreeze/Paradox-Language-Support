@@ -4,10 +4,13 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expression.ParadoxPathReferenceExpressionSupport.INSTANCE.get
 import icu.windea.pls.script.psi.*
 
 /**
@@ -23,9 +26,20 @@ class ParadoxScriptExpressionPsiReference(
     //val project by lazy { element.project }
     
     override fun handleElementRename(newElementName: String): PsiElement {
+        val resolved = resolve()
         return when {
-            element is ParadoxScriptStringExpressionElement -> element.setValue(rangeInElement.replace(element.value, newElementName))
-            element is ParadoxScriptInt -> element.setValue(rangeInElement.replace(element.value, newElementName))
+            resolved == null -> element.setValue(rangeInElement.replace(element.value, newElementName))
+            resolved is PsiFileSystemItem -> {
+                // #33
+                val configExpression = config.expression ?: throw IncorrectOperationException()
+                val ep = get(configExpression) ?: throw IncorrectOperationException()
+                val fileInfo = resolved.fileInfo ?: throw IncorrectOperationException()
+                val newFilePath = fileInfo.path.parent + "/" + newElementName
+                val pathReference = ep.extract(configExpression, element, newFilePath) ?: throw IncorrectOperationException()
+                element.setValue(pathReference)
+            }
+            resolved.language == CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
+            resolved.language.isParadoxLanguage() -> element.setValue(rangeInElement.replace(element.value, newElementName))
             else -> throw IncorrectOperationException()
         }
     }

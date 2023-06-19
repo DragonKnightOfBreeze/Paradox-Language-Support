@@ -2,8 +2,11 @@ package icu.windea.pls.lang.expression
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
+import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 提供对路径引用表达式的支持。
@@ -51,6 +54,7 @@ abstract class ParadoxPathReferenceExpressionSupport {
                 ep.supports(configExpression)
             }
         }
+        
     }
 }
 
