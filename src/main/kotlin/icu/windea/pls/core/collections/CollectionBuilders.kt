@@ -4,6 +4,10 @@ package icu.windea.pls.core.collections
 
 import java.util.*
 
+fun <T> MutableSet(comparator: Comparator<T>? = null): MutableSet<T> {
+	return if(comparator == null) mutableSetOf() else TreeSet(comparator)
+}
+
 inline fun <reified T: Enum<T>> enumSetOf(vararg values: T) : EnumSet<T> {
 	return EnumSet.noneOf(T::class.java).apply { values.forEach { add(it) } }
 }

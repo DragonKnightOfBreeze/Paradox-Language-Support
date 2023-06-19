@@ -1,5 +1,10 @@
 package icu.windea.pls.core
 
+infix fun <T> Comparator<T>?.thenPossible(comparator: Comparator<T>?): Comparator<T>? {
+    if(this == null || comparator == null) return this ?: comparator
+    return this.then(comparator)
+}
+
 /**
  * 通过[selector]得到需要的结果之后（如果这里得到的结果是null，放到最后面），
  * 首先按照[comparableSelector]的结果进行降序排序（如果这里得到的结果是null，比较结果返回0），

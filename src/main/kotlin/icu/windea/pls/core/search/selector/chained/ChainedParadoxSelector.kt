@@ -3,6 +3,7 @@ package icu.windea.pls.core.search.selector.chained
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.core.search.selector.*
@@ -79,21 +80,16 @@ open class ChainedParadoxSelector<T>(
         return true
     }
     
+    /**
+     * 注意：最终使用的排序器需要将比较结果为0的项按照原有顺序进行排序，除非它们值相等。
+     */
     override fun comparator(): Comparator<T>? {
         if(selectors.isEmpty()) return super.comparator()
         var comparator: Comparator<T>? = null
         selectors.forEachFast { selector ->
-            val nextComparator = selector.comparator() ?: return@forEachFast
-            if(comparator == null) {
-                comparator = nextComparator
-            } else {
-                comparator = comparator?.thenComparing(nextComparator)
-            }
+            comparator = comparator thenPossible selector.comparator()
         }
-        //最终使用的排序器需要将比较结果为0的项按照原有顺序进行排序，除非它们值相等
-        return comparator?.thenComparing { a, b ->
-            if(a == b) 0 else 1
-        }
+        return comparator
     }
     
     fun defaultValue(): T? {
