@@ -1,16 +1,15 @@
 package icu.windea.pls.core
 
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 
-fun String.isParameterizedExactIdentifier(vararg extraChars: Char): Boolean {
+fun String.isExactParameterAwareIdentifier(vararg extraChars: Char): Boolean {
     var isParameter = false
-    for(c in this) {
+    this.forEachFast { c ->
         when {
-            c == '$' -> {
-                isParameter = !isParameter
-            }
+            c == '$' -> isParameter = !isParameter
             isParameter -> {}
             c.isExactIdentifierChar() || c in extraChars -> {}
             else -> return false
@@ -20,7 +19,20 @@ fun String.isParameterizedExactIdentifier(vararg extraChars: Char): Boolean {
 }
 
 fun String.isParameterized(): Boolean {
-    return this.any { it == '$' }
+    var isEscaped = false
+    this.forEachFast { c ->
+        when {
+            c == '\\' -> {
+                isEscaped = true
+                return@forEachFast
+            }
+            c == '$' -> {
+                if(!isEscaped) return true
+            }
+        }
+        if(isEscaped) isEscaped = false
+    }
+    return false
 }
 
 fun String.isInlineUsage(): Boolean {

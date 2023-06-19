@@ -144,7 +144,7 @@ class ParadoxScopeFieldExpressionImpl(
 	}
 	
 	private fun isValid(node: ParadoxExpressionNode): Boolean {
-		return node.text.isParameterizedExactIdentifier()
+		return node.text.isExactParameterAwareIdentifier()
 	}
 	
 	override fun complete(context: ProcessingContext, result: CompletionResultSet) {
