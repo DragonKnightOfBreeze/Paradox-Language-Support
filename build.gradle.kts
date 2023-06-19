@@ -20,12 +20,13 @@ intellij {
 	plugins.add("com.intellij.platform.images")
 	
 	//optional
+	plugins.add("markdown")
+	//optional
 	plugins.add("uml")
 	//optional
 	plugins.add("cn.yiiguxing.plugin.translate:3.5.0") //https://github.com/YiiGuxing/TranslationPlugin
 	
 	//reference
-	plugins.add("markdown")
 	plugins.add("properties")
 	plugins.add("java")
 	plugins.add("org.jetbrains.kotlin")

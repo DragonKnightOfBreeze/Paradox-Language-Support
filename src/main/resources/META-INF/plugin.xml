@@ -10,6 +10,7 @@
 
   <depends>com.intellij.modules.lang</depends>
   <depends>com.intellij.platform.images</depends>
+  <depends optional="true" config-file="pls-extension-markdown.xml">org.intellij.plugins.markdown</depends>
   <depends optional="true" config-file="pls-extension-diagram.xml">com.intellij.diagram</depends>
   <depends optional="true" config-file="pls-extension-translation.xml">cn.yiiguxing.plugin.translate</depends>
   
