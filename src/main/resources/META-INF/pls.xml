@@ -131,4 +131,8 @@
     <modExporter implementation="icu.windea.pls.core.tool.exporter.ParadoxToLauncherJsonV2Exporter"/>
     <modExporter implementation="icu.windea.pls.core.tool.exporter.ParadoxToLauncherJsonV3Exporter"/>
   </extensions>
+  
+  <extensions defaultExtensionNs="com.intellij">
+    <!--<multiHostInjector implementation="icu.windea.pls.lang.injection.ParadoxScriptStringExpressionInjector"/>-->
+  </extensions>
 </idea-plugin>
