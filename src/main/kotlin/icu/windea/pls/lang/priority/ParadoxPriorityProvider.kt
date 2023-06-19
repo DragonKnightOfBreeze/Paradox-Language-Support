@@ -1,16 +1,12 @@
 package icu.windea.pls.lang.priority
 
 import com.intellij.openapi.extensions.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 用于基于覆盖顺序对文件、封装变量、定义、本地化进行排序。
@@ -20,59 +16,10 @@ import icu.windea.pls.script.psi.*
  * @see ParadoxPriority
  */
 @WithGameTypeEP
-abstract class ParadoxPriorityProvider {
-    abstract fun getPriorityForFile(targetFile: PsiFile): ParadoxPriority?
+interface ParadoxPriorityProvider {
+    fun getPriority(target: Any): ParadoxPriority?
     
-    abstract fun getPriority(target: Any): ParadoxPriority?
-    
-    abstract fun getPriority(searchParameters: ParadoxSearchParameters<*>): ParadoxPriority?
-    
-    protected fun getFilePath(target: Any): String? {
-        return when {
-            target is VirtualFile -> null //ignore
-            target is PsiFileSystemItem -> null //ignore
-            target is ParadoxScriptScriptedVariable -> {
-                val targetPath = target.fileInfo?.pathToEntry?.path ?: return null
-                "common/scripted_variables".takeIf { it.matchesPath(targetPath) }
-            }
-            target is ParadoxScriptDefinitionElement -> {
-                val definitionInfo = target.definitionInfo ?: return null
-                val definitionType = definitionInfo.type
-                val configGroup = definitionInfo.configGroup
-                configGroup.types.get(definitionType)?.path
-            }
-            target is ParadoxLocalisationProperty -> {
-                val localisationCategory = target.localisationInfo?.category ?: return null
-                return when(localisationCategory) {
-                    ParadoxLocalisationCategory.Localisation -> "localisation"
-                    ParadoxLocalisationCategory.SyncedLocalisation -> "localisation_synced"
-                }
-            }
-            else -> null
-        }
-    }
-    
-    protected fun getFilePath(searchParameters: ParadoxSearchParameters<*>): String? {
-        return when {
-            searchParameters is ParadoxFilePathSearch.SearchParameters -> null //ignore
-            searchParameters is ParadoxGlobalScriptedVariableSearch.SearchParameters -> {
-                "common/scripted_variables"
-            }
-            searchParameters is ParadoxDefinitionSearch.SearchParameters -> {
-                val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return null
-                val gameType = searchParameters.selector.gameType ?: return null
-                val configGroup = getCwtConfig(searchParameters.project).get(gameType)
-                configGroup.types.get(definitionType)?.path
-            }
-            searchParameters is ParadoxLocalisationSearch.SearchParameters -> {
-                "localisation"
-            }
-            searchParameters is ParadoxSyncedLocalisationSearch.SearchParameters -> {
-                "localisation_synced"
-            }
-            else -> null
-        }
-    }
+    fun getPriority(searchParameters: ParadoxSearchParameters<*>): ParadoxPriority?
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxPriorityProvider>("icu.windea.pls.priorityProvider")
