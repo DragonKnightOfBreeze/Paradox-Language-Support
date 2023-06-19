@@ -33,3 +33,4 @@ class UnsupportedScriptedVariableUsageInspection: LocalInspectionTool() {
         return PsiElementVisitor.EMPTY_VISITOR
     }
 }
+

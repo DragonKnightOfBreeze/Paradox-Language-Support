@@ -144,6 +144,18 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
                      groupPathKey="inspection.script.bug.path"
                      implementationClass="icu.windea.pls.script.inspections.bug.UnsupportedRecursionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScriptedVariableOverride"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.bug.incorrectScriptedVariableOverride"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
+                     groupPathKey="inspection.script.bug.path"
+                     implementationClass="icu.windea.pls.script.inspections.bug.IncorrectScriptedVariableOverrideInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectDefinitionOverride"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.bug.incorrectDefinitionOverride"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
+                     groupPathKey="inspection.script.bug.path"
+                     implementationClass="icu.windea.pls.script.inspections.bug.IncorrectDefinitionOverrideInspection"/>
     <!--endregion-->
     <!--region Paradox script/Scope issues-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScope"

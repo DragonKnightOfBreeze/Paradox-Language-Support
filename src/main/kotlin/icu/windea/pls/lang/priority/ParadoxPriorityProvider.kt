@@ -21,6 +21,8 @@ import icu.windea.pls.script.psi.*
  */
 @WithGameTypeEP
 abstract class ParadoxPriorityProvider {
+    abstract fun getPriorityForFile(targetFile: PsiFile): ParadoxPriority?
+    
     abstract fun getPriority(target: Any): ParadoxPriority?
     
     abstract fun getPriority(searchParameters: ParadoxSearchParameters<*>): ParadoxPriority?
