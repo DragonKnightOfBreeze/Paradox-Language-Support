@@ -26,7 +26,6 @@ import kotlin.collections.set
  * 默认不启用。
  */
 @SlowApi
-@OptimizedApi
 class UnusedValueSetValueInspection : LocalInspectionTool() {
     //may be slow for ParadoxValueSetValueSearch
     
