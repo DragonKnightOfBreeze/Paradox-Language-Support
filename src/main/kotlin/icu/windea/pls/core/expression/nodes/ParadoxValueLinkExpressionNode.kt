@@ -30,8 +30,8 @@ class ParadoxValueLinkExpressionNode (
 		rangeInElement: TextRange,
 		val config: CwtLinkConfig
 	) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
-		override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
-			throw IncorrectOperationException() //不允许重命名
+		override fun handleElementRename(newElementName: String): PsiElement {
+			throw IncorrectOperationException() //cannot rename cwt config
 		}
 		
 		override fun resolve() = config.pointer.element

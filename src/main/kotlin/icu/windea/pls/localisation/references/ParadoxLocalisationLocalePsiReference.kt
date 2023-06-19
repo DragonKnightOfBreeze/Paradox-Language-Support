@@ -14,7 +14,7 @@ class ParadoxLocalisationLocalePsiReference(
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationLocale>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		throw IncorrectOperationException() //不允许重命名
+		throw IncorrectOperationException() //cannot rename locale
 	}
 	
 	override fun resolve(): PsiElement? {

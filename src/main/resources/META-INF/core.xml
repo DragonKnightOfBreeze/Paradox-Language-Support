@@ -87,7 +87,7 @@
     <postStartupActivity implementation="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnProjectOpenedListener"/>
     
     <psi.treeChangePreprocessor implementation="icu.windea.pls.core.psi.ParadoxPsiTreeChangePreprocessor"/>
-
+    
     <!--@HiddenApi-->
     <pathReferenceProvider implementation="icu.windea.pls.core.references.paths.ParadoxPathReferenceProvider" order="first"/>
   </extensions>

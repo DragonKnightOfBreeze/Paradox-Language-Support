@@ -62,7 +62,6 @@ class ParadoxScriptValueArgumentValueExpressionNode(
 		private val parameterElementResolver: () -> ParadoxParameterElement?
 	): PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
 		override fun handleElementRename(newElementName: String): PsiElement {
-			val element = element
 			return element.setValue(rangeInElement.replace(element.value, newElementName))
 		}
 		

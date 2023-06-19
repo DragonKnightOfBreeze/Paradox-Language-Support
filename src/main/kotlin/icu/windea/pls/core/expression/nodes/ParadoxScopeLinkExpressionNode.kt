@@ -2,6 +2,7 @@ package icu.windea.pls.core.expression.nodes
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.script.highlighter.*
@@ -31,8 +32,8 @@ class ParadoxScopeLinkExpressionNode (
 		rangeInElement: TextRange,
 		val config: CwtLinkConfig
 	) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
-		override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
-			return element.setValue(rangeInElement.replace(element.value, newElementName))
+		override fun handleElementRename(newElementName: String): PsiElement {
+			throw IncorrectOperationException() //cannot rename cwt config
 		}
 		
 		override fun resolve() = config.pointer.element

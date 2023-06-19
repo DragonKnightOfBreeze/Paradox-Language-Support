@@ -23,8 +23,8 @@ class ParadoxTemplateSnippetExpressionReference(
     
     val config = CwtValueConfig.resolve(emptyPointer(), configGroup.info, configExpression.expressionString)
     
-    override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
-       throw IncorrectOperationException() // cannot rename
+    override fun handleElementRename(newElementName: String): PsiElement {
+       throw IncorrectOperationException() //cannot rename template snippet
     }
     
     //缓存解析结果以优化性能

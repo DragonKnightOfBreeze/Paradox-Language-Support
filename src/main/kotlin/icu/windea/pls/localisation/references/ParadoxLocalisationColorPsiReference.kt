@@ -16,7 +16,6 @@ class ParadoxLocalisationColorPsiReference(
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationColorfulText>(element, rangeInElement), AttributesKeyAware {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		//重命名当前元素
 		return element.setName(newElementName)
 	}
 	

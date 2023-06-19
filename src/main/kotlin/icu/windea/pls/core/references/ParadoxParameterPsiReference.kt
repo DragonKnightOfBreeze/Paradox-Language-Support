@@ -13,7 +13,6 @@ class ParadoxParameterPsiReference(
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxParameter>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		//重命名当前元素
 		return element.setName(newElementName)
 	}
 	

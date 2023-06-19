@@ -25,8 +25,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 	val project by lazy { element.project }
 	
 	override fun handleElementRename(newElementName: String): PsiElement {
-		//重命名当前元素
-		return element.setName(newElementName)
+		return element.setName(rangeInElement.replace(element.name, newElementName))
 	}
 	
 	//缓存解析结果以优化性能

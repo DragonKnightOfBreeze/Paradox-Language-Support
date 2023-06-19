@@ -10,7 +10,6 @@ class ParadoxConditionParameterPsiReference(
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxConditionParameter>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		//重命名当前元素
 		return element.setName(newElementName)
 	}
 	

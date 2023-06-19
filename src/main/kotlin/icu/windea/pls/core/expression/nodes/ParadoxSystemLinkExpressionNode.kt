@@ -33,8 +33,8 @@ class ParadoxSystemLinkExpressionNode (
 		rangeInElement: TextRange,
 		val resolved: CwtProperty?
 	) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
-		override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
-			throw IncorrectOperationException() //不允许重命名
+		override fun handleElementRename(newElementName: String): PsiElement {
+			throw IncorrectOperationException() //cannot rename cwt config
 		}
 		
 		override fun resolve() = resolved

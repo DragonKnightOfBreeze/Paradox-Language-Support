@@ -58,12 +58,11 @@ class ParadoxDataExpressionNode(
     ) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), PsiReferencesAware {
         val project = linkConfigs.first().config.info.configGroup.project
         
-        override fun handleElementRename(newElementName: String): ParadoxScriptStringExpressionElement {
+        override fun handleElementRename(newElementName: String): PsiElement {
             return element.setValue(rangeInElement.replace(element.value, newElementName))
         }
         
         override fun getReferences(): Array<out PsiReference>? {
-            val element = element
             return linkConfigs.firstNotNullOfOrNull { linkConfig ->
                 ParadoxConfigHandler.getReferences(element, rangeInElement, linkConfig, linkConfig.expression, linkConfig.info.configGroup).takeIfNotEmpty()
             }

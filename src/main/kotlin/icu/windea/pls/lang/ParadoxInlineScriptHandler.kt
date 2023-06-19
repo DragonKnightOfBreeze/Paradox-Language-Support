@@ -130,9 +130,10 @@ object ParadoxInlineScriptHandler {
         return CachedValuesManager.getCachedValue(file, cachedInlineScriptUsageInfoKey) {
             ProgressManager.checkCanceled()
             val value = doGetInlineScriptUsageInfo(file)
-            //invalidated on file modification or ScriptFileTracker
-            val tracker = ParadoxPsiModificationTracker.getInstance(file.project).ScriptFileTracker
-            CachedValueProvider.Result.create(value, file, tracker)
+            //invalidated on file modification or ScriptFileTracker or InlineScriptsTracker
+            val tracker1 = ParadoxPsiModificationTracker.getInstance(file.project).ScriptFileTracker
+            val tracker2 = ParadoxPsiModificationTracker.getInstance(file.project).InlineScriptsTracker
+            CachedValueProvider.Result.create(value, file, tracker1, tracker2)
         }
     }
     
@@ -157,7 +158,7 @@ object ParadoxInlineScriptHandler {
                     element = p
                 }
                 onRecursion(key) {
-                    //如果发生SOF，采用的element不能是当前正在遍历的p
+                    //如果发生SOF，采用的element不能是当前正在遍历的p（此时标为存在递归并结束检查）
                     hasConflict = false
                     hasRecursion = true
                     if(element === p) {
@@ -166,7 +167,7 @@ object ParadoxInlineScriptHandler {
                     return@p true
                 }
                 withCheckRecursion(key) {
-                    //尝试检查内联脚本定义所在的规则的上下文是否匹配
+                    //尝试检查内联脚本使用所在的规则上下文是否匹配（如果可以得到，它们需要全部匹配，否则标为存在冲突并结束检查）
                     if(hasConflict) return@p false
                     ProgressManager.checkCanceled()
                     val eConfigs = ParadoxConfigResolver.getConfigs(p)

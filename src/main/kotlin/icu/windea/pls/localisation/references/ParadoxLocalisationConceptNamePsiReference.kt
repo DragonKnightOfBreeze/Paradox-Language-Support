@@ -18,12 +18,9 @@ class ParadoxLocalisationConceptNamePsiReference(
     val project by lazy { element.project }
     
     override fun handleElementRename(newElementName: String): PsiElement {
-        //使用别名时不允许重命名
-        if(resolve()?.name != element.name) {
-            throw IncorrectOperationException()
-        }
-        //重命名当前元素
-        return element.setName(newElementName)
+        //cannot rename when use alias
+        if(resolve()?.name != element.name) throw IncorrectOperationException()
+        return element.setName(rangeInElement.replace(element.name, newElementName))
     }
     
     //缓存解析结果以优化性能

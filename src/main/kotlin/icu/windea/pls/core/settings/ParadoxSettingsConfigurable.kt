@@ -346,11 +346,11 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
     }
     
     private fun doRefreshInlineScripts() {
-        //重新解析inline script文件
+        //要求重新解析内联脚本文件
         ProjectManager.getInstance().openProjects.forEach { project ->
             ParadoxPsiModificationTracker.getInstance(project).InlineScriptsTracker.incModificationCount()
         }
-        //刷新inline script文件的内嵌提示
+        //刷新内联脚本文件的内嵌提示
         ParadoxCoreHandler.refreshInlayHints { file, _ ->
             ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null
         }

@@ -17,7 +17,6 @@ class ParadoxScriptedVariablePsiReference(
     val project by lazy { element.project }
     
     override fun handleElementRename(newElementName: String): PsiElement {
-        //重命名当前元素
         return element.setName(newElementName)
     }
     

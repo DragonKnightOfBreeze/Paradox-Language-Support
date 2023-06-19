@@ -1,10 +1,12 @@
 package icu.windea.pls.core.listeners
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 
 /**
@@ -20,39 +22,39 @@ class ParadoxCoreFileListener : AsyncFileListener {
                     when(event) {
                         is VFileCreateEvent -> {
                             if(event.childName.equals(PlsConstants.descriptorFileName, true)) {
-                                clearRootInfo(event.parent)
+                                doClearRootInfo(event.parent)
                                 reparseOpenedFiles = true
                             }
                         }
                         is VFileDeleteEvent -> {
-                            clearFileInfo(event.file)
+                            doClearFileInfo(event.file)
                             if(event.file.name.equals(PlsConstants.descriptorFileName, true)) {
-                                clearRootInfo(event.file.parent)
+                                doClearRootInfo(event.file.parent)
                                 reparseOpenedFiles = true
                             }
                         }
                         is VFileCopyEvent -> {
                             if(event.newChildName.equals(PlsConstants.descriptorFileName, true)) {
-                                clearRootInfo(event.newParent)
+                                doClearRootInfo(event.newParent)
                                 reparseOpenedFiles = true
                             }
                         }
                         is VFileMoveEvent -> {
-                            clearFileInfo(event.file)
+                            doClearFileInfo(event.file)
                             if(event.file.name.equals(PlsConstants.descriptorFileName, true)) {
-                                clearRootInfo(event.oldParent)
-                                clearRootInfo(event.newParent)
+                                doClearRootInfo(event.oldParent)
+                                doClearRootInfo(event.newParent)
                                 reparseOpenedFiles = true
                             }
                         }
                         is VFilePropertyChangeEvent -> {
                             if(event.propertyName == VirtualFile.PROP_NAME) {
-                                clearFileInfo(event.file)
+                                doClearFileInfo(event.file)
                                 if(event.newValue.toString().equals(PlsConstants.descriptorFileName, true)) {
-                                    clearRootInfo(event.file.parent)
+                                    doClearRootInfo(event.file.parent)
                                     reparseOpenedFiles = true
                                 } else if(event.oldValue.toString().equals(PlsConstants.descriptorFileName, true)) {
-                                    clearRootInfo(event.file.parent)
+                                    doClearRootInfo(event.file.parent)
                                     reparseOpenedFiles = true
                                 }
                             }
@@ -61,10 +63,32 @@ class ParadoxCoreFileListener : AsyncFileListener {
                             val fileName = event.file.name
                             if(fileName.equals(PlsConstants.descriptorFileName, true)) {
                                 val rootFile = event.file.fileInfo?.rootInfo?.rootFile
-                                clearRootInfo(rootFile)
+                                doClearRootInfo(rootFile)
                             } else if(fileName.equals(PlsConstants.launcherSettingsFileName, true)) {
                                 val rootFile = event.file.fileInfo?.rootInfo?.rootFile
-                                clearRootInfo(rootFile)
+                                doClearRootInfo(rootFile)
+                            }
+                        }
+                    }
+                }
+                
+                //处理内联脚本文件的变动
+                run {
+                    for(event in events) {
+                        when(event) {
+                            is VFileMoveEvent -> {
+                                if(ParadoxInlineScriptHandler.getInlineScriptExpression(event.file) != null) {
+                                    doRefreshInlineScripts()
+                                    return@run
+                                }
+                            }
+                            is VFilePropertyChangeEvent -> {
+                                if(event.propertyName == VirtualFile.PROP_NAME) {
+                                    if(ParadoxInlineScriptHandler.getInlineScriptExpression(event.file) != null) {
+                                        doRefreshInlineScripts()
+                                        return@run
+                                    }
+                                }
                             }
                         }
                     }
@@ -77,14 +101,25 @@ class ParadoxCoreFileListener : AsyncFileListener {
         }
     }
     
-    private fun clearRootInfo(rootFile: VirtualFile?) {
+    private fun doClearRootInfo(rootFile: VirtualFile?) {
         if(rootFile == null) return
         //清空根目录信息缓存
         rootFile.tryPutUserData(PlsKeys.rootInfoStatusKey, null)
     }
     
-    private fun clearFileInfo(file: VirtualFile?) {
+    private fun doClearFileInfo(file: VirtualFile?) {
         if(file == null) return
         file.tryPutUserData(PlsKeys.fileInfoStatusKey, null)
+    }
+    
+    private fun doRefreshInlineScripts() {
+        //要求重新解析内联脚本文件
+        ProjectManager.getInstance().openProjects.forEach { project ->
+            ParadoxPsiModificationTracker.getInstance(project).InlineScriptsTracker.incModificationCount()
+        }
+        //刷新内联脚本文件的内嵌提示
+        ParadoxCoreHandler.refreshInlayHints { file, _ ->
+            ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null
+        }
     }
 }
