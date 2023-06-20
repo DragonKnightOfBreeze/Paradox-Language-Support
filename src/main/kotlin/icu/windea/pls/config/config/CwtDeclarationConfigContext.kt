@@ -7,7 +7,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 
-class CwtConfigContext(
+class CwtDeclarationConfigContext(
     contextElement: PsiElement,
     val definitionName: String?,
     val definitionType: String,

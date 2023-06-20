@@ -38,7 +38,7 @@ class CwtDeclarationConfig(
     /**
      * 得到根据子类型列表进行合并后的配置。
      */
-    fun getMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig {
+    fun getMergedConfig(configContext: CwtDeclarationConfigContext): CwtPropertyConfig {
         //定义的值不为代码块的情况
         if(!propertyConfig.isBlock) return propertyConfig
         
@@ -53,7 +53,7 @@ class CwtDeclarationConfig(
         }
     }
     
-    private fun getCacheKey(configContext: CwtConfigContext): String {
+    private fun getCacheKey(configContext: CwtDeclarationConfigContext): String {
         val cacheKeyFromInjectors = CwtDeclarationConfigInjector.getCacheKey(configContext, configContext.injectors)
         if(cacheKeyFromInjectors != null) return cacheKeyFromInjectors
         
@@ -72,7 +72,7 @@ class CwtDeclarationConfig(
         }
     }
     
-    private fun doGetMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig {
+    private fun doGetMergedConfig(configContext: CwtDeclarationConfigContext): CwtPropertyConfig {
         val injectedResult = CwtDeclarationConfigInjector.getDeclarationMergedConfig(configContext, configContext.injectors)
         if(injectedResult != null) return injectedResult
         
@@ -82,4 +82,4 @@ class CwtDeclarationConfig(
     }
 }
 
-val CwtMemberConfig.Keys.configContextKey by lazy { Key.create<CwtConfigContext>("cwt.config.context") }
+val CwtMemberConfig.Keys.configContextKey by lazy { Key.create<CwtDeclarationConfigContext>("cwt.config.context") }

@@ -136,7 +136,7 @@ class ParadoxDefinitionInfo(
     
     private fun doGetDeclaration(matchOptions: Int): CwtPropertyConfig? {
         val subtypes = getSubtypeConfigs(matchOptions).map { it.name }
-        val configContext = CwtConfigContext(element, name, type, subtypes, configGroup, matchOptions)
+        val configContext = CwtDeclarationConfigContext(element, name, type, subtypes, configGroup, matchOptions)
         return configGroup.declarations.get(type)?.getMergedConfig(configContext)
     }
     

@@ -380,7 +380,7 @@ object ParadoxConfigHandler {
             val config = when {
                 typeToUse == null -> null
                 else -> {
-                    val configContext = CwtConfigContext(context.contextElement, null, typeToUse, subtypesToUse, configGroup)
+                    val configContext = CwtDeclarationConfigContext(context.contextElement, null, typeToUse, subtypesToUse, configGroup)
                     configGroup.declarations[typeToUse]?.getMergedConfig(configContext)
                 }
             }

@@ -2,14 +2,23 @@ package icu.windea.pls.lang.injection
 
 import com.intellij.lang.injection.*
 import com.intellij.psi.*
-import com.intellij.util.InjectionUtils
+import com.intellij.util.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptStringExpressionInjector: MultiHostInjector {
+//com.intellij.util.InjectionUtils
+//com.intellij.psi.impl.source.tree.injected.InjectedFileViewProvider
+//org.intellij.plugins.intelliLang.inject.InjectorUtils
+
+/**
+ * 用于在某些特定场合下注入脚本片段。
+ * 
+ * 后续可以提供CWT规则上下文，以便为注入的脚本片段提供高级语言功能。
+ */
+class ParadoxScriptSnippetInjector: MultiHostInjector {
      companion object {
          private val toInject = listOf(ParadoxScriptStringExpressionElement::class.java)
      }
@@ -37,8 +46,5 @@ class ParadoxScriptStringExpressionInjector: MultiHostInjector {
         //disable inject language action
         InjectionUtils.enableInjectLanguageAction(host, false)
         //disable injection background highlight (by implementing InjectionBackgroundSuppressor)
-        
-        //inject CWT config context to injection host
-        //TODO 1.1.0+
     }
 }

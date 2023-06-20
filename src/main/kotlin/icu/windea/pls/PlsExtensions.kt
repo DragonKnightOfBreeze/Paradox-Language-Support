@@ -4,6 +4,7 @@ package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
 import com.intellij.extapi.psi.*
+import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.lang.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.fileTypes.*
@@ -396,39 +397,41 @@ fun StringBuilder.appendImgTag(url: String, width: Int, height: Int, local: Bool
     return this
 }
 
-fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilder {
-    if(fileInfo != null) {
-        val rootInfo = fileInfo.rootInfo
-        append("<span>")
-        //描述符信息（模组名、版本等）
-        append("[")
-        append(rootInfo.qualifiedName.escapeXml())
-        append("]")
-        grayed {
-            val remoteFileId = (rootInfo as? ParadoxModRootInfo)?.descriptorInfo?.remoteFileId
-            //remoteFileId（暂不显示）
-            //if(remoteFileId != null) {
-            //	append(" ").append(PlsBundle.message("name.core.remoteFileId")).append(": ").append(remoteFileId).append(" )
-            //}
-            //相关链接
-            //通过这种方式获取需要的url，使用rootPath而非gameRootPath
-            val rootUri = fileInfo.rootInfo.rootPath.toUri().toString()
-            append(" ")
-            appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
-            if(remoteFileId != null) {
-                append(" | ")
-                appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsBundle.message("text.steamLinkLabel"))
-                appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
-                append(" | ")
-                appendLink(getSteamWorkshopLink(remoteFileId), PlsBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标
-            }
+fun StringBuilder.appendFileInfoHeader(element: PsiElement): StringBuilder {
+    val file = selectFile(element) ?: return this
+    if(file is VirtualFileWindow) return this //ignored for injected PSI
+    val fileInfo = file.fileInfo ?: return this
+    
+    val rootInfo = fileInfo.rootInfo
+    append("<span>")
+    //描述符信息（模组名、版本等）
+    append("[")
+    append(rootInfo.qualifiedName.escapeXml())
+    append("]")
+    grayed {
+        val remoteFileId = (rootInfo as? ParadoxModRootInfo)?.descriptorInfo?.remoteFileId
+        //remoteFileId（暂不显示）
+        //if(remoteFileId != null) {
+        //	append(" ").append(PlsBundle.message("name.core.remoteFileId")).append(": ").append(remoteFileId).append(" )
+        //}
+        //相关链接
+        //通过这种方式获取需要的url，使用rootPath而非gameRootPath
+        val rootUri = fileInfo.rootInfo.rootPath.toUri().toString()
+        append(" ")
+        appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
+        if(remoteFileId != null) {
+            append(" | ")
+            appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsBundle.message("text.steamLinkLabel"))
+            appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
+            append(" | ")
+            appendLink(getSteamWorkshopLink(remoteFileId), PlsBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标
         }
-        append("</span>")
-        appendBr()
-        //文件信息（相对于游戏或模组根目录的路径）
-        append("[").append(fileInfo.path).append("]")
-        appendBr()
     }
+    append("</span>")
+    appendBr()
+    //文件信息（相对于游戏或模组根目录的路径）
+    append("[").append(fileInfo.path).append("]")
+    appendBr()
     return this
 }
 

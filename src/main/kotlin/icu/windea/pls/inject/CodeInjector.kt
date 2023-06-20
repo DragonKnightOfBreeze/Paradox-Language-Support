@@ -16,7 +16,7 @@ abstract class CodeInjector: UserDataHolderBase() {
     }
     
     companion object {
-        val EP_NAME = ExtensionPointName.create<CodeInjector>("icu.windea.pls.codeInjector")
+        val EP_NAME = ExtensionPointName.create<CodeInjector>("icu.windea.pls.inject.codeInjector")
     }
 }
 

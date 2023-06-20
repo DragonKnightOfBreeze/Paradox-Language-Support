@@ -12,7 +12,7 @@ class CwtGameRuleDeclarationConfigInjector : CwtDeclarationConfigInjector {
     
     //某些game_rule的声明规则需要重载
     
-    override fun supports(configContext: CwtConfigContext): Boolean {
+    override fun supports(configContext: CwtDeclarationConfigContext): Boolean {
         val configGroup = configContext.configGroup
         if(configContext.definitionType == "game_rule") {
             if(configContext.definitionName == null) return false
@@ -23,14 +23,14 @@ class CwtGameRuleDeclarationConfigInjector : CwtDeclarationConfigInjector {
         return false
     }
     
-    override fun getCacheKey(configContext: CwtConfigContext): String? {
+    override fun getCacheKey(configContext: CwtDeclarationConfigContext): String? {
         val config = configContext.getUserData(configKey)
         if(config == null) return null
         if(doGetDeclarationMergedConfig(config) == null) return null
         return "@game_rule#${configContext.definitionName}#${configContext.matchOptions}"
     }
     
-    override fun getDeclarationMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig? {
+    override fun getDeclarationMergedConfig(configContext: CwtDeclarationConfigContext): CwtPropertyConfig? {
         val config = configContext.getUserData(configKey)
         if(config == null) return null
         return doGetDeclarationMergedConfig(config)

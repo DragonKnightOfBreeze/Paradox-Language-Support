@@ -13,34 +13,34 @@ interface CwtDeclarationConfigInjector {
     /**
      * 是否支持此上下文。
      */
-    fun supports(configContext: CwtConfigContext): Boolean
+    fun supports(configContext: CwtDeclarationConfigContext): Boolean
     
     /**
      * 得到需要的声明规则缓存的键.
      */
-    fun getCacheKey(configContext: CwtConfigContext): String? = null
+    fun getCacheKey(configContext: CwtDeclarationConfigContext): String? = null
     
     /**
      * 替代默认实现，使用另外的逻辑获取合并后的声明规则。
      *
      * 需要保证当注入时所有规则列表都是可变的。
      */
-    fun getDeclarationMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig? = null
+    fun getDeclarationMergedConfig(configContext: CwtDeclarationConfigContext): CwtPropertyConfig? = null
     
     /**
      * 在获取合并的声明规则之后对其进行额外的处理。
      */
-    fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtConfigContext) {}
+    fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtDeclarationConfigContext) {}
     
     /**
      * 替换CWT规则表达式。如果不需要，则返回null。
      */
-    fun replaceConfigExpression(configExpression: String, configContext: CwtConfigContext): String? = null
+    fun replaceConfigExpression(configExpression: String, configContext: CwtDeclarationConfigContext): String? = null
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtDeclarationConfigInjector>("icu.windea.pls.declarationConfigInjector")
         
-        fun getDeclarationMergedConfig(configContext: CwtConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList): CwtPropertyConfig? {
+        fun getDeclarationMergedConfig(configContext: CwtDeclarationConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList): CwtPropertyConfig? {
             if(injectors.isEmpty()) return null
             val gameType = configContext.configGroup.gameType
             return injectors.firstNotNullOfOrNull f@{ ep ->
@@ -49,7 +49,7 @@ interface CwtDeclarationConfigInjector {
             }
         }
         
-        fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList) {
+        fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtDeclarationConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList) {
             if(injectors.isEmpty()) return
             val gameType = configContext.configGroup.gameType
             injectors.forEach f@{ ep ->
@@ -58,7 +58,7 @@ interface CwtDeclarationConfigInjector {
             }
         }
         
-        fun getCacheKey(configContext: CwtConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList): String? {
+        fun getCacheKey(configContext: CwtDeclarationConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList): String? {
             if(injectors.isEmpty()) return null
             val gameType = configContext.configGroup.gameType
             return injectors.firstNotNullOfOrNull f@{ ep ->

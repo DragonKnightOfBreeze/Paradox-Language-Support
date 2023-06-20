@@ -99,7 +99,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     private fun StringBuilder.buildScriptedVariableDefinition(element: ParadoxScriptScriptedVariable, name: String) {
         definition {
             //加上文件信息
-            appendFileInfoHeader(element.fileInfo)
+            appendFileInfoHeader(element)
             //加上定义信息
             append(PlsBundle.message("prefix.scriptedVariable")).append(" <b>@").append(name.escapeXml().orAnonymous()).append("</b>")
             val valueElement = element.scriptedVariableValue
@@ -113,7 +113,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     private fun StringBuilder.buildPropertyDefinition(element: ParadoxScriptProperty, name: String) {
         definition {
             //加上文件信息
-            appendFileInfoHeader(element.fileInfo)
+            appendFileInfoHeader(element)
             //加上定义信息
             append(PlsBundle.message("prefix.property")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             val valueElement = element.propertyValue
@@ -127,7 +127,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     private fun StringBuilder.buildDefinitionDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sectionsList: List<MutableMap<String, String>>?) {
         definition {
             //加上文件信息
-            appendFileInfoHeader(element.fileInfo)
+            appendFileInfoHeader(element)
             
             //加上定义信息
             addDefinitionInfo(definitionInfo)

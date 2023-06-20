@@ -139,7 +139,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	private fun StringBuilder.buildPropertyDefinition(element: ParadoxLocalisationProperty) {
 		definition {
 			//加上文件信息
-			appendFileInfoHeader(element.fileInfo)
+			appendFileInfoHeader(element)
 			//加上元素定义信息
 			append(PlsBundle.message("prefix.localisationProperty")).append(" <b>").append(element.name).append("</b>")
 		}
@@ -148,7 +148,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	private fun StringBuilder.buildLocalisationDefinition(element: ParadoxLocalisationProperty, category: ParadoxLocalisationCategory, name: String) {
 		definition {
 			//加上文件信息
-			appendFileInfoHeader(element.fileInfo)
+			appendFileInfoHeader(element)
 			//加上元素定义信息
 			append(category.text).append(" <b>").append(name).append("</b>")
 		}

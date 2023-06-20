@@ -13,7 +13,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
     
     //预定义的on_action如果指定了事件类型，声明规则中需要在"<event>"规则后加上对应的规则
     
-    override fun supports(configContext: CwtConfigContext): Boolean {
+    override fun supports(configContext: CwtDeclarationConfigContext): Boolean {
         val configGroup = configContext.configGroup
         if(configContext.definitionType == "on_action") {
             if(configContext. definitionName == null) return false
@@ -25,13 +25,13 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
         return false
     }
     
-    override fun getCacheKey(configContext: CwtConfigContext): String? {
+    override fun getCacheKey(configContext: CwtDeclarationConfigContext): String? {
         val config = configContext.getUserData(configKey)
         if(config == null) return null
         return "@on_action#${configContext.definitionName}#${configContext.matchOptions}"
     }
     
-    //override fun getDeclarationMergedConfig(configContext: CwtConfigContext): CwtPropertyConfig? {
+    //override fun getDeclarationMergedConfig(configContext: CwtDeclarationConfigContext): CwtPropertyConfig? {
     //    val config = configContext.getUserData(configKey) ?: return null
     //    return doGetDeclarationMergedConfig(config)
     //}
@@ -40,7 +40,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
     //    return config.config.takeIf { it.configs.isNotNullOrEmpty() }
     //}
     
-    override fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtConfigContext) {
+    override fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtDeclarationConfigContext) {
         val config = configContext.getUserData(configKey)
         if(config == null) return
         val expressions = buildSet {

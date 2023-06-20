@@ -93,10 +93,14 @@ object PlsKeys {
     val fileInfoStatusKey = Key.create<Boolean>("paradox.fileInfo.status")
     val fileInfoKey = Key.create<ParadoxFileInfo>("paradox.fileInfo")
     
-    val injectedRootInfoKey = Key.create<ParadoxRootInfo>("paradox.injected.rootInfo") //用于为临时文件（VirtualFile）嵌入根目录信息
-    val injectedFileInfoKey = Key.create<ParadoxFileInfo>("paradox.injected.fileInfo") //用于为临时文件（VirtualFile）嵌入文件信息
-    val injectedLocaleConfigKey = Key.create<CwtLocalisationLocaleConfig>("paradox.injected.localeConfig") //用于为脚本文件（VirtualFile）嵌入语言区域
-    val injectedElementPathPrefixKey = Key.create<ParadoxElementPath>("paradox.injected.elementPathPrefix") //用于为脚本文件（VirtualFile）嵌入元素路径前缀
+    //用于为临时文件（VirtualFile）嵌入根目录信息
+    val injectedRootInfoKey = Key.create<ParadoxRootInfo>("paradox.injected.rootInfo")
+    //用于为临时文件（VirtualFile）嵌入文件信息
+    val injectedFileInfoKey = Key.create<ParadoxFileInfo>("paradox.injected.fileInfo")
+    //用于为脚本文件（VirtualFile）嵌入语言区域
+    val injectedLocaleConfigKey = Key.create<CwtLocalisationLocaleConfig>("paradox.injected.localeConfig")
+    //用于为脚本文件（VirtualFile）嵌入元素路径前缀
+    val injectedElementPathPrefixKey = Key.create<ParadoxElementPath>("paradox.injected.elementPathPrefix")
     
     val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cached.definitionInfo")
     val cachedDefinitionPrimaryLocalisationKeyKey = Key.create<CachedValue<String>>("paradox.cached.definition.primaryLocalisationKey")

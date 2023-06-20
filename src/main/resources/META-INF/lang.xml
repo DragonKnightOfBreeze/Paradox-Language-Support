@@ -133,6 +133,6 @@
   </extensions>
   
   <extensions defaultExtensionNs="com.intellij">
-    <!--<multiHostInjector implementation="icu.windea.pls.lang.injection.ParadoxScriptStringExpressionInjector"/>-->
+    <!--<multiHostInjector implementation="icu.windea.pls.lang.injection.ParadoxScriptSnippetInjector/>-->
   </extensions>
 </idea-plugin>
