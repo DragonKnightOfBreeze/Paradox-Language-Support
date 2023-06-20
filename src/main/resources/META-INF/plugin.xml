@@ -1,10 +1,8 @@
-<idea-plugin
-    url="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"
-    xmlns:xi="http://www.w3.org/2001/XInclude">
-
+<idea-plugin url="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support" xmlns:xi="http://www.w3.org/2001/XInclude">
   <id>icu.windea.pls</id>
   <name>Paradox Language Support</name>
   <category>Languages</category>
+  <resource-bundle>messages.PlsBundle</resource-bundle>
 
   <vendor email="dk_breeze@qq.com" url="https://github.com/DragonKnightOfBreeze">DragonKnightOfBreeze</vendor>
 
@@ -14,14 +12,12 @@
   <depends optional="true" config-file="pls-extension-diagram.xml">com.intellij.diagram</depends>
   <depends optional="true" config-file="pls-extension-translation.xml">cn.yiiguxing.plugin.translate</depends>
   
-  <resource-bundle>messages.PlsBundle</resource-bundle>
-
-  <xi:include href="/META-INF/inject.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/core.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/cwt.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/dds.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/paradox-script.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/paradox-localisation.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/lang.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/inject.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>

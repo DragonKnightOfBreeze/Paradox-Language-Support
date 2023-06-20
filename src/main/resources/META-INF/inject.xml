@@ -1,7 +1,7 @@
 <idea-plugin>
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.codeInjectorSupport" interface="icu.windea.pls.inject.support.CodeInjectorSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.codeInjector" interface="icu.windea.pls.inject.CodeInjector" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.inject.codeInjectorSupport" interface="icu.windea.pls.inject.support.CodeInjectorSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.inject.codeInjector" interface="icu.windea.pls.inject.CodeInjector" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
@@ -9,11 +9,11 @@
     <applicationService serviceImplementation="icu.windea.pls.inject.CodeInjectorService" preload="true"/>
   </extensions>
   .
-  <extensions defaultExtensionNs="icu.windea.pls">
+  <extensions defaultExtensionNs="icu.windea.pls.inject">
     <codeInjectorSupport implementation="icu.windea.pls.inject.support.FieldCacheCodeInjectorSupport"/>
   </extensions>
   
-  <extensions defaultExtensionNs="icu.windea.pls">
+  <extensions defaultExtensionNs="icu.windea.pls.inject">
     <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.LowLevelSearchUtilCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.IfsUtilCodeInjector"/>
