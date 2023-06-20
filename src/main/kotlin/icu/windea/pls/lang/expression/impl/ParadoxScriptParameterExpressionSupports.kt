@@ -48,6 +48,11 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport()
 }
 
 class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupport() {
+    //如果是用引号括起的字符串，相关功能需要改为使用语言注入功能（Language Injection）实现
+    //如果只有左边的引号或者右边的引号，则不作任何处理，无需实现相关功能
+    
+    //see: icu.windea.pls.lang.injection.ParadoxScriptSnippetInjector
+    
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataType.ParameterValue
     }
@@ -55,6 +60,7 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if(!getSettings().inference.argumentValueConfig) return
         if(element !is ParadoxScriptValue || config !is CwtValueConfig) return
+        if(element is ParadoxScriptString && element.text.let { it.isLeftQuoted() || it.isRightQuoted() }) return
         val propertyKey = element.propertyKey ?: return
         val propertyConfig = config.propertyConfig ?: return
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return
@@ -72,6 +78,7 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         if(!getSettings().inference.argumentValueConfig) return null
         if(element !is ParadoxScriptValue || config !is CwtValueConfig || isKey != false) return null
+        if(element is ParadoxScriptString && element.text.let { it.isLeftQuoted() || it.isRightQuoted() }) return null
         val propertyKey = element.propertyKey ?: return null
         val propertyConfig = config.propertyConfig ?: return null
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return null
@@ -86,6 +93,7 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
     override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
         if(!getSettings().inference.argumentValueConfig) return emptySet()
         if(element !is ParadoxScriptValue || config !is CwtValueConfig || isKey != false) return emptySet()
+        if(element is ParadoxScriptString && element.text.let { it.isLeftQuoted() || it.isRightQuoted() }) return emptySet()
         val propertyKey = element.propertyKey ?: return emptySet()
         val propertyConfig = config.propertyConfig ?: return emptySet()
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return emptySet()
@@ -99,6 +107,7 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
     override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
         if(!getSettings().inference.argumentValueConfig) return null
         if(element !is ParadoxScriptValue || config !is CwtValueConfig || isKey != false) return null
+        if(element is ParadoxScriptString && element.text.let { it.isLeftQuoted() || it.isRightQuoted() }) return null
         val propertyKey = element.propertyKey ?: return null
         val propertyConfig = config.propertyConfig ?: return null
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return null
@@ -119,6 +128,7 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         val scopeMatched = scopeMatched
         val key = isKey
         if(element !is ParadoxScriptValue || config !is CwtValueConfig || key != false) return
+        if(element is ParadoxScriptString && element.text.let { it.isLeftQuoted() || it.isRightQuoted() }) return
         val propertyKey = element.propertyKey ?: return
         val propertyConfig = config.propertyConfig ?: return
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return

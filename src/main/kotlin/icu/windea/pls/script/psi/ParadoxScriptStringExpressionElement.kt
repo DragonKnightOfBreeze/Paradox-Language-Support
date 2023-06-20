@@ -3,12 +3,13 @@ package icu.windea.pls.script.psi
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.injected.*
+import icu.windea.pls.core.*
 
 /**
  * @see ParadoxScriptPropertyKey
  * @see ParadoxScriptString
  */
-interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement, ContributedReferenceHost, PsiLanguageInjectionHost, InjectionBackgroundSuppressor {
+interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement, ContributedReferenceHost, PsiLanguageInjectionHost {
     override fun getName(): String
     
     override val value: String
@@ -16,7 +17,7 @@ interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement,
     override fun setValue(value: String): ParadoxScriptStringExpressionElement
     
     override fun isValidHost(): Boolean {
-        return true
+        return text.let { it.isLeftQuoted() && it.isRightQuoted() }
     }
     
     override fun updateText(text: String): ParadoxScriptStringExpressionElement {
