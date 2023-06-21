@@ -22,6 +22,9 @@ import icu.windea.pls.core.references.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.cwt.*
+import icu.windea.pls.lang.cwt.config.*
+import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.documentation.impl.*
 import icu.windea.pls.lang.model.*

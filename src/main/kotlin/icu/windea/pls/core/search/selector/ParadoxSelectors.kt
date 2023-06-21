@@ -5,10 +5,10 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.scope.type.*
+import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 

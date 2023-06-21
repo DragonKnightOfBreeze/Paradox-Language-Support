@@ -3,9 +3,9 @@ package icu.windea.pls.lang
 import com.intellij.openapi.progress.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.cwt.*
+import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 

@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.parameter.impl
 
 import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*

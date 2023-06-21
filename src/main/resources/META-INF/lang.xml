@@ -43,23 +43,7 @@
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxBaseDefinitionExtendedDocumentationProvider" order="last"/>
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxOnActionExtendedDocumentationProvider"/>
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxGameRuleExtendedDocumentationProvider"/>
-    
-    <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxIconReferenceExpressionSupport"/>
-    <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxFilePathReferenceExpressionSupport"/>
-    <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxFileNameReferenceExpressionSupport"/>
-    
-    <incorrectExpressionChecker implementation="icu.windea.pls.lang.expression.checker.impl.ParadoxExpectComplexTriggerModifierTriggerChecker"/>
-    <incorrectExpressionChecker implementation="icu.windea.pls.lang.expression.checker.impl.ParadoxSwitchTriggerChecker"/>
 
-    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxInferredScopeContextAwareDefinitionHierarchySupport"/>
-    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxEventInOnActionDefinitionHierarchySupport"/>
-    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxEventInEffectDefinitionHierarchySupport"/>
-    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxOnActionInEffectDefinitionHierarchySupport"/>
-    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxLocalisationParameterDefinitionHierarchySupport"/>
-    
-    <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.ParadoxBaseTypeInheritSupport"/>
-    <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.StellarisEventInheritSupport"/>
-    
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptBlockExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptBoolExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptLocalisationExpressionSupport"/>
@@ -79,6 +63,22 @@
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptScopeFieldExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptValueFieldExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptVariableFieldExpressionSupport"/>
+    
+    <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxIconReferenceExpressionSupport"/>
+    <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxFilePathReferenceExpressionSupport"/>
+    <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxFileNameReferenceExpressionSupport"/>
+    
+    <incorrectExpressionChecker implementation="icu.windea.pls.lang.expression.checker.impl.ParadoxExpectComplexTriggerModifierTriggerChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.lang.expression.checker.impl.ParadoxSwitchTriggerChecker"/>
+
+    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxInferredScopeContextAwareDefinitionHierarchySupport"/>
+    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxEventInOnActionDefinitionHierarchySupport"/>
+    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxEventInEffectDefinitionHierarchySupport"/>
+    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxOnActionInEffectDefinitionHierarchySupport"/>
+    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxLocalisationParameterDefinitionHierarchySupport"/>
+    
+    <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.ParadoxBaseTypeInheritSupport"/>
+    <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.StellarisEventInheritSupport"/>
     
     <scriptMemberElementInlineSupport implementation="icu.windea.pls.lang.inline.impl.ParadoxInlineScriptScriptMemberElementInlineSupport"/>
     

@@ -2,9 +2,9 @@ package icu.windea.pls.lang
 
 import com.intellij.psi.*
 import com.intellij.ui.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.ParadoxConfigMatcher.Options
+import icu.windea.pls.lang.cwt.config.*
 import java.awt.*
 
 object ParadoxColorHandler {

@@ -4,7 +4,7 @@ import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.config.*
+import icu.windea.pls.lang.cwt.config.*
 
 data class ParadoxComplexEnumValueInfo(
     val name: String,

@@ -6,8 +6,8 @@ import com.intellij.lang.findUsages.*
 import com.intellij.psi.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.cwt.*
 
 class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
     override fun getType(element: PsiElement): String {

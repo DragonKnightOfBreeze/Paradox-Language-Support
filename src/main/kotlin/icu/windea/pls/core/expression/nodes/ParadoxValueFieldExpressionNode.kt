@@ -1,7 +1,7 @@
 package icu.windea.pls.core.expression.nodes
 
 import com.intellij.openapi.util.*
-import icu.windea.pls.config.*
+import icu.windea.pls.lang.cwt.*
 
 sealed interface ParadoxValueFieldExpressionNode : ParadoxExpressionNode {
 	companion object Resolver {

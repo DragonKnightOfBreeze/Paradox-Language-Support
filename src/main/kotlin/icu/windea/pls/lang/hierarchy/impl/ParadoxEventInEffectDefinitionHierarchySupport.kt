@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.hierarchy.impl
 
 import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.cwt.config.*
+import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.hierarchy.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*

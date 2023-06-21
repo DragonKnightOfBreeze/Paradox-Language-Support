@@ -20,6 +20,8 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.cwt.config.*
+import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.codeStyle.*

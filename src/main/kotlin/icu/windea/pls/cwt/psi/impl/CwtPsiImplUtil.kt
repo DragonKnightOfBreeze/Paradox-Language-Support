@@ -9,11 +9,11 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.navigation.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.model.*
 import javax.swing.*
 

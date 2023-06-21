@@ -5,11 +5,11 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.expression.ParadoxPathReferenceExpressionSupport.INSTANCE.get
 import icu.windea.pls.script.psi.*
 

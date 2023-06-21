@@ -1,8 +1,8 @@
 package icu.windea.pls.lang
 
 import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.cwt.config.*
 
 object ParadoxFilePathHandler {
     val fileExtensionsKey = Key.create<Set<String>>("paradox.filePath.fileExtensions")

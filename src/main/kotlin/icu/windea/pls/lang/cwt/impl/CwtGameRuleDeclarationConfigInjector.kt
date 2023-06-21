@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.cwt.impl
 
 import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.cwt.*
+import icu.windea.pls.lang.cwt.config.*
 
 class CwtGameRuleDeclarationConfigInjector : CwtDeclarationConfigInjector {
     companion object {

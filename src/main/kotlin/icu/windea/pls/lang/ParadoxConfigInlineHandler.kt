@@ -3,6 +3,8 @@ package icu.windea.pls.lang
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.cwt.config.*
+import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.script.psi.*
 
 @Suppress("UNUSED_PARAMETER")

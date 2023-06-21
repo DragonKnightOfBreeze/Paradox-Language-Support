@@ -5,11 +5,11 @@ package icu.windea.pls.localisation.references
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.localisation.psi.*
 
 /**

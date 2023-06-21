@@ -1,8 +1,8 @@
 package icu.windea.pls.core.ui
 
 import icu.windea.pls.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.cwt.config.*
 
 fun getLocalesToSelect(existingLocales: List<CwtLocalisationLocaleConfig>, locale: CwtLocalisationLocaleConfig?): List<CwtLocalisationLocaleConfig> {
 	//置顶偏好的语言区域

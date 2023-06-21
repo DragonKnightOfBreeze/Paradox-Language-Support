@@ -3,10 +3,10 @@ package icu.windea.pls.core.codeInsight
 import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.cwt.*
+import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.script.psi.*
 
 /**

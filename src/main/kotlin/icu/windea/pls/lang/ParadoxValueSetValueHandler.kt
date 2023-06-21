@@ -4,15 +4,15 @@ import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.ParadoxConfigMatcher.Options
+import icu.windea.pls.lang.cwt.*
+import icu.windea.pls.lang.cwt.config.*
+import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -91,7 +91,7 @@ object ParadoxValueSetValueHandler {
         }
     }
     
-    private fun doGetInfoFromExpression(element: ParadoxScriptStringExpressionElement, config:CwtMemberConfig<*> ): List<ParadoxValueSetValueInfo> {
+    private fun doGetInfoFromExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>): List<ParadoxValueSetValueInfo> {
         val name = element.value
         val configExpression = config.expression
         val valueSetName = configExpression.value?.takeIfNotEmpty() ?: return emptyList()

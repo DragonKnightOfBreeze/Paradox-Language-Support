@@ -1,10 +1,7 @@
 package icu.windea.pls.lang.model
 
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.script.psi.*
-import java.util.concurrent.*
 
 /**
  * @property elementPath 相对于所属定义的定义成员路径。

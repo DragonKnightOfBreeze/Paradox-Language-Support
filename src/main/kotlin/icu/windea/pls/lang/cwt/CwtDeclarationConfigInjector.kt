@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.cwt
 
 import com.intellij.openapi.extensions.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.lang.cwt.config.*
 
 /**
  * 某些情况下，需要基于上下文对CWT规则进行添加、删除和修改。
