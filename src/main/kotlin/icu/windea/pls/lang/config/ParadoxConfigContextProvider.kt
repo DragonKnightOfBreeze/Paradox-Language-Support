@@ -9,14 +9,14 @@ import com.intellij.psi.*
  * @see ParadoxConfigContext
  */
 interface ParadoxConfigContextProvider {
-    fun getContext(contextElement: PsiElement, file: PsiFile): ParadoxConfigContext?
+    fun getConfigContext(contextElement: PsiElement, file: PsiFile): ParadoxConfigContext?
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxConfigContextProvider>("icu.windea.pls.configContextProvider")
         
         fun getContext(contextElement: PsiElement, file: PsiFile): ParadoxConfigContext? {
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                ep.getContext(contextElement, file)
+                ep.getConfigContext(contextElement, file)
                     ?.also { it.provider = ep }
             }
         }

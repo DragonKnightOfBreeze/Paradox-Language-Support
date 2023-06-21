@@ -14,15 +14,17 @@ import icu.windea.pls.lang.model.*
  * @property type 对应的位置是直接在文件中，还是直接在子句中，还是属性的值。
  * @property fileInfo 所在文件的文件信息。
  * @property definitionInfo 所在定义的定义信息。
- * @property elementPath 相对于所在文件的元素路径。如果在一个定义中，则是相对于这个定义的元素路径。
+ * @property elementPath 相对于所在文件的元素路径。
+ * @property elementPathFromDefinition 相对于所在定义的元素路径。如果不在定义声明中，则为null。
  * 
  * @see ParadoxConfigContextProvider
  */
 class ParadoxConfigContext(
     val type: Type,
     val fileInfo: ParadoxFileInfo? = null,
-    val definitionInfo: ParadoxDefinitionInfo? = null,
     val elementPath: ParadoxElementPath? = null,
+    val definitionInfo: ParadoxDefinitionInfo? = null,
+    val elementPathFromDefinition: ParadoxElementPath? = null,
 ): UserDataHolderBase() {
     enum class Type {
         InFile,
