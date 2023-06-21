@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.config
+package icu.windea.pls.lang.cwt
 
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.config.config.*

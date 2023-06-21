@@ -13,6 +13,7 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.config.*
+import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.model.*
 import java.util.concurrent.*
 

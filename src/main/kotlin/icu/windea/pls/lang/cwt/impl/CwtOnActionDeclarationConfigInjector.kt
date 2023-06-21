@@ -1,10 +1,10 @@
-package icu.windea.pls.lang.config.impl
+package icu.windea.pls.lang.cwt.impl
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.config.*
+import icu.windea.pls.lang.cwt.*
 
 class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
     companion object {
