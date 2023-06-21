@@ -1,6 +1,7 @@
 <idea-plugin>
   <extensionPoints>
     <extensionPoint qualifiedName="icu.windea.pls.declarationConfigInjector" interface="icu.windea.pls.lang.cwt.CwtDeclarationConfigInjector" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.configContextProvider" interface="icu.windea.pls.lang.config.ParadoxConfigContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.overriddenConfigProvider" interface="icu.windea.pls.lang.config.ParadoxOverriddenConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.documentationElementLinkProvider" interface="icu.windea.pls.lang.documentation.DocumentationElementLinkProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionExtendedDocumentationProvider" interface="icu.windea.pls.lang.documentation.ParadoxDefinitionExtendedDocumentationProvider" dynamic="true"/>
@@ -31,6 +32,10 @@
     <declarationConfigInjector implementation="icu.windea.pls.lang.cwt.impl.CwtGameRuleDeclarationConfigInjector"/>
     <declarationConfigInjector implementation="icu.windea.pls.lang.cwt.impl.CwtOnActionDeclarationConfigInjector"/>
 
+    <configContextProvider implementation="icu.windea.pls.lang.config.impl.ParadoxBaseConfigContextProvider" order="last"/>
+    <configContextProvider implementation="icu.windea.pls.lang.config.impl.ParadoxInlineScriptConfigContextProvider"/>
+    <configContextProvider implementation="icu.windea.pls.lang.config.impl.ParadoxScriptSnippetFromParameterValueConfigContextProvider"/>
+    
     <overriddenConfigProvider implementation="icu.windea.pls.lang.config.impl.ParadoxSwitchCaseOverriddenConfigProvider"/>
     <overriddenConfigProvider implementation="icu.windea.pls.lang.config.impl.StellarisComplexTriggerModifierOverriddenConfigProvider"/>
     

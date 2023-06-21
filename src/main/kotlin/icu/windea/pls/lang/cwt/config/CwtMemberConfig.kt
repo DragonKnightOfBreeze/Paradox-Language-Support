@@ -3,13 +3,13 @@ package icu.windea.pls.lang.cwt.config
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.lang.cwt.expression.CwtDataType.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.expression.*
+import icu.windea.pls.lang.cwt.expression.CwtDataType.*
 import icu.windea.pls.lang.model.*
 
 sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig<T>, CwtValueAware, CwtOptionsAware, CwtDocumentationAware {
@@ -98,14 +98,15 @@ fun <T : PsiElement> CwtMemberConfig<T>.deepMergeConfigs(configContext: CwtDecla
     }
 }
 
-val CwtMemberConfig.Keys.cardinality by lazy { Key.create<CwtCardinalityExpression>("paradox.cwtDataConfig.cardinality") }
-val CwtMemberConfig.Keys.cardinalityMinDefine by lazy { Key.create<String>("paradox.cwtDataConfig.cardinalityMinDefine") }
-val CwtMemberConfig.Keys.cardinalityMaxDefine by lazy { Key.create<String>("paradox.cwtDataConfig.cardinalityMaxDefine") }
-val CwtMemberConfig.Keys.hasScopeOption by lazy { Key.create<Boolean>("paradox.cwtDataConfig.hasScopeOption") }
-val CwtMemberConfig.Keys.scopeContext by lazy { Key.create<ParadoxScopeContext>("paradox.cwtDataConfig.scopeContext") }
-val CwtMemberConfig.Keys.replaceScopes by lazy { Key.create<Map<String, String?>>("paradox.cwtDataConfig.replaceScopes") }
-val CwtMemberConfig.Keys.pushScope by lazy { Key.create<String>("paradox.cwtDataConfig.pushScope") }
-val CwtMemberConfig.Keys.supportedScopes by lazy { Key.create<Set<String>>("paradox.cwtDataConfig.supportedScopes") }
+val CwtMemberConfig.Keys.cardinality by lazy { Key.create<CwtCardinalityExpression>("cwt.dataConfig.cardinality") }
+val CwtMemberConfig.Keys.cardinalityMinDefine by lazy { Key.create<String>("cwt.dataConfig.cardinalityMinDefine") }
+val CwtMemberConfig.Keys.cardinalityMaxDefine by lazy { Key.create<String>("cwt.dataConfig.cardinalityMaxDefine") }
+val CwtMemberConfig.Keys.hasScopeOption by lazy { Key.create<Boolean>("cwt.dataConfig.hasScopeOption") }
+val CwtMemberConfig.Keys.scopeContext by lazy { Key.create<ParadoxScopeContext>("cwt.dataConfig.scopeContext") }
+val CwtMemberConfig.Keys.replaceScopes by lazy { Key.create<Map<String, String?>>("cwt.dataConfig.replaceScopes") }
+val CwtMemberConfig.Keys.pushScope by lazy { Key.create<String>("cwt.dataConfig.pushScope") }
+val CwtMemberConfig.Keys.supportedScopes by lazy { Key.create<Set<String>>("cwt.dataConfig.supportedScopes") }
+val CwtMemberConfig.Keys.overriddenProvider by lazy { Key.create<ParadoxOverriddenConfigProvider>("cwt.DataConfig.overriddenProvider") }
 
 //may on:
 // * a config expression in declaration config
@@ -192,7 +193,5 @@ fun <T : PsiElement> CwtMemberConfig<T>.toOccurrence(contextElement: PsiElement,
     }
     return occurrence
 }
-
-val CwtMemberConfig.Keys.overriddenProvider by lazy { Key.create<ParadoxOverriddenConfigProvider>("paradox.cwtDataConfig.overriddenProvider") }
 
 var CwtMemberConfig<*>.overriddenProvider by CwtMemberConfig.Keys.overriddenProvider

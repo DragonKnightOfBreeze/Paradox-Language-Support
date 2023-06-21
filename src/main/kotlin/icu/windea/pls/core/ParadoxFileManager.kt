@@ -1,5 +1,6 @@
-package icu.windea.pls.tool
+package icu.windea.pls.core
 
+import com.intellij.injected.editor.*
 import com.intellij.lang.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
@@ -7,7 +8,6 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.testFramework.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
 import java.lang.invoke.*
 import java.nio.file.*
@@ -89,5 +89,10 @@ object ParadoxFileManager {
     @JvmStatic
     fun isLightFile(file: VirtualFile): Boolean {
         return file is LightVirtualFile
+    }
+    
+    @JvmStatic
+    fun isInjectedFile(file: VirtualFile): Boolean {
+        return file is VirtualFileWindow
     }
 }

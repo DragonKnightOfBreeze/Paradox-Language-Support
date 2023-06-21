@@ -14,7 +14,6 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
-import icu.windea.pls.tool.*
 
 object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
     private const val ID = "paradoxScript.file"

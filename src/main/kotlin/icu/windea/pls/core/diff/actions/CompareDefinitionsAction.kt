@@ -29,7 +29,6 @@ import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
 import java.awt.*
 import java.util.*
 import javax.swing.*

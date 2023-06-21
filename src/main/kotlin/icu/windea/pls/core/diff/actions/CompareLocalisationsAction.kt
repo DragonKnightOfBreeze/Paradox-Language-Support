@@ -29,7 +29,6 @@ import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.tool.*
 import java.awt.*
 import java.util.*
 import javax.swing.*

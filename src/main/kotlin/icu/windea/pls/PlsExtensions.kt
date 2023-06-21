@@ -4,7 +4,6 @@ package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
 import com.intellij.extapi.psi.*
-import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.lang.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.fileTypes.*
@@ -34,6 +33,7 @@ import icu.windea.pls.localisation.references.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
+import icu.windea.pls.tool.*
 import java.lang.Integer.*
 
 //region Misc Extensions
@@ -402,7 +402,7 @@ fun StringBuilder.appendImgTag(url: String, width: Int, height: Int, local: Bool
 
 fun StringBuilder.appendFileInfoHeader(element: PsiElement): StringBuilder {
     val file = selectFile(element) ?: return this
-    if(file is VirtualFileWindow) return this //ignored for injected PSI
+    if(ParadoxFileManager.isInjectedFile()) return this //ignored for injected PSI
     val fileInfo = file.fileInfo ?: return this
     
     val rootInfo = fileInfo.rootInfo

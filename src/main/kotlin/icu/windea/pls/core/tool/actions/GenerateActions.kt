@@ -16,7 +16,6 @@ import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.tool.*
 
 /**
  * 用于从指定的本地化文件生成其他语言区域的本地化文件。

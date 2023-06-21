@@ -21,7 +21,6 @@ import icu.windea.pls.core.listeners.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
 import icu.windea.pls.tool.script.*
 
 object ParadoxCoreHandler {

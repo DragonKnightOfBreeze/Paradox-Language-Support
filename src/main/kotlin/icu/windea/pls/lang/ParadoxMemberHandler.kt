@@ -32,7 +32,7 @@ object ParadoxMemberHandler {
     }
     
     private fun doGetDefinitionMemberDownUp(element: ParadoxScriptMemberElement): ParadoxDefinitionMemberInfo? {
-        //input element here can also be a defintion, at this time element path will be empty
+        //input element here can also be a definition, at this time element path will be empty
         val (elementPath, definition) = ParadoxElementPathHandler.getFromDefinitionWithDefinition(element, true) ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
