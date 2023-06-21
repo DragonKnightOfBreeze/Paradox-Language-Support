@@ -27,7 +27,7 @@ If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also install
 
 If you encounter any problems during use, feel free to provide feedback via Github.
 
-![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_zh.png)
+![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_en.png)
 
 ## Quick Start
 
