@@ -28,7 +28,7 @@ class ParadoxValueLinkDataSourceExpressionNode (
 			//	}
 			//}
 			if(nodes.isEmpty()) {
-				val configs = linkConfigs.filter { it.dataSource?.type == CwtDataType.Value }
+				val configs = linkConfigs.filter { it.dataSource?.type?.isValueSetValueType() == true }
 				if(configs.isNotEmpty()) {
 					val configGroup = linkConfigs.first().info.configGroup
 					val node = ParadoxValueSetValueExpression.resolve(text, textRange, configs, configGroup)!!

@@ -25,6 +25,7 @@ enum class CwtDataType {
     EnumValue,
     Value,
     ValueSet,
+    ValueOrValueSet,
     ScopeField,
     Scope,
     ScopeGroup,
@@ -65,7 +66,7 @@ enum class CwtDataType {
     
     fun isVariableFieldType() = this == VariableField || this == IntVariableField
     
-    fun isValueSetValueType() = this == Value || this == ValueSet
+    fun isValueSetValueType() = this == Value || this == ValueSet || this == ValueOrValueSet
     
     fun isConstantLikeType() = this == Constant || this == Template
     

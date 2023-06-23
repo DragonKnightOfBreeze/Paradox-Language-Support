@@ -7,7 +7,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
@@ -35,7 +34,7 @@ class ParadoxValueSetValueExpressionNode(
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup): ParadoxValueSetValueExpressionNode? {
             //text may contain parameters
-            if(configs.any { c -> c.expression?.type.let { it != CwtDataType.Value && it != CwtDataType.ValueSet } }) return null
+            if(configs.any { c -> c.expression?.type?.isValueSetValueType() == false }) return null
             return ParadoxValueSetValueExpressionNode(text, textRange, configs, configGroup)
         }
     }

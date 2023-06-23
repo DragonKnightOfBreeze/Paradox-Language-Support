@@ -1054,7 +1054,7 @@ object ParadoxConfigHandler {
         //提示预定义的value
         run {
             ProgressManager.checkCanceled()
-            if(configExpression.type == CwtDataType.Value) {
+            if(configExpression.type == CwtDataType.Value || configExpression.type == CwtDataType.ValueOrValueSet) {
                 completePredefinedValueSetValue(valueSetName, result, context)
             }
         }
@@ -1352,8 +1352,7 @@ object ParadoxConfigHandler {
     
     fun resolvePredefinedValueSetValue(name: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): PsiElement? {
         val valueSetName = configExpression.value ?: return null
-        val read = configExpression.type == CwtDataType.Value
-        if(read) {
+        if(configExpression.type == CwtDataType.Value || configExpression.type == CwtDataType.ValueOrValueSet) {
             //首先尝试解析为预定义的value
             val valueSetConfig = configGroup.values.get(valueSetName)
             val valueSetValueConfig = valueSetConfig?.valueConfigMap?.get(name)
@@ -1369,8 +1368,7 @@ object ParadoxConfigHandler {
     fun resolvePredefinedValueSetValue(element: ParadoxScriptExpressionElement, name: String, configExpressions: Iterable<CwtDataExpression>, configGroup: CwtConfigGroup): PsiElement? {
         for(configExpression in configExpressions) {
             val valueSetName = configExpression.value ?: return null
-            val read = configExpression.type == CwtDataType.Value
-            if(read) {
+            if(configExpression.type == CwtDataType.Value || configExpression.type == CwtDataType.ValueOrValueSet) {
                 //首先尝试解析为预定义的value
                 val valueSetConfig = configGroup.values.get(valueSetName)
                 val valueSetValueConfig = valueSetConfig?.valueConfigMap?.get(name)
@@ -1481,7 +1479,7 @@ object ParadoxConfigHandler {
                 if(configGroup.complexEnums.containsKey(enumName)) return 45
                 return 0 //不期望匹配到，规则有误！
             }
-            CwtDataType.Value -> {
+            CwtDataType.Value, CwtDataType.ValueOrValueSet -> {
                 val valueSetName = configExpression.value ?: return 0 //不期望匹配到
                 if(configGroup.values.containsKey(valueSetName)) return 80
                 return 40

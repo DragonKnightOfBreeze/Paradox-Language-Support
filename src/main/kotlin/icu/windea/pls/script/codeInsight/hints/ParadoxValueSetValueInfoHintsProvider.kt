@@ -30,7 +30,7 @@ class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSetti
 		if(!element.isExpression()) return true
         val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return true
 		val type = config.expression.type
-		if(type == CwtDataType.Value || type == CwtDataType.ValueSet) {
+		if(type.isValueSetValueType()) {
 			val valueSetName = config.expression.value ?: return true
 			val presentation = doCollect(valueSetName)
 			val finalPresentation = presentation.toFinalPresentation(this, file.project)

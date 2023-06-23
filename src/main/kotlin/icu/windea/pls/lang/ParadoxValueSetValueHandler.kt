@@ -164,6 +164,7 @@ object ParadoxValueSetValueHandler {
         return when(configExpression.type) {
             CwtDataType.Value -> Access.Read
             CwtDataType.ValueSet -> Access.Write
+            CwtDataType.ValueOrValueSet -> Access.ReadWrite
             else -> Access.ReadWrite
         }
     }

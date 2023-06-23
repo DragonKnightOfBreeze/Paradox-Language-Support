@@ -134,6 +134,11 @@ class CwtValueExpression private constructor(
                     val value = expressionString.substring(10, expressionString.length - 1).intern()
                     CwtValueExpression(expressionString, CwtDataType.ValueSet, value)
                 }
+                //EXTENDED BY PLS
+                expressionString.surroundsWith("value_or_value_set[", "]") -> {
+                    val value = expressionString.substring(19, expressionString.length - 1).intern()
+                    CwtValueExpression(expressionString, CwtDataType.ValueOrValueSet, value)
+                }
                 expressionString.surroundsWith("enum[", "]") -> {
                     val value = expressionString.substring(5, expressionString.length - 1).intern()
                     CwtValueExpression(expressionString, CwtDataType.EnumValue, value)

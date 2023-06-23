@@ -34,19 +34,11 @@ object ParadoxConfigMergeHandler {
                     else -> null
                 }
             }
-            CwtDataType.Value -> {
+            CwtDataType.Value, CwtDataType.ValueSet, CwtDataType.ValueOrValueSet -> {
                 when(t2) {
-                    CwtDataType.ValueSet -> if(e1.value == e2.value) CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]") else null
-                    CwtDataType.ValueField, CwtDataType.IntValueField -> CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]")
-                    CwtDataType.VariableField, CwtDataType.IntVariableField -> CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]")
-                    else -> null
-                }
-            }
-            CwtDataType.ValueSet -> {
-                when(t2) {
-                    CwtDataType.Value -> if(e1.value == e2.value) CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]") else null
-                    CwtDataType.ValueField, CwtDataType.IntValueField -> CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]")
-                    CwtDataType.VariableField, CwtDataType.IntVariableField -> CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]")
+                    CwtDataType.Value, CwtDataType.ValueSet, CwtDataType.ValueOrValueSet -> if(e1.value == e2.value) CwtValueConfig.resolve(config.pointer, config.info, "value_or_value_set[${e1.value}]") else null
+                    CwtDataType.ValueField, CwtDataType.IntValueField -> CwtValueConfig.resolve(config.pointer, config.info, "value_or_value_set[${e1.value}]")
+                    CwtDataType.VariableField, CwtDataType.IntVariableField -> CwtValueConfig.resolve(config.pointer, config.info, "value_or_value_set[${e1.value}]")
                     else -> null
                 }
             }

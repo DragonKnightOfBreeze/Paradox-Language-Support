@@ -12,7 +12,6 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxDataExpressionNode(
@@ -38,7 +37,7 @@ class ParadoxDataExpressionNode(
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
         //忽略是valueSetValue的情况
-        if(linkConfigs.any { it.dataSource?.type == CwtDataType.Value }) return null
+        if(linkConfigs.any { it.dataSource?.type?.isValueSetValueType() == true }) return null
         val expect = linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
         //排除可解析的情况
         val reference = getReference(element)
