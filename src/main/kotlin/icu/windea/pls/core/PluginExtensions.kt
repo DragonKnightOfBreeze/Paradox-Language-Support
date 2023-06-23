@@ -36,7 +36,7 @@ fun String.isParameterized(): Boolean {
 }
 
 fun String.isInlineUsage(): Boolean {
-    return this.lowercase() == ParadoxInlineScriptHandler.inlineScriptName
+    return this.lowercase() == ParadoxInlineScriptHandler.inlineScriptKey
 }
 
 

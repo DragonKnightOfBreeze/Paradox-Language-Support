@@ -7,6 +7,7 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -60,7 +61,7 @@ class CwtLocalisationLocationExpression(
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
             //0~5ms
-            val config = ParadoxConfigHandler.getValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
+            val config = ParadoxConfigHandler.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
             if(config.expression.type !in validValueTypes) {
                 return ResolveResult("", null, PlsBundle.message("dynamic"))
             }
@@ -92,7 +93,7 @@ class CwtLocalisationLocationExpression(
         } else if(propertyName != null) {
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
-            val config = ParadoxConfigHandler.getValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
+            val config = ParadoxConfigHandler.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
             if(config.expression.type !in validValueTypes) {
                 return ResolveAllResult("", emptySet(), PlsBundle.message("dynamic"))
             }

@@ -5,10 +5,23 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 
-@Suppress("UNUSED_PARAMETER")
 object ParadoxConfigInlineHandler {
     enum class Mode {
         KEY_TO_KEY, KEY_TO_VALUE, VALUE_TO_KEY, VALUE_TO_VALUE
+    }
+    
+    /**
+     * 将指定的[inlineConfig]内联作为子节点并返回。如果需要拷贝，则进行深拷贝。
+     */
+    fun inlineWithInlineConfig(inlineConfig: CwtInlineConfig): CwtPropertyConfig {
+        val other = inlineConfig.config
+        val inlined = other.copy(
+            key = inlineConfig.name,
+            configs = other.deepCopyConfigs()
+        )
+        inlined.configs?.forEach { it.parent = inlined }
+        inlined.inlineableConfig = inlineConfig
+        return inlined
     }
     
     fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, mode: Mode): CwtPropertyConfig? {
@@ -31,21 +44,6 @@ object ParadoxConfigInlineHandler {
         )
         inlined.parent = config.parent
         inlined.configs?.forEach { it.parent = inlined }
-        return inlined
-    }
-    
-    /**
-     * 将指定的[inlineConfig]内联作为子节点并返回。如果需要拷贝，则进行深拷贝。
-     */
-    fun inlineWithInlineConfig(config: CwtPropertyConfig, inlineConfig: CwtInlineConfig): CwtPropertyConfig {
-        val other = inlineConfig.config
-        val inlined = other.copy(
-            key = config.key,
-            configs = other.deepCopyConfigs()
-        )
-        inlined.parent = config
-        inlined.configs?.forEach { it.parent = inlined }
-        inlined.inlineableConfig = inlineConfig
         return inlined
     }
     
@@ -84,19 +82,6 @@ object ParadoxConfigInlineHandler {
         inlined.configs?.forEach { it.parent = inlined }
         inlined.inlineableConfig = singleAliasConfig
         return inlined
-    }
-    
-    fun inlineByInlineConfig(element: PsiElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>): Boolean {
-        if(config.inlineableConfig is CwtInlineConfig) return false
-        
-        //内联特定的规则：inline_script
-        val configGroup = config.info.configGroup
-        val inlineConfigs = configGroup.inlineConfigGroup[key]
-        if(inlineConfigs.isNullOrEmpty()) return false
-        for(inlineConfig in inlineConfigs) {
-            result.add(inlineWithInlineConfig(config, inlineConfig))
-        }
-        return true
     }
     
     fun inlineByConfig(element: PsiElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>, matchOptions: Int): Boolean {

@@ -33,6 +33,7 @@
     <declarationConfigInjector implementation="icu.windea.pls.lang.cwt.impl.CwtOnActionDeclarationConfigInjector"/>
 
     <configContextProvider implementation="icu.windea.pls.lang.config.impl.ParadoxBaseConfigContextProvider" order="last"/>
+    <configContextProvider implementation="icu.windea.pls.lang.config.impl.ParadoxInlineScriptUsageConfigContextProvider"/>
     <configContextProvider implementation="icu.windea.pls.lang.config.impl.ParadoxInlineScriptConfigContextProvider"/>
     <configContextProvider implementation="icu.windea.pls.lang.config.impl.ParadoxScriptSnippetFromParameterValueConfigContextProvider"/>
     

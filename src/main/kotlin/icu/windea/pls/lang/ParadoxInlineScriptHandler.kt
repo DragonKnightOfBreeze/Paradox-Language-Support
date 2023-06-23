@@ -21,7 +21,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxInlineScriptHandler {
-    const val inlineScriptName = "inline_script"
+    const val inlineScriptKey = "inline_script"
     
     val inlineScriptPathExpression = CwtValueExpression.resolve("filepath[common/inline_scripts/,.txt]")
     
@@ -30,7 +30,7 @@ object ParadoxInlineScriptHandler {
     
     fun getInfo(element: ParadoxScriptProperty): ParadoxInlineScriptInfo? {
         val name = element.name.lowercase()
-        if(name != inlineScriptName) return null
+        if(name != inlineScriptKey) return null
         return doGetInfoFromCache(element)
     }
     
@@ -51,7 +51,7 @@ object ParadoxInlineScriptHandler {
         val gameType = fileInfo.rootInfo.gameType
         val project = file.project
         val configGroup = getCwtConfig(project).get(gameType)
-        val inlineConfigs = configGroup.inlineConfigGroup[inlineScriptName] ?: return null
+        val inlineConfigs = configGroup.inlineConfigGroup[inlineScriptKey] ?: return null
         val propertyValue = element.propertyValue ?: return null
         val matchOptions = Options.SkipIndex or Options.SkipScope or Options.Fast
         val inlineConfig = ParadoxConfigMatcher.find(inlineConfigs, matchOptions) {
@@ -70,7 +70,7 @@ object ParadoxInlineScriptHandler {
     }
     
     fun getExpressionFromInlineConfig(propertyValue: ParadoxScriptValue, inlineConfig: CwtInlineConfig): String? {
-        if(inlineConfig.name != inlineScriptName) return null
+        if(inlineConfig.name != inlineScriptKey) return null
         val expressionLocation = getExpressionLocation(inlineConfig.config) ?: return null
         val expressionElement = if(expressionLocation.isEmpty()) {
             propertyValue.castOrNull<ParadoxScriptString>()
@@ -152,7 +152,7 @@ object ParadoxInlineScriptHandler {
                 val key = info.file?.fileInfo?.pathToEntry?.path ?: return@p true
                 val e = info.file?.findElementAt(info.elementOffset) ?: return@p true
                 val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true
-                if(p.name.lowercase() != inlineScriptName) return@p true
+                if(p.name.lowercase() != inlineScriptKey) return@p true
                 if(element == null) {
                     element = p
                 }

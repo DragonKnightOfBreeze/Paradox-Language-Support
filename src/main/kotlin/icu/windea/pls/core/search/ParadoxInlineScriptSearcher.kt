@@ -15,7 +15,7 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 
 /**
- * 内联脚本调用的查询器。
+ * 内联脚本使用的查询器。
  */
 class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptInfo, ParadoxInlineScriptSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxInlineScriptSearch.SearchParameters, consumer: Processor<in ParadoxInlineScriptInfo>) {

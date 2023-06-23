@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
  * 用于获取内联脚本中的CWT规则上下文。
  */
 class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
-    override fun getConfigContext(element: ParadoxScriptMemberElement, file: PsiFile): ParadoxConfigContext? {
+    override fun getConfigContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
         val vFile = selectFile(file) ?: return null
         if(ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
         

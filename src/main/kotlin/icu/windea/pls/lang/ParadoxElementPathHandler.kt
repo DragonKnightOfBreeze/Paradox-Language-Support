@@ -5,7 +5,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.inline.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -20,7 +19,7 @@ object ParadoxElementPathHandler {
     /**
      * 解析指定定义相对于所属文件的属性路径。
      */
-    fun getFromFile(element: PsiElement, maxDepth: Int = -1): ParadoxElementPath? {
+    fun get(element: PsiElement, maxDepth: Int = -1): ParadoxElementPath? {
         var current: PsiElement = element
         var depth = 0
         val originalSubPaths = LinkedList<String>()
@@ -54,7 +53,7 @@ object ParadoxElementPathHandler {
     /**
      * 解析指定定义相对于所属文件的属性路径。
      */
-    fun getFromFile(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int = -1): ParadoxElementPath? {
+    fun get(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int = -1): ParadoxElementPath? {
         var current: LighterASTNode = node
         var depth = 0
         val originalSubPaths = LinkedList<String>()
@@ -84,48 +83,5 @@ object ParadoxElementPathHandler {
             }
         }
         return ParadoxElementPath.resolve(originalSubPaths)
-    }
-    
-    /**
-     * 解析指定元素相对于所属定义的属性路径。
-     */
-    fun getFromDefinitionWithDefinition(element: PsiElement, allowDefinition: Boolean): Tuple2<ParadoxElementPath, ParadoxScriptDefinitionElement>? {
-        var current: PsiElement = element
-        val originalSubPaths = LinkedList<String>()
-        var definition: ParadoxScriptDefinitionElement? = null
-        var flag = allowDefinition
-        while(current !is PsiDirectory) { //这里的上限应当是null或PsiDirectory，不能是PsiFile，因为它也可能是定义
-            if(current is ParadoxScriptMemberElement) {
-                val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current) //perf: 2% 20%
-                if(linked != null) {
-                    current = linked.parent ?: break
-                    continue
-                }
-            }
-            when {
-                current is ParadoxScriptDefinitionElement -> {
-                    if(flag) {
-                        if(current.definitionInfo != null) {
-                            definition = current
-                            break
-                        }
-                    } else {
-                        flag = true
-                    }
-                    val p = when {
-                        current is ParadoxScriptProperty -> current.propertyKey.text
-                        current is ParadoxScriptFile -> current.name.substringBeforeLast('.')
-                        else -> current.name
-                    }
-                    originalSubPaths.addFirst(p)
-                }
-                current is ParadoxScriptValue && current.isBlockValue() -> {
-                    originalSubPaths.addFirst("-")
-                }
-            }
-            current = current.parent ?: break
-        }
-        if(definition == null) return null //如果未找到所属的definition，则直接返回null
-        return ParadoxElementPath.resolve(originalSubPaths) to definition
     }
 }

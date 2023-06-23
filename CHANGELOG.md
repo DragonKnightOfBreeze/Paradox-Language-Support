@@ -127,7 +127,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 * [X] 完善Stellaris的CWT规则文件
 * [X] 当脚本参数整个对应一个脚本表达式时，尝试推断得到对应的CWT规则，从而提供各种高级语言功能（如，基于CWT规则的代码高亮、引用解析和代码补全）
 * [X] 推断脚本参数对应的CWT规则时，尝试缓存结果
-* [X] 添加代码检查：递归的内联脚本调用
+* [X] 添加代码检查：递归的内联脚本使用
 
 ## 0.10.0
 
@@ -238,7 +238,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 
 * 优化与BUG修复
 * [X] 优化何时才会为本地化文件显示悬浮工具栏的判定
-* [X] 兼容嵌套的内联脚本调用
+* [X] 兼容嵌套的内联脚本使用
 * [X] 优化值集值（`valueSetValue`，如，`event_target`和`variable`）的索引
 * [X] 优化复杂枚举值（`complexEnumValue`，如`policy_flag`）的索引
 * [X] 不再可以通过`Navigate | Class or Navigate | Symbol`快速查找匹配名字的复杂枚举值

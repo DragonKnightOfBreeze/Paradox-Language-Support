@@ -15,6 +15,7 @@ import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.color.impl.*
+import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
@@ -221,7 +222,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getConfigExpression(element: ParadoxScriptProperty): String? {
-        val config = ParadoxConfigHandler.getPropertyConfigs(element).firstOrNull() ?: return null
+        val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() as? CwtPropertyConfig ?: return null
         return "${config.key} = ${config.value}"
     }
     
@@ -281,7 +282,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getConfigExpression(element: ParadoxScriptPropertyKey): String? {
-        val config = ParadoxConfigHandler.getPropertyConfigs(element).firstOrNull() ?: return null
+        val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() as? CwtPropertyConfig ?: return null
         return config.key
     }
     
@@ -378,7 +379,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getConfigExpression(element: ParadoxScriptValue): String? {
-        val config = ParadoxConfigHandler.getValueConfigs(element).firstOrNull() ?: return null
+        val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() as? CwtValueConfig ?: return null
         return config.value
     }
     //endregion

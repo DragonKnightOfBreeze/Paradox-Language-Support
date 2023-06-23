@@ -66,7 +66,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
                 val parentProperties = parentBlock.parentsOfType<ParadoxScriptProperty>(withSelf = false)
                 for(prop in parentProperties) {
                     //infer context config
-                    val propConfig = ParadoxConfigHandler.getPropertyConfigs(prop).firstOrNull() ?: continue
+                    val propConfig = ParadoxConfigHandler.getConfigs(prop).firstOrNull() as? CwtPropertyConfig ?: continue
                     if(propConfig.expression.type != CwtDataType.Definition) continue
                     if(propConfig.configs?.any { it is CwtPropertyConfig && it.expression.type == CwtDataType.Parameter } != true) continue
                     contextConfig = propConfig
@@ -190,7 +190,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
             var isFirst = true
             for(definitionType in definitionTypes) {
                 val typeConfig = configGroup.types.get(definitionType) ?: continue
-                val filePath = typeConfig.pathFile ?: continue
+                val filePath = typeConfig.pathFile ?: typeConfig.path ?: continue
                 val fileExtension = typeConfig.pathExtension
                 if(isFirst) isFirst = false else builder.append('|')
                 builder.append(filePath)

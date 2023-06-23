@@ -61,7 +61,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				val gameType = fileInfo.rootInfo.gameType
 				val configGroup = getCwtConfig(project).get(gameType)
 				val path = fileInfo.pathToEntry //这里使用pathToEntry
-				val elementPath = ParadoxElementPathHandler.getFromFile(element, PlsConstants.maxDefinitionDepth) ?: return
+				val elementPath = ParadoxElementPathHandler.get(element, PlsConstants.maxDefinitionDepth) ?: return
 				for(typeConfig in configGroup.types.values) {
 					if(typeConfig.nameField != null) continue
 					if(ParadoxDefinitionHandler.matchesTypeWithUnknownDeclaration(path, elementPath, null, typeConfig)) {
