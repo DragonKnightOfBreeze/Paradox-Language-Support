@@ -6,9 +6,6 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.expression.*
-import icu.windea.pls.config.setting.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
