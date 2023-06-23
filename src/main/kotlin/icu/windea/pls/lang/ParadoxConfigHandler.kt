@@ -11,6 +11,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import com.intellij.util.text.*
 import icons.*
@@ -95,6 +96,27 @@ object ParadoxConfigHandler {
         val indices = expression.indicesOf('$')
         if(indices.size <= 1) return emptyList()
         return indices.windowed(2, 2, false) { TextRange.create(it[0], it[1]) }
+    }
+    
+    fun getContextType(contextElement: PsiElement): ParadoxConfigContext.Type {
+        return when {
+            contextElement is PsiFile -> ParadoxConfigContext.Type.InFile
+            contextElement is ParadoxScriptRootBlock ->  ParadoxConfigContext.Type.InFile
+            contextElement is ParadoxScriptProperty -> {
+                val parentElement = contextElement.parent
+                when {
+                    parentElement is ParadoxScriptRootBlock -> ParadoxConfigContext.Type.InFile
+                    else -> ParadoxConfigContext.Type.InClause
+                }
+            }
+            else -> {
+                val expressionElement = contextElement.parentOfType<ParadoxScriptExpressionElement>(withSelf = true)
+                when {
+                    expressionElement is ParadoxScriptValue && expressionElement.isPropertyValue() -> ParadoxConfigContext.Type.PropertyValue
+                    else -> ParadoxConfigContext.Type.InClause
+                }
+            }
+        }
     }
     //endregion
     

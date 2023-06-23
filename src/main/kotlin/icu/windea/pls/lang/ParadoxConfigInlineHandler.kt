@@ -1,11 +1,9 @@
 package icu.windea.pls.lang
 
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.expression.*
+import com.intellij.psi.PsiElement
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
-import icu.windea.pls.script.psi.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxConfigInlineHandler {
@@ -88,7 +86,7 @@ object ParadoxConfigInlineHandler {
         return inlined
     }
     
-    fun inlineByInlineConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>): Boolean {
+    fun inlineByInlineConfig(element: PsiElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>): Boolean {
         if(config.inlineableConfig is CwtInlineConfig) return false
         
         //内联特定的规则：inline_script
@@ -101,7 +99,7 @@ object ParadoxConfigInlineHandler {
         return true
     }
     
-    fun inlineByConfig(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>, matchOptions: Int): Boolean {
+    fun inlineByConfig(element: PsiElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>, matchOptions: Int): Boolean {
         //内联类型为single_alias_right或alias_match_left的规则
         run {
             val configGroup = config.info.configGroup
