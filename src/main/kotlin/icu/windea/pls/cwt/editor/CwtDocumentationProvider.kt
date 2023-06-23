@@ -117,8 +117,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             val byName = if(shortName == name) null else name
             val prefix = when {
                 configType?.isReference == true -> configType.prefix
-                referenceElement is ParadoxScriptPropertyKey -> PlsBundle.message("prefix.definitionProperty")
-                referenceElement is ParadoxScriptValue -> PlsBundle.message("prefix.definitionValue")
+                element is CwtProperty -> PlsBundle.message("prefix.definitionProperty")
+                element is CwtValue -> PlsBundle.message("prefix.definitionValue")
                 else -> configType?.prefix
             }
             val typeCategory = configType?.category
