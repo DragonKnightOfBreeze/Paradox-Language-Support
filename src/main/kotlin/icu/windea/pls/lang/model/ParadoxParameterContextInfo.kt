@@ -86,8 +86,8 @@ class ParadoxParameterInfo(
     val expressionConfigs: List<CwtMemberConfig<*>> by lazy {
         val parent = element?.parent
         when {
-            parent is ParadoxScriptPropertyKey -> ParadoxConfigResolver.getConfigs(parent, matchOptions = Options.Default or Options.AcceptDefinition)
-            parent is ParadoxScriptString -> ParadoxConfigResolver.getConfigs(parent, matchOptions = Options.Default or Options.AcceptDefinition)
+            parent is ParadoxScriptPropertyKey -> ParadoxConfigHandler.getConfigs(parent, matchOptions = Options.Default or Options.AcceptDefinition)
+            parent is ParadoxScriptString -> ParadoxConfigHandler.getConfigs(parent, matchOptions = Options.Default or Options.AcceptDefinition)
             else -> emptyList()
         }
     }

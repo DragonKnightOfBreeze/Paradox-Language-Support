@@ -37,7 +37,7 @@ class MissingParameterInspection : LocalInspectionTool() {
             private fun visitElementFromContextReferenceElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
                 val from = ParadoxParameterContextReferenceInfo.From.ContextReference
-                val contextConfig = ParadoxConfigResolver.getConfigs(element).firstOrNull() ?: return
+                val contextConfig = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, contextConfig) ?: return
                 if(contextReferenceInfo.contextName.isParameterized()) return //skip if context name is parameterized
                 val argumentNames = contextReferenceInfo.argumentNames

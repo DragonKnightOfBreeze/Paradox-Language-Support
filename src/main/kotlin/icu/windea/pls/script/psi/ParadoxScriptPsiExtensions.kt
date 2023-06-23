@@ -43,7 +43,7 @@ fun ParadoxScriptExpressionElement.isExpression(): Boolean {
  * 判断当前字符串表达式是否在顶层或者子句中或者作为属性的值，并且拥有唯一匹配的CWT规则。
  */
 fun ParadoxScriptExpressionElement.isValidExpression(matchOptions: Int = ParadoxConfigMatcher.Options.Default): Boolean {
-	return ParadoxConfigResolver.getConfigs(this, orDefault = false, matchOptions = matchOptions).size == 1
+	return ParadoxConfigHandler.getConfigs(this, orDefault = false, matchOptions = matchOptions).size == 1
 }
 
 fun PsiElement.isExpressionOrMemberContext(): Boolean {

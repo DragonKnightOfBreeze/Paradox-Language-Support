@@ -47,7 +47,7 @@ object ParadoxDefinitionHandler {
     private fun doGetInfoFromCache(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
             ProgressManager.checkCanceled()
-            val file = element.containingFile
+            val file = element.containingFile ?: return@getCachedValue null
             val value = doGetInfo(element, file)
             //invalidated on file modification
             CachedValueProvider.Result.create(value, file)

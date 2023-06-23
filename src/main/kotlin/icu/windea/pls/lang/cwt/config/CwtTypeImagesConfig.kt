@@ -11,14 +11,14 @@ class CwtTypeImagesConfig(
 	override val info: CwtConfigGroupInfo,
 	val configs: List<Pair<String?, CwtLocationConfig>> //(subtypeExpression, locationConfig)
 ) : CwtConfig<CwtProperty> {
-	private val mergesConfigCache: Cache<String, List<CwtLocationConfig>> = CacheBuilder.newBuilder().buildCache()
+	private val mergedConfigsCache: Cache<String, List<CwtLocationConfig>> = CacheBuilder.newBuilder().buildCache()
 	
 	/**
 	 * 得到根据子类型列表进行合并后的配置。
 	 */
 	fun getMergedConfigs(subtypes: List<String>): List<CwtLocationConfig> {
 		val cacheKey = subtypes.joinToString(",")
-		return mergesConfigCache.getOrPut(cacheKey){
+		return mergedConfigsCache.getOrPut(cacheKey){
 			val result = mutableListOf<CwtLocationConfig>()
 			for((subtypeExpression, locationConfig) in configs) {
 				if(subtypeExpression == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {

@@ -42,7 +42,7 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         val stringElement = element
         if(!stringElement.isBlockValue()) return
         val parentProperty = stringElement.findParentProperty() ?: return
-        val configs = ParadoxConfigResolver.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
+        val configs = ParadoxConfigHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
         if(configs.isEmpty()) return
         val configGroup = configs.first().info.configGroup
         context.configGroup = configGroup

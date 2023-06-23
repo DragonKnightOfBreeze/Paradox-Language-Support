@@ -30,7 +30,7 @@ class ParadoxScriptSnippetInjector : MultiHostInjector {
     
     override fun getLanguagesToInject(registrar: MultiHostRegistrar, host: PsiElement) {
         if(host !is ParadoxScriptString) return
-        val configs = ParadoxConfigResolver.getConfigs(host)
+        val configs = ParadoxConfigHandler.getConfigs(host)
         val config = configs.firstOrNull() ?: return
         when {
             config.expression.type == CwtDataType.ParameterValue -> {
@@ -48,7 +48,7 @@ class ParadoxScriptSnippetInjector : MultiHostInjector {
         
         //disable inject language action
         InjectionUtils.enableInjectLanguageAction(host, false)
-        //disable injection background highlight (by implementing InjectionBackgroundSuppressor) - do not apply so far
+        //disable injection background highlight (by implementing InjectionBackgroundSuppressor)
         //inject config context to provide advanced language features
         //see: icu.windea.pls.script.psi.ParadoxScriptParserDefinition.createFile
         

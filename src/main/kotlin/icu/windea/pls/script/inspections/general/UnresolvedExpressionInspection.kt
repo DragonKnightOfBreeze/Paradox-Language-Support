@@ -3,6 +3,7 @@ package icu.windea.pls.script.inspections.general
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -56,35 +57,17 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         //skip checking property if property key may contain parameters
                         val propertyKey = element.propertyKey
                         if(propertyKey.text.isParameterized()) return false
-                        val definitionMemberInfo = element.definitionMemberInfo
-                        if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
-                        val configs = ParadoxConfigResolver.getPropertyConfigs(element)
+                        val configContext = ParadoxConfigHandler.getConfigContext(element) ?: return true
+                        if(configContext.isDefinition() || !configContext.isDefinitionMember()) return true
+                        val configs = ParadoxConfigHandler.getPropertyConfigs(element)
                         if(configs.isEmpty()) {
                             //这里使用合并后的子规则，即使parentProperty可以精确匹配
                             //优先使用重载后的规则
                             val expect = if(showExpectInfo) {
-                                val allConfigs = buildList {
-                                    val parentDefinitionMemberInfo = element.findParentProperty()?.definitionMemberInfo ?: return@buildList
-                                    val memberConfigs = ParadoxMemberConfigResolver.getChildConfigs(parentDefinitionMemberInfo)
-                                    memberConfigs.forEachFast {
-                                        val c = it
-                                        val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, c)
-                                        if(overriddenConfigs.isNotNullOrEmpty()) {
-                                            addAll(overriddenConfigs)
-                                        } else {
-                                            add(c)
-                                        }
-                                    }
-                                }
+                                val allConfigs = getAllConfigs(element)
                                 //某些情况下我们需要忽略一些未解析的表达式
                                 if(allConfigs.isNotEmpty() && allConfigs.all { isIgnored(it) }) return true
-                                val allExpressions = if(allConfigs.isEmpty()) emptySet() else {
-                                    buildSet {
-                                        for(c in allConfigs) {
-                                            if(c is CwtPropertyConfig) add(c.expression)
-                                        }
-                                    }
-                                }
+                                val allExpressions = allConfigs.mapTo(mutableSetOf()) { it.expression }
                                 allExpressions.takeIfNotEmpty()?.joinToString()
                             } else null
                             val message = when {
@@ -111,37 +94,16 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         //skip checking value if it may contain parameters
                         if(element is ParadoxScriptString && element.text.isParameterized()) return false
                         if(element is ParadoxScriptScriptedVariableReference && element.text.isParameterized()) return false
-                        val definitionMemberInfo = element.definitionMemberInfo
-                        if(definitionMemberInfo == null || definitionMemberInfo.isDefinition) return true
-                        val configs = ParadoxConfigResolver.getValueConfigs(element, orDefault = false)
+                        val configContext = ParadoxConfigHandler.getConfigContext(element) ?: return true
+                        if(configContext.isDefinition() || !configContext.isDefinitionMember()) return true
+                        val configs = ParadoxConfigHandler.getValueConfigs(element, orDefault = false)
                         if(configs.isEmpty()) {
                             val expect = if(showExpectInfo) {
                                 //优先使用重载后的规则
-                                val allConfigs = buildList {
-                                    val memberConfigs = ParadoxMemberConfigResolver.getConfigs(definitionMemberInfo)
-                                    memberConfigs.forEachFast f@{
-                                        val c = when {
-                                            it is CwtPropertyConfig -> it.valueConfig
-                                            it is CwtValueConfig -> it
-                                            else -> null
-                                        } ?: return@f
-                                        val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, c)
-                                        if(overriddenConfigs.isNotNullOrEmpty()) {
-                                            addAll(overriddenConfigs)
-                                        } else {
-                                            add(c)
-                                        }
-                                    }
-                                }
+                                val allConfigs = getAllConfigs(element, configContext)
                                 //某些情况下我们需要忽略一些未解析的表达式
                                 if(allConfigs.isNotEmpty() && allConfigs.all { isIgnored(it) }) return true
-                                val allExpressions = if(allConfigs.isEmpty()) emptySet() else {
-                                    buildSet {
-                                        for(c in allConfigs) {
-                                            add(c.expression)
-                                        }
-                                    }
-                                }
+                                val allExpressions = allConfigs.mapTo(mutableSetOf()) { it.expression }
                                 allExpressions.takeIfNotEmpty()?.joinToString()
                             } else null
                             val message = when {
@@ -158,6 +120,45 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                             return false
                         }
                         return true
+                    }
+                    
+                    private fun getAllConfigs(element: ParadoxScriptProperty): List<CwtPropertyConfig> {
+                        val parentMemberElement = element.parentOfType<ParadoxScriptMemberElement>() ?: return emptyList()
+                        val parentConfigContext = ParadoxConfigHandler.getConfigContext(parentMemberElement) ?: return emptyList()
+                        return buildList {
+                            val contextConfigs = parentConfigContext.getConfigs()
+                            contextConfigs.forEachFast f@{
+                                val c = when {
+                                    it is CwtPropertyConfig -> it
+                                    else -> return@f
+                                }
+                                val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, c)
+                                if(overriddenConfigs.isNotNullOrEmpty()) {
+                                    addAll(overriddenConfigs)
+                                } else {
+                                    add(c)
+                                }
+                            }
+                        }
+                    }
+                    
+                    private fun getAllConfigs(element: ParadoxScriptValue, configContext: ParadoxConfigContext): List<CwtValueConfig> {
+                        return buildList {
+                            val contextConfigs = configContext.getConfigs()
+                            contextConfigs.forEachFast f@{
+                                val c = when {
+                                    it is CwtPropertyConfig -> it.valueConfig ?: return@f
+                                    it is CwtValueConfig -> it
+                                    else -> return@f
+                                }
+                                val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, c)
+                                if(overriddenConfigs.isNotNullOrEmpty()) {
+                                    addAll(overriddenConfigs)
+                                } else {
+                                    add(c)
+                                }
+                            }
+                        }
                     }
                     
                     private fun isIgnored(config: CwtMemberConfig<*>): Boolean {

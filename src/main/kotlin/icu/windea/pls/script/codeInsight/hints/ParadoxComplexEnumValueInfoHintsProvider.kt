@@ -39,7 +39,7 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSe
             return true
         }
         
-        val config = ParadoxConfigResolver.getConfigs(element).firstOrNull() ?: return true
+        val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return true
         val configGroup = config.info.configGroup
         val type = config.expression.type
         if(type == CwtDataType.EnumValue) {

@@ -36,9 +36,8 @@ class ParadoxInlineScriptScriptMemberElementInlineSupport : ParadoxScriptMemberE
         val expression = info.expression
         return withRecursionGuard("icu.windea.pls.lang.inline.impl.ParadoxInlineScriptScriptMemberElementInlineSupport.inlineElement") a1@{
             withCheckRecursion(expression) a2@{
-                val definitionMemberInfo = element.definitionMemberInfo
-                if(definitionMemberInfo == null) return@a2 null
-                val project = definitionMemberInfo.configGroup.project
+                val configContext = ParadoxConfigHandler.getConfigContext(element) ?: return@a2 null
+                val project = configContext.configGroup.project
                 ParadoxInlineScriptHandler.getInlineScriptFile(expression, element, project)
             }
         }

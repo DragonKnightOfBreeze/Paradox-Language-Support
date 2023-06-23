@@ -461,7 +461,7 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport() 
         if(!context.quoted && context.keyword.isParameterized()) return //排除可能带参数的情况
         
         //提示预定义的modifier
-        ParadoxConfigHandler.completeModifier(context, result)
+        ParadoxModifierHandler.completeModifier(context, result)
     }
 }
 

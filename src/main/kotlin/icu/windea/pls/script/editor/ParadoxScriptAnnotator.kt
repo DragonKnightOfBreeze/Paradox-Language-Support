@@ -95,7 +95,7 @@ class ParadoxScriptAnnotator : Annotator {
         }
         
         val isKey = element is ParadoxScriptPropertyKey
-        val config = ParadoxConfigResolver.getConfigs(element, orDefault = isKey).firstOrNull()
+        val config = ParadoxConfigHandler.getConfigs(element, orDefault = isKey).firstOrNull()
         if(config != null) {
             //高亮特殊标签
             if(config is CwtValueConfig && config.isTagConfig) {

@@ -23,11 +23,11 @@ object ParadoxDefinitionHierarchyHandler {
         fileData: MutableMap<String, List<ParadoxDefinitionHierarchyInfo>>
     ) {
         val matchOptions = Options.SkipIndex or Options.SkipScope
-        val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = matchOptions)
+        val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = matchOptions)
         if(configs.isEmpty()) return
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
-        val definitionMemberInfo = memberElement.definitionMemberInfo ?: return
-        val definitionInfo = definitionMemberInfo.definitionInfo
+        val configContext = ParadoxConfigHandler.getConfigContext(memberElement) ?: return
+        val definitionInfo = configContext.definitionInfo ?: return
         configs.forEachFast { config ->
             ParadoxDefinitionHierarchySupport.indexData(fileData, element, config, definitionInfo)
         }

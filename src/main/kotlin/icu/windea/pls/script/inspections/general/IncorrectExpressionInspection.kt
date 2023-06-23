@@ -33,7 +33,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                 
                 //得到完全匹配的CWT规则
                 val isKey = element is ParadoxScriptPropertyKey
-                val config = ParadoxConfigResolver.getConfigs(element, orDefault = false).firstOrNull() ?: return
+                val config = ParadoxConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return
                 val configExpression = config.expression
                 val dataType = configExpression.type
                 when {

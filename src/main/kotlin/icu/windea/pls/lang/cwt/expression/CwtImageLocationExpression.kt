@@ -67,7 +67,7 @@ class CwtImageLocationExpression private constructor(
             //propertyName可以为空字符串，这时直接查找定义的字符串类型的值（如果存在）
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
-            val config = ParadoxConfigResolver.getValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
+            val config = ParadoxConfigHandler.getValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
             if(config.expression.type !in validValueTypes) {
                 return ResolveResult("", null, 0, PlsBundle.message("dynamic"))
             }
@@ -131,7 +131,7 @@ class CwtImageLocationExpression private constructor(
             //dynamic -> returns ("", null, 0)
             val property = definition.findProperty(propertyName, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
-            val config = ParadoxConfigResolver.getValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
+            val config = ParadoxConfigHandler.getValueConfigs(propertyValue, orDefault = false).firstOrNull() ?: return null
             if(config.expression.type !in validValueTypes) {
                 return ResolveAllResult("", emptySet(), 0, PlsBundle.message("dynamic"))
             }

@@ -275,9 +275,6 @@ val PsiElement.fileInfo: ParadoxFileInfo?
 val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
     get() = ParadoxDefinitionHandler.getInfo(this)
 
-val ParadoxScriptMemberElement.definitionMemberInfo: ParadoxDefinitionMemberInfo?
-    get() = ParadoxMemberHandler.getDefinitionMemberInfo(this)
-
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
     get() = ParadoxLocalisationHandler.getInfo(this)
 
@@ -402,7 +399,7 @@ fun StringBuilder.appendImgTag(url: String, width: Int, height: Int, local: Bool
 
 fun StringBuilder.appendFileInfoHeader(element: PsiElement): StringBuilder {
     val file = selectFile(element) ?: return this
-    if(ParadoxFileManager.isInjectedFile()) return this //ignored for injected PSI
+    if(ParadoxFileManager.isInjectedFile(file)) return this //ignored for injected PSI
     val fileInfo = file.fileInfo ?: return this
     
     val rootInfo = fileInfo.rootInfo

@@ -37,7 +37,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 if(file !is ParadoxScriptFile) return
                 //忽略可能的脚本片段入口
                 if(ParadoxScriptMemberElementInlineSupport.canLink(file)) return super.visitFile(file)
-                val configs = ParadoxConfigResolver.getConfigs(file, matchOptions = Options.Default or Options.AcceptDefinition)
+                val configs = ParadoxConfigHandler.getConfigs(file, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(file, file, configs)
             }
             
@@ -52,13 +52,13 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                     ?.also { if(it.text.isParameterized()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
-                val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
+                val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(element, position, configs)
             }
             
             private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement, configs: List<CwtMemberConfig<*>>) {
                 if(skipCheck(element, configs)) return
-                val occurrenceMap = ParadoxConfigResolver.getChildOccurrenceMap(element, configs)
+                val occurrenceMap = ParadoxConfigHandler.getChildOccurrenceMap(element, configs)
                 if(occurrenceMap.isEmpty()) return
                 val overriddenProvider = getOverriddenProvider(configs)
                 occurrenceMap.forEach { (configExpression, occurrence) ->

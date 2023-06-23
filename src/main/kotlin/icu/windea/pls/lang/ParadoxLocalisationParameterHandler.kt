@@ -103,7 +103,7 @@ object ParadoxLocalisationParameterHandler {
     
     private fun isMatchedProperty(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         if(element is ParadoxScriptProperty) {
-            val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
+            val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
             if(configs.any { it pointerEquals config }) {
                 return true
             }

@@ -115,6 +115,7 @@ class ParadoxCoreFileListener : AsyncFileListener {
     private fun doRefreshInlineScripts() {
         //要求重新解析内联脚本文件
         ProjectManager.getInstance().openProjects.forEach { project ->
+            ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker.incModificationCount()
             ParadoxPsiModificationTracker.getInstance(project).InlineScriptsTracker.incModificationCount()
         }
         //刷新内联脚本文件的内嵌提示

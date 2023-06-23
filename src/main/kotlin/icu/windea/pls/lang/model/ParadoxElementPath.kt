@@ -3,7 +3,6 @@ package icu.windea.pls.lang.model
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.model.ParadoxElementPath.*
-import java.nio.file.*
 
 /**
  * 定义或定义属性相对于所属文件或定义的路径。保留大小写。
@@ -43,7 +42,7 @@ interface ParadoxElementPath : Iterable<Info> {
         }
         
         fun resolve(rawSubPaths: List<String>): ParadoxElementPath {
-            return  ParadoxElementPathImplB(rawSubPaths)
+            return ParadoxElementPathImplB(rawSubPaths)
         }
     }
     
@@ -61,7 +60,8 @@ interface ParadoxElementPath : Iterable<Info> {
     }
 }
 
-fun ParadoxElementPath.relativeTo(other: ParadoxElementPath): ParadoxElementPath?{
+fun ParadoxElementPath.relativeTo(other: ParadoxElementPath): ParadoxElementPath? {
+    if(this == other) return EmptyParadoxElementPath
     val path = other.path.removePrefixOrNull(this.path + "/") ?: return null
     return Resolver.resolve(path)
 }

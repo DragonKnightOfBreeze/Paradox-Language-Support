@@ -37,7 +37,7 @@ object ParadoxInlineScriptHandler {
     private fun doGetInfoFromCache(element: ParadoxScriptProperty): ParadoxInlineScriptInfo? {
         return CachedValuesManager.getCachedValue(element, cachedInlineScriptInfoKey) {
             ProgressManager.checkCanceled()
-            val file = element.containingFile
+            val file = element.containingFile ?: return@getCachedValue null
             val value = runReadAction { doGetInfo(element, file) }
             //invalidated on file modification
             CachedValueProvider.Result.create(value, file)
@@ -130,10 +130,9 @@ object ParadoxInlineScriptHandler {
         return CachedValuesManager.getCachedValue(file, cachedInlineScriptUsageInfoKey) {
             ProgressManager.checkCanceled()
             val value = doGetInlineScriptUsageInfo(file)
-            //invalidated on file modification or ScriptFileTracker or InlineScriptsTracker
-            val tracker1 = ParadoxPsiModificationTracker.getInstance(file.project).ScriptFileTracker
-            val tracker2 = ParadoxPsiModificationTracker.getInstance(file.project).InlineScriptsTracker
-            CachedValueProvider.Result.create(value, file, tracker1, tracker2)
+            //invalidated on file modification or ScriptFileTracker
+            val tracker = ParadoxPsiModificationTracker.getInstance(file.project).ScriptFileTracker
+            CachedValueProvider.Result.create(value, file, tracker)
         }
     }
     
@@ -170,7 +169,7 @@ object ParadoxInlineScriptHandler {
                     //尝试检查内联脚本使用所在的规则上下文是否匹配（如果可以得到，它们需要全部匹配，否则标为存在冲突并结束检查）
                     if(hasConflict) return@p false
                     ProgressManager.checkCanceled()
-                    val eConfigs = ParadoxConfigResolver.getConfigs(p)
+                    val eConfigs = ParadoxConfigHandler.getConfigs(p)
                     if(eConfigs.isNotEmpty()) {
                         val configsToAdd = eConfigs.mapNotNull { it.parent }
                         if(configs.isEmpty()) {

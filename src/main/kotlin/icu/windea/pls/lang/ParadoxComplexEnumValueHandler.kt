@@ -26,14 +26,14 @@ object ParadoxComplexEnumValueHandler {
     private fun doGetInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedComplexEnumValueInfoKey) {
             ProgressManager.checkCanceled()
-            val file = element.containingFile
+            val file = element.containingFile ?: return@getCachedValue null
             val value = doGetInfo(element, file)
             //invalidated on file modification
             CachedValueProvider.Result.create(value, file)
         }
     }
     
-    private fun doGetInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile = element.containingFile): ParadoxComplexEnumValueInfo? {
+    private fun doGetInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile): ParadoxComplexEnumValueInfo? {
         if(element.text.isParameterized()) return null //排除可能带参数的情况
         if(element.text.isInlineUsage()) return null //排除是内联调用的情况
         val project = file.project

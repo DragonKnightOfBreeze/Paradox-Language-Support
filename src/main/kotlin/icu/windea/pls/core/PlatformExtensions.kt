@@ -39,7 +39,6 @@ import com.intellij.util.containers.*
 import com.intellij.util.io.*
 import com.intellij.util.xmlb.*
 import icu.windea.pls.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*

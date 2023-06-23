@@ -2,7 +2,6 @@ package icu.windea.pls.lang.config.impl
 
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -19,29 +18,30 @@ import icu.windea.pls.script.psi.*
  * 用于获取直接的CWT规则上下文。
  */
 class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
-    override fun getConfigContext(contextElement: PsiElement, file: PsiFile): ParadoxConfigContext? {
+    override fun getConfigContext(element: ParadoxScriptMemberElement, file: PsiFile): ParadoxConfigContext? {
         val vFile = selectFile(file) ?: return null
         if(ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
         
         val fileInfo = vFile.fileInfo ?: return null
-        val elementPath = ParadoxElementPathHandler.getFromFile(contextElement) ?: return null
-        val definition = contextElement.findParentDefinition()
-        val type = ParadoxConfigHandler.getContextType(contextElement)
+        val gameType = fileInfo.rootInfo.gameType
+        val configGroup = getCwtConfig(file.project).get(gameType)
+        val elementPath = ParadoxElementPathHandler.getFromFile(element) ?: return null
+        val definition = element.findParentDefinition()
         if(definition == null) {
-            return ParadoxConfigContext(type, fileInfo, elementPath)
+            return ParadoxConfigContext(fileInfo, elementPath, null, null, gameType, configGroup, element)
         } else {
             val definitionInfo = definition.definitionInfo ?: return null
             val definitionElementPath = definitionInfo.elementPath
             val elementPathFromDefinition = definitionElementPath.relativeTo(elementPath) ?: return null
-            return ParadoxConfigContext(type, fileInfo, elementPath, definitionInfo, elementPathFromDefinition)
+            return ParadoxConfigContext(fileInfo, elementPath, definitionInfo, elementPathFromDefinition, gameType, configGroup, element)
         }
     }
     
-    override fun getConfigs(contextElement: PsiElement, configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
-        TODO("Not yet implemented")
+    override fun getConfigs(element: ParadoxScriptMemberElement, configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+        return doGetConfigs(element, configContext, matchOptions)
     }
     
-    private fun doGetConfigs(contextElement: PsiElement, configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    private fun doGetConfigs(element: ParadoxScriptMemberElement, configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         val definitionInfo = configContext.definitionInfo ?: return null
         val elementPath = configContext.elementPathFromDefinition ?: return null
         if(elementPath.isParameterized) return null //skip if element path is parameterized
@@ -66,7 +66,7 @@ class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
                 result.forEachFast f2@{ parentConfig ->
                     //处理内联规则
                     if(isKey && parentConfig is CwtPropertyConfig) {
-                        val inlineStatus = ParadoxConfigInlineHandler.inlineByInlineConfig(contextElement, subPath, isQuoted, parentConfig, nextResult)
+                        val inlineStatus = ParadoxConfigInlineHandler.inlineByInlineConfig(element, subPath, isQuoted, parentConfig, nextResult)
                         if(inlineStatus) return@r1
                     }
                     
@@ -74,8 +74,8 @@ class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
                     if(configs.isNullOrEmpty()) return@f2
                     configs.forEachFast f3@{ config ->
                         if(isKey && config is CwtPropertyConfig) {
-                            if(ParadoxConfigMatcher.matches(contextElement, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) {
-                                ParadoxConfigInlineHandler.inlineByConfig(contextElement, subPath, isQuoted, config, nextResult, matchOptions)
+                            if(ParadoxConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) {
+                                ParadoxConfigInlineHandler.inlineByConfig(element, subPath, isQuoted, config, nextResult, matchOptions)
                             }
                         } else if(!isKey && config is CwtValueConfig) {
                             nextResult.add(config)
@@ -91,11 +91,11 @@ class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
                 if(result.isEmpty()) return@run
                 val optimizedResult = mutableListOf<CwtMemberConfig<*>>()
                 result.forEachFast { config ->
-                    val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(contextElement, config)
+                    val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, config)
                     if(overriddenConfigs.isNotNullOrEmpty()) {
                         //这里需要再次进行匹配
                         overriddenConfigs.forEachFast { overriddenConfig ->
-                            if(ParadoxConfigMatcher.matches(contextElement, expression, overriddenConfig.expression, overriddenConfig, configGroup, matchOptions).get(matchOptions)) {
+                            if(ParadoxConfigMatcher.matches(element, expression, overriddenConfig.expression, overriddenConfig, configGroup, matchOptions).get(matchOptions)) {
                                 optimizedResult.add(overriddenConfig)
                             }
                         }
@@ -120,32 +120,8 @@ class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
             }
         }
         
-        return result.sortedByPriority(configGroup) { it.expression }
-    }
-    
-    private fun doGetChildConfigs(contextElement: PsiElement, configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
-        val definitionInfo = configContext.definitionInfo ?: return null
-        val elementPath = configContext.elementPathFromDefinition ?: return null
-        if(elementPath.isParameterized) return null //skip if element path is parameterized
+        result = result.sortedByPriority(configGroup) { it.expression }
         
-        //得到的是合并后的规则列表，且过滤重复的
-        //基于上一级keyExpression，keyExpression一定唯一
-        val declaration = definitionInfo.getDeclaration(matchOptions) ?: return null
-        if(declaration.configs.isNullOrEmpty()) return null
-        //parentPath可以对应property或者value
-        return when {
-            //这里的属性路径可以为空，这时得到的就是顶级属性列表（定义的代码块类型的值中的属性列表）
-            elementPath.isEmpty() -> declaration.configs.orEmpty()
-            else -> {
-                //打平propertyConfigs中的每一个properties
-                val configs = doGetConfigs(contextElement, configContext, matchOptions) ?: return null
-                val result = mutableListOf<CwtMemberConfig<*>>()
-                configs.forEachFast { config ->
-                    val childConfigs = config.configs
-                    if(childConfigs.isNotNullOrEmpty()) result.addAll(childConfigs)
-                }
-                result
-            }
-        }
+        return result
     }
 }

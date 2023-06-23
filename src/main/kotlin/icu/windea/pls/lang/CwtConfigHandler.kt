@@ -59,7 +59,7 @@ object CwtConfigHandler {
     
     private fun getConfigTypeFromCache(element: PsiElement): CwtConfigType? {
         return CachedValuesManager.getCachedValue(element, cachedCwtConfigTypeKey) {
-            val file = element.containingFile
+            val file = element.containingFile ?: return@getCachedValue null
             val value = when(element) {
                 is CwtProperty -> doGetConfigType(element, file)
                 is CwtValue -> resolve(element, file)

@@ -16,8 +16,8 @@ import java.util.concurrent.*
  */
 @Service(Service.Level.PROJECT)
 class ParadoxPsiModificationTracker(project: Project) {
-    val ScriptFileTracker = PsiModificationTracker.getInstance(project).forLanguage(ParadoxScriptLanguage)
-    val LocalisationFileTracker = PsiModificationTracker.getInstance(project).forLanguage(ParadoxLocalisationLanguage)
+    val ScriptFileTracker = DelegatedModificationTracker(PsiModificationTracker.getInstance(project).forLanguage(ParadoxScriptLanguage))
+    val LocalisationFileTracker = DelegatedModificationTracker(PsiModificationTracker.getInstance(project).forLanguage(ParadoxLocalisationLanguage))
     
     val ScriptFileTrackers = ConcurrentHashMap<String, PathModificationTracker>()
     
@@ -37,6 +37,12 @@ class ParadoxPsiModificationTracker(project: Project) {
         
         @JvmStatic
         fun getInstance(project: Project) = project.service<ParadoxPsiModificationTracker>()
+    }
+}
+
+class DelegatedModificationTracker(private val delegate: ModificationTracker): SimpleModificationTracker() {
+    override fun getModificationCount(): Long {
+        return super.getModificationCount() + delegate.modificationCount
     }
 }
 

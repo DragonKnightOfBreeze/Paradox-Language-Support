@@ -33,7 +33,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         val stringElement = context.parent?.castOrNull<ParadoxScriptValue>() ?: return emptyList()
         if(!stringElement.isBlockValue()) return emptyList()
         val parentProperty = stringElement.findParentProperty() ?: return emptyList()
-        val configs = ParadoxConfigResolver.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
+        val configs = ParadoxConfigHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
         if(configs.isEmpty()) return emptyList()
         val configGroup = configs.first().info.configGroup
         val expression = ParadoxDataExpression.resolve(setting.id, isQuoted = false, isKey = true)

@@ -33,7 +33,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
                 val expression = property?.expression ?: element.expression
-                val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
+                val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(element, position, configs, expression)
             }
             

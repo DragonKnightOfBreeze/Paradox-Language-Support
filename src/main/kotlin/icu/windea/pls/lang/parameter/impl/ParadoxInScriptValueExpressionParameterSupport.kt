@@ -59,7 +59,7 @@ class ParadoxInScriptValueExpressionParameterSupport : ParadoxDefinitionParamete
                 if(!text.contains("value:")) return null //快速判断
                 val pipeIndex = text.indexOf('|', text.indexOf("value:").let { if(it != -1) it + 6 else return null })
                 if(pipeIndex == -1 || pipeIndex >= offset - expressionElement.startOffset) return null //要求光标在管道符之后
-                expressionElementConfig = ParadoxConfigResolver.getConfigs(expressionElement).firstOrNull() ?: return null
+                expressionElementConfig = ParadoxConfigHandler.getConfigs(expressionElement).firstOrNull() ?: return null
             }
         }
         if(!expressionElementConfig.expression.type.isValueFieldType()) return null

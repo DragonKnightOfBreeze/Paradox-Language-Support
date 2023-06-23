@@ -36,7 +36,7 @@ object ParadoxValueSetValueHandler {
         val isKey = element is ParadoxScriptPropertyKey
         
         val matchOptions = Options.SkipIndex or Options.SkipScope
-        val configs = ParadoxConfigResolver.getConfigs(element, matchOptions = matchOptions)
+        val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = matchOptions)
         if(configs.isEmpty()) return emptyList()
         
         configs.forEachFast { config ->
