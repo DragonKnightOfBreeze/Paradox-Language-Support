@@ -191,8 +191,10 @@ object ParadoxParameterHandler {
     private fun doInferConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
         var result: CwtValueConfig? = null
         ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
+            ProgressManager.checkCanceled()
             val contextInfo = getContextInfo(context) ?: return@p true
-            val config = getInferredConfig(parameterElement.name, contextInfo) ?: return@p true
+            val config = getInferredConfig(parameterElement.name, contextInfo)
+            if(config == null) return@p true
             if(result == null) {
                 result = config
             } else {
@@ -210,7 +212,9 @@ object ParadoxParameterHandler {
         if(parameterInfos.isNullOrEmpty()) return null
         var result: CwtValueConfig? = null
         for(parameterInfo in parameterInfos) {
-            val config = ParadoxParameterInferredConfigProvider.getConfig(parameterInfo, parameterContextInfo) ?: continue
+            ProgressManager.checkCanceled()
+            val config = ParadoxParameterInferredConfigProvider.getConfig(parameterInfo, parameterContextInfo)
+            if(config == null) continue
             if(result == null) {
                 result = config
             } else {

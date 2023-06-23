@@ -1,6 +1,7 @@
 package icu.windea.pls.script.codeInsight.parameterInfo
 
 import com.intellij.lang.parameterInfo.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -21,6 +22,7 @@ class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, ParadoxPara
         val targetElement = contextReferenceInfo.element ?: return null
         val parameterContextInfoMap = mutableMapOf<String, ParadoxParameterContextInfo>()
         ParadoxParameterSupport.processContext(element, contextReferenceInfo, true) p@{
+            ProgressManager.checkCanceled()
             val parameterContextInfo = ParadoxParameterHandler.getContextInfo(it) ?: return@p true
             if(parameterContextInfo.parameters.isEmpty()) return@p true
             parameterContextInfoMap.putIfAbsent(parameterContextInfo.parameters.keys.toString(), parameterContextInfo)

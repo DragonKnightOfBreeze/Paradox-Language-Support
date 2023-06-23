@@ -28,19 +28,27 @@ object ParadoxConfigMergeHandler {
                 }
             }
             CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> {
-                when {
-                    t2 == CwtDataType.ScopeField -> CwtValueConfig.resolve(config.pointer, config.info, config.value)
-                    t2 == CwtDataType.Scope && e2.value == "any" -> CwtValueConfig.resolve(config.pointer, config.info, config.value)
+                when(t2) {
+                    CwtDataType.ScopeField -> CwtValueConfig.resolve(config.pointer, config.info, config.value)
+                    CwtDataType.Scope -> if(e2.value == "any") CwtValueConfig.resolve(config.pointer, config.info, config.value) else null
                     else -> null
                 }
             }
             CwtDataType.Value -> {
-                if(t2 == CwtDataType.ValueSet && e1.value == e2.value) return CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]")
-                null
+                when(t2) {
+                    CwtDataType.ValueSet -> if(e1.value == e2.value) CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]") else null
+                    CwtDataType.ValueField, CwtDataType.IntValueField -> CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]")
+                    CwtDataType.VariableField, CwtDataType.IntVariableField -> CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]")
+                    else -> null
+                }
             }
             CwtDataType.ValueSet -> {
-                if(t2 == CwtDataType.Value && e1.value == e2.value) return CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]")
-                null
+                when(t2) {
+                    CwtDataType.Value -> if(e1.value == e2.value) CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]") else null
+                    CwtDataType.ValueField, CwtDataType.IntValueField -> CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]")
+                    CwtDataType.VariableField, CwtDataType.IntVariableField -> CwtValueConfig.resolve(config.pointer, config.info, "value_set[${e1.value}]")
+                    else -> null
+                }
             }
             CwtDataType.VariableField -> {
                 when(t2) {

@@ -69,15 +69,6 @@ class ParadoxParameterInfo(
             && element.nextSibling.let { it == null || it.text == "\"" }
     }
     
-    private fun doGetTemplateSnippet(it: PsiElement): String {
-        val elementType = it.elementType
-        val s = when(elementType) {
-            ParadoxScriptElementTypes.PARAMETER -> "#"
-            else -> it.text.takeUnless { t -> t.contains('$') } ?: "#"
-        }
-        return s
-    }
-    
     /**
      * 获取此参数对应的脚本表达式所对应的CWT规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
      */
