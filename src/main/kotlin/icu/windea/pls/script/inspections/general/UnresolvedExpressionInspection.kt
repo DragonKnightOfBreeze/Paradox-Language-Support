@@ -128,10 +128,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         return buildList {
                             val contextConfigs = parentConfigContext.getConfigs()
                             contextConfigs.forEachFast f@{
-                                val c = when {
-                                    it is CwtPropertyConfig -> it
-                                    else -> return@f
-                                }
+                                val c = if(it is CwtPropertyConfig) it else return@f
                                 val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, c)
                                 if(overriddenConfigs.isNotNullOrEmpty()) {
                                     addAll(overriddenConfigs)
@@ -146,11 +143,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         return buildList {
                             val contextConfigs = configContext.getConfigs()
                             contextConfigs.forEachFast f@{
-                                val c = when {
-                                    it is CwtPropertyConfig -> it.valueConfig ?: return@f
-                                    it is CwtValueConfig -> it
-                                    else -> return@f
-                                }
+                                val c = if(it is CwtValueConfig) it else return@f
                                 val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, c)
                                 if(overriddenConfigs.isNotNullOrEmpty()) {
                                     addAll(overriddenConfigs)

@@ -12,9 +12,6 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -199,10 +196,8 @@ object ParadoxParameterHandler {
             if(result == null) {
                 result = config
             } else {
-                if(result?.expression != config.expression) {
-                    result = null
-                    return@p false
-                }
+                result = ParadoxConfigMergeHandler.mergeValueConfig(result!!, config)
+                if(result == null) return@p false //存在冲突
             }
             true
         }
@@ -219,7 +214,7 @@ object ParadoxParameterHandler {
             if(result == null) {
                 result = config
             } else {
-                result = CwtConfigHandler.mergeValueConfig(result, config)
+                result = ParadoxConfigMergeHandler.mergeValueConfig(result, config)
                 if(result == null) break //存在冲突
             }
         }

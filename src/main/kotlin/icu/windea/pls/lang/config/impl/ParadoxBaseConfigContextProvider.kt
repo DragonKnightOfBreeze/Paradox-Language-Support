@@ -120,6 +120,10 @@ class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
             }
         }
         
+        if(element is ParadoxScriptValue && element.isPropertyValue())  {
+            result = result.mapNotNullFastTo(mutableListOf<CwtMemberConfig<*>>()) { if(it is CwtPropertyConfig) it.valueConfig else null }
+        }
+        
         result = result.sortedByPriority(configGroup) { it.expression }
         
         return result
