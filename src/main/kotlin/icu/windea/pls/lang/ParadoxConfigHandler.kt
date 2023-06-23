@@ -115,29 +115,29 @@ object ParadoxConfigHandler {
         }
         
         //得到所有待匹配的结果
-        val configs = configContext.getConfigs(matchOptions).filterFast { it is CwtPropertyConfig }.cast<List<CwtPropertyConfig>>()
-        if(configs.isEmpty()) return emptyList()
+        val contextConfigs = configContext.getConfigs(matchOptions).filterFast { it is CwtPropertyConfig }.cast<List<CwtPropertyConfig>>()
+        if(contextConfigs.isEmpty()) return emptyList()
         
         //未填写属性的值 - 匹配所有
-        if(expression == null) return configs
+        if(expression == null) return contextConfigs
         
         //得到所有可能匹配的结果
         ProgressManager.checkCanceled()
         val configGroup = configContext.configGroup
         val matchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtPropertyConfig>>()
-        configs.forEachFast f@{ config ->
+        contextConfigs.forEachFast f@{ config ->
             val matchResult = ParadoxConfigMatcher.matches(memberElement, expression, config.valueExpression, config, configGroup, matchOptions)
             if(matchResult == ParadoxConfigMatcher.Result.NotMatch) return@f
             matchResultValues.add(ParadoxConfigMatcher.ResultValue(config, matchResult))
         }
         //如果无结果且需要使用默认值，则返回所有可能匹配的规则
-        if(matchResultValues.isEmpty() && orDefault) return configs
+        if(matchResultValues.isEmpty() && orDefault) return contextConfigs
         
         val finalMatchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtPropertyConfig>>()
         doGetFinalResultValues(finalMatchResultValues, matchResultValues, matchOptions)
         if(finalMatchResultValues.isNotEmpty()) return finalMatchResultValues.mapFast { it.value }
         //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则
-        if(orDefault) return configs
+        if(orDefault) return contextConfigs
         
         return emptyList()
     }
@@ -155,55 +155,54 @@ object ParadoxConfigHandler {
                 val property = parent
                 val configContext = getConfigContext(property) ?: return emptyList()
                 
-                val configs = configContext.getConfigs(matchOptions).filterFast { it is CwtPropertyConfig }.cast<List<CwtPropertyConfig>>()
-                if(configs.isEmpty()) return emptyList()
+                val contextConfigs = configContext.getConfigs(matchOptions).filterFast { it is CwtPropertyConfig }.cast<List<CwtPropertyConfig>>()
+                if(contextConfigs.isEmpty()) return emptyList()
                 
                 //得到所有可能匹配的结果
                 ProgressManager.checkCanceled()
                 val configGroup = configContext.configGroup
                 val matchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
-                configs.forEachFast f@{ config ->
+                contextConfigs.forEachFast f@{ config ->
                     val valueConfig = config.valueConfig ?: return@f
                     val matchResult = ParadoxConfigMatcher.matches(valueElement, expression, valueConfig.expression, config, configGroup, matchOptions)
                     if(matchResult == ParadoxConfigMatcher.Result.NotMatch) return@f
                     matchResultValues.add(ParadoxConfigMatcher.ResultValue(valueConfig, matchResult))
                 }
                 //如果无结果且需要使用默认值，则返回所有可能匹配的规则
-                if(matchResultValues.isEmpty() && orDefault) return configs.mapNotNullFast { it.valueConfig }
+                if(matchResultValues.isEmpty() && orDefault) return contextConfigs.mapNotNullFast { it.valueConfig }
                 
                 val finalMatchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
                 doGetFinalResultValues(finalMatchResultValues, matchResultValues, matchOptions)
                 if(finalMatchResultValues.isNotEmpty()) return finalMatchResultValues.mapFast { it.value }
                 //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则
-                if(orDefault) return configs.mapNotNullFast { it.valueConfig }
+                if(orDefault) return contextConfigs.mapNotNullFast { it.valueConfig }
                 
                 return emptyList()
             }
             //如果value是blockElement中的value
             is ParadoxScriptBlockElement -> {
-                val property = parent.parent as? ParadoxScriptDefinitionElement ?: return emptyList()
-                val configContext = getConfigContext(property) ?: return emptyList()
+                val configContext = getConfigContext(element) ?: return emptyList()
                 
-                val configs = configContext.getConfigs(matchOptions).filterFast { it is CwtValueConfig }.cast<List<CwtValueConfig>>()
-                if(configs.isEmpty()) return emptyList()
+                val contextConfigs = configContext.getConfigs(matchOptions).filterFast { it is CwtValueConfig }.cast<List<CwtValueConfig>>()
+                if(contextConfigs.isEmpty()) return emptyList()
                 
                 //得到所有可能匹配的结果
                 ProgressManager.checkCanceled()
                 val configGroup = configContext.configGroup
                 val matchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
-                configs.forEachFast f@{ config ->
+                contextConfigs.forEachFast f@{ config ->
                     val matchResult = ParadoxConfigMatcher.matches(valueElement, expression, config.valueExpression, config, configGroup, matchOptions)
                     if(matchResult == ParadoxConfigMatcher.Result.NotMatch) return@f
                     matchResultValues.add(ParadoxConfigMatcher.ResultValue(config, matchResult))
                 }
                 //如果无结果且需要使用默认值，则返回所有可能匹配的规则
-                if(matchResultValues.isEmpty() && orDefault) return configs
+                if(matchResultValues.isEmpty() && orDefault) return contextConfigs
                 
                 val finalMatchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
                 doGetFinalResultValues(finalMatchResultValues, matchResultValues, matchOptions)
                 if(finalMatchResultValues.isNotEmpty()) return finalMatchResultValues.mapFast { it.value }
                 //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则
-                if(orDefault) return configs
+                if(orDefault) return contextConfigs
                 
                 return emptyList()
             }
