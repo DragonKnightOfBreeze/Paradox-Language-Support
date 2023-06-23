@@ -7,7 +7,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.cwt.expression.*
 import java.util.*
 
 object CwtConfigHandler {

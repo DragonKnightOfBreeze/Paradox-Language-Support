@@ -2,11 +2,9 @@ package icu.windea.pls.script.references
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
-import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 

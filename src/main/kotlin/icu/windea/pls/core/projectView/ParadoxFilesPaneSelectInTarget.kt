@@ -1,6 +1,5 @@
 package icu.windea.pls.core.projectView
 
-import com.intellij.ide.*
 import com.intellij.ide.impl.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*

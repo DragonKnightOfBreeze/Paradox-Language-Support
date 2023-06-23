@@ -3,7 +3,6 @@ package icu.windea.pls.core
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.fileTypes.impl.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*

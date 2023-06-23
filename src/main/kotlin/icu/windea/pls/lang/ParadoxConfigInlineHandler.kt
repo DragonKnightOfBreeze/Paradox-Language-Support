@@ -1,6 +1,6 @@
 package icu.windea.pls.lang
 
-import com.intellij.psi.PsiElement
+import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*

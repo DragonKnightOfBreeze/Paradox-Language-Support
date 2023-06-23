@@ -1,7 +1,7 @@
 package icu.windea.pls.core.expression
 
 import com.intellij.openapi.progress.*
-import com.intellij.util.BitUtil
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.ParadoxDataExpression.*
