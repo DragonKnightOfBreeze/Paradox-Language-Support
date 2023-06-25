@@ -21,9 +21,8 @@ import javax.swing.*
  */
 class UnresolvedExpressionInspection : LocalInspectionTool() {
     @JvmField var showExpectInfo = true
-    @JvmField var checkPropertyKey = true
-    @JvmField var checkPropertyValue = true
-    @JvmField var checkValue = true
+    
+    //如果一个表达式（属性/值）无法解析，需要直接跳过直接检测下一个表达式
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
@@ -50,8 +49,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     }
                     
                     private fun visitProperty(element: ParadoxScriptProperty): Boolean {
-                        val shouldCheck = checkPropertyKey
-                        if(!shouldCheck) return true
                         //skip checking property if property key may contain parameters
                         val propertyKey = element.propertyKey
                         if(propertyKey.text.isParameterized()) return false
@@ -82,14 +79,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     
                     private fun visitValue(element: ParadoxScriptValue): Boolean {
                         ProgressManager.checkCanceled()
-                        val shouldCheck = when {
-                            //also check if element is a scripted_variable
-                            //element is ParadoxScriptedVariableReference -> return false
-                            element.isPropertyValue() -> checkPropertyValue
-                            element.isBlockValue() -> checkValue
-                            else -> return false //skip
-                        }
-                        if(!shouldCheck) return true
+                        //also check if element is a scripted_variable
                         //skip checking value if it may contain parameters
                         if(element is ParadoxScriptString && element.text.isParameterized()) return false
                         if(element is ParadoxScriptScriptedVariableReference && element.text.isParameterized()) return false
@@ -168,21 +158,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 checkBox(PlsBundle.message("inspection.script.general.unresolvedExpression.option.showExpectInfo"))
                     .bindSelected(::showExpectInfo)
                     .actionListener { _, component -> showExpectInfo = component.isSelected }
-            }
-            row {
-                checkBox(PlsBundle.message("inspection.script.general.unresolvedExpression.option.checkPropertyKey"))
-                    .bindSelected(::checkPropertyKey)
-                    .actionListener { _, component -> checkPropertyKey = component.isSelected }
-            }
-            row {
-                checkBox(PlsBundle.message("inspection.script.general.unresolvedExpression.option.checkPropertyValue"))
-                    .bindSelected(::checkPropertyValue)
-                    .actionListener { _, component -> checkPropertyValue = component.isSelected }
-            }
-            row {
-                checkBox(PlsBundle.message("inspection.script.general.unresolvedExpression.option.checkValue"))
-                    .bindSelected(::checkValue)
-                    .actionListener { _, component -> checkValue = component.isSelected }
             }
         }
     }
