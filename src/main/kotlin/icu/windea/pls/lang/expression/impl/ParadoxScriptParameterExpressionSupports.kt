@@ -65,7 +65,7 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         val propertyConfig = config.propertyConfig ?: return
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return
         ProgressManager.checkCanceled()
-        val inferredConfig = ParadoxParameterHandler.inferConfig(parameterElement) ?: return
+        val inferredConfig = ParadoxParameterHandler.getInferredConfig(parameterElement) ?: return
         val range = rangeInElement?.shiftRight(element.startOffset) ?: element.textRange
         INSTANCE.annotate(element, rangeInElement, expression, holder, inferredConfig)
         
@@ -83,7 +83,7 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         val propertyConfig = config.propertyConfig ?: return null
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return null
         ProgressManager.checkCanceled()
-        val inferredConfig = ParadoxParameterHandler.inferConfig(parameterElement) ?: return null
+        val inferredConfig = ParadoxParameterHandler.getInferredConfig(parameterElement) ?: return null
         val inferredConfigExpression = inferredConfig.expression
         val configGroup = inferredConfig.info.configGroup
         ProgressManager.checkCanceled()
@@ -97,7 +97,7 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         val propertyKey = element.propertyKey ?: return emptySet()
         val propertyConfig = config.propertyConfig ?: return emptySet()
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return emptySet()
-        val inferredConfig = ParadoxParameterHandler.inferConfig(parameterElement) ?: return emptySet()
+        val inferredConfig = ParadoxParameterHandler.getInferredConfig(parameterElement) ?: return emptySet()
         val inferredConfigExpression = inferredConfig.expression
         val configGroup = inferredConfig.info.configGroup
         ProgressManager.checkCanceled()
@@ -112,7 +112,7 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         val propertyConfig = config.propertyConfig ?: return null
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return null
         ProgressManager.checkCanceled()
-        val inferredConfig = ParadoxParameterHandler.inferConfig(parameterElement) ?: return null
+        val inferredConfig = ParadoxParameterHandler.getInferredConfig(parameterElement) ?: return null
         val inferredConfigExpression = inferredConfig.expression
         val configGroup = inferredConfig.info.configGroup
         ProgressManager.checkCanceled()
@@ -133,7 +133,7 @@ class ParadoxScriptParameterValueExpressionSupport : ParadoxScriptExpressionSupp
         val propertyConfig = config.propertyConfig ?: return
         val parameterElement = ParadoxParameterSupport.resolveArgument(propertyKey, null, propertyConfig) ?: return
         ProgressManager.checkCanceled()
-        val inferredConfig = ParadoxParameterHandler.inferConfig(parameterElement) ?: return
+        val inferredConfig = ParadoxParameterHandler.getInferredConfig(parameterElement) ?: return
         context.config = inferredConfig
         context.configs = null
         context.scopeContext = null //TODO 

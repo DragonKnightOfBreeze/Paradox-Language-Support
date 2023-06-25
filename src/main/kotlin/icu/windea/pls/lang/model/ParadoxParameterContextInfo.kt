@@ -11,6 +11,7 @@ import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.script.psi.*
+import org.jetbrains.kotlin.tools.projectWizard.core.*
 import java.util.*
 
 class ParadoxParameterContextInfo(
@@ -79,5 +80,14 @@ class ParadoxParameterInfo(
             parent is ParadoxScriptString -> ParadoxConfigHandler.getConfigs(parent, matchOptions = Options.Default or Options.AcceptDefinition)
             else -> emptyList()
         }
+    }
+    
+    /**
+     * 获取此参数对应的脚本表达式所在容器所对应的CWT规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
+     */
+    val expressionContainingConfigs: List<CwtMemberConfig<*>> by lazy {
+        val parent = element?.parent
+        val container = parent?.parentOfType<ParadoxScriptMemberElement>() ?: return@lazy emptyList()
+        ParadoxConfigHandler.getConfigs(container, matchOptions = Options.Default or Options.AcceptDefinition)
     }
 }

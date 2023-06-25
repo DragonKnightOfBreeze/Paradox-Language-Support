@@ -17,12 +17,12 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             CwtDataType.ParameterValue -> {
                 //处理参数传递的情况
                 //这里需要尝试避免SOE
-                val passingConfig = withRecursionGuard("icu.windea.pls.lang.ParadoxParameterHandler.inferConfig") a1@{
+                val passingConfig = withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider.getConfig") a1@{
                     val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return@a1 null
                     val argumentNameConfig = config.propertyConfig ?: return@a1 null
                     val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return@a1 null
                     withCheckRecursion(passingParameterElement.contextKey) a2@{
-                        ParadoxParameterHandler.inferConfig(passingParameterElement)
+                        ParadoxParameterHandler.getInferredConfig(passingParameterElement)
                     }
                 }
                 passingConfig
@@ -31,5 +31,11 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
                 config
             }
         }
+    }
+    
+    override fun getContainingConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo) : List<CwtMemberConfig<*>>? {
+        if(!parameterInfo.isEntireExpression) return null //要求整个作为脚本表达式
+        return parameterInfo.expressionContainingConfigs
+        //目前看起来不需要做额外的处理
     }
 }

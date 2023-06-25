@@ -211,7 +211,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val name = element.name
         append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上推断得到的规则信息
-        val inferredConfig = ParadoxParameterHandler.inferConfig(element)
+        val inferredConfig = ParadoxParameterHandler.getInferredConfig(element)
         if(inferredConfig != null) {
             append(": ")
             append(inferredConfig.expression.expressionString.escapeXml())

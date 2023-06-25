@@ -25,9 +25,11 @@ import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
+@Suppress("UNUSED_PARAMETER")
 object ParadoxParameterHandler {
     val supportKey = Key.create<ParadoxParameterSupport>("paradox.parameter.support")
-    val inferredConfigKey = Key.create<CwtValueConfig?>("paradox.parameter.inferredConfig")
+    val inferredConfigKey = Key.create<CwtValueConfig>("paradox.parameter.inferredConfig")
+    val inferredContainingConfigsKey = Key.create<List<CwtMemberConfig<*>>>("paradox.parameter.inferredContainingConfigs")
     val parameterCacheKey = KeyWithDefaultValue.create<Cache<String, ParadoxParameterElement>>("paradox.parameter.cache") {
         CacheBuilder.newBuilder().recordStats().buildCache()
     }
@@ -92,7 +94,7 @@ object ParadoxParameterHandler {
         return ParadoxParameterContextInfo(file.project, gameType, parameters)
     }
     
-    fun completeParameters(element: PsiElement, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completeParameters(element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         //向上找到参数上下文
         val parameterContext = ParadoxParameterSupport.findContext(element) ?: return
@@ -112,9 +114,9 @@ object ParadoxParameterHandler {
         }
     }
     
-    fun completeArguments(element: PsiElement, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completeArguments(element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        if(quoted) return //输入参数不允许用引号括起
+        if(context.quoted) return //输入参数不允许用引号括起
         val from = ParadoxParameterContextReferenceInfo.From.Argument
         val config = context.config ?: return
         val completionOffset = context.parameters?.offset ?: return
@@ -155,7 +157,7 @@ object ParadoxParameterHandler {
     /**
      * 尝试推断得到参数对应的CWT规则。
      */
-    fun inferConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
+    fun getInferredConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
         val cacheKey = parameterElement.contextKey + "@" + parameterElement.name
         val parameterCache = selectRootFile(parameterElement.parent)?.getUserData(parameterCacheKey) ?: return null
         val cached = parameterCache.get(cacheKey)
@@ -172,7 +174,7 @@ object ParadoxParameterHandler {
             }
         }
         
-        val resolved = doInferConfig(parameterElement)
+        val resolved = doGetInferredConfig(parameterElement)
         
         val ep = parameterElement.getUserData(supportKey)
         if(ep != null) {
@@ -188,7 +190,7 @@ object ParadoxParameterHandler {
         return resolved
     }
     
-    private fun doInferConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
+    private fun doGetInferredConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
         var result: CwtValueConfig? = null
         ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
             ProgressManager.checkCanceled()
@@ -211,18 +213,102 @@ object ParadoxParameterHandler {
         val parameterInfos = parameterContextInfo.parameters.get(parameterName)
         if(parameterInfos.isNullOrEmpty()) return null
         var result: CwtValueConfig? = null
-        for(parameterInfo in parameterInfos) {
+        parameterInfos.forEach f@{ parameterInfo ->
             ProgressManager.checkCanceled()
             val config = ParadoxParameterInferredConfigProvider.getConfig(parameterInfo, parameterContextInfo)
-            if(config == null) continue
+            if(config == null) return@f
             if(result == null) {
                 result = config
             } else {
-                result = ParadoxConfigMergeHandler.shallowMergeValueConfig(result, config)
-                if(result == null) break //存在冲突
+                result = ParadoxConfigMergeHandler.shallowMergeValueConfig(result!!, config)
+                if(result == null) return@f //存在冲突
             }
         }
         return result
+    }
+    
+    /**
+     * 尝试推断得到参数容器的一组CWT规则。
+     */
+    fun getInferredContainingConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
+        val cacheKey = parameterElement.contextKey + "@" + parameterElement.name
+        val parameterCache = selectRootFile(parameterElement.parent)?.getUserData(parameterCacheKey) ?: return emptyList()
+        val cached = parameterCache.get(cacheKey)
+        if(cached != null) {
+            val modificationTracker = cached.getUserData(parameterModificationTrackerKey)
+            if(modificationTracker != null) {
+                val modificationCount = cached.getUserData(parameterModificationCountKey) ?: 0
+                if(modificationCount == modificationTracker.modificationCount) {
+                    val resolved = cached.getUserData(inferredContainingConfigsKey)
+                    if(resolved != null) {
+                        return resolved
+                    }
+                }
+            }
+        }
+        
+        val resolved = doGetInferredContainingConfigs(parameterElement)
+        
+        val ep = parameterElement.getUserData(supportKey)
+        if(ep != null) {
+            val modificationTracker = ep.getModificationTracker(parameterElement)
+            if(modificationTracker != null) {
+                parameterElement.putUserData(inferredContainingConfigsKey, resolved)
+                parameterElement.putUserData(parameterModificationTrackerKey, modificationTracker)
+                parameterElement.putUserData(parameterModificationCountKey, modificationTracker.modificationCount)
+                parameterCache.put(cacheKey, parameterElement)
+            }
+        }
+        
+        return resolved
+    }
+    
+    private fun doGetInferredContainingConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
+        var resultConfigs: List<CwtMemberConfig<*>>? = null
+        ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
+            ProgressManager.checkCanceled()
+            val contextInfo = getContextInfo(context) ?: return@p true
+            val configs = getInferredContainingConfig(parameterElement.name, contextInfo)
+            if(configs.isEmpty()) return@p true
+            if(resultConfigs == null) {
+                resultConfigs = configs
+            } else {
+                val mergedConfigs = ParadoxConfigMergeHandler.mergeConfigs(resultConfigs!!, configs)
+                if(mergedConfigs.isEmpty() && resultConfigs!!.isNotEmpty()) {
+                    //存在冲突
+                    resultConfigs = null
+                    return@p false
+                } else {
+                    resultConfigs = mergedConfigs
+                }
+            }
+            true
+        }
+        return resultConfigs.orEmpty()
+    }
+    
+    fun getInferredContainingConfig(parameterName: String, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>> {
+        val parameterInfos = parameterContextInfo.parameters.get(parameterName)
+        if(parameterInfos.isNullOrEmpty()) return emptyList()
+        var resultConfigs: List<CwtMemberConfig<*>>? = null
+        parameterInfos.forEach f@{ parameterInfo ->
+            ProgressManager.checkCanceled()
+            val configs = ParadoxParameterInferredConfigProvider.getContainingConfig(parameterInfo, parameterContextInfo)
+            if(configs.isNullOrEmpty()) return@f
+            if(resultConfigs == null) {
+                resultConfigs = configs
+            } else {
+                val mergedConfigs = ParadoxConfigMergeHandler.mergeConfigs(resultConfigs!!, configs)
+                if(mergedConfigs.isEmpty() && resultConfigs!!.isNotEmpty()) {
+                    //存在冲突
+                    resultConfigs = null
+                    return@f
+                } else {
+                    resultConfigs = mergedConfigs
+                }
+            }
+        }
+        return resultConfigs.orEmpty()
     }
     
     fun isIgnoredInferredConfig(config: CwtValueConfig): Boolean {

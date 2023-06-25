@@ -84,7 +84,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
                     }
                     else -> return@run
                 }
-                val inferredConfig = ParadoxParameterHandler.inferConfig(parameterElement) ?: return@run
+                val inferredConfig = ParadoxParameterHandler.getInferredConfig(parameterElement) ?: return@run
                 add(makeHtmlRow(PlsBundle.message("title.inferredConfigExpression"), inferredConfig.expression.expressionString))
             }
             //scope context

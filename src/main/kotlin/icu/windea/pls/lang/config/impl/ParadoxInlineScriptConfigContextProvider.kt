@@ -22,6 +22,9 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
     
     //TODO 1.1.0+ 支持解析内联脚本文件中的定义声明
     
+    //首先推断内联脚本文件的CWT规则上下文：汇总内联脚本调用处的上下文，然后合并得到最终的CWT规则上下文
+    //然后再得到当前位置的CWT规则上下文
+    
     override fun getConfigContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
         if(!getSettings().inference.inlineScriptConfig) return null
         
@@ -56,13 +59,14 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
             return ParadoxConfigHandler.getConfigsFromConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         }
         
-        // infer & merge
         val inlineScriptExpression = configContext.inlineScriptExpression ?: return null
-        var configs: List<CwtMemberConfig<*>>? = null
+        
+        // infer & merge
+        var resultConfigs: List<CwtMemberConfig<*>>? = null
         configContext.inlineScriptHasConflict = false
         configContext.inlineScriptHasRecursion = false
         withRecursionGuard("icu.windea.pls.lang.config.impl.ParadoxInlineScriptConfigContextProvider.getConfigs") {
-            withRecursionGuard(inlineScriptExpression) {
+            withCheckRecursion(inlineScriptExpression) {
                 val project = configContext.configGroup.project
                 val selector = inlineScriptSelector(project, configContext.element)
                 ParadoxInlineScriptSearch.search(inlineScriptExpression, selector).processQueryAsync p@{ info ->
@@ -73,35 +77,28 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
                     val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p true
                     val usageConfigContext = ParadoxConfigHandler.getConfigContext(memberElement) ?: return@p true
                     val usageConfigs = usageConfigContext.getConfigs(matchOptions)
-                    if(configs == null) {
-                        configs = usageConfigs
+                    if(resultConfigs == null) {
+                        resultConfigs = usageConfigs
                     } else {
-                        if(usageConfigs.isEmpty()) {
-                            if(configs!!.isEmpty()) {
-                                return@p true
-                            } else {
-                                configContext.inlineScriptHasConflict = true
-                                return@p false
-                            }
-                        }
                         // merge
-                        val mergedConfigs = ParadoxConfigMergeHandler.mergeConfigs(configs!!, usageConfigs)
-                        if(mergedConfigs.isEmpty()) {
+                        val mergedConfigs = ParadoxConfigMergeHandler.mergeConfigs(resultConfigs!!, usageConfigs)
+                        if(mergedConfigs.isEmpty() && resultConfigs!!.isNotEmpty()) {
                             configContext.inlineScriptHasConflict = true
+                            resultConfigs = null
                             return@p false
                         } else {
-                            configs = mergedConfigs
+                            resultConfigs = mergedConfigs
                         }
                     }
                     true
                 }
             } ?: run {
                 configContext.inlineScriptHasRecursion = true
-                configs = null
+                resultConfigs = null
             }
         }
         
-        return configs
+        return resultConfigs
     }
 }
 
