@@ -89,12 +89,14 @@ object ParadoxConfigHandler {
                     if(configs.isNullOrEmpty()) return@f2
                     configs.forEachFast f3@{ config ->
                         if(config is CwtPropertyConfig) {
-                            if(ParadoxConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) {
-                                val inlinedConfigs = ParadoxConfigInlineHandler.inlineByConfig(element, subPath, isQuoted, config, matchOptions)
-                                if(inlinedConfigs.isNotEmpty()) {
-                                    nextResult.addAll(inlinedConfigs)
-                                } else {
+                            val inlinedConfigs = ParadoxConfigInlineHandler.inlineByConfig(element, subPath, isQuoted, config, matchOptions)
+                            if(inlinedConfigs.isEmpty()) {
+                                if(ParadoxConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) {
                                     nextResult.add(config)
+                                }
+                            } else {
+                                if(ParadoxConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) {
+                                    nextResult.addAll(inlinedConfigs)
                                 }
                             }
                         } else if(config is CwtValueConfig) {
