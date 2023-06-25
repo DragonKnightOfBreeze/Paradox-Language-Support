@@ -12,9 +12,9 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInlineScriptInfo>>() {
+class ParadoxInlineScriptUsageIndex : FileBasedIndexExtension<String, List<ParadoxInlineScriptUsageInfo>>() {
     companion object {
-        @JvmField val NAME = ID.create<String, List<ParadoxInlineScriptInfo>>("paradox.inlineScript.index")
+        @JvmField val NAME = ID.create<String, List<ParadoxInlineScriptUsageInfo>>("paradox.inlineScriptUsage.index")
         private const val VERSION = 30 //1.0.8
     }
     
@@ -22,7 +22,7 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
     
     override fun getVersion() = VERSION
     
-    override fun getIndexer(): DataIndexer<String, List<ParadoxInlineScriptInfo>, FileContent> {
+    override fun getIndexer(): DataIndexer<String, List<ParadoxInlineScriptUsageInfo>, FileContent> {
         return DataIndexer { inputData -> //perf: 20000ms for indexing
             val file = inputData.psiFile
             buildMap { indexData(file, this) }
@@ -33,14 +33,14 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
         return EnumeratorStringDescriptor.INSTANCE
     }
     
-    override fun getValueExternalizer(): DataExternalizer<List<ParadoxInlineScriptInfo>> {
-        return object : DataExternalizer<List<ParadoxInlineScriptInfo>> {
-            override fun save(storage: DataOutput, value: List<ParadoxInlineScriptInfo>) {
-                writeInlineScriptInfos(storage, value)
+    override fun getValueExternalizer(): DataExternalizer<List<ParadoxInlineScriptUsageInfo>> {
+        return object : DataExternalizer<List<ParadoxInlineScriptUsageInfo>> {
+            override fun save(storage: DataOutput, value: List<ParadoxInlineScriptUsageInfo>) {
+                writeInlineScriptUsageInfos(storage, value)
             }
             
-            override fun read(storage: DataInput): List<ParadoxInlineScriptInfo> {
-                return readInlineScriptInfos(storage)
+            override fun read(storage: DataInput): List<ParadoxInlineScriptUsageInfo> {
+                return readInlineScriptUsageInfos(storage)
             }
         }
     }
@@ -54,7 +54,7 @@ class ParadoxInlineScriptIndex : FileBasedIndexExtension<String, List<ParadoxInl
     }
 }
 
-private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxInlineScriptInfo>>) {
+private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxInlineScriptUsageInfo>>) {
     file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
         override fun visitElement(element: PsiElement) {
             if(element is ParadoxScriptProperty) {
@@ -69,7 +69,7 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxIn
     })
 }
 
-private fun writeInlineScriptInfos(storage: DataOutput, value: List<ParadoxInlineScriptInfo>) {
+private fun writeInlineScriptUsageInfos(storage: DataOutput, value: List<ParadoxInlineScriptUsageInfo>) {
     storage.writeList(value) { info ->
         storage.writeUTFFast(info.expression)
         storage.writeInt(info.elementOffset)
@@ -77,12 +77,12 @@ private fun writeInlineScriptInfos(storage: DataOutput, value: List<ParadoxInlin
     }
 }
 
-private fun readInlineScriptInfos(storage: DataInput): MutableList<ParadoxInlineScriptInfo> {
+private fun readInlineScriptUsageInfos(storage: DataInput): MutableList<ParadoxInlineScriptUsageInfo> {
     return storage.readList {
         val expression = storage.readUTFFast()
         val elementOffset = storage.readInt()
         val gameType = storage.readByte().toGameType()
-        ParadoxInlineScriptInfo(expression, elementOffset, gameType)
+        ParadoxInlineScriptUsageInfo(expression, elementOffset, gameType)
     }
 }
 

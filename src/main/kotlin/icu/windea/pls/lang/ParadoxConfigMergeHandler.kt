@@ -4,6 +4,10 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 
 object ParadoxConfigMergeHandler {
+    fun mergeConfigs(configs: List<CwtMemberConfig<*>>, otherConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
+        return emptyList() //TODO
+    }
+    
     fun mergeValueConfig(config: CwtValueConfig, otherConfig: CwtValueConfig): CwtValueConfig? {
         if(config.expression == otherConfig.expression) return config
         return doMergeValueConfig(config, otherConfig) ?: doMergeValueConfig(otherConfig, config)

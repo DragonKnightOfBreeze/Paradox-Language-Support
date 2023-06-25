@@ -25,16 +25,16 @@ object ParadoxInlineScriptHandler {
     
     val inlineScriptPathExpression = CwtValueExpression.resolve("filepath[common/inline_scripts/,.txt]")
     
-    val cachedInlineScriptInfoKey = Key.create<CachedValue<ParadoxInlineScriptInfo>>("paradox.cached.inlineScriptInfo")
-    val cachedInlineScriptUsageInfoKey = Key.create<CachedValue<ParadoxInlineScriptUsageInfo>>("paradox.cached.inlineScriptUsageInfo")
+    val cachedInlineScriptInfoKey = Key.create<CachedValue<ParadoxInlineScriptUsageInfo>>("paradox.cached.inlineScriptInfo")
+    val cachedInlineScriptUsageInfoKey = Key.create<CachedValue<ParadoxInlineScriptUsageInfo1>>("paradox.cached.inlineScriptUsageInfo")
     
-    fun getInfo(element: ParadoxScriptProperty): ParadoxInlineScriptInfo? {
+    fun getInfo(element: ParadoxScriptProperty): ParadoxInlineScriptUsageInfo? {
         val name = element.name.lowercase()
         if(name != inlineScriptKey) return null
         return doGetInfoFromCache(element)
     }
     
-    private fun doGetInfoFromCache(element: ParadoxScriptProperty): ParadoxInlineScriptInfo? {
+    private fun doGetInfoFromCache(element: ParadoxScriptProperty): ParadoxInlineScriptUsageInfo? {
         return CachedValuesManager.getCachedValue(element, cachedInlineScriptInfoKey) {
             ProgressManager.checkCanceled()
             val file = element.containingFile ?: return@getCachedValue null
@@ -44,7 +44,7 @@ object ParadoxInlineScriptHandler {
         }
     }
     
-    private fun doGetInfo(element: ParadoxScriptProperty, file: PsiFile = element.containingFile): ParadoxInlineScriptInfo? {
+    private fun doGetInfo(element: ParadoxScriptProperty, file: PsiFile = element.containingFile): ParadoxInlineScriptUsageInfo? {
         //这里不能调用ParadoxConfigHandler.getConfigs，因为需要处理内联的情况，会导致StackOverflow
         
         val fileInfo = file.fileInfo ?: return null
@@ -62,7 +62,7 @@ object ParadoxInlineScriptHandler {
         val expression = getExpressionFromInlineConfig(propertyValue, inlineConfig) ?: return null
         if(expression.isParameterized()) return null
         val elementOffset = element.startOffset
-        return ParadoxInlineScriptInfo(expression, elementOffset, gameType)
+        return ParadoxInlineScriptUsageInfo(expression, elementOffset, gameType)
     }
     
     private fun getExpressionLocation(it: CwtMemberConfig<*>): String? {
@@ -121,12 +121,12 @@ object ParadoxInlineScriptHandler {
     /**
      * 得到内联脚本的使用位置对应的属性信息，包括是否存在冲突等。
      */
-    fun getInlineScriptUsageInfo(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
+    fun getInlineScriptUsageInfo(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo1? {
         ProgressManager.checkCanceled()
         return getUsageInfoFromCache(file)
     }
     
-    private fun getUsageInfoFromCache(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
+    private fun getUsageInfoFromCache(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo1? {
         return CachedValuesManager.getCachedValue(file, cachedInlineScriptUsageInfoKey) {
             ProgressManager.checkCanceled()
             val value = doGetInlineScriptUsageInfo(file)
@@ -136,7 +136,7 @@ object ParadoxInlineScriptHandler {
         }
     }
     
-    private fun doGetInlineScriptUsageInfo(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo? {
+    private fun doGetInlineScriptUsageInfo(file: ParadoxScriptFile): ParadoxInlineScriptUsageInfo1? {
         val fileInfo = file.fileInfo ?: return null
         val expression = getInlineScriptExpression(file) ?: return null
         val project = file.project
@@ -190,6 +190,6 @@ object ParadoxInlineScriptHandler {
             }
         }
         val usageElement = element ?: return null
-        return ParadoxInlineScriptUsageInfo(usageElement.createPointer(), hasConflict, hasRecursion)
+        return ParadoxInlineScriptUsageInfo1(usageElement.createPointer(), hasConflict, hasRecursion)
     }
 }

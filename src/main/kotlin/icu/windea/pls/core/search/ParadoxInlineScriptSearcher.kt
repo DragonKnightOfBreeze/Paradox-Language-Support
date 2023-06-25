@@ -17,8 +17,8 @@ import icu.windea.pls.script.*
 /**
  * 内联脚本使用的查询器。
  */
-class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptInfo, ParadoxInlineScriptSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxInlineScriptSearch.SearchParameters, consumer: Processor<in ParadoxInlineScriptInfo>) {
+class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptUsageInfo, ParadoxInlineScriptSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxInlineScriptSearch.SearchParameters, consumer: Processor<in ParadoxInlineScriptUsageInfo>) {
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
         if(SearchScope.isEmptyScope(scope)) return
@@ -27,13 +27,13 @@ class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptInfo, P
         val selector = queryParameters.selector
         val gameType = selector.gameType
         
-        FileBasedIndex.getInstance().processValues(ParadoxInlineScriptIndex.NAME, expression, null, p@{ file, value ->
+        FileBasedIndex.getInstance().processValues(ParadoxInlineScriptUsageIndex.NAME, expression, null, p@{ file, value ->
             ProgressManager.checkCanceled()
             val psiFile = file.toPsiFile(project) ?: return@p true //ensure file info is resolved
             if(selectGameType(file) != gameType) return@p true //check game type at file level
-            val inlineScriptInfos = value
-            if(inlineScriptInfos.isNullOrEmpty()) return@p true
-            inlineScriptInfos.forEachFast { info ->
+            val inlineScriptUsageInfos = value
+            if(inlineScriptUsageInfos.isNullOrEmpty()) return@p true
+            inlineScriptUsageInfos.forEachFast { info ->
                 if(gameType == info.gameType) {
                     info.withFile(psiFile) { consumer.process(info) }
                 }
@@ -47,7 +47,7 @@ class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptInfo, P
         FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
     }
     
-    private inline fun <T> ParadoxInlineScriptInfo.withFile(file: PsiFile, action: () -> T): T {
+    private inline fun <T> ParadoxInlineScriptUsageInfo.withFile(file: PsiFile, action: () -> T): T {
         this.file = file
         val r = action()
         this.file = null

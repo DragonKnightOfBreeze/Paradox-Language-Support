@@ -56,11 +56,3 @@ fun ParadoxConfigContext.isDefinition(): Boolean {
 fun ParadoxConfigContext.isRootOrMember(): Boolean {
     return elementPathFromRoot != null
 }
-
-fun ParadoxConfigContext.isRoot(): Boolean {
-    return elementPathFromRoot.let { it != null && it.isEmpty() }
-}
-
-fun ParadoxConfigContext.isMember(): Boolean {
-    return elementPathFromRoot.let { it != null && it.isNotEmpty() }
-}

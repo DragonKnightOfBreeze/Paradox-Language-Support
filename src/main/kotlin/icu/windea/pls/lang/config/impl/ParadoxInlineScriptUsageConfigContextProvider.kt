@@ -10,17 +10,19 @@ import icu.windea.pls.script.psi.*
 
 /**
  * 用于获取内联脚本调用中的CWT规则上下文。
- * 
- * 注意：内联脚本调用可以在定义声明之外。
  */
 class ParadoxInlineScriptUsageConfigContextProvider: ParadoxConfigContextProvider {
+    //注意：内联脚本调用可以在定义声明之外
+    
     override fun getConfigContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
         val vFile = selectFile(file) ?: return null
         
-        val fileInfo = vFile.fileInfo ?: return null
-        val gameType = fileInfo.rootInfo.gameType
+        //要求当前位置相对于文件的元素路径中包含子路径"inline_script"
         val rootIndex = elementPath.indexOfFirst { it.subPath.equals(ParadoxInlineScriptHandler.inlineScriptKey, true) }
         if(rootIndex == -1) return null
+        
+        val fileInfo = vFile.fileInfo ?: return null
+        val gameType = fileInfo.rootInfo.gameType
         val elementPathFromRoot = ParadoxElementPath.resolve(elementPath.rawSubPaths.let { it.subList(rootIndex + 1, it.size) })
         val configGroup = getCwtConfig(file.project).get(gameType)
         val configContext = ParadoxConfigContext(fileInfo, elementPath, gameType, configGroup, element)
