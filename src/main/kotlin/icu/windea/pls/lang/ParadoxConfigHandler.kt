@@ -66,8 +66,6 @@ object ParadoxConfigHandler {
         configGroup: CwtConfigGroup,
         matchOptions: Int = Options.Default
     ): List<CwtMemberConfig<*>> {
-        if(elementPathFromRoot.isEmpty()) return rootConfigs
-        
         if(elementPathFromRoot.isParameterized) return emptyList() //skip if element path is parameterized
         
         var result: List<CwtMemberConfig<*>> = rootConfigs
