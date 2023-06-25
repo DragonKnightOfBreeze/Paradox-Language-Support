@@ -4,6 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.config.impl.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -11,16 +12,14 @@ import icu.windea.pls.script.psi.*
  */
 class RecursiveInlineScriptUsageInspection: LocalInspectionTool() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if(file !is ParadoxScriptFile) return null
         if(!getSettings().inference.inlineScriptConfig) return null
         val inlineScriptExpression = ParadoxInlineScriptHandler.getInlineScriptExpression(file) ?: return null
-        val usageInfo = ParadoxInlineScriptHandler.getInlineScriptUsageInfo(file) ?: return null
-        if(usageInfo.hasRecursion) {
-            val holder = ProblemsHolder(manager, file, isOnTheFly)
-            val description = PlsBundle.message("script.annotator.inlineScript.recursive", inlineScriptExpression)
-            holder.registerProblem(file, description, GotoInlineScriptUsagesIntention())
-            return holder.resultsArray
-        }
-        return null
+        val configContext = ParadoxConfigHandler.getConfigContext(file) ?: return null
+        if(configContext.inlineScriptHasRecursion != true) return null
+        
+        val holder = ProblemsHolder(manager, file, isOnTheFly)
+        val description = PlsBundle.message("script.annotator.inlineScript.recursive", inlineScriptExpression)
+        holder.registerProblem(file, description, GotoInlineScriptUsagesIntention())
+        return holder.resultsArray
     }
 }

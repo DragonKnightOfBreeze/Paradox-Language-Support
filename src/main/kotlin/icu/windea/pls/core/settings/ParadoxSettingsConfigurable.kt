@@ -227,9 +227,9 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.inference.argumentValueConfig"))
                         .bindSelected(settings.inference::argumentValueConfig)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.argumentValueConfig.tooltip") }
-                        //如果这个配置的值发生，IDE应该会自动刷新，不需要执行额外的回调（直到PSI变更前引用仍然可以被解析，但这并无大碍）
+                        //如果这个配置的值发生变化，IDE应该会自动刷新，不需要执行额外的回调（直到PSI变更前引用仍然可以被解析，但这并无大碍）
                 }
-                //inlineScriptLocation
+                //inlineScriptConfig
                 row {
                     checkBox(PlsBundle.message("settings.inference.inlineScriptConfig"))
                         .bindSelected(settings.inference::inlineScriptConfig)

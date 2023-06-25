@@ -7,6 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.ParadoxConfigHandler.getParameterRanges
+import icu.windea.pls.lang.config.impl.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.model.*
@@ -37,14 +38,12 @@ class ParadoxScriptAnnotator : Annotator {
     
     private fun annotateInlineScriptFile(file: ParadoxScriptFile, holder: AnnotationHolder) {
         if(!getSettings().inference.inlineScriptConfig) return
-        val expression = ParadoxInlineScriptHandler.getInlineScriptExpression(file)
-        if(expression != null) {
-            val usageInfo = ParadoxInlineScriptHandler.getInlineScriptUsageInfo(file)
-            if(usageInfo != null && !usageInfo.hasConflict && !usageInfo.hasRecursion) {
-                val message = PlsBundle.message("script.annotator.inlineScript", expression)
-                holder.newAnnotation(INFORMATION, message).fileLevel().withFix(GotoInlineScriptUsagesIntention()).create()
-            }
-        }
+        val inlineScriptExpression = ParadoxInlineScriptHandler.getInlineScriptExpression(file) ?: return
+        val configContext = ParadoxConfigHandler.getConfigContext(file) ?: return
+        if(configContext.inlineScriptHasConflict == true) return
+        if(configContext.inlineScriptHasRecursion == true) return
+        val message = PlsBundle.message("script.annotator.inlineScript", inlineScriptExpression)
+        holder.newAnnotation(INFORMATION, message).fileLevel().withFix(GotoInlineScriptUsagesIntention()).create()
     }
     
     private fun annotateProperty(element: ParadoxScriptProperty, holder: AnnotationHolder) {

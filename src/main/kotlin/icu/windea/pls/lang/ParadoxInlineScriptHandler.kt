@@ -107,7 +107,8 @@ object ParadoxInlineScriptHandler {
         return doGetInlineScriptExpression(fileInfo)
     }
     
-    fun getInlineScriptExpression(file: ParadoxScriptFile): String? {
+    fun getInlineScriptExpression(file: PsiFile): String? {
+        if(file !is ParadoxScriptFile) return null
         val fileInfo = file.fileInfo ?: return null
         return doGetInlineScriptExpression(fileInfo)
     }

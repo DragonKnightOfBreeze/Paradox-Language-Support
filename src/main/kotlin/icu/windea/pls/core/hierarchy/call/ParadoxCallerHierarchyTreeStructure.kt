@@ -59,8 +59,7 @@ class ParadoxCallerHierarchyTreeStructure(
     
     private fun processScriptReferenceElement(reference: PsiReference, referenceElement: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
         if(!getSettings().hierarchy.showDefinitionsInCallHierarchy) return //不显示
-        //兼容向上内联的情况
-        val definition = referenceElement.findParentDefinition(link = true)
+        val definition = referenceElement.findParentDefinition()
         val definitionInfo = definition?.definitionInfo
         if(definition != null && definitionInfo != null) {
             ProgressManager.checkCanceled()

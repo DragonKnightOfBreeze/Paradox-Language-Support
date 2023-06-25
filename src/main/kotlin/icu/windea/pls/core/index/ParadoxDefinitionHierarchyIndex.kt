@@ -118,8 +118,10 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxDe
         override fun visitElement(element: PsiElement) {
             if(lazy) {
                 if(element is ParadoxScriptFile) {
-                    val definitionInfo = element.findParentDefinition(link = true)?.definitionInfo
-                    if(definitionInfo != null) {
+                    //TODO 1.1.0+ 目前这里不跨内联向上得到定义声明（这意味着不会索引内联脚本中的数据）
+                    val definition = element.findParentDefinition()
+                    val definitionInfo = definition?.definitionInfo
+                    if(definition != null && definitionInfo != null) {
                         element.putUserData(markKey, true)
                         definitionInfoStack.addLast(definitionInfo)
                     }

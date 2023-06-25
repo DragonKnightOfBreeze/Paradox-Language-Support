@@ -21,6 +21,8 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
     //注意：内联脚本调用可以在定义声明之外
     
     override fun getConfigContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
+        if(!getSettings().inference.inlineScriptConfig) return null
+        
         val vFile = selectFile(file) ?: return null
         if(ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
         
