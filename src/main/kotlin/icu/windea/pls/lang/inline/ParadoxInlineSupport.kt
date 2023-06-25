@@ -12,18 +12,10 @@ import icu.windea.pls.script.psi.*
  * 目前仅限内联脚本。
  */
 interface ParadoxInlineSupport {
-    fun isInlineEntry(element: PsiFile): Boolean
-    
     fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxInlineSupport>("icu.windea.pls.inlineSupport")
-        
-        fun isInlineEntry(element: PsiFile): Boolean {
-            return EP_NAME.extensionList.any { ep ->
-                ep.isInlineEntry(element) 
-            }
-        }
         
         fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->

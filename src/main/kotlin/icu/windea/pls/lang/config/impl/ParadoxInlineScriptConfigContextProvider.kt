@@ -16,6 +16,10 @@ import icu.windea.pls.script.psi.*
 
 /**
  * 用于获取内联脚本中的CWT规则上下文。
+ * 
+ * * 正常提供代码高亮、引用解析、代码补全等高级语言功能。
+ * * 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`和`TooManyExpressionInspection`。
+ * * 会将内联脚本内容内联到对应的调用处，然后再进行相关代码检查。
  */
 class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
     //注意：内联脚本调用可以在定义声明之外
@@ -99,6 +103,18 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
         }
         
         return resultConfigs
+    }
+    
+    //skip MissingExpressionInspection and TooManyExpressionInspection at root level
+    
+    override fun skipMissingExpressionCheck(configContext: ParadoxConfigContext): Boolean {
+        val elementPathFromRoot = configContext.elementPathFromRoot ?: return false
+        return elementPathFromRoot.isEmpty()
+    }
+    
+    override fun skipTooManyExpressionCheck(configContext: ParadoxConfigContext): Boolean {
+        val elementPathFromRoot = configContext.elementPathFromRoot ?: return false
+        return elementPathFromRoot.isEmpty()
     }
 }
 

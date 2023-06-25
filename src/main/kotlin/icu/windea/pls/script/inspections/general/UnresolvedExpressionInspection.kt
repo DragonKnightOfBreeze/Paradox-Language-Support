@@ -25,8 +25,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     @JvmField var checkPropertyValue = true
     @JvmField var checkValue = true
     
-    //从定义级别开始向下检查
-    
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {

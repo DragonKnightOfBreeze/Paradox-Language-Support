@@ -8,10 +8,6 @@ import icu.windea.pls.lang.inline.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxInlineScriptInlineSupport : ParadoxInlineSupport {
-    override fun isInlineEntry(element: PsiFile): Boolean {
-        return getInlineScriptExpression(element) != null
-    }
-    
     //这里需要尝试避免SOE，如果发生SOE，使用发生之前最后得到的那个结果
     
     override fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {

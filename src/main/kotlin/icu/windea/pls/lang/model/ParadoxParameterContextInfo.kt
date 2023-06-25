@@ -76,11 +76,11 @@ class ParadoxParameterInfo(
         val parent = element?.parent
         when {
             parent is ParadoxScriptPropertyKey -> {
-                val configs = ParadoxConfigHandler.getConfigs(parent, matchOptions = Options.Default or Options.AcceptDefinition)
+                val configs = ParadoxConfigHandler.getConfigs(parent)
                 configs
             }
             parent is ParadoxScriptString && parent.isExpression() -> {
-                val configs = ParadoxConfigHandler.getConfigs(parent, matchOptions = Options.Default or Options.AcceptDefinition)
+                val configs = ParadoxConfigHandler.getConfigs(parent)
                 configs.mapNotNull { if(it is CwtValueConfig) it else null }
             }
             else -> {
@@ -97,15 +97,15 @@ class ParadoxParameterInfo(
         val container = parent?.parentOfType<ParadoxScriptMemberElement>() ?: return@lazy emptyList()
         when {
             parent is ParadoxScriptPropertyKey -> {
-                val containerConfigs = ParadoxConfigHandler.getConfigs(container, matchOptions = Options.Default or Options.AcceptDefinition)
+                val containerConfigs = ParadoxConfigHandler.getConfigContext(container)?.getConfigs().orEmpty()
                 containerConfigs.mapNotNull { if(it is CwtPropertyConfig) it else null }
             }
             parent is ParadoxScriptString && parent.isPropertyValue() -> {
-                val containerConfigs = ParadoxConfigHandler.getConfigs(container, matchOptions = Options.Default or Options.AcceptDefinition)
+                val containerConfigs = ParadoxConfigHandler.getConfigContext(container)?.getConfigs().orEmpty()
                 containerConfigs.mapNotNull { if(it is CwtPropertyConfig) it.valueConfig else null }
             }
             parent is ParadoxScriptString && parent.isBlockValue() -> {
-                val containerConfigs = ParadoxConfigHandler.getConfigs(container, matchOptions = Options.Default or Options.AcceptDefinition)
+                val containerConfigs = ParadoxConfigHandler.getConfigContext(container)?.getConfigs().orEmpty()
                 containerConfigs
             }
             else -> {

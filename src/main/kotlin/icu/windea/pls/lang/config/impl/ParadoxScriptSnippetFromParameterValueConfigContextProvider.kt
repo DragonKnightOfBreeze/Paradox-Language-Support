@@ -18,6 +18,11 @@ import icu.windea.pls.script.psi.*
  * 用于获取脚本参数值中的CWT规则上下文。
  * 
  * 脚本参数值是一个引号括起的字符串，对这个字符串应用自动语言注入（注入为脚本片段），然后获取这个脚本片段中的CWT规则上下文。
+ * 
+ * * 正常提供代码高亮、引用解析、代码补全等高级语言功能。
+ * * 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`和`TooManyExpressionInspection`。
+ * * 不会将参数值内容内联到对应的调用处，然后再进行相关代码检查。
+ * * 不会将参数值内容内联到对应的调用处，然后检查语法是否合法。
  */
 class ParadoxScriptSnippetFromParameterValueConfigContextProvider : ParadoxConfigContextProvider {
     override fun getConfigContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
@@ -34,11 +39,10 @@ class ParadoxScriptSnippetFromParameterValueConfigContextProvider : ParadoxConfi
         if(argumentNameConfig.expression.type != CwtDataType.Parameter) return null
         val parameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return null
         
-        val fileInfo = vFile.fileInfo ?: return null
-        val gameType = fileInfo.rootInfo.gameType
+        val gameType = parameterElement.gameType
         val elementPathFromRoot = elementPath
         val configGroup = getCwtConfig(file.project).get(gameType)
-        val configContext = ParadoxConfigContext(fileInfo, elementPath, gameType, configGroup, element)
+        val configContext = ParadoxConfigContext(null, elementPath, gameType, configGroup, element)
         if(elementPathFromRoot.isNotEmpty()) {
             configContext.snippetFromParameterValueRootConfigContext = ParadoxConfigHandler.getConfigContext(file) ?: return null
         }
@@ -59,6 +63,18 @@ class ParadoxScriptSnippetFromParameterValueConfigContextProvider : ParadoxConfi
         
         val parameterElement = configContext.parameterElement ?: return null
         return ParadoxParameterHandler.getInferredContainingConfigs(parameterElement)
+    }
+    
+    //skip MissingExpressionInspection and TooManyExpressionInspection at root level
+    
+    override fun skipMissingExpressionCheck(configContext: ParadoxConfigContext): Boolean {
+        val elementPathFromRoot = configContext.elementPathFromRoot ?: return false
+        return elementPathFromRoot.isEmpty()
+    }
+    
+    override fun skipTooManyExpressionCheck(configContext: ParadoxConfigContext): Boolean {
+        val elementPathFromRoot = configContext.elementPathFromRoot ?: return false
+        return elementPathFromRoot.isEmpty()
     }
 }
 

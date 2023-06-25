@@ -12,7 +12,6 @@ import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
-import icu.windea.pls.lang.inline.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -34,10 +33,9 @@ class TooManyExpressionInspection : LocalInspectionTool() {
             }
             
             override fun visitFile(file: PsiFile) {
-                //ignored for inline entry
-                if(ParadoxInlineSupport.isInlineEntry(file)) return
-                
                 if(file !is ParadoxScriptFile) return
+                val configContext = ParadoxConfigHandler.getConfigContext(file) ?: return
+                if(configContext.provider?.skipTooManyExpressionCheck(configContext) == true) return
                 val configs = ParadoxConfigHandler.getConfigs(file, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(file, file, configs)
             }
@@ -51,6 +49,8 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                     ?.also { if(it.text.isParameterized()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
+                val configContext = ParadoxConfigHandler.getConfigContext(element) ?: return
+                if(configContext.provider?.skipTooManyExpressionCheck(configContext) == true) return
                 val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(element, position, configs)
             }

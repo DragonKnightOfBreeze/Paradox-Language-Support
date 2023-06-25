@@ -10,6 +10,8 @@ import icu.windea.pls.script.psi.*
 
 /**
  * 用于获取内联脚本调用中的CWT规则上下文。
+ *
+ * * 正常提供代码高亮、引用解析、代码补全等高级语言功能。
  */
 class ParadoxInlineScriptUsageConfigContextProvider: ParadoxConfigContextProvider {
     //注意：内联脚本调用可以在定义声明之外

@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.cwt.config.*
+import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
@@ -17,6 +18,10 @@ interface ParadoxConfigContextProvider {
     fun getConfigContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext?
     
     fun getConfigs(element: ParadoxScriptMemberElement, configContext: ParadoxConfigContext, matchOptions: Int = Options.Default): List<CwtMemberConfig<*>>?
+    
+    fun skipMissingExpressionCheck(configContext: ParadoxConfigContext) = false
+    
+    fun skipTooManyExpressionCheck(configContext: ParadoxConfigContext) = false
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxConfigContextProvider>("icu.windea.pls.configContextProvider")
