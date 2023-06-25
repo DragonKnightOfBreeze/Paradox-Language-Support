@@ -34,9 +34,10 @@ class TooManyExpressionInspection : LocalInspectionTool() {
             }
             
             override fun visitFile(file: PsiFile) {
+                //ignored for inline entry
+                if(ParadoxInlineSupport.isInlineEntry(file)) return
+                
                 if(file !is ParadoxScriptFile) return
-                //忽略可能的脚本片段入口
-                if(ParadoxScriptMemberElementInlineSupport.canLink(file)) return super.visitFile(file)
                 val configs = ParadoxConfigHandler.getConfigs(file, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(file, file, configs)
             }
@@ -46,8 +47,6 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 //position: (in property) property key / (standalone) left curly brace
                 val property = element.parent
                     ?.castOrNull<ParadoxScriptProperty>()
-                //忽略可能的脚本片段入口
-                if(property != null && ParadoxScriptMemberElementInlineSupport.canLink(property)) return
                 val position = property?.propertyKey
                     ?.also { if(it.text.isParameterized()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)

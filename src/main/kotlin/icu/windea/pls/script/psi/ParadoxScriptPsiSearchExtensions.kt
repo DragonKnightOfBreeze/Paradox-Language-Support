@@ -122,7 +122,7 @@ private fun ParadoxScriptValue.doProcessValueChild(conditional: Boolean, inline:
     val r = processor(this)
     if(!r) return false
     if(inline) {
-        val inlined = ParadoxScriptMemberElementInlineSupport.inlineElement(this)
+        val inlined = ParadoxInlineSupport.inlineElement(this)
         if(inlined is ParadoxScriptDefinitionElement) {
             val block = inlined.block
             if(block != null) {
@@ -139,7 +139,7 @@ private fun ParadoxScriptProperty.doProcessPropertyChild(conditional: Boolean, i
     val r = processor(this)
     if(!r) return false
     if(inline) {
-        val inlined = ParadoxScriptMemberElementInlineSupport.inlineElement(this)
+        val inlined = ParadoxInlineSupport.inlineElement(this)
         if(inlined is ParadoxScriptDefinitionElement) {
             val block = inlined.block
             if(block != null) {
@@ -235,21 +235,13 @@ fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
 /**
  * 向上得到第一个定义。
  * 可能为null，可能为自身。
- * @param link 是否处理需要连接定义成员的情况。注意连接后的成员元素不会包括在查找结果内。
  */
-fun PsiElement.findParentDefinition(link: Boolean = false): ParadoxScriptDefinitionElement? {
+fun PsiElement.findParentDefinition(): ParadoxScriptDefinitionElement? {
     if(language != ParadoxScriptLanguage) return null
     var current: PsiElement = this
     while(current !is PsiDirectory) {
         ProgressManager.checkCanceled()
         if(current is ParadoxScriptDefinitionElement && current.definitionInfo != null) return current
-        if(link && current is ParadoxScriptMemberElement) {
-            val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current)
-            if(linked != null) {
-                current = linked.parent ?: break
-                continue
-            }
-        }
         current = current.parent ?: break
     }
     return null
@@ -259,13 +251,11 @@ fun PsiElement.findParentDefinition(link: Boolean = false): ParadoxScriptDefinit
  * 向上得到第一个属性。可能为null，可能是定义，可能是脚本文件。
  * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果得到的是脚本文件，则忽略。
  * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
- * @param link 是否处理需要连接定义成员的情况。注意连接前后的成员元素不会包括在查找结果内。
  */
 fun PsiElement.findParentProperty(
     propertyName: String? = null,
     ignoreCase: Boolean = true,
-    fromParentBlock: Boolean = false,
-    link: Boolean = false
+    fromParentBlock: Boolean = false
 ): ParadoxScriptDefinitionElement? {
     if(language != ParadoxScriptLanguage) return null
     var current: PsiElement = when {
@@ -275,13 +265,6 @@ fun PsiElement.findParentProperty(
     }
     while(current !is PsiFile) {
         ProgressManager.checkCanceled()
-        if(link && current is ParadoxScriptMemberElement) {
-            val linked = ParadoxScriptMemberElementInlineSupport.linkElement(current)
-            if(linked != null) {
-                current = linked.parent ?: break
-                continue
-            }
-        }
         if(current is ParadoxScriptDefinitionElement) return current.takeIf { propertyName == null || propertyName.equals(it.name, ignoreCase) }
         if(current is ParadoxScriptBlock && !current.isPropertyValue()) return null
         current = current.parent ?: break
@@ -293,7 +276,6 @@ fun PsiElement.findParentProperty(
 /**
  * 基于路径向上查找指定的属性。如果路径为空，则返回查找到的第一个属性或值。
  * @param definitionType 如果不为null则在查找到指定的属性之后再向上查找一层属性，并要求其是定义，如果接着不为空字符串则要求匹配该定义类型表达式。
- * @param link 是否处理需要连接定义成员的情况。注意连接前后的成员元素不会包括在查找结果内。
  * @see ParadoxElementPath
  * @see ParadoxScriptMemberElement
  * @see ParadoxDefinitionTypeExpression
@@ -301,8 +283,7 @@ fun PsiElement.findParentProperty(
 fun ParadoxScriptMemberElement.findParentByPath(
     path: String = "",
     ignoreCase: Boolean = true,
-    definitionType: String? = null,
-    link: Boolean = false
+    definitionType: String? = null
 ): ParadoxScriptDefinitionElement? {
     if(language != ParadoxScriptLanguage) return null
     var current: ParadoxScriptMemberElement = this
@@ -312,11 +293,11 @@ fun ParadoxScriptMemberElement.findParentByPath(
         for(subPathInfo in subPathInfos.reversed()) {
             val subPath = subPathInfo.subPath
             if(subPath == "-") return null //TODO 暂不支持
-            current = current.findParentProperty(subPath, ignoreCase, link = link) ?: return null
+            current = current.findParentProperty(subPath, ignoreCase) ?: return null
         }
     }
     if(definitionType != null) {
-        val result = current.findParentProperty(null, link = link) ?: return null
+        val result = current.findParentProperty(null) ?: return null
         val definitionInfo = result.definitionInfo ?: return null
         if(definitionType.isNotEmpty()) {
             if(!ParadoxDefinitionTypeExpression.resolve(definitionType).matches(definitionInfo)) return null

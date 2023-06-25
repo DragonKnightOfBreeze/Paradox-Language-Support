@@ -58,7 +58,7 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxIn
     file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
         override fun visitElement(element: PsiElement) {
             if(element is ParadoxScriptProperty) {
-                val info = ParadoxInlineScriptHandler.getInfo(element)
+                val info = ParadoxInlineScriptHandler.getUsageInfo(element)
                 if(info != null) {
                     val list = fileData.getOrPut(info.expression) { mutableListOf() } as MutableList
                     list.add(info)
