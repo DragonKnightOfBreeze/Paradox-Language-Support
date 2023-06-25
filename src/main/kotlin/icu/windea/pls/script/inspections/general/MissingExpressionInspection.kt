@@ -35,7 +35,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
             override fun visitFile(file: PsiFile) {
                 if(file !is ParadoxScriptFile) return
                 val configContext = ParadoxConfigHandler.getConfigContext(file) ?: return
-                if(configContext.provider?.skipMissingExpressionCheck(configContext) == true) return
+                if(configContext.skipMissingExpressionCheck()) return
                 val configs = ParadoxConfigHandler.getConfigs(file, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(file, file, configs)
             }
@@ -50,7 +50,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
                 val configContext = ParadoxConfigHandler.getConfigContext(element) ?: return
-                if(configContext.provider?.skipMissingExpressionCheck(configContext) == true) return
+                if(configContext.skipMissingExpressionCheck()) return
                 val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(element, position, configs)
             }

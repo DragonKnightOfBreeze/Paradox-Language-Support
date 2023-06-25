@@ -38,6 +38,14 @@ class ParadoxConfigContext(
         return configsCache.getOrPut(cachedKey) { provider?.getConfigs(element, this, matchOptions).orEmpty() }
     }
     
+    fun skipMissingExpressionCheck(): Boolean {
+        return provider?.skipMissingExpressionCheck(this) ?: false
+    }
+    
+    fun skipTooManyExpressionCheck(): Boolean {
+        return provider?.skipTooManyExpressionCheck(this) ?: false
+    }
+    
     object Keys
 }
 
