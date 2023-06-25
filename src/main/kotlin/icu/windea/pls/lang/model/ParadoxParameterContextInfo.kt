@@ -11,7 +11,6 @@ import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.script.psi.*
-import org.jetbrains.kotlin.tools.projectWizard.core.*
 import java.util.*
 
 class ParadoxParameterContextInfo(
@@ -76,9 +75,17 @@ class ParadoxParameterInfo(
     val expressionConfigs: List<CwtMemberConfig<*>> by lazy {
         val parent = element?.parent
         when {
-            parent is ParadoxScriptPropertyKey -> ParadoxConfigHandler.getConfigs(parent, matchOptions = Options.Default or Options.AcceptDefinition)
-            parent is ParadoxScriptString -> ParadoxConfigHandler.getConfigs(parent, matchOptions = Options.Default or Options.AcceptDefinition)
-            else -> emptyList()
+            parent is ParadoxScriptPropertyKey -> {
+                val configs = ParadoxConfigHandler.getConfigs(parent, matchOptions = Options.Default or Options.AcceptDefinition)
+                configs
+            }
+            parent is ParadoxScriptString && parent.isExpression() -> {
+                val configs = ParadoxConfigHandler.getConfigs(parent, matchOptions = Options.Default or Options.AcceptDefinition)
+                configs.mapNotNull { if(it is CwtValueConfig) it else null }
+            }
+            else -> {
+                emptyList()
+            }
         }
     }
     
@@ -88,6 +95,22 @@ class ParadoxParameterInfo(
     val expressionContainingConfigs: List<CwtMemberConfig<*>> by lazy {
         val parent = element?.parent
         val container = parent?.parentOfType<ParadoxScriptMemberElement>() ?: return@lazy emptyList()
-        ParadoxConfigHandler.getConfigs(container, matchOptions = Options.Default or Options.AcceptDefinition)
+        when {
+            parent is ParadoxScriptPropertyKey -> {
+                val containerConfigs = ParadoxConfigHandler.getConfigs(container, matchOptions = Options.Default or Options.AcceptDefinition)
+                containerConfigs.mapNotNull { if(it is CwtPropertyConfig) it else null }
+            }
+            parent is ParadoxScriptString && parent.isPropertyValue() -> {
+                val containerConfigs = ParadoxConfigHandler.getConfigs(container, matchOptions = Options.Default or Options.AcceptDefinition)
+                containerConfigs.mapNotNull { if(it is CwtPropertyConfig) it.valueConfig else null }
+            }
+            parent is ParadoxScriptString && parent.isBlockValue() -> {
+                val containerConfigs = ParadoxConfigHandler.getConfigs(container, matchOptions = Options.Default or Options.AcceptDefinition)
+                containerConfigs
+            }
+            else -> {
+                emptyList()
+            }
+        }
     }
 }
