@@ -1,7 +1,6 @@
 package icu.windea.pls.lang
 
 import com.intellij.psi.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 
@@ -84,40 +83,38 @@ object ParadoxConfigInlineHandler {
         return inlined
     }
     
-    fun inlineByConfig(element: PsiElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, result: MutableList<CwtMemberConfig<*>>, matchOptions: Int): Boolean {
+    fun inlineByConfig(element: PsiElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, matchOptions: Int): List<CwtMemberConfig<*>> {
         //内联类型为single_alias_right或alias_match_left的规则
-        run {
-            val configGroup = config.info.configGroup
-            val valueExpression = config.valueExpression
-            when(valueExpression.type) {
-                CwtDataType.SingleAliasRight -> {
-                    val singleAliasName = valueExpression.value ?: return@run
-                    val singleAlias = configGroup.singleAliases[singleAliasName] ?: return@run
-                    result.add(inlineWithSingleAliasConfig(config, singleAlias))
-                    return true
-                }
-                CwtDataType.AliasMatchLeft -> {
-                    val aliasName = valueExpression.value ?: return@run
-                    val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
-                    val aliasSubNames = ParadoxConfigHandler.getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchOptions)
-                    for(aliasSubName in aliasSubNames) {
-                        val aliases = aliasGroup[aliasSubName] ?: continue
-                        for(alias in aliases) {
-                            var inlinedConfig = inlineWithAliasConfig(config, alias)
-                            if(inlinedConfig.valueExpression.type == CwtDataType.SingleAliasRight) {
-                                val singleAliasName = inlinedConfig.valueExpression.value ?: continue
-                                val singleAlias = configGroup.singleAliases[singleAliasName] ?: continue
-                                inlinedConfig = inlineWithSingleAliasConfig(inlinedConfig, singleAlias)
-                            }
-                            result.add(inlinedConfig)
-                        }
-                    }
-                    return true
-                }
-                else -> pass()
+        val configGroup = config.info.configGroup
+        val valueExpression = config.valueExpression
+        when(valueExpression.type) {
+            CwtDataType.SingleAliasRight -> {
+                val singleAliasName = valueExpression.value ?: return emptyList()
+                val singleAlias = configGroup.singleAliases[singleAliasName] ?: return emptyList()
+                val result = mutableListOf<CwtMemberConfig<*>>()
+                result.add(inlineWithSingleAliasConfig(config, singleAlias))
+                return result
             }
+            CwtDataType.AliasMatchLeft -> {
+                val aliasName = valueExpression.value ?: return emptyList()
+                val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptyList()
+                val result = mutableListOf<CwtMemberConfig<*>>()
+                val aliasSubNames = ParadoxConfigHandler.getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchOptions)
+                for(aliasSubName in aliasSubNames) {
+                    val aliases = aliasGroup[aliasSubName] ?: continue
+                    for(alias in aliases) {
+                        var inlinedConfig = inlineWithAliasConfig(config, alias)
+                        if(inlinedConfig.valueExpression.type == CwtDataType.SingleAliasRight) {
+                            val singleAliasName = inlinedConfig.valueExpression.value ?: continue
+                            val singleAlias = configGroup.singleAliases[singleAliasName] ?: continue
+                            inlinedConfig = inlineWithSingleAliasConfig(inlinedConfig, singleAlias)
+                        }
+                        result.add(inlinedConfig)
+                    }
+                }
+                return result
+            }
+            else -> return emptyList()
         }
-        result.add(config)
-        return false
     }
 }

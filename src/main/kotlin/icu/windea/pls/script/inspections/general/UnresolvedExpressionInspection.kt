@@ -30,9 +30,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if(suppressed != null) {
-                    if(suppressed.isAncestor(element)) return
-                }
                 val result = when(element) {
                     is ParadoxScriptProperty -> visitProperty(element)
                     is ParadoxScriptValue -> visitValue(element)
@@ -42,6 +39,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             }
             
             private fun visitProperty(element: ParadoxScriptProperty): Boolean {
+                if(suppressed != null && suppressed.isAncestor(element)) return true
+                
                 //skip checking property if property key may contain parameters
                 val propertyKey = element.propertyKey
                 if(propertyKey.text.isParameterized()) return false
@@ -71,7 +70,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             }
             
             private fun visitValue(element: ParadoxScriptValue): Boolean {
-                ProgressManager.checkCanceled()
+                if(suppressed != null && suppressed.isAncestor(element)) return true
+                
                 //also check if element is a scripted_variable
                 //skip checking value if it may contain parameters
                 if(element is ParadoxScriptString && element.text.isParameterized()) return false

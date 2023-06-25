@@ -2,6 +2,7 @@ package icu.windea.pls.script.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.progress.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -15,7 +16,7 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val element = parameters.position.parent ?: return
+        val element = parameters.position.parentOfType<ParadoxScriptStringExpressionElement>() ?: return
         
         ProgressManager.checkCanceled()
         
@@ -42,8 +43,8 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
         
         if(mayBeKey) {
             //向上得到block或者file
-            val blockElement = element.parent as? ParadoxScriptBlockElement
-            val memberElement = if(blockElement is ParadoxScriptBlock) blockElement else blockElement?.parent as? ParadoxScriptFile
+            val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
+            val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
             if(memberElement != null) {
                 //进行提示
                 ParadoxConfigHandler.addKeyCompletions(memberElement, context, resultToUse)
@@ -51,8 +52,8 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
         }
         if(mayBeValue) {
             //向上得到block或者file
-            val blockElement = element.parent as? ParadoxScriptBlockElement
-            val memberElement = if(blockElement is ParadoxScriptBlock) blockElement else blockElement?.parent as? ParadoxScriptFile
+            val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
+            val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
             if(memberElement != null) {
                 //进行提示
                 ParadoxConfigHandler.addValueCompletions(memberElement, context, resultToUse)
