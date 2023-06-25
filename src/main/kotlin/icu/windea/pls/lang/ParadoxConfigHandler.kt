@@ -715,7 +715,7 @@ object ParadoxConfigHandler {
                 typeToUse == null -> null
                 else -> {
                     val configContext = CwtDeclarationConfigContext(context.contextElement, null, typeToUse, subtypesToUse, configGroup)
-                    configGroup.declarations[typeToUse]?.getMergedConfig(configContext)
+                    configGroup.declarations[typeToUse]?.getConfig(configContext)
                 }
             }
             val element = config?.pointer?.element

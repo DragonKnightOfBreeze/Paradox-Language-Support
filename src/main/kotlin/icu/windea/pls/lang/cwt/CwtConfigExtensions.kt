@@ -14,6 +14,10 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.script.psi.*
 
+infix fun CwtConfig<*>.pointerEquals(other: CwtConfig<*>): Boolean {
+    return pointer == other.pointer
+}
+
 inline fun CwtMemberConfig<*>.processParent(inline: Boolean = false, processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
     var parent = this.parent
     while(parent != null) {

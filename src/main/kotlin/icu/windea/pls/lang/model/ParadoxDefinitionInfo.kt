@@ -63,7 +63,7 @@ class ParadoxDefinitionInfo(
     val declaration: CwtPropertyConfig? by lazy { getDeclaration() }
     
     val localisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
-        val mergedLocalisationConfig = typeConfig0.localisation?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
+        val mergedLocalisationConfig = typeConfig0.localisation?.getConfigs(subtypes) ?: return@lazy emptyList()
         val result = mutableListOf<ParadoxDefinitionRelatedLocalisationInfo>()
         //从已有的cwt规则
         for(config in mergedLocalisationConfig) {
@@ -75,7 +75,7 @@ class ParadoxDefinitionInfo(
     }
     
     val images: List<ParadoxDefinitionRelatedImageInfo> by lazy {
-        val mergedImagesConfig = typeConfig0.images?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
+        val mergedImagesConfig = typeConfig0.images?.getConfigs(subtypes) ?: return@lazy emptyList()
         val result = mutableListOf<ParadoxDefinitionRelatedImageInfo>()
         //从已有的cwt规则
         for(config in mergedImagesConfig) {
@@ -137,7 +137,7 @@ class ParadoxDefinitionInfo(
     private fun doGetDeclaration(matchOptions: Int): CwtPropertyConfig? {
         val subtypes = getSubtypeConfigs(matchOptions).map { it.name }
         val configContext = CwtDeclarationConfigContext(element, name, type, subtypes, configGroup, matchOptions)
-        return configGroup.declarations.get(type)?.getMergedConfig(configContext)
+        return configGroup.declarations.get(type)?.getConfig(configContext)
     }
     
     override fun equals(other: Any?): Boolean {

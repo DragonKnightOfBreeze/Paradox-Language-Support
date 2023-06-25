@@ -57,12 +57,12 @@ fun <T : PsiElement> CwtMemberConfig<T>.deepCopyConfigs(): List<CwtMemberConfig<
     }
 }
 
-fun <T : PsiElement> CwtMemberConfig<T>.deepMergeConfigs(configContext: CwtDeclarationConfigContext): List<CwtMemberConfig<*>> {
+fun <T : PsiElement> CwtMemberConfig<T>.deepCopyConfigsInDeclarationConfig(configContext: CwtDeclarationConfigContext): List<CwtMemberConfig<*>> {
     //因为之后可能需要对得到的声明规则进行注入，需要保证当注入时所有规则列表都是可变的
     
     val mergedConfigs: MutableList<CwtMemberConfig<*>>? = if(configs != null) mutableListOf() else null
     configs?.forEachFast { config ->
-        val childConfigList = config.deepMergeConfigs(configContext)
+        val childConfigList = config.deepCopyConfigsInDeclarationConfig(configContext)
         if(childConfigList.isNotEmpty()) {
             for(childConfig in childConfigList) {
                 mergedConfigs?.add(childConfig)

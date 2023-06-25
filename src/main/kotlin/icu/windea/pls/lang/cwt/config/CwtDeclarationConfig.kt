@@ -17,7 +17,7 @@ class CwtDeclarationConfig(
     val propertyConfig: CwtPropertyConfig, //definitionName = ...
 ) : CwtConfig<CwtProperty> {
     //use soft values to optimize memory
-    private val mergedConfigCache: Cache<String, CwtPropertyConfig> = CacheBuilder.newBuilder().softValues().buildCache()
+    private val configCache: Cache<String, CwtPropertyConfig> = CacheBuilder.newBuilder().softValues().buildCache()
     
     private val subtypesToDistinctCache by lazy {
         val result = sortedSetOf<String>()
@@ -37,14 +37,14 @@ class CwtDeclarationConfig(
     /**
      * 得到根据子类型列表进行合并后的配置。
      */
-    fun getMergedConfig(configContext: CwtDeclarationConfigContext): CwtPropertyConfig {
+    fun getConfig(configContext: CwtDeclarationConfigContext): CwtPropertyConfig {
         //定义的值不为代码块的情况
         if(!propertyConfig.isBlock) return propertyConfig
         
         val cacheKey = getCacheKey(configContext)
-        return mergedConfigCache.getOrPut(cacheKey) {
+        return configCache.getOrPut(cacheKey) {
             runReadAction {
-                val r = doGetMergedConfig(configContext)
+                val r = doGetConfig(configContext)
                 CwtDeclarationConfigInjector.handleDeclarationMergedConfig(r, configContext, configContext.injectors)
                 r.putUserData(CwtMemberConfig.Keys.configContextKey, configContext)
                 r
@@ -71,11 +71,11 @@ class CwtDeclarationConfig(
         }
     }
     
-    private fun doGetMergedConfig(configContext: CwtDeclarationConfigContext): CwtPropertyConfig {
+    private fun doGetConfig(configContext: CwtDeclarationConfigContext): CwtPropertyConfig {
         val injectedResult = CwtDeclarationConfigInjector.getDeclarationMergedConfig(configContext, configContext.injectors)
         if(injectedResult != null) return injectedResult
         
-        val configs = propertyConfig.configs?.flatMap { it.deepMergeConfigs(configContext) }
+        val configs = propertyConfig.configs?.flatMap { it.deepCopyConfigsInDeclarationConfig(configContext) }
         return propertyConfig.copy(configs = configs)
         //here propertyConfig.parent should be null
     }

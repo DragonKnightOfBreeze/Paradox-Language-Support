@@ -1,19 +1,55 @@
 package icu.windea.pls.lang
 
+import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 
 object ParadoxConfigMergeHandler {
     fun mergeConfigs(configs: List<CwtMemberConfig<*>>, otherConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
-        return emptyList() //TODO
+        val result = mutableListOf<CwtMemberConfig<*>>()
+        configs.forEach f1@{ config ->
+            otherConfigs.forEach f2@{ otherConfig ->
+                if(config is CwtPropertyConfig && otherConfig is CwtPropertyConfig) {
+                    if(config.key.equals(otherConfig.key, true)) {
+                        if(config.configs == null && otherConfig.configs == null) {
+                            if(config.valueExpression == otherConfig.valueExpression) {
+                                result.add(config)
+                                return@f1
+                            }
+                        } else if(config.configs != null && otherConfig.configs != null) {
+                            if(config pointerEquals otherConfig) { //TODO
+                                result.add(config)
+                                return@f1
+                            }
+                        }
+                    }
+                } else if(config is CwtValueConfig && otherConfig is CwtValueConfig) {
+                    if(config.configs == null && otherConfig.configs == null) {
+                        if(config.valueExpression == otherConfig.valueExpression) {
+                            result.add(config)
+                            return@f1
+                        }
+                    } else if(config.configs != null && otherConfig.configs != null) {
+                        if(config pointerEquals otherConfig) { //TODO
+                            result.add(config)
+                            return@f1
+                        }
+                    }
+                }
+            }
+        }
+        for(config in result) {
+            config.parent = null
+        }
+        return result
     }
     
-    fun mergeValueConfig(config: CwtValueConfig, otherConfig: CwtValueConfig): CwtValueConfig? {
+    fun shallowMergeValueConfig(config: CwtValueConfig, otherConfig: CwtValueConfig): CwtValueConfig? {
         if(config.expression == otherConfig.expression) return config
-        return doMergeValueConfig(config, otherConfig) ?: doMergeValueConfig(otherConfig, config)
+        return doShallowMergeValueConfig(config, otherConfig) ?: doShallowMergeValueConfig(otherConfig, config)
     }
     
-    private fun doMergeValueConfig(config: CwtValueConfig, otherConfig: CwtValueConfig): CwtValueConfig? {
+    private fun doShallowMergeValueConfig(config: CwtValueConfig, otherConfig: CwtValueConfig): CwtValueConfig? {
         val e1 = config.expression
         val e2 = otherConfig.expression
         val t1 = e1.type

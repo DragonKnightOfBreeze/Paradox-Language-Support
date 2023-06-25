@@ -198,7 +198,7 @@ object ParadoxParameterHandler {
             if(result == null) {
                 result = config
             } else {
-                result = ParadoxConfigMergeHandler.mergeValueConfig(result!!, config)
+                result = ParadoxConfigMergeHandler.shallowMergeValueConfig(result!!, config)
                 if(result == null) return@p false //存在冲突
             }
             true
@@ -218,7 +218,7 @@ object ParadoxParameterHandler {
             if(result == null) {
                 result = config
             } else {
-                result = ParadoxConfigMergeHandler.mergeValueConfig(result, config)
+                result = ParadoxConfigMergeHandler.shallowMergeValueConfig(result, config)
                 if(result == null) break //存在冲突
             }
         }

@@ -68,7 +68,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 						val type = typeConfig.name
 						//需要考虑不指定子类型的情况
 						val configContext = CwtDeclarationConfigContext(element, null, type, null, configGroup)
-						val config = configGroup.declarations[type]?.getMergedConfig(configContext) ?: continue
+						val config = configGroup.declarations[type]?.getConfig(configContext) ?: continue
 						doAddCompletions(type, config, true, element, null)
 					}
 				}
