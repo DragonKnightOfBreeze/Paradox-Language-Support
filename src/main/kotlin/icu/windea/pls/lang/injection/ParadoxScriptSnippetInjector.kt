@@ -6,7 +6,9 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
+import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
@@ -39,15 +41,25 @@ class ParadoxScriptSnippetInjector : MultiHostInjector {
         }
     }
     
-    private fun applyInjectionForParameterValue(registrar: MultiHostRegistrar, host: ParadoxScriptString) {
-        val text = host.text
+    private fun applyInjectionForParameterValue(registrar: MultiHostRegistrar, injectionHost: ParadoxScriptString) {
+        //not quoted -> don't apply
+        val text = injectionHost.text
         if(!text.let { it.isLeftQuoted() && it.isRightQuoted() }) return
         
+        val argumentNameElement = injectionHost.propertyKey ?: return
+        val argumentNameConfig = ParadoxConfigHandler.getConfigs(argumentNameElement).firstOrNull() ?: return
+        if(argumentNameConfig.expression.type != CwtDataType.Parameter) return
+        val parameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return
+        
+        //unsupported -> don't apply
+        val inferredContextConfigs = ParadoxParameterHandler.getInferredContextConfigs(parameterElement)
+        if(inferredContextConfigs.singleOrNull() == CwtValueConfig.EmptyConfig) return
+        
         registrar.startInjecting(ParadoxScriptLanguage)
-        registrar.addPlace(null, null, host, TextRange.create(0, text.length).unquote(text))
+        registrar.addPlace(null, null, injectionHost, TextRange.create(0, text.length).unquote(text))
         
         //disable inject language action
-        InjectionUtils.enableInjectLanguageAction(host, false)
+        InjectionUtils.enableInjectLanguageAction(injectionHost, false)
         //disable injection background highlight (by implementing InjectionBackgroundSuppressor)
         //inject config context to provide advanced language features
         //see: icu.windea.pls.script.psi.ParadoxScriptParserDefinition.createFile

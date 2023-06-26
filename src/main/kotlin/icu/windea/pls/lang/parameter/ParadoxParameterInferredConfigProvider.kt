@@ -5,10 +5,10 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.config.impl.*
+import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.injection.*
+import icu.windea.pls.lang.model.*
 
 /**
  * 用于为脚本参数提供推断的CWT规则。
@@ -24,7 +24,7 @@ import icu.windea.pls.lang.injection.*
 interface ParadoxParameterInferredConfigProvider {
     fun getConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig?
     
-    fun getContainingConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo) : List<CwtMemberConfig<*>>?
+    fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo) : List<CwtMemberConfig<*>>?
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxParameterInferredConfigProvider>("icu.windea.pls.parameterInferredConfigProvider")
@@ -40,12 +40,12 @@ interface ParadoxParameterInferredConfigProvider {
             }
         }
         
-        fun getContainingConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
+        fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
             val gameType = parameterContextInfo.gameType
-            return withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider.INSTANCE.getContainingConfig") {
+            return withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider.INSTANCE.getContextConfigs") {
                 EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                     if(!gameType.supportsByAnnotation(ep)) return@f null
-                    ep.getContainingConfig(parameterInfo, parameterContextInfo).takeIfNotEmpty()
+                    ep.getContextConfigs(parameterInfo, parameterContextInfo).takeIfNotEmpty()
                 }
             }
         }

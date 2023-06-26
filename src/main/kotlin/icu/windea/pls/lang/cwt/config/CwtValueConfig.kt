@@ -172,7 +172,9 @@ private object CwtValueConfigImpls {
     class DelegateA(
         delegate: CwtValueConfig,
         override var parent: CwtMemberConfig<*>?,
-    ) : CwtValueConfig by delegate
+    ) : CwtValueConfig by delegate {
+        override fun toString(): String = value
+    }
     
     //memory usage: 12 + 4 * 4 = 28b => 32b
     
@@ -183,6 +185,8 @@ private object CwtValueConfigImpls {
     ) : CwtValueConfig by delegate {
         override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
         override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
+        
+        override fun toString(): String = value
     }
     
     //memory usage: 12 + 4 * 4 = 24b => 24b
@@ -191,7 +195,9 @@ private object CwtValueConfigImpls {
         delegate: CwtValueConfig,
         override var parent: CwtMemberConfig<*>?,
         override val propertyConfig: CwtPropertyConfig? = null,
-    ) : CwtValueConfig by delegate
+    ) : CwtValueConfig by delegate {
+        override fun toString(): String = value
+    }
     
     //memory usage: 12 + 6 * 4 = 36b => 40b
     
@@ -203,5 +209,7 @@ private object CwtValueConfigImpls {
     ) : CwtValueConfig by delegate {
         override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
         override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
+        
+        override fun toString(): String = value
     }
 }

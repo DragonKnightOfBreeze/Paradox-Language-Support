@@ -136,6 +136,8 @@ private object CwtPropertyConfigImpls {
         override var parent: CwtMemberConfig<*>?,
     ) : CwtPropertyConfig by delegate {
         override val valueConfig: CwtValueConfig? by lazy { getValueConfig() }
+        
+        override fun toString(): String = "$key ${separatorType.text} $value"
     }
     
     //memory usage: 12 + 6 * 4 = 36b => 40b
@@ -148,5 +150,7 @@ private object CwtPropertyConfigImpls {
         override val valueConfig: CwtValueConfig? by lazy { getValueConfig() }
         override val values: List<CwtValueConfig>? = configs?.filterIsInstance<CwtValueConfig>()
         override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstance<CwtPropertyConfig>()
+        
+        override fun toString(): String = "$key ${separatorType.text} $value"
     }
 }

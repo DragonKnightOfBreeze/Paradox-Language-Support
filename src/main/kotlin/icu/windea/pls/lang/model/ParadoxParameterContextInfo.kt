@@ -7,7 +7,6 @@ import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.script.psi.*
@@ -73,14 +72,16 @@ class ParadoxParameterInfo(
      * 获取此参数对应的脚本表达式所对应的CWT规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
      */
     val expressionConfigs: List<CwtMemberConfig<*>> by lazy {
-        val parent = element?.parent
+        val expressionElement = element?.parent?.castOrNull<ParadoxScriptStringExpressionElement>()
+        if(expressionElement == null) return@lazy emptyList()
         when {
-            parent is ParadoxScriptPropertyKey -> {
-                val configs = ParadoxConfigHandler.getConfigs(parent)
+            expressionElement is ParadoxScriptPropertyKey -> {
+                val configs = ParadoxConfigHandler.getConfigs(expressionElement)
+                configs.mapNotNull { if(it is CwtPropertyConfig) it else null }
                 configs
             }
-            parent is ParadoxScriptString && parent.isExpression() -> {
-                val configs = ParadoxConfigHandler.getConfigs(parent)
+            expressionElement is ParadoxScriptString && expressionElement.isExpression() -> {
+                val configs = ParadoxConfigHandler.getConfigs(expressionElement)
                 configs.mapNotNull { if(it is CwtValueConfig) it else null }
             }
             else -> {
@@ -90,27 +91,13 @@ class ParadoxParameterInfo(
     }
     
     /**
-     * 获取此参数对应的脚本表达式所在容器所对应的CWT规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
+     * 获取此参数对应的脚本表达式所对应的上下文CWT规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
      */
-    val expressionContainingConfigs: List<CwtMemberConfig<*>> by lazy {
-        val parent = element?.parent
-        val container = parent?.parentOfType<ParadoxScriptMemberElement>() ?: return@lazy emptyList()
-        when {
-            parent is ParadoxScriptPropertyKey -> {
-                val containerConfigs = ParadoxConfigHandler.getConfigContext(container)?.getConfigs().orEmpty()
-                containerConfigs.mapNotNull { if(it is CwtPropertyConfig) it else null }
-            }
-            parent is ParadoxScriptString && parent.isPropertyValue() -> {
-                val containerConfigs = ParadoxConfigHandler.getConfigContext(container)?.getConfigs().orEmpty()
-                containerConfigs.mapNotNull { if(it is CwtPropertyConfig) it.valueConfig else null }
-            }
-            parent is ParadoxScriptString && parent.isBlockValue() -> {
-                val containerConfigs = ParadoxConfigHandler.getConfigContext(container)?.getConfigs().orEmpty()
-                containerConfigs
-            }
-            else -> {
-                emptyList()
-            }
-        }
+    val expressionContextConfigs: List<CwtMemberConfig<*>> by lazy {
+        val expressionElement = element?.parent?.castOrNull<ParadoxScriptStringExpressionElement>()
+        val blockElement = expressionElement?.parentOfType<ParadoxScriptBlockElement>()
+        val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
+        if(memberElement == null) return@lazy emptyList()
+        ParadoxConfigHandler.getConfigContext(memberElement)?.getConfigs().orEmpty()
     }
 }

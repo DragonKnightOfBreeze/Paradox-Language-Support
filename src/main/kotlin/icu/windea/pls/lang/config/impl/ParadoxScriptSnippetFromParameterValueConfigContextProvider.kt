@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.config.impl
 
-import com.intellij.lang.injection.InjectedLanguageManager
+import com.intellij.lang.injection.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -23,7 +23,6 @@ import icu.windea.pls.script.psi.*
  * * 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`和`TooManyExpressionInspection`。
  * * 不会将参数值内容内联到对应的调用处，然后再进行相关代码检查。
  * * 不会将参数值内容内联到对应的调用处，然后检查语法是否合法。
- * * TODO 需要特殊处理参数作为整个脚本表达式且这个脚本表达式是一个属性的键或值的情况。
  */
 class ParadoxScriptSnippetFromParameterValueConfigContextProvider : ParadoxConfigContextProvider {
     override fun getConfigContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
@@ -63,7 +62,11 @@ class ParadoxScriptSnippetFromParameterValueConfigContextProvider : ParadoxConfi
         }
         
         val parameterElement = configContext.parameterElement ?: return null
-        return ParadoxParameterHandler.getInferredContainingConfigs(parameterElement)
+        
+        //unsupported -> return null
+        val inferredContextConfigs = ParadoxParameterHandler.getInferredContextConfigs(parameterElement)
+        if(inferredContextConfigs.singleOrNull() == CwtValueConfig.EmptyConfig) return null
+        return inferredContextConfigs
     }
     
     //skip MissingExpressionInspection and TooManyExpressionInspection at root level

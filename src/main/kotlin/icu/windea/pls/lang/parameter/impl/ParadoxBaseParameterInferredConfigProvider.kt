@@ -12,30 +12,39 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     override fun getConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig? {
         if(!parameterInfo.isEntireExpression) return null //要求整个作为脚本表达式
         val configs = parameterInfo.expressionConfigs
-        val config = configs.firstOrNull() as? CwtValueConfig ?: return null
+        val config = configs.firstOrNull() ?: return null
         return when(config.expression.type) {
             CwtDataType.ParameterValue -> {
                 //处理参数传递的情况
                 //这里需要尝试避免SOE
-                val passingConfig = withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider.getConfig") a1@{
-                    val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return@a1 null
-                    val argumentNameConfig = config.propertyConfig ?: return@a1 null
-                    val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return@a1 null
-                    withCheckRecursion(passingParameterElement.contextKey) a2@{
+                if(config !is CwtValueConfig) return null
+                val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return null
+                val argumentNameConfig = config.propertyConfig ?: return null
+                val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return null
+                val passingConfig = withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider.getConfig") {
+                    withCheckRecursion(passingParameterElement.contextKey) {
                         ParadoxParameterHandler.getInferredConfig(passingParameterElement)
                     }
                 }
                 passingConfig
             }
             else -> {
-                config
+                CwtValueConfig.resolve(emptyPointer(), config.info, config.expression.expressionString)
             }
         }
     }
     
-    override fun getContainingConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo) : List<CwtMemberConfig<*>>? {
+    override fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo) : List<CwtMemberConfig<*>>? {
         if(!parameterInfo.isEntireExpression) return null //要求整个作为脚本表达式
-        return parameterInfo.expressionContainingConfigs
-        //目前看起来不需要做额外的处理
+        val parent = parameterInfo.element?.parent
+        when {
+            parent is ParadoxScriptPropertyKey -> {
+                //不适用于这种情况，特殊处理返回的数据
+                return listOf(CwtValueConfig.EmptyConfig)
+            }
+            else -> {
+                return parameterInfo.expressionContextConfigs
+            }
+        }
     }
 }

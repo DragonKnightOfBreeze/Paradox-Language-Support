@@ -88,7 +88,7 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
         }
     }
     
-    override fun getContainingConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
+    override fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         return null
     }
 }
