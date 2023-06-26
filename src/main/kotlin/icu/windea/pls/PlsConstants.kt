@@ -1,6 +1,8 @@
 package icu.windea.pls
 
 import com.intellij.codeInsight.hints.presentation.*
+import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -82,54 +84,4 @@ object PlsPatterns {
     val scriptedVariableNameRegex = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
     
     val localisationPropertyNameRegex = """[a-zA-Z0-9_.\-']+""".toRegex()
-}
-
-object PlsThreadLocals
-
-object PlsKeys {
-    val libraryKey = Key.create<ParadoxLibrary>("paradox.library")
-    val rootInfoStatusKey = Key.create<Boolean>("paradox.rootInfo.status")
-    val rootInfoKey = Key.create<ParadoxRootInfo>("paradox.rootInfo")
-    val fileInfoStatusKey = Key.create<Boolean>("paradox.fileInfo.status")
-    val fileInfoKey = Key.create<ParadoxFileInfo>("paradox.fileInfo")
-    
-    //用于为临时文件（VirtualFile）嵌入根目录信息
-    val injectedRootInfoKey = Key.create<ParadoxRootInfo>("paradox.injected.rootInfo")
-    //用于为临时文件（VirtualFile）嵌入文件信息
-    val injectedFileInfoKey = Key.create<ParadoxFileInfo>("paradox.injected.fileInfo")
-    //用于为脚本文件（VirtualFile）嵌入语言区域
-    val injectedLocaleConfigKey = Key.create<CwtLocalisationLocaleConfig>("paradox.injected.localeConfig")
-    //用于为脚本文件（VirtualFile）嵌入元素路径前缀
-    val injectedElementPathPrefixKey = Key.create<ParadoxElementPath>("paradox.injected.elementPathPrefix")
-    
-    val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cached.definitionInfo")
-    val cachedDefinitionPrimaryLocalisationKeyKey = Key.create<CachedValue<String>>("paradox.cached.definition.primaryLocalisationKey")
-    val cachedDefinitionPrimaryLocalisationKey = Key.create<CachedValue<ParadoxLocalisationProperty>>("paradox.cached.definition.primaryLocalisation")
-    val cachedDefinitionPrimaryLocalisationsKey = Key.create<CachedValue<Set<ParadoxLocalisationProperty>>>("paradox.cached.definition.primaryLocalisations")
-    val cachedDefinitionLocalizedNamesKey = Key.create<CachedValue<Set<String>>>("paradox.cached.definition.primaryLocalisations")
-    val cachedDefinitionPrimaryImageKey = Key.create<CachedValue<PsiFile>>("paradox.cached.definition.primaryImage")
-    val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("paradox.cached.localisationInfo")
-    val cachedComplexEnumValueInfoKey = Key.create<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cached.complexEnumValueInfo")
-    val cachedValueSetValueInfosKey = Key.create<CachedValue<List<ParadoxValueSetValueInfo>>>("paradox.cached.valueSetValueInfos")
-    val cachedElementPathKey = Key.create<CachedValue<ParadoxElementPath>>("paradox.cached.elementPath")
-    val cachedConfigContextKey = Key.create<CachedValue<ParadoxConfigContext>>("paradox.cached.configContext")
-    val cachedConfigsCacheKey = Key.create<CachedValue<MutableMap<String, List<CwtConfig<*>>>>>("paradox.cached.configs.cache")
-    val cachedChildOccurrenceMapCacheKey = Key.create<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>("paradox.cached.childOccurrenceMap.cache")
-    val cachedScopeContextKey = Key.create<CachedValue<ParadoxScopeContext>>("paradox.cached.scopeContext")
-    val cachedTextColorInfoKey = Key.create<CachedValue<ParadoxTextColorInfo>>("paradox.cached.textColorInfo")
-    val cachedDefineValuesKey = Key.create<CachedValue<MutableMap<String, Any?>>>("paradox.cached.defineValues")
-    val cachedColorKey = Key.create<CachedValue<Color>>("paradox.cached.color")
-    val cachedParametersKey = Key.create<CachedValue<ParadoxParameterContextInfo>>("paradox.cached.parameterContextInfo")
-    val cachedGameConceptAliasKey = Key.create<CachedValue<Set<String>>>("paradox.cached.gameConcept.alias")
-    
-    //用于将CWT规则临时写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
-    val cwtConfigKey = Key.create<CwtConfig<*>>("paradox.cwtConfig")
-    //用于在进行代码补全时标记一个property的propertyValue未填写
-    val isIncompleteKey = Key.create<Boolean>("paradox.isIncomplete")
-    //用于在进行代码补全时标记作用域不匹配
-    val scopeMismatchedKey = Key.create<Boolean>("paradox.scopeMismatched")
-    //用于在进行颜色高亮时标记参数在脚本表达式中的文本范围
-    val parameterRangesKey = Key.create<List<TextRange>>("paradox.parameterRanges")
-    //用于标记图标的帧数以便后续对原始的DDS图片进行切分
-    val iconFrameKey = Key.create<Int>("paradox.icon.frame")
 }

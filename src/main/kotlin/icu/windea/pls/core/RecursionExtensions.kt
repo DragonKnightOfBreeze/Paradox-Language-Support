@@ -1,17 +1,17 @@
 package icu.windea.pls.core
 
 import com.intellij.openapi.util.*
-import icu.windea.pls.*
 import java.util.*
 
-val PlsThreadLocals.recursionGuardCacheThreadLocal: ThreadLocal<MutableMap<String, SmartRecursionGuard>> by lazy { ThreadLocal.withInitial { mutableMapOf() } }
-val PlsThreadLocals.stackTraceThreadLocal: ThreadLocal<MutableList<Any>> by lazy { ThreadLocal() }
+object SmartRecursionGuardContext {
+    val recursionGuardCacheThreadLocal: ThreadLocal<MutableMap<String, SmartRecursionGuard>> by lazy { ThreadLocal.withInitial { mutableMapOf() } }
+}
 
 /**
  * 执行一段代码并尝试避免SOE。
  */
 inline fun <T> withRecursionGuard(key: String, action: SmartRecursionGuard.() -> T): T? {
-    val recursionGuardCache = PlsThreadLocals.recursionGuardCacheThreadLocal.get()
+    val recursionGuardCache = SmartRecursionGuardContext.recursionGuardCacheThreadLocal.get()
     val cached = recursionGuardCache.get(key)
     try {
         val recursionGuard = cached
