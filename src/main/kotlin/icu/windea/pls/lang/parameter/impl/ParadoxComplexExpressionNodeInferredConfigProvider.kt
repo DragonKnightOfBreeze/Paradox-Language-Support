@@ -16,8 +16,11 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
     //root.value:$PARAM$|K|V| -> <script_value>
     //root.value:some_script_value|K|$PARAM$| -> from parameter K
     
+    override fun supports(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
+        return !parameterInfo.isEntireExpression //要求不整个作为脚本表达式
+    }
+    
     override fun getConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig? {
-        if(parameterInfo.isEntireExpression) return null //要求不整个作为脚本表达式
         val expressionElement = parameterInfo.expressionElement
         val expressionText = expressionElement?.text ?: return null
         if(expressionText.isLeftQuoted()) return null
@@ -89,6 +92,7 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
     }
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
-        return null
+        //不适用于这种情况
+        throw UnsupportedOperationException()
     }
 }

@@ -22,11 +22,13 @@ import icu.windea.pls.lang.model.*
  */
 @WithGameTypeEP
 interface ParadoxParameterInferredConfigProvider {
-    /**
-     * @throws
-     */
+    fun supports(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): Boolean
+    
     fun getConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig?
     
+    /**
+     * @throws UnsupportedOperationException 此方法不适用。
+     */
     fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo) : List<CwtMemberConfig<*>>?
     
     companion object INSTANCE {
@@ -37,6 +39,7 @@ interface ParadoxParameterInferredConfigProvider {
             return withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider.getConfig") {
                 EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                     if(!gameType.supportsByAnnotation(ep)) return@f null
+                    if(!ep.supports(parameterInfo, parameterContextInfo)) return@f null
                     ep.getConfig(parameterInfo, parameterContextInfo)
                         ?.takeUnless { ParadoxParameterHandler.isIgnoredInferredConfig(it) }
                 }
@@ -48,6 +51,7 @@ interface ParadoxParameterInferredConfigProvider {
             return withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider.INSTANCE.getContextConfigs") {
                 EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                     if(!gameType.supportsByAnnotation(ep)) return@f null
+                    if(!ep.supports(parameterInfo, parameterContextInfo)) return@f null
                     ep.getContextConfigs(parameterInfo, parameterContextInfo).takeIfNotEmpty()
                 }
             }

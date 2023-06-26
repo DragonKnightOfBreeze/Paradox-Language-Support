@@ -247,7 +247,11 @@ object ParadoxParameterHandler {
             }
         }
         
-        val resolved = doGetInferredContextConfigs(parameterElement)
+        val resolved = try {
+            doGetInferredContextConfigs(parameterElement)
+        } catch(e: Exception) {
+            listOf(CwtValueConfig.EmptyConfig)
+        }
         
         val ep = parameterElement.getUserData(supportKey)
         if(ep != null) {

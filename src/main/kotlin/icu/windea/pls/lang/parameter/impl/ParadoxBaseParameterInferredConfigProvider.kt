@@ -9,8 +9,11 @@ import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfigProvider {
+    override fun supports(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
+        return parameterInfo.isEntireExpression //要求整个作为脚本表达式
+    }
+    
     override fun getConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig? {
-        if(!parameterInfo.isEntireExpression) return null //要求整个作为脚本表达式
         val configs = parameterInfo.expressionConfigs
         val config = configs.firstOrNull() ?: return null
         return when(config.expression.type) {
@@ -35,16 +38,37 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     }
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo) : List<CwtMemberConfig<*>>? {
-        if(!parameterInfo.isEntireExpression) return null //要求整个作为脚本表达式
         val parent = parameterInfo.element?.parent
         when {
             parent is ParadoxScriptPropertyKey -> {
-                //不适用于这种情况，特殊处理返回的数据
-                return listOf(CwtValueConfig.EmptyConfig)
+                //不适用于这种情况
+                throw UnsupportedOperationException()
+            }
+            parent is ParadoxScriptString && parent.isPropertyValue() -> {
+                //将rootBlock中的propertyConfigs转化为propertyValueConfigs
+                return parameterInfo.expressionContextConfigs.map { c1 ->
+                    when(c1) {
+                        is CwtPropertyConfig -> c1.copyDelegated(null, doGetPropertyValueConfigs(c1))
+                        is CwtValueConfig -> c1.copyDelegated(null, doGetPropertyValueConfigs(c1))
+                    }
+                }
             }
             else -> {
-                return parameterInfo.expressionContextConfigs
+                return parameterInfo.expressionContextConfigs.map { c1 ->
+                    when(c1) {
+                        is CwtPropertyConfig -> c1.copyDelegated(null)
+                        is CwtValueConfig -> c1.copyDelegated(null)
+                    }
+                }
             }
+        }
+    }
+    
+    private fun doGetPropertyValueConfigs(c1: CwtMemberConfig<*>): List<CwtValueConfig>? {
+        return c1.configs?.mapNotNull { c2 ->
+            if(c2 !is CwtPropertyConfig) return@mapNotNull null
+            val vc = c2.valueConfig ?: return@mapNotNull null
+            vc.copyDelegated(c1, vc.configs, null)
         }
     }
 }
