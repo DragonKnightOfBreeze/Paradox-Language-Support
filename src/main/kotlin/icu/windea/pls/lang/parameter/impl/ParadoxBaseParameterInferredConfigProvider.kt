@@ -39,8 +39,8 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
         val parent = parameterInfo.element?.parent
         when {
             parent is ParadoxScriptPropertyKey -> {
-                //不适用于这种情况，特殊处理返回的数据
-                return listOf(CwtValueConfig.EmptyConfig)
+                //不适用于这种情况
+                throw UnsupportedOperationException()
             }
             else -> {
                 return parameterInfo.expressionContextConfigs
