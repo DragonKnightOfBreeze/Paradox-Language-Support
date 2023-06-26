@@ -62,3 +62,10 @@ inline fun <T, C : MutableCollection<in T>> List<T>.filterFastTo(destination: C,
 inline fun <T> List<T>.filterFast(predicate: (T) -> Boolean): List<T> {
     return filterFastTo(ArrayList(), predicate)
 }
+
+inline fun <T> List<T>.findFast(predicate: (T) -> Boolean): T? {
+    forEachFast { e ->
+        if (predicate(e)) return e
+    }
+    return null
+}

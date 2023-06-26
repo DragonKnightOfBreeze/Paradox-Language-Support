@@ -128,12 +128,11 @@ object ParadoxConfigHandler {
         }
         
         if(isPropertyValue) {
+            result = doOptimizeContextConfigs(result)
             result = result.mapNotNullFastTo(mutableListOf<CwtMemberConfig<*>>()) { if(it is CwtPropertyConfig) it.valueConfig else null }
         }
         
-        result = result.sortedByPriority(configGroup) { it.expression }
-        
-        return result
+        return result.sortedByPriority(configGroup) { it.expression }
     }
     
     fun getConfigs(element: PsiElement, orDefault: Boolean = true, matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
@@ -173,13 +172,10 @@ object ParadoxConfigHandler {
         //得到所有待匹配的结果
         val contextConfigs = configContext.getConfigs(matchOptions)
         if(contextConfigs.isEmpty()) return emptyList()
-        val contextConfigsToMatch = mutableListOf<CwtPropertyConfig>()
-        contextConfigs.forEachFast f@{ config ->
-            if(config !is CwtPropertyConfig) return@f
-            if(!ParadoxConfigMatcher.matches(element, keyExpression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) return@f
-            contextConfigsToMatch.add(config)
-        }
-        doOptimizeContextConfigsToMatch(contextConfigsToMatch)
+        val contextConfigsToMatch = contextConfigs
+            .filterFast { config -> config is CwtPropertyConfig }.cast<List<CwtPropertyConfig>>()
+            .filterFast { config -> ParadoxConfigMatcher.matches(element, keyExpression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions) }
+            .let { doOptimizeContextConfigs(it) }
         if(contextConfigsToMatch.isEmpty()) return emptyList()
         
         //得到所有可能匹配的结果
@@ -213,12 +209,9 @@ object ParadoxConfigHandler {
         //得到所有待匹配的结果
         val contextConfigs = configContext.getConfigs(matchOptions)
         if(contextConfigs.isEmpty()) return emptyList()
-        val contextConfigsToMatch = mutableListOf<CwtValueConfig>()
-        contextConfigs.forEachFast f@{ config ->
-            if(config !is CwtValueConfig) return@f
-            contextConfigsToMatch.add(config)
-        }
-        doOptimizeContextConfigsToMatch(contextConfigsToMatch)
+        val contextConfigsToMatch = contextConfigs
+            .filterFast { config -> config is CwtValueConfig }.cast<List<CwtValueConfig>>()
+            .let { doOptimizeContextConfigs(it) }
         if(contextConfigsToMatch.isEmpty()) return emptyList()
         
         //得到所有可能匹配的结果
@@ -303,16 +296,14 @@ object ParadoxConfigHandler {
         }
     }
     
-    private fun <T: CwtMemberConfig<*>> doOptimizeContextConfigsToMatch(
-        result: MutableList<T>
-    ) {
-        //如果结果不唯一且结果中存在按常量字符串匹配的规则，则仅选用那些规则
-        if(result.size <= 1) return
-        val constantConfigs = result.filterFast { it.expression.type == CwtDataType.Constant }
-        if(constantConfigs.isNotEmpty() && constantConfigs.size != result.size) {
-            result.clear()
-            result.addAll(constantConfigs)
-        }
+    private fun <T: CwtMemberConfig<*>> doOptimizeContextConfigs(
+        result: List<T>
+    ): List<T> {
+        //如果结果不唯一且结果中存在按常量字符串匹配的规则，则仅选用那些规则（加上匹配子句的规则）
+        if(result.size <= 1) return result
+        val constantConfig = result.findFast { it.expression.type == CwtDataType.Constant }
+        if(constantConfig == null) return result
+        return result.filterFast { it.expression.type == CwtDataType.Constant || it.expression.type == CwtDataType.Block }
     }
     
     //兼容需要考虑内联的情况（如内联脚本）
@@ -336,7 +327,6 @@ object ParadoxConfigHandler {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedChildOccurrenceMapCacheKey) {
             val value = ConcurrentHashMap<String, Map<CwtDataExpression, Occurrence>>()
             //invalidated on ScriptFileTracker
-            //to optimize performance, do not invoke file.containingFile here
             val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
             CachedValueProvider.Result.create(value, tracker)
         }
@@ -1494,13 +1484,13 @@ object ParadoxConfigHandler {
             CwtDataType.FileName -> 70
             CwtDataType.Definition -> 70
             CwtDataType.EnumValue -> {
-                val enumName = configExpression.value ?: return 0 //不期望匹配到
+                val enumName = configExpression.value ?: return 0 //unexpected
                 if(configGroup.enums.containsKey(enumName)) return 80
                 if(configGroup.complexEnums.containsKey(enumName)) return 45
                 return 0 //不期望匹配到，规则有误！
             }
             CwtDataType.Value, CwtDataType.ValueOrValueSet -> {
-                val valueSetName = configExpression.value ?: return 0 //不期望匹配到
+                val valueSetName = configExpression.value ?: return 0 //unexpected
                 if(configGroup.values.containsKey(valueSetName)) return 80
                 return 40
             }
@@ -1517,14 +1507,14 @@ object ParadoxConfigHandler {
             CwtDataType.ParameterValue -> 90 //same to Scalar
             CwtDataType.LocalisationParameter -> 10
             CwtDataType.ShaderEffect -> 85 // (80,90)
-            CwtDataType.SingleAliasRight -> 0 //不期望匹配到
-            CwtDataType.AliasName -> 0 //不期望匹配到
-            CwtDataType.AliasKeysField -> 0 //不期望匹配到
-            CwtDataType.AliasMatchLeft -> 0 //不期望匹配到
+            CwtDataType.SingleAliasRight -> 0 //unexpected
+            CwtDataType.AliasName -> 0 //unexpected
+            CwtDataType.AliasKeysField -> 0 //unexpected
+            CwtDataType.AliasMatchLeft -> 0 //unexpected
             CwtDataType.Template -> 65
             CwtDataType.Constant -> 100
             CwtDataType.Any -> 1
-            CwtDataType.Other -> 0 //不期望匹配到
+            CwtDataType.Other -> 0 //unexpected
         }
     }
     
