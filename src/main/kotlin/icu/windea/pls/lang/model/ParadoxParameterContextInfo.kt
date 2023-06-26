@@ -4,7 +4,9 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
@@ -95,9 +97,21 @@ class ParadoxParameterInfo(
      */
     val expressionContextConfigs: List<CwtMemberConfig<*>> by lazy {
         val expressionElement = element?.parent?.castOrNull<ParadoxScriptStringExpressionElement>()
-        val blockElement = expressionElement?.parentOfType<ParadoxScriptBlockElement>()
-        val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
-        if(memberElement == null) return@lazy emptyList()
-        ParadoxConfigHandler.getConfigContext(memberElement)?.getConfigs().orEmpty()
+        if(expressionElement == null) return@lazy emptyList()
+        val contextConfigs = ParadoxConfigHandler.getConfigContext(expressionElement)?.getConfigs().orEmpty()
+        if(contextConfigs.isEmpty()) return@lazy emptyList()
+        val containerConfig = CwtValueConfig.resolve(
+            pointer = emptyPointer(),
+            info = contextConfigs.first().info,
+            value = PlsConstants.blockFolder,
+            valueTypeId = CwtType.Block.id,
+            configs = contextConfigs.mapFast { config ->
+                when(config) {
+                    is CwtPropertyConfig -> config.copyDelegated(config.parent, config.deepCopyConfigs())
+                    is CwtValueConfig -> config.copyDelegated(config.parent, config.deepCopyConfigs())
+                }
+            }
+        )
+        listOf(containerConfig)
     }
 }

@@ -130,7 +130,7 @@ object ParadoxConfigHandler {
         
         if(isPropertyValue) {
             result = doOptimizeContextConfigs(result)
-            result = result.mapNotNullFastTo(mutableListOf<CwtMemberConfig<*>>()) { if(it is CwtPropertyConfig) it.valueConfig else null }
+            result = result.mapNotNullFastTo(mutableListOf<CwtMemberConfig<*>>()) { if(it is CwtPropertyConfig) it.valueConfig else it }
         }
         
         return result.sortedByPriority(configGroup) { it.expression }
@@ -589,8 +589,8 @@ object ParadoxConfigHandler {
         return
     }
     
-    fun addPropertyValueCompletions(propertyElement: ParadoxScriptProperty, context: ProcessingContext, result: CompletionResultSet) {
-        val configContext = getConfigContext(propertyElement)
+    fun addPropertyValueCompletions(element: ParadoxScriptStringExpressionElement, propertyElement: ParadoxScriptProperty, context: ProcessingContext, result: CompletionResultSet) {
+        val configContext = getConfigContext(element)
         if(configContext == null) return
         if(!configContext.isRootOrMember()) return
         
@@ -603,9 +603,8 @@ object ParadoxConfigHandler {
         context.scopeContext = ParadoxScopeHandler.getScopeContext(propertyElement)
         
         for(config in configs) {
-            if(config is CwtPropertyConfig) {
-                val valueConfig = config.valueConfig ?: continue
-                context.config = valueConfig
+            if(config is CwtValueConfig) {
+                context.config = config
                 completeScriptExpression(context, result)
             }
         }

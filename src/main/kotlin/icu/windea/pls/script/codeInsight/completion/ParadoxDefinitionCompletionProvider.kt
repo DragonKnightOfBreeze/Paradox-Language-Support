@@ -68,7 +68,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
                 try {
                     propertyElement.putUserData(PlsKeys.isIncompleteKey, incomplete)
                     //进行提示
-                    ParadoxConfigHandler.addPropertyValueCompletions(propertyElement, context, resultToUse)
+                    ParadoxConfigHandler.addPropertyValueCompletions(element, propertyElement, context, resultToUse)
                 } finally {
                     propertyElement.putUserData(PlsKeys.isIncompleteKey, null)
                 }

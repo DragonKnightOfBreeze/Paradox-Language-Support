@@ -44,31 +44,9 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
                 //不适用于这种情况
                 throw UnsupportedOperationException()
             }
-            parent is ParadoxScriptString && parent.isPropertyValue() -> {
-                //将rootBlock中的propertyConfigs转化为propertyValueConfigs
-                return parameterInfo.expressionContextConfigs.map { c1 ->
-                    when(c1) {
-                        is CwtPropertyConfig -> c1.copyDelegated(null, doGetPropertyValueConfigs(c1))
-                        is CwtValueConfig -> c1.copyDelegated(null, doGetPropertyValueConfigs(c1))
-                    }
-                }
-            }
             else -> {
-                return parameterInfo.expressionContextConfigs.map { c1 ->
-                    when(c1) {
-                        is CwtPropertyConfig -> c1.copyDelegated(null)
-                        is CwtValueConfig -> c1.copyDelegated(null)
-                    }
-                }
+                return parameterInfo.expressionContextConfigs
             }
-        }
-    }
-    
-    private fun doGetPropertyValueConfigs(c1: CwtMemberConfig<*>): List<CwtValueConfig>? {
-        return c1.configs?.mapNotNull { c2 ->
-            if(c2 !is CwtPropertyConfig) return@mapNotNull null
-            val vc = c2.valueConfig ?: return@mapNotNull null
-            vc.copyDelegated(c1, vc.configs, null)
         }
     }
 }
