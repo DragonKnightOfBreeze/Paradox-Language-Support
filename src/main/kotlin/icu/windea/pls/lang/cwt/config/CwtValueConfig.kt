@@ -11,8 +11,6 @@ import icu.windea.pls.lang.model.*
 sealed interface CwtValueConfig : CwtMemberConfig<CwtValue>, CwtValueAware {
     val propertyConfig: CwtPropertyConfig?
     
-    val valueExpression: CwtValueExpression
-    
     companion object {
         val EmptyConfig: CwtValueConfig = CwtValueConfigImpls.ImplA(emptyPointer(), CwtConfigGroupInfo(""), "")
         

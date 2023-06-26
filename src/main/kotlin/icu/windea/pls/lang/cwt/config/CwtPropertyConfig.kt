@@ -10,7 +10,6 @@ import icu.windea.pls.lang.model.*
 
 sealed interface CwtPropertyConfig : CwtMemberConfig<CwtProperty>, CwtPropertyAware {
     val keyExpression: CwtKeyExpression
-    val valueExpression: CwtValueExpression
     
     val valueConfig: CwtValueConfig?
     

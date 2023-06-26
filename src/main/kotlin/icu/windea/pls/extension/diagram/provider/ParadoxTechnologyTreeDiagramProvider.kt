@@ -98,10 +98,8 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
             return o is PsiDirectory || o is ParadoxScriptProperty
         }
         
-        override fun getEditorTitle(element: PsiElement?, additionalElements: MutableCollection<PsiElement>): String? {
-            if(element == null) return null
-            val gameType = selectGameType(element) ?: return null //unexpected
-            return PlsDiagramBundle.message("paradox.technologyTree.editorTitle", gameType.description)
+        override fun getEditorTitle(element: PsiElement?, additionalElements: MutableCollection<PsiElement>): String {
+            return provider.presentableName
         }
         
         override fun getElementTitle(element: PsiElement): String? {

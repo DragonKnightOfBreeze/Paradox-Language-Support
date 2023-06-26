@@ -15,7 +15,7 @@ import icu.windea.pls.lang.model.*
 @WithGameType(ParadoxGameType.Vic2)
 class Vic2EventTreeDiagramSettingsConfigurable(
     val project: Project
-) : BoundConfigurable(PlsDiagramBundle.message("paradox.eventTree.name", ParadoxGameType.Vic2)), SearchableConfigurable {
+) : BoundConfigurable(PlsDiagramBundle.message("vic2.eventTree.name")), SearchableConfigurable {
     override fun getId() = Vic2EventTreeDiagramSettings.ID
     
     val settings = project.service<Vic2EventTreeDiagramSettings>().state

@@ -22,6 +22,9 @@ import icu.windea.pls.lang.model.*
  */
 @WithGameTypeEP
 interface ParadoxParameterInferredConfigProvider {
+    /**
+     * @throws
+     */
     fun getConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig?
     
     fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo) : List<CwtMemberConfig<*>>?

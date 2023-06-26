@@ -12,6 +12,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
 import icu.windea.pls.extension.diagram.settings.impl.*
 import icu.windea.pls.lang.data.*
@@ -33,6 +34,9 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
     private val _colorManager = ColorManager()
     
     override fun getID() = ID
+    
+    @Suppress("DialogTitleCapitalization")
+    override fun getPresentableName() = PlsDiagramBundle.message("stellaris.technologyTree.name")
     
     override fun getColorManager() = _colorManager
     

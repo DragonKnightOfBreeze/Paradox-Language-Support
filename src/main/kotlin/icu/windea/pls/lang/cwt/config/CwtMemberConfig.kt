@@ -15,12 +15,14 @@ import icu.windea.pls.lang.model.*
 sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig<T>, CwtValueAware, CwtOptionsAware, CwtDocumentationAware {
     val configs: List<CwtMemberConfig<*>>?
     
+    
     var parent: CwtMemberConfig<*>?
     var inlineableConfig: CwtInlineableConfig<@UnsafeVariance T>?
     
     val values: List<CwtValueConfig>?
     val properties: List<CwtPropertyConfig>?
     
+    val valueExpression: CwtValueExpression
     override val expression: CwtDataExpression
     
     override fun resolved(): CwtMemberConfig<T> = inlineableConfig?.config?.castOrNull<CwtMemberConfig<T>>() ?: this

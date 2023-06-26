@@ -18,7 +18,7 @@ import kotlinx.coroutines.*
 class StellarisTechnologyTreeDiagramSettingsConfigurable(
     val project: Project,
     val coroutineScope: CoroutineScope
-) : BoundConfigurable(PlsDiagramBundle.message("paradox.technologyTree.name", ParadoxGameType.Stellaris)), SearchableConfigurable {
+) : BoundConfigurable(PlsDiagramBundle.message("stellaris.technologyTree.name")), SearchableConfigurable {
     override fun getId() = StellarisTechnologyTreeDiagramSettings.ID
     
     val settings = project.service<StellarisTechnologyTreeDiagramSettings>().state

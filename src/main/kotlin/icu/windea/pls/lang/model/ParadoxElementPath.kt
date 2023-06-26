@@ -64,6 +64,7 @@ interface ParadoxElementPath : Iterable<Info> {
 
 fun ParadoxElementPath.relativeTo(other: ParadoxElementPath): ParadoxElementPath? {
     if(this == other) return EmptyParadoxElementPath
+    if(this.isEmpty()) return other
     val path = other.path.removePrefixOrNull(this.path + "/") ?: return null
     return Resolver.resolve(path)
 }
