@@ -10,7 +10,6 @@ import icu.windea.pls.lang.model.*
 
 sealed interface CwtPropertyConfig : CwtMemberConfig<CwtProperty>, CwtPropertyAware {
     val keyExpression: CwtKeyExpression
-    val valueExpression: CwtValueExpression
     
     val valueConfig: CwtValueConfig?
     
@@ -52,10 +51,10 @@ fun CwtPropertyConfig.copy(
 }
 
 fun CwtPropertyConfig.copyDelegated(
-    parent: CwtMemberConfig<*>? = null,
-    configs: List<CwtMemberConfig<*>>? = null
+    parent: CwtMemberConfig<*>? = this.parent,
+    configs: List<CwtMemberConfig<*>>? = this.configs
 ): CwtPropertyConfig {
-    return if(configs == null) {
+    return if(configs.isNullOrEmpty()) {
         CwtPropertyConfigImpls.DelegateA(this, parent)
     } else {
         CwtPropertyConfigImpls.DelegateB(this, parent, configs)
@@ -136,6 +135,9 @@ private object CwtPropertyConfigImpls {
         override var parent: CwtMemberConfig<*>?,
     ) : CwtPropertyConfig by delegate {
         override val valueConfig: CwtValueConfig? by lazy { getValueConfig() }
+        override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+        override val values: List<CwtValueConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+        override val properties: List<CwtPropertyConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         
         override fun toString(): String = "$key ${separatorType.text} $value"
     }

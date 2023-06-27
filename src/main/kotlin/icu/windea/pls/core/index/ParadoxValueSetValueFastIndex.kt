@@ -197,5 +197,7 @@ private fun filterFile(file: VirtualFile, lazy: Boolean): Boolean {
 }
 
 private fun useLazyIndex(file: VirtualFile): Boolean {
-    return ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null
+    if(ParadoxFileManager.isInjectedFile(file)) return true
+    if(ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null) return true
+    return false
 }

@@ -9,8 +9,11 @@ import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfigProvider {
+    override fun supports(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
+        return parameterInfo.isEntireExpression //要求整个作为脚本表达式
+    }
+    
     override fun getConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig? {
-        if(!parameterInfo.isEntireExpression) return null //要求整个作为脚本表达式
         val configs = parameterInfo.expressionConfigs
         val config = configs.firstOrNull() ?: return null
         return when(config.expression.type) {
@@ -35,7 +38,6 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     }
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo) : List<CwtMemberConfig<*>>? {
-        if(!parameterInfo.isEntireExpression) return null //要求整个作为脚本表达式
         val parent = parameterInfo.element?.parent
         when {
             parent is ParadoxScriptPropertyKey -> {

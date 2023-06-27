@@ -26,6 +26,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.ParadoxConfigMatcher.Options
+import icu.windea.pls.lang.ParadoxConfigMatcher.ResultValue
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
@@ -129,7 +130,7 @@ object ParadoxConfigHandler {
         
         if(isPropertyValue) {
             result = doOptimizeContextConfigs(result)
-            result = result.mapNotNullFastTo(mutableListOf<CwtMemberConfig<*>>()) { if(it is CwtPropertyConfig) it.valueConfig else null }
+            result = result.mapNotNullFastTo(mutableListOf<CwtMemberConfig<*>>()) { if(it is CwtPropertyConfig) it.valueConfig else it }
         }
         
         return result.sortedByPriority(configGroup) { it.expression }
@@ -142,13 +143,7 @@ object ParadoxConfigHandler {
             append('#').append(orDefault.toInt())
             append('#').append(matchOptions)
         }
-        return configsMap.getOrPut(cacheKey) {
-            when {
-                memberElement is ParadoxScriptProperty -> doGetPropertyConfigs(memberElement, orDefault, matchOptions)
-                memberElement is ParadoxScriptValue -> doGetValueConfigs(memberElement, orDefault, matchOptions)
-                else -> emptyList()
-            }
-        }.cast()
+        return configsMap.getOrPut(cacheKey) { doGetConfigs(memberElement, orDefault, matchOptions) }
     }
     
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>>? {
@@ -160,10 +155,20 @@ object ParadoxConfigHandler {
         }
     }
     
-    private fun doGetPropertyConfigs(element: ParadoxScriptProperty, orDefault: Boolean, matchOptions: Int): List<CwtPropertyConfig> {
+    private fun doGetConfigs(element: PsiElement, orDefault: Boolean, matchOptions: Int): List<CwtMemberConfig<*>> {
         //未填写属性的值 - 匹配所有
-        val keyExpression = element.propertyKey.let { ParadoxDataExpression.resolve(it, matchOptions) }
-        val valueExpression = element.propertyValue?.let { ParadoxDataExpression.resolve(it, matchOptions) }
+        val keyExpression = when {
+            element is ParadoxScriptFile -> null
+            element is ParadoxScriptProperty -> element.propertyKey.let { ParadoxDataExpression.resolve(it, matchOptions) }
+            element is ParadoxScriptValue -> null
+            else -> return emptyList()
+        }
+        val valueExpression = when {
+            element is ParadoxScriptFile -> BlockParadoxDataExpression
+            element is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxDataExpression.resolve(it, matchOptions) }
+            element is ParadoxScriptValue -> ParadoxDataExpression.resolve(element, matchOptions)
+            else -> return emptyList()
+        }
         
         val configContext = getConfigContext(element) ?: return emptyList()
         if(configContext.isDefinition() && !BitUtil.isSet(matchOptions, Options.AcceptDefinition)) return emptyList()
@@ -173,25 +178,31 @@ object ParadoxConfigHandler {
         val contextConfigs = configContext.getConfigs(matchOptions)
         if(contextConfigs.isEmpty()) return emptyList()
         val contextConfigsToMatch = contextConfigs
-            .filterFast { config -> config is CwtPropertyConfig }.cast<List<CwtPropertyConfig>>()
-            .filterFast { config -> ParadoxConfigMatcher.matches(element, keyExpression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions) }
+            .filterFast { config ->
+                when {
+                    element is ParadoxScriptProperty -> config is CwtPropertyConfig
+                        && (keyExpression == null || ParadoxConfigMatcher.matches(element, keyExpression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions))
+                    element is ParadoxScriptValue -> config is CwtValueConfig
+                    else -> true
+                }
+            }
             .let { doOptimizeContextConfigs(it) }
         if(contextConfigsToMatch.isEmpty()) return emptyList()
         
         //得到所有可能匹配的结果
         ProgressManager.checkCanceled()
         if(valueExpression == null) return contextConfigsToMatch
-        val matchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtPropertyConfig>>()
+        val matchResultValues = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
         contextConfigsToMatch.forEachFast f@{ config ->
             val matchResult = ParadoxConfigMatcher.matches(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
             if(matchResult == ParadoxConfigMatcher.Result.NotMatch) return@f
-            matchResultValues.add(ParadoxConfigMatcher.ResultValue(config, matchResult))
+            matchResultValues.add(ResultValue(config, matchResult))
         }
         //如果无结果且需要使用默认值，则返回所有可能匹配的规则
         if(matchResultValues.isEmpty() && orDefault) return contextConfigsToMatch
         
         ProgressManager.checkCanceled()
-        val finalMatchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtPropertyConfig>>()
+        val finalMatchResultValues = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
         doGetFinalResultValues(finalMatchResultValues, matchResultValues, matchOptions)
         if(finalMatchResultValues.isNotEmpty()) return finalMatchResultValues.mapFast { it.value }
         //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则
@@ -200,45 +211,7 @@ object ParadoxConfigHandler {
         return emptyList()
     }
     
-    private fun doGetValueConfigs(element: ParadoxScriptValue, orDefault: Boolean, matchOptions: Int): List<CwtValueConfig> {
-        val valueExpression = ParadoxDataExpression.resolve(element, matchOptions)
-        
-        val configContext = getConfigContext(element) ?: return emptyList()
-        val configGroup = configContext.configGroup
-        
-        //得到所有待匹配的结果
-        val contextConfigs = configContext.getConfigs(matchOptions)
-        if(contextConfigs.isEmpty()) return emptyList()
-        val contextConfigsToMatch = contextConfigs
-            .filterFast { config -> config is CwtValueConfig }.cast<List<CwtValueConfig>>()
-            .let { doOptimizeContextConfigs(it) }
-        if(contextConfigsToMatch.isEmpty()) return emptyList()
-        
-        //得到所有可能匹配的结果
-        ProgressManager.checkCanceled()
-        val matchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
-        contextConfigsToMatch.forEachFast f@{ config ->
-            val matchResult = ParadoxConfigMatcher.matches(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
-            if(matchResult == ParadoxConfigMatcher.Result.NotMatch) return@f
-            matchResultValues.add(ParadoxConfigMatcher.ResultValue(config, matchResult))
-        }
-        //如果无结果且需要使用默认值，则返回所有可能匹配的规则
-        if(matchResultValues.isEmpty() && orDefault) return contextConfigsToMatch
-        
-        val finalMatchResultValues = mutableListOf<ParadoxConfigMatcher.ResultValue<CwtValueConfig>>()
-        doGetFinalResultValues(finalMatchResultValues, matchResultValues, matchOptions)
-        if(finalMatchResultValues.isNotEmpty()) return finalMatchResultValues.mapFast { it.value }
-        //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则
-        if(orDefault) return contextConfigsToMatch
-        
-        return emptyList()
-    }
-    
-    private fun <T : CwtMemberConfig<*>> doGetFinalResultValues(
-        result: MutableList<ParadoxConfigMatcher.ResultValue<T>>,
-        matchResultValues: MutableList<ParadoxConfigMatcher.ResultValue<T>>,
-        matchOptions: Int
-    ) {
+    private fun doGetFinalResultValues(result: MutableList<ResultValue<CwtMemberConfig<*>>>, matchResultValues: MutableList<ResultValue<CwtMemberConfig<*>>>, matchOptions: Int) {
         //* 首先尝试直接的精确匹配，如果有结果，则直接返回
         //* 然后，如果有多个需要检查子句/作用域上下文的匹配，则分别对它们进行进一步匹配，保留匹配的所有结果或者第一个结果（如果没有多个，直接认为是匹配的）
         //* 然后，进行进一步的匹配 （如果没有匹配结果，将不需要访问索引的匹配认为是匹配的）
@@ -246,9 +219,9 @@ object ParadoxConfigHandler {
         matchResultValues.filterFastTo(result) { v -> v.result == ParadoxConfigMatcher.Result.ExactMatch }
         if(result.isNotEmpty()) return
         
-        var firstBlockAwareResult: ParadoxConfigMatcher.ResultValue<T>? = null
+        var firstBlockAwareResult: ResultValue<CwtMemberConfig<*>>? = null
         var firstBlockAwareResultIndex = -1
-        var firstScopeAwareResult: ParadoxConfigMatcher.ResultValue<T>? = null
+        var firstScopeAwareResult: ResultValue<CwtMemberConfig<*>>? = null
         var firstScopeAwareResultIndex = -1
         for(i in matchResultValues.lastIndex downTo 0) {
             val v = matchResultValues[i]
@@ -296,9 +269,7 @@ object ParadoxConfigHandler {
         }
     }
     
-    private fun <T: CwtMemberConfig<*>> doOptimizeContextConfigs(
-        result: List<T>
-    ): List<T> {
+    private fun doOptimizeContextConfigs(result: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
         //如果结果不唯一且结果中存在按常量字符串匹配的规则，则仅选用那些规则（加上匹配子句的规则）
         if(result.size <= 1) return result
         val constantConfig = result.findFast { it.expression.type == CwtDataType.Constant }
@@ -618,8 +589,8 @@ object ParadoxConfigHandler {
         return
     }
     
-    fun addPropertyValueCompletions(propertyElement: ParadoxScriptProperty, context: ProcessingContext, result: CompletionResultSet) {
-        val configContext = getConfigContext(propertyElement)
+    fun addPropertyValueCompletions(element: ParadoxScriptStringExpressionElement, propertyElement: ParadoxScriptProperty, context: ProcessingContext, result: CompletionResultSet) {
+        val configContext = getConfigContext(element)
         if(configContext == null) return
         if(!configContext.isRootOrMember()) return
         
@@ -632,9 +603,8 @@ object ParadoxConfigHandler {
         context.scopeContext = ParadoxScopeHandler.getScopeContext(propertyElement)
         
         for(config in configs) {
-            if(config is CwtPropertyConfig) {
-                val valueConfig = config.valueConfig ?: continue
-                context.config = valueConfig
+            if(config is CwtValueConfig) {
+                context.config = config
                 completeScriptExpression(context, result)
             }
         }
@@ -1565,8 +1535,8 @@ object ParadoxConfigHandler {
                     keys.add(it.key)
                 }
             }
-            when(config) {
-                is CwtPropertyConfig -> {
+            when {
+                config is CwtPropertyConfig -> {
                     val propertyConfig = config
                     propertyConfig.parent?.configs?.forEach { c ->
                         if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
@@ -1574,7 +1544,7 @@ object ParadoxConfigHandler {
                         }
                     }
                 }
-                is CwtValueConfig -> {
+                config is CwtValueConfig -> {
                     val propertyConfig = config.propertyConfig
                     propertyConfig?.parent?.configs?.forEach { c ->
                         if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {

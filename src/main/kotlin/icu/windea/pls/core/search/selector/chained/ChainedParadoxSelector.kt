@@ -15,20 +15,20 @@ open class ChainedParadoxSelector<T>(
     val context: Any? = null,
 ) : ParadoxSelector<T> {
     val file = selectFile(context)
-    val fileInfo = file?.fileInfo
-    val rootInfo = fileInfo?.rootInfo
-    val rootFile = rootInfo?.rootFile
+    val rootFile = selectRootFile(file)
+    val gameType = selectGameType(rootFile)
     
-    val gameType = rootInfo?.gameType
-    
-    val settings: ParadoxGameOrModSettingsState? = when {
-        rootInfo is ParadoxGameRootInfo -> getProfilesSettings().gameSettings.get(rootInfo.rootFile.path)
-        rootInfo is ParadoxModRootInfo -> getProfilesSettings().modSettings.get(rootInfo.rootFile.path)
-        else -> null
+    val settings: ParadoxGameOrModSettingsState? by lazy {
+        val rootInfo = rootFile?.fileInfo?.rootInfo
+        when {
+            rootInfo is ParadoxGameRootInfo -> getProfilesSettings().gameSettings.get(rootInfo.rootFile.path)
+            rootInfo is ParadoxModRootInfo -> getProfilesSettings().modSettings.get(rootInfo.rootFile.path)
+            else -> null
+        }
     }
     
     val defaultScope: GlobalSearchScope by lazy {
-        ParadoxSearchScope.fromFile(project, file, fileInfo)
+        ParadoxSearchScope.fromFile(project, file)
     }
     
     val scope: GlobalSearchScope by lazy {

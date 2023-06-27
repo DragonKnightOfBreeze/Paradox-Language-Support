@@ -11,8 +11,6 @@ import icu.windea.pls.lang.model.*
 sealed interface CwtValueConfig : CwtMemberConfig<CwtValue>, CwtValueAware {
     val propertyConfig: CwtPropertyConfig?
     
-    val valueExpression: CwtValueExpression
-    
     companion object {
         val EmptyConfig: CwtValueConfig = CwtValueConfigImpls.ImplA(emptyPointer(), CwtConfigGroupInfo(""), "")
         
@@ -57,22 +55,14 @@ fun CwtValueConfig.copy(
 }
 
 fun CwtValueConfig.copyDelegated(
-    parent: CwtMemberConfig<*>? = null,
-    configs: List<CwtMemberConfig<*>>? = null,
+    parent: CwtMemberConfig<*>? = this.parent,
+    configs: List<CwtMemberConfig<*>>? = this.configs,
     propertyConfig: CwtPropertyConfig? = this.propertyConfig,
 ): CwtValueConfig {
-    return if(propertyConfig == null) {
-        if(configs.isNullOrEmpty()) {
-            CwtValueConfigImpls.DelegateA(this, parent)
-        } else {
-            CwtValueConfigImpls.DelegateB(this, parent, configs)
-        }
+    return if(configs.isNullOrEmpty()) {
+        CwtValueConfigImpls.DelegateA(this, parent, propertyConfig)
     } else {
-        if(configs.isNullOrEmpty()) {
-            CwtValueConfigImpls.DelegateC(this, parent, propertyConfig)
-        } else {
-            CwtValueConfigImpls.DelegateD(this, parent, configs, propertyConfig)
-        }
+        CwtValueConfigImpls.DelegateB(this, parent, configs, propertyConfig)
     }
 }
 
@@ -167,41 +157,23 @@ private object CwtValueConfigImpls {
         override val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
     }
     
-    //memory usage: 12 + 2 * 4 = 20b => 24b
+    //memory usage: 12 + 4 * 3 = 24b => 24b
     
     class DelegateA(
         delegate: CwtValueConfig,
         override var parent: CwtMemberConfig<*>?,
-    ) : CwtValueConfig by delegate {
-        override fun toString(): String = value
-    }
-    
-    //memory usage: 12 + 4 * 4 = 28b => 32b
-    
-    class DelegateB(
-        delegate: CwtValueConfig,
-        override var parent: CwtMemberConfig<*>?,
-        override val configs: List<CwtMemberConfig<*>>? = null,
-    ) : CwtValueConfig by delegate {
-        override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
-        override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
-        
-        override fun toString(): String = value
-    }
-    
-    //memory usage: 12 + 4 * 4 = 24b => 24b
-    
-    class DelegateC(
-        delegate: CwtValueConfig,
-        override var parent: CwtMemberConfig<*>?,
         override val propertyConfig: CwtPropertyConfig? = null,
     ) : CwtValueConfig by delegate {
+        override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+        override val values: List<CwtValueConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+        override val properties: List<CwtPropertyConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+        
         override fun toString(): String = value
     }
     
     //memory usage: 12 + 6 * 4 = 36b => 40b
     
-    class DelegateD(
+    class DelegateB(
         delegate: CwtValueConfig,
         override var parent: CwtMemberConfig<*>?,
         override val configs: List<CwtMemberConfig<*>>? = null,

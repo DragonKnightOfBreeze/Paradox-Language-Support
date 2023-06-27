@@ -46,9 +46,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     
     private val _elementManager by lazy { ElementManager(this) }
     
-    @Suppress("DialogTitleCapitalization")
-    override fun getPresentableName() = PlsDiagramBundle.message("paradox.eventTree.name", gameType)
-    
     override fun createNodeContentManager() = NodeContentManager()
     
     override fun getElementManager() = _elementManager
@@ -87,10 +84,8 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             return o is PsiDirectory || o is ParadoxScriptProperty
         }
         
-        override fun getEditorTitle(element: PsiElement?, additionalElements: MutableCollection<PsiElement>): String? {
-            if(element == null) return null
-            val gameType = selectGameType(element) ?: return null //unexpected
-            return PlsDiagramBundle.message("paradox.eventTree.editorTitle", gameType.description)
+        override fun getEditorTitle(element: PsiElement?, additionalElements: MutableCollection<PsiElement>): String {
+            return provider.presentableName
         }
         
         override fun getElementTitle(element: PsiElement): String? {
