@@ -13,7 +13,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.ParadoxConfigMatcher.Options
-import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.parameter.*
@@ -105,7 +104,7 @@ object ParadoxLocalisationParameterHandler {
     private fun isMatchedProperty(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         if(element is ParadoxScriptProperty) {
             val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
-            if(configs.any { it pointerEquals config }) {
+            if(configs.any { it.pointer == config.pointer }) {
                 return true
             }
         }
