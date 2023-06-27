@@ -11,39 +11,41 @@ object ParadoxConfigMergeHandler {
         val result = mutableListOf<CwtMemberConfig<*>>()
         configs.forEach f1@{ config ->
             otherConfigs.forEach f2@{ otherConfig ->
-                if(config is CwtPropertyConfig && otherConfig is CwtPropertyConfig) {
-                    if(config.key.equals(otherConfig.key, true)) {
-                        if(config.configs == null && otherConfig.configs == null) {
-                            if(config.valueExpression == otherConfig.valueExpression) {
-                                result.add(config)
-                                return@f1
-                            }
-                        } else if(config.configs != null && otherConfig.configs != null) {
-                            if(config.pointer == otherConfig.pointer) { //TODO
-                                result.add(config)
-                                return@f1
-                            }
-                        }
-                    }
-                } else if(config is CwtValueConfig && otherConfig is CwtValueConfig) {
-                    if(config.configs == null && otherConfig.configs == null) {
-                        if(config.valueExpression == otherConfig.valueExpression) {
-                            result.add(config)
-                            return@f1
-                        }
-                    } else if(config.configs != null && otherConfig.configs != null) {
-                        if(config.pointer == otherConfig.pointer) { //TODO
-                            result.add(config)
-                            return@f1
-                        }
-                    }
-                }
+                val resultConfig = mergeConfig(config, otherConfig)
+                if(resultConfig != null) result.add(resultConfig)
             }
         }
         for(config in result) {
             config.parent = null
         }
         return result
+    }
+    
+    fun mergeConfig(c1: CwtMemberConfig<*>, c2: CwtMemberConfig<*>): CwtMemberConfig<*>? {
+        if(c1.pointer == c2.pointer) {
+            //value equality (should be)
+            return c1
+        }
+        val ic1 = c1.inlineableConfig
+        val ic2 = c2.inlineableConfig
+        if(ic1 != null && ic2 != null) {
+            if(ic1.pointer == ic2.pointer) {
+                //value equality after inline (should be)
+                return when(c1) {
+                    is CwtPropertyConfig -> c1.copy(
+                        pointer = emptyPointer(),
+                        options = mergeOptions(c1, c2),
+                        documentation = mergeDocumentations(c1, c2)
+                    )
+                    is CwtValueConfig -> c1.copy(
+                        pointer = emptyPointer(),
+                        options = mergeOptions(c1, c2),
+                        documentation = mergeDocumentations(c1, c2)
+                    )
+                }
+            }
+        }
+        return null
     }
     
     fun mergeValueConfig(c1: CwtValueConfig, c2: CwtValueConfig): CwtValueConfig? {
@@ -56,7 +58,7 @@ object ParadoxConfigMergeHandler {
             info = c1.info,
             value = c1.value,
             options = mergeOptions(c1, c2),
-            documentation = mergeDocumentations(c1, c2) 
+            documentation = mergeDocumentations(c1, c2)
         )
     }
     
@@ -109,7 +111,7 @@ object ParadoxConfigMergeHandler {
         return merge(c1.options, c2.options)
     }
     
-    private fun mergeDocumentations(c1: CwtDocumentationAware, c2: CwtDocumentationAware): String?{
+    private fun mergeDocumentations(c1: CwtDocumentationAware, c2: CwtDocumentationAware): String? {
         val d1 = c1.documentation?.takeIfNotEmpty()
         val d2 = c2.documentation?.takeIfNotEmpty()
         if(d1 == null || d2 == null) return d1 ?: d2

@@ -22,7 +22,7 @@ class CwtMemberConfigElement(
     parent: PsiElement,
     val config: CwtMemberConfig<*>,
     val gameType: ParadoxGameType,
-    val project: Project
+    private val project: Project
 ): ParadoxFakePsiElement(parent) {
     override fun getIcon(): Icon {
         return when(config) {

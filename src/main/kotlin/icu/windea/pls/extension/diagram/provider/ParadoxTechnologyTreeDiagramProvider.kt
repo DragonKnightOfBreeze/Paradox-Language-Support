@@ -57,9 +57,6 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
     
     override fun getID() = gameType.name + ".TechnologyTree"
     
-    @Suppress("DialogTitleCapitalization")
-    override fun getPresentableName() = PlsDiagramBundle.message("paradox.technologyTree.name", gameType)
-    
     override fun createNodeContentManager() = NodeContentManager()
     
     override fun getElementManager() = _elementManager
