@@ -15,7 +15,6 @@ import java.util.*
 /**
  * （对于本地化文件）检查是否存在不支持的递归。例如，递归使用本地化引用。
  */
-@SlowApi
 class UnsupportedRecursionInspection : LocalInspectionTool() {
     //目前仅做检查即可，不需要显示递归的装订线图标
     //在本地化级别进行此项检查

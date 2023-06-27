@@ -7,6 +7,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
@@ -21,6 +22,7 @@ import icu.windea.pls.script.psi.*
  * 如果某个event在某个on_action中被调用，
  * 则将此on_action的from, fromfrom...作用域推断为此event的from, fromfrom...作用域。
  */
+@SlowApi
 class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     companion object {
         val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.from.onAction")

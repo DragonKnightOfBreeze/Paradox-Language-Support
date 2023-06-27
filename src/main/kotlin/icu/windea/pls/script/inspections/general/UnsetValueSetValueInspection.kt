@@ -23,10 +23,7 @@ import kotlin.collections.set
  *
  * 默认不启用。
  */
-@SlowApi
 class UnsetValueSetValueInspection : LocalInspectionTool() {
-    //may be slow for ParadoxValueSetValueSearch
-    
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
         val project = holder.project
         val file = holder.file
