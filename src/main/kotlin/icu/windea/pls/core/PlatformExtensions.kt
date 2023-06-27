@@ -762,6 +762,8 @@ object EmptyPointer : SmartPsiElementPointer<PsiElement> {
 
 fun <T : PsiElement> emptyPointer(): SmartPsiElementPointer<T> = EmptyPointer.cast()
 
+fun SmartPsiElementPointer<*>.isEmpty() = this === EmptyPointer
+
 fun <E : PsiElement> E.createPointer(): SmartPsiElementPointer<E> {
     return SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this)
 }

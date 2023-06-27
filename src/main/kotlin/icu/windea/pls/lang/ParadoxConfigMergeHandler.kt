@@ -1,7 +1,10 @@
 package icu.windea.pls.lang
 
+import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
+import icu.windea.pls.lang.cwt.expression.CwtDataType as T
 
 object ParadoxConfigMergeHandler {
     fun mergeConfigs(configs: List<CwtMemberConfig<*>>, otherConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
@@ -43,71 +46,74 @@ object ParadoxConfigMergeHandler {
         return result
     }
     
-    fun shallowMergeValueConfig(config: CwtValueConfig, otherConfig: CwtValueConfig): CwtValueConfig? {
-        if(config.expression.type == CwtDataType.Block || otherConfig.expression.type == CwtDataType.Block) {
-            return null
-        }
-        if(config.expression == otherConfig.expression) {
-            return config.copy(propertyConfig = null)
-        }
-        return doShallowMergeValueConfig(config, otherConfig) ?: doShallowMergeValueConfig(otherConfig, config)
+    fun mergeValueConfig(c1: CwtValueConfig, c2: CwtValueConfig): CwtValueConfig? {
+        if(c1.pointer == c2.pointer) return c1 //value equality (should be) 
+        if(c1.expression.type == T.Block || c2.expression.type == T.Block) return null //cannot merge non-same clauses
+        val expressionString = mergeExpressionString(c1.expression, c2.expression)
+        if(expressionString == null) return null
+        return CwtValueConfig.resolve(
+            pointer = emptyPointer(),
+            info = c1.info,
+            value = c1.value,
+            options = mergeOptions(c1, c2),
+            documentation = mergeDocumentations(c1, c2) 
+        )
     }
     
-    private fun doShallowMergeValueConfig(config: CwtValueConfig, otherConfig: CwtValueConfig): CwtValueConfig? {
-        val e1 = config.expression
-        val e2 = otherConfig.expression
+    fun mergeExpressionString(e1: CwtDataExpression, e2: CwtDataExpression): String? {
+        val ignoreCase = e1.type == T.Constant && e2.type == T.Constant
+        if(e1.expressionString.equals(e2.expressionString, ignoreCase)) return e1.expressionString
+        return doMergeExpressionString(e1, e2) ?: doMergeExpressionString(e2, e1)
+    }
+    
+    private fun doMergeExpressionString(e1: CwtDataExpression, e2: CwtDataExpression): String? {
         val t1 = e1.type
         val t2 = e2.type
         return when(t1) {
-            CwtDataType.Int -> when(t2) {
-                CwtDataType.Int, CwtDataType.Float, CwtDataType.ValueField, CwtDataType.IntValueField, CwtDataType.VariableField, CwtDataType.IntVariableField -> {
-                    CwtValueConfig.resolve(config.pointer, config.info, "int")
-                }
+            T.Int -> when(t2) {
+                T.Int, T.Float, T.ValueField, T.IntValueField, T.VariableField, T.IntVariableField -> "int"
                 else -> null
             }
-            CwtDataType.Float -> when(t2) {
-                CwtDataType.Float, CwtDataType.ValueField, CwtDataType.VariableField -> {
-                    CwtValueConfig.resolve(config.pointer, config.info, "float")
-                }
+            T.Float -> when(t2) {
+                T.Float, T.ValueField, T.VariableField -> "float"
                 else -> null
             }
-            CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> when(t2) {
-                CwtDataType.ScopeField -> {
-                    CwtValueConfig.resolve(config.pointer, config.info, config.value)
-                }
-                CwtDataType.Scope -> {
-                    if(e2.value == "any") CwtValueConfig.resolve(config.pointer, config.info, config.value) else null
-                }
+            T.ScopeField, T.Scope, T.ScopeGroup -> when(t2) {
+                T.ScopeField -> e1.expressionString
+                T.Scope -> if(e2.value == "any") e1.expressionString else null
                 else -> null
             }
-            CwtDataType.Value, CwtDataType.ValueSet, CwtDataType.ValueOrValueSet -> when(t2) {
-                CwtDataType.Value, CwtDataType.ValueSet, CwtDataType.ValueOrValueSet -> {
-                    if(e1.value == e2.value) CwtValueConfig.resolve(config.pointer, config.info, "value_or_value_set[${e1.value}]") else null
-                }
-                CwtDataType.ValueField, CwtDataType.IntValueField, CwtDataType.VariableField, CwtDataType.IntVariableField -> {
-                    CwtValueConfig.resolve(config.pointer, config.info, "value_or_value_set[${e1.value}]")
-                }
+            T.Value, T.ValueSet, T.ValueOrValueSet -> when(t2) {
+                T.Value, T.ValueSet, T.ValueOrValueSet -> if(e1.value == e2.value) "value_or_value_set[${e1.value}]" else null
+                T.ValueField, T.IntValueField, T.VariableField, T.IntVariableField -> "value_or_value_set[${e1.value}]"
                 else -> null
             }
-            CwtDataType.VariableField -> when(t2) {
-                CwtDataType.VariableField, CwtDataType.ValueField -> {
-                    CwtValueConfig.resolve(config.pointer, config.info, "variable_field")
-                }
+            T.VariableField -> when(t2) {
+                T.VariableField, T.ValueField -> "variable_field"
                 else -> null
             }
-            CwtDataType.IntVariableField -> when(t2) {
-                CwtDataType.IntVariableField, CwtDataType.ValueField, CwtDataType.IntValueField -> {
-                    CwtValueConfig.resolve(config.pointer, config.info, "int_variable_field")
-                }
+            T.IntVariableField -> when(t2) {
+                T.IntVariableField, T.ValueField, T.IntValueField -> "int_variable_field"
                 else -> null
             }
-            CwtDataType.IntValueField -> when(t2) {
-                CwtDataType.ValueField, CwtDataType.IntValueField -> {
-                    CwtValueConfig.resolve(config.pointer, config.info, "int_value_field")
-                }
+            T.IntValueField -> when(t2) {
+                T.ValueField, T.IntValueField -> "int_value_field"
                 else -> null
             }
             else -> null
         }
+    }
+    
+    private fun mergeOptions(c1: CwtOptionsAware, c2: CwtOptionsAware): List<CwtOptionMemberConfig<*>> {
+        //keep duplicate options here (no affect to features)
+        return merge(c1.options, c2.options)
+    }
+    
+    private fun mergeDocumentations(c1: CwtDocumentationAware, c2: CwtDocumentationAware): String?{
+        val d1 = c1.documentation?.takeIfNotEmpty()
+        val d2 = c2.documentation?.takeIfNotEmpty()
+        if(d1 == null || d2 == null) return d1 ?: d2
+        if(d1 == d2) return d1
+        return "$d1\n<br><br>\n$d2"
     }
 }

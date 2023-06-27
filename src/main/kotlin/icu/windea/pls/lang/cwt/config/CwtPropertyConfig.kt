@@ -63,7 +63,7 @@ fun CwtPropertyConfig.copyDelegated(
 
 fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
     val valuePointer = when {
-        pointer === emptyPointer<CwtValue>() -> emptyPointer()
+        pointer.isEmpty() -> emptyPointer()
         else -> {
             val resolvedPointer = resolved().pointer
             val resolvedFile = resolvedPointer.containingFile ?: return null

@@ -9,6 +9,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.cwt.psi.*
@@ -37,6 +38,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         return when(element) {
             is CwtProperty -> getPropertyInfo(element, originalElement)
             is CwtString -> getStringInfo(element, originalElement)
+            is CwtMemberConfigElement -> getMemberConfigInfo(element, originalElement)
             else -> null
         }
     }
@@ -64,10 +66,21 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
+    private fun getMemberConfigInfo(element: CwtMemberConfigElement, originalElement: PsiElement?): String {
+        return buildString {
+            val name = element.name
+            val configType = null
+            val project = element.project
+            val configGroup = getCwtConfig(project).get(element.gameType)
+            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
+        }
+    }
+    
     override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
         return when(element) {
             is CwtProperty -> getPropertyDoc(element, originalElement)
             is CwtString -> getStringDoc(element, originalElement)
+            is CwtMemberConfigElement -> getMemberConfigDoc(element, originalElement)
             else -> null
         }
     }
@@ -102,6 +115,20 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
+    private fun getMemberConfigDoc(element: CwtMemberConfigElement, originalElement: PsiElement?): String {
+        return buildString {
+            val name = element.name
+            val configType = null
+            val project = element.project
+            val configGroup = getCwtConfig(project).get(element.gameType)
+            //images, localisations, scope infos
+            val sectionsList = List(3) { mutableMapOf<String, String>() }
+            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
+            buildDocumentationContent(element)
+            buildSections(sectionsList)
+        }
+    }
+    
     private fun StringBuilder.buildPropertyOrStringDefinition(
         element: PsiElement,
         originalElement: PsiElement?,
@@ -119,6 +146,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
                 configType?.isReference == true -> configType.prefix
                 element is CwtProperty -> PlsBundle.message("prefix.definitionProperty")
                 element is CwtValue -> PlsBundle.message("prefix.definitionValue")
+                element is CwtMemberConfigElement && element.config is CwtPropertyConfig -> PlsBundle.message("prefix.definitionProperty")
+                element is CwtMemberConfigElement && element.config is CwtValueConfig -> PlsBundle.message("prefix.definitionValue")
                 else -> configType?.prefix
             }
             val typeCategory = configType?.category
@@ -152,7 +181,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
                     addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sectionsList?.get(2))
                     addModifierIcon(element, referenceElement, name, configGroup, sectionsList?.get(1))
                 }
-                if(element is CwtProperty) {
+                if(element is CwtProperty || (element is CwtMemberConfigElement && element.config is CwtPropertyConfig)) {
                     addScope(element, name, configType, configGroup, sectionsList?.get(0))
                 }
                 if(referenceElement != null) {
@@ -230,7 +259,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun StringBuilder.addScope(element: CwtProperty, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+    private fun StringBuilder.addScope(element: PsiElement, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
         //即使是在CWT文件中，如果可以推断得到CWT规则组，也显示作用域信息
         
         if(!getSettings().documentation.showScopes) return

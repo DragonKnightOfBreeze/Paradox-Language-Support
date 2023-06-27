@@ -1267,7 +1267,14 @@ object ParadoxConfigHandler {
         if(result != null) return result
         
         if(configExpression is CwtKeyExpression && configExpression.type.isKeyReferenceType()) {
-            return config.resolved().pointer.element
+            val resolvedConfig = config.resolved()
+            if(resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
+                //特殊处理合成的CWT规则
+                val gameType = configGroup.gameType ?: return null
+                val project = configGroup.project
+                return CwtMemberConfigElement(element, resolvedConfig, gameType, project)
+            }
+            return resolvedConfig.pointer.element
         }
         return null
     }
@@ -1283,7 +1290,14 @@ object ParadoxConfigHandler {
         if(result.isNotEmpty()) return result
         
         if(configExpression is CwtKeyExpression && configExpression.type.isKeyReferenceType()) {
-            return config.resolved().pointer.element.toSingletonSetOrEmpty()
+            val resolvedConfig = config.resolved()
+            if(resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
+                //特殊处理合成的CWT规则
+                val gameType = configGroup.gameType ?: return emptySet()
+                val project = configGroup.project
+                return CwtMemberConfigElement(element, resolvedConfig, gameType, project).toSingletonSetOrEmpty()
+            }
+            return resolvedConfig.pointer.element.toSingletonSetOrEmpty()
         }
         return emptySet()
     }

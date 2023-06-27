@@ -61,7 +61,7 @@ object CwtConfigHandler {
             val file = element.containingFile ?: return@getCachedValue null
             val value = when(element) {
                 is CwtProperty -> doGetConfigType(element, file)
-                is CwtValue -> resolve(element, file)
+                is CwtValue -> doGetConfigType(element, file)
                 else -> null
             }
             //invalidated on file modification
@@ -150,7 +150,7 @@ object CwtConfigHandler {
         }
     }
     
-    private fun resolve(element: CwtValue, file: PsiFile): CwtConfigType? {
+    private fun doGetConfigType(element: CwtValue, file: PsiFile): CwtConfigType? {
         //val fileKey = file.name.substringBefore('.')
         val configPath = element.configPath
         if(configPath == null || configPath.isEmpty()) return null

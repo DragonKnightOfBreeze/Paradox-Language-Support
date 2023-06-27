@@ -2,6 +2,7 @@
 
 package icu.windea.pls.core.collections
 
+import icu.windea.pls.core.*
 import java.util.*
 
 fun <T> MutableSet(comparator: Comparator<T>? = null): MutableSet<T> {
@@ -30,4 +31,12 @@ fun <T> T.toSingletonSet(): Set<T> {
 
 fun <T : Any> T?.toSingletonSetOrEmpty(): Set<T> {
 	return if(this == null) Collections.emptySet() else Collections.singleton(this)
+}
+
+fun <T: Any> merge(vararg collections: Collection<T>?): List<T> {
+	return buildList { 
+		collections.forEach { collection ->
+			if(collection.isNotNullOrEmpty()) addAll(collection)
+		}
+	}
 }
