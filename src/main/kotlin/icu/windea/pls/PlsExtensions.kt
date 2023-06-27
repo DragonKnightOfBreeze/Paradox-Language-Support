@@ -4,6 +4,7 @@ package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
 import com.intellij.extapi.psi.*
+import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.lang.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.fileTypes.*
@@ -183,6 +184,7 @@ fun PsiReference.canResolveComplexEnumValue(): Boolean {
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
     return when {
         from == null -> null
+        from is VirtualFileWindow -> selectRootFile(from.delegate) //for injected PSI
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameRootFile
         else -> selectRootFile(selectFile(from))
     }

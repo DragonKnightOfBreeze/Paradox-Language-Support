@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
@@ -22,7 +23,7 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
 		val name = queryParameters.name
 		val selector = queryParameters.selector
 		val file = selector.file ?: return
-		val fileInfo = selector.fileInfo ?: return
+		val fileInfo = file.fileInfo ?: return
 		if("common/scripted_variables".matchesPath(fileInfo.pathToEntry.path)) return
 		val psiFile = file.toPsiFile(selector.project) ?: return
 		if(psiFile !is ParadoxScriptFile) return

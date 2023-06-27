@@ -63,8 +63,8 @@ interface ParadoxPriorityProvider {
                         ParadoxPriority.ORDERED -> pathResult
                     }
                 }
-                val rootInfo = searchParameters.selector.rootInfo ?: return@c 1
-                val rootFile = rootInfo.rootFile
+                val rootFile = searchParameters.selector.rootFile ?: return@c 1
+                val rootInfo = rootFile.fileInfo?.rootInfo ?: return@c 1
                 val rootPath = rootFile.path
                 val settings = when(rootInfo) {
                     is ParadoxGameRootInfo -> getProfilesSettings().gameSettings.get(rootPath)

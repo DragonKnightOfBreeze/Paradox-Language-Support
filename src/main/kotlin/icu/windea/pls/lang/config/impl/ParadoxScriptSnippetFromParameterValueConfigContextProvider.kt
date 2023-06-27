@@ -58,7 +58,7 @@ class ParadoxScriptSnippetFromParameterValueConfigContextProvider : ParadoxConfi
             val rootConfigContext = configContext.snippetFromParameterValueRootConfigContext ?: return null
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
             val configGroup = configContext.configGroup
-            return ParadoxConfigHandler.getConfigsFromConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+                return ParadoxConfigHandler.getConfigsFromConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         }
         
         val parameterElement = configContext.parameterElement ?: return null

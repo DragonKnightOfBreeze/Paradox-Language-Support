@@ -155,7 +155,6 @@ object ParadoxCoreHandler {
         val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfoKey)
         if(injectedFileInfo != null) return injectedFileInfo
         
-        
         val fileInfo = file.getUserData(PlsKeys.fileInfoKey)
         if(!refresh) return fileInfo
         val fileInfoStatus = file.getUserData(PlsKeys.fileInfoStatusKey)

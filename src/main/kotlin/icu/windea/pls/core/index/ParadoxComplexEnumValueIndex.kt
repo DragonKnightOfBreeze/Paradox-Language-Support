@@ -58,7 +58,7 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
     }
     
     override fun getInputFilter(): FileBasedIndex.InputFilter {
-        return FileBasedIndex.InputFilter { file -> filterFile(file) }
+        return FileBasedIndex.InputFilter { file -> filterFile(file, false) }
     }
     
     override fun dependsOnFileContent(): Boolean {
@@ -90,7 +90,7 @@ class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<Parado
         }
         
         private val gist = GistManager.getInstance().newVirtualFileGist(ID, VERSION, valueExternalizer) builder@{ project, file ->
-            if(!filterFile(file)) return@builder emptyMap()
+            if(!filterFile(file, true)) return@builder emptyMap()
             val psiFile = file.toPsiFile(project) ?: return@builder emptyMap()
             buildMap { indexData(psiFile, this) }
         }
@@ -114,7 +114,7 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxCo
     })
     
     if(fileData.isEmpty()) return
-    fileData.forEach { (_, value) -> 
+    fileData.forEach { (_, value) ->
         (value as MutableList).sortBy { it.name }
     }
 }
@@ -129,7 +129,7 @@ private fun writeComplexEnumValueInfos(storage: DataOutput, value: List<ParadoxC
     storage.writeUTFFast(firstInfo.enumName)
     storage.writeByte(firstInfo.gameType.toByte())
     var previousInfo: ParadoxComplexEnumValueInfo? = null
-    value.forEachFast { info -> 
+    value.forEachFast { info ->
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeByte(info.readWriteAccess.toByte())
         storage.writeIntFast(info.elementOffset)
@@ -155,9 +155,16 @@ private fun readComplexEnumValueInfos(storage: DataInput): List<ParadoxComplexEn
     return result
 }
 
-private fun filterFile(file: VirtualFile): Boolean {
+private fun filterFile(file: VirtualFile, lazy: Boolean): Boolean {
     val fileType = file.fileType
     if(fileType != ParadoxScriptFileType) return false
     if(file.fileInfo == null) return false
-    return true
+    val useLazyIndex = useLazyIndex(file)
+    return if(lazy) useLazyIndex else !useLazyIndex
+}
+
+private fun useLazyIndex(file: VirtualFile): Boolean {
+    if(ParadoxFileManager.isInjectedFile(file)) return true
+    if(ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null) return true
+    return false
 }

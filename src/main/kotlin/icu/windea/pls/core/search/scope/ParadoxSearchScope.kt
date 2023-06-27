@@ -28,17 +28,15 @@ sealed class ParadoxSearchScope(
             val psiFile = element.containingFile?.originalFile ?: return null
             val file = psiFile.virtualFile ?: return null
             val project = psiFile.project
-            val fileInfo = file.fileInfo
-            return fromFile(project, file, fileInfo)
+            return fromFile(project, file)
         }
         
         @JvmStatic
-        fun fromFile(project: Project, file: VirtualFile?, fileInfo: ParadoxFileInfo? = file?.fileInfo): GlobalSearchScope {
-            if(file == null) return allScope(project)
-            if(fileInfo == null) return allScope(project) //use all scope here
-            //如果文件不在项目中，改为使用allScope
+        fun fromFile(project: Project, file: VirtualFile?): GlobalSearchScope {
+            if(file == null) return allScope(project) //use all scope here
+            val rootInfo = selectRootFile(file)?.fileInfo?.rootInfo
+            if(rootInfo == null) return allScope(project) //use all scope here
             if(!ProjectFileIndex.getInstance(project).isInContent(file)) return allScope(project) //use all scope here
-            val rootInfo = fileInfo.rootInfo
             when(rootInfo) {
                 is ParadoxGameRootInfo -> {
                     val gameDirectory = rootInfo.rootFile
@@ -58,30 +56,33 @@ sealed class ParadoxSearchScope(
         
         @JvmStatic
         fun modScope(project: Project, context: Any?): GlobalSearchScope {
-            val file = selectFile(context) ?: return EMPTY_SCOPE
+            val file = selectFile(context)
+            if(file == null) return EMPTY_SCOPE //use empty scope here
+            val rootInfo = selectRootFile(file)?.fileInfo?.rootInfo
+            if(rootInfo == null) return EMPTY_SCOPE //use empty scope here
             if(!ProjectFileIndex.getInstance(project).isInContent(file)) return EMPTY_SCOPE //use empty scope here
-            val fileInfo = file.fileInfo
-            val rootInfo = fileInfo?.rootInfo
-            val modDirectory = rootInfo?.castOrNull<ParadoxModRootInfo>()?.rootFile
+            val modDirectory = rootInfo.castOrNull<ParadoxModRootInfo>()?.rootFile
             return ParadoxModSearchScope(project, file, modDirectory)
         }
         
         @JvmStatic
         fun gameScope(project: Project, context: Any?): GlobalSearchScope {
-            val file = selectFile(context) ?: return EMPTY_SCOPE
+            val file = selectFile(context)
+            if(file == null) return EMPTY_SCOPE //use empty scope here
+            val rootInfo = selectRootFile(file)?.fileInfo?.rootInfo
+            if(rootInfo == null) return EMPTY_SCOPE //use empty scope here
             if(!ProjectFileIndex.getInstance(project).isInContent(file)) return EMPTY_SCOPE //use empty scope here
-            val fileInfo = file.fileInfo
-            val rootInfo = fileInfo?.rootInfo
-            val gameDirectory = rootInfo?.castOrNull<ParadoxGameRootInfo>()?.rootFile
+            val gameDirectory = rootInfo.castOrNull<ParadoxGameRootInfo>()?.rootFile
             return ParadoxGameSearchScope(project, file, gameDirectory)
         }
         
         @JvmStatic
         fun modAndGameScope(project: Project, context: Any?): GlobalSearchScope {
-            val file = selectFile(context) ?: return EMPTY_SCOPE
+            val file = selectFile(context)
+            if(file == null) return EMPTY_SCOPE //use empty scope here
+            val rootInfo = selectRootFile(file)?.fileInfo?.rootInfo
+            if(rootInfo == null) return EMPTY_SCOPE //use empty scope here
             if(!ProjectFileIndex.getInstance(project).isInContent(file)) return EMPTY_SCOPE //use empty scope here
-            val fileInfo = file.fileInfo
-            val rootInfo = fileInfo?.rootInfo
             when(rootInfo) {
                 is ParadoxGameRootInfo -> {
                     val gameDirectory = rootInfo.rootFile
@@ -99,11 +100,12 @@ sealed class ParadoxSearchScope(
         
         @JvmStatic
         fun modWithDependenciesScope(project: Project, context: Any?): GlobalSearchScope {
-            val file = selectFile(context) ?: return EMPTY_SCOPE
+            val file = selectFile(context)
+            if(file == null) return EMPTY_SCOPE //use empty scope here
+            val rootInfo = selectRootFile(file)?.fileInfo?.rootInfo
+            if(rootInfo == null) return EMPTY_SCOPE //use empty scope here
             if(!ProjectFileIndex.getInstance(project).isInContent(file)) return EMPTY_SCOPE //use empty scope here
-            val fileInfo = file.fileInfo
-            val rootInfo = fileInfo?.rootInfo
-            val modDirectory = rootInfo?.castOrNull<ParadoxModRootInfo>()?.rootFile
+            val modDirectory = rootInfo.castOrNull<ParadoxModRootInfo>()?.rootFile
             if(modDirectory == null) return ParadoxModWithDependenciesSearchScope(project, file, null, null, emptySet())
             val settings = getProfilesSettings().gameSettings.get(modDirectory.path)
             val gameDirectory = settings?.gameDirectory?.toVirtualFile(false)
@@ -113,11 +115,12 @@ sealed class ParadoxSearchScope(
         
         @JvmStatic
         fun gameWithDependenciesScope(project: Project, context: Any?): GlobalSearchScope {
-            val file = selectFile(context) ?: return EMPTY_SCOPE
+            val file = selectFile(context)
+            if(file == null) return EMPTY_SCOPE //use empty scope here
+            val rootInfo = selectRootFile(file)?.fileInfo?.rootInfo
+            if(rootInfo == null) return EMPTY_SCOPE //use empty scope here
             if(!ProjectFileIndex.getInstance(project).isInContent(file)) return EMPTY_SCOPE //use empty scope here
-            val fileInfo = file.fileInfo
-            val rootInfo = fileInfo?.rootInfo
-            val gameDirectory = rootInfo?.castOrNull<ParadoxGameRootInfo>()?.rootFile
+            val gameDirectory = rootInfo.castOrNull<ParadoxGameRootInfo>()?.rootFile
             if(gameDirectory == null) return ParadoxGameWithDependenciesSearchScope(project, file, null, emptySet())
             val settings = getProfilesSettings().modSettings.get(gameDirectory.path)
             val dependencyDirectories = getDependencyDirectories(settings)
