@@ -154,7 +154,7 @@ private fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxDe
     })
     
     if(fileData.isEmpty()) return
-    fileData.forEach { (supportId, value) ->
+    fileData.forEach { (_, value) ->
         (value as MutableList).sortWith(compareBy({ it.definitionType + " " + it.definitionName }, { it.configExpression }, { it.expression }))
     }
 }
@@ -184,7 +184,6 @@ private fun writeDefinitionHierarchyInfos(storage: DataOutput, value: List<Parad
 }
 
 private fun readDefinitionHierarchyInfos(storage: DataInput): List<ParadoxDefinitionHierarchyInfo> {
-    //perf: 200s for inspect directory 'common'
     val size = storage.readIntFast()
     if(size == 0) return emptyList()
     val supportId = storage.readUTFFast()
