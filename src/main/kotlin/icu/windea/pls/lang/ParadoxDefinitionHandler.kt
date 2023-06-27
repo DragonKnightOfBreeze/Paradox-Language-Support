@@ -406,11 +406,11 @@ object ParadoxDefinitionHandler {
                     return ParadoxConfigMatcher.matches(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchOptions).get(matchOptions)
                 }
                 //匹配single_alias
-                ParadoxConfigHandler.isSingleAlias(propertyConfig) -> {
+                ParadoxConfigHandler.isSingleAliasEntryConfig(propertyConfig) -> {
                     return doMatchSingleAlias(definitionElement, propertyElement, propertyConfig, configGroup, matchOptions)
                 }
                 //匹配alias
-                ParadoxConfigHandler.isAlias(propertyConfig) -> {
+                ParadoxConfigHandler.isAliasEntryConfig(propertyConfig) -> {
                     return doMatchAlias(definitionElement, propertyElement, propertyConfig, configGroup, matchOptions)
                 }
                 propertyConfig.configs.orEmpty().isNotEmpty() -> {

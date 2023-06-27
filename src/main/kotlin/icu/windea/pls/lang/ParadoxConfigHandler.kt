@@ -67,6 +67,17 @@ object ParadoxConfigHandler {
         configGroup: CwtConfigGroup,
         matchOptions: Int = Options.Default
     ): List<CwtMemberConfig<*>> {
+        val result = doGetConfigsFromConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+        return result.sortedByPriority { it.expression }
+    }
+    
+    fun doGetConfigsFromConfigContext(
+        element: ParadoxScriptMemberElement,
+        rootConfigs: List<CwtMemberConfig<*>>,
+        elementPathFromRoot: ParadoxElementPath,
+        configGroup: CwtConfigGroup,
+        matchOptions: Int
+    ): List<CwtMemberConfig<*>> {
         if(elementPathFromRoot.isParameterized) return emptyList() //skip if element path is parameterized
         
         val isPropertyValue = element is ParadoxScriptValue && element.isPropertyValue()
@@ -107,33 +118,14 @@ object ParadoxConfigHandler {
             
             result = nextResult
             
-            //如过结果不为空且结果中存在需要重载的规则，则全部替换成重载后的规则
-            run {
-                if(result.isEmpty()) return@run
-                val optimizedResult = mutableListOf<CwtMemberConfig<*>>()
-                result.forEachFast { config ->
-                    val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, config)
-                    if(overriddenConfigs.isNotNullOrEmpty()) {
-                        //这里需要再次进行匹配
-                        overriddenConfigs.forEachFast { overriddenConfig ->
-                            if(ParadoxConfigMatcher.matches(element, expression, overriddenConfig.expression, overriddenConfig, configGroup, matchOptions).get(matchOptions)) {
-                                optimizedResult.add(overriddenConfig)
-                            }
-                        }
-                    } else {
-                        optimizedResult.add(config)
-                    }
-                    result = optimizedResult
-                }
-            }
+            if(matchKey) result = doOptimizeContextConfigs(element, result, expression, matchOptions)
         }
         
         if(isPropertyValue) {
-            result = doOptimizeContextConfigs(result)
-            result = result.mapNotNullFastTo(mutableListOf<CwtMemberConfig<*>>()) { if(it is CwtPropertyConfig) it.valueConfig else it }
+            result = result.mapNotNullFastTo(mutableListOf<CwtMemberConfig<*>>()) { if(it is CwtPropertyConfig) it.valueConfig else null }
         }
         
-        return result.sortedByPriority(configGroup) { it.expression }
+        return result
     }
     
     fun getConfigs(element: PsiElement, orDefault: Boolean = true, matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
@@ -143,7 +135,10 @@ object ParadoxConfigHandler {
             append('#').append(orDefault.toInt())
             append('#').append(matchOptions)
         }
-        return configsMap.getOrPut(cacheKey) { doGetConfigs(memberElement, orDefault, matchOptions) }
+        return configsMap.getOrPut(cacheKey) {
+            val result = doGetConfigs(memberElement, orDefault, matchOptions)
+            result.sortedByPriority { it.expression }
+        }
     }
     
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>>? {
@@ -186,7 +181,7 @@ object ParadoxConfigHandler {
                     else -> true
                 }
             }
-            .let { doOptimizeContextConfigs(it) }
+            .let { configs -> doOptimizeContextConfigs(element, configs, keyExpression, matchOptions) }
         if(contextConfigsToMatch.isEmpty()) return emptyList()
         
         //得到所有可能匹配的结果
@@ -269,12 +264,45 @@ object ParadoxConfigHandler {
         }
     }
     
-    private fun doOptimizeContextConfigs(result: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
-        //如果结果不唯一且结果中存在按常量字符串匹配的规则，则仅选用那些规则（加上匹配子句的规则）
-        if(result.size <= 1) return result
-        val constantConfig = result.findFast { it.expression.type == CwtDataType.Constant }
-        if(constantConfig == null) return result
-        return result.filterFast { it.expression.type == CwtDataType.Constant || it.expression.type == CwtDataType.Block }
+    fun doOptimizeContextConfigs(element: PsiElement, configs: List<CwtMemberConfig<*>>, expression: ParadoxDataExpression?, matchOptions: Int): List<CwtMemberConfig<*>> {
+        if(configs.isEmpty()) return emptyList()
+        if(expression == null) return configs
+        
+        val configGroup = configs.first().info.configGroup
+        var result = configs
+        
+        //如果结果不为空且结果中存在需要重载的规则，则全部替换成重载后的规则
+        run r1@{
+            if(result.isEmpty()) return@r1
+            val optimizedResult = mutableListOf<CwtMemberConfig<*>>()
+            result.forEachFast { config ->
+                val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, config)
+                if(overriddenConfigs.isNotNullOrEmpty()) {
+                    //这里需要再次进行匹配
+                    overriddenConfigs.forEachFast { overriddenConfig ->
+                        if(ParadoxConfigMatcher.matches(element, expression, overriddenConfig.expression, overriddenConfig, configGroup, matchOptions).get(matchOptions)) {
+                            optimizedResult.add(overriddenConfig)
+                        }
+                    }
+                } else {
+                    optimizedResult.add(config)
+                }
+                result = optimizedResult
+            }
+        }
+        
+        //如果要匹配的是字符串，且匹配结果中存在作为常量匹配的规则，则仅保留这些规则
+        run r1@{
+            if(expression.type != ParadoxType.String) return@r1
+            if(result.size <= 1) return@r1
+            val constantConfigs = result.filterFast { isConstantMatch(it.expression, expression, configGroup) }
+            if(constantConfigs.isEmpty()) return@r1
+            val optimizedConfigs = mutableListOf<CwtMemberConfig<*>>()
+            optimizedConfigs.addAll(constantConfigs)
+            result = optimizedConfigs
+        }
+        
+        return result
     }
     
     //兼容需要考虑内联的情况（如内联脚本）
@@ -307,7 +335,7 @@ object ParadoxConfigHandler {
         if(configs.isEmpty()) return emptyMap()
         val configGroup = configs.first().info.configGroup
         //这里需要先按优先级排序
-        val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority(configGroup) { it.expression }
+        val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority { it.expression }
         if(childConfigs.isEmpty()) return emptyMap()
         val project = configGroup.project
         val blockElement = when {
@@ -1392,18 +1420,19 @@ object ParadoxConfigHandler {
     //endregion
     
     //region Misc Methods
-    fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
-        return propertyConfig.keyExpression.type == CwtDataType.AliasName
-            && propertyConfig.valueExpression.type == CwtDataType.AliasMatchLeft
+    fun isConstantMatch(configExpression: CwtDataExpression, expression: ParadoxDataExpression, configGroup: CwtConfigGroup): Boolean {
+        if(configExpression.type == CwtDataType.Constant) return true
+        if(configExpression.type == CwtDataType.EnumValue && configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.text) } == true) return true
+        if(configExpression.type == CwtDataType.Value && configExpression.value?.let { configGroup.values[it]?.values?.contains(expression.text) } == true) return true
+        return false
     }
     
-    fun isSingleAlias(propertyConfig: CwtPropertyConfig): Boolean {
+    fun isAliasEntryConfig(propertyConfig: CwtPropertyConfig): Boolean {
+        return propertyConfig.keyExpression.type == CwtDataType.AliasName && propertyConfig.valueExpression.type == CwtDataType.AliasMatchLeft
+    }
+    
+    fun isSingleAliasEntryConfig(propertyConfig: CwtPropertyConfig): Boolean {
         return propertyConfig.valueExpression.type == CwtDataType.SingleAliasRight
-    }
-    
-    fun isComplexEnum(config: CwtMemberConfig<*>): Boolean {
-        return config.expression.type == CwtDataType.EnumValue
-            && config.expression.value?.let { config.info.configGroup.complexEnums[it] } != null
     }
     
     @InferApi
