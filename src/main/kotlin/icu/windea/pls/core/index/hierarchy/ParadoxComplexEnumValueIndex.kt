@@ -17,7 +17,7 @@ import java.io.*
  * 用于索引复杂枚举值。
  *
  * * 这个索引兼容需要内联的情况（此时使用懒加载的索引）。
- * 
+ *
  * @see ParadoxComplexEnumValueInfo
  */
 class ParadoxComplexEnumValueIndex : ParadoxHierarchyIndex<List<ParadoxComplexEnumValueInfo>>() {
@@ -50,9 +50,11 @@ class ParadoxComplexEnumValueIndex : ParadoxHierarchyIndex<List<ParadoxComplexEn
         
         //排序
         if(fileData.isEmpty()) return
-        fileData.mapValues { (_, v) -> v.sortedBy { it.name } }
+        fileData.mapValues { (_, v) ->
+            v.sortedBy { it.name }
+        }
     }
-
+    
     //尝试减少实际需要索引的数据量以优化性能
     
     override fun writeData(storage: DataOutput, value: List<ParadoxComplexEnumValueInfo>) {

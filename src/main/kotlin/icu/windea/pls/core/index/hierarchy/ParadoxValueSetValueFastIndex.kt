@@ -68,7 +68,9 @@ class ParadoxValueSetValueFastIndex : ParadoxHierarchyIndex<List<ParadoxValueSet
         
         //排序 & 去重
         if(fileData.isEmpty()) return
-        fileData.mapValues { (_, v) -> v.distinctBy { it.name + "@" + it.readWriteAccess.ordinal }.sortedBy { it.name } }
+        fileData.mapValues { (_, v) -> 
+            v.distinctBy { it.name + "@" + it.readWriteAccess.ordinal }.sortedBy { it.name }
+        }
     }
     
     //尝试减少实际需要索引的数据量以优化性能

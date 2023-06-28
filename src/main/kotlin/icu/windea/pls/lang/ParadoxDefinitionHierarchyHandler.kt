@@ -10,6 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.hierarchy.*
 import icu.windea.pls.lang.hierarchy.impl.*
