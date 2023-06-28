@@ -7,7 +7,7 @@ import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.*
+import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
@@ -31,7 +31,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
             ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
-            val fileData = ParadoxComplexEnumValueIndex.getFileData(file, project)
+            val fileData = ParadoxComplexEnumValueIndex.getInstance().getFileData(file, project)
             if(fileData.isEmpty()) return@p true
             val complexEnumValueInfoList = fileData[enumName]
             if(complexEnumValueInfoList.isNullOrEmpty()) return@p true

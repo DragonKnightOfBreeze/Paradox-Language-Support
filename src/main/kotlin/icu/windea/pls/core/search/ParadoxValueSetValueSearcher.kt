@@ -7,7 +7,7 @@ import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.*
+import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
@@ -33,7 +33,7 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
             ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
-            val fileData = ParadoxValueSetValueFastIndex.getFileData(file, project)
+            val fileData = ParadoxValueSetValueFastIndex.getInstance().getFileData(file, project)
             if(fileData.isEmpty()) return@p true
             valueSetNames.forEach f@{ valueSetName ->
                 val valueSetValueInfoList = fileData[valueSetName]

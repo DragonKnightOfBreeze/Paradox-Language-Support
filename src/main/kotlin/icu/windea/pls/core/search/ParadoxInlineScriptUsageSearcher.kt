@@ -6,11 +6,10 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
-import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.*
+import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 
@@ -27,23 +26,24 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
         val selector = queryParameters.selector
         val gameType = selector.gameType
         
-        FileBasedIndex.getInstance().processValues(ParadoxInlineScriptUsageIndex.NAME, expression, null, p@{ file, value ->
+        doProcessFiles(scope) p@{ file ->
             ProgressManager.checkCanceled()
-            val psiFile = file.toPsiFile(project) ?: return@p true //ensure file info is resolved
+            //ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
+            val psiFile = file.toPsiFile(project) ?: return@p true //ensure file info is resolved here
             if(selectGameType(file) != gameType) return@p true //check game type at file level
-            val inlineScriptUsageInfos = value
+            
+            val fileData = ParadoxInlineScriptUsageIndex.getInstance().getFileData(file, project)
+            if(fileData.isEmpty()) return@p true
+            val inlineScriptUsageInfos = fileData[expression]
             if(inlineScriptUsageInfos.isNullOrEmpty()) return@p true
             inlineScriptUsageInfos.forEachFast { info ->
-                if(gameType == info.gameType) {
-                    info.withFile(psiFile) { consumer.process(info) }
-                }
+                info.withFile(psiFile) { consumer.process(info) }
             }
             true
-        }, scope)
+        }
     }
     
     private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>) {
-        ProgressManager.checkCanceled()
         FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
     }
     
