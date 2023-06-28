@@ -620,8 +620,8 @@ fun PsiReference.resolveFirst(): PsiElement? {
  * 判断两个[PsiElement]是否在同一[VirtualFile]的同一位置。
  */
 infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean {
-    if(this == null || other == null) return false
     if(this == other) return true
+    if(this == null || other == null) return false
     return startOffset == other.startOffset
         && containingFile.originalFile.virtualFile == other.containingFile.originalFile.virtualFile
 }
