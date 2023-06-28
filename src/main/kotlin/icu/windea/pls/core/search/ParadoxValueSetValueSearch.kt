@@ -21,7 +21,7 @@ class ParadoxValueSetValueSearch : ExtensibleQueryFactory<ParadoxValueSetValueIn
     ) : ParadoxSearchParameters<ParadoxValueSetValueInfo>
     
     companion object {
-        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxValueSetValueInfo, SearchParameters>>("icu.windea.pls.paradoxValueSetValueSearch")
+        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxValueSetValueInfo, SearchParameters>>("icu.windea.pls.search.valueSetValueSearch")
         @JvmField val INSTANCE = ParadoxValueSetValueSearch()
         
         /**

@@ -73,7 +73,7 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
             withCheckRecursion(inlineScriptExpression) {
                 val project = configContext.configGroup.project
                 val selector = inlineScriptSelector(project, configContext.element)
-                ParadoxInlineScriptSearch.search(inlineScriptExpression, selector).processQueryAsync p@{ info ->
+                ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQueryAsync p@{ info ->
                     ProgressManager.checkCanceled()
                     val e = info.file?.findElementAt(info.elementOffset) ?: return@p true
                     val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true

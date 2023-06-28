@@ -21,7 +21,7 @@ class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxComplexEnumV
 	) : ParadoxSearchParameters<ParadoxComplexEnumValueInfo>
 	
 	companion object {
-		val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxComplexEnumValueInfo, SearchParameters>>("icu.windea.pls.paradoxComplexEnumValueSearch")
+        @JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxComplexEnumValueInfo, SearchParameters>>("icu.windea.pls.search.complexEnumValueSearch")
 		@JvmField val INSTANCE = ParadoxComplexEnumValueSearch()
 		
 		/**

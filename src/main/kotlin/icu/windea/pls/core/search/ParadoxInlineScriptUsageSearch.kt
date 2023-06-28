@@ -9,7 +9,7 @@ import icu.windea.pls.lang.model.*
 /**
  * 内联脚本使用的查询。
  */
-class ParadoxInlineScriptSearch: ExtensibleQueryFactory<ParadoxInlineScriptUsageInfo, ParadoxInlineScriptSearch.SearchParameters>(EP_NAME) {
+class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxInlineScriptUsageInfo, ParadoxInlineScriptUsageSearch.SearchParameters>(EP_NAME) {
     /**
      * @property expression 内联脚本的路径表达式。
      */
@@ -19,11 +19,11 @@ class ParadoxInlineScriptSearch: ExtensibleQueryFactory<ParadoxInlineScriptUsage
     ) : ParadoxSearchParameters<ParadoxInlineScriptUsageInfo>
     
     companion object {
-        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxInlineScriptUsageInfo, SearchParameters>>("icu.windea.pls.paradoxInlineScriptSearch")
-        @JvmField val INSTANCE = ParadoxInlineScriptSearch()
+        @JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxInlineScriptUsageInfo, SearchParameters>>("icu.windea.pls.seaerch.inlineScriptUsageSearch")
+        @JvmField val INSTANCE = ParadoxInlineScriptUsageSearch()
         
         /**
-         * @see icu.windea.pls.core.search.ParadoxInlineScriptSearch.SearchParameters
+         * @see icu.windea.pls.core.search.ParadoxInlineScriptUsageSearch.SearchParameters
          */
         @JvmStatic
         fun search(

@@ -17,8 +17,8 @@ import icu.windea.pls.script.*
 /**
  * 内联脚本使用的查询器。
  */
-class ParadoxInlineScriptSearcher : QueryExecutorBase<ParadoxInlineScriptUsageInfo, ParadoxInlineScriptSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxInlineScriptSearch.SearchParameters, consumer: Processor<in ParadoxInlineScriptUsageInfo>) {
+class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUsageInfo, ParadoxInlineScriptUsageSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxInlineScriptUsageSearch.SearchParameters, consumer: Processor<in ParadoxInlineScriptUsageInfo>) {
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
         if(SearchScope.isEmptyScope(scope)) return
