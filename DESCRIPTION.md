@@ -13,6 +13,8 @@ It also provides quite comprehensive support for most advanced features of scrip
 <p>If <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a> is also installed, this plugin can provide some <a href="https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md">additional features</a>.</p>
 <p>If you encounter any problems during use, feel free to provide feedback via Github.</p>
 
+<br>
+
 <p>Paradox语言支持。</p>
 <p>特性：</p>
 <ul>

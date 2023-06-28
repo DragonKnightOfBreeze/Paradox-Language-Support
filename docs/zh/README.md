@@ -59,19 +59,18 @@ IDEA插件：Paradox语言支持。
   * 点击位于页面右上方的编辑器悬浮工具栏中的蓝色齿轮图标。
   * 在编辑器中打开右键菜单，点击`Paradox Language Support > Open Mod Settings...`。
   * 点击`Tools > Paradox Language Support > Open Mod Settings...`。
-* 如果IDE卡死，或者IDE索引出现问题，或者发生了涉及IDE索引的报错，请尝试通过以下方式解决：
+* 如果IDE卡死，或者IDE索引出现问题，或者发生了插件引起的报错，请尝试通过以下方式解决：
   * 更新IDE和插件到最新版本。
   * 点击`File -> Invalidate Caches... -> Invalidate and Restart`，重建索引并重启IDE。
-* 如果IDE发生了其他类型的报错，请尝试通过以下方式解决：
-  * `java.lang.AssertionError` - 删除`paradox-language-support.xml`。这个配置文件分别位于项目目录下的`.idea`目录中，
-    以及IDE全局配置目录中（参考位置：`C:\Users\<username>\AppData\Roaming\JetBrains\IntellijIdea2023.1\options`）。
-  * `java.lang.reflect.InvocationTargetException` - 同上。
+  * 通过Github或者QQ群进行反馈。
 
 ## FAQ
 
-Q：为什么推荐使用Intellij IDEA + 此插件，而不是传统的VSCode + CWTools？
+**为什么推荐使用Intellij IDEA + 此插件，而不是传统的VSCode + CWTools？**
 
-A：因为Idea非常可爱。
+向你介绍Idea，一名可爱而充满活力的少女，以银白长发和琥珀色瞳孔为外貌特征，时常穿着深蓝色的风衣。
+同时她也是一名强大而聪颖的法师，精通元素魔法、符文魔法和现代编程魔法。
+不仅如此，她还拥有另外一层身份……一名龙骑士！
 
 ## 参考
 

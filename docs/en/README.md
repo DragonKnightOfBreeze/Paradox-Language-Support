@@ -54,18 +54,18 @@ Tips:
   * Click the blue gear icon in the editor floating toolbar located in the upper right corner of the page.
   * In the editor, open the context menu and click `Paradox Language Support > Open Mod Settings...`.
   * Click `Tools > Paradox Language Support > Open Mod Settings...`.
-* If the IDE freezes or the IDE indices encounters problems or an error related to the IDE indices happened, try the following:
+* If the IDE freezes, or its indices encounter some problems,  or it throws an error caused by the plugin, try the following:
   * Update the IDE and plugin to the latest version.
   * Click `File -> Invalidate Caches... -> Invalidate and Restart` to rebuild the index and restart the IDE.
-* If the IDE encounters other types of errors, try resolving them using the following methods:
-  * `java.lang.AssertionError` - Delete `paradox-language-support.xml`. This configuration file can be found in the `.idea` directory located in the project directory, as well as in the IDE's global configuration directory (reference location: `C:\Users\<username>\AppData\Roaming\JetBrains\IntellijIdea2023.1\options`).
-  * `java.lang.reflect.InvocationTargetException` - Same as above.
+  * Provide feedback via Github.
 
 ## FAQ
 
-Q: Why is Intellij IDEA + this plugin, instead of VSCode + CWTools?
+**Why it is suggested to use Intellij IDEA + this plugin, instead of VSCode + CWTools?**
 
-A: For Idea is so lovely.
+Introducing Idea, a lovely and vibrant girl, with silver-white hair and amber-colored eyes, while often wears a deep blue wind coat.
+Meanwhile, she is also a powerful and intelligent mage, skilled in elemental magic, rune magic and modern programming magic.
+And moreover, she has an additional identity... a dragon knight!
 
 ## Reference
 
