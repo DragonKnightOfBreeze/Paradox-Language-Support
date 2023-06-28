@@ -3,6 +3,9 @@ package icu.windea.pls.core.index
 import com.intellij.psi.stubs.*
 import icu.windea.pls.script.psi.*
 
+/**
+ * 用于基于类型索引定义声明。
+ */
 class ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptDefinitionElement>() {
 	companion object {
 		@JvmField val KEY = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.type.index")

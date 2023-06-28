@@ -3,6 +3,9 @@ package icu.windea.pls.core.index
 import com.intellij.psi.stubs.*
 import icu.windea.pls.localisation.psi.*
 
+/**
+ * 用于基于名字索引本地化声明。
+ */
 class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
     companion object {
         @JvmField val KEY = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")

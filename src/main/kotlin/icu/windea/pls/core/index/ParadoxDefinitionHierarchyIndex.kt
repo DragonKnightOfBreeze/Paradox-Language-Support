@@ -18,11 +18,11 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 import java.util.*
 
-//这个索引的索引速度可能非常慢
-//这个索引兼容需要内联的情况（此时使用懒加载的索引）
-
 /**
  * 用于索引定义声明中的定义引用、参数引用、本地化参数引用等。
+ * 
+ * * 这个索引的索引速度可能非常慢。
+ * * 这个索引兼容需要内联的情况（此时使用懒加载的索引）。
  *
  * @see ParadoxDefinitionHierarchySupport
  */

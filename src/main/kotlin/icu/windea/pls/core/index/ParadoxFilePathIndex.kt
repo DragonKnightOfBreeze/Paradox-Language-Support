@@ -9,6 +9,9 @@ import icu.windea.pls.lang.model.*
 import java.io.*
 import java.util.*
 
+/**
+ * 用于索引文件的路径信息。
+ */
 class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo>() {
     companion object {
         @JvmField val NAME = ID.create<String, ParadoxFilePathInfo>("paradox.file.path.index")

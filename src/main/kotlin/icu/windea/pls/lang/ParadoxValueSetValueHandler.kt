@@ -29,10 +29,10 @@ object ParadoxValueSetValueHandler {
     
     fun getInfos(element: ParadoxScriptStringExpressionElement): List<ParadoxValueSetValueInfo> {
         if(!element.isExpression()) return emptyList()
-        return doGetInfo(element)
+        return doGetInfos(element)
     }
     
-    private fun doGetInfo(element: ParadoxScriptStringExpressionElement): List<ParadoxValueSetValueInfo> {
+    private fun doGetInfos(element: ParadoxScriptStringExpressionElement): List<ParadoxValueSetValueInfo> {
         val isKey = element is ParadoxScriptPropertyKey
         
         val matchOptions = Options.SkipIndex or Options.SkipScope

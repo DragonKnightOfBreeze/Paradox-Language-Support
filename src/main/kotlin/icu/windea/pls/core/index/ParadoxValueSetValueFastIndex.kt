@@ -17,13 +17,12 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-//这个索引的索引速度可能非常慢
-//这个索引不会保存同一文件中重复的ParadoxValueSetValueInfo
-//这个索引不会保存ParadoxValueSetValueInfo.elementOffset
-//这个索引兼容需要内联的情况（此时使用懒加载的索引）
-
 /**
  * 用于索引值集值。
+ * 
+ * * 这个索引的索引速度可能比较慢。
+ * * 这个索引不会保存同一文件中的重复数据。
+ * * 这个索引兼容需要内联的情况（此时使用懒加载的索引）。
  */
 class ParadoxValueSetValueFastIndex : FileBasedIndexExtension<String, List<ParadoxValueSetValueInfo>>() {
     companion object {

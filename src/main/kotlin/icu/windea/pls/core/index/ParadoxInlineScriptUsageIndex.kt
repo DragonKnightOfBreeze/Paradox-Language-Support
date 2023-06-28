@@ -12,6 +12,9 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
+/**
+ * 用于索引内联脚本调用。
+ */
 class ParadoxInlineScriptUsageIndex : FileBasedIndexExtension<String, List<ParadoxInlineScriptUsageInfo>>() {
     companion object {
         @JvmField val NAME = ID.create<String, List<ParadoxInlineScriptUsageInfo>>("paradox.inlineScriptUsage.index")

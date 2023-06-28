@@ -15,10 +15,10 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-//这个索引不需要兼容需要内联的情况
-
 /**
  * 用于索引复杂枚举值。
+ * 
+ * * 这个索引不需要兼容需要内联的情况。
  */
 class ParadoxComplexEnumValueIndex : FileBasedIndexExtension<String, List<ParadoxComplexEnumValueInfo>>() {
     companion object {
