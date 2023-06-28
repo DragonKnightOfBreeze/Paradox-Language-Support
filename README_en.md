@@ -5,7 +5,7 @@
 [中文文档](README.md) | [English Documentation](README_en.md)
 
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
-[Reference Documentation](https://windea.icu/Paradox-Language-Support/#/en/) |
+[Reference Documentation](https://windea.icu/Paradox-Language-Support) |
 [Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)
 
 IDEA plugin: Support for Paradox language.
@@ -14,11 +14,11 @@ Features:
 
 * Supports script language (mainly `*.txt` files) and localization language (`*.yml` files),  
   providing many language features such as syntax parsing, reference resolving, quick documentation, code navigation, code inspection, code completion, inlay hints, live templates, code hierarchy, diagram, diff, etc.  
-  It also provides quite comprehensive support for most advanced features of script language, such as parameters, scopes, inline scripts and various complex expressions.
 * Supports CWT language (`*.cwt` files), providing basic language features.
 * Supports viewing DDS images directly in the IDE, providing some useful editor features including converting to PNG images.
+* Provides quite comprehensive support for most advanced features of script language, such as parameters, scopes, inline scripts and various complex expressions.
+* Renders related type information, scope information, localisation text and DDS images through ways such as quick documentation and inlay hints.
 * Automatically recognizes the game directory (containing the launcher settings file `launcher-settings.json`) and mod directory (containing the mod descriptor file `descriptor.mod`).
-* Renders related localisation text and DDS images, as well as prompts some useful information including scope information and parameter information, through ways such as quick documentation and inlay hints.
 
 This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode). These rule files are currently built into the plugin with some modifications and extensions.
 

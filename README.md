@@ -5,7 +5,7 @@
 [中文文档](README.md) | [English Documentation](README_en.md)
 
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
-[Reference Documentation](https://windea.icu/Paradox-Language-Support/#/zh/) |
+[Reference Documentation](https://windea.icu/Paradox-Language-Support) |
 [Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
 QQ群：653824651
 
@@ -14,12 +14,12 @@ IDEA插件：Paradox语言支持。
 特性：
 
 * 支持脚本语言（主要是`*.txt`文件）和本地化语言（`*.yml`文件），  
-  提供语法解析、引用解析、快速文档、代码导航、代码检查、代码补全、内嵌提示、动态模版、代码层级、图表、差异比较等诸多语言功能。  
-  对于脚本语言的大多数高级特性（例如参数、作用域、内联脚本和各种复杂表达式），也提供了相当完善的支持。
+  提供语法解析、引用解析、快速文档、代码导航、代码检查、代码补全、内嵌提示、动态模版、代码层级、图表、差异比较等诸多语言功能。 
 * 支持CWT语言（`*.cwt`文件），提供基础的语言功能。
 * 支持直接在IDE中查看DDS图片，提供包括转为PNG图片在内的一些有用的编辑器功能。
+* 对于脚本语言和本地化语言的多数高级特性（例如参数、作用域、内联脚本和各种复杂表达式），也提供了相当完善的支持。
+* 通过快速文档和内嵌提示等方式，渲染相关的类型信息、作用域信息、本地化文本和DDS图片。
 * 自动识别游戏目录（包含启动器配置文件`launcher-settings.json`）和模组目录（包含模组描述符文件`descriptor.mod`）。
-* 通过快速文档和内嵌提示等方式，渲染相关的本地化文本和DDS图片，以及提示包括作用域信息和参数信息在内的一些有用的信息。
 
 此插件与 [CWTools](https://github.com/cwtools/cwtools-vscode) 共享规则文件（`*.cwt`）。这些规则文件目前由插件内置，并且经过一定的修改和扩展。
 
