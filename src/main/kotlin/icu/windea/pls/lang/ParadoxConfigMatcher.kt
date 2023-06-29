@@ -21,6 +21,8 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
+import java.util.logging.*
+import java.util.logging.Logger
 
 object ParadoxConfigMatcher {
     object Options {
@@ -500,7 +502,10 @@ object ParadoxConfigMatcher {
     private fun Boolean.toFallbackResult() = if(this) Result.FallbackMatch else Result.NotMatch
     
     private fun Lazy<Boolean>.catching() = delegatedBy {
+        var error: Throwable? = null
+        val loggerLevel = Logger.getGlobal().level
         try {
+            Logger.getGlobal().level = Level.OFF
             value
         } catch(e: Throwable) {
             //进一步匹配CWT规则时需要阻止输出错误日志以及抛出某些异常
@@ -509,8 +514,11 @@ object ParadoxConfigMatcher {
             //com.intellij.openapi.project.IndexNotReadyException
             
             if(e is ProcessCanceledException) throw e
-            thisLogger().info(e)
+            error = e
             true
+        } finally {
+            Logger.getGlobal().level = loggerLevel
+            if(error != null) thisLogger().info(error)
         }
     }
     
