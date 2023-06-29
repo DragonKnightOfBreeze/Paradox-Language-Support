@@ -189,26 +189,26 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 	val nodes = mutableListOf<ParadoxExpressionNode>()
 	val offset = textRange.startOffset
 	var index: Int
-	var dotIndex = -1
+	var tokenIndex = -1
 	val textLength = text.length
-	while(dotIndex < textLength) {
-		index = dotIndex + 1
-		dotIndex = text.indexOf('.', index)
-		if(dotIndex != -1 && parameterRanges.any { it.contains(dotIndex) }) continue //这里需要跳过参数文本
-		if(dotIndex != -1 && text.indexOf('@', index).let { it != -1 && dotIndex > it }) dotIndex = -1
-		if(dotIndex != -1 && text.indexOf('|', index).let { it != -1 && dotIndex > it }) dotIndex = -1
-		val dotNode = if(dotIndex != -1) {
-			val dotRange = TextRange.create(dotIndex + offset, dotIndex + 1 + offset)
+	while(tokenIndex < textLength) {
+		index = tokenIndex + 1
+		tokenIndex = text.indexOf('.', index)
+		if(tokenIndex != -1 && tokenIndex.inParameter(parameterRanges)) continue //这里需要跳过参数文本
+		if(tokenIndex != -1 && text.indexOf('@', index).let { it != -1 && it < tokenIndex && !it.inParameter(parameterRanges) }) tokenIndex = -1
+		if(tokenIndex != -1 && text.indexOf('|', index).let { it != -1 && it < tokenIndex && !it.inParameter(parameterRanges) }) tokenIndex = -1
+		val dotNode = if(tokenIndex != -1) {
+			val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
 			ParadoxOperatorExpressionNode(".", dotRange)
 		} else {
 			null
 		}
-		if(dotIndex == -1) {
-			dotIndex = textLength
+		if(tokenIndex == -1) {
+			tokenIndex = textLength
 		}
 		//resolve node
-		val nodeText = text.substring(index, dotIndex)
-		val nodeTextRange = TextRange.create(index + offset, dotIndex + offset)
+		val nodeText = text.substring(index, tokenIndex)
+		val nodeTextRange = TextRange.create(index + offset, tokenIndex + offset)
 		val node = ParadoxScopeFieldExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
 		//handle mismatch situation
 		if(!canBeMismatched && index == 0 && node is ParadoxErrorExpressionNode) {
@@ -218,4 +218,8 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
 		if(dotNode != null) nodes.add(dotNode)
 	}
 	return ParadoxScopeFieldExpressionImpl(text, isKey, textRange, nodes, configGroup)
+}
+
+private fun Int.inParameter(parameterRanges: List<TextRange>): Boolean {
+	return parameterRanges.any { it.contains(this) }
 }

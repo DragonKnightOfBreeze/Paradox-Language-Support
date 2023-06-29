@@ -74,7 +74,7 @@ object CwtTemplateExpressionHandler {
                 val matchGroup = matchResult.groups.get(i++) ?: return false
                 val referenceName = matchGroup.value
                 val expression = ParadoxDataExpression.resolve(referenceName, false)
-                ParadoxConfigMatcher.matches(element, expression, snippetExpression, null, configGroup, matchOptions).get(matchOptions)
+                val matched = ParadoxConfigMatcher.matches(element, expression, snippetExpression, null, configGroup, matchOptions).get(matchOptions)
                 if(!matched) return false
             }
         }

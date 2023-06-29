@@ -145,28 +145,28 @@ fun Resolver.resolve(text: String, textRange: TextRange, configs: List<CwtConfig
     val nodes = mutableListOf<ParadoxExpressionNode>()
     val offset = textRange.startOffset
     var index: Int
-    var atIndex = -1
+    var tokenIndex = -1
     val textLength = text.length
-    while(atIndex < textLength) {
-        index = atIndex + 1
-        atIndex = text.indexOf('@', index)
-        if(atIndex != -1 && parameterRanges.any { it.contains(atIndex) }) continue //这里需要跳过参数文本
-        if(atIndex == -1) {
-            atIndex = textLength
+    while(tokenIndex < textLength) {
+        index = tokenIndex + 1
+        tokenIndex = text.indexOf('@', index)
+        if(tokenIndex != -1 && tokenIndex.inParameter(parameterRanges)) continue //这里需要跳过参数文本
+        if(tokenIndex == -1) {
+            tokenIndex = textLength
         }
         //resolve valueSetValueNode
-        val nodeText = text.substring(0, atIndex)
-        val nodeTextRange = TextRange.create(offset, atIndex + offset)
+        val nodeText = text.substring(0, tokenIndex)
+        val nodeTextRange = TextRange.create(offset, tokenIndex + offset)
         val node = ParadoxValueSetValueExpressionNode.resolve(nodeText, nodeTextRange, configs, configGroup)
         if(node == null) return null //unexpected
         nodes.add(node)
-        if(atIndex != textLength) {
+        if(tokenIndex != textLength) {
             //resolve at token
-            val atNode = ParadoxMarkerExpressionNode("@", TextRange.create(atIndex + offset, atIndex + 1 + offset))
+            val atNode = ParadoxMarkerExpressionNode("@", TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset))
             nodes.add(atNode)
             //resolve scope expression
-            val expText = text.substring(atIndex + 1)
-            val expTextRange = TextRange.create(atIndex + 1 + offset, textLength + offset)
+            val expText = text.substring(tokenIndex + 1)
+            val expTextRange = TextRange.create(tokenIndex + 1 + offset, textLength + offset)
             val expNode = ParadoxScopeFieldExpression.resolve(expText, expTextRange, configGroup, null, true)!!
             nodes.add(expNode)
         }
@@ -174,4 +174,8 @@ fun Resolver.resolve(text: String, textRange: TextRange, configs: List<CwtConfig
     }
     if(!canBeMismatched && nodes.isEmpty()) return null
     return ParadoxValueSetValueExpressionImpl(text, isKey, textRange, nodes, configs, configGroup)
+}
+
+private fun Int.inParameter(parameterRanges: List<TextRange>): Boolean {
+    return parameterRanges.any { it.contains(this) }
 }

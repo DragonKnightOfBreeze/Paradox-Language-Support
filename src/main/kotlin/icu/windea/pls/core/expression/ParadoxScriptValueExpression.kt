@@ -173,23 +173,23 @@ fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, c
     var scriptValueNode: ParadoxScriptValueExpressionNode? = null
     var parameterNode: ParadoxScriptValueArgumentExpressionNode? = null
     var index: Int
-    var pipeIndex = -1
+    var tokenIndex = -1
     val textLength = text.length
-    while(pipeIndex < textLength) {
-        index = pipeIndex + 1
-        pipeIndex = text.indexOf('|', index)
-        if(pipeIndex != -1 && parameterRanges.any { it.contains(pipeIndex) }) continue //这里需要跳过参数文本
-        val pipeNode = if(pipeIndex != -1) {
-            val pipeRange = TextRange.create(pipeIndex + offset, pipeIndex + 1 + offset)
+    while(tokenIndex < textLength) {
+        index = tokenIndex + 1
+        tokenIndex = text.indexOf('|', index)
+        if(tokenIndex != -1 && tokenIndex.inParameter(parameterRanges)) continue //这里需要跳过参数文本
+        val pipeNode = if(tokenIndex != -1) {
+            val pipeRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
             ParadoxMarkerExpressionNode("|", pipeRange)
         } else {
             null
         }
-        if(pipeIndex == -1) {
-            pipeIndex = textLength
+        if(tokenIndex == -1) {
+            tokenIndex = textLength
         }
-        val nodeText = text.substring(index, pipeIndex)
-        val nodeRange = TextRange.create(index + offset, pipeIndex + offset)
+        val nodeText = text.substring(index, tokenIndex)
+        val nodeRange = TextRange.create(index + offset, tokenIndex + offset)
         val node = when {
             n == 0 -> {
                 ParadoxScriptValueExpressionNode.resolve(nodeText, nodeRange, config, configGroup)
@@ -209,4 +209,8 @@ fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, c
         n++
     }
     return ParadoxScriptValueExpressionImpl(text, isKey, textRange, nodes, config, configGroup)
+}
+
+private fun Int.inParameter(parameterRanges: List<TextRange>): Boolean {
+    return parameterRanges.any { it.contains(this) }
 }
