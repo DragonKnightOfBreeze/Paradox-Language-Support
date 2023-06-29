@@ -2,7 +2,6 @@ package icu.windea.pls.lang.cwt.config
 
 import com.google.common.cache.*
 import com.intellij.openapi.application.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
@@ -44,10 +43,9 @@ class CwtDeclarationConfig(
         val cacheKey = getCacheKey(configContext)
         return configCache.getOrPut(cacheKey) {
             runReadAction {
-                val r = doGetConfig(configContext)
-                CwtDeclarationConfigInjector.handleDeclarationMergedConfig(r, configContext, configContext.injectors)
-                r.putUserData(CwtMemberConfig.Keys.configContextKey, configContext)
-                r
+                val config = doGetConfig(configContext)
+                CwtDeclarationConfigInjector.handleDeclarationMergedConfig(config, configContext, configContext.injectors)
+                config
             }
         }
     }
@@ -80,5 +78,3 @@ class CwtDeclarationConfig(
         //here propertyConfig.parent should be null
     }
 }
-
-val CwtMemberConfig.Keys.configContextKey by lazy { Key.create<CwtDeclarationConfigContext>("cwt.config.context") }

@@ -92,8 +92,8 @@ fun CwtTemplateExpression.resolveReferences(text: String, element: ParadoxScript
     return CwtTemplateExpressionHandler.resolveReferences(text, element, this, configGroup)
 }
 
-fun CwtTemplateExpression.processResolveResult(contextElement: PsiElement, configGroup: CwtConfigGroup, processor: Processor<String>) {
-    CwtTemplateExpressionHandler.processResolveResult(contextElement, this, configGroup, processor)
+fun CwtTemplateExpression.processResolveResult(element: PsiElement, configGroup: CwtConfigGroup, processor: Processor<String>) {
+    CwtTemplateExpressionHandler.processResolveResult(element, this, configGroup, processor)
 }
 
 fun <C : CwtConfig<*>> Map<String, C>.getByTemplate(text: String, element: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): C? {
