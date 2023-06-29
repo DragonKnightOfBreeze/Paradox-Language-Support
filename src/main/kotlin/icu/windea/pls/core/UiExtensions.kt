@@ -81,7 +81,7 @@ fun JBTable.setFixedColumnWidth(columnIndex: Int, sampleText: String) {
 }
 
 
-fun MutableMap<*, Boolean>.toThreeStateProperty() = object : ReadWriteProperty<Any, ThreeStateCheckBox.State> {
+fun MutableMap<*, Boolean>.toThreeStateProperty() = object : ReadWriteProperty<Any?, ThreeStateCheckBox.State> {
     val map = this@toThreeStateProperty
     
     override fun getValue(thisRef: Any?, property: KProperty<*>): ThreeStateCheckBox.State {
