@@ -166,6 +166,7 @@ class ParadoxScriptValueExpressionImpl(
 
 fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, configGroup: CwtConfigGroup, isKey: Boolean? = null): ParadoxScriptValueExpression {
     val parameterRanges = ParadoxConfigHandler.getParameterRangesInExpression(text)
+    
     val nodes = mutableListOf<ParadoxExpressionNode>()
     val offset = textRange.startOffset
     var n = 0

@@ -434,7 +434,7 @@ object ParadoxConfigHandler {
     fun getParameterRangesInExpression(expression: String): List<TextRange> {
         val indices = expression.indicesOf('$')
         if(indices.size <= 1) return emptyList()
-        return indices.windowed(2, 2, false) { TextRange.create(it[0], it[1]) }
+        return indices.windowed(2, 2, false) { TextRange.create(it[0], it[1] + 1) }
     }
     //endregion
     

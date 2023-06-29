@@ -240,10 +240,12 @@ class ParadoxValueFieldExpressionImpl(
 
 fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxValueFieldExpression? {
     //skip if text represents an int or float
-    val type = ParadoxDataExpression.resolve(text).type
-    if(type == ParadoxType.Int || type == ParadoxType.Float) return null
+    if(isNumber(text)) return null
     
     val parameterRanges = ParadoxConfigHandler.getParameterRangesInExpression(text)
+    //skip if text is a parameter with unary operator prefix
+    if(isUnaryOperatorAwareParameter(text, parameterRanges)) return null
+    
     val nodes = mutableListOf<ParadoxExpressionNode>()
     val offset = textRange.startOffset
     var isLast = false
@@ -281,4 +283,13 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
         if(dotNode != null) nodes.add(dotNode)
     }
     return ParadoxValueFieldExpressionImpl(text, isKey, textRange, nodes, configGroup)
+}
+
+private fun isNumber(text: String): Boolean {
+    return ParadoxDataExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
+}
+
+private fun isUnaryOperatorAwareParameter(text: String, parameterRanges: List<TextRange>): Boolean {
+    return text.firstOrNull()?.let { it == '+' || it == '-' } == true
+        && parameterRanges.singleOrNull()?.let { it.startOffset == 1 && it.endOffset == text.length } == true
 }

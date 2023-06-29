@@ -141,6 +141,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, config: CwtConfig<*>, c
 
 fun Resolver.resolve(text: String, textRange: TextRange, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxValueSetValueExpression? {
     val parameterRanges = ParadoxConfigHandler.getParameterRangesInExpression(text)
+    
     val nodes = mutableListOf<ParadoxExpressionNode>()
     val offset = textRange.startOffset
     var index: Int
