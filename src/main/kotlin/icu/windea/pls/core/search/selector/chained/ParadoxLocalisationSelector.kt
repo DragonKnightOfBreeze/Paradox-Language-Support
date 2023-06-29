@@ -14,14 +14,13 @@ fun localisationSelector(project: Project, context: Any? = null) = ParadoxLocali
 fun ParadoxLocalisationSelector.locale(locale: CwtLocalisationLocaleConfig?) =
     apply { if(locale != null) selectors += ParadoxLocaleSelector(locale) }
 
-@JvmOverloads
 fun ParadoxLocalisationSelector.preferLocale(locale: CwtLocalisationLocaleConfig?, condition: Boolean = true) =
     apply { if(locale != null && condition) selectors += ParadoxPreferLocaleSelector(locale) }
 
 fun ParadoxLocalisationSelector.distinctByName() =
     distinctBy { it.name }
 
-private class WithConstraintSelector(val constraint: ParadoxLocalisationConstraint) : ParadoxSelector<ParadoxLocalisationProperty>
+class WithConstraintSelector(val constraint: ParadoxLocalisationConstraint) : ParadoxSelector<ParadoxLocalisationProperty>
 
 fun ParadoxLocalisationSelector.withConstraint(constraint: ParadoxLocalisationConstraint) =
     apply { selectors += WithConstraintSelector(constraint) }

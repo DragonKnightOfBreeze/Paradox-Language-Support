@@ -15,7 +15,7 @@ class GenerateLocalisationsInFileHandler : CodeInsightActionHandler {
         val context = file.getUserData(contextKey)
             ?: getDefaultContext(project, editor, file)
             ?: return
-        ParadoxPsiGenerator.generateLocalisationsInFile(context, project, editor, file)
+        ParadoxPsiGenerator.generateLocalisationsInFile(context, project, file)
     }
     
     private fun getDefaultContext(project: Project, editor: Editor, file: PsiFile): GenerateLocalisationsInFileContext? {

@@ -24,7 +24,6 @@ fun <S : ChainedParadoxSelector<T>, T> S.withSearchScopeType(searchScopeType: St
 /**
  * 首先尝试选用同一根目录下的，然后尝试选用同一文件下的。
  */
-@JvmOverloads
 fun <S : ChainedParadoxSelector<T>, T> S.contextSensitive(condition: Boolean = true): S {
     if(condition) {
         if(rootFile != null) selectors += ParadoxPreferRootFileSelector(rootFile)

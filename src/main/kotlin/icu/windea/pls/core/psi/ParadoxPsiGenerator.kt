@@ -3,7 +3,6 @@ package icu.windea.pls.core.psi
 import com.intellij.application.options.*
 import com.intellij.ide.actions.*
 import com.intellij.notification.*
-import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
@@ -17,7 +16,7 @@ import icu.windea.pls.core.settings.*
 import icu.windea.pls.localisation.*
 
 object ParadoxPsiGenerator {
-    fun generateLocalisations(context: GenerateLocalisationsContext, project: Project, editor: Editor, file: PsiFile) {
+    fun generateLocalisations(context: GenerateLocalisationsContext, project: Project, file: PsiFile) {
         if(context.localisationNames.isEmpty()) return noLocalisations(project)
         
         val taskTitle = PlsBundle.message("process.generateLocalisations", context.definitionName)
@@ -47,10 +46,10 @@ object ParadoxPsiGenerator {
                 appendLocalisationLine(indent, localisationName, project, file)
             }
         }
-        return createLocalisationTempFile(name, text, project)
+        return createLocalisationTempFile(name, text)
     }
     
-    fun generateLocalisationsInFile(context: GenerateLocalisationsInFileContext, project: Project, editor: Editor, file: PsiFile) {
+    fun generateLocalisationsInFile(context: GenerateLocalisationsInFileContext, project: Project, file: PsiFile) {
         if(context.contextList.all { it.localisationNames.isEmpty() }) return noLocalisations(project)
         
         val taskTitle = PlsBundle.message("process.generateLocalisationsInFile", context.fileName)
@@ -82,7 +81,7 @@ object ParadoxPsiGenerator {
                 }
             }
         }
-        return createLocalisationTempFile(name, text, project)
+        return createLocalisationTempFile(name, text)
     }
     
     private fun StringBuilder.appendLocalisationLine(indent: String, localisationName: String, project: Project, file: PsiFile) {
@@ -106,7 +105,7 @@ object ParadoxPsiGenerator {
         append("\"\n")
     }
     
-    private fun createLocalisationTempFile(name: String, text: String, project: Project): VirtualFile {
+    private fun createLocalisationTempFile(name: String, text: String): VirtualFile {
         val lightFile = ParadoxFileManager.createLightFile(name, text, ParadoxLocalisationLanguage)
         lightFile.bom = PlsConstants.utf8Bom //这里需要直接这样添加bom
         return lightFile

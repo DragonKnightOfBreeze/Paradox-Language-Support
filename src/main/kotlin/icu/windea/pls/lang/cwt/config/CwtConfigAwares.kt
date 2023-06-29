@@ -2,7 +2,6 @@ package icu.windea.pls.lang.cwt.config
 
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.model.*
 
 interface CwtValueAware {
