@@ -4,7 +4,6 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.reference.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*
@@ -24,9 +23,10 @@ class IfsUtilCodeInjector : BaseCodeInjector() {
     
     //即使目标DDS文件不存在于本地（例如来自Git提交记录），也可以正常渲染
     
-    val TIME_MODIFICATION_STAMP_KEY: Key<Pair<Long?, Long?>> by staticProperty<IfsUtil, _>("TIME_MODIFICATION_STAMP_KEY")
-    val FORMAT_KEY: Key<String> by staticProperty<IfsUtil, _>("FORMAT_KEY")
-    val IMAGE_PROVIDER_REF_KEY: Key<SoftReference<ImageDocument.ScaledImageProvider>> by staticProperty<IfsUtil, _>("IMAGE_PROVIDER_REF_KEY")
+    //这里必须懒加载，不能在初始化代码注入器时就加载IfsUtil
+    val TIME_MODIFICATION_STAMP_KEY by lazy { staticProperty<IfsUtil, Key<Pair<Long?, Long?>>>("TIME_MODIFICATION_STAMP_KEY").get() }
+    val FORMAT_KEY by lazy { staticProperty<IfsUtil, Key<String>>("FORMAT_KEY").get() }
+    val IMAGE_PROVIDER_REF_KEY by lazy { staticProperty<IfsUtil, Key<SoftReference<ImageDocument.ScaledImageProvider>>>("IMAGE_PROVIDER_REF_KEY").get() }
     
     @Inject(Inject.Pointer.AFTER)
     fun refresh(file: VirtualFile, returnValue: Boolean): Boolean {
