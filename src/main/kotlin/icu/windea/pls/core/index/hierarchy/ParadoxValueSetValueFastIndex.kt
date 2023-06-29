@@ -9,6 +9,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -111,7 +112,7 @@ class ParadoxValueSetValueFastIndex : ParadoxHierarchyIndex<List<ParadoxValueSet
     
     override fun filterFile(file: VirtualFile): Boolean {
         val fileType = file.fileType
-        if(fileType != ParadoxScriptFileType) return false
+        if(fileType != ParadoxScriptFileType && fileType != ParadoxLocalisationFileType) return false
         if(file.fileInfo == null) return false
         return true
     }
