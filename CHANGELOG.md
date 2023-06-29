@@ -3,6 +3,9 @@
 ## 1.1.1
 
 * [X] 修复 #36 - 修复方法`isSamePosition`的实现中的问题
+* [X] 修复 #38 - value_field和variable_field应当可接受`-$PARAM$`
+* [X] 修复 #39 - 允许`$SCOPE|this$.modifier:xxx`
+* [ ] 其他BUG修复
 * [ ] 尝试优化性能
 
 ## 1.1.0
