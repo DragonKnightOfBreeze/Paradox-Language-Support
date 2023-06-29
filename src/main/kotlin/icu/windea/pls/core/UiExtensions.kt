@@ -84,7 +84,7 @@ fun JBTable.setFixedColumnWidth(columnIndex: Int, sampleText: String) {
 fun MutableMap<*, Boolean>.toThreeStateProperty() = object : ReadWriteProperty<Any, ThreeStateCheckBox.State> {
     val map = this@toThreeStateProperty
     
-    override fun getValue(thisRef: Any, property: KProperty<*>): ThreeStateCheckBox.State {
+    override fun getValue(thisRef: Any?, property: KProperty<*>): ThreeStateCheckBox.State {
         return when {
             map.all { (_, v) -> v } -> ThreeStateCheckBox.State.SELECTED
             map.none { (_, v) -> v } -> ThreeStateCheckBox.State.NOT_SELECTED
@@ -92,7 +92,7 @@ fun MutableMap<*, Boolean>.toThreeStateProperty() = object : ReadWriteProperty<A
         }
     }
     
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: ThreeStateCheckBox.State) {
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: ThreeStateCheckBox.State) {
         when(value) {
             ThreeStateCheckBox.State.SELECTED -> map.entries.forEach { it.setValue(true) }
             ThreeStateCheckBox.State.NOT_SELECTED -> map.entries.forEach { it.setValue(false) }

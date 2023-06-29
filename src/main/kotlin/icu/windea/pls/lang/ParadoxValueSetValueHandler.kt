@@ -143,10 +143,6 @@ object ParadoxValueSetValueHandler {
     }
     
     fun getInfos(element: ParadoxLocalisationCommandIdentifier): List<ParadoxValueSetValueInfo> {
-        return doGetInfos(element)
-    }
-    
-    private fun doGetInfos(element: ParadoxLocalisationCommandIdentifier): List<ParadoxValueSetValueInfo> {
         val reference = element.reference ?: return emptyList()
         if(reference.canResolveValueSetValue()) {
             val resolved = reference.resolve()

@@ -2,6 +2,7 @@
 
 package icu.windea.pls.core
 
+import icu.windea.pls.core.util.*
 import java.lang.reflect.*
 import kotlin.reflect.*
 import kotlin.reflect.full.*
@@ -12,176 +13,123 @@ fun <T : Class<*>> Type.genericType(index: Int): T? {
     return castOrNull<ParameterizedType>()?.actualTypeArguments?.getOrNull(index) as? T
 }
 
-inline fun <reified T : Any> T.property(propertyName: String): Any? {
-    return InternalExtensionsHolder.property(this, propertyName, T::class)
-}
-
-@Suppress("UnusedReceiverParameter")
-fun <T : Any> InternalExtensionsHolder.property(target: T, propertyName: String, kClass: KClass<T>): Any? {
-    val property = kClass.declaredMemberProperties.find { p -> p.name == propertyName }
-    if(property != null) {
-        try {
-            property.isAccessible = true
-            return property.get(target)
-        } catch(e: Exception) {
-            //ignore
+@Suppress("UNCHECKED_CAST")
+class SmartKProperty<T : Any, V>(
+    val target: T?,
+    val targetClass: KClass<T>,
+    val propertyName: String
+) : MutableProperty<V> {
+    private val delegateProperty by lazy {
+        if(target != null) {
+            doGetDelegateProperty(target)
+        } else {
+            doGetDelegatePropertyStatic()
         }
     }
-    val getter = kClass.declaredMemberFunctions.find p@{ f ->
-        if(f.parameters.size != 1) return@p false
-        val suffix = propertyName.replaceFirstChar { it.uppercaseChar() }
-        if(f.name == "get$suffix") return@p true
-        if(f.returnType.classifier == Boolean::class && f.name == "is$suffix") return@p true
-        false
-    }
-    if(getter != null) {
-        try {
-            getter.isAccessible = true
-            return getter.call(target)
-        } catch(e: Exception) {
-            //ignore
-        }
-    }
-    return null
-}
-
-inline fun <reified T : Any> staticProperty(propertyName: String): Any? {
-    return InternalExtensionsHolder.staticProperty(propertyName, T::class)
-}
-
-@Suppress("UnusedReceiverParameter")
-fun <T: Any> InternalExtensionsHolder.staticProperty(propertyName: String, kClass: KClass<T>): Any? {
-    val property = kClass.staticProperties.find { p -> p.name == propertyName }
-    if(property != null) {
-        try {
-            property.isAccessible = true
-            return property.get()
-        } catch(e: Exception) {
-            //ignore
-        }
-    }
-    val getter = kClass.staticFunctions.find p@{ f ->
-        if(f.parameters.size != 1) return@p false
-        val suffix = propertyName.replaceFirstChar { it.uppercaseChar() }
-        if(f.name == "get$suffix") return@p true
-        if(f.returnType.classifier == Boolean::class && f.name == "is$suffix") return@p true
-        false
-    }
-    if(getter != null) {
-        try {
-            getter.isAccessible = true
-            return getter.call()
-        } catch(e: Exception) {
-            //ignore
-        }
-    }
-    return null
-}
-
-inline fun <reified T : Any> T.property(propertyName: String, value: Any?) {
-    return InternalExtensionsHolder.property(this, propertyName, value, T::class)
-}
-
-fun <T: Any> InternalExtensionsHolder.property(target: T, propertyName: String, value: Any?, kClass: KClass<T>) {
-    val property = kClass.declaredMemberProperties.find { p -> p.name == propertyName }
-    if(property is KMutableProperty1) {
-        try {
-            @Suppress("UNCHECKED_CAST")
-            property as KMutableProperty1<T, in Any?>
-            property.isAccessible = true
-            return property.set(target, value)
-        } catch(e: Exception) {
-            //ignore
-        }
-    }
-    val javaField = property?.javaField
-    if(javaField != null) {
-        try {
-            javaField.isAccessible = true
-            return javaField.set(target, value)
-        } catch(e: Exception) {
-            //ignore
-        }
-    }
-    val setters = kClass.declaredMemberFunctions.filter p@{ f ->
-        if(f.parameters.size != 2) return@p false
-        val suffix = propertyName.replaceFirstChar { it.uppercaseChar() }
-        if(f.name == "set$suffix") return@p true
-        false
-    }
-    if(setters.isNotEmpty()) {
-        for(setter in setters) {
+    
+    override fun get() = delegateProperty.get()
+    
+    override fun set(value: V) = delegateProperty.set(value)
+    
+    private fun doGetDelegateProperty(target: T): MutableProperty<V> {
+        val allMemberProperties = targetClass.declaredMemberProperties
+        val property = allMemberProperties.find { it.name == propertyName }
+        if(property != null) {
             try {
-                setter.isAccessible = true
-                setter.call(this)
-                return
+                property.isAccessible = true
+                return mutableProperty({ property.get(target) as V }, { unsupported() })
             } catch(e: Exception) {
                 //ignore
             }
         }
-    }
-}
-
-inline fun <reified T : Any> staticProperty(propertyName: String, value: Any?) {
-    return InternalExtensionsHolder.staticProperty(propertyName, value, T::class)
-}
-
-@Suppress("UnusedReceiverParameter")
-fun <T:Any> InternalExtensionsHolder.staticProperty(propertyName: String, value: Any?, kClass: KClass<T>) {
-    val property = kClass.staticProperties.find { p -> p.name == propertyName }
-    if(property is KMutableProperty0) {
-        try {
-            @Suppress("UNCHECKED_CAST")
-            property as KMutableProperty0<in Any?>
-            property.isAccessible = true
-            return property.set(value)
-        } catch(e: Exception) {
-            //ignore
-        }
-    }
-    val javaField = property?.javaField
-    if(javaField != null) {
-        try {
-            javaField.isAccessible = true
-            return javaField.set(null, value)
-        } catch(e: Exception) {
-            //ignore
-        }
-    }
-    val setters = kClass.staticFunctions.filter p@{ f ->
-        if(f.parameters.size != 2) return@p false
-        val suffix = propertyName.replaceFirstChar { it.uppercaseChar() }
-        if(f.name == "set$suffix") return@p true
-        false
-    }
-    if(setters.isNotEmpty()) {
-        for(setter in setters) {
+        val allMemberFunctions = targetClass.declaredMemberFunctions
+        val getter = allMemberFunctions.find { it.isGetter() }
+        val setter = allMemberFunctions.find { it.isSetter() }
+        if(getter != null || setter != null) {
             try {
-                setter.isAccessible = true
-                setter.call()
-                return
+                getter?.isAccessible = true
+                setter?.isAccessible = true
+                return mutableProperty({ (getter?.call(target) ?: unsupported()) as V }, { setter?.call(target, it) ?: unsupported() })
             } catch(e: Exception) {
                 //ignore
             }
         }
+        return mutableProperty({ unsupported() }, { unsupported() })
+    }
+    
+    private fun doGetDelegatePropertyStatic(): MutableProperty<V> {
+        val allStaticProperties = targetClass.staticProperties
+        val property = allStaticProperties.find { it.name == propertyName }
+        if(property != null) {
+            try {
+                property.isAccessible = true
+                return mutableProperty({ property.get() as V }, { unsupported() })
+            } catch(e: Exception) {
+                //ignore
+            }
+        }
+        val allStaticFunctions = targetClass.staticFunctions
+        val getter = allStaticFunctions.find { it.isGetter() }
+        val setter = allStaticFunctions.find { it.isSetter() }
+        if(getter != null || setter != null) {
+            try {
+                getter?.isAccessible = true
+                setter?.isAccessible = true
+                return mutableProperty({ (getter?.call(null) ?: unsupported()) as V }, { setter?.call(null, it) ?: unsupported() })
+            } catch(e: Exception) {
+                //ignore
+            }
+        }
+        return mutableProperty({ unsupported() }, { unsupported() })
+    }
+    
+    private fun KFunction<*>.isGetter(): Boolean {
+        if(parameters.size != 1) return false
+        val suffix = propertyName.replaceFirstChar { it.uppercaseChar() }
+        if(name == "get$suffix") return true
+        if(returnType.classifier == Boolean::class && name == "is$suffix") return true
+        return false
+    }
+    
+    private fun KFunction<*>.isSetter(): Boolean {
+        if(parameters.size != 2) return false
+        val suffix = propertyName.replaceFirstChar { it.uppercaseChar() }
+        if(name == "set$suffix") return true
+        return false
+    }
+    
+    private fun unsupported(): Nothing {
+        throw UnsupportedOperationException()
     }
 }
 
-inline fun <reified T : Any> T.function(functionName: String, vararg args: Any?): FunctionsHolder {
-    val kClass = T::class
-    val functions = kClass.declaredFunctions.filter { it.name == functionName && it.parameters.size == args.size + 1 }
-    return FunctionsHolder(this, functions)
+inline fun <reified T : Any, V> T.property(propertyName: String): SmartKProperty<T, V> {
+    return SmartKProperty(this, T::class, propertyName)
 }
 
-inline fun <reified T : Any> staticFunction(functionName: String, vararg args: Any?): FunctionsHolder {
-    val kClass = T::class
-    val functions = kClass.staticFunctions.filter { it.name == functionName && it.parameters.size == args.size + 1 }
-    return FunctionsHolder(null, functions)
+inline fun <reified T : Any, V> staticProperty(propertyName: String): SmartKProperty<T, V> {
+    return SmartKProperty(null, T::class, propertyName)
 }
 
-class FunctionsHolder(private val target: Any?, private val functions: List<KFunction<*>>) {
+class SmartKFunction<T : Any>(
+    val target: T?,
+    val targetClass: KClass<T>,
+    val functionName: String
+) {
     operator fun invoke(vararg args: Any?): Any? {
-        for(function in functions) {
+        return if(target != null) {
+            doInvoke(target, args)
+        } else {
+            doInvokeStatic(args)
+        }
+    }
+    
+    private fun doInvoke(target: T, args: Array<out Any?>): Any? {
+        val allFunctions = targetClass.declaredFunctions
+        val expectedArgsSize = args.size + 1
+        for(function in allFunctions) {
+            if(function.name != functionName) continue
+            if(function.parameters.size != expectedArgsSize) continue
             try {
                 function.isAccessible = true
                 return function.call(target, *args)
@@ -191,4 +139,32 @@ class FunctionsHolder(private val target: Any?, private val functions: List<KFun
         }
         return null
     }
+    
+    private fun doInvokeStatic(args: Array<out Any?>): Any? {
+        val allFunctions = targetClass.staticFunctions
+        val expectedArgsSize = args.size
+        for(function in allFunctions) {
+            if(function.name != functionName) continue
+            if(function.parameters.size != expectedArgsSize) continue
+            try {
+                function.isAccessible = true
+                return function.call(target, *args)
+            } catch(e: Throwable) {
+                //ignore
+            }
+        }
+        unsupported()
+    }
+    
+    private fun unsupported(): Nothing {
+        throw UnsupportedOperationException()
+    }
+}
+
+inline fun <reified T : Any> T.function(functionName: String): SmartKFunction<T> {
+    return SmartKFunction(this, T::class, functionName)
+}
+
+inline fun <reified T : Any> staticFunction(functionName: String): SmartKFunction<T> {
+    return SmartKFunction(null, T::class, functionName)
 }

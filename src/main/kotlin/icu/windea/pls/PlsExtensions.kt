@@ -4,7 +4,7 @@ package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
 import com.intellij.extapi.psi.*
-import com.intellij.injected.editor.VirtualFileWindow
+import com.intellij.injected.editor.*
 import com.intellij.lang.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.fileTypes.*
@@ -30,10 +30,9 @@ import icu.windea.pls.localisation.references.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
-import icu.windea.pls.tool.*
 import java.lang.Integer.*
 
-//region Misc Extensions
+//region Common Extensions
 fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
 fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }

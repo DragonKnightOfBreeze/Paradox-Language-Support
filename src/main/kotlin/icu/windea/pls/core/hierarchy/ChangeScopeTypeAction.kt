@@ -10,6 +10,7 @@ import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.scope.type.*
+import icu.windea.pls.core.util.*
 import java.awt.*
 import javax.swing.*
 
@@ -19,7 +20,8 @@ class ChangeScopeTypeAction(
     val provider: HierarchyBrowserBaseEx,
     val settings: ParadoxHierarchyBrowserSettings
 ) : ComboBoxAction() {
-    val project = provider.property<HierarchyBrowserBase>("myProject") as Project
+    val project: Project by provider.property<HierarchyBrowserBase, _>("myProject")
+    val element: PsiElement by provider.property("hierarchyBase")
     
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.EDT
@@ -32,7 +34,6 @@ class ChangeScopeTypeAction(
     }
     
     override fun createPopupActionGroup(button: JComponent, dataContext: DataContext): DefaultActionGroup {
-        val element = provider.property("hierarchyBase") as PsiElement
         val group = DefaultActionGroup()
         for(scopeType in ParadoxSearchScopeTypes.getScopeTypes(project, element)) {
             group.add(MenuAction(scopeType))

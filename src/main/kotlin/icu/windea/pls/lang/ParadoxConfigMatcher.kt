@@ -36,7 +36,7 @@ object ParadoxConfigMatcher {
         /** 对于最终匹配得到的那个结果，不需要再次判断是否精确匹配。 */
         const val Fast = 0x08
         /** 允许匹配定义自身。（当要匹配表达式的是一个键时） */
-        const val AcceptDefinition = 0x10 
+        const val AcceptDefinition = 0x10
     }
     
     sealed class Result {
@@ -66,17 +66,17 @@ object ParadoxConfigMatcher {
         }
         
         class LazyBlockAwareMatch(predicate: () -> Boolean) : LazyMatch() {
-            private val result by lazy { predicate() }.catching { onMatchException(it) }
+            private val result by lazy { predicate() }.catching()
             override fun get(options: Int) = if(BitUtil.isSet(options, Options.Relax)) true else result
         }
         
         class LazyIndexAwareMatch(predicate: () -> Boolean) : LazyMatch() {
-            private val result by lazy { predicate() }.catching { onMatchException(it) }
+            private val result by lazy { predicate() }.catching()
             override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipIndex)) true else result
         }
         
         class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch() {
-            private val result by lazy { predicate() }.catching { onMatchException(it) }
+            private val result by lazy { predicate() }.catching()
             override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipScope)) true else result
         }
     }
@@ -361,10 +361,6 @@ object ParadoxConfigMatcher {
         }
     }
     
-    private fun Boolean.toResult() = if(this) Result.ExactMatch else Result.NotMatch
-    
-    private fun Boolean.toFallbackResult() = if(this) Result.FallbackMatch else Result.NotMatch 
-    
     private fun matchesScriptExpressionInBlock(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         val block = when {
             element is ParadoxScriptProperty -> element.propertyValue()
@@ -499,14 +495,23 @@ object ParadoxConfigMatcher {
         }
     }
     
-    private fun onMatchException(e: Throwable): Boolean {
-        if(e is ProcessCanceledException) throw e
-        //进一步匹配CWT规则时需要防止出现某些异常（如索引异常）
-        thisLogger().warn(e)
-        //java.lang.Throwable: Indexing process should not rely on non-indexed file data. -> 无法捕获这个异常
-        //com.intellij.openapi.project.IndexNotReadyException -> 直接认为匹配
-        //其他情况 -> 也直接认为匹配
-        return true
+    private fun Boolean.toResult() = if(this) Result.ExactMatch else Result.NotMatch
+    
+    private fun Boolean.toFallbackResult() = if(this) Result.FallbackMatch else Result.NotMatch
+    
+    private fun Lazy<Boolean>.catching() = delegatedBy {
+        try {
+            value
+        } catch(e: Throwable) {
+            //进一步匹配CWT规则时需要阻止输出错误日志以及抛出某些异常
+            //java.lang.Throwable: Indexing process should not rely on non-indexed file data.
+            //java.lang.AssertionError: Reentrant indexing
+            //com.intellij.openapi.project.IndexNotReadyException
+            
+            if(e is ProcessCanceledException) throw e
+            thisLogger().info(e)
+            true
+        }
     }
     
     class Listener : PsiModificationTracker.Listener {

@@ -10,6 +10,7 @@ import com.intellij.openapi.graph.settings.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.actions.*
 import icu.windea.pls.extension.diagram.provider.*
 
@@ -30,13 +31,12 @@ open class ParadoxDiagramExtras(
         return provider.getAdditionalDiagramSettings()
     }
     
-    @Suppress("UNCHECKED_CAST")
     override fun getToolbarActionsProvider(): DiagramToolbarActionsProvider {
         return object : DiagramToolbarActionsProvider by super.getToolbarActionsProvider() {
             override fun createToolbarActions(builder: DiagramBuilder): DefaultActionGroup {
                 val actionGroup = super.createToolbarActions(builder)
                 //before first separator
-                val children = actionGroup.property("mySortedChildren") as MutableList<AnAction>
+                val children by actionGroup.property<_, MutableList<AnAction>>("mySortedChildren")
                 val separatorIndex = children.indexOfFirst { it is SeparatorAction }
                 val index = if(separatorIndex == -1) children.size else separatorIndex
                 children.add(index, ParadoxDiagramScopeTypesActionGroup(builder))

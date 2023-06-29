@@ -18,19 +18,15 @@ inline fun <T> withMeasureMillis(idProvider: () -> String, min: Int = -1, action
         return action()
     } finally {
         val id = idProvider()
-        InternalExtensionsHolder.doPrintMeasureMillis(start, id, min)
+        val end = System.currentTimeMillis()
+        val millis = end - start
+        val avgMillis = avgMillisMap.compute(id) { _, v ->
+            if(v == null) millis.toDouble() else (v + millis) / 2.0
+        } ?: 0.0
+        if(millis > min) {
+            val avg = BigDecimal(avgMillis).setScale(10, RoundingMode.HALF_UP)
+            println("${id} - cur: $millis, avg: $avg")
+        }
     }
 }
 
-@Suppress("UnusedReceiverParameter")
-fun InternalExtensionsHolder.doPrintMeasureMillis(start: Long, id: String, min: Int) {
-    val end = System.currentTimeMillis()
-    val millis = end - start
-    val avgMillis = avgMillisMap.compute(id) { _, v ->
-        if(v == null) millis.toDouble() else (v + millis) / 2.0
-    } ?: 0.0
-    if(millis > min) {
-        val avg = BigDecimal(avgMillis).setScale(10, RoundingMode.HALF_UP)
-        println("${id} - cur: $millis, avg: $avg")
-    }
-}

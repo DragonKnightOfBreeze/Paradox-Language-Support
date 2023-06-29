@@ -7,6 +7,7 @@ import com.intellij.openapi.graph.view.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.components.*
 import javax.swing.*
 
@@ -17,7 +18,8 @@ abstract class DiagramExtrasEx : CommonDiagramExtras<PsiElement>() {
         val component = super.createNodeComponent(node, builder, nodeRealizer, wrapper)
         if(component is DiagramNodeContainer) {
             val nodeBodyComponent = component.nodeBodyComponent
-            nodeBodyComponent.property("myItemComponent", DiagramNodeItemComponentEx())
+            var myItemComponent by nodeBodyComponent.property<_, DiagramNodeItemComponent>("myItemComponent")
+            myItemComponent = DiagramNodeItemComponentEx()
         }
         return component
     }

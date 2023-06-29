@@ -5,6 +5,7 @@ import com.intellij.diagram.components.*
 import com.intellij.ui.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.*
 import java.awt.*
 
@@ -14,6 +15,9 @@ import java.awt.*
 
 @TrickyApi
 class DiagramNodeItemComponentEx : DiagramNodeItemComponent() {
+    var myLeft: SimpleColoredComponent by this.property<DiagramNodeItemComponent, _>("myLeft")
+    var myRight: SimpleColoredComponent by this.property<DiagramNodeItemComponent, _>("myRight")
+    
     private var useComponent = false
     
     //使用自定义组件时myLeft和myRight的宽度应当为0
@@ -25,8 +29,8 @@ class DiagramNodeItemComponentEx : DiagramNodeItemComponent() {
         val right = object : SimpleColoredComponent() {
             override fun getPreferredSize() = super.getPreferredSize().alsoIf(useComponent) { it.width = 0 }
         }
-        this.property<DiagramNodeItemComponent>("myLeft", left)
-        this.property<DiagramNodeItemComponent>("myRight", right)
+        myLeft = left
+        myRight = right
         removeAll()
         add(left, BorderLayout.WEST)
         add(right, BorderLayout.EAST)
