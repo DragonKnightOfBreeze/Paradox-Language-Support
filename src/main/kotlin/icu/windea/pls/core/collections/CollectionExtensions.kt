@@ -98,6 +98,7 @@ inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -
 		val iterator = entries.iterator()
 		return Array(size) { transform(iterator.next()) }
 	} catch(e: Exception) {
+		
 		val list = entries.toList()
 		return Array(size) { transform(list[it]) }
 	}

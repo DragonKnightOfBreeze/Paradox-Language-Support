@@ -1,6 +1,7 @@
 package icu.windea.pls.extension.diagram
 
 import com.intellij.diagram.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -21,6 +22,7 @@ class ParadoxRootVfsResolver() : DiagramVfsResolver<PsiElement> {
         return try {
             rootPath.toVirtualFile()?.toPsiDirectory(project)
         } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
             null
         }
     }

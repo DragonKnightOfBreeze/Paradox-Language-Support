@@ -1,5 +1,6 @@
 package icu.windea.pls.core.tool.importer
 
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.ui.table.*
@@ -54,6 +55,7 @@ open class ParadoxFromLauncherImporter : ParadoxModImporter {
         //    finishImport(newSettingsList, tableView, tableModel)
         //    notify(settings, project, PlsBundle.message("mod.importer.info", collectionName, count))
         //} catch(e: Exception) {
+        //    if(e is ProcessCanceledException) throw e
         //    thisLogger().info(e)
         //    notifyWarning(settings, project, PlsBundle.message("mod.importer.error"))
         //}

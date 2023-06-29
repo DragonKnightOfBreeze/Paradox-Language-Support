@@ -5,6 +5,7 @@ package icu.windea.pls.core.util
 import com.google.common.cache.*
 import com.google.common.util.concurrent.*
 import com.intellij.openapi.progress.*
+import icu.windea.pls.core.*
 import java.util.concurrent.*
 
 inline fun <K, V> CacheBuilder<K, V>.configure(): CacheBuilder<K, V> {
@@ -40,8 +41,10 @@ inline fun <K : Any, V> Cache<K, V>.getOrPut(key: K, defaultValueOnException: (T
     try {
         return get(key) { defaultValue(key) }
     } catch(e: ExecutionException) {
+        if(e.cause is ProcessCanceledException) throw e
         return defaultValueOnException(e.cause ?: e)
     } catch(e: UncheckedExecutionException) {
+        if(e.cause is ProcessCanceledException) throw e
         return defaultValueOnException(e.cause ?: e)
     } catch(e: ProcessCanceledException) {
         throw e

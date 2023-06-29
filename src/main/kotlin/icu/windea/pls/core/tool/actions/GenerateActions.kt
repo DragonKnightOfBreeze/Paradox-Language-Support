@@ -160,6 +160,7 @@ class GenerateLocalisationFileAction : AnAction() {
                             documentManager.doPostponedOperationsAndUnblockDocument(newDocument)
                             generated++
                         } catch(e: Exception) {
+                            if(e is ProcessCanceledException) throw e
                             thisLogger().warn(e)
                         }
                     }

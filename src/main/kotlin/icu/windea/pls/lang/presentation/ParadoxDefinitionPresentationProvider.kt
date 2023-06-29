@@ -2,6 +2,7 @@ package icu.windea.pls.lang.presentation
 
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.extensions.*
+import com.intellij.openapi.progress.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.model.*
@@ -28,6 +29,7 @@ interface ParadoxDefinitionPresentationProvider {
                 try {
                     ep.getPresentation(definition, definitionInfo)
                 } catch(e: Exception) {
+                    if(e is ProcessCanceledException) throw e
                     thisLogger().warn(e)
                     null
                 }

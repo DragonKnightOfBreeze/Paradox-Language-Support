@@ -1,6 +1,5 @@
 package icu.windea.pls.core.util
 
-import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.core.collections.*
 import java.util.concurrent.*
@@ -13,11 +12,7 @@ class ParallelProcessor<T>(
     
     override fun process(e: T): Boolean {
         val future = CompletableFuture.supplyAsync({
-            try {
-                process(e)
-            } catch(e: ProcessCanceledException) {
-                true
-            }
+            process(e)
         }, executorService)
         futures.add(future)
         return true

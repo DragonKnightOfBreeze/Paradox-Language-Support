@@ -2,6 +2,7 @@
 
 package icu.windea.pls.core
 
+import com.intellij.openapi.progress.*
 import icu.windea.pls.core.util.*
 import java.lang.reflect.*
 import kotlin.reflect.*
@@ -38,7 +39,8 @@ class SmartKProperty<T : Any, V>(
             try {
                 property.isAccessible = true
                 return mutableProperty({ property.get(target) as V }, { unsupported() })
-            } catch(e: Exception) {
+            } catch(e: Throwable) {
+                if(e is ProcessCanceledException) throw e
                 //ignore
             }
         }
@@ -50,7 +52,8 @@ class SmartKProperty<T : Any, V>(
                 getter?.isAccessible = true
                 setter?.isAccessible = true
                 return mutableProperty({ (getter?.call(target) ?: unsupported()) as V }, { setter?.call(target, it) ?: unsupported() })
-            } catch(e: Exception) {
+            } catch(e: Throwable) {
+                if(e is ProcessCanceledException) throw e
                 //ignore
             }
         }
@@ -64,7 +67,8 @@ class SmartKProperty<T : Any, V>(
             try {
                 property.isAccessible = true
                 return mutableProperty({ property.get() as V }, { unsupported() })
-            } catch(e: Exception) {
+            } catch(e: Throwable) {
+                if(e is ProcessCanceledException) throw e
                 //ignore
             }
         }
@@ -76,7 +80,8 @@ class SmartKProperty<T : Any, V>(
                 getter?.isAccessible = true
                 setter?.isAccessible = true
                 return mutableProperty({ (getter?.call(null) ?: unsupported()) as V }, { setter?.call(null, it) ?: unsupported() })
-            } catch(e: Exception) {
+            } catch(e: Throwable) {
+                if(e is ProcessCanceledException) throw e
                 //ignore
             }
         }
@@ -134,6 +139,7 @@ class SmartKFunction<T : Any>(
                 function.isAccessible = true
                 return function.call(target, *args)
             } catch(e: Throwable) {
+                if(e is ProcessCanceledException) throw e
                 //ignore
             }
         }
@@ -150,6 +156,7 @@ class SmartKFunction<T : Any>(
                 function.isAccessible = true
                 return function.call(target, *args)
             } catch(e: Throwable) {
+                if(e is ProcessCanceledException) throw e
                 //ignore
             }
         }

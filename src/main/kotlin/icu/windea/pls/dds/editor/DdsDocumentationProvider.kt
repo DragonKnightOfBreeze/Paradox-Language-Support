@@ -1,6 +1,7 @@
 package icu.windea.pls.dds.editor
 
 import com.intellij.lang.documentation.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.text.*
 import com.intellij.psi.*
@@ -30,6 +31,7 @@ class DdsDocumentationProvider : AbstractDocumentationProvider() {
 				if(message != null) builder.append(HtmlChunk.p().addText(message))
 				return builder.toString()
 			} catch(e: Exception) {
+				if(e is ProcessCanceledException) throw e
 				// nothing
 			}
 		}

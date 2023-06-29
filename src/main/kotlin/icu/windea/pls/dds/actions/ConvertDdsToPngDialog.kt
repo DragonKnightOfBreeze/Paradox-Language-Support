@@ -138,6 +138,7 @@ class ConvertDdsToPngDialog(
 						val path = FileUtil.toSystemIndependentName(targetDirectoryName)
 						targetDirectory = DirectoryUtil.mkdirs(PsiManager.getInstance(project), path)
 					} catch(ignored: IncorrectOperationException) {
+                        if(e is ProcessCanceledException) throw e
 						targetDirectory = null
 					}
 				}

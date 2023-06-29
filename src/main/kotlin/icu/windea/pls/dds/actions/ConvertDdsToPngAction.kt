@@ -105,7 +105,7 @@ class ConvertDdsToPngAction : DumbAwareAction() {
                     for(file in files) {
                         saveToDirectoryUnderProgress(file, newName, targetDirectory, added, existingFiles, pi)
                     }
-                } catch(e: Throwable) {
+                } catch(e: Exception) {
                     thrown.set(e)
                 }
             }

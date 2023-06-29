@@ -4,6 +4,7 @@ import com.intellij.icons.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileChooser.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.ui.*
@@ -51,6 +52,7 @@ interface ParadoxModDependenciesToolbarActions {
                     
                     notify(settings, project, PlsBundle.message("mod.dependencies.add.info", count))
                 } catch(e: Exception) {
+                    if(e is ProcessCanceledException) throw e
                     thisLogger().info(e)
                     notifyWarning(settings, project, PlsBundle.message("mod.dependencies.add.error"))
                 }

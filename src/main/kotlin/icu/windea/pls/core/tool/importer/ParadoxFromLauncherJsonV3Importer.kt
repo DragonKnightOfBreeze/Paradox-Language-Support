@@ -3,6 +3,7 @@ package icu.windea.pls.core.tool.importer
 import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileChooser.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.ui.table.*
@@ -76,6 +77,7 @@ class ParadoxFromLauncherJsonV3Importer : ParadoxModImporter {
                 
                 notify(settings, project, PlsBundle.message("mod.importer.info", collectionName, count))
             } catch(e: Exception) {
+                if(e is ProcessCanceledException) throw e
                 thisLogger().info(e)
                 notifyWarning(settings, project, PlsBundle.message("mod.importer.error"))
             }
