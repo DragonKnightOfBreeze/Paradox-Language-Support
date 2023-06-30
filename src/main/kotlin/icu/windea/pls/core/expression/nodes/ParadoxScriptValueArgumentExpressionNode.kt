@@ -40,7 +40,7 @@ class ParadoxScriptValueArgumentExpressionNode(
     class Reference(
         element: ParadoxScriptStringExpressionElement,
         rangeInElement: TextRange,
-        private val argumentNode: ParadoxScriptValueArgumentExpressionNode 
+        private val argumentNode: ParadoxScriptValueArgumentExpressionNode
     ) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
         override fun handleElementRename(newElementName: String): PsiElement {
             return element.setValue(rangeInElement.replace(element.value, newElementName))

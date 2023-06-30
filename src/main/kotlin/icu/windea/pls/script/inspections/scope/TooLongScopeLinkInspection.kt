@@ -27,33 +27,25 @@ class TooLongScopeLinkInspection : LocalInspectionTool() {
                     dataType.isScopeFieldType() -> {
                         val value = element.value
                         val textRange = TextRange.create(0, value.length)
-                        val isKey = element is ParadoxScriptPropertyKey
-                        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup, isKey)
-                            ?: return
+                        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup) ?: return
                         checkExpression(element, scopeFieldExpression)
                     }
                     dataType.isValueFieldType() -> {
                         val value = element.value
                         val textRange = TextRange.create(0, value.length)
-                        val isKey = element is ParadoxScriptPropertyKey
-                        val valueFieldExpression = ParadoxValueFieldExpression.resolve(value, textRange, configGroup, isKey)
-                            ?: return
+                        val valueFieldExpression = ParadoxValueFieldExpression.resolve(value, textRange, configGroup) ?: return
                         checkExpression(element, valueFieldExpression)
                     }
                     dataType.isVariableFieldType() -> {
                         val value = element.value
                         val textRange = TextRange.create(0, value.length)
-                        val isKey = element is ParadoxScriptPropertyKey
-                        val valueFieldExpression = ParadoxVariableFieldExpression.resolve(value, textRange, configGroup, isKey)
-                            ?: return
+                        val valueFieldExpression = ParadoxVariableFieldExpression.resolve(value, textRange, configGroup) ?: return
                         checkExpression(element, valueFieldExpression)
                     }
                     dataType.isValueSetValueType() -> {
                         val value = element.value
                         val textRange = TextRange.create(0, value.length)
-                        val isKey = element is ParadoxScriptPropertyKey
-                        val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(value, textRange, config, configGroup, isKey)
-                            ?: return
+                        val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(value, textRange, configGroup, config) ?: return
                         checkExpression(element, valueSetValueExpression)
                     }
                 }

@@ -231,7 +231,7 @@ object ParadoxScopeHandler {
             if(scopeField.isLeftQuoted()) return null
             val textRange = TextRange.create(0, scopeField.length)
             val configGroup = config.info.configGroup
-            val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup, true) ?: return null
+            val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup) ?: return null
             val result = getScopeContext(scopeFieldExpression, parentScopeContext)
             return result
         } else {

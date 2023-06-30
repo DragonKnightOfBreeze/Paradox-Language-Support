@@ -32,7 +32,6 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                  if(element is ParadoxScriptBoolean) return
                 
                 //得到完全匹配的CWT规则
-                val isKey = element is ParadoxScriptPropertyKey
                 val config = ParadoxConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return
                 val configExpression = config.expression
                 val dataType = configExpression.type
@@ -76,7 +75,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                         val text = element.text
                         val textRange = TextRange.create(0, text.length)
                         val configGroup = config.info.configGroup
-                        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup, isKey) ?: return
+                        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup) ?: return
                         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
                         val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return
                         val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
@@ -91,7 +90,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                         val text = element.text
                         val textRange = TextRange.create(0, text.length)
                         val configGroup = config.info.configGroup
-                        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup, isKey) ?: return
+                        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup) ?: return
                         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
                         val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return
                         val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)

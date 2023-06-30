@@ -66,7 +66,7 @@ class ParadoxInScriptValueExpressionParameterSupport : ParadoxDefinitionParamete
         val textRange = TextRange.create(0, text.length)
         val configGroup = expressionElementConfig.info.configGroup
         val isKey = expressionElement is ParadoxScriptPropertyKey
-        val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup, isKey) ?: return null
+        val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup) ?: return null
         val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
         val rangeInElement = scriptValueExpression.scriptValueNode.rangeInExpression //text range of script value name
         val definitionName = scriptValueExpression.scriptValueNode.text.takeIfNotEmpty() ?: return null

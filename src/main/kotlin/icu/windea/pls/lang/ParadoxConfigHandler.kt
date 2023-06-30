@@ -828,7 +828,7 @@ object ParadoxConfigHandler {
         if(quoted) return
         val startOffset = context.startOffset ?: 0
         val textRange = TextRange.create(startOffset, startOffset + keyword.length)
-        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup, isKey, true) ?: return
+        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup, true) ?: return
         //合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，目前不基于此进行过滤
         scopeFieldExpression.complete(context, result)
     }
@@ -839,7 +839,7 @@ object ParadoxConfigHandler {
         if(quoted) return
         val startOffset = context.startOffset ?: 0
         val textRange = TextRange.create(startOffset, startOffset + keyword.length)
-        val valueFieldExpression = ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup, isKey, true) ?: return
+        val valueFieldExpression = ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup, true) ?: return
         valueFieldExpression.complete(context, result)
     }
     
@@ -849,7 +849,7 @@ object ParadoxConfigHandler {
         if(quoted) return
         val startOffset = context.startOffset ?: 0
         val textRange = TextRange.create(startOffset, startOffset + keyword.length)
-        val variableFieldExpression = ParadoxVariableFieldExpression.resolve(keyword, textRange, configGroup, isKey, true) ?: return
+        val variableFieldExpression = ParadoxVariableFieldExpression.resolve(keyword, textRange, configGroup, true) ?: return
         variableFieldExpression.complete(context, result)
     }
     
@@ -859,7 +859,7 @@ object ParadoxConfigHandler {
         if(quoted) return
         val startOffset = context.startOffset ?: 0
         val textRange = TextRange.create(startOffset, startOffset + keyword.length)
-        val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(keyword, textRange, config, configGroup, isKey, true) ?: return
+        val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(keyword, textRange, configGroup, config, true) ?: return
         valueSetValueExpression.complete(context, result)
     }
     

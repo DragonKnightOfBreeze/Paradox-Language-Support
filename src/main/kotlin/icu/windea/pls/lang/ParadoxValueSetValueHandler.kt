@@ -33,8 +33,6 @@ object ParadoxValueSetValueHandler {
     }
     
     private fun doGetInfos(element: ParadoxScriptStringExpressionElement): List<ParadoxValueSetValueInfo> {
-        val isKey = element is ParadoxScriptPropertyKey
-        
         val matchOptions = Options.SkipIndex or Options.SkipScope
         val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = matchOptions)
         if(configs.isEmpty()) return emptyList()
@@ -50,7 +48,7 @@ object ParadoxValueSetValueHandler {
                     if(text.isLeftQuoted()) {
                         return doGetInfoFromExpression(element, config)
                     }
-                    val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(text, textRange, config, configGroup, isKey)
+                    val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(text, textRange, configGroup, config)
                     if(valueSetValueExpression == null) return emptyList()
                     return doGetInfoFromComplexExpression(element, valueSetValueExpression)
                 }
@@ -58,25 +56,25 @@ object ParadoxValueSetValueHandler {
                     val text = element.text
                     val textRange = getTextRange(element, text)
                     if(text.isLeftQuoted()) return emptyList()
-                    val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup, isKey)
+                    val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup)
                     if(scopeFieldExpression == null) return emptyList()
-                    return doGetInfoFromComplexExpression(element,scopeFieldExpression)
+                    return doGetInfoFromComplexExpression(element, scopeFieldExpression)
                 }
                 configExpression.type.isValueFieldType() -> {
                     val text = element.text
                     val textRange = getTextRange(element, text)
                     if(text.isLeftQuoted()) return emptyList()
-                    val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup, isKey)
+                    val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup)
                     if(valueFieldExpression == null) return emptyList()
-                    return doGetInfoFromComplexExpression(element,valueFieldExpression)
+                    return doGetInfoFromComplexExpression(element, valueFieldExpression)
                 }
                 configExpression.type.isVariableFieldType() -> {
                     val text = element.text
                     val textRange = getTextRange(element, text)
                     if(text.isLeftQuoted()) return emptyList()
-                    val variableFieldExpression = ParadoxVariableFieldExpression.resolve(text, textRange, configGroup, isKey)
+                    val variableFieldExpression = ParadoxVariableFieldExpression.resolve(text, textRange, configGroup)
                     if(variableFieldExpression == null) return emptyList()
-                    return doGetInfoFromComplexExpression(element,variableFieldExpression)
+                    return doGetInfoFromComplexExpression(element, variableFieldExpression)
                 }
                 else -> pass() //continue to check next config
             }
@@ -123,7 +121,7 @@ object ParadoxValueSetValueHandler {
                     }
                     node is ParadoxValueSetValueExpressionNode -> {
                         val reference = node.getReference(element) ?: return@p true
-                        reference.configs.forEachFast {config ->
+                        reference.configs.forEachFast { config ->
                             if(config.expression?.type?.isValueSetValueType() != true) return@p true
                             val configExpression = config.expression!!
                             val name = reference.rangeInElement.substring(element.text)

@@ -31,7 +31,7 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
         val expression = when {
             configExpression.type.isValueSetValueType() -> {
                 val textRange = TextRange.create(0, expressionText.length)
-                ParadoxValueSetValueExpression.resolve(expressionText, textRange, expressionConfig, configGroup)
+                ParadoxValueSetValueExpression.resolve(expressionText, textRange, configGroup, expressionConfig)
             }
             expressionConfig.expression.type.isScopeFieldType() -> {
                 val textRange = TextRange.create(0, expressionText.length)

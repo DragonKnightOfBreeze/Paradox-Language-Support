@@ -5,15 +5,15 @@ import icu.windea.pls.core.*
 import icu.windea.pls.script.highlighter.*
 
 class ParadoxParameterizedScopeFieldExpressionNode(
-	override val text: String,
-	override val rangeInExpression: TextRange,
+    override val text: String,
+    override val rangeInExpression: TextRange,
 ) : ParadoxScopeFieldExpressionNode {
-	override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCOPE_KEY
-	
-	companion object Resolver {
-		fun resolve(text: String, textRange: TextRange): ParadoxParameterizedScopeFieldExpressionNode? {
-			if(!text.isParameterized()) return null
-			return ParadoxParameterizedScopeFieldExpressionNode(text, textRange)
-		}
-	}
+    override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCOPE_KEY
+    
+    companion object Resolver {
+        fun resolve(text: String, textRange: TextRange): ParadoxParameterizedScopeFieldExpressionNode? {
+            if(!text.isParameterized()) return null
+            return ParadoxParameterizedScopeFieldExpressionNode(text, textRange)
+        }
+    }
 }

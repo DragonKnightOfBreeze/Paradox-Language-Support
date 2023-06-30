@@ -36,9 +36,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
                 if(dataType.isScopeFieldType()) {
                     val value = element.value
                     val textRange = TextRange.create(0, value.length)
-                    val isKey = element is ParadoxScriptPropertyKey
-                    val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup, isKey)
-                    if(scopeFieldExpression == null) return
+                    val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup) ?: return
                     handleErrors(element, scopeFieldExpression)
                 }
             }

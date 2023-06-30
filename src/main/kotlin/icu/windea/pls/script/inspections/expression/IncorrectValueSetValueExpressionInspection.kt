@@ -26,8 +26,7 @@ class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
                     val value = element.value
                     val textRange = TextRange.create(0, value.length)
                     val isKey = element is ParadoxScriptPropertyKey
-                    val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(value, textRange, config, configGroup, isKey)
-                    if(valueSetValueExpression == null) return
+                    val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(value, textRange, configGroup, config) ?: return
                     handleErrors(element, valueSetValueExpression)
                 }
             }

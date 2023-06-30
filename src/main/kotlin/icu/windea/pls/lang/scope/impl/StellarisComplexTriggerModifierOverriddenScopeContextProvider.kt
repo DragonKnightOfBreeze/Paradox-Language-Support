@@ -47,7 +47,7 @@ class StellarisComplexTriggerModifierOverriddenScopeContextProvider : ParadoxOve
                 if(scopeField.isLeftQuoted()) return null
                 val textRange = TextRange.create(0, scopeField.length)
                 val configGroup = config.info.configGroup
-                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup, true) ?: return null
+                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup) ?: return null
                 return ParadoxScopeHandler.getScopeContext(scopeFieldExpression, scopeContext)
             }
             config.key == PARAMETERS_KEY -> {

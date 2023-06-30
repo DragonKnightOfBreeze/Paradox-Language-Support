@@ -37,8 +37,7 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
                     val value = element.value
                     val textRange = TextRange.create(0, value.length)
                     val isKey = element is ParadoxScriptPropertyKey
-                    val valueFieldExpression = ParadoxValueFieldExpression.resolve(value, textRange, configGroup, isKey)
-                    if(valueFieldExpression == null) return
+                    val valueFieldExpression = ParadoxValueFieldExpression.resolve(value, textRange, configGroup) ?: return
                     handleErrors(element, valueFieldExpression)
                 }
             }

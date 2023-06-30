@@ -16,92 +16,92 @@ import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptValueArgumentValueExpressionNode(
-	override val text: String,
-	override val rangeInExpression: TextRange,
-	val scriptValueNode: ParadoxScriptValueExpressionNode?,
-	val argumentNode: ParadoxScriptValueArgumentExpressionNode?,
-	val configGroup: CwtConfigGroup
+    override val text: String,
+    override val rangeInExpression: TextRange,
+    val scriptValueNode: ParadoxScriptValueExpressionNode?,
+    val argumentNode: ParadoxScriptValueArgumentExpressionNode?,
+    val configGroup: CwtConfigGroup
 ) : ParadoxExpressionNode {
-	override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
-		if(!getSettings().inference.argumentValueConfig) return null
-		val parameterElement = argumentNode?.getReference(element)?.resolve() ?: return null
-		return ParadoxParameterHandler.getInferredConfig(parameterElement)
-	}
-	
-	override fun getAttributesKey(): TextAttributesKey {
-		val type = ParadoxType.resolve(text)
-		return when {
-			type.isBooleanType() -> ParadoxScriptAttributesKeys.KEYWORD_KEY
-			type.isFloatType() -> ParadoxScriptAttributesKeys.NUMBER_KEY
-			else -> ParadoxScriptAttributesKeys.STRING_KEY
-		}
-	}
-	
-	override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
-		if(!getSettings().inference.argumentValueConfig) return null
-		if(scriptValueNode == null) return null
-		if(text.isEmpty()) return null
-		val reference = scriptValueNode.getReference(element)
-		if(reference?.resolve() == null) return null //skip if script value cannot be resolved
-		if(argumentNode == null) return null
-		val project = configGroup.project
-		return Reference(element, rangeInExpression, project, null) { argumentNode.getReference(element)?.resolve() }
-	}
-	
-	companion object Resolver {
-		fun resolve(text: String, textRange: TextRange, scriptValueNode: ParadoxScriptValueExpressionNode?, parameterNode: ParadoxScriptValueArgumentExpressionNode?, configGroup: CwtConfigGroup): ParadoxScriptValueArgumentValueExpressionNode {
-			return ParadoxScriptValueArgumentValueExpressionNode(text, textRange, scriptValueNode, parameterNode, configGroup)
-		}
-	}
-	
-	class Reference(
-		element: ParadoxScriptStringExpressionElement,
-		rangeInElement: TextRange,
-		val project: Project,
-		val isKey: Boolean?,
-		private val parameterElementResolver: () -> ParadoxParameterElement?
-	): PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
-		override fun handleElementRename(newElementName: String): PsiElement {
-			return element.setValue(rangeInElement.replace(element.value, newElementName))
-		}
-		
-		//缓存解析结果以优化性能
-		
-		private object Resolver: ResolveCache.AbstractResolver<Reference, PsiElement> {
-			override fun resolve(ref: Reference, incompleteCode: Boolean): PsiElement? {
-				return ref.doResolve()
-			}
-		}
-		
-		private object MultiResolver: ResolveCache.PolyVariantResolver<Reference> {
-			override fun resolve(ref: Reference, incompleteCode: Boolean): Array<out ResolveResult> {
-				return ref.doMultiResolve()
-			}
-		}
-		
-		override fun resolve(): PsiElement? {
-			if(!getSettings().inference.argumentValueConfig) return null
-			return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
-		}
-		
-		override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-			if(!getSettings().inference.argumentValueConfig) return ResolveResult.EMPTY_ARRAY
-			return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
-		}
-		
-		private fun doResolve(): PsiElement? {
-			//根据对应的expression进行解析
-			val parameterElement = parameterElementResolver() ?: return null
-			val config = ParadoxParameterHandler.getInferredConfig(parameterElement) ?: return null
-			return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
-		}
-		
-		private fun doMultiResolve(): Array<out ResolveResult> {
-			//根据对应的expression进行解析
-			val parameterElement = parameterElementResolver() ?: return ResolveResult.EMPTY_ARRAY
-			val config = ParadoxParameterHandler.getInferredConfig(parameterElement) ?: return ResolveResult.EMPTY_ARRAY
-			return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, false)
-				.mapToArray { PsiElementResolveResult(it) }
-		}
-	}
+    override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
+        if(!getSettings().inference.argumentValueConfig) return null
+        val parameterElement = argumentNode?.getReference(element)?.resolve() ?: return null
+        return ParadoxParameterHandler.getInferredConfig(parameterElement)
+    }
+    
+    override fun getAttributesKey(): TextAttributesKey {
+        val type = ParadoxType.resolve(text)
+        return when {
+            type.isBooleanType() -> ParadoxScriptAttributesKeys.KEYWORD_KEY
+            type.isFloatType() -> ParadoxScriptAttributesKeys.NUMBER_KEY
+            else -> ParadoxScriptAttributesKeys.STRING_KEY
+        }
+    }
+    
+    override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
+        if(!getSettings().inference.argumentValueConfig) return null
+        if(scriptValueNode == null) return null
+        if(text.isEmpty()) return null
+        val reference = scriptValueNode.getReference(element)
+        if(reference?.resolve() == null) return null //skip if script value cannot be resolved
+        if(argumentNode == null) return null
+        val project = configGroup.project
+        return Reference(element, rangeInExpression, project, null) { argumentNode.getReference(element)?.resolve() }
+    }
+    
+    companion object Resolver {
+        fun resolve(text: String, textRange: TextRange, scriptValueNode: ParadoxScriptValueExpressionNode?, parameterNode: ParadoxScriptValueArgumentExpressionNode?, configGroup: CwtConfigGroup): ParadoxScriptValueArgumentValueExpressionNode {
+            return ParadoxScriptValueArgumentValueExpressionNode(text, textRange, scriptValueNode, parameterNode, configGroup)
+        }
+    }
+    
+    class Reference(
+        element: ParadoxScriptStringExpressionElement,
+        rangeInElement: TextRange,
+        val project: Project,
+        val isKey: Boolean?,
+        private val parameterElementResolver: () -> ParadoxParameterElement?
+    ) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+        override fun handleElementRename(newElementName: String): PsiElement {
+            return element.setValue(rangeInElement.replace(element.value, newElementName))
+        }
+        
+        //缓存解析结果以优化性能
+        
+        private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {
+            override fun resolve(ref: Reference, incompleteCode: Boolean): PsiElement? {
+                return ref.doResolve()
+            }
+        }
+        
+        private object MultiResolver : ResolveCache.PolyVariantResolver<Reference> {
+            override fun resolve(ref: Reference, incompleteCode: Boolean): Array<out ResolveResult> {
+                return ref.doMultiResolve()
+            }
+        }
+        
+        override fun resolve(): PsiElement? {
+            if(!getSettings().inference.argumentValueConfig) return null
+            return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
+        }
+        
+        override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+            if(!getSettings().inference.argumentValueConfig) return ResolveResult.EMPTY_ARRAY
+            return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
+        }
+        
+        private fun doResolve(): PsiElement? {
+            //根据对应的expression进行解析
+            val parameterElement = parameterElementResolver() ?: return null
+            val config = ParadoxParameterHandler.getInferredConfig(parameterElement) ?: return null
+            return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
+        }
+        
+        private fun doMultiResolve(): Array<out ResolveResult> {
+            //根据对应的expression进行解析
+            val parameterElement = parameterElementResolver() ?: return ResolveResult.EMPTY_ARRAY
+            val config = ParadoxParameterHandler.getInferredConfig(parameterElement) ?: return ResolveResult.EMPTY_ARRAY
+            return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, false)
+                .mapToArray { PsiElementResolveResult(it) }
+        }
+    }
 }

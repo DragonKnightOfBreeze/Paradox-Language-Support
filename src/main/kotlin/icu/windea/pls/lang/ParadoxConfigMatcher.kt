@@ -275,7 +275,7 @@ object ParadoxConfigMatcher {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val textRange = TextRange.create(0, expression.text.length)
-                val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
+                val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup)
                 val r = valueFieldExpression != null
                 return r.toResult()
             }
@@ -290,7 +290,7 @@ object ParadoxConfigMatcher {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val textRange = TextRange.create(0, expression.text.length)
-                val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
+                val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup)
                 val r = variableFieldExpression != null
                 return r.toResult()
             }
@@ -452,7 +452,7 @@ object ParadoxConfigMatcher {
     
     private fun getScopeFieldMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
         val textRange = TextRange.create(0, expression.text.length)
-        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup, expression.isKey)
+        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup)
         if(scopeFieldExpression == null) return Result.NotMatch
         when(configExpression.type) {
             CwtDataType.ScopeField -> return Result.ExactMatch

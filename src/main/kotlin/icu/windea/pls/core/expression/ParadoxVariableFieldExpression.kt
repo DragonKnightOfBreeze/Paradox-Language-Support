@@ -26,26 +26,20 @@ import icu.windea.pls.lang.model.*
  * ```
  */
 interface ParadoxVariableFieldExpression : ParadoxComplexExpression {
-    val scopeNodes: List<ParadoxScopeFieldExpressionNode>
-    
-    val variableNode: ParadoxDataExpressionNode
-    
     companion object Resolver
 }
 
+val ParadoxVariableFieldExpression.scopeNodes: List<ParadoxScopeFieldExpressionNode>
+    get() = nodes.filterIsInstance<ParadoxScopeFieldExpressionNode>()
+val ParadoxVariableFieldExpression.variableNode: ParadoxDataExpressionNode
+    get() = nodes.last().cast()
+
 class ParadoxVariableFieldExpressionImpl(
     override val text: String,
-    override val isKey: Boolean?,
     override val rangeInExpression: TextRange,
     override val nodes: List<ParadoxExpressionNode>,
     override val configGroup: CwtConfigGroup
 ) : AbstractExpression(text), ParadoxVariableFieldExpression {
-    override val quoted: Boolean = false
-    
-    override val scopeNodes: List<ParadoxScopeFieldExpressionNode> = nodes.filterIsInstance<ParadoxScopeFieldExpressionNode>()
-    
-    override val variableNode: ParadoxDataExpressionNode = nodes.last().cast()
-    
     override fun validate(): List<ParadoxExpressionError> {
         val errors = mutableListOf<ParadoxExpressionError>()
         var malformed = false
@@ -189,26 +183,26 @@ class ParadoxVariableFieldExpressionImpl(
     }
 }
 
-fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, isKey: Boolean? = null, canBeMismatched: Boolean = false): ParadoxVariableFieldExpression? {
+fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, canBeMismatched: Boolean = false): ParadoxVariableFieldExpression? {
     //skip if text represents an int or float
-    if(isNumber(text)) return null
+    if(isNumber(expression)) return null
     
-    val parameterRanges = ParadoxConfigHandler.getParameterRangesInExpression(text)
+    val parameterRanges = ParadoxConfigHandler.getParameterRangesInExpression(expression)
     //skip if text is a parameter with unary operator prefix
-    if(isUnaryOperatorAwareParameter(text, parameterRanges)) return null
+    if(isUnaryOperatorAwareParameter(expression, parameterRanges)) return null
     
     val nodes = mutableListOf<ParadoxExpressionNode>()
-    val offset = textRange.startOffset
+    val offset = range.startOffset
     var isLast = false
     var index: Int
     var tokenIndex = -1
-    val textLength = text.length
+    val textLength = expression.length
     while(tokenIndex < textLength) {
         index = tokenIndex + 1
-        tokenIndex = text.indexOf('.', index)
+        tokenIndex = expression.indexOf('.', index)
         if(tokenIndex != -1 && tokenIndex.inParameter(parameterRanges)) continue //这里需要跳过参数文本
-        if(tokenIndex != -1 && text.indexOf('@', index).let { it != -1 && it < tokenIndex && !it.inParameter(parameterRanges) }) tokenIndex = -1
-        if(tokenIndex != -1 && text.indexOf('|', index).let { it != -1 && it < tokenIndex && !it.inParameter(parameterRanges) }) tokenIndex = -1
+        if(tokenIndex != -1 && expression.indexOf('@', index).let { it != -1 && it < tokenIndex && !it.inParameter(parameterRanges) }) tokenIndex = -1
+        if(tokenIndex != -1 && expression.indexOf('|', index).let { it != -1 && it < tokenIndex && !it.inParameter(parameterRanges) }) tokenIndex = -1
         val dotNode = if(tokenIndex != -1) {
             val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
             ParadoxOperatorExpressionNode(".", dotRange)
@@ -220,7 +214,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
             isLast = true
         }
         //resolve node
-        val nodeText = text.substring(index, tokenIndex)
+        val nodeText = expression.substring(index, tokenIndex)
         val nodeTextRange = TextRange.create(index + offset, tokenIndex + offset)
         val node = when {
             isLast -> ParadoxDataExpressionNode.resolve(nodeText, nodeTextRange, configGroup.linksAsVariable)
@@ -233,7 +227,7 @@ fun Resolver.resolve(text: String, textRange: TextRange, configGroup: CwtConfigG
         nodes.add(node)
         if(dotNode != null) nodes.add(dotNode)
     }
-    return ParadoxVariableFieldExpressionImpl(text, isKey, textRange, nodes, configGroup)
+    return ParadoxVariableFieldExpressionImpl(expression, range, nodes, configGroup)
 }
 
 private fun Int.inParameter(parameterRanges: List<TextRange>): Boolean {
