@@ -5,6 +5,9 @@ import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 
+/**
+ * 当默认游戏类型变更后，重新解析文件。
+ */
 class ParadoxRefreshOnDefaultGameTypeChangedListener : ParadoxDefaultGameTypeListener {
     override fun onChange(gameType: ParadoxGameType) {
         val modDirectories = mutableSetOf<String>()
@@ -15,8 +18,10 @@ class ParadoxRefreshOnDefaultGameTypeChangedListener : ParadoxDefaultGameTypeLis
                 if(modDirectory != null) modDirectories.add(modDirectory)
             }
         }
+        
+        //重新解析文件
         runWriteAction { ParadoxCoreHandler.reparseFilesByRootFilePaths(modDirectories) }
         
-        //检查是否也需要强制刷新inlayHints - 不需要
+        //此时不需要刷新内嵌提示
     }
 }

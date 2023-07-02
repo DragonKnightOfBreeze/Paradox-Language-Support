@@ -16,7 +16,7 @@ import java.util.*
 import javax.swing.*
 
 /**
- * 用于为合成（注入的/合并后的）的CWT规则提供声明处。
+ * 用于为合成的（注入的/合并后的）CWT规则提供声明处。
  */
 class CwtMemberConfigElement(
     parent: PsiElement,
