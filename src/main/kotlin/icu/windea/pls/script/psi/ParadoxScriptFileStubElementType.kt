@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.impl.*
 
 object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
     private const val ID = "paradoxScript.file"
-    private const val VERSION = 23 //1.0.7
+    private const val VERSION = 31 //1.1.1
     
     override fun getExternalId() = ID
     
@@ -47,11 +47,10 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
     
     override fun indexStub(stub: PsiFileStub<*>, sink: IndexSink) {
         if(stub is ParadoxScriptFileStub) {
-            //索引definition的name和type
-            if(stub.name.isNotEmpty() && stub.type.isNotEmpty() && stub.gameType != null) {
-                sink.occurrence(ParadoxDefinitionNameIndex.KEY, stub.name)
-                sink.occurrence(ParadoxDefinitionTypeIndex.KEY, stub.type)
-            }
+            //Note that definition name can be empty (aka anonymous)
+            if(stub.gameType == null) return
+            sink.occurrence(ParadoxDefinitionNameIndex.KEY, stub.name)
+            sink.occurrence(ParadoxDefinitionTypeIndex.KEY, stub.type)
         }
         super.indexStub(stub, sink)
     }

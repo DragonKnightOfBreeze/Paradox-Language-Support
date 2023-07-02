@@ -42,21 +42,19 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
     }
     
     override fun indexStub(stub: ParadoxLocalisationPropertyStub, sink: IndexSink) {
-        if(stub.name.isNotEmpty() && stub.gameType != null) {
-            when(stub.category) {
-                ParadoxLocalisationCategory.Localisation -> {
-                    //sink.occurrence(ParadoxLocalisationNameIndex.KEY, stub.name)
-                    
-                    ParadoxLocalisationConstraint.values.forEachFast { constraint -> 
-                        if(constraint.predicate(stub.name)) {
-                            val key = if(constraint.ignoreCase) stub.name.lowercase() else stub.name
-                            sink.occurrence(constraint.indexKey, key)
-                        }
+        if(stub.gameType == null) return
+        when(stub.category) {
+            ParadoxLocalisationCategory.Localisation -> {
+                //sink.occurrence(ParadoxLocalisationNameIndex.KEY, stub.name)
+                ParadoxLocalisationConstraint.values.forEachFast { constraint -> 
+                    if(constraint.predicate(stub.name)) {
+                        val name = if(constraint.ignoreCase) stub.name.lowercase() else stub.name
+                        sink.occurrence(constraint.indexKey, name)
                     }
                 }
-                ParadoxLocalisationCategory.SyncedLocalisation -> {
-                    sink.occurrence(ParadoxSyncedLocalisationNameIndex.KEY, stub.name)
-                }
+            }
+            ParadoxLocalisationCategory.SyncedLocalisation -> {
+                sink.occurrence(ParadoxSyncedLocalisationNameIndex.KEY, stub.name)
             }
         }
     }

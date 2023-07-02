@@ -41,11 +41,10 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     }
     
     override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
-        //索引definition的name和type
-        if(stub.name.isNotEmpty() && stub.type.isNotEmpty() && stub.gameType != null) {
-            sink.occurrence(ParadoxDefinitionNameIndex.KEY, stub.name)
-            sink.occurrence(ParadoxDefinitionTypeIndex.KEY, stub.type)
-        }
+        //Note that definition name can be empty (aka anonymous)
+        if(stub.gameType == null) return
+        sink.occurrence(ParadoxDefinitionNameIndex.KEY, stub.name)
+        sink.occurrence(ParadoxDefinitionTypeIndex.KEY, stub.type)
     }
     
     override fun serialize(stub: ParadoxScriptPropertyStub, dataStream: StubOutputStream) {
