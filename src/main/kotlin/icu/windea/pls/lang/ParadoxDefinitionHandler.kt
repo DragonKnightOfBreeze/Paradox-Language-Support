@@ -127,7 +127,7 @@ object ParadoxDefinitionHandler {
         if(fastResult != null) return fastResult
         
         //判断definition的propertyValue是否需要是block
-        val declarationConfig = configGroup.declarations[typeConfig.name]?.propertyConfig
+        val declarationConfig = configGroup.declarations.get(typeConfig.name)?.propertyConfig
         //当进行代码补全时需要特殊处理
         val propertyValue = element.castOrNull<ParadoxScriptProperty>()?.propertyValue
         val isBlock = propertyValue?.let { it is ParadoxScriptBlock }
@@ -161,7 +161,7 @@ object ParadoxDefinitionHandler {
         if(fastResult != null) return fastResult
         
         //判断definition的propertyValue是否需要是block
-        val declarationConfig = configGroup.declarations[typeConfig.name]?.propertyConfig
+        val declarationConfig = configGroup.declarations.get(typeConfig.name)?.propertyConfig
         //当进行代码补全时需要特殊处理
         val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES)
         val isBlock = propertyValue?.tokenType?.let { it == BLOCK }

@@ -44,7 +44,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
             //如果是切换类型，也要按照基础类型的类型表达式查找定义
             val gameType = queryParameters.selector.gameType
             val configGroup = getCwtConfig(project).get(gameType.id)
-            val baseTypeExpression = configGroup.typeToSwapTypeMap.get(typeExpression)
+            val baseTypeExpression = configGroup.typeToBaseTypeMap.get(typeExpression)
             if(baseTypeExpression != null) {
                 doProcessQueryByTypeExpression(baseTypeExpression, project, scope, name, consumer)
             }

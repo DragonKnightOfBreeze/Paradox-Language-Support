@@ -27,12 +27,12 @@ interface CwtConfigGroup: UserDataHolder {
 	
 	val types: Map<String, CwtTypeConfig>
 	//typeExpression - swapType
-	val typeToSwapTypeMap: BidirectionalMap<String, String>
+	val typeToBaseTypeMap: BidirectionalMap<String, String>
 	//typeExpression - modifierSimpleName - modifierConfig
 	//job - job_$_add - <config>
 	val typeToModifiersMap: Map<String, Map<String, CwtModifierConfig>>
 	
-	val declarations: MutableMap<String, CwtDeclarationConfig>
+	val declarations: Map<String, CwtDeclarationConfig>
 	
 	val values: Map<String, CwtEnumConfig>
 	//enumValue可以是int、float、bool类型，统一用字符串表示
@@ -67,17 +67,17 @@ interface CwtConfigGroup: UserDataHolder {
 	val onActions: Map<String, CwtOnActionConfig>
 	
 	val modifierCategories: Map<String, CwtModifierCategoryConfig>
+	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig>
 	// key: scalar / template_expression
 	val modifiers: Map<@CaseInsensitive String, CwtModifierConfig>
 	val predefinedModifiers: Map<@CaseInsensitive String, CwtModifierConfig>
 	val generatedModifiers: Map<@CaseInsensitive String, CwtModifierConfig>
 	
-	//目前版本的CWT配置已经不再使用
-	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig>
 	//常量字符串的别名的组名的映射
 	val aliasKeysGroupConst: Map<String, Map<@CaseInsensitive String, String>>
 	//非常量字符串的别名的组名的映射
 	val aliasKeysGroupNoConst: Map<String, Set<String>>
+	
 	//处理后的连接规则
 	val linksAsScopeWithPrefixSorted: List<CwtLinkConfig>
 	val linksAsValueWithPrefixSorted: List<CwtLinkConfig>
