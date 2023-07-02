@@ -36,6 +36,8 @@ class ParadoxSettingsState : BaseState() {
     @get:Property(surroundWithTag = false)
     var hierarchy by property(HierarchyState())
     @get:Property(surroundWithTag = false)
+    var diff by property(DiffState())
+    @get:Property(surroundWithTag = false)
     var others by property(OthersState())
     
     /**
@@ -84,15 +86,15 @@ class ParadoxSettingsState : BaseState() {
     }
     
     /**
-     * @property localisationTextGenerationStrategy 生成本地化时如何生成本地化文本。
-     * @property localisationText 生成本地化时如果使用特定文本填充本地化文本，这个特定文本是什么。
-     * @property localisationTextLocale 生成本地化时如果基于特定语言区域的已有本地化文本，这个特定语言区域是什么。
+     * @property localisationStrategy 生成本地化时如何生成本地化文本。
+     * @property localisationStrategyText 生成本地化时如果使用特定文本填充本地化文本，这个特定文本是什么。
+     * @property localisationStrategyLocale 生成本地化时如果基于特定语言区域的已有本地化文本，这个特定语言区域是什么。
      */
     @Tag("generation")
     class GenerationState : BaseState() {
-        var localisationTextGenerationStrategy by enum(LocalisationTextGenerationStrategy.SpecificText)
-        var localisationText by string("REPLACE_ME")
-        var localisationTextLocale by string("auto")
+        var localisationStrategy by enum(LocalisationGenerationStrategy.SpecificText)
+        var localisationStrategyText by string("REPLACE_ME")
+        var localisationStrategyLocale by string("auto")
         var fileNamePrefix by string("000000_")
     }
     
@@ -136,10 +138,17 @@ class ParadoxSettingsState : BaseState() {
     /**
      * @property defaultDiffGroup 进行DIFF时，初始打开的DIFF分组。默认初始打开VS副本的DIFF分组。
      */
+    @Tag("diff")
+    class DiffState: BaseState() {
+        var defaultDiffGroup by enum(DiffGroupStrategy.VsCopy)
+    }
+    
+    /**
+     * @property showEditorContextToolbar 是否在编辑器右上角显示上下文悬浮工具栏。
+     */
     @Tag("others")
     class OthersState : BaseState() {
-        var showEditorFloatingToolbar by property(true)
-        var defaultDiffGroup by enum(DiffGroupStrategy.VsCopy)
+        var showEditorContextToolbar by property(true)
     }
     
     val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet(caseInsensitiveStringSet()).orEmpty() }
@@ -152,7 +161,7 @@ class ParadoxSettingsState : BaseState() {
     }
 }
 
-enum class LocalisationTextGenerationStrategy {
+enum class LocalisationGenerationStrategy {
     EmptyText,
     SpecificText,
     FromLocale,

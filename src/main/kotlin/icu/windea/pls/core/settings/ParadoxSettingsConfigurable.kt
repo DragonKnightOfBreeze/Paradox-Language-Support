@@ -193,32 +193,38 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
             }
             //generation
             collapsibleGroup(PlsBundle.message("settings.generation")) {
-                @Suppress("DialogTitleCapitalization")
-                buttonsGroup(PlsBundle.message("settings.generation.localisationTextGenerationStrategy")) {
-                    row {
-                        radioButton(PlsBundle.message("settings.generation.localisationTextGenerationStrategy.0"), LocalisationTextGenerationStrategy.EmptyText)
-                    }
-                    row {
-                        lateinit var rbCell: Cell<JBRadioButton>
-                        radioButton(PlsBundle.message("settings.generation.localisationTextGenerationStrategy.1"), LocalisationTextGenerationStrategy.SpecificText)
-                            .apply { rbCell = this }
-                        textField().bindText(settings.generation::localisationText.toNonNullableProperty(""))
-                            .enabledIf(rbCell.selected)
-                    }
-                    row {
-                        lateinit var rbCell: Cell<JBRadioButton>
-                        radioButton(PlsBundle.message("settings.generation.localisationTextGenerationStrategy.2"), LocalisationTextGenerationStrategy.FromLocale)
-                            .apply { rbCell = this }
-                        localeComboBox(settings)
-                            .bindItem(settings.generation::localisationTextLocale.toNullableProperty())
-                            .enabledIf(rbCell.selected)
-                    }
-                }.bind(settings.generation::localisationTextGenerationStrategy)
                 //fileNamePrefix
                 row {
                     label(PlsBundle.message("settings.generation.fileNamePrefix"))
                     textField().bindText(settings.generation::fileNamePrefix.toNonNullableProperty(""))
                 }.visible(false)
+                //localisation
+                row {
+                    label(PlsBundle.message("settings.generation.localisation"))
+                }
+                indent {
+                    //strategy
+                    this@collapsibleGroup.buttonsGroup(PlsBundle.message("settings.generation.localisation.strategy"), indent = false) {
+                        row {
+                            radioButton(PlsBundle.message("settings.generation.localisation.strategy.0"), LocalisationGenerationStrategy.EmptyText)
+                        }
+                        row {
+                            lateinit var rbCell: Cell<JBRadioButton>
+                            radioButton(PlsBundle.message("settings.generation.localisation.strategy.1"), LocalisationGenerationStrategy.SpecificText)
+                                .apply { rbCell = this }
+                            textField().bindText(settings.generation::localisationStrategyText.toNonNullableProperty(""))
+                                .enabledIf(rbCell.selected)
+                        }
+                        row {
+                            lateinit var rbCell: Cell<JBRadioButton>
+                            radioButton(PlsBundle.message("settings.generation.localisation.strategy.2"), LocalisationGenerationStrategy.FromLocale)
+                                .apply { rbCell = this }
+                            localeComboBox(settings)
+                                .bindItem(settings.generation::localisationStrategyLocale.toNullableProperty())
+                                .enabledIf(rbCell.selected)
+                        }
+                    }.bind(settings.generation::localisationStrategy)
+                }
             }
             //inference
             collapsibleGroup(PlsBundle.message("settings.inference")) {
@@ -227,7 +233,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.inference.argumentValueConfig"))
                         .bindSelected(settings.inference::argumentValueConfig)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.argumentValueConfig.tooltip") }
-                        //如果这个配置的值发生变化，IDE应该会自动刷新，不需要执行额外的回调（直到PSI变更前引用仍然可以被解析，但这并无大碍）
+                    //如果这个配置的值发生变化，IDE应该会自动刷新，不需要执行额外的回调（直到PSI变更前引用仍然可以被解析，但这并无大碍）
                 }
                 //inlineScriptConfig
                 row {
@@ -297,26 +303,28 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.hierarchy::showLocalisationsInCallHierarchy)
                 }
             }
+            //diff
+            collapsibleGroup(PlsBundle.message("settings.diff")) {
+                //defaultDiffGroup
+                buttonsGroup(PlsBundle.message("settings.diff.defaultDiffGroup"), indent = false) {
+                    row {
+                        radioButton(PlsBundle.message("settings.diff.defaultDiffGroup.0"), DiffGroupStrategy.VsCopy)
+                    }
+                    row {
+                        radioButton(PlsBundle.message("settings.diff.defaultDiffGroup.1"), DiffGroupStrategy.First)
+                    }
+                    row {
+                        radioButton(PlsBundle.message("settings.diff.defaultDiffGroup.2"), DiffGroupStrategy.Last)
+                    }
+                }.bind(settings.diff::defaultDiffGroup)
+            }
             //others
             collapsibleGroup(PlsBundle.message("settings.others")) {
-                //showEditorFloatingToolbar
+                //showEditorContextToolbar
                 row {
-                    checkBox(PlsBundle.message("settings.others.showEditorFloatingToolbar"))
-                        .bindSelected(settings.others::showEditorFloatingToolbar)
+                    checkBox(PlsBundle.message("settings.others.showEditorContextToolbar"))
+                        .bindSelected(settings.others::showEditorContextToolbar)
                 }
-                @Suppress("DialogTitleCapitalization")
-                //defaultDiffGroup
-                buttonsGroup(PlsBundle.message("settings.others.defaultDiffGroup")) {
-                    row {
-                        radioButton(PlsBundle.message("settings.others.defaultDiffGroup.0"), DiffGroupStrategy.VsCopy)
-                    }
-                    row {
-                        radioButton(PlsBundle.message("settings.others.defaultDiffGroup.1"), DiffGroupStrategy.First)
-                    }
-                    row {
-                        radioButton(PlsBundle.message("settings.others.defaultDiffGroup.2"), DiffGroupStrategy.Last)
-                    }
-                }.bind(settings.others::defaultDiffGroup)
             }
         }
     }

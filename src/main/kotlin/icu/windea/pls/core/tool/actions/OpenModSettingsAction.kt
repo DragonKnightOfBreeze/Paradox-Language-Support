@@ -29,7 +29,7 @@ class OpenModSettingsAction : DumbAwareAction() {
     
     override fun update(e: AnActionEvent) {
         //基于插件设置判断是否需要显示在编辑器悬浮工具栏中
-        if(e.place == ActionPlaces.CONTEXT_TOOLBAR && !getSettings().others.showEditorFloatingToolbar) {
+        if(e.place == ActionPlaces.CONTEXT_TOOLBAR && !getSettings().others.showEditorContextToolbar) {
             e.presentation.isEnabledAndVisible = false
             return
         }

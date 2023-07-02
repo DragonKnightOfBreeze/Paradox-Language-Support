@@ -89,13 +89,13 @@ object ParadoxPsiGenerator {
         append(localisationName)
         append(": \"")
         val generationSettings = getSettings().generation
-        val strategy = generationSettings.localisationTextGenerationStrategy
+        val strategy = generationSettings.localisationStrategy
         val text = when(strategy) {
-            LocalisationTextGenerationStrategy.EmptyText -> ""
-            LocalisationTextGenerationStrategy.SpecificText -> generationSettings.localisationText.orEmpty()
-            LocalisationTextGenerationStrategy.FromLocale -> {
+            LocalisationGenerationStrategy.EmptyText -> ""
+            LocalisationGenerationStrategy.SpecificText -> generationSettings.localisationStrategyText.orEmpty()
+            LocalisationGenerationStrategy.FromLocale -> {
                 //使用对应语言区域的文本，如果不存在，以及其他任何意外，直接使用空字符串
-                val locale = getLocale(generationSettings.localisationTextLocale.orEmpty())
+                val locale = getLocale(generationSettings.localisationStrategyLocale.orEmpty())
                 val selector = localisationSelector(project, file).contextSensitive().locale(locale)
                 val localisation = ParadoxLocalisationSearch.search(localisationName, selector).find()
                 localisation?.propertyValue?.text.orEmpty()

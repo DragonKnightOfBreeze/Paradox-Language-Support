@@ -94,7 +94,7 @@ class GenerateLocalisationFileAction : AnAction() {
                 val documentManager = PsiDocumentManager.getInstance(project)
                 
                 val generationSettings = getSettings().generation
-                val strategy = generationSettings.localisationTextGenerationStrategy
+                val strategy = generationSettings.localisationStrategy
                 
                 //文件名以及文件所在的某个父目录中可以带有语言区域
                 //生成的本地化文件会使用合适的文件名，放到合适的目录下
@@ -144,11 +144,11 @@ class GenerateLocalisationFileAction : AnAction() {
                                     e.setName(missingLocaleConfig.id)
                                 } else if(e is ParadoxLocalisationProperty) {
                                     when(strategy) {
-                                        LocalisationTextGenerationStrategy.EmptyText -> e.setValue("")
-                                        LocalisationTextGenerationStrategy.SpecificText -> e.setValue(generationSettings.localisationText.orEmpty())
-                                        LocalisationTextGenerationStrategy.FromLocale -> {
+                                        LocalisationGenerationStrategy.EmptyText -> e.setValue("")
+                                        LocalisationGenerationStrategy.SpecificText -> e.setValue(generationSettings.localisationStrategyText.orEmpty())
+                                        LocalisationGenerationStrategy.FromLocale -> {
                                             //使用对应语言区域的文本，如果不存在，以及其他任何意外，直接使用空字符串
-                                            val locale = getLocale(generationSettings.localisationTextLocale.orEmpty())
+                                            val locale = getLocale(generationSettings.localisationStrategyLocale.orEmpty())
                                             val selector = localisationSelector(project, baseFile).contextSensitive().locale(locale)
                                             val localisation = ParadoxLocalisationSearch.search(e.name, selector).find()
                                             e.setValue(localisation?.propertyValue?.text?.unquote().orEmpty())
