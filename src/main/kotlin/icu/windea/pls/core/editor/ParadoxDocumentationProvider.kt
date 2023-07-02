@@ -3,7 +3,6 @@
 package icu.windea.pls.core.editor
 
 import com.intellij.lang.documentation.*
-import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -187,8 +186,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         sections: MutableMap<String, String>?
     ) {
         val render = getSettings().documentation.renderRelatedLocalisationsForModifiers
-        ProgressManager.checkCanceled()
-        val gameType = element.gameType
+        val gameType = configGroup.gameType ?: return
         val project = configGroup.project
         val nameLocalisation = run {
             val key = ParadoxModifierHandler.getModifierNameKey(name)
@@ -234,8 +232,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         sections: MutableMap<String, String>?
     ) {
         val render = getSettings().documentation.renderIconForModifiers
-        ProgressManager.checkCanceled()
-        val gameType = element.gameType
+        val gameType = configGroup.gameType ?: return
         val project = configGroup.project
         val iconPath = ParadoxModifierHandler.getModifierIconPath(name)
         val iconFile = run {
@@ -265,18 +262,17 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         //即使是在CWT文件中，如果可以推断得到CWT规则组，也显示作用域信息
         if(!getSettings().documentation.showScopes) return
         
-        if(sections != null) {
-            val modifierCategories = ParadoxModifierHandler.getModifierCategories(element) ?: return
-            val gameType = configGroup.gameType
-            val contextElement = element
-            val categoryNames = modifierCategories.keys
-            if(categoryNames.isNotEmpty()) {
-                sections.put(PlsBundle.message("sectionTitle.categories"), ParadoxDocumentBuilder.getModifierCategoriesText(categoryNames, gameType, contextElement))
-            }
-            
-            val supportedScopes = modifierCategories.getSupportedScopes()
-            sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxDocumentBuilder.getScopesText(supportedScopes, gameType, contextElement))
+        if(sections == null) return
+        val gameType = configGroup.gameType ?: return
+        val modifierCategories = ParadoxModifierHandler.getModifierCategories(element) ?: return
+        val contextElement = element
+        val categoryNames = modifierCategories.keys
+        if(categoryNames.isNotEmpty()) {
+            sections.put(PlsBundle.message("sectionTitle.categories"), ParadoxDocumentationBuilder.getModifierCategoriesText(categoryNames, gameType, contextElement))
         }
+        
+        val supportedScopes = modifierCategories.getSupportedScopes()
+        sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxDocumentationBuilder.getScopesText(supportedScopes, gameType, contextElement))
     }
     
     private fun StringBuilder.addScopeContext(
@@ -289,22 +285,17 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         //@Suppress("DEPRECATION")
         //if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
         
-        val show = getSettings().documentation.showScopeContext
-        if(!show) return
+        if(!getSettings().documentation.showScopeContext) return
+        
         if(sections == null) return
+        val gameType = configGroup.gameType ?: return
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(true) ?: return
         if(!ParadoxScopeHandler.isScopeContextSupported(memberElement, indirect = true)) return
         val scopeContext = ParadoxScopeHandler.getScopeContext(memberElement)
         if(scopeContext == null) return
-        //TODO 如果作用域引用位于表达式中，应当使用那个位置的作用域上下文，但是目前实现不了，因为这里的referenceElement是整个scriptProperty
-        val contextElement = element
-        val gameType = configGroup.gameType.orDefault()
-        val scopeContextText = buildString {
-            append("<code>")
-            ParadoxScopeHandler.buildScopeContextDoc(scopeContext, gameType, contextElement, this)
-            append("</code>")
-        }
-        sections.put(PlsBundle.message("sectionTitle.scopeContext"), scopeContextText)
+        //TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
+        // 因为这里的referenceElement是整个stringExpression，得到的作用域上下文会是脚本表达式最终的作用域上下文
+        sections.put(PlsBundle.message("sectionTitle.scopeContext"), ParadoxDocumentationBuilder.getScopeContextText(scopeContext, gameType, element))
     }
     
     private fun StringBuilder.buildSections(sectionsList: List<Map<String, String>>) {

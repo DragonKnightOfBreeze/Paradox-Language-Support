@@ -4,11 +4,12 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.model.*
 
-object ParadoxDocumentBuilder {
-    fun getModifierCategoriesText(categories: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
+object ParadoxDocumentationBuilder {
+    fun getModifierCategoriesText(categories: Set<String>, gameType: ParadoxGameType, contextElement: PsiElement): String {
+        if(categories.isEmpty()) return ""
         return buildString {
-            var appendSeparator = false
             append("<code>")
+            var appendSeparator = false
             for(category in categories) {
                 if(appendSeparator) append(", ") else appendSeparator = true
                 appendCwtLink("${gameType.linkToken}modifier_categories/$category", category, contextElement)
@@ -17,7 +18,7 @@ object ParadoxDocumentBuilder {
         }
     }
     
-    fun getScopeText(scopeId: String, gameType: ParadoxGameType?, contextElement: PsiElement): String {
+    fun getScopeText(scopeId: String, gameType: ParadoxGameType, contextElement: PsiElement): String {
         return buildString {
             append("<code>")
             ParadoxScopeHandler.buildScopeDoc(scopeId, gameType, contextElement, this)
@@ -25,14 +26,23 @@ object ParadoxDocumentBuilder {
         }
     }
     
-    fun getScopesText(scopeIds: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
+    fun getScopesText(scopeIds: Set<String>, gameType: ParadoxGameType, contextElement: PsiElement): String {
+        if(scopeIds.isEmpty()) return ""
         return buildString {
-            var appendSeparator = false
             append("<code>")
+            var appendSeparator = false
             for(scopeId in scopeIds) {
                 if(appendSeparator) append(", ") else appendSeparator = true
                 ParadoxScopeHandler.buildScopeDoc(scopeId, gameType, contextElement, this)
             }
+            append("</code>")
+        }
+    }
+    
+    fun getScopeContextText(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement) : String{
+        return buildString {
+            append("<code>")
+            ParadoxScopeHandler.buildScopeContextDoc(scopeContext, gameType, contextElement, this)
             append("</code>")
         }
     }

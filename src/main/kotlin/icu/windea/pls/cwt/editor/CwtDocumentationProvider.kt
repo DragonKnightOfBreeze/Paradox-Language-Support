@@ -3,7 +3,6 @@
 package icu.windea.pls.cwt.editor
 
 import com.intellij.lang.documentation.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -193,7 +192,6 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
     
     private fun StringBuilder.addModifierRelatedLocalisations(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
         val render = getSettings().documentation.renderRelatedLocalisationsForModifiers
-        ProgressManager.checkCanceled()
         val contextElement = referenceElement
         val gameType = configGroup.gameType ?: return
         val project = configGroup.project
@@ -236,7 +234,6 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
     
     private fun StringBuilder.addModifierIcon(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
         val render = getSettings().documentation.renderIconForModifiers
-        ProgressManager.checkCanceled()
         val contextElement = referenceElement
         val gameType = configGroup.gameType ?: return
         val project = configGroup.project
@@ -263,11 +260,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         //即使是在CWT文件中，如果可以推断得到CWT规则组，也显示作用域信息
         
         if(!getSettings().documentation.showScopes) return
+        
         //为link提示名字、描述、输入作用域、输出作用域的文档注释
         //为alias modifier localisation_command等提供分类、支持的作用域的文档注释
         //仅为脚本文件和本地化文件中的引用提供
+        val gameType = configGroup.gameType ?: return
         val contextElement = element
-        val gameType = configGroup.gameType
         when(configType) {
             CwtConfigType.Link -> {
                 val linkConfig = configGroup.links[name] ?: return
@@ -277,10 +275,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
                 }
                 if(sections != null) {
                     val inputScopes = linkConfig.inputScopes
-                    sections.put(PlsBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
+                    sections.put(PlsBundle.message("sectionTitle.inputScopes"), ParadoxDocumentationBuilder.getScopesText(inputScopes, gameType, contextElement))
                     
                     val outputScope = linkConfig.outputScope
-                    if(outputScope != null) sections.put(PlsBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
+                    if(outputScope != null) sections.put(PlsBundle.message("sectionTitle.outputScopes"), ParadoxDocumentationBuilder.getScopeText(outputScope, gameType, contextElement))
                 }
             }
             CwtConfigType.LocalisationLink -> {
@@ -291,10 +289,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
                 }
                 if(sections != null) {
                     val inputScopes = linkConfig.inputScopes
-                    sections.put(PlsBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
+                    sections.put(PlsBundle.message("sectionTitle.inputScopes"), ParadoxDocumentationBuilder.getScopesText(inputScopes, gameType, contextElement))
                     
                     val outputScope = linkConfig.outputScope
-                    if(outputScope != null) sections.put(PlsBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
+                    if(outputScope != null) sections.put(PlsBundle.message("sectionTitle.outputScopes"), ParadoxDocumentationBuilder.getScopeText(outputScope, gameType, contextElement))
                 }
             }
             CwtConfigType.Modifier -> {
@@ -302,25 +300,25 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
                 if(sections != null) {
                     val categoryNames = modifierConfig.categoryConfigMap.keys
                     if(categoryNames.isNotEmpty()) {
-                        sections.put(PlsBundle.message("sectionTitle.categories"), getCategoriesText(categoryNames, gameType, contextElement))
+                        sections.put(PlsBundle.message("sectionTitle.categories"), ParadoxDocumentationBuilder.getModifierCategoriesText(categoryNames, gameType, contextElement))
                     }
                     
                     val supportedScopes = modifierConfig.supportedScopes
-                    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
+                    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxDocumentationBuilder.getScopesText(supportedScopes, gameType, contextElement))
                 }
             }
             CwtConfigType.ModifierCategory -> {
                 val modifierCategoryConfig = configGroup.modifierCategories[name] ?: return
                 if(sections != null) {
                     val supportedScopes = modifierCategoryConfig.supportedScopes
-                    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
+                    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxDocumentationBuilder.getScopesText(supportedScopes, gameType, contextElement))
                 }
             }
             CwtConfigType.LocalisationCommand -> {
                 val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
                 if(sections != null) {
                     val supportedScopes = localisationCommandConfig.supportedScopes
-                    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
+                    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxDocumentationBuilder.getScopesText(supportedScopes, gameType, contextElement))
                 }
             }
             CwtConfigType.Alias, CwtConfigType.Trigger, CwtConfigType.Effect -> {
@@ -333,70 +331,37 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
                 if(aliasConfig.name !in configGroup.aliasNamesSupportScope) return
                 if(sections != null) {
                     val supportedScopes = aliasConfig.supportedScopes
-                    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
+                    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxDocumentationBuilder.getScopesText(supportedScopes, gameType, contextElement))
                     
                     val outputScope = aliasConfig.outputScope
-                    if(outputScope != null) sections.put(PlsBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
+                    if(outputScope != null) sections.put(PlsBundle.message("sectionTitle.outputScopes"), ParadoxDocumentationBuilder.getScopeText(outputScope, gameType, contextElement))
                 }
             }
             else -> pass()
         }
     }
     
-    private fun getCategoriesText(categories: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
-        return buildString {
-            var appendSeparator = false
-            append("<code>")
-            for(category in categories) {
-                if(appendSeparator) append(", ") else appendSeparator = true
-                appendCwtLink("${gameType.linkToken}modifier_categories/$category", category, contextElement)
-            }
-            append("</code>")
-        }
-    }
-    
-    private fun getScopeText(scopeId: String, gameType: ParadoxGameType?, contextElement: PsiElement): String {
-        return buildString {
-            append("<code>")
-            ParadoxScopeHandler.buildScopeDoc(scopeId, gameType, contextElement, this)
-            append("</code>")
-        }
-    }
-    
-    private fun getScopesText(scopeIds: Set<String>, gameType: ParadoxGameType?, contextElement: PsiElement): String {
-        return buildString {
-            var appendSeparator = false
-            append("<code>")
-            for(scopeId in scopeIds) {
-                if(appendSeparator) append(", ") else appendSeparator = true
-                ParadoxScopeHandler.buildScopeDoc(scopeId, gameType, contextElement, this)
-            }
-            append("</code>")
-        }
-    }
-    
-    private fun StringBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+    private fun StringBuilder.addScopeContext(
+        element: PsiElement,
+        referenceElement: PsiElement,
+        configGroup: CwtConfigGroup,
+        sections: MutableMap<String, String>?
+    ) {
         //进行代码提示时也显示作用域上下文信息
         //@Suppress("DEPRECATION")
         //if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
         
-        val show = getSettings().documentation.showScopeContext
-        if(!show) return
+        if(!getSettings().documentation.showScopeContext) return
+        
+        val gameType = configGroup.gameType ?: return
         if(sections == null) return
         val memberElement = referenceElement.parentOfType<ParadoxScriptMemberElement>(true) ?: return
         if(!ParadoxScopeHandler.isScopeContextSupported(memberElement, indirect = true)) return
         val scopeContext = ParadoxScopeHandler.getScopeContext(memberElement)
         if(scopeContext == null) return
         //TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
-        // 因为这里的referenceElement是整个stringExpression，因此这里得到的作用域上下文是脚本表达式最终的作用域上下文
-        val contextElement = element
-        val gameType = configGroup.gameType.orDefault()
-        val scopeContextText = buildString {
-            append("<code>")
-            ParadoxScopeHandler.buildScopeContextDoc(scopeContext, gameType, contextElement, this)
-            append("</code>")
-        }
-        sections.put(PlsBundle.message("sectionTitle.scopeContext"), scopeContextText)
+        // 因为这里的referenceElement是整个stringExpression，得到的作用域上下文会是脚本表达式最终的作用域上下文
+        sections.put(PlsBundle.message("sectionTitle.scopeContext"), ParadoxDocumentationBuilder.getScopeContextText(scopeContext, gameType, element))
     }
     
     private fun StringBuilder.buildDocumentationContent(element: PsiElement) {
@@ -418,9 +383,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
                 current is CwtOptionComment -> {
                     val option = current.option
                     if(option != null) {
-                        when {
-                            option.name == "format" && option.value == "html" -> html = true
-                        }
+                        if(option.name == "format" && option.value == "html") html = true
                     }
                 }
                 current is PsiWhiteSpace || current is PsiComment -> continue

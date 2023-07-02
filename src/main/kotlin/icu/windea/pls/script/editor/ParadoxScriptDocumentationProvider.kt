@@ -38,7 +38,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun getPropertyInfo(element: ParadoxScriptProperty): String? {
+    private fun getPropertyInfo(element: ParadoxScriptProperty): String {
         val definitionInfo = element.definitionInfo
         if(definitionInfo != null) return getDefinitionInfo(element, definitionInfo)
         val name = element.name
@@ -71,7 +71,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun getPropertyDoc(element: ParadoxScriptProperty): String? {
+    private fun getPropertyDoc(element: ParadoxScriptProperty): String {
         val definitionInfo = element.definitionInfo
         if(definitionInfo != null) return getDefinitionDoc(element, definitionInfo)
         val name = element.name
@@ -202,7 +202,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     private fun StringBuilder.addRelatedLocalisationsForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
         val localisationInfos = definitionInfo.localisations
         if(localisationInfos.isEmpty()) return
-        val render = getSettings().documentation.renderRelatedLocalisationsForDefinitions
         val project = element.project
         val map = mutableMapOf<String, String>()
         val sectionKeys = mutableSetOf<String>()
@@ -219,7 +218,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             }
             if(resolved.localisation != null) {
                 sectionKeys.add(key)
-                if(render && sections != null) {
+                if(sections != null && getSettings().documentation.renderRelatedLocalisationsForDefinitions) {
                     //加上渲染后的相关本地化文本
                     val richText = ParadoxLocalisationTextHtmlRenderer.render(resolved.localisation, forDoc = true)
                     sections.put(key.toCapitalizedWords(), richText)
@@ -234,9 +233,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     }
     
     private fun StringBuilder.addRelatedImagesForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
+        val render = getSettings().documentation.renderRelatedImagesForDefinitions
         val imagesInfos = definitionInfo.images
         if(imagesInfos.isEmpty()) return
-        val render = getSettings().documentation.renderRelatedImagesForDefinitions
         val project = element.project
         val map = mutableMapOf<String, String>()
         val sectionKeys = mutableSetOf<String>()
@@ -275,18 +274,16 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         //即使是在CWT文件中，如果可以推断得到CWT规则组，也显示作用域信息
         if(!getSettings().documentation.showScopes) return
         
-        if(sections != null) {
-            val modifierCategories = ParadoxDefinitionModifierProvider.getModifierCategories(element, definitionInfo) ?: return
-            val gameType = definitionInfo.gameType
-            val contextElement = element
-            val categoryNames = modifierCategories.keys
-            if(categoryNames.isNotEmpty()) {
-                sections.put(PlsBundle.message("sectionTitle.categories"), ParadoxDocumentBuilder.getModifierCategoriesText(categoryNames, gameType, contextElement))
-            }
-            
-            val supportedScopes = modifierCategories.getSupportedScopes()
-            sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxDocumentBuilder.getScopesText(supportedScopes, gameType, contextElement))
+        if(sections == null) return
+        val gameType = definitionInfo.gameType
+        val modifierCategories = ParadoxDefinitionModifierProvider.getModifierCategories(element, definitionInfo) ?: return
+        val categoryNames = modifierCategories.keys
+        if(categoryNames.isNotEmpty()) {
+            sections.put(PlsBundle.message("sectionTitle.categories"), ParadoxDocumentationBuilder.getModifierCategoriesText(categoryNames, gameType, element))
         }
+        
+        val supportedScopes = modifierCategories.getSupportedScopes()
+        sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxDocumentationBuilder.getScopesText(supportedScopes, gameType, element))
     }
     
     private fun StringBuilder.addScopeContextForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
@@ -294,25 +291,19 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         //@Suppress("DEPRECATION")
         //if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
         
-        val show = getSettings().documentation.showScopeContext
-        if(!show) return
+        if(!getSettings().documentation.showScopeContext) return
+        
         if(sections == null) return
+        val gameType = definitionInfo.gameType
         if(!ParadoxScopeHandler.isScopeContextSupported(element, indirect = true)) return
         val scopeContext = ParadoxScopeHandler.getScopeContext(element)
         if(scopeContext == null) return
-        val contextElement = element
-        val gameType = definitionInfo.gameType
-        val scopeContextText = buildString {
-            append("<code>")
-            ParadoxScopeHandler.buildScopeContextDoc(scopeContext, gameType, contextElement, this)
-            append("</code>")
-        }
-        sections.put(PlsBundle.message("sectionTitle.scopeContext"), scopeContextText)
+        sections.put(PlsBundle.message("sectionTitle.scopeContext"), ParadoxDocumentationBuilder.getScopeContextText(scopeContext, gameType, element))
     }
     
     private fun StringBuilder.addParametersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
-        val show = getSettings().documentation.showParameters
-        if(!show) return
+        if(!getSettings().documentation.showParameters) return
+        
         if(sections == null) return
         val parameterContextInfo = ParadoxParameterHandler.getContextInfo(element) ?: return
         if(parameterContextInfo.parameters.isEmpty()) return //ignore
