@@ -6,7 +6,7 @@ import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.model.*
 
 /**
- * 当根信息被添加或移除时，同步游戏配置、模组配置和模组描述符配置。
+ * 当根目录信息被添加时，同步相关配置。
  */
 class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
     override fun onAdd(rootInfo: ParadoxRootInfo) {
@@ -20,20 +20,26 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
         val settings = getProfilesSettings()
         val gameFile = rootInfo.rootFile
         val gameDirectory = gameFile.path
-        val launcherSettingsInfo = rootInfo.launcherSettingsInfo
+        var gameDescriptorSettings = settings.gameDescriptorSettings.get(gameDirectory)
+        if(gameDescriptorSettings == null) {
+            gameDescriptorSettings = ParadoxGameDescriptorSettingsState()
+            gameDescriptorSettings.fromRootInfo(rootInfo)
+            settings.gameDescriptorSettings.put(gameDirectory, gameDescriptorSettings)
+            settings.updateSettings()
+        } else {
+            gameDescriptorSettings.fromRootInfo(rootInfo)
+            settings.updateSettings()
+        }
+        
         var gameSettings = settings.gameSettings.get(gameDirectory)
         if(gameSettings == null) {
             gameSettings = ParadoxGameSettingsState()
-            gameSettings.gameType = rootInfo.gameType
-            gameSettings.gameVersion = launcherSettingsInfo.rawVersion
-            gameSettings.gameDirectory = gameDirectory
+            gameSettings.gameType = gameDescriptorSettings.gameType
+            gameSettings.gameDirectory = gameDescriptorSettings.gameDirectory
             settings.gameSettings.put(gameDirectory, gameSettings)
             settings.updateSettings()
             
             ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onAdd(gameSettings)
-        } else {
-            gameSettings.gameVersion = launcherSettingsInfo.rawVersion
-            settings.updateSettings()
         }
     }
     
@@ -41,17 +47,14 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
         val settings = getProfilesSettings()
         val modFile = rootInfo.rootFile
         val modDirectory = modFile.path
-        val descriptorInfo = rootInfo.descriptorInfo
         var modDescriptorSettings = settings.modDescriptorSettings.get(modDirectory)
-        if(modDescriptorSettings != null) {
-            modDescriptorSettings.fromDescriptorInfo(descriptorInfo)
-            modDescriptorSettings.modDirectory = rootInfo.rootFile.path
+        if(modDescriptorSettings == null) {
+            modDescriptorSettings = ParadoxModDescriptorSettingsState()
+            modDescriptorSettings.fromRootInfo(rootInfo)
+            settings.modDescriptorSettings.put(modDirectory, modDescriptorSettings)
             settings.updateSettings()
         } else {
-            modDescriptorSettings = ParadoxModDescriptorSettingsState()
-            modDescriptorSettings.fromDescriptorInfo(descriptorInfo)
-            modDescriptorSettings.modDirectory = rootInfo.rootFile.path
-            settings.modDescriptorSettings.put(modDirectory, modDescriptorSettings)
+            modDescriptorSettings.fromRootInfo(rootInfo)
             settings.updateSettings()
         }
         

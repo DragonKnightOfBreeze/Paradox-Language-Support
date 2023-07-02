@@ -23,8 +23,8 @@ class ParadoxFilesViewProjectNode(
         //如果项目中存在游戏或模组目录，则仅使用这个游戏或模组目录对应的游戏类型作为子节点
         val rootPaths = mutableSetOf<String>()
         val profilesSettings = getProfilesSettings()
+        rootPaths += profilesSettings.gameDescriptorSettings.keys
         rootPaths += profilesSettings.modDescriptorSettings.keys
-        rootPaths += profilesSettings.gameSettings.keys
         val projectFileIndex = ProjectFileIndex.getInstance(project)
         rootPaths.forEach f@{ rootPath ->
             val rootFile = VfsUtil.findFile(rootPath.toPath(), true) ?: return@f

@@ -173,7 +173,6 @@ class ParadoxModSettingsDialog(
     
     private fun doApply() {
         settings.gameType = gameType
-        settings.gameVersion = gameVersion
         settings.gameDirectory = gameDirectory
         settings.modDependencies = modDependencies
         getProfilesSettings().updateSettings()
