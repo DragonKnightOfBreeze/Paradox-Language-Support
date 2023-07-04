@@ -58,7 +58,7 @@ class MissingImageInspection : LocalInspectionTool() {
                 var hasPrimary = false
                 for(info in imageInfos) {
                     ProgressManager.checkCanceled()
-                    if(nameToDistinct.contains(info.name)) continue
+                    if(nameToDistinct.contains(info.key)) continue
                     if(info.primary && hasPrimary) continue
                     //多个位置表达式无法解析时，使用第一个
                     if(info.required || if(info.primary) checkPrimaryForDefinitions else checkOptionalForDefinitions) {
@@ -66,15 +66,15 @@ class MissingImageInspection : LocalInspectionTool() {
                         if(resolved != null) {
                             if(resolved.message != null) continue //skip if it's dynamic
                             if(resolved.file == null) {
-                                infoMap.putIfAbsent(info.name, Info(info, resolved.filePath))
+                                infoMap.putIfAbsent(info.key, Info(info, resolved.filePath))
                             } else {
-                                infoMap.remove(info.name)
-                                nameToDistinct.add(info.name)
+                                infoMap.remove(info.key)
+                                nameToDistinct.add(info.key)
                                 if(info.primary) hasPrimary = true
                             }
                         } else if(info.locationExpression.placeholder == null) {
                             //从定义的属性推断，例如，#name
-                            infoMap.putIfAbsent(info.name, Info(info, null))
+                            infoMap.putIfAbsent(info.key, Info(info, null))
                         }
                     }
                 }

@@ -78,7 +78,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     ProgressManager.checkCanceled()
                     if(info.required || if(info.primary) checkPrimaryForDefinitions else checkOptionalForDefinitions) {
                         for(locale in localeConfigs) {
-                            if(nameToDistinct.contains(info.name + "@" + locale)) continue
+                            if(nameToDistinct.contains(info.key + "@" + locale)) continue
                             if(info.primary && hasPrimaryLocales.contains(locale)) continue
                             //多个位置表达式无法解析时，使用第一个
                             val selector = localisationSelector(project, file).locale(locale) //use file as context
@@ -86,15 +86,15 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                             if(resolved != null) {
                                 if(resolved.message != null) continue //skip if it's dynamic or inlined
                                 if(resolved.localisation == null) {
-                                    infoMap.putIfAbsent(info.name + "@" + locale, Info(info, resolved.key, locale))
+                                    infoMap.putIfAbsent(info.key + "@" + locale, Info(info, resolved.name, locale))
                                 } else {
-                                    infoMap.remove(info.name + "@" + locale)
-                                    nameToDistinct.add(info.name + "@" + locale)
+                                    infoMap.remove(info.key + "@" + locale)
+                                    nameToDistinct.add(info.key + "@" + locale)
                                     if(info.primary) hasPrimaryLocales.add(locale)
                                 }
                             } else if(info.locationExpression.propertyName != null) {
                                 //从定义的属性推断，例如，#name
-                                infoMap.putIfAbsent(info.name + "@" + locale, Info(info, null, locale))
+                                infoMap.putIfAbsent(info.key + "@" + locale, Info(info, null, locale))
                             }
                         }
                     }

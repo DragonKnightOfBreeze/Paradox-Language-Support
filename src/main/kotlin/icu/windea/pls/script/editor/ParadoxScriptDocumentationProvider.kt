@@ -212,9 +212,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             if(resolved.message != null) {
                 map.put(key, resolved.message)
             } else if(resolved.localisation != null) {
-                map.put(key, buildString { appendLocalisationLink(definitionInfo.gameType, resolved.key, element) })
+                map.put(key, buildString { appendLocalisationLink(definitionInfo.gameType, resolved.name, element) })
             } else if(required) {
-                map.putIfAbsent(key, resolved.key)
+                map.putIfAbsent(key, resolved.name)
             }
             if(resolved.localisation != null) {
                 sectionKeys.add(key)

@@ -691,10 +691,13 @@ class CwtConfigGroupImpl(
     }
     
     private fun resolveLocationConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocationConfig? {
+        //default to optional
+        //default to primary for icon, name and title (by inference)
         val expression = propertyConfig.stringValue ?: return null
         val required = propertyConfig.findOptionValue("required") != null
+        val optional = propertyConfig.findOptionValue("optional") != null
         val primary = propertyConfig.findOptionValue("primary") != null
-        return CwtLocationConfig(propertyConfig.pointer, propertyConfig.info, name, expression, required, primary)
+        return CwtLocationConfig(propertyConfig.pointer, propertyConfig.info, name, expression, required || !optional, primary)
     }
     
     private fun resolveDefinitionModifierConfig(propertyConfig: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? {
@@ -762,7 +765,7 @@ class CwtConfigGroupImpl(
                 "desc" -> desc = prop.stringValue?.trim() //去除首尾空白
                 "from_data" -> fromData = prop.booleanValue ?: false
                 "type" -> type = prop.stringValue
-                "data_source" -> dataSource = prop.valueExpression //TODO 实际上也可能是data（可重复），但是目前只有一处
+                "data_source" -> dataSource = prop.valueExpression
                 "prefix" -> prefix = prop.stringValue
                 "for_definition_type" -> forDefinitionType = prop.stringValue
                 "input_scopes" -> inputScopes = buildSet {

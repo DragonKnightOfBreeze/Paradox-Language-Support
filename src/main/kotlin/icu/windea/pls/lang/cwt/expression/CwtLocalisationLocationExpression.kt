@@ -42,7 +42,7 @@ class CwtLocalisationLocationExpression(
     }
     
     data class ResolveResult(
-        val key: String,
+        val name: String,
         val localisation: ParadoxLocalisationProperty?,
         val message: String? = null
     )
@@ -54,9 +54,9 @@ class CwtLocalisationLocationExpression(
         if(placeholder != null) {
             if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             
-            val key = resolvePlaceholder(definitionInfo.name)!!
-            val localisation = ParadoxLocalisationSearch.search(key, selector).find()
-            return ResolveResult(key, localisation)
+            val name = resolvePlaceholder(definitionInfo.name)!!
+            val localisation = ParadoxLocalisationSearch.search(name, selector).find()
+            return ResolveResult(name, localisation)
         } else if(propertyName != null) {
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
@@ -68,17 +68,17 @@ class CwtLocalisationLocationExpression(
             if(config.expression.type == CwtDataType.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
                 return ResolveResult("", null, PlsBundle.message("inlined"))
             }
-            val key = propertyValue.value
+            val name = propertyValue.value
             //0~5ms
-            val localisation = ParadoxLocalisationSearch.search(key, selector).find()
-            return ResolveResult(key, localisation)
+            val localisation = ParadoxLocalisationSearch.search(name, selector).find()
+            return ResolveResult(name, localisation)
         } else {
             return null //不期望的结果
         }
     }
     
     data class ResolveAllResult(
-        val key: String,
+        val name: String,
         val localisations: Set<ParadoxLocalisationProperty>,
         val message: String? = null
     )
@@ -87,9 +87,9 @@ class CwtLocalisationLocationExpression(
         if(placeholder != null) {
             if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             
-            val key = resolvePlaceholder(definitionInfo.name)!!
-            val localisations = ParadoxLocalisationSearch.search(key, selector).findAll()
-            return ResolveAllResult(key, localisations)
+            val name = resolvePlaceholder(definitionInfo.name)!!
+            val localisations = ParadoxLocalisationSearch.search(name, selector).findAll()
+            return ResolveAllResult(name, localisations)
         } else if(propertyName != null) {
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
@@ -100,9 +100,9 @@ class CwtLocalisationLocationExpression(
             if(config.expression.type == CwtDataType.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
                 return ResolveAllResult("", emptySet(), PlsBundle.message("inlined"))
             }
-            val key = propertyValue.value
-            val localisations = ParadoxLocalisationSearch.search(key, selector).findAll()
-            return ResolveAllResult(key, localisations)
+            val name = propertyValue.value
+            val localisations = ParadoxLocalisationSearch.search(name, selector).findAll()
+            return ResolveAllResult(name, localisations)
         } else {
             return null //不期望的结果
         }

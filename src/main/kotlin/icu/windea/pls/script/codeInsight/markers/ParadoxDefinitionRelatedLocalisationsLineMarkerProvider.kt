@@ -47,7 +47,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
 				tooltipBuilder.append(PlsBundle.message("prefix.relatedLocalisation")).append(" ").append(key).append(" = ").append(resolved.message)
 			} else if(resolved.localisations.isNotEmpty() && keys.add(key)) {
 				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
-				tooltipBuilder.append(PlsBundle.message("prefix.relatedLocalisation")).append(" ").append(key).append(" = ").append(resolved.key)
+				tooltipBuilder.append(PlsBundle.message("prefix.relatedLocalisation")).append(" ").append(key).append(" = ").append(resolved.name)
 			}
 		}
 		if(keys.isEmpty()) return

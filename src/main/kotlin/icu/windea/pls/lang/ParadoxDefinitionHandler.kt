@@ -661,7 +661,7 @@ object ParadoxDefinitionHandler {
         for(primaryLocalisation in primaryLocalisations) {
             val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
             val resolved = primaryLocalisation.locationExpression.resolve(element, definitionInfo, selector)
-            val key = resolved?.key ?: continue
+            val key = resolved?.name ?: continue
             return key
         }
         return null

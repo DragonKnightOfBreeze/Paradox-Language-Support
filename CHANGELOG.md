@@ -192,7 +192,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 
 以下是一些超链接的示例：
 
-```markdown
+```
 * [some_scripted_variable](pdx-sv:some_scripted_variable)
 * [origin_default](pdx-def:origin_default)
 * [origin_default](pdx-loc:origin_default)

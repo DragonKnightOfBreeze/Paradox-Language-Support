@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.model
 
 import com.intellij.openapi.util.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
@@ -63,10 +62,10 @@ class ParadoxDefinitionInfo(
     val declaration: CwtPropertyConfig? by lazy { getDeclaration() }
     
     val localisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
-        val mergedLocalisationConfig = typeConfig0.localisation?.getConfigs(subtypes) ?: return@lazy emptyList()
+        val mergedConfig = typeConfig.localisation?.getConfigs(subtypes) ?: return@lazy emptyList()
         val result = mutableListOf<ParadoxDefinitionRelatedLocalisationInfo>()
         //从已有的cwt规则
-        for(config in mergedLocalisationConfig) {
+        for(config in mergedConfig) {
             val locationExpression = CwtLocalisationLocationExpression.resolve(config.value)
             val info = ParadoxDefinitionRelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
             result.add(info)
@@ -75,10 +74,10 @@ class ParadoxDefinitionInfo(
     }
     
     val images: List<ParadoxDefinitionRelatedImageInfo> by lazy {
-        val mergedImagesConfig = typeConfig0.images?.getConfigs(subtypes) ?: return@lazy emptyList()
+        val mergedConfig = typeConfig.images?.getConfigs(subtypes) ?: return@lazy emptyList()
         val result = mutableListOf<ParadoxDefinitionRelatedImageInfo>()
         //从已有的cwt规则
-        for(config in mergedImagesConfig) {
+        for(config in mergedConfig) {
             val locationExpression = CwtImageLocationExpression.resolve(config.value)
             val info = ParadoxDefinitionRelatedImageInfo(config.key, locationExpression, config.required, config.primary)
             result.add(info)
@@ -96,11 +95,11 @@ class ParadoxDefinitionInfo(
     }
     
     val primaryLocalisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
-        localisations.filter { it.primary || it.inferIsPrimary() }
+        localisations.filter { it.primary || it.primaryByInference }
     }
     
     val primaryImages: List<ParadoxDefinitionRelatedImageInfo> by lazy {
-        images.filter { it.primary || it.inferIsPrimary() }
+        images.filter { it.primary || it.primaryByInference }
     }
     
     val localisationConfig get() = typeConfig.localisation
@@ -152,12 +151,3 @@ class ParadoxDefinitionInfo(
     object Keys
 }
 
-@InferApi
-private fun ParadoxDefinitionRelatedLocalisationInfo.inferIsPrimary(): Boolean {
-    return name.equals("name", true) || name.equals("title", true)
-}
-
-@InferApi
-private fun ParadoxDefinitionRelatedImageInfo.inferIsPrimary(): Boolean {
-    return name.equals("icon", true)
-}
