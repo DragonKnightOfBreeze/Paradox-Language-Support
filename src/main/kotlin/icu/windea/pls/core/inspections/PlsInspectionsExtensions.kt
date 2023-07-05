@@ -4,6 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import java.util.regex.*
 
@@ -39,12 +40,19 @@ fun getCommentsForSuppression(element: PsiElement): Sequence<PsiElement> {
 fun isSuppressedForDefinition(element: PsiElement, toolId: String) : Boolean {
     if(element !is ParadoxScriptDefinitionElement) return false
     val definitionInfo = element.definitionInfo ?: return false
+    //1.1.2 TODO 考虑提取成扩展点
     //1.1.2 禁用继承自其他事件的事件的某些检查
-    //1.1.2 TODO 这并不准确，但目前就这样处理吧
     if(definitionInfo.type == "event" && definitionInfo.subtypes.contains("inherited")) {
         if(toolId == "ParadoxScriptMissingExpression") return true
         if(toolId == "ParadoxScriptMissingLocalisation") return true
         if(toolId == "ParadoxScriptMissingImage") return true
+    }
+    if(definitionInfo.gameType == ParadoxGameType.Stellaris) {
+        //1.1.2 禁用名字以数字结尾的领袖特质的某些检查
+        if(definitionInfo.type == "trait" && definitionInfo.subtypes.contains("leader_trait") && definitionInfo.name.substringAfterLast('_', "").toIntOrNull() != null) {
+            if(toolId == "ParadoxScriptMissingLocalisation") return true
+            if(toolId == "ParadoxScriptMissingImage") return true
+        }
     }
     return false
 }
