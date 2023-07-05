@@ -112,11 +112,11 @@ faith = {
 * `from_data`表示是否由其他脚本文件生成
 * `data_source`表示表达式`faith:X`中，`X`需要匹配何种CWT数据类型（如`<faith>`）
 * `prefix`表示表达式`faith:X`中强制性的前缀`faith:`
-* `type`用来判断其是scope还是value(`scope`, `both`)
+* `type`用来判断其是scope还是value(`scope`, `value`, `both`)
 
 扩展：
 
-* `for_definition = pop_faction`：表示此link只能在类型为`pop_faction`的定义中使用，且引用的`data_source`也只能来自该定义声明中
+* `for_definition = pop_faction`：表示此link只能在类型为`pop_faction`的定义的声明中使用，且引用的`data_source`也只能来自该定义的声明中
 
 内置的系统作用域连接（`system link`）：
 

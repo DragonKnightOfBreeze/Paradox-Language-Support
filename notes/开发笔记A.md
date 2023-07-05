@@ -8,8 +8,8 @@
 
 ### 异常
 
-* `ProcessCanceledException` - 可能会在任何操作中发生，这时操作将会取消。在代码中尽可能频繁地调用`ProgressManager.checkCanceled()`以避免
-* `IncorrectOperationException` - 不支持的操作。例如，当元素无法被重命名时，这时IDE会自动提示：`Cannot perform refactoring...`
+* `ProcessCanceledException` - 可能会在任何操作中发生，这时操作将会取消。在代码中应尽可能频繁地调用`ProgressManager.checkCanceled()`以避免卡顿。不要尝试捕获该类异常。
+* `IncorrectOperationException` - 不支持的操作。例如，当元素无法被重命名时，这时IDE会自动提示：`Cannot perform refactoring...`。
 
 ### 缓存
 
