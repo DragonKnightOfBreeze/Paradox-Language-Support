@@ -72,8 +72,8 @@ class MissingImageInspection : LocalInspectionTool() {
                                 nameToDistinct.add(info.key)
                                 if(info.primary) hasPrimary = true
                             }
-                        } else if(info.locationExpression.placeholder == null) {
-                            //从定义的属性推断，例如，#name
+                        } else {
+                            //无法直接获取到图片路径的场合
                             infoMap.putIfAbsent(info.key, Info(info, null))
                         }
                     }
@@ -82,32 +82,26 @@ class MissingImageInspection : LocalInspectionTool() {
                     //显示为WEAK_WARNING
                     //缺失多个时，每个算作一个问题
                     for((info, key) in infoMap.values) {
-                        val message = getMessage(info, key)
+                        val message = getMessage(info, key, definitionInfo.name)
                         holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING)
                     }
                 }
             }
             
-            private fun getMessage(info: ParadoxDefinitionRelatedImageInfo, key: String?): String {
+            private fun getMessage(info: ParadoxDefinitionRelatedImageInfo, key: String?, definitionName: String): String {
                 val expression = info.locationExpression
-                val propertyName = expression.propertyName
-                return when {
-                    info.required -> when {
-                        key != null -> PlsBundle.message("inspection.script.general.missingImage.description.1.1", key)
-                        propertyName != null -> PlsBundle.message("inspection.script.general.missingImage.description.1.2", propertyName)
-                        else -> PlsBundle.message("inspection.script.general.missingImage.description.1.3", expression)
-                    }
-                    info.primary -> when {
-                        key != null -> PlsBundle.message("inspection.script.general.missingImage.description.2.1", key)
-                        propertyName != null -> PlsBundle.message("inspection.script.general.missingImage.description.2.2", propertyName)
-                        else -> PlsBundle.message("inspection.script.general.missingImage.description.2.3", expression)
-                    }
-                    else -> when {
-                        key != null -> PlsBundle.message("inspection.script.general.missingImage.description.3.1", key)
-                        propertyName != null -> PlsBundle.message("inspection.script.general.missingImage.description.3.2", propertyName)
-                        else -> PlsBundle.message("inspection.script.general.missingImage.description.3.3", expression)
-                    }
+                val p1 = when {
+                    info.required -> PlsBundle.message("inspection.script.general.missingImage.description.p1.1")
+                    info.primary -> PlsBundle.message("inspection.script.general.missingImage.description.p1.2")
+                    else -> PlsBundle.message("inspection.script.general.missingImage.description.p1.3")
                 }
+                val p2 = when {
+                    key != null -> PlsBundle.message("inspection.script.general.missingImage.description.p2.1", key)
+                    expression.placeholder.let { it != null && it.startsWith("GFX_") } -> PlsBundle.message("inspection.script.general.missingImage.description.p2.2", expression.resolvePlaceholder(definitionName)!!)
+                    expression.propertyName != null -> PlsBundle.message("inspection.script.general.missingImage.description.p2.3", expression.propertyName)
+                    else -> PlsBundle.message("inspection.script.general.missingImage.description.p2.4", expression.expressionString)
+                }
+                return PlsBundle.message("inspection.script.general.missingImage.description", p1, p2)
             }
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
@@ -122,7 +116,7 @@ class MissingImageInspection : LocalInspectionTool() {
                     ParadoxFilePathSearch.search(iconPath, null, iconSelector).find()
                 }
                 if(iconFile == null) {
-                    val message = PlsBundle.message("inspection.script.general.missingImage.description.4", name)
+                    val message = PlsBundle.message("inspection.script.general.missingImage.description.1", name)
                     holder.registerProblem(element, message, ProblemHighlightType.WEAK_WARNING)
                 }
             }

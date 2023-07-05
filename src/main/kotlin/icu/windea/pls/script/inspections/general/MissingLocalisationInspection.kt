@@ -92,8 +92,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                                     nameToDistinct.add(info.key + "@" + locale)
                                     if(info.primary) hasPrimaryLocales.add(locale)
                                 }
-                            } else if(info.locationExpression.propertyName != null) {
-                                //从定义的属性推断，例如，#name
+                            } else {
+                                //无法直接获取到本地化名字的场合
                                 infoMap.putIfAbsent(info.key + "@" + locale, Info(info, null, locale))
                             }
                         }
@@ -129,24 +129,17 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             
             private fun getMessage(info: ParadoxDefinitionRelatedLocalisationInfo, key: String?, locale: CwtLocalisationLocaleConfig): String {
                 val expression = info.locationExpression
-                val propertyName = expression.propertyName
-                return when {
-                    info.required -> when {
-                        key != null -> PlsBundle.message("inspection.script.general.missingLocalisation.description.1.1", key, locale)
-                        propertyName != null -> PlsBundle.message("inspection.script.general.missingLocalisation.description.1.2", propertyName, locale)
-                        else -> PlsBundle.message("inspection.script.general.missingLocalisation.description.1.3", expression, locale)
-                    }
-                    info.primary -> when {
-                        key != null -> PlsBundle.message("inspection.script.general.missingLocalisation.description.2.1", key, locale)
-                        propertyName != null -> PlsBundle.message("inspection.script.general.missingLocalisation.description.2.2", propertyName, locale)
-                        else -> PlsBundle.message("inspection.script.general.missingLocalisation.description.2.3", expression, locale)
-                    }
-                    else -> when {
-                        key != null -> PlsBundle.message("inspection.script.general.missingLocalisation.description.3.1", key, locale)
-                        propertyName != null -> PlsBundle.message("inspection.script.general.missingLocalisation.description.3.2", propertyName, locale)
-                        else -> PlsBundle.message("inspection.script.general.missingLocalisation.description.3.3", expression, locale)
-                    }
+                val p1 = when {
+                    info.required -> PlsBundle.message("inspection.script.general.missingLocalisation.description.p1.1")
+                    info.primary -> PlsBundle.message("inspection.script.general.missingLocalisation.description.p1.2")
+                    else -> PlsBundle.message("inspection.script.general.missingLocalisation.description.p1.3")
                 }
+                val p2 = when {
+                    key != null -> PlsBundle.message("inspection.script.general.missingLocalisation.description.p2.1", key)
+                    expression.propertyName != null -> PlsBundle.message("inspection.script.general.missingLocalisation.description.p2.2", expression.propertyName)
+                    else -> PlsBundle.message("inspection.script.general.missingLocalisation.description.p2.3", expression.expressionString)
+                }
+                return PlsBundle.message("inspection.script.general.missingLocalisation.description", p1, p2, locale)
             }
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
@@ -166,7 +159,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 }
                 if(missingLocales.isNotEmpty()) {
                     for(locale in missingLocales) {
-                        val message = PlsBundle.message("inspection.script.general.missingLocalisation.description.4", name, locale)
+                        val message = PlsBundle.message("inspection.script.general.missingLocalisation.description.1", name, locale)
                         holder.registerProblem(element, message, ProblemHighlightType.WEAK_WARNING)
                     }
                 }
