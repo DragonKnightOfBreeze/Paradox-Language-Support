@@ -166,7 +166,8 @@ object ParadoxConfigHandler {
         }
         
         val configContext = getConfigContext(element) ?: return emptyList()
-        if(configContext.isDefinition() && !BitUtil.isSet(matchOptions, Options.AcceptDefinition)) return emptyList()
+        val isDefinition = configContext.isDefinition()
+        if(isDefinition && element is ParadoxScriptDefinitionElement && !BitUtil.isSet(matchOptions, Options.AcceptDefinition)) return emptyList()
         val configGroup = configContext.configGroup
         
         //得到所有待匹配的结果
@@ -175,8 +176,12 @@ object ParadoxConfigHandler {
         val contextConfigsToMatch = contextConfigs
             .filterFast { config ->
                 when {
-                    element is ParadoxScriptProperty -> config is CwtPropertyConfig
-                        && (keyExpression == null || ParadoxConfigMatcher.matches(element, keyExpression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions))
+                    element is ParadoxScriptProperty -> config is CwtPropertyConfig && run {
+                        if(keyExpression == null) return@run true
+                        if(isDefinition) return@run true
+                        ParadoxConfigMatcher.matches(element, keyExpression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)
+                    }
+                    
                     element is ParadoxScriptValue -> config is CwtValueConfig
                     else -> true
                 }

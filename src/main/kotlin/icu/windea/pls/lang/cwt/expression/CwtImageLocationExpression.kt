@@ -24,11 +24,11 @@ private val validValueTypes = arrayOf(
  * CWT图片位置表达式。
  *
  * 用于定位定义的相关图片。
- * 
+ *
  * 如果包含占位符`$`，将其替换成定义的名字后，尝试得到对应路径的图片，否则尝试得到对应名字的属性的值对应的图片。
  *
- * 示例：`"gfx/interface/icons/modifiers/mod_$.dds"`, `"icon"`, "icon|p1,p2"`
- * 
+ * 示例：`"gfx/interface/icons/modifiers/mod_$.dds"`, "GFX_$", `"icon"`, "icon|p1,p2"`
+ *
  * @property placeholder 占位符文本。其中的`"$"`会在解析时被替换成定义的名字。
  * @property propertyName 属性名。
  * @property extraPropertyNames 额外的属性名。位于管道符之后，用逗号分隔。
@@ -60,6 +60,22 @@ class CwtImageLocationExpression private constructor(
     fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, project: Project, frame: Int = 0): ResolveResult? {
         if(placeholder != null) {
             if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
+            
+            if(placeholder.startsWith("GFX_")) {
+                val spriteName = resolvePlaceholder(definitionInfo.name)!!
+                val selector = definitionSelector(project, definition).contextSensitive()
+                val resolved = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
+                val resolvedDefinition = resolved
+                val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
+                val resolvedProject = resolved.project
+                val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
+                if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
+                return primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
+                    val locationExpression = primaryImageConfig.locationExpression
+                    val r = locationExpression.resolve(resolvedDefinition, resolvedDefinitionInfo, resolvedProject, frame)
+                    r?.takeIf { it.file != null || it.message != null }
+                }
+            }
             
             //假定这里的filePath以.dds结尾
             val filePath = resolvePlaceholder(definitionInfo.name)!!
@@ -95,9 +111,9 @@ class CwtImageLocationExpression private constructor(
                 }
                 //由filePath解析为definition，这里也可能是sprite之外的definition
                 resolved is ParadoxScriptDefinitionElement -> {
-                    val resolvedProject = resolved.project
                     val resolvedDefinition = resolved
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
+                    val resolvedProject = resolved.project
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                     if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
                     return primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
@@ -124,13 +140,37 @@ class CwtImageLocationExpression private constructor(
         if(placeholder != null) {
             if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             
+            if(placeholder.startsWith("GFX_")) {
+                val spriteName = resolvePlaceholder(definitionInfo.name)!!
+                val selector = definitionSelector(project, definition).contextSensitive()
+                val resolved = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
+                val resolvedDefinition = resolved
+                val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
+                val resolvedProject = resolved.project
+                val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
+                if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
+                var resolvedFilePath: String? = null
+                var resolvedSet: MutableSet<PsiFile>? = null
+                for(primaryImageConfig in primaryImageConfigs) {
+                    val locationExpression = primaryImageConfig.locationExpression
+                    val r = locationExpression.resolveAll(resolvedDefinition, resolvedDefinitionInfo, resolvedProject, frame) ?: continue
+                    if(r.message != null) return r
+                    val (filePath, files) = r
+                    if(resolvedFilePath == null) resolvedFilePath = filePath
+                    if(resolvedSet == null) resolvedSet = mutableSetOf()
+                    resolvedSet.addAll(files)
+                }
+                if(resolvedFilePath == null) return null
+                return ResolveAllResult(resolvedFilePath, resolvedSet ?: emptySet(), frame)
+            }
+            
             //假定这里的filePath以.dds结尾
             val filePath = resolvePlaceholder(definitionInfo.name)!!
             val selector = fileSelector(project, definition).contextSensitive()
             val files = ParadoxFilePathSearch.search(filePath, null, selector).findAll()
                 .mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
             return ResolveAllResult(filePath, files, frame)
-        } else if(!propertyName.isNullOrEmpty()) {
+        } else if(propertyName != null) {
             //dynamic -> returns ("", null, 0)
             val property = definition.findProperty(propertyName, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
@@ -159,9 +199,9 @@ class CwtImageLocationExpression private constructor(
                 }
                 //由filePath解析为definition，这里也可能是sprite之外的definition
                 resolved is ParadoxScriptDefinitionElement -> {
-                    val resolvedProject = resolved.project
                     val resolvedDefinition = resolved
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
+                    val resolvedProject = resolved.project
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                     if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
                     var resolvedFilePath: String? = null
@@ -186,7 +226,7 @@ class CwtImageLocationExpression private constructor(
     }
     
     companion object Resolver {
-        val EmptyExpression = CwtImageLocationExpression("")
+        val EmptyExpression = CwtImageLocationExpression("", propertyName = "")
         
         private val cache = CacheBuilder.newBuilder().buildCache<String, CwtImageLocationExpression> { doResolve(it) }
         

@@ -26,7 +26,7 @@ private val validValueTypes = arrayOf(
  * 如果包含占位符`$`，将其替换成定义的名字后，尝试得到对应名字的本地化，否则尝试得到对应名字的属性的值对应的本地化。
  *
  * 示例：`"$"`, `"$_desc"`, `"title"`
- * 
+ *
  * @property placeholder 占位符文本。其中的`"$"`会在解析时被替换成定义的名字。
  * @property propertyName 属性名。
  */
@@ -112,7 +112,7 @@ class CwtLocalisationLocationExpression private constructor(
     }
     
     companion object Resolver {
-        val EmptyExpression = CwtLocalisationLocationExpression("", "")
+        val EmptyExpression = CwtLocalisationLocationExpression("", propertyName = "")
         
         private val cache = CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) }
         
