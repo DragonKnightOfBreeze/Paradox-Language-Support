@@ -12,18 +12,18 @@ import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
+import org.intellij.images.fileTypes.impl.ImageFileType
 import java.lang.invoke.*
 import kotlin.io.path.*
 
 /**
- * DDS图片地址的解析器。
+ * 图片地址的解析器。用于从定义、图片文件、图片路径解析得到用于渲染的图片路径。输入的图片可以是PNG图片和PNG图片。
  */
-@Suppress("unused")
 object ParadoxDdsUrlResolver {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
     /**
-     * 基于定义进行解析。定义类型可以不为sprite。返回对应的PNG图片的绝对路径。
+     * 基于定义进行解析。接受类型不为`sprite`的定义。返回用于渲染的图片的绝对路径。
      * @param frame 帧数。用于切割图片，默认为0，表示不切割。如果为0，但对应的定义可以获取帧数信息，则使用那个帧数。
      */
     fun resolveByDefinition(definition: ParadoxScriptDefinitionElement, frame: Int = 0, defaultToUnknown: Boolean = false): String {
@@ -42,7 +42,7 @@ object ParadoxDdsUrlResolver {
     }
     
     /**
-     * 直接基于dds文件进行解析。返回对应的PNG图片的绝对路径。
+     * 基于文件进行解析。返回用于渲染的图片的绝对路径。
      * @param frame 帧数。用于切割图片，默认为0，表示不切割。
      */
     fun resolveByFile(file: VirtualFile, frame: Int = 0, defaultToUnknown: Boolean = false): String {
@@ -60,7 +60,7 @@ object ParadoxDdsUrlResolver {
     }
     
     /**
-     * 直接基于dds文件的相对于游戏或模组目录的路径进行解析。返回对应的PNG图片的绝对路径。
+     * 基于文件路径进行解析。输入的文件路径需要相对于游戏或模组的根目录。返回用于渲染的图片的绝对路径。
      */
     fun resolveByFilePath(filePath: String, project: Project, frame: Int = 0, defaultToUnknown: Boolean = false): String {
         try {
@@ -88,21 +88,14 @@ object ParadoxDdsUrlResolver {
         return doResolveByFile(resolved.file.virtualFile, frameToUse)
     }
     
-    /**
-     * 得到sprite定义的对应DDS文件的filePath。基于名为"textureFile"的定义属性（忽略大小写）。
-     */
-    fun getSpriteDdsFilePath(sprite: ParadoxScriptDefinitionElement): String? {
-        return sprite.findProperty("textureFile", inline = true)?.propertyValue?.stringValue()
-    }
-    
-    //private fun doResolveByFile(fileName: String, project: Project, frame: Int): String? {
-    //	val files = FilenameIndex.getVirtualFilesByName(fileName, false, GlobalSearchScope.allScope(project))
-    //	val file = files.firstOrNull() ?: return null //直接取第一个
-    //	return doResolveByFile(file, frame)
-    //}
-    
     private fun doResolveByFile(file: VirtualFile, frame: Int): String? {
-        if(file.fileType != DdsFileType) return null
+        val fileType = file.fileType
+        if(fileType == ImageFileType.INSTANCE && file.extension?.lowercase().let { it == "png" }) {
+            //accept png file
+            return file.toNioPath().absolutePathString()
+        }
+        if(fileType != DdsFileType) return null
+        
         //如果可以得到相对于游戏或模组根路径的文件路径，则使用绝对根路径+相对路径定位，否则直接使用绝对路径
         val fileInfo = file.fileInfo
         val rootPath = fileInfo?.rootInfo?.gameRootPath
@@ -124,8 +117,9 @@ object ParadoxDdsUrlResolver {
         return if(defaultToUnknown) DdsConverter.getUnknownPngUrl() else ""
     }
     
-    fun getPngFile(file: VirtualFile, frame: Int = 0): VirtualFile? {
-        val absPngPath = doResolveByFile(file, frame) ?: return null
+    fun getPngFile(ddsFile: VirtualFile, frame: Int = 0): VirtualFile? {
+        if(ddsFile.fileType != DdsFileType) return null // input file must be a dds file 
+        val absPngPath = doResolveByFile(ddsFile, frame) ?: return null
         return VfsUtil.findFile(absPngPath.toPath(), true)
     }
 }

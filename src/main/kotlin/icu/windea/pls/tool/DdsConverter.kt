@@ -12,9 +12,8 @@ import java.nio.file.*
 import kotlin.io.path.*
 
 /**
- * 基于[DDS4J](https://github.com/vincentzhang96/DDS4J)。
+ * 基于[DDS4J](https://github.com/vincentzhang96/DDS4J)实现的DDS转化器。用于将DDS图片转化为PNG图片并得到对应的图片路径。
  */
-@Suppress("unused")
 object DdsConverter {
 	private val logger =  Logger.getInstance(MethodHandles.lookup().lookupClass())
 	
