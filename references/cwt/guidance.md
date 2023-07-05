@@ -252,7 +252,7 @@ type[ship_size] = {
     path = "game/common/ship_sizes"
     localisation = {
         name = "$"
-        description = "$_desc"
+        desc = "$_desc"
         ## required
         required = "$_required"
         subtype[advanced] = {

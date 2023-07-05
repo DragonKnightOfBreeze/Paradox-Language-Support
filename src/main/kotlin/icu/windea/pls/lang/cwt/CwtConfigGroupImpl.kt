@@ -692,7 +692,8 @@ class CwtConfigGroupImpl(
     
     private fun resolveLocationConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocationConfig? {
         //default to optional
-        //default to primary for icon, name and title (by inference)
+        //default to primary for name and title if it represents a localisation location (by inference)
+        //default to primary for icon if it represents a image location (by inference)
         val expression = propertyConfig.stringValue ?: return null
         val required = propertyConfig.findOptionValue("required") != null
         val optional = propertyConfig.findOptionValue("optional") != null

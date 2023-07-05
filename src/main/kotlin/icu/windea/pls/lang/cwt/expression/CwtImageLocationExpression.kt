@@ -123,7 +123,7 @@ class CwtImageLocationExpression private constructor(
             if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             
             //假定这里的filePath以.dds结尾
-            val filePath = buildString { for(c in placeholder) if(c == '$') append(definitionInfo.name) else append(c) }
+            val filePath = resolvePlaceholder(definitionInfo.name)!!
             val selector = fileSelector(project, definition).contextSensitive()
             val files = ParadoxFilePathSearch.search(filePath, null, selector).findAll()
                 .mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
