@@ -254,8 +254,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
                 if(render && sections != null) {
                     //加上DDS图片预览图
                     val url = ParadoxDdsUrlResolver.resolveByFile(resolved.file.virtualFile, resolved.frame)
-                    val tag = buildString { appendImgTag(url) }
-                    sections.put(key.toCapitalizedWords(), tag)
+                    sections.put("<code>$key</code>", buildString { appendImgTag(url) })
                 }
             }
         }

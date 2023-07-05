@@ -213,21 +213,21 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         if(nameLocalisation != null) {
             appendBr()
             append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
-            append("Name = ").appendLocalisationLink(gameType, nameLocalisation.name, contextElement)
+            append("name = ").appendLocalisationLink(gameType, nameLocalisation.name, contextElement)
         }
         if(descLocalisation != null) {
             appendBr()
             append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
-            append("Desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement)
+            append("desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement)
         }
         if(sections != null && render) {
             if(nameLocalisation != null) {
                 val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
-                sections.put("Name", richText)
+                sections.put("<code>name</code>", richText)
             }
             if(descLocalisation != null) {
                 val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation, forDoc = true)
-                sections.put("Desc", richText)
+                sections.put("<code>desc</code>", richText)
             }
         }
     }
@@ -246,12 +246,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         if(iconFile != null) {
             appendBr()
             append(PlsBundle.message("prefix.relatedImage")).append(" ")
-            append("Icon = ").appendFilePathLink(gameType, iconPath, iconPath, contextElement)
+            append("icon = ").appendFilePathLink(gameType, iconPath, iconPath, contextElement)
         }
         if(sections != null && render) {
             if(iconFile != null) {
                 val url = ParadoxDdsUrlResolver.resolveByFile(iconFile)
-                sections.put("Icon", buildString { appendImgTag(url) })
+                sections.put("<code>icon</code>", buildString { appendImgTag(url) })
             }
         }
     }
