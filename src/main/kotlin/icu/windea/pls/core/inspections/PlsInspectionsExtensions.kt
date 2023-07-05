@@ -48,6 +48,10 @@ fun isSuppressedForDefinition(element: PsiElement, toolId: String) : Boolean {
         if(toolId == "ParadoxScriptMissingImage") return true
     }
     if(definitionInfo.gameType == ParadoxGameType.Stellaris) {
+        //1.1.2 传统的采纳和完成不需要有对应的图片
+        if((definitionInfo.type == "tradition" || definitionInfo.typeConfig.baseType == "tradition") && definitionInfo.name.let { it.endsWith("_adopt") || it.endsWith("_finish") }) {
+            if(toolId == "ParadoxScriptMissingImage") return true
+        }
         //1.1.2 禁用名字以数字结尾的领袖特质的某些检查
         if(definitionInfo.type == "trait" && definitionInfo.subtypes.contains("leader_trait") && definitionInfo.name.substringAfterLast('_', "").toIntOrNull() != null) {
             if(toolId == "ParadoxScriptMissingLocalisation") return true
