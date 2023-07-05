@@ -76,13 +76,14 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 val hasPrimaryLocales = mutableSetOf<CwtLocalisationLocaleConfig>()
                 for(info in localisationInfos) {
                     ProgressManager.checkCanceled()
+                    val expression = info.locationExpression
                     if(info.required || if(info.primary) checkPrimaryForDefinitions else checkOptionalForDefinitions) {
                         for(locale in localeConfigs) {
                             if(nameToDistinct.contains(info.key + "@" + locale)) continue
                             if(info.primary && hasPrimaryLocales.contains(locale)) continue
                             //多个位置表达式无法解析时，使用第一个
                             val selector = localisationSelector(project, file).locale(locale) //use file as context
-                            val resolved = info.locationExpression.resolve(definition, definitionInfo, selector)
+                            val resolved = expression.resolve(definition, definitionInfo, selector)
                             if(resolved != null) {
                                 if(resolved.message != null) continue //skip if it's dynamic or inlined
                                 if(resolved.localisation == null) {
@@ -92,8 +93,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                                     nameToDistinct.add(info.key + "@" + locale)
                                     if(info.primary) hasPrimaryLocales.add(locale)
                                 }
-                            } else {
-                                //无法直接获取到本地化名字的场合
+                            } else if(expression.propertyName != null || (expression.placeholder != null && definitionInfo.name.isNotEmpty())) {
+                                //无法直接获取到本地化名字的场合 - 从属性值获取，或者从占位符文本获取且定义非匿名
                                 infoMap.putIfAbsent(info.key + "@" + locale, Info(info, null, locale))
                             }
                         }

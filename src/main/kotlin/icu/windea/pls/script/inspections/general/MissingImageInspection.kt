@@ -58,11 +58,12 @@ class MissingImageInspection : LocalInspectionTool() {
                 var hasPrimary = false
                 for(info in imageInfos) {
                     ProgressManager.checkCanceled()
+                    val expression = info.locationExpression
                     if(nameToDistinct.contains(info.key)) continue
                     if(info.primary && hasPrimary) continue
                     //多个位置表达式无法解析时，使用第一个
                     if(info.required || if(info.primary) checkPrimaryForDefinitions else checkOptionalForDefinitions) {
-                        val resolved = info.locationExpression.resolve(definition, definitionInfo, project)
+                        val resolved = expression.resolve(definition, definitionInfo, project)
                         if(resolved != null) {
                             if(resolved.message != null) continue //skip if it's dynamic
                             if(resolved.file == null) {
@@ -72,8 +73,8 @@ class MissingImageInspection : LocalInspectionTool() {
                                 nameToDistinct.add(info.key)
                                 if(info.primary) hasPrimary = true
                             }
-                        } else {
-                            //无法直接获取到图片路径的场合
+                        } else if(expression.propertyName != null || (expression.placeholder != null && definitionInfo.name.isNotEmpty())) {
+                            //无法直接获取到图片路径的场合 - 从属性值获取，或者从占位符文本获取且定义非匿名
                             infoMap.putIfAbsent(info.key, Info(info, null))
                         }
                     }
