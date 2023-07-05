@@ -39,12 +39,6 @@ class CwtImageLocationExpression private constructor(
     val propertyName: String? = null,
     val extraPropertyNames: List<String>? = null
 ) : AbstractExpression(expressionString), CwtExpression {
-    operator fun component1() = placeholder
-    
-    operator fun component2() = propertyName
-    
-    operator fun component3() = extraPropertyNames
-    
     fun resolvePlaceholder(name: String): String? {
         if(placeholder == null) return null
         return buildString { for(c in placeholder) if(c == '$') append(name) else append(c) }
@@ -237,7 +231,10 @@ class CwtImageLocationExpression private constructor(
         private fun doResolve(expressionString: String): CwtImageLocationExpression {
             return when {
                 expressionString.isEmpty() -> EmptyExpression
-                expressionString.contains('$') -> CwtImageLocationExpression(expressionString, placeholder = expressionString)
+                expressionString.contains('$') -> {
+                    val placeholder = expressionString
+                    CwtImageLocationExpression(expressionString, placeholder = placeholder)
+                }
                 else -> {
                     val propertyName = expressionString.substringBefore('|').intern()
                     val extraPropertyNames = expressionString.substringAfter('|', "").takeIfNotEmpty()

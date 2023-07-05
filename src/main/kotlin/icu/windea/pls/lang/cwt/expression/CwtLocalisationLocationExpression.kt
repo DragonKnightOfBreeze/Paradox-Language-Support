@@ -25,7 +25,7 @@ private val validValueTypes = arrayOf(
  *
  * 如果包含占位符`$`，将其替换成定义的名字后，尝试得到对应名字的本地化，否则尝试得到对应名字的属性的值对应的本地化。
  *
- * 示例：`"$"`, `"$_desc"`, `"title"`
+ * 示例：`"$"`, `"$_desc"`, `"$_DESC|u"` , `"title"`
  *
  * @property placeholder 占位符文本。其中的`"$"`会在解析时被替换成定义的名字。
  * @property propertyName 属性名。
@@ -33,15 +33,13 @@ private val validValueTypes = arrayOf(
 class CwtLocalisationLocationExpression private constructor(
     expressionString: String,
     val placeholder: String? = null,
-    val propertyName: String? = null
+    val propertyName: String? = null,
+    val upperCase: Boolean = false
 ) : AbstractExpression(expressionString), CwtExpression {
-    operator fun component1() = placeholder
-    
-    operator fun component2() = propertyName
-    
     fun resolvePlaceholder(name: String): String? {
         if(placeholder == null) return null
         return buildString { for(c in placeholder) if(c == '$') append(name) else append(c) }
+            .letIf(upperCase) { it.uppercase() }
     }
     
     data class ResolveResult(
@@ -123,8 +121,15 @@ class CwtLocalisationLocationExpression private constructor(
         private fun doResolve(expressionString: String): CwtLocalisationLocationExpression {
             return when {
                 expressionString.isEmpty() -> EmptyExpression
-                expressionString.contains('$') -> CwtLocalisationLocationExpression(expressionString, placeholder = expressionString)
-                else -> CwtLocalisationLocationExpression(expressionString, propertyName = expressionString)
+                expressionString.contains('$') -> {
+                    val placeholder = expressionString.substringBefore('|').intern()
+                    val upperCase = expressionString.substringAfter('|', "") == "u"
+                    CwtLocalisationLocationExpression(expressionString, placeholder = placeholder, upperCase = upperCase)
+                }
+                else -> {
+                    val propertyName = expressionString
+                    CwtLocalisationLocationExpression(expressionString, propertyName = propertyName)
+                }
             }
         }
     }
