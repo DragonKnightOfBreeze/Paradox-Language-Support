@@ -3,6 +3,11 @@ types = {
 		path = "game"
 		path_file = descriptor.mod
 		name_from_file = yes
+		images = {
+			## primary
+			## optional
+			picture = picture
+		}
 	}
 }
 
