@@ -85,8 +85,11 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                             val selector = localisationSelector(project, file).locale(locale) //use file as context
                             val resolved = expression.resolve(definition, definitionInfo, selector)
                             if(resolved != null) {
-                                if(resolved.message != null) continue //skip if it's dynamic or inlined
-                                if(resolved.localisation == null) {
+                                if(resolved.message != null) { //dynamic, inlined, etc.
+                                    infoMap.remove(info.key + "@" + locale)
+                                    nameToDistinct.add(info.key + "@" + locale)
+                                    if(info.primary) hasPrimaryLocales.add(locale)
+                                } else if(resolved.localisation == null) {
                                     infoMap.putIfAbsent(info.key + "@" + locale, Info(info, resolved.name, locale))
                                 } else {
                                     infoMap.remove(info.key + "@" + locale)

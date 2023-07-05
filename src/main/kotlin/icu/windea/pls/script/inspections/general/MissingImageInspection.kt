@@ -65,8 +65,11 @@ class MissingImageInspection : LocalInspectionTool() {
                     if(info.required || if(info.primary) checkPrimaryForDefinitions else checkOptionalForDefinitions) {
                         val resolved = expression.resolve(definition, definitionInfo, project)
                         if(resolved != null) {
-                            if(resolved.message != null) continue //skip if it's dynamic
-                            if(resolved.file == null) {
+                            if(resolved.message != null) { //dynamic, inlined, etc.
+                                infoMap.remove(info.key)
+                                nameToDistinct.add(info.key)
+                                if(info.primary) hasPrimary = true
+                            } else if(resolved.file == null) {
                                 infoMap.putIfAbsent(info.key, Info(info, resolved.filePath))
                             } else {
                                 infoMap.remove(info.key)
