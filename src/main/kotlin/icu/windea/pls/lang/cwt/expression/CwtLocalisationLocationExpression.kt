@@ -19,15 +19,18 @@ private val validValueTypes = arrayOf(
 )
 
 /**
- * CWT本地化的位置表达式。
+ * CWT本地化位置表达式。
  *
- * 用于推断定义的相关本地化（relatedLocation）的位置。
+ * 用于定位定义的相关本地化。
  *
- * 示例：`"$"`, `"$_desc"`, `"#title"`
- * @property placeholder 占位符（表达式文本包含"$"时，为整个字符串，"$"会在解析时替换成定义的名字，如果定义是匿名的，则忽略此表达式）。
- * @property propertyName 属性名（表达式文本以"#"开始时，为"#"之后的子字符串，可以为空字符串）。
+ * 如果包含占位符`$`，将其替换成定义的名字后，尝试得到对应名字的本地化，否则尝试得到对应名字的属性的值对应的本地化。
+ *
+ * 示例：`"$"`, `"$_desc"`, `"title"`
+ * 
+ * @property placeholder 占位符文本。其中的`"$"`会在解析时被替换成定义的名字。
+ * @property propertyName 属性名。
  */
-class CwtLocalisationLocationExpression(
+class CwtLocalisationLocationExpression private constructor(
     expressionString: String,
     val placeholder: String? = null,
     val propertyName: String? = null
@@ -120,11 +123,8 @@ class CwtLocalisationLocationExpression(
         private fun doResolve(expressionString: String): CwtLocalisationLocationExpression {
             return when {
                 expressionString.isEmpty() -> EmptyExpression
-                expressionString.startsWith('#') -> {
-                    val propertyName = expressionString.substring(1).intern()
-                    CwtLocalisationLocationExpression(expressionString, null, propertyName)
-                }
-                else -> CwtLocalisationLocationExpression(expressionString, expressionString)
+                expressionString.contains('$') -> CwtLocalisationLocationExpression(expressionString, placeholder = expressionString)
+                else -> CwtLocalisationLocationExpression(expressionString, propertyName = expressionString)
             }
         }
     }

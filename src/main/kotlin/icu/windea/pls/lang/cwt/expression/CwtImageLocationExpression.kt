@@ -21,14 +21,17 @@ private val validValueTypes = arrayOf(
 )
 
 /**
- * CWT图片的位置表达式。
+ * CWT图片位置表达式。
  *
- * 用于推断定义的相关图片（relatedImage）的位置。
+ * 用于定位定义的相关图片。
+ * 
+ * 如果包含占位符`$`，将其替换成定义的名字后，尝试得到对应路径的图片，否则尝试得到对应名字的属性的值对应的图片。
  *
- * 示例：`"gfx/interface/icons/modifiers/mod_$.dds"`, `"#icon"`, "#icon|#icon_frame"`
- * @property placeholder 占位符（表达式文本包含"$"时，为整个字符串，"$"会在解析时替换成定义的名字，，如果定义是匿名的，则忽略此表达式）。
- * @property propertyName 属性名（表达式文本以"#"开始时，为"#"之后和可能的"|"之前的子字符串，可以为空字符串）。
- * @property extraPropertyNames 额外的属性名（表达式文本以"#"开始且之后包含"|"时，为"|"之后的按","分割的子字符串）。
+ * 示例：`"gfx/interface/icons/modifiers/mod_$.dds"`, `"icon"`, "icon|p1,p2"`
+ * 
+ * @property placeholder 占位符文本。其中的`"$"`会在解析时被替换成定义的名字。
+ * @property propertyName 属性名。
+ * @property extraPropertyNames 额外的属性名。位于管道符之后，用逗号分隔。
  */
 class CwtImageLocationExpression private constructor(
     expressionString: String,
@@ -61,8 +64,7 @@ class CwtImageLocationExpression private constructor(
             //假定这里的filePath以.dds结尾
             val filePath = resolvePlaceholder(definitionInfo.name)!!
             val selector = fileSelector(project, definition).contextSensitive()
-            val file = ParadoxFilePathSearch.search(filePath, null, selector).find()
-                ?.toPsiFile(project)
+            val file = ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
             return ResolveResult(filePath, file, frame)
         } else if(propertyName != null) {
             //propertyName可以为空字符串，这时直接查找定义的字符串类型的值（如果存在）
@@ -195,19 +197,13 @@ class CwtImageLocationExpression private constructor(
         private fun doResolve(expressionString: String): CwtImageLocationExpression {
             return when {
                 expressionString.isEmpty() -> EmptyExpression
-                expressionString.startsWith('#') -> {
-                    val pipeIndex = expressionString.indexOf('|', 1)
-                    if(pipeIndex == -1) {
-                        val propertyName = expressionString.substring(1).intern()
-                        CwtImageLocationExpression(expressionString, null, propertyName)
-                    } else {
-                        val propertyName = expressionString.substring(1, pipeIndex).intern()
-                        val extraPropertyNames = expressionString.substring(pipeIndex + 1)
-                            .splitToSequence(',').mapTo(mutableListOf()) { it.drop(1) }
-                        CwtImageLocationExpression(expressionString, null, propertyName, extraPropertyNames)
-                    }
+                expressionString.contains('$') -> CwtImageLocationExpression(expressionString, placeholder = expressionString)
+                else -> {
+                    val propertyName = expressionString.substringBefore('|').intern()
+                    val extraPropertyNames = expressionString.substringAfter('|', "").takeIfNotEmpty()
+                        ?.toCommaDelimitedStringList()
+                    CwtImageLocationExpression(expressionString, propertyName = propertyName, extraPropertyNames = extraPropertyNames)
                 }
-                else -> CwtImageLocationExpression(expressionString, expressionString, null, null)
             }
         }
     }
