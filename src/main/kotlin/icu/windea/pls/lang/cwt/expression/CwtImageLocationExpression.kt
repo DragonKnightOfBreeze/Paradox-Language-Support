@@ -84,8 +84,8 @@ class CwtImageLocationExpression private constructor(
             if(config.expression.type !in validValueTypes) {
                 return ResolveResult("", null, 0, PlsBundle.message("dynamic"))
             }
-            val key = propertyValue.value
-            if(definitionInfo.name.equals(key, true)) return null //防止出现SOF
+            val name = propertyValue.value
+            if(definitionInfo.name.equals(name, true)) return null //防止出现SOF
             val frameToUse = when {
                 frame != 0 -> frame
                 extraPropertyNames.isNullOrEmpty() -> 0
@@ -172,8 +172,8 @@ class CwtImageLocationExpression private constructor(
             if(config.expression.type !in validValueTypes) {
                 return ResolveAllResult("", emptySet(), 0, PlsBundle.message("dynamic"))
             }
-            val key = propertyValue.value
-            if(definitionInfo.name.equals(key, true)) return null //防止出现SOF
+            val name = propertyValue.value
+            if(definitionInfo.name.equals(name, true)) return null //防止出现SOF
             val frameToUse = when {
                 frame != 0 -> frame
                 extraPropertyNames.isNullOrEmpty() -> 0
