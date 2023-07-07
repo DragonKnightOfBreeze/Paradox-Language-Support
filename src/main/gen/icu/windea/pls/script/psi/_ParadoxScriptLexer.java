@@ -10,7 +10,7 @@ import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 
-public class ParadoxScriptLexer implements FlexLexer {
+public class _ParadoxScriptLexer implements FlexLexer {
 
   /** This character denotes the end of file */
   public static final int YYEOF = -1;
@@ -514,7 +514,7 @@ public class ParadoxScriptLexer implements FlexLexer {
     private boolean leftAbsSign = true;
 	private boolean quoted = false;
     
-    public ParadoxScriptLexer() {
+    public _ParadoxScriptLexer() {
         this((java.io.Reader)null);
     }
 	
@@ -578,7 +578,7 @@ public class ParadoxScriptLexer implements FlexLexer {
    *
    * @param   in  the java.io.Reader to read input from.
    */
-  public ParadoxScriptLexer(java.io.Reader in) {
+  public _ParadoxScriptLexer(java.io.Reader in) {
     this.zzReader = in;
   }
 

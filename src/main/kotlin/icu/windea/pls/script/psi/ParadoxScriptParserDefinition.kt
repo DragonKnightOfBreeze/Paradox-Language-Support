@@ -32,8 +32,8 @@ class ParadoxScriptParserDefinition : ParserDefinition {
         return ParadoxScriptParser()
     }
     
-    override fun createLexer(project: Project?): ParadoxScriptLexerAdapter {
-        return ParadoxScriptLexerAdapter()
+    override fun createLexer(project: Project?): ParadoxScriptLexer {
+        return ParadoxScriptLexer()
     }
     
     override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): SpaceRequirements {

@@ -4,7 +4,7 @@ import com.intellij.lang.cacheBuilder.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationWordScanner : DefaultWordsScanner(
-	ParadoxLocalisationLexerAdapter(),
+	ParadoxLocalisationLexer(),
 	ParadoxLocalisationTokenSets.IDENTIFIER_TOKENS,
 	ParadoxLocalisationTokenSets.COMMENT_TOKENS,
 	ParadoxLocalisationTokenSets.LITERAL_TOKENS

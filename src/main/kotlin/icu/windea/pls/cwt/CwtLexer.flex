@@ -10,7 +10,7 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 %%
 
 %public
-%class CwtLexer
+%class _CwtLexer
 %implements FlexLexer
 %function advance
 %type IElementType
@@ -32,9 +32,9 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 %state WAITING_DOCUMENTATION
 
 %{
-  private int optionDepth = 0;
+    private int optionDepth = 0;
     
-    public CwtLexer() {
+    public _CwtLexer() {
       this((java.io.Reader)null);
     }
     

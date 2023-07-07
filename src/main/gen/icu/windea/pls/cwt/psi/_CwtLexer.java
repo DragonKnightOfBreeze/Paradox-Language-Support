@@ -15,7 +15,7 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
  * <a href="http://www.jflex.de/">JFlex</a> 1.7.0
  * from the specification file <tt>CwtLexer.flex</tt>
  */
-public class CwtLexer implements FlexLexer {
+public class _CwtLexer implements FlexLexer {
 
   /** This character denotes the end of file */
   public static final int YYEOF = -1;
@@ -376,7 +376,7 @@ public class CwtLexer implements FlexLexer {
   /* user code: */
   private int optionDepth = 0;
     
-    public CwtLexer() {
+    public _CwtLexer() {
       this((java.io.Reader)null);
     }
     
@@ -394,7 +394,7 @@ public class CwtLexer implements FlexLexer {
    *
    * @param   in  the java.io.Reader to read input from.
    */
-  public CwtLexer(java.io.Reader in) {
+  public _CwtLexer(java.io.Reader in) {
     this.zzReader = in;
   }
 

@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "icu.windea"
-version = "1.1.2"
+version = "1.1.3"
 
 intellij {
 	pluginName.set("Paradox Language Support")
@@ -30,6 +30,7 @@ intellij {
 	plugins.add("properties")
 	plugins.add("java")
 	plugins.add("org.jetbrains.kotlin")
+	plugins.add("org.jetbrains.plugins.vue")
 }
 
 grammarKit {

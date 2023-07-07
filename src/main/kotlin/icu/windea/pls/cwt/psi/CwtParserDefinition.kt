@@ -28,7 +28,7 @@ class CwtParserDefinition : ParserDefinition {
 	
 	override fun createParser(project: Project?) = CwtParser()
 	
-	override fun createLexer(project: Project?) = CwtLexerAdapter()
+	override fun createLexer(project: Project?) = CwtLexer()
 	
 	override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): SpaceRequirements {
 		val leftType = left?.elementType

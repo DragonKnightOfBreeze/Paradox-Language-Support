@@ -9,7 +9,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %%
 
 %public
-%class ParadoxScriptLexer
+%class _ParadoxScriptLexer
 %implements FlexLexer
 %function advance
 %type IElementType
@@ -54,7 +54,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     private boolean leftAbsSign = true;
 	private boolean quoted = false;
     
-    public ParadoxScriptLexer() {
+    public _ParadoxScriptLexer() {
         this((java.io.Reader)null);
     }
 	

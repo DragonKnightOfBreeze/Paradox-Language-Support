@@ -11,7 +11,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %%
 
 %public
-%class ParadoxLocalisationLexer
+%class _ParadoxLocalisationLexer
 %implements FlexLexer
 %function advance
 %type IElementType
@@ -50,7 +50,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     private CommandLocation commandLocation = CommandLocation.NORMAL;
     private ReferenceLocation referenceLocation = ReferenceLocation.NORMAL;
 	
-    public ParadoxLocalisationLexer() {
+    public _ParadoxLocalisationLexer() {
         this((java.io.Reader)null);
     }
 	

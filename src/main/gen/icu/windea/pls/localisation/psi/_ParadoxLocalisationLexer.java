@@ -12,7 +12,7 @@ import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 
-public class ParadoxLocalisationLexer implements FlexLexer {
+public class _ParadoxLocalisationLexer implements FlexLexer {
 
   /** This character denotes the end of file */
   public static final int YYEOF = -1;
@@ -415,7 +415,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
     private CommandLocation commandLocation = CommandLocation.NORMAL;
     private ReferenceLocation referenceLocation = ReferenceLocation.NORMAL;
 	
-    public ParadoxLocalisationLexer() {
+    public _ParadoxLocalisationLexer() {
         this((java.io.Reader)null);
     }
 	
@@ -488,7 +488,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
    *
    * @param   in  the java.io.Reader to read input from.
    */
-  public ParadoxLocalisationLexer(java.io.Reader in) {
+  public _ParadoxLocalisationLexer(java.io.Reader in) {
     this.zzReader = in;
   }
 

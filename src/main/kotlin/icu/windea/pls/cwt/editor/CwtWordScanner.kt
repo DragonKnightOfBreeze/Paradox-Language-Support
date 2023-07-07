@@ -4,7 +4,7 @@ import com.intellij.lang.cacheBuilder.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtWordScanner: DefaultWordsScanner(
-	CwtLexerAdapter(),
+	CwtLexer(),
 	CwtTokenSets.IDENTIFIER_TOKENS,
 	CwtTokenSets.COMMENT_TOKENS,
 	CwtTokenSets.LITERAL_TOKENS
