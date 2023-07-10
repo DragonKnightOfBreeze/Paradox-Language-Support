@@ -61,6 +61,7 @@ object PlsIcons {
 	@JvmField val TemplateExpression = loadIcon("icons/templateExpression.svg")
 	@JvmField val Alias = loadIcon("/icons/alias.svg")
 	@JvmField val PathReference = AllIcons.FileTypes.Any_type 
+	@JvmField val InlineScript = AllIcons.FileTypes.AddAny
 	
 	@JvmField val OnAction = loadIcon("/icons/onAction.svg") 
 	@JvmField val EventNamespace = loadIcon("/icons/eventNamespace.svg")

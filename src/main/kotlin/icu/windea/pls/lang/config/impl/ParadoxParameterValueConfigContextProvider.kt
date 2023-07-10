@@ -22,14 +22,17 @@ import icu.windea.pls.script.psi.*
  * * 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`和`TooManyExpressionInspection`。
  * * 不会将参数值内容内联到对应的调用处，然后再进行相关代码检查。
  * * 不会将参数值内容内联到对应的调用处，然后检查语法是否合法。
+ * 
+ * @see ParadoxScriptInjector
  */
-class ParadoxScriptSnippetFromParameterValueConfigContextProvider : ParadoxConfigContextProvider {
+class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider {
     override fun getConfigContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
         if(!getSettings().inference.argumentValueConfig) return null
         
         val vFile = selectFile(file) ?: return null
         if(!ParadoxFileManager.isInjectedFile(vFile)) return null //limited for injected psi
         
+        //TODO 1.1.3
         val injectionHost = InjectedLanguageManager.getInstance(file.project).getInjectionHost(file)
         if(injectionHost !is ParadoxScriptString) return null
         

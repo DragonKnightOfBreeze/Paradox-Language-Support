@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.highlighter.*
@@ -47,7 +48,8 @@ class ParadoxScriptValueArgumentExpressionNode(
         }
         
         override fun resolve(): ParadoxParameterElement? {
-            return ParadoxParameterSupport.resolveArgument(element, rangeInElement, argumentNode)
+            val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return null
+            return ParadoxParameterSupport.resolveArgument(element, rangeInElement, config)
         }
     }
 }

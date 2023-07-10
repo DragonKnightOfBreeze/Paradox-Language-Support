@@ -35,7 +35,7 @@
     <configContextProvider implementation="icu.windea.pls.lang.config.impl.ParadoxBaseConfigContextProvider" order="last"/>
     <configContextProvider implementation="icu.windea.pls.lang.config.impl.ParadoxInlineScriptUsageConfigContextProvider"/>
     <configContextProvider implementation="icu.windea.pls.lang.config.impl.ParadoxInlineScriptConfigContextProvider"/>
-    <configContextProvider implementation="icu.windea.pls.lang.config.impl.ParadoxScriptSnippetFromParameterValueConfigContextProvider"/>
+    <configContextProvider implementation="icu.windea.pls.lang.config.impl.ParadoxParameterValueConfigContextProvider"/>
     
     <overriddenConfigProvider implementation="icu.windea.pls.lang.config.impl.ParadoxSwitchCaseOverriddenConfigProvider"/>
     <overriddenConfigProvider implementation="icu.windea.pls.lang.config.impl.StellarisComplexTriggerModifierOverriddenConfigProvider"/>
@@ -139,6 +139,6 @@
   </extensions>
   
   <extensions defaultExtensionNs="com.intellij">
-    <multiHostInjector implementation="icu.windea.pls.lang.injection.ParadoxScriptSnippetInjector"/>
+    <multiHostInjector implementation="icu.windea.pls.script.psi.ParadoxScriptInjector"/>
   </extensions>
 </idea-plugin>

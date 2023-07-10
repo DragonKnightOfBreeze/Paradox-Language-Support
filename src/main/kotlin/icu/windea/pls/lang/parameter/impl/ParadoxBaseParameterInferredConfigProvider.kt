@@ -25,7 +25,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
                 val argumentNameConfig = config.propertyConfig ?: return null
                 val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return null
                 val passingConfig = withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider.getConfig") {
-                    withCheckRecursion(passingParameterElement.contextKey) {
+                    withCheckRecursion(passingParameterElement.key) {
                         ParadoxParameterHandler.getInferredConfig(passingParameterElement)
                     }
                 }

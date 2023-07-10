@@ -17,8 +17,8 @@ import icu.windea.pls.lang.model.*
  * 
  * 如过参数值是用引号括起的，可能需要通过预言注入推断CWT规则文件的上下文。
  *
- * @see ParadoxScriptSnippetInjector
- * @see ParadoxScriptSnippetFromParameterValueConfigContextProvider
+ * @see ParadoxScriptInjector
+ * @see ParadoxParameterValueConfigContextProvider
  */
 @WithGameTypeEP
 interface ParadoxParameterInferredConfigProvider {

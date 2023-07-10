@@ -3,6 +3,7 @@ package icu.windea.pls.lang
 import com.google.common.cache.*
 import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.highlighting.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
@@ -30,9 +31,7 @@ object ParadoxParameterHandler {
     val supportKey = Key.create<ParadoxParameterSupport>("paradox.parameter.support")
     val inferredConfigKey = Key.create<CwtValueConfig>("paradox.parameter.inferredConfig")
     val inferredContextConfigsKey = Key.create<List<CwtMemberConfig<*>>>("paradox.parameter.inferredContextConfigs")
-    val parameterCacheKey = KeyWithDefaultValue.create<Cache<String, ParadoxParameterElement>>("paradox.parameter.cache") {
-        CacheBuilder.newBuilder().recordStats().buildCache()
-    }
+    val parameterCacheKey = KeyWithDefaultValue.create<Cache<String, ParadoxParameterElement>>("paradox.parameter.cache") { CacheBuilder.newBuilder().buildCache() }
     val parameterModificationTrackerKey = Key.create<ModificationTracker>("paradox.parameter.modificationTracker")
     val parameterModificationCountKey = Key.create<Long>("paradox.parameter.modificationCount")
     
@@ -109,7 +108,7 @@ object ParadoxParameterHandler {
                 ?: continue
             val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
                 .withIcon(PlsIcons.Parameter)
-                .withTypeText(parameterElement.contextName, parameterContext.icon, true)
+                .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
             result.addElement(lookupElement)
         }
     }
@@ -139,7 +138,7 @@ object ParadoxParameterHandler {
                     ?: continue
                 val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
                     .withIcon(PlsIcons.Parameter)
-                    .withTypeText(parameterElement.contextName, parameterContext.icon, true)
+                    .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
                     .letIf(insertSeparator) {
                         it.withInsertHandler { c, _ ->
                             val editor = c.editor
@@ -154,11 +153,19 @@ object ParadoxParameterHandler {
         }
     }
     
+    fun getReadWriteAccess(element: PsiElement): ReadWriteAccessDetector.Access {
+        return when {
+            element is ParadoxParameter -> ReadWriteAccessDetector.Access.Read
+            element is ParadoxConditionParameter -> ReadWriteAccessDetector.Access.Read
+            else -> ReadWriteAccessDetector.Access.Write
+        }
+    }
+    
     /**
      * 尝试推断得到参数对应的CWT规则。
      */
     fun getInferredConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
-        val cacheKey = parameterElement.contextKey + "@" + parameterElement.name
+        val cacheKey = parameterElement.key + "@" + parameterElement.name
         val parameterCache = selectRootFile(parameterElement.parent)?.getUserData(parameterCacheKey) ?: return null
         val cached = parameterCache.get(cacheKey)
         if(cached != null) {
@@ -231,7 +238,7 @@ object ParadoxParameterHandler {
      * 尝试推断得到参数对应的上下文CWT规则。
      */
     fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        val cacheKey = parameterElement.contextKey + "@" + parameterElement.name
+        val cacheKey = parameterElement.key + "@" + parameterElement.name
         val parameterCache = selectRootFile(parameterElement.parent)?.getUserData(parameterCacheKey) ?: return emptyList()
         val cached = parameterCache.get(cacheKey)
         if(cached != null) {

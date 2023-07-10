@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.injection
+package icu.windea.pls.script.psi
 
 import com.intellij.lang.injection.*
 import com.intellij.openapi.util.*
@@ -10,16 +10,8 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
 
-/**
- * 用于在某些特定场合下注入脚本片段。
- *
- * 后续可以提供CWT规则上下文，以便为注入的脚本片段提供高级语言功能。
- * 
- * @see icu.windea.pls.lang.config.impl.ParadoxScriptSnippetFromParameterValueConfigContextProvider
- */
-class ParadoxScriptSnippetInjector : MultiHostInjector {
+class ParadoxScriptInjector : MultiHostInjector {
     //see: com.intellij.util.InjectionUtils
     //see: com.intellij.psi.impl.source.tree.injected.InjectedFileViewProvider
     //see: org.intellij.plugins.intelliLang.inject.InjectorUtils
@@ -37,6 +29,7 @@ class ParadoxScriptSnippetInjector : MultiHostInjector {
     }
     
     private fun applyInjectionForParameterValue(registrar: MultiHostRegistrar, injectionHost: PsiElement) {
+        //TODO 1.1.3
         if(injectionHost !is ParadoxScriptString) return
         val argumentNameElement = injectionHost.propertyKey ?: return
         val argumentNameConfig = ParadoxConfigHandler.getConfigs(argumentNameElement).firstOrNull() ?: return

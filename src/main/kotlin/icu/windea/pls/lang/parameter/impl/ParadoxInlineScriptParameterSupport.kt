@@ -4,6 +4,7 @@ import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
@@ -109,22 +110,26 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     private fun doResolveParameter(element: PsiElement, name: String): ParadoxParameterElement? {
         val context = findContext(element) as? ParadoxScriptFile ?: return null
         val expression = ParadoxInlineScriptHandler.getInlineScriptExpression(context) ?: return null
-        val readWriteAccess = getReadWriteAccess(element)
-        val contextKey = "inline_script@$expression"
+        val contextName = expression
+        val contextIcon = PlsIcons.InlineScript
+        val key = "inline_script@$expression"
+        val rangeInParent = TextRange.create(0, element.textLength)
+        val readWriteAccess = ParadoxParameterHandler.getReadWriteAccess(element)
         val gameType = selectGameType(context) ?: return null
         val project = context.project
-        val result = ParadoxParameterElement(element, name, context.name, contextKey, readWriteAccess, gameType, project)
+        val result = ParadoxParameterElement(element, name, contextName, contextIcon, key, rangeInParent, readWriteAccess, gameType, project)
         result.putUserData(containingContextKey, context.createPointer())
         result.putUserData(inlineScriptExpressionKey, expression)
         result.putUserData(ParadoxParameterHandler.supportKey, this)
         return result
     }
     
-    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, vararg extraArgs: Any?): ParadoxParameterElement? {
-        //extraArgs: config
-        val config = extraArgs.getOrNull(0)?.castOrNull<CwtMemberConfig<*>>() ?: return null
+    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
         if(config !is CwtPropertyConfig || config.expression.type != CwtDataType.Parameter) return null
-        //infer inline config
+        return doResolveArgument(element, rangeInElement, config)
+    }
+    
+    private fun doResolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtPropertyConfig): ParadoxParameterElement? {
         val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parent?.castOrNull<CwtPropertyConfig>() ?: return null
         val inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptHandler.inlineScriptKey } ?: return null
         val contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
@@ -132,28 +137,25 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val expression = ParadoxInlineScriptHandler.getExpressionFromInlineConfig(propertyValue, inlineConfig) ?: return null
         if(expression.isParameterized()) return null //skip if context name is parameterized
         val name = element.name
+        val contextName = expression
+        val contextIcon = PlsIcons.InlineScript
+        val key = "inline_script@$expression"
+        val rangeInParent = rangeInElement ?: TextRange.create(0, element.textLength)
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
-        val contextKey = "inline_script@$expression"
         val gameType = config.info.configGroup.gameType ?: return null
         val project = config.info.configGroup.project
-        val result = ParadoxParameterElement(element, name, expression, contextKey, readWriteAccess, gameType, project)
+        val result = ParadoxParameterElement(element, name, contextName, contextIcon, key, rangeInParent, readWriteAccess, gameType, project)
         result.putUserData(inlineScriptExpressionKey, expression)
         result.putUserData(ParadoxParameterHandler.supportKey, this)
         return result
     }
     
-    private fun getReadWriteAccess(element: PsiElement) = when {
-        element is ParadoxParameter -> ReadWriteAccessDetector.Access.Read
-        element is ParadoxConditionParameter -> ReadWriteAccessDetector.Access.Read
-        else -> ReadWriteAccessDetector.Access.Write
+    override fun getContainingContext(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {
+        return element.getUserData(containingContextKey)?.element
     }
     
     override fun getContainingContextReference(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {
         return element.getUserData(containingContextReferenceKey)?.element
-    }
-    
-    override fun getContainingContext(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {
-        return element.getUserData(containingContextKey)?.element
     }
     
     override fun processContext(element: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {

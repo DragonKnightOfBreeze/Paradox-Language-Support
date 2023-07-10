@@ -1,12 +1,10 @@
 package icu.windea.pls.lang.parameter.impl
 
-import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
@@ -89,21 +87,24 @@ class ParadoxInScriptValueExpressionParameterSupport : ParadoxDefinitionParamete
         return result
     }
     
-    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, vararg extraArgs: Any?): ParadoxParameterElement? {
-        //extraArgs: argumentNode
-        val argumentNode = extraArgs.getOrNull(0)?.castOrNull<ParadoxScriptValueArgumentExpressionNode>() ?: return null
-        val name = argumentNode.text
-        val definitionName = argumentNode.scriptValueNode?.text ?: return null
-        if(definitionName.isParameterized()) return null //skip if context name is parameterized
-        val configGroup = argumentNode.configGroup
-        val contextKey = "definition@$definitionName: script_value"
-        val definitionTypes = listOf("script_value")
-        val readWriteAccess = ReadWriteAccessDetector.Access.Write
-        val gameType = configGroup.gameType ?: return null
-        val project = configGroup.project
-        val result = ParadoxParameterElement(element, name, definitionName, contextKey, readWriteAccess, gameType, project)
-        result.putUserData(definitionNameKey, definitionName)
-        result.putUserData(definitionTypesKey, definitionTypes)
-        return result
+    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
+        //TODO 1.1.3
+        return null
+        
+        ////extraArgs: argumentNode
+        //val argumentNode = extraArgs.getOrNull(0)?.castOrNull<ParadoxScriptValueArgumentExpressionNode>() ?: return null
+        //val name = argumentNode.text
+        //val definitionName = argumentNode.scriptValueNode?.text ?: return null
+        //if(definitionName.isParameterized()) return null //skip if context name is parameterized
+        //val configGroup = argumentNode.configGroup
+        //val contextKey = "definition@$definitionName: script_value"
+        //val definitionTypes = listOf("script_value")
+        //val readWriteAccess = ReadWriteAccessDetector.Access.Write
+        //val gameType = configGroup.gameType ?: return null
+        //val project = configGroup.project
+        //val result = ParadoxParameterElement(element, name, definitionName, contextKey, readWriteAccess, gameType, project)
+        //result.putUserData(definitionNameKey, definitionName)
+        //result.putUserData(definitionTypesKey, definitionTypes)
+        //return result
     }
 }
