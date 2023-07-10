@@ -16,6 +16,8 @@ import icu.windea.pls.script.psi.*
  * 用于在某些特定场合下注入脚本片段。
  *
  * 后续可以提供CWT规则上下文，以便为注入的脚本片段提供高级语言功能。
+ * 
+ * @see icu.windea.pls.lang.config.impl.ParadoxScriptSnippetFromParameterValueConfigContextProvider
  */
 class ParadoxScriptSnippetInjector : MultiHostInjector {
     //see: com.intellij.util.InjectionUtils
@@ -31,21 +33,11 @@ class ParadoxScriptSnippetInjector : MultiHostInjector {
     }
     
     override fun getLanguagesToInject(registrar: MultiHostRegistrar, host: PsiElement) {
-        if(host !is ParadoxScriptString) return
-        val configs = ParadoxConfigHandler.getConfigs(host)
-        val config = configs.firstOrNull() ?: return
-        when {
-            config.expression.type == CwtDataType.ParameterValue -> {
-                applyInjectionForParameterValue(registrar, host)
-            }
-        }
+        applyInjectionForParameterValue(registrar, host)
     }
     
-    private fun applyInjectionForParameterValue(registrar: MultiHostRegistrar, injectionHost: ParadoxScriptString) {
-        //not quoted -> don't apply
-        val text = injectionHost.text
-        if(!text.let { it.isLeftQuoted() && it.isRightQuoted() }) return
-        
+    private fun applyInjectionForParameterValue(registrar: MultiHostRegistrar, injectionHost: PsiElement) {
+        if(injectionHost !is ParadoxScriptString) return
         val argumentNameElement = injectionHost.propertyKey ?: return
         val argumentNameConfig = ParadoxConfigHandler.getConfigs(argumentNameElement).firstOrNull() ?: return
         if(argumentNameConfig.expression.type != CwtDataType.Parameter) return
@@ -56,6 +48,7 @@ class ParadoxScriptSnippetInjector : MultiHostInjector {
         if(inferredContextConfigs.singleOrNull() == CwtValueConfig.EmptyConfig) return
         
         registrar.startInjecting(ParadoxScriptLanguage)
+        val text = injectionHost.text
         registrar.addPlace(null, null, injectionHost, TextRange.create(0, text.length).unquote(text))
         
         //disable inject language action

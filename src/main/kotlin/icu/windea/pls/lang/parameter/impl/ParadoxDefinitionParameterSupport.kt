@@ -76,20 +76,26 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
             }
         }
         if(contextConfig == null || contextReferenceElement == null) return null
-        val rangeInElement = contextReferenceElement.propertyKey.textRangeInParent
         val definitionName = contextReferenceElement.name.takeIfNotEmpty() ?: return null
         if(definitionName.isParameterized()) return null //skip if context name is parameterized
         val definitionTypes = contextConfig.expression.value?.split('.') ?: return null
+        val contextName = definitionName
         val argumentNames = mutableSetOf<String>()
+        val contextNameRange = contextReferenceElement.propertyKey.textRangeInParent
+        val argumentRanges = mutableListOf<Tuple3<String, TextRange, TextRange?>>()
+        val startOffset = contextReferenceElement.startOffset
         contextReferenceElement.block?.processProperty p@{
             if(completionOffset != -1 && completionOffset in it.textRange) return@p true
-            val argumentName = it.propertyKey.name
+            val k = it.propertyKey
+            val v = it.propertyValue
+            val argumentName = k.name
             argumentNames.add(argumentName)
+            argumentRanges.add(tupleOf(argumentName, k.textRange.shiftLeft(startOffset), v?.textRange?.shiftLeft(startOffset)))
             true
         }
         val gameType = contextConfig.info.configGroup.gameType ?: return null
         val project = contextConfig.info.configGroup.project
-        val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(), rangeInElement, definitionName, argumentNames, gameType, project)
+        val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(), contextName, argumentNames, contextNameRange, argumentRanges, gameType, project)
         info.putUserData(definitionNameKey, definitionName)
         info.putUserData(definitionTypesKey, definitionTypes)
         return info
@@ -97,15 +103,15 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     
     override fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement? {
         val name = element.name ?: return null
-        return doResolveParameterOrArgument(element, name)
+        return doResolveParameter(element, name)
     }
     
     override fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement? {
         val name = element.name ?: return null
-        return doResolveParameterOrArgument(element, name)
+        return doResolveParameter(element, name)
     }
     
-    private fun doResolveParameterOrArgument(element: PsiElement, name: String): ParadoxParameterElement? {
+    private fun doResolveParameter(element: PsiElement, name: String): ParadoxParameterElement? {
         val context = findContext(element) ?: return null
         val definitionInfo = context.definitionInfo ?: return null
         val definitionName = context.name

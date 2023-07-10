@@ -42,8 +42,21 @@ interface ParadoxScriptValueExpression : ParadoxComplexExpression {
 
 val ParadoxScriptValueExpression.scriptValueNode: ParadoxScriptValueExpressionNode
     get() = nodes.first().cast()
-val ParadoxScriptValueExpression.parameterNodes: List<ParadoxScriptValueArgumentExpressionNode>
-    get() = nodes.filterIsInstance<ParadoxScriptValueArgumentExpressionNode>()
+val ParadoxScriptValueExpression.argumentNodes: List<Tuple2<ParadoxScriptValueArgumentExpressionNode, ParadoxScriptValueArgumentValueExpressionNode?>>
+    get() = buildList { 
+        var argumentNode : ParadoxScriptValueArgumentExpressionNode? = null
+        for(node in nodes) {
+            if(node is ParadoxScriptValueArgumentExpressionNode) {
+                argumentNode = node
+            } else if(node is ParadoxScriptValueArgumentValueExpressionNode && argumentNode != null) {
+                add(tupleOf(argumentNode, node))
+                argumentNode = null
+            }
+        }
+        if(argumentNode != null) {
+            add(tupleOf(argumentNode, null))
+        }
+    }
 
 class ParadoxScriptValueExpressionImpl(
     override val text: String,

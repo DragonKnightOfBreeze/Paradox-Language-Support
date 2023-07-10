@@ -3,12 +3,14 @@ package icu.windea.pls.lang.model
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.core.*
 
 class ParadoxParameterContextReferenceInfo(
     private val elementPointer: SmartPsiElementPointer<PsiElement>,
-    val rangeInElement: TextRange,
     val contextName: String,
     val argumentNames: Set<String>,
+    val contextNameRange: TextRange,
+    val argumentRanges: List<Tuple3<String, TextRange, TextRange?>>,
     val gameType: ParadoxGameType,
     val project: Project
 ) : UserDataHolderBase() {

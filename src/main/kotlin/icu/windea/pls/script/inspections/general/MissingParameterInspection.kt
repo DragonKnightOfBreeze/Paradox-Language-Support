@@ -54,7 +54,7 @@ class MissingParameterInspection : LocalInspectionTool() {
                 }
                 requiredParameterNames.removeAll(argumentNames)
                 if(requiredParameterNames.isEmpty()) return
-                registerProblem(element, requiredParameterNames, contextReferenceInfo.rangeInElement)
+                registerProblem(element, requiredParameterNames, contextReferenceInfo.contextNameRange)
             }
             
             private fun registerProblem(element: PsiElement, names: Set<String>, rangeInElement: TextRange? = null) {

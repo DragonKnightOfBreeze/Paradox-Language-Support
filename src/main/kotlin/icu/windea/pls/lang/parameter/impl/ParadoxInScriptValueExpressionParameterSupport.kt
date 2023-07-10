@@ -65,21 +65,25 @@ class ParadoxInScriptValueExpressionParameterSupport : ParadoxDefinitionParamete
         if(!expressionElementConfig.expression.type.isValueFieldType()) return null
         val textRange = TextRange.create(0, text.length)
         val configGroup = expressionElementConfig.info.configGroup
-        val isKey = expressionElement is ParadoxScriptPropertyKey
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup) ?: return null
         val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
-        val rangeInElement = scriptValueExpression.scriptValueNode.rangeInExpression //text range of script value name
         val definitionName = scriptValueExpression.scriptValueNode.text.takeIfNotEmpty() ?: return null
         if(definitionName.isParameterized()) return null //skip if context name is parameterized
-        val expressionElementOffset = if(completionOffset != -1) expressionElement.startOffset else -1
-        val argumentNames = scriptValueExpression.parameterNodes.mapNotNullTo(mutableSetOf()) p@{ 
-            if(completionOffset != -1 && completionOffset in it.rangeInExpression.shiftRight(expressionElementOffset)) return@p null
-            it.text.takeIfNotEmpty()
-        }
         val definitionTypes = listOf("script_value")
+        val contextName = definitionName
+        val argumentNames = mutableSetOf<String>()
+        val contextNameRange = scriptValueExpression.scriptValueNode.rangeInExpression //text range of script value name
+        val argumentRanges = mutableListOf<Tuple3<String, TextRange, TextRange?>>()
+        val expressionElementOffset = expressionElement.startOffset
+        scriptValueExpression.argumentNodes.forEach f@{ (nameNode, valueNode) ->
+            if(completionOffset != -1 && completionOffset in nameNode.rangeInExpression.shiftRight(expressionElementOffset)) return@f
+            val argumentName = nameNode.text
+            argumentNames.add(argumentName)
+            argumentRanges.add(tupleOf(argumentName, nameNode.rangeInExpression, valueNode?.rangeInExpression))
+        }
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
-        val result = ParadoxParameterContextReferenceInfo(expressionElement.createPointer(), rangeInElement, definitionName, argumentNames, gameType, project)
+        val result = ParadoxParameterContextReferenceInfo(expressionElement.createPointer(), contextName, argumentNames, contextNameRange, argumentRanges, gameType, project)
         result.putUserData(definitionNameKey, definitionName)
         result.putUserData(definitionTypesKey, definitionTypes)
         return result
