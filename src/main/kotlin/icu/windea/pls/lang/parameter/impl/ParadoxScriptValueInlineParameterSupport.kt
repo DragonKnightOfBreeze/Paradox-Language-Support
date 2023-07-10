@@ -1,10 +1,13 @@
 package icu.windea.pls.lang.parameter.impl
 
+import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icons.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
@@ -72,9 +75,10 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxDefinitionParameterSuppo
         val argumentNames = mutableSetOf<String>()
         val contextNameRange = scriptValueExpression.scriptValueNode.rangeInExpression //text range of script value name
         val expressionElementOffset = expressionElement.startOffset
-        scriptValueExpression.argumentNodes.forEach f@{ (nameNode, valueNode) ->
-            if(completionOffset != -1 && completionOffset in nameNode.rangeInExpression.shiftRight(expressionElementOffset)) return@f
-            val argumentName = nameNode.text
+        scriptValueExpression.nodes.forEach f@{ 
+            if(it !is ParadoxScriptValueArgumentExpressionNode) return@f
+            if(completionOffset != -1 && completionOffset in it.rangeInExpression.shiftRight(expressionElementOffset)) return@f
+            val argumentName = it.text
             argumentNames.add(argumentName)
         }
         val gameType = configGroup.gameType ?: return null
@@ -86,23 +90,34 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxDefinitionParameterSuppo
     }
     
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
-        //TODO 1.1.3
-        return null
-        
-        ////extraArgs: argumentNode
-        //val argumentNode = extraArgs.getOrNull(0)?.castOrNull<ParadoxScriptValueArgumentExpressionNode>() ?: return null
-        //val name = argumentNode.text
-        //val definitionName = argumentNode.scriptValueNode?.text ?: return null
-        //if(definitionName.isParameterized()) return null //skip if context name is parameterized
-        //val configGroup = argumentNode.configGroup
-        //val contextKey = "definition@$definitionName: script_value"
-        //val definitionTypes = listOf("script_value")
-        //val readWriteAccess = ReadWriteAccessDetector.Access.Write
-        //val gameType = configGroup.gameType ?: return null
-        //val project = configGroup.project
-        //val result = ParadoxParameterElement(element, name, definitionName, contextKey, readWriteAccess, gameType, project)
-        //result.putUserData(definitionNameKey, definitionName)
-        //result.putUserData(definitionTypesKey, definitionTypes)
-        //return result
+        if(rangeInElement == null) return null
+        if(config !is CwtMemberConfig<*>) return null
+        if(!config.expression.type.isScopeFieldType()) return null
+        val expression = element.text.takeIf { it.contains("value:") } ?: return null
+        val range = TextRange.create(0, expression.length)
+        val configGroup = config.info.configGroup
+        val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression, range, configGroup) ?: return null
+        val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
+        val scriptValueNode = scriptValueExpression.scriptValueNode ?: return null
+        val definitionName = scriptValueNode.text ?: return null
+        if(definitionName.isParameterized()) return null //skip if context name is parameterized
+        val definitionTypes = listOf("script_value")
+        val argumentNode = scriptValueExpression.nodes.find f@{
+            if(it !is ParadoxScriptValueArgumentExpressionNode) return@f false
+            if(it.rangeInExpression != rangeInElement) return@f false
+            true
+        } as? ParadoxScriptValueArgumentExpressionNode ?: return null
+        val name = argumentNode.text
+        val contextName = definitionName
+        val contextIcon = PlsIcons.Definition
+        val key = "definition@$definitionName: script_value"
+        val rangeInParent = rangeInElement
+        val readWriteAccess = ReadWriteAccessDetector.Access.Write
+        val gameType = configGroup.gameType ?: return null
+        val project = configGroup.project
+        val result = ParadoxParameterElement(element, name, contextName, contextIcon, key, rangeInParent, readWriteAccess, gameType, project)
+        result.putUserData(definitionNameKey, definitionName)
+        result.putUserData(definitionTypesKey, definitionTypes)
+        return result
     }
 }
