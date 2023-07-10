@@ -313,9 +313,9 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, INLINE_MATH_PARAMETER, "<inline math parameter>");
     r = consumeToken(b, PARAMETER_START);
-    p = r; // pin = 1
-    r = r && report_error_(b, doInlineMathParameter(b, l + 1));
-    r = p && report_error_(b, consumeToken(b, PARAMETER_TOKEN)) && r;
+    r = r && doInlineMathParameter(b, l + 1);
+    p = r; // pin = 2
+    r = r && report_error_(b, consumeToken(b, PARAMETER_TOKEN));
     r = p && report_error_(b, inline_math_parameter_3(b, l + 1)) && r;
     r = p && consumeToken(b, PARAMETER_END) && r;
     exit_section_(b, l, m, r, p, inline_math_parameter_auto_recover_);
@@ -418,9 +418,9 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, PARAMETER, "<parameter>");
     r = consumeToken(b, PARAMETER_START);
-    p = r; // pin = 1
-    r = r && report_error_(b, doParameter(b, l + 1));
-    r = p && report_error_(b, consumeToken(b, PARAMETER_TOKEN)) && r;
+    r = r && doParameter(b, l + 1);
+    p = r; // pin = 2
+    r = r && report_error_(b, consumeToken(b, PARAMETER_TOKEN));
     r = p && report_error_(b, parameter_3(b, l + 1)) && r;
     r = p && consumeToken(b, PARAMETER_END) && r;
     exit_section_(b, l, m, r, p, parameter_auto_recover_);

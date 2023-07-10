@@ -92,7 +92,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxDefinitionParameterSuppo
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
         if(rangeInElement == null) return null
         if(config !is CwtMemberConfig<*>) return null
-        if(!config.expression.type.isScopeFieldType()) return null
+        if(!config.expression.type.isValueFieldType()) return null
         val expression = element.text.takeIf { it.contains("value:") } ?: return null
         val range = TextRange.create(0, expression.length)
         val configGroup = config.info.configGroup

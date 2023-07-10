@@ -60,7 +60,6 @@
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptEnumValueExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptModifierExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptParameterExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptParameterValueExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptLocalisationParameterExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptAliasNameExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.impl.ParadoxScriptConstantExpressionSupport"/>

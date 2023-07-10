@@ -5,19 +5,15 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.config.impl.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.model.*
 
 /**
- * 用于为脚本参数提供推断的CWT规则。
- *
- * 如果推断结果有多个且互不兼容，认为推断结果存在冲突，最终使用的CWT规则会是null。
+ * 用于为脚本参数提供推断的CWT规则上下文。
  * 
- * 如过参数值是用引号括起的，可能需要通过预言注入推断CWT规则文件的上下文。
+ * 基于语言注入功能为参数值对应的脚本片段提供高级语言功能。
  *
- * @see ParadoxScriptInjector
- * @see ParadoxParameterValueConfigContextProvider
+ * @see icu.windea.pls.lang.config.impl.ParadoxParameterValueConfigContextProvider
  */
 @WithGameTypeEP
 interface ParadoxParameterInferredConfigProvider {
