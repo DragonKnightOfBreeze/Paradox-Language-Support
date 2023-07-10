@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.*
 /**
  * @see icu.windea.pls.core.expression.nodes.ParadoxScriptValueArgumentExpressionNode
  */
-class ParadoxInScriptValueExpressionParameterSupport : ParadoxDefinitionParameterSupport() {
+class ParadoxScriptValueInlineParameterSupport : ParadoxDefinitionParameterSupport() {
     override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
         var expressionElement: ParadoxScriptStringExpressionElement? = null
         var text: String? = null
