@@ -78,7 +78,6 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val contextName = expression
         val argumentNames = mutableSetOf<String>()
         val contextNameRange = contextReferenceElement.propertyKey.textRangeInParent
-        val argumentRanges = mutableListOf<Tuple3<String, TextRange, TextRange?>>()
         val startOffset = contextReferenceElement.startOffset
         contextReferenceElement.block?.processProperty p@{
             if(completionOffset != -1 && completionOffset in it.textRange) return@p true
@@ -87,12 +86,11 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
             val argumentName = k.name
             if(argumentName == "script") return@p true //hardcoded
             argumentNames.add(argumentName)
-            argumentRanges.add(tupleOf(argumentName, k.textRange.shiftLeft(startOffset), v?.textRange?.shiftLeft(startOffset)))
             true
         }
         val gameType = inlineConfig.info.configGroup.gameType ?: return null
         val project = inlineConfig.info.configGroup.project
-        val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(), contextName, argumentNames, contextNameRange, argumentRanges, gameType, project)
+        val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(), contextName, argumentNames, contextNameRange, gameType, project)
         info.putUserData(inlineScriptExpressionKey, expression)
         return info
     }

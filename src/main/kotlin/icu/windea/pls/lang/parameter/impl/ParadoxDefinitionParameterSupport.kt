@@ -82,20 +82,17 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val contextName = definitionName
         val argumentNames = mutableSetOf<String>()
         val contextNameRange = contextReferenceElement.propertyKey.textRangeInParent
-        val argumentRanges = mutableListOf<Tuple3<String, TextRange, TextRange?>>()
         val startOffset = contextReferenceElement.startOffset
         contextReferenceElement.block?.processProperty p@{
             if(completionOffset != -1 && completionOffset in it.textRange) return@p true
             val k = it.propertyKey
-            val v = it.propertyValue
             val argumentName = k.name
             argumentNames.add(argumentName)
-            argumentRanges.add(tupleOf(argumentName, k.textRange.shiftLeft(startOffset), v?.textRange?.shiftLeft(startOffset)))
             true
         }
         val gameType = contextConfig.info.configGroup.gameType ?: return null
         val project = contextConfig.info.configGroup.project
-        val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(), contextName, argumentNames, contextNameRange, argumentRanges, gameType, project)
+        val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(), contextName, argumentNames, contextNameRange, gameType, project)
         info.putUserData(definitionNameKey, definitionName)
         info.putUserData(definitionTypesKey, definitionTypes)
         return info

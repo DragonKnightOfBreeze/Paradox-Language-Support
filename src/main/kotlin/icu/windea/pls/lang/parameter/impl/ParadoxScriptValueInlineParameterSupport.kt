@@ -71,20 +71,18 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxDefinitionParameterSuppo
         val contextName = definitionName
         val argumentNames = mutableSetOf<String>()
         val contextNameRange = scriptValueExpression.scriptValueNode.rangeInExpression //text range of script value name
-        val argumentRanges = mutableListOf<Tuple3<String, TextRange, TextRange?>>()
         val expressionElementOffset = expressionElement.startOffset
         scriptValueExpression.argumentNodes.forEach f@{ (nameNode, valueNode) ->
             if(completionOffset != -1 && completionOffset in nameNode.rangeInExpression.shiftRight(expressionElementOffset)) return@f
             val argumentName = nameNode.text
             argumentNames.add(argumentName)
-            argumentRanges.add(tupleOf(argumentName, nameNode.rangeInExpression, valueNode?.rangeInExpression))
         }
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
-        val result = ParadoxParameterContextReferenceInfo(expressionElement.createPointer(), contextName, argumentNames, contextNameRange, argumentRanges, gameType, project)
-        result.putUserData(definitionNameKey, definitionName)
-        result.putUserData(definitionTypesKey, definitionTypes)
-        return result
+        val info = ParadoxParameterContextReferenceInfo(expressionElement.createPointer(), contextName, argumentNames, contextNameRange, gameType, project)
+        info.putUserData(definitionNameKey, definitionName)
+        info.putUserData(definitionTypesKey, definitionTypes)
+        return info
     }
     
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {

@@ -10,7 +10,6 @@ class ParadoxParameterContextReferenceInfo(
     val contextName: String,
     val argumentNames: Set<String>,
     val contextNameRange: TextRange,
-    val argumentRanges: List<Tuple3<String, TextRange, TextRange?>>,
     val gameType: ParadoxGameType,
     val project: Project
 ) : UserDataHolderBase() {
