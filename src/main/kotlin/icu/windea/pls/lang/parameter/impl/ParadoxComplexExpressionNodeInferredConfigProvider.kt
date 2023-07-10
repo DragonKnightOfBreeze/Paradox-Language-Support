@@ -80,7 +80,7 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
             node is ParadoxScriptValueArgumentValueExpressionNode -> {
                 val argumentNode = node.argumentNode ?: return null
                 val passingConfig = withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider.getConfig") a1@{
-                    val passingParameterElement = ParadoxParameterSupport.resolveArgument(expressionElement, node.rangeInExpression, argumentNode) ?: return null
+                    val passingParameterElement = ParadoxParameterSupport.resolveArgument(expressionElement, argumentNode.rangeInExpression, expressionConfig) ?: return null
                     withCheckRecursion(passingParameterElement.key) a2@{
                         ParadoxParameterHandler.getInferredConfig(passingParameterElement)
                     }

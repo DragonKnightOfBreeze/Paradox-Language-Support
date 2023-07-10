@@ -7,7 +7,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.impl.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.injection.*
 import icu.windea.pls.lang.model.*
 
 /**

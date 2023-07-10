@@ -17,6 +17,10 @@ interface ParadoxLocalisationParameterSupport {
     
     fun resolveParameter(element: ParadoxLocalisationPropertyReference): ParadoxParameterElement?
     
+    /**
+     * @param element 传入参数名对应的PSI。
+     * @param rangeInElement 传入参数名对应的在[element]中的文本范围。
+     */
     fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement?
     
     /**
