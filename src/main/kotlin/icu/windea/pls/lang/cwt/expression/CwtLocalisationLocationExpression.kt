@@ -65,6 +65,9 @@ class CwtLocalisationLocationExpression private constructor(
             if(config.expression.type !in validValueTypes) {
                 return ResolveResult("", null, PlsBundle.message("dynamic"))
             }
+            if(propertyValue.text.isParameterized()) {
+                return ResolveResult("", null, PlsBundle.message("parameterized"))
+            }
             if(config.expression.type == CwtDataType.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
                 return ResolveResult("", null, PlsBundle.message("inlined"))
             }
@@ -72,7 +75,7 @@ class CwtLocalisationLocationExpression private constructor(
             val localisation = ParadoxLocalisationSearch.search(name, selector).find()
             return ResolveResult(name, localisation)
         } else {
-            return null //不期望的结果
+            throw IllegalStateException() //不期望的结果
         }
     }
     
@@ -96,6 +99,9 @@ class CwtLocalisationLocationExpression private constructor(
             if(config.expression.type !in validValueTypes) {
                 return ResolveAllResult("", emptySet(), PlsBundle.message("dynamic"))
             }
+            if(propertyValue.text.isParameterized()) {
+                return ResolveAllResult("", emptySet(), PlsBundle.message("parameterized"))
+            }
             if(config.expression.type == CwtDataType.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
                 return ResolveAllResult("", emptySet(), PlsBundle.message("inlined"))
             }
@@ -103,7 +109,7 @@ class CwtLocalisationLocationExpression private constructor(
             val localisations = ParadoxLocalisationSearch.search(name, selector).findAll()
             return ResolveAllResult(name, localisations)
         } else {
-            return null //不期望的结果
+            throw IllegalStateException() //不期望的结果
         }
     }
     

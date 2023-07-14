@@ -84,6 +84,9 @@ class CwtImageLocationExpression private constructor(
             if(config.expression.type !in validValueTypes) {
                 return ResolveResult("", null, 0, PlsBundle.message("dynamic"))
             }
+            if(propertyValue.text.isParameterized()) {
+                return ResolveResult("", null, 0, PlsBundle.message("parameterized"))
+            }
             val name = propertyValue.value
             if(definitionInfo.name.equals(name, true)) return null //防止出现SOF
             val frameToUse = when {
@@ -119,7 +122,7 @@ class CwtImageLocationExpression private constructor(
                 else -> return null //解析失败或不支持
             }
         } else {
-            return null //不期望的结果
+            throw IllegalStateException() //不期望的结果
         }
     }
     
@@ -172,6 +175,9 @@ class CwtImageLocationExpression private constructor(
             if(config.expression.type !in validValueTypes) {
                 return ResolveAllResult("", emptySet(), 0, PlsBundle.message("dynamic"))
             }
+            if(propertyValue.text.isParameterized()) {
+                return ResolveAllResult("", emptySet(), 0, PlsBundle.message("parameterized"))
+            }
             val name = propertyValue.value
             if(definitionInfo.name.equals(name, true)) return null //防止出现SOF
             val frameToUse = when {
@@ -215,7 +221,7 @@ class CwtImageLocationExpression private constructor(
                 else -> return null //解析失败或不支持
             }
         } else {
-            return null //不期望的结果
+            throw IllegalStateException() //不期望的结果
         }
     }
     
