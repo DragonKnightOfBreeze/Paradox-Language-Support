@@ -98,8 +98,8 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxDefinitionParameterSuppo
         val configGroup = config.info.configGroup
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression, range, configGroup) ?: return null
         val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
-        val scriptValueNode = scriptValueExpression.scriptValueNode ?: return null
-        val definitionName = scriptValueNode.text ?: return null
+        val scriptValueNode = scriptValueExpression.scriptValueNode
+        val definitionName = scriptValueNode.text
         if(definitionName.isParameterized()) return null //skip if context name is parameterized
         val definitionTypes = listOf("script_value")
         val argumentNode = scriptValueExpression.nodes.find f@{
