@@ -60,9 +60,11 @@ class ParadoxScriptInjector : MultiHostInjector {
         val from = ParadoxParameterContextReferenceInfo.From.InContextReference
         val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(host, from = from) ?: return emptyList()
         if(contextReferenceInfo.arguments.isEmpty()) return emptyList()
-        val startOffset = host.startOffset
+        val textRange = host.textRange
         return contextReferenceInfo.arguments.mapNotNull { referenceInfo -> 
-            referenceInfo.argumentValueRange?.takeIf { it.startOffset >= startOffset }?.shiftLeft(startOffset)
+            referenceInfo.argumentValueRange
+                ?.takeIf { it.startOffset >= textRange.startOffset && it.endOffset <= textRange.endOffset }
+                ?.shiftLeft(textRange.startOffset)
         }
     }
     

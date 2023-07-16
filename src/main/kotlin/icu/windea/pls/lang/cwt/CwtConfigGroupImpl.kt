@@ -982,12 +982,12 @@ class CwtConfigGroupImpl(
             this += "scripted_effect"
             this += "scripted_trigger"
             this += "game_rule"
-            this += "on_action" //也支持，其中调用的事件的类型要匹配
         }
     }
     
     private fun bindDefinitionTypesIndirectSupportScope() {
         with(definitionTypesIndirectSupportScope) {
+            this += "on_action" //也支持，其中调用的事件的类型要匹配
             this += "event" //事件
         }
     }
