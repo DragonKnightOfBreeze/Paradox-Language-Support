@@ -11,7 +11,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.core.references.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.model.*
@@ -81,7 +81,7 @@ interface ParadoxModifierSupport {
         }
         
         fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
-            val ep = element.getUserData(ParadoxModifierHandler.supportKey) ?: return null
+            val ep = element.getUserData(Keys.support) ?: return null
             return ep.getModifierCategories(element)
             
             //val gameType = element.gameType
@@ -92,7 +92,7 @@ interface ParadoxModifierSupport {
         }
         
         fun getDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean {
-            val ep = element.getUserData(ParadoxModifierHandler.supportKey) ?: return false
+            val ep = element.getUserData(Keys.support) ?: return false
             return ep.buildDocumentationDefinition(element, builder)
             
             //val gameType = element.gameType
@@ -109,5 +109,13 @@ interface ParadoxModifierSupport {
                 ep.buildDDocumentationDefinitionForDefinition(definition, definitionInfo, builder)
             }
         }
+    }
+    
+    object Keys {
+        val support = Key.create<ParadoxModifierSupport>("paradox.modifierElement.support")
+        val modifierConfig = Key.create<CwtModifierConfig>("paradox.modifierElement.config")
+        val references = Key.create<List<ParadoxTemplateSnippetExpressionReference>>("paradox.modifierElement.references")
+        val economicCategoryInfo = Key.create<StellarisEconomicCategoryInfo>("paradox.modifierElement.economicCategoryInfo")
+        val economicCategoryModifierInfo = Key.create<StellarisEconomicCategoryModifierInfo>("paradox.modifierElement.economicCategoryModifierInfo")
     }
 }

@@ -28,13 +28,6 @@ import java.util.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxParameterHandler {
-    val supportKey = Key.create<ParadoxParameterSupport>("paradox.parameter.support")
-    val inferredConfigKey = Key.create<CwtValueConfig>("paradox.parameter.inferredConfig")
-    val inferredContextConfigsKey = Key.create<List<CwtMemberConfig<*>>>("paradox.parameter.inferredContextConfigs")
-    val parameterCacheKey = KeyWithDefaultValue.create<Cache<String, ParadoxParameterElement>>("paradox.parameter.cache") { CacheBuilder.newBuilder().buildCache() }
-    val parameterModificationTrackerKey = Key.create<ModificationTracker>("paradox.parameter.modificationTracker")
-    val parameterModificationCountKey = Key.create<Long>("paradox.parameter.modificationCount")
-    
     fun getContextInfo(context: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
         if(!ParadoxParameterSupport.isContext(context)) return null
         return CachedValuesManager.getCachedValue(context, PlsKeys.cachedParametersKey) {
@@ -166,14 +159,14 @@ object ParadoxParameterHandler {
      */
     fun getInferredConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
         val cacheKey = parameterElement.key + "@" + parameterElement.name
-        val parameterCache = selectRootFile(parameterElement.parent)?.getUserData(parameterCacheKey) ?: return null
+        val parameterCache = selectRootFile(parameterElement.parent)?.getUserData(Keys.parameterCache) ?: return null
         val cached = parameterCache.get(cacheKey)
         if(cached != null) {
-            val modificationTracker = cached.getUserData(parameterModificationTrackerKey)
+            val modificationTracker = cached.getUserData(Keys.parameterModificationTracker)
             if(modificationTracker != null) {
-                val modificationCount = cached.getUserData(parameterModificationCountKey) ?: 0
+                val modificationCount = cached.getUserData(Keys.parameterModificationCount) ?: 0
                 if(modificationCount == modificationTracker.modificationCount) {
-                    val resolved = cached.getUserData(inferredConfigKey)
+                    val resolved = cached.getUserData(Keys.inferredConfig)
                     if(resolved != null) {
                         return resolved.takeIf { it !== CwtValueConfig.EmptyConfig }
                     }
@@ -183,13 +176,13 @@ object ParadoxParameterHandler {
         
         val resolved = doGetInferredConfig(parameterElement)
         
-        val ep = parameterElement.getUserData(supportKey)
+        val ep = parameterElement.getUserData(ParadoxParameterSupport.Keys.support)
         if(ep != null) {
             val modificationTracker = ep.getModificationTracker(parameterElement)
             if(modificationTracker != null) {
-                parameterElement.putUserData(inferredConfigKey, resolved ?: CwtValueConfig.EmptyConfig)
-                parameterElement.putUserData(parameterModificationTrackerKey, modificationTracker)
-                parameterElement.putUserData(parameterModificationCountKey, modificationTracker.modificationCount)
+                parameterElement.putUserData(Keys.inferredConfig, resolved ?: CwtValueConfig.EmptyConfig)
+                parameterElement.putUserData(Keys.parameterModificationTracker, modificationTracker)
+                parameterElement.putUserData(Keys.parameterModificationCount, modificationTracker.modificationCount)
                 parameterCache.put(cacheKey, parameterElement)
             }
         }
@@ -239,14 +232,14 @@ object ParadoxParameterHandler {
      */
     fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
         val cacheKey = parameterElement.key + "@" + parameterElement.name
-        val parameterCache = selectRootFile(parameterElement.parent)?.getUserData(parameterCacheKey) ?: return emptyList()
+        val parameterCache = selectRootFile(parameterElement.parent)?.getUserData(Keys.parameterCache) ?: return emptyList()
         val cached = parameterCache.get(cacheKey)
         if(cached != null) {
-            val modificationTracker = cached.getUserData(parameterModificationTrackerKey)
+            val modificationTracker = cached.getUserData(Keys.parameterModificationTracker)
             if(modificationTracker != null) {
-                val modificationCount = cached.getUserData(parameterModificationCountKey) ?: 0
+                val modificationCount = cached.getUserData(Keys.parameterModificationCount) ?: 0
                 if(modificationCount == modificationTracker.modificationCount) {
-                    val resolved = cached.getUserData(inferredContextConfigsKey)
+                    val resolved = cached.getUserData(Keys.inferredContextConfigs)
                     if(resolved != null) {
                         return resolved
                     }
@@ -260,13 +253,13 @@ object ParadoxParameterHandler {
             listOf(CwtValueConfig.EmptyConfig)
         }
         
-        val ep = parameterElement.getUserData(supportKey)
+        val ep = parameterElement.getUserData(ParadoxParameterSupport.Keys.support)
         if(ep != null) {
             val modificationTracker = ep.getModificationTracker(parameterElement)
             if(modificationTracker != null) {
-                parameterElement.putUserData(inferredContextConfigsKey, resolved)
-                parameterElement.putUserData(parameterModificationTrackerKey, modificationTracker)
-                parameterElement.putUserData(parameterModificationCountKey, modificationTracker.modificationCount)
+                parameterElement.putUserData(Keys.inferredContextConfigs, resolved)
+                parameterElement.putUserData(Keys.parameterModificationTracker, modificationTracker)
+                parameterElement.putUserData(Keys.parameterModificationCount, modificationTracker.modificationCount)
                 parameterCache.put(cacheKey, parameterElement)
             }
         }
@@ -327,5 +320,13 @@ object ParadoxParameterHandler {
             CwtDataType.Any, CwtDataType.Other -> true
             else -> false
         }
+    }
+    
+    object Keys {
+        val inferredConfig = Key.create<CwtValueConfig>("paradox.parameter.inferredConfig")
+        val inferredContextConfigs = Key.create<List<CwtMemberConfig<*>>>("paradox.parameter.inferredContextConfigs")
+        val parameterCache = KeyWithDefaultValue.create<Cache<String, ParadoxParameterElement>>("paradox.parameter.cache") { CacheBuilder.newBuilder().buildCache() }
+        val parameterModificationTracker = Key.create<ModificationTracker>("paradox.parameter.modificationTracker")
+        val parameterModificationCount = Key.create<Long>("paradox.parameter.modificationCount")
     }
 }

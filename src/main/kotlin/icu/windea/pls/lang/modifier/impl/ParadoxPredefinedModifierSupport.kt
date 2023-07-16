@@ -31,8 +31,8 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return null
         val resolved = ParadoxModifierElement(element, modifierName, gameType, project)
-        resolved.putUserData(ParadoxModifierHandler.modifierConfigKey, modifierConfig)
-        resolved.putUserData(ParadoxModifierHandler.supportKey, this)
+        resolved.putUserData(ParadoxModifierSupport.Keys.modifierConfig, modifierConfig)
+        resolved.putUserData(ParadoxModifierSupport.Keys.support, this)
         return resolved
     }
     
@@ -77,7 +77,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
     }
     
     override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
-        return element.getUserData(ParadoxModifierHandler.modifierConfigKey)?.categoryConfigMap
+        return element.getUserData(ParadoxModifierSupport.Keys.modifierConfig)?.categoryConfigMap
     }
     
     //这里需要返回null，以便尝试适用接下来的扩展点，如果全部无法适用，会使用默认的处理逻辑

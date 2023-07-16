@@ -18,10 +18,6 @@ import icu.windea.pls.script.psi.*
 
 open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     companion object {
-        @JvmField val containingContextKey = Key.create<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>("paradox.parameterElement.containingContext")
-        @JvmField val containingContextReferenceKey = Key.create<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>("paradox.parameterElement.contextReference")
-        @JvmField val definitionNameKey = Key.create<String>("paradox.parameterElement.definitionName")
-        @JvmField val definitionTypesKey = Key.create<List<String>>("paradox.parameterElement.definitionTypes")
         @JvmField val modificationTrackerKey = Key.create<ModificationTracker>("paradox.definition.parameter.modificationTracker")
     }
     
@@ -93,8 +89,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val gameType = contextConfig.info.configGroup.gameType ?: return null
         val project = contextConfig.info.configGroup.project
         val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(), contextName, argumentNames, contextNameRange, gameType, project)
-        info.putUserData(definitionNameKey, definitionName)
-        info.putUserData(definitionTypesKey, definitionTypes)
+        info.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
+        info.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
         return info
     }
     
@@ -121,11 +117,15 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val gameType = definitionInfo.gameType
         val project = definitionInfo.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, key, rangeInParent, readWriteAccess, gameType, project)
-        result.putUserData(containingContextKey, context.createPointer())
-        result.putUserData(definitionNameKey, definitionName)
-        result.putUserData(definitionTypesKey, definitionTypes)
-        result.putUserData(ParadoxParameterHandler.supportKey, this)
+        result.putUserData(ParadoxParameterSupport.Keys.containingContext, context.createPointer())
+        result.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
+        result.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
+        result.putUserData(ParadoxParameterSupport.Keys.support, this)
         return result
+    }
+    
+    override fun resolveArguments(element: ParadoxScriptExpressionElement): List<ParadoxParameterElement>? {
+        TODO("Not yet implemented")
     }
     
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
@@ -149,23 +149,15 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val gameType = config.info.configGroup.gameType ?: return null
         val project = config.info.configGroup.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, key, rangeInParent, readWriteAccess, gameType, project)
-        result.putUserData(definitionNameKey, definitionName)
-        result.putUserData(definitionTypesKey, definitionTypes)
-        result.putUserData(ParadoxParameterHandler.supportKey, this)
+        result.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
+        result.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
+        result.putUserData(ParadoxParameterSupport.Keys.support, this)
         return result
     }
     
-    override fun getContainingContext(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {
-        return element.getUserData(containingContextKey)?.element
-    }
-    
-    override fun getContainingContextReference(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {
-        return element.getUserData(containingContextReferenceKey)?.element
-    }
-    
     override fun processContext(element: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-        val definitionName = element.getUserData(definitionNameKey) ?: return false
-        val definitionTypes = element.getUserData(definitionTypesKey) ?: return false
+        val definitionName = element.getUserData(ParadoxParameterSupport.Keys.definitionName) ?: return false
+        val definitionTypes = element.getUserData(ParadoxParameterSupport.Keys.definitionTypes) ?: return false
         if(definitionName.isParameterized()) return false //skip if context name is parameterized
         val definitionType = definitionTypes.joinToString(".")
         val project = element.project
@@ -175,8 +167,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
     
     override fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-        val definitionName = contextReferenceInfo.getUserData(definitionNameKey) ?: return false
-        val definitionTypes = contextReferenceInfo.getUserData(definitionTypesKey) ?: return false
+        val definitionName = contextReferenceInfo.getUserData(ParadoxParameterSupport.Keys.definitionName) ?: return false
+        val definitionTypes = contextReferenceInfo.getUserData(ParadoxParameterSupport.Keys.definitionTypes) ?: return false
         if(definitionName.isParameterized()) return false //skip if context name is parameterized
         val definitionType = definitionTypes.joinToString(".")
         val project = contextReferenceInfo.project
@@ -205,8 +197,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
     
     override fun buildDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {
-        val definitionName = element.getUserData(definitionNameKey) ?: return false
-        val definitionType = element.getUserData(definitionTypesKey) ?: return false
+        val definitionName = element.getUserData(ParadoxParameterSupport.Keys.definitionName) ?: return false
+        val definitionType = element.getUserData(ParadoxParameterSupport.Keys.definitionTypes) ?: return false
         if(definitionType.isEmpty()) return false
         
         //不加上文件信息

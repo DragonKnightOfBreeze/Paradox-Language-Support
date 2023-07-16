@@ -4,12 +4,13 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.injected.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 
 /**
  * @see ParadoxScriptPropertyKey
  * @see ParadoxScriptString
  */
-interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement, ContributedReferenceHost, PsiLanguageInjectionHost {
+interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement, ContributedReferenceHost, ParadoxLanguageInjectionHost {
     override fun getName(): String
     
     override val value: String
@@ -17,7 +18,7 @@ interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement,
     override fun setValue(value: String): ParadoxScriptStringExpressionElement
     
     override fun isValidHost(): Boolean {
-        return text.let { it.isLeftQuoted() && it.isRightQuoted() }
+        return true
     }
     
     override fun updateText(text: String): ParadoxScriptStringExpressionElement {

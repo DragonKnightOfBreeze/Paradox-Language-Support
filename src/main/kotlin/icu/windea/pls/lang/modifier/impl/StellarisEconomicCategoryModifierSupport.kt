@@ -26,9 +26,6 @@ import icu.windea.pls.script.psi.*
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
     companion object {
-        @JvmField val economicCategoryInfoKey = Key.create<StellarisEconomicCategoryInfo>("paradox.modifierElement.economicCategoryInfo")
-        @JvmField val economicCategoryModifierInfoKey = Key.create<StellarisEconomicCategoryModifierInfo>("paradox.modifierElement.economicCategoryModifierInfo")
-        
         const val economicCategoriesDirPath = "common/economic_categories"
         const val economicCategoriesPathExpression = "common/economic_categories/,.txt"
     }
@@ -73,9 +70,9 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         }
         if(economicCategoryInfo == null || economicCategoryModifierInfo == null) return null
         val resolved = ParadoxModifierElement(element, modifierName, gameType, project)
-        resolved.putUserData(economicCategoryInfoKey, economicCategoryInfo)
-        resolved.putUserData(economicCategoryModifierInfoKey, economicCategoryModifierInfo)
-        resolved.putUserData(ParadoxModifierHandler.supportKey, this)
+        resolved.putUserData(ParadoxModifierSupport.Keys.economicCategoryInfo, economicCategoryInfo)
+        resolved.putUserData(ParadoxModifierSupport.Keys.economicCategoryModifierInfo, economicCategoryModifierInfo)
+        resolved.putUserData(ParadoxModifierSupport.Keys.support, this)
         return resolved
     }
     
@@ -125,7 +122,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
     }
     
     override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
-        val economicCategoryInfo = element.getUserData(economicCategoryInfoKey) ?: return null
+        val economicCategoryInfo = element.getUserData(ParadoxModifierSupport.Keys.economicCategoryInfo) ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory //may be null
         val configGroup = getCwtConfig(element.project).get(element.gameType)
         return StellarisEconomicCategoryHandler.resolveModifierCategory(modifierCategory, configGroup)
@@ -133,8 +130,8 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
     
     override fun buildDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean = with(builder) {
         val gameType = element.gameType
-        val economicCategoryInfo = element.getUserData(economicCategoryInfoKey) ?: return false
-        val modifierInfo = element.getUserData(economicCategoryModifierInfoKey) ?: return false
+        val economicCategoryInfo = element.getUserData(ParadoxModifierSupport.Keys.economicCategoryInfo) ?: return false
+        val modifierInfo = element.getUserData(ParadoxModifierSupport.Keys.economicCategoryModifierInfo) ?: return false
         
         //加上名字
         val name = element.name

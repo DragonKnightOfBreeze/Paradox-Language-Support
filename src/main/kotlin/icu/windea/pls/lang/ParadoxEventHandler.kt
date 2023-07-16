@@ -72,19 +72,19 @@ object ParadoxEventHandler {
      */
     fun getTypes(project: Project, gameType: ParadoxGameType): Set<String> {
         val eventConfig = getCwtConfig(project).get(gameType).types["event"] ?: return emptySet()
-        return eventConfig.config.getOrPutUserData(CwtMemberConfig.Keys.eventEventTypesKey) {
+        return eventConfig.config.getOrPutUserData(CwtMemberConfig.Keys.eventEventTypes) {
             eventConfig.subtypes.mapNotNullTo(mutableSetOf()) { (k, v) -> if(v.config.findOption("group")?.stringValue == "event_type") k else null }
         }
     }
     
     fun getType(definitionInfo: ParadoxDefinitionInfo): String? {
-        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventTypeKey, "") {
+        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventType, "") {
             definitionInfo.subtypeConfigs.find { it.config.findOption("group")?.stringValue == "event_type" }?.name
         }
     }
     
     fun getScope(definitionInfo: ParadoxDefinitionInfo): String? {
-        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventScopeKey) {
+        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventScope) {
             definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.pushScope } ?: ParadoxScopeHandler.anyScopeId
         }
     }
@@ -140,6 +140,6 @@ object ParadoxEventHandler {
 }
 
 val PlsKeys.cachedEventInvocationsKey by lazy { Key.create<CachedValue<Set<String>>>("paradox.cached.event.invocations") }
-val CwtMemberConfig.Keys.eventEventTypesKey by lazy { Key.create<Set<String>>("paradox.event.types") }
-val ParadoxDefinitionInfo.Keys.eventEventTypeKey by lazy { Key.create<String>("paradox.event.type") }
-val ParadoxDefinitionInfo.Keys.eventEventScopeKey by lazy { Key.create<String>("paradox.event.scope") }
+val CwtMemberConfig.Keys.eventEventTypes by lazy { Key.create<Set<String>>("paradox.event.types") }
+val ParadoxDefinitionInfo.Keys.eventEventType by lazy { Key.create<String>("paradox.event.type") }
+val ParadoxDefinitionInfo.Keys.eventEventScope by lazy { Key.create<String>("paradox.event.scope") }

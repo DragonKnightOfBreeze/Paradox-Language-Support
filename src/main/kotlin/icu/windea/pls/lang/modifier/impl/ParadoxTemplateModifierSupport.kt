@@ -24,11 +24,6 @@ import icu.windea.pls.script.psi.*
  * 通过模版表达式生成修正。（如：`job_<job>_add` -> `job_researcher_add`）
  */
 class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
-    companion object {
-        @JvmField
-        val referencesKey = Key.create<List<ParadoxTemplateSnippetExpressionReference>>("paradox.modifierElement.references")
-    }
-    
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         return configGroup.generatedModifiers.values.any { config ->
@@ -50,7 +45,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         if(modifierConfig == null) return null
         val resolved = ParadoxModifierElement(element, modifierName, gameType, project)
         resolved.putUserData(ParadoxModifierHandler.modifierConfigKey, modifierConfig)
-        resolved.putUserData(referencesKey, references)
+        resolved.putUserData(ParadoxModifierSupport.Keys.references, references)
         resolved.putUserData(ParadoxModifierHandler.supportKey, this)
         return resolved
     }
@@ -105,7 +100,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     
     override fun buildDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean = with(builder) {
         val modifierConfig = element.getUserData(ParadoxModifierHandler.modifierConfigKey) ?: return false
-        val references = element.getUserData(referencesKey) ?: return false
+        val references = element.getUserData(ParadoxModifierSupport.Keys.references) ?: return false
         
         //加上名字
         val configGroup = modifierConfig.info.configGroup

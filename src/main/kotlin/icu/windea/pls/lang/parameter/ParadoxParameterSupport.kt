@@ -18,6 +18,10 @@ interface ParadoxParameterSupport {
     
     fun findContext(element: PsiElement): ParadoxScriptDefinitionElement?
     
+    fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement?
+    
+    fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement?
+    
     /**
      * 向上查找参数的上下文引用信息。
      *
@@ -28,9 +32,11 @@ interface ParadoxParameterSupport {
      */
     fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo?
     
-    fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement?
-    
-    fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement?
+    /**
+     * @param element 传入参数名对应的PSI。此PSI中可能有多个片段需要被解析为传入参数。
+     * @return 返回null则表示此扩展点不适用。
+     */
+    fun resolveArguments(element: ParadoxScriptExpressionElement): List<ParadoxParameterElement>? 
     
     /**
      * @param element 传入参数名对应的PSI。
@@ -38,11 +44,7 @@ interface ParadoxParameterSupport {
      * @param config [element]对应的CWT规则。
      */
     fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement?
-    
-    fun getContainingContext(element: ParadoxParameterElement): ParadoxScriptDefinitionElement?
-    
-    fun getContainingContextReference(element: ParadoxParameterElement): ParadoxScriptDefinitionElement?
-    
+
     /**
      * @param onlyMostRelevant 只获取最相关的上下文。
      * @return 此扩展点是否适用。
@@ -56,7 +58,7 @@ interface ParadoxParameterSupport {
     fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
     
     /**
-     * 如果返回值不为null，表示推断得到的CWT规则可以通过一定条件进行缓存。
+     * 如果返回值不为null，则表示推断得到的CWT规则可以通过一定条件进行缓存。
      */
     fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker? = null
     
@@ -101,18 +103,6 @@ interface ParadoxParameterSupport {
             }
         }
         
-        fun getContainingContext(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-                ep.getContainingContext(element)
-            }
-        }
-        
-        fun getContainingContextReference(element: ParadoxParameterElement): ParadoxScriptDefinitionElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-                ep.getContainingContextReference(element)
-            }
-        }
-        
         fun processContext(element: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
             return EP_NAME.extensionList.any { ep ->
                 ep.processContext(element, onlyMostRelevant, processor)
@@ -130,5 +120,14 @@ interface ParadoxParameterSupport {
                 ep.buildDocumentationDefinition(element, builder)
             }
         }
+    }
+    
+    object Keys {
+        val support = Key.create<ParadoxParameterSupport>("paradox.parameterElement.support")
+        val containingContext = Key.create<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>("paradox.parameterElement.containingContext")
+        val containingContextReference = Key.create<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>("paradox.parameterElement.contextReference")
+        val definitionName = Key.create<String>("paradox.parameterElement.definitionName")
+        val definitionTypes = Key.create<List<String>>("paradox.parameterElement.definitionTypes")
+        val inlineScriptExpression = Key.create<String>("paradox.parameterElement.inlineScriptExpression")
     }
 }

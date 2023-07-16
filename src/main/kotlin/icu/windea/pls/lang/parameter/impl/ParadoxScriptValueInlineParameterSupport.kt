@@ -12,12 +12,22 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*
 
 /**
+ * @see icu.windea.pls.core.expression.ParadoxScriptValueExpression
  * @see icu.windea.pls.core.expression.nodes.ParadoxScriptValueArgumentExpressionNode
  */
-class ParadoxScriptValueInlineParameterSupport : ParadoxDefinitionParameterSupport() {
+class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
+    override fun isContext(element: ParadoxScriptDefinitionElement) = false
+    
+    override fun findContext(element: PsiElement) = null
+    
+    override fun resolveParameter(element: ParadoxParameter) = null
+    
+    override fun resolveConditionParameter(element: ParadoxConditionParameter) = null
+    
     override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
         var expressionElement: ParadoxScriptStringExpressionElement? = null
         var text: String? = null
@@ -84,9 +94,13 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxDefinitionParameterSuppo
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
         val info = ParadoxParameterContextReferenceInfo(expressionElement.createPointer(), contextName, argumentNames, contextNameRange, gameType, project)
-        info.putUserData(definitionNameKey, definitionName)
-        info.putUserData(definitionTypesKey, definitionTypes)
+        info.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
+        info.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
         return info
+    }
+    
+    override fun resolveArguments(element: ParadoxScriptExpressionElement): List<ParadoxParameterElement>? {
+        TODO("Not yet implemented")
     }
     
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
@@ -116,8 +130,12 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxDefinitionParameterSuppo
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, key, rangeInParent, readWriteAccess, gameType, project)
-        result.putUserData(definitionNameKey, definitionName)
-        result.putUserData(definitionTypesKey, definitionTypes)
+        result.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
+        result.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
         return result
     }
+    
+    override fun processContext(element: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean) = false
+    
+    override fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean) = false
 }
