@@ -15,6 +15,7 @@ import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.inherit.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.modifier.*
+import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import icu.windea.pls.tool.localisation.*
@@ -304,7 +305,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         if(!getSettings().documentation.showParameters) return
         
         if(sections == null) return
-        val parameterContextInfo = ParadoxParameterHandler.getContextInfo(element) ?: return
+        val parameterContextInfo = ParadoxParameterSupport.getContextInfo(element) ?: return
         if(parameterContextInfo.parameters.isEmpty()) return //ignore
         val parametersText = buildString {
             var isFirst = true

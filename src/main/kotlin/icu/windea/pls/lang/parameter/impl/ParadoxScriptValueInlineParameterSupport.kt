@@ -18,6 +18,7 @@ import icu.windea.pls.script.psi.*
 /**
  * @see icu.windea.pls.core.expression.ParadoxScriptValueExpression
  * @see icu.windea.pls.core.expression.nodes.ParadoxScriptValueArgumentExpressionNode
+ * @see icu.windea.pls.core.expression.nodes.ParadoxScriptValueArgumentValueExpressionNode
  */
 class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
     override fun isContext(element: ParadoxScriptDefinitionElement) = false
@@ -27,6 +28,8 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
     override fun resolveParameter(element: ParadoxParameter) = null
     
     override fun resolveConditionParameter(element: ParadoxConditionParameter) = null
+    
+    override fun getContextInfo(element: ParadoxScriptDefinitionElement) = null
     
     override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
         var expressionElement: ParadoxScriptStringExpressionElement? = null
@@ -74,9 +77,9 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
             }
         }
         if(!expressionElementConfig.expression.type.isValueFieldType()) return null
-        val textRange = TextRange.create(0, text.length)
+        val range = TextRange.create(0, text.length)
         val configGroup = expressionElementConfig.info.configGroup
-        val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup) ?: return null
+        val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, range, configGroup) ?: return null
         val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
         val definitionName = scriptValueExpression.scriptValueNode.text.takeIfNotEmpty() ?: return null
         if(definitionName.isParameterized()) return null //skip if context name is parameterized
@@ -99,18 +102,16 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         return info
     }
     
-    override fun resolveArguments(element: ParadoxScriptExpressionElement): List<ParadoxParameterElement>? {
-        TODO("Not yet implemented")
-    }
-    
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
         if(rangeInElement == null) return null
         if(config !is CwtMemberConfig<*>) return null
         if(!config.expression.type.isValueFieldType()) return null
-        val expression = element.text.takeIf { it.contains("value:") } ?: return null
-        val range = TextRange.create(0, expression.length)
+        val text = element.text
+        if(text.isLeftQuoted()) return null
+        if(!text.contains("value:")) return null //快速判断
+        val range = TextRange.create(0, text.length)
         val configGroup = config.info.configGroup
-        val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression, range, configGroup) ?: return null
+        val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, range, configGroup) ?: return null
         val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
         val scriptValueNode = scriptValueExpression.scriptValueNode
         val definitionName = scriptValueNode.text

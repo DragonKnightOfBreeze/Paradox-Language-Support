@@ -28,20 +28,24 @@ import java.util.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxParameterHandler {
-    fun getContextInfo(context: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
-        if(!ParadoxParameterSupport.isContext(context)) return null
-        return CachedValuesManager.getCachedValue(context, PlsKeys.cachedParameters) {
-            val value = doGetContextInfo(context)
-            CachedValueProvider.Result(value, context)
+    /**
+     * 得到[element]对应的参数上下文信息。
+     * 
+     * 这个方法不会判断[element]是否是合法的参数上下文，如果需要，考虑使用[ParadoxParameterSupport.getContextInfo]。
+     */
+    fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParameterContextInfo) {
+            val value = doGetContextInfo(element)
+            CachedValueProvider.Result(value, element)
         }
     }
     
-    private fun doGetContextInfo(context: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
-        val file = context.containingFile
+    private fun doGetContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
+        val file = element.containingFile
         val gameType = selectGameType(file) ?: return null
         val parameters = sortedMapOf<String, MutableList<ParadoxParameterInfo>>() //按名字进行排序
         val fileConditionStack = LinkedList<ReversibleValue<String>>()
-        context.accept(object : PsiRecursiveElementWalkingVisitor() {
+        element.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxParameter) visitParameter(element)
                 if(element is ParadoxScriptParameterConditionExpression) visitParadoxConditionExpression(element)
@@ -90,7 +94,7 @@ object ParadoxParameterHandler {
         ProgressManager.checkCanceled()
         //向上找到参数上下文
         val parameterContext = ParadoxParameterSupport.findContext(element) ?: return
-        val parameterContextInfo = getContextInfo(parameterContext) ?: return
+        val parameterContextInfo = ParadoxParameterSupport.getContextInfo(parameterContext) ?: return
         if(parameterContextInfo.parameters.isEmpty()) return
         for((parameterName, parameterInfos) in parameterContextInfo.parameters) {
             ProgressManager.checkCanceled()
@@ -119,7 +123,7 @@ object ParadoxParameterHandler {
         val insertSeparator = context.isKey == true && context.contextElement !is ParadoxScriptPropertyKey
         ParadoxParameterSupport.processContext(element, contextReferenceInfo, true) p@{ parameterContext ->
             ProgressManager.checkCanceled()
-            val parameterContextInfo = getContextInfo(parameterContext) ?: return@p true
+            val parameterContextInfo = ParadoxParameterSupport.getContextInfo(parameterContext) ?: return@p true
             if(parameterContextInfo.parameters.isEmpty()) return@p true
             for((parameterName, parameterInfos) in parameterContextInfo.parameters) {
                 //排除已输入的
@@ -194,7 +198,7 @@ object ParadoxParameterHandler {
         var result: CwtValueConfig? = null
         ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
             ProgressManager.checkCanceled()
-            val contextInfo = getContextInfo(context) ?: return@p true
+            val contextInfo = ParadoxParameterSupport.getContextInfo(context) ?: return@p true
             val config = getInferredConfig(parameterElement.name, contextInfo)
             if(config == null) return@p true
             if(result == null) {
@@ -271,7 +275,7 @@ object ParadoxParameterHandler {
         var resultConfigs: List<CwtMemberConfig<*>>? = null
         ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
             ProgressManager.checkCanceled()
-            val contextInfo = getContextInfo(context) ?: return@p true
+            val contextInfo = ParadoxParameterSupport.getContextInfo(context) ?: return@p true
             val configs = getInferredContextConfigs(parameterElement.name, contextInfo)
             if(configs.isEmpty()) return@p true
             if(resultConfigs == null) {

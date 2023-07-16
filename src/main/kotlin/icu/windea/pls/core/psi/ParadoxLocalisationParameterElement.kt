@@ -9,22 +9,17 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.lang.parameter.*
 import java.util.*
 import javax.swing.*
 
 /**
- * 定义的参数并不存在一个真正意义上的声明处，用这个模拟。
- *
- * @property key 用于判断参数是否拥有相同的上下文。
- * @see ParadoxParameterSupport
+ * 本地化的参数并不存在一个真正意义上的声明处，用这个模拟。
+ * @see ParadoxLocalisationParameterSupport
  */
-class ParadoxParameterElement(
+class ParadoxLocalisationParameterElement(
     parent: PsiElement,
     private val name: String,
-    val contextName: String,
-    val contextIcon: Icon,
-    val key: String,
+    val localisationName: String,
     val rangeInParent: TextRange?,
     val readWriteAccess: ReadWriteAccessDetector.Access,
     val gameType: ParadoxGameType,
@@ -55,7 +50,7 @@ class ParadoxParameterElement(
     }
     
     override fun getPresentation(): ItemPresentation {
-        return ParadoxParameterElementPresentation(this)
+        return ParadoxLocalisationParameterElementPresentation(this)
     }
     
     override fun getProject(): Project {
@@ -71,15 +66,14 @@ class ParadoxParameterElement(
     }
     
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxParameterElement &&
+        return other is ParadoxLocalisationParameterElement &&
             name == other.name &&
-            key == other.key &&
+            localisationName == other.localisationName &&
             project == other.project &&
             gameType == other.gameType
     }
     
     override fun hashCode(): Int {
-        return Objects.hash(name, key, project, gameType)
+        return Objects.hash(name, localisationName, project, gameType)
     }
 }
-

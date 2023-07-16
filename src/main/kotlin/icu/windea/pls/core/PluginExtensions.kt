@@ -11,7 +11,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.nodes.*
@@ -170,9 +169,9 @@ fun PsiReference.canResolveParameter(): Boolean {
             val configExpression = this.config.expression ?: return false
             configExpression.type == CwtDataType.Parameter
         }
+        is ParadoxScriptValueArgumentExpressionNode.Reference -> true
         is ParadoxParameterPsiReference -> true
         is ParadoxConditionParameterPsiReference -> true
-        is ParadoxScriptValueArgumentExpressionNode.Reference -> true
         is ParadoxLocalisationPropertyPsiReference -> true
         else -> false
     }

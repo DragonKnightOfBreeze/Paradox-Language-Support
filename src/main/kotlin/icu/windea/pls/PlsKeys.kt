@@ -44,7 +44,7 @@ val PlsKeys.cachedScopeContext by lazy { Key.create<CachedValue<ParadoxScopeCont
 val PlsKeys.cachedTextColorInfo by lazy { Key.create<CachedValue<ParadoxTextColorInfo>>("paradox.cached.textColorInfo") }
 val PlsKeys.cachedDefineValues by lazy { Key.create<CachedValue<MutableMap<String, Any?>>>("paradox.cached.defineValues") }
 val PlsKeys.cachedColor by lazy { Key.create<CachedValue<Color>>("paradox.cached.color") }
-val PlsKeys.cachedParameters by lazy { Key.create<CachedValue<ParadoxParameterContextInfo>>("paradox.cached.parameterContextInfo") }
+val PlsKeys.cachedParameterContextInfo by lazy { Key.create<CachedValue<ParadoxParameterContextInfo>>("paradox.cached.parameterContextInfo") }
 val PlsKeys.cachedGameConceptAlias by lazy { Key.create<CachedValue<Set<String>>>("paradox.cached.gameConcept.alias") }
 
 //用于将CWT规则临时写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）

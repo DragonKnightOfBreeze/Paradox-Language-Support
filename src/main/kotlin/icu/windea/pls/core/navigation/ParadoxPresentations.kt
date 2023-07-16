@@ -16,6 +16,18 @@ class ParadoxParameterElementPresentation(
 	}
 }
 
+class ParadoxLocalisationParameterElementPresentation(
+	private val element: ParadoxLocalisationParameterElement
+): ItemPresentation{
+	override fun getIcon(unused: Boolean): Icon {
+		return element.icon
+	}
+	
+	override fun getPresentableText(): String {
+		return element.name
+	}
+}
+
 class ParadoxValueSetValueElementPresentation(
 	private val element: ParadoxValueSetValueElement
 ): ItemPresentation{

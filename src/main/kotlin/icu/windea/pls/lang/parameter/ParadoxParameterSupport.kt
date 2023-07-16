@@ -18,9 +18,7 @@ interface ParadoxParameterSupport {
     
     fun findContext(element: PsiElement): ParadoxScriptDefinitionElement?
     
-    fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement?
-    
-    fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement?
+    fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo?
     
     /**
      * 向上查找参数的上下文引用信息。
@@ -32,17 +30,10 @@ interface ParadoxParameterSupport {
      */
     fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo?
     
-    /**
-     * @param element 传入参数名对应的PSI。此PSI中可能有多个片段需要被解析为传入参数。
-     * @return 返回null则表示此扩展点不适用。
-     */
-    fun resolveArguments(element: ParadoxScriptExpressionElement): List<ParadoxParameterElement>? 
+    fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement?
     
-    /**
-     * @param element 传入参数名对应的PSI。
-     * @param rangeInElement 传入参数名对应的在[element]中的文本范围。
-     * @param config [element]对应的CWT规则。
-     */
+    fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement?
+    
     fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement?
 
     /**
@@ -77,6 +68,12 @@ interface ParadoxParameterSupport {
         
         fun findContext(element: PsiElement): ParadoxScriptDefinitionElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { it.findContext(element) }
+        }
+        
+        fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
+            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
+                ep.getContextInfo(element)
+            }
         }
         
         fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {

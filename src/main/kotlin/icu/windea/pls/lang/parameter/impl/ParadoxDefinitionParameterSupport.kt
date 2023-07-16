@@ -6,6 +6,7 @@ import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
@@ -15,6 +16,7 @@ import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.references.*
 
 open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     companion object {
@@ -29,8 +31,13 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
     
     override fun findContext(element: PsiElement): ParadoxScriptDefinitionElement? {
-        val context = element.findParentDefinition()
-        return context?.takeIf { isContext(it) }
+        val parentDefinition = element.findParentDefinition()
+        return parentDefinition?.takeIf { isContext(it) }
+    }
+    
+    override fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
+        if(!isContext(element)) return null
+        return ParadoxParameterHandler.getContextInfo(element)
     }
     
     override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
@@ -78,7 +85,6 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val contextName = definitionName
         val argumentNames = mutableSetOf<String>()
         val contextNameRange = contextReferenceElement.propertyKey.textRangeInParent
-        val startOffset = contextReferenceElement.startOffset
         contextReferenceElement.block?.processProperty p@{
             if(completionOffset != -1 && completionOffset in it.textRange) return@p true
             val k = it.propertyKey
@@ -122,10 +128,6 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         result.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
         result.putUserData(ParadoxParameterSupport.Keys.support, this)
         return result
-    }
-    
-    override fun resolveArguments(element: ParadoxScriptExpressionElement): List<ParadoxParameterElement>? {
-        TODO("Not yet implemented")
     }
     
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {

@@ -1,13 +1,10 @@
 package icu.windea.pls.core.expression.nodes
 
 import com.intellij.openapi.editor.colors.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.impl.source.resolve.*
+import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
@@ -44,8 +41,7 @@ class ParadoxScriptValueArgumentValueExpressionNode(
         val reference = scriptValueNode.getReference(element)
         if(reference?.resolve() == null) return null //skip if script value cannot be resolved
         if(argumentNode == null) return null
-        val project = configGroup.project
-        return Reference(element, rangeInExpression, project, null) { argumentNode.getReference(element)?.resolve() }
+        return Reference(element, rangeInExpression, this)
     }
     
     companion object Resolver {
@@ -54,54 +50,20 @@ class ParadoxScriptValueArgumentValueExpressionNode(
         }
     }
     
+    /**
+     * @see icu.windea.pls.lang.parameter.impl.ParadoxScriptValueInlineParameterSupport
+     */
     class Reference(
         element: ParadoxScriptStringExpressionElement,
         rangeInElement: TextRange,
-        val project: Project,
-        val isKey: Boolean?,
-        private val parameterElementResolver: () -> ParadoxParameterElement?
-    ) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+        val node: ParadoxScriptValueArgumentValueExpressionNode
+    ) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
         override fun handleElementRename(newElementName: String): PsiElement {
-            return element.setValue(rangeInElement.replace(element.value, newElementName))
-        }
-        
-        //缓存解析结果以优化性能
-        
-        private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {
-            override fun resolve(ref: Reference, incompleteCode: Boolean): PsiElement? {
-                return ref.doResolve()
-            }
-        }
-        
-        private object MultiResolver : ResolveCache.PolyVariantResolver<Reference> {
-            override fun resolve(ref: Reference, incompleteCode: Boolean): Array<out ResolveResult> {
-                return ref.doMultiResolve()
-            }
+            throw IncorrectOperationException()
         }
         
         override fun resolve(): PsiElement? {
-            if(!getSettings().inference.argumentValueConfig) return null
-            return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
-        }
-        
-        override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-            if(!getSettings().inference.argumentValueConfig) return ResolveResult.EMPTY_ARRAY
-            return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
-        }
-        
-        private fun doResolve(): PsiElement? {
-            //根据对应的expression进行解析
-            val parameterElement = parameterElementResolver() ?: return null
-            val config = ParadoxParameterHandler.getInferredConfig(parameterElement) ?: return null
-            return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
-        }
-        
-        private fun doMultiResolve(): Array<out ResolveResult> {
-            //根据对应的expression进行解析
-            val parameterElement = parameterElementResolver() ?: return ResolveResult.EMPTY_ARRAY
-            val config = ParadoxParameterHandler.getInferredConfig(parameterElement) ?: return ResolveResult.EMPTY_ARRAY
-            return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, false)
-                .mapToArray { PsiElementResolveResult(it) }
+            return null
         }
     }
 }
