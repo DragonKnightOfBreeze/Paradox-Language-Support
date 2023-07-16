@@ -45,13 +45,14 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
     }
     
     override fun indexStub(stub: PsiFileStub<*>, sink: IndexSink) {
-        if(stub is ParadoxScriptFileStub) {
-            //Note that definition name can be empty (aka anonymous)
-            if(stub.gameType == null) return
-            sink.occurrence(ParadoxDefinitionNameIndex.KEY, stub.name)
-            sink.occurrence(ParadoxDefinitionTypeIndex.KEY, stub.type)
-        }
-        super.indexStub(stub, sink)
+        //尝试在这里进行索引时没有效果的，考虑使用FileTypeIndex
+        //if(stub is ParadoxScriptFileStub) {
+        //    //Note that definition name can be empty (aka anonymous)
+        //    if(stub.gameType == null) return
+        //    sink.occurrence(ParadoxDefinitionNameIndex.KEY, stub.name)
+        //    sink.occurrence(ParadoxDefinitionTypeIndex.KEY, stub.type)
+        //}
+        //super.indexStub(stub, sink)
     }
     
     override fun serialize(stub: PsiFileStub<*>, dataStream: StubOutputStream) {

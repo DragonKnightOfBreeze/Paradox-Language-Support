@@ -32,8 +32,13 @@ class ParadoxValueLinkDataSourceExpressionNode(
             run {
                 if(nodes.isNotEmpty()) return@run
                 val offset = textRange.startOffset
-                val tokenIndex = text.indexOf('|')
-                if(tokenIndex != -1 && !tokenIndex.inParameter(parameterRanges)) { //这里需要跳过参数文本
+                var index: Int
+                var tokenIndex = -1
+                val textLength = text.length
+                while(tokenIndex < textLength) {
+                    index = tokenIndex + 1
+                    tokenIndex = text.indexOf('|', index)
+                    if(tokenIndex != -1 && tokenIndex.inParameter(parameterRanges)) continue //这里需要跳过参数文本
                     val scriptValueConfig = linkConfigs.find { it.name == "script_value" }
                     if(scriptValueConfig == null) {
                         val dataText = text.substring(0, tokenIndex)
@@ -49,6 +54,7 @@ class ParadoxValueLinkDataSourceExpressionNode(
                         val node = ParadoxScriptValueExpression.resolve(text, textRange, configGroup, scriptValueConfig)
                         nodes.add(node)
                     }
+                    break
                 }
             }
             run {

@@ -9,7 +9,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.lang.cwt.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -21,48 +22,72 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         val scope = queryParameters.selector.scope
         if(SearchScope.isEmptyScope(scope)) return
         val name = queryParameters.name
-        val typeExpression = queryParameters.typeExpression
+        val typeExpression = queryParameters.typeExpression?.let { ParadoxDefinitionTypeExpression.resolve(it) }
         val project = queryParameters.project
+        val configGroup = getCwtConfig(project).get(queryParameters.selector.gameType ?: return)
         
+        processQueryForFileDefinitions(name, typeExpression, project, scope, configGroup) { consumer.process(it) }
+        processQueryForStubDefinitions(name, typeExpression, project, scope) { consumer.process(it) }
+        
+        if(typeExpression != null) {
+            //如果是切换类型，也要按照基础类型的类型表达式查找定义
+            val baseTypeExpression = configGroup.typeToBaseTypeMap.get(typeExpression.expressionString)?.let { ParadoxDefinitionTypeExpression.resolve(it) }
+            if(baseTypeExpression != null) {
+                processQueryForFileDefinitions(name, baseTypeExpression, project, scope, configGroup) { consumer.process(it) }
+                processQueryForStubDefinitions(name, baseTypeExpression, project, scope) { consumer.process(it) }
+            }
+        }
+    }
+    
+    private fun processQueryForFileDefinitions(
+        name: String?,
+        typeExpression: ParadoxDefinitionTypeExpression?,
+        project: Project,
+        scope: GlobalSearchScope,
+        configGroup: CwtConfigGroup,
+        processor: Processor<ParadoxScriptFile>
+    ) {
+        if(typeExpression != null && configGroup.types.get(typeExpression.type)?.typePerFile != true) return
+        FileTypeIndex.processFiles(ParadoxScriptFileType, p@{
+            val file = it.toPsiFile(project) ?: return@p true
+            if(file !is ParadoxScriptFile) return@p true
+            val definitionInfo = file.definitionInfo ?: return@p true
+            if(name != null && definitionInfo.name != name) return@p true
+            if(typeExpression != null && definitionInfo.type != typeExpression.type) return@p true
+            if(typeExpression != null && typeExpression.subtypes.isNotEmpty() && !definitionInfo.subtypes.containsAll(typeExpression.subtypes)) return@p true
+            processor.process(file)
+        }, scope)
+    }
+    
+    private fun processQueryForStubDefinitions(
+        name: String?,
+        typeExpression: ParadoxDefinitionTypeExpression?,
+        project: Project,
+        scope: GlobalSearchScope,
+        consumer: Processor<in ParadoxScriptDefinitionElement>
+    ) {
         if(typeExpression == null) {
             if(name == null) {
-                //查找所有定义
                 ParadoxDefinitionNameIndex.KEY.processAllElementsByKeys(project, scope) { _, it ->
                     consumer.process(it)
                 }
             } else {
-                //按照名字查找定义
                 ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) {
                     consumer.process(it)
                 }
             }
         } else {
-            //按照类型表达式查找定义
-            doProcessQueryByTypeExpression(typeExpression, project, scope, name, consumer)
-            
-            //如果是切换类型，也要按照基础类型的类型表达式查找定义
-            val gameType = queryParameters.selector.gameType
-            val configGroup = getCwtConfig(project).get(gameType.id)
-            val baseTypeExpression = configGroup.typeToBaseTypeMap.get(typeExpression)
-            if(baseTypeExpression != null) {
-                doProcessQueryByTypeExpression(baseTypeExpression, project, scope, name, consumer)
-            }
-        }
-    }
-    
-    private fun doProcessQueryByTypeExpression(typeExpression: String, project: Project, scope: GlobalSearchScope, name: String?, consumer: Processor<in ParadoxScriptDefinitionElement>) {
-        if(name == null) {
-            val (type, subtypes) = ParadoxDefinitionTypeExpression.resolve(typeExpression)
-            ParadoxDefinitionTypeIndex.KEY.processAllElements(type, project, scope) p@{
-                if(subtypes.isNotEmpty() && !matchesSubtypes(it, subtypes)) return@p true
-                consumer.process(it)
-            }
-        } else {
-            val (type, subtypes) = ParadoxDefinitionTypeExpression.resolve(typeExpression)
-            ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) p@{
-                if(!matchesType(it, type)) return@p true
-                if(subtypes.isNotEmpty() && !matchesSubtypes(it, subtypes)) return@p true
-                consumer.process(it)
+            if(name == null) {
+                ParadoxDefinitionTypeIndex.KEY.processAllElements(typeExpression.type, project, scope) p@{
+                    if(typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(it, typeExpression.subtypes)) return@p true
+                    consumer.process(it)
+                }
+            } else {
+                ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) p@{
+                    if(!matchesType(it, typeExpression.type)) return@p true
+                    if(typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(it, typeExpression.subtypes)) return@p true
+                    consumer.process(it)
+                }
             }
         }
     }
