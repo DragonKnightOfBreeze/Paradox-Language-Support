@@ -11,7 +11,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.lang.parameter.*
+import icu.windea.pls.script.injection.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -53,20 +53,21 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
     
     @Suppress("UnstableApiUsage", "DEPRECATION")
     private fun getParameterElement(file: PsiFile, host: PsiElement): ParadoxParameterElement? {
+        val injectionInfos = host.getUserData(ParadoxScriptInjector.Keys.parameterValueInjectionInfos)
+        if(injectionInfos.isNullOrEmpty()) return null
         return when {
             host is ParadoxScriptStringExpressionElement -> {
                 //why it's deprecated and internal???
                 val shreds = InjectedLanguageUtilBase.getShreds(file)
                 val shred = shreds?.singleOrNull()
-                val rangeInsideHost = shred?.rangeInsideHost
-                if(rangeInsideHost == null) return null
-                host.references.firstNotNullOfOrNull t@{
-                    if(it.rangeInElement != rangeInsideHost) return@t null
-                    it.resolve()?.castOrNull<ParadoxParameterElement>()
-                }
+                val rangeInsideHost = shred?.rangeInsideHost ?: return null
+                val injectionInfo = injectionInfos.find { it.rangeInsideHost == rangeInsideHost } ?: return null
+                injectionInfo.parameterElementProvider()
             }
             host is ParadoxParameter -> {
-                ParadoxParameterSupport.resolveParameter(host)
+                //just use the only one
+                val injectionInfo = injectionInfos.singleOrNull() ?: return null
+                injectionInfo.parameterElementProvider()
             }
             else -> null
         }

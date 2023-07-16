@@ -1,4 +1,4 @@
-package icu.windea.pls.script.psi
+package icu.windea.pls.script.injection
 
 import com.intellij.lang.injection.*
 import com.intellij.openapi.util.*
@@ -7,15 +7,14 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 脚本语言的语言注入器，用于提供以下功能：
- * 
+ *
  * * 对脚本参数的传入值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
  * * 对脚本参数的默认值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
  */
@@ -35,6 +34,8 @@ class ParadoxScriptInjector : MultiHostInjector {
     override fun getLanguagesToInject(registrar: MultiHostRegistrar, host: PsiElement) {
         if(host.hasSyntaxError()) return //skip if host has syntax error 
         
+        host.getUserData(Keys.parameterValueInjectionInfos)?.clear()
+        
         applyInjectionForArgumentValue(registrar, host)
         applyInjectionForParameterDefaultValue(registrar, host)
     }
@@ -42,46 +43,56 @@ class ParadoxScriptInjector : MultiHostInjector {
     private fun applyInjectionForArgumentValue(registrar: MultiHostRegistrar, host: PsiElement) {
         if(host !is ParadoxScriptString) return
         if(!getSettings().inference.parameterConfig) return
-        val rangesInsideHost = getRangeInsideHostForArgumentValue(host)
-        if(rangesInsideHost.isEmpty()) return
+        val injectionInfos = getInjectionInfosForArgumentValue(host)
+        if(injectionInfos.isEmpty()) return
         
-        rangesInsideHost.forEach { rangeInsideHost ->
+        host.getUserData(Keys.parameterValueInjectionInfos)?.addAll(injectionInfos)
+        injectionInfos.forEach { injectionInfo ->
             registrar.startInjecting(ParadoxScriptLanguage)
-            registrar.addPlace(null, null, host, rangeInsideHost)
+            registrar.addPlace(null, null, host, injectionInfo.rangeInsideHost)
             registrar.doneInjecting()
         }
         InjectionUtils.enableInjectLanguageAction(host, false)
         host.containingFile?.let { file -> InjectionUtils.setCollectLineMarkersForInjectedFiles(file, false) }
     }
     
-    private fun getRangeInsideHostForArgumentValue(host: ParadoxScriptString): List<TextRange> {
+    private fun getInjectionInfosForArgumentValue(host: ParadoxScriptString): List<ParameterValueInjectionInfo> {
         //这里先向上得到contextReferenceInfo，接着获取传入值对应的textRange，然后选用在host的textRange之内的那些
-        //这里可能存在一些性能问题……需要确认
         val from = ParadoxParameterContextReferenceInfo.From.InContextReference
         val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(host, from = from) ?: return emptyList()
         if(contextReferenceInfo.arguments.isEmpty()) return emptyList()
         val textRange = host.textRange
-        return contextReferenceInfo.arguments.mapNotNull { referenceInfo -> 
-            referenceInfo.argumentValueRange
+        return contextReferenceInfo.arguments.mapNotNull t1@{ referenceInfo ->
+            val rangeInsideHost = referenceInfo.argumentValueRange
                 ?.takeIf { it.startOffset >= textRange.startOffset && it.endOffset <= textRange.endOffset }
                 ?.shiftLeft(textRange.startOffset)
+                ?: return@t1 null
+            ParameterValueInjectionInfo(rangeInsideHost) {
+                host.references.firstNotNullOfOrNull t2@{
+                    if(it.rangeInElement != rangeInsideHost) return@t2 null
+                    it.resolve()?.castOrNull<ParadoxParameterElement>()
+                } 
+            }
         }
     }
     
     private fun applyInjectionForParameterDefaultValue(registrar: MultiHostRegistrar, host: PsiElement) {
         if(host !is ParadoxParameter) return
         if(!getSettings().inference.parameterConfig) return
-        val rangeInsideHost = getRangeInsideHostForParameterDefaultValue(host)
-        if(rangeInsideHost == null) return
+        val injectionInfo = getInjectionInfoForParameterDefaultValue(host)
+        if(injectionInfo == null) return
         
+        host.getUserData(Keys.parameterValueInjectionInfos)?.add(injectionInfo)
         registrar.startInjecting(ParadoxScriptLanguage)
-        registrar.addPlace(null, null, host, rangeInsideHost)
+        registrar.addPlace(null, null, host, injectionInfo.rangeInsideHost)
         registrar.doneInjecting()
         InjectionUtils.enableInjectLanguageAction(host, false)
         host.containingFile?.let { file -> InjectionUtils.setCollectLineMarkersForInjectedFiles(file, false) }
     }
     
-    private fun getRangeInsideHostForParameterDefaultValue(host: ParadoxParameter): TextRange? {
+    private fun getInjectionInfoForParameterDefaultValue(host: ParadoxParameter): ParameterValueInjectionInfo? {
+        val parameterName = host.name
+        if(parameterName.isNullOrEmpty()) return null //skip if host is invalid
         var start = -1
         var end = -1
         host.processChild { e ->
@@ -94,6 +105,18 @@ class ParadoxScriptInjector : MultiHostInjector {
             true
         }
         if(start == -1 || end == -1) return null
-        return TextRange.create(start, end)
+        val rangeInsideHost = TextRange.create(start, end)
+        return ParameterValueInjectionInfo(rangeInsideHost) {
+            ParadoxParameterSupport.resolveParameter(host)
+        }
+    }
+    
+    object Keys {
+        val parameterValueInjectionInfos by lazy { KeyWithDefaultValue.create<MutableList<ParameterValueInjectionInfo>>("paradox.script.injection.parameterValueInjectionInfo") { mutableListOf() } }
     }
 }
+
+data class ParameterValueInjectionInfo(
+    val rangeInsideHost: TextRange,
+    val parameterElementProvider: () -> ParadoxParameterElement?
+)

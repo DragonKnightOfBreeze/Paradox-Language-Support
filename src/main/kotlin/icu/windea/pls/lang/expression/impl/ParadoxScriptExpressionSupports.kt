@@ -51,7 +51,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if(!context.quoted && context.keyword.isParameterized()) return //排除可能带参数的情况
+        if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
         val config = context.config ?: return
         val keyword = context.keyword
@@ -107,7 +107,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if(!context.quoted && context.keyword.isParameterized()) return //排除可能带参数的情况
+        if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
         val config = context.config ?: return
         val keyword = context.keyword
@@ -164,7 +164,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if(!context.quoted && context.keyword.isParameterized()) return //排除可能带参数的情况
+        if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
         val config = context.config ?: return
         if(context.quoted) return
@@ -223,7 +223,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport(
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if(!context.quoted && context.keyword.isParameterized()) return //排除可能带参数的情况
+        if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
         val config = context.config ?: return
         val scopeContext = context.scopeContext
@@ -304,7 +304,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if(!context.quoted && context.keyword.isParameterized()) return //排除可能带参数的情况
+        if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
         val config = context.config ?: return
         val configExpression = config.expression ?: return
@@ -384,7 +384,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if(!context.quoted && context.keyword.isParameterized()) return //排除可能带参数的情况
+        if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
         val config = context.config ?: return
         val enumName = config.expression?.value ?: return
@@ -457,7 +457,7 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport() 
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if(!context.quoted && context.keyword.isParameterized()) return //排除可能带参数的情况
+        if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
         //提示预定义的modifier
         ParadoxModifierHandler.completeModifier(context, result)
@@ -499,7 +499,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport()
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if(!context.quoted && context.keyword.isParameterized()) return //排除可能带参数的情况
+        if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
         val config = context.config ?: return
         val aliasName = config.expression?.value ?: return
@@ -558,7 +558,7 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptConstantLikeExpressi
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if(!context.quoted && context.keyword.isParameterized()) return //排除可能带参数的情况
+        if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
         val config = context.config ?: return
         val configExpression = config.expression ?: return
@@ -605,7 +605,7 @@ class ParadoxScriptTemplateExpressionSupport : ParadoxScriptConstantLikeExpressi
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if(!context.quoted && context.keyword.isParameterized()) return //排除可能带参数的情况
+        if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
         ParadoxConfigHandler.completeTemplateExpression(context, result)
     }

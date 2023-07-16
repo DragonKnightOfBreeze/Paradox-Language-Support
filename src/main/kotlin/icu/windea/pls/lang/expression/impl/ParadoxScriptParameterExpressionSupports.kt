@@ -32,7 +32,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport()
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if(!context.quoted && context.keyword.isParameterized()) return //排除可能带参数的情况
+        if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
         val config = context.config ?: return
         //提示参数名（仅限key）

@@ -138,6 +138,6 @@
   </extensions>
   
   <extensions defaultExtensionNs="com.intellij">
-    <multiHostInjector implementation="icu.windea.pls.script.psi.ParadoxScriptInjector"/>
+    <multiHostInjector implementation="icu.windea.pls.script.injection.ParadoxScriptInjector"/>
   </extensions>
 </idea-plugin>
