@@ -4,14 +4,12 @@ import com.intellij.lang.injection.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.impl.source.tree.injected.InjectedLanguageEditorUtil
-import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtilBase
+import com.intellij.psi.impl.source.tree.injected.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*
@@ -31,16 +29,14 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
     override fun getConfigContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
         if(!getSettings().inference.parameterConfig) return null
         
-        val vFile = selectFile(file) ?: return null
-        if(!ParadoxFileManager.isInjectedFile(vFile)) return null //limited for injected psi
+        //unnecessary check
+        //val vFile = selectFile(file) ?: return null
+        //if(ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
         
-        val injectionHost = InjectedLanguageManager.getInstance(file.project).getInjectionHost(file)
-        if(injectionHost !is ParadoxScriptString) return null
-        
-        val argumentNameElement = injectionHost.propertyKey ?: return null
-        val argumentNameConfig = ParadoxConfigHandler.getConfigs(argumentNameElement).firstOrNull() ?: return null
-        if(argumentNameConfig.expression.type != CwtDataType.Parameter) return null
-        val parameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return null
+        val host = InjectedLanguageManager.getInstance(file.project).getInjectionHost(file)
+        if(host == null) return null
+        val parameterElement = getParameterElement(file, host)
+        if(parameterElement == null) return null
         
         ProgressManager.checkCanceled()
         val gameType = parameterElement.gameType
@@ -53,6 +49,27 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
         configContext.elementPathFromRoot = elementPathFromRoot
         configContext.parameterElement = parameterElement
         return configContext
+    }
+    
+    @Suppress("UnstableApiUsage", "DEPRECATION")
+    private fun getParameterElement(file: PsiFile, host: PsiElement): ParadoxParameterElement? {
+        return when {
+            host is ParadoxScriptStringExpressionElement -> {
+                //why it's deprecated and internal???
+                val shreds = InjectedLanguageUtilBase.getShreds(file)
+                val shred = shreds?.singleOrNull()
+                val rangeInsideHost = shred?.rangeInsideHost
+                if(rangeInsideHost == null) return null
+                host.references.firstNotNullOfOrNull t@{
+                    if(it.rangeInElement != rangeInsideHost) return@t null
+                    it.resolve()?.castOrNull<ParadoxParameterElement>()
+                }
+            }
+            host is ParadoxParameter -> {
+                ParadoxParameterSupport.resolveParameter(host)
+            }
+            else -> null
+        }
     }
     
     override fun getConfigs(element: ParadoxScriptMemberElement, configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
