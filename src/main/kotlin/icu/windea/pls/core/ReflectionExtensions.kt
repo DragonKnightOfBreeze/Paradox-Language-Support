@@ -34,58 +34,62 @@ class SmartKProperty<T : Any, V>(
     
     private fun doGetDelegateProperty(target: T): MutableProperty<V> {
         val allMemberProperties = targetClass.declaredMemberProperties
-        val property = allMemberProperties.find { it.name == propertyName }
-        if(property != null) {
-            try {
-                property.isAccessible = true
-                return mutableProperty({ property.get(target) as V }, { unsupported() })
-            } catch(e: Throwable) {
-                if(e is ProcessCanceledException) throw e
-                //ignore
-            }
-        }
         val allMemberFunctions = targetClass.declaredMemberFunctions
-        val getter = allMemberFunctions.find { it.isGetter() }
-        val setter = allMemberFunctions.find { it.isSetter() }
-        if(getter != null || setter != null) {
-            try {
-                getter?.isAccessible = true
-                setter?.isAccessible = true
-                return mutableProperty({ if(getter != null) getter.call(target) as V else unsupported() }, { if(setter != null) setter.call(target, it) else unsupported() })
-            } catch(e: Throwable) {
-                if(e is ProcessCanceledException) throw e
-                //ignore
-            }
+        val property = allMemberProperties.find { it.name == propertyName }?.also { it.isAccessible = true }
+        val javaField = property?.javaField?.also { it.isAccessible = true }
+        val getter = allMemberFunctions.find { it.isGetter() }?.also { it.isAccessible = true }
+        val setter = allMemberFunctions.find { it.isSetter() }?.also { it.isAccessible = true }
+        try {
+            return mutableProperty({
+                when {
+                    javaField != null -> javaField.get(target) as V
+                    property != null -> property.get(target) as V
+                    getter != null -> getter.call(target) as V
+                    else -> unsupported()
+                }
+            }, {
+                when {
+                    javaField != null -> javaField.set(target, it)
+                    property != null && property is KMutableProperty1 -> (property as KMutableProperty1<T, in Any?>).set(target, it)
+                    setter != null -> setter.call(target, it)
+                    else -> unsupported()
+                }
+            })
+        } catch(e: Throwable) {
+            if(e is ProcessCanceledException) throw e
+            //ignore
+            return mutableProperty({ unsupported() }, { unsupported() })
         }
-        return mutableProperty({ unsupported() }, { unsupported() })
     }
     
     private fun doGetDelegatePropertyStatic(): MutableProperty<V> {
         val allStaticProperties = targetClass.staticProperties
-        val property = allStaticProperties.find { it.name == propertyName }
-        if(property != null) {
-            try {
-                property.isAccessible = true
-                return mutableProperty({ property.get() as V }, { unsupported() })
-            } catch(e: Throwable) {
-                if(e is ProcessCanceledException) throw e
-                //ignore
-            }
-        }
         val allStaticFunctions = targetClass.staticFunctions
-        val getter = allStaticFunctions.find { it.isGetter() }
-        val setter = allStaticFunctions.find { it.isSetter() }
-        if(getter != null || setter != null) {
-            try {
-                getter?.isAccessible = true
-                setter?.isAccessible = true
-                return mutableProperty({ if(getter != null) getter.call(null) as V else unsupported() }, { if(setter != null) setter.call(null, it) else unsupported() })
-            } catch(e: Throwable) {
-                if(e is ProcessCanceledException) throw e
-                //ignore
-            }
+        val property = allStaticProperties.find { it.name == propertyName }?.also { it.isAccessible = true }
+        val javaField = property?.javaField?.also { it.isAccessible = true }
+        val getter = allStaticFunctions.find { it.isGetter() }?.also { it.isAccessible = true }
+        val setter = allStaticFunctions.find { it.isSetter() }?.also { it.isAccessible = true }
+        try {
+            return mutableProperty({
+                when {
+                    javaField != null -> javaField.get(null) as V
+                    property != null -> property.get() as V
+                    getter != null -> getter.call(null) as V
+                    else -> unsupported()
+                }
+            }, {
+                when {
+                    javaField != null -> javaField.set(null, it)
+                    property != null && property is KMutableProperty0 -> (property as KMutableProperty0<in Any?>).set(it)
+                    setter != null -> setter.call(null, it) 
+                    else -> unsupported()
+                }
+            })
+        } catch(e: Throwable) {
+            if(e is ProcessCanceledException) throw e
+            //ignore
+            return mutableProperty({ unsupported() }, { unsupported() })
         }
-        return mutableProperty({ unsupported() }, { unsupported() })
     }
     
     private fun KFunction<*>.isGetter(): Boolean {
