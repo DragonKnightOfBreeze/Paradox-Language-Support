@@ -28,9 +28,13 @@ inline fun <K : Any, V> Cache<K, V>.getOrPut(key: K, crossinline defaultValue: (
     try {
         return get(key) { defaultValue(key) }
     } catch(e: ExecutionException) {
-        throw e.cause ?: e
+        val cause = e.cause
+        if(cause is ProcessCanceledException) throw cause
+        throw cause ?: e
     } catch(e: UncheckedExecutionException) {
-        throw e.cause ?: e
+        val cause = e.cause
+        if(cause is ProcessCanceledException) throw cause
+        throw cause ?: e
     } catch(e: ProcessCanceledException) {
         throw e
     }
@@ -40,11 +44,13 @@ inline fun <K : Any, V> Cache<K, V>.getOrPut(key: K, defaultValueOnException: (T
     try {
         return get(key) { defaultValue(key) }
     } catch(e: ExecutionException) {
-        if(e.cause is ProcessCanceledException) throw e
-        return defaultValueOnException(e.cause ?: e)
+        val cause = e.cause
+        if(cause is ProcessCanceledException) throw cause
+        return defaultValueOnException(cause ?: e)
     } catch(e: UncheckedExecutionException) {
-        if(e.cause is ProcessCanceledException) throw e
-        return defaultValueOnException(e.cause ?: e)
+        val cause = e.cause
+        if(cause is ProcessCanceledException) throw cause
+        return defaultValueOnException(cause ?: e)
     } catch(e: ProcessCanceledException) {
         throw e
     }

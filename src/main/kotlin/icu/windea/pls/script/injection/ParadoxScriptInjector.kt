@@ -17,6 +17,8 @@ import icu.windea.pls.script.psi.*
  *
  * * 对脚本参数的传入值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
  * * 对脚本参数的默认值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
+ * 
+ * @see icu.windea.pls.lang.config.impl.ParadoxParameterValueConfigContextProvider
  */
 class ParadoxScriptInjector : MultiHostInjector {
     //see: com.intellij.util.InjectionUtils
@@ -24,7 +26,7 @@ class ParadoxScriptInjector : MultiHostInjector {
     //see: org.intellij.plugins.intelliLang.inject.InjectorUtils
     
     companion object {
-        private val toInject = listOf(ParadoxScriptString::class.java, ParadoxScriptParameter::class.java)
+        private val toInject = listOf(ParadoxScriptString::class.java, ParadoxScriptParameter::class.java, ParadoxScriptInlineMathParameter::class.java)
     }
     
     override fun elementsToInjectIn(): List<Class<out PsiElement>> {
@@ -67,12 +69,13 @@ class ParadoxScriptInjector : MultiHostInjector {
                 ?.takeIf { it.startOffset >= textRange.startOffset && it.endOffset <= textRange.endOffset }
                 ?.shiftLeft(textRange.startOffset)
                 ?: return@t1 null
-            ParameterValueInjectionInfo(rangeInsideHost) {
-                host.references.firstNotNullOfOrNull t2@{
-                    if(it.rangeInElement != referenceInfo.argumentNameRange.shiftLeft(textRange.startOffset)) return@t2 null
-                    it.resolve()?.castOrNull<ParadoxParameterElement>()
-                } 
-            }
+            //ParameterValueInjectionInfo(rangeInsideHost) {
+            //    host.references.firstNotNullOfOrNull t2@{
+            //        if(it.rangeInElement != referenceInfo.argumentNameRange.shiftLeft(textRange.startOffset)) return@t2 null
+            //        it.resolve()?.castOrNull<ParadoxParameterElement>()
+            //    } 
+            //}
+            null
         }
     }
     

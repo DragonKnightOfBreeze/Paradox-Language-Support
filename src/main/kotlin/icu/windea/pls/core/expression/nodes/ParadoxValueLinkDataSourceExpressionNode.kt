@@ -2,6 +2,7 @@ package icu.windea.pls.core.expression.nodes
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.script.highlighter.*
 
@@ -15,61 +16,32 @@ class ParadoxValueLinkDataSourceExpressionNode(
     
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxValueLinkDataSourceExpressionNode {
+            val parameterRanges = ParadoxConfigHandler.getParameterRangesInExpression(text)
+            
             //text may contain parameters
             //child node can be valueSetValueExpression / scriptValueExpression
             val nodes = mutableListOf<ParadoxExpressionNode>()
-            //if(nodes.isEmpty()) {
-            //	val scopeFieldConfig = linkConfigs.find { it.expression?.type?.isScopeFieldType() == true }
-            //	if(scopeFieldConfig != null) {
-            //		val configGroup = linkConfigs.first().info.configGroup
-            //		val node = ParadoxScopeExpressionNode.resolve(text, textRange, configGroup)
-            //		nodes.add(node)
-            //	}
-            //}
-            if(nodes.isEmpty()) {
+            run {
                 val configs = linkConfigs.filter { it.dataSource?.type?.isValueSetValueType() == true }
                 if(configs.isNotEmpty()) {
                     val configGroup = linkConfigs.first().info.configGroup
                     val node = ParadoxValueSetValueExpression.resolve(text, textRange, configGroup, configs)!!
                     nodes.add(node)
                 }
-                //val offset = textRange.startOffset
-                //val atIndex = text.indexOf('@')
-                //if(atIndex != -1) {
-                //	if(configs.isEmpty()) {
-                //		val dataText = text.substring(0, atIndex)
-                //		val dataRange = TextRange.create(offset, atIndex + offset)
-                //		val dataNode = ParadoxDataExpressionNode.resolve(dataText, dataRange, linkConfigs)
-                //		nodes.add(dataNode)
-                //		val errorText = text.substring(atIndex)
-                //		val errorRange = TextRange.create(atIndex + offset, text.length + offset)
-                //		val errorNode = ParadoxErrorTokenExpressionNode(errorText, errorRange)
-                //		nodes.add(errorNode)
-                //	} else {
-                //		val configGroup = linkConfigs.first().info.configGroup
-                //		val node = ParadoxValueSetValueExpression.resolve(text, textRange, configs, configGroup)
-                //		nodes.add(node)
-                //	}
-                //} else {
-                //	if(configs.isNotEmpty()) {
-                //		val configGroup = linkConfigs.first().info.configGroup
-                //		val node = ParadoxValueSetValueExpression.resolve(text, textRange, configs, configGroup)
-                //		nodes.add(node)
-                //	}
-                //}
             }
-            if(nodes.isEmpty()) {
+            run {
+                if(nodes.isNotEmpty()) return@run
                 val offset = textRange.startOffset
-                val pipeIndex = text.indexOf('|')
-                if(pipeIndex != -1) {
+                val tokenIndex = text.indexOf('|')
+                if(tokenIndex != -1 && !tokenIndex.inParameter(parameterRanges)) { //这里需要跳过参数文本
                     val scriptValueConfig = linkConfigs.find { it.name == "script_value" }
                     if(scriptValueConfig == null) {
-                        val dataText = text.substring(0, pipeIndex)
-                        val dataRange = TextRange.create(offset, pipeIndex + offset)
+                        val dataText = text.substring(0, tokenIndex)
+                        val dataRange = TextRange.create(offset, tokenIndex + offset)
                         val dataNode = ParadoxDataExpressionNode.resolve(dataText, dataRange, linkConfigs)
                         nodes.add(dataNode)
-                        val errorText = text.substring(pipeIndex)
-                        val errorRange = TextRange.create(pipeIndex + offset, text.length + offset)
+                        val errorText = text.substring(tokenIndex)
+                        val errorRange = TextRange.create(tokenIndex + offset, text.length + offset)
                         val errorNode = ParadoxErrorTokenExpressionNode(errorText, errorRange)
                         nodes.add(errorNode)
                     } else {
@@ -79,11 +51,16 @@ class ParadoxValueLinkDataSourceExpressionNode(
                     }
                 }
             }
-            if(nodes.isEmpty()) {
+            run {
+                if(nodes.isNotEmpty()) return@run
                 val node = ParadoxDataExpressionNode.resolve(text, textRange, linkConfigs)
                 nodes.add(node)
             }
             return ParadoxValueLinkDataSourceExpressionNode(text, textRange, linkConfigs, nodes)
+        }
+        
+        private fun Int.inParameter(parameterRanges: List<TextRange>): Boolean {
+            return parameterRanges.any { it.contains(this) }
         }
     }
 }

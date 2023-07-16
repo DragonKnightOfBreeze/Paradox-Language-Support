@@ -15,7 +15,7 @@ interface ParadoxParameter : ParadoxTypedElement, NavigatablePsiElement, Paradox
     override val type: ParadoxType get() = ParadoxType.Parameter
     
     override fun isValidHost(): Boolean {
-        return text.let { it.isLeftQuoted() && it.isRightQuoted() }
+        return true
     }
     
     override fun updateText(text: String): ParadoxParameter {

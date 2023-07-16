@@ -30,7 +30,7 @@ import java.util.*
 object ParadoxParameterHandler {
     /**
      * 得到[element]对应的参数上下文信息。
-     * 
+     *
      * 这个方法不会判断[element]是否是合法的参数上下文，如果需要，考虑使用[ParadoxParameterSupport.getContextInfo]。
      */
     fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
@@ -251,11 +251,7 @@ object ParadoxParameterHandler {
             }
         }
         
-        val resolved = try {
-            doGetInferredContextConfigs(parameterElement)
-        } catch(e: UnsupportedOperationException) {
-            listOf(CwtValueConfig.EmptyConfig)
-        }
+        val resolved = doGetInferredContextConfigs(parameterElement)
         
         val ep = parameterElement.getUserData(ParadoxParameterSupport.Keys.support)
         if(ep != null) {

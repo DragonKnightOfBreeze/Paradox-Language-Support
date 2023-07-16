@@ -1,6 +1,8 @@
 package icu.windea.pls.lang.parameter.impl
 
+import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
@@ -38,15 +40,22 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     }
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo) : List<CwtMemberConfig<*>>? {
-        val parent = parameterInfo.element?.parent
-        when {
-            parent is ParadoxScriptPropertyKey -> {
-                //不适用于这种情况
-                throw UnsupportedOperationException()
+        val expressionElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptStringExpressionElement>()
+        if(expressionElement == null) return emptyList()
+        val contextConfigs = ParadoxConfigHandler.getConfigContext(expressionElement)?.getConfigs().orEmpty()
+        if(contextConfigs.isEmpty()) return emptyList()
+        val containerConfig = CwtValueConfig.resolve(
+            pointer = emptyPointer(),
+            info = contextConfigs.first().info,
+            value = PlsConstants.blockFolder,
+            valueTypeId = CwtType.Block.id,
+            configs = contextConfigs.mapFast { config ->
+                when(config) {
+                    is CwtPropertyConfig -> config.copyDelegated(config.parent, config.deepCopyConfigs())
+                    is CwtValueConfig -> config.copyDelegated(config.parent, config.deepCopyConfigs())
+                }
             }
-            else -> {
-                return parameterInfo.expressionContextConfigs
-            }
-        }
+        )
+        return listOf(containerConfig)
     }
 }

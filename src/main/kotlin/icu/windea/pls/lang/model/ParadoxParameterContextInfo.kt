@@ -91,27 +91,4 @@ class ParadoxParameterInfo(
             }
         }
     }
-    
-    /**
-     * 获取此参数对应的脚本表达式所对应的上下文CWT规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
-     */
-    val expressionContextConfigs: List<CwtMemberConfig<*>> by lazy {
-        val expressionElement = element?.parent?.castOrNull<ParadoxScriptStringExpressionElement>()
-        if(expressionElement == null) return@lazy emptyList()
-        val contextConfigs = ParadoxConfigHandler.getConfigContext(expressionElement)?.getConfigs().orEmpty()
-        if(contextConfigs.isEmpty()) return@lazy emptyList()
-        val containerConfig = CwtValueConfig.resolve(
-            pointer = emptyPointer(),
-            info = contextConfigs.first().info,
-            value = PlsConstants.blockFolder,
-            valueTypeId = CwtType.Block.id,
-            configs = contextConfigs.mapFast { config ->
-                when(config) {
-                    is CwtPropertyConfig -> config.copyDelegated(config.parent, config.deepCopyConfigs())
-                    is CwtValueConfig -> config.copyDelegated(config.parent, config.deepCopyConfigs())
-                }
-            }
-        )
-        listOf(containerConfig)
-    }
 }

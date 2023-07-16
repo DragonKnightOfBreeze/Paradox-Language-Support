@@ -21,9 +21,6 @@ interface ParadoxParameterInferredConfigProvider {
     
     fun getConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig?
     
-    /**
-     * @throws UnsupportedOperationException 此方法不适用。
-     */
     fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo) : List<CwtMemberConfig<*>>?
     
     companion object INSTANCE {

@@ -538,7 +538,7 @@ object ParadoxDefinitionHandler {
     fun createStubForFile(file: PsiFile, tree: LighterAST): StubElement<*>? {
         if(file !is ParadoxScriptFile) return null
         val node = tree.root
-        val rootKey = getNameFromNode(node, tree) ?: return null
+        val rootKey = file.name.substringBeforeLast('.')
         val project = file.project
         val vFile = selectFile(file) ?: return null
         val fileInfo = vFile.fileInfo ?: return null

@@ -1,7 +1,9 @@
 package icu.windea.pls.lang.parameter.impl
 
 import com.intellij.openapi.util.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.*
@@ -92,7 +94,14 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
     }
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
-        //不适用于这种情况
-        throw UnsupportedOperationException()
+        val config = getConfig(parameterInfo, parameterContextInfo) ?: return null
+        val containerConfig = CwtValueConfig.resolve(
+            pointer = emptyPointer(),
+            info = config.info,
+            value = PlsConstants.blockFolder,
+            valueTypeId = CwtType.Block.id,
+            configs = listOf(config)
+        )
+        return listOf(containerConfig)
     }
 }
