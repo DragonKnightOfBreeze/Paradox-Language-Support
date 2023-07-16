@@ -37,6 +37,7 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
         val inlineScriptExpression = ParadoxInlineScriptHandler.getInlineScriptExpression(vFile)
         if(inlineScriptExpression == null) return null
         
+        ProgressManager.checkCanceled()
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         val elementPathFromRoot = elementPath

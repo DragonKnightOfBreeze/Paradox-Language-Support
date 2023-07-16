@@ -1,8 +1,11 @@
 package icu.windea.pls.lang.config.impl
 
 import com.intellij.lang.injection.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.tree.injected.InjectedLanguageEditorUtil
+import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtilBase
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
@@ -31,7 +34,6 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
         val vFile = selectFile(file) ?: return null
         if(!ParadoxFileManager.isInjectedFile(vFile)) return null //limited for injected psi
         
-        //TODO 1.1.3
         val injectionHost = InjectedLanguageManager.getInstance(file.project).getInjectionHost(file)
         if(injectionHost !is ParadoxScriptString) return null
         
@@ -40,6 +42,7 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
         if(argumentNameConfig.expression.type != CwtDataType.Parameter) return null
         val parameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return null
         
+        ProgressManager.checkCanceled()
         val gameType = parameterElement.gameType
         val elementPathFromRoot = elementPath
         val configGroup = getCwtConfig(file.project).get(gameType)

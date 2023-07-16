@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.config.impl
 
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -17,6 +18,7 @@ class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
         val vFile = selectFile(file) ?: return null
         if(ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
         
+        ProgressManager.checkCanceled()
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         val definition = element.findParentDefinition()
