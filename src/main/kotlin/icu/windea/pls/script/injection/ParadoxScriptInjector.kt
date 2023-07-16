@@ -69,7 +69,7 @@ class ParadoxScriptInjector : MultiHostInjector {
                 ?: return@t1 null
             ParameterValueInjectionInfo(rangeInsideHost) {
                 host.references.firstNotNullOfOrNull t2@{
-                    if(it.rangeInElement != rangeInsideHost) return@t2 null
+                    if(it.rangeInElement != referenceInfo.argumentNameRange.shiftLeft(textRange.startOffset)) return@t2 null
                     it.resolve()?.castOrNull<ParadoxParameterElement>()
                 } 
             }

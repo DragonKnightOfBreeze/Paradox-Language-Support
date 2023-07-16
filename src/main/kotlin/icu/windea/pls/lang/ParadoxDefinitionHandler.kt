@@ -536,14 +536,23 @@ object ParadoxDefinitionHandler {
     //stub methods
     
     fun createStubForFile(file: PsiFile, tree: LighterAST): StubElement<*>? {
-        //这里使用scriptProperty.definitionInfo.name而非scriptProperty.name
-        val psiFile = file as? ParadoxScriptFile ?: return null
-        val definitionInfo = psiFile.definitionInfo ?: return null
-        val name = definitionInfo.name
-        val type = definitionInfo.type
-        val subtypes = definitionInfo.subtypes
-        val gameType = definitionInfo.gameType
-        return ParadoxScriptFileStubImpl(psiFile, name, type, subtypes, gameType)
+        if(file !is ParadoxScriptFile) return null
+        val node = tree.root
+        val rootKey = getNameFromNode(node, tree) ?: return null
+        val project = file.project
+        val vFile = selectFile(file) ?: return null
+        val fileInfo = vFile.fileInfo ?: return null
+        val gameType = selectGameType(vFile) ?: return null
+        val path = fileInfo.pathToEntry //这里使用pathToEntry
+        val elementPath = ParadoxElementPathHandler.get(node, tree, vFile) ?: return null
+        val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
+        val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
+        if(typeConfig == null) return null
+        //NOTE 这里不处理需要内联的情况
+        val name = doGetNameWhenCreateStub(typeConfig, rootKey, node, tree)
+        val type = typeConfig.name
+        val subtypes = doGetSubtypesWhenCreateStub(typeConfig, rootKey, configGroup) //如果无法在索引时获取，之后再懒加载
+        return ParadoxScriptFileStubImpl(file, name, type, subtypes, gameType)
     }
     
     fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub? {
@@ -563,13 +572,13 @@ object ParadoxDefinitionHandler {
         if(rootKey.isParameterized()) return null //排除可能带参数的情况
         if(rootKey.isInlineUsage()) return null //排除是内联调用的情况
         val psi = parentStub.psi
-        val psiFile = psi.containingFile
-        val project = psiFile.project
-        val file = selectFile(psi) ?: return null
-        val fileInfo = file.fileInfo ?: return null
-        val gameType = selectGameType(file) ?: return null
+        val file = psi.containingFile
+        val project = file.project
+        val vFile = selectFile(psi) ?: return null
+        val fileInfo = vFile.fileInfo ?: return null
+        val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.pathToEntry //这里使用pathToEntry
-        val elementPath = ParadoxElementPathHandler.get(node, tree, file) ?: return null
+        val elementPath = ParadoxElementPathHandler.get(node, tree, vFile) ?: return null
         val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
         val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
         if(typeConfig == null) return null
@@ -587,7 +596,7 @@ object ParadoxDefinitionHandler {
                 getValueFromNode(node, tree).orEmpty()
             }
             typeConfig.nameField != null -> {
-                node.firstChild(tree, BLOCK)
+                node.firstChild(tree, ParadoxScriptTokenSets.BLOCK_OR_ROOT_BLOCK)
                     ?.firstChild(tree) { it.tokenType == PROPERTY && getNameFromNode(it, tree)?.equals(typeConfig.nameField, true) == true }
                     ?.let { getValueFromNode(it, tree) }
                     .orEmpty()

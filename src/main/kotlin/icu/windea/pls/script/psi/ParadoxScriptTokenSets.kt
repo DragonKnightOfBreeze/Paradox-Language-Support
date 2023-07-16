@@ -35,4 +35,6 @@ object ParadoxScriptTokenSets {
     
     @JvmField val SCRIPTED_VARIABLE_SEPARATOR_TOKENS = TokenSet.create(EQUAL_SIGN)
     @JvmField val PROPERTY_SEPARATOR_TOKENS = TokenSet.create(EQUAL_SIGN, LT_SIGN, GT_SIGN, LE_SIGN, GE_SIGN, NOT_EQUAL_SIGN)
+    
+    @JvmField val BLOCK_OR_ROOT_BLOCK = TokenSet.create(BLOCK, ROOT_BLOCK)
 }
