@@ -775,13 +775,13 @@ object ParadoxConfigHandler {
                 else -> ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
             }
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return
-            put(PlsCompletionKeys.scopeMatchedKey, scopeMatched)
+            put(PlsCompletionKeys.scopeMatched, scopeMatched)
         }
         
         ParadoxScriptExpressionSupport.complete(context, result)
         
-        put(PlsCompletionKeys.scopeContextKey, scopeContext)
-        put(PlsCompletionKeys.scopeMatchedKey, null)
+        put(PlsCompletionKeys.scopeContext, scopeContext)
+        put(PlsCompletionKeys.scopeMatched, null)
     }
     
     fun completeAliasName(aliasName: String, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {

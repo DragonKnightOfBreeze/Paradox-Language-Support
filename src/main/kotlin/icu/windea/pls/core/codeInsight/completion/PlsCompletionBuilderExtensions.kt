@@ -102,11 +102,12 @@ fun CompletionResultSet.addScriptExpressionElement(
         completeWithValue -> targetConfig?.isBlock ?: false
         else -> false
     }
+    val finalLookupString = lookupString.quoteIfNecessary()
     //这里ID不一定等同于lookupString
     val id = when {
-        constantValue != null -> "$lookupString = $constantValue"
-        insertCurlyBraces -> "$lookupString = {...}"
-        else -> lookupString
+        constantValue != null -> "$finalLookupString = $constantValue"
+        insertCurlyBraces -> "$finalLookupString = {...}"
+        else -> finalLookupString
     }
     //排除重复项
     if(context.completionIds?.add(id) == false) return
@@ -114,8 +115,8 @@ fun CompletionResultSet.addScriptExpressionElement(
     val isKeyOrValueOnly = context.contextElement is ParadoxScriptPropertyKey || context.isKey != true
     val isKey = context.isKey == true
     var lookupElement = when {
-        element != null -> LookupElementBuilder.create(element, lookupString)
-        else -> LookupElementBuilder.create(lookupString)
+        element != null -> LookupElementBuilder.create(element, finalLookupString) //quote if necessary
+        else -> LookupElementBuilder.create(finalLookupString) //quote if necessary
     }
     if(localizedNames.isNotEmpty()) {
         //这样就可以了
@@ -132,6 +133,9 @@ fun CompletionResultSet.addScriptExpressionElement(
     }
     if(icon != null) {
         lookupElement = lookupElement.withIcon(getIconToUse(icon, config))
+    }
+    if(presentableText == null && lookupString != finalLookupString) {
+        presentableText = lookupString //always show unquoted lookup string
     }
     if(presentableText != null) {
         lookupElement = lookupElement.withPresentableText(presentableText!!)

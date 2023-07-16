@@ -12,47 +12,6 @@ import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.model.*
 
-object PlsCompletionKeys
-
-val PlsCompletionKeys.completionIdsKey by lazy { keyOf<MutableSet<String>>("paradoxCompletion.completionIds") }
-val PlsCompletionKeys.parametersKey by lazy { keyOf<CompletionParameters>("paradoxCompletion.parameters") }
-val PlsCompletionKeys.contextElementKey by lazy { keyOf<PsiElement>("paradoxCompletion.contextElement") }
-val PlsCompletionKeys.originalFileKey by lazy { keyOf<PsiFile>("paradoxCompletion.originalFile") }
-val PlsCompletionKeys.quotedKey by lazy { keyOf<Boolean>("paradoxCompletion.quoted") { false } }
-val PlsCompletionKeys.rightQuotedKey by lazy { keyOf<Boolean>("paradoxCompletion.rightQuoted") }
-val PlsCompletionKeys.offsetInParentKey by lazy { keyOf<Int>("paradoxCompletion.offsetInParent") }
-val PlsCompletionKeys.keywordKey by lazy { keyOf<String>("paradoxCompletion.keyword") }
-val PlsCompletionKeys.startOffsetKey by lazy { keyOf<Int>("paradoxCompletion.startOffset") }
-val PlsCompletionKeys.isKeyKey by lazy { keyOf<Boolean>("paradoxCompletion.isKey") }
-val PlsCompletionKeys.configKey by lazy { keyOf<CwtConfig<*>>("paradoxCompletion.config") }
-val PlsCompletionKeys.configsKey by lazy { keyOf<Collection<CwtConfig<*>>>("paradoxCompletion.configs") }
-val PlsCompletionKeys.configGroupKey by lazy { keyOf<CwtConfigGroup>("paradoxCompletion.configGroup") }
-val PlsCompletionKeys.scopeContextKey by lazy { keyOf<ParadoxScopeContext>("paradoxCompletion.scopeContext") }
-val PlsCompletionKeys.scopeMatchedKey by lazy { keyOf<Boolean>("paradoxCompletion.scopeMatched") { true } }
-val PlsCompletionKeys.scopeNameKey by lazy { keyOf<String>("paradoxCompletion.scopeName") }
-val PlsCompletionKeys.scopeGroupNameKey by lazy { keyOf<String>("paradoxCompletion.scopeGroupName") }
-val PlsCompletionKeys.isIntKey by lazy { keyOf<Boolean>("paradoxCompletion.isInt") }
-
-var ProcessingContext.completionIds by PlsCompletionKeys.completionIdsKey
-var ProcessingContext.parameters by PlsCompletionKeys.parametersKey
-var ProcessingContext.contextElement by PlsCompletionKeys.contextElementKey
-var ProcessingContext.originalFile by PlsCompletionKeys.originalFileKey
-var ProcessingContext.quoted by PlsCompletionKeys.quotedKey
-var ProcessingContext.rightQuoted by PlsCompletionKeys.rightQuotedKey
-var ProcessingContext.offsetInParent by PlsCompletionKeys.offsetInParentKey
-var ProcessingContext.keyword by PlsCompletionKeys.keywordKey
-var ProcessingContext.startOffset by PlsCompletionKeys.startOffsetKey
-var ProcessingContext.isKey: Boolean? by PlsCompletionKeys.isKeyKey
-var ProcessingContext.config by PlsCompletionKeys.configKey
-var ProcessingContext.configs by PlsCompletionKeys.configsKey
-var ProcessingContext.configGroup by PlsCompletionKeys.configGroupKey
-var ProcessingContext.scopeContext by PlsCompletionKeys.scopeContextKey
-var ProcessingContext.scopeMatched by PlsCompletionKeys.scopeMatchedKey
-var ProcessingContext.scopeName by PlsCompletionKeys.scopeNameKey
-var ProcessingContext.scopeGroupName by PlsCompletionKeys.scopeGroupNameKey
-var ProcessingContext.isInt by PlsCompletionKeys.isIntKey
-
-
 fun PsiElement.getKeyword(offsetInParent: Int): String {
     return text.substring(0, offsetInParent).unquote()
 }

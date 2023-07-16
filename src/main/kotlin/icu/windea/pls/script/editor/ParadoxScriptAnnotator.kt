@@ -34,6 +34,8 @@ class ParadoxScriptAnnotator : Annotator {
     
     private fun annotateFile(file: ParadoxScriptFile, holder: AnnotationHolder) {
         annotateInlineScriptFile(file, holder)
+        val definitionInfo = file.definitionInfo
+        if(definitionInfo != null) annotateDefinition(file, holder, definitionInfo)
     }
     
     private fun annotateInlineScriptFile(file: ParadoxScriptFile, holder: AnnotationHolder) {
@@ -48,11 +50,13 @@ class ParadoxScriptAnnotator : Annotator {
     
     private fun annotateProperty(element: ParadoxScriptProperty, holder: AnnotationHolder) {
         val definitionInfo = element.definitionInfo
-        if(definitionInfo != null) return annotateDefinition(element, holder, definitionInfo)
+        if(definitionInfo != null) annotateDefinition(element, holder, definitionInfo)
     }
     
-    private fun annotateDefinition(element: ParadoxScriptProperty, holder: AnnotationHolder, definitionInfo: ParadoxDefinitionInfo) {
-        holder.newSilentAnnotation(INFORMATION).range(element.propertyKey).textAttributes(Keys.DEFINITION_KEY).create()
+    private fun annotateDefinition(element: ParadoxScriptDefinitionElement, holder: AnnotationHolder, definitionInfo: ParadoxDefinitionInfo) {
+        if(element is ParadoxScriptProperty) {
+            holder.newSilentAnnotation(INFORMATION).range(element.propertyKey).textAttributes(Keys.DEFINITION_KEY).create()
+        }
         val nameField = definitionInfo.typeConfig.nameField
         if(nameField != null) {
             //如果存在，高亮定义名对应的字符串（可能还有其他高亮）
