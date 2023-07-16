@@ -184,7 +184,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val localeConfig = localisation.localeConfig ?: preferredParadoxLocale()
         val text = localisation.text
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), text, fileInfo) }
-        tempFile.putUserData(PlsKeys.injectedLocaleConfigKey, localeConfig)
+        tempFile.putUserData(PlsKeys.injectedLocaleConfig, localeConfig)
         //return contentFactory.createDocument(project, tempFile)
         return FileDocumentFragmentContent(project, documentContent, localisation.textRange, tempFile)
     }

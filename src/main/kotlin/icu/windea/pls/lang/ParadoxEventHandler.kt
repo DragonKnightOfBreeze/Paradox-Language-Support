@@ -104,7 +104,7 @@ object ParadoxEventHandler {
      * TODO 兼容内联和事件继承的情况。
      */
     fun getInvocations(definition: ParadoxScriptDefinitionElement): Set<String> {
-        return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedEventInvocationsKey) {
+        return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedEventInvocations) {
             val value = doGetInvocations(definition)
             CachedValueProvider.Result(value, definition)
         }
@@ -139,7 +139,7 @@ object ParadoxEventHandler {
     }
 }
 
-val PlsKeys.cachedEventInvocationsKey by lazy { Key.create<CachedValue<Set<String>>>("paradox.cached.event.invocations") }
+val PlsKeys.cachedEventInvocations by lazy { Key.create<CachedValue<Set<String>>>("paradox.cached.event.invocations") }
 val CwtMemberConfig.Keys.eventEventTypes by lazy { Key.create<Set<String>>("paradox.event.types") }
 val ParadoxDefinitionInfo.Keys.eventEventType by lazy { Key.create<String>("paradox.event.type") }
 val ParadoxDefinitionInfo.Keys.eventEventScope by lazy { Key.create<String>("paradox.event.scope") }

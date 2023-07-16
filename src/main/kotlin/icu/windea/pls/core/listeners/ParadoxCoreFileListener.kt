@@ -104,12 +104,12 @@ class ParadoxCoreFileListener : AsyncFileListener {
     private fun doClearRootInfo(rootFile: VirtualFile?) {
         if(rootFile == null) return
         //清空根目录信息缓存
-        rootFile.tryPutUserData(PlsKeys.rootInfoStatusKey, null)
+        rootFile.tryPutUserData(PlsKeys.rootInfoStatus, null)
     }
     
     private fun doClearFileInfo(file: VirtualFile?) {
         if(file == null) return
-        file.tryPutUserData(PlsKeys.fileInfoStatusKey, null)
+        file.tryPutUserData(PlsKeys.fileInfoStatus, null)
     }
     
     private fun doRefreshInlineScripts() {

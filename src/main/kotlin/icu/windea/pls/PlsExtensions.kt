@@ -224,8 +224,8 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
     return when {
         from == null -> null
         from is CwtLocalisationLocaleConfig -> from
-        from is VirtualFile -> from.getUserData(PlsKeys.injectedLocaleConfigKey)
-        from is PsiFile -> from.virtualFile?.getUserData(PlsKeys.injectedLocaleConfigKey)
+        from is VirtualFile -> from.getUserData(PlsKeys.injectedLocaleConfig)
+        from is PsiFile -> from.virtualFile?.getUserData(PlsKeys.injectedLocaleConfig)
             ?: selectLocaleFromPsiFile(from)
         from is ParadoxLocalisationLocale -> from.name.toLocale(from)
         from is ParadoxLocalisationPropertyList -> selectLocale(from.locale)
@@ -254,7 +254,7 @@ private fun String.toLocale(from: PsiElement): CwtLocalisationLocaleConfig? {
 //region PsiElement Extensions
 val Project.paradoxLibrary: ParadoxLibrary
     get() {
-        return this.getOrPutUserData(PlsKeys.libraryKey) {
+        return this.getOrPutUserData(PlsKeys.library) {
             ParadoxLibrary(this)
         }
     }
@@ -293,17 +293,6 @@ val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorInfo?
         val colorId = this.name ?: return null
         return ParadoxTextColorHandler.getInfo(colorId, project, this)
     }
-
-fun ParadoxScriptValue.isNullLike(): Boolean {
-    return when {
-        this is ParadoxScriptBlock -> this.isEmpty
-        this is ParadoxScriptString -> this.textMatches("")
-        this is ParadoxScriptInt -> this.text.toIntOrNull() == 0 //兼容0.0和0.00这样的情况
-        this is ParadoxScriptFloat -> this.text.toIntOrNull() == 0 //兼容0.0和0.00这样的情况
-        this is ParadoxScriptBoolean -> this.textMatches("no")
-        else -> false
-    }
-}
 //endregion
 
 //region Documentation Extensions

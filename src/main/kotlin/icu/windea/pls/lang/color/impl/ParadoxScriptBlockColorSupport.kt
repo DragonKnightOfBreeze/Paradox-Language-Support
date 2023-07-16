@@ -15,7 +15,7 @@ import java.awt.*
 class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
     override fun getColor(element: PsiElement): Color? {
         if(element !is ParadoxScriptBlock) return null
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColorKey) {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColor) {
             val value = try {
                 doGetColor(element)
             } catch(e: Exception) {

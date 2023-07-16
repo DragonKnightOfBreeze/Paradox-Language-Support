@@ -42,7 +42,7 @@ object ParadoxElementPathHandler {
         }
         if(current is PsiFile) {
             val virtualFile = selectFile(current)
-            val injectedElementPathPrefix = virtualFile?.getUserData(PlsKeys.injectedElementPathPrefixKey)
+            val injectedElementPathPrefix = virtualFile?.getUserData(PlsKeys.injectedElementPathPrefix)
             if(injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
                 originalSubPaths.addAll(0, injectedElementPathPrefix.subPaths.map { it.rawSubPath })
             }
@@ -77,7 +77,7 @@ object ParadoxElementPathHandler {
         }
         if(current.tokenType == ParadoxScriptStubElementTypes.FILE) {
             val virtualFile = file
-            val injectedElementPathPrefix = virtualFile.getUserData(PlsKeys.injectedElementPathPrefixKey)
+            val injectedElementPathPrefix = virtualFile.getUserData(PlsKeys.injectedElementPathPrefix)
             if(injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
                 originalSubPaths.addAll(0, injectedElementPathPrefix.subPaths.map { it.rawSubPath })
             }

@@ -19,7 +19,7 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
     
     override fun getColor(element: PsiElement): Color? {
         if(element !is ParadoxScriptColor) return null
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColorKey) {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColor) {
             val value = try {
                 doGetColor(element)
             } catch(e: Exception) {

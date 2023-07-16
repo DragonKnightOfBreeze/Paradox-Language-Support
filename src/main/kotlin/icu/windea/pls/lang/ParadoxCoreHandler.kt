@@ -39,30 +39,30 @@ object ParadoxCoreHandler {
         if(!runCatching { rootFile.isValid }.getOrDefault(true)) return null //注意这里可能会抛出异常
         
         //首先尝试获取注入的rootInfo
-        val injectedRootInfo = rootFile.getUserData(PlsKeys.injectedRootInfoKey)
+        val injectedRootInfo = rootFile.getUserData(PlsKeys.injectedRootInfo)
         if(injectedRootInfo != null) return injectedRootInfo
         
-        val rootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
+        val rootInfo = rootFile.getUserData(PlsKeys.rootInfo)
         if(!refresh) return rootInfo
-        val rootInfoStatus = rootFile.getUserData(PlsKeys.rootInfoStatusKey)
+        val rootInfoStatus = rootFile.getUserData(PlsKeys.rootInfoStatus)
         if(rootInfoStatus != null) return rootInfo
         
         try {
             val newRootInfo = doGetRootInfo(rootFile)
             if(newRootInfo != null) {
-                rootFile.tryPutUserData(PlsKeys.rootInfoStatusKey, true)
-                rootFile.tryPutUserData(PlsKeys.rootInfoKey, newRootInfo)
+                rootFile.tryPutUserData(PlsKeys.rootInfoStatus, true)
+                rootFile.tryPutUserData(PlsKeys.rootInfo, newRootInfo)
                 onAddRootInfo(rootFile, newRootInfo)
             } else {
-                rootFile.tryPutUserData(PlsKeys.rootInfoStatusKey, false)
+                rootFile.tryPutUserData(PlsKeys.rootInfoStatus, false)
                 if(rootInfo != null) onRemoveRootInfo(rootFile, rootInfo)
             }
-            rootFile.tryPutUserData(PlsKeys.rootInfoKey, newRootInfo)
+            rootFile.tryPutUserData(PlsKeys.rootInfo, newRootInfo)
             return newRootInfo
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
             thisLogger().warn(e)
-            rootFile.tryPutUserData(PlsKeys.rootInfoStatusKey, null)
+            rootFile.tryPutUserData(PlsKeys.rootInfoStatus, null)
             return null
         }
     }
@@ -152,12 +152,12 @@ object ParadoxCoreHandler {
         if(!runCatching { file.isValid }.getOrDefault(true)) return null //注意这里可能会抛出异常
         
         //首先尝试获取注入的fileInfo
-        val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfoKey)
+        val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfo)
         if(injectedFileInfo != null) return injectedFileInfo
         
-        val fileInfo = file.getUserData(PlsKeys.fileInfoKey)
+        val fileInfo = file.getUserData(PlsKeys.fileInfo)
         if(!refresh) return fileInfo
-        val fileInfoStatus = file.getUserData(PlsKeys.fileInfoStatusKey)
+        val fileInfoStatus = file.getUserData(PlsKeys.fileInfoStatus)
         if(fileInfoStatus != null) return fileInfo
         
         //这里不能直接获取file.parent，需要基于filePath尝试获取parent，因为file可能是内存文件
@@ -170,15 +170,15 @@ object ParadoxCoreHandler {
             val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
             if(rootInfo != null) {
                 val newFileInfo = doGetFileInfo(file, filePath, fileName, rootInfo)
-                file.tryPutUserData(PlsKeys.fileInfoStatusKey, true)
-                file.tryPutUserData(PlsKeys.fileInfoKey, newFileInfo)
+                file.tryPutUserData(PlsKeys.fileInfoStatus, true)
+                file.tryPutUserData(PlsKeys.fileInfo, newFileInfo)
                 return newFileInfo
             }
             currentFilePath = currentFilePath.parent ?: break
             currentFile = currentFile?.parent ?: if(isLightFile) VfsUtil.findFile(currentFilePath, false) else break
         }
-        file.tryPutUserData(PlsKeys.fileInfoStatusKey, false)
-        file.tryPutUserData(PlsKeys.fileInfoKey, null)
+        file.tryPutUserData(PlsKeys.fileInfoStatus, false)
+        file.tryPutUserData(PlsKeys.fileInfo, null)
         return null
     }
     

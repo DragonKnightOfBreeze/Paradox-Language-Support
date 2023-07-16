@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 @Suppress("UNUSED_PARAMETER")
 class GenerateLocalisationsInFileHandler : CodeInsightActionHandler {
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
-        val contextKey = PlsKeys.generateLocalisationsInFileContextKey
+        val contextKey = PlsKeys.generateLocalisationsInFileContext
         val context = file.getUserData(contextKey)
             ?: getDefaultContext(project, editor, file)
             ?: return

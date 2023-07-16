@@ -24,7 +24,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                 when {
                     //predefined localisation command
                     resolved is CwtProperty -> {
-                        val config = resolved.getUserData(PlsKeys.cwtConfigKey)
+                        val config = resolved.getUserData(PlsKeys.cwtConfig)
                         when(config) {
                             is CwtLocalisationCommandConfig -> {
                                 val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return

@@ -382,7 +382,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getConfigExpression(element: ParadoxLocalisationCommandScope): String? {
         val resolved = element.reference.resolve()
-        val config = resolved?.getUserData(PlsKeys.cwtConfigKey)
+        val config = resolved?.getUserData(PlsKeys.cwtConfig)
         return when {
             config is CwtLocalisationLinkConfig -> "localisation scope"
             config is CwtSystemLinkConfig -> "system link"
@@ -437,7 +437,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getConfigExpression(element: ParadoxLocalisationCommandField): String? {
         val resolved = element.reference?.resolve()
-        val config = resolved?.getUserData(PlsKeys.cwtConfigKey)
+        val config = resolved?.getUserData(PlsKeys.cwtConfig)
         return when {
             config is CwtLocalisationCommandConfig -> "localisation command"
             resolved is ParadoxScriptProperty -> "<scripted_loc>"

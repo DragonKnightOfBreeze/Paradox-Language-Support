@@ -24,7 +24,7 @@ object ParadoxLocalisationHandler {
     }
     
     private fun doGetInfoFromCache(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationInfoKey) {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationInfo) {
             ProgressManager.checkCanceled()
             val value = doGetInfo(element)
             CachedValueProvider.Result.create(value, element)

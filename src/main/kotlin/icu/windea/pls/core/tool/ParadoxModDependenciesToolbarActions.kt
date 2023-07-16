@@ -25,7 +25,7 @@ interface ParadoxModDependenciesToolbarActions {
             val gameType = settings.gameType.orDefault()
             val descriptor = ParadoxDirectoryDescriptor(chooseMultiple = true)
                 .withTitle(PlsBundle.message("mod.dependencies.add.title"))
-                .apply { putUserData(PlsDataKeys.gameTypeKey, gameType) }
+                .apply { putUserData(PlsDataKeys.gameType, gameType) }
             FileChooser.chooseFiles(descriptor, project, tableView, null) { files ->
                 try {
                     var count = 0

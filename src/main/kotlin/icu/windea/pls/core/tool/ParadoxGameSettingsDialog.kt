@@ -7,7 +7,6 @@ import com.intellij.openapi.ui.*
 import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDescriptor
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.listeners.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.model.*
@@ -50,7 +49,7 @@ class ParadoxGameSettingsDialog(
                 val descriptor = ParadoxDirectoryDescriptor()
                     .withTitle(PlsBundle.message("game.settings.gameDirectory.title"))
                     .asBrowseFolderDescriptor()
-                    .apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
+                    .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
                     .text(settings.gameDirectory.orEmpty())
                     .columns(36)

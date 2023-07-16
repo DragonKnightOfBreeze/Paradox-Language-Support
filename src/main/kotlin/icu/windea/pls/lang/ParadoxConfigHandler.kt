@@ -47,7 +47,7 @@ object ParadoxConfigHandler {
     }
     
     private fun doGetConfigContextFromCache(element: ParadoxScriptMemberElement): ParadoxConfigContext? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigContextKey) {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigContext) {
             ProgressManager.checkCanceled()
             val value = doGetConfigContext(element)
             //invalidated on ScriptFileTracker
@@ -142,7 +142,7 @@ object ParadoxConfigHandler {
     }
     
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>>? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsCacheKey) {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsCache) {
             val value = ConcurrentHashMap<String, List<CwtMemberConfig<*>>>()
             //invalidated on ScriptFileTracker
             val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
@@ -328,7 +328,7 @@ object ParadoxConfigHandler {
     }
     
     private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMemberElement): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedChildOccurrenceMapCacheKey) {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedChildOccurrenceMapCache) {
             val value = ConcurrentHashMap<String, Map<CwtDataExpression, Occurrence>>()
             //invalidated on ScriptFileTracker
             val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
@@ -456,7 +456,7 @@ object ParadoxConfigHandler {
             return
         }
         //进行特殊代码高亮时，可能需要跳过字符串表达式中的参数部分
-        val parameterRanges = element.getUserData(PlsKeys.parameterRangesKey).orEmpty()
+        val parameterRanges = element.getUserData(PlsKeys.parameterRanges).orEmpty()
         if(parameterRanges.isEmpty()) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
         } else {
@@ -1351,21 +1351,21 @@ object ParadoxConfigHandler {
     fun resolvePredefinedScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val systemLink = configGroup.systemLinks[name] ?: return null
         val resolved = systemLink.pointer.element ?: return null
-        resolved.putUserData(PlsKeys.cwtConfigKey, systemLink)
+        resolved.putUserData(PlsKeys.cwtConfig, systemLink)
         return resolved
     }
     
     fun resolveScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.linksAsScopeNotData[name] ?: return null
         val resolved = linkConfig.pointer.element ?: return null
-        resolved.putUserData(PlsKeys.cwtConfigKey, linkConfig)
+        resolved.putUserData(PlsKeys.cwtConfig, linkConfig)
         return resolved
     }
     
     fun resolveValueLinkValue(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.linksAsValueNotData[name] ?: return null
         val resolved = linkConfig.pointer.element ?: return null
-        resolved.putUserData(PlsKeys.cwtConfigKey, linkConfig)
+        resolved.putUserData(PlsKeys.cwtConfig, linkConfig)
         return resolved
     }
     
@@ -1373,7 +1373,7 @@ object ParadoxConfigHandler {
         val enumConfig = configGroup.enums[enumName] ?: return null
         val enumValueConfig = enumConfig.valueConfigMap.get(name) ?: return null
         val resolved = enumValueConfig.pointer.element ?: return null
-        resolved.putUserData(PlsKeys.cwtConfigKey, enumValueConfig)
+        resolved.putUserData(PlsKeys.cwtConfig, enumValueConfig)
         return resolved
     }
     
@@ -1385,7 +1385,7 @@ object ParadoxConfigHandler {
             val valueSetValueConfig = valueSetConfig?.valueConfigMap?.get(name)
             val predefinedResolved = valueSetValueConfig?.pointer?.element
             if(predefinedResolved != null) {
-                predefinedResolved.putUserData(PlsKeys.cwtConfigKey, valueSetValueConfig)
+                predefinedResolved.putUserData(PlsKeys.cwtConfig, valueSetValueConfig)
                 return predefinedResolved
             }
         }
@@ -1401,7 +1401,7 @@ object ParadoxConfigHandler {
                 val valueSetValueConfig = valueSetConfig?.valueConfigMap?.get(name)
                 val predefinedResolved = valueSetValueConfig?.pointer?.element
                 if(predefinedResolved != null) {
-                    predefinedResolved.putUserData(PlsKeys.cwtConfigKey, valueSetValueConfig)
+                    predefinedResolved.putUserData(PlsKeys.cwtConfig, valueSetValueConfig)
                     return predefinedResolved
                 }
             }
@@ -1412,14 +1412,14 @@ object ParadoxConfigHandler {
     fun resolvePredefinedLocalisationScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.localisationLinks[name] ?: return null
         val resolved = linkConfig.pointer.element ?: return null
-        resolved.putUserData(PlsKeys.cwtConfigKey, linkConfig)
+        resolved.putUserData(PlsKeys.cwtConfig, linkConfig)
         return resolved
     }
     
     fun resolvePredefinedLocalisationCommand(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val commandConfig = configGroup.localisationCommands[name] ?: return null
         val resolved = commandConfig.pointer.element ?: return null
-        resolved.putUserData(PlsKeys.cwtConfigKey, commandConfig)
+        resolved.putUserData(PlsKeys.cwtConfig, commandConfig)
         return resolved
     }
     //endregion

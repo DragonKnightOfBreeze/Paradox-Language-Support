@@ -27,7 +27,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                 when {
                     //system link or localisation scope
                     resolved is CwtProperty -> {
-                        val config = resolved.getUserData(PlsKeys.cwtConfigKey)
+                        val config = resolved.getUserData(PlsKeys.cwtConfig)
                         when(config) {
                             is CwtLocalisationLinkConfig -> {
                                 val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return

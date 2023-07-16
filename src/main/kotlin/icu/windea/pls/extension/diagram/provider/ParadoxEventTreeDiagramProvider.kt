@@ -142,7 +142,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                         }
                         nodeItem is PsiFile -> {
                             //事件图片
-                            val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrameKey) ?: 0)
+                            val iconUrl = ParadoxDdsUrlResolver.resolveByFile(nodeItem.virtualFile, nodeElement.getUserData(PlsKeys.iconFrame) ?: 0)
                             if(iconUrl.isEmpty()) return null
                             val icon = IconLoader.findIcon(iconUrl.toFileUrl())
                             icon?.toLabel()

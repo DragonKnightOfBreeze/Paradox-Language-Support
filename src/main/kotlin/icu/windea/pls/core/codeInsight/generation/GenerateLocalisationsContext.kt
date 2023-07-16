@@ -17,4 +17,4 @@ data class GenerateLocalisationsContext(
     lateinit var file: PsiFile
 }
 
-val PlsKeys.generateLocalisationsContextKey by lazy { Key.create<GenerateLocalisationsContext>("paradox.generateLocalisationContext") }
+val PlsKeys.generateLocalisationsContext by lazy { Key.create<GenerateLocalisationsContext>("paradox.generateLocalisationContext") }

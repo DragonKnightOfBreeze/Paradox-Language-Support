@@ -35,7 +35,7 @@ object ParadoxDefinitionHandler {
         //快速判断
         if(runCatching { element.greenStub }.getOrNull()?.isValid() == false) return null
         //如果不能使用缓存，需要重新获取
-        val notUseCache = element.getUserData(PlsKeys.isIncompleteKey) == true
+        val notUseCache = element.getUserData(PlsKeys.isIncomplete) == true
         if(notUseCache) {
             val file = element.containingFile
             return doGetInfo(element, file)
@@ -45,7 +45,7 @@ object ParadoxDefinitionHandler {
     }
     
     private fun doGetInfoFromCache(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfo) {
             ProgressManager.checkCanceled()
             val file = element.containingFile ?: return@getCachedValue null
             val value = doGetInfo(element, file)
@@ -645,7 +645,7 @@ object ParadoxDefinitionHandler {
     }
     
     private fun doGetPrimaryLocalisationKeyFromCache(element: ParadoxScriptDefinitionElement): String? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisationKeyKey) {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisationKey) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisationKey(element)
             val tracker = ParadoxPsiModificationTracker.getInstance(element.project).LocalisationFileTracker
@@ -672,7 +672,7 @@ object ParadoxDefinitionHandler {
     }
     
     private fun doGetPrimaryLocalisationFromCache(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? =
-        CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisationKey) {
+        CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisation) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisation(element)
             val tracker = ParadoxPsiModificationTracker.getInstance(element.project).LocalisationFileTracker
@@ -698,7 +698,7 @@ object ParadoxDefinitionHandler {
     }
     
     private fun doGetPrimaryLocalisationsFromCache(element: ParadoxScriptDefinitionElement): Set<ParadoxLocalisationProperty> {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisationsKey) {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisations) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisations(element)
             val tracker = ParadoxPsiModificationTracker.getInstance(element.project).LocalisationFileTracker
@@ -726,7 +726,7 @@ object ParadoxDefinitionHandler {
     }
     
     private fun doGetPrimaryImageFromCache(element: ParadoxScriptDefinitionElement): PsiFile? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryImageKey) {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryImage) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryImage(element)
             val tracker = PsiModificationTracker.MODIFICATION_COUNT
@@ -743,7 +743,7 @@ object ParadoxDefinitionHandler {
             val resolved = primaryImage.locationExpression.resolve(element, definitionInfo, project)
             val file = resolved?.file
             if(file == null) continue
-            element.putUserData(PlsKeys.iconFrameKey, resolved.frame)
+            element.putUserData(PlsKeys.iconFrame, resolved.frame)
             return file
         }
         return null
@@ -754,7 +754,7 @@ object ParadoxDefinitionHandler {
     }
     
     private fun doGetLocalizedNamesFromCache(element: ParadoxScriptDefinitionElement): Set<String> {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionLocalizedNamesKey) {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionLocalizedNames) {
             ProgressManager.checkCanceled()
             val value = doGetLocalizedNames(element)
             val tracker = ParadoxPsiModificationTracker.getInstance(element.project).LocalisationFileTracker

@@ -22,9 +22,9 @@ class GenerateLocalisationsInFileFix(
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if(editor == null) return
         val handler = GenerateLocalisationsInFileHandler()
-        file.putUserData(PlsKeys.generateLocalisationsInFileContextKey, context)
+        file.putUserData(PlsKeys.generateLocalisationsInFileContext, context)
         handler.invoke(project, editor, file)
-        file.putUserData(PlsKeys.generateLocalisationsInFileContextKey, null)
+        file.putUserData(PlsKeys.generateLocalisationsInFileContext, null)
     }
     
     //true so that we can run MissingLocalisationInspection on mod files scope and generate all missing localisations

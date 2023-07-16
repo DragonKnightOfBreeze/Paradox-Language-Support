@@ -30,7 +30,7 @@ import java.util.*
 object ParadoxParameterHandler {
     fun getContextInfo(context: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
         if(!ParadoxParameterSupport.isContext(context)) return null
-        return CachedValuesManager.getCachedValue(context, PlsKeys.cachedParametersKey) {
+        return CachedValuesManager.getCachedValue(context, PlsKeys.cachedParameters) {
             val value = doGetContextInfo(context)
             CachedValueProvider.Result(value, context)
         }

@@ -111,7 +111,7 @@ class ParadoxScriptAnnotator : Annotator {
                 if(elementText.contains('$')) {
                     val parameterRanges = getParameterRanges(element)
                     //缓存参数文本范围
-                    element.putUserData(PlsKeys.parameterRangesKey, parameterRanges)
+                    element.putUserData(PlsKeys.parameterRanges, parameterRanges)
                     //如果参数直接作为整个脚本表达式，不需要进行额外的高亮
                     if(parameterRanges.singleOrNull()?.length == elementText.unquote().length) {
                         return

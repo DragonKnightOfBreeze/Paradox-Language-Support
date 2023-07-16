@@ -66,11 +66,11 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
                 //这里需要特殊处理一下，标记属性的值是否未填写
                 val incomplete = !quoted && keyword.isEmpty()
                 try {
-                    propertyElement.putUserData(PlsKeys.isIncompleteKey, incomplete)
+                    propertyElement.putUserData(PlsKeys.isIncomplete, incomplete)
                     //进行提示
                     ParadoxConfigHandler.addPropertyValueCompletions(element, propertyElement, context, resultToUse)
                 } finally {
-                    propertyElement.putUserData(PlsKeys.isIncompleteKey, null)
+                    propertyElement.putUserData(PlsKeys.isIncomplete, null)
                 }
             }
         }

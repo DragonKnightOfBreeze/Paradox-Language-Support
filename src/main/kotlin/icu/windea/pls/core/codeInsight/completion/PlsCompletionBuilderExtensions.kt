@@ -25,12 +25,12 @@ import javax.swing.*
 
 fun LookupElementBuilder.withScopeMatched(scopeMatched: Boolean): LookupElementBuilder {
     if(scopeMatched) return this
-    putUserData(PlsKeys.scopeMismatchedKey, true)
+    putUserData(PlsKeys.scopeMismatched, true)
     return withItemTextForeground(JBColor.GRAY)
 }
 
 fun LookupElement.withPriority(priority: Double?, offset: Double = 0.0): LookupElement {
-    val scopeMatched = getUserData(PlsKeys.scopeMismatchedKey) != true
+    val scopeMatched = getUserData(PlsKeys.scopeMismatched) != true
     if(priority == null && scopeMatched) return this
     val finalPriority = (priority ?: 0.0) + offset + (if(scopeMatched) 0 else PlsCompletionPriorities.scopeMismatchOffset)
     return PrioritizedLookupElement.withPriority(this, finalPriority)
@@ -122,7 +122,7 @@ fun CompletionResultSet.addScriptExpressionElement(
         lookupElement = lookupElement.withLookupStrings(localizedNames)
     }
     if(!scopeMatched) {
-        lookupElement.putUserData(PlsKeys.scopeMismatchedKey, true)
+        lookupElement.putUserData(PlsKeys.scopeMismatched, true)
     }
     if(bold) {
         lookupElement = lookupElement.bold()

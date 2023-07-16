@@ -19,7 +19,7 @@ object ParadoxTextColorHandler {
     }
     
     private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
-        return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedTextColorInfoKey) {
+        return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedTextColorInfo) {
             val value = doGetInfo(definition)
             CachedValueProvider.Result.create(value, definition)
         }

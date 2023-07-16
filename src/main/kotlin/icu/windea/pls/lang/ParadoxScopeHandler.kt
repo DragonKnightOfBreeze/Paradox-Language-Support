@@ -186,7 +186,7 @@ object ParadoxScopeHandler {
     }
     
     private fun doGetScopeContextFromCache(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContext) {
             val file = element.containingFile ?: return@getCachedValue null
             val value = doGetScopeContextOfDefinition(element)
                 ?: doGetScopeContextOfDefinitionMember(element)
@@ -248,7 +248,7 @@ object ParadoxScopeHandler {
     }
     
     private fun doGetScopeContextFromCache(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContextKey) {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContext) {
             ProgressManager.checkCanceled()
             val file = element.containingFile ?: return@getCachedValue null
             val value = doGetScopeContextOfLocalisationCommandIdentifier(element)
@@ -263,7 +263,7 @@ object ParadoxScopeHandler {
         when {
             //system link or localisation scope
             prevResolved is CwtProperty -> {
-                val config = prevResolved.getUserData(PlsKeys.cwtConfigKey)
+                val config = prevResolved.getUserData(PlsKeys.cwtConfig)
                 when(config) {
                     is CwtLocalisationLinkConfig -> {
                         val prevPrevElement = prevElement.prevIdentifier

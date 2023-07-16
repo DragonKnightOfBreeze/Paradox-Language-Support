@@ -9,7 +9,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.core.tool.model.*
@@ -40,7 +39,7 @@ class ParadoxFromLauncherJsonV3Importer : ParadoxModImporter {
         }
         val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor("json")
             .withTitle(PlsBundle.message("mod.importer.launcherJson.title"))
-            .apply { putUserData(PlsDataKeys.gameTypeKey, gameType) }
+            .apply { putUserData(PlsDataKeys.gameType, gameType) }
         FileChooser.chooseFile(descriptor, project, tableView, defaultSelected) { file ->
             try {
                 val data = jsonMapper.readValue<ParadoxLauncherJsonV3>(file.inputStream)

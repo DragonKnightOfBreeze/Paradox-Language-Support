@@ -59,15 +59,13 @@ import javax.swing.*
 import javax.swing.text.*
 import kotlin.reflect.*
 
-//region RT Extensions
-fun String.unquotedTextRange(): TextRange {
-    val leftQuoted = this.isLeftQuoted()
-    val rightQuoted = this.isRightQuoted()
-    val startOffset = if(leftQuoted) 1 else 0
-    val endOffset = if(rightQuoted) length - 1 else length
-    return TextRange.create(startOffset, endOffset)
+//region Stdlib Extensions
+fun String.compareToIgnoreCase(other: String): Int {
+    return String.CASE_INSENSITIVE_ORDER.compare(this, other)
 }
+//endregion
 
+//region Common Extensions
 object CaseInsensitiveStringHashingStrategy : Hash.Strategy<String?> {
     override fun hashCode(s: String?): Int {
         return if(s == null) 0 else StringUtilRt.stringHashCodeInsensitive(s)
@@ -88,12 +86,14 @@ fun <V> caseInsensitiveStringKeyMap(): MutableMap<@CaseInsensitive String, V> {
     return Object2ObjectLinkedOpenCustomHashMap(CaseInsensitiveStringHashingStrategy)
 }
 
-fun String.compareToIgnoreCase(other: String): Int {
-    return String.CASE_INSENSITIVE_ORDER.compare(this, other)
+fun String.unquotedTextRange(): TextRange {
+    val leftQuoted = this.isLeftQuoted()
+    val rightQuoted = this.isRightQuoted()
+    val startOffset = if(leftQuoted) 1 else 0
+    val endOffset = if(rightQuoted) length - 1 else length
+    return TextRange.create(startOffset, endOffset)
 }
-//endregion
 
-//region Misc Extensions
 fun TextRange.unquote(text: String): TextRange {
     val leftQuoted = text.isLeftQuoted()
     val rightQuoted = text.isRightQuoted()
@@ -427,7 +427,7 @@ fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
 
 //endregion
 
-//region ASTNode Extensions
+//region AST Extensions
 fun <T : ASTNode> T.takeIf(elementType: IElementType): T? {
     return takeIf { it.elementType == elementType }
 }
@@ -512,7 +512,7 @@ fun LighterASTNode.internNode(tree: LighterAST): CharSequence? {
 }
 //endregion
 
-//region PsiElement Extensions
+//region PSI Extensions
 val PsiElement.startOffset get() = if(this is ASTDelegatePsiElement) this.node.startOffset else this.textRange.startOffset
 
 val PsiElement.endOffset get() = if(this is ASTDelegatePsiElement) this.node.let { it.startOffset + it.textLength } else this.textRange.endOffset

@@ -28,7 +28,7 @@ object ParadoxFileManager {
             Files.createDirectories(diffDirPath)
             val diffDirFile = VfsUtil.findFile(diffDirPath, false) ?: return null
             val tempFile = VfsUtil.copyFile(ParadoxFileManager, file, diffDirFile, fileName)
-            tempFile.putUserData(PlsKeys.injectedFileInfoKey, file.fileInfo)
+            tempFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
             return tempFile
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
@@ -49,7 +49,7 @@ object ParadoxFileManager {
             val path = diffDirPath.resolve(fileName)
             Files.writeString(path, text)
             val tempFile = VfsUtil.findFile(path, true) ?: return null
-            tempFile.putUserData(PlsKeys.injectedFileInfoKey, fileInfo)
+            tempFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
             return tempFile
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
@@ -66,7 +66,7 @@ object ParadoxFileManager {
         //为了兼容不同的lineSeparator，这里不能直接使用document.charSequence
         val text = file.toPsiFile(project)?.text ?: throw IllegalStateException()
         val lightFile = LightVirtualFile(name, text)
-        lightFile.putUserData(PlsKeys.injectedFileInfoKey, file.fileInfo)
+        lightFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
         return lightFile
     }
     
@@ -76,7 +76,7 @@ object ParadoxFileManager {
     @JvmStatic
     fun createLightFile(name: String, text: CharSequence, fileInfo: ParadoxFileInfo): VirtualFile {
         val lightFile = LightVirtualFile(name, text)
-        lightFile.putUserData(PlsKeys.injectedFileInfoKey, fileInfo)
+        lightFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
         return lightFile
     }
     
