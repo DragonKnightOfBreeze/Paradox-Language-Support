@@ -15,7 +15,7 @@ import java.util.*
 class ParadoxFileLocaleIndex : ScalarIndexExtension<String>() {
     companion object {
         @JvmField val NAME = ID.create<String, Void>("paradox.file.locale.index")
-        private const val VERSION = 27 //1.0.5
+        private const val VERSION = 32 //1.1.3
     }
     
     override fun getName() = NAME

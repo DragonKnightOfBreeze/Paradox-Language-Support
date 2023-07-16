@@ -15,7 +15,7 @@ import java.util.*
 class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo>() {
     companion object {
         @JvmField val NAME = ID.create<String, ParadoxFilePathInfo>("paradox.file.path.index")
-        private const val VERSION = 30 //1.0.8
+        private const val VERSION = 32 //1.1.3
         
         val EXCLUDED_DIRECTORIES = listOf(
             "_CommonRedist", "crash_reporter", "curated_save_games",

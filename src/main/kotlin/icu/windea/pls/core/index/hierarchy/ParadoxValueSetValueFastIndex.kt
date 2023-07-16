@@ -26,7 +26,7 @@ import java.io.*
 class ParadoxValueSetValueFastIndex : ParadoxHierarchyIndex<List<ParadoxValueSetValueInfo>>() {
     companion object {
         val NAME = ID.create<String, List<ParadoxValueSetValueInfo>>("paradox.valueSetValue.fast.index")
-        private const val VERSION = 30 //1.0.8
+        private const val VERSION = 32 //1.1.3
         private val INSTANCE by lazy { EXTENSION_POINT_NAME.findExtensionOrFail(ParadoxValueSetValueFastIndex::class.java) }
         
         @JvmStatic

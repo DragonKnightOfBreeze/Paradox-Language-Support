@@ -78,7 +78,6 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val argumentNames = mutableSetOf<String>()
         val contextNameRange = contextReferenceElement.propertyKey.textRange
         val arguments = mutableListOf<ParadoxParameterReferenceInfo>()
-        val startOffset = contextReferenceElement.startOffset
         contextReferenceElement.block?.processProperty p@{
             if(completionOffset != -1 && completionOffset in it.textRange) return@p true
             val k = it.propertyKey
