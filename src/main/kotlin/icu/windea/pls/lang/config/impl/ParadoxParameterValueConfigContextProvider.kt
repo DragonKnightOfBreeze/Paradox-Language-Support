@@ -14,7 +14,7 @@ import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 用于获取脚本参数值中的CWT规则上下文。
+ * 用于获取脚本参数的传入值和默认值中的CWT规则上下文。
  * 
  * * 基于语言注入功能实现。
  * * 正常提供代码高亮、引用解析、代码补全等高级语言功能。

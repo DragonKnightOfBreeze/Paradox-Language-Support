@@ -22,9 +22,11 @@ class CwtConfigGroupsImpl(
 		for((groupName, fileGroup) in fileGroups) {
 			val gameType = ParadoxGameType.resolve(groupName)
 			if(gameType != null) {
-				fileGroup.putAll(coreFileGroup)
+				val finalFileGroup = mutableMapOf<String, VirtualFile>()
+				finalFileGroup += coreFileGroup
+				finalFileGroup += fileGroup
 				val configInfo = CwtConfigGroupInfo(groupName)
-				val configGroup = CwtConfigGroupImpl(project, gameType, configInfo, fileGroup)
+				val configGroup = CwtConfigGroupImpl(project, gameType, configInfo, finalFileGroup)
 				configInfo.configGroup = configGroup
 				groups[groupName] = configGroup
 			}

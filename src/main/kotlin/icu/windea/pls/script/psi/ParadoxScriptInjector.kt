@@ -25,7 +25,7 @@ class ParadoxScriptInjector : MultiHostInjector {
     //see: org.intellij.plugins.intelliLang.inject.InjectorUtils
     
     companion object {
-        private val toInject = listOf(ParadoxScriptString::class.java)
+        private val toInject = listOf(ParadoxScriptString::class.java, ParadoxScriptParameter::class.java)
     }
     
     override fun elementsToInjectIn(): List<Class<out PsiElement>> {
