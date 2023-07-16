@@ -26,6 +26,10 @@ mod_descriptor = {
 		## cardinality = 0..inf
 		scalar
 	}
+	## cardinality = 0..1
+	dependencies = {
+		<mod_descriptor>
+	}
 	### Mod's supported game version, support "*" wildcard.
 	supported_version = scalar
 	### Mod's Steam workshop item id.
