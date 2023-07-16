@@ -116,8 +116,8 @@ object ParadoxDefinitionHandler {
         configGroup: CwtConfigGroup
     ): Boolean {
         //判断definition是否需要是scriptFile还是scriptProperty
-        val nameFromFileConfig = typeConfig.nameFromFile
-        if(nameFromFileConfig) {
+        val typePerFileConfig = typeConfig.typePerFile
+        if(typePerFileConfig) {
             if(element !is ParadoxScriptFile) return false
         } else {
             if(element !is ParadoxScriptProperty) return false
@@ -150,8 +150,8 @@ object ParadoxDefinitionHandler {
     ): Boolean {
         //判断definition是否需要是scriptFile还是scriptProperty
         val elementType = node.tokenType
-        val nameFromFileConfig = typeConfig.nameFromFile
-        if(nameFromFileConfig) {
+        val typePerFileConfig = typeConfig.typePerFile
+        if(typePerFileConfig) {
             if(elementType != ParadoxScriptStubElementTypes.FILE) return false
         } else {
             if(elementType != PROPERTY) return false
@@ -243,8 +243,8 @@ object ParadoxDefinitionHandler {
         typeConfig: CwtTypeConfig
     ): Boolean {
         //判断element是否需要是scriptFile还是scriptProperty
-        val nameFromFileConfig = typeConfig.nameFromFile
-        if(nameFromFileConfig) return false
+        val typePerFileConfig = typeConfig.typePerFile
+        if(typePerFileConfig) return false
         
         //判断path是否匹配
         val pathConfig = typeConfig.path ?: return false
