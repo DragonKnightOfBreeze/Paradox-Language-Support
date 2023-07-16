@@ -67,7 +67,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
             //extraArgs: offset?
             ParadoxParameterContextReferenceInfo.From.InContextReference -> {
                 val offset = extraArgs.getOrNull(0)?.castOrNull<Int>() ?: -1
-                expressionElement = element.parentOfType<ParadoxScriptStringExpressionElement>() ?: return null
+                expressionElement = element.parentOfType<ParadoxScriptStringExpressionElement>(withSelf = true) ?: return null
                 text = expressionElement.text ?: return null
                 if(text.isLeftQuoted()) return null
                 if(!text.contains("value:")) return null //快速判断

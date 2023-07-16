@@ -2,7 +2,8 @@ types = {
 	type[mod_descriptor] = {
 		path = "game"
 		path_file = descriptor.mod
-		name_from_file = yes
+		type_per_file = yes
+		name = name
 		images = {
 			## primary
 			## optional

@@ -71,11 +71,9 @@ class ParadoxScriptValueExpressionImpl(
         var pipeCount = 0
         var lastIsParameter = false
         for((index, node) in nodes.withIndex()) {
-            val isLast = index == nodes.lastIndex
             if(node is ParadoxTokenExpressionNode) {
                 pipeCount++
             } else {
-                if(isLast && node.text.isEmpty()) continue
                 if(!malformed && (node.text.isEmpty() || !isValid(node))) {
                     malformed = true
                 }
@@ -197,6 +195,8 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
         if(tokenIndex == -1) {
             tokenIndex = textLength
         }
+        if(index == tokenIndex && tokenIndex == textLength) break
+        //resolve node
         val nodeText = expression.substring(index, tokenIndex)
         val nodeRange = TextRange.create(index + offset, tokenIndex + offset)
         val node = when {
