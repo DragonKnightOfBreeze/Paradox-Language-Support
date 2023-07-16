@@ -3,7 +3,6 @@ package icu.windea.pls.core.index.hierarchy
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.indexing.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*

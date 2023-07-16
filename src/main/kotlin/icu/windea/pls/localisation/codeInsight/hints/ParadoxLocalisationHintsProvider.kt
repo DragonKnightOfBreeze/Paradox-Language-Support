@@ -8,7 +8,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.*
 
 @Suppress("UnstableApiUsage")

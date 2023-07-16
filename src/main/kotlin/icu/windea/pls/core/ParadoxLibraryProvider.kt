@@ -3,7 +3,6 @@ package icu.windea.pls.core
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 
 class ParadoxLibraryProvider : AdditionalLibraryRootsProvider() {

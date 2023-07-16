@@ -2,7 +2,7 @@ package icu.windea.pls.core.search.selector.chained
 
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 
 typealias ParadoxFileSelector = ChainedParadoxSelector<VirtualFile>
 

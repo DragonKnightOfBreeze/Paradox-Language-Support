@@ -6,7 +6,6 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.encoding.*
 import com.intellij.psi.*

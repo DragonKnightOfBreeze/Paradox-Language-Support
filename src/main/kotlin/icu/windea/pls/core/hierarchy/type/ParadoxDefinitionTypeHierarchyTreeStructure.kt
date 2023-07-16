@@ -3,7 +3,6 @@ package icu.windea.pls.core.hierarchy.type
 import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.hierarchy.type.ParadoxDefinitionHierarchyNodeDescriptor.*
 import icu.windea.pls.core.search.*

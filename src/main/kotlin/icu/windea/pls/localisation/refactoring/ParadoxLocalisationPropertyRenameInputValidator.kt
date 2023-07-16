@@ -14,7 +14,7 @@ class ParadoxLocalisationPropertyRenameInputValidator : RenameInputValidator {
 	}
 	
 	override fun isInputValid(newName: String, element: PsiElement, context: ProcessingContext): Boolean {
-		return PlsPatterns.localisationPropertyNameRegex.matches(newName)
+		return PlsConstants.Patterns.localisationPropertyNameRegex.matches(newName)
 	}
 
 	override fun getPattern(): ElementPattern<out PsiElement> {

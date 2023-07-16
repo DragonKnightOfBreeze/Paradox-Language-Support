@@ -1,7 +1,6 @@
 package icu.windea.pls.inject.injectors
 
 import com.intellij.codeInspection.reference.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*

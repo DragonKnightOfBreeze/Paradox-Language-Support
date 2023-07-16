@@ -62,7 +62,7 @@ object DdsConverter {
 			val uuid = absPath.removeSuffix(relPath).trim('/').toUUID().toString()
 			val frameText = if(frame > 0) "@$frame" else ""
 			val finalPath = "${relPathWithoutExtension}${frameText}@${uuid}.png"
-			return PlsPaths.imagesDirectoryPath.resolve(finalPath) 
+			return PlsConstants.Paths.imagesDirectoryPath.resolve(finalPath) 
 		} else {
 			//路径：~/.pls/images/_external/{fileNameWithoutExtension}@${frame}@${uuid}.png
 			//UUID：基于DDS文件所在目录
@@ -73,7 +73,7 @@ object DdsConverter {
 			val uuid = if(parent.isEmpty()) "" else parent.toUUID().toString() 
 			val frameText = if(frame > 0) "@$frame" else ""
 			val finalPath = "_external/${fileNameWithoutExtension}${frameText}@${uuid}.png"
-			return PlsPaths.imagesDirectoryPath.resolve(finalPath)
+			return PlsConstants.Paths.imagesDirectoryPath.resolve(finalPath)
 		}
 	}
 	
@@ -112,12 +112,12 @@ object DdsConverter {
 	}
 	
 	fun getUnknownPngUrl(): String {
-		if(PlsPaths.unknownPngPath.notExists()) {
-			PlsPaths.unknownPngClasspathUrl.openStream().use { inputStream ->
-				Files.copy(inputStream, PlsPaths.unknownPngPath) //将jar包中的unknown.png复制到~/.pls/images中
+		if(PlsConstants.Paths.unknownPngPath.notExists()) {
+			PlsConstants.Paths.unknownPngClasspathUrl.openStream().use { inputStream ->
+				Files.copy(inputStream, PlsConstants.Paths.unknownPngPath) //将jar包中的unknown.png复制到~/.pls/images中
 			}
 		}
-		return PlsPaths.unknownPngPath.toString()
+		return PlsConstants.Paths.unknownPngPath.toString()
 	}
 	
 	fun convertBytes(file: VirtualFile): ByteArray? {

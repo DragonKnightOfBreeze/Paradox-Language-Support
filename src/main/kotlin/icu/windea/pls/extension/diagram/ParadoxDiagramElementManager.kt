@@ -2,7 +2,6 @@ package icu.windea.pls.extension.diagram
 
 import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.extension.diagram.provider.*
 

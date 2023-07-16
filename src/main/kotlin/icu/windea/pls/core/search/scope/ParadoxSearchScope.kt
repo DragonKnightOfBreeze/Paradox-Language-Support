@@ -6,7 +6,6 @@ import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.model.*

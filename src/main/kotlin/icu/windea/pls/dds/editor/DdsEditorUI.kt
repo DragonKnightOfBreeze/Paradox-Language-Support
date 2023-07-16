@@ -14,6 +14,7 @@ import com.intellij.ui.*
 import com.intellij.ui.components.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import org.intellij.images.editor.*
 import org.intellij.images.editor.ImageDocument.*
 import org.intellij.images.options.*

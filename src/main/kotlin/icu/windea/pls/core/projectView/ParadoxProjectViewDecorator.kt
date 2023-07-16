@@ -3,7 +3,7 @@ package icu.windea.pls.core.projectView
 import com.intellij.ide.projectView.*
 import com.intellij.ide.projectView.impl.nodes.*
 import icons.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
 
 /**

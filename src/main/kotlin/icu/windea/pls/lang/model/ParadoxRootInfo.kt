@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.model
 
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import java.nio.file.*
 

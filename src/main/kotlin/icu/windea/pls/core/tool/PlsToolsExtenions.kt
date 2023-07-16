@@ -2,7 +2,6 @@ package icu.windea.pls.core.tool
 
 import com.intellij.notification.*
 import com.intellij.openapi.project.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
 
 fun notify(settings: ParadoxGameOrModSettingsState, project: Project, message: String) {

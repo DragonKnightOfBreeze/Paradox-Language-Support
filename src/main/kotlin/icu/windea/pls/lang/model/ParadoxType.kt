@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.model
 
-import com.intellij.openapi.progress.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import java.text.*

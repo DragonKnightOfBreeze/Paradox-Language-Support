@@ -1,18 +1,8 @@
 package icu.windea.pls
 
 import com.intellij.codeInsight.hints.presentation.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.observable.properties.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.cwt.expression.*
-import icu.windea.pls.lang.model.*
-import icu.windea.pls.localisation.psi.*
-import java.awt.*
 
 object PlsConstants {
     val locationClass = PlsIcons::class.java
@@ -57,31 +47,30 @@ object PlsConstants {
     //val eraseMarker = TextAttributes()
     
     val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
-}
-
-object PlsPaths {
-    val userHome = System.getProperty("user.home")
     
-    const val dataDirectoryName = ".pls"
+    object Patterns {
+        val scriptParameterNameRegex = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
+        val scriptedVariableNameRegex = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
+        val localisationPropertyNameRegex = """[a-zA-Z0-9_.\-']+""".toRegex()
+    }
     
-    const val imagesDirectoryName = "images"
-    const val unknownPngName = "unknown.png"
-    
-    val userHomePath by lazy { userHome.toPath() }
-    val dataDirectoryPath by lazy { userHomePath.resolve(dataDirectoryName) }
-    val imagesDirectoryPath by lazy { dataDirectoryPath.resolve(imagesDirectoryName) }
-    val unknownPngPath by lazy { imagesDirectoryPath.resolve(unknownPngName) }
-    val unknownPngUrl by lazy { unknownPngPath.toUri().toURL() }
-    
-    val unknownPngClasspathUrl = "/$unknownPngName".toClasspathUrl()
-    
-    const val tmpDirectoryName = "tmp"
-    val tmpDirectoryPath by lazy { dataDirectoryPath.resolve(tmpDirectoryName) }
-}
-
-object PlsPatterns {
-    val scriptParameterNameRegex = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
-    val scriptedVariableNameRegex = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
-    
-    val localisationPropertyNameRegex = """[a-zA-Z0-9_.\-']+""".toRegex()
+    object Paths {
+        val userHome = System.getProperty("user.home")
+        
+        const val dataDirectoryName = ".pls"
+        
+        const val imagesDirectoryName = "images"
+        const val unknownPngName = "unknown.png"
+        
+        val userHomePath by lazy { userHome.toPath() }
+        val dataDirectoryPath by lazy { userHomePath.resolve(dataDirectoryName) }
+        val imagesDirectoryPath by lazy { dataDirectoryPath.resolve(imagesDirectoryName) }
+        val unknownPngPath by lazy { imagesDirectoryPath.resolve(unknownPngName) }
+        val unknownPngUrl by lazy { unknownPngPath.toUri().toURL() }
+        
+        val unknownPngClasspathUrl = "/$unknownPngName".toClasspathUrl()
+        
+        const val tmpDirectoryName = "tmp"
+        val tmpDirectoryPath by lazy { dataDirectoryPath.resolve(tmpDirectoryName) }
+    }
 }

@@ -5,7 +5,6 @@ package icu.windea.pls.core.tool.actions
 import com.intellij.ide.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
 

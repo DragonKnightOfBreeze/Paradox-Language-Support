@@ -44,7 +44,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         }.orEmpty()
         if(modifierConfig == null) return null
         val resolved = ParadoxModifierElement(element, modifierName, gameType, project)
-        resolved.putUserData(ParadoxModifierHandler.modifierConfigKey, modifierConfig)
+        resolved.putUserData(ParadoxModifierSupport.Keys.modifierConfig, modifierConfig)
         resolved.putUserData(ParadoxModifierSupport.Keys.references, references)
         resolved.putUserData(ParadoxModifierHandler.supportKey, this)
         return resolved

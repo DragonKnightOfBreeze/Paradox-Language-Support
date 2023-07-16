@@ -8,7 +8,6 @@ import com.intellij.openapi.module.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 
 class ParadoxFilesViewProjectNode(

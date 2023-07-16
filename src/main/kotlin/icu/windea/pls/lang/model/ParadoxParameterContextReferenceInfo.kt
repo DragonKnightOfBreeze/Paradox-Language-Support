@@ -3,7 +3,6 @@ package icu.windea.pls.lang.model
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.core.*
 
 class ParadoxParameterContextReferenceInfo(
     private val elementPointer: SmartPsiElementPointer<PsiElement>,

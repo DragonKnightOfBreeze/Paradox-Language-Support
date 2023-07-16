@@ -13,6 +13,7 @@ import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
+import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.script.psi.*
 
 //com.intellij.testIntegration.GotoTestOrCodeHandler
@@ -68,7 +69,7 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
                         }
                         configExpression.type == CwtDataType.Modifier -> {
                             val modifierElement = ParadoxModifierHandler.resolveModifier(name, location, configGroup)
-                            val configElement = modifierElement?.getUserData(ParadoxModifierHandler.modifierConfigKey)?.pointer?.element
+                            val configElement = modifierElement?.getUserData(ParadoxModifierSupport.Keys.modifierConfig)?.pointer?.element
                             configElement?.let { add(it) }
                         }
                         else -> pass()

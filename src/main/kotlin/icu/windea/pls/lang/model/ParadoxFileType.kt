@@ -3,6 +3,7 @@ package icu.windea.pls.lang.model
 import com.intellij.openapi.vcs.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 
 enum class ParadoxFileType(
 	val id: String,

@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.inline
 
 import com.intellij.openapi.extensions.*
-import com.intellij.psi.*
 import icu.windea.pls.script.psi.*
 
 /**

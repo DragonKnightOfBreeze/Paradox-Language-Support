@@ -2,7 +2,7 @@ package icu.windea.pls.core.inspections
 
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.cwt.*

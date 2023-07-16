@@ -4,7 +4,6 @@ import com.intellij.diagram.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 
 class ParadoxRootVfsResolver() : DiagramVfsResolver<PsiElement> {

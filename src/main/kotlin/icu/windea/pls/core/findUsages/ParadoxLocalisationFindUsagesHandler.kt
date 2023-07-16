@@ -2,7 +2,7 @@ package icu.windea.pls.core.findUsages
 
 import com.intellij.find.findUsages.*
 import com.intellij.openapi.actionSystem.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationFindUsagesHandler(

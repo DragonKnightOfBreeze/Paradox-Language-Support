@@ -3,6 +3,7 @@ package icu.windea.pls.lang.model
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 
 enum class ParadoxLocalisationCategory(

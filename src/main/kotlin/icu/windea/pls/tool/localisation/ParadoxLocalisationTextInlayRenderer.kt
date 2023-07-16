@@ -156,7 +156,7 @@ object ParadoxLocalisationTextInlayRenderer {
                     val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
                     context.builder.add(presentation)
                 } else {
-                    val unknownIcon = IconLoader.findIcon(PlsPaths.unknownPngUrl) ?: return true
+                    val unknownIcon = IconLoader.findIcon(PlsConstants.Paths.unknownPngUrl) ?: return true
                     val presentation = psiSingleReference(smallScaledIcon(unknownIcon)) { resolved }
                     context.builder.add(presentation)
                 }

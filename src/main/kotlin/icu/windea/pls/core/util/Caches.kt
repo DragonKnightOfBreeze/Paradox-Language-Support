@@ -5,7 +5,6 @@ package icu.windea.pls.core.util
 import com.google.common.cache.*
 import com.google.common.util.concurrent.*
 import com.intellij.openapi.progress.*
-import icu.windea.pls.core.*
 import java.util.concurrent.*
 
 inline fun <K, V> CacheBuilder<K, V>.configure(): CacheBuilder<K, V> {

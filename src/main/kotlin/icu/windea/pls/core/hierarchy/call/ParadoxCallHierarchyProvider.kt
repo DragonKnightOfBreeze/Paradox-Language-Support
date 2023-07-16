@@ -3,7 +3,7 @@ package icu.windea.pls.core.hierarchy.call
 import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 

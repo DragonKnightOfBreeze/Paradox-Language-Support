@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.config.impl
 
 import com.intellij.psi.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.config.*

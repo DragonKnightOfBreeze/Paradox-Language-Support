@@ -13,7 +13,7 @@ class ParadoxScriptParameterRenameInputValidator : RenameInputValidator {
 	}
 	
 	override fun isInputValid(newName: String, element: PsiElement, context: ProcessingContext): Boolean {
-		return PlsPatterns.scriptParameterNameRegex.matches(newName)
+		return PlsConstants.Patterns.scriptParameterNameRegex.matches(newName)
 	}
 	
 	override fun getPattern(): ElementPattern<out PsiElement> {

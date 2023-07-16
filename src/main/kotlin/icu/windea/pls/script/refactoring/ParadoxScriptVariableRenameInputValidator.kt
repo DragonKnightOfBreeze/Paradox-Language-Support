@@ -14,7 +14,7 @@ class ParadoxScriptVariableRenameInputValidator : RenameInputValidator {
 	}
 	
 	override fun isInputValid(newName: String, element: PsiElement, context: ProcessingContext): Boolean {
-		return PlsPatterns.scriptedVariableNameRegex.matches(newName)
+		return PlsConstants.Patterns.scriptedVariableNameRegex.matches(newName)
 	}
 
 	override fun getPattern(): ElementPattern<out PsiElement> {
