@@ -51,7 +51,7 @@ class SmartKProperty<T : Any, V>(
             try {
                 getter?.isAccessible = true
                 setter?.isAccessible = true
-                return mutableProperty({ (getter?.call(target) ?: unsupported()) as V }, { setter?.call(target, it) ?: unsupported() })
+                return mutableProperty({ if(getter != null) getter.call(target) as V else unsupported() }, { if(setter != null) setter.call(target, it) else unsupported() })
             } catch(e: Throwable) {
                 if(e is ProcessCanceledException) throw e
                 //ignore
@@ -79,7 +79,7 @@ class SmartKProperty<T : Any, V>(
             try {
                 getter?.isAccessible = true
                 setter?.isAccessible = true
-                return mutableProperty({ (getter?.call(null) ?: unsupported()) as V }, { setter?.call(null, it) ?: unsupported() })
+                return mutableProperty({ if(getter != null) getter.call(null) as V else unsupported() }, { if(setter != null) setter.call(null, it) else unsupported() })
             } catch(e: Throwable) {
                 if(e is ProcessCanceledException) throw e
                 //ignore
