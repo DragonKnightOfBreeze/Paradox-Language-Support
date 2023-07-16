@@ -38,6 +38,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
     override fun getQuickNavigateInfo(element: PsiElement, originalElement: PsiElement?): String? {
         return when(element) {
             is ParadoxParameterElement -> getParameterInfo(element, originalElement)
+            is ParadoxLocalisationParameterElement -> getLocalisationParameterInfo(element, originalElement)
             is ParadoxValueSetValueElement -> getValueSetValueInfo(element, originalElement)
             is ParadoxComplexEnumValueElement -> getComplexEnumValueInfo(element, originalElement)
             is ParadoxModifierElement -> getModifierInfo(element, originalElement)
@@ -48,6 +49,12 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
     private fun getParameterInfo(element: ParadoxParameterElement, originalElement: PsiElement?): String {
         return buildString {
             buildParameterDefinition(element)
+        }
+    }
+    
+    private fun getLocalisationParameterInfo(element: ParadoxLocalisationParameterElement, originalElement: PsiElement?): String {
+        return buildString {
+            buildLocalisationParameterDefinition(element)
         }
     }
     
@@ -72,6 +79,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
     override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
         return when(element) {
             is ParadoxParameterElement -> getParameterDoc(element, originalElement)
+            is ParadoxLocalisationParameterElement -> getLocalisationParameterDoc(element, originalElement)
             is ParadoxValueSetValueElement -> getValueSetValueDoc(element, originalElement)
             is ParadoxComplexEnumValueElement -> getComplexEnumValueDoc(element, originalElement)
             is ParadoxModifierElement -> getModifierDoc(element, originalElement)
@@ -82,6 +90,12 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
     private fun getParameterDoc(element: ParadoxParameterElement, originalElement: PsiElement?): String {
         return buildString {
             buildParameterDefinition(element)
+        }
+    }
+    
+    private fun getLocalisationParameterDoc(element: ParadoxLocalisationParameterElement, originalElement: PsiElement?): String {
+        return buildString {
+            buildLocalisationParameterDefinition(element)
         }
     }
     
@@ -114,7 +128,17 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         val name = element.name
         definition {
             val r = ParadoxParameterSupport.getDocumentationDefinition(element, this)
-                || ParadoxLocalisationParameterSupport.getDocumentationDefinition(element, this)
+            if(!r) {
+                //显示默认的快速文档
+                append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+            }
+        }
+    }
+    
+    private fun StringBuilder.buildLocalisationParameterDefinition(element: ParadoxLocalisationParameterElement) {
+        val name = element.name
+        definition {
+            val r = ParadoxLocalisationParameterSupport.getDocumentationDefinition(element, this)
             if(!r) {
                 //显示默认的快速文档
                 append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")

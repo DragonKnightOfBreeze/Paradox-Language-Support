@@ -26,7 +26,7 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider {
     override fun getConfigContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
-        if(!getSettings().inference.argumentValueConfig) return null
+        if(!getSettings().inference.parameterConfig) return null
         
         val vFile = selectFile(file) ?: return null
         if(!ParadoxFileManager.isInjectedFile(vFile)) return null //limited for injected psi

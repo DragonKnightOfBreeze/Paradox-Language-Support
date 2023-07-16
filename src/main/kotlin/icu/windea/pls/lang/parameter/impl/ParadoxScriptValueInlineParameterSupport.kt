@@ -37,7 +37,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         var expressionElementConfig: CwtMemberConfig<*>? = null
         var completionOffset = -1
         when(from) {
-            //extraArgs: config, completionOffset
+            //extraArgs: config, completionOffset?
             ParadoxParameterContextReferenceInfo.From.Argument -> {
                 val config = extraArgs.getOrNull(0)?.castOrNull<CwtMemberConfig<*>>() ?: return null
                 completionOffset = extraArgs.getOrNull(1)?.castOrNull<Int>() ?: -1
@@ -64,15 +64,16 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
                 if(!text.contains("value:")) return null //快速判断
                 expressionElementConfig = contextConfig
             }
-            //extraArgs: offset
+            //extraArgs: offset?
             ParadoxParameterContextReferenceInfo.From.InContextReference -> {
-                val offset = extraArgs.getOrNull(0)?.castOrNull<Int>() ?: return null
+                val offset = extraArgs.getOrNull(0)?.castOrNull<Int>() ?: -1
                 expressionElement = element.parentOfType<ParadoxScriptStringExpressionElement>() ?: return null
                 text = expressionElement.text ?: return null
                 if(text.isLeftQuoted()) return null
                 if(!text.contains("value:")) return null //快速判断
                 val pipeIndex = text.indexOf('|', text.indexOf("value:").let { if(it != -1) it + 6 else return null })
-                if(pipeIndex == -1 || pipeIndex >= offset - expressionElement.startOffset) return null //要求光标在管道符之后
+                if(pipeIndex == -1) return null
+                if(offset != -1 && pipeIndex >= offset - expressionElement.startOffset) return null //要求光标在管道符之后（如果offset不为-1）
                 expressionElementConfig = ParadoxConfigHandler.getConfigs(expressionElement).firstOrNull() ?: return null
             }
         }
@@ -86,17 +87,20 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val definitionTypes = listOf("script_value")
         val contextName = definitionName
         val argumentNames = mutableSetOf<String>()
-        val contextNameRange = scriptValueExpression.scriptValueNode.rangeInExpression //text range of script value name
+        val startOffset = element.startOffset
+        val contextNameRange = scriptValueExpression.scriptValueNode.rangeInExpression.shiftRight(startOffset) //text range of script value name
+        val arguments = mutableListOf<ParadoxParameterReferenceInfo>()
         val expressionElementOffset = expressionElement.startOffset
-        scriptValueExpression.nodes.forEach f@{ 
-            if(it !is ParadoxScriptValueArgumentExpressionNode) return@f
-            if(completionOffset != -1 && completionOffset in it.rangeInExpression.shiftRight(expressionElementOffset)) return@f
-            val argumentName = it.text
+        scriptValueExpression.argumentNodes.forEach f@{ (nameNode, valueNode) ->
+            if(completionOffset != -1 && completionOffset in nameNode.rangeInExpression.shiftRight(expressionElementOffset)) return@f
+            val argumentName = nameNode.text
             argumentNames.add(argumentName)
+            val parameterReferenceInfo = ParadoxParameterReferenceInfo(argumentName, nameNode.rangeInExpression.shiftRight(startOffset) , valueNode?.rangeInExpression?.shiftRight(startOffset) )
+            arguments.add(parameterReferenceInfo)
         }
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
-        val info = ParadoxParameterContextReferenceInfo(expressionElement.createPointer(), contextName, argumentNames, contextNameRange, gameType, project)
+        val info = ParadoxParameterContextReferenceInfo(expressionElement.createPointer(), contextName, argumentNames, contextNameRange, gameType, project, arguments)
         info.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
         info.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
         return info

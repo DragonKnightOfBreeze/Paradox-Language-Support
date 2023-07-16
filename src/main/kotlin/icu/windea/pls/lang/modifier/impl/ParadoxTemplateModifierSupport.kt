@@ -46,7 +46,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val resolved = ParadoxModifierElement(element, modifierName, gameType, project)
         resolved.putUserData(ParadoxModifierSupport.Keys.modifierConfig, modifierConfig)
         resolved.putUserData(ParadoxModifierSupport.Keys.references, references)
-        resolved.putUserData(ParadoxModifierHandler.supportKey, this)
+        resolved.putUserData(ParadoxModifierSupport.Keys.support, this)
         return resolved
     }
     
@@ -95,11 +95,11 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     }
     
     override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
-        return element.getUserData(ParadoxModifierHandler.modifierConfigKey)?.categoryConfigMap
+        return element.getUserData(ParadoxModifierSupport.Keys.modifierConfig)?.categoryConfigMap
     }
     
     override fun buildDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean = with(builder) {
-        val modifierConfig = element.getUserData(ParadoxModifierHandler.modifierConfigKey) ?: return false
+        val modifierConfig = element.getUserData(ParadoxModifierSupport.Keys.modifierConfig) ?: return false
         val references = element.getUserData(ParadoxModifierSupport.Keys.references) ?: return false
         
         //加上名字

@@ -20,7 +20,7 @@ class ParadoxScriptValueArgumentValueExpressionNode(
     val configGroup: CwtConfigGroup
 ) : ParadoxExpressionNode {
     override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
-        if(!getSettings().inference.argumentValueConfig) return null
+        if(!getSettings().inference.parameterConfig) return null
         val parameterElement = argumentNode?.getReference(element)?.resolve() ?: return null
         return ParadoxParameterHandler.getInferredConfig(parameterElement)
     }
@@ -35,7 +35,7 @@ class ParadoxScriptValueArgumentValueExpressionNode(
     }
     
     override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
-        if(!getSettings().inference.argumentValueConfig) return null
+        if(!getSettings().inference.parameterConfig) return null
         if(scriptValueNode == null) return null
         if(text.isEmpty()) return null
         val reference = scriptValueNode.getReference(element)

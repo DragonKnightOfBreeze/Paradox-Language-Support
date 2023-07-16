@@ -143,7 +143,7 @@ class ParadoxScriptValueExpressionImpl(
                     context.startOffset = node.rangeInExpression.startOffset
                     ParadoxParameterHandler.completeArguments(context.contextElement, context, resultToUse)
                 }
-            } else if(node is ParadoxScriptValueArgumentValueExpressionNode && getSettings().inference.argumentValueConfig) {
+            } else if(node is ParadoxScriptValueArgumentValueExpressionNode && getSettings().inference.parameterConfig) {
                 if(inRange && scriptValueNode.text.isNotEmpty()) {
                     //尝试提示传入参数的值
                     run {

@@ -36,7 +36,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         var contextReferenceElement: ParadoxScriptProperty? = null
         var completionOffset = -1
         when(from) {
-            //extraArgs: config, completionOffset
+            //extraArgs: config, completionOffset?
             ParadoxParameterContextReferenceInfo.From.Argument -> {
                 val config = extraArgs.getOrNull(0)?.castOrNull<CwtMemberConfig<*>>() ?: return null
                 completionOffset = extraArgs.getOrNull(1)?.castOrNull<Int>() ?: -1
@@ -52,7 +52,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
                 inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptHandler.inlineScriptKey } ?: return null
                 contextReferenceElement = element.castOrNull() ?: return null
             }
-            //extraArgs: offset
+            //extraArgs: offset?
             ParadoxParameterContextReferenceInfo.From.InContextReference -> {
                 val parentBlock = when(element.elementType) {
                     ParadoxScriptElementTypes.LEFT_BRACE -> element.parent.parentOfType<ParadoxScriptBlock>()
@@ -76,7 +76,9 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         if(expression.isParameterized()) return null //skip if context name is parameterized
         val contextName = expression
         val argumentNames = mutableSetOf<String>()
-        val contextNameRange = contextReferenceElement.propertyKey.textRangeInParent
+        val contextNameRange = contextReferenceElement.propertyKey.textRange
+        val arguments = mutableListOf<ParadoxParameterReferenceInfo>()
+        val startOffset = contextReferenceElement.startOffset
         contextReferenceElement.block?.processProperty p@{
             if(completionOffset != -1 && completionOffset in it.textRange) return@p true
             val k = it.propertyKey
@@ -84,11 +86,13 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
             val argumentName = k.name
             if(argumentName == "script") return@p true //hardcoded
             argumentNames.add(argumentName)
+            val parameterReferenceInfo = ParadoxParameterReferenceInfo(argumentName, k.textRange, v?.textRange)
+            arguments.add(parameterReferenceInfo)
             true
         }
         val gameType = inlineConfig.info.configGroup.gameType ?: return null
         val project = inlineConfig.info.configGroup.project
-        val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(), contextName, argumentNames, contextNameRange, gameType, project)
+        val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(), contextName, argumentNames, contextNameRange, gameType, project, arguments)
         info.putUserData(ParadoxParameterSupport.Keys.inlineScriptExpression, expression)
         return info
     }
