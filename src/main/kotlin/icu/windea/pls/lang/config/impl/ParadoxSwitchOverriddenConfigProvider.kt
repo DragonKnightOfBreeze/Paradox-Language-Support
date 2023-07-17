@@ -11,11 +11,11 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxSwitchCaseOverriddenConfigProvider: ParadoxOverriddenConfigProvider {
+class ParadoxSwitchOverriddenConfigProvider : ParadoxOverriddenConfigProvider {
     companion object {
         private const val CASE_KEY = "scalar"
         private val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
-        private val SWITCH_KEYS = arrayOf("alias[effect:switch]", "alias[trigger:switch]", "alias[effect:inverted_switch]", "alias[effect:inverted_switch]")
+        private val CONTEXT_KEYS = arrayOf("switch", "inverted_switch")
     }
     
     @Suppress("UNCHECKED_CAST")
@@ -25,12 +25,12 @@ class ParadoxSwitchCaseOverriddenConfigProvider: ParadoxOverriddenConfigProvider
         if(config !is CwtPropertyConfig) return null
         if(config.key != CASE_KEY) return null
         val aliasConfig = config.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
-        if(aliasConfig.config.key !in SWITCH_KEYS) return null
+        if(aliasConfig.subName !in CONTEXT_KEYS) return null
         ProgressManager.checkCanceled()
         val triggerConfig = aliasConfig.config.configs?.find { it is CwtPropertyConfig && it.key in TRIGGER_KEYS && it.value == "alias_keys_field[trigger]" } ?: return null
         val triggerConfigKey = triggerConfig.castOrNull<CwtPropertyConfig>()?.key ?: return null
         val triggerProperty = contextElement.parentOfType<ParadoxScriptBlock>(withSelf = false)
-            ?.findProperty(triggerConfigKey, inline = true) 
+            ?.findProperty(triggerConfigKey, inline = true)
             ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
         if(CwtValueExpression.resolve(triggerName).type != CwtDataType.Constant) return null //must be predefined trigger

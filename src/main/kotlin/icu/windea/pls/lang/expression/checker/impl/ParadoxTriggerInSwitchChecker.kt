@@ -8,21 +8,21 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.expression.checker.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxSwitchTriggerChecker : ParadoxIncorrectExpressionChecker {
+class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
     companion object {
         private val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
-        private val SWITCH_KEYS = arrayOf("alias[effect:switch]", "alias[trigger:switch]", "alias[effect:inverted_switch]", "alias[effect:inverted_switch]")
+        private val CONTEXT_NAMES = arrayOf("switch", "inverted_switch")
     }
     
     override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
-        //switch = {...}中判定的应当是一个simple_trigger
+        //switch = {...}和inverted_switch = {...}中指定的应当是一个simple_trigger
         if(element !is ParadoxScriptString && element !is ParadoxScriptScriptedVariableReference) return
         if(config !is CwtValueConfig || config.value != "alias_keys_field[trigger]") return
         
         val propertyConfig = config.propertyConfig ?: return
         if(propertyConfig.key !in TRIGGER_KEYS) return
         val aliasConfig = config.memberConfig.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
-        if(aliasConfig.config.key !in SWITCH_KEYS) return
+        if(aliasConfig.subName !in CONTEXT_NAMES) return
         
         val triggerName = element.stringValue() ?: return
         val configGroup = config.info.configGroup

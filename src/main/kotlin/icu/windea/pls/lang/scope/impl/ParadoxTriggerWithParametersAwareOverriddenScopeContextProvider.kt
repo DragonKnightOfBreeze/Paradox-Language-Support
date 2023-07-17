@@ -5,7 +5,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
@@ -15,14 +14,12 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.psi.*
 
-@WithGameType(ParadoxGameType.Stellaris)
-class StellarisComplexTriggerModifierOverriddenScopeContextProvider : ParadoxOverriddenScopeContextProvider {
-    companion object{
+class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxOverriddenScopeContextProvider {
+    companion object {
         private const val TRIGGER_KEY = "trigger"
         private const val TRIGGER_SCOPE_KEY = "trigger_scope"
         private const val PARAMETERS_KEY = "parameters"
-        private const val COMPLEX_TRIGGER_MODIFIER_NAME = "complex_trigger_modifier"
-        private val COMPLEX_TRIGGER_MODIFIER_KEYS = arrayOf("alias[modifier_rule:complex_trigger_modifier]", "alias[modifier_rule_with_loc:complex_trigger_modifier]")
+        private val CONTEXT_NAMES = arrayOf("complex_trigger_modifier")
     }
     
     override fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
@@ -31,13 +28,12 @@ class StellarisComplexTriggerModifierOverriddenScopeContextProvider : ParadoxOve
         if(config !is CwtPropertyConfig) return null
         if(config.key != TRIGGER_KEY && config.key != PARAMETERS_KEY) return null
         val aliasConfig = config.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
-        if(aliasConfig.config.key !in COMPLEX_TRIGGER_MODIFIER_KEYS) return null
+        if(aliasConfig.subName !in CONTEXT_NAMES) return null
         ProgressManager.checkCanceled()
         val complexTriggerModifierProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
-            .filter { it.name.lowercase() == COMPLEX_TRIGGER_MODIFIER_NAME }
+            .filter { it.name.lowercase() in CONTEXT_NAMES }
             .find { ParadoxConfigHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
             ?: return null
-        
         when {
             config.key == TRIGGER_KEY -> {
                 //基于trigger_scope的值得到最终的scopeContext，然后推断作为trigger的值的scopeContext
