@@ -19,11 +19,14 @@ class ParadoxScriptValueArgumentValueExpressionNode(
     val argumentNode: ParadoxScriptValueArgumentExpressionNode?,
     val configGroup: CwtConfigGroup
 ) : ParadoxExpressionNode {
-    override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
-        if(!getSettings().inference.parameterConfig) return null
-        val parameterElement = argumentNode?.getReference(element)?.resolve() ?: return null
-        return ParadoxParameterHandler.getInferredConfig(parameterElement)
-    }
+    //相关高级语言功能（代码高亮、引用解析等）改为使用语言注入实现
+    //see: icu.windea.pls.script.injection.ParadoxScriptInjector
+    
+    //override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
+    //    if(!getSettings().inference.parameterConfig) return null
+    //    val parameterElement = argumentNode?.getReference(element)?.resolve() ?: return null
+    //    return ParadoxParameterHandler.getInferredConfig(parameterElement)
+    //}
     
     override fun getAttributesKey(): TextAttributesKey {
         val type = ParadoxType.resolve(text)
@@ -34,15 +37,15 @@ class ParadoxScriptValueArgumentValueExpressionNode(
         }
     }
     
-    override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
-        if(!getSettings().inference.parameterConfig) return null
-        if(scriptValueNode == null) return null
-        if(text.isEmpty()) return null
-        val reference = scriptValueNode.getReference(element)
-        if(reference?.resolve() == null) return null //skip if script value cannot be resolved
-        if(argumentNode == null) return null
-        return Reference(element, rangeInExpression, this)
-    }
+    //override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
+    //    if(!getSettings().inference.parameterConfig) return null
+    //    if(scriptValueNode == null) return null
+    //    if(text.isEmpty()) return null
+    //    val reference = scriptValueNode.getReference(element)
+    //    if(reference?.resolve() == null) return null //skip if script value cannot be resolved
+    //    if(argumentNode == null) return null
+    //    return Reference(element, rangeInExpression, this)
+    //}
     
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, scriptValueNode: ParadoxScriptValueExpressionNode?, parameterNode: ParadoxScriptValueArgumentExpressionNode?, configGroup: CwtConfigGroup): ParadoxScriptValueArgumentValueExpressionNode {
@@ -50,20 +53,17 @@ class ParadoxScriptValueArgumentValueExpressionNode(
         }
     }
     
-    /**
-     * @see icu.windea.pls.lang.parameter.impl.ParadoxScriptValueInlineParameterSupport
-     */
-    class Reference(
-        element: ParadoxScriptStringExpressionElement,
-        rangeInElement: TextRange,
-        val node: ParadoxScriptValueArgumentValueExpressionNode
-    ) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
-        override fun handleElementRename(newElementName: String): PsiElement {
-            throw IncorrectOperationException()
-        }
-        
-        override fun resolve(): PsiElement? {
-            return null
-        }
-    }
+    //class Reference(
+    //    element: ParadoxScriptStringExpressionElement,
+    //    rangeInElement: TextRange,
+    //    val node: ParadoxScriptValueArgumentValueExpressionNode
+    //) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+    //    override fun handleElementRename(newElementName: String): PsiElement {
+    //        throw IncorrectOperationException()
+    //    }
+    //    
+    //    override fun resolve(): PsiElement? {
+    //        return null
+    //    }
+    //}
 }

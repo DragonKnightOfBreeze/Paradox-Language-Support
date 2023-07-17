@@ -101,7 +101,7 @@ class ParadoxScriptValueExpressionImpl(
     private fun isValid(node: ParadoxExpressionNode): Boolean {
         return when(node) {
             is ParadoxScriptValueArgumentExpressionNode -> node.text.isExactIdentifier()
-            is ParadoxScriptValueArgumentValueExpressionNode -> node.text.isExactParameterAwareIdentifier('.', '-', '+') //兼容数字文本
+            is ParadoxScriptValueArgumentValueExpressionNode -> true //兼容数字文本、字符串文本、封装变量引用等，这里直接返回true
             else -> node.text.isExactParameterAwareIdentifier()
         }
     }

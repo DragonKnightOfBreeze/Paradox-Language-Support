@@ -11,6 +11,8 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.script.psi.*
 
+//icu.windea.pls.lang.config.impl.ParadoxSwitchOverriddenConfigProvider
+
 class ParadoxSwitchOverriddenConfigProvider : ParadoxOverriddenConfigProvider {
     companion object {
         private const val CASE_KEY = "scalar"

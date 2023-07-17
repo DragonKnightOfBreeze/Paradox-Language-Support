@@ -33,9 +33,10 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
                 holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.complexTrigger", element.expression.orEmpty()))
             }
         } else {
-            if(resultTriggerConfigs.none { !it.config.isBlock }) {
-                holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.simpleTrigger", element.expression.orEmpty()))
-            }
+            //can also be complex trigger here, for some parameters can be ignored (like "count = xxx")
+            //if(resultTriggerConfigs.none { !it.config.isBlock }) {
+            //    holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.simpleTrigger", element.expression.orEmpty()))
+            //}
         }
     }
     

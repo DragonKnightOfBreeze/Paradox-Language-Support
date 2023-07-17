@@ -17,7 +17,6 @@ class ParadoxValueSetValueExpressionNode(
     val configGroup: CwtConfigGroup
 ) : ParadoxExpressionNode {
     override fun getAttributesKey(): TextAttributesKey? {
-        if(text.isParameterized()) return null
         val expression = configs.first().expression!! //first is ok
         val valueSetName = expression.value ?: return null
         return when(valueSetName) {

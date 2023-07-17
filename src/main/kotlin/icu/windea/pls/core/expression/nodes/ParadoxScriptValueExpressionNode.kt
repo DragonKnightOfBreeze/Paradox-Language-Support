@@ -22,7 +22,6 @@ class ParadoxScriptValueExpressionNode(
 ) : ParadoxExpressionNode {
     override fun getAttributesKey(): TextAttributesKey? {
         if(text.isEmpty()) return null
-        if(text.isParameterized()) return null
         return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
     }
     
