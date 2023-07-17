@@ -1419,6 +1419,10 @@ object ParadoxConfigHandler {
     
     //region Misc Methods
     fun isConstantMatch(configExpression: CwtDataExpression, expression: ParadoxDataExpression, configGroup: CwtConfigGroup): Boolean {
+        //注意这里可能需要在同一循环中同时检查keyExpression和valueExpression，因此这里需要特殊处理
+        if(configExpression is CwtKeyExpression && expression.isKey == false) return false
+        if(configExpression is CwtValueExpression && expression.isKey == true) return false
+        
         if(configExpression.type == CwtDataType.Constant) return true
         if(configExpression.type == CwtDataType.EnumValue && configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.text) } == true) return true
         if(configExpression.type == CwtDataType.Value && configExpression.value?.let { configGroup.values[it]?.values?.contains(expression.text) } == true) return true
