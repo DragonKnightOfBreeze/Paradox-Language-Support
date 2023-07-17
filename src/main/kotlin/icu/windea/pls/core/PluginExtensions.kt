@@ -7,6 +7,7 @@ import com.intellij.lang.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.indexing.*
@@ -31,6 +32,23 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
 import java.lang.Integer.*
+
+//region Stdlib Extensions
+inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {
+    val oldValue = this.get()
+    val newValue = value
+    if(newValue == null) {
+        return true
+    } else if(oldValue == null) {
+        this.set(newValue)
+        return true
+    } else {
+        val mergedValue = mergeAction(oldValue, newValue)
+        this.set(mergedValue)
+        return mergedValue != null
+    }
+}
+//endregion
 
 //region Common Extensions
 fun getDefaultProject() = ProjectManager.getInstance().defaultProject

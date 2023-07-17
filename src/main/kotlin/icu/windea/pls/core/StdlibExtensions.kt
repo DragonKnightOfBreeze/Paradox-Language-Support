@@ -3,6 +3,7 @@
 package icu.windea.pls.core
 
 import com.google.common.cache.*
+import com.intellij.openapi.util.Ref
 import com.intellij.util.io.*
 import icu.windea.pls.*
 import icu.windea.pls.core.util.*
@@ -476,8 +477,8 @@ private val antPatternToRegexCache = CacheBuilder.newBuilder().buildCache<String
 }
 
 private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean, trimSeparator: Boolean): Boolean {
-    val usedPath = this.let { if(trimSeparator) it.trimFast('/') else it } .let { if(ignoreCase) it.lowercase() else it }
-    val usedPattern = pattern.let { if(trimSeparator) it.trimFast('/') else it } .let { if(ignoreCase) it.lowercase() else it }
+    val usedPath = this.let { if(trimSeparator) it.trimFast('/') else it }.let { if(ignoreCase) it.lowercase() else it }
+    val usedPattern = pattern.let { if(trimSeparator) it.trimFast('/') else it }.let { if(ignoreCase) it.lowercase() else it }
     val regex = antPatternToRegexCache.get(usedPattern)
     return usedPath.matches(regex)
 }

@@ -5,6 +5,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.*
@@ -66,7 +67,7 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
         val inlineScriptExpression = configContext.inlineScriptExpression ?: return null
         
         // infer & merge
-        var resultConfigs: List<CwtMemberConfig<*>>? = null
+        val result = Ref.create<List<CwtMemberConfig<*>>>()
         configContext.inlineScriptHasConflict = false
         configContext.inlineScriptHasRecursion = false
         withRecursionGuard("icu.windea.pls.lang.config.impl.ParadoxInlineScriptConfigContextProvider.getConfigs") {
@@ -80,29 +81,20 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
                     if(p.name.lowercase() != ParadoxInlineScriptHandler.inlineScriptKey) return@p true
                     val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p true
                     val usageConfigContext = ParadoxConfigHandler.getConfigContext(memberElement) ?: return@p true
-                    val usageConfigs = usageConfigContext.getConfigs(matchOptions)
-                    if(resultConfigs == null) {
-                        resultConfigs = usageConfigs
-                    } else {
-                        // merge
-                        val mergedConfigs = ParadoxConfigMergeHandler.mergeConfigs(resultConfigs!!, usageConfigs)
-                        if(mergedConfigs.isEmpty() && resultConfigs!!.isNotEmpty()) {
-                            configContext.inlineScriptHasConflict = true
-                            resultConfigs = null
-                            return@p false
-                        } else {
-                            resultConfigs = mergedConfigs
-                        }
+                    val usageConfigs = usageConfigContext.getConfigs(matchOptions).takeIfNotEmpty()
+                    // merge
+                    result.mergeValue(usageConfigs) { v1, v2 -> ParadoxConfigMergeHandler.mergeConfigs(v1, v2) }.also {
+                        if(it) return@also
+                        configContext.inlineScriptHasConflict = true
+                        result.set(null)
                     }
-                    true
                 }
             } ?: run {
                 configContext.inlineScriptHasRecursion = true
-                resultConfigs = null
+                result.set(null)
             }
         }
-        
-        return resultConfigs
+        return result.get()
     }
     
     //skip MissingExpressionInspection and TooManyExpressionInspection at root level

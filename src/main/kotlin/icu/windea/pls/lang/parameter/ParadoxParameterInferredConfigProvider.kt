@@ -19,8 +19,14 @@ import icu.windea.pls.lang.model.*
 interface ParadoxParameterInferredConfigProvider {
     fun supports(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): Boolean
     
+    /**
+     * 返回唯一确定的规则。这个规则仅用作显示（快速文档、参数提示等）。
+     */
     fun getConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig?
     
+    /**
+     * 返回唯一确定的规则上下文。这个规则上下文用于后续获取匹配的一组规则。
+     */
     fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo) : List<CwtMemberConfig<*>>?
     
     companion object INSTANCE {

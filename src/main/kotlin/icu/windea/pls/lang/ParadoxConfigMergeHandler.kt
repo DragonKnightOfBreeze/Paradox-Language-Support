@@ -7,10 +7,19 @@ import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.cwt.expression.CwtDataType as T
 
 object ParadoxConfigMergeHandler {
-    fun mergeConfigs(configs: List<CwtMemberConfig<*>>, otherConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
+    fun mergeConfigs(cs1: List<CwtMemberConfig<*>>, cs2: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
+        //try to merge single value configs first (by value expressions)
+        val c1 = cs1.singleOrNull()
+        val c2 = cs2.singleOrNull()
+        if(c1 is CwtValueConfig && c2 is CwtValueConfig) {
+            val resultConfig = mergeValueConfig(c1, c2)
+            if(resultConfig != null) return resultConfig.toSingletonList()
+        }
+        
+        //merge multiple configs
         val result = mutableListOf<CwtMemberConfig<*>>()
-        configs.forEach f1@{ config ->
-            otherConfigs.forEach f2@{ otherConfig ->
+        cs1.forEach f1@{ config ->
+            cs2.forEach f2@{ otherConfig ->
                 val resultConfig = mergeConfig(config, otherConfig)
                 if(resultConfig != null) result.add(resultConfig)
             }
@@ -22,10 +31,8 @@ object ParadoxConfigMergeHandler {
     }
     
     fun mergeConfig(c1: CwtMemberConfig<*>, c2: CwtMemberConfig<*>): CwtMemberConfig<*>? {
-        if(c1.pointer == c2.pointer) {
-            //value equality (should be)
-            return c1
-        }
+        if(c1 === c2) return c1 //reference equality
+        if(c1.pointer == c2.pointer) return c1 //value equality (should be)
         val ic1 = c1.inlineableConfig
         val ic2 = c2.inlineableConfig
         if(ic1 != null && ic2 != null) {
@@ -49,6 +56,7 @@ object ParadoxConfigMergeHandler {
     }
     
     fun mergeValueConfig(c1: CwtValueConfig, c2: CwtValueConfig): CwtValueConfig? {
+        if(c1 === c2) return c1 //reference equality
         if(c1.pointer == c2.pointer) return c1 //value equality (should be) 
         if(c1.expression.type == T.Block || c2.expression.type == T.Block) return null //cannot merge non-same clauses
         val expressionString = mergeExpressionString(c1.expression, c2.expression)
@@ -72,6 +80,7 @@ object ParadoxConfigMergeHandler {
         val t1 = e1.type
         val t2 = e2.type
         return when(t1) {
+            T.Any -> e2.expressionString
             T.Int -> when(t2) {
                 T.Int, T.Float, T.ValueField, T.IntValueField, T.VariableField, T.IntVariableField -> "int"
                 else -> null
