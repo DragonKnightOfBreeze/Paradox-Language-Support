@@ -41,8 +41,9 @@ object ParadoxConfigInlineHandler {
                 else -> config.deepCopyConfigs()
             },
         )
-        inlined.parent = config.parent
         inlined.configs?.forEach { it.parent = inlined }
+        inlined.parent = config.parent
+        inlined.inlineableConfig = config.inlineableConfig
         return inlined
     }
     
@@ -60,7 +61,7 @@ object ParadoxConfigInlineHandler {
         )
         inlined.parent = config.parent
         inlined.configs?.forEach { it.parent = inlined }
-        inlined.inlineableConfig = aliasConfig
+        inlined.inlineableConfig = config.inlineableConfig ?: aliasConfig
         return inlined
     }
     
@@ -79,7 +80,7 @@ object ParadoxConfigInlineHandler {
         )
         inlined.parent = config.parent
         inlined.configs?.forEach { it.parent = inlined }
-        inlined.inlineableConfig = singleAliasConfig
+        inlined.inlineableConfig = config.inlineableConfig //should not set to singleAliasConfig - a single alias config do not inline property key  
         return inlined
     }
     

@@ -1,5 +1,7 @@
 package icu.windea.pls.lang.parameter.impl
 
+import com.intellij.lang.injection.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -29,8 +31,16 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
     
     override fun findContext(element: PsiElement): ParadoxScriptDefinitionElement? {
-        val parentDefinition = element.findParentDefinition()
-        return parentDefinition?.takeIf { isContext(it) }
+        //NOTE 这里需要兼容通过语言注入注入到脚本文件中的脚本片段中的参数（此时需要先获取最外面的injectionHost）
+        val finalElement = doFindFinalElement(element, element.project)
+        val context = finalElement.findParentDefinition()
+        return context?.takeIf { isContext(it) }
+    }
+    
+    private tailrec fun doFindFinalElement(element: PsiElement, project: Project): PsiElement{
+        val host = InjectedLanguageManager.getInstance(project).getInjectionHost(element)
+        if(host == null) return element
+        return doFindFinalElement(host, project)
     }
     
     override fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
