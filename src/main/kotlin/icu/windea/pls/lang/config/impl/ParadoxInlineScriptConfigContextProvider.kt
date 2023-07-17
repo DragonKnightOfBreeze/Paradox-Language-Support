@@ -55,6 +55,7 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
     //获取CWT规则后才能确定是否存在冲突以及是否存在递归
     
     override fun getConfigs(element: ParadoxScriptMemberElement, configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+        ProgressManager.checkCanceled()
         val elementPathFromRoot = configContext.elementPathFromRoot ?: return null
         
         if(elementPathFromRoot.isNotEmpty()) {

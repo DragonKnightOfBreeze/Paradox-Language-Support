@@ -74,6 +74,7 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
     }
     
     override fun getConfigs(element: ParadoxScriptMemberElement, configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+        ProgressManager.checkCanceled()
         val elementPathFromRoot = configContext.elementPathFromRoot ?: return null
         
         if(elementPathFromRoot.isNotEmpty()) {
