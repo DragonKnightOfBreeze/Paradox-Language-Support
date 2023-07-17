@@ -78,29 +78,27 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
             }
         }
         if(!expressionElementConfig.expression.type.isValueFieldType()) return null
-        val range = TextRange.create(0, text.length)
         val configGroup = expressionElementConfig.info.configGroup
+        val gameType = configGroup.gameType ?: return null
+        val project = configGroup.project
+        val range = TextRange.create(0, text.length)
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, range, configGroup) ?: return null
         val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
         val definitionName = scriptValueExpression.scriptValueNode.text.takeIfNotEmpty() ?: return null
         if(definitionName.isParameterized()) return null //skip if context name is parameterized
         val definitionTypes = listOf("script_value")
         val contextName = definitionName
-        val argumentNames = mutableSetOf<String>()
         val startOffset = element.startOffset
         val contextNameRange = scriptValueExpression.scriptValueNode.rangeInExpression.shiftRight(startOffset) //text range of script value name
         val arguments = mutableListOf<ParadoxParameterReferenceInfo>()
-        val expressionElementOffset = expressionElement.startOffset
+        val pointer = expressionElement.createPointer(project)
+        val offset = expressionElement.startOffset
         scriptValueExpression.argumentNodes.forEach f@{ (nameNode, valueNode) ->
-            if(completionOffset != -1 && completionOffset in nameNode.rangeInExpression.shiftRight(expressionElementOffset)) return@f
+            if(completionOffset != -1 && completionOffset in nameNode.rangeInExpression.shiftRight(offset)) return@f
             val argumentName = nameNode.text
-            argumentNames.add(argumentName)
-            val parameterReferenceInfo = ParadoxParameterReferenceInfo(argumentName, nameNode.rangeInExpression.shiftRight(startOffset) , valueNode?.rangeInExpression?.shiftRight(startOffset) )
-            arguments.add(parameterReferenceInfo)
+            arguments += ParadoxParameterReferenceInfo(argumentName, pointer, nameNode.rangeInExpression.shiftRight(startOffset), pointer, valueNode?.rangeInExpression?.shiftRight(startOffset))
         }
-        val gameType = configGroup.gameType ?: return null
-        val project = configGroup.project
-        val info = ParadoxParameterContextReferenceInfo(expressionElement.createPointer(), contextName, argumentNames, contextNameRange, gameType, project, arguments)
+        val info = ParadoxParameterContextReferenceInfo(pointer, contextName, pointer, contextNameRange, arguments, gameType, project)
         info.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
         info.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
         return info

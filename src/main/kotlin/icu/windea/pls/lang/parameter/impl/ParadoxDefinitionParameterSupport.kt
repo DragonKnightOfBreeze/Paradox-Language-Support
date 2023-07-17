@@ -77,27 +77,24 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
             }
         }
         if(contextConfig == null || contextReferenceElement == null) return null
+        val configGroup = contextConfig.info.configGroup
+        val gameType = configGroup.gameType ?: return null
+        val project = configGroup.project
         val definitionName = contextReferenceElement.name.takeIfNotEmpty() ?: return null
         if(definitionName.isParameterized()) return null //skip if context name is parameterized
         val definitionTypes = contextConfig.expression.value?.split('.') ?: return null
         val contextName = definitionName
-        val argumentNames = mutableSetOf<String>()
-        val contextNameRange = contextReferenceElement.propertyKey.textRange
+        val contextNameElement = contextReferenceElement.propertyKey
         val arguments = mutableListOf<ParadoxParameterReferenceInfo>()
-        val startOffset = contextReferenceElement.startOffset
         contextReferenceElement.block?.processProperty p@{
             if(completionOffset != -1 && completionOffset in it.textRange) return@p true
             val k = it.propertyKey
             val v = it.propertyValue
             val argumentName = k.name
-            argumentNames.add(argumentName)
-            val parameterReferenceInfo = ParadoxParameterReferenceInfo(argumentName, k.textRange, v?.textRange)
-            arguments.add(parameterReferenceInfo)
+            arguments += ParadoxParameterReferenceInfo(argumentName, k.createPointer(project), k.textRange, v?.createPointer(project), v?.textRange)
             true
         }
-        val gameType = contextConfig.info.configGroup.gameType ?: return null
-        val project = contextConfig.info.configGroup.project
-        val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(), contextName, argumentNames, contextNameRange, gameType, project, arguments)
+        val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(project), contextName, contextNameElement.createPointer(project), contextNameElement.textRange, arguments, gameType, project)
         info.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
         info.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
         return info
@@ -126,7 +123,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val gameType = definitionInfo.gameType
         val project = definitionInfo.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, key, rangeInParent, readWriteAccess, gameType, project)
-        result.putUserData(ParadoxParameterSupport.Keys.containingContext, context.createPointer())
+        result.putUserData(ParadoxParameterSupport.Keys.containingContext, context.createPointer(project))
         result.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
         result.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
         result.putUserData(ParadoxParameterSupport.Keys.support, this)

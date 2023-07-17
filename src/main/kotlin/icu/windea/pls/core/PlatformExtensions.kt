@@ -764,11 +764,11 @@ fun <T : PsiElement> emptyPointer(): SmartPsiElementPointer<T> = EmptyPointer.ca
 
 fun SmartPsiElementPointer<*>.isEmpty() = this === EmptyPointer
 
-fun <E : PsiElement> E.createPointer(): SmartPsiElementPointer<E> {
+fun <E : PsiElement> E.createPointer(project: Project = this.project): SmartPsiElementPointer<E> {
     return SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this)
 }
 
-fun <E : PsiElement> E.createPointer(file: PsiFile?): SmartPsiElementPointer<E> {
+fun <E : PsiElement> E.createPointer(file: PsiFile?, project: Project = this.project): SmartPsiElementPointer<E> {
     return try {
         SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this, file)
     } catch(e: IllegalArgumentException) {

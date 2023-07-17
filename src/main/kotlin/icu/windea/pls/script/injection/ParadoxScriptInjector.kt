@@ -26,7 +26,11 @@ class ParadoxScriptInjector : MultiHostInjector {
     //see: org.intellij.plugins.intelliLang.inject.InjectorUtils
     
     companion object {
-        private val toInject = listOf(ParadoxScriptString::class.java, ParadoxScriptParameter::class.java, ParadoxScriptInlineMathParameter::class.java)
+        private val toInject = listOf(
+            ParadoxScriptString::class.java,
+            ParadoxScriptParameter::class.java,
+            ParadoxScriptInlineMathParameter::class.java
+        )
     }
     
     override fun elementsToInjectIn(): List<Class<out PsiElement>> {
@@ -63,19 +67,24 @@ class ParadoxScriptInjector : MultiHostInjector {
         val from = ParadoxParameterContextReferenceInfo.From.InContextReference
         val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(host, from = from) ?: return emptyList()
         if(contextReferenceInfo.arguments.isEmpty()) return emptyList()
-        val textRange = host.textRange
+        val hostRange = host.textRange
         return contextReferenceInfo.arguments.mapNotNull t1@{ referenceInfo ->
             val rangeInsideHost = referenceInfo.argumentValueRange
-                ?.takeIf { it.startOffset >= textRange.startOffset && it.endOffset <= textRange.endOffset }
-                ?.shiftLeft(textRange.startOffset)
+                ?.takeIf { it.startOffset >= hostRange.startOffset && it.endOffset <= hostRange.endOffset }
+                ?.shiftLeft(hostRange.startOffset)
                 ?: return@t1 null
-            //ParameterValueInjectionInfo(rangeInsideHost) {
-            //    host.references.firstNotNullOfOrNull t2@{
-            //        if(it.rangeInElement != referenceInfo.argumentNameRange.shiftLeft(textRange.startOffset)) return@t2 null
-            //        it.resolve()?.castOrNull<ParadoxParameterElement>()
-            //    } 
-            //}
-            null
+            ParameterValueInjectionInfo(rangeInsideHost) p@{
+                val argumentNameElement = referenceInfo.argumentNameElement ?: return@p null
+                val argumentNameElementRange = argumentNameElement.textRange
+                val argumentNameRange = referenceInfo.argumentNameRange
+                    .takeIf { it.startOffset >= argumentNameElementRange.startOffset && it.endOffset <= argumentNameElementRange.endOffset }
+                    ?.shiftLeft(argumentNameElementRange.startOffset)
+                    ?: return@p null
+                argumentNameElement.references.firstNotNullOfOrNull t2@{ reference ->
+                    if(reference.rangeInElement != argumentNameRange) return@t2 null
+                    reference.resolve()?.castOrNull<ParadoxParameterElement>()
+                } 
+            }
         }
     }
     
@@ -119,7 +128,9 @@ class ParadoxScriptInjector : MultiHostInjector {
     }
 }
 
-data class ParameterValueInjectionInfo(
+class ParameterValueInjectionInfo(
     val rangeInsideHost: TextRange,
-    val parameterElementProvider: () -> ParadoxParameterElement?
-)
+    parameterElementProvider: () -> ParadoxParameterElement? //这里必须使用懒加载，否则调用element.references时会导致SOF
+) {
+    val parameterElement by lazy { parameterElementProvider() }
+}

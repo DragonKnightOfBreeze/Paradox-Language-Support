@@ -62,12 +62,12 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
                 val shred = shreds?.singleOrNull()
                 val rangeInsideHost = shred?.rangeInsideHost ?: return null
                 val injectionInfo = injectionInfos.find { it.rangeInsideHost == rangeInsideHost } ?: return null
-                injectionInfo.parameterElementProvider()
+                injectionInfo.parameterElement
             }
             host is ParadoxParameter -> {
                 //just use the only one
                 val injectionInfo = injectionInfos.singleOrNull() ?: return null
-                injectionInfo.parameterElementProvider()
+                injectionInfo.parameterElement
             }
             else -> null
         }

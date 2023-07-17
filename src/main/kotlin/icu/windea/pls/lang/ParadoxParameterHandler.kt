@@ -87,7 +87,7 @@ object ParadoxParameterHandler {
                 fileConditionStack.removeLast()
             }
         })
-        return ParadoxParameterContextInfo(file.project, gameType, parameters)
+        return ParadoxParameterContextInfo(parameters, file.project, gameType)
     }
     
     fun completeParameters(element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {
@@ -117,7 +117,7 @@ object ParadoxParameterHandler {
         val config = context.config ?: return
         val completionOffset = context.parameters?.offset ?: return
         val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, config, completionOffset) ?: return
-        val argumentNames = contextReferenceInfo.argumentNames.toMutableSet()
+        val argumentNames = contextReferenceInfo.arguments.mapTo(mutableSetOf()) { it.argumentName }
         val namesToDistinct = mutableSetOf<String>().synced()
         //整合查找到的所有参数上下文
         val insertSeparator = context.isKey == true && context.contextElement !is ParadoxScriptPropertyKey

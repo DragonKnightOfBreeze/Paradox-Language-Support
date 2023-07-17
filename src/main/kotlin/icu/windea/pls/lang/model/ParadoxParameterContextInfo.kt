@@ -3,10 +3,7 @@ package icu.windea.pls.lang.model
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
@@ -15,9 +12,9 @@ import icu.windea.pls.script.psi.*
 import java.util.*
 
 class ParadoxParameterContextInfo(
+    val parameters: Map<String, List<ParadoxParameterInfo>>,
     val project: Project,
-    val gameType: ParadoxGameType,
-    val parameters: Map<String, List<ParadoxParameterInfo>>
+    val gameType: ParadoxGameType
 ) {
     fun isOptional(parameterName: String, argumentNames: Set<String>? = null): Boolean {
         val parameterInfos = parameters.get(parameterName)

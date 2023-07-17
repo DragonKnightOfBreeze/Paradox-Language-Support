@@ -3,21 +3,21 @@ package icu.windea.pls.lang.model
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.core.*
 
 /**
  * @param contextNameRange 表示作用域名字的那段文本在整个文件中的文本范围。
  */
 class ParadoxParameterContextReferenceInfo(
-    private val elementPointer: SmartPsiElementPointer<PsiElement>,
+    private val elementPointer: SmartPsiElementPointer<out PsiElement>,
     val contextName: String,
-    val argumentNames: Set<String>,
+    private val contextNameElementPointer: SmartPsiElementPointer<out PsiElement>,
     val contextNameRange: TextRange,
+    val arguments: List<ParadoxParameterReferenceInfo>,
     val gameType: ParadoxGameType,
-    val project: Project,
-    val arguments: List<ParadoxParameterReferenceInfo>
+    val project: Project
 ) : UserDataHolderBase() {
     val element: PsiElement? get() = elementPointer.element
+    val contextNameElement: PsiElement? get() = contextNameElementPointer.element
     
     enum class From {
         /** extraArgs: config, completionOffset? */
@@ -35,6 +35,11 @@ class ParadoxParameterContextReferenceInfo(
  */
 class ParadoxParameterReferenceInfo(
     val argumentName: String,
+    private val argumentNameElementPointer: SmartPsiElementPointer<out PsiElement>,
     val argumentNameRange: TextRange,
+    private val argumentValueElementPointer: SmartPsiElementPointer<out PsiElement>?,
     val argumentValueRange: TextRange?
-)
+) {
+    val argumentNameElement: PsiElement? get() = argumentNameElementPointer.element
+    val argumentValueElement: PsiElement? get() = argumentValueElementPointer?.element
+}
