@@ -48,28 +48,28 @@ abstract class OpenUrlAction : DumbAwareAction(){
 
 class OpenGameStorePageOnSteamWebsiteAction: OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
-        val steamId = fileInfo.rootInfo.gameType.gameSteamId
+        val steamId = fileInfo.rootInfo.gameType.steamId
         return getSteamGameStoreLink(steamId)
     }
 }
 
 class OpenGameStorePageOnSteamAction: OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
-        val steamId = fileInfo.rootInfo.gameType.gameSteamId
+        val steamId = fileInfo.rootInfo.gameType.steamId
         return getSteamGameStoreLinkOnSteam(steamId)
     }
 }
 
 class OpenGameWorkshopPageOnSteamWebsiteAction: OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
-        val steamId = fileInfo.rootInfo.gameType.gameSteamId
+        val steamId = fileInfo.rootInfo.gameType.steamId
         return getSteamGameWorkshopLink(steamId)
     }
 }
 
 class OpenGameWorkshopPageOnSteamAction: OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
-        val steamId = fileInfo.rootInfo.gameType.gameSteamId
+        val steamId = fileInfo.rootInfo.gameType.steamId
         return getSteamGameWorkshopLinkOnSteam(steamId)
     }
 }

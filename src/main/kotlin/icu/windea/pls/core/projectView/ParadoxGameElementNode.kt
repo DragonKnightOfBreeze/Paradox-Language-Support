@@ -58,12 +58,12 @@ class ParadoxGameElementNode(
     override fun update(presentation: PresentationData) {
         if(value == null) return
         presentation.setIcon(PlsIcons.GameDirectory)
-        presentation.presentableText = value.gameType.description
+        presentation.presentableText = value.gameType.title
     }
     
     override fun getTitle(): String? {
         if(value == null) return null
-        return value.gameType.description
+        return value.gameType.title
     }
     
     override fun isAlwaysShowPlus(): Boolean {

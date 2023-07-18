@@ -22,6 +22,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
+import kotlin.io.path.*
 
 object ParadoxCoreHandler {
     fun onAddRootInfo(rootFile: VirtualFile, rootInfo: ParadoxRootInfo) {
@@ -141,6 +142,24 @@ object ParadoxCoreHandler {
         val remoteFileId = data?.getData("remote_file_id")?.value?.stringValue()
         val path = data?.getData("path")?.value?.stringValue()
         return ParadoxModDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
+    }
+    
+    fun getInferredGameType(rootInfo: ParadoxModRootInfo): ParadoxGameType? {
+        val parentDir = rootInfo.rootFile.parent
+        runCatching {
+            //如果模组目录直接位于游戏创意工坊目录下，直接推断为对应的游戏类型
+            val steamWorkshopDir = parentDir ?: return@runCatching null
+            val steamId = steamWorkshopDir.name
+            ParadoxGameType.resolveBySteamId(steamId)?.takeIf { getSteamWorkshopPath(steamId) == steamWorkshopDir.toNioPath().absolutePathString() }
+        }.getOrNull()?.let { return it }
+        runCatching {
+            //如果模组目录直接位于游戏数据目录下的mod子目录下，直接推断为对应的游戏类型
+            val modDir = parentDir.takeIf { it.name == "mod" } ?: return@runCatching null
+            val gameDataDir = modDir.parent ?: return@runCatching null
+            val gameName = gameDataDir.name
+            ParadoxGameType.resolveByTitle(gameName)?.takeIf { getGameDataPath(gameName) == gameDataDir.toNioPath().absolutePathString() }
+        }.getOrNull()?.let { return it }
+        return null
     }
     
     fun getFileInfo(element: PsiElement, refresh: Boolean = true): ParadoxFileInfo? {

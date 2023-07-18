@@ -13,7 +13,7 @@ class ParadoxExtendedDocumentationBundle(bundleName: String) : DynamicBundle(bun
         
         private fun get(key: String) = bundles.getValue(key)
         
-        private fun get(key: ParadoxGameType?) = bundles.getValue(key?.name ?: "Core")
+        private fun get(key: ParadoxGameType?) = bundles.getValue(key?.title ?: "Core")
         
         @Nls
         @JvmStatic

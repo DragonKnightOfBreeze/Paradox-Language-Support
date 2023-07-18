@@ -83,7 +83,7 @@ class GoToSteamGamePathAction : GoToPathAction() {
         if(gameType == null) return false
         if(this.targetPath == null || this.gameType != gameType) {
             this.gameType = gameType
-            this.targetPath = getSteamGamePath(gameType.gameSteamId, gameType.gameName)?.toPathOrNull()
+            this.targetPath = getSteamGamePath(gameType.steamId, gameType.title)?.toPathOrNull()
         }
         return true
     }
@@ -100,7 +100,7 @@ class GoToSteamWorkshopPathAction : GoToPathAction() {
         if(gameType == null) return false
         if(this.targetPath == null || this.gameType != gameType) {
             this.gameType = gameType
-            this.targetPath = getSteamWorkshopPath(gameType.gameSteamId)?.toPathOrNull()
+            this.targetPath = getSteamWorkshopPath(gameType.steamId)?.toPathOrNull()
         }
         return true
     }
@@ -117,7 +117,7 @@ class GoToGameDataPathAction : GoToPathAction() {
         if(gameType == null) return false
         if(this.targetPath == null || this.gameType != gameType) {
             this.gameType = gameType
-            this.targetPath = getGameDataPath(gameType.gameName)?.toPathOrNull()
+            this.targetPath = getGameDataPath(gameType.title)?.toPathOrNull()
         }
         return true
     }

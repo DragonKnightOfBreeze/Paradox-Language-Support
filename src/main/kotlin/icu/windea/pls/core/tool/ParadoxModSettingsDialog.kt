@@ -74,6 +74,7 @@ class ParadoxModSettingsDialog(
                     .bindItem(gameTypeProperty)
                     .columns(18)
                     .onApply { settings.gameType = gameTypeProperty.get() } //set game type to non-default on apply
+                    .enabled(settings.inferredGameType == null) //disabled if game type can be inferred
                 //gameVersion
                 label(PlsBundle.message("mod.settings.gameVersion")).widthGroup("right")
                 textField()
@@ -97,7 +98,7 @@ class ParadoxModSettingsDialog(
             row {
                 //quickSelectGameDirectory
                 link(PlsBundle.message("mod.settings.quickSelectGameDirectory")) { quickSelectGameDirectory() }
-                    visible(getSteamGamePath(gameType.gameSteamId, gameType.gameName) != null)
+                    visible(getSteamGamePath(gameType.steamId, gameType.title) != null)
             }
             row {
                 //modDirectory
@@ -139,13 +140,13 @@ class ParadoxModSettingsDialog(
             ?: return error(PlsBundle.message("mod.settings.gameDirectory.error.2"))
         val rootInfo = rootFile.rootInfo
         if(rootInfo !is ParadoxGameRootInfo) {
-            return error(PlsBundle.message("mod.settings.gameDirectory.error.3", gameType.description))
+            return error(PlsBundle.message("mod.settings.gameDirectory.error.3", gameType.title))
         }
         return null
     }
     
     private fun quickSelectGameDirectory() {
-        val targetPath = getSteamGamePath(gameType.gameSteamId, gameType.gameName) ?: return
+        val targetPath = getSteamGamePath(gameType.steamId, gameType.title) ?: return
         gameDirectory = targetPath
     }
     

@@ -2,6 +2,7 @@ package icu.windea.pls.lang.model
 
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import java.nio.file.*
 
 /**
@@ -44,7 +45,7 @@ class ParadoxGameRootInfo(
     
     override val qualifiedName: String
         get() = buildString {
-            append(gameType.description)
+            append(gameType.title)
             append("@")
             append(launcherSettingsInfo.rawVersion)
         }
@@ -73,13 +74,17 @@ class ParadoxModRootInfo(
     val descriptorFile: VirtualFile,
     val descriptorInfo: ParadoxModDescriptorInfo
 ) : ParadoxRootInfo() {
+    val inferredGameType: ParadoxGameType? = doGetInferredGameType()
     override val gameType: ParadoxGameType get() = doGetGameType()
     override val gameRootFile: VirtualFile get() = rootFile
     
+    private fun doGetInferredGameType(): ParadoxGameType? {
+        return ParadoxCoreHandler.getInferredGameType(this)
+    }
+    
     private fun doGetGameType(): ParadoxGameType {
-        val allModSettings = getProfilesSettings()
-        val modDirectory = rootFile.path
-        return allModSettings.modDescriptorSettings.get(modDirectory)?.gameType
+        return inferredGameType 
+            ?: getProfilesSettings().modDescriptorSettings.get(rootFile.path)?.gameType
             ?: getSettings().defaultGameType
     }
     
@@ -88,7 +93,7 @@ class ParadoxModRootInfo(
     
     override val qualifiedName: String
         get() = buildString {
-            append(gameType.description).append(" Mod: ")
+            append(gameType.title).append(" Mod: ")
             append(descriptorInfo.name)
             descriptorInfo.version?.let { version -> append("@").append(version) }
         }

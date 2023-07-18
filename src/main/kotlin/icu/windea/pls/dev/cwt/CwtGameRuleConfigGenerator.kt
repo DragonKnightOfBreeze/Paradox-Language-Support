@@ -20,7 +20,7 @@ class CwtGameRuleConfigGenerator(
             val oldName = oldItemRegex.matchEntire(it)?.groupValues?.getOrNull(1)
             if(oldName != null) oldItems.add(oldName)
         }
-        val gamePath = getSteamGamePath(gameType.id, gameType.name) ?: throw IllegalStateException()
+        val gamePath = getSteamGamePath(gameType.id, gameType.title) ?: throw IllegalStateException()
         val txtFile = File(gamePath, txtPath)
         val newItems = mutableSetOf<String>()
         val newItemRegex = """(\w+)\s*=\s*\{.*""".toRegex()

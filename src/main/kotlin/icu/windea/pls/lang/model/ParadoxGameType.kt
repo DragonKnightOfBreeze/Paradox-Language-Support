@@ -7,8 +7,8 @@ import icu.windea.pls.core.*
  */
 enum class ParadoxGameType(
     val id: String,
-    val description: String,
-    val gameSteamId: String,
+    val title: String,
+    val steamId: String,
     val entries: List<String> = emptyList(),
 ) {
     Stellaris("stellaris", "Stellaris", "281990", listOf("pdx_launcher/game", "pdx_launcher/common", "pdx_online_assets", "previewer_assets")),
@@ -20,21 +20,23 @@ enum class ParadoxGameType(
     Vic2("vic2", "Victoria II", "42960", listOf("jomini")),
     Vic3("vic3", "Victoria III", "529340", listOf("jomini"));
     
-    val gameName: String get() = description
-    
     override fun toString(): String {
-        return description
+        return title
     }
     
     companion object {
         val values = values()
         val valueList = values.toList()
-        val valueMap = values.associateBy { it.id }
         
-        fun resolve(id: String): ParadoxGameType? {
-            if(id.isEmpty()) return null
-            return valueMap[id.lowercase()]
-        }
+        private val valueMap = values.associateBy { it.id }
+        private val valueMapByTitle = values.associateBy { it.title }
+        private val valueMapBySteamId = values.associateBy { it.steamId }
+        
+        fun resolve(id: String) = valueMap[id.lowercase()]
+        
+        fun resolveByTitle(title: String) = valueMapByTitle[title]
+        
+        fun resolveBySteamId(steamId: String) = valueMapBySteamId[steamId]
     }
 }
 

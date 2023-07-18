@@ -55,7 +55,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
     
     private val _elementManager by lazy { ElementManager(this) }
     
-    override fun getID() = gameType.name + ".TechnologyTree"
+    override fun getID() = gameType.title + ".TechnologyTree"
     
     override fun createNodeContentManager() = NodeContentManager()
     

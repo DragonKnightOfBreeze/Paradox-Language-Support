@@ -39,7 +39,7 @@ class ParadoxGameDescriptorSettingsState : BaseState() {
     
     val qualifiedName: String
         get() = buildString {
-            append(gameType.orDefault().description)
+            append(gameType.orDefault().title)
             append("@")
             append(gameVersion)
         }
@@ -64,19 +64,22 @@ class ParadoxModDescriptorSettingsState : BaseState() {
     var picture: String? by string()
     var tags: MutableSet<String> by stringSet()
     var remoteId: String? by string()
+    var inferredGameType: ParadoxGameType? by enum()
     var gameType: ParadoxGameType? by enum()
     var source: ParadoxModSource by enum(ParadoxModSource.Local)
     var modDirectory: String? by string()
     
     val qualifiedName: String
         get() = buildString {
-            append(gameType.orDefault().description).append(" Mod: ")
+            append(gameType.orDefault().title).append(" Mod: ")
             append(name)
             version?.let { version -> append("@").append(version) }
         }
     
     fun fromRootInfo(rootInfo: ParadoxModRootInfo) {
         modDirectory = rootInfo.rootFile.path
+        inferredGameType = rootInfo.inferredGameType
+        if(inferredGameType != null) gameType = inferredGameType
         
         val descriptorInfo = rootInfo.descriptorInfo
         name = descriptorInfo.name.takeIfNotEmpty() ?: PlsBundle.message("mod.name.unnamed")
@@ -119,6 +122,7 @@ interface ParadoxModDescriptorAwareSettingsState {
     val picture get() = modDescriptorSettings?.picture
     val tags get() = modDescriptorSettings?.tags
     val remoteId get() = modDescriptorSettings?.remoteId
+    val inferredGameType get() = modDescriptorSettings?.inferredGameType
     val gameType get() = modDescriptorSettings?.gameType
     val source get() = modDescriptorSettings?.source
 }
