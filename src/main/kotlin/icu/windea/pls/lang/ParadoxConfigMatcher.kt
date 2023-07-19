@@ -5,11 +5,9 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
@@ -60,26 +58,63 @@ object ParadoxConfigMatcher {
             override fun get(options: Int) = true
         }
         
-        sealed class LazyMatch : Result()
+        //memory usage: 12 + 4 = 16b => 16b
         
-        class LazySimpleMatch(predicate: () -> Boolean) : LazyMatch() {
-            private val result by lazy { predicate() }
-            override fun get(options: Int) = if(BitUtil.isSet(options, Options.Relax)) true else result
+        sealed class LazyMatch(predicate: () -> Boolean) : Result() {
+            //use manual lazy implementation instead of kotlin Lazy to optimize memory
+            private var value: Any = predicate
+            
+            override fun get(options: Int): Boolean {
+                return doGet()
+            }
+            
+            protected fun doGet(): Boolean {
+                if(value is Boolean) return value as Boolean
+                return synchronized(this) {
+                    if(value is Boolean) return value as Boolean
+                    val r = doGetCatching()
+                    value = r
+                    r
+                }
+            }
+            
+            private fun doGetCatching(): Boolean {
+                //it's necessary to prevent outputting error logs and throwing certain exceptions here
+                var error: Throwable? = null
+                val loggerLevel = Logger.getGlobal().level
+                try {
+                    Logger.getGlobal().level = Level.OFF
+                    @Suppress("UNCHECKED_CAST")
+                    return (value as () -> Boolean)()
+                } catch(e: Throwable) {
+                    //java.lang.Throwable: Indexing process should not rely on non-indexed file data.
+                    //java.lang.AssertionError: Reentrant indexing
+                    //com.intellij.openapi.project.IndexNotReadyException
+                    
+                    if(e is ProcessCanceledException) throw e
+                    error = e
+                    return true
+                } finally {
+                    Logger.getGlobal().level = loggerLevel
+                    if(error != null) thisLogger().info(error)
+                }
+            }
         }
         
-        class LazyBlockAwareMatch(predicate: () -> Boolean) : LazyMatch() {
-            private val result by lazy { predicate() }.catching()
-            override fun get(options: Int) = if(BitUtil.isSet(options, Options.Relax)) true else result
+        class LazySimpleMatch(predicate: () -> Boolean) : LazyMatch(predicate) {
+            override fun get(options: Int) = if(BitUtil.isSet(options, Options.Relax)) true else doGet()
         }
         
-        class LazyIndexAwareMatch(predicate: () -> Boolean) : LazyMatch() {
-            private val result by lazy { predicate() }.catching()
-            override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipIndex)) true else result
+        class LazyBlockAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate) {
+            override fun get(options: Int) = if(BitUtil.isSet(options, Options.Relax)) true else doGet()
         }
         
-        class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch() {
-            private val result by lazy { predicate() }.catching()
-            override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipScope)) true else result
+        class LazyIndexAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate) {
+            override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipIndex)) true else doGet()
+        }
+        
+        class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate) {
+            override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipScope)) true else doGet()
         }
     }
     
@@ -383,13 +418,13 @@ object ParadoxConfigMatcher {
     }
     
     
-    private val configMatchResultCache = CacheBuilder.newBuilder().buildCache<VirtualFile, Cache<String, Result>> { CacheBuilder.newBuilder().buildCache() }
+    private val configMatchResultCache = CacheBuilder.newBuilder().buildCache<String, Result>()
     
     private fun getCachedResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
         ProgressManager.checkCanceled()
         val rootFile = selectRootFile(element) ?: return Result.NotMatch //TODO 1.0.3+ 可以考虑优化性能，但是影响不大
-        val cache = configMatchResultCache.get(rootFile)
-        return cache.getOrPut(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
+        val globalCacheKey = rootFile.path + ":" + cacheKey
+        return configMatchResultCache.getOrPut(globalCacheKey) { Result.LazyIndexAwareMatch(predicate) }
     }
     
     private fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {
@@ -500,27 +535,6 @@ object ParadoxConfigMatcher {
     private fun Boolean.toResult() = if(this) Result.ExactMatch else Result.NotMatch
     
     private fun Boolean.toFallbackResult() = if(this) Result.FallbackMatch else Result.NotMatch
-    
-    private fun Lazy<Boolean>.catching() = delegatedBy {
-        var error: Throwable? = null
-        val loggerLevel = Logger.getGlobal().level
-        try {
-            Logger.getGlobal().level = Level.OFF
-            value
-        } catch(e: Throwable) {
-            //进一步匹配CWT规则时需要阻止输出错误日志以及抛出某些异常
-            //java.lang.Throwable: Indexing process should not rely on non-indexed file data.
-            //java.lang.AssertionError: Reentrant indexing
-            //com.intellij.openapi.project.IndexNotReadyException
-            
-            if(e is ProcessCanceledException) throw e
-            error = e
-            true
-        } finally {
-            Logger.getGlobal().level = loggerLevel
-            if(error != null) thisLogger().info(error)
-        }
-    }
     
     class Listener : PsiModificationTracker.Listener {
         override fun modificationCountChanged() {
