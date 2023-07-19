@@ -33,9 +33,9 @@ class ParadoxLocalisationFile(
         val dotIndex = name.lastIndexOf('.').let { if(it == -1) name.lastIndex else it }
         val prefixIndex = name.lastIndexOf("l_", dotIndex)
         if(prefixIndex == -1) {
-            return name.substring(0, dotIndex) + localeId + ".yml"
+            return name.substring(0, dotIndex) + "_" + localeId + ".yml"
         } else {
-            return name.substring(0, prefixIndex) + localeId + ".yml"
+            return name.substring(0, prefixIndex) + "_" + localeId + ".yml"
         }
     }
     
