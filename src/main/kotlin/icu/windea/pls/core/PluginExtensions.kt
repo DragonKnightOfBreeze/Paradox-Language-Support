@@ -190,6 +190,16 @@ fun PsiReference.canResolveParameter(): Boolean {
         is ParadoxScriptValueArgumentExpressionNode.Reference -> true
         is ParadoxParameterPsiReference -> true
         is ParadoxConditionParameterPsiReference -> true
+        else -> false
+    }
+}
+
+fun PsiReference.canResolveLocalisationParameter(): Boolean {
+    return when(this) {
+        is ParadoxScriptExpressionPsiReference -> {
+            val configExpression = this.config.expression ?: return false
+            configExpression.type == CwtDataType.LocalisationParameter
+        }
         is ParadoxLocalisationPropertyPsiReference -> true
         else -> false
     }
