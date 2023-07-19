@@ -25,6 +25,7 @@ object ParadoxSearchScopeTypes {
         val file = selectFile(context) ?: return null
         val fileInfo = file.fileInfo ?: return null
         val result = mutableListOf<ParadoxSearchScopeType>()
+        result.add(All)
         if(file.fileType.isParadoxFileType()) {
             result.add(File)
         }
@@ -46,7 +47,6 @@ object ParadoxSearchScopeTypes {
                 }
             }
         }
-        result.add(All)
         return result
     }
     
