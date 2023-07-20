@@ -15,7 +15,14 @@ open class ChainedParadoxSelector<T>(
 ) : ParadoxSelector<T> {
     val file = selectFile(context)
     val rootFile = selectRootFile(file)
-    val gameType = selectGameType(rootFile)
+    
+    val gameType by lazy {
+        val selectorGameType = selectors.filterIsInstance<ParadoxWithGameTypeSelector<*>>().lastOrNull()?.gameType
+        when {
+            selectorGameType == null -> selectGameType(rootFile)
+            else -> selectorGameType
+        }
+    }
     
     val settings: ParadoxGameOrModSettingsState? by lazy {
         val rootInfo = rootFile?.fileInfo?.rootInfo
