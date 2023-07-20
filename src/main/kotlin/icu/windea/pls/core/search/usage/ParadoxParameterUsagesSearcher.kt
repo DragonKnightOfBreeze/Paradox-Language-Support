@@ -30,19 +30,7 @@ class ParadoxParameterUsagesSearcher: QueryExecutorBase<PsiReference, References
 	}
 	
 	private fun getProcessor(target: PsiElement): RequestResultProcessor {
-		return object : FilteredRequestResultProcessor(target) {
-			override fun appslyFor(element: PsiElement): Boolean {
-				return element.language.isParadoxLanguage()
-			}
-			
-			override fun acceptElement(element: PsiElement): Boolean {
-				return element is ParadoxParameter || element is ParadoxConditionParameter || element is ParadoxScriptStringExpressionElement
-			}
-			
-			override fun acceptReference(reference: PsiReference): Boolean {
-				return reference.canResolveParameter()
-			}
-		}
+		return ParadoxFilteredRequestResultProcessor(target, ParadoxResolveConstraint.Parameter)
 	}
 }
 

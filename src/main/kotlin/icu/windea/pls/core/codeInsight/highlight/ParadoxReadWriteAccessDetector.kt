@@ -33,47 +33,47 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
 	}
 	
 	override fun getReferenceAccess(referencedElement: PsiElement, reference: PsiReference): Access {
-		if(reference.canResolveParameter()) {
-			val resolved = reference.resolveFirst()?.castOrNull<ParadoxParameterElement>()
-			if(resolved != null) return resolved.readWriteAccess
-		}
-		if(reference.canResolveLocalisationParameter()) {
-			val resolved = reference.resolveFirst()?.castOrNull<ParadoxLocalisationParameterElement>()
-			if(resolved != null) return resolved.readWriteAccess
-		}
-		if(reference.canResolveValueSetValue()) {
-			val resolved = reference.resolveFirst()?.castOrNull<ParadoxValueSetValueElement>()
-			if(resolved != null) return resolved.readWriteAccess
-		}
-		if(reference.canResolveComplexEnumValue()) {
-			val resolved = reference.resolveFirst()?.castOrNull<ParadoxComplexEnumValueElement>()
-			if(resolved != null) return resolved.readWriteAccess
-		}
-		return Access.ReadWrite
-	}
+        if(reference.canResolve(ParadoxResolveConstraint.Parameter)) {
+            val resolved = reference.resolveFirst()?.castOrNull<ParadoxParameterElement>()
+            if(resolved != null) return resolved.readWriteAccess
+        }
+        if(reference.canResolve(ParadoxResolveConstraint.LocalisationParameter)) {
+            val resolved = reference.resolveFirst()?.castOrNull<ParadoxLocalisationParameterElement>()
+            if(resolved != null) return resolved.readWriteAccess
+        }
+        if(reference.canResolve(ParadoxResolveConstraint.ValueSetValue)) {
+            val resolved = reference.resolveFirst()?.castOrNull<ParadoxValueSetValueElement>()
+            if(resolved != null) return resolved.readWriteAccess
+        }
+        if(reference.canResolve(ParadoxResolveConstraint.ComplexEnumValue)) {
+            val resolved = reference.resolveFirst()?.castOrNull<ParadoxComplexEnumValueElement>()
+            if(resolved != null) return resolved.readWriteAccess
+        }
+        return Access.ReadWrite
+    }
 	
 	override fun getExpressionAccess(expression: PsiElement): Access {
 		//find usages use this method finally
 		if(expression.language != ParadoxScriptLanguage && expression.language != ParadoxLocalisationLanguage) return Access.ReadWrite
 		for(reference in expression.references) {
-			ProgressManager.checkCanceled()
-			if(reference.canResolveParameter()) {
-				val resolved = reference.resolveFirst()?.castOrNull<ParadoxParameterElement>()
-				if(resolved != null) return resolved.readWriteAccess
-			}
-			if(reference.canResolveLocalisationParameter()) {
-				val resolved = reference.resolveFirst()?.castOrNull<ParadoxLocalisationParameterElement>()
-				if(resolved != null) return resolved.readWriteAccess
-			}
-			if(reference.canResolveValueSetValue()) {
-				val resolved = reference.resolveFirst()?.castOrNull<ParadoxValueSetValueElement>()
-				if(resolved != null) return resolved.readWriteAccess
-			}
-			if(reference.canResolveComplexEnumValue()) {
-				val resolved = reference.resolveFirst()?.castOrNull<ParadoxComplexEnumValueElement>()
-				if(resolved != null) return resolved.readWriteAccess
-			}
-		}
+            ProgressManager.checkCanceled()
+            if(reference.canResolve(ParadoxResolveConstraint.Parameter)) {
+                val resolved = reference.resolveFirst()?.castOrNull<ParadoxParameterElement>()
+                if(resolved != null) return resolved.readWriteAccess
+            }
+            if(reference.canResolve(ParadoxResolveConstraint.LocalisationParameter)) {
+                val resolved = reference.resolveFirst()?.castOrNull<ParadoxLocalisationParameterElement>()
+                if(resolved != null) return resolved.readWriteAccess
+            }
+            if(reference.canResolve(ParadoxResolveConstraint.ValueSetValue)) {
+                val resolved = reference.resolveFirst()?.castOrNull<ParadoxValueSetValueElement>()
+                if(resolved != null) return resolved.readWriteAccess
+            }
+            if(reference.canResolve(ParadoxResolveConstraint.ComplexEnumValue)) {
+                val resolved = reference.resolveFirst()?.castOrNull<ParadoxComplexEnumValueElement>()
+                if(resolved != null) return resolved.readWriteAccess
+            }
+        }
 		return Access.ReadWrite
 	}
 	

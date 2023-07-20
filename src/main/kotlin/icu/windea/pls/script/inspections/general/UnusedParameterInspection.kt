@@ -70,7 +70,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
                 val references = element.references
                 for(reference in references) {
                     ProgressManager.checkCanceled()
-                    if(!reference.canResolveParameter()) continue
+                    if(!reference.canResolve(ParadoxResolveConstraint.Parameter)) continue
                     val resolved = reference.resolve()
                     if(resolved !is ParadoxParameterElement) continue
                     if(resolved.contextName.isParameterized()) continue //skip if context name is parameterized
@@ -82,7 +82,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
                         //TODO 1.0.6+ 这里可以考虑进一步优化，直接查询ParadoxDefinitionHierarchyIndex
                         val r = ReferencesSearch.search(resolved, searchScope).processQueryAsync p@{ ref ->
                             ProgressManager.checkCanceled()
-                            if(!ref.canResolveParameter()) return@p true
+                            if(!ref.canResolve(ParadoxResolveConstraint.Parameter)) return@p true
                             val res = ref.resolve()
                             if(res !is ParadoxParameterElement) return@p true
                             if(res.readWriteAccess != Access.Read) return@p true

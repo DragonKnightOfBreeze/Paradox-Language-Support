@@ -30,7 +30,7 @@ object ParadoxPsiFinder {
         }
         val expressionReference by lazy {
             file.findReferenceAt(offset) {
-                it.element is ParadoxScriptExpressionElement && it.canResolveDefinition()
+                it.element is ParadoxScriptExpressionElement && it.canResolve(ParadoxResolveConstraint.Definition)
             }
         }
         
@@ -87,7 +87,7 @@ object ParadoxPsiFinder {
         }
         if(BitUtil.isSet(options, FindLocalisationOptions.BY_REFERENCE)) {
             val reference = file.findReferenceAt(offset) {
-                it.canResolveLocalisation()
+                it.canResolve(ParadoxResolveConstraint.Localisation)
             }
             val resolved = when {
                 reference == null -> null

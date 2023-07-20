@@ -9,7 +9,6 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
 import kotlin.experimental.*
 
 /**
@@ -33,15 +32,7 @@ class ParadoxLocalisationUsagesSearcher : QueryExecutorBase<PsiReference, Refere
 	}
 	
 	private fun getProcessor(target: PsiElement): RequestResultProcessor {
-		return object : FilteredRequestResultProcessor(target) {
-			override fun appslyFor(element: PsiElement): Boolean {
-				return element.language.isParadoxLanguage()
-			}
-			
-			override fun acceptReference(reference: PsiReference): Boolean {
-				return reference.canResolveLocalisation()
-			}
-		}
+		return ParadoxFilteredRequestResultProcessor(target, ParadoxResolveConstraint.Localisation)
 	}
 }
 

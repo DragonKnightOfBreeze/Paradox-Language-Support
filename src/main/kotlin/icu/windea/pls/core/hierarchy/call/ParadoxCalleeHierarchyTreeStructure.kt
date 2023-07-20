@@ -35,6 +35,7 @@ class ParadoxCalleeHierarchyTreeStructure(
     }
     
     private fun processElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
+        val settings = getSettings()
         val scopeType = getHierarchySettings().scopeType
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
         element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
@@ -83,15 +84,15 @@ class ParadoxCalleeHierarchyTreeStructure(
                 if(references.isEmpty()) return
                 for(reference in references) {
                     var canResolve = false
-                    canResolve = canResolve || (reference.canResolveScriptedVariable() && getSettings().hierarchy.showScriptedVariablesInCallHierarchy)
-                    canResolve = canResolve || (reference.canResolveDefinition() && getSettings().hierarchy.showDefinitionsInCallHierarchy)
-                    canResolve = canResolve || (reference.canResolveLocalisation() && getSettings().hierarchy.showLocalisationsInCallHierarchy)
+                    canResolve = canResolve || (reference.canResolve(ParadoxResolveConstraint.ScriptedVariable) && settings.hierarchy.showScriptedVariablesInCallHierarchy)
+                    canResolve = canResolve || (reference.canResolve(ParadoxResolveConstraint.Definition) && settings.hierarchy.showDefinitionsInCallHierarchy)
+                    canResolve = canResolve || (reference.canResolve(ParadoxResolveConstraint.Localisation) && settings.hierarchy.showLocalisationsInCallHierarchy)
                     if(!canResolve) continue
                     
                     val resolved = reference.resolve()
                     when(resolved) {
                         is ParadoxScriptScriptedVariable -> {
-                            if(!getSettings().hierarchy.showScriptedVariablesInCallHierarchy) continue //不显示
+                            if(!settings.hierarchy.showScriptedVariablesInCallHierarchy) continue //不显示
                             val key = "v:${resolved.name}"
                             if(descriptors.containsKey(key)) continue //去重
                             val resolvedFile = selectFile(resolved)
@@ -99,9 +100,9 @@ class ParadoxCalleeHierarchyTreeStructure(
                             descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
                         }
                         is ParadoxScriptDefinitionElement -> {
-                            if(!getSettings().hierarchy.showDefinitionsInCallHierarchy) continue //不显示
+                            if(!settings.hierarchy.showDefinitionsInCallHierarchy) continue //不显示
                             val definitionInfo = resolved.definitionInfo ?: continue
-                            if(!getSettings().hierarchy.showDefinitionsInCallHierarchy(rootDefinitionInfo, definitionInfo)) return //不显示
+                            if(!settings.hierarchy.showDefinitionsInCallHierarchy(rootDefinitionInfo, definitionInfo)) return //不显示
                             val key = "d:${definitionInfo.name}: ${definitionInfo.type}"
                             if(descriptors.containsKey(key)) continue //去重
                             val resolvedFile = selectFile(resolved)
@@ -109,7 +110,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                             descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
                         }
                         is ParadoxLocalisationProperty -> {
-                            if(!getSettings().hierarchy.showLocalisationsInCallHierarchy) continue //不显示
+                            if(!settings.hierarchy.showLocalisationsInCallHierarchy) continue //不显示
                             val localisationInfo = resolved.localisationInfo ?: continue
                             val key = "l:${localisationInfo.name}"
                             if(descriptors.containsKey(key)) continue //去重

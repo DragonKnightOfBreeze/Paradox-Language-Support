@@ -24,7 +24,7 @@ abstract class FilteredRequestResultProcessor(private val target: PsiElement) : 
         return true
     }
     
-    protected open fun appslyFor(element: PsiElement): Boolean = true
+    protected open fun applyFor(element: PsiElement): Boolean = true
     
     protected open fun acceptElement(element: PsiElement): Boolean = true
     

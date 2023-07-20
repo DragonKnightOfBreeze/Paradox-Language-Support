@@ -43,7 +43,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
                 val references = element.references
                 for(reference in references) {
                     ProgressManager.checkCanceled()
-                    if(!reference.canResolveValueSetValue()) continue
+                    if(!reference.canResolve(ParadoxResolveConstraint.ValueSetValue)) continue
                     val resolved = reference.resolveFirst()
                     if(resolved !is ParadoxValueSetValueElement) continue
                     if(resolved.readWriteAccess != Access.Write) continue

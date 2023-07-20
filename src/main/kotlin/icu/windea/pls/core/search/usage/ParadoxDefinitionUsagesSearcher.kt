@@ -56,15 +56,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
     }
     
     private fun getProcessor(target: PsiElement): RequestResultProcessor {
-        return object : FilteredRequestResultProcessor(target) {
-            override fun appslyFor(element: PsiElement): Boolean {
-                return element.language.isParadoxLanguage()
-            }
-            
-            override fun acceptReference(reference: PsiReference): Boolean {
-                return reference.canResolveDefinition()
-            }
-        }
+        return ParadoxFilteredRequestResultProcessor(target, ParadoxResolveConstraint.Definition)
     }
 }
 
