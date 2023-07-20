@@ -11,7 +11,7 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 对应的CWT规则有多个且存在冲突的表达式的检测。
+ * 对应的CWT规则有多个且存在冲突的表达式的检查。
  */
 @Suppress("UNUSED_PARAMETER")
 class ConflictingResolvedExpressionInspection : LocalInspectionTool() {

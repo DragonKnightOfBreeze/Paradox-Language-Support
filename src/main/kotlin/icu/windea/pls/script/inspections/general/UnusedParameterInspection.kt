@@ -19,7 +19,7 @@ import kotlin.collections.mutableMapOf
 import kotlin.collections.set
 
 /**
- * 参数（`$PARAM$`）被设置/引用但未被使用的检查。
+ * 参数被设置/引用但未被使用的检查。
  *
  * 例如：有`some_effect = {PARAM = some_value}`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。
  */
