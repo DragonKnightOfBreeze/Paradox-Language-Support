@@ -7,17 +7,16 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.psi.*
 import kotlin.experimental.*
 
-/**
- * 本地化的使用的查询。
- */
-class ParadoxLocalisationUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
+class ParadoxLocalisationParameterUsagesSearcher: QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
 	override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
 		val target = queryParameters.elementToSearch
-		if(target !is ParadoxLocalisationProperty) return
+		if(target !is ParadoxLocalisationParameterElement) return
 		val name = target.name
 		if(name.isEmpty()) return
 		val project = queryParameters.project
@@ -31,9 +30,12 @@ class ParadoxLocalisationUsagesSearcher : QueryExecutorBase<PsiReference, Refere
 	}
 	
 	private class TheProcessor(target: PsiElement): FilteredRequestResultProcessor(target) {
+		override fun acceptElement(element: PsiElement): Boolean {
+			return element is ParadoxLocalisationPropertyReference || element is ParadoxScriptStringExpressionElement
+		}
+		
 		override fun acceptReference(reference: PsiReference): Boolean {
-			return reference.canResolveLocalisation()
+			return reference.canResolveLocalisationParameter()
 		}
 	}
 }
-
