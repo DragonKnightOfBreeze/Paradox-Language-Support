@@ -13,11 +13,7 @@ import java.awt.*
 //com.intellij.diagram.components.DiagramNodeBodyComponent
 //com.intellij.diagram.components.DiagramNodeItemComponent
 
-@TrickyApi
 class DiagramNodeItemComponentEx : DiagramNodeItemComponent() {
-    var myLeft: SimpleColoredComponent by this.property<DiagramNodeItemComponent, _>("myLeft")
-    var myRight: SimpleColoredComponent by this.property<DiagramNodeItemComponent, _>("myRight")
-    
     private var useComponent = false
     
     //使用自定义组件时myLeft和myRight的宽度应当为0
@@ -29,8 +25,8 @@ class DiagramNodeItemComponentEx : DiagramNodeItemComponent() {
         val right = object : SimpleColoredComponent() {
             override fun getPreferredSize() = super.getPreferredSize().alsoIf(useComponent) { it.width = 0 }
         }
-        myLeft = left
-        myRight = right
+        this.left = left
+        this.right = right
         removeAll()
         add(left, BorderLayout.WEST)
         add(right, BorderLayout.EAST)

@@ -8,19 +8,18 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.components.*
 import javax.swing.*
 
-@TrickyApi
 abstract class DiagramExtrasEx : CommonDiagramExtras<PsiElement>() {
     override fun createNodeComponent(node: DiagramNode<PsiElement>, builder: DiagramBuilder, nodeRealizer: NodeRealizer, wrapper: JPanel): JComponent {
         //允许添加自定义的组件
         val component = super.createNodeComponent(node, builder, nodeRealizer, wrapper)
         if(component is DiagramNodeContainer) {
             val nodeBodyComponent = component.nodeBodyComponent
-            var myItemComponent by nodeBodyComponent.property<_, DiagramNodeItemComponent>("myItemComponent")
-            myItemComponent = DiagramNodeItemComponentEx()
+            nodeBodyComponent.itemComponent = DiagramNodeItemComponentEx()
         }
         return component
     }
-}
+}//

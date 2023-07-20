@@ -9,12 +9,9 @@ import com.intellij.openapi.graph.layout.*
 import com.intellij.openapi.graph.settings.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.actions.*
 import icu.windea.pls.extension.diagram.provider.*
 
-@TrickyApi
 open class ParadoxDiagramExtras(
     val provider: ParadoxDiagramProvider
 ) : DiagramExtrasEx() {
@@ -36,7 +33,7 @@ open class ParadoxDiagramExtras(
             override fun createToolbarActions(builder: DiagramBuilder): DefaultActionGroup {
                 val actionGroup = super.createToolbarActions(builder)
                 //before first separator
-                val children by actionGroup.property<_, MutableList<AnAction>>("mySortedChildren")
+                val children = actionGroup.children
                 val separatorIndex = children.indexOfFirst { it is SeparatorAction }
                 val index = if(separatorIndex == -1) children.size else separatorIndex
                 children.add(index, ParadoxDiagramScopeTypesActionGroup(builder))
