@@ -149,7 +149,7 @@ class ParadoxOnActionFromEffectInferredScopeContextProvider : ParadoxDefinitionI
                                 scopeContextMap.put(toRef, refScope)
                             }
                             if(depth >= 4) return@p true
-                            doProcessQuery(containingEventName, searchScope, scopeContextMap, configGroup)
+                            doProcessQuery(containingEventName, searchScope, scopeContextMap, configGroup, depth + 1)
                         }
                     }
                 }
