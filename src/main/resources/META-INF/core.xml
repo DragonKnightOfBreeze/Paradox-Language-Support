@@ -76,11 +76,13 @@
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxDefinitionImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxLocalisationImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxFileImplementationsSearch"/>
-    
+
+    <referencesSearch implementation="icu.windea.pls.core.search.usage.CwtConfigUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxDefinitionUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxLocalisationUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.core.search.usage.CwtConfigUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxFileUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxParameterUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxLocalisationParameterUsagesSearcher"/>
     
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
     

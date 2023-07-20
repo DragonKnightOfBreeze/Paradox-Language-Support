@@ -19,7 +19,7 @@ import java.util.*
  * 用于索引定义声明中的定义引用、参数引用、本地化参数引用等。
  *
  * * 这个索引可能不会记录数据在文件中的位置。
- * * 这个索引目前不需要兼容需要内联的情况（此时使用懒加载的索引）。
+ * * 这个索引目前需要兼容需要内联的情况（此时使用懒加载的索引）。
  *
  * @see ParadoxDefinitionHierarchyInfo
  * @see ParadoxDefinitionHierarchySupport

@@ -28,7 +28,7 @@ class ParadoxDiagramChangeScopeTypeAction(
         val project = builder.project
         val provider = builder.provider
         if(provider !is ParadoxDiagramProvider) return DESELECTED_ICON
-        var settings = provider.getDiagramSettings(project)?.state ?: return DESELECTED_ICON
+        val settings = provider.getDiagramSettings(project)?.state ?: return DESELECTED_ICON
         val currentScopeType = settings.scopeType
         val selected = ParadoxSearchScopeTypes.get(currentScopeType).id == scopeType.id
         return if(selected) SELECTED_ICON else DESELECTED_ICON

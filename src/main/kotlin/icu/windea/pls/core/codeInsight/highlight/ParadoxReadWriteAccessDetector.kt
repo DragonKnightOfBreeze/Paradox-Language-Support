@@ -37,6 +37,10 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
 			val resolved = reference.resolveFirst()?.castOrNull<ParadoxParameterElement>()
 			if(resolved != null) return resolved.readWriteAccess
 		}
+		if(reference.canResolveLocalisationParameter()) {
+			val resolved = reference.resolveFirst()?.castOrNull<ParadoxLocalisationParameterElement>()
+			if(resolved != null) return resolved.readWriteAccess
+		}
 		if(reference.canResolveValueSetValue()) {
 			val resolved = reference.resolveFirst()?.castOrNull<ParadoxValueSetValueElement>()
 			if(resolved != null) return resolved.readWriteAccess
@@ -55,6 +59,10 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
 			ProgressManager.checkCanceled()
 			if(reference.canResolveParameter()) {
 				val resolved = reference.resolveFirst()?.castOrNull<ParadoxParameterElement>()
+				if(resolved != null) return resolved.readWriteAccess
+			}
+			if(reference.canResolveLocalisationParameter()) {
+				val resolved = reference.resolveFirst()?.castOrNull<ParadoxLocalisationParameterElement>()
 				if(resolved != null) return resolved.readWriteAccess
 			}
 			if(reference.canResolveValueSetValue()) {

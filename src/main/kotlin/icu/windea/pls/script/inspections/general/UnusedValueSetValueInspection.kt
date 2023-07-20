@@ -46,32 +46,31 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
                     if(!reference.canResolveValueSetValue()) continue
                     val resolved = reference.resolveFirst()
                     if(resolved !is ParadoxValueSetValueElement) continue
-                    if(resolved.readWriteAccess == Access.Write) {
-                        val cachedStatus = statusMap[resolved]
-                        val status = if(cachedStatus == null) {
+                    if(resolved.readWriteAccess != Access.Write) continue
+                    val cachedStatus = statusMap[resolved]
+                    val status = if(cachedStatus == null) {
+                        ProgressManager.checkCanceled()
+                        val selector = valueSetValueSelector(project, file).withSearchScope(searchScope) //use file as context
+                        val r = ParadoxValueSetValueSearch.search(resolved.name, resolved.valueSetNames, selector).processQueryAsync p@{
                             ProgressManager.checkCanceled()
-                            val selector = valueSetValueSelector(project, file).withSearchScope(searchScope) //use file as context
-                            val r = ParadoxValueSetValueSearch.search(resolved.name, resolved.valueSetNames, selector).processQueryAsync p@{
-                                ProgressManager.checkCanceled()
-                                if(it.readWriteAccess == Access.Read) {
-                                    statusMap[resolved] = true
-                                    false
-                                } else {
-                                    true
-                                }
-                            }
-                            if(r) {
-                                statusMap[resolved] = false
+                            if(it.readWriteAccess == Access.Read) {
+                                statusMap[resolved] = true
                                 false
                             } else {
                                 true
                             }
+                        }
+                        if(r) {
+                            statusMap[resolved] = false
+                            false
                         } else {
-                            cachedStatus
+                            true
                         }
-                        if(!status) {
-                            registerProblem(element, resolved.name, resolved.valueSetNames.joinToString(), reference.rangeInElement)
-                        }
+                    } else {
+                        cachedStatus
+                    }
+                    if(!status) {
+                        registerProblem(element, resolved.name, resolved.valueSetNames.joinToString(), reference.rangeInElement)
                     }
                 }
             }

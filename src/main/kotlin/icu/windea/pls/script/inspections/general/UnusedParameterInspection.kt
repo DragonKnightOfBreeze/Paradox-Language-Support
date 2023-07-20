@@ -74,34 +74,32 @@ class UnusedParameterInspection : LocalInspectionTool() {
                     val resolved = reference.resolve()
                     if(resolved !is ParadoxParameterElement) continue
                     if(resolved.contextName.isParameterized()) continue //skip if context name is parameterized
-                    if(resolved.readWriteAccess == Access.Write) {
-                        //当确定已被使用时，后续不需要再进行ReferencesSearch
-                        val cachedStatus = statusMap[resolved]
-                        val status = if(cachedStatus == null) {
+                    if(resolved.readWriteAccess != Access.Write) continue
+                    //当确定已被使用时，后续不需要再进行ReferencesSearch
+                    val cachedStatus = statusMap[resolved]
+                    val status = if(cachedStatus == null) {
+                        ProgressManager.checkCanceled()
+                        //TODO 1.0.6+ 这里可以考虑进一步优化，直接查询ParadoxDefinitionHierarchyIndex
+                        val r = ReferencesSearch.search(resolved, searchScope).processQueryAsync p@{ ref ->
                             ProgressManager.checkCanceled()
-                            //TODO 1.0.6+ 这里可以考虑进一步优化，直接查询ParadoxDefinitionHierarchyIndex
-                            val r = ReferencesSearch.search(resolved, searchScope).processQueryAsync p@{
-                                ProgressManager.checkCanceled()
-                                val res = it.resolve()
-                                if(res is ParadoxParameterElement && res.readWriteAccess == Access.Read) {
-                                    statusMap[resolved] = true
-                                    false
-                                } else {
-                                    true
-                                }
-                            }
-                            if(r) {
-                                statusMap[resolved] = false
-                                false
-                            } else {
-                                true
-                            }
+                            if(!ref.canResolveParameter()) return@p true
+                            val res = ref.resolve()
+                            if(res !is ParadoxParameterElement) return@p true
+                            if(res.readWriteAccess != Access.Read) return@p true
+                            statusMap[resolved] = true
+                            false
+                        }
+                        if(r) {
+                            statusMap[resolved] = false
+                            false
                         } else {
-                            cachedStatus
+                            true
                         }
-                        if(!status) {
-                            registerProblem(element, resolved.name, reference.rangeInElement)
-                        }
+                    } else {
+                        cachedStatus
+                    }
+                    if(!status) {
+                        registerProblem(element, resolved.name, reference.rangeInElement)
                     }
                 }
             }
