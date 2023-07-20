@@ -60,7 +60,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                         if(resolvedNames.contains(name)) return //不需要重复解析引用
                         guardStack.addLast(name)
                         try {
-                            val resolved = e.reference?.resolveLocalisation() //直接解析为本地化以优化性能
+                            val resolved = resolveLocalisation(e) //直接解析为本地化以优化性能
                             if(resolved !is ParadoxLocalisationProperty) return
                             val resolvedName = resolved.name
                             resolvedNames.add(resolvedName)
@@ -71,6 +71,11 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                         }
                     }
                 })
+            }
+            
+            private fun resolveLocalisation(e: ParadoxLocalisationPropertyReference): ParadoxLocalisationProperty? {
+                val reference = e.reference ?: return null
+                return reference.resolveLocalisation()
             }
             
             private fun registerProblem(element: ParadoxLocalisationProperty, recursion: PsiElement) {
