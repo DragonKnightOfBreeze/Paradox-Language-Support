@@ -9,12 +9,13 @@ private val ourReferenceService = PsiReferenceService.getService()
 // icu.windea.pls.core.search.FilteredRequestResultProcessor
 abstract class FilteredRequestResultProcessor(private val target: PsiElement) : RequestResultProcessor(target) {
     override fun processTextOccurrence(element: PsiElement, offsetInElement: Int, consumer: Processor<in PsiReference>): Boolean {
-        if(!acceptElement(element)) return true
+        val apply = applyFor(element)
+        if(apply && !acceptElement(element)) return true
         if(!target.isValid) return false
         val references = ourReferenceService.getReferences(element, PsiReferenceService.Hints(target, offsetInElement))
         for(i in references.indices) {
             val ref = references[i]
-            if(!acceptReference(ref)) continue
+            if(apply && !acceptReference(ref)) continue
             ProgressManager.checkCanceled()
             if(ReferenceRange.containsOffsetInElement(ref, offsetInElement) && ref.isReferenceTo(target) && !consumer.process(ref)) {
                 return false
@@ -22,6 +23,8 @@ abstract class FilteredRequestResultProcessor(private val target: PsiElement) : 
         }
         return true
     }
+    
+    protected open fun appslyFor(element: PsiElement): Boolean = true
     
     protected open fun acceptElement(element: PsiElement): Boolean = true
     

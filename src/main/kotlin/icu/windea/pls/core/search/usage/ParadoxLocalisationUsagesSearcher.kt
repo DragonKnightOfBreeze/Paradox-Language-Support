@@ -9,6 +9,7 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.psi.*
 import kotlin.experimental.*
 
 /**
@@ -25,14 +26,21 @@ class ParadoxLocalisationUsagesSearcher : QueryExecutorBase<PsiReference, Refere
 			//这里不能直接使用target.useScope，否则文件高亮会出现问题
 			val useScope = queryParameters.effectiveSearchScope
 			val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_COMMENTS
-			val processor = TheProcessor(target)
+			val processor = getProcessor(target)
+			queryParameters.optimizer.wordRequests.removeIf { it.word == name }
 			queryParameters.optimizer.searchWord(name, useScope, searchContext, true, target, processor)
 		}
 	}
 	
-	private class TheProcessor(target: PsiElement): FilteredRequestResultProcessor(target) {
-		override fun acceptReference(reference: PsiReference): Boolean {
-			return reference.canResolveLocalisation()
+	private fun getProcessor(target: PsiElement): RequestResultProcessor {
+		return object : FilteredRequestResultProcessor(target) {
+			override fun appslyFor(element: PsiElement): Boolean {
+				return element.language.isParadoxLanguage()
+			}
+			
+			override fun acceptReference(reference: PsiReference): Boolean {
+				return reference.canResolveLocalisation()
+			}
 		}
 	}
 }

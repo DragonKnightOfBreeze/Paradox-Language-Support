@@ -1,11 +1,11 @@
-package icu.windea.pls.lang.model
+package icu.windea.pls.core
 
 import com.intellij.psi.stubs.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.localisation.psi.*
 
 /**
- * 用于过滤本地化索引并进行必要的特殊处理。
+ * 用于优化本地化查询。
  */
 enum class ParadoxLocalisationConstraint(
     val indexKey: StubIndexKey<String, ParadoxLocalisationProperty>,

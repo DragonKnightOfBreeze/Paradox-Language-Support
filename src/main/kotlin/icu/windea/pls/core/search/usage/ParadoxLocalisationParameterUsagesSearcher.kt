@@ -24,18 +24,25 @@ class ParadoxLocalisationParameterUsagesSearcher: QueryExecutorBase<PsiReference
 			//这里不能直接使用target.useScope，否则文件高亮会出现问题
 			val useScope = queryParameters.effectiveSearchScope
 			val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_COMMENTS
-			val processor = TheProcessor(target)
+			val processor = getProcessor(target)
+			queryParameters.optimizer.wordRequests.removeIf { it.word == name }
 			queryParameters.optimizer.searchWord(name, useScope, searchContext, true, target, processor)
 		}
 	}
 	
-	private class TheProcessor(target: PsiElement): FilteredRequestResultProcessor(target) {
-		override fun acceptElement(element: PsiElement): Boolean {
-			return element is ParadoxLocalisationPropertyReference || element is ParadoxScriptStringExpressionElement
-		}
-		
-		override fun acceptReference(reference: PsiReference): Boolean {
-			return reference.canResolveLocalisationParameter()
+	private fun getProcessor(target: PsiElement): RequestResultProcessor {
+		return object : FilteredRequestResultProcessor(target) {
+			override fun appslyFor(element: PsiElement): Boolean {
+				return element.language.isParadoxLanguage()
+			}
+			
+			override fun acceptElement(element: PsiElement): Boolean {
+				return element is ParadoxLocalisationPropertyReference || element is ParadoxScriptStringExpressionElement
+			}
+			
+			override fun acceptReference(reference: PsiReference): Boolean {
+				return reference.canResolveLocalisationParameter()
+			}
 		}
 	}
 }
