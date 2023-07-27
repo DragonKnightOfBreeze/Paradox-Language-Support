@@ -80,7 +80,6 @@
     <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxEventInOnActionDefinitionHierarchySupport"/>
     <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxEventInEffectDefinitionHierarchySupport"/>
     <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxOnActionInEffectDefinitionHierarchySupport"/>
-    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxLocalisationParameterDefinitionHierarchySupport"/>
     
     <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.ParadoxBaseTypeInheritSupport"/>
     <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.StellarisEventInheritSupport"/>
