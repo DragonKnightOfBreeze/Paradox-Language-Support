@@ -25,7 +25,7 @@ import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.diff.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*

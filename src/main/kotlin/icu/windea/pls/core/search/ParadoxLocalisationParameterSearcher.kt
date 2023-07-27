@@ -8,20 +8,17 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.hierarchy.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 
-/**
- * 复杂枚举值的查询器。
- */
-class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValueInfo, ParadoxComplexEnumValueSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxComplexEnumValueSearch.SearchParameters, consumer: Processor<in ParadoxComplexEnumValueInfo>) {
+class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisationParameterInfo, ParadoxLocalisationParameterSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxLocalisationParameterSearch.SearchParameters, consumer: Processor<in ParadoxLocalisationParameterInfo>) {
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
         if(SearchScope.isEmptyScope(scope)) return
         val name = queryParameters.name
-        val enumName = queryParameters.enumName
+        val localisationName = queryParameters.localisationName
         val project = queryParameters.project
         val selector = queryParameters.selector
         val gameType = selector.gameType ?: return
@@ -31,11 +28,11 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
             ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
-            val fileData = ParadoxComplexEnumValueIndex.getInstance().getFileData(file, project)
+            val fileData = ParadoxLocalisationParameterIndex.getInstance().getFileData(file, project)
             if(fileData.isEmpty()) return@p true
-            val complexEnumValueInfoList = fileData[enumName]
-            if(complexEnumValueInfoList.isNullOrEmpty()) return@p true
-            complexEnumValueInfoList.forEachFast { info ->
+            val localisationParameterInfoList = fileData[localisationName]
+            if(localisationParameterInfoList.isNullOrEmpty()) return@p true
+            localisationParameterInfoList.forEachFast { info ->
                 if(name == null || name == info.name) {
                     val r = consumer.process(info)
                     if(!r) return@p false
@@ -50,4 +47,3 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         return FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
     }
 }
-

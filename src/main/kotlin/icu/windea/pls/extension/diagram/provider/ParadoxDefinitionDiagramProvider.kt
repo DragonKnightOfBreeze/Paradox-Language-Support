@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*

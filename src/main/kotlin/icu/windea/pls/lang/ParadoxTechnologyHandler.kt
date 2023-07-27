@@ -5,13 +5,13 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxTechnologyHandler {
-    fun getTechnologies(selector: ParadoxDefinitionSelector): Set<ParadoxScriptDefinitionElement> {
+    fun getTechnologies(selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {
         return ParadoxDefinitionSearch.search("technology", selector).findAll()
     }
     

@@ -1,7 +1,7 @@
 package icu.windea.pls.core.search
 
 import com.intellij.openapi.project.*
-import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.core.search.selector.*
 
 interface ParadoxSearchParameters<T> {
     val selector: ChainedParadoxSelector<T>

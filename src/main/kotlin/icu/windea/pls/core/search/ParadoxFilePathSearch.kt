@@ -4,7 +4,7 @@ import com.intellij.openapi.extensions.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
-import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.cwt.expression.*
 
 /**

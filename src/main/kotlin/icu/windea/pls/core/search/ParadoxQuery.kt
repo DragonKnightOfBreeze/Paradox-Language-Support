@@ -4,7 +4,6 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.selector.*
-import icu.windea.pls.core.search.selector.chained.*
 import icu.windea.pls.lang.priority.*
 import java.util.concurrent.atomic.*
 

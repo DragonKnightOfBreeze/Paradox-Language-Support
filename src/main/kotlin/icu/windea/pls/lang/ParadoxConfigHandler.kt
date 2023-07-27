@@ -24,7 +24,7 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.ParadoxConfigMatcher.ResultValue
 import icu.windea.pls.lang.config.*
