@@ -1,5 +1,7 @@
 package icu.windea.pls.core.index.hierarchy
 
+import com.intellij.openapi.vfs.*
+import com.intellij.psi.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -7,11 +9,12 @@ import icu.windea.pls.core.index.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.localisation.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-class ParadoxLocalisationParameterIndex: ParadoxDefinitionHierarchyIndex<ParadoxLocalisationParameterInfo>() {
+class ParadoxLocalisationParameterIndex : ParadoxHierarchyIndex<List<ParadoxLocalisationParameterInfo>>() {
     companion object {
         val NAME = ID.create<String, List<ParadoxLocalisationParameterInfo>>("paradox.localisationParameter.index")
         private const val VERSION = 32 //1.1.3
@@ -25,22 +28,40 @@ class ParadoxLocalisationParameterIndex: ParadoxDefinitionHierarchyIndex<Paradox
     
     override fun getVersion() = VERSION
     
-    override fun indexData(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxLocalisationParameterInfo>>) {
+    override fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxLocalisationParameterInfo>>) {
+        file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+            override fun visitElement(element: PsiElement) {
+                if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
+                    val matchOptions = ParadoxConfigMatcher.Options.SkipIndex or ParadoxConfigMatcher.Options.SkipScope
+                    val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = matchOptions)
+                    configs.forEachFast { config ->
+                        doIndexData(element, config, fileData)
+                    }
+                }
+                if(element.isExpressionOrMemberContext()) super.visitElement(element)
+            }
+        })
+        
+        //排序
+        if(fileData.isEmpty()) return
+        fileData.mapValues { (_, v) ->
+            v.sortedBy { it.name }
+        }
+    }
+    
+    private fun doIndexData(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, fileData: MutableMap<String, List<ParadoxLocalisationParameterInfo>>) {
         val localisationReferenceElement = ParadoxLocalisationParameterHandler.getLocalisationReferenceElement(element, config) ?: return
-        val localisationName = localisationReferenceElement.name.takeIfNotEmpty()
-        if(localisationName == null) return
         val name = element.value
-        val info = ParadoxLocalisationParameterInfo(name, localisationName, element.startOffset, definitionInfo.gameType)
+        if(name.isEmpty() || name.isParameterized()) return
+        val localisationName = localisationReferenceElement.name
+        if(localisationName.isEmpty() || localisationName.isParameterized()) return 
+        val gameType = config.info.configGroup.gameType ?: return
+        val info = ParadoxLocalisationParameterInfo(name, localisationName, element.startOffset, gameType)
         val list = fileData.getOrPut(localisationName) { mutableListOf() } as MutableList
         list.add(info)
     }
     
-    override fun afterIndexData(fileData: MutableMap<String, List<ParadoxLocalisationParameterInfo>>) {
-        if(fileData.isEmpty()) return
-        fileData.mapValues { (_,v) ->
-            v.sortedBy { it.name }
-        }
-    }
+    //尝试减少实际需要索引的数据量以优化性能
     
     override fun writeData(storage: DataOutput, value: List<ParadoxLocalisationParameterInfo>) {
         val size = value.size
@@ -72,5 +93,18 @@ class ParadoxLocalisationParameterIndex: ParadoxDefinitionHierarchyIndex<Paradox
             previousInfo = info
         }
         return result
+    }
+    
+    override fun filterFile(file: VirtualFile): Boolean {
+        val fileType = file.fileType
+        if(fileType != ParadoxScriptFileType && fileType != ParadoxLocalisationFileType) return false
+        if(file.fileInfo == null) return false
+        return true
+    }
+    
+    override fun useLazyIndex(file: VirtualFile): Boolean {
+        if(ParadoxFileManager.isInjectedFile(file)) return true
+        if(ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null) return true
+        return false
     }
 }
