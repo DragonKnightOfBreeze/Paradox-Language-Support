@@ -17,21 +17,6 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxDefinitionHierarchyHandler {
-    fun indexData(
-        element: ParadoxScriptStringExpressionElement,
-        fileData: MutableMap<String, List<ParadoxDefinitionHierarchyInfo>>
-    ) {
-        val matchOptions = Options.SkipIndex or Options.SkipScope
-        val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = matchOptions)
-        if(configs.isEmpty()) return
-        val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
-        val configContext = ParadoxConfigHandler.getConfigContext(memberElement) ?: return
-        val definitionInfo = configContext.definitionInfo ?: return
-        configs.forEachFast { config ->
-            ParadoxDefinitionHierarchySupport.indexData(fileData, element, config, definitionInfo)
-        }
-    }
-    
     fun processQuery(
         project: Project,
         supportId: String,
@@ -102,22 +87,6 @@ inline fun ParadoxDefinitionHierarchyHandler.processOnActionsInEffect(
 object ParadoxOnActionInEffectHierarchyContext {
     val ParadoxDefinitionHierarchyInfo.containingEventScope: String? by ParadoxOnActionInEffectDefinitionHierarchySupport.containingEventScopeKey
     val ParadoxDefinitionHierarchyInfo.scopesElementOffset: Int? by ParadoxOnActionInEffectDefinitionHierarchySupport.scopesElementOffsetKey
-}
-
-inline fun ParadoxDefinitionHierarchyHandler.processLocalisationParameters(
-    project: Project,
-    gameType: ParadoxGameType,
-    scope: GlobalSearchScope,
-    crossinline processor: ParadoxLocalisationParameterHierarchyContext.(file: VirtualFile, infos: List<ParadoxDefinitionHierarchyInfo>) -> Boolean
-): Boolean {
-    val supportId = ParadoxLocalisationParameterDefinitionHierarchySupport.ID
-    return processQuery(project, supportId, gameType, scope) p@{ file, value ->
-        ParadoxLocalisationParameterHierarchyContext.processor(file, value)
-    }
-}
-
-object ParadoxLocalisationParameterHierarchyContext {
-    val ParadoxDefinitionHierarchyInfo.localisationName: String? by ParadoxLocalisationParameterDefinitionHierarchySupport.localisationNameKey
 }
 
 inline fun ParadoxDefinitionHierarchyHandler.processInferredScopeContextAwareDefinitions(

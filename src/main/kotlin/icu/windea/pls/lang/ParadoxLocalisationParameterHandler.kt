@@ -2,7 +2,6 @@ package icu.windea.pls.lang
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
-import com.intellij.openapi.application.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -10,13 +9,13 @@ import icons.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.search.scope.*
+import icu.windea.pls.core.search.*
+import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -41,17 +40,11 @@ object ParadoxLocalisationParameterHandler {
     }
     
     private fun doGetParametersFromDefinitionHierarchyIndex(element: ParadoxLocalisationProperty): Set<String> {
-        val gameType = selectGameType(element) ?: return emptySet()
-        val searchScope = runReadAction { ParadoxSearchScope.fromElement(element) }
-            ?.withFileTypes(ParadoxScriptFileType)
-            ?: return emptySet()
         val targetLocalisationName = element.name
         val result = mutableSetOf<String>().synced()
-        ParadoxDefinitionHierarchyHandler.processLocalisationParameters(element.project, gameType, searchScope) p@{ _, infos ->
-            infos.forEachFast f@{ info ->
-                val localisationName = info.localisationName ?: return@f
-                if(localisationName == targetLocalisationName) result.add(info.expression)
-            }
+        val selector = localisationParameterSelector(element.project, element)
+        ParadoxLocalisationParameterSearch.search(targetLocalisationName, selector).processQueryAsync p@{ info ->
+            result.add(info.name)
             true
         }
         return result

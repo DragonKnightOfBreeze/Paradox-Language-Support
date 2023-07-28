@@ -11,7 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.model.*
@@ -139,7 +139,7 @@ object StellarisEconomicCategoryHandler {
         return doGetUseForAiBudgetFromParent(source, parent, parent, project, selector)
     }
     
-    private fun doGetUseForAiBudgetFromParent(source: String, current: String, parent: String, project: Project, selector: ParadoxDefinitionSelector): Boolean {
+    private fun doGetUseForAiBudgetFromParent(source: String, current: String, parent: String, project: Project, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): Boolean {
         val parentElement = ParadoxDefinitionSearch.search(parent, "economic_category", selector).find()
         val newParent = parentElement?.findProperty("parent", inline = true)?.propertyValue?.stringValue()
         if(source == newParent) return false //recursive parent > invalid, return false

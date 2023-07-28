@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 /**
- * 用于索引定义声明中的定义引用、参数引用、本地化参数引用等。
+ * 用于索引定义声明中特定的表达式。
  *
  * @see ParadoxDefinitionHierarchyIndex
  */

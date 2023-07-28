@@ -10,7 +10,7 @@ import icons.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.chained.*
+import icu.windea.pls.core.search.selector.*
 
 class ParadoxGameElementNode(
     project: Project,

@@ -13,7 +13,7 @@ data class ParadoxValueSetValueInfo(
     override val elementOffset: Int,
     override val gameType: ParadoxGameType
 ) : ParadoxExpressionInfo {
-    override val file: PsiFile? get() = null //unused yet
+    @Volatile override var file: PsiFile? = null //unused yet
     
     fun getConfig(project: Project): CwtEnumConfig? {
         return getCwtConfig(project).get(gameType).values[valueSetName]
