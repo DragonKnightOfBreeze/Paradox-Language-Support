@@ -9,6 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.*
@@ -23,13 +24,13 @@ import icu.windea.pls.script.psi.*
  * 则将此on_action的from, fromfrom...作用域推断为此event的from, fromfrom...作用域。
  */
 @SlowApi
-class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
+class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     companion object {
         val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.from.onAction")
     }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if(!getSettings().inference.eventScopeContextFromOnAction) return null
+        if(!getSettings().inference.eventScopeContext) return null
         if(definitionInfo.type != "event") return null
         return doGetScopeContextFromCache(definition)
     }
@@ -67,36 +68,45 @@ class ParadoxEventFromOnActionInferredScopeContextProvider : ParadoxDefinitionIn
         thisEventType: String?,
         searchScope: GlobalSearchScope,
         scopeContextMap: MutableMap<String, String?>,
-        configGroup: CwtConfigGroup
+        configGroup: CwtConfigGroup,
+        depth: Int = 1
     ): Boolean {
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
-        return ParadoxDefinitionHierarchyHandler.processEventsInOnAction(project, gameType, searchScope) p@{ file, infos ->
-            val psiFile = file.toPsiFile(project)?: return@p true
-            infos.forEachFast f@{ info ->
-                val eventName = info.expression
-                if(eventName != thisEventName) return@f
-                val containingOnActionName = info.definitionName
-                //这里使用psiFile作为contextElement
-                val config = configGroup.onActions.getByTemplate(containingOnActionName, psiFile, configGroup)
-                if(config == null) return@f //missing
-                if(config.eventType != thisEventType) return@f //invalid (mismatch)
-                val map = config.config.replaceScopes ?: return@f
-                if(scopeContextMap.isNotEmpty()) {
-                    val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map)
-                    if(mergedMap != null) {
-                        scopeContextMap.clear()
-                        scopeContextMap.putAll(mergedMap)
-                    } else {
-                        return@p false
+        return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxEventInEventInferredScopeContextProvider.doProcessQuery") {
+            if(depth == 1) stackTrace.addLast(thisEventName)
+            
+            val index = ParadoxEventInOnActionDefinitionHierarchyIndex.getInstance()
+            ParadoxDefinitionHierarchyHandler.processQuery(index, project, gameType, searchScope) p@{ file, fileData ->
+                val infos = fileData.values.firstOrNull() ?: return@p true
+                val psiFile = file.toPsiFile(project) ?: return@p true
+                infos.forEachFast f@{ info ->
+                    val eventName = info.eventName
+                    if(eventName != thisEventName) return@f
+                    val containingOnActionName = info.containingOnActionName
+                    withCheckRecursion(containingOnActionName) {
+                        //这里使用psiFile作为contextElement
+                        val config = configGroup.onActions.getByTemplate(containingOnActionName, psiFile, configGroup)
+                        if(config == null) return@f //missing
+                        if(config.eventType != thisEventType) return@f //invalid (mismatch)
+                        val map = config.config.replaceScopes ?: return@f
+                        if(scopeContextMap.isNotEmpty()) {
+                            val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map)
+                            if(mergedMap != null) {
+                                scopeContextMap.clear()
+                                scopeContextMap.putAll(mergedMap)
+                            } else {
+                                return@p false
+                            }
+                        } else {
+                            scopeContextMap.putAll(map)
+                        }
                     }
-                } else {
-                    scopeContextMap.putAll(map)
                 }
+                true
             }
-            true
-        }
+        } ?: false
     }
     
     override fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {

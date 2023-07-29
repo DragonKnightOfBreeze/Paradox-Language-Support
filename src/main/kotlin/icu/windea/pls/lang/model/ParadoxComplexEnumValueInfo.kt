@@ -2,6 +2,7 @@ package icu.windea.pls.lang.model
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.cwt.config.*
@@ -13,7 +14,7 @@ data class ParadoxComplexEnumValueInfo(
     override val elementOffset: Int,
     override val gameType: ParadoxGameType
 ) : ParadoxExpressionInfo {
-    @Volatile override var file: PsiFile? = null //unused yet
+    @Volatile override var virtualFile: VirtualFile? = null
     
     fun getConfig(project: Project): CwtComplexEnumConfig? {
         return getCwtConfig(project).get(gameType).complexEnums[enumName]

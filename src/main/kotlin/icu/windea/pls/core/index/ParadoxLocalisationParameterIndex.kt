@@ -1,22 +1,21 @@
-package icu.windea.pls.core.index.hierarchy
+package icu.windea.pls.core.index
 
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-class ParadoxLocalisationParameterIndex : ParadoxHierarchyIndex<List<ParadoxLocalisationParameterInfo>>() {
+class ParadoxLocalisationParameterIndex : ParadoxFileBasedIndex<List<ParadoxLocalisationParameterInfo>>() {
     companion object {
-        val NAME = ID.create<String, List<ParadoxLocalisationParameterInfo>>("paradox.localisationParameter.index")
+        @JvmField val NAME = ID.create<String, List<ParadoxLocalisationParameterInfo>>("paradox.localisationParameter.index")
         private const val VERSION = 32 //1.1.3
         private val INSTANCE by lazy { EXTENSION_POINT_NAME.findExtensionOrFail(ParadoxLocalisationParameterIndex::class.java) }
         
@@ -54,9 +53,10 @@ class ParadoxLocalisationParameterIndex : ParadoxHierarchyIndex<List<ParadoxLoca
         val name = element.value
         if(name.isEmpty() || name.isParameterized()) return
         val localisationName = localisationReferenceElement.name
-        if(localisationName.isEmpty() || localisationName.isParameterized()) return 
+        if(localisationName.isEmpty() || localisationName.isParameterized()) return
+        val elementOffset = element.startOffset
         val gameType = config.info.configGroup.gameType ?: return
-        val info = ParadoxLocalisationParameterInfo(name, localisationName, element.startOffset, gameType)
+        val info = ParadoxLocalisationParameterInfo(name, localisationName, elementOffset, gameType)
         val list = fileData.getOrPut(localisationName) { mutableListOf() } as MutableList
         list.add(info)
     }

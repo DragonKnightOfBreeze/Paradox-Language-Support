@@ -77,7 +77,8 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
                 val selector = inlineScriptSelector(project, configContext.element)
                 ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQueryAsync p@{ info ->
                     ProgressManager.checkCanceled()
-                    val e = info.file?.findElementAt(info.elementOffset) ?: return@p true
+                    val file = info.virtualFile?.toPsiFile(project) ?: return@p true
+                    val e = file.findElementAt(info.elementOffset) ?: return@p true
                     val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true
                     if(p.name.lowercase() != ParadoxInlineScriptHandler.inlineScriptKey) return@p true
                     val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p true

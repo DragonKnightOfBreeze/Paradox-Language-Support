@@ -1,4 +1,4 @@
-package icu.windea.pls.core.index.hierarchy
+package icu.windea.pls.core.index
 
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
@@ -9,12 +9,7 @@ import com.intellij.util.io.*
 import icu.windea.pls.core.*
 import java.io.*
 
-/**
- * 基于脚本层级的索引。
- * 
- * 构建此类索引时需要遍历脚本文件的内容，一般仅需遍历脚本文件中的所有表达式。
- */
-abstract class ParadoxHierarchyIndex<T>: FileBasedIndexExtension<String, T>() {
+abstract class ParadoxFileBasedIndex<T>: FileBasedIndexExtension<String, T>() {
     abstract override fun getName(): ID<String, T>
     
     abstract override fun getVersion(): Int

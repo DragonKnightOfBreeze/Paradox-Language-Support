@@ -8,6 +8,7 @@ import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.index.*
 import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
@@ -36,7 +37,7 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
             val inlineScriptUsageInfos = fileData[expression]
             if(inlineScriptUsageInfos.isNullOrEmpty()) return@p true
             inlineScriptUsageInfos.forEachFast { info ->
-                info.withFile(psiFile) { consumer.process(info) }
+                info.withVirtualFile(file) { consumer.process(info) }
             }
             true
         }
@@ -44,12 +45,5 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
     
     private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>) {
         FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
-    }
-    
-    private inline fun <T> ParadoxInlineScriptUsageInfo.withFile(file: PsiFile, action: () -> T): T {
-        this.file = file
-        val r = action()
-        this.file = null
-        return r
     }
 }

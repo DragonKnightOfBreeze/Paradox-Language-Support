@@ -75,11 +75,6 @@
     
     <incorrectExpressionChecker implementation="icu.windea.pls.lang.expression.checker.impl.ParadoxTriggerInTriggerWithParametersAwareChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.lang.expression.checker.impl.ParadoxTriggerInSwitchChecker"/>
-
-    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxInferredScopeContextAwareDefinitionHierarchySupport"/>
-    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxEventInOnActionDefinitionHierarchySupport"/>
-    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxEventInEffectDefinitionHierarchySupport"/>
-    <definitionHierarchySupport implementation="icu.windea.pls.lang.hierarchy.impl.ParadoxOnActionInEffectDefinitionHierarchySupport"/>
     
     <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.ParadoxBaseTypeInheritSupport"/>
     <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.StellarisEventInheritSupport"/>
@@ -112,9 +107,9 @@
     <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxOnActionScopeContextProvider"/>
 
     <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxBaseDefinitionInferredScopeContextProvider"/>
-    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxEventFromOnActionInferredScopeContextProvider"/>
-    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxEventFromEffectInferredScopeContextProvider"/>
-    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxOnActionFromEffectInferredScopeContextProvider"/>
+    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxEventInOnActionInferredScopeContextProvider"/>
+    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxEventInEventInferredScopeContextProvider"/>
+    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxOnActionInEffectInferredScopeContextProvider"/>
     
     <definitionPresentationProvider implementation="icu.windea.pls.lang.presentation.impl.StellarisTechnologyPresentationProvider"/>
 

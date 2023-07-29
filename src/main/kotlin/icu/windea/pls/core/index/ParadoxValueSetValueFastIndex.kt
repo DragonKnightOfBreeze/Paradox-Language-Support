@@ -1,11 +1,10 @@
-package icu.windea.pls.core.index.hierarchy
+package icu.windea.pls.core.index
 
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
@@ -17,15 +16,15 @@ import java.io.*
 /**
  * 用于索引值集值。
  *
+ * * 这个索引兼容需要内联的情况（此时使用懒加载的索引）。
  * * 这个索引不会保存同一文件中的重复数据。
  * * 这个索引不会记录数据在文件中的位置。
- * * 这个索引兼容需要内联的情况（此时使用懒加载的索引）。
  * 
  * @see ParadoxValueSetValueInfo
  */
-class ParadoxValueSetValueFastIndex : ParadoxHierarchyIndex<List<ParadoxValueSetValueInfo>>() {
+class ParadoxValueSetValueFastIndex : ParadoxFileBasedIndex<List<ParadoxValueSetValueInfo>>() {
     companion object {
-        val NAME = ID.create<String, List<ParadoxValueSetValueInfo>>("paradox.valueSetValue.fast.index")
+        @JvmField val NAME = ID.create<String, List<ParadoxValueSetValueInfo>>("paradox.valueSetValue.fast.index")
         private const val VERSION = 32 //1.1.3
         private val INSTANCE by lazy { EXTENSION_POINT_NAME.findExtensionOrFail(ParadoxValueSetValueFastIndex::class.java) }
         

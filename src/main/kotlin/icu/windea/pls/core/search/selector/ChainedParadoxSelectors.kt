@@ -4,7 +4,6 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.model.*
@@ -18,6 +17,7 @@ fun <T> nopSelector(project: Project) = ChainedParadoxSelector<T>(project)
 //region scriptedVariableSelector
 fun scriptedVariableSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxScriptScriptedVariable>(project, context)
 
+@JvmName("distinctByName_scriptedVariableSelector")
 fun ChainedParadoxSelector<ParadoxScriptScriptedVariable>.distinctByName() =
     distinctBy { it.name }
 //endregion
@@ -25,7 +25,8 @@ fun ChainedParadoxSelector<ParadoxScriptScriptedVariable>.distinctByName() =
 //region definitionSelector
 fun definitionSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxScriptDefinitionElement>(project, context)
 
-fun ChainedParadoxSelector<ParadoxScriptDefinitionElement>.distinctByName() = 
+@JvmName("distinctByName_definitionSelector")
+fun ChainedParadoxSelector<ParadoxScriptDefinitionElement>.distinctByName() =
     distinctBy { ParadoxDefinitionHandler.getName(it) }
 //endregion
 
@@ -63,14 +64,16 @@ fun ChainedParadoxSelector<VirtualFile>.distinctByFilePath() =
 //region complexEnumValueSelector
 fun complexEnumValueSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxComplexEnumValueInfo>(project, context)
 
-fun ChainedParadoxSelector<ParadoxComplexEnumValueInfo>.distinctByName() = 
+@JvmName("distinctByName_complexEnumValueSelector")
+fun ChainedParadoxSelector<ParadoxComplexEnumValueInfo>.distinctByName() =
     distinctBy { it.name }
 //endregion
 
 //region valueSetValueSelector
 fun valueSetValueSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxValueSetValueInfo>(project, context)
 
-fun ChainedParadoxSelector<ParadoxValueSetValueInfo>.distinctByName() = 
+@JvmName("distinctByName_valueSetValueSelector")
+fun ChainedParadoxSelector<ParadoxValueSetValueInfo>.distinctByName() =
     distinctBy { it.name }
 //endregion
 

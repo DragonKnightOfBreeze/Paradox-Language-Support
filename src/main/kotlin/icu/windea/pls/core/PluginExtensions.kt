@@ -161,7 +161,7 @@ tailrec fun selectFile(from: Any?): VirtualFile? {
         from is PsiFile -> from.originalFile.virtualFile
         from is StubBasedPsiElementBase<*> -> selectFile(from.containingFileStub?.psi ?: from.containingFile)
         from is PsiElement -> selectFile(from.containingFile)
-        from is ParadoxExpressionInfo -> selectFile(from.file)
+        from is ParadoxExpressionInfo -> selectFile(from.virtualFile)
         else -> null
     }
 }
@@ -179,7 +179,7 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
             ?: selectGameType(from.containingFile)
         from is StubBasedPsiElementBase<*> -> selectGameType(from.containingFile)
         from is PsiElement -> selectGameType(from.parent)
-        from is ParadoxExpressionInfo -> selectGameType(from.file)
+        from is ParadoxExpressionInfo -> selectGameType(from.virtualFile)
         else -> null
     }
 }

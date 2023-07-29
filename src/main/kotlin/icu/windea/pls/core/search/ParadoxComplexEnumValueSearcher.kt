@@ -7,6 +7,7 @@ import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.index.*
 import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
@@ -37,7 +38,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
             if(complexEnumValueInfoList.isNullOrEmpty()) return@p true
             complexEnumValueInfoList.forEachFast { info ->
                 if(name == null || name == info.name) {
-                    val r = consumer.process(info)
+                    val r = info.withVirtualFile(file) { consumer.process(info) }
                     if(!r) return@p false
                 }
             }

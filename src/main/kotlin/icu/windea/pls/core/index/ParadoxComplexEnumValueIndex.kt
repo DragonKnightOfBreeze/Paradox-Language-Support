@@ -1,11 +1,10 @@
-package icu.windea.pls.core.index.hierarchy
+package icu.windea.pls.core.index
 
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
@@ -19,9 +18,9 @@ import java.io.*
  *
  * @see ParadoxComplexEnumValueInfo
  */
-class ParadoxComplexEnumValueIndex : ParadoxHierarchyIndex<List<ParadoxComplexEnumValueInfo>>() {
+class ParadoxComplexEnumValueIndex : ParadoxFileBasedIndex<List<ParadoxComplexEnumValueInfo>>() {
     companion object {
-        val NAME = ID.create<String, List<ParadoxComplexEnumValueInfo>>("paradox.complexEnumValue.index")
+        @JvmField val NAME = ID.create<String, List<ParadoxComplexEnumValueInfo>>("paradox.complexEnumValue.index")
         private const val VERSION = 32 //1.1.3
         private val INSTANCE by lazy { EXTENSION_POINT_NAME.findExtensionOrFail(ParadoxComplexEnumValueIndex::class.java) }
         

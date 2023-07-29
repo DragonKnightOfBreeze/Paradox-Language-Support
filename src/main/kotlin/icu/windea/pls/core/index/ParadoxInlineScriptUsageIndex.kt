@@ -1,10 +1,9 @@
-package icu.windea.pls.core.index.hierarchy
+package icu.windea.pls.core.index
 
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
@@ -13,14 +12,14 @@ import java.io.*
 
 /**
  * 用于索引内联脚本调用。
- * 
+ *
  * * 这个索引兼容需要内联的情况（此时使用懒加载的索引）。
- * 
+ *
  * @see ParadoxInlineScriptUsageInfo
  */
-class ParadoxInlineScriptUsageIndex : ParadoxHierarchyIndex<List<ParadoxInlineScriptUsageInfo>>() {
+class ParadoxInlineScriptUsageIndex : ParadoxFileBasedIndex<List<ParadoxInlineScriptUsageInfo>>() {
     companion object {
-        val NAME = ID.create<String, List<ParadoxInlineScriptUsageInfo>>("paradox.inlineScriptUsage.index")
+        @JvmField val NAME = ID.create<String, List<ParadoxInlineScriptUsageInfo>>("paradox.inlineScriptUsage.index")
         private const val VERSION = 32 //1.1.3
         private val INSTANCE by lazy { EXTENSION_POINT_NAME.findExtensionOrFail(ParadoxInlineScriptUsageIndex::class.java) }
         

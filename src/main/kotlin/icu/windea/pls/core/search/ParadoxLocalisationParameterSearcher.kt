@@ -7,9 +7,9 @@ import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.hierarchy.*
-import icu.windea.pls.core.model.*
+import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 
 class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisationParameterInfo, ParadoxLocalisationParameterSearch.SearchParameters>() {
@@ -34,7 +34,7 @@ class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisati
             if(localisationParameterInfoList.isNullOrEmpty()) return@p true
             localisationParameterInfoList.forEachFast { info ->
                 if(name == null || name == info.name) {
-                    val r = consumer.process(info)
+                    val r = info.withVirtualFile(file) { consumer.process(info) }
                     if(!r) return@p false
                 }
             }

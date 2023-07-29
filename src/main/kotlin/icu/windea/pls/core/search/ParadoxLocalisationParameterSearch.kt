@@ -3,8 +3,8 @@ package icu.windea.pls.core.search
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.lang.model.*
 
 class ParadoxLocalisationParameterSearch: ExtensibleQueryFactory<ParadoxLocalisationParameterInfo, ParadoxLocalisationParameterSearch.SearchParameters>(EP_NAME) {
 	class SearchParameters(

@@ -10,6 +10,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.*
@@ -19,22 +20,22 @@ import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 如果某个event在一个effect子句中被调用，
+ * 如果某个on_action在一个effect子句中被调用，
  * 则将此另一个event的root作用域推断为此event的from作用域，
  * 将调用此另一个event的event的root作用域推断为此event的fromfrom作用域，
  * 依此类推直到fromfromfromfrom作用域。
- * 如果有声明scopes = { from = ... }，则将此event的from作用域推断为这个声明中from对应的作用域，
+ * 如果有声明scopes = { from = ... }，则将此on_action的from作用域推断为这个声明中from对应的作用域，
  * 依此类推直到fromfromfromfrom作用域。
  */
 @SlowApi
-class ParadoxEventFromEffectInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
+class ParadoxOnActionInEffectInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     companion object {
         val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.from.effect")
     }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if(!getSettings().inference.eventScopeContextFromEffect) return null
-        if(definitionInfo.type != "event") return null
+        if(!getSettings().inference.onActionScopeContext) return null
+        if(definitionInfo.type != "on_action") return null
         return doGetScopeContextFromCache(definition)
     }
     
@@ -49,25 +50,28 @@ class ParadoxEventFromEffectInferredScopeContextProvider : ParadoxDefinitionInfe
     }
     
     private fun doGetScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
+        ProgressManager.checkCanceled()
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
-        val thisEventName = definitionInfo.name
-        val thisEventScope = ParadoxEventHandler.getScope(definitionInfo)
+        //skip if on action is predefined
+        val config = configGroup.onActions.getByTemplate(definitionInfo.name, definition, configGroup)
+        if(config != null) return null
+        val thisOnActionName = definitionInfo.name
         val scopeContextMap = mutableMapOf<String, String?>()
-        scopeContextMap.put("this", thisEventScope)
-        scopeContextMap.put("root", thisEventScope)
+        scopeContextMap.put("this", ParadoxScopeHandler.anyScopeId)
+        scopeContextMap.put("root", ParadoxScopeHandler.anyScopeId)
         //optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?: return null
         var hasConflict = false
-        val r = doProcessQuery(thisEventName, searchScope, scopeContextMap, configGroup)
+        val r = doProcessQuery(thisOnActionName, searchScope, scopeContextMap, configGroup)
         if(!r) hasConflict = true
         val resultScopeContextMap = scopeContextMap.takeIf { it.size > 2 } ?: return null
         return ParadoxScopeContextInferenceInfo(resultScopeContextMap, hasConflict)
     }
     
     private fun doProcessQuery(
-        thisEventName: String,
+        thisOnActionName: String,
         searchScope: GlobalSearchScope,
         scopeContextMap: MutableMap<String, String?>,
         configGroup: CwtConfigGroup,
@@ -76,21 +80,23 @@ class ParadoxEventFromEffectInferredScopeContextProvider : ParadoxDefinitionInfe
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
-        return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxEventFromEffectInferredScopeContextProvider.doProcessQuery") {
-            if(depth == 1) stackTrace.addLast(thisEventName) 
+        return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxOnActionInEffectInferredScopeContextProvider.doProcessQuery") {
+            if(depth == 1) stackTrace.addLast(thisOnActionName)
             
             val toRef = "from".repeat(depth)
-            ParadoxDefinitionHierarchyHandler.processEventsInEffect(project, gameType, searchScope) p@{ file, infos ->
+            val index = ParadoxOnActionInEventDefinitionHierarchyIndex.getInstance()
+            ParadoxDefinitionHierarchyHandler.processQuery(index, project, gameType, searchScope) p@{ file, fileData ->
+                val infos = fileData.values.firstOrNull() ?: return@p true
+                val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEachFast f@{ info ->
-                    val eventName = info.expression
-                    if(eventName != thisEventName) return@f
-                    val containingEventName = info.definitionName
+                    val onActionName = info.onActionName
+                    if(onActionName != thisOnActionName) return@f
+                    val containingEventName = info.containingEventName
                     withCheckRecursion(containingEventName) {
-                        val scopesElementOffset = info.scopesElementOffset ?: -1
+                        val scopesElementOffset = info.scopesElementOffset
                         if(scopesElementOffset != -1) {
                             //从scopes = { ... }中推断
                             ProgressManager.checkCanceled()
-                            val psiFile = file.toPsiFile(project) ?: return@p false
                             val scopesElement = psiFile.findElementAt(scopesElementOffset)?.parentOfType<ParadoxScriptProperty>() ?: return@p false
                             val scopesBlockElement = scopesElement.block ?: return@p false
                             val scopeContextOfScopesElement = ParadoxScopeHandler.getScopeContext(scopesElement)
@@ -155,11 +161,10 @@ class ParadoxEventFromEffectInferredScopeContextProvider : ParadoxDefinitionInfe
     }
     
     override fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsBundle.message("script.annotator.scopeContext.2", definitionInfo.name)
+        return PlsBundle.message("script.annotator.scopeContext.3", definitionInfo.name)
     }
     
     override fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
-        return PlsBundle.message("script.annotator.scopeContext.2.conflict", definitionInfo.name)
+        return PlsBundle.message("script.annotator.scopeContext.3.conflict", definitionInfo.name)
     }
 }
-

@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.model.*
@@ -15,10 +16,11 @@ import java.util.*
 /**
  * 用于索引定义声明中的定义引用、参数引用、本地化参数引用等。
  *
+ * * 这个索引兼容需要内联的情况（此时使用懒加载的索引）。
  * * 这个索引可能不会记录数据在文件中的位置。
- * * 这个索引目前需要兼容需要内联的情况（此时使用懒加载的索引）。
+ * * 这个索引可能不会保存同一文件中的重复数据。
  */
-abstract class ParadoxDefinitionHierarchyIndex<T> : ParadoxHierarchyIndex<List<T>>() {
+abstract class ParadoxDefinitionHierarchyIndex<T> : ParadoxFileBasedIndex<List<T>>() {
     companion object {
         private val markKey = Key.create<Boolean>("paradox.definition.hierarchy.index.mark")
     }
@@ -68,7 +70,7 @@ abstract class ParadoxDefinitionHierarchyIndex<T> : ParadoxHierarchyIndex<List<T
     
     protected abstract fun indexData(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<T>>)
     
-    protected abstract fun afterIndexData(fileData: MutableMap<String, List<T>>)
+    protected open fun afterIndexData(fileData: MutableMap<String, List<T>>) {}
     
     override fun filterFile(file: VirtualFile): Boolean {
         val fileType = file.fileType

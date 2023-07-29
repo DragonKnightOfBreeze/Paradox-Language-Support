@@ -56,7 +56,7 @@ object ParadoxSearchScopeTypes {
         override fun findRoot(project: Project, context: Any?): PsiElement? {
             return when {
                 context is PsiElement -> context.findParentDefinition()
-                context is ParadoxExpressionInfo -> context.file?.findElementAt(context.elementOffset)?.findParentDefinition()
+                context is ParadoxExpressionInfo -> context.virtualFile?.toPsiFile(project)?.findElementAt(context.elementOffset)?.findParentDefinition()
                 else -> null
             }
         }

@@ -8,7 +8,7 @@ import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.model.*
 
-open class ChainedParadoxSelector<T>(
+class ChainedParadoxSelector<T>(
     val project: Project,
     val context: Any? = null,
 ) : ParadoxSelector<T> {

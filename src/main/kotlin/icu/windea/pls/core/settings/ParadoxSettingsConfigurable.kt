@@ -249,25 +249,18 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContext.tooltip") }
                         .onApply { ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker.incModificationCount() }
                 }
-                //eventScopeContextFromOnAction
+                //eventScopeContext
                 row {
-                    checkBox(PlsBundle.message("settings.inference.eventScopeContextFromOnAction"))
-                        .bindSelected(settings.inference::eventScopeContextFromOnAction)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContextFromOnAction.tooltip") }
+                    checkBox(PlsBundle.message("settings.inference.eventScopeContext"))
+                        .bindSelected(settings.inference::eventScopeContext)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContext.tooltip") }
                         .onApply { ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker.incModificationCount() }
                 }
-                //eventScopeContextFromEffect
+                //onActionScopeContext
                 row {
-                    checkBox(PlsBundle.message("settings.inference.eventScopeContextFromEffect"))
-                        .bindSelected(settings.inference::eventScopeContextFromEffect)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContextFromEffect.tooltip") }
-                        .onApply { ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker.incModificationCount() }
-                }
-                //onActionScopeContextFromEffect
-                row {
-                    checkBox(PlsBundle.message("settings.inference.onActionScopeContextFromEffect"))
-                        .bindSelected(settings.inference::onActionScopeContextFromEffect)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.onActionScopeContextFromEffect.tooltip") }
+                    checkBox(PlsBundle.message("settings.inference.onActionScopeContext"))
+                        .bindSelected(settings.inference::onActionScopeContext)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.onActionScopeContext.tooltip") }
                         .onApply { ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker.incModificationCount() }
                 }
             }
