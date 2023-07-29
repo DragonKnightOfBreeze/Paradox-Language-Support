@@ -5,12 +5,8 @@ package icu.windea.pls.core.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.patterns.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.cwt.*
-import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.model.*
 
 fun PsiElement.getKeyword(offsetInParent: Int): String {
     return text.substring(0, offsetInParent).unquote()

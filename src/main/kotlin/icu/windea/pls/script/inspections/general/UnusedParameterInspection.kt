@@ -15,7 +15,6 @@ import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
 
 /**

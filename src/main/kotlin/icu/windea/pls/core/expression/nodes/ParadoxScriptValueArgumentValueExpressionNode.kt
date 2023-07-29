@@ -2,15 +2,9 @@ package icu.windea.pls.core.expression.nodes
 
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
-import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.highlighter.*
-import icu.windea.pls.script.psi.*
 
 class ParadoxScriptValueArgumentValueExpressionNode(
     override val text: String,

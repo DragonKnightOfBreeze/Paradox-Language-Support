@@ -3,7 +3,6 @@
 package icu.windea.pls.core
 
 import com.google.common.cache.*
-import com.intellij.openapi.util.Ref
 import com.intellij.util.io.*
 import icu.windea.pls.*
 import icu.windea.pls.core.util.*

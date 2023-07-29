@@ -5,9 +5,6 @@ import com.intellij.diagram.components.*
 import com.intellij.diagram.extras.custom.*
 import com.intellij.openapi.graph.view.*
 import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.components.*
 import javax.swing.*

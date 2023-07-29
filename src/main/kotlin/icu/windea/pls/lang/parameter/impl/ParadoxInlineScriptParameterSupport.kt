@@ -2,7 +2,7 @@ package icu.windea.pls.lang.parameter.impl
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.lang.injection.*
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*

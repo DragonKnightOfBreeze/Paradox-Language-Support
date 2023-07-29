@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.model
 
 import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
 
 data class ParadoxLocalisationParameterInfo(
     val name: String,

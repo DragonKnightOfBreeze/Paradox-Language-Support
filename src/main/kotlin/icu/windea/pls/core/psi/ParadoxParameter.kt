@@ -2,7 +2,6 @@ package icu.windea.pls.core.psi
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.model.*
 
 interface ParadoxParameter : ParadoxTypedElement, NavigatablePsiElement, ParadoxLanguageInjectionHost {
