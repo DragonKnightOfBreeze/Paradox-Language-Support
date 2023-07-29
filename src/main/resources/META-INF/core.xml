@@ -11,6 +11,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.search.valueSetValueSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.complexEnumValueSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.inlineScriptUsageSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.search.parameterSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.localisationParameterSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
   </extensionPoints>
   
@@ -69,6 +70,7 @@
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxComplexEnumValueIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxValueSetValueFastIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxInlineScriptUsageIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxParameterIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxLocalisationParameterIndex"/>
     
     <fileBasedIndex implementation="icu.windea.pls.core.index.hierarchy.ParadoxInferredScopeContextAwareDefinitionHierarchyIndex"/>
@@ -116,6 +118,7 @@
     <complexEnumValueSearch implementation="icu.windea.pls.core.search.ParadoxComplexEnumValueSearcher"/>
     <valueSetValueSearch implementation="icu.windea.pls.core.search.ParadoxValueSetValueSearcher"/>
     <inlineScriptUsageSearch implementation="icu.windea.pls.core.search.ParadoxInlineScriptUsageSearcher"/>
+    <parameterSearch implementation="icu.windea.pls.core.search.ParadoxParameterSearcher"/>
     <localisationParameterSearch implementation="icu.windea.pls.core.search.ParadoxLocalisationParameterSearcher"/>
   </extensions>
   

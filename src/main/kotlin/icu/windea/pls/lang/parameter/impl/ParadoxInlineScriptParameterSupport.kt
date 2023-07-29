@@ -89,14 +89,14 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         if(expression.isParameterized()) return null //skip if context name is parameterized
         val contextName = expression
         val contextNameElement = contextReferenceElement.propertyKey
-        val arguments = mutableListOf<ParadoxParameterReferenceInfo>()
+        val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
         contextReferenceElement.block?.processProperty p@{
             if(completionOffset != -1 && completionOffset in it.textRange) return@p true
             val k = it.propertyKey
             val v = it.propertyValue
             val argumentName = k.name
             if(argumentName == "script") return@p true //hardcoded
-            arguments += ParadoxParameterReferenceInfo(argumentName, k.createPointer(project), k.textRange, v?.createPointer(project), v?.textRange)
+            arguments += ParadoxParameterContextReferenceInfo.Argument(argumentName, k.createPointer(project), k.textRange, v?.createPointer(project), v?.textRange)
             true
         }
         val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(project), contextName, contextNameElement.createPointer(project), contextNameElement.textRange, arguments, gameType, project)
@@ -119,12 +119,12 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val expression = ParadoxInlineScriptHandler.getInlineScriptExpression(context) ?: return null
         val contextName = expression
         val contextIcon = PlsIcons.InlineScript
-        val key = "inline_script@$expression"
+        val contextKey = "inline_script@$expression"
         val rangeInParent = TextRange.create(0, element.textLength)
         val readWriteAccess = ParadoxParameterHandler.getReadWriteAccess(element)
         val gameType = selectGameType(context) ?: return null
         val project = context.project
-        val result = ParadoxParameterElement(element, name, contextName, contextIcon, key, rangeInParent, readWriteAccess, gameType, project)
+        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
         result.putUserData(ParadoxParameterSupport.Keys.containingContext, context.createPointer(project))
         result.putUserData(ParadoxParameterSupport.Keys.inlineScriptExpression, expression)
         result.putUserData(ParadoxParameterSupport.Keys.support, this)
@@ -146,12 +146,12 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val name = element.name
         val contextName = expression
         val contextIcon = PlsIcons.InlineScript
-        val key = "inline_script@$expression"
+        val contextKey = "inline_script@$expression"
         val rangeInParent = rangeInElement ?: TextRange.create(0, element.textLength)
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
         val gameType = config.info.configGroup.gameType ?: return null
         val project = config.info.configGroup.project
-        val result = ParadoxParameterElement(element, name, contextName, contextIcon, key, rangeInParent, readWriteAccess, gameType, project)
+        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
         result.putUserData(ParadoxParameterSupport.Keys.inlineScriptExpression, expression)
         result.putUserData(ParadoxParameterSupport.Keys.support, this)
         return result

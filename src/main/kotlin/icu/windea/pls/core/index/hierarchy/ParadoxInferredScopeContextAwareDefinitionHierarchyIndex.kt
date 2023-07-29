@@ -38,7 +38,7 @@ class ParadoxInferredScopeContextAwareDefinitionHierarchyIndex : ParadoxDefiniti
             val dataType = config.expression.type
             if(dataType != CwtDataType.Definition) return
             val definitionType = config.expression.value?.substringBefore('.') ?: return
-            if(definitionType !in ParadoxBaseDefinitionInferredScopeContextProvider.DEFINITION_TYPES) return
+            if(definitionType !in DEFINITION_TYPES) return
         }
         
         val definitionName = element.value

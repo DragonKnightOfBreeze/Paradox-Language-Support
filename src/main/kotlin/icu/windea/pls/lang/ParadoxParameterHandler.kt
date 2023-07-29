@@ -43,7 +43,7 @@ object ParadoxParameterHandler {
     private fun doGetContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
         val file = element.containingFile
         val gameType = selectGameType(file) ?: return null
-        val parameters = sortedMapOf<String, MutableList<ParadoxParameterInfo>>() //按名字进行排序
+        val parameters = sortedMapOf<String, MutableList<ParadoxParameterContextInfo.Parameter>>() //按名字进行排序
         val fileConditionStack = LinkedList<ReversibleValue<String>>()
         element.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -74,7 +74,7 @@ object ParadoxParameterHandler {
                 val name = element.name ?: return
                 val defaultValue = element.defaultValue
                 val conditionalStack = if(fileConditionStack.isEmpty()) null else LinkedList(fileConditionStack)
-                val info = ParadoxParameterInfo(element.createPointer(file), name, defaultValue, conditionalStack)
+                val info = ParadoxParameterContextInfo.Parameter(element.createPointer(file), name, defaultValue, conditionalStack)
                 parameters.getOrPut(name) { mutableListOf() }.add(info)
                 //不需要继续向下遍历
             }
@@ -162,7 +162,7 @@ object ParadoxParameterHandler {
      * 尝试推断得到参数对应的CWT规则。
      */
     fun getInferredConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
-        val cacheKey = parameterElement.key + "@" + parameterElement.name
+        val cacheKey = parameterElement.contextKey + "@" + parameterElement.name
         val parameterCache = selectRootFile(parameterElement.parent)?.getUserData(Keys.parameterCache) ?: return null
         val cached = parameterCache.get(cacheKey)
         if(cached != null) {
@@ -218,7 +218,7 @@ object ParadoxParameterHandler {
      * 尝试推断得到参数对应的上下文CWT规则。
      */
     fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        val cacheKey = parameterElement.key + "@" + parameterElement.name
+        val cacheKey = parameterElement.contextKey + "@" + parameterElement.name
         val parameterCache = selectRootFile(parameterElement.parent)?.getUserData(Keys.parameterCache) ?: return emptyList()
         val cached = parameterCache.get(cacheKey)
         if(cached != null) {

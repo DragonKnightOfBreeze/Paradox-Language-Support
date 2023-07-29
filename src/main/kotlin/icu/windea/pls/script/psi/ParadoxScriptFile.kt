@@ -14,7 +14,7 @@ class ParadoxScriptFile(
 	viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxScriptDefinitionElement {
 	companion object {
-		val FILE = ParadoxScriptStubElementTypes.FILE
+		val ELEMENT_TYPE = ParadoxScriptStubElementTypes.FILE
 	}
 	
 	override val block get() = findChild<ParadoxScriptRootBlock>()

@@ -47,7 +47,7 @@ enum class ParadoxResolveConstraint {
     Definition {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when(element) {
-                is ParadoxScriptStringExpressionElement -> true
+                is ParadoxScriptStringExpressionElement -> element.isExpression()
                 is ParadoxScriptInt -> true
                 is ParadoxLocalisationCommandField -> true //<scripted_loc>
                 is ParadoxLocalisationConceptName -> true //<game_concept>
@@ -80,7 +80,7 @@ enum class ParadoxResolveConstraint {
     Localisation {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when(element) {
-                is ParadoxScriptStringExpressionElement -> true
+                is ParadoxScriptStringExpressionElement -> element.isExpression()
                 is ParadoxLocalisationPropertyReference -> true
                 else -> false
             }
@@ -102,7 +102,7 @@ enum class ParadoxResolveConstraint {
             return when(element) {
                 is ParadoxParameter -> true
                 is ParadoxConditionParameter -> true
-                is ParadoxScriptStringExpressionElement -> true
+                is ParadoxScriptStringExpressionElement -> element.isExpression()
                 else -> false
             }
         }
@@ -124,7 +124,7 @@ enum class ParadoxResolveConstraint {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when(element) {
                 is ParadoxLocalisationPropertyReference -> true
-                is ParadoxScriptStringExpressionElement -> true
+                is ParadoxScriptStringExpressionElement -> element.isExpression()
                 else -> false
             }
         }
@@ -143,7 +143,7 @@ enum class ParadoxResolveConstraint {
     ValueSetValue {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when(element) {
-                is ParadoxScriptStringExpressionElement -> true
+                is ParadoxScriptStringExpressionElement -> element.isExpression()
                 is ParadoxLocalisationCommandScope -> true
                 is ParadoxLocalisationCommandField -> true
                 else -> false
@@ -176,7 +176,7 @@ enum class ParadoxResolveConstraint {
     ComplexEnumValue {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when(element) {
-                is ParadoxScriptStringExpressionElement -> true
+                is ParadoxScriptStringExpressionElement -> element.isExpression()
                 else -> false
             }
         }

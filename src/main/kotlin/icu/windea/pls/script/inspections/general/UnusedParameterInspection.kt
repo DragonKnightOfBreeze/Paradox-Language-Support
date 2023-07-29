@@ -6,12 +6,13 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.search.searches.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.scope.*
+import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -37,7 +38,11 @@ class UnusedParameterInspection : LocalInspectionTool() {
         
         return object : PsiElementVisitor() {
             private fun shouldVisit(element: PsiElement): Boolean {
-                return element is ParadoxScriptStringExpressionElement || element is ParadoxConditionParameter
+                return when {
+                    element is ParadoxScriptStringExpressionElement -> !element.text.isParameterized()
+                    element is ParadoxConditionParameter -> true
+                    else -> false
+                }
             }
             
             override fun visitElement(element: PsiElement) {
@@ -52,19 +57,20 @@ class UnusedParameterInspection : LocalInspectionTool() {
                     if(resolved !is ParadoxParameterElement) continue
                     if(resolved.contextName.isParameterized()) continue //skip if context name is parameterized
                     if(resolved.readWriteAccess != Access.Write) continue
-                    //当确定已被使用时，后续不需要再进行ReferencesSearch
                     val cachedStatus = statusMap[resolved]
                     val status = if(cachedStatus == null) {
                         ProgressManager.checkCanceled()
-                        val r = ReferencesSearch.search(resolved, searchScope).processQueryAsync p@{ ref ->
+                        val selector = parameterSelector(project, file).withSearchScope(searchScope) //use file as context
+                        val r = ParadoxParameterSearch.search(resolved.name, resolved.contextKey, selector).processQueryAsync p@{
                             ProgressManager.checkCanceled()
-                            if(!ref.canResolve(ParadoxResolveConstraint.Parameter)) return@p true
-                            val res = ref.resolve()
-                            if(res !is ParadoxParameterElement) return@p true
-                            if(res.readWriteAccess != Access.Read) return@p true
-                            statusMap[resolved] = true
-                            false
+                            if(it.readWriteAccess == Access.Read) {
+                                statusMap[resolved] = true
+                                false
+                            } else {
+                                true
+                            }
                         }
+                        
                         if(r) {
                             statusMap[resolved] = false
                             false

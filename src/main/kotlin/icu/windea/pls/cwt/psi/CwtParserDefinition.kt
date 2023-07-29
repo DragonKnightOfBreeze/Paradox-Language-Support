@@ -5,8 +5,6 @@ import com.intellij.lang.ParserDefinition.*
 import com.intellij.lang.ParserDefinition.SpaceRequirements.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtParserDefinition : ParserDefinition {
@@ -16,7 +14,7 @@ class CwtParserDefinition : ParserDefinition {
 	
 	override fun getStringLiteralElements() = CwtTokenSets.STRING_LITERALS
 	
-	override fun getFileNodeType() = CwtFile.FILE
+	override fun getFileNodeType() = CwtFile.ELEMENT_TYPE
 	
 	override fun createFile(viewProvider: FileViewProvider) = CwtFile(viewProvider)
 	

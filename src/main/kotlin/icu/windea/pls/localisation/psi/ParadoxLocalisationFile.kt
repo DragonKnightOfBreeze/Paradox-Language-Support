@@ -11,7 +11,7 @@ class ParadoxLocalisationFile(
     viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage) {
     companion object {
-        val FILE = ParadoxLocalisationStubElementTypes.FILE
+        val ELEMENT_TYPE = ParadoxLocalisationStubElementTypes.FILE
     }
     
     override fun getFileType() = ParadoxLocalisationFileType

@@ -90,13 +90,13 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val contextName = definitionName
         val startOffset = element.startOffset
         val contextNameRange = scriptValueExpression.scriptValueNode.rangeInExpression.shiftRight(startOffset) //text range of script value name
-        val arguments = mutableListOf<ParadoxParameterReferenceInfo>()
+        val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
         val pointer = expressionElement.createPointer(project)
         val offset = expressionElement.startOffset
         scriptValueExpression.argumentNodes.forEach f@{ (nameNode, valueNode) ->
             if(completionOffset != -1 && completionOffset in nameNode.rangeInExpression.shiftRight(offset)) return@f
             val argumentName = nameNode.text
-            arguments += ParadoxParameterReferenceInfo(argumentName, pointer, nameNode.rangeInExpression.shiftRight(startOffset), pointer, valueNode?.rangeInExpression?.shiftRight(startOffset))
+            arguments += ParadoxParameterContextReferenceInfo.Argument(argumentName, pointer, nameNode.rangeInExpression.shiftRight(startOffset), pointer, valueNode?.rangeInExpression?.shiftRight(startOffset))
         }
         val info = ParadoxParameterContextReferenceInfo(pointer, contextName, pointer, contextNameRange, arguments, gameType, project)
         info.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
@@ -127,12 +127,12 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val name = argumentNode.text
         val contextName = definitionName
         val contextIcon = PlsIcons.Definition
-        val key = "definition@$definitionName: script_value"
+        val contextKey = "definition@$definitionName: script_value"
         val rangeInParent = rangeInElement
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
-        val result = ParadoxParameterElement(element, name, contextName, contextIcon, key, rangeInParent, readWriteAccess, gameType, project)
+        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
         result.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
         result.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
         return result

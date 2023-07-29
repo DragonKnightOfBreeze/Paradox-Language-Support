@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
 import java.util.*
 
 class ParadoxParameterContextInfo(
-    val parameters: Map<String, List<ParadoxParameterInfo>>,
+    val parameters: Map<String, List<Parameter>>,
     val project: Project,
     val gameType: ParadoxGameType
 ) {
@@ -41,50 +41,50 @@ class ParadoxParameterContextInfo(
         }
         return false
     }
-}
-
-/**
- * @property conditionStack，文件中从上到下，链表中从左到右，记录条件表达式的堆栈。
- */
-class ParadoxParameterInfo(
-    private val elementPointer: SmartPsiElementPointer<ParadoxParameter>,
-    val name: String,
-    val defaultValue: String?,
-    val conditionStack: LinkedList<ReversibleValue<String>>? = null,
-) {
-    val element: ParadoxParameter? get() = elementPointer.element
-    val expressionElement: ParadoxScriptStringExpressionElement? get() = elementPointer.element?.parent?.castOrNull()
-    
-    val rangeInExpressionElement: TextRange? by lazy {
-        if(expressionElement == null) return@lazy null
-        element?.textRangeInParent
-    }
-    
-    val isEntireExpression: Boolean by lazy {
-        val element = element
-        element != null
-            && element.prevSibling.let { it == null || it.text == "\"" }
-            && element.nextSibling.let { it == null || it.text == "\"" }
-    }
     
     /**
-     * 获取此参数对应的脚本表达式所对应的CWT规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
+     * @property conditionStack，文件中从上到下，链表中从左到右，记录条件表达式的堆栈。
      */
-    val expressionConfigs: List<CwtMemberConfig<*>> by lazy {
-        val expressionElement = element?.parent?.castOrNull<ParadoxScriptStringExpressionElement>()
-        if(expressionElement == null) return@lazy emptyList()
-        when {
-            expressionElement is ParadoxScriptPropertyKey -> {
-                val configs = ParadoxConfigHandler.getConfigs(expressionElement)
-                configs.mapNotNull { if(it is CwtPropertyConfig) it else null }
-                configs
-            }
-            expressionElement is ParadoxScriptString && expressionElement.isExpression() -> {
-                val configs = ParadoxConfigHandler.getConfigs(expressionElement)
-                configs.mapNotNull { if(it is CwtValueConfig) it else null }
-            }
-            else -> {
-                emptyList()
+    class Parameter(
+        private val elementPointer: SmartPsiElementPointer<ParadoxParameter>,
+        val name: String,
+        val defaultValue: String?,
+        val conditionStack: LinkedList<ReversibleValue<String>>? = null,
+    ) {
+        val element: ParadoxParameter? get() = elementPointer.element
+        val expressionElement: ParadoxScriptStringExpressionElement? get() = elementPointer.element?.parent?.castOrNull()
+        
+        val rangeInExpressionElement: TextRange? by lazy {
+            if(expressionElement == null) return@lazy null
+            element?.textRangeInParent
+        }
+        
+        val isEntireExpression: Boolean by lazy {
+            val element = element
+            element != null
+                && element.prevSibling.let { it == null || it.text == "\"" }
+                && element.nextSibling.let { it == null || it.text == "\"" }
+        }
+        
+        /**
+         * 获取此参数对应的脚本表达式所对应的CWT规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
+         */
+        val expressionConfigs: List<CwtMemberConfig<*>> by lazy {
+            val expressionElement = element?.parent?.castOrNull<ParadoxScriptStringExpressionElement>()
+            if(expressionElement == null) return@lazy emptyList()
+            when {
+                expressionElement is ParadoxScriptPropertyKey -> {
+                    val configs = ParadoxConfigHandler.getConfigs(expressionElement)
+                    configs.mapNotNull { if(it is CwtPropertyConfig) it else null }
+                    configs
+                }
+                expressionElement is ParadoxScriptString && expressionElement.isExpression() -> {
+                    val configs = ParadoxConfigHandler.getConfigs(expressionElement)
+                    configs.mapNotNull { if(it is CwtValueConfig) it else null }
+                }
+                else -> {
+                    emptyList()
+                }
             }
         }
     }

@@ -33,7 +33,10 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
         
         return object : PsiElementVisitor() {
             private fun shouldVisit(element: PsiElement): Boolean {
-                return (element is ParadoxScriptStringExpressionElement && !element.text.isParameterized())
+                return when {
+                    element is ParadoxScriptStringExpressionElement -> !element.text.isParameterized()
+                    else -> false
+                }
             }
             
             override fun visitElement(element: PsiElement) {
@@ -60,6 +63,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
                                 true
                             }
                         }
+                        
                         if(r) {
                             statusMap[resolved] = false
                             false

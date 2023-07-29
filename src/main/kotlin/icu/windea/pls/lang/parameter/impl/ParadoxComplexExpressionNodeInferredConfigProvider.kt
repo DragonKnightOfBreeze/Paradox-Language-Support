@@ -17,12 +17,12 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
     //root.value:$PARAM$|K|V| -> <script_value>
     //root.value:some_script_value|K|$PARAM$| -> from parameter K
     
-    override fun supports(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
+    override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
         //要求不整个作为脚本表达式
         return !parameterInfo.isEntireExpression
     }
     
-    override fun getConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig? {
+    override fun getConfig(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig? {
         val expressionElement = parameterInfo.expressionElement ?: return null
         if(expressionElement.text.isLeftQuoted()) return null
         val expressionConfigs = parameterInfo.expressionConfigs
@@ -30,7 +30,7 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
         return config
     }
     
-    override fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
+    override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val expressionElement = parameterInfo.expressionElement ?: return null
         if(expressionElement.text.isLeftQuoted()) return null
         val expressionConfigs = parameterInfo.expressionConfigs
@@ -46,7 +46,7 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
         return listOf(containerConfig)
     }
     
-    private fun getConfigFromExpressionConfig(expressionElement: ParadoxScriptStringExpressionElement, expressionConfig: CwtMemberConfig<*>, parameterInfo: ParadoxParameterInfo): CwtValueConfig? {
+    private fun getConfigFromExpressionConfig(expressionElement: ParadoxScriptStringExpressionElement, expressionConfig: CwtMemberConfig<*>, parameterInfo: ParadoxParameterContextInfo.Parameter): CwtValueConfig? {
         val configGroup = expressionConfig.info.configGroup
         val textRange = TextRange.create(0, expressionElement.text.length)
         val expression = ParadoxComplexExpression.resolve(expressionElement.text, textRange, configGroup, expressionConfig) ?: return null
@@ -83,7 +83,7 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
                 val argumentNode = node.argumentNode ?: return null
                 val passingConfig = withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider.getConfigFromNode") a1@{
                     val passingParameterElement = ParadoxParameterSupport.resolveArgument(expressionElement, argumentNode.rangeInExpression, expressionConfig) ?: return null
-                    withCheckRecursion(passingParameterElement.key) a2@{
+                    withCheckRecursion(passingParameterElement.contextKey) a2@{
                         ParadoxParameterHandler.getInferredConfig(passingParameterElement)
                     }
                 }

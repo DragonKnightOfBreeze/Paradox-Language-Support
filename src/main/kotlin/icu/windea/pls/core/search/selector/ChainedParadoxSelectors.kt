@@ -81,6 +81,18 @@ fun ChainedParadoxSelector<ParadoxValueSetValueInfo>.distinctByName() =
 fun inlineScriptSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxInlineScriptUsageInfo>(project, context)
 //endregion
 
+//region valueSetValueSelector
+fun parameterSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxParameterInfo>(project, context)
+
+@JvmName("distinctByName_parameterSelector")
+fun ChainedParadoxSelector<ParadoxParameterInfo>.distinctByName() =
+    distinctBy { it.name }
+//endregion
+
 //region localisationParameterSelector
 fun localisationParameterSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxLocalisationParameterInfo>(project, context)
+
+@JvmName("distinctByName_localisationParameterSelector")
+fun ChainedParadoxSelector<ParadoxLocalisationParameterInfo>.distinctByName() =
+    distinctBy { it.name }
 //endregion

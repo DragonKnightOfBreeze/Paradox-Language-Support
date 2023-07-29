@@ -17,22 +17,22 @@ import icu.windea.pls.lang.model.*
  */
 @WithGameTypeEP
 interface ParadoxParameterInferredConfigProvider {
-    fun supports(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): Boolean
+    fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean
     
     /**
      * 返回唯一确定的规则。这个规则仅用作显示（快速文档、参数提示等）。
      */
-    fun getConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig?
+    fun getConfig(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig?
     
     /**
      * 返回唯一确定的规则上下文。这个规则上下文用于后续获取匹配的一组规则。
      */
-    fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo) : List<CwtMemberConfig<*>>?
+    fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo) : List<CwtMemberConfig<*>>?
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxParameterInferredConfigProvider>("icu.windea.pls.parameterInferredConfigProvider")
         
-        fun getConfig(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig? {
+        fun getConfig(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig? {
             val gameType = parameterContextInfo.gameType
             return withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider.getConfig") {
                 EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
@@ -44,7 +44,7 @@ interface ParadoxParameterInferredConfigProvider {
             }
         }
         
-        fun getContextConfigs(parameterInfo: ParadoxParameterInfo, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
+        fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
             val gameType = parameterContextInfo.gameType
             return withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider.INSTANCE.getContextConfigs") {
                 EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->

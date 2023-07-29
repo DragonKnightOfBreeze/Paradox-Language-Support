@@ -39,4 +39,5 @@ val ParadoxFileLocaleIndexName by lazy { findIndex<ParadoxFileLocaleIndex>().nam
 val ParadoxComplexEnumValueIndexName by lazy { findIndex<ParadoxComplexEnumValueIndex>().name }
 val ParadoxValueSetValueFastIndexName by lazy { findIndex<ParadoxValueSetValueFastIndex>().name }
 val ParadoxInlineScriptUsageIndexName by lazy { findIndex<ParadoxInlineScriptUsageIndex>().name }
+val ParadoxParameterIndexName by lazy { findIndex<ParadoxParameterIndex>().name }
 val ParadoxLocalisationParameterIndexName by lazy { findIndex<ParadoxLocalisationParameterIndex>().name }

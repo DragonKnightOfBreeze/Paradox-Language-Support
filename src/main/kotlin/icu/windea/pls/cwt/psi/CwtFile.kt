@@ -10,7 +10,7 @@ class CwtFile(
   viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, CwtLanguage) {
 	companion object {
-		val FILE = IFileElementType("CWT_FILE", CwtLanguage)
+		val ELEMENT_TYPE = IFileElementType("CWT_FILE", CwtLanguage)
 	}
 	
 	override fun getFileType() = CwtFileType

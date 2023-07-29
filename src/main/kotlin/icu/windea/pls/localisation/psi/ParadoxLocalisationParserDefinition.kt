@@ -13,7 +13,7 @@ class ParadoxLocalisationParserDefinition : ParserDefinition {
     
     override fun getStringLiteralElements() = ParadoxLocalisationTokenSets.STRING_LITERALS
     
-    override fun getFileNodeType() = ParadoxLocalisationFile.FILE
+    override fun getFileNodeType() = ParadoxLocalisationFile.ELEMENT_TYPE
     
     override fun createFile(viewProvider: FileViewProvider): ParadoxLocalisationFile {
         return ParadoxLocalisationFile(viewProvider)

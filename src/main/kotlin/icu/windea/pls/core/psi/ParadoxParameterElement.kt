@@ -16,7 +16,7 @@ import javax.swing.*
 /**
  * 定义的参数并不存在一个真正意义上的声明处，用这个模拟。
  *
- * @property key 用于判断参数是否拥有相同的上下文。
+ * @property contextKey 用于判断参数是否拥有相同的上下文。
  * @see ParadoxParameterSupport
  */
 class ParadoxParameterElement(
@@ -24,7 +24,7 @@ class ParadoxParameterElement(
     private val name: String,
     val contextName: String,
     val contextIcon: Icon,
-    val key: String,
+    val contextKey: String,
     val rangeInParent: TextRange?,
     val readWriteAccess: ReadWriteAccessDetector.Access,
     val gameType: ParadoxGameType,
@@ -73,13 +73,13 @@ class ParadoxParameterElement(
     override fun equals(other: Any?): Boolean {
         return other is ParadoxParameterElement &&
             name == other.name &&
-            key == other.key &&
+            contextKey == other.contextKey &&
             project == other.project &&
             gameType == other.gameType
     }
     
     override fun hashCode(): Int {
-        return Objects.hash(name, key, project, gameType)
+        return Objects.hash(name, contextKey, project, gameType)
     }
 }
 
