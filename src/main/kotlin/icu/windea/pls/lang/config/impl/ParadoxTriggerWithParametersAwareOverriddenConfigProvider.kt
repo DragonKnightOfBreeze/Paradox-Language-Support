@@ -21,17 +21,18 @@ class ParadoxTriggerWithParametersAwareOverriddenConfigProvider : ParadoxOverrid
     @Suppress("UNCHECKED_CAST")
     override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
         //重载complex_trigger_modifier = {...}中属性parameters的值对应的CWT规则
+        //重载export_trigger_value_to_variable = {...}中属性parameters的值对应的CWT规则
         //兼容使用内联或者使用封装变量的情况
         if(config !is CwtPropertyConfig) return null
         if(config.key != PARAMETERS_KEY) return null
         val aliasConfig = config.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
         if(aliasConfig.subName !in CONTEXT_NAMES) return null
         ProgressManager.checkCanceled()
-        val complexTriggerModifierProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
+        val contextProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
             .filter { it.name.lowercase() in CONTEXT_NAMES }
             .find { ParadoxConfigHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
             ?: return null
-        val triggerProperty = complexTriggerModifierProperty.findProperty(TRIGGER_KEY, inline = true) ?: return null
+        val triggerProperty = contextProperty.findProperty(TRIGGER_KEY, inline = true) ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
         if(CwtValueExpression.resolve(triggerName).type != CwtDataType.Constant) return null //must be predefined trigger
         val configGroup = config.info.configGroup

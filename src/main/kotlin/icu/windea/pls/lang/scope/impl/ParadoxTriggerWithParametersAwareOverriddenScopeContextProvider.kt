@@ -19,11 +19,12 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         private const val TRIGGER_KEY = "trigger"
         private const val TRIGGER_SCOPE_KEY = "trigger_scope"
         private const val PARAMETERS_KEY = "parameters"
-        private val CONTEXT_NAMES = arrayOf("complex_trigger_modifier")
+        private val CONTEXT_NAMES = arrayOf("complex_trigger_modifier", "export_trigger_value_to_variable")
     }
     
     override fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
         //重载complex_trigger_modifier = {...}中属性trigger和parameters的值对应的作用域上下文
+        //重载export_trigger_value_to_variable = {...}中属性trigger和parameters的值对应的作用域上下文
         //兼容trigger_scope的值对应的作用域与当前作用域上下文不匹配的情况
         if(config !is CwtPropertyConfig) return null
         if(config.key != TRIGGER_KEY && config.key != PARAMETERS_KEY) return null

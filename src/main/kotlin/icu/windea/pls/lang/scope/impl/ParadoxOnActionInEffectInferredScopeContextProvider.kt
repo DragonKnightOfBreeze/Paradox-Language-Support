@@ -57,12 +57,12 @@ class ParadoxOnActionInEffectInferredScopeContextProvider : ParadoxDefinitionInf
         val config = configGroup.onActions.getByTemplate(definitionInfo.name, definition, configGroup)
         if(config != null) return null
         val thisOnActionName = definitionInfo.name
-        val scopeContextMap = mutableMapOf<String, String?>()
-        scopeContextMap.put("this", ParadoxScopeHandler.anyScopeId)
-        scopeContextMap.put("root", ParadoxScopeHandler.anyScopeId)
         //optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?: return null
+        val scopeContextMap = mutableMapOf<String, String?>()
+        scopeContextMap.put("this", ParadoxScopeHandler.anyScopeId)
+        scopeContextMap.put("root", ParadoxScopeHandler.anyScopeId)
         var hasConflict = false
         val r = doProcessQuery(thisOnActionName, searchScope, scopeContextMap, configGroup)
         if(!r) hasConflict = true
@@ -123,7 +123,7 @@ class ParadoxOnActionInEffectInferredScopeContextProvider : ParadoxDefinitionInf
                             }
                             
                             if(scopeContextMap.isNotEmpty()) {
-                                val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map)
+                                val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map, true)
                                 if(mergedMap != null) {
                                     scopeContextMap.clear()
                                     scopeContextMap.putAll(mergedMap)

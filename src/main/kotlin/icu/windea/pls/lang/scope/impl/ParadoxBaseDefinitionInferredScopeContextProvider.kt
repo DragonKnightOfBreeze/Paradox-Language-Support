@@ -92,7 +92,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
                         }
                         //val map = scopeContext.detailMap.mapValues { (_, v) -> v.id }
                         if(scopeContextMap.isNotEmpty()) {
-                            val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map)
+                            val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map, true)
                             if(mergedMap != null) {
                                 scopeContextMap.clear()
                                 scopeContextMap.putAll(mergedMap)

@@ -16,7 +16,7 @@ class CwtParserDefinition : ParserDefinition {
 	
 	override fun getWhitespaceTokens() = CwtTokenSets.WHITE_SPACES
 	
-	override fun getCommentTokens() = CwtTokenSets.COMMENT_TOKENS
+	override fun getCommentTokens() = CwtTokenSets.COMMENTS
 	
 	override fun getStringLiteralElements() = CwtTokenSets.STRING_LITERALS
 	

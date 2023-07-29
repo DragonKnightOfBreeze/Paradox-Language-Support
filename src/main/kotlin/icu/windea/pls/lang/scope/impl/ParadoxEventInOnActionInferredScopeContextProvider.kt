@@ -51,11 +51,11 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         val configGroup = definitionInfo.configGroup
         val thisEventName = definitionInfo.name
         val thisEventType = ParadoxEventHandler.getType(definitionInfo)
-        val scopeContextMap = mutableMapOf<String, String?>()
         //optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?.withFilePath("common/on_actions", "txt")
             ?: return null
+        val scopeContextMap = mutableMapOf<String, String?>()
         var hasConflict = false
         val r = doProcessQuery(thisEventName, thisEventType, searchScope, scopeContextMap, configGroup)
         if(!r) hasConflict = true
@@ -92,7 +92,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
                         if(config.eventType != thisEventType) return@f //invalid (mismatch)
                         val map = config.config.replaceScopes ?: return@f
                         if(scopeContextMap.isNotEmpty()) {
-                            val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map)
+                            val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map, true)
                             if(mergedMap != null) {
                                 scopeContextMap.clear()
                                 scopeContextMap.putAll(mergedMap)

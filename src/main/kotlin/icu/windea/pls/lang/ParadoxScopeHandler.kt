@@ -110,7 +110,7 @@ object ParadoxScopeHandler {
     /**
      * @param indirect 是否包括间接支持作用域上下文的情况。（如事件）
      */
-    fun isScopeContextSupported(element: ParadoxScriptMemberElement, indirect:Boolean = false): Boolean {
+    fun isScopeContextSupported(element: ParadoxScriptMemberElement, indirect: Boolean = false): Boolean {
         //some definitions, such as on_action, also support scope context on definition level
         if(element is ParadoxScriptDefinitionElement) {
             val definitionInfo = element.definitionInfo
@@ -437,7 +437,7 @@ object ParadoxScopeHandler {
         return scopeContext ?: otherScopeContext
     }
     
-    fun mergeScopeContextMap(map: Map<String, String?>, otherMap: Map<String, String?>): Map<String, String?>? {
+    fun mergeScopeContextMap(map: Map<String, String?>, otherMap: Map<String, String?>, optimized: Boolean = false): Map<String, String?>? {
         val result = mutableMapOf<String, String?>()
         doMergeScopeContextMap(result, map, otherMap, "this", true).let { if(!it) return null }
         doMergeScopeContextMap(result, map, otherMap, "root", true).let { if(!it) return null }
@@ -449,6 +449,7 @@ object ParadoxScopeHandler {
         doMergeScopeContextMap(result, map, otherMap, "fromfrom", false)
         doMergeScopeContextMap(result, map, otherMap, "fromfromfrom", false)
         doMergeScopeContextMap(result, map, otherMap, "fromfromfromfrom", false)
+        if(optimized) optimizeScopeMap(result)
         return result.takeIfNotEmpty()
     }
     
@@ -456,20 +457,35 @@ object ParadoxScopeHandler {
         val s = mergeScopeId(m1[key], m2[key])
         val r = if(orUnknown) s ?: unknownScopeId else s.takeUnless { it == unknownScopeId }
         if(r != null) result[key] = r
-        return s != null
+        return r != null
+    }
+    
+    private fun optimizeScopeMap(scopeMap: MutableMap<String, String?>) {
+        val thisScope = scopeMap["this"]
+        if(thisScope == null || thisScope == ParadoxScopeHandler.unknownScopeId) {
+            scopeMap["this"] = ParadoxScopeHandler.anyScopeId
+        }
+        val rootScope = scopeMap["root"]
+        if(rootScope == null || rootScope == ParadoxScopeHandler.unknownScopeId) {
+            scopeMap["root"] = ParadoxScopeHandler.anyScopeId
+        }
     }
     
     fun mergeScopeId(scopeId: String?, otherScopeId: String?): String? {
-        if(scopeId == otherScopeId) return scopeId
+        if(scopeId == otherScopeId) return scopeId ?: unknownScopeId
         if(scopeId == anyScopeId || otherScopeId == anyScopeId) return anyScopeId
         if(scopeId == unknownScopeId || otherScopeId == unknownScopeId) return unknownScopeId
-        return scopeId ?: otherScopeId
+        if(scopeId == null) return otherScopeId
+        if(otherScopeId == null) return scopeId
+        return null
     }
     
     fun mergeScope(scope: ParadoxScope?, otherScope: ParadoxScope?): ParadoxScope? {
-        if(scope == otherScope) return scope
+        if(scope == otherScope) return scope ?: ParadoxScope.UnknownScope
         if(scope == ParadoxScope.AnyScope || otherScope == ParadoxScope.AnyScope) return ParadoxScope.AnyScope
         if(scope == ParadoxScope.UnknownScope || otherScope == ParadoxScope.UnknownScope) return ParadoxScope.UnknownScope
-        return scope ?: otherScope
+        if(scope == null) return otherScope
+        if(otherScope == null) return scope
+        return null
     }
 }
