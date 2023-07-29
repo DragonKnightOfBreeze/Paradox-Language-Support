@@ -133,7 +133,7 @@ class ConvertDdsToPngAction : DumbAwareAction() {
             pi.text2 = InspectionsBundle.message("processing.progress.text", file.name)
         }
         
-        val backendPngFile = ParadoxDdsUrlResolver.getPngFile(file.virtualFile) ?: return
+        val backendPngFile = ParadoxImageResolver.getPngFile(file.virtualFile) ?: return
         val name = newName ?: getNewName(file.name)
         val existing = targetDirectory.findFile(name)
         if(existing != null && existing != file) {

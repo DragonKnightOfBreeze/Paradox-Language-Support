@@ -67,7 +67,7 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
                 val iconSelector = fileSelector(project, element).contextSensitive()
                 ParadoxFilePathSearch.search(iconPath, null, iconSelector).find()
             } ?: return true
-            val iconUrl = ParadoxDdsUrlResolver.resolveByFile(iconFile, defaultToUnknown = false)
+            val iconUrl = ParadoxImageResolver.resolveUrlByFile(iconFile, defaultToUnknown = false)
             if(iconUrl.isNotEmpty()) {
                 //忽略异常
                 runCatching {

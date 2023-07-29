@@ -138,6 +138,10 @@ public class DdsImageDecoder {
         return convertToPNG(dds, "");
     }
 
+    public byte[] convertToPNG(Dds dds, int frame) {
+        return convertToPNG(dds, "", frame);
+    }
+
     public byte[] convertToPNG(Dds dds, String swizzle) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
@@ -145,18 +149,16 @@ public class DdsImageDecoder {
         } catch (IOException e) {
             //  Impossible
         }
-
         return byteArrayOutputStream.toByteArray();
     }
 
-    public byte[] convertToPNG(Dds dds, int frame) {
+    public byte[] convertToPNG(Dds dds, String swizzle, int frame) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
-            convertToPNG(dds, byteArrayOutputStream, frame);
+            convertToPNG(dds, byteArrayOutputStream, swizzle, frame);
         } catch (IOException e) {
             //  Impossible
         }
-
         return byteArrayOutputStream.toByteArray();
     }
 
@@ -164,6 +166,10 @@ public class DdsImageDecoder {
         convertToPNG(dds, outputStream, "");
     }
 
+    public void convertToPNG(Dds dds, OutputStream outputStream, int frame) throws IOException {
+        convertToPNG(dds, outputStream, "", frame);
+    }
+    
     public void convertToPNG(Dds dds, OutputStream outputStream, String swizzle) throws IOException {
         DdsHeader header = dds.getHeader();
         FormatDecoder decoder = Decoders.getDecoder(dds);
@@ -178,13 +184,11 @@ public class DdsImageDecoder {
 
         pngWriter.end();
     }
-
-    public void convertToPNG(Dds dds, OutputStream outputStream, int frame) throws IOException {
-        convertToPNG(dds, outputStream, frame, "");
-    }
-
-    public void convertToPNG(Dds dds, OutputStream outputStream, int frame, String swizzle) throws IOException {
-        if(frame <= 0) throw new IllegalArgumentException();
+    public void convertToPNG(Dds dds, OutputStream outputStream, String swizzle, int frame) throws IOException {
+        if(frame <= 0) {
+            convertToPNG(dds, outputStream, swizzle);
+            return;
+        }
         DdsHeader header = dds.getHeader();
         FormatDecoder decoder = Decoders.getDecoder(dds);
         int width = header.getDwWidth();

@@ -82,7 +82,6 @@ Tools and plugins:
 * [cwtools/cwtools](https://github.com/cwtools/cwtools)
 * [cwtools/cwtools-vscode](https://github.com/cwtools/cwtools-vscode)
 * [OldEnt/stellaris-triggers-modifiers-effects-list](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
-* [vincentzhang96/DDS4J](https://github.com/vincentzhang96/DDS4J)
 * [YiiGuxing/TranslationPlugin](https://github.com/YiiGuxing/TranslationPlugin)
 
 Wiki:

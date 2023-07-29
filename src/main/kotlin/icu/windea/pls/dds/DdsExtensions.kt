@@ -5,7 +5,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.tool.*
 import kotlin.io.path.*
 
-//icu.windea.pls.tool.ParadoxDdsUrlResolver.doResolveByFile(com.intellij.openapi.vfs.VirtualFile)
+//icu.windea.pls.tool.ParadoxImageResolver.doResolveByFile(com.intellij.openapi.vfs.VirtualFile)
 fun invalidateDdsFile(ddsFile: VirtualFile) {
     if(ddsFile.fileType != DdsFileType) return
     //如果可以得到相对于游戏或模组根路径的文件路径，则使用绝对根路径+相对路径定位，否则直接使用绝对路径
@@ -17,5 +17,5 @@ fun invalidateDdsFile(ddsFile: VirtualFile) {
     } else {
         ddsFile.toNioPath().absolutePathString()
     }
-    DdsConverter.invalidateUrl(ddsAbsPath)
+    ParadoxDdsResolver.invalidateUrl(ddsAbsPath)
 }

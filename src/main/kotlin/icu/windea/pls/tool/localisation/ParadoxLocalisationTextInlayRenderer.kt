@@ -142,8 +142,8 @@ object ParadoxLocalisationTextInlayRenderer {
     private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context): Boolean = with(context.factory) {
         val resolved = element.reference?.resolve() ?: return true
         val iconUrl = when {
-            resolved is ParadoxScriptDefinitionElement -> ParadoxDdsUrlResolver.resolveByDefinition(resolved, defaultToUnknown = true)
-            resolved is PsiFile -> ParadoxDdsUrlResolver.resolveByFile(resolved.virtualFile, defaultToUnknown = true)
+            resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, defaultToUnknown = true)
+            resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, defaultToUnknown = true)
             else -> return true
         }
         if(iconUrl.isNotEmpty()) {

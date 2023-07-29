@@ -254,7 +254,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
                 sectionKeys.add(key)
                 if(render && sections != null) {
                     //加上DDS图片预览图
-                    val url = ParadoxDdsUrlResolver.resolveByFile(resolved.file.virtualFile, resolved.frame)
+                    val url = ParadoxImageResolver.resolveUrlByFile(resolved.file.virtualFile, resolved.frame)
                     sections.put("<code>$key</code>", buildString { appendImgTag(url) })
                 }
             }

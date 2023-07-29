@@ -41,7 +41,7 @@ class IfsUtilCodeInjector : BaseCodeInjector() {
                 file.putUserData(IMAGE_PROVIDER_REF_KEY, null)
                 
                 //convert dds bytes to png bytes
-                val bytes = DdsConverter.convertBytes(file) ?: return false
+                val bytes = ImageManager.convertDdsToPng(file.inputStream) ?: return false
                 val inputStream = ByteArrayInputStream(bytes)
                 val imageInputStream = ImageIO.createImageInputStream(inputStream)
                 imageInputStream.use {

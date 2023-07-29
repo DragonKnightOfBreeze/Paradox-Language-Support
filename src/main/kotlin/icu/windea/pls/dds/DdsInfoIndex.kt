@@ -33,7 +33,7 @@ object DdsInfoIndex {
 		val fileType = file.fileType
 		if(fileType != DdsFileType) return@newVirtualFileGist null
 		//直接委托给ImageInfoReader
-		val pngFile = ParadoxDdsUrlResolver.getPngFile(file) ?: return@newVirtualFileGist null
+		val pngFile = ParadoxImageResolver.getPngFile(file) ?: return@newVirtualFileGist null
 		val content = try {
 			pngFile.contentsToByteArray()
 		} catch(e: IOException) {

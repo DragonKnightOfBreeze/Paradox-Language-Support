@@ -130,9 +130,9 @@ object ParadoxLocalisationTextHtmlRenderer {
         val resolved = element.reference?.resolve()
         val iconFrame = element.frame
         val iconUrl = when {
-            resolved is ParadoxScriptDefinitionElement -> ParadoxDdsUrlResolver.resolveByDefinition(resolved, iconFrame, defaultToUnknown = true)
-            resolved is PsiFile -> ParadoxDdsUrlResolver.resolveByFile(resolved.virtualFile, iconFrame, defaultToUnknown = true)
-            else -> DdsConverter.getUnknownPngUrl()
+            resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, iconFrame, defaultToUnknown = true)
+            resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, iconFrame, defaultToUnknown = true)
+            else -> ParadoxDdsResolver.getUnknownPngUrl()
         }
         if(iconUrl.isNotEmpty()) {
             //找不到图标的话就直接跳过

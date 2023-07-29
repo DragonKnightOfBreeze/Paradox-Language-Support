@@ -52,9 +52,9 @@ dependencies {
 		exclude(module = "jackson-core")
 		exclude(module = "jackson-databind")
 	}
-	//Sqlite
+	////Sqlite
 	//implementation("org.xerial:sqlite-jdbc:3.40.1.0")
-	//Byte Buddy
+	////Byte Buddy
 	//implementation("net.bytebuddy:byte-buddy:1.14.2")
 	//Javassist
 	implementation("org.javassist:javassist:3.29.2-GA")
@@ -67,6 +67,10 @@ dependencies {
 	testImplementation("net.bytebuddy:byte-buddy:1.14.2")
 	//Javassist
 	testImplementation("org.javassist:javassist:3.29.2-GA")
+	////JOGL
+	//testImplementation("org.jogamp.jogl:jogl-all:2.3.2")
+	////OPENRNDR
+	//testImplementation("org.openrndr:openrndr-dds:0.4.4-alpha2")
 }
 
 sourceSets {
@@ -124,7 +128,7 @@ tasks {
 		include("**/*Test.class")
 	}
 	jar {
-		//排除特定的class文件
+		//排除特定文件
 		exclude("icu/windea/pls/dev")
 		//添加项目文档和许可证
 		from("README.md", "README_en.md", "LICENSE")
@@ -143,6 +147,10 @@ tasks {
 				into("config/cwt/$toDir")
 			}
 		}
+	}
+	buildPlugin {
+		//排除特定文件
+		exclude("jackson-dataformat-csv-*.jar") 
 	}
 	patchPluginXml {
 		sinceBuild.set("231")
