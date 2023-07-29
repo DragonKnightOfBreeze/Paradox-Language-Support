@@ -16,14 +16,12 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
+private const val ID = "Vic3.EventTree"
+
+private val ITEM_PROPERTY_KEYS = arrayOf("picture", "icon", "left_icon", "right_icon", "minor_left_icon", "minor_right_icon", "gui_window")
+
 @WithGameType(ParadoxGameType.Vic3)
 class Vic3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Vic3) {
-    companion object {
-        const val ID = "Vic3.EventTree"
-        
-        val ITEM_PROPERTY_KEYS = arrayOf("picture", "icon", "left_icon", "right_icon", "minor_left_icon", "minor_right_icon", "gui_window")
-    }
-    
     override fun getID() = ID
     
     @Suppress("DialogTitleCapitalization")

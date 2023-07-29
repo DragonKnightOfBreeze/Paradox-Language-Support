@@ -44,7 +44,7 @@ class ParadoxGameElementNode(
             if(file.isDirectory) {
                 //直接位于游戏或模组目录中，且未被排除
                 if(!directoryNames.add(file.name)) return@p true
-                val fileData = FileBasedIndex.getInstance().getFileData(ParadoxFilePathIndex.NAME, file, project)
+                val fileData = FileBasedIndex.getInstance().getFileData(ParadoxFilePathIndexName, file, project)
                 if(!fileData.values.single().included) return@p true
                 val element = ParadoxDirectoryElement(project, fileInfo.pathToEntry, fileInfo.rootInfo.gameType, value.preferredRootFile)
                 val elementNode = ParadoxDirectoryElementNode(project, element, settings)

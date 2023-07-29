@@ -10,6 +10,9 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
+private val NAME = ID.create<String, List<ParadoxInlineScriptUsageInfo>>("paradox.inlineScriptUsage.index")
+private const val VERSION = 32 //1.1.3
+
 /**
  * 用于索引内联脚本调用。
  *
@@ -18,15 +21,6 @@ import java.io.*
  * @see ParadoxInlineScriptUsageInfo
  */
 class ParadoxInlineScriptUsageIndex : ParadoxFileBasedIndex<List<ParadoxInlineScriptUsageInfo>>() {
-    companion object {
-        @JvmField val NAME = ID.create<String, List<ParadoxInlineScriptUsageInfo>>("paradox.inlineScriptUsage.index")
-        private const val VERSION = 32 //1.1.3
-        private val INSTANCE by lazy { EXTENSION_POINT_NAME.findExtensionOrFail(ParadoxInlineScriptUsageIndex::class.java) }
-        
-        @JvmStatic
-        fun getInstance() = INSTANCE
-    }
-    
     override fun getName() = NAME
     
     override fun getVersion() = VERSION

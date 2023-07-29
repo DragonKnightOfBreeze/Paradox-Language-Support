@@ -11,13 +11,11 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.script.psi.*
 
+private const val TRIGGER_KEY = "trigger"
+private const val PARAMETERS_KEY = "parameters"
+private val CONTEXT_NAMES = arrayOf("complex_trigger_modifier", "export_trigger_value_to_variable")
+
 class ParadoxTriggerWithParametersAwareOverriddenConfigProvider : ParadoxOverriddenConfigProvider {
-    companion object {
-        private const val TRIGGER_KEY = "trigger"
-        private const val PARAMETERS_KEY = "parameters"
-        private val CONTEXT_NAMES = arrayOf("complex_trigger_modifier", "export_trigger_value_to_variable")
-    }
-    
     @Suppress("UNCHECKED_CAST")
     override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
         //重载complex_trigger_modifier = {...}中属性parameters的值对应的CWT规则

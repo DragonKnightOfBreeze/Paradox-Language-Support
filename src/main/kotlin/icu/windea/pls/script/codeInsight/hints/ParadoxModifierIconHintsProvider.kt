@@ -22,13 +22,11 @@ import javax.swing.*
  */
 @Suppress("UnstableApiUsage")
 class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() {
-    companion object {
-        private val settingsKey = SettingsKey<Settings>("ParadoxModifierIconHintsSettingsKey")
-    }
-    
     data class Settings(
         var iconHeightLimit: Int = 32
     )
+    
+    private val settingsKey = SettingsKey<Settings>("ParadoxModifierIconHintsSettingsKey")
     
     override val name: String get() = PlsBundle.message("script.hints.modifierIcon")
     override val description: String get() = PlsBundle.message("script.hints.modifierIcon.description")

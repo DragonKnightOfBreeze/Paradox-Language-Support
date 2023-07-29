@@ -9,9 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationPropertyRenameInputValidator : RenameInputValidator {
-	companion object {
-		private val elementPattern = psiElement(ParadoxLocalisationProperty::class.java)
-	}
+	private val elementPattern = psiElement(ParadoxLocalisationProperty::class.java)
 	
 	override fun isInputValid(newName: String, element: PsiElement, context: ProcessingContext): Boolean {
 		return PlsConstants.Patterns.localisationPropertyNameRegex.matches(newName)

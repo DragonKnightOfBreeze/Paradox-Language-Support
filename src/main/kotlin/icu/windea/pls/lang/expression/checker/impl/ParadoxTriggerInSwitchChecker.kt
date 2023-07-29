@@ -8,12 +8,10 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.expression.checker.*
 import icu.windea.pls.script.psi.*
 
+private val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
+private val CONTEXT_NAMES = arrayOf("switch", "inverted_switch")
+
 class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
-    companion object {
-        private val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
-        private val CONTEXT_NAMES = arrayOf("switch", "inverted_switch")
-    }
-    
     override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         //switch = {...}和inverted_switch = {...}中指定的应当是一个simple_trigger
         if(element !is ParadoxScriptString && element !is ParadoxScriptScriptedVariableReference) return

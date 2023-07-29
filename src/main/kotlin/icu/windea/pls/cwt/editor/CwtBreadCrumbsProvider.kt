@@ -7,12 +7,10 @@ import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtBreadCrumbsProvider : BreadcrumbsProvider {
-	companion object {
-		private val defaultLanguages: Array<Language> = arrayOf(CwtLanguage)
-	}
+	private val _defaultLanguages = arrayOf(CwtLanguage)
 	
-	override fun getLanguages(): Array<Language> {
-		return defaultLanguages
+	override fun getLanguages(): Array<out Language> {
+		return _defaultLanguages
 	}
 	
 	override fun acceptElement(element: PsiElement): Boolean {

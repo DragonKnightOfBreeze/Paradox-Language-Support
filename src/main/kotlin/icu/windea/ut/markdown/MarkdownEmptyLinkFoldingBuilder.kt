@@ -9,6 +9,9 @@ import com.intellij.psi.*
 import icu.windea.pls.core.annotations.*
 import org.intellij.plugins.markdown.lang.psi.impl.*
 
+private const val GROUP_NAME = "ut.markdown.emptyLink"
+private val FOLDING_GROUP = FoldingGroup.newGroup(GROUP_NAME)
+
 /**
  * 用于折叠标签文本为空的Markdown内联链接。（`[](...)`）
  */
@@ -16,11 +19,6 @@ import org.intellij.plugins.markdown.lang.psi.impl.*
 @WithExtension("org.intellij.plugins.markdown")
 @Suppress("UnstableApiUsage")
 class MarkdownEmptyLinkFoldingBuilder: FoldingBuilderEx(), DumbAware {
-    companion object {
-        const val GROUP_NAME = "ut.markdown.emptyLink"
-        val FOLDING_GROUP = FoldingGroup.newGroup(GROUP_NAME)
-    }
-    
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         val descriptors = mutableListOf<FoldingDescriptor>()
         root.accept(object : PsiRecursiveElementWalkingVisitor(){

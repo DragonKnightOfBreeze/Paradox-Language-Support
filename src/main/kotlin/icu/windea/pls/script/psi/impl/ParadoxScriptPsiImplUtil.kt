@@ -14,6 +14,7 @@ import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.color.*
 import icu.windea.pls.lang.color.impl.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.model.*
@@ -470,14 +471,16 @@ object ParadoxScriptPsiImplUtil {
         return element.text.substringIn('{', '}').trim().splitByBlank()
     }
     
+    private val colorSupport by lazy { ParadoxColorSupport.EP_NAME.findExtensionOrFail(ParadoxScriptColorColorSupport::class.java) }
+    
     @JvmStatic
     fun getColor(element: ParadoxScriptColor): Color? {
-        return ParadoxScriptColorColorSupport.INSTANCE.getColor(element)
+        return colorSupport.getColor(element)
     }
     
     @JvmStatic
     fun setColor(element: ParadoxScriptColor, color: Color) {
-        ParadoxScriptColorColorSupport.INSTANCE.setColor(element, color)
+        colorSupport.setColor(element, color)
     }
     
     @JvmStatic

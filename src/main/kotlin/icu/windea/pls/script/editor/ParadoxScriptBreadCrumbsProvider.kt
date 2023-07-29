@@ -8,12 +8,10 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptBreadCrumbsProvider : BreadcrumbsProvider {
-	companion object {
-		private val defaultLanguages: Array<Language> = arrayOf(ParadoxScriptLanguage)
-	}
+	private val _defaultLanguages = arrayOf(ParadoxScriptLanguage)
 	
-	override fun getLanguages(): Array<Language> {
-		return defaultLanguages
+	override fun getLanguages(): Array<out Language> {
+		return _defaultLanguages
 	}
 	
 	override fun acceptElement(element: PsiElement): Boolean {

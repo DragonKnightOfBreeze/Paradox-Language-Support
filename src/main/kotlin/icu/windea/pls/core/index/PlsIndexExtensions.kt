@@ -1,6 +1,8 @@
 package icu.windea.pls.core.index
 
 import com.intellij.codeInsight.highlighting.*
+import com.intellij.psi.stubs.*
+import com.intellij.util.indexing.*
 import icu.windea.pls.lang.model.*
 
 fun ReadWriteAccessDetector.Access.toByte() = this.ordinal
@@ -14,3 +16,27 @@ fun Byte.toReadWriteAccess() = when {
 fun ParadoxGameType.toByte() = this.ordinal
 
 fun Byte.toGameType() = ParadoxGameType.values[this.toInt()]
+
+
+inline fun <reified T: StubIndexExtension<*,*>> findStubIndex(): T{
+    return StubIndexExtension.EP_NAME.findExtensionOrFail(T::class.java)
+}
+
+inline fun <reified T : FileBasedIndexExtension<*, *>> findIndex(): T {
+    return FileBasedIndexExtension.EXTENSION_POINT_NAME.findExtensionOrFail(T::class.java)
+}
+
+
+val ParadoxScriptedVariableNameIndexKey by lazy { findStubIndex<ParadoxScriptedVariableNameIndex>().getKey() }
+val ParadoxDefinitionNameIndexKey by lazy { findStubIndex<ParadoxDefinitionNameIndex>().getKey() }
+val ParadoxDefinitionTypeIndexKey by lazy { findStubIndex<ParadoxDefinitionTypeIndex>().getKey() }
+val ParadoxLocalisationNameIndexKey by lazy { findStubIndex<ParadoxLocalisationNameIndex>().getKey() }
+val ParadoxLocalisationNameIndexModifierKey by lazy { findStubIndex<ParadoxLocalisationNameIndex.ModifierIndex>().getKey() }
+val ParadoxSyncedLocalisationNameIndexKey by lazy { findStubIndex<ParadoxSyncedLocalisationNameIndex>().getKey() }
+
+val ParadoxFilePathIndexName by lazy { findIndex<ParadoxFilePathIndex>().name }
+val ParadoxFileLocaleIndexName by lazy { findIndex<ParadoxFileLocaleIndex>().name }
+val ParadoxComplexEnumValueIndexName by lazy { findIndex<ParadoxComplexEnumValueIndex>().name }
+val ParadoxValueSetValueFastIndexName by lazy { findIndex<ParadoxValueSetValueFastIndex>().name }
+val ParadoxInlineScriptUsageIndexName by lazy { findIndex<ParadoxInlineScriptUsageIndex>().name }
+val ParadoxLocalisationParameterIndexName by lazy { findIndex<ParadoxLocalisationParameterIndex>().name }

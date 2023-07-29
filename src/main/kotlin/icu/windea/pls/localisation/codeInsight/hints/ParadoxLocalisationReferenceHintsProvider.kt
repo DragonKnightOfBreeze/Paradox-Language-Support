@@ -18,14 +18,12 @@ import javax.swing.*
  */
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvider<Settings>() {
-    companion object {
-        private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxLocalisationReferenceHintsSettingsKey")
-    }
-    
     data class Settings(
         var textLengthLimit: Int = 30,
         var iconHeightLimit: Int = 32
     )
+    
+    private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxLocalisationReferenceHintsSettingsKey")
     
     override val name: String get() = PlsBundle.message("localisation.hints.localisationReference")
     override val description: String get() = PlsBundle.message("localisation.hints.localisationReference.description")

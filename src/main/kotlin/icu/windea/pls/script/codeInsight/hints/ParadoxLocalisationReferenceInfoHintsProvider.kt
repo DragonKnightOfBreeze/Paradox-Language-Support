@@ -22,22 +22,20 @@ import javax.swing.*
  */
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
-    companion object {
-        private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxLocalisationReferenceInfoHintsSettingsKey")
-        private val expressionTypes: EnumSet<CwtDataType> = enumSetOf(
-            CwtDataType.Localisation,
-            CwtDataType.InlineLocalisation,
-            CwtDataType.SyncedLocalisation,
-            CwtDataType.AliasName, //需要兼容alias
-            CwtDataType.AliasKeysField, //需要兼容alias
-            CwtDataType.AliasMatchLeft, //需要兼容alias
-            CwtDataType.SingleAliasRight, //需要兼容single_alias
-        )
-    }
-    
     data class Settings(
         var textLengthLimit: Int = 30,
         var iconHeightLimit: Int = 32
+    )
+    
+    private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxLocalisationReferenceInfoHintsSettingsKey")
+    private val expressionTypes: EnumSet<CwtDataType> = enumSetOf(
+        CwtDataType.Localisation,
+        CwtDataType.InlineLocalisation,
+        CwtDataType.SyncedLocalisation,
+        CwtDataType.AliasName, //需要兼容alias
+        CwtDataType.AliasKeysField, //需要兼容alias
+        CwtDataType.AliasMatchLeft, //需要兼容alias
+        CwtDataType.SingleAliasRight, //需要兼容single_alias
     )
     
     override val name: String get() = PlsBundle.message("script.hints.localisationReferenceInfo")

@@ -20,16 +20,14 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 
+private const val ID = "Stellaris.TechnologyTree"
+
+private val ITEM_PROPERTY_KEYS = arrayOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels")
+
+private val nodeDataKey = Key.create<StellarisTechnologyDataProvider.Data>("stellaris.technologyTree.node.data")
+
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvider(ParadoxGameType.Stellaris) {
-    companion object {
-        const val ID = "Stellaris.TechnologyTree"
-        
-        val ITEM_PROPERTY_KEYS = arrayOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels")
-        
-        val nodeDataKey = Key.create<StellarisTechnologyDataProvider.Data>("stellaris.technologyTree.node.data")
-    }
-    
     private val _colorManager = ColorManager()
     
     override fun getID() = ID

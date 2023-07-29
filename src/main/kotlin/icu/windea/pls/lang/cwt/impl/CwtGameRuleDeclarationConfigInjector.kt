@@ -5,11 +5,9 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 
+private val configKey = Key.create<CwtGameRuleConfig>("cwt.config.injector.gameRule.config")
+
 class CwtGameRuleDeclarationConfigInjector : CwtDeclarationConfigInjector {
-    companion object {
-        val configKey = Key.create<CwtGameRuleConfig>("cwt.config.injector.gameRule.config")
-    }
-    
     //某些game_rule的声明规则需要重载
     
     override fun supports(configContext: CwtDeclarationConfigContext): Boolean {

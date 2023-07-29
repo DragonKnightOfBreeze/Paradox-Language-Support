@@ -16,14 +16,12 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
+private const val ID = "Hoi4.EventTree"
+
+private val ITEM_PROPERTY_KEYS = arrayOf("picture")
+
 @WithGameType(ParadoxGameType.Hoi4)
 class Hoi4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Hoi4) {
-    companion object {
-        const val ID = "Hoi4.EventTree"
-        
-        val ITEM_PROPERTY_KEYS = arrayOf("picture")
-    }
-    
     override fun getID() = ID
     
     @Suppress("DialogTitleCapitalization")

@@ -9,6 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.index.*
 import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
@@ -18,17 +19,14 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.psi.*
 
+private val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo")
+
+private val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect")
+
 /**
  * 推断scripted_trigger、scripted_effect等的作用域上下文（仅限this和root）。
  */
-@SlowApi
 class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
-    companion object {
-        val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo")
-        
-        val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect")
-    }
-    
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if(!getSettings().inference.scopeContext) return null
         if(definitionInfo.type !in DEFINITION_TYPES) return null
@@ -71,7 +69,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         val gameType = configGroup.gameType ?: return true
         return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxBaseDefinitionInferredScopeContextProvider.doProcessQuery") {
             withCheckRecursion(definitionInfo.name + "@" + definitionInfo.type) {
-                val index = ParadoxInferredScopeContextAwareDefinitionHierarchyIndex.getInstance()
+                val index = findIndex<ParadoxInferredScopeContextAwareDefinitionHierarchyIndex>()
                 ParadoxDefinitionHierarchyHandler.processQuery(index , project, gameType, searchScope) p@{ file, fileData ->
                     val infos = fileData.values.firstOrNull() ?: return@p true
                     val psiFile = file.toPsiFile(project) ?: return@p true

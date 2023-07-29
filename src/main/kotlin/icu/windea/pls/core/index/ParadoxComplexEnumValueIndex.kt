@@ -11,6 +11,10 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
+private val NAME = ID.create<String, List<ParadoxComplexEnumValueInfo>>("paradox.complexEnumValue.index")
+private const val VERSION = 32 //1.1.3
+
+
 /**
  * 用于索引复杂枚举值。
  *
@@ -19,15 +23,6 @@ import java.io.*
  * @see ParadoxComplexEnumValueInfo
  */
 class ParadoxComplexEnumValueIndex : ParadoxFileBasedIndex<List<ParadoxComplexEnumValueInfo>>() {
-    companion object {
-        @JvmField val NAME = ID.create<String, List<ParadoxComplexEnumValueInfo>>("paradox.complexEnumValue.index")
-        private const val VERSION = 32 //1.1.3
-        private val INSTANCE by lazy { EXTENSION_POINT_NAME.findExtensionOrFail(ParadoxComplexEnumValueIndex::class.java) }
-        
-        @JvmStatic
-        fun getInstance() = INSTANCE
-    }
-    
     override fun getName() = NAME
     
     override fun getVersion() = VERSION

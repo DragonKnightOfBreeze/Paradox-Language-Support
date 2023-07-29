@@ -42,7 +42,7 @@ object ParadoxScriptScriptedVariableStubElementType : ILightStubElementType<Para
     
     override fun indexStub(stub: ParadoxScriptScriptedVariableStub, sink: IndexSink) {
         if(stub.gameType == null) return
-        sink.occurrence(ParadoxScriptedVariableNameIndex.KEY, stub.name)
+        sink.occurrence(ParadoxScriptedVariableNameIndexKey, stub.name)
     }
     
     override fun serialize(stub: ParadoxScriptScriptedVariableStub, dataStream: StubOutputStream) {

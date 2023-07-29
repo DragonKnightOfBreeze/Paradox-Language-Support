@@ -22,14 +22,12 @@ import javax.swing.*
  */
 @Suppress("UnstableApiUsage")
 class ParadoxModifierLocalizedNameHintsProvider: ParadoxScriptHintsProvider<Settings>(){
-	companion object {
-		private val settingsKey = SettingsKey<Settings>("ParadoxModifierLocalizedNameHintsSettingsKey")
-	}
-	
 	data class Settings(
 		var textLengthLimit: Int = 30,
 		var iconHeightLimit: Int = 32
 	)
+	
+	private val settingsKey = SettingsKey<Settings>("ParadoxModifierLocalizedNameHintsSettingsKey")
 	
 	override val name: String get() = PlsBundle.message("script.hints.modifierLocalizedName")
 	override val description: String get() = PlsBundle.message("script.hints.modifierLocalizedName.description")

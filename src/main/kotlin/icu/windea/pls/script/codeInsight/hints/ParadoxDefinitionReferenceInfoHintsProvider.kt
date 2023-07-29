@@ -18,16 +18,14 @@ import java.util.*
  */
 @Suppress("UnstableApiUsage")
 class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
-    companion object {
-        private val settingsKey: SettingsKey<NoSettings> = SettingsKey("ParadoxDefinitionReferenceInfoHintsSettingsKey")
-        private val expressionTypes: EnumSet<CwtDataType> = enumSetOf(
-            CwtDataType.Definition,
-            CwtDataType.AliasName, //需要兼容alias
-            CwtDataType.AliasKeysField, //需要兼容alias
-            CwtDataType.AliasMatchLeft, //需要兼容alias
-            CwtDataType.SingleAliasRight, //需要兼容single_alias
-        )
-    }
+    private val settingsKey: SettingsKey<NoSettings> = SettingsKey("ParadoxDefinitionReferenceInfoHintsSettingsKey")
+    private val expressionTypes: EnumSet<CwtDataType> = enumSetOf(
+        CwtDataType.Definition,
+        CwtDataType.AliasName, //需要兼容alias
+        CwtDataType.AliasKeysField, //需要兼容alias
+        CwtDataType.AliasMatchLeft, //需要兼容alias
+        CwtDataType.SingleAliasRight, //需要兼容single_alias
+    )
     
     override val name: String get() = PlsBundle.message("script.hints.definitionReferenceInfo")
     override val description: String get() = PlsBundle.message("script.hints.definitionReferenceInfo.description")

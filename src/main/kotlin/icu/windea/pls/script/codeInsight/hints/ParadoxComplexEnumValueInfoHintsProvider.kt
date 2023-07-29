@@ -16,9 +16,7 @@ import icu.windea.pls.script.psi.*
  */
 @Suppress("UnstableApiUsage")
 class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
-    companion object {
-        private val settingsKey = SettingsKey<NoSettings>("ParadoxComplexEnumValueInfoHintsSettingsKey")
-    }
+    private val settingsKey = SettingsKey<NoSettings>("ParadoxComplexEnumValueInfoHintsSettingsKey")
     
     override val name: String get() = PlsBundle.message("script.hints.complexEnumValueInfo")
     override val description: String get() = PlsBundle.message("script.hints.complexEnumValueInfo.description")

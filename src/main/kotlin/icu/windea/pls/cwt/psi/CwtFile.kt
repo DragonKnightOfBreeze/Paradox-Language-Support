@@ -2,12 +2,17 @@ package icu.windea.pls.cwt.psi
 
 import com.intellij.extapi.psi.*
 import com.intellij.psi.*
+import com.intellij.psi.tree.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 
 class CwtFile(
   viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, CwtLanguage) {
+	companion object {
+		val FILE = IFileElementType("CWT_FILE", CwtLanguage)
+	}
+	
 	override fun getFileType() = CwtFileType
 	
 	val block get() = findChild<CwtRootBlock>()

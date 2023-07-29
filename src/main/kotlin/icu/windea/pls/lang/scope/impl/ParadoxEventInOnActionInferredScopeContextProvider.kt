@@ -9,6 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.index.*
 import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
@@ -19,16 +20,13 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.psi.*
 
+private  val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.from.onAction")
+
 /**
  * 如果某个event在某个on_action中被调用，
  * 则将此on_action的from, fromfrom...作用域推断为此event的from, fromfrom...作用域。
  */
-@SlowApi
 class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
-    companion object {
-        val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.from.onAction")
-    }
-    
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if(!getSettings().inference.eventScopeContext) return null
         if(definitionInfo.type != "event") return null
@@ -77,7 +75,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxEventInEventInferredScopeContextProvider.doProcessQuery") {
             if(depth == 1) stackTrace.addLast(thisEventName)
             
-            val index = ParadoxEventInOnActionDefinitionHierarchyIndex.getInstance()
+            val index = findIndex<ParadoxEventInOnActionDefinitionHierarchyIndex>()
             ParadoxDefinitionHierarchyHandler.processQuery(index, project, gameType, searchScope) p@{ file, fileData ->
                 val infos = fileData.values.firstOrNull() ?: return@p true
                 val psiFile = file.toPsiFile(project) ?: return@p true

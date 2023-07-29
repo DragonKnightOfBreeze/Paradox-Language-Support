@@ -13,25 +13,19 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
+private val NAME = ID.create<String, List<ParadoxValueSetValueInfo>>("paradox.valueSetValue.fast.index")
+private const val VERSION = 32 //1.1.3
+
 /**
  * 用于索引值集值。
  *
  * * 这个索引兼容需要内联的情况（此时使用懒加载的索引）。
  * * 这个索引不会保存同一文件中的重复数据。
  * * 这个索引不会记录数据在文件中的位置。
- * 
+ *
  * @see ParadoxValueSetValueInfo
  */
 class ParadoxValueSetValueFastIndex : ParadoxFileBasedIndex<List<ParadoxValueSetValueInfo>>() {
-    companion object {
-        @JvmField val NAME = ID.create<String, List<ParadoxValueSetValueInfo>>("paradox.valueSetValue.fast.index")
-        private const val VERSION = 32 //1.1.3
-        private val INSTANCE by lazy { EXTENSION_POINT_NAME.findExtensionOrFail(ParadoxValueSetValueFastIndex::class.java) }
-        
-        @JvmStatic
-        fun getInstance() = INSTANCE
-    }
-    
     override fun getName() = NAME
     
     override fun getVersion() = VERSION
@@ -67,7 +61,7 @@ class ParadoxValueSetValueFastIndex : ParadoxFileBasedIndex<List<ParadoxValueSet
         
         //排序 & 去重
         if(fileData.isEmpty()) return
-        fileData.mapValues { (_, v) -> 
+        fileData.mapValues { (_, v) ->
             v.distinctBy { it.name + "@" + it.readWriteAccess.ordinal }.sortedBy { it.name }
         }
     }

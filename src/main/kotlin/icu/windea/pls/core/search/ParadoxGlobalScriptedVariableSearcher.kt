@@ -20,12 +20,12 @@ class ParadoxGlobalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScr
         
         if(queryParameters.name == null) {
             //查找所有封装变量
-            ParadoxScriptedVariableNameIndex.KEY.processAllElementsByKeys(project, scope) { _, it ->
+            ParadoxScriptedVariableNameIndexKey.processAllElementsByKeys(project, scope) { _, it ->
                 consumer.process(it)
             }
         } else {
             //查找指定名字的封装变量
-            ParadoxScriptedVariableNameIndex.KEY.processAllElements(queryParameters.name, project, scope) {
+            ParadoxScriptedVariableNameIndexKey.processAllElements(queryParameters.name, project, scope) {
                 consumer.process(it)
             }
         }

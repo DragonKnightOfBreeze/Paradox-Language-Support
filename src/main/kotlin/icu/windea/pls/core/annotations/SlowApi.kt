@@ -6,4 +6,3 @@ package icu.windea.pls.core.annotations
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
 annotation class SlowApi
-

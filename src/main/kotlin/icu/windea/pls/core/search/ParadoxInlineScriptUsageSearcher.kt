@@ -8,6 +8,7 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.*
 
@@ -26,11 +27,10 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
         
         doProcessFiles(scope) p@{ file ->
             ProgressManager.checkCanceled()
-            //ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
-            val psiFile = file.toPsiFile(project) ?: return@p true //ensure file info is resolved here
+            ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
-            val fileData = ParadoxInlineScriptUsageIndex.getInstance().getFileData(file, project)
+            val fileData = findIndex<ParadoxInlineScriptUsageIndex>().getFileData(file, project)
             if(fileData.isEmpty()) return@p true
             val inlineScriptUsageInfos = fileData[expression]
             if(inlineScriptUsageInfos.isNullOrEmpty()) return@p true

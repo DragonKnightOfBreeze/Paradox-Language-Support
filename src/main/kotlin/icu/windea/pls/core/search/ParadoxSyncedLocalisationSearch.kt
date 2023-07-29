@@ -59,7 +59,7 @@ class ParadoxSyncedLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisati
             //保证返回结果的名字的唯一性
             val project = selector.project
             val scope = selector.scope
-            return ParadoxSyncedLocalisationNameIndex.KEY.processFirstElementByKeys(
+            return ParadoxSyncedLocalisationNameIndexKey.processFirstElementByKeys(
                 project, scope,
                 predicate = { element -> selector.select(element) },
                 keyPredicate = { key -> key.matchesKeyword(keyword) },

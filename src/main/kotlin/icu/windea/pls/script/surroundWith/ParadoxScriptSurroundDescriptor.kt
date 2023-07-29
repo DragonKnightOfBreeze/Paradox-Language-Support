@@ -10,15 +10,13 @@ import icu.windea.pls.script.psi.*
 //com.intellij.json.surroundWith.JsonSurrounderBase
 //com.intellij.json.surroundWith.JsonWithObjectLiteralSurrounder
 
+private val defaultSurrounders = arrayOf(
+	ParadoxScriptClausePropertySurrounder(),
+	ParadoxScriptClauseSurrounder(),
+	ParadoxScriptParameterConditionSurrounder()
+)
+
 class ParadoxScriptSurroundDescriptor : SurroundDescriptor {
-	companion object {
-		private val defaultSurrounders = arrayOf(
-			ParadoxScriptClausePropertySurrounder(),
-			ParadoxScriptClauseSurrounder(),
-			ParadoxScriptParameterConditionSurrounder()
-		)
-	}
-	
 	override fun getElementsToSurround(file: PsiFile, startOffset: Int, endOffset: Int): Array<PsiElement> {
 		return file.findElementsBetween(startOffset, endOffset, { it.parentOfType<ParadoxScriptBlockElement>() }) {
 			it

@@ -9,9 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptVariableRenameInputValidator : RenameInputValidator {
-	companion object {
-		private val elementPattern = psiElement(ParadoxScriptScriptedVariable::class.java)
-	}
+	private val elementPattern = psiElement(ParadoxScriptScriptedVariable::class.java)
 	
 	override fun isInputValid(newName: String, element: PsiElement, context: ProcessingContext): Boolean {
 		return PlsConstants.Patterns.scriptedVariableNameRegex.matches(newName)

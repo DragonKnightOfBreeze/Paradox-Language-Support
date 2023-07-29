@@ -5,11 +5,9 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 
+private val configKey = Key.create<CwtOnActionConfig>("cwt.config.injector.onAction.config")
+
 class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
-    companion object {
-        val configKey = Key.create<CwtOnActionConfig>("cwt.config.injector.onAction.config")
-    }
-    
     //预定义的on_action如果指定了事件类型，声明规则中需要在"<event>"规则后加上对应的规则
     
     override fun supports(configContext: CwtDeclarationConfigContext): Boolean {

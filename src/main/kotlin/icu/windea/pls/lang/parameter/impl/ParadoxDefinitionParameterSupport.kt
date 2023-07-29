@@ -12,6 +12,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.model.*
@@ -19,10 +20,6 @@ import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.psi.*
 
 open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
-    companion object {
-        @JvmField val modificationTrackerKey = Key.create<ModificationTracker>("paradox.definition.parameter.modificationTracker")
-    }
-    
     override fun isContext(element: ParadoxScriptDefinitionElement): Boolean {
         if(element !is ParadoxScriptProperty) return false
         val definitionInfo = element.definitionInfo ?: return false
@@ -192,7 +189,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     override fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker {
         val project = parameterElement.project
         val configGroup = getCwtConfig(project).get(parameterElement.gameType)
-        return configGroup.getOrPutUserData(modificationTrackerKey) {
+        return configGroup.getOrPutUserData(CwtConfigGroup.Keys.parameterModificationTracker) {
             val definitionTypes = configGroup.definitionTypesSupportParameters
             val builder = StringBuilder()
             var isFirst = true

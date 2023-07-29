@@ -20,13 +20,11 @@ import javax.swing.*
  */
 @Suppress("UnstableApiUsage")
 class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
-	companion object {
-		private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxScopeContextInfoHintsSettingsKey")
-	}
-	
 	data class Settings(
 		var showOnlyIfScopeIsChanged: Boolean = true
 	)
+	
+	private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxScopeContextInfoHintsSettingsKey")
 	
 	override val name: String get() = PlsBundle.message("script.hints.scopeContext")
 	override val description: String get() = PlsBundle.message("script.hints.scopeContext.description")

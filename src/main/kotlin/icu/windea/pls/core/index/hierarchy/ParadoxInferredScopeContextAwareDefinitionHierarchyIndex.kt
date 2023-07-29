@@ -12,6 +12,11 @@ import icu.windea.pls.lang.scope.impl.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
+private val NAME = ID.create<String, List<ParadoxInferredScopeContextAwareDefinitionHierarchyIndex.Info>>("paradox.inferredScopeContextAware.definitionHierarchy.index")
+private const val VERSION = 32 //1.1.3
+
+private val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect")
+
 class ParadoxInferredScopeContextAwareDefinitionHierarchyIndex : ParadoxDefinitionHierarchyIndex<ParadoxInferredScopeContextAwareDefinitionHierarchyIndex.Info>() {
     data class Info(
         val definitionName: String,
@@ -20,15 +25,6 @@ class ParadoxInferredScopeContextAwareDefinitionHierarchyIndex : ParadoxDefiniti
         override val gameType: ParadoxGameType
     ) : ParadoxExpressionInfo {
         @Volatile override var virtualFile: VirtualFile? = null
-    }
-    
-    companion object {
-        @JvmField val NAME = ID.create<String, List<Info>>("paradox.inferredScopeContextAware.definitionHierarchy.index")
-        private const val VERSION = 32 //1.1.3
-        private val INSTANCE by lazy { EXTENSION_POINT_NAME.findExtensionOrFail(ParadoxInferredScopeContextAwareDefinitionHierarchyIndex::class.java) }
-        
-        @JvmStatic
-        fun getInstance() = INSTANCE
     }
     
     override fun getName() = NAME

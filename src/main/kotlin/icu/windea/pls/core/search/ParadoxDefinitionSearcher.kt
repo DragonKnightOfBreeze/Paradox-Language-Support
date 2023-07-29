@@ -68,22 +68,22 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
     ) {
         if(typeExpression == null) {
             if(name == null) {
-                ParadoxDefinitionNameIndex.KEY.processAllElementsByKeys(project, scope) { _, it ->
+                ParadoxDefinitionNameIndexKey.processAllElementsByKeys(project, scope) { _, it ->
                     consumer.process(it)
                 }
             } else {
-                ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) {
+                ParadoxDefinitionNameIndexKey.processAllElements(name, project, scope) {
                     consumer.process(it)
                 }
             }
         } else {
             if(name == null) {
-                ParadoxDefinitionTypeIndex.KEY.processAllElements(typeExpression.type, project, scope) p@{
+                ParadoxDefinitionTypeIndexKey.processAllElements(typeExpression.type, project, scope) p@{
                     if(typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(it, typeExpression.subtypes)) return@p true
                     consumer.process(it)
                 }
             } else {
-                ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) p@{
+                ParadoxDefinitionNameIndexKey.processAllElements(name, project, scope) p@{
                     if(!matchesType(it, typeExpression.type)) return@p true
                     if(typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(it, typeExpression.subtypes)) return@p true
                     consumer.process(it)

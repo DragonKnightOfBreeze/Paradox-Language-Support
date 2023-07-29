@@ -46,7 +46,7 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
         if(stub.gameType == null) return
         when(stub.category) {
             ParadoxLocalisationCategory.Localisation -> {
-                //sink.occurrence(ParadoxLocalisationNameIndex.KEY, stub.name)
+                //sink.occurrence(ParadoxLocalisationNameIndexKey, stub.name)
                 ParadoxLocalisationConstraint.values.forEachFast { constraint -> 
                     if(constraint.predicate(stub.name)) {
                         val name = if(constraint.ignoreCase) stub.name.lowercase() else stub.name
@@ -55,7 +55,7 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
                 }
             }
             ParadoxLocalisationCategory.SyncedLocalisation -> {
-                sink.occurrence(ParadoxSyncedLocalisationNameIndex.KEY, stub.name)
+                sink.occurrence(ParadoxSyncedLocalisationNameIndexKey, stub.name)
             }
         }
     }

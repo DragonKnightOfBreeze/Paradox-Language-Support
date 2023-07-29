@@ -8,13 +8,10 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.expression.checker.*
 import icu.windea.pls.script.psi.*
 
+private const val TRIGGER_KEY = "trigger"
+private val CONTEXT_NAMES = arrayOf("complex_trigger_modifier", "export_trigger_value_to_variable")
+
 class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpressionChecker {
-    companion object {
-        private const val TRIGGER_KEY = "trigger"
-        private val CONTEXT_NAMES = arrayOf("complex_trigger_modifier", "export_trigger_value_to_variable")
-        
-    }
-    
     override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         //complex_trigger_modifier = {...}中指定的应当是一个simple_trigger（如果不带参数）或者complex_trigger（如果带参数）
         if(element !is ParadoxScriptString && element !is ParadoxScriptScriptedVariableReference) return

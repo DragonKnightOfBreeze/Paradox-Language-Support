@@ -11,59 +11,57 @@ import icu.windea.pls.core.settings.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptedVariableReferenceFoldingBuilder: FoldingBuilderEx() {
-	companion object {
-		const val GROUP_NAME = "scripted_variable_references"
-		val FOLDING_GROUP = FoldingGroup.newGroup(GROUP_NAME)
-	}
-	
-	fun getGroupName() : String {
-		return GROUP_NAME
-	}
-	
-	fun getFoldingGroup(): FoldingGroup? {
-		return FOLDING_GROUP
-	}
-	
-	override fun getPlaceholderText(node: ASTNode): String {
-		return ""
-	}
-	
-	override fun isCollapsedByDefault(node: ASTNode): Boolean {
-		return service<ParadoxFoldingSettings>().collapseScriptedVariableReferences
-	}
-	
-	override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-		if(quick) return FoldingDescriptor.EMPTY_ARRAY
-		if(!root.language.isParadoxLanguage()) return FoldingDescriptor.EMPTY_ARRAY
-		val foldingGroup = getFoldingGroup()
-		val allDescriptors = mutableListOf<FoldingDescriptor>()
-		root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
-			override fun visitElement(element: PsiElement) {
-				if(element is ParadoxScriptedVariableReference) visitScriptedVariableReference(element)
-				//optimize performance
-				when(element) {
-					is ParadoxScriptPropertyKey -> return
-					is ParadoxScriptBlock -> pass()
-					is ParadoxScriptValue -> return
-					is ParadoxScriptParameterConditionExpression -> return
-					is ParadoxLocalisationLocale -> return
-					is ParadoxLocalisationIcon -> return
-					is ParadoxLocalisationCommand -> return
-				}
-				super.visitElement(element)
-			}
-			
-			private fun visitScriptedVariableReference(element: ParadoxScriptedVariableReference) {
-				val referenceValue = element.referenceValue ?: return
-				val resolvedValue = when{
-					element is ParadoxScriptScriptedVariableReference -> referenceValue.value
-					else -> referenceValue.value.unquote()
-				}
-				val descriptor = FoldingDescriptor(element.node, element.textRange, foldingGroup, resolvedValue)
-				allDescriptors.add(descriptor)
-			}
-		})
-		return allDescriptors.toTypedArray()
-	}
+private const val GROUP_NAME = "scripted_variable_references"
+private val FOLDING_GROUP = FoldingGroup.newGroup(GROUP_NAME)
+
+class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
+    fun getGroupName(): String {
+        return GROUP_NAME
+    }
+    
+    fun getFoldingGroup(): FoldingGroup? {
+        return FOLDING_GROUP
+    }
+    
+    override fun getPlaceholderText(node: ASTNode): String {
+        return ""
+    }
+    
+    override fun isCollapsedByDefault(node: ASTNode): Boolean {
+        return service<ParadoxFoldingSettings>().collapseScriptedVariableReferences
+    }
+    
+    override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
+        if(quick) return FoldingDescriptor.EMPTY_ARRAY
+        if(!root.language.isParadoxLanguage()) return FoldingDescriptor.EMPTY_ARRAY
+        val foldingGroup = getFoldingGroup()
+        val allDescriptors = mutableListOf<FoldingDescriptor>()
+        root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+            override fun visitElement(element: PsiElement) {
+                if(element is ParadoxScriptedVariableReference) visitScriptedVariableReference(element)
+                //optimize performance
+                when(element) {
+                    is ParadoxScriptPropertyKey -> return
+                    is ParadoxScriptBlock -> pass()
+                    is ParadoxScriptValue -> return
+                    is ParadoxScriptParameterConditionExpression -> return
+                    is ParadoxLocalisationLocale -> return
+                    is ParadoxLocalisationIcon -> return
+                    is ParadoxLocalisationCommand -> return
+                }
+                super.visitElement(element)
+            }
+            
+            private fun visitScriptedVariableReference(element: ParadoxScriptedVariableReference) {
+                val referenceValue = element.referenceValue ?: return
+                val resolvedValue = when {
+                    element is ParadoxScriptScriptedVariableReference -> referenceValue.value
+                    else -> referenceValue.value.unquote()
+                }
+                val descriptor = FoldingDescriptor(element.node, element.textRange, foldingGroup, resolvedValue)
+                allDescriptors.add(descriptor)
+            }
+        })
+        return allDescriptors.toTypedArray()
+    }
 }

@@ -95,4 +95,6 @@ interface CwtConfigGroup: UserDataHolder {
 	val definitionTypesSkipCheckSystemLink: Set<String>
 	//支持参数的定义类型
 	val definitionTypesSupportParameters: Set<String>
+	
+	object Keys
 }

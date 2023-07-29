@@ -48,8 +48,8 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
         //if(stub is ParadoxScriptFileStub) {
         //    //Note that definition name can be empty (aka anonymous)
         //    if(stub.gameType == null) return
-        //    sink.occurrence(ParadoxDefinitionNameIndex.KEY, stub.name)
-        //    sink.occurrence(ParadoxDefinitionTypeIndex.KEY, stub.type)
+        //    sink.occurrence(ParadoxDefinitionNameIndexKey, stub.name)
+        //    sink.occurrence(ParadoxDefinitionTypeIndexKey, stub.type)
         //}
         //super.indexStub(stub, sink)
     }

@@ -31,7 +31,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
             ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
-            val fileData = ParadoxComplexEnumValueIndex.getInstance().getFileData(file, project)
+            val fileData = findIndex<ParadoxComplexEnumValueIndex>().getFileData(file, project)
             if(fileData.isEmpty()) return@p true
             val complexEnumValueInfoList = fileData[enumName]
             if(complexEnumValueInfoList.isNullOrEmpty()) return@p true

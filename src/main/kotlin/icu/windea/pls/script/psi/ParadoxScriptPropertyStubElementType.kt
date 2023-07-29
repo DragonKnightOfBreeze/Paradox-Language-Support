@@ -43,8 +43,8 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
         //Note that definition name can be empty (aka anonymous)
         if(stub.gameType == null) return
-        sink.occurrence(ParadoxDefinitionNameIndex.KEY, stub.name)
-        sink.occurrence(ParadoxDefinitionTypeIndex.KEY, stub.type)
+        sink.occurrence(ParadoxDefinitionNameIndexKey, stub.name)
+        sink.occurrence(ParadoxDefinitionTypeIndexKey, stub.type)
     }
     
     override fun serialize(stub: ParadoxScriptPropertyStub, dataStream: StubOutputStream) {

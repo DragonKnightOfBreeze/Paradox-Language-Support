@@ -8,17 +8,13 @@ import com.intellij.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptParserDefinition : ParserDefinition {
-    companion object {
-        val FILE = ParadoxScriptStubElementTypes.FILE
-    }
-    
     override fun getWhitespaceTokens() = ParadoxScriptTokenSets.WHITE_SPACES
     
     override fun getCommentTokens() = ParadoxScriptTokenSets.COMMENTS
     
     override fun getStringLiteralElements() = ParadoxScriptTokenSets.STRING_LITERALS
     
-    override fun getFileNodeType() = FILE
+    override fun getFileNodeType() = ParadoxScriptFile.FILE
     
     override fun createFile(viewProvider: FileViewProvider): ParadoxScriptFile {
         return ParadoxScriptFile(viewProvider)

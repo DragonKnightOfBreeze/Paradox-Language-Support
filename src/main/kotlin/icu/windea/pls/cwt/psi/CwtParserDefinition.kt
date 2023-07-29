@@ -10,17 +10,13 @@ import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtParserDefinition : ParserDefinition {
-	companion object {
-		val FILE = IFileElementType("CWT_FILE", CwtLanguage)
-	}
-	
 	override fun getWhitespaceTokens() = CwtTokenSets.WHITE_SPACES
 	
 	override fun getCommentTokens() = CwtTokenSets.COMMENTS
 	
 	override fun getStringLiteralElements() = CwtTokenSets.STRING_LITERALS
 	
-	override fun getFileNodeType() = FILE
+	override fun getFileNodeType() = CwtFile.FILE
 	
 	override fun createFile(viewProvider: FileViewProvider) = CwtFile(viewProvider)
 	

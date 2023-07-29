@@ -13,6 +13,10 @@ import javax.swing.*
 class ParadoxScriptFile(
 	viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxScriptDefinitionElement {
+	companion object {
+		val FILE = ParadoxScriptStubElementTypes.FILE
+	}
+	
 	override val block get() = findChild<ParadoxScriptRootBlock>()
 	
 	override fun getIcon(flags: Int): Icon? {

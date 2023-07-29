@@ -13,13 +13,11 @@ import icu.windea.pls.script.psi.*
 
 //icu.windea.pls.lang.config.impl.ParadoxSwitchOverriddenConfigProvider
 
+private const val CASE_KEY = "scalar"
+private val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
+private val CONTEXT_KEYS = arrayOf("switch", "inverted_switch")
+
 class ParadoxSwitchOverriddenConfigProvider : ParadoxOverriddenConfigProvider {
-    companion object {
-        private const val CASE_KEY = "scalar"
-        private val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
-        private val CONTEXT_KEYS = arrayOf("switch", "inverted_switch")
-    }
-    
     @Suppress("UNCHECKED_CAST")
     override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
         //重载switch = {...}和inverted_switch = {...}中对应的CWT规则为scalar的属性的键对应的CWT规则

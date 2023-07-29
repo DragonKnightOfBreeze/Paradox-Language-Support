@@ -16,14 +16,12 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
+private const val ID = "Ck2.EventTree"
+
+private val ITEM_PROPERTY_KEYS = arrayOf("picture")
+
 @WithGameType(ParadoxGameType.Ck2)
 class Ck2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Ck2) {
-    companion object {
-        const val ID = "Ck2.EventTree"
-        
-        val ITEM_PROPERTY_KEYS = arrayOf("picture")
-    }
-    
     override fun getID() = ID
     
     @Suppress("DialogTitleCapitalization")

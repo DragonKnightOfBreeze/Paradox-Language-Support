@@ -16,13 +16,12 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
+private const val ID = "Vic2.EventTree"
+
+private val ITEM_PROPERTY_KEYS = arrayOf("picture")
+
 @WithGameType(ParadoxGameType.Vic2)
 class Vic2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Vic2) {
-    companion object {
-        const val ID = "Vic2.EventTree"
-        
-        val ITEM_PROPERTY_KEYS = arrayOf("picture")
-    }
     
     override fun getID() = ID
     

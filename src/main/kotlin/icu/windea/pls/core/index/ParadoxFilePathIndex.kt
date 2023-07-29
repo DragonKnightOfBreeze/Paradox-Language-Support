@@ -9,21 +9,19 @@ import icu.windea.pls.lang.model.*
 import java.io.*
 import java.util.*
 
+private val NAME = ID.create<String, ParadoxFilePathInfo>("paradox.file.path.index")
+private const val VERSION = 32 //1.1.3
+
+private val EXCLUDED_DIRECTORIES = listOf(
+    "_CommonRedist", "crash_reporter", "curated_save_games",
+    "pdx_browser", "pdx_launcher", "pdx_online_assets", "previewer_assets",
+    "jomini",
+)
+
 /**
  * 用于索引文件的路径信息。
  */
 class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo>() {
-    companion object {
-        @JvmField val NAME = ID.create<String, ParadoxFilePathInfo>("paradox.file.path.index")
-        private const val VERSION = 32 //1.1.3
-        
-        val EXCLUDED_DIRECTORIES = listOf(
-            "_CommonRedist", "crash_reporter", "curated_save_games",
-            "pdx_browser", "pdx_launcher", "pdx_online_assets", "previewer_assets",
-            "jomini",
-        )
-    }
-    
     override fun getName() = NAME
     
     override fun getVersion() = VERSION

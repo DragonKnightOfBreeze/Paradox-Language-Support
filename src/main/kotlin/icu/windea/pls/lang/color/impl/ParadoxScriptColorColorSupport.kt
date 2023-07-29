@@ -13,10 +13,6 @@ import icu.windea.pls.script.psi.*
 import java.awt.*
 
 class ParadoxScriptColorColorSupport : ParadoxColorSupport {
-    companion object {
-        val INSTANCE = ParadoxScriptColorColorSupport()
-    }
-    
     override fun getColor(element: PsiElement): Color? {
         if(element !is ParadoxScriptColor) return null
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColor) {

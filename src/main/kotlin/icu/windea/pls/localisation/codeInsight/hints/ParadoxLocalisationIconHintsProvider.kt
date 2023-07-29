@@ -14,15 +14,13 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import javax.swing.*
 
+private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationIconHintsSettingsKey")
+
 /**
  * 本地化图标的内嵌提示（显示选用的图标，如果大小合适且存在，只是显示图标而已）。
  */
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Settings>() {
-	companion object {
-		private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationIconHintsSettingsKey")
-	}
-	
 	data class Settings(
 		var iconHeightLimit: Int = 32
 	)

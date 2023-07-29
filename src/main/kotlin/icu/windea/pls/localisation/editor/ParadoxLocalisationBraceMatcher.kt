@@ -6,16 +6,14 @@ import com.intellij.psi.tree.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 class ParadoxLocalisationBraceMatcher : PairedBraceMatcher {
-	companion object{
-		private val bracePairs = arrayOf(
-			BracePair(PROPERTY_REFERENCE_START, PROPERTY_REFERENCE_END,false),
-			BracePair(ICON_START, ICON_END,false),
-			BracePair(COMMAND_START, COMMAND_END,false),
-			BracePair(COLORFUL_TEXT_START, COLORFUL_TEXT_END,false)
-		)
-	}
-
-	override fun getPairs(): Array<BracePair> = bracePairs
+	private val _bracePairs = arrayOf(
+		BracePair(PROPERTY_REFERENCE_START, PROPERTY_REFERENCE_END,false),
+		BracePair(ICON_START, ICON_END,false),
+		BracePair(COMMAND_START, COMMAND_END,false),
+		BracePair(COLORFUL_TEXT_START, COLORFUL_TEXT_END,false)
+	)
+	
+	override fun getPairs(): Array<BracePair> = _bracePairs
 
 	override fun getCodeConstructStart(file: PsiFile?, openingBraceOffset: Int): Int = openingBraceOffset
 

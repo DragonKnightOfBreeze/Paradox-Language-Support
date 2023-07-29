@@ -11,6 +11,9 @@ import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
+private val NAME = ID.create<String, List<ParadoxEventInOnActionDefinitionHierarchyIndex.Info>>("paradox.eventInOnAction.definitionHierarchy.index")
+private const val VERSION = 32 //1.1.3
+
 class ParadoxEventInOnActionDefinitionHierarchyIndex : ParadoxDefinitionHierarchyIndex<ParadoxEventInOnActionDefinitionHierarchyIndex.Info>() {
     data class Info(
         val eventName: String,
@@ -20,15 +23,6 @@ class ParadoxEventInOnActionDefinitionHierarchyIndex : ParadoxDefinitionHierarch
         override val gameType: ParadoxGameType
     ) : ParadoxExpressionInfo {
         @Volatile override var virtualFile: VirtualFile? = null
-    }
-    
-    companion object {
-        @JvmField val NAME = ID.create<String, List<Info>>("paradox.eventInOnAction.definitionHierarchy.index")
-        private const val VERSION = 32 //1.1.3
-        private val INSTANCE by lazy { EXTENSION_POINT_NAME.findExtensionOrFail(ParadoxEventInOnActionDefinitionHierarchyIndex::class.java) }
-        
-        @JvmStatic
-        fun getInstance() = INSTANCE
     }
     
     override fun getName() = NAME
