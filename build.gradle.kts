@@ -152,7 +152,7 @@ tasks {
 		exclude("lib/jackson-dataformat-csv-*.jar") 
 	}
 	patchPluginXml {
-		sinceBuild.set("231")
+		sinceBuild.set("232")
 		untilBuild.set("")
 		val descriptionText = projectDir.resolve("DESCRIPTION.md").readText()
 		pluginDescription.set(descriptionText)

@@ -123,7 +123,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
     
     override fun navigateToElement(descriptor: Navigatable) {
         if(descriptor is PsiElement) {
-            NavigationUtil.activateFileWithPsiElement(descriptor, true)
+            activateFileWithPsiElement(descriptor, true)
         } else {
             descriptor.navigate(true)
         }

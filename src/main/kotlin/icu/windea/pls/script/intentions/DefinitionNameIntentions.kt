@@ -74,7 +74,7 @@ class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
 		val selector = definitionSelector(project, definition).contextSensitive()
 		val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
 		if(result.isEmpty()) return
-		NavigationUtil.getPsiElementPopup(result.toTypedArray(), PlsBundle.message("script.intention.definitionName.gotoImplementations.title", definitionInfo.name))
+		getPsiElementPopup(result.toTypedArray(), PlsBundle.message("script.intention.definitionName.gotoImplementations.title", definitionInfo.name))
 			.showInBestPositionFor(editor)
 	}
 }
@@ -91,7 +91,7 @@ class DefinitionNameGotoTypeDeclarationIntention : DefinitionNameIntention() {
 		definitionInfo.typeConfig.pointer.element?.let { result.add(it) }
 		if(result.isEmpty()) return
 		definitionInfo.subtypeConfigs.forEach { config -> config.pointer.element?.let { result.add(it) } }
-		NavigationUtil.getPsiElementPopup(result.toTypedArray(),  PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration.title", definitionInfo.name))
+		getPsiElementPopup(result.toTypedArray(),  PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration.title", definitionInfo.name))
 			.showInBestPositionFor(editor)
 	}
 }
