@@ -23,31 +23,6 @@ inline fun <T, V> DataOutput.writeOrWriteFrom(value: T, from: T?, selector: (T) 
     writeAction(selector(value))
 }
 
-//@Suppress("NOTHING_TO_INLINE")
-//inline fun DataInput.readUTFWithCache(cache: MutableList<String>) : String {
-//    val flag = readBoolean()
-//    if(flag) {
-//        val cacheIndex = readIntFast()
-//        return cache[cacheIndex]
-//    }
-//    val result = readUTFFast()
-//    cache.add(result)
-//    return result
-//}
-//
-//@Suppress("NOTHING_TO_INLINE")
-//inline fun DataOutput.writeUTFWithCache(value: String, cache: MutableList<String>){
-//    val index = cache.indexOf(value)
-//    if(index != -1) {
-//        writeBoolean(true)
-//        writeIntFast(index)
-//    } else {
-//        writeBoolean(false)
-//        writeUTFFast(value)
-//        cache.add(value)
-//    }
-//}
-
 @Suppress("NOTHING_TO_INLINE")
 inline fun DataInput.readIntFast(): Int = DataInputOutputUtil.readINT(this)
 
@@ -79,15 +54,6 @@ val StubBasedPsiElementBase<*>.containingFileStub: PsiFileStub<*>?
     get() {
         val stub = this.greenStub ?: return null
         return stub.containingFileStub
-    }
-
-val StubElement<*>.containingFileStub: PsiFileStub<*>
-    get() {
-        var current = this
-        while(current !is PsiFileStub<*>) {
-            current = current.parentStub
-        }
-        return current
     }
 
 inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElements(

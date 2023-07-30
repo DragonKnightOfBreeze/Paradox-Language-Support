@@ -8,7 +8,6 @@ import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.model.*
-import icu.windea.pls.lang.scope.impl.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
@@ -48,16 +47,28 @@ class ParadoxInferredScopeContextAwareDefinitionHierarchyIndex : ParadoxDefiniti
         list.add(info)
     }
     
+    override fun afterIndexData(fileData: MutableMap<String, List<Info>>) {
+        //排序
+        fileData.mapValues { (_,v) ->
+            v.sortedBy { it.typeExpression }
+        }
+    }
+    
+    //尝试减少实际需要索引的数据量以优化性能
+    
     override fun writeData(storage: DataOutput, value: List<Info>) {
         val size = value.size
         storage.writeIntFast(size)
         if(size == 0) return
         val firstInfo = value.first()
         storage.writeByte(firstInfo.gameType.toByte())
+        var previousInfo: Info? = null
         value.forEachFast { info ->
             storage.writeUTFFast(info.definitionName)
+            storage.writeOrWriteFrom(info, previousInfo, { it.typeExpression }, { storage.writeUTFFast(it) })
             storage.writeUTFFast(info.typeExpression)
             storage.writeIntFast(info.elementOffset)
+            previousInfo = info
         }
     }
     
@@ -65,13 +76,15 @@ class ParadoxInferredScopeContextAwareDefinitionHierarchyIndex : ParadoxDefiniti
         val size = storage.readIntFast()
         if(size == 0) return emptyList()
         val gameType = storage.readByte().toGameType()
+        var previousInfo: Info? = null
         val result = mutableListOf<Info>()
         repeat(size) {
             val definitionName = storage.readUTFFast()
-            val typeExpression = storage.readUTFFast()
+            val typeExpression = storage.readOrReadFrom(previousInfo, { it.typeExpression }, { storage.readUTFFast() })
             val elementOffset = storage.readIntFast()
             val info = Info(definitionName, typeExpression, elementOffset, gameType)
             result += info
+            previousInfo = info
         }
         return result
     }

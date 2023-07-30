@@ -269,7 +269,7 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun doOptimizeContextConfigs(element: PsiElement, configs: List<CwtMemberConfig<*>>, expression: ParadoxDataExpression?, matchOptions: Int): List<CwtMemberConfig<*>> {
+    private fun doOptimizeContextConfigs(element: PsiElement, configs: List<CwtMemberConfig<*>>, expression: ParadoxDataExpression?, matchOptions: Int): List<CwtMemberConfig<*>> {
         if(configs.isEmpty()) return emptyList()
         if(expression == null) return configs
         
