@@ -11,12 +11,12 @@ plugins {
 }
 
 group = "icu.windea"
-version = "1.1.4"
+version = "1.1.5"
 
 intellij {
 	pluginName.set("Paradox Language Support")
 	type.set("IU")
-	version.set("2023.1")
+	version.set("2023.2")
 	plugins.add("com.intellij.platform.images")
 	
 	//optional
@@ -24,13 +24,12 @@ intellij {
 	//optional
 	plugins.add("uml")
 	//optional
-	plugins.add("cn.yiiguxing.plugin.translate:3.5.0") //https://github.com/YiiGuxing/TranslationPlugin
+	plugins.add("cn.yiiguxing.plugin.translate:3.5.1") //https://github.com/YiiGuxing/TranslationPlugin
 	
 	//reference
 	plugins.add("properties")
 	plugins.add("java")
 	plugins.add("org.jetbrains.kotlin")
-	plugins.add("org.jetbrains.plugins.vue")
 }
 
 grammarKit {
@@ -150,7 +149,7 @@ tasks {
 	}
 	buildPlugin {
 		//排除特定文件
-		exclude("jackson-dataformat-csv-*.jar") 
+		exclude("lib/jackson-dataformat-csv-*.jar") 
 	}
 	patchPluginXml {
 		sinceBuild.set("231")

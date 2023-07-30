@@ -9,7 +9,6 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
@@ -80,22 +79,25 @@ object ParadoxConfigMatcher {
             
             private fun doGetCatching(): Boolean {
                 //it's necessary to prevent outputting error logs and throwing certain exceptions here
+                
+                //java.lang.Throwable: Indexing process should not rely on non-indexed file data.
+                //java.lang.AssertionError: Reentrant indexing
+                //com.intellij.openapi.project.IndexNotReadyException
+                
                 var error: Throwable? = null
-                val loggerLevel = Logger.getGlobal().level
+                val globalLogger = Logger.getLogger("") //DO NOT use Logger.getGlobalLogger(), it's incorrect
+                val loggerLevel = globalLogger.level
                 try {
-                    Logger.getGlobal().level = Level.OFF
+                    globalLogger.level = Level.OFF
                     @Suppress("UNCHECKED_CAST")
                     return (value as () -> Boolean)()
                 } catch(e: Throwable) {
-                    //java.lang.Throwable: Indexing process should not rely on non-indexed file data.
-                    //java.lang.AssertionError: Reentrant indexing
-                    //com.intellij.openapi.project.IndexNotReadyException
                     
                     if(e is ProcessCanceledException) throw e
                     error = e
                     return true
                 } finally {
-                    Logger.getGlobal().level = loggerLevel
+                    globalLogger.level = loggerLevel
                     if(error != null) thisLogger().info(error)
                 }
             }
@@ -119,41 +121,6 @@ object ParadoxConfigMatcher {
     }
     
     data class ResultValue<out T>(val value: T, val result: Result)
-    
-    inline fun <T : Any> find(collection: Collection<T>?, options: Int = Options.Default, matcher: (T) -> Result?): T? {
-        if(collection.isNullOrEmpty()) return null
-        val fast = BitUtil.isSet(options, Options.Fast)
-        var tempResults: MutableList<ResultValue<T>>? = null
-        for(v in collection) {
-            val r = matcher(v)
-            if(r == null || r == Result.NotMatch) continue
-            if(r == Result.ExactMatch && fast) return v
-            if(tempResults == null) tempResults = mutableListOf()
-            tempResults.add(ResultValue(v, r))
-        }
-        if(tempResults.isNullOrEmpty()) return null
-        if(tempResults.size == 1 && fast) return tempResults[0].value
-        tempResults.forEachFast { (v, r) -> if(r.get(options)) return v }
-        return null
-    }
-    
-    inline fun <T : Any> findAll(collection: Collection<T>?, options: Int = Options.Default, matcher: (T) -> Result?): List<T> {
-        if(collection.isNullOrEmpty()) return emptyList()
-        val fast = BitUtil.isSet(options, Options.Fast)
-        var tempResults: MutableList<ResultValue<T>>? = null
-        for(v in collection) {
-            val r = matcher(v)
-            if(r == null || r == Result.NotMatch) continue
-            if(r == Result.ExactMatch && fast) return v.toSingletonList()
-            if(tempResults == null) tempResults = mutableListOf()
-            tempResults.add(ResultValue(v, r))
-        }
-        if(tempResults.isNullOrEmpty()) return emptyList()
-        if(tempResults.size == 1 && fast) return tempResults[0].value.toSingletonList()
-        val result = mutableListOf<T>()
-        tempResults.forEachFast { (v, r) -> if(r.get(options)) result.add(v) }
-        return result
-    }
     
     //兼容scriptedVariableReference inlineMath parameter
     
