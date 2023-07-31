@@ -46,28 +46,12 @@ class ParadoxModifierElement(
         return name
     }
     
-    override fun getTextRange(): TextRange? {
-        return null //return null to avoid incorrect highlight at file start
-    }
-    
-    override fun getNameIdentifier(): PsiElement {
-        return this
-    }
-    
     override fun getPresentation(): ItemPresentation {
         return ParadoxModifierElementPresentation(this)
     }
     
     override fun getProject(): Project {
         return project
-    }
-    
-    override fun navigate(requestFocus: Boolean) {
-        //click to show usages
-    }
-    
-    override fun canNavigate(): Boolean {
-        return false // false -> click to show usages
     }
     
     override fun equals(other: Any?): Boolean {

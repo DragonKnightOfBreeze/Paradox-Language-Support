@@ -181,11 +181,12 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
     var parameterNode: ParadoxScriptValueArgumentExpressionNode? = null
     var index: Int
     var tokenIndex = -1
+    var startIndex = 0
     val textLength = expression.length
     while(tokenIndex < textLength) {
         index = tokenIndex + 1
         tokenIndex = expression.indexOf('|', index)
-        if(tokenIndex != -1 && tokenIndex.inParameter(parameterRanges)) continue //这里需要跳过参数文本
+        if(tokenIndex != -1 && ParadoxConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
         val pipeNode = if(tokenIndex != -1) {
             val pipeRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
             ParadoxMarkerExpressionNode("|", pipeRange)
@@ -197,8 +198,9 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
         }
         if(index == tokenIndex && tokenIndex == textLength) break
         //resolve node
-        val nodeText = expression.substring(index, tokenIndex)
-        val nodeRange = TextRange.create(index + offset, tokenIndex + offset)
+        val nodeText = expression.substring(startIndex, tokenIndex)
+        val nodeRange = TextRange.create(startIndex + offset, tokenIndex + offset)
+        startIndex = tokenIndex + 1
         val node = when {
             n == 0 -> {
                 ParadoxScriptValueExpressionNode.resolve(nodeText, nodeRange, config, configGroup)
@@ -218,8 +220,4 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
         n++
     }
     return ParadoxScriptValueExpressionImpl(expression, range, nodes, configGroup, config)
-}
-
-private fun Int.inParameter(parameterRanges: List<TextRange>): Boolean {
-    return parameterRanges.any { it.contains(this) }
 }

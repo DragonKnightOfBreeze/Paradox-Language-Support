@@ -441,6 +441,10 @@ object ParadoxConfigHandler {
         if(indices.size <= 1) return emptyList()
         return indices.windowed(2, 2, false) { TextRange.create(it[0], it[1] + 1) }
     }
+    
+    fun inParameterRanges(parameterRanges: List<TextRange>, index: Int): Boolean {
+        return parameterRanges.any { index in it }
+    }
     //endregion
     
     //region Annotate Methods
@@ -1452,9 +1456,7 @@ object ParadoxConfigHandler {
         if(constKey != null) return constKey
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
         val expression = ParadoxDataExpression.resolve(key, quoted, true)
-        return keys.find { key ->
-            ParadoxConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(key), null, configGroup, matchOptions).get(matchOptions)
-        }
+        return keys.find { ParadoxConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchOptions).get(matchOptions) }
     }
     
     fun getAliasSubNames(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = Options.Default): List<String> {
@@ -1462,9 +1464,7 @@ object ParadoxConfigHandler {
         if(constKey != null) return listOf(constKey)
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptyList()
         val expression = ParadoxDataExpression.resolve(key, quoted, true)
-        return keys.filter { key ->
-            ParadoxConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(key), null, configGroup, matchOptions).get(matchOptions)
-        }
+        return keys.filter { ParadoxConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchOptions).get(matchOptions) }
     }
     
     fun requireNotExactMatch(configExpression: CwtDataExpression): Boolean {

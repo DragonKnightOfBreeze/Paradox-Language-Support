@@ -196,13 +196,14 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
     var isLast = false
     var index: Int
     var tokenIndex = -1
+    var startIndex = 0
     val textLength = expression.length
     while(tokenIndex < textLength) {
         index = tokenIndex + 1
         tokenIndex = expression.indexOf('.', index)
-        if(tokenIndex != -1 && tokenIndex.inParameter(parameterRanges)) continue //这里需要跳过参数文本
-        if(tokenIndex != -1 && expression.indexOf('@', index).let { it != -1 && it < tokenIndex && !it.inParameter(parameterRanges) }) tokenIndex = -1
-        if(tokenIndex != -1 && expression.indexOf('|', index).let { it != -1 && it < tokenIndex && !it.inParameter(parameterRanges) }) tokenIndex = -1
+        if(tokenIndex != -1 && ParadoxConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
+        if(tokenIndex != -1 && expression.indexOf('@', index).let { it != -1 && it < tokenIndex && !ParadoxConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
+        if(tokenIndex != -1 && expression.indexOf('|', index).let { it != -1 && it < tokenIndex && !ParadoxConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
         val dotNode = if(tokenIndex != -1) {
             val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
             ParadoxOperatorExpressionNode(".", dotRange)
@@ -215,24 +216,21 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
         }
         if(index == tokenIndex && tokenIndex == textLength) break
         //resolve node
-        val nodeText = expression.substring(index, tokenIndex)
-        val nodeTextRange = TextRange.create(index + offset, tokenIndex + offset)
+        val nodeText = expression.substring(startIndex, tokenIndex)
+        val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
+        startIndex = tokenIndex + 1
         val node = when {
             isLast -> ParadoxDataExpressionNode.resolve(nodeText, nodeTextRange, configGroup.linksAsVariable)
             else -> ParadoxScopeFieldExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
         }
         //handle mismatch situation
-        if(!canBeMismatched && index == 0 && node is ParadoxErrorExpressionNode) {
+        if(!canBeMismatched && startIndex == 0 && node is ParadoxErrorExpressionNode) {
             return null
         }
         nodes.add(node)
         if(dotNode != null) nodes.add(dotNode)
     }
     return ParadoxVariableFieldExpressionImpl(expression, range, nodes, configGroup)
-}
-
-private fun Int.inParameter(parameterRanges: List<TextRange>): Boolean {
-    return parameterRanges.any { it.contains(this) }
 }
 
 private fun isNumber(text: String): Boolean {

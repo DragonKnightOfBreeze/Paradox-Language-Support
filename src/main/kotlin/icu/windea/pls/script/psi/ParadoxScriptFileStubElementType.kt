@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.impl.*
 
 object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
     private const val ID = "paradoxScript.file"
-    private const val VERSION = 33 //1.1.5
+    private const val VERSION = 32 //1.1.5
     
     override fun getExternalId() = ID
     

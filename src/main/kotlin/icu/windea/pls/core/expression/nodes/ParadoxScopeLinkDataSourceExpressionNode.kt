@@ -44,9 +44,5 @@ class ParadoxScopeLinkDataSourceExpressionNode(
             }
             return ParadoxScopeLinkDataSourceExpressionNode(text, textRange, linkConfigs, nodes)
         }
-        
-        //private fun Int.inParameter(parameterRanges: List<TextRange>): Boolean {
-        //    return parameterRanges.any { it.contains(this) }
-        //}
     }
 }

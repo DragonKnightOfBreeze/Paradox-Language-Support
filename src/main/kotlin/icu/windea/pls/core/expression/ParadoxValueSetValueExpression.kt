@@ -146,7 +146,7 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
     while(tokenIndex < textLength) {
         index = tokenIndex + 1
         tokenIndex = expression.indexOf('@', index)
-        if(tokenIndex != -1 && tokenIndex.inParameter(parameterRanges)) continue //这里需要跳过参数文本
+        if(tokenIndex != -1 && ParadoxConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
         if(tokenIndex == -1) {
             tokenIndex = textLength
         }
@@ -173,6 +173,3 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
     return ParadoxValueSetValueExpressionImpl(expression, range, nodes, configGroup, configs)
 }
 
-private fun Int.inParameter(parameterRanges: List<TextRange>): Boolean {
-    return parameterRanges.any { it.contains(this) }
-}
