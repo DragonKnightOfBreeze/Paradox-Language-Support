@@ -19,8 +19,9 @@ class ParadoxGameWithDependenciesSearchScope(
     }
     
     override fun contains(file: VirtualFile): Boolean {
-        if(!ParadoxFileHandler.canReference(contextFile, file)) return false //判断上下文文件能否引用另一个文件中的内容
-        return (gameDirectory != null && VfsUtilCore.isAncestor(gameDirectory, file, false))
+        val contextFile0 = file.findTopHostFileOrThis()
+        if(!ParadoxFileHandler.canReference(contextFile, contextFile0)) return false //判断上下文文件能否引用另一个文件中的内容
+        return (gameDirectory != null && VfsUtilCore.isAncestor(gameDirectory, contextFile0, false))
             || VfsUtilCore.isUnder(file, dependencyDirectories)
     }
     
@@ -33,7 +34,7 @@ class ParadoxGameWithDependenciesSearchScope(
     private fun getOrder(file: VirtualFile) : Int {
         //-1 - 找不到rootFile
         //0 - 位于游戏目录下
-        val rootFile = file.fileInfo?.rootInfo?.rootFile ?: return -1
+        val rootFile = selectRootFile(file) ?: return -1
         if(rootFile == gameDirectory) return 0
         val i = dependencyDirectories.indexOf(rootFile)
         return if(i != -1) i + 1 else -1

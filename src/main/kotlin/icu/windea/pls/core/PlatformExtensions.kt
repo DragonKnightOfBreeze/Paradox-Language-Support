@@ -8,8 +8,10 @@ import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInsight.template.*
 import com.intellij.codeInsight.template.impl.*
 import com.intellij.extapi.psi.*
+import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.lang.*
 import com.intellij.lang.documentation.*
+import com.intellij.lang.injection.*
 import com.intellij.navigation.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
@@ -855,6 +857,33 @@ fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
         element is LeafPsiElement -> element.parent
         else -> element
     }
+}
+//endregion
+
+//region Language Injection Extensions
+/**
+ * 向上找到最顶层的作为语言注入宿主的虚拟文件，或者返回自身。
+ */
+fun VirtualFile.findTopHostFileOrThis(): VirtualFile {
+    return doFindTopHostFileOrThis(this)
+}
+
+private tailrec fun doFindTopHostFileOrThis(file: VirtualFile): VirtualFile {
+    if(file is VirtualFileWindow) return doFindTopHostFileOrThis(file.delegate)
+    return file
+}
+
+/**
+ * 向上找到最顶层的作为语言注入宿主的PSI元素，或者返回自身。
+ */
+fun PsiElement.findTopHostElementOrThis(project: Project): PsiElement {
+    return doFindTopHostElementOrThis(this, project)
+}
+
+private tailrec fun doFindTopHostElementOrThis(element: PsiElement, project: Project): PsiElement{
+    val host = InjectedLanguageManager.getInstance(project).getInjectionHost(element)
+    if(host == null) return element
+    return doFindTopHostElementOrThis(host, project)
 }
 //endregion
 

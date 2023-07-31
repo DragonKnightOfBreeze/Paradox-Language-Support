@@ -20,7 +20,7 @@ abstract class ParadoxFakePsiElement(parent: PsiElement): RenameableFakePsiEleme
     }
     
     override fun canNavigate(): Boolean {
-        return true
+        return false
     }
     
     override fun getResolveScope(): GlobalSearchScope {

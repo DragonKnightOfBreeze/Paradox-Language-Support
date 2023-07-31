@@ -14,11 +14,16 @@
   </extensions>
   
   <extensions defaultExtensionNs="icu.windea.pls.inject">
-    <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
+    <!--core injectors-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.LowLevelSearchUtilCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.IfsUtilCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.RefManagerImplCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.SymbolNavigationServiceImplCodeInjector"/>
     
+    <!--injectors to provide additional features-->
+    <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
+    
+    <!--injectors to optimize performance-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptPropertyCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptPropertyKeyCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptBooleanCodeInjector"/>

@@ -4,6 +4,7 @@ import com.intellij.model.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 
@@ -24,8 +25,9 @@ class ParadoxGameSearchScope(
     }
     
     override fun contains(file: VirtualFile): Boolean {
-        if(!ParadoxFileHandler.canReference(contextFile, file)) return false //判断上下文文件能否引用另一个文件中的内容
-        return gameDirectory != null && VfsUtilCore.isAncestor(gameDirectory, file, false)
+        val contextFile0 = file.findTopHostFileOrThis()
+        if(!ParadoxFileHandler.canReference(contextFile, contextFile0)) return false //判断上下文文件能否引用另一个文件中的内容
+        return gameDirectory != null && VfsUtilCore.isAncestor(gameDirectory, contextFile0, false)
     }
     
     override fun calcHashCode(): Int {

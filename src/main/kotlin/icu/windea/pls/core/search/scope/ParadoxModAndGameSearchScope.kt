@@ -19,9 +19,10 @@ class ParadoxModAndGameSearchScope(
     }
     
     override fun contains(file: VirtualFile): Boolean {
-        if(!ParadoxFileHandler.canReference(contextFile, file)) return false //判断上下文文件能否引用另一个文件中的内容
-        return (modDirectory != null && VfsUtilCore.isAncestor(modDirectory, file, false))
-            || (gameDirectory != null && VfsUtilCore.isAncestor(gameDirectory, file, false))
+        val contextFile0 = file.findTopHostFileOrThis()
+        if(!ParadoxFileHandler.canReference(contextFile, contextFile0)) return false //判断上下文文件能否引用另一个文件中的内容
+        return (modDirectory != null && VfsUtilCore.isAncestor(modDirectory, contextFile0, false))
+            || (gameDirectory != null && VfsUtilCore.isAncestor(gameDirectory, contextFile0, false))
     }
     
     override fun compare(file1: VirtualFile, file2: VirtualFile): Int {
@@ -33,7 +34,7 @@ class ParadoxModAndGameSearchScope(
     private fun getOrder(file: VirtualFile): Int {
         //-1 - 找不到rootFile
         //0 - 位于游戏目录下
-        val rootFile = file.fileInfo?.rootInfo?.rootFile ?: return -1
+        val rootFile = selectRootFile(file) ?: return -1
         if(rootFile == gameDirectory) return 0
         if(rootFile == modDirectory) return 1
         return -1

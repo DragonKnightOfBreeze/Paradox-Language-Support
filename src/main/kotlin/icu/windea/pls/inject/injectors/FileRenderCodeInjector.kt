@@ -29,7 +29,7 @@ class FileRenderCodeInjector : BaseCodeInjector() {
             val rootInfo = file.rootInfo
             if(rootInfo != null && rootInfo.rootFile == file) {
                 val comment = rootInfo.qualifiedName
-                renderer.append(" " + comment, SimpleTextAttributes.GRAYED_ATTRIBUTES)
+                renderer.append(" $comment", SimpleTextAttributes.GRAYED_ATTRIBUTES)
             }
         } catch(e: Exception) {
             thisLogger().warn(e)

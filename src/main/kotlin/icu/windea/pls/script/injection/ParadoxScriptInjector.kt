@@ -94,22 +94,10 @@ class ParadoxScriptInjector : MultiHostInjector {
     private fun applyInjectionForParameterDefaultValue(host: PsiElement, allInjectionInfos: MutableList<ParameterValueInjectionInfo>) {
         if(host !is ParadoxParameter) return
         if(!getSettings().inference.parameterConfig) return
-        if(isAlreadyApplied(host)) return //对应的文本范围已经应用语言注入的场合，直接跳过
         val injectionInfo = getInjectionInfoForParameterDefaultValue(host)
         if(injectionInfo == null) return
         
         allInjectionInfos.add(injectionInfo)
-    }
-    
-    private fun isAlreadyApplied(host: ParadoxParameter): Boolean {
-        val parent = host.parent
-        if(parent !is ParadoxScriptStringExpressionElement) return false
-        val parentInjectionInfos = parent.getUserData(Keys.parameterValueInjectionInfos)
-        if(parentInjectionInfos.isNullOrEmpty()) return false
-        val range = host.textRange
-        val parentOffset = parent.startOffset
-        val result = parentInjectionInfos.any { it.rangeInsideHost.shiftRight(parentOffset).contains(range) }
-        return result
     }
     
     private fun getInjectionInfoForParameterDefaultValue(host: ParadoxParameter): ParameterValueInjectionInfo? {

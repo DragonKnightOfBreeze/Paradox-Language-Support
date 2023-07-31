@@ -24,9 +24,9 @@ class IfsUtilCodeInjector : BaseCodeInjector() {
     //即使目标DDS文件不存在于本地（例如来自Git提交记录），也可以正常渲染
     
     //这里必须懒加载，不能在初始化代码注入器时就加载IfsUtil
-    val TIME_MODIFICATION_STAMP_KEY by lazy { staticProperty<IfsUtil, Key<Pair<Long?, Long?>>>("TIME_MODIFICATION_STAMP_KEY").get() }
-    val FORMAT_KEY by lazy { staticProperty<IfsUtil, Key<String>>("FORMAT_KEY").get() }
-    val IMAGE_PROVIDER_REF_KEY by lazy { staticProperty<IfsUtil, Key<SoftReference<ImageDocument.ScaledImageProvider>>>("IMAGE_PROVIDER_REF_KEY").get() }
+    private val TIME_MODIFICATION_STAMP_KEY by lazy { staticProperty<IfsUtil, Key<Pair<Long?, Long?>>>("TIME_MODIFICATION_STAMP_KEY").get() }
+    private val FORMAT_KEY by lazy { staticProperty<IfsUtil, Key<String>>("FORMAT_KEY").get() }
+    private val IMAGE_PROVIDER_REF_KEY by lazy { staticProperty<IfsUtil, Key<SoftReference<ImageDocument.ScaledImageProvider>>>("IMAGE_PROVIDER_REF_KEY").get() }
     
     @Inject(Inject.Pointer.AFTER)
     fun refresh(file: VirtualFile, returnValue: Boolean): Boolean {

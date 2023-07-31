@@ -62,10 +62,10 @@ class ParadoxCoreFileListener : AsyncFileListener {
                         is VFileContentChangeEvent -> {
                             val fileName = event.file.name
                             if(fileName.equals(PlsConstants.descriptorFileName, true)) {
-                                val rootFile = event.file.fileInfo?.rootInfo?.rootFile
+                                val rootFile = selectRootFile(event.file)
                                 doClearRootInfo(rootFile)
                             } else if(fileName.equals(PlsConstants.launcherSettingsFileName, true)) {
-                                val rootFile = event.file.fileInfo?.rootInfo?.rootFile
+                                val rootFile = selectRootFile(event.file)
                                 doClearRootInfo(rootFile)
                             }
                         }
