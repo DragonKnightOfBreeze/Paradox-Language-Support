@@ -4,16 +4,14 @@ import com.intellij.codeInsight.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.lang.model.*
 import icu.windea.pls.script.psi.*
 
 @Suppress("UNUSED_PARAMETER")
 class GenerateLocalisationsHandler : CodeInsightActionHandler {
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
-        val contextKey = PlsKeys.generateLocalisationsContext
+        val contextKey = GenerateLocalisationsContext.key
         val context = file.getUserData(contextKey)
             ?: getDefaultContext(project, editor, file)
             ?: return
@@ -26,24 +24,10 @@ class GenerateLocalisationsHandler : CodeInsightActionHandler {
         val offset = editor.caretModel.offset
         val definition = findElement(file, offset)?.findParentDefinition() ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
-        return getDefaultContext(definitionInfo)
+        return ParadoxPsiGenerator.getDefaultGenerateLocalisationsContext(definitionInfo)
     }
     
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
         return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
     }
-    
-    companion object {
-        @JvmStatic
-        fun getDefaultContext(definitionInfo: ParadoxDefinitionInfo): GenerateLocalisationsContext? {
-            if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
-            
-            val definitionName = definitionInfo.name
-            val localisationInfos = definitionInfo.localisations
-            if(localisationInfos.isEmpty()) return null
-            val localisationNames = localisationInfos.mapNotNullTo(mutableSetOf()) { it.locationExpression.resolvePlaceholder(definitionName) }
-            return GenerateLocalisationsContext(definitionName, localisationNames)
-        }
-    }
 }
-

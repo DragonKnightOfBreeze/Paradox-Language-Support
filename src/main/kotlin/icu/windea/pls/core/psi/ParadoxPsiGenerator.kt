@@ -13,9 +13,41 @@ import icu.windea.pls.core.codeInsight.generation.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.settings.*
+import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
+import icu.windea.pls.script.psi.*
 
 object ParadoxPsiGenerator {
+    fun getDefaultGenerateLocalisationsContext(definitionInfo: ParadoxDefinitionInfo): GenerateLocalisationsContext? {
+        if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
+        
+        val definitionName = definitionInfo.name
+        val localisationInfos = definitionInfo.localisations
+        if(localisationInfos.isEmpty()) return null
+        val localisationNames = localisationInfos.mapNotNullTo(mutableSetOf()) { it.locationExpression.resolvePlaceholder(definitionName) }
+        return GenerateLocalisationsContext(
+            definitionName = definitionName,
+            localisationNames = localisationNames
+        )
+    }
+    
+    fun getDefaultGenerateLocalisationsInFileContext(file: PsiFile): GenerateLocalisationsInFileContext {
+        val context = GenerateLocalisationsInFileContext(file.name, mutableListOf())
+        file.accept(object : PsiRecursiveElementWalkingVisitor() {
+            override fun visitElement(element: PsiElement) {
+                if(element is ParadoxScriptDefinitionElement) visitDefinition(element)
+                if(element.isExpressionOrMemberContext()) super.visitElement(element)
+            }
+            
+            private fun visitDefinition(element: ParadoxScriptDefinitionElement) {
+                val definitionInfo = element.definitionInfo ?: return
+                val context0 = getDefaultGenerateLocalisationsContext(definitionInfo) ?: return
+                context.contextList.add(context0)
+            }
+        })
+        return context
+    }
+    
     fun generateLocalisations(context: GenerateLocalisationsContext, project: Project, file: PsiFile) {
         if(context.localisationNames.isEmpty()) return noLocalisations(project)
         

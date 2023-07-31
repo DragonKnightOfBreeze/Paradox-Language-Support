@@ -85,7 +85,6 @@ object ParadoxDdsResolver {
         Files.newOutputStream(pngAbsPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING).use { outputStream ->
             val dds = Dds()
             val inputStream = absPath.toPath().inputStream()
-            dds.read(inputStream)
             ImageManager.convertDdsToPng(inputStream, outputStream, frame)
             outputStream.flush()
         }

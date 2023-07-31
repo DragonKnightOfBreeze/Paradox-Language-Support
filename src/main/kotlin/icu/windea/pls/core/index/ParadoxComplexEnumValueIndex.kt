@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 private val NAME = ID.create<String, List<ParadoxComplexEnumValueInfo>>("paradox.complexEnumValue.index")
-private const val VERSION = 32 //1.1.3
+private const val VERSION = 33 //1.1.5
 
 
 /**

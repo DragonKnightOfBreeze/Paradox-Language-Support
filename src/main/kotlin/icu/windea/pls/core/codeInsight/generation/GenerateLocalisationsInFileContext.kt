@@ -8,6 +8,8 @@ import icu.windea.pls.*
 data class GenerateLocalisationsInFileContext(
     val fileName: String,
     val contextList: MutableList<GenerateLocalisationsContext>
-)
-
-val PlsKeys.generateLocalisationsInFileContext by lazy { Key.create<GenerateLocalisationsInFileContext>("paradox.generateLocalisationInFileContext") }
+) {
+    companion object {
+        val key = Key.create<GenerateLocalisationsInFileContext>("paradox.generateLocalisationInFileContext")
+    }
+}

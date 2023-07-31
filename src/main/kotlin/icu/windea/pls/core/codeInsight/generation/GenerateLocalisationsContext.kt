@@ -15,6 +15,13 @@ data class GenerateLocalisationsContext(
     lateinit var project: Project
     lateinit var editor: Editor
     lateinit var file: PsiFile
+    
+    data class Localisation(
+        val localisationName: String,
+        val checked: Boolean
+    )
+    
+    companion object {
+        val key = Key.create<GenerateLocalisationsContext>("paradox.generateLocalisationContext")
+    }
 }
-
-val PlsKeys.generateLocalisationsContext by lazy { Key.create<GenerateLocalisationsContext>("paradox.generateLocalisationContext") }
