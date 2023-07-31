@@ -7,15 +7,15 @@ import javassist.*
 import kotlin.reflect.full.*
 
 /**
- * @see FieldCacheMethods
+ * @see FieldCache
  */
 class FieldCacheCodeInjectorSupport : CodeInjectorSupport() {
     override fun apply(codeInjector: CodeInjector) {
         val targetClass = codeInjector.getUserData(CodeInjectorService.targetClassKey) ?: return
-        val fieldCacheMethods = codeInjector::class.findAnnotation<FieldCacheMethods>() ?: return
-        val methodNames = fieldCacheMethods.methods
-        val fieldPrefix = fieldCacheMethods.fieldPrefix
-        val cleanupMethodName = fieldCacheMethods.cleanupMethod
+        val fieldCache = codeInjector::class.findAnnotation<FieldCache>() ?: return
+        val methodNames = fieldCache.methods
+        val fieldPrefix = fieldCache.fieldPrefix
+        val cleanupMethodName = fieldCache.cleanupMethod
         if(methodNames.isEmpty()) return
         var cleanupMethod = targetClass.declaredMethods.find { it.name == cleanupMethodName }
         if(cleanupMethod == null) {

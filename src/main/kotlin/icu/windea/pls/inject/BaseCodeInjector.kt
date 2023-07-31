@@ -32,6 +32,7 @@ abstract class BaseCodeInjector : CodeInjector() {
         putUserData(CodeInjectorService.targetClassKey, targetClass)
         
         doInjectMethods(targetClass, codeInjectorInfo)
+        
         applyCodeInjectorSupports()
         
         putUserData(CodeInjectorService.targetClassKey, null)
