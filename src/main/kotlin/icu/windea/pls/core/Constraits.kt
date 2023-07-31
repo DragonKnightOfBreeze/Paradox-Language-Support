@@ -52,6 +52,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxLocalisationIcon -> true
                 is ParadoxLocalisationCommandField -> true //<scripted_loc>
                 is ParadoxLocalisationConceptName -> true //<game_concept>
+                is ParadoxLocalisationColorfulText -> true //<text_color>
                 else -> false
             }
         }
@@ -75,6 +76,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxLocalisationIconPsiReference -> true
                 is ParadoxLocalisationCommandFieldPsiReference -> true //<scripted_loc>
                 is ParadoxLocalisationConceptNamePsiReference -> true //<game_concept>
+                is ParadoxLocalisationColorPsiReference -> true //<text_color>
                 else -> false
             }
         }
