@@ -49,6 +49,7 @@ enum class ParadoxResolveConstraint {
             return when(element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
                 is ParadoxScriptInt -> true
+                is ParadoxLocalisationIcon -> true
                 is ParadoxLocalisationCommandField -> true //<scripted_loc>
                 is ParadoxLocalisationConceptName -> true //<game_concept>
                 else -> false
@@ -71,6 +72,7 @@ enum class ParadoxResolveConstraint {
                         configExpression.type == CwtDataType.Definition
                     }
                 }
+                is ParadoxLocalisationIconPsiReference -> true
                 is ParadoxLocalisationCommandFieldPsiReference -> true //<scripted_loc>
                 is ParadoxLocalisationConceptNamePsiReference -> true //<game_concept>
                 else -> false

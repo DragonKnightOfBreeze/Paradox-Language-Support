@@ -94,7 +94,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         if(color != null) {
             context.builder.append("<span style=\"color: #").append(color.toHex()).append("\">")
         }
-        val resolved = element.reference?.resolveLocalisation() //直接解析为本地化以优化性能
+        val resolved = element.reference?.resolve()
             ?: element.scriptedVariableReference?.reference?.resolve()
         when {
             resolved is ParadoxLocalisationProperty -> {
@@ -137,11 +137,14 @@ object ParadoxLocalisationTextHtmlRenderer {
         if(iconUrl.isNotEmpty()) {
             //找不到图标的话就直接跳过
             val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return
-            //text_icon的标准大小是18*18
-            //本地化文本实际上可以嵌入任意大小的图片，因此这里要基于文档的字体大小进行缩放
+            //如果图标大小在16*16到32*32之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
+            //实际上，本地化文本可以嵌入任意大小的图片
             @Suppress("UnstableApiUsage")
             val docFontSize = getDocumentationFontSize().size
-            val scale = docFontSize.toFloat() / 18
+            val scale = when {
+                icon.iconHeight in 16..32 -> docFontSize.toFloat() / icon.iconHeight
+                else -> docFontSize.toFloat() / 18
+            }
             val iconWidth = (icon.iconWidth * scale).toInt()
             val iconHeight = (icon.iconHeight * scale).toInt()
             context.builder.appendImgTag(iconUrl, iconWidth, iconHeight)

@@ -51,7 +51,7 @@ class ParadoxLocalisationPropertyPsiReference(
     }
     
     fun resolveLocalisation(): ParadoxLocalisationProperty? {
-        return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false).castOrNull()
+        return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false).castOrNull()
     }
     
     private fun doResolve(): PsiElement? {

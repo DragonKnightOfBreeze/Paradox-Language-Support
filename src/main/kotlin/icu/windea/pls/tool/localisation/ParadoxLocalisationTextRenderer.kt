@@ -57,7 +57,7 @@ object ParadoxLocalisationTextRenderer {
     }
     
     private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {
-        val resolved = element.reference?.resolveLocalisation() //直接解析为本地化以优化性能
+        val resolved = element.reference?.resolve()
             ?: element.scriptedVariableReference?.reference?.resolve()
 		when {
 			resolved is ParadoxLocalisationProperty -> {
