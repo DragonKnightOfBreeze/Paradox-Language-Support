@@ -64,6 +64,7 @@ class MissingImageInspection : LocalInspectionTool() {
                         else -> ParadoxImageCodeInsightInfo.Type.Optional
                     }
                     val name = resolved?.filePath
+                    val gfxName = expression.resolvePlaceholder(definitionInfo.name)?.takeIf { it.startsWith("GFX_") }
                     val check = when {
                         info.required -> true
                         checkPrimaryForDefinitions && (info.primary || info.primaryByInference) -> true
@@ -72,7 +73,7 @@ class MissingImageInspection : LocalInspectionTool() {
                     }
                     val missing = resolved?.file == null && resolved?.message == null
                     val dynamic = resolved?.message != null
-                    val codeInsightInfo = ParadoxImageCodeInsightInfo(type, name, info, check, missing, dynamic)
+                    val codeInsightInfo = ParadoxImageCodeInsightInfo(type, name, gfxName, info, check, missing, dynamic)
                     codeInsightInfos += codeInsightInfo
                 }
                 
@@ -84,12 +85,12 @@ class MissingImageInspection : LocalInspectionTool() {
                         val check = checkGeneratedModifierIconsForDefinitions
                         val iconPath = ParadoxModifierHandler.getModifierIconPath(modifierName)
                         val missing = isMissing(iconPath)
-                        val codeInsightInfo = ParadoxImageCodeInsightInfo(type, iconPath, null, check, missing, false)
+                        val codeInsightInfo = ParadoxImageCodeInsightInfo(type, iconPath, null, null, check, missing, false)
                         codeInsightInfos += codeInsightInfo
                     }
                 }
                 
-                registerProblems(location, codeInsightInfos, holder)
+                registerProblems(codeInsightInfos, location, holder)
             }
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
@@ -104,11 +105,11 @@ class MissingImageInspection : LocalInspectionTool() {
                     val check = checkModifierIcons
                     val iconPath = ParadoxModifierHandler.getModifierIconPath(modifierName)
                     val missing = isMissing(iconPath)
-                    val codeInsightInfo = ParadoxImageCodeInsightInfo(type, iconPath, null, check, missing, false)
+                    val codeInsightInfo = ParadoxImageCodeInsightInfo(type, iconPath, null, null, check, missing, false)
                     codeInsightInfos += codeInsightInfo
                 }
                 
-                registerProblems(element, codeInsightInfos, holder)
+                registerProblems(codeInsightInfos, element, holder)
             }
             
             private fun isMissing(iconPath: String): Boolean {
@@ -118,12 +119,39 @@ class MissingImageInspection : LocalInspectionTool() {
                 return missing
             }
             
-            private fun registerProblems(element: PsiElement, codeInsightInfos: List<ParadoxImageCodeInsightInfo>, holder: ProblemsHolder) {
-                for(codeInsightInfo in codeInsightInfos) {
-                    val message = codeInsightInfo.getMissingMessage() ?: continue
+            private fun registerProblems(codeInsightInfos: List<ParadoxImageCodeInsightInfo>, element: PsiElement, holder: ProblemsHolder) {
+                val messages = getMessages(codeInsightInfos)
+                if(messages.isEmpty()) return
+                for(message in messages) {
                     //显示为WEAK_WARNING
                     holder.registerProblem(element, message, ProblemHighlightType.WEAK_WARNING)
                 }
+            }
+            
+            private fun getMessages(codeInsightInfos: List<ParadoxImageCodeInsightInfo>): List<String> {
+                val includeMap = mutableMapOf<String, ParadoxImageCodeInsightInfo>()
+                val excludeKeys = mutableSetOf<String>()
+                for(codeInsightInfo in codeInsightInfos) {
+                    if(!codeInsightInfo.check) continue
+                    val key = codeInsightInfo.key ?: continue
+                    if(excludeKeys.contains(key)) continue
+                    if(codeInsightInfo.missing) {
+                        includeMap.putIfAbsent(key, codeInsightInfo)
+                    } else {
+                        includeMap.remove(key)
+                        excludeKeys.add(key)
+                    }
+                }
+                return includeMap.values.mapNotNull { getMessage(it) }
+            }
+            
+            private fun getMessage(codeInsightInfo: ParadoxImageCodeInsightInfo): String? {
+                val locationExpression = codeInsightInfo.relatedImageInfo?.locationExpression
+                val from = locationExpression?.propertyName?.let { PlsBundle.message("inspection.script.general.missingImage.from.3", it) }
+                    ?: codeInsightInfo.gfxName?.let { PlsBundle.message("inspection.script.general.missingImage.from.2", it) }
+                    ?: codeInsightInfo.filePath?.let { PlsBundle.message("inspection.script.general.missingImage.from.1", it) }
+                    ?: return null
+                return PlsBundle.message("inspection.script.general.missingImage.description", from)
             }
         }
     }

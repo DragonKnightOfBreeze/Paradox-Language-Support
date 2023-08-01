@@ -18,7 +18,9 @@ data class ParadoxLocalisationCodeInsightInfo(
         ModifierName, ModifierDesc
     }
     
-    fun getMissingMessage(): String? {
-        return null //TODO
+    val key = when {
+        relatedLocalisationInfo != null -> "@" + relatedLocalisationInfo.key + locale.id
+        name != null -> name + locale.id
+        else -> null
     }
 }

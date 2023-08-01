@@ -30,14 +30,14 @@ private val validValueTypes = arrayOf(
  * 示例：`"gfx/interface/icons/modifiers/mod_$.dds"`, "GFX_$", `"icon"`, "icon|p1,p2"`
  *
  * @property placeholder 占位符文本。其中的`"$"`会在解析时被替换成定义的名字。
- * @property propertyName 属性名。
- * @property extraPropertyNames 额外的属性名。位于管道符之后，用逗号分隔。
+ * @property propertyName 属性名，用于获取图片的引用文本。
+ * @property framePropertyNames 属性名，用于获取帧数，帧数用于后续切割图片。
  */
 class CwtImageLocationExpression private constructor(
     expressionString: String,
     val placeholder: String? = null,
     val propertyName: String? = null,
-    val extraPropertyNames: List<String>? = null
+    val framePropertyNames: List<String>? = null,
 ) : AbstractExpression(expressionString), CwtExpression {
     fun resolvePlaceholder(name: String): String? {
         if(placeholder == null) return null
@@ -91,8 +91,8 @@ class CwtImageLocationExpression private constructor(
             if(definitionInfo.name.equals(name, true)) return null //防止出现SOF
             val frameToUse = when {
                 frame != 0 -> frame
-                extraPropertyNames.isNullOrEmpty() -> 0
-                else -> extraPropertyNames.firstNotNullOfOrNull { propertyName ->
+                framePropertyNames.isNullOrEmpty() -> 0
+                else -> framePropertyNames.firstNotNullOfOrNull { propertyName ->
                     definition.findProperty(propertyName, conditional = true, inline = true)?.propertyValue?.intValue() ?: 0
                 } ?: 0
             }
@@ -182,8 +182,8 @@ class CwtImageLocationExpression private constructor(
             if(definitionInfo.name.equals(name, true)) return null //防止出现SOF
             val frameToUse = when {
                 frame != 0 -> frame
-                extraPropertyNames.isNullOrEmpty() -> 0
-                else -> extraPropertyNames.firstNotNullOfOrNull { propertyName ->
+                framePropertyNames.isNullOrEmpty() -> 0
+                else -> framePropertyNames.firstNotNullOfOrNull { propertyName ->
                     definition.findProperty(propertyName, inline = true)?.propertyValue?.intValue() ?: 0
                 } ?: 0
             }
@@ -243,9 +243,9 @@ class CwtImageLocationExpression private constructor(
                 }
                 else -> {
                     val propertyName = expressionString.substringBefore('|').intern()
-                    val extraPropertyNames = expressionString.substringAfter('|', "").takeIfNotEmpty()
+                    val framePropertyNames = expressionString.substringAfter('|', "").takeIfNotEmpty()
                         ?.toCommaDelimitedStringList()
-                    CwtImageLocationExpression(expressionString, propertyName = propertyName, extraPropertyNames = extraPropertyNames)
+                    CwtImageLocationExpression(expressionString, propertyName = propertyName, framePropertyNames = framePropertyNames)
                 }
             }
         }

@@ -28,7 +28,8 @@ private val validValueTypes = arrayOf(
  * 示例：`"$"`, `"$_desc"`, `"$_DESC|u"` , `"title"`
  *
  * @property placeholder 占位符文本。其中的`"$"`会在解析时被替换成定义的名字。
- * @property propertyName 属性名。
+ * @property propertyName 属性名，用于获取本地化的名字。
+ * @property upperCase 本地化的名字是否强制大写。
  */
 class CwtLocalisationLocationExpression private constructor(
     expressionString: String,

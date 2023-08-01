@@ -128,7 +128,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     }
                 }
                 
-                registerProblems(location, codeInsightInfos, holder)
+                registerProblems(codeInsightInfos, location, holder)
             }
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
@@ -161,7 +161,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     }
                 }
                 
-                registerProblems(element, codeInsightInfos, holder)
+                registerProblems(codeInsightInfos, element, holder)
             }
             
             private fun isMissing(name: String, locale: CwtLocalisationLocaleConfig): Boolean {
@@ -172,16 +172,43 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 return missing
             }
             
-            private fun registerProblems(element: PsiElement, codeInsightInfos: List<ParadoxLocalisationCodeInsightInfo>, holder: ProblemsHolder) {
-                for(codeInsightInfo in codeInsightInfos) {
-                    val message = codeInsightInfo.getMissingMessage() ?: continue
-                    val fixes = getFixes(element, codeInsightInfos).toTypedArray()
+            private fun registerProblems(codeInsightInfos: List<ParadoxLocalisationCodeInsightInfo>, element: PsiElement, holder: ProblemsHolder) {
+                val messages = getMessages(codeInsightInfos)
+                if(messages.isEmpty()) return
+                val fixes = getFixes(codeInsightInfos, element).toTypedArray()
+                for(message in messages) {
                     //显示为WEAK_WARNING
                     holder.registerProblem(element, message, ProblemHighlightType.WEAK_WARNING, *fixes)
                 }
             }
             
-            private fun getFixes(element: PsiElement, codeInsightInfos: List<ParadoxLocalisationCodeInsightInfo>): List<LocalQuickFix> {
+            private fun getMessages(codeInsightInfos: List<ParadoxLocalisationCodeInsightInfo>): List<String> {
+                val includeMap = mutableMapOf<String, ParadoxLocalisationCodeInsightInfo>()
+                val excludeKeys = mutableSetOf<String>()
+                for(codeInsightInfo in codeInsightInfos) {
+                    if(!codeInsightInfo.check) continue
+                    val key = codeInsightInfo.key ?: continue
+                    if(excludeKeys.contains(key)) continue
+                    if(codeInsightInfo.missing) {
+                        includeMap.putIfAbsent(key, codeInsightInfo)
+                    } else {
+                        includeMap.remove(key)
+                        excludeKeys.add(key)
+                    }
+                }
+                return includeMap.values.mapNotNull { getMessage(it) }
+            }
+            
+            private fun getMessage(codeInsightInfo: ParadoxLocalisationCodeInsightInfo): String? {
+                val locationExpression = codeInsightInfo.relatedLocalisationInfo?.locationExpression
+                val from = locationExpression?.propertyName?.let { PlsBundle.message("inspection.script.general.missingLocalisation.from.2", it) }
+                    ?: codeInsightInfo.name?.let { PlsBundle.message("inspection.script.general.missingLocalisation.from.1", it) }
+                    ?: return null
+                val localeId = codeInsightInfo.locale.id
+                return PlsBundle.message("inspection.script.general.missingLocalisation.description", from, localeId)
+            }
+            
+            private fun getFixes(codeInsightInfos: List<ParadoxLocalisationCodeInsightInfo>, element: PsiElement): List<LocalQuickFix> {
                 return emptyList()
                 //return buildList {
                 //    val context = GenerateLocalisationsContext(definitionInfo.name, contextMap.mapNotNullTo(mutableSetOf()) { it.value.key })
@@ -203,7 +230,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         lateinit var checkForModifiersCb: Cell<JBCheckBox>
         return panel {
             //checkForLocales
-            row { 
+            row {
                 label(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForLocales"))
                 cell(ActionLink(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForLocales.configure")) {
                     val allLocaleConfigs = getCwtConfig().core.localisationLocales

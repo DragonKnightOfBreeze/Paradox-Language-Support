@@ -4,7 +4,8 @@ import icu.windea.pls.model.*
 
 data class ParadoxImageCodeInsightInfo(
     val type: Type,
-    val name: String?,
+    val filePath: String?,
+    val gfxName: String?,
     val relatedImageInfo: ParadoxDefinitionRelatedImageInfo?,
     val check: Boolean,
     val missing: Boolean,
@@ -16,7 +17,10 @@ data class ParadoxImageCodeInsightInfo(
         ModifierIcon
     }
     
-    fun getMissingMessage(): String? {
-        return null //TODO
+    val key = when {
+        relatedImageInfo != null -> "@" + relatedImageInfo.key
+        filePath != null -> filePath
+        gfxName != null -> "#" + gfxName
+        else -> null
     }
 }
