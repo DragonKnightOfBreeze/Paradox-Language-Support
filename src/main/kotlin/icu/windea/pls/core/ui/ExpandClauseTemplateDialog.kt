@@ -84,7 +84,7 @@ class ExpandClauseTemplateDialog(
         tableView.columnSelectionAllowed = true
         tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
         //快速搜索
-        object : TableViewSpeedSearch<ElementDescriptor>(tableView) {
+        object : TableViewSpeedSearch<ElementDescriptor>(tableView, null) {
             override fun getItemText(element: ElementDescriptor): String {
                 return element.name
             }

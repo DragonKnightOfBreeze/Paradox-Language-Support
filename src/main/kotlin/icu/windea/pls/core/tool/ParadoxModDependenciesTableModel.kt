@@ -136,7 +136,7 @@ class ParadoxModDependenciesTableModel(
             tableView.setFixedColumnWidth(VersionItem.columnIndex, VersionItem.name)
             tableView.setFixedColumnWidth(SupportedVersionItem.columnIndex, SupportedVersionItem.name)
             //快速搜索
-            object : TableViewSpeedSearch<ParadoxModDependencySettingsState>(tableView) {
+            object : TableViewSpeedSearch<ParadoxModDependencySettingsState>(tableView, null) {
                 override fun getItemText(element: ParadoxModDependencySettingsState): String {
                     val modDirectory = element.modDirectory.orEmpty()
                     val modDescriptorSettings = getProfilesSettings().modDescriptorSettings.getValue(modDirectory)

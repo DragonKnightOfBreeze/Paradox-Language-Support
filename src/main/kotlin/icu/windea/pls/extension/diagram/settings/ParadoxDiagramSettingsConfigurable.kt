@@ -31,7 +31,7 @@ class ParadoxDiagramSettingsConfigurable(
                             //com.intellij.codeInsight.actions.ReaderModeSettingsListener.Companion.goToEditorReaderMode
                             DataManager.getInstance().dataContextFromFocusAsync.onSuccess { context ->
                                 context?.let { dataContext ->
-                                    Settings.KEY.getData(dataContext)?.let { 
+                                    Settings.KEY.getData(dataContext)?.let {
                                         it.select(it.find(settings.id))
                                     }
                                 }

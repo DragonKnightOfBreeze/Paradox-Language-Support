@@ -9,6 +9,7 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
+import icu.windea.pls.model.constraints.*
 import kotlin.experimental.*
 
 class ParadoxParameterUsagesSearcher: QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {

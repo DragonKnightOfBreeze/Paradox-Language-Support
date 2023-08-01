@@ -12,6 +12,7 @@ import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -26,12 +27,13 @@ class MissingImageInspection : LocalInspectionTool() {
     @JvmField var checkForDefinitions = true
     @JvmField var checkPrimaryForDefinitions = false
     @JvmField var checkOptionalForDefinitions = false
-    @JvmField var checkForModifiers = false
+    @JvmField var checkGeneratedModifierIconsForDefinitions = true
+    @JvmField var checkForModifiers = true
+    @JvmField var checkModifierIcons = true
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val project = holder.project
         val file = holder.file
-        
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -49,79 +51,77 @@ class MissingImageInspection : LocalInspectionTool() {
             }
             
             private fun visitDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
-                ProgressManager.checkCanceled()
-                val imageInfos = definitionInfo.images
-                if(imageInfos.isEmpty()) return
+                val codeInsightInfos = mutableListOf<ParadoxImageCodeInsightInfo>()
                 val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
-                val nameToDistinct = mutableSetOf<String>()
-                val infoMap = mutableMapOf<String, Info>()
-                //进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
-                var hasPrimary = false
-                for(info in imageInfos) {
+                
+                for(info in definitionInfo.images) {
                     ProgressManager.checkCanceled()
                     val expression = info.locationExpression
-                    if(nameToDistinct.contains(info.key)) continue
-                    if(info.primary && hasPrimary) continue
-                    //多个位置表达式无法解析时，使用第一个
-                    if(info.required || if(info.primary) checkPrimaryForDefinitions else checkOptionalForDefinitions) {
-                        val resolved = expression.resolve(definition, definitionInfo, project)
-                        if(resolved != null) {
-                            if(resolved.message != null) { //dynamic, inlined, etc.
-                                infoMap.remove(info.key)
-                                nameToDistinct.add(info.key)
-                                if(info.primary) hasPrimary = true
-                            } else if(resolved.file == null) {
-                                infoMap.putIfAbsent(info.key, Info(info, resolved.filePath))
-                            } else {
-                                infoMap.remove(info.key)
-                                nameToDistinct.add(info.key)
-                                if(info.primary) hasPrimary = true
-                            }
-                        } else if(expression.propertyName != null || (expression.placeholder != null && definitionInfo.name.isNotEmpty())) {
-                            //无法直接获取到图片路径的场合 - 从属性值获取，或者从占位符文本获取且定义非匿名
-                            infoMap.putIfAbsent(info.key, Info(info, null))
-                        }
+                    val resolved = expression.resolve(definition, definitionInfo, project)
+                    val type = when {
+                        info.required -> ParadoxImageCodeInsightInfo.Type.Required
+                        info.primary -> ParadoxImageCodeInsightInfo.Type.Primary
+                        else -> ParadoxImageCodeInsightInfo.Type.Optional
+                    }
+                    val name = resolved?.filePath
+                    val check = when {
+                        info.required -> true
+                        checkPrimaryForDefinitions && (info.primary || info.primaryByInference) -> true
+                        checkOptionalForDefinitions && !info.required -> true
+                        else -> false
+                    }
+                    val missing = resolved?.file == null && resolved?.message == null
+                    val dynamic = resolved?.message != null
+                    val codeInsightInfo = ParadoxImageCodeInsightInfo(type, name, info, check, missing, dynamic)
+                    codeInsightInfos += codeInsightInfo
+                }
+                
+                for(info in definitionInfo.modifiers) {
+                    ProgressManager.checkCanceled()
+                    val modifierName = info.name
+                    run {
+                        val type = ParadoxImageCodeInsightInfo.Type.GeneratedModifierIcon
+                        val check = checkGeneratedModifierIconsForDefinitions
+                        val iconPath = ParadoxModifierHandler.getModifierIconPath(modifierName)
+                        val missing = isMissing(iconPath)
+                        val codeInsightInfo = ParadoxImageCodeInsightInfo(type, iconPath, null, check, missing, false)
+                        codeInsightInfos += codeInsightInfo
                     }
                 }
-                if(infoMap.isNotEmpty()) {
-                    //显示为WEAK_WARNING
-                    //缺失多个时，每个算作一个问题
-                    for((info, key) in infoMap.values) {
-                        val message = getMessage(info, key, definitionInfo.name)
-                        holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING)
-                    }
-                }
-            }
-            
-            private fun getMessage(info: ParadoxDefinitionRelatedImageInfo, key: String?, definitionName: String): String {
-                val expression = info.locationExpression
-                val p1 = when {
-                    info.required -> PlsBundle.message("inspection.script.general.missingImage.description.p1.1")
-                    info.primary -> PlsBundle.message("inspection.script.general.missingImage.description.p1.2")
-                    else -> PlsBundle.message("inspection.script.general.missingImage.description.p1.3")
-                }
-                val p2 = when {
-                    key != null -> PlsBundle.message("inspection.script.general.missingImage.description.p2.1", key)
-                    expression.placeholder.let { it != null && it.startsWith("GFX_") } -> PlsBundle.message("inspection.script.general.missingImage.description.p2.2", expression.resolvePlaceholder(definitionName)!!)
-                    expression.propertyName != null -> PlsBundle.message("inspection.script.general.missingImage.description.p2.3", expression.propertyName)
-                    else -> PlsBundle.message("inspection.script.general.missingImage.description.p2.4", expression.expressionString)
-                }
-                return PlsBundle.message("inspection.script.general.missingImage.description", p1, p2)
+                
+                registerProblems(location, codeInsightInfos, holder)
             }
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                ProgressManager.checkCanceled()
-                if(!checkForModifiers) return
+                val modifierName = element.value
+                if(modifierName.isEmpty() || modifierName.isParameterized()) return
                 val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
                 if(config.expression.type != CwtDataType.Modifier) return
-                val name = element.value
-                val iconPath = ParadoxModifierHandler.getModifierIconPath(name)
-                val iconFile = run {
-                    val iconSelector = fileSelector(project, file) //use file as context
-                    ParadoxFilePathSearch.search(iconPath, null, iconSelector).find()
+                val codeInsightInfos = mutableListOf<ParadoxImageCodeInsightInfo>()
+                
+                run {
+                    val type = ParadoxImageCodeInsightInfo.Type.ModifierIcon
+                    val check = checkModifierIcons
+                    val iconPath = ParadoxModifierHandler.getModifierIconPath(modifierName)
+                    val missing = isMissing(iconPath)
+                    val codeInsightInfo = ParadoxImageCodeInsightInfo(type, iconPath, null, check, missing, false)
+                    codeInsightInfos += codeInsightInfo
                 }
-                if(iconFile == null) {
-                    val message = PlsBundle.message("inspection.script.general.missingImage.description.1", name)
+                
+                registerProblems(element, codeInsightInfos, holder)
+            }
+            
+            private fun isMissing(iconPath: String): Boolean {
+                val iconSelector = fileSelector(project, file) //use file as context
+                val iconFile = ParadoxFilePathSearch.search(iconPath, null, iconSelector).findFirst()
+                val missing = iconFile == null
+                return missing
+            }
+            
+            private fun registerProblems(element: PsiElement, codeInsightInfos: List<ParadoxImageCodeInsightInfo>, holder: ProblemsHolder) {
+                for(codeInsightInfo in codeInsightInfos) {
+                    val message = codeInsightInfo.getMissingMessage() ?: continue
+                    //显示为WEAK_WARNING
                     holder.registerProblem(element, message, ProblemHighlightType.WEAK_WARNING)
                 }
             }
@@ -129,8 +129,10 @@ class MissingImageInspection : LocalInspectionTool() {
     }
     
     override fun createOptionsPanel(): JComponent {
+        lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
+        lateinit var checkForModifiersCb: Cell<JBCheckBox>
         return panel {
-            lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
+            //checkForDefinitions
             row {
                 checkBox(PlsBundle.message("inspection.script.general.missingImage.option.checkForDefinitions"))
                     .bindSelected(::checkForDefinitions)
@@ -138,28 +140,54 @@ class MissingImageInspection : LocalInspectionTool() {
                     .also { checkForDefinitionsCb = it }
             }
             indent {
+                //checkRequiredForDefinitions
+                row {
+                    checkBox(PlsBundle.message("inspection.script.general.missingImage.option.checkRequiredForDefinitions"))
+                        .selected(true)
+                        .enabled(false)
+                }
+                //checkPrimaryForDefinitions
                 row {
                     checkBox(PlsBundle.message("inspection.script.general.missingImage.option.checkPrimaryForDefinitions"))
                         .bindSelected(::checkPrimaryForDefinitions)
                         .actionListener { _, component -> checkPrimaryForDefinitions = component.isSelected }
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
+                //checkOptionalForDefinitions
                 row {
                     checkBox(PlsBundle.message("inspection.script.general.missingImage.option.checkOptionalForDefinitions"))
                         .bindSelected(::checkOptionalForDefinitions)
                         .actionListener { _, component -> checkOptionalForDefinitions = component.isSelected }
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
+                //checkGeneratedModifierIconsForDefinitions
+                row {
+                    checkBox(PlsBundle.message("inspection.script.general.missingImage.option.checkGeneratedModifierIconsForDefinitions"))
+                        .bindSelected(::checkGeneratedModifierIconsForDefinitions)
+                        .actionListener { _, component -> checkGeneratedModifierIconsForDefinitions = component.isSelected }
+                        .enabledIf(checkForDefinitionsCb.selected)
+                }
             }
+            //checkForModifiers
             row {
                 checkBox(PlsBundle.message("inspection.script.general.missingImage.option.checkForModifiers"))
                     .bindSelected(::checkForModifiers)
                     .actionListener { _, component -> checkForModifiers = component.isSelected }
+                    .also { checkForModifiersCb = it }
+            }
+            indent {
+                //checkModifierIcons
+                row {
+                    checkBox(PlsBundle.message("inspection.script.general.missingImage.option.checkModifierIcons"))
+                        .bindSelected(::checkModifierIcons)
+                        .actionListener { _, component -> checkModifierIcons = component.isSelected }
+                        .enabledIf(checkForModifiersCb.selected)
+                }
             }
         }
     }
     
-    data class Info(
+    data class Context(
         val info: ParadoxDefinitionRelatedImageInfo,
         val key: String?
     )

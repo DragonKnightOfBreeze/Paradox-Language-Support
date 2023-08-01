@@ -13,7 +13,7 @@ class ParadoxLocaleDialog(
     var locale = locale ?: localesToSelect.firstOrNull()
     
     init {
-        title = PlsBundle.message("ui.dialog.selectParadoxLocale.title")
+        title = PlsBundle.message("ui.dialog.selectLocale.title")
         init()
     }
     
@@ -23,3 +23,4 @@ class ParadoxLocaleDialog(
         }
     }
 }
+

@@ -2,13 +2,13 @@ package icu.windea.pls.localisation.psi
 
 import com.intellij.lang.*
 import com.intellij.psi.stubs.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.model.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.impl.*
+import icu.windea.pls.model.constraints.*
 
 object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<ParadoxLocalisationPropertyStub, ParadoxLocalisationProperty>(
     "PROPERTY",

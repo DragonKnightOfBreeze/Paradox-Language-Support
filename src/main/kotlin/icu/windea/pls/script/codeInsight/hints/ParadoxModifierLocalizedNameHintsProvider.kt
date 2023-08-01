@@ -12,6 +12,7 @@ import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxModifierLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*

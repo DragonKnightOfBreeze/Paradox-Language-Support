@@ -10,7 +10,7 @@ class ParadoxLocalePopup(
 	existingLocales: List<CwtLocalisationLocaleConfig> = emptyList(),
 	localesToSelect: List<CwtLocalisationLocaleConfig> = getLocalesToSelect(existingLocales, locale),
 	private val onChosen: (selected: CwtLocalisationLocaleConfig) -> Unit //必须传入，否则没有意义
-) : BaseListPopupStep<CwtLocalisationLocaleConfig>(PlsBundle.message("ui.popup.selectParadoxLocale.title"), localesToSelect) {
+) : BaseListPopupStep<CwtLocalisationLocaleConfig>(PlsBundle.message("ui.popup.selectLocale.title"), localesToSelect) {
 	var locale: CwtLocalisationLocaleConfig? = null //初始为null
 	
 	override fun getIconFor(value: CwtLocalisationLocaleConfig) = value.icon

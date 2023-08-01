@@ -66,7 +66,7 @@ class ParadoxLocaleTableModel(
             tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
             tableView.setFixedColumnWidth(SelectedItem.columnIndex, "   ")
             //快速搜索
-            object : TableViewSpeedSearch<String>(tableView) {
+            object : TableViewSpeedSearch<String>(tableView, null) {
                 override fun getItemText(element: String): String {
                     return element
                 }

@@ -6,6 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.references.*
+import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 
 /**

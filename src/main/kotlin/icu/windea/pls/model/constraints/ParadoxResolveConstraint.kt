@@ -1,9 +1,7 @@
-package icu.windea.pls.core
+package icu.windea.pls.model.constraints
 
 import com.intellij.psi.*
-import com.intellij.psi.stubs.*
 import icu.windea.pls.core.expression.nodes.*
-import icu.windea.pls.core.index.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.lang.cwt.expression.*
@@ -11,22 +9,6 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.references.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
-
-/**
- * 用于优化本地化查询。
- */
-enum class ParadoxLocalisationConstraint(
-    val indexKey: StubIndexKey<String, ParadoxLocalisationProperty>,
-    val predicate: (String) -> Boolean,
-    val ignoreCase: Boolean = false,
-) {
-    Default(ParadoxLocalisationNameIndexKey, { true }),
-    Modifier(ParadoxLocalisationNameIndexModifierKey, { it.startsWith("mod_", true) }, ignoreCase = true);
-    
-    companion object {
-        val values = values()
-    }
-}
 
 enum class ParadoxResolveConstraint {
     ScriptedVariable {

@@ -4,7 +4,10 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.cwt.config.*
 
-fun getLocalesToSelect(existingLocales: List<CwtLocalisationLocaleConfig>, locale: CwtLocalisationLocaleConfig?): List<CwtLocalisationLocaleConfig> {
+fun getLocalesToSelect(
+	existingLocales: List<CwtLocalisationLocaleConfig> = emptyList(),
+	locale: CwtLocalisationLocaleConfig? = null
+): List<CwtLocalisationLocaleConfig> {
 	//置顶偏好的语言区域
 	val preferredLocale = preferredParadoxLocale()
 	val allLocaleConfigs = getCwtConfig().core.localisationLocales
