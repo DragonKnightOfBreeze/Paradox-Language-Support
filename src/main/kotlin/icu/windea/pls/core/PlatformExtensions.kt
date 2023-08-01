@@ -8,7 +8,7 @@ import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInsight.template.*
 import com.intellij.codeInsight.template.impl.*
 import com.intellij.extapi.psi.*
-import com.intellij.injected.editor.VirtualFileWindow
+import com.intellij.injected.editor.*
 import com.intellij.lang.*
 import com.intellij.lang.documentation.*
 import com.intellij.lang.injection.*

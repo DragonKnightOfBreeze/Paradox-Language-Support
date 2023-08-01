@@ -8,8 +8,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.model.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
 
 class ParadoxWithGameTypeSelector<T>(
     val gameType: ParadoxGameType

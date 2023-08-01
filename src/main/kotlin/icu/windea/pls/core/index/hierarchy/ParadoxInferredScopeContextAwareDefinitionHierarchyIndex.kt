@@ -8,7 +8,6 @@ import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.model.*
-import icu.windea.pls.lang.scope.impl.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 

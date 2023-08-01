@@ -3,7 +3,6 @@
 package icu.windea.pls.core.codeInsight.generation
 
 import com.intellij.openapi.util.*
-import icu.windea.pls.*
 
 data class GenerateLocalisationsInFileContext(
     val fileName: String,

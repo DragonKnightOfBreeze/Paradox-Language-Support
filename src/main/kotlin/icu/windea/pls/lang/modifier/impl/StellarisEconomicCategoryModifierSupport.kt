@@ -16,8 +16,8 @@ import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.model.*
 import icu.windea.pls.lang.modifier.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 /**

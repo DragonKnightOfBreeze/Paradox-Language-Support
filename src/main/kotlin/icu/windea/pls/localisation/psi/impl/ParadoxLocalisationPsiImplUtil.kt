@@ -18,11 +18,11 @@ import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.model.*
 import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.references.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 

@@ -3,7 +3,6 @@ package icu.windea.pls.core.psi
 import com.intellij.lang.*
 import com.intellij.navigation.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*

@@ -5,9 +5,9 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.impl.*
+import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
 
 object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<ParadoxLocalisationPropertyStub, ParadoxLocalisationProperty>(

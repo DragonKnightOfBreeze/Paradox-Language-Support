@@ -4,8 +4,8 @@ import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.fileTypes.impl.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
 import icu.windea.pls.localisation.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 
 /**

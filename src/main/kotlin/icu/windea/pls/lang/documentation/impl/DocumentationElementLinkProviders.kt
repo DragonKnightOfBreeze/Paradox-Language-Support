@@ -10,8 +10,8 @@ import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.documentation.*
-import icu.windea.pls.model.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 class CwtConfigLinkProvider : DocumentationElementLinkProvider {

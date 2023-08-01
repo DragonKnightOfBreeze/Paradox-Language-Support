@@ -3,8 +3,8 @@ package icu.windea.pls.lang.scope.impl
 import com.intellij.openapi.progress.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.model.*
 import icu.windea.pls.lang.scope.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxOnActionScopeContextProvider : ParadoxDefinitionScopeContextProvider {

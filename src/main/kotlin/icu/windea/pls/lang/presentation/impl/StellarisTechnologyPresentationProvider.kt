@@ -8,8 +8,8 @@ import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.data.impl.StellarisTechnologyDataProvider.*
-import icu.windea.pls.model.*
 import icu.windea.pls.lang.presentation.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*
 import java.awt.*

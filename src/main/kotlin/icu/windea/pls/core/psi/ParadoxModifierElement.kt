@@ -2,15 +2,14 @@ package icu.windea.pls.core.psi
 
 import com.intellij.navigation.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
 import icu.windea.pls.lang.modifier.*
+import icu.windea.pls.model.*
 import java.util.*
 import javax.swing.*
 

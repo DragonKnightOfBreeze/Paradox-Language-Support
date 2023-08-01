@@ -6,10 +6,10 @@ import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.impl.*
+import icu.windea.pls.model.*
 
 /**
  * 用于处理本地化信息。

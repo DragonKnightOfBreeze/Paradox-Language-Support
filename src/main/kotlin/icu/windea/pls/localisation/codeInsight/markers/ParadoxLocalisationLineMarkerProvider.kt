@@ -11,8 +11,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
-import icu.windea.pls.model.ParadoxLocalisationCategory.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.ParadoxLocalisationCategory.*
 
 /**
  * 本地化（localisation/localisation_synced）的装订线图标提供器。
