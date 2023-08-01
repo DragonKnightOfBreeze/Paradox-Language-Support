@@ -1,6 +1,6 @@
 package icu.windea.pls.core.annotations
 
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 /**
  * 注明此功能仅限于指定的游戏类型。

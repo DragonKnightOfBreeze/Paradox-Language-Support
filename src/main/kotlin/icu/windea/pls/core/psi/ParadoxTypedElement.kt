@@ -1,7 +1,7 @@
 package icu.windea.pls.core.psi
 
 import com.intellij.psi.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 /**
  * @property type 脚本表达式的类型。基于PSI元素的类型。

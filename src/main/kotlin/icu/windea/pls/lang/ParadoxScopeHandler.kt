@@ -15,7 +15,7 @@ import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*

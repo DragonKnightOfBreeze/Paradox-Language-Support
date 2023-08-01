@@ -1,6 +1,6 @@
 package icu.windea.pls.dev.cwt
 
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import org.junit.*
 
 class CwtLocalisationConfigGeneratorTest {

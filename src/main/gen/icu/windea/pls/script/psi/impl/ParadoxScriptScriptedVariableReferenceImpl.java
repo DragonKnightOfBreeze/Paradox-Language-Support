@@ -14,7 +14,7 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.core.references.ParadoxScriptedVariablePsiReference;
-import icu.windea.pls.lang.model.ParadoxType;
+import icu.windea.pls.model.ParadoxType;
 import javax.swing.Icon;
 
 public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptValueImpl implements ParadoxScriptScriptedVariableReference {

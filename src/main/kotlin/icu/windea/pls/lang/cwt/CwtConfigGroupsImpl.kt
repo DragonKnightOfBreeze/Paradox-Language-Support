@@ -3,7 +3,7 @@ package icu.windea.pls.lang.cwt
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import java.util.concurrent.*
 
 class CwtConfigGroupsImpl(

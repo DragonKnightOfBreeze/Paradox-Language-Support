@@ -6,7 +6,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.cwt.expression.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 sealed interface CwtValueConfig : CwtMemberConfig<CwtValue>, CwtValueAware {
     val propertyConfig: CwtPropertyConfig?

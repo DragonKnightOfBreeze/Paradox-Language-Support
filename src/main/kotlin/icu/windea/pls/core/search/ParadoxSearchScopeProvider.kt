@@ -7,7 +7,7 @@ import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.scope.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 /**
  * 在查找使用以及其他一些地方提供自定义的额外的查询作用域。

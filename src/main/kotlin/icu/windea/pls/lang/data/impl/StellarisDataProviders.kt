@@ -2,7 +2,7 @@ package icu.windea.pls.lang.data.impl
 
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.data.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
 

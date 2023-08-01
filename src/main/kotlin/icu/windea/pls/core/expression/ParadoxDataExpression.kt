@@ -7,7 +7,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.ParadoxDataExpression.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 /**

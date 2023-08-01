@@ -3,7 +3,7 @@ package icu.windea.pls.core.index
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.psi.stubs.*
 import com.intellij.util.indexing.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 fun ReadWriteAccessDetector.Access.toByte() = this.ordinal
 

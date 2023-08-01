@@ -10,7 +10,7 @@ import com.intellij.usages.*
 import com.intellij.usages.impl.*
 import com.intellij.usages.rules.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 

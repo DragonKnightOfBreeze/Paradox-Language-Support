@@ -4,7 +4,7 @@ import com.fasterxml.jackson.dataformat.csv.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import java.io.*
 
 /**

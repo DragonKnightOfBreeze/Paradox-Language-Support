@@ -3,7 +3,7 @@ package icu.windea.pls.core.listeners
 import com.intellij.openapi.application.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 /**
  * 当默认游戏类型变更后，重新解析文件。

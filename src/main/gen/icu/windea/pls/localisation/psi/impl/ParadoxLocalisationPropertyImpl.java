@@ -11,7 +11,7 @@ import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.lang.model.ParadoxLocalisationCategory;
+import icu.windea.pls.model.ParadoxLocalisationCategory;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 

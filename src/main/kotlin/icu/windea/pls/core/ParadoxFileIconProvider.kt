@@ -5,7 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import javax.swing.*
 
 class ParadoxFileIconProvider: FileIconProvider {

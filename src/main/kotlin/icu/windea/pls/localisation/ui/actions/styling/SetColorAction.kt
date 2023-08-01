@@ -6,7 +6,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.actions.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 //org.intellij.plugins.markdown.ui.actions.styling.MarkdownHeaderAction
 //org.intellij.plugins.markdown.ui.actions.styling.BaseToggleStateAction

@@ -13,7 +13,7 @@ import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.core.tool.model.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 /**
  * 从启动器JSON配置文件导入模组配置。

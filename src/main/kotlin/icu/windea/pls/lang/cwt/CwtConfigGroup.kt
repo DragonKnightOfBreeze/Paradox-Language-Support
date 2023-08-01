@@ -6,7 +6,7 @@ import com.intellij.util.containers.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.setting.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 interface CwtConfigGroup: UserDataHolder {
 	val gameType: ParadoxGameType?

@@ -3,7 +3,7 @@ package icu.windea.pls.core
 import com.intellij.ide.util.*
 import com.intellij.util.*
 import icons.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 /**
  * 用于渲染定义、本地化等所在的位置（游戏目录/模组目录）。在弹出项右侧显示特定的图标和位置文本。

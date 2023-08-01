@@ -7,7 +7,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*
 import com.intellij.util.io.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import java.nio.file.*
 
 //com.intellij.ide.actions.RevealFileAction

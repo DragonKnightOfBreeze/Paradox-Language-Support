@@ -9,7 +9,7 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.tool.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 /**
  * 当打开项目中的模组文件时，检查模组的游戏目录是否已配置。如果未配置则弹出通知。

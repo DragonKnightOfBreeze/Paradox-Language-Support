@@ -2,7 +2,7 @@ package icu.windea.pls.core.psi
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 interface ParadoxParameter : ParadoxTypedElement, NavigatablePsiElement, ParadoxLanguageInjectionHost {
     override fun getName(): String?

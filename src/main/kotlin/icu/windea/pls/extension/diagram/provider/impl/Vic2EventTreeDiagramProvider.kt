@@ -13,7 +13,7 @@ import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
 import icu.windea.pls.extension.diagram.settings.impl.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 private const val ID = "Vic2.EventTree"

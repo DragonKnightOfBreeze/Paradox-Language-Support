@@ -3,7 +3,7 @@ package icu.windea.pls.core.listeners
 import com.intellij.openapi.application.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 /**
  * 当根目录信息被添加时，同步相关配置。

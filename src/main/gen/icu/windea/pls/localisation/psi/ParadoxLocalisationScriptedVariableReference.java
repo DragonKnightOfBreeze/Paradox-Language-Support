@@ -5,13 +5,13 @@ import com.intellij.navigation.*;
 import com.intellij.psi.search.*;
 import icu.windea.pls.core.psi.*;
 import icu.windea.pls.core.references.*;
-import icu.windea.pls.lang.model.*;
+import icu.windea.pls.model.*;
 import org.jetbrains.annotations.*;
 import icu.windea.pls.core.psi.ParadoxScriptedVariableReference;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.lang.model.ParadoxType;
+import icu.windea.pls.model.ParadoxType;
 import icu.windea.pls.core.references.ParadoxScriptedVariablePsiReference;
 import javax.swing.Icon;
 

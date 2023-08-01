@@ -13,7 +13,7 @@ import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 /**
  * 值字段表达式。

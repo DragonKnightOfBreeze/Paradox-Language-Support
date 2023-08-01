@@ -10,7 +10,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.cwt.expression.CwtDataType.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig<T>, CwtValueAware, CwtOptionsAware, CwtDocumentationAware {
     val configs: List<CwtMemberConfig<*>>?

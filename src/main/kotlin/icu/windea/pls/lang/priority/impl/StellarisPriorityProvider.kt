@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.priority.impl
 
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisPriorityProvider : ParadoxFilePathBasedPriorityProvider() {

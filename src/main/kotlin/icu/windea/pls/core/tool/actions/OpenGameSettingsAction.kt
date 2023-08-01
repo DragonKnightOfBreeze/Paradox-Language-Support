@@ -11,7 +11,7 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.listeners.*
 import icu.windea.pls.core.tool.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 /**
  * 打开游戏配置。

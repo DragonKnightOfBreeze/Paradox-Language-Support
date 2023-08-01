@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.cwt.expression
 
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 enum class CwtDataType {
     Block,

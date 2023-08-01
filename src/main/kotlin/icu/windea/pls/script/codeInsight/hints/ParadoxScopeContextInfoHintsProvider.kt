@@ -10,7 +10,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxScopeContextInfoHintsProvider.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*

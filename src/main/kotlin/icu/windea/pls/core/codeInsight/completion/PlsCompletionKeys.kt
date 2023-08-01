@@ -6,7 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 object PlsCompletionKeys
 

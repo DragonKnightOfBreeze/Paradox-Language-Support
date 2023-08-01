@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.documentation
 
 import com.intellij.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import org.jetbrains.annotations.*
 
 class ParadoxExtendedDocumentationBundle(bundleName: String) : DynamicBundle(bundleName) {

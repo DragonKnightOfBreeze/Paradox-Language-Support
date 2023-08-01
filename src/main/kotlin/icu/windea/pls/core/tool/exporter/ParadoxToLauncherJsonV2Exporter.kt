@@ -13,7 +13,7 @@ import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.core.tool.model.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 private const val pos = 4096
 private const val defaultSavedName = "playlist.json"

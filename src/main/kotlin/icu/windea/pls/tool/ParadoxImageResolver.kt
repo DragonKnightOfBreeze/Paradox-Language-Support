@@ -9,7 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.dds.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import org.intellij.images.fileTypes.impl.*
 import java.lang.invoke.*

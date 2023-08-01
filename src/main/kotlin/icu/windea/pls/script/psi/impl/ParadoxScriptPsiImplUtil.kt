@@ -17,7 +17,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.color.*
 import icu.windea.pls.lang.color.impl.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*

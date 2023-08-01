@@ -1,7 +1,7 @@
 package icu.windea.pls.script.psi.impl
 
 import com.intellij.psi.stubs.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptPropertyStubImpl(

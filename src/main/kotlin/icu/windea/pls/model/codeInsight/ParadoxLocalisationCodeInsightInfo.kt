@@ -1,7 +1,7 @@
 package icu.windea.pls.model.codeInsight
 
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 data class ParadoxLocalisationCodeInsightInfo(
     val type: Type,

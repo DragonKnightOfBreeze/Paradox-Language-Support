@@ -9,7 +9,7 @@ import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.extras.*
 import icu.windea.pls.extension.diagram.settings.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 abstract class ParadoxDiagramProvider(
     val gameType: ParadoxGameType

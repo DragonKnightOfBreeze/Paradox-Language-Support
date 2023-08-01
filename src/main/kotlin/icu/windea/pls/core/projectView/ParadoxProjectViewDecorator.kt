@@ -4,7 +4,7 @@ import com.intellij.ide.projectView.*
 import com.intellij.ide.projectView.impl.nodes.*
 import icons.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 /**
  * 在项目视图中为游戏或模组根目录提供特定的图标和额外的信息文本。

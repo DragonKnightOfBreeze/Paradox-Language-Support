@@ -10,7 +10,7 @@ import com.intellij.util.ui.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisEventTreeDiagramSettingsConfigurable(

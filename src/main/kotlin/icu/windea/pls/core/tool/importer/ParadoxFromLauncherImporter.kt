@@ -7,7 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import java.nio.file.*
 
 private const val dbPath = "launcher-v2.sqlite"

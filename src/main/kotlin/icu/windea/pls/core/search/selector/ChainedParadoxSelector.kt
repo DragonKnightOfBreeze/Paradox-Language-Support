@@ -6,7 +6,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.core.settings.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 class ChainedParadoxSelector<T>(
     val project: Project,

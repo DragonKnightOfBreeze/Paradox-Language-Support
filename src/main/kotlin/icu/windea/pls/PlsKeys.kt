@@ -6,7 +6,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.*
 

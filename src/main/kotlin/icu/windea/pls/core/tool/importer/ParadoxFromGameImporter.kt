@@ -12,7 +12,7 @@ import icu.windea.pls.core.tool.*
 import icu.windea.pls.core.tool.model.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 private const val dlcLoadJsonPath = "dlc_load.json"
 private const val collectionName = "Paradox"

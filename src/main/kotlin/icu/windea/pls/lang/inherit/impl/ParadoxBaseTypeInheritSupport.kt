@@ -3,7 +3,7 @@ package icu.windea.pls.lang.inherit.impl
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.inherit.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 /**

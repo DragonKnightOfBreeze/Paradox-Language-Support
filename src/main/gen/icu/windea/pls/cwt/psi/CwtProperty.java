@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.lang.model.CwtSeparatorType;
+import icu.windea.pls.model.CwtSeparatorType;
 import javax.swing.Icon;
 
 public interface CwtProperty extends CwtNamedElement {

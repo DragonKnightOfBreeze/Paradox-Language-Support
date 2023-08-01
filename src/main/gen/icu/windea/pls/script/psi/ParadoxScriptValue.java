@@ -9,7 +9,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.lang.model.ParadoxType;
+import icu.windea.pls.model.ParadoxType;
 import javax.swing.Icon;
 
 public interface ParadoxScriptValue extends NavigatablePsiElement, ParadoxScriptExpressionElement, ParadoxScriptMemberElement {

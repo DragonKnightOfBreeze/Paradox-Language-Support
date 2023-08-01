@@ -3,7 +3,7 @@ package icu.windea.pls.lang.documentation.impl
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.documentation.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxOnActionExtendedDocumentationProvider : ParadoxDefinitionExtendedDocumentationProvider {

@@ -8,7 +8,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.testFramework.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import java.lang.invoke.*
 import java.nio.file.*
 import java.util.*

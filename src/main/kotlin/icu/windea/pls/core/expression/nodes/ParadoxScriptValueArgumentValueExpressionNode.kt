@@ -3,7 +3,7 @@ package icu.windea.pls.core.expression.nodes
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.lang.cwt.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.highlighter.*
 
 class ParadoxScriptValueArgumentValueExpressionNode(

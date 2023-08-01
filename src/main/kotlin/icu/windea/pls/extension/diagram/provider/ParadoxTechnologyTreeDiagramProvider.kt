@@ -16,7 +16,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 import icu.windea.pls.lang.presentation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*

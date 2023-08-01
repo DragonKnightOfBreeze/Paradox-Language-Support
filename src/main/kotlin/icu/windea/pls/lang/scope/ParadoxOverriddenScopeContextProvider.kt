@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 /**
  * 用于在某些极个别情况下基于另外的逻辑获取脚本表达式对应的作用域上下文。

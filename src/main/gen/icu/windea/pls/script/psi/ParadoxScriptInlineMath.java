@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.lang.model.ParadoxType;
+import icu.windea.pls.model.ParadoxType;
 
 public interface ParadoxScriptInlineMath extends ParadoxScriptValue {
 

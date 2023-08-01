@@ -10,7 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.listeners.*
 import icu.windea.pls.core.settings.*
-import icu.windea.pls.lang.model.*
+import icu.windea.pls.model.*
 
 class ParadoxGameSettingsDialog(
     val project: Project,
