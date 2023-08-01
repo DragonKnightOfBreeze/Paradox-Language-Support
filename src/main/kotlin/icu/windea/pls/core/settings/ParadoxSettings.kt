@@ -91,10 +91,10 @@ class ParadoxSettingsState : BaseState() {
      */
     @Tag("generation")
     class GenerationState : BaseState() {
+        var fileNamePrefix by string("000000_")
         var localisationStrategy by enum(LocalisationGenerationStrategy.SpecificText)
         var localisationStrategyText by string("REPLACE_ME")
         var localisationStrategyLocale by string("auto")
-        var fileNamePrefix by string("000000_")
     }
     
     /**

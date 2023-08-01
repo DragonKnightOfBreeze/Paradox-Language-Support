@@ -198,33 +198,27 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     label(PlsBundle.message("settings.generation.fileNamePrefix"))
                     textField().bindText(settings.generation::fileNamePrefix.toNonNullableProperty(""))
                 }.visible(false)
-                //localisation
-                row {
-                    label(PlsBundle.message("settings.generation.localisation"))
-                }
-                indent {
-                    //strategy
-                    this@collapsibleGroup.buttonsGroup(PlsBundle.message("settings.generation.localisation.strategy"), indent = false) {
-                        row {
-                            radioButton(PlsBundle.message("settings.generation.localisation.strategy.0"), LocalisationGenerationStrategy.EmptyText)
-                        }
-                        row {
-                            lateinit var rbCell: Cell<JBRadioButton>
-                            radioButton(PlsBundle.message("settings.generation.localisation.strategy.1"), LocalisationGenerationStrategy.SpecificText)
-                                .apply { rbCell = this }
-                            textField().bindText(settings.generation::localisationStrategyText.toNonNullableProperty(""))
-                                .enabledIf(rbCell.selected)
-                        }
-                        row {
-                            lateinit var rbCell: Cell<JBRadioButton>
-                            radioButton(PlsBundle.message("settings.generation.localisation.strategy.2"), LocalisationGenerationStrategy.FromLocale)
-                                .apply { rbCell = this }
-                            localeComboBox(settings)
-                                .bindItem(settings.generation::localisationStrategyLocale.toNullableProperty())
-                                .enabledIf(rbCell.selected)
-                        }
-                    }.bind(settings.generation::localisationStrategy)
-                }
+                //localisationStrategy
+                buttonsGroup(PlsBundle.message("settings.generation.localisationStrategy")) {
+                    row {
+                        radioButton(PlsBundle.message("settings.generation.localisationStrategy.0"), LocalisationGenerationStrategy.EmptyText)
+                    }
+                    row {
+                        lateinit var rbCell: Cell<JBRadioButton>
+                        radioButton(PlsBundle.message("settings.generation.localisationStrategy.1"), LocalisationGenerationStrategy.SpecificText)
+                            .apply { rbCell = this }
+                        textField().bindText(settings.generation::localisationStrategyText.toNonNullableProperty(""))
+                            .enabledIf(rbCell.selected)
+                    }
+                    row {
+                        lateinit var rbCell: Cell<JBRadioButton>
+                        radioButton(PlsBundle.message("settings.generation.localisationStrategy.2"), LocalisationGenerationStrategy.FromLocale)
+                            .apply { rbCell = this }
+                        localeComboBox(settings)
+                            .bindItem(settings.generation::localisationStrategyLocale.toNullableProperty())
+                            .enabledIf(rbCell.selected)
+                    }
+                }.bind(settings.generation::localisationStrategy)
             }
             //inference
             collapsibleGroup(PlsBundle.message("settings.inference")) {
