@@ -37,7 +37,7 @@ object ParadoxCoreHandler {
     
     fun getRootInfo(rootFile: VirtualFile, refresh: Boolean = true): ParadoxRootInfo? {
         if(!rootFile.isDirectory) return null
-        if(!runCatching { rootFile.isValid }.getOrDefault(true)) return null //注意这里可能会抛出异常
+        if(!runCatching { runReadAction { rootFile.isValid } }.getOrDefault(true)) return null //注意这里可能会抛出异常
         
         //首先尝试获取注入的rootInfo
         val injectedRootInfo = rootFile.getUserData(PlsKeys.injectedRootInfo)
@@ -168,7 +168,7 @@ object ParadoxCoreHandler {
     }
     
     fun getFileInfo(file: VirtualFile, refresh: Boolean = true): ParadoxFileInfo? {
-        if(!runCatching { file.isValid }.getOrDefault(true)) return null //注意这里可能会抛出异常
+        if(!runCatching { runReadAction { file.isValid } }.getOrDefault(true)) return null //注意这里可能会抛出异常
         
         //首先尝试获取注入的fileInfo
         val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfo)
