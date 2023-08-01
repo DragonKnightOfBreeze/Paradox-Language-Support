@@ -40,7 +40,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     ProgressManager.checkCanceled()
                     //need read action here
                     runReadAction {
-                        val selector = localisationSelector(project, definition).contextSensitive().preferLocale(preferredParadoxLocale())
+                        val selector = localisationSelector(project, definition).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
                         val resolved = locationExpression.resolveAll(definition, definitionInfo, selector)
                         if(resolved != null && resolved.localisations.isNotEmpty()) {
                             targets.addAll(resolved.localisations)
@@ -59,7 +59,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     run {
                         val key = ParadoxModifierHandler.getModifierNameKey(modifierElement.name)
                         val selector = localisationSelector(project, element).contextSensitive()
-                            .preferLocale(preferredParadoxLocale())
+                            .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
                             .withConstraint(ParadoxLocalisationConstraint.Modifier)
                         val result = ParadoxLocalisationSearch.search(key, selector).findAll()
                         targets.addAll(result)
@@ -67,7 +67,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     run {
                         val key = ParadoxModifierHandler.getModifierDescKey(modifierElement.name)
                         val selector = localisationSelector(project, element).contextSensitive()
-                            .preferLocale(preferredParadoxLocale())
+                            .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
                             .withConstraint(ParadoxLocalisationConstraint.Modifier)
                         val result = ParadoxLocalisationSearch.search(key, selector).findAll()
                         targets.addAll(result)

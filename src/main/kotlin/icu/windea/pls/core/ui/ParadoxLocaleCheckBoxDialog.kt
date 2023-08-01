@@ -5,11 +5,11 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.cwt.config.*
 
-class ParadoxLocaleCheckboxDialog(
-    selectedLocales: List<CwtLocalisationLocaleConfig>,
-    localesToSelect: List<CwtLocalisationLocaleConfig> = getLocalesToSelect()
+class ParadoxLocaleCheckBoxDialog(
+    val selectedLocales: Collection<CwtLocalisationLocaleConfig>,
+    val allLocales: Collection<CwtLocalisationLocaleConfig>
 ): DialogWrapper(null, false) {
-    val localeStatusMap = localesToSelect.associateWithTo(mutableMapOf()) { it in selectedLocales }
+    val localeStatusMap = allLocales.associateWithTo(mutableMapOf()) { it in selectedLocales }
     
     init {
         title = PlsBundle.message("ui.dialog.selectLocales.title")

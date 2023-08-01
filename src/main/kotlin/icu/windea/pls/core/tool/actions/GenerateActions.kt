@@ -14,6 +14,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.settings.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 
@@ -46,7 +47,7 @@ class GenerateLocalisationFileAction : AnAction() {
             if(files.isEmpty()) return@run
             visible = true
             //任意文件的文件名中必须带有某个语言区域，并且文件文本中必须仅带有这个语言区域
-            val allLocales = getCwtConfig().core.localisationLocalesNoDefaultNoPrefix
+            val allLocales = ParadoxLocaleHandler.getLocaleConfigMapByShortId()
             val fileMap = mutableMapOf<String, VirtualFile>()
             files.forEach { file ->
                 val localeString = allLocales.keys.find { file.name.contains(it) }
@@ -75,7 +76,7 @@ class GenerateLocalisationFileAction : AnAction() {
         }
         if(files.isEmpty()) return
         //任意文件的文件名中必须带有某个语言区域，并且文件文本中必须仅带有这个语言区域
-        val allLocales = getCwtConfig().core.localisationLocalesNoDefaultNoPrefix
+        val allLocales = ParadoxLocaleHandler.getLocaleConfigMapByShortId()
         val fileMap = mutableMapOf<String, VirtualFile>()
         files.forEach { file ->
             val localeString = allLocales.keys.find { file.name.contains(it) }
@@ -148,7 +149,7 @@ class GenerateLocalisationFileAction : AnAction() {
                                         LocalisationGenerationStrategy.SpecificText -> e.setValue(generationSettings.localisationStrategyText.orEmpty())
                                         LocalisationGenerationStrategy.FromLocale -> {
                                             //使用对应语言区域的文本，如果不存在，以及其他任何意外，直接使用空字符串
-                                            val locale = getLocale(generationSettings.localisationStrategyLocale.orEmpty())
+                                            val locale = ParadoxLocaleHandler.getLocale(generationSettings.localisationStrategyLocale.orEmpty())
                                             val selector = localisationSelector(project, baseFile).contextSensitive().locale(locale)
                                             val localisation = ParadoxLocalisationSearch.search(e.name, selector).find()
                                             e.setValue(localisation?.propertyValue?.text?.unquote().orEmpty())

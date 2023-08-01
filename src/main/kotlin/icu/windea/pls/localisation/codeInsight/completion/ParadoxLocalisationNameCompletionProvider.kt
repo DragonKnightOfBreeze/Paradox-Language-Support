@@ -9,6 +9,7 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 
@@ -36,7 +37,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
         //排除正在输入的那一个
         val selector = localisationSelector(project, file)
             .contextSensitive()
-            .preferLocale(preferredParadoxLocale())
+            .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
             .notSamePosition(element)
             //.distinctByName() //这里selector不需要指定去重
         val processor: (ParadoxLocalisationProperty) -> Boolean = processor@{

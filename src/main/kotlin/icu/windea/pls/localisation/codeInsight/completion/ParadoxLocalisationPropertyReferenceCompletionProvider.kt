@@ -38,7 +38,7 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
         //提示localisation或者synced_localisation
         val selector = localisationSelector(project, file)
             .contextSensitive()
-            .preferLocale(preferredParadoxLocale())
+            .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
             //.distinctByName() //这里selector不需要指定去重
         val processor: (ParadoxLocalisationProperty) -> Boolean = {
             ProgressManager.checkCanceled()

@@ -10,6 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -37,7 +38,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
 		val project = element.project
 		for((key, locationExpression) in localisationInfos) {
 			ProgressManager.checkCanceled()
-			val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
+			val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
 			val resolved = locationExpression.resolveAll(element, definitionInfo, selector) ?: continue
 			if(resolved.localisations.isNotEmpty()) {
 				targets.addAll(resolved.localisations)

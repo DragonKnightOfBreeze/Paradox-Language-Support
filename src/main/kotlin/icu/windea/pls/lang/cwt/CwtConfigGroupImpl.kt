@@ -31,9 +31,6 @@ class CwtConfigGroupImpl(
     
     override val systemLinks: MutableMap<@CaseInsensitive String, CwtSystemLinkConfig> = caseInsensitiveStringKeyMap()
     override val localisationLocales: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
-    override val localisationLocalesNoDefault: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
-    override val localisationLocalesNoDefaultNoPrefix: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
-    override val localisationLocalesByCode: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
     override val localisationPredefinedParameters: MutableMap<String, CwtLocalisationPredefinedParameterConfig> = mutableMapOf()
     
     override val folders: MutableSet<String> = mutableSetOf()
@@ -276,9 +273,6 @@ class CwtConfigGroupImpl(
             val codes = property.properties?.find { p -> p.key == "codes" }?.values?.mapNotNull { v -> v.stringValue }.orEmpty()
             val config = CwtLocalisationLocaleConfig(property.pointer, fileConfig.info, id, description, codes)
             localisationLocales.put(id, config)
-            if(id != "l_default") localisationLocalesNoDefault.put(id, config)
-            if(id != "l_default" && id.startsWith("l_")) localisationLocalesNoDefaultNoPrefix.put(id.drop(2), config)
-            codes.forEach { code -> localisationLocalesByCode.put(code, config) }
         }
     }
     
@@ -693,7 +687,7 @@ class CwtConfigGroupImpl(
     private fun resolveLocationConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocationConfig? {
         //default to optional
         //default to primary for name and title if it represents a localisation location (by inference)
-        //default to primary for icon if it represents a image location (by inference)
+        //default to primary for icon if it represents an image location (by inference)
         val expression = propertyConfig.stringValue ?: return null
         val required = propertyConfig.findOptionValue("required") != null
         val optional = propertyConfig.findOptionValue("optional") != null

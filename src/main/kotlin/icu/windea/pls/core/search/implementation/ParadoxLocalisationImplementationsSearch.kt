@@ -9,6 +9,7 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 
@@ -29,7 +30,7 @@ class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, Defin
             val category = localisationInfo.category
             //这里不需要也无法进行排序
             val selector = localisationSelector(project, sourceElement)
-                .preferLocale(preferredParadoxLocale()) //限定语言区域
+                .preferLocale(ParadoxLocaleHandler.getPreferredLocale()) //限定语言区域
                 .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
             val localisations = when(category) {
                 ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.search(name, selector).findAll()

@@ -25,7 +25,7 @@ import javax.swing.*
 
 /**
  * 缺失的本地化的检查。
- * @property checkForLocales 要检查的语言区域。默认检查英文。
+ * @property locales 要检查的语言区域。默认检查英文。
  * @property checkForPreferredLocale 是否同样检查主要的语言区域。默认为true。
  * @property checkForDefinitions 是否检查定义。默认为true。
  * @property checkPrimaryForDefinitions 是否同样检查定义的主要的相关本地化，默认为true。
@@ -33,9 +33,10 @@ import javax.swing.*
  * @property checkForModifiers 是否检查修正。默认为false。
  */
 class MissingLocalisationInspection : LocalInspectionTool() {
-    @OptionTag(converter = CommaDelimitedStringSetConverter::class)
-    @JvmField var checkForLocales = mutableSetOf<String>()
     @JvmField var checkForPreferredLocale = true
+    @JvmField var checkForSpecificLocales = true
+    @OptionTag(converter = CommaDelimitedStringSetConverter::class)
+    @JvmField var locales = mutableSetOf<String>()
     @JvmField var checkForDefinitions = true
     @JvmField var checkPrimaryForDefinitions = false
     @JvmField var checkOptionalForDefinitions = false
@@ -48,11 +49,11 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val project = holder.project
         val file = holder.file
-        val allLocaleConfigs = getCwtConfig().core.localisationLocales
-        val localeConfigs = mutableSetOf<CwtLocalisationLocaleConfig>()
-        if(checkForPreferredLocale) localeConfigs.add(preferredParadoxLocale())
-        checkForLocales.mapNotNullTo(localeConfigs) { allLocaleConfigs.get(it) }
-        if(localeConfigs.isEmpty()) return PsiElementVisitor.EMPTY_VISITOR
+        val allLocales = ParadoxLocaleHandler.getLocaleConfigMapById()
+        val locales = mutableSetOf<CwtLocalisationLocaleConfig>()
+        if(checkForPreferredLocale) locales.add(ParadoxLocaleHandler.getPreferredLocale())
+        if(checkForSpecificLocales) this.locales.mapNotNullTo(locales) { allLocales.get(it) }
+        if(locales.isEmpty()) return PsiElementVisitor.EMPTY_VISITOR
         return object : PsiElementVisitor() {
             var inFileContext: GenerateLocalisationsInFileContext? = null
             
@@ -78,7 +79,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 for(info in definitionInfo.localisations) {
                     ProgressManager.checkCanceled()
                     val expression = info.locationExpression
-                    for(locale in localeConfigs) {
+                    for(locale in locales) {
                         ProgressManager.checkCanceled()
                         val selector = localisationSelector(project, file).locale(locale) //use file as context
                         val resolved = expression.resolve(definition, definitionInfo, selector)
@@ -108,7 +109,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                         val type = ParadoxLocalisationCodeInsightInfo.Type.GeneratedModifierName
                         val check = checkGeneratedModifierNamesForDefinitions
                         val name = ParadoxModifierHandler.getModifierNameKey(modifierName)
-                        for(locale in localeConfigs) {
+                        for(locale in locales) {
                             ProgressManager.checkCanceled()
                             val missing = isMissing(name, locale)
                             val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, check, missing, false)
@@ -119,7 +120,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                         val type = ParadoxLocalisationCodeInsightInfo.Type.GeneratedModifierDesc
                         val check = checkGeneratedModifierDescriptionsForDefinitions
                         val name = ParadoxModifierHandler.getModifierDescKey(modifierName)
-                        for(locale in localeConfigs) {
+                        for(locale in locales) {
                             ProgressManager.checkCanceled()
                             val missing = isMissing(name, locale)
                             val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, check, missing, false)
@@ -142,7 +143,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     val type = ParadoxLocalisationCodeInsightInfo.Type.ModifierName
                     val check = checkModifierNames
                     val name = ParadoxModifierHandler.getModifierNameKey(modifierName)
-                    for(locale in localeConfigs) {
+                    for(locale in locales) {
                         ProgressManager.checkCanceled()
                         val missing = isMissing(name, locale)
                         val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, check, missing, false)
@@ -153,7 +154,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     val type = ParadoxLocalisationCodeInsightInfo.Type.ModifierDesc
                     val check = checkModifierDescriptions
                     val name = ParadoxModifierHandler.getModifierDescKey(modifierName)
-                    for(locale in localeConfigs) {
+                    for(locale in locales) {
                         ProgressManager.checkCanceled()
                         val missing = isMissing(name, locale)
                         val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, check, missing, false)
@@ -233,12 +234,12 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             row {
                 label(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForLocales"))
                 cell(ActionLink(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForLocales.configure")) {
-                    val allLocaleConfigs = getCwtConfig().core.localisationLocales
-                    val localeConfigs = checkForLocales.mapNotNull { allLocaleConfigs.get(it) }
-                    val localeDialog = ParadoxLocaleCheckboxDialog(localeConfigs)
+                    val allLocales = ParadoxLocaleHandler.getLocaleConfigMapById()
+                    val selectedLocales = locales.mapNotNull { allLocales.get(it) }
+                    val localeDialog = ParadoxLocaleCheckBoxDialog(selectedLocales, allLocales.values)
                     if(localeDialog.showAndGet()) {
-                        val newCheckForLocales = localeDialog.localeStatusMap.mapNotNullTo(mutableSetOf()) { (k, v) -> if(v) k.id else null }
-                        checkForLocales = newCheckForLocales
+                        val newLocales = localeDialog.localeStatusMap.mapNotNullTo(mutableSetOf()) { (k, v) -> if(v) k.id else null }
+                        locales = newLocales
                     }
                 })
             }

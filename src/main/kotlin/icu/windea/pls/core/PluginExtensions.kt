@@ -61,24 +61,6 @@ fun getProfilesSettings() = service<ParadoxProfilesSettings>().state
 
 fun getCwtConfig(project: Project = getTheOnlyOpenOrDefaultProject()) = project.service<CwtConfigProvider>().configGroups
 
-fun getLocale(locale: String): CwtLocalisationLocaleConfig {
-    val primaryLocale = locale
-    if(primaryLocale.isNotEmpty() && primaryLocale != "auto") {
-        val locales = getCwtConfig().core.localisationLocales
-        val usedLocale = locales.get(primaryLocale)
-        if(usedLocale != null) return usedLocale
-    }
-    //基于OS得到对应的语言区域，或者使用英文
-    val userLanguage = System.getProperty("user.language") ?: "en"
-    val localesByCode = getCwtConfig().core.localisationLocalesByCode
-    return localesByCode.get(userLanguage) ?: localesByCode.get("en") ?: throw IllegalStateException()
-}
-
-fun preferredParadoxLocale(): CwtLocalisationLocaleConfig {
-    val primaryLocale = getSettings().preferredLocale.orEmpty()
-    return getLocale(primaryLocale)
-}
-
 /**
  * 比较游戏版本。允许通配符，如："3.3.*"
  */
@@ -197,7 +179,7 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
             ?: selectLocale(from.containingFile)
         from is StubBasedPsiElementBase<*> && from.language == ParadoxLocalisationLanguage -> selectLocale(from.containingFile)
         from is PsiElement && from.language == ParadoxLocalisationLanguage -> selectLocale(from.parent)
-        else -> preferredParadoxLocale()
+        else -> ParadoxLocaleHandler.getPreferredLocale()
     }
 }
 

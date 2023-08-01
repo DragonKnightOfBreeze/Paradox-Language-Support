@@ -216,14 +216,14 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         val nameLocalisation = run {
             val key = ParadoxModifierHandler.getModifierNameKey(name)
             val selector = localisationSelector(project, element).contextSensitive()
-                .preferLocale(preferredParadoxLocale())
+                .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
         }
         val descLocalisation = run {
             val key = ParadoxModifierHandler.getModifierDescKey(name)
             val selector = localisationSelector(project, element).contextSensitive()
-                .preferLocale(preferredParadoxLocale())
+                .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
         }

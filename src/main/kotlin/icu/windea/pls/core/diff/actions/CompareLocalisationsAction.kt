@@ -26,6 +26,7 @@ import icu.windea.pls.core.diff.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
@@ -181,7 +182,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         //创建临时文件
         //val file = localisation.containingFile ?: return null
         val fileInfo = documentContent.highlightFile?.fileInfo ?: return null
-        val localeConfig = localisation.localeConfig ?: preferredParadoxLocale()
+        val localeConfig = localisation.localeConfig ?: ParadoxLocaleHandler.getPreferredLocale()
         val text = localisation.text
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), text, fileInfo) }
         tempFile.putUserData(PlsKeys.injectedLocaleConfig, localeConfig)

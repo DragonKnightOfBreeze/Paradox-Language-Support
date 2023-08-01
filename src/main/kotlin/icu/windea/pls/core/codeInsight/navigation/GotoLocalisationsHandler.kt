@@ -12,6 +12,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import java.util.*
 
@@ -31,7 +32,7 @@ class GotoLocalisationsHandler: GotoTargetHandler() {
         val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
             //need read action here
             runReadAction {
-                val selector = localisationSelector(project, localisation).contextSensitive().preferLocale(preferredParadoxLocale())
+                val selector = localisationSelector(project, localisation).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
                 val resolved = ParadoxLocalisationSearch.search(localisationInfo.name, selector).findAll()
                 targets.addAll(resolved)
             }

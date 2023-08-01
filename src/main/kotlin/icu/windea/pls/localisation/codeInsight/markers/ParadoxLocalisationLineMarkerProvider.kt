@@ -11,6 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.ParadoxLocalisationCategory.*
 
@@ -34,7 +35,7 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
         }
         val targets by lazy {
             val project = element.project
-            val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
+            val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
             when(category) {
                 Localisation -> ParadoxLocalisationSearch.search(name, selector).findAll()
                 SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll()

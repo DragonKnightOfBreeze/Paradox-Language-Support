@@ -316,15 +316,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
         }
     }
     
-    private fun Row.localeComboBox(settings: ParadoxSettingsState) =
-        this.comboBox(settings.localeList, listCellRenderer { value ->
-            if(value == "auto") {
-                text = PlsBundle.message("locale.auto")
-            } else {
-                text = getCwtConfig().core.localisationLocales.getValue(value).description
-            }
-        })
-    
     private fun doReparseFilesByFileNames(ignoredFileNameSet: Set<String>, oldIgnoredFileNameSet: Set<String>) {
         //设置中的被忽略文件名被更改时，需要重新解析相关文件
         val fileNames = mutableSetOf<String>()

@@ -39,14 +39,14 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         val configGroup = config.info.configGroup
         val project = configGroup.project
-        val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(preferredParadoxLocale(), exact)
+        val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleHandler.getPreferredLocale(), exact)
         return ParadoxLocalisationSearch.search(expression, selector).find()
     }
     
     override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
         val configGroup = config.info.configGroup
         val project = configGroup.project
-        val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
+        val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
         return ParadoxLocalisationSearch.search(expression, selector).findAll()
     }
     
@@ -64,7 +64,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         val contextElement = context.contextElement
         val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
         val selector = localisationSelector(project, contextElement).contextSensitive()
-            .preferLocale(preferredParadoxLocale())
+            .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
             //.distinctByName() //这里selector不需要指定去重
         ParadoxLocalisationSearch.processVariants(keyword, selector) { localisation ->
             val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -95,14 +95,14 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         val configGroup = config.info.configGroup
         val project = configGroup.project
-        val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(preferredParadoxLocale(), exact)
+        val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleHandler.getPreferredLocale(), exact)
         return ParadoxSyncedLocalisationSearch.search(expression, selector).find()
     }
     
     override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
         val configGroup = config.info.configGroup
         val project = configGroup.project
-        val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
+        val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
         return ParadoxSyncedLocalisationSearch.search(expression, selector).findAll()
     }
     
@@ -120,7 +120,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
         val contextElement = context.contextElement
         val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
         //这里selector不需要指定去重
-        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(preferredParadoxLocale())
+        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
         ParadoxSyncedLocalisationSearch.processVariants(keyword, selector) { syncedLocalisation ->
             val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = syncedLocalisation.containingFile
@@ -151,7 +151,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         if(element.text.isLeftQuoted()) return null //inline string
         val configGroup = config.info.configGroup
         val project = configGroup.project
-        val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(preferredParadoxLocale(), exact)
+        val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleHandler.getPreferredLocale(), exact)
         return ParadoxSyncedLocalisationSearch.search(expression, selector).find()
     }
     
@@ -159,7 +159,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         if(element.text.isLeftQuoted()) return emptySet() //specific expression
         val configGroup = config.info.configGroup
         val project = configGroup.project
-        val selector = localisationSelector(project, element).contextSensitive().preferLocale(preferredParadoxLocale())
+        val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
         return ParadoxLocalisationSearch.search(expression, selector).findAll()
     }
     
@@ -178,7 +178,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         val contextElement = context.contextElement
         val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
         val selector = localisationSelector(project, contextElement).contextSensitive()
-            .preferLocale(preferredParadoxLocale())
+            .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
             //.distinctByName() //这里selector不需要指定去重
         ParadoxLocalisationSearch.processVariants(keyword, selector) { localisation ->
             val name = localisation.name //=localisation.paradoxLocalisationInfo?.name

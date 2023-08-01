@@ -5,6 +5,7 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 /**
@@ -153,7 +154,7 @@ class ParadoxSettingsState : BaseState() {
     val localeList by lazy {
         buildList {
             add("auto")
-            addAll(getCwtConfig().core.localisationLocalesNoDefault.keys)
+            addAll(ParadoxLocaleHandler.getLocaleConfigMapById(pingPreferred = false).keys)
         }
     }
 }
