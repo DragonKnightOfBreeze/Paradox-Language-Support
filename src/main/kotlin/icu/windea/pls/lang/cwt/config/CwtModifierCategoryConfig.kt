@@ -5,14 +5,12 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 
 /**
- * @property internalId internal_id: int
  * @property supportedScopes supported_scopes: string | string[]
  */
 class CwtModifierCategoryConfig(
 	override val pointer: SmartPsiElementPointer<out CwtProperty>,
 	override val info: CwtConfigGroupInfo,
 	val name: String,
-	val internalId: String? = null,
 	val supportedScopes: Set<String>
 ) : CwtConfig<CwtProperty>
 

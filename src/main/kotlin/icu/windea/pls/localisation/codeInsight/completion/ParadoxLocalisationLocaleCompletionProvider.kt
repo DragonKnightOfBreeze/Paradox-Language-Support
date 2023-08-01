@@ -48,7 +48,7 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
         val localeIdFromFileName = file.castOrNull<ParadoxLocalisationFile>()?.getLocaleIdFromFileName()
         //批量提示
         val lookupElements = mutableSetOf<LookupElement>()
-        val locales = getCwtConfig(project).core.localisationLocales.values
+        val locales = getCwtConfig(project).core.localisationLocalesById.values
         for(locale in locales) {
             ProgressManager.checkCanceled()
             val element = locale.pointer.element ?: continue

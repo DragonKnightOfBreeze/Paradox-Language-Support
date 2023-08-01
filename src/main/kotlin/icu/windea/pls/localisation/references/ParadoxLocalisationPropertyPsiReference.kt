@@ -74,7 +74,7 @@ class ParadoxLocalisationPropertyPsiReference(
         if(resolvedParameter != null) return resolvedParameter
         
         //尝试解析成predefined_parameter
-        val resolvedPredefinedParameter = getCwtConfig(project).core.localisationLocales.get(name)?.pointer?.element
+        val resolvedPredefinedParameter = getCwtConfig(project).core.localisationLocalesById.get(name)?.pointer?.element
         if(resolvedPredefinedParameter != null) return resolvedPredefinedParameter
         
         return null
@@ -100,7 +100,7 @@ class ParadoxLocalisationPropertyPsiReference(
         if(resolvedParameter != null) return resolvedParameter.let { arrayOf(PsiElementResolveResult(it)) }
         
         //尝试解析成predefined_parameter
-        val resolvedPredefinedParameter = getCwtConfig(project).core.localisationLocales.get(name)?.pointer?.element
+        val resolvedPredefinedParameter = getCwtConfig(project).core.localisationLocalesById.get(name)?.pointer?.element
         if(resolvedPredefinedParameter != null) return resolvedPredefinedParameter.let { arrayOf(PsiElementResolveResult(it)) }
         
         return ResolveResult.EMPTY_ARRAY

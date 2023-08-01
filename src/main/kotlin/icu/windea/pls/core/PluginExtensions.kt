@@ -189,11 +189,11 @@ private fun selectLocaleFromPsiFile(from: PsiFile): CwtLocalisationLocaleConfig?
     val virtualFile = from.virtualFile ?: return null
     val project = from.project
     val localeId = FileBasedIndex.getInstance().getFileData(indexKey, virtualFile, project).keys.singleOrNull() ?: return null
-    return getCwtConfig(project).core.localisationLocales.get(localeId)
+    return getCwtConfig(project).core.localisationLocalesById.get(localeId)
 }
 
 private fun String.toLocale(from: PsiElement): CwtLocalisationLocaleConfig? {
-    return getCwtConfig(from.project).core.localisationLocales.get(this)
+    return getCwtConfig(from.project).core.localisationLocalesById.get(this)
 }
 //endregion
 

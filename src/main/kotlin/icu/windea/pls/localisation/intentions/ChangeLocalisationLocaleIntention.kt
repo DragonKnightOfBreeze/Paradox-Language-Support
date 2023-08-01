@@ -35,7 +35,7 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
         if(editor == null || file == null) return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
-        val locales = getCwtConfig(project).core.localisationLocales.values.toTypedArray()
+        val locales = getCwtConfig(project).core.localisationLocalesById.values.toTypedArray()
         JBPopupFactory.getInstance().createListPopup(Popup(element, locales)).showInBestPositionFor(editor)
     }
     

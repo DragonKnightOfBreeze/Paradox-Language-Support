@@ -17,7 +17,8 @@ interface CwtConfigGroup: UserDataHolder {
 	val postfixTemplateSettings: Map<String, Map<@CaseInsensitive String, CwtPostfixTemplateSetting>> //EXTENDED BY PLS
 	
 	val systemLinks: Map<@CaseInsensitive String, CwtSystemLinkConfig> //EXTENDED BY PLS
-	val localisationLocales: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
+	val localisationLocalesById: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
+	val localisationLocalesByCode: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
 	val localisationPredefinedParameters: Map<String, CwtLocalisationPredefinedParameterConfig> //EXTENDED BY PLS
 	
 	val folders: Set<String>
@@ -64,7 +65,6 @@ interface CwtConfigGroup: UserDataHolder {
 	val onActions: Map<String, CwtOnActionConfig>
 	
 	val modifierCategories: Map<String, CwtModifierCategoryConfig>
-	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig>
 	// key: scalar / template_expression
 	val modifiers: Map<@CaseInsensitive String, CwtModifierConfig>
 	val predefinedModifiers: Map<@CaseInsensitive String, CwtModifierConfig>

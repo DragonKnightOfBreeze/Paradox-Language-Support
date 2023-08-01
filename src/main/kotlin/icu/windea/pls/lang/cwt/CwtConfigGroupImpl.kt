@@ -30,7 +30,8 @@ class CwtConfigGroupImpl(
     override val postfixTemplateSettings: MutableMap<String, MutableMap<String, CwtPostfixTemplateSetting>> = mutableMapOf()
     
     override val systemLinks: MutableMap<@CaseInsensitive String, CwtSystemLinkConfig> = caseInsensitiveStringKeyMap()
-    override val localisationLocales: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
+    override val localisationLocalesById: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
+    override val localisationLocalesByCode: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
     override val localisationPredefinedParameters: MutableMap<String, CwtLocalisationPredefinedParameterConfig> = mutableMapOf()
     
     override val folders: MutableSet<String> = mutableSetOf()
@@ -70,7 +71,6 @@ class CwtConfigGroupImpl(
     override val onActions: MutableMap<String, CwtOnActionConfig> = mutableMapOf()
     
     override val modifierCategories: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
-    override val modifierCategoryIdMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
     override val modifiers: MutableMap<@CaseInsensitive String, CwtModifierConfig> = caseInsensitiveStringKeyMap()
     override val generatedModifiers: Map<@CaseInsensitive String, CwtModifierConfig> by lazy {
         //put xxx_<xxx>_xxx before xxx_<xxx>
@@ -114,7 +114,6 @@ class CwtConfigGroupImpl(
         bindTypeToBaseTypeMap()
         bindMissingDeclarations()
         bindMissingLocalisationLinks()
-        bindModifierCategoryIdMap()
         bindModifierCategories()
     }
     
@@ -272,7 +271,8 @@ class CwtConfigGroupImpl(
             val description = property.documentation.orEmpty()
             val codes = property.properties?.find { p -> p.key == "codes" }?.values?.mapNotNull { v -> v.stringValue }.orEmpty()
             val config = CwtLocalisationLocaleConfig(property.pointer, fileConfig.info, id, description, codes)
-            localisationLocales.put(id, config)
+            localisationLocalesById.put(id, config)
+            codes.forEach { code -> localisationLocalesByCode.put(code, config) }
         }
     }
     
@@ -802,13 +802,11 @@ class CwtConfigGroupImpl(
     }
     
     private fun resolveModifierCategoryConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifierCategoryConfig? {
-        var internalId: String? = null
         var supportedScopes: Set<String>? = null
         val props = propertyConfig.properties
         if(props.isNullOrEmpty()) return null
         for(prop in props) {
             when(prop.key) {
-                "internal_id" -> internalId = prop.value //目前版本的CWT配置已经不再有这个属性
                 "supported_scopes" -> supportedScopes = buildSet {
                     prop.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
                     prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
@@ -816,7 +814,7 @@ class CwtConfigGroupImpl(
             }
         }
         supportedScopes = supportedScopes ?: ParadoxScopeHandler.anyScopeIdSet
-        return CwtModifierCategoryConfig(propertyConfig.pointer, propertyConfig.info, name, internalId, supportedScopes)
+        return CwtModifierCategoryConfig(propertyConfig.pointer, propertyConfig.info, name, supportedScopes)
     }
     
     private fun resolveModifierConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifierConfig? {
@@ -923,18 +921,11 @@ class CwtConfigGroupImpl(
         }
     }
     
-    private fun bindModifierCategoryIdMap() {
-        for(modifierCategory in modifierCategories.values) {
-            val internalId = modifierCategory.internalId ?: continue
-            modifierCategoryIdMap[internalId] = modifierCategory
-        }
-    }
-    
     private fun bindModifierCategories() {
         for(modifier in modifiers.values) {
             //category可能是modifierCategory的name，也可能是modifierCategory的internalId
             for(category in modifier.categories) {
-                val categoryConfig = modifierCategories[category] ?: modifierCategoryIdMap[category] ?: continue
+                val categoryConfig = modifierCategories[category] ?: continue
                 modifier.categoryConfigMap[categoryConfig.name] = categoryConfig
             }
         }
