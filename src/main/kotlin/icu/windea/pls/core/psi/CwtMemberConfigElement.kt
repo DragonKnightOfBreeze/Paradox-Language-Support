@@ -34,10 +34,6 @@ class CwtMemberConfigElement(
         return config.expression.expressionString
     }
     
-    override fun setName(name: String): PsiElement {
-        throw IncorrectOperationException() //cannot rename
-    }
-    
     override fun getTypeName(): String {
         return when(config) {
             is CwtPropertyConfig -> PlsBundle.message("cwt.description.property")

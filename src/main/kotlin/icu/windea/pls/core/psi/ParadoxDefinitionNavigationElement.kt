@@ -2,6 +2,7 @@ package icu.windea.pls.core.psi
 
 import com.intellij.navigation.*
 import com.intellij.psi.*
+import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -22,6 +23,10 @@ class ParadoxDefinitionNavigationElement(
     
     override fun getName(): String? {
         return _name
+    }
+    
+    override fun setName(name: String): PsiElement {
+        throw IncorrectOperationException() //cannot rename
     }
     
     override fun getTypeName(): String {
