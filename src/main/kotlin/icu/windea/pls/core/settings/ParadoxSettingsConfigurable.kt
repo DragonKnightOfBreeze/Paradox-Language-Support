@@ -22,9 +22,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
     @Suppress("DialogTitleCapitalization")
     override fun createPanel(): DialogPanel {
         val settings = getSettings()
-        val oldDefaultGameType = settings.defaultGameType
-        val oldPreferredLocale = settings.preferredLocale
-        val oldIgnoredFileNameSet = settings.ignoredFileNameSet
         return panel {
             //general
             group(PlsBundle.message("settings.general")) {
@@ -34,8 +31,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent {
                             toolTipText = PlsBundle.message("settings.general.defaultGameType.tooltip")
                         }
-                    val values = ParadoxGameType.valueList
-                    comboBox(values)
+                    val oldDefaultGameType = settings.defaultGameType
+                    comboBox(ParadoxGameType.valueList)
                         .bindItem(settings::defaultGameType.toNullableProperty())
                         .onApply {
                             if(oldDefaultGameType != settings.defaultGameType) {
@@ -50,11 +47,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent {
                             toolTipText = PlsBundle.message("settings.general.preferredLocale.tooltip")
                         }
+                    val oldPreferredLocale = settings.preferredLocale
                     localeComboBox(settings)
                         .bindItem(settings::preferredLocale.toNullableProperty())
                         .onApply {
                             if(oldPreferredLocale != settings.preferredLocale) {
-                                doRefreshInlayHints()
+                                refreshInlayHints()
                             }
                         }
                 }
@@ -64,6 +62,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent {
                             toolTipText = PlsBundle.message("settings.general.ignoredFileNames.tooltip")
                         }
+                    val oldIgnoredFileNameSet = settings.ignoredFileNameSet
                     expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                         .bindText(settings::ignoredFileNames.toNonNullableProperty(""))
                         .comment(PlsBundle.message("settings.general.ignoredFileNames.comment"))
@@ -71,7 +70,10 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .resizableColumn()
                         .onApply {
                             if(oldIgnoredFileNameSet != settings.ignoredFileNameSet) {
-                                doReparseFilesByFileNames(settings.ignoredFileNameSet, oldIgnoredFileNameSet)
+                                val fileNames = mutableSetOf<String>()
+                                fileNames += oldIgnoredFileNameSet
+                                fileNames += settings.ignoredFileNameSet
+                                reparseFilesByFileNames(fileNames)
                             }
                         }
                 }
@@ -234,7 +236,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.inference.inlineScriptConfig"))
                         .bindSelected(settings.inference::inlineScriptConfig)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.inlineScriptConfig.tooltip") }
-                        .onApply { doRefreshInlineScripts() }
+                        .onApply { refreshInlineScripts() }
                 }
                 //scopeContext
                 row {
@@ -316,30 +318,32 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
         }
     }
     
-    private fun doReparseFilesByFileNames(ignoredFileNameSet: Set<String>, oldIgnoredFileNameSet: Set<String>) {
-        //设置中的被忽略文件名被更改时，需要重新解析相关文件
-        val fileNames = mutableSetOf<String>()
-        fileNames += oldIgnoredFileNameSet
-        fileNames += ignoredFileNameSet
-        runWriteAction { ParadoxCoreHandler.reparseFilesByFileNames(fileNames) }
-    }
-    
-    private fun doRefreshInlayHints() {
-        ParadoxCoreHandler.refreshInlayHints { file, _ ->
-            val fileType = file.fileType
-            fileType == ParadoxScriptFileType || fileType == ParadoxLocalisationFileType
+    @Suppress("CompanionObjectInExtension")
+    companion object {
+        fun reparseFilesByFileNames(fileNames: Set<String>) {
+            //重新解析指定文件名的文件
+            //设置中的被忽略文件名被更改时，需要重新解析相关文件
+            runWriteAction { ParadoxCoreHandler.reparseFilesByFileNames(fileNames) }
         }
-    }
-    
-    private fun doRefreshInlineScripts() {
-        //要求重新解析内联脚本文件
-        ProjectManager.getInstance().openProjects.forEach { project ->
-            ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker.incModificationCount()
-            ParadoxPsiModificationTracker.getInstance(project).InlineScriptsTracker.incModificationCount()
+        
+        fun refreshInlayHints() {
+            //刷新脚本文件和本地化文件的内嵌提示
+            ParadoxCoreHandler.refreshInlayHints { file, _ ->
+                val fileType = file.fileType
+                fileType == ParadoxScriptFileType || fileType == ParadoxLocalisationFileType
+            }
         }
-        //刷新内联脚本文件的内嵌提示
-        ParadoxCoreHandler.refreshInlayHints { file, _ ->
-            ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null
+        
+        fun refreshInlineScripts() {
+            //重新解析内联脚本文件
+            ProjectManager.getInstance().openProjects.forEach { project ->
+                ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker.incModificationCount()
+                ParadoxPsiModificationTracker.getInstance(project).InlineScriptsTracker.incModificationCount()
+            }
+            //刷新内联脚本文件的内嵌提示
+            ParadoxCoreHandler.refreshInlayHints { file, _ ->
+                ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null
+            }
         }
     }
 }

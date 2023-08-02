@@ -1,3 +1,5 @@
+@file:Suppress("CanBeParameter")
+
 package icu.windea.pls.core.ui
 
 import com.intellij.openapi.ui.*

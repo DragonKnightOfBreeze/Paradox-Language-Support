@@ -1,7 +1,6 @@
 package icu.windea.pls.script.inspections.general
 
 import com.intellij.codeInspection.*
-import com.intellij.openapi.options.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.components.*
@@ -12,7 +11,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.generation.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
-import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
@@ -49,10 +47,10 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val project = holder.project
         val file = holder.file
-        val allLocales = ParadoxLocaleHandler.getLocaleConfigMapById()
+        val allLocaleMap = ParadoxLocaleHandler.getLocaleConfigMapById()
         val locales = mutableSetOf<CwtLocalisationLocaleConfig>()
         if(checkForPreferredLocale) locales.add(ParadoxLocaleHandler.getPreferredLocale())
-        if(checkForSpecificLocales) this.locales.mapNotNullTo(locales) { allLocales.get(it) }
+        if(checkForSpecificLocales) this.locales.mapNotNullTo(locales) { allLocaleMap.get(it) }
         if(locales.isEmpty()) return PsiElementVisitor.EMPTY_VISITOR
         return object : PsiElementVisitor() {
             var inFileContext: GenerateLocalisationsInFileContext? = null
@@ -230,26 +228,30 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
         lateinit var checkForModifiersCb: Cell<JBCheckBox>
         return panel {
-            //checkForLocales
-            row {
-                label(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForLocales"))
-                cell(ActionLink(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForLocales.configure")) {
-                    val allLocales = ParadoxLocaleHandler.getLocaleConfigMapById()
-                    val selectedLocales = locales.mapNotNull { allLocales.get(it) }
-                    val localeDialog = ParadoxLocaleCheckBoxDialog(selectedLocales, allLocales.values)
-                    if(localeDialog.showAndGet()) {
-                        val newLocales = localeDialog.localeStatusMap.mapNotNullTo(mutableSetOf()) { (k, v) -> if(v) k.id else null }
-                        locales = newLocales
-                    }
-                })
-            }
             //checkForPreferredLocale
             row {
-                checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.forPreferredLocale"))
+                checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForPreferredLocale"))
                     .bindSelected(::checkForPreferredLocale)
                     .actionListener { _, component -> checkForPreferredLocale = component.isSelected }
-                cell(ActionLink(PlsBundle.message("inspection.script.general.missingLocalisation.option.forPreferredLocale.configure")) {
-                    ShowSettingsUtil.getInstance().showSettingsDialog(null, ParadoxSettingsConfigurable::class.java)
+                cell(ActionLink(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForPreferredLocale.configure")) {
+                    //ShowSettingsUtil.getInstance().showSettingsDialog(null, ParadoxSettingsConfigurable::class.java)
+                    val dialog = ParadoxPreferredLocaleDialog()
+                    dialog.showAndGet()
+                })
+            }
+            //checkForSpecificLocales
+            row {
+                checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForSpecificLocales"))
+                    .bindSelected(::checkForSpecificLocales)
+                    .actionListener { _, component -> checkForSpecificLocales = component.isSelected }
+                cell(ActionLink(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForSpecificLocales.configure")) {
+                    val allLocaleMap = ParadoxLocaleHandler.getLocaleConfigMapById(pingPreferred = false)
+                    val selectedLocales = locales.mapNotNull { allLocaleMap.get(it) }
+                    val dialog = ParadoxLocaleCheckBoxDialog(selectedLocales, allLocaleMap.values)
+                    if(dialog.showAndGet()) {
+                        val newLocales = dialog.localeStatusMap.mapNotNullTo(mutableSetOf()) { (k, v) -> if(v) k.id else null }
+                        locales = newLocales
+                    }
                 })
             }
             //checkForDefinitions
