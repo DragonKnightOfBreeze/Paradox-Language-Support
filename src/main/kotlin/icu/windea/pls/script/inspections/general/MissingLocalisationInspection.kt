@@ -61,7 +61,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             
             private fun registerProblems(context: ParadoxLocalisationCodeInsightContext, element: PsiElement, holder: ProblemsHolder) {
-                val location = when{
+                val location = when {
                     element is ParadoxScriptFile -> element
                     element is ParadoxScriptProperty -> element.propertyKey
                     element is ParadoxScriptStringExpressionElement -> element
@@ -69,7 +69,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 }
                 val messages = getMessages(context)
                 if(messages.isEmpty()) return
-                val fixes = buildList<LocalQuickFix> { 
+                val fixes = buildList<LocalQuickFix> {
                     this += GenerateLocalisationsFix(element, context, this@MissingLocalisationInspection)
                     this += GenerateLocalisationsInFileFix(element, this@MissingLocalisationInspection)
                 }.toTypedArray()

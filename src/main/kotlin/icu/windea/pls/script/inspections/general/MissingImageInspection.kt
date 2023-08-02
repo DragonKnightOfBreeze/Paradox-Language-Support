@@ -45,7 +45,7 @@ class MissingImageInspection : LocalInspectionTool() {
             }
             
             private fun registerProblems(context: ParadoxImageCodeInsightContext, element: PsiElement, holder: ProblemsHolder) {
-                val location = when{
+                val location = when {
                     element is ParadoxScriptFile -> element
                     element is ParadoxScriptProperty -> element.propertyKey
                     element is ParadoxScriptStringExpressionElement -> element
