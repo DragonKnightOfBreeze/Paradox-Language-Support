@@ -149,7 +149,9 @@ tasks {
 	}
 	buildPlugin {
 		//排除特定文件
-		exclude("lib/jackson-dataformat-csv-*.jar") 
+		exclude("lib/jackson-dataformat-csv-*.jar")
+		//重命名插件tar
+		rename("instrumented\\-(.*\\.jar)", "$1")
 	}
 	patchPluginXml {
 		sinceBuild.set("232")
