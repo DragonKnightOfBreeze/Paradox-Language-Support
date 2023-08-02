@@ -6,11 +6,8 @@ import com.intellij.psi.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.script.psi.*
@@ -38,78 +35,23 @@ class MissingImageInspection : LocalInspectionTool() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
                 when(element) {
-                    is ParadoxScriptDefinitionElement -> {
-                        if(!checkForDefinitions) return
-                        val definitionInfo = element.definitionInfo ?: return
-                        visitDefinition(element, definitionInfo)
-                    }
-                    is ParadoxScriptStringExpressionElement -> {
-                        if(!checkForModifiers) return
-                        visitStringExpressionElement(element)
-                    }
+                    is ParadoxScriptDefinitionElement -> visitDefinition(element)
+                    is ParadoxScriptStringExpressionElement -> visitStringExpressionElement(element)
                 }
             }
             
-            private fun visitDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
-                val codeInsightInfos = mutableListOf<ParadoxImageCodeInsightInfo>()
+            private fun visitDefinition(definition: ParadoxScriptDefinitionElement) {
+                val codeInsightInfos = ParadoxImageCodeInsightInfo.fromDefinition(definition, this@MissingImageInspection)
+                if(codeInsightInfos.isNullOrEmpty()) return
                 val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
-                
-                for(info in definitionInfo.images) {
-                    ProgressManager.checkCanceled()
-                    val expression = info.locationExpression
-                    val resolved = expression.resolve(definition, definitionInfo, project)
-                    val type = when {
-                        info.required -> ParadoxImageCodeInsightInfo.Type.Required
-                        info.primary -> ParadoxImageCodeInsightInfo.Type.Primary
-                        else -> ParadoxImageCodeInsightInfo.Type.Optional
-                    }
-                    val name = resolved?.filePath
-                    val gfxName = expression.resolvePlaceholder(definitionInfo.name)?.takeIf { it.startsWith("GFX_") }
-                    val check = when {
-                        info.required -> true
-                        checkPrimaryForDefinitions && (info.primary || info.primaryByInference) -> true
-                        checkOptionalForDefinitions && !info.required -> true
-                        else -> false
-                    }
-                    val missing = resolved?.file == null && resolved?.message == null
-                    val dynamic = resolved?.message != null
-                    val codeInsightInfo = ParadoxImageCodeInsightInfo(type, name, gfxName, info, check, missing, dynamic)
-                    codeInsightInfos += codeInsightInfo
-                }
-                
-                for(info in definitionInfo.modifiers) {
-                    ProgressManager.checkCanceled()
-                    val modifierName = info.name
-                    run {
-                        val type = ParadoxImageCodeInsightInfo.Type.GeneratedModifierIcon
-                        val check = checkGeneratedModifierIconsForDefinitions
-                        val iconPath = ParadoxModifierHandler.getModifierIconPath(modifierName)
-                        val missing = isMissing(iconPath)
-                        val codeInsightInfo = ParadoxImageCodeInsightInfo(type, iconPath, null, null, check, missing, false)
-                        codeInsightInfos += codeInsightInfo
-                    }
-                }
-                
                 registerProblems(codeInsightInfos, location, holder)
             }
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                val modifierName = element.value
-                if(modifierName.isEmpty() || modifierName.isParameterized()) return
-                val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
-                if(config.expression.type != CwtDataType.Modifier) return
-                val codeInsightInfos = mutableListOf<ParadoxImageCodeInsightInfo>()
-                
-                run {
-                    val type = ParadoxImageCodeInsightInfo.Type.ModifierIcon
-                    val check = checkModifierIcons
-                    val iconPath = ParadoxModifierHandler.getModifierIconPath(modifierName)
-                    val missing = isMissing(iconPath)
-                    val codeInsightInfo = ParadoxImageCodeInsightInfo(type, iconPath, null, null, check, missing, false)
-                    codeInsightInfos += codeInsightInfo
-                }
-                
-                registerProblems(codeInsightInfos, element, holder)
+                val codeInsightInfos = ParadoxImageCodeInsightInfo.fromModifier(element, this@MissingImageInspection)
+                if(codeInsightInfos.isNullOrEmpty()) return
+                val location = element
+                registerProblems(codeInsightInfos, location, holder)
             }
             
             private fun isMissing(iconPath: String): Boolean {

@@ -9,15 +9,10 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.generation.*
-import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.cwt.expression.*
-import icu.windea.pls.model.*
 import icu.windea.pls.model.codeInsight.*
-import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -45,8 +40,6 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField var checkModifierDescriptions = false
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val project = holder.project
-        val file = holder.file
         val allLocaleMap = ParadoxLocaleHandler.getLocaleConfigMapById()
         val locales = mutableSetOf<CwtLocalisationLocaleConfig>()
         if(checkForPreferredLocale) locales.add(ParadoxLocaleHandler.getPreferredLocale())
@@ -58,117 +51,23 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
                 when(element) {
-                    is ParadoxScriptDefinitionElement -> {
-                        if(!checkForDefinitions) return
-                        val definitionInfo = element.definitionInfo ?: return
-                        visitDefinition(element, definitionInfo)
-                    }
-                    is ParadoxScriptStringExpressionElement -> {
-                        if(!checkForModifiers) return
-                        visitStringExpressionElement(element)
-                    }
+                    is ParadoxScriptDefinitionElement -> visitDefinition(element)
+                    is ParadoxScriptStringExpressionElement -> visitStringExpressionElement(element)
                 }
             }
             
-            private fun visitDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
-                val codeInsightInfos = mutableListOf<ParadoxLocalisationCodeInsightInfo>()
+            private fun visitDefinition(definition: ParadoxScriptDefinitionElement) {
+                val codeInsightInfos = ParadoxLocalisationCodeInsightInfo.fromDefinition(definition, locales, this@MissingLocalisationInspection)
+                if(codeInsightInfos.isNullOrEmpty()) return
                 val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
-                
-                for(info in definitionInfo.localisations) {
-                    ProgressManager.checkCanceled()
-                    val expression = info.locationExpression
-                    for(locale in locales) {
-                        ProgressManager.checkCanceled()
-                        val selector = localisationSelector(project, file).locale(locale) //use file as context
-                        val resolved = expression.resolve(definition, definitionInfo, selector)
-                        val type = when {
-                            info.required -> ParadoxLocalisationCodeInsightInfo.Type.Required
-                            info.primary -> ParadoxLocalisationCodeInsightInfo.Type.Primary
-                            else -> ParadoxLocalisationCodeInsightInfo.Type.Optional
-                        }
-                        val name = resolved?.name
-                        val check = when {
-                            info.required -> true
-                            checkPrimaryForDefinitions && (info.primary || info.primaryByInference) -> true
-                            checkOptionalForDefinitions && !info.required -> true
-                            else -> false
-                        }
-                        val missing = resolved?.localisation == null && resolved?.message == null
-                        val dynamic = resolved?.message != null
-                        val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, info, locale, check, missing, dynamic)
-                        codeInsightInfos += codeInsightInfo
-                    }
-                }
-                
-                for(info in definitionInfo.modifiers) {
-                    ProgressManager.checkCanceled()
-                    val modifierName = info.name
-                    run {
-                        val type = ParadoxLocalisationCodeInsightInfo.Type.GeneratedModifierName
-                        val check = checkGeneratedModifierNamesForDefinitions
-                        val name = ParadoxModifierHandler.getModifierNameKey(modifierName)
-                        for(locale in locales) {
-                            ProgressManager.checkCanceled()
-                            val missing = isMissing(name, locale)
-                            val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, check, missing, false)
-                            codeInsightInfos += codeInsightInfo
-                        }
-                    }
-                    run {
-                        val type = ParadoxLocalisationCodeInsightInfo.Type.GeneratedModifierDesc
-                        val check = checkGeneratedModifierDescriptionsForDefinitions
-                        val name = ParadoxModifierHandler.getModifierDescKey(modifierName)
-                        for(locale in locales) {
-                            ProgressManager.checkCanceled()
-                            val missing = isMissing(name, locale)
-                            val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, check, missing, false)
-                            codeInsightInfos += codeInsightInfo
-                        }
-                    }
-                }
-                
                 registerProblems(codeInsightInfos, location, holder)
             }
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                val modifierName = element.value
-                if(modifierName.isEmpty() || modifierName.isParameterized()) return
-                val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
-                if(config.expression.type != CwtDataType.Modifier) return
-                val codeInsightInfos = mutableListOf<ParadoxLocalisationCodeInsightInfo>()
-                
-                run {
-                    val type = ParadoxLocalisationCodeInsightInfo.Type.ModifierName
-                    val check = checkModifierNames
-                    val name = ParadoxModifierHandler.getModifierNameKey(modifierName)
-                    for(locale in locales) {
-                        ProgressManager.checkCanceled()
-                        val missing = isMissing(name, locale)
-                        val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, check, missing, false)
-                        codeInsightInfos += codeInsightInfo
-                    }
-                }
-                run {
-                    val type = ParadoxLocalisationCodeInsightInfo.Type.ModifierDesc
-                    val check = checkModifierDescriptions
-                    val name = ParadoxModifierHandler.getModifierDescKey(modifierName)
-                    for(locale in locales) {
-                        ProgressManager.checkCanceled()
-                        val missing = isMissing(name, locale)
-                        val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, check, missing, false)
-                        codeInsightInfos += codeInsightInfo
-                    }
-                }
-                
-                registerProblems(codeInsightInfos, element, holder)
-            }
-            
-            private fun isMissing(name: String, locale: CwtLocalisationLocaleConfig): Boolean {
-                val selector = localisationSelector(project, file).locale(locale)
-                    .withConstraint(ParadoxLocalisationConstraint.Modifier) //use file as context
-                val localisation = ParadoxLocalisationSearch.search(name, selector).findFirst()
-                val missing = localisation == null
-                return missing
+                val codeInsightInfos = ParadoxLocalisationCodeInsightInfo.fromModifier(element, locales, this@MissingLocalisationInspection)
+                if(codeInsightInfos.isNullOrEmpty()) return
+                val location = element
+                registerProblems(codeInsightInfos, location, holder)
             }
             
             private fun registerProblems(codeInsightInfos: List<ParadoxLocalisationCodeInsightInfo>, element: PsiElement, holder: ProblemsHolder) {
