@@ -4,30 +4,13 @@ import com.intellij.codeInsight.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.model.codeInsight.*
 
-@Suppress("UNUSED_PARAMETER")
-class GenerateLocalisationsHandler : CodeInsightActionHandler {
+class GenerateLocalisationsHandler(
+    private val context: ParadoxLocalisationCodeInsightContext? = null
+) : CodeInsightActionHandler {
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
-        val contextKey = GenerateLocalisationsContext.key
-        val context = file.getUserData(contextKey)
-            ?: getDefaultContext(project, editor, file)
-            ?: return
-        file.putUserData(contextKey, null)
-        ParadoxPsiGenerator.generateLocalisations(context, project, file)
-    }
-    
-    private fun getDefaultContext(project: Project, editor: Editor, file: PsiFile): GenerateLocalisationsContext? {
-        //直接基于所有的相关本地化，无论是否确实
-        val offset = editor.caretModel.offset
-        val definition = findElement(file, offset)?.findParentDefinition() ?: return null
-        val definitionInfo = definition.definitionInfo ?: return null
-        return ParadoxPsiGenerator.getDefaultGenerateLocalisationsContext(definitionInfo)
-    }
-    
-    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
-        return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
+        ParadoxPsiGenerator.generateLocalisations(project, editor, file, context)
     }
 }

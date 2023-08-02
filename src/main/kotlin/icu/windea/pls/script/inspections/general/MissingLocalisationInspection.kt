@@ -9,6 +9,7 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.generation.*
+import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
@@ -46,8 +47,6 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         if(checkForSpecificLocales) this.locales.mapNotNullTo(locales) { allLocaleMap.get(it) }
         if(locales.isEmpty()) return PsiElementVisitor.EMPTY_VISITOR
         return object : PsiElementVisitor() {
-            var inFileContext: GenerateLocalisationsInFileContext? = null
-            
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
                 when(element) {
@@ -57,33 +56,40 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             
             private fun visitDefinition(definition: ParadoxScriptDefinitionElement) {
-                val codeInsightInfos = ParadoxLocalisationCodeInsightInfo.fromDefinition(definition, locales, this@MissingLocalisationInspection)
-                if(codeInsightInfos.isNullOrEmpty()) return
-                val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
-                registerProblems(codeInsightInfos, location, holder)
+                val context = ParadoxLocalisationCodeInsightContext.fromDefinition(definition, locales, this@MissingLocalisationInspection)
+                if(context == null || context.infos.isEmpty()) return
+                registerProblems(context, definition, holder)
             }
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                val codeInsightInfos = ParadoxLocalisationCodeInsightInfo.fromModifier(element, locales, this@MissingLocalisationInspection)
-                if(codeInsightInfos.isNullOrEmpty()) return
-                val location = element
-                registerProblems(codeInsightInfos, location, holder)
+                val context = ParadoxLocalisationCodeInsightContext.fromExpression(element, locales, this@MissingLocalisationInspection)
+                if(context == null || context.infos.isEmpty()) return
+                registerProblems(context, element, holder)
             }
             
-            private fun registerProblems(codeInsightInfos: List<ParadoxLocalisationCodeInsightInfo>, element: PsiElement, holder: ProblemsHolder) {
-                val messages = getMessages(codeInsightInfos)
+            private fun registerProblems(context: ParadoxLocalisationCodeInsightContext, element: PsiElement, holder: ProblemsHolder) {
+                val location = when{
+                    element is ParadoxScriptFile -> element
+                    element is ParadoxScriptProperty -> element.propertyKey
+                    element is ParadoxScriptStringExpressionElement -> element
+                    else -> return
+                }
+                val messages = getMessages(context)
                 if(messages.isEmpty()) return
-                val fixes = getFixes(codeInsightInfos, element).toTypedArray()
+                val fixes = buildList<LocalQuickFix> { 
+                    this += GenerateLocalisationsFix(element, context)
+                    this += GenerateLocalisationsInFileFix(element)
+                }.toTypedArray()
                 for(message in messages) {
                     //显示为WEAK_WARNING
-                    holder.registerProblem(element, message, ProblemHighlightType.WEAK_WARNING, *fixes)
+                    holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING, *fixes)
                 }
             }
             
-            private fun getMessages(codeInsightInfos: List<ParadoxLocalisationCodeInsightInfo>): List<String> {
+            private fun getMessages(context: ParadoxLocalisationCodeInsightContext): List<String> {
                 val includeMap = mutableMapOf<String, ParadoxLocalisationCodeInsightInfo>()
                 val excludeKeys = mutableSetOf<String>()
-                for(codeInsightInfo in codeInsightInfos) {
+                for(codeInsightInfo in context.infos) {
                     if(!codeInsightInfo.check) continue
                     val key = codeInsightInfo.key ?: continue
                     if(excludeKeys.contains(key)) continue
@@ -104,21 +110,6 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     ?: return null
                 val localeId = codeInsightInfo.locale.id
                 return PlsBundle.message("inspection.script.general.missingLocalisation.description", from, localeId)
-            }
-            
-            private fun getFixes(codeInsightInfos: List<ParadoxLocalisationCodeInsightInfo>, element: PsiElement): List<LocalQuickFix> {
-                return emptyList()
-                //return buildList {
-                //    val context = GenerateLocalisationsContext(definitionInfo.name, contextMap.mapNotNullTo(mutableSetOf()) { it.value.key })
-                //    add(GenerateLocalisationsFix(context, definition))
-                //    if(inFileContext == null) {
-                //        val fileName = definition.containingFile.name
-                //        inFileContext = GenerateLocalisationsInFileContext(fileName, mutableListOf())
-                //    }
-                //    val inFileContext = inFileContext!!
-                //    inFileContext.contextList.add(context)
-                //    add(GenerateLocalisationsInFileFix(inFileContext, definition))
-                //}
             }
         }
     }

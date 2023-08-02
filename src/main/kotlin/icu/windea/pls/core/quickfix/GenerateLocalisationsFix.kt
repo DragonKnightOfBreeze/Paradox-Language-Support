@@ -6,26 +6,32 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.generation.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.model.codeInsight.*
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
 
 class GenerateLocalisationsFix(
-    private val context: GenerateLocalisationsContext,
-    element: ParadoxScriptDefinitionElement
+    element: PsiElement,
+    val context: ParadoxLocalisationCodeInsightContext
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
+    private val contextName = context.name.orAnonymous()
+    
     override fun getPriority() = PriorityAction.Priority.HIGH
     
-    override fun getText() = PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.1", context.definitionName)
+    override fun getText(): String {
+        return when(context.type){
+            Type.Definition -> PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.1", contextName)
+            Type.Modifier -> PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.2", contextName)
+        }
+    }
     
     override fun getFamilyName() = text
     
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if(editor == null) return
-        if(startElement !is ParadoxScriptDefinitionElement) return
-        val handler = GenerateLocalisationsHandler()
-        file.putUserData(GenerateLocalisationsContext.key, context)
+        val handler = GenerateLocalisationsHandler(context)
         handler.invoke(project, editor, file)
-        file.putUserData(GenerateLocalisationsContext.key, null)
     }
     
     //true so that we can run MissingLocalisationInspection on mod files scope and generate all missing localisations

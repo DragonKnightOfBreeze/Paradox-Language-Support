@@ -32,7 +32,7 @@ class ParadoxLocalisationAnnotator : Annotator {
             val startOffset = element.startOffset
             holder.newAnnotation(ERROR, PlsBundle.message("localisation.annotator.adjacentIcon"))
                 .range(TextRange.create(startOffset, startOffset + 1)) //icon prefix
-                .withFix(InsertStringFix(" ", startOffset))
+                .withFix(InsertStringFix(PlsBundle.message("localisation.annotator.adjacentIcon.fix"), " ", startOffset))
                 .create()
         }
     }

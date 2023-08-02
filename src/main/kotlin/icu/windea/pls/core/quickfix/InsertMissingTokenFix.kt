@@ -22,7 +22,7 @@ class InsertMissingTokenFix(
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         if(editor == null) return
         editor.caretModel.moveToOffset(caretOffset)
-        editor.document.insertString(editor.caretModel.offset, token)
+        editor.document.insertString(caretOffset, token)
     }
     
     override fun startInWriteAction() = true

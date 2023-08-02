@@ -6,8 +6,6 @@ import com.intellij.psi.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.script.psi.*
@@ -29,8 +27,6 @@ class MissingImageInspection : LocalInspectionTool() {
     @JvmField var checkModifierIcons = true
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val project = holder.project
-        val file = holder.file
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -41,39 +37,36 @@ class MissingImageInspection : LocalInspectionTool() {
             }
             
             private fun visitDefinition(definition: ParadoxScriptDefinitionElement) {
-                val codeInsightInfos = ParadoxImageCodeInsightInfo.fromDefinition(definition, this@MissingImageInspection)
-                if(codeInsightInfos.isNullOrEmpty()) return
-                val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
-                registerProblems(codeInsightInfos, location, holder)
+                val context = ParadoxImageCodeInsightContext.fromDefinition(definition, this@MissingImageInspection)
+                if(context == null || context.infos.isEmpty()) return
+                registerProblems(context, definition, holder)
             }
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                val codeInsightInfos = ParadoxImageCodeInsightInfo.fromModifier(element, this@MissingImageInspection)
-                if(codeInsightInfos.isNullOrEmpty()) return
-                val location = element
-                registerProblems(codeInsightInfos, location, holder)
+                val context = ParadoxImageCodeInsightContext.fromExpression(element, this@MissingImageInspection)
+                if(context == null || context.infos.isEmpty()) return
+                registerProblems(context, element, holder)
             }
             
-            private fun isMissing(iconPath: String): Boolean {
-                val iconSelector = fileSelector(project, file) //use file as context
-                val iconFile = ParadoxFilePathSearch.search(iconPath, null, iconSelector).findFirst()
-                val missing = iconFile == null
-                return missing
-            }
-            
-            private fun registerProblems(codeInsightInfos: List<ParadoxImageCodeInsightInfo>, element: PsiElement, holder: ProblemsHolder) {
-                val messages = getMessages(codeInsightInfos)
+            private fun registerProblems(context: ParadoxImageCodeInsightContext, element: PsiElement, holder: ProblemsHolder) {
+                val location = when{
+                    element is ParadoxScriptFile -> element
+                    element is ParadoxScriptProperty -> element.propertyKey
+                    element is ParadoxScriptStringExpressionElement -> element
+                    else -> return
+                }
+                val messages = getMessages(context)
                 if(messages.isEmpty()) return
                 for(message in messages) {
                     //显示为WEAK_WARNING
-                    holder.registerProblem(element, message, ProblemHighlightType.WEAK_WARNING)
+                    holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING)
                 }
             }
             
-            private fun getMessages(codeInsightInfos: List<ParadoxImageCodeInsightInfo>): List<String> {
+            private fun getMessages(context: ParadoxImageCodeInsightContext): List<String> {
                 val includeMap = mutableMapOf<String, ParadoxImageCodeInsightInfo>()
                 val excludeKeys = mutableSetOf<String>()
-                for(codeInsightInfo in codeInsightInfos) {
+                for(codeInsightInfo in context.infos) {
                     if(!codeInsightInfo.check) continue
                     val key = codeInsightInfo.key ?: continue
                     if(excludeKeys.contains(key)) continue
