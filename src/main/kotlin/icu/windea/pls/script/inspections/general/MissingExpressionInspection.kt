@@ -19,7 +19,7 @@ import javax.swing.*
 /**
  * 缺失的表达式的检查。
  * @property firstOnly 是否仅标出第一个错误。
- * @property firstOnlyOnFile 在文件级别上，是否仅标出第一个错误。（默认为true，否则文件顶部的错误列可能会过多）
+ * @property firstOnlyOnFile 在文件级别上，是否仅标出第一个错误。
  */
 class MissingExpressionInspection : LocalInspectionTool() {
     @JvmField var firstOnly = false

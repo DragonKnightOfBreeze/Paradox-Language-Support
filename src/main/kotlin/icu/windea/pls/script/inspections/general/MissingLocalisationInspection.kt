@@ -8,7 +8,6 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.codeInsight.generation.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.lang.*
@@ -19,12 +18,6 @@ import javax.swing.*
 
 /**
  * 缺失的本地化的检查。
- * @property locales 要检查的语言区域。默认检查英文。
- * @property checkForPreferredLocale 是否同样检查主要的语言区域。默认为true。
- * @property checkForDefinitions 是否检查定义。默认为true。
- * @property checkPrimaryForDefinitions 是否同样检查定义的主要的相关本地化，默认为true。
- * @property checkOptionalForDefinitions 是否同样检查定义的可选的相关本地化，默认为false。
- * @property checkForModifiers 是否检查修正。默认为false。
  */
 class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField var checkForPreferredLocale = true
