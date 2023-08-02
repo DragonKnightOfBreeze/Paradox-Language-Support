@@ -29,7 +29,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField var checkOptionalForDefinitions = false
     @JvmField var checkGeneratedModifierNamesForDefinitions = false
     @JvmField var checkGeneratedModifierDescriptionsForDefinitions = false
-    @JvmField var checkForModifiers = false
+    @JvmField var checkForModifiers = true
     @JvmField var checkModifierNames = true
     @JvmField var checkModifierDescriptions = false
     

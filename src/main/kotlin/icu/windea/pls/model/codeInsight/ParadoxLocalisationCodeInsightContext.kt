@@ -44,7 +44,8 @@ data class ParadoxLocalisationCodeInsightContext(
                     if(element.isExpressionOrMemberContext()) super.visitElement(element)
                 }
             })
-            return ParadoxLocalisationCodeInsightContext(Type.File, file.name, codeInsightInfos, children)
+            val finalChildren = children.distinctBy { it.type.name + "@" + it.name } //exclude duplicates
+            return ParadoxLocalisationCodeInsightContext(Type.File, file.name, codeInsightInfos, finalChildren, inspection)
         }
         
         fun fromDefinition(

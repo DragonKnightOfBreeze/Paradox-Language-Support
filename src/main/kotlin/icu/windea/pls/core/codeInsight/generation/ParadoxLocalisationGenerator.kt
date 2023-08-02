@@ -13,20 +13,25 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
 
 object ParadoxLocalisationGenerator {
-    fun getMembers(context: ParadoxLocalisationCodeInsightContext): List<ParadoxGenerateLocalisationsChooser.Localisation> {
+    fun getMembers(context: ParadoxLocalisationCodeInsightContext, locale: CwtLocalisationLocaleConfig): List<ParadoxGenerateLocalisationsChooser.Localisation> {
         val members = mutableListOf<ParadoxGenerateLocalisationsChooser.Localisation>()
-        doGetMembers(members, context)
+        doGetMembers(members, context, locale)
         return members
     }
     
-    private fun doGetMembers(members: MutableList<ParadoxGenerateLocalisationsChooser.Localisation>, context: ParadoxLocalisationCodeInsightContext) {
+    private fun doGetMembers(members: MutableList<ParadoxGenerateLocalisationsChooser.Localisation>, context: ParadoxLocalisationCodeInsightContext, locale: CwtLocalisationLocaleConfig) {
         val onlyMissing = context.inspection != null
+        context.children.forEach { child ->
+            doGetMembers(members, child, locale)
+        }
         context.infos.forEach f@{ info ->
+            if(info.locale != locale) return@f
             if(onlyMissing && !info.missing) return@f
             val name = info.name ?: return@f
             members += ParadoxGenerateLocalisationsChooser.Localisation(name, info, context)
@@ -37,8 +42,8 @@ object ParadoxLocalisationGenerator {
         val memberArray = members.toTypedArray()
         val chooser = ParadoxGenerateLocalisationsChooser(memberArray, project)
         chooser.title = getChooserName(context)
-        //by default, select all missing localisations
-        val missingMemberArray = memberArray.filter { it.info.missing }.toTypedArray()
+        //by default, select all checked missing localisations
+        val missingMemberArray = memberArray.filter { it.info.check && it.info.missing }.toTypedArray()
         chooser.selectElements(missingMemberArray)
         chooser.show()
         if(chooser.exitCode != DialogWrapper.OK_EXIT_CODE) return null
@@ -59,13 +64,13 @@ object ParadoxLocalisationGenerator {
         }
     }
     
-    fun generate(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Localisation>, project: Project, file: PsiFile) {
+    fun generate(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Localisation>, project: Project, file: PsiFile, locale: CwtLocalisationLocaleConfig) {
         val taskTitle = getProcessFileName(context)
         val task = object : Task.Modal(project, taskTitle, true) {
             var generatedFile: VirtualFile? = null
             
             override fun run(indicator: ProgressIndicator) {
-                generatedFile = generateFile(context, members, project, file) //生成本地化文件
+                generatedFile = generateFile(context, members, project, file, locale) //生成本地化文件
             }
             
             override fun onSuccess() {
@@ -92,15 +97,18 @@ object ParadoxLocalisationGenerator {
         }
     }
     
-    private fun generateFile(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Localisation>, project: Project, file: PsiFile): VirtualFile {
+    private fun generateFile(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Localisation>, project: Project, file: PsiFile, locale: CwtLocalisationLocaleConfig): VirtualFile {
         val generatedFileName = getGeneratedFileName(context)
-        val localeConfig = ParadoxLocaleHandler.getPreferredLocale()
+        val namesToDistinct = mutableSetOf<String>()
         val text = buildString {
-            append(localeConfig.id).append(":\n")
+            append(locale.id).append(":\n")
             val indentSize = CodeStyle.getSettings(project).getIndentOptions(ParadoxLocalisationFileType).INDENT_SIZE
             val indent = " ".repeat(indentSize)
-            for(member in members) {
-                appendLocalisationLine(indent, member.text, project, file)
+            for(localisation in members) {
+                //exclude duplicate localisation names
+                if(namesToDistinct.add(localisation.name)) {
+                    appendLocalisationLine(indent, localisation.name, project, file)
+                }
             }
         }
         return createLocalisationTempFile(generatedFileName, text)
