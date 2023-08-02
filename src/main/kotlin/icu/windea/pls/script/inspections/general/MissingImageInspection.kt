@@ -18,8 +18,8 @@ class MissingImageInspection : LocalInspectionTool() {
     @JvmField var checkForDefinitions = true
     @JvmField var checkPrimaryForDefinitions = false
     @JvmField var checkOptionalForDefinitions = false
-    @JvmField var checkGeneratedModifierIconsForDefinitions = true
-    @JvmField var checkForModifiers = true
+    @JvmField var checkGeneratedModifierIconsForDefinitions = false
+    @JvmField var checkForModifiers = false
     @JvmField var checkModifierIcons = true
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
