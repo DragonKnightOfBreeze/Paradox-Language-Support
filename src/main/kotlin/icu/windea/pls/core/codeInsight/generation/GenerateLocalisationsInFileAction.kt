@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.*
  * 生成当前脚本文件中所有定义的所有（缺失的）本地化。
  */
 class GenerateLocalisationsInFileAction : BaseCodeInsightAction(), GenerateActionPopupTemplateInjector {
-    private val handler = GenerateLocalisationsInFileHandler()
+    private val handler = ParadoxGenerateLocalisationsHandler(forFile = true)
     
     override fun getHandler(): CodeInsightActionHandler {
         return handler

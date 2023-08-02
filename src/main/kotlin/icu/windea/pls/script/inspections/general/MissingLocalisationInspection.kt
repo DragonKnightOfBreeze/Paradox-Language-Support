@@ -70,8 +70,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 val messages = getMessages(context)
                 if(messages.isEmpty()) return
                 val fixes = buildList<LocalQuickFix> { 
-                    this += GenerateLocalisationsFix(element, context)
-                    this += GenerateLocalisationsInFileFix(element)
+                    this += GenerateLocalisationsFix(element, context, this@MissingLocalisationInspection)
+                    this += GenerateLocalisationsInFileFix(element, this@MissingLocalisationInspection)
                 }.toTypedArray()
                 for(message in messages) {
                     //显示为WEAK_WARNING

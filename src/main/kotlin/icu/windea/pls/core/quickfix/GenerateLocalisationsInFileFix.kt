@@ -8,9 +8,11 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.generation.*
+import icu.windea.pls.script.inspections.general.*
 
 class GenerateLocalisationsInFileFix(
-    element: PsiElement
+    element: PsiElement,
+    private val inspection: MissingLocalisationInspection? = null
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     private val fileName = element.containingFile?.name.orAnonymous()
     
@@ -22,7 +24,7 @@ class GenerateLocalisationsInFileFix(
     
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if(editor == null) return
-        val handler = GenerateLocalisationsInFileHandler()
+        val handler = ParadoxGenerateLocalisationsHandler(null, inspection, forFile = true)
         handler.invoke(project, editor, file)
     }
     
