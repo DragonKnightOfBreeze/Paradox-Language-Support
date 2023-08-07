@@ -17,8 +17,8 @@ import com.intellij.util.concurrency.annotations.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.data.*
 import icu.windea.pls.core.listeners.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*

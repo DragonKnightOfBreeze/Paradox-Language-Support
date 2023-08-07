@@ -36,7 +36,7 @@ class IrEventTreeDiagramSettingsConfigurable(
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("ir.eventTree.settings.type")))
                         .applyToComponent { isThirdStateEnabled = false }
-                        .customize(JBGaps(3, 0, 3, 0))
+                        .customize(UnscaledGaps(3, 0, 3, 0))
                         .also { cb = it }
                 }
                 indent {
@@ -45,7 +45,7 @@ class IrEventTreeDiagramSettingsConfigurable(
                             checkBox(PlsDiagramBundle.message("ir.eventTree.settings.type.${key}"))
                                 .bindSelected(settings.type.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
-                                .customize(JBGaps(3, 0, 3, 0))
+                                .customize(UnscaledGaps(3, 0, 3, 0))
                         }
                     }
                 }
@@ -55,7 +55,7 @@ class IrEventTreeDiagramSettingsConfigurable(
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("ir.eventTree.settings.eventType")))
                         .applyToComponent { isThirdStateEnabled = false }
-                        .customize(JBGaps(3, 0, 3, 0))
+                        .customize(UnscaledGaps(3, 0, 3, 0))
                         .also { cb = it }
                 }
                 indent {
@@ -64,7 +64,7 @@ class IrEventTreeDiagramSettingsConfigurable(
                             checkBox(PlsDiagramBundle.message("ir.eventTree.settings.eventType.option", key))
                                 .bindSelected(settings.eventType.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
-                                .customize(JBGaps(3, 0, 3, 0))
+                                .customize(UnscaledGaps(3, 0, 3, 0))
                         }
                     }
                 }

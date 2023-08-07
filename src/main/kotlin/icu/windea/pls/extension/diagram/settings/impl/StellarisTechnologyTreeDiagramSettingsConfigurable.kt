@@ -39,7 +39,7 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.type")))
                         .applyToComponent { isThirdStateEnabled = false }
-                        .customize(JBGaps(3, 0, 3, 0))
+                        .customize(UnscaledGaps(3, 0, 3, 0))
                         .also { cb = it }
                 }
                 indent {
@@ -48,7 +48,7 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                             checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.type.${key}"))
                                 .bindSelected(settings.type.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
-                                .customize(JBGaps(3, 0, 3, 0))
+                                .customize(UnscaledGaps(3, 0, 3, 0))
                         }
                     }
                 }
@@ -58,7 +58,7 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.tier")))
                         .applyToComponent { isThirdStateEnabled = false }
-                        .customize(JBGaps(3, 0, 3, 0))
+                        .customize(UnscaledGaps(3, 0, 3, 0))
                         .also { cb = it }
                 }
                 indent {
@@ -67,7 +67,7 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                             checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.tier.option", key))
                                 .bindSelected(settings.tier.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
-                                .customize(JBGaps(3, 0, 3, 0))
+                                .customize(UnscaledGaps(3, 0, 3, 0))
                         }
                     }
                 }
@@ -77,7 +77,7 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.area")))
                         .applyToComponent { isThirdStateEnabled = false }
-                        .customize(JBGaps(3, 0, 3, 0))
+                        .customize(UnscaledGaps(3, 0, 3, 0))
                         .also { cb = it }
                 }
                 indent {
@@ -86,11 +86,11 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                             checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.area.option", key))
                                 .bindSelected(settings.area.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
-                                .customize(JBGaps(3, 0, 3, 0))
+                                .customize(UnscaledGaps(3, 0, 3, 0))
                             //add localized name as comment lazily
                             settings.areaNames.get(key)?.let { p ->
                                 comment("")
-                                    .customize(JBGaps(3, 16, 3, 0))
+                                    .customize(UnscaledGaps(3, 16, 3, 0))
                                     .applyToComponent { coroutineScope.launch { text = readAction(p) } }
                             }
                         }
@@ -102,7 +102,7 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.category")))
                         .applyToComponent { isThirdStateEnabled = false }
-                        .customize(JBGaps(3, 0, 3, 0))
+                        .customize(UnscaledGaps(3, 0, 3, 0))
                         .also { cb = it }
                 }
                 indent {
@@ -111,10 +111,10 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                             checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.category.option", key))
                                 .bindSelected(settings.category.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
-                                .customize(JBGaps(3, 0, 3, 0))
+                                .customize(UnscaledGaps(3, 0, 3, 0))
                             //add localized name as comment lazily
                             settings.categoryNames.get(key)?.let { p ->
-                                comment("").customize(JBGaps(3, 16, 3, 0))
+                                comment("").customize(UnscaledGaps(3, 16, 3, 0))
                                     .applyToComponent { coroutineScope.launch { text = readAction(p) } }
                             }
                         }

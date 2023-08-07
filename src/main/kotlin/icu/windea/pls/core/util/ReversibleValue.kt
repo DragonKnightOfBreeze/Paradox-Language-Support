@@ -1,6 +1,4 @@
-@file:Suppress("PackageDirectoryMismatch")
-
-package icu.windea.pls.core
+package icu.windea.pls.core.util
 
 data class ReversibleValue<T>(
     val operator: Boolean,

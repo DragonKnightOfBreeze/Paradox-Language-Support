@@ -7,24 +7,19 @@ import com.google.common.util.concurrent.*
 import com.intellij.openapi.progress.*
 import java.util.concurrent.*
 
-inline fun <K, V> CacheBuilder<K, V>.configure(): CacheBuilder<K, V> {
-    //return maximumSize(0)
-    return this
+inline fun <K: Any, V: Any> CacheBuilder<in K, in V>.buildCache(): Cache<K, V> {
+    return build()
 }
 
-inline fun <K, V> CacheBuilder<in K, in V>.buildCache(): Cache<K, V> {
-    return configure().build()
-}
-
-inline fun <K, V> CacheBuilder<in K, in V>.buildCache(crossinline loader: (K) -> V): LoadingCache<K, V> {
-    return configure().build(object : CacheLoader<K, V>() {
+inline fun <K : Any, V: Any> CacheBuilder<in K, in V>.buildCache(crossinline loader: (K) -> V): LoadingCache<K, V> {
+    return build(object : CacheLoader<K, V>() {
         override fun load(key: K): V {
             return loader(key)
         }
     })
 }
 
-inline fun <K : Any, V> Cache<K, V>.getOrPut(key: K, crossinline defaultValue: (K) -> V): V {
+inline fun <K : Any, V: Any> Cache<K, V>.getOrPut(key: K, crossinline defaultValue: (K) -> V): V {
     try {
         return get(key) { defaultValue(key) }
     } catch(e: ExecutionException) {
@@ -40,7 +35,7 @@ inline fun <K : Any, V> Cache<K, V>.getOrPut(key: K, crossinline defaultValue: (
     }
 }
 
-inline fun <K : Any, V> Cache<K, V>.getOrPut(key: K, defaultValueOnException: (Throwable) -> V, crossinline defaultValue: (K) -> V): V {
+inline fun <K : Any, V: Any> Cache<K, V>.getOrPut(key: K, defaultValueOnException: (Throwable) -> V, crossinline defaultValue: (K) -> V): V {
     try {
         return get(key) { defaultValue(key) }
     } catch(e: ExecutionException) {
@@ -56,10 +51,10 @@ inline fun <K : Any, V> Cache<K, V>.getOrPut(key: K, defaultValueOnException: (T
     }
 }
 
-inline operator fun <K : Any, V> Cache<K, V>.get(key: K): V? {
+inline operator fun <K : Any, V: Any> Cache<K, V>.get(key: K): V? {
     return getIfPresent(key)
 }
 
-inline operator fun <K : Any, V> Cache<K, V>.set(key: K, value: V) {
+inline operator fun <K : Any, V: Any> Cache<K, V>.set(key: K, value: V) {
     put(key, value)
 }

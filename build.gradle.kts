@@ -129,6 +129,7 @@ tasks {
 	jar {
 		//排除特定文件
 		exclude("icu/windea/pls/dev")
+		exclude("icu/windea/pls/core/data/CsvExtensionsKt.class")
 		//添加项目文档和许可证
 		from("README.md", "README_en.md", "LICENSE")
 		//添加CWT配置文件

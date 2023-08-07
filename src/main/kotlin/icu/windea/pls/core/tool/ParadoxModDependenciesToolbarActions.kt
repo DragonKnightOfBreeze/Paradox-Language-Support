@@ -123,7 +123,7 @@ interface ParadoxModDependenciesToolbarActions {
     ) : AnAction(AllIcons.Actions.Edit) {
         init {
             templatePresentation.text = PlsBundle.message("mod.dependencies.toolbar.action.edit")
-            shortcutSet = CustomShortcutSet.fromString("ENTER")
+            registerCustomShortcutSet(CustomShortcutSet.fromString("ENTER"), null)
         }
         
         override fun getActionUpdateThread(): ActionUpdateThread {
@@ -148,7 +148,7 @@ interface ParadoxModDependenciesToolbarActions {
     ) : AnAction(AllIcons.ToolbarDecorator.Import) {
         init {
             templatePresentation.text = PlsBundle.message("mod.dependencies.toolbar.action.import")
-            shortcutSet = CustomShortcutSet.fromString("alt I")
+            registerCustomShortcutSet(CustomShortcutSet.fromString("alt I"), null)
         }
         
         override fun getActionUpdateThread(): ActionUpdateThread {
@@ -168,7 +168,7 @@ interface ParadoxModDependenciesToolbarActions {
     ) : AnAction(AllIcons.ToolbarDecorator.Export) {
         init {
             templatePresentation.text = PlsBundle.message("mod.dependencies.toolbar.action.export")
-            shortcutSet = CustomShortcutSet.fromString("alt E")
+            registerCustomShortcutSet(CustomShortcutSet.fromString("alt E"), null)
         }
         
         override fun getActionUpdateThread(): ActionUpdateThread {

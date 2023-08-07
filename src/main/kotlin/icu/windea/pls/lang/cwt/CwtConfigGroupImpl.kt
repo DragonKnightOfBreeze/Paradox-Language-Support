@@ -8,6 +8,7 @@ import com.intellij.util.containers.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
