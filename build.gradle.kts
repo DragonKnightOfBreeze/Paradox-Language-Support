@@ -90,7 +90,7 @@ kotlin {
 
 val jarExclude = listOf(
 	"icu/windea/pls/dev",
-	"icu/windea/pls/core/data/CsvExtensionsKt.class",
+	"icu/windea/pls/core/data/CsvExtensions*.class",
 )
 val zipExclude = listOf(
 	"lib/jackson-dataformat-csv-*.jar",
