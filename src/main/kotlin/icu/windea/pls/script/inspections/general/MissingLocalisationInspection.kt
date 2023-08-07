@@ -27,7 +27,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField var checkForDefinitions = true
     @JvmField var checkPrimaryForDefinitions = false
     @JvmField var checkOptionalForDefinitions = false
-    @JvmField var checkGeneratedModifierNamesForDefinitions = true
+    @JvmField var checkGeneratedModifierNamesForDefinitions = false
     @JvmField var checkGeneratedModifierDescriptionsForDefinitions = false
     @JvmField var checkForModifiers = true
     @JvmField var checkModifierNames = true
@@ -61,7 +61,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             
             private fun registerProblems(context: ParadoxLocalisationCodeInsightContext, element: PsiElement, holder: ProblemsHolder) {
-                val location = when{
+                val location = when {
                     element is ParadoxScriptFile -> element
                     element is ParadoxScriptProperty -> element.propertyKey
                     element is ParadoxScriptStringExpressionElement -> element
@@ -69,9 +69,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 }
                 val messages = getMessages(context)
                 if(messages.isEmpty()) return
-                val fixes = buildList<LocalQuickFix> { 
-                    this += GenerateLocalisationsFix(element, context)
-                    this += GenerateLocalisationsInFileFix(element)
+                val fixes = buildList<LocalQuickFix> {
+                    this += GenerateLocalisationsFix(element, context, this@MissingLocalisationInspection)
+                    this += GenerateLocalisationsInFileFix(element, this@MissingLocalisationInspection)
                 }.toTypedArray()
                 for(message in messages) {
                     //显示为WEAK_WARNING

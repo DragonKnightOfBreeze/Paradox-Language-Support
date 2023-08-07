@@ -14,17 +14,37 @@ import icu.windea.pls.script.psi.*
 
 data class ParadoxImageCodeInsightContext(
     val type: Type,
-    val name:String,
+    val name: String,
     val infos: List<ParadoxImageCodeInsightInfo>,
     val children: List<ParadoxImageCodeInsightContext> = emptyList(),
     val inspection: MissingImageInspection? = null
 ) {
     enum class Type {
+        File,
         Definition,
         Modifier
     }
     
     companion object {
+        fun fromFile(
+            file: PsiFile,
+            inspection: MissingImageInspection? = null
+        ): ParadoxImageCodeInsightContext? {
+            if(file !is ParadoxScriptFile) return null
+            val codeInsightInfos = mutableListOf<ParadoxImageCodeInsightInfo>()
+            val children = mutableListOf<ParadoxImageCodeInsightContext>()
+            file.accept(object : PsiRecursiveElementWalkingVisitor() {
+                override fun visitElement(element: PsiElement) {
+                    when(element) {
+                        is ParadoxScriptDefinitionElement -> fromDefinition(element, inspection)?.let { children.add(it) }
+                        is ParadoxScriptStringExpressionElement -> fromExpression(element, inspection)?.let { children.add(it) }
+                    }
+                    if(element.isExpressionOrMemberContext()) super.visitElement(element)
+                }
+            })
+            return ParadoxImageCodeInsightContext(Type.File, file.name, codeInsightInfos, children)
+        }
+        
         fun fromDefinition(
             definition: ParadoxScriptDefinitionElement,
             inspection: MissingImageInspection? = null
@@ -62,7 +82,7 @@ data class ParadoxImageCodeInsightContext(
                 val modifierName = info.name
                 run {
                     val type = ParadoxImageCodeInsightInfo.Type.GeneratedModifierIcon
-                    val check =  inspection == null || inspection.checkGeneratedModifierIconsForDefinitions
+                    val check = inspection == null || inspection.checkGeneratedModifierIconsForDefinitions
                     val iconPath = ParadoxModifierHandler.getModifierIconPath(modifierName)
                     val missing = isMissing(iconPath, project, definition)
                     val codeInsightInfo = ParadoxImageCodeInsightInfo(type, iconPath, null, null, check, missing, false)

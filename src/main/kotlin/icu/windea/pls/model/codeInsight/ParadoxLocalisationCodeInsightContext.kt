@@ -15,20 +15,42 @@ import icu.windea.pls.script.psi.*
 
 data class ParadoxLocalisationCodeInsightContext(
     val type: Type,
-    val name:String,
+    val name: String,
     val infos: List<ParadoxLocalisationCodeInsightInfo>,
     val children: List<ParadoxLocalisationCodeInsightContext> = emptyList(),
     val inspection: MissingLocalisationInspection? = null
 ) {
     enum class Type {
+        File,
         Definition,
         Modifier
     }
     
     companion object {
+        fun fromFile(
+            file: PsiFile,
+            locales: Collection<CwtLocalisationLocaleConfig>,
+            inspection: MissingLocalisationInspection? = null
+        ): ParadoxLocalisationCodeInsightContext? {
+            if(file !is ParadoxScriptFile) return null
+            val codeInsightInfos = mutableListOf<ParadoxLocalisationCodeInsightInfo>()
+            val children = mutableListOf<ParadoxLocalisationCodeInsightContext>()
+            file.accept(object : PsiRecursiveElementWalkingVisitor() {
+                override fun visitElement(element: PsiElement) {
+                    when(element) {
+                        is ParadoxScriptDefinitionElement -> fromDefinition(element, locales, inspection)?.let { children.add(it) }
+                        is ParadoxScriptStringExpressionElement -> fromExpression(element, locales, inspection)?.let { children.add(it) }
+                    }
+                    if(element.isExpressionOrMemberContext()) super.visitElement(element)
+                }
+            })
+            val finalChildren = children.distinctBy { it.type.name + "@" + it.name } //exclude duplicates
+            return ParadoxLocalisationCodeInsightContext(Type.File, file.name, codeInsightInfos, finalChildren, inspection)
+        }
+        
         fun fromDefinition(
             definition: ParadoxScriptDefinitionElement,
-            locales: Set<CwtLocalisationLocaleConfig>,
+            locales: Collection<CwtLocalisationLocaleConfig>,
             inspection: MissingLocalisationInspection? = null
         ): ParadoxLocalisationCodeInsightContext? {
             if(!(inspection == null || inspection.checkForDefinitions)) return null
@@ -94,10 +116,11 @@ data class ParadoxLocalisationCodeInsightContext(
         
         fun fromExpression(
             element: ParadoxScriptStringExpressionElement,
-            locales: Set<CwtLocalisationLocaleConfig>,
+            locales: Collection<CwtLocalisationLocaleConfig>,
             inspection: MissingLocalisationInspection? = null
         ): ParadoxLocalisationCodeInsightContext? {
             if(!(inspection == null || inspection.checkForModifiers)) return null //quick check
+            if(!element.isExpression()) return null
             val expression = element.value
             if(expression.isEmpty() || expression.isParameterized()) return null
             val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return null
@@ -107,7 +130,7 @@ data class ParadoxLocalisationCodeInsightContext(
         fun fromModifier(
             element: ParadoxScriptStringExpressionElement,
             config: CwtMemberConfig<*>,
-            locales: Set<CwtLocalisationLocaleConfig>,
+            locales: Collection<CwtLocalisationLocaleConfig>,
             inspection: MissingLocalisationInspection?
         ): ParadoxLocalisationCodeInsightContext? {
             if(!(inspection == null || inspection.checkForModifiers)) return null

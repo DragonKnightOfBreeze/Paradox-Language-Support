@@ -18,7 +18,7 @@ class MissingImageInspection : LocalInspectionTool() {
     @JvmField var checkForDefinitions = true
     @JvmField var checkPrimaryForDefinitions = false
     @JvmField var checkOptionalForDefinitions = false
-    @JvmField var checkGeneratedModifierIconsForDefinitions = true
+    @JvmField var checkGeneratedModifierIconsForDefinitions = false
     @JvmField var checkForModifiers = true
     @JvmField var checkModifierIcons = true
     
@@ -45,7 +45,7 @@ class MissingImageInspection : LocalInspectionTool() {
             }
             
             private fun registerProblems(context: ParadoxImageCodeInsightContext, element: PsiElement, holder: ProblemsHolder) {
-                val location = when{
+                val location = when {
                     element is ParadoxScriptFile -> element
                     element is ParadoxScriptProperty -> element.propertyKey
                     element is ParadoxScriptStringExpressionElement -> element

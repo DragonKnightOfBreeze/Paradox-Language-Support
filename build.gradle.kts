@@ -19,6 +19,7 @@ intellij {
 	version.set("2023.2")
 	plugins.add("com.intellij.platform.images")
 	
+	
 	//optional
 	plugins.add("markdown")
 	//optional
@@ -120,13 +121,13 @@ tasks {
 			)
 		}
 	}
-	test {
+	withType<Test> {
 		systemProperty("idea.force.use.core.classloader", true)
 		useJUnitPlatform()
 		isScanForTestClasses = false
 		include("**/*Test.class")
 	}
-	jar {
+	withType<Jar> {
 		//排除特定文件
 		exclude("icu/windea/pls/dev")
 		exclude("icu/windea/pls/core/data/CsvExtensionsKt.class")
@@ -150,7 +151,9 @@ tasks {
 	}
 	buildPlugin {
 		//排除特定文件
-		exclude("lib/jackson-dataformat-csv-*.jar") 
+		exclude("lib/jackson-dataformat-csv-*.jar")
+		//重命名插件tar
+		rename("instrumented\\-(.*\\.jar)", "$1")
 	}
 	patchPluginXml {
 		sinceBuild.set("232")

@@ -70,7 +70,7 @@ class ParadoxScriptValueExpressionImpl(
         val errors = mutableListOf<ParadoxExpressionError>()
         var pipeCount = 0
         var lastIsParameter = false
-        for((index, node) in nodes.withIndex()) {
+        for(node in nodes) {
             if(node is ParadoxTokenExpressionNode) {
                 pipeCount++
             } else {

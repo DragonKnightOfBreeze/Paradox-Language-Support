@@ -11,13 +11,14 @@ import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 /**
  * 生成当前定义的所有（缺失的）本地化。
  */
 class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopupTemplateInjector {
-    private val handler = GenerateLocalisationsHandler()
+    private val handler = ParadoxGenerateLocalisationsHandler()
     
     override fun getHandler(): CodeInsightActionHandler {
         return handler
@@ -36,11 +37,16 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
         val file = PsiUtilBase.getPsiFileInEditor(editor, project)
         if(file !is ParadoxScriptFile) return
         presentation.isVisible = true
+        if(file.definitionInfo != null) {
+            presentation.isEnabled = true
+            return
+        }
         val offset = editor.caretModel.offset
         val element = findElement(file, offset)
         val isEnabled = when {
             element == null -> false
             element.isDefinitionRootKeyOrName() -> true
+            ParadoxModifierHandler.resolveModifier(element) != null -> true
             else -> false
         }
         presentation.isEnabled = isEnabled
