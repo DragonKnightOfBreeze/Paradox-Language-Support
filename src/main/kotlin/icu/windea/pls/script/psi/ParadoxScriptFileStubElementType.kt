@@ -85,12 +85,11 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
             val type = node.elementType
             val parentType = parent.elementType
             return when {
+                type == ROOT_BLOCK -> false
                 type == SCRIPTED_VARIABLE -> parentType != ROOT_BLOCK
                 type == PROPERTY -> false
                 type == BLOCK -> false
-                parentType == PROPERTY -> type != BLOCK
-                parentType == BLOCK -> type != PROPERTY
-                else -> false
+                else -> true
             }
         }
         
@@ -99,12 +98,11 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
             val type = node.tokenType
             val parentType = parent.tokenType
             return when {
+                type == ROOT_BLOCK -> false
                 type == SCRIPTED_VARIABLE -> parentType != ROOT_BLOCK
                 type == PROPERTY -> false
                 type == BLOCK -> false
-                parentType == PROPERTY -> type != BLOCK
-                parentType == BLOCK -> type != PROPERTY
-                else -> false
+                else -> true
             }
         }
     }

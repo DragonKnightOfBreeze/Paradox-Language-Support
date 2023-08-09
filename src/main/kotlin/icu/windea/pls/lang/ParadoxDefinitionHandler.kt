@@ -34,7 +34,7 @@ object ParadoxDefinitionHandler {
     
     fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
         //快速判断
-        if(runCatching { element.greenStub }.getOrNull()?.isValid() == false) return null
+        if(runCatching { element.greenStub }.getOrNull()?.isValidDefinition() == false) return null
         //如果不能使用缓存，需要重新获取
         val notUseCache = element.getUserData(PlsKeys.isIncomplete) == true
         if(notUseCache) {
@@ -557,6 +557,8 @@ object ParadoxDefinitionHandler {
     }
     
     fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub? {
+        if(!isDefinitionStubAwareParentStub(parentStub)) return null
+        
         //这里使用scriptProperty.definitionInfo.name而非scriptProperty.name
         val definitionInfo = psi.definitionInfo ?: return null
         val name = definitionInfo.name
@@ -569,6 +571,8 @@ object ParadoxDefinitionHandler {
     }
     
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptPropertyStub? {
+        if(!isDefinitionStubAwareParentStub(parentStub)) return null
+        
         val rootKey = getNameFromNode(node, tree) ?: return null
         if(rootKey.isParameterized()) return null //排除可能带参数的情况
         if(rootKey.isInlineUsage()) return null //排除是内联调用的情况
@@ -588,6 +592,17 @@ object ParadoxDefinitionHandler {
         val type = typeConfig.name
         val subtypes = doGetSubtypesWhenCreateStub(typeConfig, rootKey, configGroup) //如果无法在索引时获取，之后再懒加载
         return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
+    }
+    
+    private fun isDefinitionStubAwareParentStub(parentStub: StubElement<*>): Boolean {
+        //优化：parentStub必须对应一个定义且该定义可能包含嵌套的定义，或者对应一个文件
+        if(parentStub is ParadoxScriptFileStub && !parentStub.isValidDefinition()) return true
+        if(parentStub is ParadoxScriptDefinitionElementStub<*>) {
+            if(!parentStub.isValidDefinition()) return false
+            val parentTypeConfig = getCwtConfig().get(parentStub.gameType).types[parentStub.type] ?: return false
+            return parentTypeConfig.baseType != null
+        }
+        return false
     }
     
     private fun doGetNameWhenCreateStub(typeConfig: CwtTypeConfig, rootKey: String, node: LighterASTNode, tree: LighterAST): String {
