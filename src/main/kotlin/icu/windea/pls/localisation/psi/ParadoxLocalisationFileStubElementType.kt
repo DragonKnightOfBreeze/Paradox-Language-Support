@@ -28,8 +28,8 @@ object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFil
             //仅索引有根目录的文件
             val fileInfo = file.fileInfo ?: return false
             val path = fileInfo.pathToEntry
-            //要求不直接在根目录
-            if(path.isEmpty()) return false
+            //不索引直接在根目录下的文件
+            if(path.length == 1) return false
             return true
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
@@ -39,7 +39,7 @@ object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFil
     
     class Builder : LightStubBuilder() {
         override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {
-            //仅包括propertyList和property
+            //包括：propertyList、property
             val type = node.elementType
             return when {
                 type == LOCALE -> true
@@ -51,7 +51,7 @@ object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFil
         }
         
         override fun skipChildProcessingWhenBuildingStubs(tree: LighterAST, parent: LighterASTNode, node: LighterASTNode): Boolean {
-            //仅包括propertyList和property
+            //包括：propertyList、property
             val type = node.tokenType
             return when {
                 type == LOCALE -> true

@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
@@ -33,8 +34,8 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
             //仅索引有根目录的文件
             val fileInfo = file.fileInfo ?: return false
             val path = fileInfo.pathToEntry
-            //要求不直接在根目录
-            if(path.isEmpty()) return false
+            //不索引直接在根目录下的文件（除了模组描述符文件）
+            if(path.length == 1) return path.path.equals(PlsConstants.descriptorFileName, true)
             //不索引内联脚本文件
             if("common/inline_scripts".matchesPath(path.path)) return false
             return true
@@ -80,7 +81,7 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
         }
         
         override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {
-            //需要包括scripted_variable, property
+            //包括：顶层的scripted_variable、property
             val type = node.elementType
             val parentType = parent.elementType
             return when {
@@ -94,7 +95,7 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
         }
         
         override fun skipChildProcessingWhenBuildingStubs(tree: LighterAST, parent: LighterASTNode, node: LighterASTNode): Boolean {
-            //需要包括scripted_variable, property
+            //包括：顶层的scripted_variable、property
             val type = node.tokenType
             val parentType = parent.tokenType
             return when {
