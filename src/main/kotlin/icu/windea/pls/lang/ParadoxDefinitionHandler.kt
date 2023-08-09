@@ -595,12 +595,20 @@ object ParadoxDefinitionHandler {
     }
     
     private fun isDefinitionStubAwareParentStub(parentStub: StubElement<*>): Boolean {
-        //优化：parentStub必须对应一个定义且该定义可能包含嵌套的定义，或者对应一个文件
-        if(parentStub is ParadoxScriptFileStub && !parentStub.isValidDefinition()) return true
+        //优化：parentStub必须对应一个定义且该定义可以嵌套定义（目前仅限直接嵌套），或者对应一个非定义的文件，或者对应一个非定义的属性且在定义之外
+        //TODO 1.1.6 需要验证
         if(parentStub is ParadoxScriptDefinitionElementStub<*>) {
-            if(!parentStub.isValidDefinition()) return false
-            val parentTypeConfig = getCwtConfig().get(parentStub.gameType).types[parentStub.type] ?: return false
-            return parentTypeConfig.baseType != null
+            if(parentStub.isValidDefinition()) {
+                val parentTypeConfig = getCwtConfig().get(parentStub.gameType).types[parentStub.type] ?: return false
+                return parentTypeConfig.baseType != null
+            } else {
+                var stub: StubElement<PsiElement>? = parentStub.parentStub
+                while(stub != null) {
+                    if(stub is ParadoxScriptDefinitionElementStub<*> && stub.isValidDefinition()) return false
+                    stub = stub.parentStub
+                }
+                return true
+            }
         }
         return false
     }
