@@ -17,6 +17,9 @@ fun ParadoxGameType.toByte() = this.ordinal
 
 fun Byte.toGameType() = ParadoxGameType.values[this.toInt()]
 
+fun ParadoxLocalisationCategory.toByte() = this.ordinal
+
+fun Byte.toLocalisationCategory() = ParadoxLocalisationCategory.values[this.toInt()]
 
 inline fun <reified T: StubIndexExtension<*,*>> findStubIndex(): T{
     return StubIndexExtension.EP_NAME.findExtensionOrFail(T::class.java)
@@ -25,7 +28,6 @@ inline fun <reified T: StubIndexExtension<*,*>> findStubIndex(): T{
 inline fun <reified T : FileBasedIndexExtension<*, *>> findIndex(): T {
     return FileBasedIndexExtension.EXTENSION_POINT_NAME.findExtensionOrFail(T::class.java)
 }
-
 
 val ParadoxScriptedVariableNameIndexKey by lazy { findStubIndex<ParadoxScriptedVariableNameIndex>().getKey() }
 val ParadoxDefinitionNameIndexKey by lazy { findStubIndex<ParadoxDefinitionNameIndex>().getKey() }

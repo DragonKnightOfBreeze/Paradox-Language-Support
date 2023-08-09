@@ -9,7 +9,7 @@ interface ParadoxScriptDefinitionElementStub<T : ParadoxScriptDefinitionElement>
 	val subtypes: List<String>? //null -> 无法在索引时获取（需要访问定义索引）
 	val rootKey: String
 	val elementPath: ParadoxElementPath
-	val gameType: ParadoxGameType?
+	val gameType: ParadoxGameType
 	
 	fun isValid() = name.isNotEmpty() && type.isNotEmpty()
 }

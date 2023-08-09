@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 private val NAME = ID.create<String, List<ParadoxLocalisationParameterInfo>>("paradox.localisationParameter.index")
-private const val VERSION = 32 //1.1.5
+private const val VERSION = 33 //1.1.6
 
 class ParadoxLocalisationParameterIndex : ParadoxFileBasedIndex<List<ParadoxLocalisationParameterInfo>>() {
     override fun getName() = NAME

@@ -2,6 +2,7 @@ package icu.windea.pls.script.psi
 
 import com.intellij.lang.*
 import com.intellij.psi.stubs.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
@@ -29,7 +30,7 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     }
     
     private fun createDefaultStub(parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-        return ParadoxScriptPropertyStubImpl(parentStub, "", "", null, "", EmptyParadoxElementPath, null)
+        return ParadoxScriptPropertyStubImpl(parentStub, "", "", null, "", EmptyParadoxElementPath, ParadoxGameType.placeholder())
     }
     
     override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -42,7 +43,6 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     
     override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
         //Note that definition name can be empty (aka anonymous)
-        if(stub.gameType == null) return
         sink.occurrence(ParadoxDefinitionNameIndexKey, stub.name)
         sink.occurrence(ParadoxDefinitionTypeIndexKey, stub.type)
     }
@@ -55,11 +55,11 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
             dataStream.writeInt(-1)
         } else {
             dataStream.writeInt(subtypes.size)
-            subtypes.forEach { subtype -> dataStream.writeName(subtype) }
+            subtypes.forEachFast { subtype -> dataStream.writeName(subtype) }
         }
         dataStream.writeName(stub.rootKey)
         dataStream.writeName(stub.elementPath.path)
-        dataStream.writeName(stub.gameType?.id)
+        dataStream.writeByte(stub.gameType.toByte())
     }
     
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
@@ -69,7 +69,7 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
         val subtypes = if(subtypesSize == -1) null else MutableList(subtypesSize) { dataStream.readNameString().orEmpty() }
         val rootKey = dataStream.readNameString().orEmpty()
         val elementPath = dataStream.readNameString().orEmpty().let { ParadoxElementPath.resolve(it) }
-        val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
+        val gameType = dataStream.readByte().toGameType()
         return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
     }
 }

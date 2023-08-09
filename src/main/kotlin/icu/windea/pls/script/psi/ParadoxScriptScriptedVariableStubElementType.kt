@@ -29,7 +29,7 @@ object ParadoxScriptScriptedVariableStubElementType : ILightStubElementType<Para
     }
     
     private fun createDefaultStub(parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub {
-        return ParadoxScriptScriptedVariableStubImpl(parentStub, "", null)
+        return ParadoxScriptScriptedVariableStubImpl(parentStub, "", ParadoxGameType.placeholder())
     }
     
     override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -41,18 +41,17 @@ object ParadoxScriptScriptedVariableStubElementType : ILightStubElementType<Para
     }
     
     override fun indexStub(stub: ParadoxScriptScriptedVariableStub, sink: IndexSink) {
-        if(stub.gameType == null) return
         sink.occurrence(ParadoxScriptedVariableNameIndexKey, stub.name)
     }
     
     override fun serialize(stub: ParadoxScriptScriptedVariableStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name)
-        dataStream.writeName(stub.gameType?.id)
+        dataStream.writeByte(stub.gameType.toByte())
     }
     
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub {
         val name = dataStream.readNameString().orEmpty()
-        val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
+        val gameType = dataStream.readByte().toGameType()
         return ParadoxScriptScriptedVariableStubImpl(parentStub, name, gameType)
     }
 }

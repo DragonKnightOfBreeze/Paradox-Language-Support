@@ -9,7 +9,7 @@ class ParadoxScriptFileStubImpl(
     override val name: String,
     override val type: String,
     override val subtypes: List<String>?,
-    override val gameType: ParadoxGameType?
+    override val gameType: ParadoxGameType
 ) : PsiFileStubImpl<ParadoxScriptFile>(file), ParadoxScriptFileStub {
     override val elementPath: ParadoxElementPath get() = EmptyParadoxElementPath
     override val rootKey: String get() = name

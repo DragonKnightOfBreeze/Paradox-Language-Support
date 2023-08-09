@@ -37,6 +37,8 @@ enum class ParadoxGameType(
         fun resolveByTitle(title: String) = valueMapByTitle[title]
         
         fun resolveBySteamId(steamId: String) = valueMapBySteamId[steamId]
+        
+        fun placeholder() = Stellaris
     }
 }
 

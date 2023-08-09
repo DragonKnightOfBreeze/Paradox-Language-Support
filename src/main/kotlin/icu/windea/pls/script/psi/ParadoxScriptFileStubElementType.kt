@@ -7,15 +7,16 @@ import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
 
 object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
     private const val ID = "paradoxScript.file"
-    private const val VERSION = 32 //1.1.5
+    private const val VERSION = 33 //1.1.6
     
     override fun getExternalId() = ID
     
@@ -44,14 +45,8 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
     }
     
     override fun indexStub(stub: PsiFileStub<*>, sink: IndexSink) {
-        //尝试在这里进行索引时没有效果的，考虑使用FileTypeIndex
-        //if(stub is ParadoxScriptFileStub) {
-        //    //Note that definition name can be empty (aka anonymous)
-        //    if(stub.gameType == null) return
-        //    sink.occurrence(ParadoxDefinitionNameIndexKey, stub.name)
-        //    sink.occurrence(ParadoxDefinitionTypeIndexKey, stub.type)
-        //}
-        //super.indexStub(stub, sink)
+        //尝试在这里进行索引是没有效果的，考虑使用FileTypeIndex
+        super.indexStub(stub, sink)
     }
     
     override fun serialize(stub: PsiFileStub<*>, dataStream: StubOutputStream) {
@@ -63,9 +58,9 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
                 dataStream.writeInt(-1)
             } else {
                 dataStream.writeInt(subtypes.size)
-                subtypes.forEach { subtype -> dataStream.writeName(subtype) }
+                subtypes.forEachFast { subtype -> dataStream.writeName(subtype) }
             }
-            dataStream.writeName(stub.gameType?.id)
+            dataStream.writeByte(stub.gameType.toByte())
         }
         super.serialize(stub, dataStream)
     }
@@ -75,7 +70,7 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
         val type = dataStream.readNameString().orEmpty()
         val subtypesSize = dataStream.readInt()
         val subtypes = if(subtypesSize == -1) null else MutableList(subtypesSize) { dataStream.readNameString().orEmpty() }
-        val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
+        val gameType = dataStream.readByte().toGameType()
         return ParadoxScriptFileStubImpl(null, name, type, subtypes, gameType)
     }
     

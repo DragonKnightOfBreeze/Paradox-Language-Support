@@ -8,17 +8,18 @@ import icu.windea.pls.localisation.psi.*
 
 enum class ParadoxLocalisationCategory(
 	val id: String,
-	val text: String,
-	val flag: Boolean
+	val text: String
 ) {
-	Localisation("localisation", PlsBundle.message("prefix.localisation"), true),
-	SyncedLocalisation("localisation_synced", PlsBundle.message("prefix.localisationSynced"), false);
+	Localisation("localisation", PlsBundle.message("prefix.localisation")),
+	SyncedLocalisation("localisation_synced", PlsBundle.message("prefix.localisationSynced"));
 	
 	override fun toString(): String {
 		return text
 	}
 	
 	companion object {
+		val values = values()
+		
 		fun resolve(flag: Boolean): ParadoxLocalisationCategory {
 			return if(flag) Localisation else SyncedLocalisation
 		}
@@ -51,7 +52,7 @@ enum class ParadoxLocalisationCategory(
 			val root = propertyReference.fileInfo?.pathToEntry ?: return null
 			return resolve(root)
 		}
+		
+		fun placeholder() = Localisation
 	}
 }
-
-fun ParadoxLocalisationCategory?.orDefault() = this ?: ParadoxLocalisationCategory.Localisation

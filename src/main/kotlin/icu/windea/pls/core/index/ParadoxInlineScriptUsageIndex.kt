@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 private val NAME = ID.create<String, List<ParadoxInlineScriptUsageInfo>>("paradox.inlineScriptUsage.index")
-private const val VERSION = 32 //1.1.5
+private const val VERSION = 33 //1.1.6
 
 /**
  * 用于索引内联脚本调用。
