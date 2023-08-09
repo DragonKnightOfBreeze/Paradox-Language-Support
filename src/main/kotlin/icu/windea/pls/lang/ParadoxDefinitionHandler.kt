@@ -638,7 +638,7 @@ object ParadoxDefinitionHandler {
         //if(!stub.isValid()) return null //这里不用再次判断
         val name = stub.name
         val type = stub.type
-        val gameType = stub.gameType ?: return null
+        val gameType = stub.gameType
         val configGroup = getCwtConfig(project).get(gameType) //这里需要指定project
         val typeConfig = configGroup.types[type] ?: return null
         val subtypes = stub.subtypes

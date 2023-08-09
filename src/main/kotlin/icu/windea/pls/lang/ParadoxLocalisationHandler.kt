@@ -80,7 +80,7 @@ object ParadoxLocalisationHandler {
         //if(!stub.isValid()) return null //这里不用再次判断
         val name = stub.name
         val category = stub.category
-        val gameType = stub.gameType ?: return null
+        val gameType = stub.gameType
         return ParadoxLocalisationInfo(name, category, gameType)
     }
 }

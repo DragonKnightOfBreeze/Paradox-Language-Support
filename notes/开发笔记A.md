@@ -52,6 +52,11 @@
 
 这里操作可能被取消：`com.intellij.util.indexing.FileBasedIndexImpl.ensureUpToDate`
 
+```
+# IDEA进行代码补全时，不会显示超过以下自定义属性的值的的提示项
+ide.completion.variant.limit=1000
+```
+
 ### 索引
 
 可以使用stubIndex。

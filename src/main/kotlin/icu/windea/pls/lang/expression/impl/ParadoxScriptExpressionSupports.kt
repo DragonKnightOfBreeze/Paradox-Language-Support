@@ -56,7 +56,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         val config = context.config ?: return
         val keyword = context.keyword
         
-        //因为这里的提示结果可能有上千条，按照输入的关键字过滤结果，关键字变更时重新提示
+        //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
         
         val configGroup = config.info.configGroup
@@ -112,7 +112,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
         val config = context.config ?: return
         val keyword = context.keyword
         
-        //因为这里的提示结果可能有上千条，按照输入的关键字过滤结果，关键字变更时重新提示
+        //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
         
         val configGroup = config.info.configGroup
@@ -170,7 +170,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         if(context.quoted) return
         val keyword = context.keyword
         
-        //因为这里的提示结果可能有上千条，按照输入的关键字过滤结果，关键字变更时重新提示
+        //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
         
         val configGroup = config.info.configGroup

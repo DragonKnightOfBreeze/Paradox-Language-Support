@@ -30,7 +30,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
         val category = ParadoxLocalisationCategory.resolve(file) ?: return
         val project = parameters.originalFile.project
         
-        //因为这里的提示结果可能有上千条，按照输入的关键字过滤结果，关键字变更时重新提示
+        //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnAnyPrefixChange()
         
         //提示localisation或者synced_localisation

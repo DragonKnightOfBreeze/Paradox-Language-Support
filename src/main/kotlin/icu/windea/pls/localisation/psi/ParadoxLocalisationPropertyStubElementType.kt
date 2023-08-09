@@ -43,7 +43,6 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
     }
     
     override fun indexStub(stub: ParadoxLocalisationPropertyStub, sink: IndexSink) {
-        if(stub.gameType == null) return
         when(stub.category) {
             ParadoxLocalisationCategory.Localisation -> {
                 //sink.occurrence(ParadoxLocalisationNameIndexKey, stub.name)
