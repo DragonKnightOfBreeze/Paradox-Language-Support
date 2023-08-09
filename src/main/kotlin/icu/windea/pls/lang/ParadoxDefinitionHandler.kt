@@ -550,9 +550,9 @@ object ParadoxDefinitionHandler {
         val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
         if(typeConfig == null) return null
         //NOTE 这里不处理需要内联的情况
-        val name = doGetNameWhenCreateStub(typeConfig, rootKey, node, tree)
+        val name = getNameWhenCreateStub(typeConfig, rootKey, node, tree)
         val type = typeConfig.name
-        val subtypes = doGetSubtypesWhenCreateStub(typeConfig, rootKey, configGroup) //如果无法在索引时获取，之后再懒加载
+        val subtypes = getSubtypesWhenCreateStub(typeConfig, rootKey, configGroup) //如果无法在索引时获取，之后再懒加载
         return ParadoxScriptFileStubImpl(file, name, type, subtypes, gameType)
     }
     
@@ -588,9 +588,9 @@ object ParadoxDefinitionHandler {
         val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
         if(typeConfig == null) return null
         //NOTE 这里不处理需要内联的情况
-        val name = doGetNameWhenCreateStub(typeConfig, rootKey, node, tree)
+        val name = getNameWhenCreateStub(typeConfig, rootKey, node, tree)
         val type = typeConfig.name
-        val subtypes = doGetSubtypesWhenCreateStub(typeConfig, rootKey, configGroup) //如果无法在索引时获取，之后再懒加载
+        val subtypes = getSubtypesWhenCreateStub(typeConfig, rootKey, configGroup) //如果无法在索引时获取，之后再懒加载
         return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
     }
     
@@ -605,7 +605,7 @@ object ParadoxDefinitionHandler {
         return false
     }
     
-    private fun doGetNameWhenCreateStub(typeConfig: CwtTypeConfig, rootKey: String, node: LighterASTNode, tree: LighterAST): String {
+    private fun getNameWhenCreateStub(typeConfig: CwtTypeConfig, rootKey: String, node: LighterASTNode, tree: LighterAST): String {
         return when {
             typeConfig.nameFromFile -> rootKey
             typeConfig.nameField == "" -> {
@@ -621,7 +621,7 @@ object ParadoxDefinitionHandler {
         }
     }
     
-    private fun doGetSubtypesWhenCreateStub(typeConfig: CwtTypeConfig, rootKey: String, configGroup: CwtConfigGroup): List<String>? {
+    private fun getSubtypesWhenCreateStub(typeConfig: CwtTypeConfig, rootKey: String, configGroup: CwtConfigGroup): List<String>? {
         val subtypesConfig = typeConfig.subtypes
         val result = mutableListOf<CwtSubtypeConfig>()
         for(subtypeConfig in subtypesConfig.values) {
