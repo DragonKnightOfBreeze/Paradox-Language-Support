@@ -133,7 +133,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val producers = runReadAction {
             localisations.mapNotNull { otherLocalisation ->
                 val otherPsiFile = otherLocalisation.containingFile ?: return@mapNotNull null
-                val locale = otherPsiFile.localeConfig ?: return@mapNotNull null
+                val locale = selectLocale(otherPsiFile) ?: return@mapNotNull null
                 val otherFile = otherPsiFile.virtualFile ?: return@mapNotNull null
                 val isSamePosition = localisation isSamePosition otherLocalisation
                 val otherContentTitle = when {
@@ -182,7 +182,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         //创建临时文件
         //val file = localisation.containingFile ?: return null
         val fileInfo = documentContent.highlightFile?.fileInfo ?: return null
-        val localeConfig = localisation.localeConfig ?: ParadoxLocaleHandler.getPreferredLocale()
+        val localeConfig = selectLocale(localisation) ?: ParadoxLocaleHandler.getPreferredLocale()
         val text = localisation.text
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), text, fileInfo) }
         tempFile.putUserData(PlsKeys.injectedLocaleConfig, localeConfig)

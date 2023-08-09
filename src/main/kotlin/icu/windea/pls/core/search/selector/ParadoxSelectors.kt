@@ -122,7 +122,7 @@ class ParadoxLocaleSelector(
     val locale: CwtLocalisationLocaleConfig
 ) : ParadoxSelector<ParadoxLocalisationProperty> {
     override fun select(result: ParadoxLocalisationProperty): Boolean {
-        return locale == result.localeConfig
+        return locale == selectLocale(result)
     }
     
     override fun selectAll(result: ParadoxLocalisationProperty): Boolean {
@@ -134,7 +134,7 @@ class ParadoxPreferLocaleSelector(
     val locale: CwtLocalisationLocaleConfig
 ) : ParadoxSelector<ParadoxLocalisationProperty> {
     override fun select(result: ParadoxLocalisationProperty): Boolean {
-        return locale == result.localeConfig
+        return locale == selectLocale(result)
     }
     
     override fun selectAll(result: ParadoxLocalisationProperty): Boolean {
@@ -142,7 +142,7 @@ class ParadoxPreferLocaleSelector(
     }
     
     override fun comparator(): Comparator<ParadoxLocalisationProperty> {
-        return complexCompareBy({ it.localeConfig }, { it.id }, { locale == it }) //同时也按照localeId来进行排序
+        return complexCompareBy({ selectLocale(it) }, { it.id }, { locale == it }) //同时也按照localeId来进行排序
     }
 }
 

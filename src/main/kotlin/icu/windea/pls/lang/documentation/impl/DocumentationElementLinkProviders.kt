@@ -255,7 +255,7 @@ class ParadoxLocalisationLinkProvider : DocumentationElementLinkProvider {
         val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
         val name = remain
         val project = contextElement.project
-        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(contextElement.localeConfig)
+        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(selectLocale(contextElement))
             .withGameType(gameType)
         return ParadoxLocalisationSearch.search(name, selector).find()
     }

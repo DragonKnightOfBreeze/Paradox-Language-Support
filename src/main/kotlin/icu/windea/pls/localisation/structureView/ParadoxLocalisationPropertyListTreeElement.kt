@@ -21,7 +21,7 @@ class ParadoxLocalisationPropertyListTreeElement(
 	}
 	
 	override fun getLocationString(): String? {
-		val localeConfig = element?.localeConfig ?: return null
-		return localeConfig.description
-	}
+        val localeConfig = element?.let { selectLocale(it) } ?: return null
+        return localeConfig.description
+    }
 }

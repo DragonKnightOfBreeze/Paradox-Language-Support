@@ -153,8 +153,8 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
         from == null -> null
         from is ParadoxGameType -> from
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
-        from is PsiDirectory -> from.fileInfo?.rootInfo?.gameType
-        from is PsiFile -> from.fileInfo?.rootInfo?.gameType
+        from is PsiDirectory -> selectGameType(selectFile(from))
+        from is PsiFile -> selectGameType(selectFile(from))
         from is ParadoxScriptScriptedVariable -> runCatching { from.greenStub }.getOrNull()?.gameType
             ?: selectGameType(from.containingFile)
         from is ParadoxScriptDefinitionElement -> runCatching { from.greenStub }.getOrNull()?.gameType
@@ -171,8 +171,8 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
         from == null -> null
         from is CwtLocalisationLocaleConfig -> from
         from is VirtualFile -> from.getUserData(PlsKeys.injectedLocaleConfig)
-        from is PsiFile -> from.virtualFile?.getUserData(PlsKeys.injectedLocaleConfig)
-            ?: selectLocaleFromPsiFile(from)
+        from is PsiDirectory -> ParadoxLocaleHandler.getPreferredLocale()
+        from is PsiFile -> ParadoxCoreHandler.getLocaleConfig(from.virtualFile ?: return null, from.project)
         from is ParadoxLocalisationLocale -> from.name.toLocale(from)
         from is ParadoxLocalisationPropertyList -> selectLocale(from.locale)
         from is ParadoxLocalisationProperty -> runCatching { from.greenStub }.getOrNull()?.locale?.toLocale(from)
@@ -181,15 +181,6 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
         from is PsiElement && from.language == ParadoxLocalisationLanguage -> selectLocale(from.parent)
         else -> ParadoxLocaleHandler.getPreferredLocale()
     }
-}
-
-private fun selectLocaleFromPsiFile(from: PsiFile): CwtLocalisationLocaleConfig? {
-    //这里改为使用索引以优化性能（尽可能地避免访问PSI）
-    val indexKey = ParadoxFileLocaleIndexName
-    val virtualFile = from.virtualFile ?: return null
-    val project = from.project
-    val localeId = FileBasedIndex.getInstance().getFileData(indexKey, virtualFile, project).keys.singleOrNull() ?: return null
-    return getCwtConfig(project).core.localisationLocalesById.get(localeId)
 }
 
 private fun String.toLocale(from: PsiElement): CwtLocalisationLocaleConfig? {
@@ -211,21 +202,16 @@ val Project.paradoxLibrary: ParadoxLibrary
 val VirtualFile.rootInfo: ParadoxRootInfo?
     get() = ParadoxCoreHandler.getRootInfo(this)
 val VirtualFile.fileInfo: ParadoxFileInfo?
-    get() = ParadoxCoreHandler.getFileInfo(this, refresh = false)
+    get() = ParadoxCoreHandler.getFileInfo(this)
 val PsiElement.fileInfo: ParadoxFileInfo?
-    get() = ParadoxCoreHandler.getFileInfo(this, refresh = false)
+    get() = ParadoxCoreHandler.getFileInfo(this)
 
 val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
     get() = ParadoxDefinitionHandler.getInfo(this)
-
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
     get() = ParadoxLocalisationHandler.getInfo(this)
-
 val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo?
     get() = ParadoxComplexEnumValueHandler.getInfo(this)
-
-val PsiElement.localeConfig: CwtLocalisationLocaleConfig?
-    get() = selectLocale(this)
 
 val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorInfo?
     get() {
@@ -233,7 +219,6 @@ val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorInfo?
         val colorId = this.propertyReferenceParameter?.text?.find { it.isExactLetter() } ?: return null
         return ParadoxTextColorHandler.getInfo(colorId.toString(), project, this)
     }
-
 val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorInfo?
     get() {
         val colorId = this.name ?: return null

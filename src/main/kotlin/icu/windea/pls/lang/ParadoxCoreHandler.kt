@@ -18,7 +18,9 @@ import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.data.*
+import icu.windea.pls.core.index.*
 import icu.windea.pls.core.listeners.*
+import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
@@ -35,35 +37,33 @@ object ParadoxCoreHandler {
         ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onRemove(rootInfo)
     }
     
-    fun getRootInfo(rootFile: VirtualFile, refresh: Boolean = true): ParadoxRootInfo? {
+    fun getRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         if(!rootFile.isDirectory) return null
-        if(!runCatching { runReadAction { rootFile.isValid } }.getOrDefault(true)) return null //注意这里可能会抛出异常
+        //这里不需要判断文件是否仍然合法（未被删除）
         
         //首先尝试获取注入的rootInfo
         val injectedRootInfo = rootFile.getUserData(PlsKeys.injectedRootInfo)
         if(injectedRootInfo != null) return injectedRootInfo
         
-        val rootInfo = rootFile.getUserData(PlsKeys.rootInfo)
-        if(!refresh) return rootInfo
-        val rootInfoStatus = rootFile.getUserData(PlsKeys.rootInfoStatus)
-        if(rootInfoStatus != null) return rootInfo
+        val cachedRootInfoOrEmpty = rootFile.getUserData(PlsKeys.rootInfo)
+        val cachedRootInfo = cachedRootInfoOrEmpty.castOrNull<ParadoxRootInfo>()
+        if(cachedRootInfoOrEmpty != null) return cachedRootInfo
         
         try {
-            val newRootInfo = doGetRootInfo(rootFile)
-            if(newRootInfo != null) {
-                rootFile.tryPutUserData(PlsKeys.rootInfoStatus, true)
-                rootFile.tryPutUserData(PlsKeys.rootInfo, newRootInfo)
-                onAddRootInfo(rootFile, newRootInfo)
+            val rootInfo = doGetRootInfo(rootFile)
+            if(rootInfo != null) {
+                rootFile.tryPutUserData(PlsKeys.rootInfo, rootInfo)
+                onAddRootInfo(rootFile, rootInfo)
             } else {
-                rootFile.tryPutUserData(PlsKeys.rootInfoStatus, false)
-                if(rootInfo != null) onRemoveRootInfo(rootFile, rootInfo)
+                rootFile.tryPutUserData(PlsKeys.rootInfo, EMPTY_OBJECT)
+                if(cachedRootInfo != null) onRemoveRootInfo(rootFile, cachedRootInfo)
             }
-            rootFile.tryPutUserData(PlsKeys.rootInfo, newRootInfo)
-            return newRootInfo
+            rootFile.tryPutUserData(PlsKeys.rootInfo, rootInfo)
+            return rootInfo
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
             thisLogger().warn(e)
-            rootFile.tryPutUserData(PlsKeys.rootInfoStatus, null)
+            rootFile.tryPutUserData(PlsKeys.rootInfo, EMPTY_OBJECT)
             return null
         }
     }
@@ -162,22 +162,21 @@ object ParadoxCoreHandler {
         return null
     }
     
-    fun getFileInfo(element: PsiElement, refresh: Boolean = true): ParadoxFileInfo? {
+    fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
         val file = selectFile(element) ?: return null
-        return getFileInfo(file, refresh)
+        return getFileInfo(file)
     }
     
-    fun getFileInfo(file: VirtualFile, refresh: Boolean = true): ParadoxFileInfo? {
-        if(!runCatching { runReadAction { file.isValid } }.getOrDefault(true)) return null //注意这里可能会抛出异常
+    fun getFileInfo(file: VirtualFile): ParadoxFileInfo? {
+        //这里不需要判断文件是否仍然合法（未被删除）
         
         //首先尝试获取注入的fileInfo
         val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfo)
         if(injectedFileInfo != null) return injectedFileInfo
         
-        val fileInfo = file.getUserData(PlsKeys.fileInfo)
-        if(!refresh) return fileInfo
-        val fileInfoStatus = file.getUserData(PlsKeys.fileInfoStatus)
-        if(fileInfoStatus != null) return fileInfo
+        val cachedFileInfoOrEmpty = file.getUserData(PlsKeys.fileInfo)
+        val cachedFileInfo = cachedFileInfoOrEmpty.castOrNull<ParadoxFileInfo>()
+        if(cachedFileInfoOrEmpty != null) return cachedFileInfo
         
         //这里不能直接获取file.parent，需要基于filePath尝试获取parent，因为file可能是内存文件
         val isLightFile = ParadoxFileManager.isLightFile(file)
@@ -188,16 +187,14 @@ object ParadoxCoreHandler {
         while(true) {
             val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
             if(rootInfo != null) {
-                val newFileInfo = doGetFileInfo(file, filePath, fileName, rootInfo)
-                file.tryPutUserData(PlsKeys.fileInfoStatus, true)
-                file.tryPutUserData(PlsKeys.fileInfo, newFileInfo)
-                return newFileInfo
+                val fileInfo = doGetFileInfo(file, filePath, fileName, rootInfo)
+                file.tryPutUserData(PlsKeys.fileInfo, fileInfo)
+                return fileInfo
             }
             currentFilePath = currentFilePath.parent ?: break
             currentFile = currentFile?.parent ?: if(isLightFile) VfsUtil.findFile(currentFilePath, false) else break
         }
-        file.tryPutUserData(PlsKeys.fileInfoStatus, false)
-        file.tryPutUserData(PlsKeys.fileInfo, null)
+        file.tryPutUserData(PlsKeys.fileInfo, EMPTY_OBJECT)
         return null
     }
     
@@ -250,6 +247,23 @@ object ParadoxCoreHandler {
         return null
     }
     
+    fun getLocaleConfig(file: VirtualFile, project: Project): CwtLocalisationLocaleConfig? {
+        //这里不需要判断文件是否仍然合法（未被删除）
+        //使用简单缓存 + 文件索引以优化性能（避免直接访问PSI）
+        
+        //首先尝试获取注入的localeConfig
+        val injectedLocaleConfig = file.getUserData(PlsKeys.injectedLocaleConfig)
+        if(injectedLocaleConfig != null) return injectedLocaleConfig
+        
+        val cachedLocaleConfig = file.getUserData(PlsKeys.localeConfig)
+        if(cachedLocaleConfig != null) return cachedLocaleConfig.castOrNull()
+        
+        val indexKey = ParadoxFileLocaleIndexName
+        val localeId = FileBasedIndex.getInstance().getFileData(indexKey, file, project).keys.singleOrNull() ?: return null
+        val localeConfig = getCwtConfig(project).core.localisationLocalesById.get(localeId)
+        file.tryPutUserData(PlsKeys.localeConfig, localeConfig ?: EMPTY_OBJECT)
+        return localeConfig
+    }
     
     @RequiresWriteLock
     fun reparseFilesByRootFilePaths(rootFilePaths: Set<String>) {

@@ -58,7 +58,7 @@ class ParadoxLocalisationPropertyPsiReference(
         val element = element
         val file = element.containingFile as? ParadoxLocalisationFile ?: return null
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
-        val locale = file.localeConfig
+        val locale = selectLocale(file)
         val name = element.name
         
         //尝试解析成localisation或者synced_localisation
@@ -84,7 +84,7 @@ class ParadoxLocalisationPropertyPsiReference(
         val element = element
         val file = element.containingFile as? ParadoxLocalisationFile ?: return emptyArray()
         val category = ParadoxLocalisationCategory.resolve(file) ?: return emptyArray()
-        val locale = file.localeConfig
+        val locale = selectLocale(file)
         val name = element.name
         
         //尝试解析成localisation或者synced_localisation

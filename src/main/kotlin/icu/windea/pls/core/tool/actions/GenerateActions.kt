@@ -52,7 +52,7 @@ class GenerateLocalisationFileAction : AnAction() {
             files.forEach { file ->
                 val localeString = allLocales.keys.find { file.name.contains(it) }
                 if(localeString == null) return@forEach
-                val localeConfig = file.toPsiFile(project)?.castOrNull<ParadoxLocalisationFile>()?.localeConfig
+                val localeConfig = file.toPsiFile(project)?.castOrNull<ParadoxLocalisationFile>()?.let { selectLocale(it) }
                 if(localeConfig != allLocales[localeString]) return@forEach
                 val pathPattern = file.path.replace(localeString, "$")
                 fileMap.putIfAbsent(pathPattern, file)
@@ -81,7 +81,7 @@ class GenerateLocalisationFileAction : AnAction() {
         files.forEach { file ->
             val localeString = allLocales.keys.find { file.name.contains(it) }
             if(localeString == null) return@forEach
-            val localeConfig = file.toPsiFile(project)?.castOrNull<ParadoxLocalisationFile>()?.localeConfig
+            val localeConfig = file.toPsiFile(project)?.castOrNull<ParadoxLocalisationFile>()?.let { selectLocale(it) }
             if(localeConfig != allLocales[localeString]) return@forEach
             val pathPattern = file.path.replace(localeString, "$")
             fileMap.putIfAbsent(pathPattern, file)

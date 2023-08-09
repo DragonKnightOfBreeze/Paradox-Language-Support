@@ -9,7 +9,7 @@ class ParadoxLocalisationFindUsagesHandler(
     private val element: ParadoxLocalisationProperty,
     private val factory: ParadoxFindUsagesHandlerFactory
 ) : ParadoxFindUsagesHandler(element, factory) {
-    val locale by lazy { element.localeConfig }
+    val locale by lazy { selectLocale(element) }
     
     override fun getFindUsagesDialog(isSingleFile: Boolean, toShowInNewTab: Boolean, mustOpenInNewTab: Boolean): AbstractFindUsagesDialog {
         return ParadoxFindLocalisationUsagesDialog(element, project, factory.findLocalisationOptions, toShowInNewTab, mustOpenInNewTab, isSingleFile, this)

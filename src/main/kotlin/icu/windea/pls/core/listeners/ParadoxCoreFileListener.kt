@@ -6,8 +6,10 @@ import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.localisation.*
 
 /**
  * 监听文件更改以更新相关信息缓存。
@@ -18,55 +20,58 @@ class ParadoxCoreFileListener : AsyncFileListener {
             override fun afterVfsChange() {
                 var reparseOpenedFiles = false
                 
-                for(event in events) {
-                    when(event) {
-                        is VFileCreateEvent -> {
-                            if(event.childName.equals(PlsConstants.descriptorFileName, true)) {
-                                doClearRootInfo(event.parent)
-                                reparseOpenedFiles = true
-                            }
-                        }
-                        is VFileDeleteEvent -> {
-                            doClearFileInfo(event.file)
-                            if(event.file.name.equals(PlsConstants.descriptorFileName, true)) {
-                                doClearRootInfo(event.file.parent)
-                                reparseOpenedFiles = true
-                            }
-                        }
-                        is VFileCopyEvent -> {
-                            if(event.newChildName.equals(PlsConstants.descriptorFileName, true)) {
-                                doClearRootInfo(event.newParent)
-                                reparseOpenedFiles = true
-                            }
-                        }
-                        is VFileMoveEvent -> {
-                            doClearFileInfo(event.file)
-                            if(event.file.name.equals(PlsConstants.descriptorFileName, true)) {
-                                doClearRootInfo(event.oldParent)
-                                doClearRootInfo(event.newParent)
-                                reparseOpenedFiles = true
-                            }
-                        }
-                        is VFilePropertyChangeEvent -> {
-                            if(event.propertyName == VirtualFile.PROP_NAME) {
-                                doClearFileInfo(event.file)
-                                if(event.newValue.toString().equals(PlsConstants.descriptorFileName, true)) {
-                                    doClearRootInfo(event.file.parent)
-                                    reparseOpenedFiles = true
-                                } else if(event.oldValue.toString().equals(PlsConstants.descriptorFileName, true)) {
-                                    doClearRootInfo(event.file.parent)
+                //处理描述符文件的变动
+                run {
+                    events.forEachFast { event ->
+                        when(event) {
+                            is VFileCreateEvent -> {
+                                if(event.childName.equals(PlsConstants.descriptorFileName, true)) {
+                                    clearRootInfo(event.parent)
                                     reparseOpenedFiles = true
                                 }
                             }
-                        }
-                        is VFileContentChangeEvent -> {
-                            val fileName = event.file.name
-                            if(fileName.equals(PlsConstants.descriptorFileName, true)) {
-                                val rootFile = selectRootFile(event.file)
-                                doClearRootInfo(rootFile)
-                            } else if(fileName.equals(PlsConstants.launcherSettingsFileName, true)) {
-                                val rootFile = selectRootFile(event.file)
-                                doClearRootInfo(rootFile)
+                            is VFileDeleteEvent -> {
+                                clearFileInfo(event.file)
+                                if(event.file.name.equals(PlsConstants.descriptorFileName, true)) {
+                                    clearRootInfo(event.file.parent)
+                                    reparseOpenedFiles = true
+                                }
+                            }
+                            is VFileCopyEvent -> {
+                                if(event.newChildName.equals(PlsConstants.descriptorFileName, true)) {
+                                    clearRootInfo(event.newParent)
+                                    reparseOpenedFiles = true
+                                }
+                            }
+                            is VFileMoveEvent -> {
+                                clearFileInfo(event.file)
+                                if(event.file.name.equals(PlsConstants.descriptorFileName, true)) {
+                                    clearRootInfo(event.oldParent)
+                                    clearRootInfo(event.newParent)
+                                    reparseOpenedFiles = true
+                                }
+                            }
+                            is VFilePropertyChangeEvent -> {
+                                if(event.propertyName == VirtualFile.PROP_NAME) {
+                                    clearFileInfo(event.file)
+                                    if(event.newValue.toString().equals(PlsConstants.descriptorFileName, true)) {
+                                        clearRootInfo(event.file.parent)
+                                        reparseOpenedFiles = true
+                                    } else if(event.oldValue.toString().equals(PlsConstants.descriptorFileName, true)) {
+                                        clearRootInfo(event.file.parent)
+                                        reparseOpenedFiles = true
+                                    }
+                                }
+                            }
+                            is VFileContentChangeEvent -> {
+                                val fileName = event.file.name
+                                if(fileName.equals(PlsConstants.descriptorFileName, true)) {
+                                    val rootFile = selectRootFile(event.file)
+                                    clearRootInfo(rootFile)
+                                } else if(fileName.equals(PlsConstants.launcherSettingsFileName, true)) {
+                                    val rootFile = selectRootFile(event.file)
+                                    clearRootInfo(rootFile)
+                                }
                             }
                         }
                     }
@@ -74,18 +79,18 @@ class ParadoxCoreFileListener : AsyncFileListener {
                 
                 //处理内联脚本文件的变动
                 run {
-                    for(event in events) {
+                    events.forEachFast { event ->
                         when(event) {
                             is VFileMoveEvent -> {
                                 if(ParadoxInlineScriptHandler.getInlineScriptExpression(event.file) != null) {
-                                    doRefreshInlineScripts()
+                                    refreshInlineScripts()
                                     return@run
                                 }
                             }
                             is VFilePropertyChangeEvent -> {
                                 if(event.propertyName == VirtualFile.PROP_NAME) {
                                     if(ParadoxInlineScriptHandler.getInlineScriptExpression(event.file) != null) {
-                                        doRefreshInlineScripts()
+                                        refreshInlineScripts()
                                         return@run
                                     }
                                 }
@@ -94,25 +99,43 @@ class ParadoxCoreFileListener : AsyncFileListener {
                     }
                 }
                 
+                //处理本地化文件的语言区域的变动
+                run { 
+                    events.forEachFast { event ->
+                        when(event) {
+                            is VFileContentChangeEvent -> {
+                                if(event.file.fileType == ParadoxLocalisationFileType) {
+                                    clearLocale(event.file)
+                                }
+                            }
+                        }
+                    }
+                }
+                
                 if(reparseOpenedFiles) {
-                    runReadAction { ParadoxCoreHandler.reparseOpenedFiles() }
+                    reparseOpenedFiles()
                 }
             }
         }
     }
     
-    private fun doClearRootInfo(rootFile: VirtualFile?) {
+    private fun clearRootInfo(rootFile: VirtualFile?) {
         if(rootFile == null) return
         //清空根目录信息缓存
-        rootFile.tryPutUserData(PlsKeys.rootInfoStatus, null)
+        rootFile.tryPutUserData(PlsKeys.rootInfo, null)
     }
     
-    private fun doClearFileInfo(file: VirtualFile?) {
+    private fun clearFileInfo(file: VirtualFile?) {
         if(file == null) return
-        file.tryPutUserData(PlsKeys.fileInfoStatus, null)
+        file.tryPutUserData(PlsKeys.fileInfo, null)
     }
     
-    private fun doRefreshInlineScripts() {
+    private fun clearLocale(file: VirtualFile?) {
+        if(file == null) return
+        file.tryPutUserData(PlsKeys.localeConfig, null)
+    }
+    
+    private fun refreshInlineScripts() {
         //要求重新解析内联脚本文件
         ProjectManager.getInstance().openProjects.forEach { project ->
             ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker.incModificationCount()
@@ -122,5 +145,9 @@ class ParadoxCoreFileListener : AsyncFileListener {
         ParadoxCoreHandler.refreshInlayHints { file, _ ->
             ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null
         }
+    }
+    
+    private fun reparseOpenedFiles() {
+        runReadAction { ParadoxCoreHandler.reparseOpenedFiles() }
     }
 }

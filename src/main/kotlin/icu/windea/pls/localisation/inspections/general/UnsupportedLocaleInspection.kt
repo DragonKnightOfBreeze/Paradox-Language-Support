@@ -20,7 +20,7 @@ class UnsupportedLocaleInspection : LocalInspectionTool() {
             
             private fun visitLocale(element: ParadoxLocalisationLocale) {
                 ProgressManager.checkCanceled()
-                val localeConfig = element.localeConfig
+                val localeConfig = selectLocale(element)
                 if(localeConfig != null) return
                 val location = element.localeId
                 holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unsupportedLocale.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)

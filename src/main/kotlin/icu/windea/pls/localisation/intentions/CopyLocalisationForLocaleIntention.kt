@@ -81,7 +81,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
             val throwableList = mutableListOf<Throwable>()
             val textList = elements.map { element ->
                 if(targetLang == null) return@map element.text
-                val sourceLang = element.localeConfig?.toLang() ?: return@map element.text
+                val sourceLang = selectLocale(element)?.toLang() ?: return@map element.text
                 if(sourceLang == targetLang) return@map element.text
                 
                 val key = element.name

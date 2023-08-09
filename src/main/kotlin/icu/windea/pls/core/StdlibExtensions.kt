@@ -15,6 +15,8 @@ import kotlin.contracts.*
 import kotlin.math.*
 import kotlin.reflect.*
 
+val EMPTY_OBJECT = Any()
+
 inline fun pass() {}
 
 @OptIn(ExperimentalContracts::class)

@@ -23,37 +23,37 @@ import icu.windea.pls.model.*
  */
 class IncorrectFileNameInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-		if(file !is ParadoxLocalisationFile) return null //不期望的结果
-		val fileInfo = file.fileInfo ?: return null
-		if(!fileInfo.pathToEntry.canBeLocalisationPath()) return null //仅对于localisation
-		if(ParadoxFileManager.isLightFile(file.virtualFile)) return null //不检查临时文件
-		//仅对于存在且仅存在一个locale的本地化文件
-		var theOnlyPropertyList: ParadoxLocalisationPropertyList? = null
-		file.processChildrenOfType<ParadoxLocalisationPropertyList> {
-			if(theOnlyPropertyList == null) {
-				theOnlyPropertyList = it
-				true
-			} else {
-				return null
-			}
-		}
-		val locale = theOnlyPropertyList?.locale ?: return null
-		if(!locale.isValid) return null //locale尚未填写完成时也跳过检查
-		val localeConfig = locale.localeConfig ?: return null //locale不支持时也跳过检查
-		val localeId = localeConfig.id
-		val fileName = file.name
-		val localeIdFromFile = file.getLocaleIdFromFileName()
-		if(localeIdFromFile == localeId) return null //匹配语言区域，跳过
-		val expectedFileName = file.getExpectedFileName(localeId)
-		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		val quickFixes = buildList {
-			this += RenameFileFix(locale, expectedFileName)
-			if(localeIdFromFile != null) this += RenameLocaleFix(locale, localeIdFromFile)
-		}.toTypedArray<LocalQuickFix>()
-		//将检查注册在locale上，而非file上
-		holder.registerProblem(locale, PlsBundle.message("inspection.localisation.incorrectFileName.description", fileName, localeId), *quickFixes)
-		return holder.resultsArray
-	}
+        if(file !is ParadoxLocalisationFile) return null //不期望的结果
+        val fileInfo = file.fileInfo ?: return null
+        if(!fileInfo.pathToEntry.canBeLocalisationPath()) return null //仅对于localisation
+        if(ParadoxFileManager.isLightFile(file.virtualFile)) return null //不检查临时文件
+        //仅对于存在且仅存在一个locale的本地化文件
+        var theOnlyPropertyList: ParadoxLocalisationPropertyList? = null
+        file.processChildrenOfType<ParadoxLocalisationPropertyList> {
+            if(theOnlyPropertyList == null) {
+                theOnlyPropertyList = it
+                true
+            } else {
+                return null
+            }
+        }
+        val locale = theOnlyPropertyList?.locale ?: return null
+        if(!locale.isValid) return null //locale尚未填写完成时也跳过检查
+        val localeConfig = selectLocale(locale) ?: return null //locale不支持时也跳过检查
+        val localeId = localeConfig.id
+        val fileName = file.name
+        val localeIdFromFile = file.getLocaleIdFromFileName()
+        if(localeIdFromFile == localeId) return null //匹配语言区域，跳过
+        val expectedFileName = file.getExpectedFileName(localeId)
+        val holder = ProblemsHolder(manager, file, isOnTheFly)
+        val quickFixes = buildList {
+            this += RenameFileFix(locale, expectedFileName)
+            if(localeIdFromFile != null) this += RenameLocaleFix(locale, localeIdFromFile)
+        }.toTypedArray<LocalQuickFix>()
+        //将检查注册在locale上，而非file上
+        holder.registerProblem(locale, PlsBundle.message("inspection.localisation.incorrectFileName.description", fileName, localeId), *quickFixes)
+        return holder.resultsArray
+    }
 	
 	//org.jetbrains.kotlin.idea.intentions.RenameFileToMatchClassIntention
 	

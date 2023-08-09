@@ -13,10 +13,10 @@ import java.awt.*
 object PlsKeys
 
 val PlsKeys.library by lazy { Key.create<ParadoxLibrary>("paradox.library") }
-val PlsKeys.rootInfoStatus by lazy { Key.create<Boolean>("paradox.rootInfo.status") }
-val PlsKeys.rootInfo by lazy { Key.create<ParadoxRootInfo>("paradox.rootInfo") }
-val PlsKeys.fileInfoStatus by lazy { Key.create<Boolean>("paradox.fileInfo.status") }
-val PlsKeys.fileInfo by lazy { Key.create<ParadoxFileInfo>("paradox.fileInfo") }
+
+val PlsKeys.rootInfo by lazy { Key.create<Any>("paradox.rootInfo") }
+val PlsKeys.fileInfo by lazy { Key.create<Any>("paradox.fileInfo") }
+val PlsKeys.localeConfig by lazy { Key.create<Any>("paradox.localeConfig") }
 
 //用于为临时文件（VirtualFile）嵌入根目录信息
 val PlsKeys.injectedRootInfo by lazy { Key.create<ParadoxRootInfo>("paradox.injected.rootInfo") }

@@ -18,6 +18,6 @@ class ParadoxLocalisationLocalePsiReference(
 	}
 	
 	override fun resolve(): PsiElement? {
-		return element.localeConfig?.pointer?.element
+        return selectLocale(element)?.pointer?.element
 	}
 }
