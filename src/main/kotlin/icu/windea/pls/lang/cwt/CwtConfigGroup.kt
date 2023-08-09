@@ -24,7 +24,7 @@ interface CwtConfigGroup: UserDataHolder {
 	val folders: Set<String>
 	
 	val types: Map<String, CwtTypeConfig>
-	//typeExpression - swapType
+	//typeExpression - baseType
 	val typeToBaseTypeMap: BidirectionalMap<String, String>
 	//typeExpression - modifierSimpleName - modifierConfig
 	//job - job_$_add - <config>

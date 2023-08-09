@@ -11,5 +11,5 @@ interface ParadoxScriptDefinitionElementStub<T : ParadoxScriptDefinitionElement>
 	val elementPath: ParadoxElementPath
 	val gameType: ParadoxGameType
 	
-	fun isValid() = name.isNotEmpty() && type.isNotEmpty()
+	fun isValidDefinition() = type.isNotEmpty()
 }
