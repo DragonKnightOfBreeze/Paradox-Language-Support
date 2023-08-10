@@ -10,6 +10,7 @@
 
 * [X] 修复`some_scripted_trigger`可能被插件认为同时匹配`<scripted_trigger>`和`scope_field`的问题（以及类似问题）
 * [X] 优化对嵌套的定义的支持（如，`swapped_civic`）
+* [X] 优化 #48 - 提示封装变量和本地化时，确保加入的提示项不超过`ide.completion.variant.limit`指定的上限
 * [ ] 尝试优化插件性能
 
 ## 1.1.5

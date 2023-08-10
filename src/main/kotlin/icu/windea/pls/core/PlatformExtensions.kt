@@ -147,12 +147,13 @@ fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiE
 }
 
 @Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
-inline fun <T> Query<T>.processQuery(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
+inline fun <T> Query<T>.processQuery(onlyMostRelevant: Boolean = false, limited: Boolean = false, consumer: Processor<in T>): Boolean {
     if(onlyMostRelevant && this is ParadoxQuery<*, *>) {
         find()?.let { consumer.process(it as T) }
         return true
     }
-    return forEach(consumer)
+    val finalConsumer: Processor<in T> = if(limited) LimitedCompletionProcessor(consumer) else consumer
+    return forEach(finalConsumer)
 }
 
 @Suppress("NOTHING_TO_INLINE")

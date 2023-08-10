@@ -48,13 +48,13 @@ class ParadoxSyncedLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisati
         /**
          * 基于同步本地化名字索引，根据关键字和推断的语言区域遍历所有的同步本地化（localisation_synced），并按照本地化的键进行去重。
          *
-         * 优化代码提示时会用到此方法。
+         * 用于优化代码提示的性能。
          */
         @JvmStatic
         fun processVariants(
             keyword: String,
             selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
-            processor: (ParadoxLocalisationProperty) -> Boolean
+            processor: Processor<ParadoxLocalisationProperty>
         ): Boolean {
             //保证返回结果的名字的唯一性
             val project = selector.project
@@ -65,7 +65,7 @@ class ParadoxSyncedLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisati
                 keyPredicate = { key -> key.matchesKeyword(keyword) },
                 getDefaultValue = { selector.defaultValue() },
                 resetDefaultValue = { selector.resetDefaultValue() },
-                processor = processor
+                processor = { processor.process(it) }
             )
         }
     }

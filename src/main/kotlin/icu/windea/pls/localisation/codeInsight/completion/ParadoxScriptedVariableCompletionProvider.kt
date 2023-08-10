@@ -29,9 +29,10 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
 		val element = parameters.position
 		val project = parameters.originalFile.project
 		val selector = scriptedVariableSelector(project, element).contextSensitive().distinctByName()
-		ParadoxGlobalScriptedVariableSearch.search(selector = selector).processQuery { processScriptedVariable(it, result) }
+		ParadoxGlobalScriptedVariableSearch.search(selector = selector).processQuery(limited = true) { processScriptedVariable(it, result) }
 	}
 	
+	@Suppress("SameReturnValue")
 	private fun processScriptedVariable(it: ParadoxScriptScriptedVariable, result: CompletionResultSet): Boolean {
 		ProgressManager.checkCanceled()
 		val name = it.name ?: return true

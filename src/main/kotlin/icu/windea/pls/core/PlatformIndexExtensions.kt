@@ -60,12 +60,12 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
     key: K,
     project: Project,
     scope: GlobalSearchScope,
-    crossinline action: (T) -> Boolean
+    crossinline processor: (T) -> Boolean
 ): Boolean {
     if(DumbService.isDumb(project)) return true
     return StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
         ProgressManager.checkCanceled()
-        action(element)
+        processor(element)
     }
 }
 
@@ -73,7 +73,7 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
     project: Project,
     scope: GlobalSearchScope,
     crossinline keyPredicate: (key: K) -> Boolean = { true },
-    crossinline action: (key: K, element: T) -> Boolean
+    crossinline processor: (key: K, element: T) -> Boolean
 ): Boolean {
     if(DumbService.isDumb(project)) return true
     
@@ -82,7 +82,7 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
         if(keyPredicate(key)) {
             StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
                 ProgressManager.checkCanceled()
-                action(key, element)
+                processor(key, element)
             }
         }
         true

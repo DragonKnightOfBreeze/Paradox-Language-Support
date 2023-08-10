@@ -40,7 +40,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
             .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
             .notSamePosition(element)
             //.distinctByName() //这里selector不需要指定去重
-        val processor: (ParadoxLocalisationProperty) -> Boolean = processor@{
+        val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> {
             ProgressManager.checkCanceled()
             val name = it.name
             val icon = it.icon

@@ -66,7 +66,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         val selector = localisationSelector(project, contextElement).contextSensitive()
             .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
             //.distinctByName() //这里selector不需要指定去重
-        ParadoxLocalisationSearch.processVariants(keyword, selector) { localisation ->
+        ParadoxLocalisationSearch.processVariants(keyword, selector, LimitedCompletionProcessor { localisation ->
             val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = localisation.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)
@@ -76,7 +76,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
                 .withTypeIcon(typeFile.icon)
             result.addScriptExpressionElement(context, builder)
             true
-        }
+        })
     }
 }
 
@@ -180,7 +180,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         val selector = localisationSelector(project, contextElement).contextSensitive()
             .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
             //.distinctByName() //这里selector不需要指定去重
-        ParadoxLocalisationSearch.processVariants(keyword, selector) { localisation ->
+        ParadoxLocalisationSearch.processVariants(keyword, selector, LimitedCompletionProcessor { localisation ->
             val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = localisation.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)
@@ -190,7 +190,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
                 .withTypeIcon(typeFile.icon)
             result.addScriptExpressionElement(context, builder)
             true
-        }
+        })
     }
 }
 

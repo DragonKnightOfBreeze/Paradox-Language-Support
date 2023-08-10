@@ -23,9 +23,10 @@ class ParadoxScriptedVariableNameCompletionProvider: CompletionProvider<Completi
 		val file = parameters.originalFile
 		val project = file.project
 		val selector = scriptedVariableSelector(project, element).contextSensitive().notSamePosition(element).distinctByName()
-		ParadoxGlobalScriptedVariableSearch.search(selector).processQuery { processScriptedVariable(it, result) }
+		ParadoxGlobalScriptedVariableSearch.search(selector).processQuery(limited = true) { processScriptedVariable(it, result) }
 	}
 	
+	@Suppress("SameReturnValue")
 	private fun processScriptedVariable(scriptedVariable: ParadoxScriptScriptedVariable, result: CompletionResultSet): Boolean {
 		//不自动插入后面的等号
 		ProgressManager.checkCanceled()
