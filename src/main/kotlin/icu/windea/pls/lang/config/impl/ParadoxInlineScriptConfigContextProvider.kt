@@ -80,7 +80,7 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
                     val file = info.virtualFile?.toPsiFile(project) ?: return@p true
                     val e = file.findElementAt(info.elementOffset) ?: return@p true
                     val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true
-                    if(p.name.lowercase() != ParadoxInlineScriptHandler.inlineScriptKey) return@p true
+                    if(!p.name.equals(ParadoxInlineScriptHandler.inlineScriptKey, true)) return@p true
                     val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p true
                     val usageConfigContext = ParadoxConfigHandler.getConfigContext(memberElement) ?: return@p true
                     val usageConfigs = usageConfigContext.getConfigs(matchOptions).takeIfNotEmpty()

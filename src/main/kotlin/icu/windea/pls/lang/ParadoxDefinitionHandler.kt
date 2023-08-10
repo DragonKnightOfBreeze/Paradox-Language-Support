@@ -550,20 +550,20 @@ object ParadoxDefinitionHandler {
         val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
         if(typeConfig == null) return null
         //NOTE 这里不处理需要内联的情况
-        val name = getNameWhenCreateStub(typeConfig, rootKey, node, tree)
+        val name = getNameWhenCreateDefinitionStub(typeConfig, rootKey, node, tree)
         val type = typeConfig.name
-        val subtypes = getSubtypesWhenCreateStub(typeConfig, rootKey, configGroup) //如果无法在索引时获取，之后再懒加载
+        val subtypes = getSubtypesWhenCreateDefinitionStub(typeConfig, rootKey, configGroup) //如果无法在索引时获取，之后再懒加载
         return ParadoxScriptFileStubImpl(file, name, type, subtypes, gameType)
     }
     
     fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub? {
-        if(!checkParentStub(parentStub)) return null
+        if(!checkParentStubWhenCreateDefinitionStub(parentStub)) return null
         //这里使用scriptProperty.definitionInfo.name而非scriptProperty.name
         val definitionInfo = psi.definitionInfo ?: return null
         val rootKey = definitionInfo.rootKey
         if(rootKey.isParameterized()) return null //排除可能带参数的情况
         if(rootKey.isInlineUsage()) return null //排除是内联调用的情况
-        if(!checkRootKey(rootKey, parentStub)) return null
+        if(!checkRootKeyWhenCreateDefinitionStub(rootKey, parentStub)) return null
         val name = definitionInfo.name
         val type = definitionInfo.type
         val subtypes = runCatching { definitionInfo.subtypes }.getOrNull() //如果无法在索引时获取，之后再懒加载
@@ -573,11 +573,14 @@ object ParadoxDefinitionHandler {
     }
     
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptPropertyStub? {
-        if(!checkParentStub(parentStub)) return null
+        if(!checkParentStubWhenCreateDefinitionStub(parentStub)) return null
         val rootKey = getNameFromNode(node, tree) ?: return null
         if(rootKey.isParameterized()) return null //排除可能带参数的情况
         if(rootKey.isInlineUsage()) return null //排除是内联调用的情况
-        if(!checkRootKey(rootKey, parentStub)) return null
+        if(rootKey == "swap_type") {
+            println()
+        }
+        if(!checkRootKeyWhenCreateDefinitionStub(rootKey, parentStub)) return null
         val psi = parentStub.psi
         val file = psi.containingFile
         val project = file.project
@@ -590,13 +593,13 @@ object ParadoxDefinitionHandler {
         val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
         if(typeConfig == null) return null
         //NOTE 这里不处理需要内联的情况
-        val name = getNameWhenCreateStub(typeConfig, rootKey, node, tree)
+        val name = getNameWhenCreateDefinitionStub(typeConfig, rootKey, node, tree)
         val type = typeConfig.name
-        val subtypes = getSubtypesWhenCreateStub(typeConfig, rootKey, configGroup) //如果无法在索引时获取，之后再懒加载
+        val subtypes = getSubtypesWhenCreateDefinitionStub(typeConfig, rootKey, configGroup) //如果无法在索引时获取，之后再懒加载
         return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
     }
     
-    private fun checkParentStub(parentStub: StubElement<*>): Boolean {
+    private fun checkParentStubWhenCreateDefinitionStub(parentStub: StubElement<*>): Boolean {
         //优化：parentStub必须对应一个定义且该定义可以嵌套定义且stub可能对应这些嵌套定义，或者对应一个非定义的文件，或者对应一个非定义的属性且在定义之外
         if(parentStub is ParadoxScriptDefinitionElementStub<*>) {
             if(parentStub.isValidDefinition) {
@@ -612,7 +615,7 @@ object ParadoxDefinitionHandler {
         return true
     }
     
-    private fun checkRootKey(rootKey: String, parentStub: StubElement<*>): Boolean {
+    private fun checkRootKeyWhenCreateDefinitionStub(rootKey: String, parentStub: StubElement<*>): Boolean {
         //优化：如果parentStub对应一个定义，该定义必须可以嵌套定义且stub可能对应这些嵌套定义
         if(parentStub is ParadoxScriptDefinitionElementStub<*>) {
             if(parentStub.isValidDefinition) {
@@ -622,7 +625,7 @@ object ParadoxDefinitionHandler {
         return true
     }
     
-    private fun getNameWhenCreateStub(typeConfig: CwtTypeConfig, rootKey: String, node: LighterASTNode, tree: LighterAST): String {
+    private fun getNameWhenCreateDefinitionStub(typeConfig: CwtTypeConfig, rootKey: String, node: LighterASTNode, tree: LighterAST): String {
         return when {
             typeConfig.nameFromFile -> rootKey
             typeConfig.nameField == "" -> {
@@ -638,7 +641,7 @@ object ParadoxDefinitionHandler {
         }
     }
     
-    private fun getSubtypesWhenCreateStub(typeConfig: CwtTypeConfig, rootKey: String, configGroup: CwtConfigGroup): List<String>? {
+    private fun getSubtypesWhenCreateDefinitionStub(typeConfig: CwtTypeConfig, rootKey: String, configGroup: CwtConfigGroup): List<String>? {
         val subtypesConfig = typeConfig.subtypes
         val result = mutableListOf<CwtSubtypeConfig>()
         for(subtypeConfig in subtypesConfig.values) {

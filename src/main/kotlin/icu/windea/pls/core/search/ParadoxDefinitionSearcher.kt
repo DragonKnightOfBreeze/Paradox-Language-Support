@@ -36,8 +36,9 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
                 val baseTypeExpression = ParadoxDefinitionTypeExpression.resolve(baseType)
                 if(typeExpression.matches(baseTypeExpression)) {
                     ProgressManager.checkCanceled()
-                    processQueryForFileDefinitions(name, baseTypeExpression, project, scope, configGroup) { consumer.process(it) }
-                    processQueryForStubDefinitions(name, baseTypeExpression, project, scope) { consumer.process(it) }
+                    val swappedTypeExpression = ParadoxDefinitionTypeExpression.resolve(swappedTypeConfig.name)
+                    processQueryForFileDefinitions(name, swappedTypeExpression, project, scope, configGroup) { consumer.process(it) }
+                    processQueryForStubDefinitions(name, swappedTypeExpression, project, scope) { consumer.process(it) }
                 }
             }
         }

@@ -62,7 +62,9 @@ class CwtTypeConfig(
             info.configGroup.swappedTypes.values.forEach f@{ swappedTypeConfig ->
                 val baseType = swappedTypeConfig.baseType ?: return@f
                 val baseTypeName = baseType.substringBefore('.')
-                if(baseTypeName == name) add(swappedTypeConfig.name)
+                if(baseTypeName != name) return@f
+                val rootKey = swappedTypeConfig.typeKeyFilter?.takeIfTrue()?.singleOrNull() ?: return@f
+                add(rootKey)
             }
         }
     }
