@@ -88,7 +88,7 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
                 type == ROOT_BLOCK -> false
                 type == SCRIPTED_VARIABLE -> parentType != ROOT_BLOCK
                 type == PROPERTY -> false
-                type == BLOCK -> false
+                type == BLOCK -> skipBlock(node, { this.treeParent }, { this.elementType })
                 else -> true
             }
         }
@@ -101,9 +101,22 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
                 type == ROOT_BLOCK -> false
                 type == SCRIPTED_VARIABLE -> parentType != ROOT_BLOCK
                 type == PROPERTY -> false
-                type == BLOCK -> false
+                type == BLOCK -> skipBlock(node, { tree.getParent(this) }, { this.tokenType })
                 else -> true
             }
+        }
+        
+        private inline fun <T> skipBlock(node: T, parentProvider: T.() -> T?, typeProvider: T.() -> IElementType): Boolean {
+            //优化：跳过深度过高的属性（认为它们不可能是定义）
+            var current = node
+            var i = 1
+            val max = PlsConstants.maxDefinitionDepth
+            while(true) {
+                current = current.parentProvider() ?: break
+                if(current.typeProvider() == BLOCK) i++
+                if(i > max) return true
+            }
+            return false
         }
     }
 }
