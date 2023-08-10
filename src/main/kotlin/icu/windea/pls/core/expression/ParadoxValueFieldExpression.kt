@@ -271,9 +271,7 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
             else -> ParadoxScopeFieldExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
         }
         //handle mismatch situation
-        if(!canBeMismatched && startIndex == 0 && node is ParadoxErrorExpressionNode) {
-            return null
-        }
+        if(!canBeMismatched && nodes.isEmpty() && node is ParadoxErrorExpressionNode) return null
         nodes.add(node)
         if(dotNode != null) nodes.add(dotNode)
     }

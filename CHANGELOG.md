@@ -8,6 +8,7 @@
 
 ## 1.1.6
 
+* [X] 修复`some_scripted_trigger`可能被插件认为同时匹配`<scripted_trigger>`和`scope_field`的问题（以及类似问题）
 * [X] 优化对嵌套的定义的支持（如，`swapped_civic`）
 * [ ] 尝试优化插件性能
 
