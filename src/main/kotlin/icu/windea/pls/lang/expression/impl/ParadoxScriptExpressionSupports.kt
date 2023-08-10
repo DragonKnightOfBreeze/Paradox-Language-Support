@@ -66,7 +66,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         val selector = localisationSelector(project, contextElement).contextSensitive()
             .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
             //.distinctByName() //这里selector不需要指定去重
-        ParadoxLocalisationSearch.processVariants(keyword, selector, LimitedCompletionProcessor { localisation ->
+        ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, LimitedCompletionProcessor { localisation ->
             val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = localisation.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)
@@ -121,7 +121,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
         val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
         //这里selector不需要指定去重
         val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
-        ParadoxSyncedLocalisationSearch.processVariants(keyword, selector) { syncedLocalisation ->
+        ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector) { syncedLocalisation ->
             val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = syncedLocalisation.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(syncedLocalisation, name)
@@ -180,7 +180,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         val selector = localisationSelector(project, contextElement).contextSensitive()
             .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
             //.distinctByName() //这里selector不需要指定去重
-        ParadoxLocalisationSearch.processVariants(keyword, selector, LimitedCompletionProcessor { localisation ->
+        ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, LimitedCompletionProcessor { localisation ->
             val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = localisation.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)

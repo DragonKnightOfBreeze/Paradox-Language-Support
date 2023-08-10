@@ -1,5 +1,6 @@
 package icu.windea.pls.core.search
 
+import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
@@ -46,13 +47,11 @@ class ParadoxSyncedLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisati
         }
         
         /**
-         * 基于同步本地化名字索引，根据关键字和推断的语言区域遍历所有的同步本地化（localisation_synced），并按照本地化的键进行去重。
-         *
          * 用于优化代码提示的性能。
          */
         @JvmStatic
         fun processVariants(
-            keyword: String,
+            prefixMatcher: PrefixMatcher,
             selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
             processor: Processor<ParadoxLocalisationProperty>
         ): Boolean {
@@ -61,8 +60,8 @@ class ParadoxSyncedLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisati
             val scope = selector.scope
             return ParadoxSyncedLocalisationNameIndexKey.processFirstElementByKeys(
                 project, scope,
+                keyPredicate = { key -> prefixMatcher.prefixMatches(key) },
                 predicate = { element -> selector.select(element) },
-                keyPredicate = { key -> key.matchesKeyword(keyword) },
                 getDefaultValue = { selector.defaultValue() },
                 resetDefaultValue = { selector.resetDefaultValue() },
                 processor = { processor.process(it) }

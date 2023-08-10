@@ -1,5 +1,6 @@
 package icu.windea.pls.core.search
 
+import com.intellij.codeInsight.completion.PrefixMatcher
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
@@ -46,13 +47,11 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         }
         
         /**
-         * 基于本地化名字索引，根据关键字和推断的语言区域遍历所有的本地化（localisation），并按照本地化的键进行去重。
-         * 
          * 用于优化代码提示的性能。
          */
         @JvmStatic
         fun processVariants(
-            keyword: String,
+            prefixMatcher: PrefixMatcher,
             selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
             processor: Processor<ParadoxLocalisationProperty>
         ): Boolean {
@@ -61,7 +60,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
             val scope = selector.scope
             return ParadoxLocalisationNameIndexKey.processFirstElementByKeys(
                 project, scope,
-                keyPredicate = { key -> key.matchesKeyword(keyword) },
+                keyPredicate = { key -> prefixMatcher.prefixMatches(key) },
                 predicate = { element -> selector.select(element) },
                 getDefaultValue = { selector.defaultValue() },
                 resetDefaultValue = { selector.resetDefaultValue() },

@@ -355,33 +355,6 @@ fun String.toCapitalizedWords(): String {
 
 private val keywordDelimiters = charArrayOf('.', '_')
 
-/**
- * 判断指定的关键词是否匹配当前字符串。
- */
-@Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-fun String.matchesKeyword(keyword: String): Boolean {
-    if(keyword.isEmpty()) return true
-    
-    //IDEA底层如何匹配关键词：
-    //com.intellij.codeInsight.completion.PrefixMatcher.prefixMatches(java.lang.String)
-    
-    //这里如何匹配关键词：按顺序包含所有字符，忽略大小写
-    var index = -1
-    for(i in 0 until keyword.length) {
-        val c = keyword[i]
-        val index1 = (this as java.lang.String).indexOf(c.lowercaseChar().code, index + 1)
-        val index2 = (this as java.lang.String).indexOf(c.uppercaseChar().code, index + 1)
-        when {
-            index1 == -1 && index2 == -1 -> return false
-            index1 == -1 -> index = index2
-            index2 == -1 -> index = index1
-            else -> index = min(index, index2)
-        }
-    }
-    
-    return true
-}
-
 fun CharSequence.indicesOf(char: Char, startIndex: Int = 0, ignoreCase: Boolean = false): List<Int> {
     var indices: MutableList<Int>? = null
     var lastIndex = indexOf(char, startIndex, ignoreCase)

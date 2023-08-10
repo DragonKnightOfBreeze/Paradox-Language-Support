@@ -52,8 +52,8 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
             true
         }
         when(category) {
-            ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(keyword, selector, processor)
-            ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(keyword, selector, processor)
+            ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
+            ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
         }
     }
 }
