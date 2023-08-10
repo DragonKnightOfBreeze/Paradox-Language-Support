@@ -75,7 +75,7 @@
     <incorrectExpressionChecker implementation="icu.windea.pls.lang.expression.checker.impl.ParadoxTriggerInTriggerWithParametersAwareChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.lang.expression.checker.impl.ParadoxTriggerInSwitchChecker"/>
     
-    <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.ParadoxBaseTypeInheritSupport"/>
+    <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.ParadoxSwappedTypeInheritSupport"/>
     <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.StellarisEventInheritSupport"/>
     
     <inlineSupport implementation="icu.windea.pls.lang.inline.impl.ParadoxInlineScriptInlineSupport"/>

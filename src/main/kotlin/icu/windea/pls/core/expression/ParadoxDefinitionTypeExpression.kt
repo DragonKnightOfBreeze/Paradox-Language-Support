@@ -39,6 +39,10 @@ class ParadoxDefinitionTypeExpression(
         return type == this.type && subtypes.containsAll(this.subtypes)
     }
     
+    fun matches(typeExpression: ParadoxDefinitionTypeExpression): Boolean {
+        return matches(typeExpression.type, typeExpression.subtypes)
+    }
+    
     fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean {
         return matches(definitionInfo.type, definitionInfo.subtypes)
     }

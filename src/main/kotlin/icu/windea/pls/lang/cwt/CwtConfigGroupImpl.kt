@@ -38,7 +38,7 @@ class CwtConfigGroupImpl(
     override val folders: MutableSet<String> = mutableSetOf()
     
     override val types: MutableMap<String, CwtTypeConfig> = mutableMapOf()
-    override val typeToBaseTypeMap: BidirectionalMap<String, String> = BidirectionalMap()
+    override val swappedTypes: MutableMap<String, CwtTypeConfig> = mutableMapOf()
     override val typeToModifiersMap: MutableMap<String, MutableMap<String, CwtModifierConfig>> = mutableMapOf()
     
     override val declarations: MutableMap<String, CwtDeclarationConfig> = mutableMapOf()
@@ -112,8 +112,7 @@ class CwtConfigGroupImpl(
     }
     
     init {
-        bindTypeToBaseTypeMap()
-        bindMissingDeclarations()
+        bindMissingDeclarationsOfSwappedTypes()
         bindMissingLocalisationLinks()
         bindModifierCategories()
     }
@@ -890,19 +889,13 @@ class CwtConfigGroupImpl(
 
     //绑定CWT配置
     
-    private fun bindTypeToBaseTypeMap() {
+    private fun bindMissingDeclarationsOfSwappedTypes() {
         for(typeConfig in types.values) {
             if(typeConfig.baseType == null) continue
-            typeToBaseTypeMap[typeConfig.baseType] = typeConfig.name
-        }
-    }
-    
-    private fun bindMissingDeclarations() {
-        for(typeConfig in types.values) {
-            if(typeConfig.baseType == null) continue
+            val typeName = typeConfig.name
+            swappedTypes[typeName] = typeConfig
             val baseTypeName = typeConfig.baseType.substringBefore('.')
             val baseDeclarationConfig = declarations[baseTypeName] ?: continue
-            val typeName = typeConfig.name
             val typeKey = typeConfig.typeKeyFilter?.takeIfTrue()?.singleOrNull() ?: continue
             val declarationConfig = baseDeclarationConfig.propertyConfig.configs
                 ?.find { it is CwtPropertyConfig && it.key.equals(typeKey, true) }?.castOrNull<CwtPropertyConfig>() 

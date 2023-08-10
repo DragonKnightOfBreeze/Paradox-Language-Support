@@ -21,15 +21,17 @@ interface CwtConfigGroup: UserDataHolder {
 	val localisationLocalesByCode: Map<String, CwtLocalisationLocaleConfig> //EXTENDED BY PLS
 	val localisationPredefinedParameters: Map<String, CwtLocalisationPredefinedParameterConfig> //EXTENDED BY PLS
 	
+	//unused
 	val folders: Set<String>
 	
+	//type - typeConfig
 	val types: Map<String, CwtTypeConfig>
-	//typeExpression - baseType
-	val typeToBaseTypeMap: BidirectionalMap<String, String>
-	//typeExpression - modifierSimpleName - modifierConfig
-	//job - job_$_add - <config>
+	//type - typeConfig
+	val swappedTypes: Map<String, CwtTypeConfig>
+	//typeExpression - modifierTemplate - modifierConfig
 	val typeToModifiersMap: Map<String, Map<String, CwtModifierConfig>>
 	
+	//type - declarationConfig
 	val declarations: Map<String, CwtDeclarationConfig>
 	
 	val values: Map<String, CwtEnumConfig>

@@ -30,11 +30,15 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         processQueryForStubDefinitions(name, typeExpression, project, scope) { consumer.process(it) }
         
         if(typeExpression != null) {
-            //如果是切换类型，也要按照基础类型的类型表达式查找定义
-            val baseTypeExpression = configGroup.typeToBaseTypeMap.get(typeExpression.expressionString)?.let { ParadoxDefinitionTypeExpression.resolve(it) }
-            if(baseTypeExpression != null) {
-                processQueryForFileDefinitions(name, baseTypeExpression, project, scope, configGroup) { consumer.process(it) }
-                processQueryForStubDefinitions(name, baseTypeExpression, project, scope) { consumer.process(it) }
+            //如果存在切换类型，也要查找对应的切换类型的定义
+            configGroup.swappedTypes.values.forEach f@{ swappedTypeConfig ->
+                val baseType = swappedTypeConfig.baseType ?: return@f
+                val baseTypeExpression = ParadoxDefinitionTypeExpression.resolve(baseType)
+                if(typeExpression.matches(baseTypeExpression)) {
+                    ProgressManager.checkCanceled()
+                    processQueryForFileDefinitions(name, baseTypeExpression, project, scope, configGroup) { consumer.process(it) }
+                    processQueryForStubDefinitions(name, baseTypeExpression, project, scope) { consumer.process(it) }
+                }
             }
         }
     }
@@ -49,6 +53,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
     ) {
         if(typeExpression != null && configGroup.types.get(typeExpression.type)?.typePerFile != true) return
         FileTypeIndex.processFiles(ParadoxScriptFileType, p@{
+            ProgressManager.checkCanceled()
             val file = it.toPsiFile(project) ?: return@p true
             if(file !is ParadoxScriptFile) return@p true
             val definitionInfo = file.definitionInfo ?: return@p true

@@ -27,31 +27,49 @@ import icu.windea.pls.cwt.psi.*
  * @property images (property*) images: imagesInfo
  */
 class CwtTypeConfig(
-	override val pointer: SmartPsiElementPointer<out CwtProperty>,
-	override val info: CwtConfigGroupInfo,
-	val config: CwtPropertyConfig,
-	val name: String,
-	val baseType: String? = null,
-	val path: String? = null,
-	val pathStrict: Boolean = false,
-	val pathFile: String? = null,
-	val pathExtension: String? = null,
-	val nameField: String? = null,
-	val nameFromFile: Boolean = false,
-	val typePerFile: Boolean = false,
-	val unique: Boolean = false,
-	val severity: String? = null,
-	val skipRootKey: List<List<@CaseInsensitive String>>? = null,
-	val typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>? = null,
-	val typeKeyRegex: Regex? = null,
-	val startsWith: @CaseInsensitive String? = null,
-	val graphRelatedTypes: Set<String>? = null,
-	val subtypes: Map<String, CwtSubtypeConfig> = emptyMap(),
-	val localisation: CwtTypeLocalisationConfig? = null,
-	val images: CwtTypeImagesConfig? = null
+    override val pointer: SmartPsiElementPointer<out CwtProperty>,
+    override val info: CwtConfigGroupInfo,
+    val config: CwtPropertyConfig,
+    val name: String,
+    val baseType: String? = null,
+    val path: String? = null,
+    val pathStrict: Boolean = false,
+    val pathFile: String? = null,
+    val pathExtension: String? = null,
+    val nameField: String? = null,
+    val nameFromFile: Boolean = false,
+    val typePerFile: Boolean = false,
+    val unique: Boolean = false,
+    val severity: String? = null,
+    val skipRootKey: List<List<@CaseInsensitive String>>? = null,
+    val typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>? = null,
+    val typeKeyRegex: Regex? = null,
+    val startsWith: @CaseInsensitive String? = null,
+    val graphRelatedTypes: Set<String>? = null,
+    val subtypes: Map<String, CwtSubtypeConfig> = emptyMap(),
+    val localisation: CwtTypeLocalisationConfig? = null,
+    val images: CwtTypeImagesConfig? = null
 ) : CwtConfig<CwtProperty> {
-	val possibleRootKeys = caseInsensitiveStringSet().apply { 
-		typeKeyFilter?.takeIfTrue()?.let { addAll(it) }
-		subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeIfTrue()?.let { addAll(it) } }
-	}
+    val possibleRootKeys by lazy {
+        caseInsensitiveStringSet().apply {
+            typeKeyFilter?.takeIfTrue()?.let { addAll(it) }
+            subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeIfTrue()?.let { addAll(it) } }
+        }
+    }
+    
+    val possibleSwappedTypeRootKeys by lazy {
+        caseInsensitiveStringSet().apply {
+            info.configGroup.swappedTypes.values.forEach f@{ swappedTypeConfig ->
+                val baseType = swappedTypeConfig.baseType ?: return@f
+                val baseTypeName = baseType.substringBefore('.')
+                if(baseTypeName == name) add(swappedTypeConfig.name)
+            }
+        }
+    }
+    
+    val possibleNestedTypeRootKeys by lazy { 
+        caseInsensitiveStringSet().apply { 
+            addAll(possibleSwappedTypeRootKeys)
+        }
+    }
 }
