@@ -14,7 +14,7 @@ group = "icu.windea"
 version = providers.gradleProperty("pluginVersion").get()
 
 intellij {
-	pluginName.set("Paradox Language Support")
+	pluginName.set(providers.gradleProperty("pluginName"))
 	type.set(providers.gradleProperty("intellijType"))
 	version.set(providers.gradleProperty("intellijVersion"))
 	
@@ -169,6 +169,8 @@ tasks {
 		zipExclude.forEach { exclude(it) }
 		//重命名插件tar
 		rename("instrumented\\-(.*\\.jar)", "$1")
+		//重命名插件包
+		archiveBaseName.set(providers.gradleProperty("pluginPackageName"))
 	}
 	runIde {
 		systemProperty("idea.is.internal", true)
