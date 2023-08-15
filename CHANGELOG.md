@@ -7,6 +7,10 @@
 * [ ] 尝试支持脚本文件的一些高级插值语法（如，`a[[b]c]d`，`a$b|c$d`）
 * [ ] 尝试优化插件性能
 
+## 1.1.7
+
+* [X] 优化：提示封装变量和本地化时，确保加入的提示项不超过`ide.completion.variant.limit`指定的上限 -> 改为仅限本地化
+
 ## 1.1.6
 
 * [X] 修复`some_scripted_trigger`可能被插件认为同时匹配`<scripted_trigger>`和`scope_field`的问题（以及类似问题）

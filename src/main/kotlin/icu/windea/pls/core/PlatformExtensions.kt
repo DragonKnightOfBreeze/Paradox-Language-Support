@@ -147,17 +147,13 @@ fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiE
 }
 
 @Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
-inline fun <T> Query<T>.processQuery(onlyMostRelevant: Boolean = false, limited: Boolean = false, consumer: Processor<in T>): Boolean {
+inline fun <T> Query<T>.processQuery(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
     if(onlyMostRelevant && this is ParadoxQuery<*, *>) {
         find()?.let { consumer.process(it as T) }
         return true
     }
-    val finalConsumer: Processor<in T> = if(limited) LimitedCompletionProcessor(consumer) else consumer
-    return forEach(finalConsumer)
+    return forEach(consumer)
 }
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T> Result<T>.cancelable() = onFailure { if(it is ProcessCanceledException) throw it }
 
 @Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
 inline fun <T> Query<T>.processQueryAsync(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
@@ -167,6 +163,9 @@ inline fun <T> Query<T>.processQueryAsync(onlyMostRelevant: Boolean = false, con
     }
     return allowParallelProcessing().forEach(consumer)
 }
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> Result<T>.cancelable() = onFailure { if(it is ProcessCanceledException) throw it }
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun <T> UserDataHolder.tryPutUserData(key: Key<T>, value: T) {

@@ -20,7 +20,7 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
         val project = file.project
         val selector = scriptedVariableSelector(project, element).contextSensitive().distinctByName()
         ParadoxLocalScriptedVariableSearch.search(selector).processQuery { processScriptedVariable(it, result) }
-        ParadoxGlobalScriptedVariableSearch.search(selector).processQuery(limited = true) { processScriptedVariable(it, result) }
+        ParadoxGlobalScriptedVariableSearch.search(selector).processQuery { processScriptedVariable(it, result) }
     }
     
     @Suppress("SameReturnValue")
