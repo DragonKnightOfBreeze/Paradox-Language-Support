@@ -29,7 +29,7 @@ sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig
     
     override fun resolvedOrNull(): CwtMemberConfig<T>? = inlineableConfig?.config?.castOrNull<CwtMemberConfig<T>>()
     
-    object Keys
+    object Keys: KeyAware
 }
 
 val <T : PsiElement> CwtMemberConfig<T>.isBlock: Boolean

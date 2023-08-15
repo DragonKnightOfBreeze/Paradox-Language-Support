@@ -8,26 +8,26 @@ import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.*
 
-object PlsCompletionKeys
+object PlsCompletionKeys : KeyAware
 
-val PlsCompletionKeys.completionIds by lazy { keyOf<MutableSet<String>>("paradoxCompletion.completionIds") }
-val PlsCompletionKeys.parameters by lazy { keyOf<CompletionParameters>("paradoxCompletion.parameters") }
-val PlsCompletionKeys.contextElement by lazy { keyOf<PsiElement>("paradoxCompletion.contextElement") }
-val PlsCompletionKeys.originalFile by lazy { keyOf<PsiFile>("paradoxCompletion.originalFile") }
-val PlsCompletionKeys.quoted by lazy { keyOf<Boolean>("paradoxCompletion.quoted") { false } }
-val PlsCompletionKeys.rightQuoted by lazy { keyOf<Boolean>("paradoxCompletion.rightQuoted") }
-val PlsCompletionKeys.offsetInParent by lazy { keyOf<Int>("paradoxCompletion.offsetInParent") }
-val PlsCompletionKeys.keyword by lazy { keyOf<String>("paradoxCompletion.keyword") }
-val PlsCompletionKeys.startOffset by lazy { keyOf<Int>("paradoxCompletion.startOffset") }
-val PlsCompletionKeys.isKey by lazy { keyOf<Boolean>("paradoxCompletion.isKey") }
-val PlsCompletionKeys.config by lazy { keyOf<CwtConfig<*>>("paradoxCompletion.config") }
-val PlsCompletionKeys.configs by lazy { keyOf<Collection<CwtConfig<*>>>("paradoxCompletion.configs") }
-val PlsCompletionKeys.configGroup by lazy { keyOf<CwtConfigGroup>("paradoxCompletion.configGroup") }
-val PlsCompletionKeys.scopeContext by lazy { keyOf<ParadoxScopeContext>("paradoxCompletion.scopeContext") }
-val PlsCompletionKeys.scopeMatched by lazy { keyOf<Boolean>("paradoxCompletion.scopeMatched") { true } }
-val PlsCompletionKeys.scopeName by lazy { keyOf<String>("paradoxCompletion.scopeName") }
-val PlsCompletionKeys.scopeGroupName by lazy { keyOf<String>("paradoxCompletion.scopeGroupName") }
-val PlsCompletionKeys.isInt by lazy { keyOf<Boolean>("paradoxCompletion.isInt") }
+val PlsCompletionKeys.completionIds by createKey<MutableSet<String>>("paradoxCompletion.completionIds")
+val PlsCompletionKeys.parameters by createKey<CompletionParameters>("paradoxCompletion.parameters")
+val PlsCompletionKeys.contextElement by createKey<PsiElement>("paradoxCompletion.contextElement")
+val PlsCompletionKeys.originalFile by createKey<PsiFile>("paradoxCompletion.originalFile")
+val PlsCompletionKeys.quoted by createKey<Boolean>("paradoxCompletion.quoted") { false }
+val PlsCompletionKeys.rightQuoted by createKey<Boolean>("paradoxCompletion.rightQuoted")
+val PlsCompletionKeys.offsetInParent by createKey<Int>("paradoxCompletion.offsetInParent")
+val PlsCompletionKeys.keyword by createKey<String>("paradoxCompletion.keyword")
+val PlsCompletionKeys.startOffset by createKey<Int>("paradoxCompletion.startOffset")
+val PlsCompletionKeys.isKey by createKey<Boolean>("paradoxCompletion.isKey")
+val PlsCompletionKeys.config by createKey<CwtConfig<*>>("paradoxCompletion.config")
+val PlsCompletionKeys.configs by createKey<Collection<CwtConfig<*>>>("paradoxCompletion.configs")
+val PlsCompletionKeys.configGroup by createKey<CwtConfigGroup>("paradoxCompletion.configGroup")
+val PlsCompletionKeys.scopeContext by createKey<ParadoxScopeContext>("paradoxCompletion.scopeContext")
+val PlsCompletionKeys.scopeMatched by createKey<Boolean>("paradoxCompletion.scopeMatched") { true }
+val PlsCompletionKeys.scopeName by createKey<String>("paradoxCompletion.scopeName")
+val PlsCompletionKeys.scopeGroupName by createKey<String>("paradoxCompletion.scopeGroupName")
+val PlsCompletionKeys.isInt by createKey<Boolean>("paradoxCompletion.isInt")
 
 var ProcessingContext.completionIds by PlsCompletionKeys.completionIds
 var ProcessingContext.parameters by PlsCompletionKeys.parameters
@@ -38,7 +38,7 @@ var ProcessingContext.rightQuoted by PlsCompletionKeys.rightQuoted
 var ProcessingContext.offsetInParent by PlsCompletionKeys.offsetInParent
 var ProcessingContext.keyword by PlsCompletionKeys.keyword
 var ProcessingContext.startOffset by PlsCompletionKeys.startOffset
-var ProcessingContext.isKey: Boolean? by PlsCompletionKeys.isKey
+var ProcessingContext.isKey by PlsCompletionKeys.isKey
 var ProcessingContext.config by PlsCompletionKeys.config
 var ProcessingContext.configs by PlsCompletionKeys.configs
 var ProcessingContext.configGroup by PlsCompletionKeys.configGroup

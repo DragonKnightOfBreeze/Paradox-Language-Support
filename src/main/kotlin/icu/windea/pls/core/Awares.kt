@@ -14,3 +14,5 @@ interface AttributesKeyAware {
 interface PsiReferencesAware {
     fun getReferences(): Array<out PsiReference>? = null
 }
+
+interface KeyAware

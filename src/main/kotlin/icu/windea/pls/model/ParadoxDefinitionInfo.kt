@@ -1,6 +1,7 @@
 package icu.windea.pls.model
 
 import com.intellij.openapi.util.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
@@ -148,6 +149,6 @@ class ParadoxDefinitionInfo(
         return Objects.hash(name, typesText, gameType)
     }
     
-    object Keys
+    object Keys: KeyAware
 }
 

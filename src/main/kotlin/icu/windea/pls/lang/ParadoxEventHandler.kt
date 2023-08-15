@@ -139,7 +139,7 @@ object ParadoxEventHandler {
     }
 }
 
-val PlsKeys.cachedEventInvocations by lazy { Key.create<CachedValue<Set<String>>>("paradox.cached.event.invocations") }
-val CwtMemberConfig.Keys.eventEventTypes by lazy { Key.create<Set<String>>("paradox.event.types") }
-val ParadoxDefinitionInfo.Keys.eventEventType by lazy { Key.create<String>("paradox.event.type") }
-val ParadoxDefinitionInfo.Keys.eventEventScope by lazy { Key.create<String>("paradox.event.scope") }
+val PlsKeys.cachedEventInvocations by createKey<CachedValue<Set<String>>>("paradox.cached.event.invocations")
+val CwtMemberConfig.Keys.eventEventTypes by createKey<Set<String>>("paradox.event.types")
+val ParadoxDefinitionInfo.Keys.eventEventType by createKey<String>("paradox.event.type")
+val ParadoxDefinitionInfo.Keys.eventEventScope by createKey<String>("paradox.event.scope") 
