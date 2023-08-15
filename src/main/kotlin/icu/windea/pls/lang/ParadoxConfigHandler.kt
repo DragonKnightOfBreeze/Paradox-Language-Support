@@ -516,7 +516,7 @@ object ParadoxConfigHandler {
         val originalFile = context.originalFile
         val project = originalFile.project
         val gameType = selectGameType(originalFile) ?: return
-        val configGroup = getCwtConfig(project).get(gameType)
+        val configGroup = getConfigGroups(project).get(gameType)
         val elementPath = ParadoxElementPathHandler.get(memberElement, PlsConstants.maxDefinitionDepth) ?: return
         
         context.isKey = true
@@ -1449,7 +1449,7 @@ object ParadoxConfigHandler {
         //这里的key可能是"core"，而这不是gameType
         val key = path.substringAfter("config/cwt/", "").substringBefore("/", "")
         if(key.isEmpty()) return null
-        return getCwtConfig(project).get(key)
+        return getConfigGroups(project).get(key)
     }
     
     fun getAliasSubName(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = Options.Default): String? {

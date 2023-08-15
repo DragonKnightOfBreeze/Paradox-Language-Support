@@ -39,7 +39,7 @@ object ParadoxModifierHandler {
         val name = element.value
         val gameType = selectGameType(element) ?: return null
         val project = element.project
-        val configGroup = getCwtConfig(project).get(gameType)
+        val configGroup = getConfigGroups(project).get(gameType)
         return resolveModifier(name, element, configGroup, useSupport)
     }
     

@@ -41,7 +41,7 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
         ProgressManager.checkCanceled()
         val gameType = parameterElement.gameType
         val elementPathFromRoot = elementPath
-        val configGroup = getCwtConfig(file.project).get(gameType)
+        val configGroup = getConfigGroups(file.project).get(gameType)
         val configContext = ParadoxConfigContext(null, elementPath, gameType, configGroup, element)
         if(elementPathFromRoot.isNotEmpty()) {
             configContext.snippetFromParameterValueRootConfigContext = ParadoxConfigHandler.getConfigContext(file) ?: return null

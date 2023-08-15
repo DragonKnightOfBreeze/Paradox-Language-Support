@@ -48,7 +48,7 @@ enum class ParadoxFileType(
 		//NOTE PLS use its own logic to resolve actual file type, so folders.cwt will be ignored
 		//private fun isInFolders(gameType: ParadoxGameType, path: ParadoxPath): Boolean {
 		//	if(path.parent.isEmpty()) return false
-		//	val folders = getCwtConfig(getDefaultProject()).get(gameType)?.folders
+		//	val folders = getConfigGroups(getDefaultProject()).get(gameType)?.folders
 		//	return folders.isNullOrEmpty() || folders.any { it.matchesPath(path.parent) }
 		//}
 	}

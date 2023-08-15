@@ -16,7 +16,7 @@ class ParadoxScriptFileStubImpl(
     override val rootKey: String get() = name
     
     override val isValidDefinition: Boolean = type.isNotEmpty()
-    override val nestedTypeRootKeys: Set<String> = getCwtConfig().get(gameType).types.get(type)?.possibleNestedTypeRootKeys.orEmpty()
+    override val nestedTypeRootKeys: Set<String> = getConfigGroups().get(gameType).types.get(type)?.possibleNestedTypeRootKeys.orEmpty()
     
     override fun toString(): String {
         return "ParadoxScriptFileStub(name=$name, type=$type, subtypes=$subtypes, rootKey=$rootKey, gameType=$gameType)"

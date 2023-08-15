@@ -124,7 +124,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
         val economicCategoryInfo = element.getUserData(ParadoxModifierSupport.Keys.economicCategoryInfo) ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory //may be null
-        val configGroup = getCwtConfig(element.project).get(element.gameType)
+        val configGroup = getConfigGroups(element.project).get(element.gameType)
         return StellarisEconomicCategoryHandler.resolveModifierCategory(modifierCategory, configGroup)
     }
     

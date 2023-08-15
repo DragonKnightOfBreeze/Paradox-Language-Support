@@ -49,7 +49,7 @@ class ParadoxTypeDeclarationProvider : TypeDeclarationProvider {
 				val complexEnumValueInfo = symbol.complexEnumValueInfo
 				if(complexEnumValueInfo != null) {
 					val gameType = complexEnumValueInfo.gameType
-					val configGroup = getCwtConfig(symbol.project).get(gameType)
+					val configGroup = getConfigGroups(symbol.project).get(gameType)
 					val enumName = complexEnumValueInfo.enumName
 					val config = configGroup.complexEnums[enumName] ?: return null //unexpected
 					val resolved = config.pointer.element ?: return null

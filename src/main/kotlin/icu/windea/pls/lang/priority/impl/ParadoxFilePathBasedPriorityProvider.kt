@@ -73,7 +73,7 @@ abstract class ParadoxFilePathBasedPriorityProvider : ParadoxPriorityProvider {
             searchParameters is ParadoxDefinitionSearch.SearchParameters -> {
                 val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return null
                 val gameType = searchParameters.selector.gameType ?: return null
-                val configGroup = getCwtConfig(searchParameters.project).get(gameType)
+                val configGroup = getConfigGroups(searchParameters.project).get(gameType)
                 val typeConfig = configGroup.types.get(definitionType) ?: return null
                 typeConfig.path
             }
@@ -98,7 +98,7 @@ abstract class ParadoxFilePathBasedPriorityProvider : ParadoxPriorityProvider {
         if(searchParameters !is ParadoxDefinitionSearch.SearchParameters) return null
         val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return null
         val gameType = searchParameters.selector.gameType ?: return null
-        val configGroup = getCwtConfig(searchParameters.project).get(gameType)
+        val configGroup = getConfigGroups(searchParameters.project).get(gameType)
         val typeConfig = configGroup.types.get(definitionType) ?: return null
         return doGetForcedDefinitionPriority(typeConfig)
     }

@@ -42,7 +42,7 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         val elementPathFromRoot = elementPath
-        val configGroup = getCwtConfig(file.project).get(gameType)
+        val configGroup = getConfigGroups(file.project).get(gameType)
         val configContext = ParadoxConfigContext(fileInfo, elementPath, gameType, configGroup, element)
         if(elementPathFromRoot.isNotEmpty()) {
             configContext.inlineScriptRootConfigContext = ParadoxConfigHandler.getConfigContext(file) ?: return null

@@ -40,7 +40,7 @@ object ParadoxComplexEnumValueHandler {
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.pathToEntry //这里使用pathToEntry
         val gameType = fileInfo.rootInfo.gameType
-        val configGroup = getCwtConfig(project).get(gameType)
+        val configGroup = getConfigGroups(project).get(gameType)
         for(complexEnumConfig in configGroup.complexEnums.values) {
             if(matchesComplexEnumByPath(complexEnumConfig, path)) {
                 if(matchesComplexEnum(complexEnumConfig, element)) {

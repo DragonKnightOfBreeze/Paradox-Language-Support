@@ -260,7 +260,7 @@ object ParadoxCoreHandler {
         
         val indexKey = ParadoxFileLocaleIndexName
         val localeId = FileBasedIndex.getInstance().getFileData(indexKey, file, project).keys.singleOrNull() ?: return null
-        val localeConfig = getCwtConfig(project).core.localisationLocalesById.get(localeId)
+        val localeConfig = getConfigGroups(project).core.localisationLocalesById.get(localeId)
         file.tryPutUserData(PlsKeys.localeConfig, localeConfig ?: EMPTY_OBJECT)
         return localeConfig
     }

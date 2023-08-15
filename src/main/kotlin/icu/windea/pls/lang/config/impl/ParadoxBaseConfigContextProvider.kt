@@ -23,14 +23,14 @@ class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
         val gameType = fileInfo.rootInfo.gameType
         val definition = element.findParentDefinition()
         if(definition == null) {
-            val configGroup = getCwtConfig(file.project).get(gameType)
+            val configGroup = getConfigGroups(file.project).get(gameType)
             val configContext = ParadoxConfigContext(fileInfo, elementPath, gameType, configGroup, element)
             return configContext
         } else {
             val definitionInfo = definition.definitionInfo ?: return null
             val definitionElementPath = definitionInfo.elementPath
             val elementPathFromRoot = definitionElementPath.relativeTo(elementPath) ?: return null
-            val configGroup = getCwtConfig(file.project).get(gameType)
+            val configGroup = getConfigGroups(file.project).get(gameType)
             val configContext = ParadoxConfigContext(fileInfo, elementPath, gameType, configGroup, element)
             configContext.definitionInfo = definitionInfo
             configContext.elementPathFromRoot = elementPathFromRoot

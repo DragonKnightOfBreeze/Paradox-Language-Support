@@ -16,6 +16,6 @@ data class ParadoxComplexEnumValueInfo(
     @Volatile override var virtualFile: VirtualFile? = null
     
     fun getConfig(project: Project): CwtComplexEnumConfig? {
-        return getCwtConfig(project).get(gameType).complexEnums[enumName]
+        return getConfigGroups(project).get(gameType).complexEnums[enumName]
     }
 }

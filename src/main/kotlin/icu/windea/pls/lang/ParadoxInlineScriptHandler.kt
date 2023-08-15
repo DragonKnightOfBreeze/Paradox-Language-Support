@@ -47,7 +47,7 @@ object ParadoxInlineScriptHandler {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         val project = file.project
-        val configGroup = getCwtConfig(project).get(gameType)
+        val configGroup = getConfigGroups(project).get(gameType)
         val inlineConfigs = configGroup.inlineConfigGroup[inlineScriptKey] ?: return null
         val propertyValue = element.propertyValue ?: return null
         val matchOptions = Options.SkipIndex or Options.SkipScope

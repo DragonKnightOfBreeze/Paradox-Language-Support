@@ -59,7 +59,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 			element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockValue()) -> {
 				val fileInfo = file.fileInfo ?: return
 				val gameType = fileInfo.rootInfo.gameType
-				val configGroup = getCwtConfig(project).get(gameType)
+				val configGroup = getConfigGroups(project).get(gameType)
 				val path = fileInfo.pathToEntry //这里使用pathToEntry
 				val elementPath = ParadoxElementPathHandler.get(element, PlsConstants.maxDefinitionDepth) ?: return
 				for(typeConfig in configGroup.types.values) {

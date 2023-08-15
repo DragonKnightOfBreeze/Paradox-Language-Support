@@ -35,7 +35,7 @@ object ParadoxTechnologyHandler {
         }
         
         fun getResearchAreas(): Set<String> {
-            return getCwtConfig().stellaris.enums.get("research_area")?.values.orEmpty()
+            return getConfigGroups().stellaris.enums.get("research_area")?.values.orEmpty()
         }
         
         fun getTechnologyCategories(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {

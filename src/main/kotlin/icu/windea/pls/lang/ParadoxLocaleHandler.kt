@@ -12,18 +12,18 @@ object ParadoxLocaleHandler {
     fun getLocale(localeString: String): CwtLocalisationLocaleConfig {
         //基于localeString得到对应的语言区域
         if(localeString.isNotEmpty() && localeString != "auto") {
-            val localesById = getCwtConfig().core.localisationLocalesById
+            val localesById = getConfigGroups().core.localisationLocalesById
             val locale = localesById.get(localeString)
             if(locale != null) return locale
         }
         //基于OS得到对应的语言区域，或者使用英文
         val userLanguage = System.getProperty("user.language") ?: "en"
-        val localesByCode = getCwtConfig().core.localisationLocalesByCode
+        val localesByCode = getConfigGroups().core.localisationLocalesByCode
         return localesByCode.get(userLanguage) ?: localesByCode.get("en") ?: throw IllegalStateException()
     }
     
     fun getLocaleConfigs(pingPreferred: Boolean = true, noDefault: Boolean = true): List<CwtLocalisationLocaleConfig> {
-        var locales = getCwtConfig().core.localisationLocalesById.values
+        var locales = getConfigGroups().core.localisationLocalesById.values
         if(pingPreferred) {
             val preferredLocale = getPreferredLocale()
             locales = locales.pinned { it == preferredLocale }

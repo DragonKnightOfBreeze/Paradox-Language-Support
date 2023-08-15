@@ -9,6 +9,6 @@ fun Row.localeComboBox(settings: ParadoxSettingsState) =
         if(value == "auto") {
             text = PlsBundle.message("locale.auto")
         } else {
-            text = getCwtConfig().core.localisationLocalesById.getValue(value).description
+            text = getConfigGroups().core.localisationLocalesById.getValue(value).description
         }
     })

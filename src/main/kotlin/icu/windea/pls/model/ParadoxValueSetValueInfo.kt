@@ -16,6 +16,6 @@ data class ParadoxValueSetValueInfo(
     @Volatile override var virtualFile: VirtualFile? = null
     
     fun getConfig(project: Project): CwtEnumConfig? {
-        return getCwtConfig(project).get(gameType).values[valueSetName]
+        return getConfigGroups(project).get(gameType).values[valueSetName]
     }
 }

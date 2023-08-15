@@ -71,7 +71,7 @@ object ParadoxEventHandler {
      * 得到指定事件的所有事件类型（注有"## group = event_type"，拥有特定的作用域，一般拥有特定的type或者rootKey）。
      */
     fun getTypes(project: Project, gameType: ParadoxGameType): Set<String> {
-        val eventConfig = getCwtConfig(project).get(gameType).types["event"] ?: return emptySet()
+        val eventConfig = getConfigGroups(project).get(gameType).types["event"] ?: return emptySet()
         return eventConfig.config.getOrPutUserData(CwtMemberConfig.Keys.eventEventTypes) {
             eventConfig.subtypes.mapNotNullTo(mutableSetOf()) { (k, v) -> if(v.config.findOption("group")?.stringValue == "event_type") k else null }
         }

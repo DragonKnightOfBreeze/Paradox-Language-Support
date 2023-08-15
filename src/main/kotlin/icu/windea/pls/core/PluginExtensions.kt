@@ -55,11 +55,15 @@ fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
 fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
 
-fun getSettings() = service<ParadoxSettings>().state
+private val settings by lazy { service<ParadoxSettings>().state }
+fun getSettings() = settings
 
-fun getProfilesSettings() = service<ParadoxProfilesSettings>().state
+private val profilesSettings by lazy { service<ParadoxProfilesSettings>().state }
+fun getProfilesSettings() = profilesSettings
 
-fun getCwtConfig(project: Project = getTheOnlyOpenOrDefaultProject()) = project.service<CwtConfigProvider>().configGroups
+private val configGroups by lazy { getDefaultProject().service<CwtConfigProvider>().configGroups }
+fun getConfigGroups() = configGroups
+fun getConfigGroups(project: Project) = project.service<CwtConfigProvider>().configGroups
 
 /**
  * 比较游戏版本。允许通配符，如："3.3.*"
@@ -184,7 +188,7 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
 }
 
 private fun String.toLocale(from: PsiElement): CwtLocalisationLocaleConfig? {
-    return getCwtConfig(from.project).core.localisationLocalesById.get(this)
+    return getConfigGroups(from.project).core.localisationLocalesById.get(this)
 }
 //endregion
 

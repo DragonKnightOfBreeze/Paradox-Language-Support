@@ -36,7 +36,7 @@ class UnsupportedInlineMathUsageInspection: LocalInspectionTool() {
     //    if(fileInfo != null) {
     //        val path = fileInfo.pathToEntry
     //        val gameType = fileInfo.rootInfo.gameType
-    //        val configGroup = getCwtConfig(file.project).get(gameType)
+    //        val configGroup = getConfigGroups(file.project).get(gameType)
     //        
     //        fun doBuildVisitor(definitionType: String, message: String): PsiElementVisitor? {
     //            val definitionFilePath = configGroup.types.get(definitionType)?.path ?: return null

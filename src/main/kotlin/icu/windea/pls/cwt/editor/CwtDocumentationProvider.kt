@@ -71,7 +71,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             val name = element.name
             val configType = null
             val project = element.project
-            val configGroup = getCwtConfig(project).get(element.gameType)
+            val configGroup = getConfigGroups(project).get(element.gameType)
             buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
         }
     }
@@ -120,7 +120,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             val name = element.name
             val configType = null
             val project = element.project
-            val configGroup = getCwtConfig(project).get(element.gameType)
+            val configGroup = getConfigGroups(project).get(element.gameType)
             //images, localisations, scope infos
             val sectionsList = List(3) { mutableMapOf<String, String>() }
             buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
@@ -411,7 +411,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
     
     private fun getConfigGroup(element: PsiElement, originalElement: PsiElement?, project: Project): CwtConfigGroup? {
         val gameType = selectGameType(originalElement?.takeIf { it.language.isParadoxLanguage() })
-        val configGroup = gameType?.let { getCwtConfig(project).get(it) }
+        val configGroup = gameType?.let { getConfigGroups(project).get(it) }
             ?: ParadoxConfigHandler.getConfigGroupFromCwtFile(element.containingFile, project)
         return configGroup
     }

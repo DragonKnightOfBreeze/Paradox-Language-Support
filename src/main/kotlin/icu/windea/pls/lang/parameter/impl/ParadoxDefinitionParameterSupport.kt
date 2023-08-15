@@ -180,7 +180,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     
     override fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker {
         val project = parameterElement.project
-        val configGroup = getCwtConfig(project).get(parameterElement.gameType)
+        val configGroup = getConfigGroups(project).get(parameterElement.gameType)
         return configGroup.getOrPutUserData(CwtConfigGroup.Keys.parameterModificationTracker) {
             val definitionTypes = configGroup.definitionTypesSupportParameters
             val builder = StringBuilder()
