@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 private val NAME = ID.create<String, List<ParadoxInferredScopeContextAwareDefinitionHierarchyIndex.Info>>("paradox.inferredScopeContextAware.definitionHierarchy.index")
-private const val VERSION = 33 //1.1.6
+private const val VERSION = 34 //1.1.7
 
 private val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect")
 

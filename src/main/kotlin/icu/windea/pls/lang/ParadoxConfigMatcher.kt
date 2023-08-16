@@ -64,10 +64,7 @@ object ParadoxConfigMatcher {
             private var value: Any = predicate
             
             override fun get(options: Int): Boolean {
-                return doGet()
-            }
-            
-            protected fun doGet(): Boolean {
+                if(skip(options)) return true
                 if(value is Boolean) return value as Boolean
                 return synchronized(this) {
                     if(value is Boolean) return value as Boolean
@@ -77,8 +74,19 @@ object ParadoxConfigMatcher {
                 }
             }
             
+            private fun skip(options: Int): Boolean {
+                return when {
+                    this is LazySimpleMatch -> BitUtil.isSet(options, Options.Relax)
+                    this is LazyBlockAwareMatch -> BitUtil.isSet(options, Options.Relax)
+                    this is LazyIndexAwareMatch -> BitUtil.isSet(options, Options.SkipIndex) || indexStatusThreadLocal.get() == true
+                    this is LazyScopeAwareMatch -> BitUtil.isSet(options, Options.SkipScope) || indexStatusThreadLocal.get() == true
+                    else -> false
+                }
+            }
+            
             private fun doGetCatching(): Boolean {
-                //it's necessary to prevent outputting error logs and throwing certain exceptions here
+                //it's necessary to suppress outputting error logs and throwing certain exceptions here
+                //it's unexpected to throw index related exceptions here (but it's hard to prevent) 
                 
                 //java.lang.Throwable: Indexing process should not rely on non-indexed file data.
                 //java.lang.AssertionError: Reentrant indexing
@@ -92,7 +100,6 @@ object ParadoxConfigMatcher {
                     @Suppress("UNCHECKED_CAST")
                     return (value as () -> Boolean)()
                 } catch(e: Throwable) {
-                    
                     if(e is ProcessCanceledException) throw e
                     error = e
                     return true
@@ -103,21 +110,13 @@ object ParadoxConfigMatcher {
             }
         }
         
-        class LazySimpleMatch(predicate: () -> Boolean) : LazyMatch(predicate) {
-            override fun get(options: Int) = if(BitUtil.isSet(options, Options.Relax)) true else doGet()
-        }
+        class LazySimpleMatch(predicate: () -> Boolean) : LazyMatch(predicate)
         
-        class LazyBlockAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate) {
-            override fun get(options: Int) = if(BitUtil.isSet(options, Options.Relax)) true else doGet()
-        }
+        class LazyBlockAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
         
-        class LazyIndexAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate) {
-            override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipIndex)) true else doGet()
-        }
+        class LazyIndexAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
         
-        class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate) {
-            override fun get(options: Int) = if(BitUtil.isSet(options, Options.SkipScope)) true else doGet()
-        }
+        class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
     }
     
     data class ResultValue<out T>(val value: T, val result: Result)

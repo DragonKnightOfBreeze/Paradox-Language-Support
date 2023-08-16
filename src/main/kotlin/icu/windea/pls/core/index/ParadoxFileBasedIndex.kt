@@ -16,8 +16,8 @@ abstract class ParadoxFileBasedIndex<T>: FileBasedIndexExtension<String, T>() {
     
     override fun getIndexer(): DataIndexer<String, T, FileContent> {
         return DataIndexer { inputData ->
-            val file = inputData.psiFile
-            buildMap { indexData(file, this) }
+            val psiFile = inputData.psiFile
+            buildFileData(psiFile)
         }
     }
     
@@ -74,7 +74,18 @@ abstract class ParadoxFileBasedIndex<T>: FileBasedIndexExtension<String, T>() {
             if(!filterFile(file)) return@builder emptyMap()
             if(!useLazyIndex(file)) return@builder emptyMap()
             val psiFile = file.toPsiFile(project) ?: return@builder emptyMap()
-            buildMap { indexData(psiFile, this) }
+            buildFileData(psiFile)
+        }
+    }
+    
+    private fun buildFileData(file: PsiFile): Map<String, T> {
+        return buildMap { 
+            try {
+                indexStatusThreadLocal.set(true)
+                indexData(file, this)
+            } finally {
+                indexStatusThreadLocal.remove()
+            }
         }
     }
     

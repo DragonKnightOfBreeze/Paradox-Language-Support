@@ -10,6 +10,12 @@ import com.intellij.util.io.*
 import icu.windea.pls.core.collections.*
 import java.io.*
 
+/**
+ * 用于标记当前线程是否正在编制索引。
+ * @see icu.windea.pls.core.index.ParadoxFileBasedIndex
+ */
+val indexStatusThreadLocal = ThreadLocal<Boolean>()
+
 inline fun <T, V> DataInput.readOrReadFrom(from: T?, selector: (T) -> V, readAction: () -> V): V {
     if(from == null) return readAction()
     if(readBoolean()) return selector(from)
