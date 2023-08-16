@@ -54,7 +54,7 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
     //排除重复项
     if(context.completionIds?.add(id) == false) return
     
-    val config = context.config
+    val config = context.config!!
     
     run {
         val lookupElement = PlsLookupElements.blockLookupElement
@@ -83,8 +83,7 @@ fun CompletionResultSet.addScriptExpressionElement(
     //should be filtered out before, check again here
     if((!builder.scopeMatched || !context.scopeMatched) && getSettings().completion.completeOnlyScopeIsMatched) return
     
-    val config = context.config
-    
+    val config = context.config!!
     val completeWithValue = getSettings().completion.completeWithValue
     val targetConfig = when {
         config is CwtPropertyConfig -> config
@@ -229,7 +228,7 @@ private fun applyKeyOrValueInsertHandler(context: ProcessingContext, c: Insertio
     skipOrInsertRightQuote(context, c.editor)
 }
 
-@Suppress("UNUSED_PARAMETER")
+@Suppress("UNUSED_PARAMETER", "SameParameterValue")
 private fun applyValueInsertHandler(c: InsertionContext, context: ProcessingContext, insertCurlyBraces: Boolean) {
     if(!insertCurlyBraces) return
     val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
@@ -281,7 +280,8 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
         hasRemainList.add(hasRemain)
     }
     if(constantConfigGroupList.isEmpty()) return
-    val propertyName = ParadoxConfigHandler.getEntryName(context.config)
+    val config = context.config!!
+    val propertyName = ParadoxConfigHandler.getEntryName(config)
     
     val resultLookupElement = builder.withInsertHandler { c, _ ->
         if(context.isKey == true) {

@@ -188,8 +188,8 @@ class ParadoxValueFieldExpressionImpl(
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val keyword = context.keyword
-        val startOffset = context.startOffset
-        val offsetInParent = context.offsetInParent
+        val startOffset = context.startOffset!!
+        val offsetInParent = context.offsetInParent!!
         val isKey = context.isKey
         val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
         

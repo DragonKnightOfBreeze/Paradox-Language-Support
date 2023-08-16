@@ -204,12 +204,14 @@ fun <T> ProcessingContext.getOrDefault(key: Key<T>): T? {
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun <T> createKey(name: String): Key<T> = Key.create(name)
+inline fun <T> createKey(name: String) = Key.create<T>(name)
 @Suppress("NOTHING_TO_INLINE")
-inline fun <T> createKey(name: String, noinline defaultValueProvider: () -> T): Key<T> = KeyWithDefaultValue.create(name, defaultValueProvider)
+inline fun <T> createKey(name: String, noinline defaultValueProvider: () -> T) = KeyWithDefaultValue.create(name, defaultValueProvider)
 
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.getValue(thisRef: KeyAware, property: KProperty<*>) = this
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: KeyAware, property: KProperty<*>) = this
 
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getUserData(this)
@@ -218,6 +220,8 @@ inline operator fun <T> Key<T>.setValue(thisRef: UserDataHolder, property: KProp
 
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T? = thisRef.getOrDefault(this)
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T = thisRef.getOrDefault(this)!!
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T?) = thisRef.put(this, value)
 

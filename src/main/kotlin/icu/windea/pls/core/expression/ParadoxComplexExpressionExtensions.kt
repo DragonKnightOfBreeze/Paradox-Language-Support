@@ -64,15 +64,16 @@ private fun ParadoxExpressionNode.doGetReferences(element: ParadoxScriptStringEx
  * @return 是否已经输入了前缀。
  */
 fun completeForScopeExpressionNode(node: ParadoxScopeFieldExpressionNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
+    val offsetInParent = context.offsetInParent!!
+    val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
     val nodeRange = node.rangeInExpression
     val linkFromDataNode = node.castOrNull<ParadoxScopeLinkFromDataExpressionNode>()
     val prefixNode = linkFromDataNode?.prefixNode
     val dataSourceNode = linkFromDataNode?.dataSourceNode
     val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
     val endOffset = dataSourceNode?.rangeInExpression?.startOffset ?: -1
-    val offsetInParent = context.offsetInParent
     if(prefixNode != null && dataSourceNode != null && offsetInParent >= dataSourceNode.rangeInExpression.startOffset) {
-        val scopeContextResult = ParadoxScopeHandler.getScopeContext(prefixNode, context.scopeContext)
+        val scopeContextResult = ParadoxScopeHandler.getScopeContext(prefixNode, scopeContext)
         context.scopeContext = scopeContextResult
         
         val keywordToUse = dataSourceNode.text.substring(0, offsetInParent - endOffset)
@@ -112,8 +113,9 @@ fun completeForScopeExpressionNode(node: ParadoxScopeFieldExpressionNode, contex
  */
 fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
     val keyword = context.keyword
-    val startOffset = context.startOffset
-    val offsetInParent = context.offsetInParent
+    val startOffset = context.startOffset!!
+    val offsetInParent = context.offsetInParent!!
+    val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
     val nodeRange = node.rangeInExpression
     val linkFromDataNode = node.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
     val prefixNode = linkFromDataNode?.prefixNode
@@ -121,7 +123,7 @@ fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, contex
     val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
     val endOffset = dataSourceNode?.rangeInExpression?.startOffset ?: -1
     if(prefixNode != null && dataSourceNode != null && offsetInParent >= dataSourceNode.rangeInExpression.startOffset) {
-        val scopeContextResult = ParadoxScopeHandler.getScopeContext(prefixNode, context.scopeContext)
+        val scopeContextResult = ParadoxScopeHandler.getScopeContext(prefixNode, scopeContext)
         context.scopeContext = scopeContextResult
         
         val keywordToUse = dataSourceNode.text.substring(0, offsetInParent - endOffset)
@@ -152,7 +154,7 @@ fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, contex
 }
 
 fun completeForVariableDataExpressionNode(node: ParadoxDataExpressionNode, context: ProcessingContext, result: CompletionResultSet) {
-    val offsetInParent = context.offsetInParent
+    val offsetInParent = context.offsetInParent!!
     val nodeRange = node.rangeInExpression
     val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
     val resultToUse = result.withPrefixMatcher(keywordToUse)

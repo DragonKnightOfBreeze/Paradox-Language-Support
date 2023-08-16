@@ -108,8 +108,8 @@ class ParadoxScriptValueExpressionImpl(
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val keyword = context.keyword
-        val startOffset = context.startOffset
-        val offsetInParent = context.offsetInParent
+        val startOffset = context.startOffset!!
+        val offsetInParent = context.offsetInParent!!
         val isKey = context.isKey
         val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
         val scopeMatched = context.scopeMatched
@@ -139,7 +139,7 @@ class ParadoxScriptValueExpressionImpl(
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
                     context.startOffset = node.rangeInExpression.startOffset
-                    ParadoxParameterHandler.completeArguments(context.contextElement, context, resultToUse)
+                    ParadoxParameterHandler.completeArguments(context.contextElement!!, context, resultToUse)
                 }
             } else if(node is ParadoxScriptValueArgumentValueExpressionNode && getSettings().inference.parameterConfig) {
                 if(inRange && scriptValueNode.text.isNotEmpty()) {

@@ -390,7 +390,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
         val enumName = config.expression?.value ?: return
         val configGroup = config.info.configGroup
         val project = configGroup.project
-        val contextElement = context.contextElement
+        val contextElement = context.contextElement!!
         val tailText = ParadoxConfigHandler.getScriptExpressionTailText(config)
         //提示简单枚举
         val enumConfig = configGroup.enums[enumName]

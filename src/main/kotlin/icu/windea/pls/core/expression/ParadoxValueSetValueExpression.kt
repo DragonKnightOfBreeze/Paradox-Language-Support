@@ -86,7 +86,8 @@ class ParadoxValueSetValueExpressionImpl(
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val keyword = context.keyword
-        val startOffset = context.startOffset
+        val startOffset = context.startOffset!!
+        val offsetInParent = context.offsetInParent!!
         val isKey = context.isKey
         val config = context.config
         val configs = context.configs
@@ -97,7 +98,6 @@ class ParadoxValueSetValueExpressionImpl(
         context.scopeContext = null //don't check now
         context.isKey = null
         
-        val offsetInParent = context.offsetInParent
         for(node in nodes) {
             val nodeRange = node.rangeInExpression
             val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset

@@ -36,7 +36,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport()
         
         val config = context.config ?: return
         //提示参数名（仅限key）
-        val contextElement = context.contextElement
+        val contextElement = context.contextElement!!
         val isKey = context.isKey
         if(isKey != true || config !is CwtPropertyConfig) return
         return ParadoxParameterHandler.completeArguments(contextElement, context, result)
