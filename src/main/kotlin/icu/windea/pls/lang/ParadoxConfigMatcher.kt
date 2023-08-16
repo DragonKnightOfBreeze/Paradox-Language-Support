@@ -5,6 +5,7 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
+import com.intellij.openapi.util.io.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
@@ -388,8 +389,9 @@ object ParadoxConfigMatcher {
     
     private fun getCachedResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
         ProgressManager.checkCanceled()
-        val rootFile = selectRootFile(element) ?: return Result.NotMatch //TODO 1.0.3+ 可以考虑优化性能，但是影响不大
-        val globalCacheKey = "${rootFile.path}:$cacheKey"
+        val rootFile = selectRootFile(element) ?: return Result.NotMatch
+        val rootPath = rootFile.rootInfo?.rootPath?.toStringOrEmpty()
+        val globalCacheKey = "${rootPath}:$cacheKey"
         return configMatchResultCache.getOrPut(globalCacheKey) { Result.LazyIndexAwareMatch(predicate) }
     }
     
