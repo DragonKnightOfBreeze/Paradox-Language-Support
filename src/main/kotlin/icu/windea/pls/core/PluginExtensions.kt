@@ -10,27 +10,20 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.expression.nodes.*
-import icu.windea.pls.core.index.*
-import icu.windea.pls.core.references.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.documentation.impl.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.references.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.references.*
 import java.lang.Integer.*
 
 //region Stdlib Extensions
@@ -55,14 +48,14 @@ fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
 fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
 
-private val settings by lazy { service<ParadoxSettings>().state }
-fun getSettings() = settings
+private val _settings by lazy { service<ParadoxSettings>().state }
+fun getSettings() = _settings
 
-private val profilesSettings by lazy { service<ParadoxProfilesSettings>().state }
-fun getProfilesSettings() = profilesSettings
+private val _profilesSettings by lazy { service<ParadoxProfilesSettings>().state }
+fun getProfilesSettings() = _profilesSettings
 
-private val configGroups by lazy { getDefaultProject().service<CwtConfigProvider>().configGroups }
-fun getConfigGroups() = configGroups
+private val _configGroups by lazy { getDefaultProject().service<CwtConfigProvider>().configGroups }
+fun getConfigGroups() = _configGroups
 fun getConfigGroups(project: Project) = project.service<CwtConfigProvider>().configGroups
 
 /**
