@@ -79,9 +79,10 @@ object ParadoxModifierHandler {
         return resolved
     }
     
-    fun completeModifier(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
-        val element = contextElement
+    fun completeModifier(context: ProcessingContext, result: CompletionResultSet) {
+        val element = context.contextElement!!
         if(element !is ParadoxScriptStringExpressionElement) return
+        
         val modifierNames = mutableSetOf<String>()
         ParadoxModifierSupport.completeModifier(context, result, modifierNames)
     }

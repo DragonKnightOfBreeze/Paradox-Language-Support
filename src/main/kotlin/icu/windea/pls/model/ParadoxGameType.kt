@@ -14,7 +14,7 @@ enum class ParadoxGameType(
     Stellaris("stellaris", "Stellaris", "281990", listOf("pdx_launcher/game", "pdx_launcher/common", "pdx_online_assets", "previewer_assets")),
     Ck2("ck2", "Crusader Kings II", "203770", listOf("jomini")),
     Ck3("ck3", "Crusader Kings III", "1158310", listOf("jomini")),
-    Eu4("eu4", "Europa Universalis IV", "236850", listOf("jomini")),
+    Eu4("eu4", "Europa Universalis IV", "236850", listOf("tweakergui_assets")),
     Hoi4("hoi4", "Hearts of Iron IV", "394360", listOf("jomini")),
     Ir("ir", "Imperator: Rome", "859580", listOf("jomini")),
     Vic2("vic2", "Victoria II", "42960", listOf("jomini")),

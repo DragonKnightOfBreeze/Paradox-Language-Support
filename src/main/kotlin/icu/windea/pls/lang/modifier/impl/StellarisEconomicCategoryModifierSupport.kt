@@ -76,12 +76,13 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         return resolved
     }
     
-    override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>): Unit = with(context) {
-        val element = contextElement
+    override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
+        val element = context.contextElement!!
+        val configGroup = context.configGroup!!
+        val scopeContext = context.scopeContext
         if(element !is ParadoxScriptStringExpressionElement) return
-        val configGroup = configGroup
-        val project = configGroup.project
-        val selector = definitionSelector(project, element).contextSensitive()
+        
+        val selector = definitionSelector(configGroup.project, element).contextSensitive()
         ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val info = StellarisEconomicCategoryHandler.getInfo(definition) ?: return@p true
@@ -108,7 +109,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
                     .withScopeMatched(scopeMatched)
                     .letIf(getSettings().completion.completeByLocalizedName) {
                         //如果启用，也基于修正的本地化名字进行代码补全
-                        val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, project, element)
+                        val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, configGroup.project, element)
                         it.withLocalizedNames(localizedNames)
                     }
                 result.addScriptExpressionElement(context, builder)

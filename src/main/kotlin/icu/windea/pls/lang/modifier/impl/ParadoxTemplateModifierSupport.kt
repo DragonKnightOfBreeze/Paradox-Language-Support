@@ -49,13 +49,14 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         return resolved
     }
     
-    override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>): Unit = with(context) {
-        val element = contextElement
+    override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
+        val element = context.contextElement!!
+        val configGroup = context.configGroup!!
+        val scopeContext = context.scopeContext
         if(element !is ParadoxScriptStringExpressionElement) return
         val modifiers = configGroup.generatedModifiers
         if(modifiers.isEmpty()) return
-        val configGroup = configGroup
-        val project = configGroup.project
+        
         for(modifierConfig in modifiers.values) {
             //排除不匹配modifier的supported_scopes的情况
             val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
@@ -66,7 +67,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             if(template.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
             //生成的modifier
-            template.processResolveResult(contextElement, configGroup) p@{ name ->
+            template.processResolveResult(element, configGroup) p@{ name ->
                 //排除重复的
                 if(!modifierNames.add(name)) return@p true
                 
@@ -79,7 +80,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                     .withScopeMatched(scopeMatched)
                     .letIf(getSettings().completion.completeByLocalizedName) {
                         //如果启用，也基于修正的本地化名字进行代码补全
-                        val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, project, element)
+                        val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, configGroup.project, element)
                         it.withLocalizedNames(localizedNames)
                     }
                 result.addScriptExpressionElement(context, builder)

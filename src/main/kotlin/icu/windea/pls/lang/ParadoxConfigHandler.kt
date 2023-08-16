@@ -513,7 +513,7 @@ object ParadoxConfigHandler {
     
     //region Complete Methods
     fun addRootKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
-        val originalFile = context.originalFile
+        val originalFile = context.originalFile!!
         val project = originalFile.project
         val gameType = selectGameType(originalFile) ?: return
         val configGroup = getConfigGroups(project).get(gameType)
@@ -556,7 +556,7 @@ object ParadoxConfigHandler {
         configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
             for(config in configsWithSameKey) {
                 if(shouldComplete(config, occurrenceMap)) {
-                    val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(context.contextElement, config)
+                    val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(context.contextElement!!, config)
                     if(overriddenConfigs.isNotNullOrEmpty()) {
                         for(overriddenConfig in overriddenConfigs) {
                             context.config = overriddenConfig
@@ -602,7 +602,7 @@ object ParadoxConfigHandler {
         
         for(config in configs) {
             if(shouldComplete(config, occurrenceMap)) {
-                val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(context.contextElement, config)
+                val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(context.contextElement!!, config)
                 if(overriddenConfigs.isNotNullOrEmpty()) {
                     for(overriddenConfig in overriddenConfigs) {
                         context.config = overriddenConfig
@@ -675,8 +675,8 @@ object ParadoxConfigHandler {
     }
     
     fun completeRootKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxElementPath) {
-        val fileInfo = context.originalFile.fileInfo ?: return
-        val configGroup = context.configGroup
+        val fileInfo = context.originalFile!!.fileInfo ?: return
+        val configGroup = context.configGroup!!
         val path = fileInfo.pathToEntry //这里使用pathToEntry
         val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
         for(typeConfig in configGroup.types.values) {
@@ -725,7 +725,7 @@ object ParadoxConfigHandler {
             val config = when {
                 typeToUse == null -> null
                 else -> {
-                    val configContext = CwtDeclarationConfigContext(context.contextElement, null, typeToUse, subtypesToUse, configGroup)
+                    val configContext = CwtDeclarationConfigContext(context.contextElement!!, null, typeToUse, subtypesToUse, configGroup)
                     configGroup.declarations.get(typeToUse)?.getConfig(configContext)
                 }
             }
@@ -751,48 +751,50 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeScriptExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completeScriptExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val configExpression = config.expression ?: return@with
-        val config = config
-        val configGroup = configGroup
+        val configExpression = context.config!!.expression ?: return
+        val config = context.config!!
+        val configGroup = context.configGroup!!
+        val scopeMatched = context.scopeMatched!!
+        val scopeContext = context.scopeContext
         
         if(configExpression.isEmpty()) return
         
         //匹配作用域
         if(scopeMatched) {
-            val scopeContext = scopeContext
             val supportedScopes = when {
                 config is CwtPropertyConfig -> config.supportedScopes
                 config is CwtAliasConfig -> config.supportedScopes
                 config is CwtLinkConfig -> config.inputScopes
                 else -> null
             }
-            val scopeMatched = when {
+            val scopeMatched1 = when {
                 scopeContext == null -> true
                 else -> ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
             }
-            if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return
-            put(PlsCompletionKeys.scopeMatched, scopeMatched)
+            if(!scopeMatched1 && getSettings().completion.completeOnlyScopeIsMatched) return
+            context.put(PlsCompletionKeys.scopeMatched, scopeMatched1)
         }
         
         ParadoxScriptExpressionSupport.complete(context, result)
         
-        put(PlsCompletionKeys.scopeContext, scopeContext)
-        put(PlsCompletionKeys.scopeMatched, null)
+        context.scopeMatched = null
+        context.scopeContext = scopeContext
     }
     
-    fun completeAliasName(aliasName: String, context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completeAliasName(aliasName: String, context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val config = config
-        val configs = configs
+        val configGroup = context.configGroup!!
+        val config = context.config!!
+        val configs = context.configs!!
         
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return
         for(aliasConfigs in aliasGroup.values) {
             //aliasConfigs的名字是相同的 
             val aliasConfig = aliasConfigs.firstOrNull() ?: continue
             //aliasSubName是一个表达式
-            if(isKey == true) {
+            if(context.isKey == true) {
                 context.config = aliasConfig
                 context.configs = aliasConfigs
                 completeScriptExpression(context, result)
@@ -805,16 +807,19 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeTemplateExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completeTemplateExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val element = contextElement
-        if(element !is ParadoxScriptStringExpressionElement) return
-        val configExpression = context.config.expression ?: return
+        val contextElement = context.contextElement!!
+        val configGroup = context.configGroup!!
+        val config = context.config!!
+        val scopeMatched = context.scopeMatched!!
+        
+        if(contextElement !is ParadoxScriptStringExpressionElement) return
+        val configExpression = config.expression ?: return
         val template = CwtTemplateExpression.resolve(configExpression.expressionString)
-        val scopeMatched = context.scopeMatched
-        val tailText = getScriptExpressionTailText(context.config)
+        val tailText = getScriptExpressionTailText(config)
         template.processResolveResult(contextElement, configGroup) { expression ->
-            val templateExpressionElement = resolveTemplateExpression(element, expression, configExpression, configGroup)
+            val templateExpressionElement = resolveTemplateExpression(contextElement, expression, configExpression, configGroup)
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(templateExpressionElement, expression)
                 .withIcon(PlsIcons.TemplateExpression)
                 .withTailText(tailText)
@@ -825,49 +830,68 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeScopeFieldExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completeScopeFieldExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
+        val quoted = context.quoted!!
+        val keyword = context.keyword!!
+        val configGroup = context.configGroup!!
+        
         //基于当前位置的代码补全
         if(quoted) return
         val startOffset = context.startOffset ?: 0
         val textRange = TextRange.create(startOffset, startOffset + keyword.length)
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup, true) ?: return
         //合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，目前不基于此进行过滤
-        scopeFieldExpression.complete(context, result)
+        return scopeFieldExpression.complete(context, result)
     }
     
-    fun completeValueFieldExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completeValueFieldExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
+        val quoted = context.quoted!!
+        val keyword = context.keyword!!
+        val configGroup = context.configGroup!!
+        
         //基于当前位置的代码补全
         if(quoted) return
         val startOffset = context.startOffset ?: 0
         val textRange = TextRange.create(startOffset, startOffset + keyword.length)
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup, true) ?: return
-        valueFieldExpression.complete(context, result)
+        return valueFieldExpression.complete(context, result)
     }
     
-    fun completeVariableFieldExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completeVariableFieldExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
+        val quoted = context.quoted!!
+        val keyword = context.keyword!!
+        val configGroup = context.configGroup!!
+        
         //基于当前位置的代码补全
         if(quoted) return
         val startOffset = context.startOffset ?: 0
         val textRange = TextRange.create(startOffset, startOffset + keyword.length)
         val variableFieldExpression = ParadoxVariableFieldExpression.resolve(keyword, textRange, configGroup, true) ?: return
-        variableFieldExpression.complete(context, result)
+        return variableFieldExpression.complete(context, result)
     }
     
-    fun completeValueSetValueExpression(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completeValueSetValueExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
+        val quoted = context.quoted!!
+        val keyword = context.keyword!!
+        val configGroup = context.configGroup!!
+        val config = context.config!!
+        
         //基于当前位置的代码补全
         if(quoted) return
         val startOffset = context.startOffset ?: 0
         val textRange = TextRange.create(startOffset, startOffset + keyword.length)
         val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(keyword, textRange, configGroup, config, true) ?: return
-        valueSetValueExpression.complete(context, result)
+        return valueSetValueExpression.complete(context, result)
     }
     
-    fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
+        val configGroup = context.configGroup!!
+        
         //总是提示，无论作用域是否匹配
         val systemLinkConfigs = configGroup.systemLinks
         for(systemLinkConfig in systemLinkConfigs.values) {
@@ -885,9 +909,10 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completeScope(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val scopeContext = scopeContext
+        val configGroup = context.configGroup!!
+        val scopeContext = context.scopeContext
         
         val linkConfigs = configGroup.linksAsScopeNotData
         for(scope in linkConfigs.values) {
@@ -909,9 +934,10 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeScopeLinkPrefix(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completeScopeLinkPrefix(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val scopeContext = scopeContext
+        val configGroup = context.configGroup!!
+        val scopeContext = context.scopeContext
         
         val linkConfigs = configGroup.linksAsScopeWithPrefix
         for(linkConfig in linkConfigs.values) {
@@ -933,11 +959,12 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeScopeLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?, dataSourceNodeToCheck: ParadoxExpressionNode?): Unit = with(context) {
+    fun completeScopeLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?, dataSourceNodeToCheck: ParadoxExpressionNode?) {
         ProgressManager.checkCanceled()
-        val config = config
-        val configs = configs
-        val scopeContext = scopeContext
+        val configGroup = context.configGroup!!
+        val config = context.config
+        val configs = context.configs
+        val scopeContext = context.scopeContext
         
         val linkConfigs = when {
             prefix == null -> configGroup.linksAsScopeWithoutPrefix.values
@@ -947,11 +974,11 @@ object ParadoxConfigHandler {
         if(dataSourceNodeToCheck is ParadoxScopeFieldExpressionNode) {
             completeForScopeExpressionNode(dataSourceNodeToCheck, context, result)
             context.scopeContext = scopeContext
-            return@with
+            return
         }
         if(dataSourceNodeToCheck is ParadoxValueSetValueExpression) {
             dataSourceNodeToCheck.complete(context, result)
-            return@with
+            return
         }
         
         context.configs = linkConfigs
@@ -964,9 +991,10 @@ object ParadoxConfigHandler {
         context.scopeMatched = null
     }
     
-    fun completeValueLinkValue(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completeValueLinkValue(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val scopeContext = scopeContext
+        val configGroup = context.configGroup!!
+        val scopeContext = context.scopeContext
         
         val linkConfigs = configGroup.linksAsValueNotData
         for(linkConfig in linkConfigs.values) {
@@ -989,9 +1017,10 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeValueLinkPrefix(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completeValueLinkPrefix(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val scopeContext = scopeContext
+        val configGroup = context.configGroup!!
+        val scopeContext = context.scopeContext
         
         val linkConfigs = configGroup.linksAsValueWithPrefix
         for(linkConfig in linkConfigs.values) {
@@ -1012,10 +1041,11 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeValueLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?, dataSourceNodeToCheck: ParadoxExpressionNode?, variableOnly: Boolean = false): Unit = with(context) {
+    fun completeValueLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?, dataSourceNodeToCheck: ParadoxExpressionNode?, variableOnly: Boolean = false) {
         ProgressManager.checkCanceled()
-        val config = config
-        val configs = configs
+        val configGroup = context.configGroup!!
+        val config = context.config
+        val configs = context.configs
         
         val linkConfigs = when {
             prefix == null -> configGroup.linksAsValueWithoutPrefix.values
@@ -1024,11 +1054,11 @@ object ParadoxConfigHandler {
         
         if(dataSourceNodeToCheck is ParadoxValueSetValueExpression) {
             dataSourceNodeToCheck.complete(context, result)
-            return@with
+            return
         }
         if(dataSourceNodeToCheck is ParadoxScriptValueExpression) {
             dataSourceNodeToCheck.complete(context, result)
-            return@with
+            return
         }
         
         context.configs = linkConfigs
@@ -1041,27 +1071,28 @@ object ParadoxConfigHandler {
         context.scopeMatched = null
     }
     
-    fun completeValueSetValue(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completeValueSetValue(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val configs = configs
+        val config = context.config
+        val configs = context.configs
+        
         if(configs.isNotNullOrEmpty()) {
-            for(config in configs) {
-                doCompleteValueSetValue(context, result, config)
+            for(c in configs) {
+                doCompleteValueSetValue(context, result, c)
             }
-        } else {
-            val config = config
-            if(config != null) {
-                doCompleteValueSetValue(context, result, config)
-            }
+        } else if(config != null) {
+            doCompleteValueSetValue(context, result, config)
         }
     }
     
-    private fun doCompleteValueSetValue(context: ProcessingContext, result: CompletionResultSet, config: CwtConfig<*>): Unit = with(context) {
+    private fun doCompleteValueSetValue(context: ProcessingContext, result: CompletionResultSet, config: CwtConfig<*>) {
         val keyword = context.keyword
+        val contextElement = context.contextElement!!
+        val configGroup = context.configGroup!!
         val project = configGroup.project
         
-        val configExpression = config.expression ?: return@with
-        val valueSetName = configExpression.value ?: return@with
+        val configExpression = config.expression ?: return
+        val valueSetName = configExpression.value ?: return
         //提示预定义的value
         run {
             ProgressManager.checkCanceled()
@@ -1090,8 +1121,11 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completePredefinedValueSetValue(valueSetName: String, result: CompletionResultSet, context: ProcessingContext) = with(context) {
+    fun completePredefinedValueSetValue(valueSetName: String, result: CompletionResultSet, context: ProcessingContext) {
         ProgressManager.checkCanceled()
+        val configGroup = context.configGroup!!
+        val config = context.config
+        
         val tailText = getScriptExpressionTailText(config)
         val valueConfig = configGroup.values[valueSetName] ?: return
         val valueSetValueConfigs = valueConfig.valueConfigMap.values
@@ -1110,8 +1144,9 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completePredefinedLocalisationScope(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completePredefinedLocalisationScope(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
+        val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
         
         val localisationLinks = configGroup.localisationLinks
@@ -1134,8 +1169,9 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completePredefinedLocalisationCommand(context: ProcessingContext, result: CompletionResultSet): Unit = with(context) {
+    fun completePredefinedLocalisationCommand(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
+        val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
         
         val localisationCommands = configGroup.localisationCommands
@@ -1158,12 +1194,13 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeEventTarget(context: ProcessingContext, result: CompletionResultSet) = with(context) {
+    fun completeEventTarget(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val contextElement = contextElement
-        val keyword = keyword
-        val file = originalFile
+        val contextElement = context.contextElement!!
+        val keyword = context.keyword!!
+        val file = context.originalFile!!
         val project = file.project
+        
         val eventTargetSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
         ParadoxValueSetValueSearch.search(ParadoxValueSetValueHandler.EVENT_TARGETS, eventTargetSelector).processQueryAsync p@{ info ->
             ProgressManager.checkCanceled()
@@ -1180,10 +1217,11 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeScriptedLoc(context: ProcessingContext, result: CompletionResultSet) = with(context) {
+    fun completeScriptedLoc(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val file = originalFile
+        val file = context.originalFile!!
         val project = file.project
+        
         val scriptedLocSelector = definitionSelector(project, file).contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search("scripted_loc", scriptedLocSelector).processQueryAsync p@{ scriptedLoc ->
             ProgressManager.checkCanceled()
@@ -1200,12 +1238,13 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeVariable(context: ProcessingContext, result: CompletionResultSet) = with(context) {
+    fun completeVariable(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val contextElement = contextElement
-        val keyword = keyword
-        val file = originalFile
+        val contextElement = context.contextElement!!
+        val keyword = context.keyword!!
+        val file = context.originalFile!!
         val project = file.project
+        
         val variableSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
         ParadoxValueSetValueSearch.search("variable", variableSelector).processQueryAsync p@{ info ->
             ProgressManager.checkCanceled()
@@ -1222,10 +1261,11 @@ object ParadoxConfigHandler {
         }
     }
     
-    fun completeConcept(context: ProcessingContext, result: CompletionResultSet) = with(context) {
+    fun completeConcept(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val file = originalFile
+        val file = context.originalFile!!
         val project = file.project
+        
         val conceptSelector = definitionSelector(project, file).contextSensitive().distinctByName()
         val keysToDistinct = mutableSetOf<String>()
         ParadoxDefinitionSearch.search("game_concept", conceptSelector).processQueryAsync p@{ element ->

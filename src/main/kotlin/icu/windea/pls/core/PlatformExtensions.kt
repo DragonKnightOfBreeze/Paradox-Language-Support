@@ -168,7 +168,7 @@ inline fun <T> Query<T>.processQueryAsync(onlyMostRelevant: Boolean = false, con
 inline fun <T> Result<T>.cancelable() = onFailure { if(it is ProcessCanceledException) throw it }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun <T> UserDataHolder.tryPutUserData(key: Key<T>, value: T) {
+inline fun <T> UserDataHolder.tryPutUserData(key: Key<T>, value: T?) {
     runCatching { putUserData(key, value) }.cancelable()
 }
 
@@ -193,7 +193,7 @@ inline fun <T> UserDataHolder.putUserDataIfAbsent(key: Key<T>, value: T) {
     if(getUserData(key) == null) putUserData(key, value)
 }
 
-fun <T> ProcessingContext.getOrDefault(key: Key<T>): T {
+fun <T> ProcessingContext.getOrDefault(key: Key<T>): T? {
     val value = this.get(key)
     if(value == null && key is KeyWithDefaultValue) {
         val defaultValue = key.defaultValue
@@ -214,12 +214,12 @@ inline operator fun <T> Key<T>.getValue(thisRef: KeyAware, property: KProperty<*
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getUserData(this)
 @Suppress("NOTHING_TO_INLINE")
-inline operator fun <T> Key<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T) = thisRef.putUserData(this, value)
+inline operator fun <T> Key<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T?) = thisRef.putUserData(this, value)
 
 @Suppress("NOTHING_TO_INLINE")
-inline operator fun <T> Key<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>) = thisRef.getOrDefault(this)
+inline operator fun <T> Key<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T? = thisRef.getOrDefault(this)
 @Suppress("NOTHING_TO_INLINE")
-inline operator fun <T> Key<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T) = thisRef.put(this, value)
+inline operator fun <T> Key<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T?) = thisRef.put(this, value)
 
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)

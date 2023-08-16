@@ -35,13 +35,14 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
         return resolved
     }
     
-    override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>)= with(context) {
-        val element = context.contextElement
+    override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
+        val element = context.contextElement!!
+        val configGroup = context.configGroup!!
+        val scopeContext = context.scopeContext
         if(element !is ParadoxScriptStringExpressionElement) return
         val modifiers = configGroup.predefinedModifiers
         if(modifiers.isEmpty()) return
-        val configGroup = configGroup
-        val project = configGroup.project
+        
         for(modifierConfig in modifiers.values) {
             //排除重复的
             if(!modifierNames.add(modifierConfig.name)) continue
@@ -64,7 +65,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
                 .withScopeMatched(scopeMatched)
                 .letIf(getSettings().completion.completeByLocalizedName) {
                     //如果启用，也基于修正的本地化名字进行代码补全
-                    val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, project, element)
+                    val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, configGroup.project, element)
                     it.withLocalizedNames(localizedNames)
                 }
             result.addScriptExpressionElement(context, builder)
