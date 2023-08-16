@@ -69,7 +69,7 @@ object ParadoxConfigHandler {
         matchOptions: Int = Options.Default
     ): List<CwtMemberConfig<*>> {
         val result = doGetConfigsFromConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
-        return result.sortedByPriority { it.expression }
+        return result.sortedByPriority { it.expression } //TODO 1.1.7+ 26% of getConfigsFromConfigContext
     }
     
     fun doGetConfigsFromConfigContext(
@@ -368,9 +368,9 @@ object ParadoxConfigHandler {
                 occurrenceMap.clear()
                 return@p true
             }
-            val matched = childConfigs.find { childConfig ->
-                if(childConfig is CwtPropertyConfig && data !is ParadoxScriptProperty) return@find false
-                if(childConfig is CwtValueConfig && data !is ParadoxScriptValue) return@find false
+            val matched = childConfigs.findFast { childConfig ->
+                if(childConfig is CwtPropertyConfig && data !is ParadoxScriptProperty) return@findFast false
+                if(childConfig is CwtValueConfig && data !is ParadoxScriptValue) return@findFast false
                 ParadoxConfigMatcher.matches(data, expression, childConfig.expression, childConfig, configGroup).get()
             }
             if(matched == null) return@p true
@@ -1589,7 +1589,7 @@ object ParadoxConfigHandler {
         return when {
             config is CwtPropertyConfig -> {
                 config.inlineableConfig?.let { getEntryConfigs(it) }
-                    ?: config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }
+                    ?: config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filterFast { it is CwtPropertyConfig && it.key == config.key }
                     ?: config.toSingletonList()
             }
             config is CwtValueConfig && config.propertyConfig != null -> {
