@@ -70,6 +70,7 @@ val CwtValueConfig.isTagConfig get() = findOptionValue("tag") != null
 
 private object CwtValueConfigImpls {
     sealed class Impl : UserDataHolderBase(), CwtValueConfig {
+        override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
         override val expression: CwtValueExpression get() = valueExpression
         
         override fun resolved(): CwtValueConfig = inlineableConfig?.config?.castOrNull<CwtValueConfig>() ?: this
@@ -94,7 +95,6 @@ private object CwtValueConfigImpls {
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val values: List<CwtValueConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val properties: List<CwtPropertyConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        override val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
     }
     
     //memory usage: 12 + 12 * 4 + 1 = 61b => 64b
@@ -114,7 +114,6 @@ private object CwtValueConfigImpls {
         override val propertyConfig: CwtPropertyConfig? get() = null
         override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
         override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
-        override val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
     }
     
     //memory usage: 12 + 10 * 4 + 1 = 53b => 56b
@@ -134,7 +133,6 @@ private object CwtValueConfigImpls {
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val values: List<CwtValueConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val properties: List<CwtPropertyConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        override val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
     }
     
     //memory usage: 12 + 13 * 4 + 1 = 65b => 72b
@@ -154,7 +152,6 @@ private object CwtValueConfigImpls {
         
         override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
         override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
-        override val valueExpression: CwtValueExpression = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
     }
     
     //memory usage: 12 + 4 * 3 = 24b => 24b

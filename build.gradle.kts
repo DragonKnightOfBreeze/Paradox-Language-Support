@@ -175,6 +175,7 @@ tasks {
 	runIde {
 		systemProperty("idea.is.internal", true)
 		systemProperty("pls.is.debug", true)
+		jvmArgs("-Xmx4096m") //自定义JVM参数
 	}
 	publishPlugin {
 		token.set(providers.environmentVariable("IDEA_TOKEN"))
