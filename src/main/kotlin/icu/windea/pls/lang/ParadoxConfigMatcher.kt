@@ -5,10 +5,10 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
-import com.intellij.openapi.util.io.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*
@@ -79,8 +79,8 @@ object ParadoxConfigMatcher {
                 return when {
                     this is LazySimpleMatch -> BitUtil.isSet(options, Options.Relax)
                     this is LazyBlockAwareMatch -> BitUtil.isSet(options, Options.Relax)
-                    this is LazyIndexAwareMatch -> BitUtil.isSet(options, Options.SkipIndex) || indexStatusThreadLocal.get() == true
-                    this is LazyScopeAwareMatch -> BitUtil.isSet(options, Options.SkipScope) || indexStatusThreadLocal.get() == true
+                    this is LazyIndexAwareMatch -> BitUtil.isSet(options, Options.SkipIndex) || PlsContext.isIndexing()
+                    this is LazyScopeAwareMatch -> BitUtil.isSet(options, Options.SkipScope) || PlsContext.isIndexing()
                     else -> false
                 }
             }
@@ -384,14 +384,12 @@ object ParadoxConfigMatcher {
         return actualKeys.any { it in keys }
     }
     
-    
     private val configMatchResultCache = CacheBuilder.newBuilder().buildCache<String, Result>()
     
     private fun getCachedResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
         ProgressManager.checkCanceled()
-        val rootFile = selectRootFile(element) ?: return Result.NotMatch
-        val rootPath = rootFile.rootInfo?.rootPath?.toStringOrEmpty()
-        val globalCacheKey = "${rootPath}:$cacheKey"
+        val globalCacheKeyPrefix = PlsContext.getGlobalCacheKeyPrefix(element) ?: return Result.NotMatch
+        val globalCacheKey = "$globalCacheKeyPrefix$cacheKey"
         return configMatchResultCache.getOrPut(globalCacheKey) { Result.LazyIndexAwareMatch(predicate) }
     }
     

@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.util.gist.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import java.io.*
 
@@ -81,10 +82,12 @@ abstract class ParadoxFileBasedIndex<T>: FileBasedIndexExtension<String, T>() {
     private fun buildFileData(file: PsiFile): Map<String, T> {
         return buildMap { 
             try {
-                indexStatusThreadLocal.set(true)
+                PlsContext.indexStatusThreadLocal.set(true)
+                PlsContext.globalCacheKeyPrefixThreadLocal.set(PlsContext.buildGlobalCacheKeyPrefix(file))
                 indexData(file, this)
             } finally {
-                indexStatusThreadLocal.remove()
+                PlsContext.indexStatusThreadLocal.remove()
+                PlsContext.globalCacheKeyPrefixThreadLocal.remove()
             }
         }
     }

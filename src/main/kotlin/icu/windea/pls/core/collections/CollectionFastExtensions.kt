@@ -1,5 +1,8 @@
 package icu.windea.pls.core.collections
 
+@PublishedApi
+internal fun <T> Iterable<T>.collectionSizeOrDefault(default: Int): Int = if (this is Collection<*>) this.size else default
+
 inline fun String.forEachFast(action: (Char) -> Unit) {
     val length = this.length
     for(i in 0 until length) {
@@ -37,7 +40,7 @@ inline fun <T, R, C : MutableCollection<in R>> List<T>.mapToFast(destination: C,
 }
 
 inline fun <T, R> List<T>.mapFast(transform: (T) -> R): List<R> {
-    return mapToFast(ArrayList(size), transform)
+    return mapToFast(ArrayList(collectionSizeOrDefault(10)), transform)
 }
 
 inline fun <T, R, C : MutableCollection<in R>> List<T>.mapNotNullToFast(destination: C, transform: (T) -> R?): C {

@@ -1,6 +1,7 @@
 package icu.windea.pls.lang
 
 import com.intellij.psi.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 
@@ -18,7 +19,7 @@ object ParadoxConfigInlineHandler {
             key = inlineConfig.name,
             configs = other.deepCopyConfigs()
         )
-        inlined.configs?.forEach { it.parent = inlined }
+        inlined.configs?.forEachFast { it.parent = inlined }
         inlined.inlineableConfig = inlineConfig
         return inlined
     }
@@ -41,7 +42,7 @@ object ParadoxConfigInlineHandler {
                 else -> config.deepCopyConfigs()
             },
         )
-        inlined.configs?.forEach { it.parent = inlined }
+        inlined.configs?.forEachFast { it.parent = inlined }
         inlined.parent = config.parent
         inlined.inlineableConfig = config.inlineableConfig
         return inlined
@@ -60,7 +61,7 @@ object ParadoxConfigInlineHandler {
             options = other.options
         )
         inlined.parent = config.parent
-        inlined.configs?.forEach { it.parent = inlined }
+        inlined.configs?.forEachFast { it.parent = inlined }
         inlined.inlineableConfig = config.inlineableConfig ?: aliasConfig
         return inlined
     }
@@ -79,7 +80,7 @@ object ParadoxConfigInlineHandler {
             options = config.options
         )
         inlined.parent = config.parent
-        inlined.configs?.forEach { it.parent = inlined }
+        inlined.configs?.forEachFast { it.parent = inlined }
         inlined.inlineableConfig = config.inlineableConfig //should not set to singleAliasConfig - a single alias config do not inline property key  
         return inlined
     }
@@ -101,13 +102,13 @@ object ParadoxConfigInlineHandler {
                 val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptyList()
                 val result = mutableListOf<CwtMemberConfig<*>>()
                 val aliasSubNames = ParadoxConfigHandler.getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchOptions)
-                for(aliasSubName in aliasSubNames) {
-                    val aliases = aliasGroup[aliasSubName] ?: continue
-                    for(alias in aliases) {
+                aliasSubNames.forEachFast f1@{ aliasSubName ->
+                    val aliases = aliasGroup[aliasSubName] ?: return@f1
+                    aliases.forEachFast f2@{ alias ->
                         var inlinedConfig = inlineWithAliasConfig(config, alias)
                         if(inlinedConfig.valueExpression.type == CwtDataType.SingleAliasRight) {
-                            val singleAliasName = inlinedConfig.valueExpression.value ?: continue
-                            val singleAlias = configGroup.singleAliases[singleAliasName] ?: continue
+                            val singleAliasName = inlinedConfig.valueExpression.value ?: return@f2
+                            val singleAlias = configGroup.singleAliases[singleAliasName] ?: return@f2
                             inlinedConfig = inlineWithSingleAliasConfig(inlinedConfig, singleAlias)
                         }
                         result.add(inlinedConfig)
