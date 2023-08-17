@@ -54,7 +54,7 @@ inline fun <T: CwtConfig<*>> Collection<T>.sortedByPriority(crossinline expressi
 }
 
 inline fun <T> Collection<T>.sortedByPriority(configGroup: CwtConfigGroup, crossinline expressionExtractor: (T) -> CwtDataExpression): List<T> {
-    if(isEmpty()) return emptyList()
+    if(size <= 1) return toListOrThis()
     return sortedByDescending { ParadoxConfigHandler.getPriority(expressionExtractor(it), configGroup) }
 }
 

@@ -384,6 +384,60 @@ object ParadoxConfigHandler {
     //endregion
     
     //region Expression Methods
+    fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Int {
+        return when(configExpression.type) {
+            CwtDataType.Block -> 100
+            CwtDataType.Bool -> 100
+            CwtDataType.Int -> 90
+            CwtDataType.Float -> 90
+            CwtDataType.Scalar -> 90
+            CwtDataType.ColorField -> 90
+            CwtDataType.PercentageField -> 90
+            CwtDataType.DateField -> 90
+            CwtDataType.Localisation -> 60
+            CwtDataType.SyncedLocalisation -> 60
+            CwtDataType.InlineLocalisation -> 60
+            CwtDataType.StellarisNameFormat -> 60
+            CwtDataType.AbsoluteFilePath -> 70
+            CwtDataType.Icon -> 70
+            CwtDataType.FilePath -> 70
+            CwtDataType.FileName -> 70
+            CwtDataType.Definition -> 70
+            CwtDataType.EnumValue -> {
+                val enumName = configExpression.value ?: return 0 //unexpected
+                if(configGroup.enums.containsKey(enumName)) return 80
+                if(configGroup.complexEnums.containsKey(enumName)) return 45
+                return 0 //不期望匹配到，规则有误！
+            }
+            CwtDataType.Value, CwtDataType.ValueOrValueSet -> {
+                val valueSetName = configExpression.value ?: return 0 //unexpected
+                if(configGroup.values.containsKey(valueSetName)) return 80
+                return 40
+            }
+            CwtDataType.ValueSet -> 40
+            CwtDataType.ScopeField -> 50
+            CwtDataType.Scope -> 50
+            CwtDataType.ScopeGroup -> 50
+            CwtDataType.ValueField -> 45
+            CwtDataType.IntValueField -> 45
+            CwtDataType.VariableField -> 45
+            CwtDataType.IntVariableField -> 45
+            CwtDataType.Modifier -> 75 //higher than Definition
+            CwtDataType.Parameter -> 10
+            CwtDataType.ParameterValue -> 90 //same to Scalar
+            CwtDataType.LocalisationParameter -> 10
+            CwtDataType.ShaderEffect -> 85 // (80,90)
+            CwtDataType.SingleAliasRight -> 0 //unexpected
+            CwtDataType.AliasName -> 0 //unexpected
+            CwtDataType.AliasKeysField -> 0 //unexpected
+            CwtDataType.AliasMatchLeft -> 0 //unexpected
+            CwtDataType.Template -> 65
+            CwtDataType.Constant -> 100
+            CwtDataType.Any -> 1
+            CwtDataType.Other -> 0 //unexpected
+        }
+    }
+    
     fun getExpressionText(element: ParadoxScriptExpressionElement, rangeInElement: TextRange? = null): String {
         return when {
             element is ParadoxScriptBlock -> "" //should not be used
@@ -1506,72 +1560,6 @@ object ParadoxConfigHandler {
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptyList()
         val expression = ParadoxDataExpression.resolve(key, quoted, true)
         return keys.filter { ParadoxConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchOptions).get(matchOptions) }
-    }
-    
-    fun requireNotExactMatch(configExpression: CwtDataExpression): Boolean {
-        return when {
-            configExpression.type == CwtDataType.Block -> true
-            configExpression.type == CwtDataType.Int && configExpression.extraValue != null -> true
-            configExpression.type == CwtDataType.Float && configExpression.extraValue != null -> true
-            configExpression.type == CwtDataType.ColorField && configExpression.value != null -> true
-            configExpression.type == CwtDataType.Scope && configExpression.value != null -> true
-            configExpression.type == CwtDataType.ScopeGroup && configExpression.value != null -> true
-            else -> false
-        }
-    }
-    
-    fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Int {
-        return when(configExpression.type) {
-            CwtDataType.Block -> 100
-            CwtDataType.Bool -> 100
-            CwtDataType.Int -> 90
-            CwtDataType.Float -> 90
-            CwtDataType.Scalar -> 90
-            CwtDataType.ColorField -> 90
-            CwtDataType.PercentageField -> 90
-            CwtDataType.DateField -> 90
-            CwtDataType.Localisation -> 60
-            CwtDataType.SyncedLocalisation -> 60
-            CwtDataType.InlineLocalisation -> 60
-            CwtDataType.StellarisNameFormat -> 60
-            CwtDataType.AbsoluteFilePath -> 70
-            CwtDataType.Icon -> 70
-            CwtDataType.FilePath -> 70
-            CwtDataType.FileName -> 70
-            CwtDataType.Definition -> 70
-            CwtDataType.EnumValue -> {
-                val enumName = configExpression.value ?: return 0 //unexpected
-                if(configGroup.enums.containsKey(enumName)) return 80
-                if(configGroup.complexEnums.containsKey(enumName)) return 45
-                return 0 //不期望匹配到，规则有误！
-            }
-            CwtDataType.Value, CwtDataType.ValueOrValueSet -> {
-                val valueSetName = configExpression.value ?: return 0 //unexpected
-                if(configGroup.values.containsKey(valueSetName)) return 80
-                return 40
-            }
-            CwtDataType.ValueSet -> 40
-            CwtDataType.ScopeField -> 50
-            CwtDataType.Scope -> 50
-            CwtDataType.ScopeGroup -> 50
-            CwtDataType.ValueField -> 45
-            CwtDataType.IntValueField -> 45
-            CwtDataType.VariableField -> 45
-            CwtDataType.IntVariableField -> 45
-            CwtDataType.Modifier -> 75 //higher than Definition
-            CwtDataType.Parameter -> 10
-            CwtDataType.ParameterValue -> 90 //same to Scalar
-            CwtDataType.LocalisationParameter -> 10
-            CwtDataType.ShaderEffect -> 85 // (80,90)
-            CwtDataType.SingleAliasRight -> 0 //unexpected
-            CwtDataType.AliasName -> 0 //unexpected
-            CwtDataType.AliasKeysField -> 0 //unexpected
-            CwtDataType.AliasMatchLeft -> 0 //unexpected
-            CwtDataType.Template -> 65
-            CwtDataType.Constant -> 100
-            CwtDataType.Any -> 1
-            CwtDataType.Other -> 0 //unexpected
-        }
     }
     
     fun getEntryName(config: CwtConfig<*>): String? {
