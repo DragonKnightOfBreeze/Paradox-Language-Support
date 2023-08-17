@@ -123,7 +123,7 @@ object ParadoxConfigHandler {
         }
         
         if(isPropertyValue) {
-            result = result.mapNotNullFastTo(mutableListOf<CwtMemberConfig<*>>()) { if(it is CwtPropertyConfig) it.valueConfig else null }
+            result = result.mapNotNullToFast(mutableListOf<CwtMemberConfig<*>>()) { if(it is CwtPropertyConfig) it.valueConfig else null }
         }
         
         return result
@@ -217,7 +217,7 @@ object ParadoxConfigHandler {
         //* 然后，如果有多个需要检查子句/作用域上下文的匹配，则分别对它们进行进一步匹配，保留匹配的所有结果或者第一个结果（如果没有多个，直接认为是匹配的）
         //* 然后，进行进一步的匹配 （如果没有匹配结果，将不需要访问索引的匹配认为是匹配的）
         
-        matchResultValues.filterFastTo(result) { v -> v.result == ParadoxConfigMatcher.Result.ExactMatch }
+        matchResultValues.filterToFast(result) { v -> v.result == ParadoxConfigMatcher.Result.ExactMatch }
         if(result.isNotEmpty()) return
         
         var firstBlockAwareResult: ResultValue<CwtMemberConfig<*>>? = null
@@ -255,14 +255,14 @@ object ParadoxConfigHandler {
             }
         }
         
-        matchResultValues.filterFastTo(result) p@{ v ->
+        matchResultValues.filterToFast(result) p@{ v ->
             if(v.result is ParadoxConfigMatcher.Result.LazyBlockAwareMatch) return@p true
             if(v.result is ParadoxConfigMatcher.Result.LazyScopeAwareMatch) return@p true
             v.result.get(matchOptions)
         }
         if(result.isNotEmpty()) return
         
-        matchResultValues.filterFastTo(result) p@{ v ->
+        matchResultValues.filterToFast(result) p@{ v ->
             if(v.result is ParadoxConfigMatcher.Result.LazyBlockAwareMatch) return@p true
             if(v.result is ParadoxConfigMatcher.Result.LazyScopeAwareMatch) return@p true
             if(v.result is ParadoxConfigMatcher.Result.LazySimpleMatch) return@p true

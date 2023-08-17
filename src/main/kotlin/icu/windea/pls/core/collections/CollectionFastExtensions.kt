@@ -28,7 +28,7 @@ inline fun <T> List<T>.forEachIndexedFast(action: (Int, T) -> Unit) {
     }
 }
 
-inline fun <T, R, C : MutableCollection<in R>> List<T>.mapFastTo(destination: C, transform: (T) -> R): C {
+inline fun <T, R, C : MutableCollection<in R>> List<T>.mapToFast(destination: C, transform: (T) -> R): C {
     forEachFast {
         val e = transform(it)
         destination.add(e)
@@ -37,10 +37,10 @@ inline fun <T, R, C : MutableCollection<in R>> List<T>.mapFastTo(destination: C,
 }
 
 inline fun <T, R> List<T>.mapFast(transform: (T) -> R): List<R> {
-    return mapFastTo(ArrayList(size), transform)
+    return mapToFast(ArrayList(size), transform)
 }
 
-inline fun <T, R, C : MutableCollection<in R>> List<T>.mapNotNullFastTo(destination: C, transform: (T) -> R?): C {
+inline fun <T, R, C : MutableCollection<in R>> List<T>.mapNotNullToFast(destination: C, transform: (T) -> R?): C {
     forEachFast {
         val e = transform(it)
         if(e != null) destination.add(e)
@@ -49,10 +49,10 @@ inline fun <T, R, C : MutableCollection<in R>> List<T>.mapNotNullFastTo(destinat
 }
 
 inline fun <T, R> List<T>.mapNotNullFast(transform: (T) -> R?): List<R> {
-    return mapNotNullFastTo(ArrayList(), transform)
+    return mapNotNullToFast(ArrayList(), transform)
 }
 
-inline fun <T, C : MutableCollection<in T>> List<T>.filterFastTo(destination: C, predicate: (T) -> Boolean): C {
+inline fun <T, C : MutableCollection<in T>> List<T>.filterToFast(destination: C, predicate: (T) -> Boolean): C {
     forEachFast { e ->
         if (predicate(e)) destination.add(e)
     }
@@ -60,7 +60,18 @@ inline fun <T, C : MutableCollection<in T>> List<T>.filterFastTo(destination: C,
 }
 
 inline fun <T> List<T>.filterFast(predicate: (T) -> Boolean): List<T> {
-    return filterFastTo(ArrayList(), predicate)
+    return filterToFast(ArrayList(), predicate)
+}
+
+inline fun <reified R> List<*>.filterIsInstanceFast(): List<R> {
+    return filterIsInstanceToFast(ArrayList())
+}
+
+inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceToFast(destination: C): C {
+    forEachFast { e ->
+        if(e is R) destination.add(e)
+    }
+    return destination
 }
 
 inline fun <T> List<T>.findFast(predicate: (T) -> Boolean): T? {

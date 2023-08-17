@@ -4,6 +4,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.model.*
@@ -112,8 +113,8 @@ private object CwtValueConfigImpls {
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtValue>? = null
         
         override val propertyConfig: CwtPropertyConfig? get() = null
-        override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
-        override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
+        override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstanceFast<CwtValueConfig>() }
+        override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstanceFast<CwtPropertyConfig>() }
     }
     
     //memory usage: 12 + 10 * 4 + 1 = 53b => 56b
@@ -150,8 +151,8 @@ private object CwtValueConfigImpls {
         @Volatile override var parent: CwtMemberConfig<*>? = null
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtValue>? = null
         
-        override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
-        override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
+        override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstanceFast<CwtValueConfig>() }
+        override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstanceFast<CwtPropertyConfig>() }
     }
     
     //memory usage: 12 + 4 * 3 = 24b => 24b
@@ -176,8 +177,8 @@ private object CwtValueConfigImpls {
         override val configs: List<CwtMemberConfig<*>>? = null,
         override val propertyConfig: CwtPropertyConfig? = null,
     ) : CwtValueConfig by delegate {
-        override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstance<CwtValueConfig>() }
-        override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstance<CwtPropertyConfig>() }
+        override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstanceFast<CwtValueConfig>() }
+        override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstanceFast<CwtPropertyConfig>() }
         
         override fun toString(): String = value
     }

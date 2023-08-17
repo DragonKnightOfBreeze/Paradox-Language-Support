@@ -4,6 +4,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.model.*
@@ -122,8 +123,8 @@ private object CwtPropertyConfigImpls {
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
         
         override val valueConfig: CwtValueConfig? by lazy { getValueConfig() }
-        override val values: List<CwtValueConfig>? = configs?.filterIsInstance<CwtValueConfig>()
-        override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstance<CwtPropertyConfig>()
+        override val values: List<CwtValueConfig>? = configs?.filterIsInstanceFast<CwtValueConfig>()
+        override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstanceFast<CwtPropertyConfig>()
     }
     
     //memory usage: 12 + 3 * 4 = 24b => 24b
@@ -148,8 +149,8 @@ private object CwtPropertyConfigImpls {
         override val configs: List<CwtMemberConfig<*>>? = null,
     ) : CwtPropertyConfig by delegate {
         override val valueConfig: CwtValueConfig? by lazy { getValueConfig() }
-        override val values: List<CwtValueConfig>? = configs?.filterIsInstance<CwtValueConfig>()
-        override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstance<CwtPropertyConfig>()
+        override val values: List<CwtValueConfig>? = configs?.filterIsInstanceFast<CwtValueConfig>()
+        override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstanceFast<CwtPropertyConfig>()
         
         override fun toString(): String = "$key ${separatorType.text} $value"
     }
