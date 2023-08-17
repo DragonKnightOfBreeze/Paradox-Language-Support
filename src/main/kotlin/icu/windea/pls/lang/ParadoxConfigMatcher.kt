@@ -386,17 +386,19 @@ object ParadoxConfigMatcher {
     
     private val configMatchResultCache = CacheBuilder.newBuilder().buildCache<String, Result>()
     
-    private fun getCachedResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
+    private fun getCachedMatchResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
         ProgressManager.checkCanceled()
-        val globalCacheKeyPrefix = PlsContext.getGlobalCacheKeyPrefix(element) ?: return Result.NotMatch
-        val globalCacheKey = "$globalCacheKeyPrefix$cacheKey"
+        if(PlsContext.isIndexing()) return Result.ExactMatch // indexing -> should not visit indices -> treat as exact match
+        val rootFile = selectRootFile(element) ?: return Result.NotMatch
+        val rootPath = rootFile.rootInfo?.rootPath?.toString() ?: return Result.NotMatch
+        val globalCacheKey = "$rootPath:$cacheKey"
         return configMatchResultCache.getOrPut(globalCacheKey) { Result.LazyIndexAwareMatch(predicate) }
     }
     
     private fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {
         val name = expression.text
         val cacheKey = "l#$name"
-        return getCachedResult(element, cacheKey) {
+        return getCachedMatchResult(element, cacheKey) {
             val selector = localisationSelector(project, element)
             ParadoxLocalisationSearch.search(name, selector).findFirst() != null
         }
@@ -405,7 +407,7 @@ object ParadoxConfigMatcher {
     private fun getSyncedLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {
         val name = expression.text
         val cacheKey = "ls#$name"
-        return getCachedResult(element, cacheKey) {
+        return getCachedMatchResult(element, cacheKey) {
             val selector = localisationSelector(project, element)
             ParadoxSyncedLocalisationSearch.search(name, selector).findFirst() != null
         }
@@ -415,7 +417,7 @@ object ParadoxConfigMatcher {
         val name = expression.text
         val typeExpression = configExpression.value ?: return Result.NotMatch //invalid cwt config
         val cacheKey = "d#${typeExpression}#${name}"
-        return getCachedResult(element, cacheKey) {
+        return getCachedMatchResult(element, cacheKey) {
             val selector = definitionSelector(project, element)
             ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null
         }
@@ -424,7 +426,7 @@ object ParadoxConfigMatcher {
     private fun getPathReferenceMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, project: Project): Result {
         val pathReference = expression.text.normalizePath()
         val cacheKey = "p#${pathReference}#${configExpression}"
-        return getCachedResult(element, cacheKey) {
+        return getCachedMatchResult(element, cacheKey) {
             val selector = fileSelector(project, element)
             ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null
         }
@@ -434,7 +436,7 @@ object ParadoxConfigMatcher {
         val searchScope = complexEnumConfig.searchScopeType
         if(searchScope == null) {
             val cacheKey = "ce#${enumName}#${name}"
-            return getCachedResult(element, cacheKey) {
+            return getCachedMatchResult(element, cacheKey) {
                 val selector = complexEnumValueSelector(project, element)
                 ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
             }
@@ -484,7 +486,7 @@ object ParadoxConfigMatcher {
     private fun getModifierMatchResult(element: PsiElement, expression: ParadoxDataExpression, configGroup: CwtConfigGroup): Result {
         val name = expression.text
         val cacheKey = "m#${name}"
-        return getCachedResult(element, cacheKey) {
+        return getCachedMatchResult(element, cacheKey) {
             ParadoxModifierHandler.matchesModifier(name, element, configGroup)
         }
     }
@@ -493,7 +495,7 @@ object ParadoxConfigMatcher {
         val exp = expression.text
         val template = configExpression.expressionString
         val cacheKey = "t#${template}#${exp}"
-        return getCachedResult(element, cacheKey) {
+        return getCachedMatchResult(element, cacheKey) {
             CwtTemplateExpression.resolve(template).matches(exp, element, configGroup)
         }
     }
