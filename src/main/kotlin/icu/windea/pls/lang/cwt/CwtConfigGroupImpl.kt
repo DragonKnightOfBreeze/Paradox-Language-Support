@@ -125,22 +125,22 @@ class CwtConfigGroupImpl(
     }
     
     override val linksAsScopeWithPrefixSorted: List<CwtLinkConfig> by lazy {
-        linksAsScopeWithPrefix.values.sortedByPriority(this) { it.dataSource!! }
+        linksAsScopeWithPrefix.values.sortedByPriority({ it.dataSource!! }, { this })
     }
     override val linksAsValueWithPrefixSorted: List<CwtLinkConfig> by lazy {
-        linksAsValueWithPrefix.values.sortedByPriority(this) { it.dataSource!! }
+        linksAsValueWithPrefix.values.sortedByPriority({ it.dataSource!! }, { this })
     }
     override val linksAsScopeWithoutPrefixSorted: List<CwtLinkConfig> by lazy {
-        linksAsScopeWithoutPrefix.values.sortedByPriority(this) { it.dataSource!! }
+        linksAsScopeWithoutPrefix.values.sortedByPriority({ it.dataSource!! }, { this })
     }
     override val linksAsValueWithoutPrefixSorted: List<CwtLinkConfig> by lazy {
-        linksAsValueWithoutPrefix.values.sortedByPriority(this) { it.dataSource!! }
+        linksAsValueWithoutPrefix.values.sortedByPriority({ it.dataSource!! }, { this })
     }
     override val linksAsVariable: List<CwtLinkConfig> by lazy {
         linksAsValueWithoutPrefix["variable"].toSingletonListOrEmpty()
     }
     
-    override val aliasNamesSupportScope: MutableSet<String> = mutableSetOf() 
+    override val aliasNamesSupportScope: MutableSet<String> = mutableSetOf()
     override val definitionTypesSupportScope: MutableSet<String> = mutableSetOf()
     override val definitionTypesIndirectSupportScope: MutableSet<String> = mutableSetOf()
     override val definitionTypesSkipCheckSystemLink: MutableSet<String> = mutableSetOf()
@@ -886,7 +886,7 @@ class CwtConfigGroupImpl(
     private fun resolveDeclarationConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDeclarationConfig {
         return CwtDeclarationConfig(propertyConfig.pointer, propertyConfig.info, name, propertyConfig)
     }
-
+    
     //绑定CWT配置
     
     private fun bindMissingDeclarationsOfSwappedTypes() {
@@ -898,7 +898,7 @@ class CwtConfigGroupImpl(
             val baseDeclarationConfig = declarations[baseTypeName] ?: continue
             val typeKey = typeConfig.typeKeyFilter?.takeIfTrue()?.singleOrNull() ?: continue
             val declarationConfig = baseDeclarationConfig.propertyConfig.configs
-                ?.find { it is CwtPropertyConfig && it.key.equals(typeKey, true) }?.castOrNull<CwtPropertyConfig>() 
+                ?.find { it is CwtPropertyConfig && it.key.equals(typeKey, true) }?.castOrNull<CwtPropertyConfig>()
                 ?.let { resolveDeclarationConfig(it, typeName) }
                 ?: continue
             declarations[typeName] = declarationConfig
@@ -942,7 +942,7 @@ class CwtConfigGroupImpl(
                 aliasKeysGroupConst[k] = keysConst
             }
             if(!keysNoConst.isNullOrEmpty()) {
-                aliasKeysGroupNoConst[k] = keysNoConst.sortedByPriority(this) { CwtKeyExpression.resolve(it) }.toSet()
+                aliasKeysGroupNoConst[k] = keysNoConst.sortedByPriority({ CwtKeyExpression.resolve(it) }, { this }).toSet()
             }
         }
     }

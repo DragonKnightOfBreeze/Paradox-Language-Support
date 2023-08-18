@@ -69,7 +69,7 @@ object ParadoxConfigHandler {
         matchOptions: Int = Options.Default
     ): List<CwtMemberConfig<*>> {
         val result = doGetConfigsFromConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
-        return result.sortedByPriority { it.expression } //TODO 1.1.7+ 26% of getConfigsFromConfigContext
+        return result.sortedByPriority({ it.expression }, { it.info.configGroup })
     }
     
     fun doGetConfigsFromConfigContext(
@@ -138,7 +138,7 @@ object ParadoxConfigHandler {
         }
         return configsMap.getOrPut(cacheKey) {
             val result = doGetConfigs(memberElement, orDefault, matchOptions)
-            result.sortedByPriority { it.expression }
+            result.sortedByPriority({ it.expression }, { it.info.configGroup })
         }
     }
     
@@ -341,7 +341,7 @@ object ParadoxConfigHandler {
         if(configs.isEmpty()) return emptyMap()
         val configGroup = configs.first().info.configGroup
         //这里需要先按优先级排序
-        val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority { it.expression }
+        val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority({ it.expression }, { configGroup })
         if(childConfigs.isEmpty()) return emptyMap()
         val project = configGroup.project
         val blockElement = when {

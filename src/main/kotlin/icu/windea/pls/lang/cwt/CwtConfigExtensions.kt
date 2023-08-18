@@ -47,17 +47,10 @@ fun CwtConfig<*>.findAliasConfig(): CwtAliasConfig? {
     }
 }
 
-inline fun <T: CwtConfig<*>> Collection<T>.sortedByPriority(crossinline expressionExtractor: (T) -> CwtDataExpression): List<T> {
-    if(isEmpty()) return emptyList()
-    val configGroup = first().info.configGroup
-    return sortedByDescending { ParadoxConfigHandler.getPriority(expressionExtractor(it), configGroup) }
-}
-
-inline fun <T> Collection<T>.sortedByPriority(configGroup: CwtConfigGroup, crossinline expressionExtractor: (T) -> CwtDataExpression): List<T> {
+inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T) -> CwtDataExpression, crossinline configGroupProvider: (T) -> CwtConfigGroup): List<T> {
     if(size <= 1) return toListOrThis()
-    return sortedByDescending { ParadoxConfigHandler.getPriority(expressionExtractor(it), configGroup) }
+    return sortedByDescending { ParadoxConfigHandler.getPriority(expressionProvider(it), configGroupProvider(it)) }
 }
-
 
 val CwtProperty.configPath: CwtConfigPath?
     get() = CwtConfigHandler.get(this)
