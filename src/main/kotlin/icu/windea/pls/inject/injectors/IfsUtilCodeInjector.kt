@@ -2,7 +2,6 @@ package icu.windea.pls.inject.injectors
 
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
-import com.intellij.reference.*
 import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.inject.*
@@ -11,6 +10,7 @@ import icu.windea.pls.tool.*
 import org.intellij.images.editor.*
 import org.intellij.images.vfs.*
 import java.io.*
+import java.lang.ref.*
 import javax.imageio.*
 
 /**
@@ -36,7 +36,7 @@ class IfsUtilCodeInjector : BaseCodeInjector() {
         val loadedTimeModificationStamp = file.getUserData(TIME_MODIFICATION_STAMP_KEY)
         val actualTimeModificationStamp = Pair.create(file.timeStamp, file.modificationStamp)
         val imageProviderRef = file.getUserData(IMAGE_PROVIDER_REF_KEY)
-        if(actualTimeModificationStamp != loadedTimeModificationStamp || SoftReference.dereference(imageProviderRef) == null) {
+        if(actualTimeModificationStamp != loadedTimeModificationStamp || com.intellij.reference.SoftReference.dereference(imageProviderRef) == null) {
             try {
                 file.putUserData(IMAGE_PROVIDER_REF_KEY, null)
                 

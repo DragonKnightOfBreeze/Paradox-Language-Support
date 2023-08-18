@@ -23,7 +23,7 @@ intellij {
 	//optional
 	plugins.add("markdown")
 	plugins.add("uml")
-	plugins.add("cn.yiiguxing.plugin.translate:3.5.1") //https://github.com/YiiGuxing/TranslationPlugin
+	plugins.add("cn.yiiguxing.plugin.translate:3.5.2") //https://github.com/YiiGuxing/TranslationPlugin
 	
 	//reference
 	plugins.add("properties")

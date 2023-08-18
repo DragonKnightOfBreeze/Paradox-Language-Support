@@ -116,6 +116,6 @@ object PlsIcons {
 	}
 	
 	@JvmStatic fun loadIcon(path: String): Icon {
-		return IconManager.getInstance().getIcon(path, PlsIcons::class.java)
+		return IconManager.getInstance().getIcon(path, PlsIcons.javaClass.classLoader)
 	}
 }

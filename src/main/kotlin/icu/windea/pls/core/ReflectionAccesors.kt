@@ -1,9 +1,13 @@
 package icu.windea.pls.core
 
 import com.intellij.ide.hierarchy.*
+import com.intellij.injected.editor.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.impl.*
+import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.tree.injected.*
 import com.intellij.psi.search.*
 
 val DefaultActionGroup.children: MutableList<AnAction> by memberProperty<DefaultActionGroup, _>("mySortedChildren")
@@ -13,3 +17,11 @@ val HierarchyBrowserBaseEx.element: PsiElement by memberProperty<HierarchyBrowse
 
 val SearchRequestCollector.wordRequests: MutableList<PsiSearchRequest> by memberProperty<SearchRequestCollector, _>("myWordRequests")
 val SearchRequestCollector.queryRequests: MutableList<QuerySearchRequest> by memberProperty<SearchRequestCollector, _>("myQueryRequests")
+
+//com.intellij.psi.impl.source.tree.injected.DocumentWindowImpl.getShreds
+private val DocumentWindow_getShreds = memberFunction<DocumentWindow>("getShreds", "com.intellij.psi.impl.source.tree.injected.DocumentWindowImpl")
+fun DocumentWindow.getShreds(): Place? = runCatching { DocumentWindow_getShreds(this) }.getOrNull()?.cast()
+
+//com.intellij.codeInsight.documentation.DocumentationFontSize.getDocumentationFontSize
+private val _getDocumentationFontSize = staticFunction<Any>("getDocumentationFontSize", "com.intellij.codeInsight.documentation.DocumentationFontSize")
+fun getDocumentationFontSize(): FontSize = _getDocumentationFontSize().cast()

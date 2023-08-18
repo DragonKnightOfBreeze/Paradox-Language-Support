@@ -29,6 +29,7 @@ import com.intellij.openapi.vfs.newvfs.events.*
 import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
 import com.intellij.psi.impl.source.tree.*
+import com.intellij.psi.impl.source.tree.injected.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
@@ -890,6 +891,13 @@ private tailrec fun doFindTopHostElementOrThis(element: PsiElement, project: Pro
     val host = InjectedLanguageManager.getInstance(project).getInjectionHost(element)
     if(host == null) return element
     return doFindTopHostElementOrThis(host, project)
+}
+
+fun PsiFile.getShreds(): Place? {
+    //why it's deprecated and internal???
+    //@Suppress("UnstableApiUsage", "DEPRECATION")
+    //return InjectedLanguageUtilBase.getShreds(this)
+    return viewProvider.document.castOrNull<DocumentWindow>()?.getShreds()
 }
 //endregion
 

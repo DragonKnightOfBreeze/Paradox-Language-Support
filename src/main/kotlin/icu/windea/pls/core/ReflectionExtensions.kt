@@ -36,6 +36,7 @@ class SmartMemberKProperty<T : Any, V>(
         val setter = allMemberFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true }
         try {
             return DelegateProperty({ target ->
+                if(targetClass.isInstance(target)) cannotCast(target, targetClass)
                 when {
                     javaField != null -> javaField.get(target) as V
                     property != null -> property.get(target) as V
@@ -43,6 +44,7 @@ class SmartMemberKProperty<T : Any, V>(
                     else -> unsupported()
                 }
             }, { target, value ->
+                if(targetClass.isInstance(target)) cannotCast(target, targetClass)
                 when {
                     javaField != null -> javaField.set(target, value)
                     property != null && property is KMutableProperty1 -> (property as KMutableProperty1<T, in Any?>).set(target, value)
@@ -118,13 +120,14 @@ class SmartMemberKFunction<T : Any>(
     val targetClass: KClass<T>,
     val functionName: String
 ) {
+    val matchedFunctions by lazy { targetClass.declaredFunctions.filter { it.name == functionName } } 
+    
     operator fun invoke(target: T, vararg args: Any?): Any? = doInvoke(target, args)
     
     private fun doInvoke(target: T, args: Array<out Any?>): Any? {
-        val allFunctions = targetClass.declaredFunctions
+        if(!targetClass.isInstance(target)) cannotCast(target, targetClass)
         val expectedArgsSize = args.size + 1
-        for(function in allFunctions) {
-            if(function.name != functionName) continue
+        for(function in matchedFunctions) {
             if(function.parameters.size != expectedArgsSize) continue
             try {
                 function.isAccessible = true
@@ -142,13 +145,13 @@ class SmartStaticKFunction<T : Any>(
     val targetClass: KClass<T>,
     val functionName: String
 ) {
+    val matchedFunctions by lazy { targetClass.staticFunctions.filter { it.name == functionName } }
+    
     operator fun invoke(vararg args: Any?): Any? = doInvoke(args)
     
     private fun doInvoke(args: Array<out Any?>): Any? {
-        val allFunctions = targetClass.staticFunctions
         val expectedArgsSize = args.size
-        for(function in allFunctions) {
-            if(function.name != functionName) continue
+        for(function in matchedFunctions) {
             if(function.parameters.size != expectedArgsSize) continue
             try {
                 function.isAccessible = true
@@ -188,28 +191,32 @@ private fun unsupported(): Nothing {
     throw UnsupportedOperationException()
 }
 
-inline fun <reified T : Any, V> memberProperty(propertyName: String): SmartMemberKProperty<T, V> {
-    return SmartMemberKProperty(T::class, propertyName)
+private fun cannotCast(target: Any, targetClass: KClass<out Any>): Nothing {
+    throw ClassCastException("Actual target class ${target::class.qualifiedName} cannot cast to target class ${targetClass.qualifiedName}")
 }
 
-inline fun <reified T : Any, V> staticProperty(propertyName: String): SmartStaticKProperty<T, V> {
-    return SmartStaticKProperty(T::class, propertyName)
+inline fun <reified T : Any, V> memberProperty(propertyName: String, targetClassName: String? = null): SmartMemberKProperty<T, V> {
+    return SmartMemberKProperty(targetClassName?.toKClass()?.cast() ?: T::class, propertyName)
 }
 
-inline fun <reified T : Any, V> T.property(propertyName: String): SmartKProperty<T, V> {
-    return SmartKProperty(this, SmartMemberKProperty(T::class, propertyName))
+inline fun <reified T : Any, V> staticProperty(propertyName: String, targetClassName: String? = null): SmartStaticKProperty<T, V> {
+    return SmartStaticKProperty(targetClassName?.toKClass()?.cast() ?: T::class, propertyName)
 }
 
-inline fun <reified T : Any> memberFunction(functionName: String): SmartMemberKFunction<T> {
-    return SmartMemberKFunction(T::class, functionName)
+inline fun <reified T : Any, V> T.property(propertyName: String, targetClassName: String? = null): SmartKProperty<T, V> {
+    return SmartKProperty(this, SmartMemberKProperty(targetClassName?.toKClass()?.cast() ?: T::class, propertyName))
 }
 
-inline fun <reified T : Any> staticFunction(functionName: String): SmartStaticKFunction<T> {
-    return SmartStaticKFunction(T::class, functionName)
+inline fun <reified T : Any> memberFunction(functionName: String, targetClassName: String? = null): SmartMemberKFunction<T> {
+    return SmartMemberKFunction(targetClassName?.toKClass()?.cast() ?: T::class, functionName)
 }
 
-inline fun <reified T : Any> T.function(functionName: String): SmartKFunction<T> {
-    return SmartKFunction(this, SmartMemberKFunction(T::class, functionName))
+inline fun <reified T : Any> staticFunction(functionName: String, targetClassName: String? = null): SmartStaticKFunction<T> {
+    return SmartStaticKFunction(targetClassName?.toKClass()?.cast() ?: T::class, functionName)
+}
+
+inline fun <reified T : Any> T.function(functionName: String, targetClassName: String? = null): SmartKFunction<T> {
+    return SmartKFunction(this, SmartMemberKFunction(targetClassName?.toKClass()?.cast() ?: T::class, functionName))
 }
 
 operator fun <T : Any, V> SmartMemberKProperty<T, V>.getValue(thisRef: T, property: KProperty<*>): V {

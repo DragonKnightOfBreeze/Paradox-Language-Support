@@ -589,6 +589,10 @@ fun String.toClasspathUrl() = PlsConstants.locationClass.getResource(this)!!
 //
 //fun String.toFloatRangeOrNull(): FloatRange? = runCatching { split("..", limit = 2).let { (a, b) -> a.toFloat()..b.toFloat() } }.getOrNull()
 
+fun String.toClass() = Class.forName(this)
+
+fun String.toKClass() = Class.forName(this).kotlin
+
 fun URL.toFile() = File(this.toURI())
 
 fun URL.toPath() = Paths.get(this.toURI())

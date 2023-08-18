@@ -13,7 +13,7 @@ interface ElementsToolbarActions {
     ) : AnAction(PlsIcons.Actions.DuplicateDescriptor) {
         init {
             templatePresentation.text = PlsBundle.message("ui.dialog.expandClauseTemplate.actions.duplicate")
-            shortcutSet = CustomShortcutSet.fromString("alt C")
+            registerCustomShortcutSet(CustomShortcutSet.fromString("alt C"))
         }
         
         override fun getActionUpdateThread() = ActionUpdateThread.EDT
@@ -35,7 +35,7 @@ interface ElementsToolbarActions {
     ) : AnAction(PlsIcons.Actions.SwitchToPrevDescriptor) {
         init {
             templatePresentation.text = PlsBundle.message("ui.dialog.expandClauseTemplate.actions.switchToPrev")
-            shortcutSet = CustomShortcutSet.fromString("alt P")
+            registerCustomShortcutSet(CustomShortcutSet.fromString("alt P"))
         }
         
         override fun getActionUpdateThread() = ActionUpdateThread.EDT
@@ -62,7 +62,7 @@ interface ElementsToolbarActions {
     ) : AnAction(PlsIcons.Actions.SwitchToNextDescriptor) {
         init {
             templatePresentation.text = PlsBundle.message("ui.dialog.expandClauseTemplate.actions.switchToNext")
-            shortcutSet = CustomShortcutSet.fromString("alt N")
+            registerCustomShortcutSet(CustomShortcutSet.fromString("alt N"))
         }
         
         override fun getActionUpdateThread() = ActionUpdateThread.EDT

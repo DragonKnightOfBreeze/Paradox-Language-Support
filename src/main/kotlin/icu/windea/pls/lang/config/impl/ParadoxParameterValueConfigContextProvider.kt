@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.config.impl
 
+import com.intellij.injected.editor.DocumentWindow
 import com.intellij.lang.injection.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
@@ -51,14 +52,12 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
         return configContext
     }
     
-    @Suppress("UnstableApiUsage", "DEPRECATION")
     private fun getParameterElement(file: PsiFile, host: PsiElement): ParadoxParameterElement? {
         val injectionInfos = host.getUserData(ParadoxScriptInjector.Keys.parameterValueInjectionInfos)
         if(injectionInfos.isNullOrEmpty()) return null
         return when {
             host is ParadoxScriptStringExpressionElement -> {
-                //why it's deprecated and internal???
-                val shreds = InjectedLanguageUtilBase.getShreds(file)
+                val shreds = file.getShreds()
                 val shred = shreds?.singleOrNull()
                 val rangeInsideHost = shred?.rangeInsideHost ?: return null
                 val injectionInfo = injectionInfos.find { it.rangeInsideHost == rangeInsideHost } ?: return null
