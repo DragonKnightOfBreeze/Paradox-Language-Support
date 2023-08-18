@@ -44,7 +44,21 @@ object ParadoxConfigHandler {
     //region Handle Methods
     fun getConfigContext(element: PsiElement): ParadoxConfigContext? {
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return null
-        return doGetConfigContextFromCache(memberElement)
+        val contextMemberElement = getContextMemberElement(memberElement)
+        return doGetConfigContextFromCache(contextMemberElement)
+    }
+    
+    private fun getContextMemberElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement {
+        val parent = element.parent
+        
+        //如果element直接位于某个文件或子句中，这个文件或子句中的所有memberElement的上下文都是相同的
+        //因此可以直接使用第一个memberElement的上下文
+        val firstMemberElementInFileOrBlock = parent
+            ?.takeIf { it is ParadoxScriptBlockElement }
+            ?.findChild<ParadoxScriptMemberElement>()
+        firstMemberElementInFileOrBlock?.let { return it }
+        
+        return element
     }
     
     private fun doGetConfigContextFromCache(element: ParadoxScriptMemberElement): ParadoxConfigContext? {

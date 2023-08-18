@@ -635,28 +635,28 @@ infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean {
         && containingFile.originalFile.virtualFile == other.containingFile.originalFile.virtualFile
 }
 
-inline fun <reified T : PsiElement> PsiElement.findChild(): T? {
-    return findChildOfType()
+inline fun <reified T : PsiElement> PsiElement.findChild(forward: Boolean = true): T? {
+    return findChildOfType(forward)
 }
 
-fun PsiElement.findChild(type: IElementType): PsiElement? {
-    return findChildOfType { it.elementType == type }
+fun PsiElement.findChild(type: IElementType, forward: Boolean = true): PsiElement? {
+    return findChildOfType(forward) { it.elementType == type }
 }
 
-fun PsiElement.findChild(tokenSet: TokenSet): PsiElement? {
-    return findChildOfType { it.elementType in tokenSet }
+fun PsiElement.findChild(tokenSet: TokenSet, forward: Boolean = true): PsiElement? {
+    return findChildOfType(forward) { it.elementType in tokenSet }
 }
 
-inline fun <reified T : PsiElement> PsiElement.findChildren(): List<T> {
-    return findChildrenOfType()
+inline fun <reified T : PsiElement> PsiElement.findChildren(forward: Boolean = true): List<T> {
+    return findChildrenOfType(forward)
 }
 
-fun PsiElement.findChildren(type: IElementType): List<PsiElement> {
-    return findChildrenOfType { it.elementType == type }
+fun PsiElement.findChildren(type: IElementType, forward: Boolean = true): List<PsiElement> {
+    return findChildrenOfType(forward) { it.elementType == type }
 }
 
-fun PsiElement.findChildren(tokenSet: TokenSet): List<PsiElement> {
-    return findChildrenOfType { it.elementType in tokenSet }
+fun PsiElement.findChildren(tokenSet: TokenSet, forward: Boolean = true): List<PsiElement> {
+    return findChildrenOfType(forward) { it.elementType in tokenSet }
 }
 
 inline fun PsiElement.processChild(forward: Boolean = true, processor: (PsiElement) -> Boolean): Boolean {
