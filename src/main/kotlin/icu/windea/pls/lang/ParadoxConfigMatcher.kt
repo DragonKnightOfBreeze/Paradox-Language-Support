@@ -58,8 +58,6 @@ object ParadoxConfigMatcher {
             override fun get(options: Int) = true
         }
         
-        //memory usage: 12 + 4 = 16b => 16b
-        
         sealed class LazyMatch(predicate: () -> Boolean) : Result() {
             //use manual lazy implementation instead of kotlin Lazy to optimize memory
             private var value: Any = predicate

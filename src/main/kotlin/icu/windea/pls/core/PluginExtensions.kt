@@ -27,6 +27,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.lang.Integer.*
+import java.util.concurrent.ConcurrentHashMap
 
 //region Stdlib Extensions
 inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {
@@ -115,7 +116,7 @@ fun String.isInlineUsage(): Boolean {
 }
 
 //use cache to optimize performance (~4% of ParadoxConfigHandler.getConfigs())
-private val supportsByAnnotationCache  = CacheBuilder.newBuilder().buildCache<Any, Boolean>()
+private val supportsByAnnotationCache = ConcurrentHashMap<Any, Boolean>()
 
 /**
  * 基于注解[WithGameType]判断目标对象是否支持当前游戏类型。

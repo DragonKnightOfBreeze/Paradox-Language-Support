@@ -85,8 +85,6 @@ private object CwtPropertyConfigImpls {
         override fun toString(): String = "$key ${separatorType.text} $value"
     }
     
-    //memory usage: 12 + 12 * 4 + 2 = 62b => 64b
-    
     class ImplA(
         override val pointer: SmartPsiElementPointer<out CwtProperty>,
         override val info: CwtConfigGroupInfo,
@@ -105,8 +103,6 @@ private object CwtPropertyConfigImpls {
         override val values: List<CwtValueConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val properties: List<CwtPropertyConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
     }
-    
-    //memory usage: 12 + 15 * 4 + 2 = 74b => 80b
     
     class ImplB(
         override val pointer: SmartPsiElementPointer<out CwtProperty>,
@@ -127,8 +123,6 @@ private object CwtPropertyConfigImpls {
         override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstanceFast<CwtPropertyConfig>()
     }
     
-    //memory usage: 12 + 3 * 4 = 24b => 24b
-    
     class DelegateA(
         delegate: CwtPropertyConfig,
         override var parent: CwtMemberConfig<*>?,
@@ -140,8 +134,6 @@ private object CwtPropertyConfigImpls {
         
         override fun toString(): String = "$key ${separatorType.text} $value"
     }
-    
-    //memory usage: 12 + 6 * 4 = 36b => 40b
     
     class DelegateB(
         delegate: CwtPropertyConfig,

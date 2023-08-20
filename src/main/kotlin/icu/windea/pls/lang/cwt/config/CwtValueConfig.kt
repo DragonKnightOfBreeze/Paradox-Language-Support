@@ -79,8 +79,6 @@ private object CwtValueConfigImpls {
         override fun toString(): String = value
     }
     
-    //memory usage: 12 + 9 * 4 + 1 = 49b => 56b
-    
     class ImplA(
         override val pointer: SmartPsiElementPointer<out CwtValue>,
         override val info: CwtConfigGroupInfo,
@@ -97,8 +95,6 @@ private object CwtValueConfigImpls {
         override val values: List<CwtValueConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val properties: List<CwtPropertyConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
     }
-    
-    //memory usage: 12 + 12 * 4 + 1 = 61b => 64b
     
     class ImplB(
         override val pointer: SmartPsiElementPointer<out CwtValue>,
@@ -117,8 +113,6 @@ private object CwtValueConfigImpls {
         override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstanceFast<CwtPropertyConfig>() }
     }
     
-    //memory usage: 12 + 10 * 4 + 1 = 53b => 56b
-    
     class ImplC(
         override val pointer: SmartPsiElementPointer<out CwtValue>,
         override val info: CwtConfigGroupInfo,
@@ -135,8 +129,6 @@ private object CwtValueConfigImpls {
         override val values: List<CwtValueConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val properties: List<CwtPropertyConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
     }
-    
-    //memory usage: 12 + 13 * 4 + 1 = 65b => 72b
     
     class ImplD(
         override val pointer: SmartPsiElementPointer<out CwtValue>,
@@ -155,8 +147,6 @@ private object CwtValueConfigImpls {
         override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstanceFast<CwtPropertyConfig>() }
     }
     
-    //memory usage: 12 + 4 * 3 = 24b => 24b
-    
     class DelegateA(
         delegate: CwtValueConfig,
         override var parent: CwtMemberConfig<*>?,
@@ -168,8 +158,6 @@ private object CwtValueConfigImpls {
         
         override fun toString(): String = value
     }
-    
-    //memory usage: 12 + 6 * 4 = 36b => 40b
     
     class DelegateB(
         delegate: CwtValueConfig,
