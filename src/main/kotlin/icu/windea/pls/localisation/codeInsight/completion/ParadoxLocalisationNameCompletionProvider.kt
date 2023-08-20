@@ -24,8 +24,6 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
         if(ParadoxPsiManager.isLocalisationLocaleLike(position)) return
         
         val element = position.parent?.parent as? ParadoxLocalisationProperty ?: return
-        val offsetInParent = parameters.offset - element.startOffset
-        val keyword = position.getKeyword(offsetInParent)
         val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return
         val category = ParadoxLocalisationCategory.resolve(file) ?: return
         val project = parameters.originalFile.project

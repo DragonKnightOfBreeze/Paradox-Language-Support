@@ -18,8 +18,6 @@ import icu.windea.pls.model.*
  */
 class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val offsetInParent = parameters.offset - parameters.position.startOffset
-        val keyword = parameters.position.getKeyword(offsetInParent)
         val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return
         val category = ParadoxLocalisationCategory.resolve(file) ?: return
         val project = parameters.originalFile.project
