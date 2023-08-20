@@ -8,7 +8,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
-import icu.windea.pls.*
+import icu.windea.pls.PlsContext.indexStatus
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*
@@ -79,8 +79,8 @@ object ParadoxConfigMatcher {
                 return when {
                     this is LazySimpleMatch -> BitUtil.isSet(options, Options.Relax)
                     this is LazyBlockAwareMatch -> BitUtil.isSet(options, Options.Relax)
-                    this is LazyIndexAwareMatch -> BitUtil.isSet(options, Options.SkipIndex) || PlsContext.isIndexing()
-                    this is LazyScopeAwareMatch -> BitUtil.isSet(options, Options.SkipScope) || PlsContext.isIndexing()
+                    this is LazyIndexAwareMatch -> BitUtil.isSet(options, Options.SkipIndex) || indexStatus.get() == true
+                    this is LazyScopeAwareMatch -> BitUtil.isSet(options, Options.SkipScope) || indexStatus.get() == true
                     else -> false
                 }
             }
@@ -388,7 +388,7 @@ object ParadoxConfigMatcher {
     
     private fun getCachedMatchResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
         ProgressManager.checkCanceled()
-        if(PlsContext.isIndexing()) return Result.ExactMatch // indexing -> should not visit indices -> treat as exact match
+        if(indexStatus.get() == true) return Result.ExactMatch // indexing -> should not visit indices -> treat as exact match
         val rootFile = selectRootFile(element) ?: return Result.NotMatch
         val rootPath = rootFile.rootInfo?.rootPath?.toString() ?: return Result.NotMatch
         val globalCacheKey = "$rootPath:$cacheKey"

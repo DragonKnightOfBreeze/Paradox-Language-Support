@@ -49,6 +49,8 @@ class ParadoxTriggerWithParametersAwareOverriddenConfigProvider : ParadoxOverrid
         // int / float / value_field / int_value_field / variable_field / int_variable_field
         if(configExpression !is CwtKeyExpression) return false
         configs.forEach { c1 ->
+            val pc = c1.memberConfig.parent?.memberConfig?.castOrNull<CwtPropertyConfig>()
+            if(pc?.key != "complex_trigger_modifier") return true
             c1.configs?.forEach { c2 ->
                 if(c2 is CwtPropertyConfig && c2.expression == configExpression) {
                     val valueExpression = c2.valueExpression

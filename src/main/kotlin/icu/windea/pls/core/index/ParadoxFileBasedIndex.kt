@@ -82,12 +82,12 @@ abstract class ParadoxFileBasedIndex<T>: FileBasedIndexExtension<String, T>() {
     private fun buildFileData(file: PsiFile): Map<String, T> {
         return buildMap { 
             try {
-                PlsContext.indexStatusThreadLocal.set(true)
-                PlsContext.globalCacheKeyPrefixThreadLocal.set(PlsContext.buildGlobalCacheKeyPrefix(file))
+                PlsContext.indexStatus.set(true)
+                PlsContext.globalCacheKeyPrefix.set(PlsContext.buildGlobalCacheKeyPrefix(file))
                 indexData(file, this)
             } finally {
-                PlsContext.indexStatusThreadLocal.remove()
-                PlsContext.globalCacheKeyPrefixThreadLocal.remove()
+                PlsContext.indexStatus.remove()
+                PlsContext.globalCacheKeyPrefix.remove()
             }
         }
     }

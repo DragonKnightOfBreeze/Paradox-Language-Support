@@ -55,8 +55,10 @@ class CwtDeclarationConfigContext(
         return buildString {
             val gameTypeId = configGroup.gameType.id
             append(gameTypeId).append(':')
-            append(definitionType).append('.')
-            if(definitionSubtypes != null) {
+            append(matchOptions).append('#')
+            append(definitionType)
+            if(definitionSubtypes.isNotNullOrEmpty()) {
+                append('.')
                 var isFirst = true
                 declarationConfig.subtypesToDistinct.forEach { s ->
                     if(definitionSubtypes.contains(s)) {
@@ -65,7 +67,6 @@ class CwtDeclarationConfigContext(
                     }
                 }
             }
-            append('#').append(matchOptions)
         }
     }
     

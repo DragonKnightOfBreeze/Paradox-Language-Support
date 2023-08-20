@@ -35,7 +35,7 @@ class ParadoxInlineScriptUsageConfigContextProvider: ParadoxConfigContextProvide
     override fun getCacheKey(configContext: ParadoxConfigContext, matchOptions: Int): String? {
         val path = configContext.fileInfo?.path ?: return null // null -> unexpected
         val elementPathFromRoot = configContext.elementPathFromRoot ?: return null // null -> unexpected
-        return "isu@${configContext.gameType.id}:${path.path}\n${elementPathFromRoot.path}"
+        return "isu@${configContext.gameType.id}:${matchOptions}#${path.path}\n${elementPathFromRoot.path}"
     }
     
     override fun getConfigs(configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
