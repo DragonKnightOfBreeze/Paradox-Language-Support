@@ -4,6 +4,7 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
+import icu.windea.pls.model.*
 
 private val configKey = Key.create<CwtGameRuleConfig>("cwt.config.injector.gameRule.config")
 
@@ -25,7 +26,8 @@ class CwtGameRuleDeclarationConfigInjector : CwtDeclarationConfigInjector {
         val config = configContext.getUserData(configKey)
         if(config == null) return null
         if(doGetDeclarationMergedConfig(config) == null) return null
-        return "@game_rule#${configContext.definitionName}#${configContext.matchOptions}"
+        val gameTypeId = configContext.configGroup.gameType.id
+        return "$gameTypeId:game_rule@${configContext.definitionName}#${configContext.matchOptions}"
     }
     
     override fun getDeclarationMergedConfig(configContext: CwtDeclarationConfigContext): CwtPropertyConfig? {

@@ -7,11 +7,11 @@ import com.google.common.util.concurrent.*
 import com.intellij.openapi.progress.*
 import java.util.concurrent.*
 
-inline fun <K: Any, V: Any> CacheBuilder<in K, in V>.buildCache(): Cache<K, V> {
+inline fun <K : Any, V : Any> CacheBuilder<in K, in V>.buildCache(): Cache<K, V> {
     return build()
 }
 
-inline fun <K : Any, V: Any> CacheBuilder<in K, in V>.buildCache(crossinline loader: (K) -> V): LoadingCache<K, V> {
+inline fun <K : Any, V : Any> CacheBuilder<in K, in V>.buildCache(crossinline loader: (K) -> V): LoadingCache<K, V> {
     return build(object : CacheLoader<K, V>() {
         override fun load(key: K): V {
             return loader(key)
@@ -19,7 +19,7 @@ inline fun <K : Any, V: Any> CacheBuilder<in K, in V>.buildCache(crossinline loa
     })
 }
 
-inline fun <K : Any, V: Any> Cache<K, V>.getOrPut(key: K, crossinline defaultValue: (K) -> V): V {
+inline fun <K : Any, V : Any> Cache<K, V>.getOrPut(key: K, crossinline defaultValue: (K) -> V): V {
     try {
         return get(key) { defaultValue(key) }
     } catch(e: ExecutionException) {
@@ -35,7 +35,7 @@ inline fun <K : Any, V: Any> Cache<K, V>.getOrPut(key: K, crossinline defaultVal
     }
 }
 
-inline fun <K : Any, V: Any> Cache<K, V>.getOrPut(key: K, defaultValueOnException: (Throwable) -> V, crossinline defaultValue: (K) -> V): V {
+inline fun <K : Any, V : Any> Cache<K, V>.getOrPut(key: K, defaultValueOnException: (Throwable) -> V, crossinline defaultValue: (K) -> V): V {
     try {
         return get(key) { defaultValue(key) }
     } catch(e: ExecutionException) {
@@ -51,10 +51,10 @@ inline fun <K : Any, V: Any> Cache<K, V>.getOrPut(key: K, defaultValueOnExceptio
     }
 }
 
-inline operator fun <K : Any, V: Any> Cache<K, V>.get(key: K): V? {
+inline operator fun <K : Any, V : Any> Cache<K, V>.get(key: K): V? {
     return getIfPresent(key)
 }
 
-inline operator fun <K : Any, V: Any> Cache<K, V>.set(key: K, value: V) {
+inline operator fun <K : Any, V : Any> Cache<K, V>.set(key: K, value: V) {
     put(key, value)
 }

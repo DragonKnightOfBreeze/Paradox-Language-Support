@@ -4,6 +4,7 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
+import icu.windea.pls.model.*
 
 private val configKey = Key.create<CwtOnActionConfig>("cwt.config.injector.onAction.config")
 
@@ -14,7 +15,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
         val configGroup = configContext.configGroup
         if(configContext.definitionType == "on_action") {
             if(configContext. definitionName == null) return false
-            val contextElement = configContext.contextElement ?: return false
+            val contextElement = configContext.element ?: return false
             val config = configGroup.onActions.getByTemplate(configContext.definitionName, contextElement, configGroup, configContext.matchOptions)
             configContext.putUserData(configKey, config)
             return config != null
@@ -25,7 +26,8 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
     override fun getCacheKey(configContext: CwtDeclarationConfigContext): String? {
         val config = configContext.getUserData(configKey)
         if(config == null) return null
-        return "@on_action#${configContext.definitionName}#${configContext.matchOptions}"
+        val gameTypeId = configContext.configGroup.gameType.id
+        return "$gameTypeId:on_action@${configContext.definitionName}#${configContext.matchOptions}"
     }
     
     //override fun getDeclarationMergedConfig(configContext: CwtDeclarationConfigContext): CwtPropertyConfig? {

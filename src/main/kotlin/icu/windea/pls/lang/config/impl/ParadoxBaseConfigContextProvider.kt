@@ -24,27 +24,36 @@ class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
         val definition = element.findParentDefinition()
         if(definition == null) {
             val configGroup = getConfigGroups(file.project).get(gameType)
-            val configContext = ParadoxConfigContext(fileInfo, elementPath, gameType, configGroup, element)
+            val configContext = ParadoxConfigContext(element, fileInfo, elementPath, gameType, configGroup)
             return configContext
         } else {
             val definitionInfo = definition.definitionInfo ?: return null
             val definitionElementPath = definitionInfo.elementPath
             val elementPathFromRoot = definitionElementPath.relativeTo(elementPath) ?: return null
             val configGroup = getConfigGroups(file.project).get(gameType)
-            val configContext = ParadoxConfigContext(fileInfo, elementPath, gameType, configGroup, element)
+            val configContext = ParadoxConfigContext(element, fileInfo, elementPath, gameType, configGroup)
             configContext.definitionInfo = definitionInfo
             configContext.elementPathFromRoot = elementPathFromRoot
             return configContext
         }
     }
     
-    override fun getConfigs(element: ParadoxScriptMemberElement, configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getCacheKey(configContext: ParadoxConfigContext, matchOptions: Int): String? {
+        val definitionInfo = configContext.definitionInfo ?: return null
+        val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null
+        val declarationConfigContextCacheKey = declarationConfig.declarationConfigCacheKey ?: return null // null -> unexpected
+        val elementPathFromRoot = configContext.elementPathFromRoot ?: return null // null -> unexpected
+        return "b@$declarationConfigContextCacheKey\n$elementPathFromRoot"
+    }
+    
+    override fun getConfigs(configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
         val elementPathFromRoot = configContext.elementPathFromRoot ?: return null
-        val configGroup = configContext.configGroup
         val definitionInfo = configContext.definitionInfo ?: return null
-        val declaration = definitionInfo.getDeclaration(matchOptions) ?: return null
-        val rootConfigs = declaration.toSingletonList()
-        return ParadoxConfigHandler.getConfigsFromConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+        val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null
+        val rootConfigs = declarationConfig.toSingletonList()
+        val configGroup = configContext.configGroup
+        val element = configContext.element
+        return ParadoxConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
     }
 }

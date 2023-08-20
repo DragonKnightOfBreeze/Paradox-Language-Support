@@ -23,19 +23,28 @@ import icu.windea.pls.script.psi.*
  * @see ParadoxConfigContextProvider
  */
 class ParadoxConfigContext(
+    val element: ParadoxScriptMemberElement,
     val fileInfo: ParadoxFileInfo?,
     val elementPath: ParadoxElementPath?,
     val gameType: ParadoxGameType,
-    val configGroup: CwtConfigGroup,
-    val element: ParadoxScriptMemberElement
+    val configGroup: CwtConfigGroup
 ) : UserDataHolderBase() {
-    private val configsCache: Cache<String, List<CwtMemberConfig<*>>> = CacheBuilder.newBuilder().buildCache()
+    companion object {
+        //use soft values to optimize memory
+        private val configsCache: Cache<String, List<CwtMemberConfig<*>>> = CacheBuilder.newBuilder().softValues().buildCache()
+    }
     
     fun getConfigs(matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
-        val cachedKey = buildString {
-            append('#').append(matchOptions)
-        }
-        return configsCache.getOrPut(cachedKey) { provider?.getConfigs(element, this, matchOptions).orEmpty() }
+        val cachedKey = doGetCachedKey(matchOptions) ?: return emptyList()
+        return configsCache.getOrPut(cachedKey) { doGetConfigs(matchOptions) }
+    }
+    
+    private fun doGetCachedKey(matchOptions: Int): String? {
+        return provider?.getCacheKey(this, matchOptions)
+    }
+    
+    private fun doGetConfigs(matchOptions: Int): List<CwtMemberConfig<*>> {
+        return provider?.getConfigs(this, matchOptions).orEmpty()
     }
     
     fun skipMissingExpressionCheck(): Boolean {
@@ -46,12 +55,12 @@ class ParadoxConfigContext(
         return provider?.skipTooManyExpressionCheck(this) ?: false
     }
     
-    object Keys
+    object Keys: KeyAware
 }
 
-val ParadoxConfigContext.Keys.definitionInfo by lazy { Key.create<ParadoxDefinitionInfo>("paradox.configContext.definitionInfo") }
-val ParadoxConfigContext.Keys.elementPathFromRoot by lazy { Key.create<ParadoxElementPath>("paradox.configContext.elementPathFromRoot") }
-val ParadoxConfigContext.Keys.provider by lazy { Key.create<ParadoxConfigContextProvider>("paradox.configContext.provider") }
+val ParadoxConfigContext.Keys.definitionInfo by createKey<ParadoxDefinitionInfo>("paradox.configContext.definitionInfo")
+val ParadoxConfigContext.Keys.elementPathFromRoot by createKey<ParadoxElementPath>("paradox.configContext.elementPathFromRoot")
+val ParadoxConfigContext.Keys.provider by createKey<ParadoxConfigContextProvider>("paradox.configContext.provider")
 
 var ParadoxConfigContext.definitionInfo by ParadoxConfigContext.Keys.definitionInfo
 var ParadoxConfigContext.elementPathFromRoot by ParadoxConfigContext.Keys.elementPathFromRoot

@@ -1,5 +1,6 @@
 package icu.windea.pls.core
 
+import com.google.common.cache.CacheBuilder
 import com.intellij.codeInsight.documentation.*
 import com.intellij.extapi.psi.*
 import com.intellij.injected.editor.*
@@ -14,6 +15,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.settings.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
@@ -112,13 +114,18 @@ fun String.isInlineUsage(): Boolean {
     return this.equals(ParadoxInlineScriptHandler.inlineScriptKey, true)
 }
 
+//use cache to optimize performance (~4% of ParadoxConfigHandler.getConfigs())
+private val supportsByAnnotationCache  = CacheBuilder.newBuilder().buildCache<Any, Boolean>()
+
 /**
  * 基于注解[WithGameType]判断目标对象是否支持当前游戏类型。
  */
 fun ParadoxGameType?.supportsByAnnotation(target: Any): Boolean {
     if(this == null) return true
-    val targetGameType = target.javaClass.getAnnotation(WithGameType::class.java)?.value ?: return true
-    return this in targetGameType
+    return supportsByAnnotationCache.getOrPut(target) {
+        val targetGameType = target.javaClass.getAnnotation(WithGameType::class.java)?.value
+        targetGameType == null || this in targetGameType
+    }
 }
 //endregion
 

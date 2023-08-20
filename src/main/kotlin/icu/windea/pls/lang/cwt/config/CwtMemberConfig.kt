@@ -15,7 +15,6 @@ import icu.windea.pls.model.*
 sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig<T>, CwtValueAware, CwtOptionsAware, CwtDocumentationAware {
     val configs: List<CwtMemberConfig<*>>?
     
-    
     var parent: CwtMemberConfig<*>?
     var inlineableConfig: CwtInlineableConfig<@UnsafeVariance T>?
     

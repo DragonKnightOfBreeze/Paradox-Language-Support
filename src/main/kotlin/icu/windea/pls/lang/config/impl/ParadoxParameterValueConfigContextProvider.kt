@@ -1,11 +1,9 @@
 package icu.windea.pls.lang.config.impl
 
-import com.intellij.injected.editor.DocumentWindow
 import com.intellij.lang.injection.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.impl.source.tree.injected.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
@@ -17,13 +15,13 @@ import icu.windea.pls.script.psi.*
 
 /**
  * 用于获取脚本参数的传入值和默认值中的CWT规则上下文。
- * 
+ *
  * * 基于语言注入功能实现。
  * * 正常提供代码高亮、引用解析、代码补全等高级语言功能。
  * * 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`和`TooManyExpressionInspection`。
  * * 不会将参数值内容内联到对应的调用处，然后再进行相关代码检查。
  * * 不会将参数值内容内联到对应的调用处，然后检查语法是否合法。
- * 
+ *
  * @see ParadoxScriptInjector
  */
 class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider {
@@ -43,7 +41,7 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
         val gameType = parameterElement.gameType
         val elementPathFromRoot = elementPath
         val configGroup = getConfigGroups(file.project).get(gameType)
-        val configContext = ParadoxConfigContext(null, elementPath, gameType, configGroup, element)
+        val configContext = ParadoxConfigContext(element, null, elementPath, gameType, configGroup)
         if(elementPathFromRoot.isNotEmpty()) {
             configContext.snippetFromParameterValueRootConfigContext = ParadoxConfigHandler.getConfigContext(file) ?: return null
         }
@@ -72,15 +70,22 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
         }
     }
     
-    override fun getConfigs(element: ParadoxScriptMemberElement, configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getCacheKey(configContext: ParadoxConfigContext, matchOptions: Int): String? {
+        val parameterElement = configContext.parameterElement ?: return null // null -> unexpected
+        val elementPathFromRoot = configContext.elementPathFromRoot ?: return null // null -> unexpected
+        return "is@${configContext.gameType.id}:${parameterElement.contextKey}@${parameterElement.name}\n${elementPathFromRoot.path}"
+    }
+    
+    override fun getConfigs(configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
         val elementPathFromRoot = configContext.elementPathFromRoot ?: return null
         
         if(elementPathFromRoot.isNotEmpty()) {
             val rootConfigContext = configContext.snippetFromParameterValueRootConfigContext ?: return null
+            val element = configContext.element
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
             val configGroup = configContext.configGroup
-                return ParadoxConfigHandler.getConfigsFromConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+            return ParadoxConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         }
         
         val parameterElement = configContext.parameterElement ?: return null

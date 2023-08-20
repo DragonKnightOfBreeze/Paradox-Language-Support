@@ -353,8 +353,6 @@ fun String.toCapitalizedWords(): String {
     }
 }
 
-private val keywordDelimiters = charArrayOf('.', '_')
-
 fun CharSequence.indicesOf(char: Char, startIndex: Int = 0, ignoreCase: Boolean = false): List<Int> {
     var indices: MutableList<Int>? = null
     var lastIndex = indexOf(char, startIndex, ignoreCase)
@@ -596,20 +594,6 @@ fun String.toKClass() = Class.forName(this).kotlin
 fun URL.toFile() = File(this.toURI())
 
 fun URL.toPath() = Paths.get(this.toURI())
-
-@PublishedApi
-internal val enumValuesCache: LoadingCache<Class<*>, Array<*>> by lazy { CacheBuilder.newBuilder().buildCache { it.enumConstants } }
-
-/**
- * 得到共享的指定枚举类型的所有枚举常量组成的数组。
- */
-@Suppress("UNCHECKED_CAST")
-inline fun <reified T : Enum<T>> sharedEnumValues(): Array<T> {
-    return enumValuesCache[T::class.java] as Array<T>
-}
-
-@Suppress("UNCHECKED_CAST")
-inline val <T : Enum<T>> Class<T>.sharedEnumConstants get() = enumValuesCache[this] as Array<T>
 
 //fun <T> Result<T>.getOrThrow(predicate: (Throwable) -> Boolean): T? {
 //	return this.onFailure { if(predicate(it)) throw it }.getOrNull()

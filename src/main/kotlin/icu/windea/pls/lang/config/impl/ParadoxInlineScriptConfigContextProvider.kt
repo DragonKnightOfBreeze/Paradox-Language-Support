@@ -43,26 +43,33 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
         val gameType = fileInfo.rootInfo.gameType
         val elementPathFromRoot = elementPath
         val configGroup = getConfigGroups(file.project).get(gameType)
-        val configContext = ParadoxConfigContext(fileInfo, elementPath, gameType, configGroup, element)
+        val configContext = ParadoxConfigContext(element, fileInfo, elementPath, gameType, configGroup)
         if(elementPathFromRoot.isNotEmpty()) {
             configContext.inlineScriptRootConfigContext = ParadoxConfigHandler.getConfigContext(file) ?: return null
         }
-        configContext.elementPathFromRoot = elementPathFromRoot
         configContext.inlineScriptExpression = inlineScriptExpression
+        configContext.elementPathFromRoot = elementPathFromRoot
         return configContext
+    }
+    
+    override fun getCacheKey(configContext: ParadoxConfigContext, matchOptions: Int): String? {
+        val inlineScriptExpression = configContext.inlineScriptExpression ?: return null // null -> unexpected
+        val elementPathFromRoot = configContext.elementPathFromRoot ?: return null // null -> unexpected
+        return "is@${configContext.gameType.id}:${inlineScriptExpression}\n${elementPathFromRoot.path}"
     }
     
     //获取CWT规则后才能确定是否存在冲突以及是否存在递归
     
-    override fun getConfigs(element: ParadoxScriptMemberElement, configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getConfigs(configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
         val elementPathFromRoot = configContext.elementPathFromRoot ?: return null
         
         if(elementPathFromRoot.isNotEmpty()) {
             val rootConfigContext = configContext.inlineScriptRootConfigContext ?: return null
+            val element = configContext.element
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
             val configGroup = configContext.configGroup
-            return ParadoxConfigHandler.getConfigsFromConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+            return ParadoxConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         }
         
         val inlineScriptExpression = configContext.inlineScriptExpression ?: return null
@@ -71,7 +78,7 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         configContext.inlineScriptHasConflict = false
         configContext.inlineScriptHasRecursion = false
-        withRecursionGuard("icu.windea.pls.lang.config.impl.ParadoxInlineScriptConfigContextProvider.getConfigs") {
+        withRecursionGuard("icu.windea.pls.lang.config.impl.ParadoxInlineScriptConfigContextProvider.getConfigsForConfigContext") {
             withCheckRecursion(inlineScriptExpression) {
                 val project = configContext.configGroup.project
                 val selector = inlineScriptSelector(project, configContext.element)

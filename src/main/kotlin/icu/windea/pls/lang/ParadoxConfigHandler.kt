@@ -75,18 +75,18 @@ object ParadoxConfigHandler {
         return ParadoxConfigContextProvider.getContext(element)
     }
     
-    fun getConfigsFromConfigContext(
+    fun getConfigsForConfigContext(
         element: ParadoxScriptMemberElement,
         rootConfigs: List<CwtMemberConfig<*>>,
         elementPathFromRoot: ParadoxElementPath,
         configGroup: CwtConfigGroup,
         matchOptions: Int = Options.Default
     ): List<CwtMemberConfig<*>> {
-        val result = doGetConfigsFromConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+        val result = doGetConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         return result.sortedByPriority({ it.expression }, { it.info.configGroup })
     }
     
-    fun doGetConfigsFromConfigContext(
+    private fun doGetConfigsForConfigContext(
         element: ParadoxScriptMemberElement,
         rootConfigs: List<CwtMemberConfig<*>>,
         elementPathFromRoot: ParadoxElementPath,
@@ -143,14 +143,18 @@ object ParadoxConfigHandler {
         return result
     }
     
-    fun getConfigs(element: PsiElement, orDefault: Boolean = true, matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
+    fun getConfigs(
+        element: PsiElement,
+        orDefault: Boolean = true,
+        matchOptions: Int = Options.Default
+    ): List<CwtMemberConfig<*>> {
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return emptyList()
         val configsMap = doGetConfigsCacheFromCache(memberElement) ?: return emptyList()
         val cacheKey = buildString {
             append('#').append(orDefault.toInt())
             append('#').append(matchOptions)
         }
-        return configsMap.getOrPut(cacheKey) {
+        return configsMap.computeIfAbsent(cacheKey) {
             val result = doGetConfigs(memberElement, orDefault, matchOptions)
             result.sortedByPriority({ it.expression }, { it.info.configGroup })
         }
@@ -790,11 +794,11 @@ object ParadoxConfigHandler {
                 typeConfigToUse == null || tuples.isEmpty() -> null
                 else -> tuples.mapNotNull { it.second }.ifEmpty { null }?.distinctBy { it.name }?.map { it.name }
             }
-            val config = when {
-                typeToUse == null -> null
-                else -> {
+            val config = if(typeToUse == null) null else {
+                val declarationConfig = configGroup.declarations.get(typeToUse)
+                if(declarationConfig == null) null else {
                     val configContext = CwtDeclarationConfigContext(context.contextElement!!, null, typeToUse, subtypesToUse, configGroup)
-                    configGroup.declarations.get(typeToUse)?.getConfig(configContext)
+                    configContext.getConfig(declarationConfig)
                 }
             }
             val element = config?.pointer?.element

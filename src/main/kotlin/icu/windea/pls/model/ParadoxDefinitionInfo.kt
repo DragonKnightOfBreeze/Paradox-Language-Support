@@ -135,9 +135,10 @@ class ParadoxDefinitionInfo(
     private val declarationConfigsCache = ConcurrentHashMap<Int, CwtPropertyConfig?>()
     
     private fun doGetDeclaration(matchOptions: Int): CwtPropertyConfig? {
+        val declarationConfig = configGroup.declarations.get(type) ?: return null
         val subtypes = getSubtypeConfigs(matchOptions).map { it.name }
         val configContext = CwtDeclarationConfigContext(element, name, type, subtypes, configGroup, matchOptions)
-        return configGroup.declarations.get(type)?.getConfig(configContext)
+        return configContext.getConfig(declarationConfig)
     }
     
     override fun equals(other: Any?): Boolean {

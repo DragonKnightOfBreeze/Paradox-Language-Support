@@ -10,20 +10,6 @@ object ParadoxConfigInlineHandler {
         KEY_TO_KEY, KEY_TO_VALUE, VALUE_TO_KEY, VALUE_TO_VALUE
     }
     
-    /**
-     * 将指定的[inlineConfig]内联作为子节点并返回。如果需要拷贝，则进行深拷贝。
-     */
-    fun inlineWithInlineConfig(inlineConfig: CwtInlineConfig): CwtPropertyConfig {
-        val other = inlineConfig.config
-        val inlined = other.copy(
-            key = inlineConfig.name,
-            configs = other.deepCopyConfigs()
-        )
-        inlined.configs?.forEachFast { it.parent = inlined }
-        inlined.inlineableConfig = inlineConfig
-        return inlined
-    }
-    
     fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, mode: Mode): CwtPropertyConfig? {
         val inlined = config.copy(
             key = when(mode) {
@@ -45,6 +31,20 @@ object ParadoxConfigInlineHandler {
         inlined.configs?.forEachFast { it.parent = inlined }
         inlined.parent = config.parent
         inlined.inlineableConfig = config.inlineableConfig
+        return inlined
+    }
+    
+    /**
+     * 将指定的[inlineConfig]内联作为子节点并返回。如果需要拷贝，则进行深拷贝。
+     */
+    fun inlineWithInlineConfig(inlineConfig: CwtInlineConfig): CwtPropertyConfig {
+        val other = inlineConfig.config
+        val inlined = other.copy(
+            key = inlineConfig.name,
+            configs = other.deepCopyConfigs()
+        )
+        inlined.configs?.forEachFast { it.parent = inlined }
+        inlined.inlineableConfig = inlineConfig
         return inlined
     }
     

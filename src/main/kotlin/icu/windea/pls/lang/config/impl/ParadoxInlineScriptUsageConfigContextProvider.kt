@@ -27,16 +27,23 @@ class ParadoxInlineScriptUsageConfigContextProvider: ParadoxConfigContextProvide
         val gameType = fileInfo.rootInfo.gameType
         val elementPathFromRoot = ParadoxElementPath.resolve(elementPath.rawSubPaths.let { it.subList(rootIndex + 1, it.size) })
         val configGroup = getConfigGroups(file.project).get(gameType)
-        val configContext = ParadoxConfigContext(fileInfo, elementPath, gameType, configGroup, element)
+        val configContext = ParadoxConfigContext(element, fileInfo, elementPath, gameType, configGroup)
         configContext.elementPathFromRoot = elementPathFromRoot
         return configContext
     }
     
-    override fun getConfigs(element: ParadoxScriptMemberElement, configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getCacheKey(configContext: ParadoxConfigContext, matchOptions: Int): String? {
+        val path = configContext.fileInfo?.path ?: return null // null -> unexpected
+        val elementPathFromRoot = configContext.elementPathFromRoot ?: return null // null -> unexpected
+        return "isu@${configContext.gameType.id}:${path.path}\n${elementPathFromRoot.path}"
+    }
+    
+    override fun getConfigs(configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         val elementPathFromRoot = configContext.elementPathFromRoot ?: return null
         val configGroup = configContext.configGroup
         val inlineConfigs = configGroup.inlineConfigGroup[ParadoxInlineScriptHandler.inlineScriptKey] ?: return null
+        val element = configContext.element
         val rootConfigs = inlineConfigs.map { ParadoxConfigInlineHandler.inlineWithInlineConfig(it) }
-        return ParadoxConfigHandler.getConfigsFromConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+        return ParadoxConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
     }
 }
