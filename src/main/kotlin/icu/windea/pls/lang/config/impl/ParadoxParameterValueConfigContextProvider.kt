@@ -73,7 +73,7 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
     override fun getCacheKey(configContext: ParadoxConfigContext, matchOptions: Int): String? {
         val parameterElement = configContext.parameterElement ?: return null // null -> unexpected
         val elementPathFromRoot = configContext.elementPathFromRoot ?: return null // null -> unexpected
-        return "is@${configContext.gameType.id}:${parameterElement.contextKey}@${parameterElement.name}\n${elementPathFromRoot.path}"
+        return "is@${configContext.gameType.id}:${matchOptions}#${parameterElement.contextKey}@${parameterElement.name}\n${elementPathFromRoot.path}"
     }
     
     override fun getConfigs(configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {

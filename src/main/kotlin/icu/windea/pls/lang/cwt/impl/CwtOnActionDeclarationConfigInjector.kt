@@ -27,7 +27,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
         val config = configContext.getUserData(configKey)
         if(config == null) return null
         val gameTypeId = configContext.configGroup.gameType.id
-        return "$gameTypeId:on_action@${configContext.definitionName}#${configContext.matchOptions}"
+        return "$gameTypeId:${configContext.matchOptions}#on_action@${configContext.definitionName}"
     }
     
     //override fun getDeclarationMergedConfig(configContext: CwtDeclarationConfigContext): CwtPropertyConfig? {

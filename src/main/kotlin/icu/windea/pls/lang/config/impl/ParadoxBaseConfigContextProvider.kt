@@ -43,7 +43,7 @@ class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
         val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null
         val declarationConfigContextCacheKey = declarationConfig.declarationConfigCacheKey ?: return null // null -> unexpected
         val elementPathFromRoot = configContext.elementPathFromRoot ?: return null // null -> unexpected
-        return "b@$declarationConfigContextCacheKey\n$elementPathFromRoot"
+        return "b@${matchOptions}#${declarationConfigContextCacheKey}\n${elementPathFromRoot}"
     }
     
     override fun getConfigs(configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {

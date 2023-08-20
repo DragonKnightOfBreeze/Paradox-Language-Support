@@ -55,7 +55,7 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
     override fun getCacheKey(configContext: ParadoxConfigContext, matchOptions: Int): String? {
         val inlineScriptExpression = configContext.inlineScriptExpression ?: return null // null -> unexpected
         val elementPathFromRoot = configContext.elementPathFromRoot ?: return null // null -> unexpected
-        return "is@${configContext.gameType.id}:${inlineScriptExpression}\n${elementPathFromRoot.path}"
+        return "is@${configContext.gameType.id}:${matchOptions}#${inlineScriptExpression}\n${elementPathFromRoot.path}"
     }
     
     //获取CWT规则后才能确定是否存在冲突以及是否存在递归

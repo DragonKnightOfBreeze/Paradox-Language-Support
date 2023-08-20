@@ -2,6 +2,7 @@ package icu.windea.pls.model
 
 import com.google.common.cache.*
 import com.intellij.openapi.util.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.ParadoxConfigMatcher.Options
@@ -36,11 +37,16 @@ class ParadoxConfigContext(
     
     fun getConfigs(matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
         val cachedKey = doGetCachedKey(matchOptions) ?: return emptyList()
-        return configsCache.getOrPut(cachedKey) { doGetConfigs(matchOptions) }
+        val cached = configsCache.getOrPut(cachedKey) { doGetConfigs(matchOptions) }
+        //some configs cannot be cached (e.g. from overridden configs)
+        if(PlsContext.overrideConfigStatus.get() == true) configsCache.invalidate(cachedKey)
+        PlsContext.overrideConfigStatus.remove()
+        return cached
     }
     
     private fun doGetCachedKey(matchOptions: Int): String? {
         return provider?.getCacheKey(this, matchOptions)
+            ?.let { if(element is ParadoxScriptValue && element.isPropertyValue()) "pv#$it" else it }
     }
     
     private fun doGetConfigs(matchOptions: Int): List<CwtMemberConfig<*>> {

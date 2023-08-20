@@ -2,6 +2,7 @@ package icu.windea.pls.lang.config
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
@@ -35,6 +36,7 @@ interface ParadoxOverriddenConfigProvider {
                 if(!gameType.supportsByAnnotation(ep)) return@f null
                 ep.getOverriddenConfigs(contextElement, config).takeIfNotEmpty()
                     ?.onEach { it.overriddenProvider = ep }
+                    ?.also { PlsContext.overrideConfigStatus.set(true) } //set overrideConfigStatus
             }
         }
     }
