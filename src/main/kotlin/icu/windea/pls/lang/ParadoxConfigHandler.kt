@@ -49,14 +49,15 @@ object ParadoxConfigHandler {
     }
     
     private fun getContextMemberElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement {
-        val parent = element.parent
+        //NOTE 实测不相同
         
-        //如果element直接位于某个文件或子句中，这个文件或子句中的所有memberElement的上下文都是相同的
-        //因此可以直接使用第一个memberElement的上下文
-        val firstMemberElementInFileOrBlock = parent
-            ?.takeIf { it is ParadoxScriptBlockElement }
-            ?.findChild<ParadoxScriptMemberElement>()
-        firstMemberElementInFileOrBlock?.let { return it }
+        ////如果element直接位于某个文件或子句中，这个文件或子句中的所有memberElement的上下文都是相同的
+        ////因此可以直接使用第一个memberElement的上下文
+        //val parent = element.parent
+        //val firstMemberElementInFileOrBlock = parent
+        //    ?.takeIf { it is ParadoxScriptBlockElement }
+        //    ?.findChild<ParadoxScriptMemberElement>()
+        //firstMemberElementInFileOrBlock?.let { return it }
         
         return element
     }
