@@ -38,7 +38,7 @@ val PlsKeys.cachedLocalisationInfo by createKey<CachedValue<ParadoxLocalisationI
 val PlsKeys.cachedComplexEnumValueInfo by createKey<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cached.complexEnumValueInfo")
 val PlsKeys.cachedValueSetValueInfos by createKey<CachedValue<List<ParadoxValueSetValueInfo>>>("paradox.cached.valueSetValueInfos")
 val PlsKeys.cachedElementPath by createKey<CachedValue<ParadoxElementPath>>("paradox.cached.elementPath")
-val PlsKeys.cachedConfigContext by createKey<CachedValue<ParadoxConfigContext>>("paradox.cached.configContext")
+val PlsKeys.cachedConfigContext by createKey<CachedValue<SoftReference<ParadoxConfigContext>>>("paradox.cached.configContext")
 val PlsKeys.cachedConfigsCache by createKey<CachedValue<SoftReference<MutableMap<String, List<CwtMemberConfig<*>>>>>>("paradox.cached.configs.cache")
 val PlsKeys.cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>("paradox.cached.childOccurrenceMap.cache")
 val PlsKeys.cachedScopeContext by createKey<CachedValue<ParadoxScopeContext>>("paradox.cached.scopeContext")

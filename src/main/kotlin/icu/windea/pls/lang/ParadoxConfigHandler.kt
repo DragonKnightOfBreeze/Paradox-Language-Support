@@ -38,38 +38,32 @@ import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
-import java.lang.ref.SoftReference
+import java.lang.ref.*
 import java.util.concurrent.*
 
 object ParadoxConfigHandler {
     //region Handle Methods
     fun getConfigContext(element: PsiElement): ParadoxConfigContext? {
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return null
-        val contextMemberElement = getContextMemberElement(memberElement)
-        return doGetConfigContextFromCache(contextMemberElement)
-    }
-    
-    private fun getContextMemberElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement {
-        //NOTE 实测不相同
-        
-        ////如果element直接位于某个文件或子句中，这个文件或子句中的所有memberElement的上下文都是相同的
-        ////因此可以直接使用第一个memberElement的上下文
-        //val parent = element.parent
-        //val firstMemberElementInFileOrBlock = parent
-        //    ?.takeIf { it is ParadoxScriptBlockElement }
-        //    ?.findChild<ParadoxScriptMemberElement>()
-        //firstMemberElementInFileOrBlock?.let { return it }
-        
-        return element
+        return doGetConfigContextFromCache(memberElement)
     }
     
     private fun doGetConfigContextFromCache(element: ParadoxScriptMemberElement): ParadoxConfigContext? {
+        val ref = doGetConfigContextRefFromCache(element) ?: return null
+        ref.get()?.let { return it }
+        element.putUserData(PlsKeys.cachedConfigContext, null)
+        val ref0 = doGetConfigContextRefFromCache(element) ?: return null
+        ref0.get()?.let { return it }
+        return doGetConfigContext(element)
+    }
+    
+    private fun doGetConfigContextRefFromCache(element: ParadoxScriptMemberElement): SoftReference<ParadoxConfigContext>? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigContext) {
             ProgressManager.checkCanceled()
-            val value = doGetConfigContext(element)
             //invalidated on ScriptFileTracker
             val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
-            CachedValueProvider.Result.create(value, tracker)
+            val value = doGetConfigContext(element)
+            CachedValueProvider.Result.create(value?.let { SoftReference(it) }, tracker)
         }
     }
     
@@ -163,10 +157,12 @@ object ParadoxConfigHandler {
     }
     
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>> {
-        doGetConfigsCacheRefFromCache(element).get()?.let { return it }
-        doGetConfigsCacheRefFromCache(element).get()?.let { return it }
-        element.putUserData(PlsKeys.cachedConfigsCache, null)
-        return ConcurrentHashMap()
+        val ref = doGetConfigsCacheRefFromCache(element)
+        ref.get()?.let { return it }
+        element.putUserData(PlsKeys.cachedConfigContext, null)
+        val ref0 = doGetConfigsCacheRefFromCache(element)
+        ref0.get()?.let { return it }
+        return doGetConfigsCache()
     }
     
     private fun doGetConfigsCacheRefFromCache(element: PsiElement): SoftReference<MutableMap<String, List<CwtMemberConfig<*>>>> {
@@ -174,8 +170,13 @@ object ParadoxConfigHandler {
             //invalidated on ScriptFileTracker
             val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
             //use soft reference to optimize memory
-            CachedValueProvider.Result.create(SoftReference(ConcurrentHashMap()), tracker)
+            val value = doGetConfigsCache()
+            CachedValueProvider.Result.create(SoftReference(value), tracker)
         }
+    }
+    
+    private fun doGetConfigsCache(): MutableMap<String, List<CwtMemberConfig<*>>> {
+        return ConcurrentHashMap()
     }
     
     private fun doGetConfigs(element: PsiElement, orDefault: Boolean, matchOptions: Int): List<CwtMemberConfig<*>> {
