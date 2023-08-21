@@ -43,7 +43,7 @@ class ParadoxInlineScriptUsageConfigContextProvider: ParadoxConfigContextProvide
         val configGroup = configContext.configGroup
         val inlineConfigs = configGroup.inlineConfigGroup[ParadoxInlineScriptHandler.inlineScriptKey] ?: return null
         val element = configContext.element
-        val rootConfigs = inlineConfigs.map { ParadoxConfigInlineHandler.inlineWithInlineConfig(it) }
+        val rootConfigs = inlineConfigs.map { ParadoxConfigGenerator.inlineWithInlineConfig(it) }
         return ParadoxConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
     }
 }

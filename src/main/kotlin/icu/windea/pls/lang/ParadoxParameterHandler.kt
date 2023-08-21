@@ -183,7 +183,7 @@ object ParadoxParameterHandler {
             ProgressManager.checkCanceled()
             val contextInfo = ParadoxParameterSupport.getContextInfo(context) ?: return@p true
             val config = getInferredConfig(parameterElement.name, contextInfo)
-            result.mergeValue(config) { v1, v2 -> ParadoxConfigMergeHandler.mergeValueConfig(v1, v2) }
+            result.mergeValue(config) { v1, v2 -> ParadoxConfigMerger.mergeValueConfig(v1, v2) }
         }
         val resolved = result.get()
         
@@ -209,7 +209,7 @@ object ParadoxParameterHandler {
         parameterInfos.process { parameterInfo ->
             ProgressManager.checkCanceled()
             val config = ParadoxParameterInferredConfigProvider.getConfig(parameterInfo, parameterContextInfo)
-            result.mergeValue(config) { v1, v2 -> ParadoxConfigMergeHandler.mergeValueConfig(v1, v2) }
+            result.mergeValue(config) { v1, v2 -> ParadoxConfigMerger.mergeValueConfig(v1, v2) }
         }
         return result.get()
     }
@@ -239,7 +239,7 @@ object ParadoxParameterHandler {
             ProgressManager.checkCanceled()
             val contextInfo = ParadoxParameterSupport.getContextInfo(context) ?: return@p true
             val contextConfigs = getInferredContextConfigs(parameterElement.name, contextInfo).takeIfNotEmpty()
-            result.mergeValue(contextConfigs) { v1, v2 -> ParadoxConfigMergeHandler.mergeConfigs(v1, v2) }
+            result.mergeValue(contextConfigs) { v1, v2 -> ParadoxConfigMerger.mergeConfigs(v1, v2) }
         }
         val resolved = result.get().orEmpty()
         
@@ -264,7 +264,7 @@ object ParadoxParameterHandler {
         parameterInfos.process { parameterInfo ->
             ProgressManager.checkCanceled()
             val contextConfigs = ParadoxParameterInferredConfigProvider.getContextConfigs(parameterInfo, parameterContextInfo).takeIfNotEmpty()
-            result.mergeValue(contextConfigs) { v1,v2 -> ParadoxConfigMergeHandler.mergeConfigs(v1, v2) }
+            result.mergeValue(contextConfigs) { v1,v2 -> ParadoxConfigMerger.mergeConfigs(v1, v2) }
         }
         return result.get().orEmpty()
     }

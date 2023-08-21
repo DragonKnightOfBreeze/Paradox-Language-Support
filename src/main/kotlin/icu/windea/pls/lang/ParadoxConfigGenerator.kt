@@ -1,31 +1,84 @@
 package icu.windea.pls.lang
 
 import com.intellij.psi.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 
-object ParadoxConfigInlineHandler {
-    enum class Mode {
+object ParadoxConfigGenerator {
+    fun deepCopyConfigs(config: CwtMemberConfig<*>): List<CwtMemberConfig<*>>? {
+        if(config.configs.isNullOrEmpty()) return config.configs
+        return config.configs?.mapFast { c1 ->
+            when(c1) {
+                is CwtPropertyConfig -> c1.copyDelegated(c1.parent, deepCopyConfigs(c1))
+                is CwtValueConfig -> c1.copyDelegated(c1.parent, deepCopyConfigs(c1))
+            }
+        }
+    }
+    
+    fun deepCopyConfigsInDeclarationConfig(config: CwtMemberConfig<*>, configContext: CwtDeclarationConfigContext): List<CwtMemberConfig<*>> {
+        //因为之后可能需要对得到的声明规则进行注入，需要保证当注入时所有规则列表都是可变的
+        
+        val mergedConfigs: MutableList<CwtMemberConfig<*>>? = if(config.configs != null) mutableListOf() else null
+        config.configs?.forEachFast { c1 ->
+            val c2s = deepCopyConfigsInDeclarationConfig(c1, configContext)
+            if(c2s.isNotEmpty()) {
+                for(c2 in c2s) {
+                    mergedConfigs?.add(c2)
+                }
+            }
+        }
+        when(config) {
+            is CwtValueConfig -> {
+                val mergedConfig = config.copyDelegated(config.parent, mergedConfigs)
+                if(configContext.injectors.isNotEmpty()) return mutableListOf(mergedConfig)
+                return mergedConfig.toSingletonList()
+            }
+            is CwtPropertyConfig -> {
+                val subtypeExpression = config.key.removeSurroundingOrNull("subtype[", "]")
+                if(subtypeExpression == null) {
+                    val mergedConfig = config.copyDelegated(config.parent, mergedConfigs)
+                    if(configContext.injectors.isNotEmpty()) return mutableListOf(mergedConfig)
+                    return mergedConfig.toSingletonList()
+                } else {
+                    val subtypes = configContext.definitionSubtypes
+                    if(subtypes == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
+                        mergedConfigs?.forEachFast { mergedConfig ->
+                            mergedConfig.parent = config.parent
+                        }
+                        if(configContext.injectors.isNotEmpty()) return mergedConfigs ?: mutableListOf()
+                        return mergedConfigs.orEmpty()
+                    } else {
+                        if(configContext.injectors.isNotEmpty()) return mutableListOf()
+                        return emptyList()
+                    }
+                }
+            }
+        }
+    }
+    
+    enum class InlineMode {
         KEY_TO_KEY, KEY_TO_VALUE, VALUE_TO_KEY, VALUE_TO_VALUE
     }
     
-    fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, mode: Mode): CwtPropertyConfig? {
+    fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, inlineMode: InlineMode): CwtPropertyConfig? {
         val inlined = config.copy(
-            key = when(mode) {
-                Mode.KEY_TO_KEY -> if(otherConfig is CwtPropertyConfig) otherConfig.key else return null
-                Mode.VALUE_TO_KEY -> otherConfig.value
+            key = when(inlineMode) {
+                InlineMode.KEY_TO_KEY -> if(otherConfig is CwtPropertyConfig) otherConfig.key else return null
+                InlineMode.VALUE_TO_KEY -> otherConfig.value
                 else -> config.key
             },
-            value = when(mode) {
-                Mode.VALUE_TO_VALUE -> otherConfig.value
-                Mode.KEY_TO_VALUE -> if(otherConfig is CwtPropertyConfig) otherConfig.key else return null
+            value = when(inlineMode) {
+                InlineMode.VALUE_TO_VALUE -> otherConfig.value
+                InlineMode.KEY_TO_VALUE -> if(otherConfig is CwtPropertyConfig) otherConfig.key else return null
                 else -> config.value
             },
-            configs = when(mode) {
-                Mode.KEY_TO_VALUE -> null
-                Mode.VALUE_TO_VALUE -> otherConfig.deepCopyConfigs()
-                else -> config.deepCopyConfigs()
+            configs = when(inlineMode) {
+                InlineMode.KEY_TO_VALUE -> null
+                InlineMode.VALUE_TO_VALUE -> deepCopyConfigs(otherConfig)
+                else -> deepCopyConfigs(config)
             },
         )
         inlined.configs?.forEachFast { it.parent = inlined }
@@ -41,7 +94,7 @@ object ParadoxConfigInlineHandler {
         val other = inlineConfig.config
         val inlined = other.copy(
             key = inlineConfig.name,
-            configs = other.deepCopyConfigs()
+            configs = deepCopyConfigs(other)
         )
         inlined.configs?.forEachFast { it.parent = inlined }
         inlined.inlineableConfig = inlineConfig
@@ -56,7 +109,7 @@ object ParadoxConfigInlineHandler {
         val inlined = config.copy(
             key = aliasConfig.subName,
             value = other.value,
-            configs = other.deepCopyConfigs(),
+            configs = deepCopyConfigs(other),
             documentation = other.documentation,
             options = other.options
         )
@@ -75,7 +128,7 @@ object ParadoxConfigInlineHandler {
         val other = singleAliasConfig.config
         val inlined = config.copy(
             value = other.value,
-            configs = other.deepCopyConfigs(),
+            configs = deepCopyConfigs(other),
             documentation = config.documentation ?: other.documentation,
             options = config.options
         )

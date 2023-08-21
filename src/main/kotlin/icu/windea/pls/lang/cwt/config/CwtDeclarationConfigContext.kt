@@ -74,7 +74,7 @@ class CwtDeclarationConfigContext(
         val injectedResult = CwtDeclarationConfigInjector.getDeclarationMergedConfig(this, injectors)
         if(injectedResult != null) return injectedResult
         
-        val configs = declarationConfig.propertyConfig.configs?.flatMap { it.deepCopyConfigsInDeclarationConfig(this) }
+        val configs = declarationConfig.propertyConfig.configs?.flatMap { ParadoxConfigGenerator.deepCopyConfigsInDeclarationConfig(it, this) }
         return declarationConfig.propertyConfig.copy(configs = configs)
         //declarationConfig.propertyConfig.parent should be null here
     }

@@ -118,7 +118,7 @@ object ParadoxConfigHandler {
                     configs.forEachFast f3@{ config ->
                         if(config is CwtPropertyConfig) {
                             if(!matchKey || ParadoxConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) {
-                                val inlinedConfigs = ParadoxConfigInlineHandler.inlineByConfig(element, subPath, isQuoted, config, matchOptions)
+                                val inlinedConfigs = ParadoxConfigGenerator.inlineByConfig(element, subPath, isQuoted, config, matchOptions)
                                 if(inlinedConfigs.isEmpty()) {
                                     nextResult.add(config)
                                 } else {

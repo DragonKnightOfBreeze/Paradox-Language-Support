@@ -48,57 +48,6 @@ val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<PsiElement>
         else -> this
     }
 
-fun <T : PsiElement> CwtMemberConfig<T>.deepCopyConfigs(): List<CwtMemberConfig<*>>? {
-    if(configs.isNullOrEmpty()) return configs
-    return configs?.mapFast { config ->
-        when(config) {
-            is CwtPropertyConfig -> config.copyDelegated(config.parent, config.deepCopyConfigs())
-            is CwtValueConfig -> config.copyDelegated(config.parent, config.deepCopyConfigs())
-        }
-    }
-}
-
-fun <T : PsiElement> CwtMemberConfig<T>.deepCopyConfigsInDeclarationConfig(configContext: CwtDeclarationConfigContext): List<CwtMemberConfig<*>> {
-    //因为之后可能需要对得到的声明规则进行注入，需要保证当注入时所有规则列表都是可变的
-    
-    val mergedConfigs: MutableList<CwtMemberConfig<*>>? = if(configs != null) mutableListOf() else null
-    configs?.forEachFast { config ->
-        val childConfigList = config.deepCopyConfigsInDeclarationConfig(configContext)
-        if(childConfigList.isNotEmpty()) {
-            for(childConfig in childConfigList) {
-                mergedConfigs?.add(childConfig)
-            }
-        }
-    }
-    when(this) {
-        is CwtValueConfig -> {
-            val mergedConfig = this.copyDelegated(parent, mergedConfigs)
-            if(configContext.injectors.isNotEmpty()) return mutableListOf(mergedConfig)
-            return mergedConfig.toSingletonList()
-        }
-        is CwtPropertyConfig -> {
-            val subtypeExpression = key.removeSurroundingOrNull("subtype[", "]")
-            if(subtypeExpression == null) {
-                val mergedConfig = this.copyDelegated(parent, mergedConfigs)
-                if(configContext.injectors.isNotEmpty()) return mutableListOf(mergedConfig)
-                return mergedConfig.toSingletonList()
-            } else {
-                val subtypes = configContext.definitionSubtypes
-                if(subtypes == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
-                    mergedConfigs?.forEachFast { mergedConfig ->
-                        mergedConfig.parent = parent
-                    }
-                    if(configContext.injectors.isNotEmpty()) return mergedConfigs ?: mutableListOf()
-                    return mergedConfigs.orEmpty()
-                } else {
-                    if(configContext.injectors.isNotEmpty()) return mutableListOf()
-                    return emptyList()
-                }
-            }
-        }
-    }
-}
-
 val CwtMemberConfig.Keys.cardinality by lazy { Key.create<CwtCardinalityExpression>("cwt.dataConfig.cardinality") }
 val CwtMemberConfig.Keys.cardinalityMinDefine by lazy { Key.create<String>("cwt.dataConfig.cardinalityMinDefine") }
 val CwtMemberConfig.Keys.cardinalityMaxDefine by lazy { Key.create<String>("cwt.dataConfig.cardinalityMaxDefine") }

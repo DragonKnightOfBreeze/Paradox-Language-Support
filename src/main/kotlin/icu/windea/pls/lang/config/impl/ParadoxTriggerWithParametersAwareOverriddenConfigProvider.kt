@@ -38,7 +38,7 @@ class ParadoxTriggerWithParametersAwareOverriddenConfigProvider : ParadoxOverrid
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
         for(resultTriggerConfig in resultTriggerConfigs) {
             if(!resultTriggerConfig.config.isBlock) continue //not complex trigger, skip
-            val inlined = ParadoxConfigInlineHandler.inlineWithConfig(config, resultTriggerConfig.config, ParadoxConfigInlineHandler.Mode.VALUE_TO_VALUE) ?: continue
+            val inlined = ParadoxConfigGenerator.inlineWithConfig(config, resultTriggerConfig.config, ParadoxConfigGenerator.InlineMode.VALUE_TO_VALUE) ?: continue
             resultConfigs.add(inlined)
         }
         return resultConfigs as List<T>

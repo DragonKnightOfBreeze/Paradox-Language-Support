@@ -6,7 +6,7 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.cwt.expression.CwtDataType as T
 
-object ParadoxConfigMergeHandler {
+object ParadoxConfigMerger {
     fun mergeConfigs(cs1: List<CwtMemberConfig<*>>, cs2: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
         //try to merge single value configs first (by value expressions)
         val c1 = cs1.singleOrNull()
