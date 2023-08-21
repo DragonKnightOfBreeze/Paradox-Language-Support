@@ -38,6 +38,7 @@ import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
+import java.lang.ref.SoftReference
 import java.util.concurrent.*
 
 object ParadoxConfigHandler {
@@ -150,7 +151,7 @@ object ParadoxConfigHandler {
         matchOptions: Int = Options.Default
     ): List<CwtMemberConfig<*>> {
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return emptyList()
-        val configsMap = doGetConfigsCacheFromCache(memberElement) ?: return emptyList()
+        val configsMap = doGetConfigsCacheFromCache(memberElement)
         val cacheKey = buildString {
             append('#').append(orDefault.toInt())
             append('#').append(matchOptions)
@@ -161,12 +162,19 @@ object ParadoxConfigHandler {
         }
     }
     
-    private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>>? {
+    private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>> {
+        doGetConfigsCacheRefFromCache(element).get()?.let { return it }
+        doGetConfigsCacheRefFromCache(element).get()?.let { return it }
+        element.putUserData(PlsKeys.cachedConfigsCache, null)
+        return ConcurrentHashMap()
+    }
+    
+    private fun doGetConfigsCacheRefFromCache(element: PsiElement): SoftReference<MutableMap<String, List<CwtMemberConfig<*>>>> {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsCache) {
-            val value = ConcurrentHashMap<String, List<CwtMemberConfig<*>>>()
             //invalidated on ScriptFileTracker
             val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
-            CachedValueProvider.Result.create(value, tracker)
+            //use soft reference to optimize memory
+            CachedValueProvider.Result.create(SoftReference(ConcurrentHashMap()), tracker)
         }
     }
     
