@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 private val NAME = ID.create<String, List<ParadoxValueSetValueInfo>>("paradox.valueSetValue.fast.index")
-private const val VERSION = 34 //1.1.7
+private const val VERSION = 37 //1.1.7
 
 /**
  * 用于索引值集值。

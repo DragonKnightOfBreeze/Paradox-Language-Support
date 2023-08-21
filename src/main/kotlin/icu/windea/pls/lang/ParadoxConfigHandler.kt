@@ -13,6 +13,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
+import com.intellij.util.containers.ContainerUtil
 import com.intellij.util.text.*
 import icons.*
 import icu.windea.pls.*
@@ -38,8 +39,9 @@ import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
-import java.lang.ref.*
-import java.util.concurrent.*
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.isNullOrEmpty
 
 object ParadoxConfigHandler {
     //region Handle Methods
@@ -49,21 +51,12 @@ object ParadoxConfigHandler {
     }
     
     private fun doGetConfigContextFromCache(element: ParadoxScriptMemberElement): ParadoxConfigContext? {
-        val ref = doGetConfigContextRefFromCache(element) ?: return null
-        ref.get()?.let { return it }
-        element.putUserData(PlsKeys.cachedConfigContext, null)
-        val ref0 = doGetConfigContextRefFromCache(element) ?: return null
-        ref0.get()?.let { return it }
-        return doGetConfigContext(element)
-    }
-    
-    private fun doGetConfigContextRefFromCache(element: ParadoxScriptMemberElement): SoftReference<ParadoxConfigContext>? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigContext) {
             ProgressManager.checkCanceled()
             //invalidated on ScriptFileTracker
             val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
             val value = doGetConfigContext(element)
-            CachedValueProvider.Result.create(value?.let { SoftReference(it) }, tracker)
+            CachedValueProvider.Result.create(value, tracker)
         }
     }
     
@@ -157,26 +150,17 @@ object ParadoxConfigHandler {
     }
     
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>> {
-        val ref = doGetConfigsCacheRefFromCache(element)
-        ref.get()?.let { return it }
-        element.putUserData(PlsKeys.cachedConfigContext, null)
-        val ref0 = doGetConfigsCacheRefFromCache(element)
-        ref0.get()?.let { return it }
-        return doGetConfigsCache()
-    }
-    
-    private fun doGetConfigsCacheRefFromCache(element: PsiElement): SoftReference<MutableMap<String, List<CwtMemberConfig<*>>>> {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsCache) {
             //invalidated on ScriptFileTracker
             val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
-            //use soft reference to optimize memory
             val value = doGetConfigsCache()
-            CachedValueProvider.Result.create(SoftReference(value), tracker)
+            CachedValueProvider.Result.create(value, tracker)
         }
     }
     
     private fun doGetConfigsCache(): MutableMap<String, List<CwtMemberConfig<*>>> {
-        return ConcurrentHashMap()
+        //use soft values to optimize memory
+        return ContainerUtil.createConcurrentSoftValueMap()
     }
     
     private fun doGetConfigs(element: PsiElement, orDefault: Boolean, matchOptions: Int): List<CwtMemberConfig<*>> {
@@ -358,11 +342,16 @@ object ParadoxConfigHandler {
     
     private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMemberElement): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedChildOccurrenceMapCache) {
-            val value = ConcurrentHashMap<String, Map<CwtDataExpression, Occurrence>>()
             //invalidated on ScriptFileTracker
             val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
+            val value = doGetChildOccurrenceMapCache()
             CachedValueProvider.Result.create(value, tracker)
         }
+    }
+    
+    private fun doGetChildOccurrenceMapCache(): MutableMap<String, Map<CwtDataExpression, Occurrence>> {
+        //use soft values to optimize memory
+        return ContainerUtil.createConcurrentSoftValueMap()
     }
     
     private fun doGetChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
