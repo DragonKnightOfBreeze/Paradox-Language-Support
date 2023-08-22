@@ -8,7 +8,7 @@ import icu.windea.pls.model.*
  * @property value 游戏类型。
  */
 @MustBeDocumented
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FUNCTION)
 annotation class WithGameType(
 	vararg val value: ParadoxGameType
 )
