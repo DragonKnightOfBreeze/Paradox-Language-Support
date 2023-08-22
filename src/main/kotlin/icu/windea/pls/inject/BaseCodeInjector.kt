@@ -14,7 +14,7 @@ import kotlin.reflect.jvm.*
 
 /**
  * @see InjectTarget
- * @see Inject
+ * @see InjectMethod
  */
 abstract class BaseCodeInjector : CodeInjector() {
     final override fun inject() {
@@ -60,12 +60,12 @@ abstract class BaseCodeInjector : CodeInjector() {
         val injectMethodInfos = mutableMapOf<String, CodeInjectorInfo.MethodInfo>()
         val functions = this::class.declaredFunctions
         for(function in functions) {
-            val inject = function.findAnnotation<Inject>() ?: continue
+            val injectMethod = function.findAnnotation<InjectMethod>() ?: continue
             val method = function.javaMethod ?: continue
             val uuid = UUID.randomUUID().toString()
             injectMethods.put(uuid, method)
             val hasReceiver = function.extensionReceiverParameter != null
-            val injectMethodInfo = CodeInjectorInfo.MethodInfo(inject.pointer, hasReceiver)
+            val injectMethodInfo = CodeInjectorInfo.MethodInfo(injectMethod.pointer, hasReceiver)
             injectMethodInfos.put(uuid, injectMethodInfo)
         }
         return CodeInjectorInfo(this, injectTargetName, injectPluginId, injectMethods, injectMethodInfos)
@@ -93,11 +93,11 @@ abstract class BaseCodeInjector : CodeInjector() {
             }
             
             val targetArg = if(Modifier.isStatic(targetMethod.modifiers)) "null" else "$0"
-            val returnValueArg = if(injectMethodInfo.pointer == Inject.Pointer.AFTER || injectMethodInfo.pointer == Inject.Pointer.AFTER_FINALLY) "\$_" else "null"
+            val returnValueArg = if(injectMethodInfo.pointer == InjectMethod.Pointer.AFTER || injectMethodInfo.pointer == InjectMethod.Pointer.AFTER_FINALLY) "\$_" else "null"
             
             val args = "new Object[] { \"$id\", \"$methodId\", \$args, (\$w) $targetArg, (\$w) $returnValueArg }"
             val expr = "(\$r) __invokeInjectMethodMethod__.invoke(__codeInjectorService__, $args)"
-            val code = if(injectMethodInfo.pointer != Inject.Pointer.BEFORE) "return $expr;" else """
+            val code = if(injectMethodInfo.pointer != InjectMethod.Pointer.BEFORE) "return $expr;" else """
                 {
                     try {
                         return $expr;
@@ -108,17 +108,11 @@ abstract class BaseCodeInjector : CodeInjector() {
                 """.trimIndent()
             
             when(injectMethodInfo.pointer) {
-                Inject.Pointer.BODY -> targetMethod.setBody(code)
-                Inject.Pointer.BEFORE -> targetMethod.insertBefore(code)
-                Inject.Pointer.AFTER -> targetMethod.insertAfter(code, false, targetMethod.declaringClass.isKotlin)
-                Inject.Pointer.AFTER_FINALLY -> targetMethod.insertAfter(code, true, targetMethod.declaringClass.isKotlin)
+                InjectMethod.Pointer.BODY -> targetMethod.setBody(code)
+                InjectMethod.Pointer.BEFORE -> targetMethod.insertBefore(code)
+                InjectMethod.Pointer.AFTER -> targetMethod.insertAfter(code, false, targetMethod.declaringClass.isKotlin)
+                InjectMethod.Pointer.AFTER_FINALLY -> targetMethod.insertAfter(code, true, targetMethod.declaringClass.isKotlin)
             }
-        }
-    }
-    
-    private fun applyCodeInjectorSupports() {
-        CodeInjectorSupport.EP_NAME.extensionList.forEach { ep ->
-            ep.apply(this)
         }
     }
     
@@ -132,6 +126,12 @@ abstract class BaseCodeInjector : CodeInjector() {
     
     protected fun continueInvocation(): Nothing {
         throw CONTINUE_INVOCATION
+    }
+    
+    private fun applyCodeInjectorSupports() {
+        CodeInjectorSupport.EP_NAME.extensionList.forEach { ep ->
+            ep.apply(this)
+        }
     }
     
     companion object {

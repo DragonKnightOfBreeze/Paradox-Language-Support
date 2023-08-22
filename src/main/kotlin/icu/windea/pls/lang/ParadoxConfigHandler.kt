@@ -18,7 +18,7 @@ import com.intellij.util.text.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.annotations.api.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*

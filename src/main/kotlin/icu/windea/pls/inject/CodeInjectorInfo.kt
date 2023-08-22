@@ -11,7 +11,7 @@ data class CodeInjectorInfo(
     val injectMethodInfos: Map<String, MethodInfo>
 ) {
     data class MethodInfo(
-        val pointer: Inject.Pointer,
+        val pointer: InjectMethod.Pointer,
         val hasReceiver: Boolean
     )
 }

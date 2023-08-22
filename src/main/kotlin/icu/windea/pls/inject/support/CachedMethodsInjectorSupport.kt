@@ -7,29 +7,16 @@ import javassist.*
 import kotlin.reflect.full.*
 
 /**
- * @see FieldCache
+ * 用于支持基于字段缓存的方法。
+ * @see InjectCachedMethods
  */
-class FieldCacheCodeInjectorSupport : CodeInjectorSupport() {
+class CachedMethodsInjectorSupport : CodeInjectorSupport() {
     override fun apply(codeInjector: CodeInjector) {
         val targetClass = codeInjector.getUserData(CodeInjectorService.targetClassKey) ?: return
-        val fieldCache = codeInjector::class.findAnnotation<FieldCache>() ?: return
-        val methodNames = fieldCache.methods
-        val fieldPrefix = fieldCache.fieldPrefix
-        val cleanupMethodName = fieldCache.cleanupMethod
+        val injectCachedMethods = codeInjector::class.findAnnotation<InjectCachedMethods>() ?: return
+        val methodNames = injectCachedMethods.methods
+        val cleanupMethodName = injectCachedMethods.cleanupMethod
         if(methodNames.isEmpty()) return
-        var cleanupMethod = targetClass.declaredMethods.find { it.name == cleanupMethodName }
-        if(cleanupMethod == null) {
-            val superCleanUpMethod = targetClass.methods.find { it.name == cleanupMethodName }
-            if(superCleanUpMethod != null) {
-                val m = CtMethod(superCleanUpMethod, targetClass, null)
-                m.setBody("{ return super.${superCleanUpMethod.name}(\$\$); }")
-                targetClass.addMethod(m)
-                cleanupMethod = m
-            } else {
-                thisLogger().warn("Clean up method ${cleanupMethodName}() is not found in ${targetClass.name}")
-                return
-            }
-        }
         
         val finalMethodNames = mutableSetOf<String>()
         for(methodName in methodNames) {
@@ -54,18 +41,32 @@ class FieldCacheCodeInjectorSupport : CodeInjectorSupport() {
             }
             
             finalMethodNames.add(methodName)
-            val fieldName = fieldPrefix + methodName
+            val fieldName = "__${methodName}__"
             val returnTypeName = if(returnType is CtPrimitiveType) returnType.wrapperName else returnType.name
-            val field = CtField.make("public volatile ${returnTypeName} ${fieldName} = null;", targetClass)
+            val emptyObjectField = CtField.make("public static final Object __EMPTY_OBJECT__ = new Object();", targetClass)
+            targetClass.addField(emptyObjectField)
+            val field = CtField.make("public volatile ${returnTypeName} ${fieldName} = __EMPTY_OBJECT__;", targetClass)
             targetClass.addField(field)
-            val code1 = "{ if(${fieldName} != null) { return ${fieldName}; } }"
+            val code1 = "{ if(${fieldName} != __EMPTY_OBJECT__) { return ${fieldName}; } }"
             method.insertBefore(code1)
             val code2 = "{ ${fieldName} = \$_; }"
             method.insertAfter(code2)
         }
         
-        val s = finalMethodNames.joinToString("\n") { methodName -> "${fieldPrefix}${methodName} = null;" }
-        val code = "{\n$s\n}"
-        cleanupMethod.insertBefore(code)
+        var cleanupMethod = targetClass.declaredMethods.find { it.name == cleanupMethodName }
+        if(cleanupMethod == null) {
+            val superCleanUpMethod = targetClass.methods.find { it.name == cleanupMethodName }
+            if(superCleanUpMethod != null) {
+                val m = CtMethod(superCleanUpMethod, targetClass, null)
+                m.setBody("{ return super.${superCleanUpMethod.name}(\$\$); }")
+                targetClass.addMethod(m)
+                cleanupMethod = m
+            }
+        }
+        if(cleanupMethod != null) {
+            val s = finalMethodNames.joinToString("\n") { methodName -> "__${methodName}__ = null;" }
+            val code = "{\n$s\n}"
+            cleanupMethod.insertBefore(code)
+        }
     }
 }

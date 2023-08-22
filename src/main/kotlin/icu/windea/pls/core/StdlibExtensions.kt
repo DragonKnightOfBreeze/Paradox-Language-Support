@@ -599,14 +599,6 @@ fun URL.toPath() = Paths.get(this.toURI())
 //	return this.onFailure { if(predicate(it)) throw it }.getOrNull()
 //}
 
-inline fun <V, T> withPropertyValue(property: KMutableProperty0<V>, value: V, action: () -> T): T {
-    val oldValue = property.get()
-    property.set(value)
-    val result = action()
-    property.set(oldValue)
-    return result
-}
-
 typealias FloatRange = ClosedRange<Float>
 
 operator fun FloatRange.contains(element: Float?): Boolean {

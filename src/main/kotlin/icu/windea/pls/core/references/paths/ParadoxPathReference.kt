@@ -4,7 +4,7 @@ import com.intellij.codeInsight.daemon.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.annotations.api.*
 import icu.windea.pls.lang.documentation.*
 
 @HiddenApi

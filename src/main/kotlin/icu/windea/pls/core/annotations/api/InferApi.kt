@@ -1,4 +1,4 @@
-package icu.windea.pls.core.annotations
+package icu.windea.pls.core.annotations.api
 
 /**
  * 注明此API的实现使用了某种推断逻辑。

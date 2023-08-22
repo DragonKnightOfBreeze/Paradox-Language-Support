@@ -22,7 +22,7 @@ class SymbolNavigationServiceImplCodeInjector : BaseCodeInjector() {
     //com.intellij.codeInsight.navigation.impl.SymbolNavigationServiceImpl
     //com.intellij.codeInsight.navigation.impl.SymbolNavigationServiceImpl.getNavigationTargets
     
-    @Inject(Inject.Pointer.AFTER)
+    @InjectMethod(InjectMethod.Pointer.AFTER)
     fun getNavigationTargets(project: Project, symbol: Symbol, returnValue: Collection<NavigationTarget>): Collection<NavigationTarget> {
         if(returnValue.isEmpty()) return returnValue
         return returnValue.filter { getElement(it) !is ParadoxFakePsiElement }

@@ -67,15 +67,14 @@ fun CwtValueConfig.copyDelegated(
     }
 }
 
-val CwtValueConfig.isTagConfig get() = findOptionValue("tag") != null
-
 private object CwtValueConfigImpls {
-    sealed class Impl : UserDataHolderBase(), CwtValueConfig {
+    abstract class Impl : UserDataHolderBase(), CwtValueConfig {
         override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
         override val expression: CwtValueExpression get() = valueExpression
         
         override fun resolved(): CwtValueConfig = inlineableConfig?.config?.castOrNull<CwtValueConfig>() ?: this
         override fun resolvedOrNull(): CwtValueConfig? = inlineableConfig?.config?.castOrNull<CwtValueConfig>()
+        
         override fun toString(): String = value
     }
     
@@ -109,8 +108,9 @@ private object CwtValueConfigImpls {
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtValue>? = null
         
         override val propertyConfig: CwtPropertyConfig? get() = null
-        override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstanceFast<CwtValueConfig>() }
-        override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstanceFast<CwtPropertyConfig>() }
+        
+        @Lazy override val values: List<CwtValueConfig>? = configs?.filterIsInstanceFast<CwtValueConfig>()
+        @Lazy override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstanceFast<CwtPropertyConfig>()
     }
     
     class ImplC(
@@ -143,8 +143,8 @@ private object CwtValueConfigImpls {
         @Volatile override var parent: CwtMemberConfig<*>? = null
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtValue>? = null
         
-        override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstanceFast<CwtValueConfig>() }
-        override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstanceFast<CwtPropertyConfig>() }
+        @Lazy override val values: List<CwtValueConfig>? = configs?.filterIsInstanceFast<CwtValueConfig>()
+        @Lazy override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstanceFast<CwtPropertyConfig>()
     }
     
     class DelegateA(
@@ -155,8 +155,6 @@ private object CwtValueConfigImpls {
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val values: List<CwtValueConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val properties: List<CwtPropertyConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        
-        override fun toString(): String = value
     }
     
     class DelegateB(
@@ -165,9 +163,7 @@ private object CwtValueConfigImpls {
         override val configs: List<CwtMemberConfig<*>>? = null,
         override val propertyConfig: CwtPropertyConfig? = null,
     ) : CwtValueConfig by delegate {
-        override val values: List<CwtValueConfig>? by lazy { configs?.filterIsInstanceFast<CwtValueConfig>() }
-        override val properties: List<CwtPropertyConfig>? by lazy { configs?.filterIsInstanceFast<CwtPropertyConfig>() }
-        
-        override fun toString(): String = value
+        @Lazy override val values: List<CwtValueConfig>? = configs?.filterIsInstanceFast<CwtValueConfig>()
+        @Lazy override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstanceFast<CwtPropertyConfig>()
     }
 }

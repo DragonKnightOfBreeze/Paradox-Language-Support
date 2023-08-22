@@ -4,7 +4,7 @@ import com.intellij.openapi.extensions.*
 import com.intellij.openapi.util.*
 
 /**
- * 用于在运行时动态修改第三方代码。
+ * 代码注入器。
  */
 abstract class CodeInjector: UserDataHolderBase() {
     open val id: String = javaClass.name

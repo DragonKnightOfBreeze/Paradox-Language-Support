@@ -28,6 +28,8 @@ sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig
     
     override fun resolvedOrNull(): CwtMemberConfig<T>? = inlineableConfig?.config?.castOrNull<CwtMemberConfig<T>>()
     
+    override fun toString(): String
+    
     object Keys: KeyAware
 }
 
@@ -47,6 +49,8 @@ val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<PsiElement>
         this is CwtValueConfig -> propertyConfig ?: this
         else -> this
     }
+
+val CwtValueConfig.isTagConfig get() = findOptionValue("tag") != null
 
 val CwtMemberConfig.Keys.cardinality by lazy { Key.create<CwtCardinalityExpression>("cwt.dataConfig.cardinality") }
 val CwtMemberConfig.Keys.cardinalityMinDefine by lazy { Key.create<String>("cwt.dataConfig.cardinalityMinDefine") }

@@ -62,26 +62,15 @@ fun CwtPropertyConfig.copyDelegated(
     }
 }
 
-fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
-    val valuePointer = when {
-        pointer.isEmpty() -> emptyPointer()
-        else -> {
-            val resolvedPointer = resolved().pointer
-            val resolvedFile = resolvedPointer.containingFile ?: return null
-            resolvedPointer.element?.propertyValue?.createPointer(resolvedFile)
-        }
-    } ?: return null
-    return CwtValueConfig.resolve(valuePointer, info, value, valueType.id, configs, options, documentation, this)
-}
-
 private object CwtPropertyConfigImpls {
-    sealed class Impl : UserDataHolderBase(), CwtPropertyConfig {
+    abstract class Impl : UserDataHolderBase(), CwtPropertyConfig {
         override val keyExpression: CwtKeyExpression get() = CwtKeyExpression.resolve(key)
         override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
         override val expression: CwtKeyExpression get() = keyExpression
         
         override fun resolved(): CwtPropertyConfig = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>() ?: this
         override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>()
+        
         override fun toString(): String = "$key ${separatorType.text} $value"
     }
     
@@ -98,7 +87,8 @@ private object CwtPropertyConfigImpls {
         @Volatile override var parent: CwtMemberConfig<*>? = null
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
         
-        override val valueConfig: CwtValueConfig? by lazy { getValueConfig() }
+        @Lazy override val valueConfig: CwtValueConfig? = doGetValueConfig()
+        
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val values: List<CwtValueConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val properties: List<CwtPropertyConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
@@ -118,21 +108,21 @@ private object CwtPropertyConfigImpls {
         @Volatile override var parent: CwtMemberConfig<*>? = null
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
         
-        override val valueConfig: CwtValueConfig? by lazy { getValueConfig() }
-        override val values: List<CwtValueConfig>? = configs?.filterIsInstanceFast<CwtValueConfig>()
-        override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstanceFast<CwtPropertyConfig>()
+        @Lazy override val valueConfig: CwtValueConfig? = doGetValueConfig()
+        
+        @Lazy override val values: List<CwtValueConfig>? = configs?.filterIsInstanceFast<CwtValueConfig>()
+        @Lazy override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstanceFast<CwtPropertyConfig>()
     }
     
     class DelegateA(
         delegate: CwtPropertyConfig,
         override var parent: CwtMemberConfig<*>?,
     ) : CwtPropertyConfig by delegate {
-        override val valueConfig: CwtValueConfig? by lazy { getValueConfig() }
+        @Lazy override val valueConfig: CwtValueConfig? = doGetValueConfig()
+        
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val values: List<CwtValueConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val properties: List<CwtPropertyConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        
-        override fun toString(): String = "$key ${separatorType.text} $value"
     }
     
     class DelegateB(
@@ -140,10 +130,21 @@ private object CwtPropertyConfigImpls {
         override var parent: CwtMemberConfig<*>?,
         override val configs: List<CwtMemberConfig<*>>? = null,
     ) : CwtPropertyConfig by delegate {
-        override val valueConfig: CwtValueConfig? by lazy { getValueConfig() }
-        override val values: List<CwtValueConfig>? = configs?.filterIsInstanceFast<CwtValueConfig>()
-        override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstanceFast<CwtPropertyConfig>()
+        @Lazy override val valueConfig: CwtValueConfig? = doGetValueConfig()
         
-        override fun toString(): String = "$key ${separatorType.text} $value"
+        @Lazy override val values: List<CwtValueConfig>? = configs?.filterIsInstanceFast<CwtValueConfig>()
+        @Lazy override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstanceFast<CwtPropertyConfig>()
     }
+}
+
+private fun CwtPropertyConfig.doGetValueConfig(): CwtValueConfig? {
+    val valuePointer = when {
+        pointer.isEmpty() -> emptyPointer()
+        else -> {
+            val resolvedPointer = resolved().pointer
+            val resolvedFile = resolvedPointer.containingFile ?: return null
+            resolvedPointer.element?.propertyValue?.createPointer(resolvedFile)
+        }
+    } ?: return null
+    return CwtValueConfig.resolve(valuePointer, info, value, valueType.id, configs, options, documentation, this)
 }

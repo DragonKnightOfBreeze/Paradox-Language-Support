@@ -18,7 +18,7 @@ class FileRenderCodeInjector : BaseCodeInjector() {
     //com.intellij.openapi.fileChooser.tree.FileRenderer
     //com.intellij.openapi.fileChooser.tree.FileRenderer.customize
     
-    @Inject(Inject.Pointer.AFTER)
+    @InjectMethod(InjectMethod.Pointer.AFTER)
     fun Any.customize(renderer: SimpleColoredComponent, value: Any, selected: Boolean, focused: Boolean) {
         try {
             val file = when {

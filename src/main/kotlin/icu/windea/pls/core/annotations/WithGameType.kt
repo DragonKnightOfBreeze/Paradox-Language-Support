@@ -3,7 +3,7 @@ package icu.windea.pls.core.annotations
 import icu.windea.pls.model.*
 
 /**
- * 注明此功能仅限于指定的游戏类型。
+ * 注明此功能仅适用于特定的游戏类型。
  * 
  * @property value 游戏类型。
  */

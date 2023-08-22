@@ -13,7 +13,7 @@ class RefManagerImplCodeInjector : BaseCodeInjector() {
     //com.intellij.codeInspection.reference.RefManagerImpl
     //com.intellij.codeInspection.reference.RefManagerImpl.getGroupName
     
-    @Inject(Inject.Pointer.BEFORE)
+    @InjectMethod(InjectMethod.Pointer.BEFORE)
     fun getGroupName(entity: RefElement): String? {
         if(entity is RefFile) {
             //按目录分组时显示相对于游戏或模组根目录的路径

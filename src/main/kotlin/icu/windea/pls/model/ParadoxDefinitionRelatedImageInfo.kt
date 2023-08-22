@@ -1,6 +1,6 @@
 package icu.windea.pls.model
 
-import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.annotations.api.*
 import icu.windea.pls.lang.cwt.expression.*
 
 data class ParadoxDefinitionRelatedImageInfo(

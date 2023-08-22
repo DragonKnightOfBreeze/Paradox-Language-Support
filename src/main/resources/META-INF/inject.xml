@@ -10,7 +10,7 @@
   </extensions>
   .
   <extensions defaultExtensionNs="icu.windea.pls.inject">
-    <codeInjectorSupport implementation="icu.windea.pls.inject.support.FieldCacheCodeInjectorSupport"/>
+    <codeInjectorSupport implementation="icu.windea.pls.inject.support.CachedMethodsInjectorSupport"/>
   </extensions>
   
   <extensions defaultExtensionNs="icu.windea.pls.inject">
