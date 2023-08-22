@@ -6,6 +6,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.inject.annotations.Lazy
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.model.*
 

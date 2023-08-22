@@ -17,7 +17,7 @@ import javax.imageio.*
  * 用于支持直接在IDE的编辑器中渲染DDS图片。
  */
 @InjectTarget("org.intellij.images.vfs.IfsUtil", pluginId = "com.intellij.platform.images")
-class IfsUtilCodeInjector : BaseCodeInjector() {
+class IfsUtilCodeInjector : CodeInjectorBase() {
     //org.intellij.images.vfs.IfsUtil
     //org.intellij.images.vfs.IfsUtil.refresh
     

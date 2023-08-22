@@ -14,10 +14,9 @@ class CachedMethodsInjectorSupport : CodeInjectorSupport() {
     override fun apply(codeInjector: CodeInjector) {
         val targetClass = codeInjector.getUserData(CodeInjectorService.targetClassKey) ?: return
         val injectCachedMethods = codeInjector::class.findAnnotation<InjectCachedMethods>() ?: return
-        val methodNames = injectCachedMethods.methods
-        val cleanupMethodName = injectCachedMethods.cleanupMethod
-        if(methodNames.isEmpty()) return
         
+        val methodNames = injectCachedMethods.methods
+        if(methodNames.isEmpty()) return
         val finalMethodNames = mutableSetOf<String>()
         for(methodName in methodNames) {
             var method = targetClass.declaredMethods.find { it.name == methodName && it.parameterTypes.isEmpty() }
@@ -53,6 +52,8 @@ class CachedMethodsInjectorSupport : CodeInjectorSupport() {
             method.insertAfter(code2)
         }
         
+        val cleanupMethodName = injectCachedMethods.cleanupMethod
+        if(cleanupMethodName.isEmpty()) return //cleanup method is optional
         var cleanupMethod = targetClass.declaredMethods.find { it.name == cleanupMethodName }
         if(cleanupMethod == null) {
             val superCleanUpMethod = targetClass.methods.find { it.name == cleanupMethodName }
@@ -61,12 +62,13 @@ class CachedMethodsInjectorSupport : CodeInjectorSupport() {
                 m.setBody("{ return super.${superCleanUpMethod.name}(\$\$); }")
                 targetClass.addMethod(m)
                 cleanupMethod = m
+            } else {
+                thisLogger().warn("Clean up method ${cleanupMethodName}() is not found in ${targetClass.name}")
+                return
             }
         }
-        if(cleanupMethod != null) {
-            val s = finalMethodNames.joinToString("\n") { methodName -> "__${methodName}__ = null;" }
-            val code = "{\n$s\n}"
-            cleanupMethod.insertBefore(code)
-        }
+        val s = finalMethodNames.joinToString("\n") { methodName -> "__${methodName}__ = null;" }
+        val code = "{\n$s\n}"
+        cleanupMethod.insertBefore(code)
     }
 }

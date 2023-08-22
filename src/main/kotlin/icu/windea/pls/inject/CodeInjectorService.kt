@@ -1,6 +1,7 @@
 package icu.windea.pls.inject
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import javassist.*
@@ -11,6 +12,7 @@ import java.lang.reflect.*
  *
  * @see CodeInjector
  */
+@Service
 class CodeInjectorService : UserDataHolderBase() {
     companion object {
         //for Application / CodeInjector

@@ -1,10 +1,11 @@
-package icu.windea.pls.inject.support
+package icu.windea.pls.inject
 
 import com.intellij.openapi.extensions.*
-import icu.windea.pls.inject.*
 
 /**
- * 用于提供额外的代码注入策略的支持。
+ * 用于支持额外的代码注入器策略。
+ * @see CodeInjector
+ * @see CodeInjectorBase
  */
 abstract class CodeInjectorSupport {
     abstract fun apply(codeInjector: CodeInjector)

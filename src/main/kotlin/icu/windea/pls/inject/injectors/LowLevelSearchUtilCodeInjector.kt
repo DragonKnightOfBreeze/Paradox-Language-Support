@@ -9,7 +9,7 @@ import icu.windea.pls.inject.annotations.*
  * 重写IDE低层检查字符串是否是标识符的代码逻辑，以便兼容本地化文件中的本地化图标引用（`£unity£`），从而可以正确地查找引用。
  */
 @InjectTarget("com.intellij.psi.impl.search.LowLevelSearchUtil")
-class LowLevelSearchUtilCodeInjector : BaseCodeInjector() {
+class LowLevelSearchUtilCodeInjector : CodeInjectorBase() {
     //com.intellij.psi.impl.search.LowLevelSearchUtil
     //com.intellij.psi.impl.search.LowLevelSearchUtil.checkJavaIdentifier
     

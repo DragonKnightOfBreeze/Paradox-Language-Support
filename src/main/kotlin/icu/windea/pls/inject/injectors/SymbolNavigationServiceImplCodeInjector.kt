@@ -18,7 +18,7 @@ import kotlin.reflect.jvm.*
  * @see ParadoxFakePsiElement
  */
 @InjectTarget("com.intellij.codeInsight.navigation.impl.SymbolNavigationServiceImpl")
-class SymbolNavigationServiceImplCodeInjector : BaseCodeInjector() {
+class SymbolNavigationServiceImplCodeInjector : CodeInjectorBase() {
     //com.intellij.codeInsight.navigation.impl.SymbolNavigationServiceImpl
     //com.intellij.codeInsight.navigation.impl.SymbolNavigationServiceImpl.getNavigationTargets
     

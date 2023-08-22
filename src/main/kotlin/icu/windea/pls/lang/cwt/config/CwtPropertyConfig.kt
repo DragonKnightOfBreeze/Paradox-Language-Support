@@ -6,6 +6,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.inject.annotations.Lazy
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.model.*
 
@@ -130,7 +131,11 @@ private object CwtPropertyConfigImpls {
         override var parent: CwtMemberConfig<*>?,
         override val configs: List<CwtMemberConfig<*>>? = null,
     ) : CwtPropertyConfig by delegate {
-        @Lazy override val valueConfig: CwtValueConfig? = doGetValueConfig()
+        private var _valueConfig: Any? = EMPTY_OBJECT
+        override val valueConfig: CwtValueConfig? @Synchronized get() {
+            if(_valueConfig === EMPTY_OBJECT) _valueConfig = doGetValueConfig()
+            return _valueConfig.cast()
+        }
         
         @Lazy override val values: List<CwtValueConfig>? = configs?.filterIsInstanceFast<CwtValueConfig>()
         @Lazy override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstanceFast<CwtPropertyConfig>()

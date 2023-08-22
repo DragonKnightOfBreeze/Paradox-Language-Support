@@ -14,7 +14,7 @@ import icu.windea.pls.inject.annotations.*
  * 渲染文件节点时，为游戏或模组根目录提供提供额外的信息文本。
  */
 @InjectTarget("com.intellij.openapi.fileChooser.tree.FileRenderer")
-class FileRenderCodeInjector : BaseCodeInjector() {
+class FileRenderCodeInjector : CodeInjectorBase() {
     //com.intellij.openapi.fileChooser.tree.FileRenderer
     //com.intellij.openapi.fileChooser.tree.FileRenderer.customize
     

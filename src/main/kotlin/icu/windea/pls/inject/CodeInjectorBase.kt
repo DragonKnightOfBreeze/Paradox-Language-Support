@@ -4,7 +4,6 @@ import com.intellij.ide.plugins.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.inject.annotations.*
-import icu.windea.pls.inject.support.*
 import javassist.*
 import javassist.Modifier
 import java.lang.reflect.*
@@ -16,7 +15,7 @@ import kotlin.reflect.jvm.*
  * @see InjectTarget
  * @see InjectMethod
  */
-abstract class BaseCodeInjector : CodeInjector() {
+abstract class CodeInjectorBase : CodeInjector() {
     final override fun inject() {
         val codeInjectorInfo = getCodeInjectorInfo() ?: return
         putUserData(CodeInjectorService.codeInjectorInfoKey, codeInjectorInfo)
