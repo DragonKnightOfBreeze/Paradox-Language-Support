@@ -111,7 +111,7 @@ private object CwtPropertyConfigImpls {
         delegate: CwtPropertyConfig,
         override var parentConfig: CwtMemberConfig<*>?,
     ) : CwtPropertyConfig by delegate {
-        override val valueConfig: CwtValueConfig? = doGetValueConfig()
+        override val valueConfig: CwtValueConfig? = doGetValueConfigDelegated(delegate)
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
     }
     
@@ -120,7 +120,7 @@ private object CwtPropertyConfigImpls {
         override var parentConfig: CwtMemberConfig<*>?,
         override val configs: List<CwtMemberConfig<*>>? = null,
     ) : CwtPropertyConfig by delegate {
-        override val valueConfig: CwtValueConfig? = doGetValueConfig()
+        override val valueConfig: CwtValueConfig? = doGetValueConfigDelegated(delegate)
     }
 }
 
@@ -134,4 +134,9 @@ private fun CwtPropertyConfig.doGetValueConfig(): CwtValueConfig? {
         }
     } ?: return null
     return CwtValueConfig.resolve(valuePointer, info, value, valueType.id, configs, options, documentation, this)
+}
+
+private fun CwtPropertyConfig.doGetValueConfigDelegated(delegate: CwtPropertyConfig): CwtValueConfig? {
+    val delegateValueConfig = delegate.valueConfig ?: return null
+    return delegateValueConfig.copyDelegated(null, configs, this)
 }
