@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.*
 
 /**
  * 用于获取内联脚本中的CWT规则上下文。
- * 
+ *
  * * 正常提供代码高亮、引用解析、代码补全等高级语言功能。
  * * 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`和`TooManyExpressionInspection`。
  * * 会将内联脚本内容内联到对应的调用处，然后再进行相关代码检查。
@@ -119,10 +119,10 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
     }
 }
 
-val ParadoxConfigContext.Keys.inlineScriptRootConfigContext by lazy { Key.create<ParadoxConfigContext>("paradox.configContext.inlineScript.rootConfigContext") }
-val ParadoxConfigContext.Keys.inlineScriptExpression by lazy { Key.create<String>("paradox.configContext.inlineScript.expression") }
-val ParadoxConfigContext.Keys.inlineScriptHasConflict by lazy { Key.create<Boolean>("paradox.configContext.inlineScript.hasConflict") }
-val ParadoxConfigContext.Keys.inlineScriptHasRecursion by lazy { Key.create<Boolean>("paradox.configContext.inlineScript.hasRecursion") }
+val ParadoxConfigContext.Keys.inlineScriptRootConfigContext by createKey<ParadoxConfigContext>("paradox.configContext.inlineScript.rootConfigContext")
+val ParadoxConfigContext.Keys.inlineScriptExpression by createKey<String>("paradox.configContext.inlineScript.expression")
+val ParadoxConfigContext.Keys.inlineScriptHasConflict by createKey<Boolean>("paradox.configContext.inlineScript.hasConflict")
+val ParadoxConfigContext.Keys.inlineScriptHasRecursion by createKey<Boolean>("paradox.configContext.inlineScript.hasRecursion")
 
 var ParadoxConfigContext.inlineScriptRootConfigContext by ParadoxConfigContext.Keys.inlineScriptRootConfigContext
 var ParadoxConfigContext.inlineScriptExpression by ParadoxConfigContext.Keys.inlineScriptExpression

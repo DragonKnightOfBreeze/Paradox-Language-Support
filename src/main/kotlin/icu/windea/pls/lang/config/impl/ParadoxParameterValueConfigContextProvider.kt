@@ -2,7 +2,6 @@ package icu.windea.pls.lang.config.impl
 
 import com.intellij.lang.injection.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
@@ -109,8 +108,8 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
     }
 }
 
-val ParadoxConfigContext.Keys.snippetFromParameterValueRootConfigContext by lazy { Key.create<ParadoxConfigContext>("paradox.configContext.snippetFromParameterValue.rootConfigContext") }
-val ParadoxConfigContext.Keys.parameterElement by lazy { Key.create<ParadoxParameterElement>("paradox.configContext.snippetFromParameterValue.parameterElement") }
+val ParadoxConfigContext.Keys.snippetFromParameterValueRootConfigContext by createKey<ParadoxConfigContext>("paradox.configContext.snippetFromParameterValue.rootConfigContext")
+val ParadoxConfigContext.Keys.parameterElement by createKey<ParadoxParameterElement>("paradox.configContext.snippetFromParameterValue.parameterElement")
 
 var ParadoxConfigContext.snippetFromParameterValueRootConfigContext by ParadoxConfigContext.Keys.snippetFromParameterValueRootConfigContext
 var ParadoxConfigContext.parameterElement by ParadoxConfigContext.Keys.parameterElement

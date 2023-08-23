@@ -24,7 +24,7 @@ sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig
     
     override fun toString(): String
     
-    object Keys: KeyAware
+    object Keys : KeyAware
 }
 
 val <T : PsiElement> CwtMemberConfig<T>.isBlock: Boolean
@@ -44,17 +44,18 @@ val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<PsiElement>
         else -> this
     }
 
-val CwtValueConfig.isTagConfig get() = findOptionValue("tag") != null
+val CwtValueConfig.isTagConfig: Boolean
+    get() = findOptionValue("tag") != null
 
-val CwtMemberConfig.Keys.cardinality by lazy { Key.create<CwtCardinalityExpression>("cwt.dataConfig.cardinality") }
-val CwtMemberConfig.Keys.cardinalityMinDefine by lazy { Key.create<String>("cwt.dataConfig.cardinalityMinDefine") }
-val CwtMemberConfig.Keys.cardinalityMaxDefine by lazy { Key.create<String>("cwt.dataConfig.cardinalityMaxDefine") }
-val CwtMemberConfig.Keys.hasScopeOption by lazy { Key.create<Boolean>("cwt.dataConfig.hasScopeOption") }
-val CwtMemberConfig.Keys.scopeContext by lazy { Key.create<ParadoxScopeContext>("cwt.dataConfig.scopeContext") }
-val CwtMemberConfig.Keys.replaceScopes by lazy { Key.create<Map<String, String?>>("cwt.dataConfig.replaceScopes") }
-val CwtMemberConfig.Keys.pushScope by lazy { Key.create<String>("cwt.dataConfig.pushScope") }
-val CwtMemberConfig.Keys.supportedScopes by lazy { Key.create<Set<String>>("cwt.dataConfig.supportedScopes") }
-val CwtMemberConfig.Keys.overriddenProvider by lazy { Key.create<ParadoxOverriddenConfigProvider>("cwt.DataConfig.overriddenProvider") }
+val CwtMemberConfig.Keys.cardinality by createKey<CwtCardinalityExpression>("cwt.memberConfig.cardinality")
+val CwtMemberConfig.Keys.cardinalityMinDefine by createKey<String>("cwt.memberConfig.cardinalityMinDefine")
+val CwtMemberConfig.Keys.cardinalityMaxDefine by createKey<String>("cwt.memberConfig.cardinalityMaxDefine")
+val CwtMemberConfig.Keys.hasScopeOption by createKey<Boolean>("cwt.memberConfig.hasScopeOption")
+val CwtMemberConfig.Keys.scopeContext by createKey<ParadoxScopeContext>("cwt.memberConfig.scopeContext")
+val CwtMemberConfig.Keys.replaceScopes by createKey<Map<String, String?>>("cwt.memberConfig.replaceScopes")
+val CwtMemberConfig.Keys.pushScope by createKey<String>("cwt.memberConfig.pushScope")
+val CwtMemberConfig.Keys.supportedScopes by createKey<Set<String>>("cwt.memberConfig.supportedScopes")
+val CwtMemberConfig.Keys.overriddenProvider by createKey<ParadoxOverriddenConfigProvider>("cwt.memberConfig.overriddenProvider")
 
 //may on:
 // * a config expression in declaration config

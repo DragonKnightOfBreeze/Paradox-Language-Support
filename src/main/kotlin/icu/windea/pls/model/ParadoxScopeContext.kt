@@ -154,13 +154,11 @@ class ParadoxScopeContext private constructor(
         }
     }
     
-    object Keys
+    object Keys: KeyAware
 }
 
-val ParadoxScopeContext.Keys.overriddenProvider by lazy { Key.create<ParadoxOverriddenScopeContextProvider>("paradox.scopeContext.overriddenProvider") }
-val ParadoxScopeContext.Keys.scopeFieldInfo by lazy { Key.create<List<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>>("paradox.scopeContext.scopeFieldInfo") }
+val ParadoxScopeContext.Keys.overriddenProvider by createKey<ParadoxOverriddenScopeContextProvider>("paradox.scopeContext.overriddenProvider")
+val ParadoxScopeContext.Keys.scopeFieldInfo by createKey<List<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>>("paradox.scopeContext.scopeFieldInfo")
 
 var ParadoxScopeContext.overriddenProvider by ParadoxScopeContext.Keys.overriddenProvider
-
-//scope context list of scope field expression nodes
-var ParadoxScopeContext.scopeFieldInfo by ParadoxScopeContext.Keys.scopeFieldInfo
+var ParadoxScopeContext.scopeFieldInfo by ParadoxScopeContext.Keys.scopeFieldInfo //scope context list of scope field expression nodes

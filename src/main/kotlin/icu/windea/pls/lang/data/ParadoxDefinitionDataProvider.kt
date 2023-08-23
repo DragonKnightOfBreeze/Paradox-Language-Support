@@ -22,7 +22,7 @@ import icu.windea.pls.tool.script.*
 @WithGameTypeEP
 abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
     val dataType: Class<T> by lazy { javaClass.genericSuperclass.genericType(0)!! }
-    val cachedDataKey: Key<CachedValue<T>> by lazy { Key.create("stellaris.cached.data.by.${javaClass.name}") }
+    val cachedDataKey: Key<CachedValue<T>> by lazy { createKey("stellaris.cached.data.by.${javaClass.name}") }
     
     abstract fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
     

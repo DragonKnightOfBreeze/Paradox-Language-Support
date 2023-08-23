@@ -15,7 +15,7 @@ inline operator fun <reified T> ParadoxScriptData.get(path: String, defaultValue
     return ParadoxScriptDataDelegateProvider(getData(path), typeOf<T>(), defaultValue)
 }
 
-val ParadoxScriptData.Keys.propertyValuesKey by lazy { Key.create<MutableMap<KProperty<*>, Any?>>("paradox.data.property.values") }
+val ParadoxScriptData.Keys.propertyValuesKey by createKey<MutableMap<KProperty<*>, Any?>>("paradox.data.property.values")
 
 class ParadoxScriptDataDelegateProvider<T>(
     val delegate: ParadoxScriptData?,
