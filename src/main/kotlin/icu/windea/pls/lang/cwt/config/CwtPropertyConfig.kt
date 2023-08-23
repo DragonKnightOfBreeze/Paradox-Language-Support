@@ -14,7 +14,7 @@ sealed interface CwtPropertyConfig : CwtMemberConfig<CwtProperty>, CwtKeyAware {
     val valueConfig: CwtValueConfig?
     
     companion object {
-        val EmptyConfig: CwtPropertyConfig = resolve(emptyPointer(), CwtConfigGroupInfo(""), "", "")
+        val EmptyConfig: CwtPropertyConfig by lazy { resolve(emptyPointer(), CwtConfigGroupInfo(""), "", "") }
     }
     
     object Keys: KeyAware
@@ -76,13 +76,6 @@ private object CwtPropertyConfigImpls {
         options: List<CwtOptionMemberConfig<*>>? = null,
         documentation: String? = null,
     ) : UserDataHolderBase(), CwtPropertyConfig {
-        init {
-            putUserData(CwtPropertyConfig.Keys.configs, configs)
-            putUserData(CwtPropertyConfig.Keys.options, options)
-            putUserData(CwtPropertyConfig.Keys.documentation, documentation)
-            putUserData(CwtPropertyConfig.Keys.valueConfig, getValueConfig())
-        }
-        
         override val configs by CwtPropertyConfig.Keys.configs
         override val options by CwtPropertyConfig.Keys.options
         override val documentation by CwtPropertyConfig.Keys.documentation
@@ -98,6 +91,15 @@ private object CwtPropertyConfigImpls {
         override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>()
         
         override fun toString(): String = "$key ${separatorType.text} $value"
+        
+        //should put after delegate properties
+        
+        init {
+            putUserData(CwtPropertyConfig.Keys.configs, configs)
+            putUserData(CwtPropertyConfig.Keys.options, options)
+            putUserData(CwtPropertyConfig.Keys.documentation, documentation)
+            putUserData(CwtPropertyConfig.Keys.valueConfig, getValueConfig())
+        }
     }
     
     // 12 + 2 * 4 = 20 => 24b
@@ -107,12 +109,6 @@ private object CwtPropertyConfigImpls {
         configs: List<CwtMemberConfig<*>>? = null,
         parentConfig: CwtMemberConfig<*>? = null,
     ) : UserDataHolderBase(), CwtPropertyConfig by delegate {
-        init {
-            putUserData(CwtPropertyConfig.Keys.configs, configs)
-            putUserData(CwtPropertyConfig.Keys.valueConfig, getValueConfig())
-            putUserData(CwtPropertyConfig.Keys.parentConfig, parentConfig)
-        }
-        
         override val configs by CwtPropertyConfig.Keys.configs
         override val valueConfig by CwtPropertyConfig.Keys.valueConfig
         override var parentConfig by CwtPropertyConfig.Keys.parentConfig
@@ -125,5 +121,13 @@ private object CwtPropertyConfigImpls {
         override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
         
         override fun toString(): String = "$key ${separatorType.text} $value"
+        
+        //should put after delegate properties
+        
+        init {
+            putUserData(CwtPropertyConfig.Keys.configs, configs)
+            putUserData(CwtPropertyConfig.Keys.valueConfig, getValueConfig())
+            putUserData(CwtPropertyConfig.Keys.parentConfig, parentConfig)
+        }
     }
 }

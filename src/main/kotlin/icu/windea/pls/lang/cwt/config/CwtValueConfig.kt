@@ -12,7 +12,7 @@ sealed interface CwtValueConfig : CwtMemberConfig<CwtValue>, CwtValueAware {
     val propertyConfig: CwtPropertyConfig?
     
     companion object {
-        val EmptyConfig: CwtValueConfig = resolve(emptyPointer(), CwtConfigGroupInfo(""), "")
+        val EmptyConfig: CwtValueConfig by lazy { resolve(emptyPointer(), CwtConfigGroupInfo(""), "") }
     }
     
     object Keys: KeyAware
@@ -117,11 +117,6 @@ private object CwtValueConfigImpls {
         configs: List<CwtMemberConfig<*>>? = null,
         parentConfig: CwtMemberConfig<*>?,
     ) : UserDataHolderBase(), CwtValueConfig by delegate {
-        init {
-            putUserData(CwtValueConfig.Keys.configs, configs)
-            putUserData(CwtValueConfig.Keys.parentConfig, parentConfig)
-        }
-        
         override val configs by CwtValueConfig.Keys.configs
         override var parentConfig by CwtValueConfig.Keys.parentConfig
         override var inlineableConfig by CwtValueConfig.Keys.inlineableConfig
@@ -133,6 +128,13 @@ private object CwtValueConfigImpls {
         override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
         
         override fun toString(): String = value
+        
+        //should put after delegate properties
+        
+        init {
+            putUserData(CwtValueConfig.Keys.configs, configs)
+            putUserData(CwtValueConfig.Keys.parentConfig, parentConfig)
+        }
     }
     
     // 12 + 3 * 4 = 24 => 24b
