@@ -2,6 +2,7 @@ package icu.windea.pls.lang.cwt.config
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.util.keyFMap.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.cwt.psi.*
@@ -190,6 +191,9 @@ private object CwtValueConfigImpls {
         
         @Volatile override var parentConfig: CwtMemberConfig<*>? = null
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtValue>? = null
+        
+        override fun <T : Any?> getUserData(key: Key<T>): T? = propertyConfig.getUserData(key)
+        override fun <T : Any?> putUserData(key: Key<T>, value: T?) = propertyConfig.putUserData(key, value)
         
         override fun toString(): String = value
     }
