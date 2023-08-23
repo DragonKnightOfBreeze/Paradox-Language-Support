@@ -66,6 +66,21 @@ fun CwtValueConfig.copyDelegated(
     }
 }
 
+fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
+    val valuePointer = run {
+        val resolvedPointer = resolved().pointer
+        val resolvedFile = resolvedPointer.containingFile ?: return null
+        resolvedPointer.element?.propertyValue?.createPointer(resolvedFile)
+    } ?: return null
+    return CwtValueConfigImpls.FromPropertyConfig(valuePointer, this)
+}
+
+class CwtPropertyPointer(
+    private val delegate: SmartPsiElementPointer<CwtProperty>
+) : SmartPsiElementPointer<CwtProperty> by delegate {
+    val valuePointer: SmartPsiElementPointer<CwtValue>? = delegate.element?.propertyValue?.createPointer()
+}
+
 private object CwtValueConfigImpls {
     abstract class Impl : UserDataHolderBase(), CwtValueConfig {
         override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
@@ -73,8 +88,6 @@ private object CwtValueConfigImpls {
         
         override fun resolved(): CwtValueConfig = inlineableConfig?.config?.castOrNull<CwtValueConfig>() ?: this
         override fun resolvedOrNull(): CwtValueConfig? = inlineableConfig?.config?.castOrNull<CwtValueConfig>()
-        
-        override fun toString(): String = value
     }
     
     class ImplA(
@@ -90,6 +103,8 @@ private object CwtValueConfigImpls {
         
         override val propertyConfig: CwtPropertyConfig? get() = null
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+        
+        override fun toString(): String = value
     }
     
     class ImplB(
@@ -105,6 +120,8 @@ private object CwtValueConfigImpls {
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtValue>? = null
         
         override val propertyConfig: CwtPropertyConfig? get() = null
+        
+        override fun toString(): String = value
     }
     
     class ImplC(
@@ -120,6 +137,8 @@ private object CwtValueConfigImpls {
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtValue>? = null
         
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+        
+        override fun toString(): String = value
     }
     
     class ImplD(
@@ -134,6 +153,8 @@ private object CwtValueConfigImpls {
     ) : Impl(), CwtValueConfig {
         @Volatile override var parentConfig: CwtMemberConfig<*>? = null
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtValue>? = null
+        
+        override fun toString(): String = value
     }
     
     class DelegateA(
@@ -142,6 +163,8 @@ private object CwtValueConfigImpls {
         override val propertyConfig: CwtPropertyConfig? = null,
     ) : CwtValueConfig by delegate {
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+        
+        override fun toString(): String = value
     }
     
     class DelegateB(
@@ -149,5 +172,24 @@ private object CwtValueConfigImpls {
         override var parentConfig: CwtMemberConfig<*>?,
         override val configs: List<CwtMemberConfig<*>>? = null,
         override val propertyConfig: CwtPropertyConfig? = null,
-    ) : CwtValueConfig by delegate
+    ) : CwtValueConfig by delegate {
+        override fun toString(): String = value
+    }
+    
+    class FromPropertyConfig(
+        override val pointer: SmartPsiElementPointer<out CwtValue>,
+        override val propertyConfig: CwtPropertyConfig,
+    ) : Impl(), CwtValueConfig {
+        override val info: CwtConfigGroupInfo get() = propertyConfig.info
+        override val value: String get() = propertyConfig.value
+        override val valueTypeId: Byte get() = propertyConfig.valueTypeId
+        override val documentation: String? get() = propertyConfig.documentation
+        override val options: List<CwtOptionMemberConfig<*>>? get() = propertyConfig.options
+        override val configs: List<CwtMemberConfig<*>>? get() = propertyConfig.configs
+        
+        @Volatile override var parentConfig: CwtMemberConfig<*>? = null
+        @Volatile override var inlineableConfig: CwtInlineableConfig<CwtValue>? = null
+        
+        override fun toString(): String = value
+    }
 }
