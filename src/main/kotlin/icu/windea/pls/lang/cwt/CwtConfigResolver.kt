@@ -37,7 +37,8 @@ object CwtConfigResolver {
             logger.error("Incorrect CWT config in ${fileConfig.name}\n${propertyElement.text}")
             return null
         }
-        val pointer = propertyElement.createPointer(file)
+        //use CwtPropertyPointer to optimize performance and memory
+        val pointer = propertyElement.createPointer(file).let { CwtPropertyPointer(it) }
         val key = propertyElement.name.intern() //intern to optimize memory
         val value: String = valueElement.value.intern() //intern to optimize memory
         val valueType: CwtType

@@ -67,10 +67,11 @@ fun CwtValueConfig.copyDelegated(
 }
 
 fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
-    val valuePointer = run {
-        val resolvedPointer = resolved().pointer
-        val resolvedFile = resolvedPointer.containingFile ?: return null
-        resolvedPointer.element?.propertyValue?.createPointer(resolvedFile)
+    //this function should be enough fast because there is no pointers to be created
+    val resolvedPointer = resolved().pointer
+    val valuePointer = when {
+        resolvedPointer is CwtPropertyPointer -> resolvedPointer.valuePointer
+        else -> resolvedPointer.element?.propertyValue?.createPointer()
     } ?: return null
     return CwtValueConfigImpls.FromPropertyConfig(valuePointer, this)
 }

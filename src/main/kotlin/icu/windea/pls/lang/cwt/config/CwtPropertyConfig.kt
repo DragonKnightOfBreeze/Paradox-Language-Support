@@ -84,7 +84,7 @@ private object CwtPropertyConfigImpls {
         @Volatile override var parentConfig: CwtMemberConfig<*>? = null
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
         
-        override val valueConfig: CwtValueConfig? = getValueConfig()
+        override val valueConfig: CwtValueConfig? get() = getValueConfig()
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         
         override fun toString(): String = "$key ${separatorType.text} $value"
@@ -104,7 +104,7 @@ private object CwtPropertyConfigImpls {
         @Volatile override var parentConfig: CwtMemberConfig<*>? = null
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
         
-        override val valueConfig: CwtValueConfig? = getValueConfig()
+        override val valueConfig: CwtValueConfig? get() = getValueConfig()
         
         override fun toString(): String = "$key ${separatorType.text} $value"
     }
@@ -113,7 +113,7 @@ private object CwtPropertyConfigImpls {
         delegate: CwtPropertyConfig,
         override var parentConfig: CwtMemberConfig<*>?,
     ) : CwtPropertyConfig by delegate {
-        override val valueConfig: CwtValueConfig? = getValueConfig()
+        override val valueConfig: CwtValueConfig? get() = getValueConfig()
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         
         override fun toString(): String = "$key ${separatorType.text} $value"
@@ -124,7 +124,7 @@ private object CwtPropertyConfigImpls {
         override var parentConfig: CwtMemberConfig<*>?,
         override val configs: List<CwtMemberConfig<*>>? = null,
     ) : CwtPropertyConfig by delegate {
-        override val valueConfig: CwtValueConfig? = getValueConfig()
+        override val valueConfig: CwtValueConfig? get() = getValueConfig()
         
         override fun toString(): String = "$key ${separatorType.text} $value"
     }
