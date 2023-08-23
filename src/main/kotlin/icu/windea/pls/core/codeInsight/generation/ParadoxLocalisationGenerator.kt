@@ -121,7 +121,8 @@ object ParadoxLocalisationGenerator {
     }
     
     private fun getGeneratedFileName(context: ParadoxLocalisationCodeInsightContext): String {
-        return if(context.inspection != null) {
+        val onlyMissing = context.fromInspection
+        return if(onlyMissing) {
             when(context.type) {
                 Type.File -> PlsBundle.message("generation.localisation.fileName.0.missing", context.name)
                 Type.Definition -> PlsBundle.message("generation.localisation.fileName.1.missing", context.name)
