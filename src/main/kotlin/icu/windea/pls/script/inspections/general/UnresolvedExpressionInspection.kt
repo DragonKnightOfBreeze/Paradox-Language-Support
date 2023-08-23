@@ -8,11 +8,13 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -49,21 +51,21 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 if(configContext.getConfigs().isEmpty()) return true
                 val configs = ParadoxConfigHandler.getConfigs(element)
                 if(configs.isEmpty()) {
-                    //这里使用合并后的子规则，即使parentProperty可以精确匹配
                     //优先使用重载后的规则
-                    val expect = if(showExpectInfo) {
-                        val allConfigs = getAllConfigs(element)
-                        //某些情况下我们需要忽略一些未解析的表达式
-                        if(allConfigs.isNotEmpty() && allConfigs.all { isIgnored(it) }) return true
-                        val allExpressions = allConfigs.mapTo(mutableSetOf()) { it.expression }
-                        allExpressions.takeIfNotEmpty()?.joinToString()
-                    } else null
+                    val expectedConfigs = getExpectedConfigs(element)
+                    //某些情况下我们需要忽略一些未解析的表达式
+                    if(expectedConfigs.isNotEmpty() && expectedConfigs.all { isIgnored(it) }) return true
+                    val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.expression }
+                    expectedExpressions.takeIfNotEmpty()?.joinToString()
+                    val expect = if(showExpectInfo) expectedExpressions.joinToString() else null
                     val message = when {
                         expect == null -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.1.1", propertyKey.expression)
                         expect.isNotEmpty() -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.1.2", propertyKey.expression, expect)
                         else -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.1.3", propertyKey.expression)
                     }
-                    holder.registerProblem(element, message)
+                    val fixes = getFixes(element, expectedConfigs).toTypedArray()
+                    holder.registerProblem(element, message, *fixes)
+                    //skip checking children
                     return false
                 }
                 return true
@@ -81,20 +83,19 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 if(configContext.getConfigs().isEmpty()) return true
                 val configs = ParadoxConfigHandler.getConfigs(element, orDefault = false)
                 if(configs.isEmpty()) {
-                    val expect = if(showExpectInfo) {
-                        //优先使用重载后的规则
-                        val allConfigs = getAllConfigs(element, configContext)
-                        //某些情况下我们需要忽略一些未解析的表达式
-                        if(allConfigs.isNotEmpty() && allConfigs.all { isIgnored(it) }) return true
-                        val allExpressions = allConfigs.mapTo(mutableSetOf()) { it.expression }
-                        allExpressions.takeIfNotEmpty()?.joinToString()
-                    } else null
+                    //优先使用重载后的规则
+                    val expectedConfigs = getExpectedConfigs(element, configContext)
+                    //某些情况下我们需要忽略一些未解析的表达式
+                    if(expectedConfigs.isNotEmpty() && expectedConfigs.all { isIgnored(it) }) return true
+                    val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.expression }
+                    val expect = if(showExpectInfo) expectedExpressions.joinToString() else null
                     val message = when {
                         expect == null -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.2.1", element.expression)
                         expect.isNotEmpty() -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.2.2", element.expression, expect)
                         else -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.2.3", element.expression)
                     }
-                    holder.registerProblem(element, message)
+                    val fixes = getFixes(element, expectedConfigs).toTypedArray()
+                    holder.registerProblem(element, message, *fixes)
                     //skip checking children
                     return false
                 }
@@ -105,7 +106,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 return true
             }
             
-            private fun getAllConfigs(element: ParadoxScriptProperty): List<CwtPropertyConfig> {
+            private fun getExpectedConfigs(element: ParadoxScriptProperty): List<CwtPropertyConfig> {
+                //这里使用合并后的子规则，即使parentProperty可以精确匹配
                 val parentMemberElement = element.parentOfType<ParadoxScriptMemberElement>() ?: return emptyList()
                 val parentConfigContext = ParadoxConfigHandler.getConfigContext(parentMemberElement) ?: return emptyList()
                 return buildList {
@@ -122,7 +124,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 }
             }
             
-            private fun getAllConfigs(element: ParadoxScriptValue, configContext: ParadoxConfigContext): List<CwtValueConfig> {
+            private fun getExpectedConfigs(element: ParadoxScriptValue, configContext: ParadoxConfigContext): List<CwtValueConfig> {
                 return buildList {
                     val contextConfigs = configContext.getConfigs()
                     contextConfigs.forEachFast f@{
@@ -139,6 +141,26 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             
             private fun isIgnored(config: CwtMemberConfig<*>): Boolean {
                 return config.expression.type.isPathReferenceType()
+            }
+            
+            private fun getFixes(element: PsiElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
+                return buildList {
+                    val expressionElement = when(element) {
+                        is ParadoxScriptProperty -> element.propertyKey
+                        is ParadoxScriptStringExpressionElement -> element
+                        else -> null
+                    }
+                    if(expressionElement != null) {
+                        val locales = ParadoxLocaleHandler.getLocaleConfigs()
+                        val context = expectedConfigs.firstNotNullOfOrNull { 
+                            ParadoxLocalisationCodeInsightContext.fromReference(expressionElement,it, locales, unresolved = true)
+                        }
+                        if(context != null) {
+                            this += GenerateLocalisationsFix(expressionElement, context)
+                            this += GenerateLocalisationsInFileFix(expressionElement)
+                        }
+                    }
+                }
             }
         }
     }

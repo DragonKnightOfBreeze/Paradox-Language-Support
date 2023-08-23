@@ -87,12 +87,16 @@ object ParadoxLocalisationGenerator {
                 Type.File -> PlsBundle.message("generation.localisation.processName.0.missing", context.name)
                 Type.Definition -> PlsBundle.message("generation.localisation.processName.1.missing", context.name)
                 Type.Modifier -> PlsBundle.message("generation.localisation.processName.2.missing", context.name)
+                Type.LocalisationReference -> PlsBundle.message("generation.localisation.processName.3.missing", context.name)
+                Type.SyncedLocalisationReference -> PlsBundle.message("generation.localisation.processName.4.missing", context.name)
             }
         } else {
             when(context.type) {
                 Type.File -> PlsBundle.message("generation.localisation.processName.0", context.name)
                 Type.Definition -> PlsBundle.message("generation.localisation.processName.1", context.name)
                 Type.Modifier -> PlsBundle.message("generation.localisation.processName.2", context.name)
+                Type.LocalisationReference -> PlsBundle.message("generation.localisation.processName.3", context.name)
+                Type.SyncedLocalisationReference -> PlsBundle.message("generation.localisation.processName.4", context.name)
             }
         }
     }
@@ -120,12 +124,16 @@ object ParadoxLocalisationGenerator {
                 Type.File -> PlsBundle.message("generation.localisation.fileName.0.missing", context.name)
                 Type.Definition -> PlsBundle.message("generation.localisation.fileName.1.missing", context.name)
                 Type.Modifier -> PlsBundle.message("generation.localisation.fileName.2.missing", context.name)
+                Type.LocalisationReference -> PlsBundle.message("generation.localisation.fileName.3.missing", context.name)
+                Type.SyncedLocalisationReference -> PlsBundle.message("generation.localisation.fileName.4.missing", context.name)
             }
         } else {
             when(context.type) {
                 Type.File -> PlsBundle.message("generation.localisation.fileName.0", context.name)
                 Type.Definition -> PlsBundle.message("generation.localisation.fileName.1", context.name)
                 Type.Modifier -> PlsBundle.message("generation.localisation.fileName.2", context.name)
+                Type.LocalisationReference -> PlsBundle.message("generation.localisation.fileName.3", context.name)
+                Type.SyncedLocalisationReference -> PlsBundle.message("generation.localisation.fileName.4", context.name)
             }
         }
     }

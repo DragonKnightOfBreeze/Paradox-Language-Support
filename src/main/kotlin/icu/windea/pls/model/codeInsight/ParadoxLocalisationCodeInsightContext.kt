@@ -23,7 +23,9 @@ data class ParadoxLocalisationCodeInsightContext(
     enum class Type {
         File,
         Definition,
-        Modifier
+        Modifier,
+        LocalisationReference,
+        SyncedLocalisationReference
     }
     
     companion object {
@@ -44,7 +46,10 @@ data class ParadoxLocalisationCodeInsightContext(
                     if(element.isExpressionOrMemberContext()) super.visitElement(element)
                 }
             })
-            val finalChildren = children.distinctBy { it.type.name + "@" + it.name } //exclude duplicates
+            //exclude duplicates and sort contexts
+            val finalChildren = children
+                .distinctBy { it.type.name + "@" + it.name }
+                .sortedWith(compareBy( { it.type }, { if(it.type == Type.LocalisationReference || it.type == Type.SyncedLocalisationReference) it.name else 0 }))
             return ParadoxLocalisationCodeInsightContext(Type.File, file.name, codeInsightInfos, finalChildren, inspection)
         }
         
@@ -124,7 +129,9 @@ data class ParadoxLocalisationCodeInsightContext(
             val expression = element.value
             if(expression.isEmpty() || expression.isParameterized()) return null
             val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return null
-            return fromModifier(element, config, locales, inspection)
+            fromModifier(element, config, locales, inspection)?.let { return it }
+            fromReference(element, config, locales)?.let{ return it }
+            return null
         }
         
         fun fromModifier(
@@ -163,6 +170,33 @@ data class ParadoxLocalisationCodeInsightContext(
             }
             
             return ParadoxLocalisationCodeInsightContext(Type.Modifier, modifierName, codeInsightInfos, inspection = inspection)
+        }
+        
+        fun fromReference(
+            element: ParadoxScriptStringExpressionElement,
+            config: CwtMemberConfig<*>,
+            locales: Collection<CwtLocalisationLocaleConfig>,
+            unresolved: Boolean = false
+        ): ParadoxLocalisationCodeInsightContext? {
+            val contextType = when {
+                config.expression.type == CwtDataType.Localisation -> Type.LocalisationReference
+                config.expression.type == CwtDataType.SyncedLocalisation -> Type.SyncedLocalisationReference
+                config.expression.type == CwtDataType.InlineLocalisation && !element.text.isLeftQuoted() -> Type.LocalisationReference
+                else -> null
+            }
+            if(contextType == null) return null
+            val type = ParadoxLocalisationCodeInsightInfo.Type.Reference
+            val name = element.value
+            if(name.isEmpty()) return null
+            val codeInsightInfos = mutableListOf<ParadoxLocalisationCodeInsightInfo>()
+            val project by lazy { element.project }
+            for(locale in locales) {
+                ProgressManager.checkCanceled()
+                val missing = if(unresolved) true else isMissing(name, project, element, locale)
+                val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, true, missing, false)
+                codeInsightInfos += codeInsightInfo
+            }
+            return ParadoxLocalisationCodeInsightContext(contextType, name, codeInsightInfos)
         }
         
         private fun isMissing(name: String, project: Project, context: PsiElement, locale: CwtLocalisationLocaleConfig): Boolean {

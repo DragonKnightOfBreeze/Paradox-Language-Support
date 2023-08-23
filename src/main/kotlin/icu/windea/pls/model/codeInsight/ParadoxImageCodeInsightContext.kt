@@ -22,7 +22,8 @@ data class ParadoxImageCodeInsightContext(
     enum class Type {
         File,
         Definition,
-        Modifier
+        Modifier,
+        Unresolved
     }
     
     companion object {
@@ -101,7 +102,8 @@ data class ParadoxImageCodeInsightContext(
             val expression = element.value
             if(expression.isEmpty() || expression.isParameterized()) return null
             val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return null
-            return fromModifier(element, config, inspection)
+            fromModifier(element, config, inspection)?.let { return it }
+            return null
         }
         
         fun fromModifier(

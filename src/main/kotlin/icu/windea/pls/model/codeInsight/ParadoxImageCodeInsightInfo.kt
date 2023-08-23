@@ -29,7 +29,8 @@ data class ParadoxImageCodeInsightInfo(
     enum class Type {
         Required, Primary, Optional,
         GeneratedModifierIcon,
-        ModifierIcon
+        ModifierIcon,
+        Reference
     }
     
     val key = when {

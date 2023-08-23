@@ -69,10 +69,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 }
                 val messages = getMessages(context)
                 if(messages.isEmpty()) return
-                val fixes = buildList<LocalQuickFix> {
-                    this += GenerateLocalisationsFix(element, context, this@MissingLocalisationInspection)
-                    this += GenerateLocalisationsInFileFix(element, this@MissingLocalisationInspection)
-                }.toTypedArray()
+                val fixes = getFixes(element, context).toTypedArray()
                 for(message in messages) {
                     //显示为WEAK_WARNING
                     holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING, *fixes)
@@ -103,6 +100,13 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     ?: return null
                 val localeId = codeInsightInfo.locale.id
                 return PlsBundle.message("inspection.script.general.missingLocalisation.description", from, localeId)
+            }
+            
+            private fun getFixes(element: PsiElement, context: ParadoxLocalisationCodeInsightContext): List<LocalQuickFix> {
+                return buildList {
+                    this += GenerateLocalisationsFix(element, context, this@MissingLocalisationInspection)
+                    this += GenerateLocalisationsInFileFix(element, this@MissingLocalisationInspection)
+                }
             }
         }
     }

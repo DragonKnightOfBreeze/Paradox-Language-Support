@@ -12,7 +12,7 @@ import icu.windea.pls.script.inspections.general.*
 
 class GenerateLocalisationsInFileFix(
     element: PsiElement,
-    private val inspection: MissingLocalisationInspection? = null
+    private val inspection: MissingLocalisationInspection? = null,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     private val fileName = element.containingFile?.name.orAnonymous()
     

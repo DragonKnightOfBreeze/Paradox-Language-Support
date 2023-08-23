@@ -38,7 +38,7 @@ class ParadoxGenerateLocalisationsChooser(
     
     override fun createLeftSideActions(): Array<Action> {
         return buildList<Action> {
-            this += SelectAction(PlsBundle.message("generation.localisation.select.All")) { selectElements(myElements) }
+            this += SelectAction(PlsBundle.message("generation.localisation.select.all")) { selectElements(myElements) }
             this += SelectAction(PlsBundle.message("generation.localisation.select.missing")) { selectElements(myElements.filter { it.info.missing }.toTypedArray()) }
             this += SelectAction(PlsBundle.message("generation.localisation.select.missingAndChecked")) { selectElements(myElements.filter { it.info.missing && it.info.check }.toTypedArray()) }
         }.toTypedArray()
@@ -60,9 +60,11 @@ class ParadoxGenerateLocalisationsChooser(
     ) : MemberChooserObjectBase(name, PlsIcons.Localisation), ClassMember {
         override fun getParentNodeDelegate(): MemberChooserObject {
             return when(context.type) {
-                Type.File -> Unresolved(context)
+                Type.File -> LocalisationReferences(context) //unexpected
                 Type.Definition -> Definition(context.name, context)
                 Type.Modifier -> Modifier(context.name, context)
+                Type.LocalisationReference -> LocalisationReferences(context)
+                Type.SyncedLocalisationReference -> SyncedLocalisationReferences(context)
             }
         }
         
@@ -89,7 +91,11 @@ class ParadoxGenerateLocalisationsChooser(
         override fun hashCode() = name.hashCode()
     }
     
-    data class Unresolved(
+    data class LocalisationReferences(
         val context: ParadoxLocalisationCodeInsightContext
-    ) : MemberChooserObjectBase(PlsBundle.message("generation.localisation.unresolved"))
+    ) : MemberChooserObjectBase(PlsBundle.message("generation.localisation.localisationReferences"))
+    
+    data class SyncedLocalisationReferences(
+        val context: ParadoxLocalisationCodeInsightContext
+    ) : MemberChooserObjectBase(PlsBundle.message("generation.localisation.syncedLocalisationReferences"))
 }

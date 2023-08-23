@@ -15,7 +15,8 @@ data class ParadoxLocalisationCodeInsightInfo(
     enum class Type {
         Required, Primary, Optional,
         GeneratedModifierName, GeneratedModifierDesc,
-        ModifierName, ModifierDesc
+        ModifierName, ModifierDesc,
+        Reference
     }
     
     val key = when {
