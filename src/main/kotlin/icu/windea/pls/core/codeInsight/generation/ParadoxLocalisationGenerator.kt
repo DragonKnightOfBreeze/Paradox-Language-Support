@@ -26,7 +26,7 @@ object ParadoxLocalisationGenerator {
     }
     
     private fun doGetMembers(members: MutableList<ParadoxGenerateLocalisationsChooser.Localisation>, context: ParadoxLocalisationCodeInsightContext, locale: CwtLocalisationLocaleConfig) {
-        val onlyMissing = context.inspection != null
+        val onlyMissing = context.fromInspection
         context.children.forEach { child ->
             doGetMembers(members, child, locale)
         }
@@ -51,7 +51,8 @@ object ParadoxLocalisationGenerator {
     }
     
     private fun getChooserName(context: ParadoxLocalisationCodeInsightContext): String {
-        return if(context.inspection != null) {
+        val onlyMissing = context.fromInspection
+        return if(onlyMissing) {
             when(context.type) {
                 Type.File -> PlsBundle.message("generation.localisation.chooserTitle.0.missing")
                 else -> PlsBundle.message("generation.localisation.chooserTitle.1.missing")
@@ -82,7 +83,8 @@ object ParadoxLocalisationGenerator {
     }
     
     private fun getProcessFileName(context: ParadoxLocalisationCodeInsightContext): String {
-        return if(context.inspection != null) {
+        val onlyMissing = context.fromInspection
+        return if(onlyMissing) {
             when(context.type) {
                 Type.File -> PlsBundle.message("generation.localisation.processName.0.missing", context.name)
                 Type.Definition -> PlsBundle.message("generation.localisation.processName.1.missing", context.name)
