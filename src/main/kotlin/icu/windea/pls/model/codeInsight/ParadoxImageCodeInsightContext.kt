@@ -17,7 +17,7 @@ data class ParadoxImageCodeInsightContext(
     val name: String,
     val infos: List<ParadoxImageCodeInsightInfo>,
     val children: List<ParadoxImageCodeInsightContext> = emptyList(),
-    val inspection: MissingImageInspection? = null
+    val fromInspection: Boolean = false,
 ) {
     enum class Type {
         File,
@@ -27,9 +27,13 @@ data class ParadoxImageCodeInsightContext(
     }
     
     companion object {
+        private fun getMissingImageInspection(context: PsiElement): MissingImageInspection? {
+            return getInspectionToolState("ParadoxScriptMissingImage", context, context.project)?.enabledTool?.castOrNull()
+        }
+        
         fun fromFile(
             file: PsiFile,
-            inspection: MissingImageInspection? = null
+            fromInspection: Boolean = false,
         ): ParadoxImageCodeInsightContext? {
             if(file !is ParadoxScriptFile) return null
             val codeInsightInfos = mutableListOf<ParadoxImageCodeInsightInfo>()
@@ -37,8 +41,8 @@ data class ParadoxImageCodeInsightContext(
             file.accept(object : PsiRecursiveElementWalkingVisitor() {
                 override fun visitElement(element: PsiElement) {
                     when(element) {
-                        is ParadoxScriptDefinitionElement -> fromDefinition(element, inspection)?.let { children.add(it) }
-                        is ParadoxScriptStringExpressionElement -> fromExpression(element, inspection)?.let { children.add(it) }
+                        is ParadoxScriptDefinitionElement -> fromDefinition(element, fromInspection)?.let { children.add(it) }
+                        is ParadoxScriptStringExpressionElement -> fromExpression(element, fromInspection)?.let { children.add(it) }
                     }
                     if(element.isExpressionOrMemberContext()) super.visitElement(element)
                 }
@@ -48,8 +52,10 @@ data class ParadoxImageCodeInsightContext(
         
         fun fromDefinition(
             definition: ParadoxScriptDefinitionElement,
-            inspection: MissingImageInspection? = null
+            fromInspection: Boolean = false,
         ): ParadoxImageCodeInsightContext? {
+            val inspection = if(fromInspection) getMissingImageInspection(definition) else null
+            
             if(!(inspection == null || inspection.checkForDefinitions)) return null
             val definitionInfo = definition.definitionInfo ?: return null
             val project = definitionInfo.project
@@ -91,26 +97,27 @@ data class ParadoxImageCodeInsightContext(
                 }
             }
             
-            return ParadoxImageCodeInsightContext(Type.Definition, definitionInfo.name, codeInsightInfos, inspection = inspection)
+            return ParadoxImageCodeInsightContext(Type.Definition, definitionInfo.name, codeInsightInfos, fromInspection = fromInspection)
         }
         
         fun fromExpression(
             element: ParadoxScriptStringExpressionElement,
-            inspection: MissingImageInspection? = null
+            fromInspection: Boolean = false,
         ): ParadoxImageCodeInsightContext? {
-            if(!(inspection == null || inspection.checkForModifiers)) return null //quick check
             val expression = element.value
             if(expression.isEmpty() || expression.isParameterized()) return null
             val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return null
-            fromModifier(element, config, inspection)?.let { return it }
+            fromModifier(element, config, fromInspection)?.let { return it }
             return null
         }
         
         fun fromModifier(
             element: ParadoxScriptStringExpressionElement,
             config: CwtMemberConfig<*>,
-            inspection: MissingImageInspection?
+            fromInspection: Boolean = false,
         ): ParadoxImageCodeInsightContext? {
+            val inspection = if(fromInspection) getMissingImageInspection(element) else null
+            
             if(!(inspection == null || inspection.checkForModifiers)) return null
             if(config.expression.type != CwtDataType.Modifier) return null
             val modifierName = element.value
@@ -126,7 +133,7 @@ data class ParadoxImageCodeInsightContext(
                 codeInsightInfos += codeInsightInfo
             }
             
-            return ParadoxImageCodeInsightContext(Type.Modifier, modifierName, codeInsightInfos, inspection = inspection)
+            return ParadoxImageCodeInsightContext(Type.Modifier, modifierName, codeInsightInfos, fromInspection = fromInspection)
         }
         
         private fun isMissing(iconPath: String, project: Project, context: PsiElement): Boolean {

@@ -10,12 +10,10 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.generation.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
-import icu.windea.pls.script.inspections.general.*
 
 class GenerateLocalisationsFix(
     element: PsiElement,
     private val context: ParadoxLocalisationCodeInsightContext,
-    private val inspection: MissingLocalisationInspection? = null,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     private val contextName = context.name.orAnonymous()
     
@@ -25,7 +23,8 @@ class GenerateLocalisationsFix(
         return when(context.type) {
             Type.Definition -> PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.1", contextName)
             Type.Modifier -> PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.2", contextName)
-            Type.Unresolved -> PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.3", contextName)
+            Type.LocalisationReference -> PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.3", contextName)
+            Type.SyncedLocalisationReference -> PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.4", contextName)
             else -> throw IllegalStateException()
         }
     }
@@ -34,7 +33,7 @@ class GenerateLocalisationsFix(
     
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if(editor == null) return
-        val handler = ParadoxGenerateLocalisationsHandler(context, inspection)
+        val handler = ParadoxGenerateLocalisationsHandler(context, fromInspection = true)
         handler.invoke(project, editor, file)
     }
     

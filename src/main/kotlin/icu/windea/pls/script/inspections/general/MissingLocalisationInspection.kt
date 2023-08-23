@@ -49,13 +49,13 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             
             private fun visitDefinition(definition: ParadoxScriptDefinitionElement) {
-                val context = ParadoxLocalisationCodeInsightContext.fromDefinition(definition, locales, this@MissingLocalisationInspection)
+                val context = ParadoxLocalisationCodeInsightContext.fromDefinition(definition, locales, fromInspection = true)
                 if(context == null || context.infos.isEmpty()) return
                 registerProblems(context, definition, holder)
             }
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                val context = ParadoxLocalisationCodeInsightContext.fromExpression(element, locales, this@MissingLocalisationInspection)
+                val context = ParadoxLocalisationCodeInsightContext.fromExpression(element, locales, fromInspection = true)
                 if(context == null || context.infos.isEmpty()) return
                 registerProblems(context, element, holder)
             }
@@ -104,8 +104,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             
             private fun getFixes(element: PsiElement, context: ParadoxLocalisationCodeInsightContext): List<LocalQuickFix> {
                 return buildList {
-                    this += GenerateLocalisationsFix(element, context, this@MissingLocalisationInspection)
-                    this += GenerateLocalisationsInFileFix(element, this@MissingLocalisationInspection)
+                    this += GenerateLocalisationsFix(element, context)
+                    this += GenerateLocalisationsInFileFix(element)
                 }
             }
         }

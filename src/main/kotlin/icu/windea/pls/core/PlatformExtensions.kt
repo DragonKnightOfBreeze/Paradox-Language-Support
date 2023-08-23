@@ -7,6 +7,8 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInsight.template.*
 import com.intellij.codeInsight.template.impl.*
+import com.intellij.codeInspection.*
+import com.intellij.codeInspection.ex.ScopeToolState
 import com.intellij.extapi.psi.*
 import com.intellij.injected.editor.*
 import com.intellij.lang.*
@@ -26,6 +28,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
+import com.intellij.profile.codeInspection.*
 import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
 import com.intellij.psi.impl.source.tree.*
@@ -887,7 +890,7 @@ fun PsiElement.findTopHostElementOrThis(project: Project): PsiElement {
     return doFindTopHostElementOrThis(this, project)
 }
 
-private tailrec fun doFindTopHostElementOrThis(element: PsiElement, project: Project): PsiElement{
+private tailrec fun doFindTopHostElementOrThis(element: PsiElement, project: Project): PsiElement {
     val host = InjectedLanguageManager.getInstance(project).getInjectionHost(element)
     if(host == null) return element
     return doFindTopHostElementOrThis(host, project)
@@ -899,6 +902,16 @@ fun PsiFile.getShreds(): Place? {
     //return InjectedLanguageUtilBase.getShreds(this)
     return viewProvider.document.castOrNull<DocumentWindow>()?.getShreds()
 }
+//endregion
+
+//region Inspection Extensions
+fun getInspectionToolState(shortName: String, element: PsiElement?, project: Project): ScopeToolState? {
+    val currentProfile = InspectionProfileManager.getInstance(project).currentProfile
+    val tools = currentProfile.getToolsOrNull(shortName, project) ?: return null
+    return tools.getState(element)
+}
+
+val ScopeToolState.enabledTool: InspectionProfileEntry? get() = if(isEnabled) tool.tool else null
 //endregion
 
 //region Xml Converters

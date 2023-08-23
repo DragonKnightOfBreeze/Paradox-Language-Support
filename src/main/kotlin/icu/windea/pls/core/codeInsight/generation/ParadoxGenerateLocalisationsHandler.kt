@@ -20,6 +20,7 @@ class ParadoxGenerateLocalisationsHandler(
     private val context: ParadoxLocalisationCodeInsightContext? = null,
     private val inspection: MissingLocalisationInspection? = null,
     private val forFile: Boolean = false,
+    private val fromInspection: Boolean = false,
 ) : CodeInsightActionHandler {
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
         val onChosen = action@{ selected: CwtLocalisationLocaleConfig ->
@@ -49,7 +50,7 @@ class ParadoxGenerateLocalisationsHandler(
     private fun getContext(file: PsiFile, editor: Editor): ParadoxLocalisationCodeInsightContext? {
         if(context != null) return context
         val locales = ParadoxLocaleHandler.getLocaleConfigs()
-        if(forFile) return ParadoxLocalisationCodeInsightContext.fromFile(file, locales, inspection)
+        if(forFile) return ParadoxLocalisationCodeInsightContext.fromFile(file, locales, fromInspection = fromInspection)
         val element = findElement(file, editor.caretModel.offset)
         val contextElement = when {
             element == null -> null
@@ -59,8 +60,8 @@ class ParadoxGenerateLocalisationsHandler(
         }
         val context = when {
             contextElement == null -> null
-            contextElement is ParadoxScriptDefinitionElement -> ParadoxLocalisationCodeInsightContext.fromDefinition(contextElement, locales, inspection)
-            contextElement is ParadoxScriptStringExpressionElement -> ParadoxLocalisationCodeInsightContext.fromExpression(contextElement, locales, inspection)
+            contextElement is ParadoxScriptDefinitionElement -> ParadoxLocalisationCodeInsightContext.fromDefinition(contextElement, locales, fromInspection = fromInspection)
+            contextElement is ParadoxScriptStringExpressionElement -> ParadoxLocalisationCodeInsightContext.fromExpression(contextElement, locales, fromInspection = fromInspection)
             else -> null
         }
         return context
