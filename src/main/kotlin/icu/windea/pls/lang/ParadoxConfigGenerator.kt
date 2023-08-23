@@ -12,8 +12,8 @@ object ParadoxConfigGenerator {
         if(config.configs.isNullOrEmpty()) return config.configs
         return config.configs?.mapFast { c1 ->
             when(c1) {
-                is CwtPropertyConfig -> c1.copyDelegated(c1.parent, deepCopyConfigs(c1))
-                is CwtValueConfig -> c1.copyDelegated(c1.parent, deepCopyConfigs(c1))
+                is CwtPropertyConfig -> c1.copyDelegated(c1.parentConfig, deepCopyConfigs(c1))
+                is CwtValueConfig -> c1.copyDelegated(c1.parentConfig, deepCopyConfigs(c1))
             }
         }
     }
@@ -32,21 +32,21 @@ object ParadoxConfigGenerator {
         }
         when(config) {
             is CwtValueConfig -> {
-                val mergedConfig = config.copyDelegated(config.parent, mergedConfigs)
+                val mergedConfig = config.copyDelegated(config.parentConfig, mergedConfigs)
                 if(configContext.injectors.isNotEmpty()) return mutableListOf(mergedConfig)
                 return mergedConfig.toSingletonList()
             }
             is CwtPropertyConfig -> {
                 val subtypeExpression = config.key.removeSurroundingOrNull("subtype[", "]")
                 if(subtypeExpression == null) {
-                    val mergedConfig = config.copyDelegated(config.parent, mergedConfigs)
+                    val mergedConfig = config.copyDelegated(config.parentConfig, mergedConfigs)
                     if(configContext.injectors.isNotEmpty()) return mutableListOf(mergedConfig)
                     return mergedConfig.toSingletonList()
                 } else {
                     val subtypes = configContext.definitionSubtypes
                     if(subtypes == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
                         mergedConfigs?.forEachFast { mergedConfig ->
-                            mergedConfig.parent = config.parent
+                            mergedConfig.parentConfig = config.parentConfig
                         }
                         if(configContext.injectors.isNotEmpty()) return mergedConfigs ?: mutableListOf()
                         return mergedConfigs.orEmpty()
@@ -81,8 +81,8 @@ object ParadoxConfigGenerator {
                 else -> deepCopyConfigs(config)
             },
         )
-        inlined.configs?.forEachFast { it.parent = inlined }
-        inlined.parent = config.parent
+        inlined.configs?.forEachFast { it.parentConfig = inlined }
+        inlined.parentConfig = config.parentConfig
         inlined.inlineableConfig = config.inlineableConfig
         return inlined
     }
@@ -96,7 +96,7 @@ object ParadoxConfigGenerator {
             key = inlineConfig.name,
             configs = deepCopyConfigs(other)
         )
-        inlined.configs?.forEachFast { it.parent = inlined }
+        inlined.configs?.forEachFast { it.parentConfig = inlined }
         inlined.inlineableConfig = inlineConfig
         return inlined
     }
@@ -113,8 +113,8 @@ object ParadoxConfigGenerator {
             documentation = other.documentation,
             options = other.options
         )
-        inlined.parent = config.parent
-        inlined.configs?.forEachFast { it.parent = inlined }
+        inlined.parentConfig = config.parentConfig
+        inlined.configs?.forEachFast { it.parentConfig = inlined }
         inlined.inlineableConfig = config.inlineableConfig ?: aliasConfig
         return inlined
     }
@@ -132,8 +132,8 @@ object ParadoxConfigGenerator {
             documentation = config.documentation ?: other.documentation,
             options = config.options
         )
-        inlined.parent = config.parent
-        inlined.configs?.forEachFast { it.parent = inlined }
+        inlined.parentConfig = config.parentConfig
+        inlined.configs?.forEachFast { it.parentConfig = inlined }
         inlined.inlineableConfig = config.inlineableConfig //should not set to singleAliasConfig - a single alias config do not inline property key  
         return inlined
     }

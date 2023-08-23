@@ -13,7 +13,7 @@ class CwtOptionConfig private constructor(
     override val valueTypeId: Byte = CwtType.String.id,
     override val separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
     override val options: List<CwtOptionMemberConfig<*>>? = null,
-) : CwtOptionMemberConfig<CwtOption>, CwtPropertyAware {
+) : CwtOptionMemberConfig<CwtOption>, CwtKeyAware {
     companion object Resolver {
         private val cache = ConcurrentHashMap<String, CwtOptionConfig>()
         

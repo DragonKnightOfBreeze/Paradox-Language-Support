@@ -26,7 +26,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         //兼容trigger_scope的值对应的作用域与当前作用域上下文不匹配的情况
         if(config !is CwtPropertyConfig) return null
         if(config.key != TRIGGER_KEY && config.key != PARAMETERS_KEY) return null
-        val aliasConfig = config.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
+        val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
         if(aliasConfig.subName !in CONTEXT_NAMES) return null
         ProgressManager.checkCanceled()
         val complexTriggerModifierProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)

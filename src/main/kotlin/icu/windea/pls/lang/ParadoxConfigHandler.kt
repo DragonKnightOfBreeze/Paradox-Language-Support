@@ -1594,14 +1594,14 @@ object ParadoxConfigHandler {
         return when {
             config is CwtPropertyConfig -> {
                 config.inlineableConfig?.let { getEntryConfigs(it) }
-                    ?: config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filterFast { it is CwtPropertyConfig && it.key == config.key }
+                    ?: config.parentConfig?.castOrNull<CwtPropertyConfig>()?.configs?.filterFast { it is CwtPropertyConfig && it.key == config.key }
                     ?: config.toSingletonList()
             }
             config is CwtValueConfig && config.propertyConfig != null -> {
                 getEntryConfigs(config.propertyConfig!!)
             }
             config is CwtValueConfig -> {
-                config.parent?.castOrNull<CwtPropertyConfig>()?.configs?.filterIsInstance<CwtValueConfig>()
+                config.parentConfig?.castOrNull<CwtPropertyConfig>()?.configs?.filterIsInstance<CwtValueConfig>()
                     ?: config.toSingletonList()
             }
             config is CwtSingleAliasConfig -> {
@@ -1629,7 +1629,7 @@ object ParadoxConfigHandler {
             when {
                 config is CwtPropertyConfig -> {
                     val propertyConfig = config
-                    propertyConfig.parent?.configs?.forEach { c ->
+                    propertyConfig.parentConfig?.configs?.forEach { c ->
                         if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
                             c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
                         }
@@ -1637,7 +1637,7 @@ object ParadoxConfigHandler {
                 }
                 config is CwtValueConfig -> {
                     val propertyConfig = config.propertyConfig
-                    propertyConfig?.parent?.configs?.forEach { c ->
+                    propertyConfig?.parentConfig?.configs?.forEach { c ->
                         if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
                             c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
                         }

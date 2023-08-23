@@ -23,7 +23,7 @@ class ParadoxTriggerWithParametersAwareOverriddenConfigProvider : ParadoxOverrid
         //兼容使用内联或者使用封装变量的情况
         if(config !is CwtPropertyConfig) return null
         if(config.key != PARAMETERS_KEY) return null
-        val aliasConfig = config.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
+        val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
         if(aliasConfig.subName !in CONTEXT_NAMES) return null
         ProgressManager.checkCanceled()
         val contextProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
@@ -52,7 +52,7 @@ class ParadoxTriggerWithParametersAwareOverriddenConfigProvider : ParadoxOverrid
         
         if(configExpression !is CwtKeyExpression) return false
         configs.forEach { c1 ->
-            val pc = c1.memberConfig.parent?.memberConfig?.castOrNull<CwtPropertyConfig>()
+            val pc = c1.memberConfig.parentConfig?.memberConfig?.castOrNull<CwtPropertyConfig>()
             if(pc?.key != "complex_trigger_modifier") return true
             c1.configs?.forEach { c2 ->
                 if(c2 is CwtPropertyConfig && c2.expression == configExpression) {

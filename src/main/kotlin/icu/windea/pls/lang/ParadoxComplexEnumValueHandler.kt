@@ -109,7 +109,7 @@ object ParadoxComplexEnumValueHandler {
     }
     
     private fun doBeforeMatchParent(config: CwtMemberConfig<*>, element: PsiElement, complexEnumConfig: CwtComplexEnumConfig): Boolean {
-        val parentConfig = config.parent ?: return false
+        val parentConfig = config.parentConfig ?: return false
         val parentBlockElement = element.parentOfType<ParadoxScriptBlockElement>() ?: return false
         val parentElement = when {
             parentBlockElement is ParadoxScriptRootBlock -> null

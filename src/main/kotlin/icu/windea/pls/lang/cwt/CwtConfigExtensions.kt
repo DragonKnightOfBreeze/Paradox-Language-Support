@@ -15,14 +15,14 @@ import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.script.psi.*
 
 inline fun CwtMemberConfig<*>.processParent(inline: Boolean = false, processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
-    var parent = this.parent
+    var parent = this.parentConfig
     while(parent != null) {
         val result = processor(parent)
         if(!result) return false
         if(inline) {
-            parent = parent.inlineableConfig?.config ?: parent.parent
+            parent = parent.inlineableConfig?.config ?: parent.parentConfig
         } else {
-            parent = parent.parent
+            parent = parent.parentConfig
         }
     }
     return true

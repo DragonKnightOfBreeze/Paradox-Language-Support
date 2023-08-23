@@ -62,7 +62,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
                             for(expression in expressions) {
                                 val keyArg = if(isKey) expression else cc.key
                                 val valueArg = if(isValue) expression else cc.stringValue.orEmpty()
-                                val cc0 = cc.copy(key = keyArg, value = valueArg).also { it.parent = cc.parent }
+                                val cc0 = cc.copy(key = keyArg, value = valueArg).also { it.parentConfig = cc.parentConfig }
                                 ccs.add(cc0)
                                 i = index
                             }
@@ -72,7 +72,7 @@ class CwtOnActionDeclarationConfigInjector : CwtDeclarationConfigInjector {
                     is CwtValueConfig -> {
                         if(cc.stringValue == "<event>") {
                             for(expression in expressions) {
-                                val cc0 = cc.copy(pointer = emptyPointer(), value = expression).also { it.parent = cc.parent }
+                                val cc0 = cc.copy(pointer = emptyPointer(), value = expression).also { it.parentConfig = cc.parentConfig }
                                 ccs.add(cc0)
                                 i = index
                             }

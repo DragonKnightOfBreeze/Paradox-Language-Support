@@ -986,7 +986,7 @@ class CwtConfigGroupImpl(
             this += "script_value" //SV也支持参数
             //this += "inline_script" //内联脚本也支持参数（并且可以表示多条语句）（但不是定义）
             for(parameterConfig in info.parameterConfigs) {
-                val propertyConfig = parameterConfig.parent as? CwtPropertyConfig ?: continue
+                val propertyConfig = parameterConfig.parentConfig as? CwtPropertyConfig ?: continue
                 val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
                 val contextExpression = if(aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression else CwtKeyExpression.resolve(aliasSubName)
                 if(contextExpression.type == CwtDataType.Definition && contextExpression.value != null) {

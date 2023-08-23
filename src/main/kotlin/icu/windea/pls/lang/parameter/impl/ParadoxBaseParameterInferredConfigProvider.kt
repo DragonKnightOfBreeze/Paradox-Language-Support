@@ -71,8 +71,8 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             valueTypeId = CwtType.Block.id,
             configs = expressionContextConfigs.map { config ->
                 when(config) {
-                    is CwtPropertyConfig -> config.copyDelegated(config.parent, ParadoxConfigGenerator.deepCopyConfigs(config))
-                    is CwtValueConfig -> config.copyDelegated(config.parent, ParadoxConfigGenerator.deepCopyConfigs(config))
+                    is CwtPropertyConfig -> config.copyDelegated(config.parentConfig, ParadoxConfigGenerator.deepCopyConfigs(config))
+                    is CwtValueConfig -> config.copyDelegated(config.parentConfig, ParadoxConfigGenerator.deepCopyConfigs(config))
                 }
             }
         )

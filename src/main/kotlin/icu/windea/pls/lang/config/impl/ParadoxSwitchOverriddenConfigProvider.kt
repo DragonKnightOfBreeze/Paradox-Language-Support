@@ -24,7 +24,7 @@ class ParadoxSwitchOverriddenConfigProvider : ParadoxOverriddenConfigProvider {
         //兼容使用内联或者使用封装变量的情况
         if(config !is CwtPropertyConfig) return null
         if(config.key != CASE_KEY) return null
-        val aliasConfig = config.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
+        val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
         if(aliasConfig.subName !in CONTEXT_KEYS) return null
         ProgressManager.checkCanceled()
         val triggerConfig = aliasConfig.config.configs?.find { it is CwtPropertyConfig && it.key in TRIGGER_KEYS && it.value == "alias_keys_field[trigger]" } ?: return null

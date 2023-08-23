@@ -162,7 +162,7 @@ object ParadoxScopeHandler {
             } else if(currentConfig is CwtValueConfig) {
                 currentConfig = currentConfig.propertyConfig ?: currentConfig
             }
-            currentConfig = currentConfig.parent ?: break
+            currentConfig = currentConfig.parentConfig ?: break
         }
         return false
     }

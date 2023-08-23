@@ -25,7 +25,7 @@ object ParadoxConfigMerger {
             }
         }
         for(config in result) {
-            config.parent = null
+            config.parentConfig = null
         }
         return result
     }

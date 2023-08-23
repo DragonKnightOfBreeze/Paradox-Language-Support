@@ -118,7 +118,7 @@ object CwtConfigResolver {
         val config = CwtPropertyConfig.resolve(pointer, fileConfig.info, key, value, valueType.id, separatorType.id, configs, options, documentation)
         fileConfig.info.acceptConfigExpression(config.keyExpression, config)
         fileConfig.info.acceptConfigExpression(config.valueExpression, config)
-        configs?.forEach { it.parent = config }
+        configs?.forEach { it.parentConfig = config }
         return config
     }
     
@@ -201,7 +201,7 @@ object CwtConfigResolver {
         
         val config = CwtValueConfig.resolve(pointer, fileConfig.info, value, valueType.id, configs, options, documentation)
         fileConfig.info.acceptConfigExpression(config.valueExpression, config)
-        configs?.forEach { it.parent = config }
+        configs?.forEach { it.parentConfig = config }
         return config
     }
     

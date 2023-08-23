@@ -56,7 +56,7 @@ class ParadoxOnActionInEventDefinitionHierarchyIndex : ParadoxDefinitionHierarch
         val effectConfig = config.takeIf { it is CwtValueConfig }
             ?.memberConfig
             ?.takeIf { it is CwtPropertyConfig && it.key == "on_action" }
-            ?.parent
+            ?.parentConfig
             ?.takeIf { it.inlineableConfig?.castOrNull<CwtAliasConfig>()?.let { c -> c.name == "effect" && c.subName == "fire_on_action" } ?: false }
         if(effectConfig == null) return null
         val scopesConfig = effectConfig.configs

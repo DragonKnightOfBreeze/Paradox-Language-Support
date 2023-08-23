@@ -19,7 +19,7 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
         
         val propertyConfig = config.propertyConfig ?: return
         if(propertyConfig.key != TRIGGER_KEY) return
-        val aliasConfig = propertyConfig.parent?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
+        val aliasConfig = propertyConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
         if(aliasConfig.subName !in CONTEXT_NAMES) return
         
         val triggerName = element.stringValue() ?: return

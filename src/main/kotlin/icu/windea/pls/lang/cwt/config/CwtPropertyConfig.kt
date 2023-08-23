@@ -4,13 +4,11 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.core.annotations.Lazy
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.model.*
 
-sealed interface CwtPropertyConfig : CwtMemberConfig<CwtProperty>, CwtPropertyAware {
+sealed interface CwtPropertyConfig : CwtMemberConfig<CwtProperty>, CwtKeyAware {
     val keyExpression: CwtKeyExpression
     
     val valueConfig: CwtValueConfig?
@@ -53,7 +51,7 @@ fun CwtPropertyConfig.copy(
 }
 
 fun CwtPropertyConfig.copyDelegated(
-    parent: CwtMemberConfig<*>? = this.parent,
+    parent: CwtMemberConfig<*>? = this.parentConfig,
     configs: List<CwtMemberConfig<*>>? = this.configs
 ): CwtPropertyConfig {
     return if(configs.isNullOrEmpty()) {
@@ -85,14 +83,11 @@ private object CwtPropertyConfigImpls {
         override val options: List<CwtOptionMemberConfig<*>>? = null,
         override val documentation: String? = null,
     ) : Impl(), CwtPropertyConfig {
-        @Volatile override var parent: CwtMemberConfig<*>? = null
+        @Volatile override var parentConfig: CwtMemberConfig<*>? = null
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
         
-        @Lazy override val valueConfig: CwtValueConfig? = doGetValueConfig()
-        
+        override val valueConfig: CwtValueConfig? = doGetValueConfig()
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        override val values: List<CwtValueConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        override val properties: List<CwtPropertyConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
     }
     
     class ImplB(
@@ -106,39 +101,26 @@ private object CwtPropertyConfigImpls {
         override val options: List<CwtOptionMemberConfig<*>>? = null,
         override val documentation: String? = null,
     ) : Impl(), CwtPropertyConfig {
-        @Volatile override var parent: CwtMemberConfig<*>? = null
+        @Volatile override var parentConfig: CwtMemberConfig<*>? = null
         @Volatile override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
         
-        @Lazy override val valueConfig: CwtValueConfig? = doGetValueConfig()
-        
-        @Lazy override val values: List<CwtValueConfig>? = configs?.filterIsInstanceFast<CwtValueConfig>()
-        @Lazy override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstanceFast<CwtPropertyConfig>()
+        override val valueConfig: CwtValueConfig? = doGetValueConfig()
     }
     
     class DelegateA(
         delegate: CwtPropertyConfig,
-        override var parent: CwtMemberConfig<*>?,
+        override var parentConfig: CwtMemberConfig<*>?,
     ) : CwtPropertyConfig by delegate {
-        @Lazy override val valueConfig: CwtValueConfig? = doGetValueConfig()
-        
+        override val valueConfig: CwtValueConfig? = doGetValueConfig()
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        override val values: List<CwtValueConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        override val properties: List<CwtPropertyConfig>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
     }
     
     class DelegateB(
         delegate: CwtPropertyConfig,
-        override var parent: CwtMemberConfig<*>?,
+        override var parentConfig: CwtMemberConfig<*>?,
         override val configs: List<CwtMemberConfig<*>>? = null,
     ) : CwtPropertyConfig by delegate {
-        private var _valueConfig: Any? = EMPTY_OBJECT
-        override val valueConfig: CwtValueConfig? @Synchronized get() {
-            if(_valueConfig === EMPTY_OBJECT) _valueConfig = doGetValueConfig()
-            return _valueConfig.cast()
-        }
-        
-        @Lazy override val values: List<CwtValueConfig>? = configs?.filterIsInstanceFast<CwtValueConfig>()
-        @Lazy override val properties: List<CwtPropertyConfig>? = configs?.filterIsInstanceFast<CwtPropertyConfig>()
+        override val valueConfig: CwtValueConfig? = doGetValueConfig()
     }
 }
 

@@ -4,22 +4,16 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.cwt.expression.CwtDataType.*
 import icu.windea.pls.model.*
 
-sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig<T>, CwtValueAware, CwtOptionsAware, CwtDocumentationAware {
-    val configs: List<CwtMemberConfig<*>>?
-    
-    var parent: CwtMemberConfig<*>?
+sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig<T>, CwtValueAware, CwtConfigsAware, CwtDocumentationAware, CwtOptionsAware {
+    override val configs: List<CwtMemberConfig<*>>?
+    var parentConfig: CwtMemberConfig<*>?
     var inlineableConfig: CwtInlineableConfig<@UnsafeVariance T>?
-    
-    val values: List<CwtValueConfig>?
-    val properties: List<CwtPropertyConfig>?
     
     val valueExpression: CwtValueExpression
     override val expression: CwtDataExpression
@@ -38,8 +32,8 @@ val <T : PsiElement> CwtMemberConfig<T>.isBlock: Boolean
 
 val CwtMemberConfig<*>.isRoot: Boolean
     get() = when {
-        this is CwtPropertyConfig -> this.parent == null
-        this is CwtValueConfig -> this.parent == null && this.propertyConfig == null
+        this is CwtPropertyConfig -> this.parentConfig == null
+        this is CwtValueConfig -> this.parentConfig == null && this.propertyConfig == null
         else -> false
     }
 

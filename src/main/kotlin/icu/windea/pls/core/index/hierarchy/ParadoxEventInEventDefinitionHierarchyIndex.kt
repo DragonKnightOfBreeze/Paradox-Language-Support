@@ -56,7 +56,7 @@ class ParadoxEventInEventDefinitionHierarchyIndex : ParadoxDefinitionHierarchyIn
         val effectConfig = config.takeIf { it is CwtValueConfig }
             ?.memberConfig
             ?.takeIf { it is CwtPropertyConfig && it.key == "id" }
-            ?.parent
+            ?.parentConfig
             ?.takeIf { it.inlineableConfig?.castOrNull<CwtAliasConfig>()?.let { c -> c.name == "effect" } ?: false }
         if(effectConfig == null) return null
         val scopesConfig = effectConfig.configs

@@ -57,7 +57,7 @@ object ParadoxLocalisationParameterHandler {
     }
     
     private fun findParameterPropertiesFromLocalisationProperty(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): List<ParadoxScriptProperty> {
-        val configToUse = config.parent?.configs?.firstNotNullOfOrNull { c -> c.configs?.find { isParameterConfig(element, it) } }
+        val configToUse = config.parentConfig?.configs?.firstNotNullOfOrNull { c -> c.configs?.find { isParameterConfig(element, it) } }
         if(configToUse == null) return emptyList()
         val context = element.findParentProperty(fromParentBlock = true)
             ?.castOrNull<ParadoxScriptProperty>()
@@ -76,7 +76,7 @@ object ParadoxLocalisationParameterHandler {
     }
     
     private fun findLocalisationPropertyFromParameterProperty(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): ParadoxScriptProperty? {
-        val configToUse = config.parent?.parent?.configs?.find { isLocalisationConfig(element, it) }
+        val configToUse = config.parentConfig?.parentConfig?.configs?.find { isLocalisationConfig(element, it) }
         if(configToUse == null) return null
         val context = element.findParentProperty(fromParentBlock = true)
             ?.findParentProperty(fromParentBlock = true)
