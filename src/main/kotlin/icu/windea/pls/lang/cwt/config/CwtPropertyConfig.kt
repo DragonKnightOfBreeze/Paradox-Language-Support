@@ -65,10 +65,13 @@ private object CwtPropertyConfigImpls {
         options: List<CwtOptionMemberConfig<*>>? = null,
         documentation: String? = null,
     ) : UserDataHolderBase(), CwtPropertyConfig {
-        override val configs  = configs
-        override val options  = options
+        override val configs = configs
+        override val options = options
         override val documentation = documentation
-        override val valueConfig  = getValueConfig()
+        
+        //use memory-optimized lazy property
+        private var _valueConfig: Any? = EMPTY_OBJECT
+        override val valueConfig @Synchronized get() = if(_valueConfig !== EMPTY_OBJECT) _valueConfig.castOrNull() else getValueConfig().also { _valueConfig = it }
         
         override var parentConfig: CwtMemberConfig<*>? = null
         override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
@@ -87,8 +90,11 @@ private object CwtPropertyConfigImpls {
         private val delegate: CwtPropertyConfig,
         configs: List<CwtMemberConfig<*>>? = null,
     ) : UserDataHolderBase(), CwtPropertyConfig by delegate {
-        override val configs  = configs
-        override val valueConfig  = getValueConfig()
+        override val configs = configs
+        
+        //use memory-optimized lazy property
+        private var _valueConfig: Any? = EMPTY_OBJECT
+        override val valueConfig @Synchronized get() = if(_valueConfig !== EMPTY_OBJECT) _valueConfig.castOrNull() else getValueConfig().also { _valueConfig = it }
         
         override var parentConfig: CwtMemberConfig<*>? = null
         override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null

@@ -79,6 +79,7 @@ private object CwtValueConfigImpls {
         override val configs = configs
         override val options = options
         override val documentation = documentation
+        
         override val propertyConfig = propertyConfig
         
         override var parentConfig: CwtMemberConfig<*>? = null
