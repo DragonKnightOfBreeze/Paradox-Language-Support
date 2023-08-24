@@ -87,10 +87,11 @@ object ParadoxConfigGenerator {
         return inlined
     }
     
-    /**
-     * 将指定的[inlineConfig]内联作为子节点并返回。如果需要拷贝，则进行深拷贝。
-     */
     fun inlineWithInlineConfig(inlineConfig: CwtInlineConfig): CwtPropertyConfig {
+        return doInlineWithInlineConfig(inlineConfig)
+    }
+    
+    private fun doInlineWithInlineConfig(inlineConfig: CwtInlineConfig): CwtPropertyConfig {
         val other = inlineConfig.config
         val inlined = other.copy(
             key = inlineConfig.name,
@@ -98,43 +99,6 @@ object ParadoxConfigGenerator {
         )
         inlined.configs?.forEachFast { it.parentConfig = inlined }
         inlined.inlineableConfig = inlineConfig
-        return inlined
-    }
-    
-    /**
-     * 从[aliasConfig]内联规则：key改为取[aliasConfig]的subName，value改为取[aliasConfig]的的value，如果需要拷贝，则进行深拷贝。
-     */
-    fun inlineWithAliasConfig(config: CwtPropertyConfig, aliasConfig: CwtAliasConfig): CwtPropertyConfig {
-        val other = aliasConfig.config
-        val inlined = config.copy(
-            key = aliasConfig.subName,
-            value = other.value,
-            configs = deepCopyConfigs(other),
-            documentation = other.documentation,
-            options = other.options
-        )
-        inlined.parentConfig = config.parentConfig
-        inlined.configs?.forEachFast { it.parentConfig = inlined }
-        inlined.inlineableConfig = config.inlineableConfig ?: aliasConfig
-        return inlined
-    }
-    
-    /**
-     * 从[singleAliasConfig]内联规则：value改为取[singleAliasConfig]的的value，如果需要拷贝，则进行深拷贝。
-     */
-    fun inlineWithSingleAliasConfig(config: CwtPropertyConfig, singleAliasConfig: CwtSingleAliasConfig): CwtPropertyConfig {
-        //内联所有value
-        //这里需要优先使用singleAliasConfig的options、optionValues和documentation
-        val other = singleAliasConfig.config
-        val inlined = config.copy(
-            value = other.value,
-            configs = deepCopyConfigs(other),
-            documentation = config.documentation ?: other.documentation,
-            options = config.options
-        )
-        inlined.parentConfig = config.parentConfig
-        inlined.configs?.forEachFast { it.parentConfig = inlined }
-        inlined.inlineableConfig = config.inlineableConfig //should not set to singleAliasConfig - a single alias config do not inline property key  
         return inlined
     }
     
@@ -147,7 +111,7 @@ object ParadoxConfigGenerator {
                 val singleAliasName = valueExpression.value ?: return emptyList()
                 val singleAlias = configGroup.singleAliases[singleAliasName] ?: return emptyList()
                 val result = mutableListOf<CwtMemberConfig<*>>()
-                result.add(inlineWithSingleAliasConfig(config, singleAlias))
+                result.add(singleAlias.inline(config))
                 return result
             }
             CwtDataType.AliasMatchLeft -> {
@@ -158,11 +122,11 @@ object ParadoxConfigGenerator {
                 aliasSubNames.forEachFast f1@{ aliasSubName ->
                     val aliases = aliasGroup[aliasSubName] ?: return@f1
                     aliases.forEachFast f2@{ alias ->
-                        var inlinedConfig = inlineWithAliasConfig(config, alias)
+                        var inlinedConfig = alias.inline(config)
                         if(inlinedConfig.valueExpression.type == CwtDataType.SingleAliasRight) {
                             val singleAliasName = inlinedConfig.valueExpression.value ?: return@f2
                             val singleAlias = configGroup.singleAliases[singleAliasName] ?: return@f2
-                            inlinedConfig = inlineWithSingleAliasConfig(inlinedConfig, singleAlias)
+                            inlinedConfig = singleAlias.inline(inlinedConfig)
                         }
                         result.add(inlinedConfig)
                     }
