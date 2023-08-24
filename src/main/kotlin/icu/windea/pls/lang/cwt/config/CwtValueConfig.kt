@@ -25,6 +25,13 @@ val CwtValueConfig.Keys.propertyConfig by createKey<CwtPropertyConfig?>("cwt.val
 val CwtValueConfig.Keys.parentConfig by createKey<CwtMemberConfig<*>?>("cwt.valueConfig.parentConfig")
 val CwtValueConfig.Keys.inlineableConfig by createKey<CwtInlineableConfig<CwtValue>?>("cwt.valueConfig.inlineableConfig")
 
+private var CwtValueConfig._configs by CwtValueConfig.Keys.configs
+private var CwtValueConfig._options by CwtValueConfig.Keys.options
+private var CwtValueConfig._documentation by CwtValueConfig.Keys.documentation
+private var CwtValueConfig._propertyConfig by CwtValueConfig.Keys.propertyConfig
+private var CwtValueConfig._parentConfig by CwtValueConfig.Keys.parentConfig
+private var CwtValueConfig._inlineableConfig by CwtValueConfig.Keys.inlineableConfig
+
 fun CwtValueConfig.Companion.resolve(
     pointer: SmartPsiElementPointer<out CwtValue>,
     info: CwtConfigGroupInfo,
@@ -88,18 +95,20 @@ private object CwtValueConfigImpls {
         propertyConfig: CwtPropertyConfig? = null,
     ) : UserDataHolderBase(), CwtValueConfig {
         init {
-            putUserData(CwtValueConfig.Keys.configs, configs)
-            putUserData(CwtValueConfig.Keys.options, options)
-            putUserData(CwtValueConfig.Keys.documentation, documentation)
-            putUserData(CwtValueConfig.Keys.propertyConfig, propertyConfig)
+            _configs = configs
+            _options = options
+            _documentation = documentation
+            _propertyConfig = propertyConfig
         }
         
-        override val configs by CwtValueConfig.Keys.configs
-        override val options by CwtValueConfig.Keys.options
-        override val documentation by CwtValueConfig.Keys.documentation
-        override val propertyConfig by CwtValueConfig.Keys.propertyConfig
-        override var parentConfig by CwtValueConfig.Keys.parentConfig
-        override var inlineableConfig by CwtValueConfig.Keys.inlineableConfig
+        override val configs get() = _configs
+        override val options get() = _options
+        override val documentation get() = _documentation
+        override val propertyConfig get() = _propertyConfig
+        override var parentConfig get() = _parentConfig
+            set(value) = run { _parentConfig = value }
+        override var inlineableConfig get() = _inlineableConfig
+            set(value) = run { _inlineableConfig = value }
         
         override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
         override val expression: CwtValueExpression get() = valueExpression
@@ -117,9 +126,16 @@ private object CwtValueConfigImpls {
         configs: List<CwtMemberConfig<*>>? = null,
         parentConfig: CwtMemberConfig<*>?,
     ) : UserDataHolderBase(), CwtValueConfig by delegate {
-        override val configs by CwtValueConfig.Keys.configs
-        override var parentConfig by CwtValueConfig.Keys.parentConfig
-        override var inlineableConfig by CwtValueConfig.Keys.inlineableConfig
+        init {
+            _configs = configs
+            _parentConfig = parentConfig
+        }
+        
+        override val configs get() =  _configs
+        override var parentConfig get() = _parentConfig
+            set(value) = run { _parentConfig = value }
+        override var inlineableConfig get() = _inlineableConfig
+            set(value) = run { _inlineableConfig = value }
         
         override fun resolved(): CwtValueConfig = inlineableConfig?.config?.castOrNull<CwtValueConfig>() ?: this
         override fun resolvedOrNull(): CwtValueConfig? = inlineableConfig?.config?.castOrNull<CwtValueConfig>()
@@ -128,13 +144,6 @@ private object CwtValueConfigImpls {
         override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
         
         override fun toString(): String = value
-        
-        //should put after delegate properties
-        
-        init {
-            putUserData(CwtValueConfig.Keys.configs, configs)
-            putUserData(CwtValueConfig.Keys.parentConfig, parentConfig)
-        }
     }
     
     // 12 + 3 * 4 = 24 => 24b
@@ -150,8 +159,10 @@ private object CwtValueConfigImpls {
         override val options: List<CwtOptionMemberConfig<*>>? get() = propertyConfig.options
         override val configs: List<CwtMemberConfig<*>>? get() = propertyConfig.configs
         
-        override var parentConfig by CwtValueConfig.Keys.parentConfig
-        override var inlineableConfig by CwtValueConfig.Keys.inlineableConfig
+        override var parentConfig get() = _parentConfig
+            set(value) = run { _parentConfig = value }
+        override var inlineableConfig get() = _inlineableConfig
+            set(value) = run { _inlineableConfig = value }
         
         override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
         override val expression: CwtValueExpression get() = valueExpression

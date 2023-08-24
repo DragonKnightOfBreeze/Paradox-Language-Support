@@ -27,6 +27,13 @@ val CwtPropertyConfig.Keys.valueConfig by createKey<CwtValueConfig?>("cwt.proper
 val CwtPropertyConfig.Keys.parentConfig by createKey<CwtMemberConfig<*>?>("cwt.propertyConfig.parentConfig")
 val CwtPropertyConfig.Keys.inlineableConfig by createKey<CwtInlineableConfig<CwtProperty>?>("cwt.propertyConfig.inlineableConfig")
 
+private var CwtPropertyConfig._configs by CwtPropertyConfig.Keys.configs
+private var CwtPropertyConfig._options by CwtPropertyConfig.Keys.options
+private var CwtPropertyConfig._documentation by CwtPropertyConfig.Keys.documentation
+private var CwtPropertyConfig._valueConfig by CwtPropertyConfig.Keys.valueConfig
+private var CwtPropertyConfig._parentConfig by CwtPropertyConfig.Keys.parentConfig
+private var CwtPropertyConfig._inlineableConfig by CwtPropertyConfig.Keys.inlineableConfig
+
 fun CwtPropertyConfig.Companion.resolve(
     pointer: SmartPsiElementPointer<out CwtProperty>,
     info: CwtConfigGroupInfo,
@@ -76,12 +83,14 @@ private object CwtPropertyConfigImpls {
         options: List<CwtOptionMemberConfig<*>>? = null,
         documentation: String? = null,
     ) : UserDataHolderBase(), CwtPropertyConfig {
-        override val configs by CwtPropertyConfig.Keys.configs
-        override val options by CwtPropertyConfig.Keys.options
-        override val documentation by CwtPropertyConfig.Keys.documentation
-        override val valueConfig by CwtPropertyConfig.Keys.valueConfig
-        override var parentConfig by CwtPropertyConfig.Keys.parentConfig
-        override var inlineableConfig by CwtPropertyConfig.Keys.inlineableConfig
+        override val configs get () = _configs
+        override val options get () = _options
+        override val documentation get () = _documentation
+        override val valueConfig get () = _valueConfig
+        override var parentConfig get() = _parentConfig
+            set(value) = run { _parentConfig = value }
+        override var inlineableConfig get() = _inlineableConfig
+            set(value) = run { _inlineableConfig = value }
         
         override val keyExpression: CwtKeyExpression get() = CwtKeyExpression.resolve(key)
         override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
@@ -109,10 +118,18 @@ private object CwtPropertyConfigImpls {
         configs: List<CwtMemberConfig<*>>? = null,
         parentConfig: CwtMemberConfig<*>? = null,
     ) : UserDataHolderBase(), CwtPropertyConfig by delegate {
-        override val configs by CwtPropertyConfig.Keys.configs
-        override val valueConfig by CwtPropertyConfig.Keys.valueConfig
-        override var parentConfig by CwtPropertyConfig.Keys.parentConfig
-        override var inlineableConfig by CwtPropertyConfig.Keys.inlineableConfig
+        init {
+            _configs = configs
+            _valueConfig = getValueConfig()
+            _parentConfig = parentConfig
+        }
+        
+        override val configs get() = _configs
+        override val valueConfig get() = _valueConfig
+        override var parentConfig get() = _parentConfig
+            set(value) = run { _parentConfig = value }
+        override var inlineableConfig get() = _inlineableConfig
+            set(value) = run { _inlineableConfig = value }
         
         override fun resolved(): CwtPropertyConfig = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>() ?: this
         override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>()
@@ -121,13 +138,5 @@ private object CwtPropertyConfigImpls {
         override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
         
         override fun toString(): String = "$key ${separatorType.text} $value"
-        
-        //should put after delegate properties
-        
-        init {
-            putUserData(CwtPropertyConfig.Keys.configs, configs)
-            putUserData(CwtPropertyConfig.Keys.valueConfig, getValueConfig())
-            putUserData(CwtPropertyConfig.Keys.parentConfig, parentConfig)
-        }
     }
 }
