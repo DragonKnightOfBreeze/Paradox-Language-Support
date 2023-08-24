@@ -258,7 +258,7 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getFrame(element: ParadoxLocalisationIcon): Int {
-        //NOTE 这里的帧数可能用propertyReference表示，对应脚本中的参数，这时帧数传0
+        //这里的帧数可以用$PARAM$表示，对应某个本地化参数，此时直接返回0
         val iconFrameElement = element.iconFrame //默认为0（不切分）
         if(iconFrameElement != null) return iconFrameElement.text.toIntOrNull() ?: 0
         //这里的propertyReference是一个来自脚本文件的参数，不解析

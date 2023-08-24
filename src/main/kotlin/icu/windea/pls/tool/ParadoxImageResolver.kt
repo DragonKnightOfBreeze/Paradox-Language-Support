@@ -18,6 +18,9 @@ import kotlin.io.path.*
 object ParadoxImageResolver {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
+    //NOTE 切分数量由sprite声明中的属性noOfFrames的值确定
+    //TODO 1.0.7+ 支持切分PNG图片
+    
     /**
      * 基于定义解析图片的路径。接受类型不为`sprite`的定义。返回用于渲染的图片的绝对路径。
      * @param frame 帧数。用于切割图片，默认为0，表示不切割。如果为0，但对应的定义可以获取帧数信息，则使用那个帧数。

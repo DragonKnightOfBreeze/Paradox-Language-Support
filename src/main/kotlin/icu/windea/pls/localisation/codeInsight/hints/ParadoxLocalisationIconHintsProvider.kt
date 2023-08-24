@@ -21,57 +21,58 @@ private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationIconHintsSet
  */
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Settings>() {
-	data class Settings(
-		var iconHeightLimit: Int = 32
-	)
-	
-	override val name: String get() = PlsBundle.message("localisation.hints.localisationIcon")
-	override val description: String get() = PlsBundle.message("localisation.hints.localisationIcon.description")
-	override val key: SettingsKey<Settings> get() = settingsKey
-	
-	override fun createSettings() = Settings()
-	
-	override fun createConfigurable(settings: Settings): ImmediateConfigurable {
-		return object : ImmediateConfigurable {
-			override fun createComponent(listener: ChangeListener): JComponent = panel {
-				row {
-					label(PlsBundle.message("localisation.hints.settings.iconHeightLimit"))
-						.applyToComponent { toolTipText = PlsBundle.message("localisation.hints.settings.iconHeightLimit.tooltip") }
-					textField()
-						.bindIntText(settings::iconHeightLimit)
-						.bindIntWhenTextChanged(settings::iconHeightLimit)
-						.errorOnApply(PlsBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
-				}
-			}
-		}
-	}
-	
-	//icu.windea.pls.tool.localisation.ParadoxLocalisationTextInlayRenderer.renderIconTo
-	
-	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-		if(element is ParadoxLocalisationIcon) {
-			val resolved = element.reference?.resolve() ?: return true
-			val iconUrl = when {
-				resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, defaultToUnknown = false)
-				resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, defaultToUnknown = false)
-				else -> return true
-			}
-			if(iconUrl.isNotEmpty()) {
-				//忽略异常
-				runCatching {
-					//找不到图标的话就直接跳过
-					val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
-					//基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-					if(icon.iconHeight <= settings.iconHeightLimit) {
-						//点击可以导航到声明处（定义或DDS）
-						val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
-						val finalPresentation = presentation.toFinalPresentation(this, file.project, smaller = true)
-						val endOffset = element.endOffset
-						sink.addInlineElement(endOffset, true, finalPresentation, false)
-					}
-				}
-			}
-		}
-		return true
-	}
+    data class Settings(
+        var iconHeightLimit: Int = 32
+    )
+    
+    override val name: String get() = PlsBundle.message("localisation.hints.localisationIcon")
+    override val description: String get() = PlsBundle.message("localisation.hints.localisationIcon.description")
+    override val key: SettingsKey<Settings> get() = settingsKey
+    
+    override fun createSettings() = Settings()
+    
+    override fun createConfigurable(settings: Settings): ImmediateConfigurable {
+        return object : ImmediateConfigurable {
+            override fun createComponent(listener: ChangeListener): JComponent = panel {
+                row {
+                    label(PlsBundle.message("localisation.hints.settings.iconHeightLimit"))
+                        .applyToComponent { toolTipText = PlsBundle.message("localisation.hints.settings.iconHeightLimit.tooltip") }
+                    textField()
+                        .bindIntText(settings::iconHeightLimit)
+                        .bindIntWhenTextChanged(settings::iconHeightLimit)
+                        .errorOnApply(PlsBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
+                }
+            }
+        }
+    }
+    
+    //icu.windea.pls.tool.localisation.ParadoxLocalisationTextInlayRenderer.renderIconTo
+    
+    override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
+        if(element is ParadoxLocalisationIcon) {
+            val iconFrame = element.frame
+            val resolved = element.reference?.resolve() ?: return true
+            val iconUrl = when {
+                resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, iconFrame, defaultToUnknown = false)
+                resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, iconFrame, defaultToUnknown = false)
+                else -> return true
+            }
+            if(iconUrl.isNotEmpty()) {
+                //忽略异常
+                runCatching {
+                    //找不到图标的话就直接跳过
+                    val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
+                    //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
+                    if(icon.iconHeight <= settings.iconHeightLimit) {
+                        //点击可以导航到声明处（定义或DDS）
+                        val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
+                        val finalPresentation = presentation.toFinalPresentation(this, file.project, smaller = true)
+                        val endOffset = element.endOffset
+                        sink.addInlineElement(endOffset, true, finalPresentation, false)
+                    }
+                }
+            }
+        }
+        return true
+    }
 }
