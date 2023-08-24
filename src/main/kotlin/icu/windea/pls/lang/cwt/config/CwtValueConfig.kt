@@ -14,23 +14,7 @@ sealed interface CwtValueConfig : CwtMemberConfig<CwtValue>, CwtValueAware {
     companion object {
         val EmptyConfig: CwtValueConfig by lazy { resolve(emptyPointer(), CwtConfigGroupInfo(""), "") }
     }
-    
-    object Keys: KeyAware
 }
-
-val CwtValueConfig.Keys.configs by createKey<List<CwtMemberConfig<*>>?>("cwt.valueConfig.configs")
-val CwtValueConfig.Keys.options by createKey<List<CwtOptionMemberConfig<*>>?>("cwt.valueConfig.options")
-val CwtValueConfig.Keys.documentation by createKey<String?>("cwt.valueConfig.documentation")
-val CwtValueConfig.Keys.propertyConfig by createKey<CwtPropertyConfig?>("cwt.valueConfig.propertyConfig")
-val CwtValueConfig.Keys.parentConfig by createKey<CwtMemberConfig<*>?>("cwt.valueConfig.parentConfig")
-val CwtValueConfig.Keys.inlineableConfig by createKey<CwtInlineableConfig<CwtValue>?>("cwt.valueConfig.inlineableConfig")
-
-private var CwtValueConfig._configs by CwtValueConfig.Keys.configs
-private var CwtValueConfig._options by CwtValueConfig.Keys.options
-private var CwtValueConfig._documentation by CwtValueConfig.Keys.documentation
-private var CwtValueConfig._propertyConfig by CwtValueConfig.Keys.propertyConfig
-private var CwtValueConfig._parentConfig by CwtValueConfig.Keys.parentConfig
-private var CwtValueConfig._inlineableConfig by CwtValueConfig.Keys.inlineableConfig
 
 fun CwtValueConfig.Companion.resolve(
     pointer: SmartPsiElementPointer<out CwtValue>,
@@ -55,14 +39,14 @@ fun CwtValueConfig.copy(
     documentation: String? = this.documentation,
     propertyConfig: CwtPropertyConfig? = this.propertyConfig,
 ): CwtValueConfig {
-    return CwtValueConfigImpls.Impl(pointer, info, value, valueTypeId, configs, options, documentation, propertyConfig)
+    return CwtValueConfig.resolve(pointer, info, value, valueTypeId, configs, options, documentation, propertyConfig)
 }
 
 fun CwtValueConfig.copyDelegated(
     configs: List<CwtMemberConfig<*>>? = this.configs,
     parentConfig: CwtMemberConfig<*>? = this.parentConfig,
 ): CwtValueConfig {
-    return CwtValueConfigImpls.Delegate(this, configs, parentConfig)
+    return CwtValueConfigImpls.Delegate(this, configs).apply { this.parentConfig = parentConfig }
 }
 
 fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
@@ -82,8 +66,6 @@ class CwtPropertyPointer(
 }
 
 private object CwtValueConfigImpls {
-    // 12 + 4 * 4 + 1 * 1 = 29 => 32b
-    
     class Impl(
         override val pointer: SmartPsiElementPointer<out CwtValue>,
         override val info: CwtConfigGroupInfo,
@@ -94,21 +76,13 @@ private object CwtValueConfigImpls {
         documentation: String? = null,
         propertyConfig: CwtPropertyConfig? = null,
     ) : UserDataHolderBase(), CwtValueConfig {
-        init {
-            _configs = configs
-            _options = options
-            _documentation = documentation
-            _propertyConfig = propertyConfig
-        }
+        override val configs = configs
+        override val options = options
+        override val documentation = documentation
+        override val propertyConfig = propertyConfig
         
-        override val configs get() = _configs
-        override val options get() = _options
-        override val documentation get() = _documentation
-        override val propertyConfig get() = _propertyConfig
-        override var parentConfig get() = _parentConfig
-            set(value) = run { _parentConfig = value }
-        override var inlineableConfig get() = _inlineableConfig
-            set(value) = run { _inlineableConfig = value }
+        override var parentConfig: CwtMemberConfig<*>? = null
+        override var inlineableConfig: CwtInlineableConfig<CwtValue>? = null
         
         override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
         override val expression: CwtValueExpression get() = valueExpression
@@ -119,34 +93,23 @@ private object CwtValueConfigImpls {
         override fun toString(): String = value
     }
     
-    // 12 + 2 * 4 = 20 => 24b
-    
     class Delegate(
-        delegate: CwtValueConfig,
+        private val delegate: CwtValueConfig,
         configs: List<CwtMemberConfig<*>>? = null,
-        parentConfig: CwtMemberConfig<*>?,
     ) : UserDataHolderBase(), CwtValueConfig by delegate {
-        init {
-            _configs = configs
-            _parentConfig = parentConfig
-        }
+        override val configs = configs
         
-        override val configs get() =  _configs
-        override var parentConfig get() = _parentConfig
-            set(value) = run { _parentConfig = value }
-        override var inlineableConfig get() = _inlineableConfig
-            set(value) = run { _inlineableConfig = value }
+        override var parentConfig: CwtMemberConfig<*>? = null
+        override var inlineableConfig: CwtInlineableConfig<CwtValue>? = null
         
         override fun resolved(): CwtValueConfig = inlineableConfig?.config?.castOrNull<CwtValueConfig>() ?: this
         override fun resolvedOrNull(): CwtValueConfig? = inlineableConfig?.config?.castOrNull<CwtValueConfig>()
         
-        override fun <T : Any?> getUserData(key: Key<T>) = super.getUserData(key)
+        override fun <T : Any?> getUserData(key: Key<T>) = super.getUserData(key) ?: delegate.getUserData(key)
         override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
         
         override fun toString(): String = value
     }
-    
-    // 12 + 3 * 4 = 24 => 24b
     
     class FromPropertyConfig(
         override val pointer: SmartPsiElementPointer<out CwtValue>,
@@ -159,16 +122,17 @@ private object CwtValueConfigImpls {
         override val options: List<CwtOptionMemberConfig<*>>? get() = propertyConfig.options
         override val configs: List<CwtMemberConfig<*>>? get() = propertyConfig.configs
         
-        override var parentConfig get() = _parentConfig
-            set(value) = run { _parentConfig = value }
-        override var inlineableConfig get() = _inlineableConfig
-            set(value) = run { _inlineableConfig = value }
+        override var parentConfig: CwtMemberConfig<*>? = null
+        override var inlineableConfig: CwtInlineableConfig<CwtValue>? = null
         
         override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
         override val expression: CwtValueExpression get() = valueExpression
         
         override fun resolved(): CwtValueConfig = inlineableConfig?.config?.castOrNull<CwtValueConfig>() ?: this
         override fun resolvedOrNull(): CwtValueConfig? = inlineableConfig?.config?.castOrNull<CwtValueConfig>()
+        
+        override fun <T : Any?> getUserData(key: Key<T>) = super.getUserData(key) ?: propertyConfig.getUserData(key)
+        override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
         
         override fun toString(): String = value
     }

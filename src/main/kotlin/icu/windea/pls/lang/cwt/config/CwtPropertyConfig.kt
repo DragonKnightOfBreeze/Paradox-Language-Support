@@ -16,23 +16,7 @@ sealed interface CwtPropertyConfig : CwtMemberConfig<CwtProperty>, CwtKeyAware {
     companion object {
         val EmptyConfig: CwtPropertyConfig by lazy { resolve(emptyPointer(), CwtConfigGroupInfo(""), "", "") }
     }
-    
-    object Keys: KeyAware
 }
-
-val CwtPropertyConfig.Keys.configs by createKey<List<CwtMemberConfig<*>>?>("cwt.propertyConfig.configs")
-val CwtPropertyConfig.Keys.options by createKey<List<CwtOptionMemberConfig<*>>?>("cwt.propertyConfig.options")
-val CwtPropertyConfig.Keys.documentation by createKey<String?>("cwt.propertyConfig.documentation")
-val CwtPropertyConfig.Keys.valueConfig by createKey<CwtValueConfig?>("cwt.propertyConfig.valueConfig")
-val CwtPropertyConfig.Keys.parentConfig by createKey<CwtMemberConfig<*>?>("cwt.propertyConfig.parentConfig")
-val CwtPropertyConfig.Keys.inlineableConfig by createKey<CwtInlineableConfig<CwtProperty>?>("cwt.propertyConfig.inlineableConfig")
-
-private var CwtPropertyConfig._configs by CwtPropertyConfig.Keys.configs
-private var CwtPropertyConfig._options by CwtPropertyConfig.Keys.options
-private var CwtPropertyConfig._documentation by CwtPropertyConfig.Keys.documentation
-private var CwtPropertyConfig._valueConfig by CwtPropertyConfig.Keys.valueConfig
-private var CwtPropertyConfig._parentConfig by CwtPropertyConfig.Keys.parentConfig
-private var CwtPropertyConfig._inlineableConfig by CwtPropertyConfig.Keys.inlineableConfig
 
 fun CwtPropertyConfig.Companion.resolve(
     pointer: SmartPsiElementPointer<out CwtProperty>,
@@ -45,7 +29,7 @@ fun CwtPropertyConfig.Companion.resolve(
     options: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null
 ): CwtPropertyConfig {
-    return CwtPropertyConfigImpls.Impl(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
+    return CwtPropertyConfig.resolve(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
 }
 
 fun CwtPropertyConfig.copy(
@@ -66,12 +50,10 @@ fun CwtPropertyConfig.copyDelegated(
     configs: List<CwtMemberConfig<*>>? = this.configs,
     parentConfig: CwtMemberConfig<*>? = this.parentConfig
 ): CwtPropertyConfig {
-    return CwtPropertyConfigImpls.Delegate(this, configs, parentConfig)
+    return CwtPropertyConfigImpls.Delegate(this, configs).apply { this.parentConfig = parentConfig }
 }
 
 private object CwtPropertyConfigImpls {
-    // 12 + 5 * 4 + 2 * 1 = 34 => 40b
-    
     class Impl(
         override val pointer: SmartPsiElementPointer<out CwtProperty>,
         override val info: CwtConfigGroupInfo,
@@ -83,14 +65,13 @@ private object CwtPropertyConfigImpls {
         options: List<CwtOptionMemberConfig<*>>? = null,
         documentation: String? = null,
     ) : UserDataHolderBase(), CwtPropertyConfig {
-        override val configs get () = _configs
-        override val options get () = _options
-        override val documentation get () = _documentation
-        override val valueConfig get () = _valueConfig
-        override var parentConfig get() = _parentConfig
-            set(value) = run { _parentConfig = value }
-        override var inlineableConfig get() = _inlineableConfig
-            set(value) = run { _inlineableConfig = value }
+        override val configs  = configs
+        override val options  = options
+        override val documentation = documentation
+        override val valueConfig  = getValueConfig()
+        
+        override var parentConfig: CwtMemberConfig<*>? = null
+        override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
         
         override val keyExpression: CwtKeyExpression get() = CwtKeyExpression.resolve(key)
         override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
@@ -100,41 +81,22 @@ private object CwtPropertyConfigImpls {
         override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>()
         
         override fun toString(): String = "$key ${separatorType.text} $value"
-        
-        //should put after delegate properties
-        
-        init {
-            putUserData(CwtPropertyConfig.Keys.configs, configs)
-            putUserData(CwtPropertyConfig.Keys.options, options)
-            putUserData(CwtPropertyConfig.Keys.documentation, documentation)
-            putUserData(CwtPropertyConfig.Keys.valueConfig, getValueConfig())
-        }
     }
     
-    // 12 + 2 * 4 = 20 => 24b
-    
     class Delegate(
-        delegate: CwtPropertyConfig,
+        private val delegate: CwtPropertyConfig,
         configs: List<CwtMemberConfig<*>>? = null,
-        parentConfig: CwtMemberConfig<*>? = null,
     ) : UserDataHolderBase(), CwtPropertyConfig by delegate {
-        init {
-            _configs = configs
-            _valueConfig = getValueConfig()
-            _parentConfig = parentConfig
-        }
+        override val configs  = configs
+        override val valueConfig  = getValueConfig()
         
-        override val configs get() = _configs
-        override val valueConfig get() = _valueConfig
-        override var parentConfig get() = _parentConfig
-            set(value) = run { _parentConfig = value }
-        override var inlineableConfig get() = _inlineableConfig
-            set(value) = run { _inlineableConfig = value }
+        override var parentConfig: CwtMemberConfig<*>? = null
+        override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
         
         override fun resolved(): CwtPropertyConfig = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>() ?: this
         override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>()
         
-        override fun <T : Any?> getUserData(key: Key<T>) = super.getUserData(key)
+        override fun <T : Any?> getUserData(key: Key<T>) = super.getUserData(key) ?: delegate.getUserData(key)
         override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
         
         override fun toString(): String = "$key ${separatorType.text} $value"
