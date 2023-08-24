@@ -29,7 +29,7 @@ fun CwtPropertyConfig.Companion.resolve(
     options: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null
 ): CwtPropertyConfig {
-    return CwtPropertyConfig.resolve(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
+    return CwtPropertyConfigImpls.Impl(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
 }
 
 fun CwtPropertyConfig.copy(
@@ -43,7 +43,7 @@ fun CwtPropertyConfig.copy(
     options: List<CwtOptionMemberConfig<*>>? = this.options,
     documentation: String? = this.documentation
 ): CwtPropertyConfig {
-    return CwtPropertyConfigImpls.Impl(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
+    return CwtPropertyConfig.resolve(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
 }
 
 fun CwtPropertyConfig.copyDelegated(
