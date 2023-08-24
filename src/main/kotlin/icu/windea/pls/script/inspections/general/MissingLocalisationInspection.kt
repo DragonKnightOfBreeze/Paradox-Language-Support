@@ -55,7 +55,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                val context = ParadoxLocalisationCodeInsightContext.fromExpression(element, locales, fromInspection = true)
+                val context = ParadoxLocalisationCodeInsightContext.fromExpression(element, locales, forReference = false, fromInspection = true)
                 if(context == null || context.infos.isEmpty()) return
                 registerProblems(context, element, holder)
             }

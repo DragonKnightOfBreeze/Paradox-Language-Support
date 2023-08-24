@@ -40,7 +40,7 @@ object ParadoxLocalisationGenerator {
     
     fun showChooser(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Localisation>, project: Project): ParadoxGenerateLocalisationsChooser? {
         val memberArray = members.toTypedArray()
-        val chooser = ParadoxGenerateLocalisationsChooser(memberArray, project)
+        val chooser = ParadoxGenerateLocalisationsChooser(context, memberArray, project)
         chooser.title = getChooserName(context)
         //by default, select all checked missing localisations
         val missingMemberArray = memberArray.filter { it.info.check && it.info.missing }.toTypedArray()

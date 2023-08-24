@@ -132,6 +132,7 @@ data class ParadoxLocalisationCodeInsightContext(
         fun fromExpression(
             element: ParadoxScriptStringExpressionElement,
             locales: Collection<CwtLocalisationLocaleConfig>,
+            forReference: Boolean = true,
             fromInspection: Boolean = false,
         ): ParadoxLocalisationCodeInsightContext? {
             if(!element.isExpression()) return null
@@ -139,7 +140,9 @@ data class ParadoxLocalisationCodeInsightContext(
             if(expression.isEmpty() || expression.isParameterized()) return null
             val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return null
             fromModifier(element, config, locales, fromInspection)?.let { return it }
-            fromReference(element, config, locales)?.let{ return it }
+            if(forReference) {
+                fromReference(element, config, locales)?.let { return it }
+            }
             return null
         }
         

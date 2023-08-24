@@ -12,10 +12,10 @@ class CwtSingleAliasConfig(
 	override val config: CwtPropertyConfig,
 	override val name: String
 ): CwtInlineableConfig<CwtProperty> {
-	private val inlinedConfigCache by lazy { ContainerUtil.createConcurrentSoftKeySoftValueMap<CwtPropertyConfig, CwtPropertyConfig>() }
+	//private val inlinedConfigCache by lazy { ContainerUtil.createConcurrentSoftKeySoftValueMap<CwtPropertyConfig, CwtPropertyConfig>() }
 	
 	fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
-		return inlinedConfigCache.computeIfAbsent(config) { doInline(config) }
+		return doInline(config)
 	}
 	
 	private fun doInline(config: CwtPropertyConfig): CwtPropertyConfig {

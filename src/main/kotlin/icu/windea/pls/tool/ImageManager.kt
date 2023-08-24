@@ -4,13 +4,11 @@ import co.phoenixlab.dds.*
 import java.io.*
 
 object ImageManager {
-	//language=MySQL
-	val a = "1 select select"
-	
 	//可选方案：
 	//DDS4J (https://github.com/vincentzhang96/DDS4J)
 	//JOGL (https://jogamp.org/jogl/www/)
 	//OPENRNDR (https://github.com/openrndr/openrndr/tree/master/openrndr-dds)
+	
 	//目前选用：
 	//DDS4J - 简单易用
 	

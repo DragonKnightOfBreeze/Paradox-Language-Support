@@ -13,6 +13,7 @@ import java.awt.event.*
 import javax.swing.*
 
 class ParadoxGenerateLocalisationsChooser(
+    private val context: ParadoxLocalisationCodeInsightContext,
     elements: Array<out Localisation>,
     project: Project
 ) : MemberChooser<ParadoxGenerateLocalisationsChooser.Localisation>(elements, true, true, project, null, emptyArray()) {
@@ -40,7 +41,7 @@ class ParadoxGenerateLocalisationsChooser(
         return buildList<Action> {
             this += SelectAction(PlsBundle.message("generation.localisation.select.all")) { selectElements(myElements) }
             this += SelectAction(PlsBundle.message("generation.localisation.select.missing")) { selectElements(myElements.filter { it.info.missing }.toTypedArray()) }
-            this += SelectAction(PlsBundle.message("generation.localisation.select.missingAndChecked")) { selectElements(myElements.filter { it.info.missing && it.info.check }.toTypedArray()) }
+            if(context.fromInspection) this += SelectAction(PlsBundle.message("generation.localisation.select.missingAndChecked")) { selectElements(myElements.filter { it.info.missing && it.info.check }.toTypedArray()) }
         }.toTypedArray()
     }
     
