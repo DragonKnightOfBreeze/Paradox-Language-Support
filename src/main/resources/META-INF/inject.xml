@@ -1,4 +1,10 @@
 <idea-plugin>
+  <extensions defaultExtensionNs="com.intellij">
+    <!--these services must be non-light and preload-->
+    <!--suppress PluginXmlValidity -->
+    <applicationService serviceImplementation="icu.windea.pls.inject.CodeInjectorService" preload="true"/>
+  </extensions>
+  
   <extensionPoints>
     <!--these extension points are not dynamic in fact, but we just mark them as dynamic-->
     <extensionPoint qualifiedName="icu.windea.pls.inject.codeInjectorSupport" interface="icu.windea.pls.inject.CodeInjectorSupport" dynamic="true"/>

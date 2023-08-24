@@ -36,7 +36,7 @@ class SmartMemberKProperty<T : Any, V>(
         val setter = allMemberFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true }
         try {
             return DelegateProperty({ target ->
-                if(targetClass.isInstance(target)) cannotCast(target, targetClass)
+                if(!targetClass.isInstance(target)) cannotCast(target, targetClass)
                 when {
                     javaField != null -> javaField.get(target) as V
                     property != null -> property.get(target) as V
@@ -44,7 +44,7 @@ class SmartMemberKProperty<T : Any, V>(
                     else -> unsupported()
                 }
             }, { target, value ->
-                if(targetClass.isInstance(target)) cannotCast(target, targetClass)
+                if(!targetClass.isInstance(target)) cannotCast(target, targetClass)
                 when {
                     javaField != null -> javaField.set(target, value)
                     property != null && property is KMutableProperty1 -> (property as KMutableProperty1<T, in Any?>).set(target, value)

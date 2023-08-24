@@ -10,7 +10,7 @@ import kotlin.reflect.full.*
  * 用于支持基于字段缓存的方法。
  * @see InjectCachedMethods
  */
-class CachedMethodsInjectorSupport : CodeInjectorSupport() {
+class CachedMethodsInjectorSupport : CodeInjectorSupport {
     override fun apply(codeInjector: CodeInjector) {
         val targetClass = codeInjector.getUserData(CodeInjectorService.targetClassKey) ?: return
         val injectCachedMethods = codeInjector::class.findAnnotation<InjectCachedMethods>() ?: return
@@ -42,11 +42,13 @@ class CachedMethodsInjectorSupport : CodeInjectorSupport() {
             finalMethodNames.add(methodName)
             val fieldName = "__${methodName}__"
             val returnTypeName = if(returnType is CtPrimitiveType) returnType.wrapperName else returnType.name
-            val emptyObjectField = CtField.make("public static final Object __EMPTY_OBJECT__ = new Object();", targetClass)
-            targetClass.addField(emptyObjectField)
-            val field = CtField.make("public volatile ${returnTypeName} ${fieldName} = __EMPTY_OBJECT__;", targetClass)
+            if(targetClass.declaredFields.find { it.name == "__EMPTY_OBJECT__" } == null) {
+                val emptyObjectField = CtField.make("private static final Object __EMPTY_OBJECT__ = new Object();", targetClass)
+                targetClass.addField(emptyObjectField)
+            }
+            val field = CtField.make("public volatile Object ${fieldName} = __EMPTY_OBJECT__;", targetClass)
             targetClass.addField(field)
-            val code1 = "{ if(${fieldName} != __EMPTY_OBJECT__) { return ${fieldName}; } }"
+            val code1 = "{ if(${fieldName} != __EMPTY_OBJECT__) { return (${returnTypeName}) ${fieldName}; } }"
             method.insertBefore(code1)
             val code2 = "{ ${fieldName} = \$_; }"
             method.insertAfter(code2)

@@ -12,7 +12,6 @@ import java.lang.reflect.*
  *
  * @see CodeInjector
  */
-@Service
 class CodeInjectorService : UserDataHolderBase() {
     companion object {
         //for Application / CodeInjector

@@ -7,8 +7,8 @@ import com.intellij.openapi.extensions.*
  * @see CodeInjector
  * @see CodeInjectorBase
  */
-abstract class CodeInjectorSupport {
-    abstract fun apply(codeInjector: CodeInjector)
+interface CodeInjectorSupport {
+    fun apply(codeInjector: CodeInjector)
     
     companion object {
         val EP_NAME = ExtensionPointName.create<CodeInjectorSupport>("icu.windea.pls.inject.codeInjectorSupport")
