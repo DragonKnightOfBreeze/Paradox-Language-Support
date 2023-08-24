@@ -788,7 +788,7 @@ object ParadoxDefinitionHandler {
             val resolved = primaryImage.locationExpression.resolve(element, definitionInfo, project)
             val file = resolved?.file
             if(file == null) continue
-            element.putUserData(PlsKeys.iconFrame, resolved.frame)
+            element.putUserData(PlsKeys.frameInfo, resolved.frameInfo)
             return file
         }
         return null

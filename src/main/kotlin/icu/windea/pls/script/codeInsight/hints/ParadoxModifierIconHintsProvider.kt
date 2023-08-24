@@ -65,21 +65,18 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
                 val iconSelector = fileSelector(project, element).contextSensitive()
                 ParadoxFilePathSearch.search(iconPath, null, iconSelector).find()
             } ?: return true
-            val iconUrl = ParadoxImageResolver.resolveUrlByFile(iconFile, defaultToUnknown = false)
-            if(iconUrl.isNotEmpty()) {
-                //忽略异常
-                runCatching {
-                    //找不到图标的话就直接跳过
-                    val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
-                    //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-                    if(icon.iconHeight <= settings.iconHeightLimit) {
-                        //点击可以导航到声明处（DDS）
-                        val presentation = psiSingleReference(smallScaledIcon(icon)) { iconFile.toPsiFile(project) }
-                        val finalPresentation = presentation.toFinalPresentation(this, file.project, smaller = true)
-                        val endOffset = element.endOffset
-                        sink.addInlineElement(endOffset, true, finalPresentation, false)
-                    }
-                }
+            val iconUrl = ParadoxImageResolver.resolveUrlByFile(iconFile)
+            if(iconUrl == null) return true
+            
+            //找不到图标的话就直接跳过
+            val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
+            //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
+            if(icon.iconHeight <= settings.iconHeightLimit) {
+                //点击可以导航到声明处（DDS）
+                val presentation = psiSingleReference(smallScaledIcon(icon)) { iconFile.toPsiFile(project) }
+                val finalPresentation = presentation.toFinalPresentation(this, file.project, smaller = true)
+                val endOffset = element.endOffset
+                sink.addInlineElement(endOffset, true, finalPresentation, false)
             }
         }
         return true

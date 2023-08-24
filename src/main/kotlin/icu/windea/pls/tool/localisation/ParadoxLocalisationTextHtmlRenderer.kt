@@ -128,25 +128,25 @@ object ParadoxLocalisationTextHtmlRenderer {
     private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context) {
         val resolved = element.reference?.resolve()
         val iconFrame = element.frame
+        val frameInfo = FrameInfo(iconFrame, 0)
         val iconUrl = when {
-            resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, iconFrame, defaultToUnknown = true)
-            resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, iconFrame, defaultToUnknown = true)
-            else -> ParadoxDdsResolver.getUnknownPngUrl()
+            resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, frameInfo)
+            resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, frameInfo)
+            else -> null
+        } ?: ParadoxImageResolver.getDefaultUrl()
+        
+        //找不到图标的话就直接跳过
+        val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return
+        //如果图标大小在16*16到32*32之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
+        //实际上，本地化文本可以嵌入任意大小的图片
+        val docFontSize = getDocumentationFontSize().size
+        val scale = when {
+            icon.iconHeight in 16..32 -> docFontSize.toFloat() / icon.iconHeight
+            else -> docFontSize.toFloat() / 18
         }
-        if(iconUrl.isNotEmpty()) {
-            //找不到图标的话就直接跳过
-            val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return
-            //如果图标大小在16*16到32*32之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
-            //实际上，本地化文本可以嵌入任意大小的图片
-            val docFontSize = getDocumentationFontSize().size
-            val scale = when {
-                icon.iconHeight in 16..32 -> docFontSize.toFloat() / icon.iconHeight
-                else -> docFontSize.toFloat() / 18
-            }
-            val iconWidth = (icon.iconWidth * scale).toInt()
-            val iconHeight = (icon.iconHeight * scale).toInt()
-            context.builder.appendImgTag(iconUrl, iconWidth, iconHeight)
-        }
+        val iconWidth = (icon.iconWidth * scale).toInt()
+        val iconHeight = (icon.iconHeight * scale).toInt()
+        context.builder.appendImgTag(iconUrl, iconWidth, iconHeight)
     }
     
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {

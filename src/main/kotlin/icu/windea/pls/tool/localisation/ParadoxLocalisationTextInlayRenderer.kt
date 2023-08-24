@@ -140,27 +140,25 @@ object ParadoxLocalisationTextInlayRenderer {
     }
     
     private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context): Boolean = with(context.factory) {
-        val resolved = element.reference?.resolve() ?: return true
+        val resolved = element.reference?.resolve()
+        val iconFrame = element.frame
+        val frameInfo = FrameInfo(iconFrame, 0)
         val iconUrl = when {
-            resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, defaultToUnknown = true)
-            resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, defaultToUnknown = true)
-            else -> return true
-        }
-        if(iconUrl.isNotEmpty()) {
-            //忽略异常
-            runCatching {
-                //找不到图标的话就直接跳过
-                val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
-                if(icon.iconHeight <= context.iconHeightLimit) {
-                    //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-                    val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
-                    context.builder.add(presentation)
-                } else {
-                    val unknownIcon = IconLoader.findIcon(PlsConstants.Paths.unknownPngUrl) ?: return true
-                    val presentation = psiSingleReference(smallScaledIcon(unknownIcon)) { resolved }
-                    context.builder.add(presentation)
-                }
-            }
+            resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, frameInfo)
+            resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, frameInfo)
+            else -> null
+        } ?: ParadoxImageResolver.getDefaultUrl()
+        
+        //找不到图标的话就直接跳过
+        val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
+        if(icon.iconHeight <= context.iconHeightLimit) {
+            //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
+            val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
+            context.builder.add(presentation)
+        } else {
+            val unknownIcon = IconLoader.findIcon(PlsConstants.Paths.unknownPngUrl) ?: return true
+            val presentation = psiSingleReference(smallScaledIcon(unknownIcon)) { resolved }
+            context.builder.add(presentation)
         }
         return true
     }

@@ -21,8 +21,7 @@ class DdsDocumentationProvider : AbstractDocumentationProvider() {
 			val width = info?.width ?: 0
 			val height = info?.height ?: 0
 			try {
-				val url = ParadoxImageResolver.resolveUrlByFile(file)
-				if(url.isEmpty()) return null //无法将DDS转换成PNG时直接返回
+				val url = ParadoxImageResolver.resolveUrlByFile(file) ?: return null //无法将DDS转换成PNG时直接返回
 				//如果能获取图片大小就显示出来，否则不显示
 				val canGetInfo = width != 0 && height != 0
 				val message = if(canGetInfo) PlsBundle.message("dds.description", width, height) else null

@@ -50,26 +50,23 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
 		if(element is ParadoxLocalisationIcon) {
-			val resolved = element.reference?.resolve() ?: return true
+			val resolved = element.reference?.resolve()
+			val iconFrame = element.frame
+			val frameInfo = FrameInfo(iconFrame, 0)
 			val iconUrl = when {
-				resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, defaultToUnknown = false)
-				resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, defaultToUnknown = false)
-				else -> return true
-			}
-			if(iconUrl.isNotEmpty()) {
-				//忽略异常
-				runCatching {
-					//找不到图标的话就直接跳过
-					val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
-					//基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-					if(icon.iconHeight <= settings.iconHeightLimit) {
-						//点击可以导航到声明处（定义或DDS）
-						val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
-						val finalPresentation = presentation.toFinalPresentation(this, file.project, smaller = true)
-						val endOffset = element.endOffset
-						sink.addInlineElement(endOffset, true, finalPresentation, false)
-					}
-				}
+				resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, frameInfo)
+				resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, frameInfo)
+				else -> null
+			} ?: return true //找不到图标的话就直接跳过
+			
+			val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
+			//基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
+			if(icon.iconHeight <= settings.iconHeightLimit) {
+				//点击可以导航到声明处（定义或DDS）
+				val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
+				val finalPresentation = presentation.toFinalPresentation(this, file.project, smaller = true)
+				val endOffset = element.endOffset
+				sink.addInlineElement(endOffset, true, finalPresentation, false)
 			}
 		}
 		return true

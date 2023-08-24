@@ -6,6 +6,7 @@ import ar.com.hjg.pngj.ImageLineInt;
 import ar.com.hjg.pngj.PngWriter;
 import co.phoenixlab.dds.decoder.Decoders;
 import co.phoenixlab.dds.decoder.FormatDecoder;
+import icu.windea.pls.tool.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -138,7 +139,7 @@ public class DdsImageDecoder {
         return convertToPNG(dds, "");
     }
 
-    public byte[] convertToPNG(Dds dds, int frame) {
+    public byte[] convertToPNG(Dds dds, FrameInfo frame) {
         return convertToPNG(dds, "", frame);
     }
 
@@ -152,7 +153,7 @@ public class DdsImageDecoder {
         return byteArrayOutputStream.toByteArray();
     }
 
-    public byte[] convertToPNG(Dds dds, String swizzle, int frame) {
+    public byte[] convertToPNG(Dds dds, String swizzle, FrameInfo frame) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
             convertToPNG(dds, byteArrayOutputStream, swizzle, frame);
@@ -166,7 +167,7 @@ public class DdsImageDecoder {
         convertToPNG(dds, outputStream, "");
     }
 
-    public void convertToPNG(Dds dds, OutputStream outputStream, int frame) throws IOException {
+    public void convertToPNG(Dds dds, OutputStream outputStream, FrameInfo frame) throws IOException {
         convertToPNG(dds, outputStream, "", frame);
     }
     
@@ -184,8 +185,8 @@ public class DdsImageDecoder {
 
         pngWriter.end();
     }
-    public void convertToPNG(Dds dds, OutputStream outputStream, String swizzle, int frame) throws IOException {
-        if(frame <= 0) {
+    public void convertToPNG(Dds dds, OutputStream outputStream, String swizzle, FrameInfo frameInfo) throws IOException {
+        if(frameInfo == null || frameInfo.getFrame() <= 0) {
             convertToPNG(dds, outputStream, swizzle);
             return;
         }
@@ -193,7 +194,8 @@ public class DdsImageDecoder {
         FormatDecoder decoder = Decoders.getDecoder(dds);
         int width = header.getDwWidth();
         int height = header.getDwHeight();
-        int frames = width / height;
+        int frame = frameInfo.getFrame();
+        int frames = (frameInfo.getFrames() <= 0 || frameInfo.getFrames() < frameInfo.getFrame()) ? width / height : frameInfo.getFrames();
         ImageInfo imageInfo = new ImageInfo(height, height, 8, true);
         PngWriter pngWriter = new PngWriter(outputStream, imageInfo);
         ImageLineInt imageLine = new ImageLineInt(imageInfo);

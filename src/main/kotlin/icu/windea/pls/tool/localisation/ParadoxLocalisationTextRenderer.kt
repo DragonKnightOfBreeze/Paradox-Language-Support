@@ -87,7 +87,7 @@ object ParadoxLocalisationTextRenderer {
     }
     
     private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context) {
-        //NOTE 不提取到结果中
+        //忽略
         //builder.append(":${element.name}:")
     }
     
