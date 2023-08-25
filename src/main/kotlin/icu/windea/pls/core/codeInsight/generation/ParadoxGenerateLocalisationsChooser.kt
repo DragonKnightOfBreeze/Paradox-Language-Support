@@ -13,10 +13,11 @@ import java.awt.event.*
 import javax.swing.*
 
 class ParadoxGenerateLocalisationsChooser(
-    private val context: ParadoxLocalisationCodeInsightContext,
     elements: Array<out Localisation>,
     project: Project
 ) : MemberChooser<ParadoxGenerateLocalisationsChooser.Localisation>(elements, true, true, project, null, emptyArray()) {
+    val context get() = ParadoxLocalisationGenerator.currentContext.get()
+    
     override fun isContainerNode(key: MemberChooserObject): Boolean {
         return key !is Localisation
     }
@@ -94,9 +95,17 @@ class ParadoxGenerateLocalisationsChooser(
     
     data class LocalisationReferences(
         val context: ParadoxLocalisationCodeInsightContext
-    ) : MemberChooserObjectBase(PlsBundle.message("generation.localisation.localisationReferences"))
+    ) : MemberChooserObjectBase(PlsBundle.message("generation.localisation.localisationReferences")) {
+        override fun equals(other: Any?) = this === other || (other is LocalisationReferences)
+        
+        override fun hashCode() = 0
+    }
     
     data class SyncedLocalisationReferences(
         val context: ParadoxLocalisationCodeInsightContext
-    ) : MemberChooserObjectBase(PlsBundle.message("generation.localisation.syncedLocalisationReferences"))
+    ) : MemberChooserObjectBase(PlsBundle.message("generation.localisation.syncedLocalisationReferences")) {
+        override fun equals(other: Any?) = this === other || (other is SyncedLocalisationReferences)
+        
+        override fun hashCode() = 0
+    }
 }

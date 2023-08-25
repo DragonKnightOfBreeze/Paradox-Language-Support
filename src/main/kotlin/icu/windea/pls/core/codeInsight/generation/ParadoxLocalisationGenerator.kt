@@ -19,6 +19,29 @@ import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
 
 object ParadoxLocalisationGenerator {
+    val currentContext = ThreadLocal<ParadoxLocalisationCodeInsightContext>()
+    
+    fun showChooser(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Localisation>, project: Project): ParadoxGenerateLocalisationsChooser? {
+        try {
+            currentContext.set(context)
+            return doShowChooser(members, project, context)
+        } finally {
+            currentContext.remove()
+        }
+    }
+    
+    private fun doShowChooser(members: List<ParadoxGenerateLocalisationsChooser.Localisation>, project: Project, context: ParadoxLocalisationCodeInsightContext): ParadoxGenerateLocalisationsChooser? {
+        val memberArray = members.toTypedArray()
+        val chooser = ParadoxGenerateLocalisationsChooser(memberArray, project)
+        chooser.title = getChooserName(context)
+        //by default, select all checked missing localisations
+        val missingMemberArray = memberArray.filter { it.info.check && it.info.missing }.toTypedArray()
+        chooser.selectElements(missingMemberArray)
+        chooser.show()
+        if(chooser.exitCode != DialogWrapper.OK_EXIT_CODE) return null
+        return chooser
+    }
+    
     fun getMembers(context: ParadoxLocalisationCodeInsightContext, locale: CwtLocalisationLocaleConfig): List<ParadoxGenerateLocalisationsChooser.Localisation> {
         val members = mutableListOf<ParadoxGenerateLocalisationsChooser.Localisation>()
         doGetMembers(members, context, locale)
@@ -36,18 +59,6 @@ object ParadoxLocalisationGenerator {
             val name = info.name ?: return@f
             members += ParadoxGenerateLocalisationsChooser.Localisation(name, info, context)
         }
-    }
-    
-    fun showChooser(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Localisation>, project: Project): ParadoxGenerateLocalisationsChooser? {
-        val memberArray = members.toTypedArray()
-        val chooser = ParadoxGenerateLocalisationsChooser(context, memberArray, project)
-        chooser.title = getChooserName(context)
-        //by default, select all checked missing localisations
-        val missingMemberArray = memberArray.filter { it.info.check && it.info.missing }.toTypedArray()
-        chooser.selectElements(missingMemberArray)
-        chooser.show()
-        if(chooser.exitCode != DialogWrapper.OK_EXIT_CODE) return null
-        return chooser
     }
     
     private fun getChooserName(context: ParadoxLocalisationCodeInsightContext): String {

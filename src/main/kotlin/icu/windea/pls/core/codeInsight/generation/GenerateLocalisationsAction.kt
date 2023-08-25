@@ -54,8 +54,7 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
         val contextElement = when {
             element == null -> null
             element.isDefinitionRootKeyOrName() -> element.findParentDefinition()
-            ParadoxModifierHandler.resolveModifier(element) != null -> element
-            else -> null
+            else -> element
         }
         val context = when {
             contextElement == null -> null
