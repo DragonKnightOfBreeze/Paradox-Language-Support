@@ -19,7 +19,7 @@ class ParadoxEventNamespacePsiReference(
 	val project by lazy { element.project }
 	
 	override fun handleElementRename(newElementName: String): PsiElement {
-		return element.setValue(rangeInElement.replace(element.value, newElementName))
+		return element.setValue(rangeInElement.replace(element.text, newElementName))
 	}
 	
 	override fun resolve(): PsiElement? {

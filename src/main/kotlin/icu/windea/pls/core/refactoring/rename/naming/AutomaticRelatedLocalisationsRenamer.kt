@@ -2,6 +2,7 @@ package icu.windea.pls.core.refactoring.rename.naming
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.*
+import com.intellij.refactoring.RefactoringSettings
 import com.intellij.refactoring.rename.naming.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*

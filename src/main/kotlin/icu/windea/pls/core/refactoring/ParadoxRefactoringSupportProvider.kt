@@ -14,9 +14,9 @@ class ParadoxRefactoringSupportProvider : RefactoringSupportProvider() {
 			//element is ParadoxScriptProperty && element.definitionInfo.let { it != null && it.typeConfig.nameField == null } -> true
 			element is ParadoxScriptStringExpressionElement -> true
 			element is ParadoxLocalisationProperty -> true
-			element is ParadoxParameterElement -> true
-			element is ParadoxValueSetValueElement -> true
-			element is ParadoxComplexEnumValueElement -> true
+			//element is ParadoxParameterElement -> true //should be available, but cannot be
+			//element is ParadoxValueSetValueElement -> true //should be available, but cannot be
+			//element is ParadoxComplexEnumValueElement -> true //should be available, but cannot be
 			else -> false
 		}
 	}

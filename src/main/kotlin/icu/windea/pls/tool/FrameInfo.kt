@@ -9,11 +9,6 @@ data class FrameInfo(
     val frame: Int,
     val frames: Int
 ) {
-    fun merge(other: FrameInfo?): FrameInfo? {
-        val frame0 = if(other == null || other.frame == 0) frame else other.frame
-        val frames0 = if(other == null || other.frames == 0) frames else other.frames
-        return of(frame0, frames0)
-    }
     
     companion object {
         fun of(frame: Int? = null, frames: Int? = null): FrameInfo? {
@@ -23,4 +18,10 @@ data class FrameInfo(
             return FrameInfo(frame0, frames0)
         }
     }
+}
+
+fun FrameInfo?.merge(other: FrameInfo?): FrameInfo? {
+    val frame0 = if(other == null || other.frame == 0) this?.frame else other.frame
+    val frames0 = if(other == null || other.frames == 0) this?.frames else other.frames
+    return FrameInfo.of(frame0, frames0)
 }

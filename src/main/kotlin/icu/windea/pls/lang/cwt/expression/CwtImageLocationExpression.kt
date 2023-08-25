@@ -54,6 +54,9 @@ class CwtImageLocationExpression private constructor(
     fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: FrameInfo? = null): ResolveResult? {
         val project = definitionInfo.project
         var newFrameInfo = frameInfo
+        if(definitionInfo.type == "sprite") {
+            newFrameInfo = newFrameInfo.merge(ParadoxSpriteHandler.getFrameInfo(definition))
+        }
         if(placeholder != null) {
             if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             
@@ -63,9 +66,6 @@ class CwtImageLocationExpression private constructor(
                 val resolved = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
                 val resolvedDefinition = resolved
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
-                if(resolvedDefinitionInfo.type == "sprite") {
-                    newFrameInfo = newFrameInfo?.merge(ParadoxSpriteHandler.getFrameInfo(resolvedDefinition))
-                }
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                 if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
                 return primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
@@ -107,9 +107,6 @@ class CwtImageLocationExpression private constructor(
                 resolved is ParadoxScriptDefinitionElement -> {
                     val resolvedDefinition = resolved
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
-                    if(resolvedDefinitionInfo.type == "sprite") {
-                        newFrameInfo = newFrameInfo?.merge(ParadoxSpriteHandler.getFrameInfo(resolvedDefinition))
-                    }
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                     if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
                     return primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
@@ -135,6 +132,9 @@ class CwtImageLocationExpression private constructor(
     fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: FrameInfo? = null): ResolveAllResult? {
         val project = definitionInfo.project
         var newFrameInfo = frameInfo
+        if(definitionInfo.type == "sprite") {
+            newFrameInfo = newFrameInfo.merge(ParadoxSpriteHandler.getFrameInfo(definition))
+        }
         if(placeholder != null) {
             if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             
@@ -144,9 +144,6 @@ class CwtImageLocationExpression private constructor(
                 val resolved = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
                 val resolvedDefinition = resolved
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
-                if(resolvedDefinitionInfo.type == "sprite") {
-                    newFrameInfo = newFrameInfo?.merge(ParadoxSpriteHandler.getFrameInfo(resolvedDefinition))
-                }
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                 if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
                 var resolvedFilePath: String? = null
@@ -197,9 +194,6 @@ class CwtImageLocationExpression private constructor(
                 resolved is ParadoxScriptDefinitionElement -> {
                     val resolvedDefinition = resolved
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
-                    if(resolvedDefinitionInfo.type == "sprite") {
-                        newFrameInfo = newFrameInfo?.merge(ParadoxSpriteHandler.getFrameInfo(resolvedDefinition))
-                    }
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                     if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
                     var resolvedFilePath: String? = null
