@@ -102,15 +102,14 @@ object ParadoxConfigHandler {
                 result.forEachFast f2@{ parentConfig ->
                     val configs = parentConfig.configs
                     if(configs.isNullOrEmpty()) return@f2
+                    //如果匹配带参数的子路径时，初始能够匹配到多个结果，则直接返回空列表
+                    //参数值可能是任意值，如果初始能够匹配到多个结果，实际上并不能确定具体的上下文是什么
                     var matchCount = 0
                     configs.forEachFast f3@{ config ->
                         if(config is CwtPropertyConfig) {
-                            if(!matchKey || ParadoxConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) {
-                                //如果匹配带参数的子路径时，初始能够匹配到多个结果，则直接返回空列表
-                                //参数值可能是任意值，如果初始能够匹配到多个结果，实际上并不能确定具体的上下文是什么
+                            if(subPathIsParameterized || !matchKey || ParadoxConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) {
                                 matchCount++
-                                if(matchCount > 1 && subPathIsParameterized) return emptyList()
-                                
+                                if(subPathIsParameterized && matchCount > 1) return emptyList()
                                 val inlinedConfigs = ParadoxConfigGenerator.inlineByConfig(element, subPath, isQuoted, config, matchOptions)
                                 if(inlinedConfigs.isEmpty()) {
                                     nextResult.add(config)
