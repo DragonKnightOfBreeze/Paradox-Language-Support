@@ -1,15 +1,23 @@
 package icu.windea.pls.core.refactoring.rename.naming
 
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.refactoring.rename.naming.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.api.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.script.psi.*
 
 /**
  * 用于在重命名定义时自动重命名由其生成的修正（如果存在）。
  */
-class AutomaticGeneratedModifiersRenamer(element: ParadoxScriptDefinitionElement, newName: String) : AutomaticRenamer() {
+@SlowApi
+class AutomaticGeneratedModifiersRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
+        element as ParadoxScriptDefinitionElement
         val allRenames = mutableMapOf<PsiElement, String>()
         prepareRenaming(element, newName, allRenames)
         for((key, value) in allRenames) {
@@ -29,7 +37,15 @@ class AutomaticGeneratedModifiersRenamer(element: ParadoxScriptDefinitionElement
     
     override fun entityName() = PlsBundle.message("rename.generatedModifiers.entityName")
     
-    private fun prepareRenaming(element: ParadoxScriptDefinitionElement, newName: String, allRenames: Map<PsiElement, String>) {
-        
+    private fun prepareRenaming(element: ParadoxScriptDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
+        val definitionInfo = element.definitionInfo ?: return
+        val infos = definitionInfo.modifiers.takeIfNotEmpty() ?: return
+        for(info in infos) {
+            ProgressManager.checkCanceled()
+            val modifierName = info.name
+            val newModifierName = info.config.template.extract(newName)
+            val modifierElement = ParadoxModifierElement(element, modifierName, definitionInfo.gameType, definitionInfo.project)
+            allRenames[modifierElement] = newModifierName
+        }
     }
 }

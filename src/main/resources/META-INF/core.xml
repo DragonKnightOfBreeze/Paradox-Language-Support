@@ -61,6 +61,7 @@
     <renameInputValidator implementation="icu.windea.pls.core.refactoring.rename.ParadoxLocalisationPropertyRenameInputValidator"/>
     <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticRelatedLocalisationsRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticRelatedImagesRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticGeneratedModifiersRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticGeneratedModifiersNameDescRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticGeneratedModifiersIconRenamerFactory"/>
     <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.refactoring.actions.IntroduceLocalScriptedVariableHandler"/>

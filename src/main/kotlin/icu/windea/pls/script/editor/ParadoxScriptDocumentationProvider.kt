@@ -242,7 +242,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         val sectionKeys = mutableSetOf<String>()
         for((key, locationExpression, required) in imagesInfos) {
             if(sectionKeys.contains(key)) continue
-            val resolved = locationExpression.resolve(element, definitionInfo, project) ?: continue //发生意外，直接跳过
+            val resolved = locationExpression.resolve(element, definitionInfo) ?: continue //发生意外，直接跳过
             if(resolved.message != null) {
                 map.putIfAbsent(key, resolved.message)
             } else if(resolved.file != null) {

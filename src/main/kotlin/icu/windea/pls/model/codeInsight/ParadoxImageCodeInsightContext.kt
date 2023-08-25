@@ -64,7 +64,7 @@ data class ParadoxImageCodeInsightContext(
             for(info in definitionInfo.images) {
                 ProgressManager.checkCanceled()
                 val expression = info.locationExpression
-                val resolved = expression.resolve(definition, definitionInfo, project)
+                val resolved = expression.resolve(definition, definitionInfo)
                 val type = when {
                     info.required -> ParadoxImageCodeInsightInfo.Type.Required
                     info.primary -> ParadoxImageCodeInsightInfo.Type.Primary

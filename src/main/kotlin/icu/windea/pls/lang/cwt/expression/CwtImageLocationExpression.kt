@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.cwt.expression
 
 import com.google.common.cache.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -53,7 +52,8 @@ class CwtImageLocationExpression private constructor(
         val message: String? = null
     )
     
-    fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, project: Project, frameInfo: FrameInfo? = null): ResolveResult? {
+    fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: FrameInfo? = null): ResolveResult? {
+        val project = definitionInfo.project
         if(placeholder != null) {
             if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             
@@ -63,12 +63,11 @@ class CwtImageLocationExpression private constructor(
                 val resolved = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
                 val resolvedDefinition = resolved
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
-                val resolvedProject = resolved.project
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                 if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
                 return primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
                     val locationExpression = primaryImageConfig.locationExpression
-                    val r = locationExpression.resolve(resolvedDefinition, resolvedDefinitionInfo, resolvedProject, frameInfo)
+                    val r = locationExpression.resolve(resolvedDefinition, resolvedDefinitionInfo, frameInfo)
                     r?.takeIf { it.file != null || it.message != null }
                 }
             }
@@ -108,12 +107,11 @@ class CwtImageLocationExpression private constructor(
                 resolved is ParadoxScriptDefinitionElement -> {
                     val resolvedDefinition = resolved
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
-                    val resolvedProject = resolved.project
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                     if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
                     return primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
                         val locationExpression = primaryImageConfig.locationExpression
-                        val r = locationExpression.resolve(resolvedDefinition, resolvedDefinitionInfo, resolvedProject, newFrameInfo)
+                        val r = locationExpression.resolve(resolvedDefinition, resolvedDefinitionInfo, newFrameInfo)
                         r?.takeIf { it.file != null || it.message != null }
                     }
                 }
@@ -131,7 +129,8 @@ class CwtImageLocationExpression private constructor(
         val message: String? = null
     )
     
-    fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, project: Project, frameInfo: FrameInfo? = null): ResolveAllResult? {
+    fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: FrameInfo? = null): ResolveAllResult? {
+        val project = definitionInfo.project
         if(placeholder != null) {
             if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             
@@ -141,14 +140,13 @@ class CwtImageLocationExpression private constructor(
                 val resolved = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
                 val resolvedDefinition = resolved
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
-                val resolvedProject = resolved.project
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                 if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
                 var resolvedFilePath: String? = null
                 var resolvedSet: MutableSet<PsiFile>? = null
                 for(primaryImageConfig in primaryImageConfigs) {
                     val locationExpression = primaryImageConfig.locationExpression
-                    val r = locationExpression.resolveAll(resolvedDefinition, resolvedDefinitionInfo, resolvedProject, frameInfo) ?: continue
+                    val r = locationExpression.resolveAll(resolvedDefinition, resolvedDefinitionInfo, frameInfo) ?: continue
                     if(r.message != null) return r
                     val (filePath, files) = r
                     if(resolvedFilePath == null) resolvedFilePath = filePath
@@ -195,14 +193,13 @@ class CwtImageLocationExpression private constructor(
                 resolved is ParadoxScriptDefinitionElement -> {
                     val resolvedDefinition = resolved
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
-                    val resolvedProject = resolved.project
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                     if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
                     var resolvedFilePath: String? = null
                     var resolvedSet: MutableSet<PsiFile>? = null
                     for(primaryImageConfig in primaryImageConfigs) {
                         val locationExpression = primaryImageConfig.locationExpression
-                        val r = locationExpression.resolveAll(resolvedDefinition, resolvedDefinitionInfo, resolvedProject, newFrameInfo) ?: continue
+                        val r = locationExpression.resolveAll(resolvedDefinition, resolvedDefinitionInfo, newFrameInfo) ?: continue
                         if(r.message != null) return r
                         val (filePath, files) = r
                         if(resolvedFilePath == null) resolvedFilePath = filePath

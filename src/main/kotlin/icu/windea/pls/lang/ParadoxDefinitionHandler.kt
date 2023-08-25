@@ -785,7 +785,7 @@ object ParadoxDefinitionHandler {
         if(primaryImages.isEmpty()) return null //没有或者CWT规则不完善
         val project = definitionInfo.project
         for(primaryImage in primaryImages) {
-            val resolved = primaryImage.locationExpression.resolve(element, definitionInfo, project)
+            val resolved = primaryImage.locationExpression.resolve(element, definitionInfo)
             val file = resolved?.file
             if(file == null) continue
             element.putUserData(PlsKeys.frameInfo, resolved.frameInfo)

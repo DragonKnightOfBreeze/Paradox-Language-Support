@@ -40,7 +40,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
                     ProgressManager.checkCanceled()
                     //need read action here
                     runReadAction {
-                        val resolved = locationExpression.resolveAll(definition, definitionInfo, project)
+                        val resolved = locationExpression.resolveAll(definition, definitionInfo)
                         if(resolved != null && resolved.files.isNotEmpty()) {
                             targets.addAll(resolved.files)
                         }

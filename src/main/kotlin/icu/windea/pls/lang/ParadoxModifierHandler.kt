@@ -103,6 +103,11 @@ object ParadoxModifierHandler {
         return "mod_${name}_desc"
     }
     
+    fun getModifierIconName(name: String): String {
+        //mod_$.dds
+        return "mod_${name}.dds"
+    }
+    
     fun getModifierIconPath(name: String): String {
         //gfx/interface/icons/modifiers/mod_$.dds
         return "gfx/interface/icons/modifiers/mod_${name}.dds"

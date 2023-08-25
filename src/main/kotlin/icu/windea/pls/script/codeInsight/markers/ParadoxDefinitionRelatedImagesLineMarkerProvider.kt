@@ -35,7 +35,7 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : RelatedItemLineMarkerPr
 		val project = element.project
 		for((key, locationExpression) in imageInfos) {
 			ProgressManager.checkCanceled()
-			val resolved = locationExpression.resolveAll(element, definitionInfo, project) ?: continue
+			val resolved = locationExpression.resolveAll(element, definitionInfo) ?: continue
 			if(resolved.files.isNotEmpty()) {
 				targets.addAll(resolved.files)
 			}
