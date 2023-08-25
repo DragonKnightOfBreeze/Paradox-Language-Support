@@ -6,13 +6,21 @@ package icu.windea.pls.tool
  * @property frames 总帧数。如果小于等于0，则视为未指定。
  */
 data class FrameInfo(
-	val frame: Int = 0,
-	val frames: Int = 0
-){
-	fun normalize() : FrameInfo? {
-		val frames = if(frames <= 0) 0 else frames
-		val frame = if(frame <= 0 || frame > frames) 0 else frame
-		if(frame == 0) return null
-		return FrameInfo(frame, frames)
-	}
+    val frame: Int,
+    val frames: Int
+) {
+    fun merge(other: FrameInfo?): FrameInfo? {
+        val frame0 = if(other == null || other.frame == 0) frame else other.frame
+        val frames0 = if(other == null || other.frames == 0) frames else other.frames
+        return of(frame0, frames0)
+    }
+    
+    companion object {
+        fun of(frame: Int? = null, frames: Int? = null): FrameInfo? {
+            val frames0 = if(frames == null || frames <= 0) 0 else frames
+            val frame0 = if(frame == null || frame <= 0 || (frames0 != 0 && frame > frames0)) 0 else frame
+            if(frame0 == 0 && frames0 == 0) return null
+            return FrameInfo(frame0, frames0)
+        }
+    }
 }

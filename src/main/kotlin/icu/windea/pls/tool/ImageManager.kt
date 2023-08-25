@@ -17,13 +17,13 @@ object ImageManager {
 	fun convertDdsToPng(inputStream: InputStream, frameInfo: FrameInfo? = null): ByteArray? {
 		val dds = Dds()
 		dds.read(inputStream)
-		return ddsImageDecoder.convertToPNG(dds, frameInfo?.normalize())
+		return ddsImageDecoder.convertToPNG(dds, frameInfo)
 	}
 	
 	fun convertDdsToPng(inputStream: InputStream, outputStream: OutputStream, frameInfo: FrameInfo? = null) {
 		val dds = Dds()
 		dds.read(inputStream)
-		ddsImageDecoder.convertToPNG(dds, outputStream, frameInfo?.normalize())
+		ddsImageDecoder.convertToPNG(dds, outputStream, frameInfo)
 	}
 }
 

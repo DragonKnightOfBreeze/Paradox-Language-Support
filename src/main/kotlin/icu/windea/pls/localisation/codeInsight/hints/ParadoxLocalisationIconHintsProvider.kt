@@ -52,7 +52,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
 		if(element is ParadoxLocalisationIcon) {
 			val resolved = element.reference?.resolve()
 			val iconFrame = element.frame
-			val frameInfo = FrameInfo(iconFrame, 0)
+			val frameInfo = FrameInfo.of(iconFrame)
 			val iconUrl = when {
 				resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, frameInfo)
 				resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, frameInfo)

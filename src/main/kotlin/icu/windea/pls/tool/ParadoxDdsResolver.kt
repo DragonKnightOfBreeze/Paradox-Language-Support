@@ -24,7 +24,7 @@ object ParadoxDdsResolver {
      * @param frameInfo 帧数信息，用于切分图片。
      */
     fun resolveUrl(absPath: String, relPath: String? = null, frameInfo: FrameInfo? = null): String? {
-        val finalFrameInfo = frameInfo?.normalize()
+        val finalFrameInfo = frameInfo
         try {
             //如果存在基于DDS文件绝对路径的缓存数据，则使用缓存的PNG文件绝对路径
             val pngAbsPath = getPngAbsPath(absPath.replace('\\', '/'), relPath, finalFrameInfo)
@@ -97,7 +97,7 @@ object ParadoxDdsResolver {
      * @param frameInfo 帧数信息，用于切分图片。
      */
     fun invalidateUrl(absPath: String, frameInfo: FrameInfo? = null) {
-        val finalFrameInfo = frameInfo?.normalize()
+        val finalFrameInfo = frameInfo
         val cacheKey = getCacheKey(absPath.replace('\\', '/'), finalFrameInfo)
         ddsCache.invalidate(cacheKey)
         externalDdsCache.invalidate(cacheKey)
