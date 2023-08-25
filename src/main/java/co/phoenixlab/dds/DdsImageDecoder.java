@@ -178,18 +178,21 @@ public class DdsImageDecoder {
     public void convertToPNG(Dds dds, OutputStream outputStream, String swizzle, FrameInfo frameInfo) throws IOException {
         DdsHeader header = dds.getHeader();
         FormatDecoder decoder = Decoders.getDecoder(dds);
-        int cols = frameInfo == null ? header.getDwWidth() : header.getDwWidth() / frameInfo.getFrames();
+        int frame = frameInfo != null ? frameInfo.getFrame() : 0;
+        int frames = frameInfo != null ? frameInfo.getFrames() : 0;
+        if(frames == 0) frames = header.getDwWidth() / header.getDwHeight();
+        int cols = frame == 0 ? header.getDwWidth() : header.getDwWidth() / frames;
         int rows = header.getDwHeight();
         ImageInfo imageInfo = new ImageInfo(cols, rows, 8, true);
         PngWriter pngWriter = new PngWriter(outputStream, imageInfo);
         ImageLineInt imageLine = new ImageLineInt(imageInfo);
         for (int[] ints : decoder) {
             int [] finalInts;
-            if(frameInfo == null) {
+            if(frame == 0) {
                 finalInts = ints;
             } else {
-                int finalLength = ints.length / frameInfo.getFrames();
-                int finalSrcPos = finalLength * (frameInfo.getFrame() - 1);
+                int finalLength = ints.length / frames;
+                int finalSrcPos = finalLength * (frame - 1);
                 finalInts = new int[finalLength];
                 System.arraycopy(ints, finalSrcPos,finalInts, 0, finalLength);
             }
