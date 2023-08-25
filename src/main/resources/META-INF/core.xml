@@ -55,6 +55,17 @@
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.editor.folding.ParadoxVariableOperationExpressionFoldingBuilder"/>
     <lang.foldingBuilder language="PARADOX" implementationClass="icu.windea.pls.core.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
     
+    <lang.refactoringSupport language="PARADOX" implementationClass="icu.windea.pls.core.refactoring.ParadoxRefactoringSupportProvider"/>
+    <renameInputValidator implementation="icu.windea.pls.core.refactoring.rename.ParadoxScriptedVariableRenameInputValidator"/>
+    <renameInputValidator implementation="icu.windea.pls.core.refactoring.rename.ParadoxParameterRenameInputValidator"/>
+    <renameInputValidator implementation="icu.windea.pls.core.refactoring.rename.ParadoxLocalisationPropertyRenameInputValidator"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticRelatedLocalisationsRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticRelatedImagesRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticGeneratedModifiersNameDescRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticGeneratedModifiersIconRenamerFactory"/>
+    <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.refactoring.actions.IntroduceLocalScriptedVariableHandler"/>
+    <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.refactoring.actions.IntroduceGlobalScriptedVariableHandler"/>
+    
     <typeHierarchyProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.hierarchy.type.ParadoxDefinitionHierarchyProvider"/>
     <callHierarchyProvider language="PARADOX" implementationClass="icu.windea.pls.core.hierarchy.call.ParadoxCallHierarchyProvider"/>
 
@@ -250,6 +261,17 @@
       </action>
       <add-to-group group-id="GoToCodeGroup" relative-to-action="GotoRelated" anchor="after"/>
       <add-to-group group-id="EditorPopupMenu.GoTo" relative-to-action="GotoRelated" anchor="after"/>
+    </group>
+
+    <group id="Pls.RefactoringGroup" popup="false">
+      <action id="Pls.IntroduceLocalScriptedVariable" class="icu.windea.pls.core.refactoring.actions.IntroduceLocalScriptedVariableAction">
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt v"/>
+        <add-to-group group-id="IntroduceActionsGroup" anchor="first"/>
+      </action>
+      <action id="Pls.IntroduceGlobalScriptedVariable" class="icu.windea.pls.core.refactoring.actions.IntroduceGlobalScriptedVariableAction">
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt g"/>
+        <add-to-group group-id="IntroduceActionsGroup" anchor="after" relative-to-action="Pls.IntroduceLocalScriptedVariable"/>
+      </action>
     </group>
 
     <group id="Pls.Diff">

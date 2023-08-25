@@ -1,4 +1,4 @@
-package icu.windea.pls.script.refactoring
+package icu.windea.pls.core.refactoring.actions
 
 import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.observable.properties.*

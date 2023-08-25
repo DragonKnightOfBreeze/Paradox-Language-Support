@@ -1,4 +1,4 @@
-package icu.windea.pls.script.refactoring
+package icu.windea.pls.core.refactoring.actions
 
 import com.intellij.lang.refactoring.*
 import com.intellij.openapi.actionSystem.*
@@ -11,12 +11,12 @@ import icu.windea.pls.script.psi.*
 /**
  * 声明本地封装变量的动作。
  */
-class ParadoxScriptIntroduceLocalScriptedVariableAction : BasePlatformRefactoringAction() {
+class IntroduceLocalScriptedVariableAction : BasePlatformRefactoringAction() {
 	init {
 		addTextOverride(ActionPlaces.MAIN_MENU, PlsBundle.message("action.Pls.Script.IntroduceGlobalScriptedVariable.text.mainMenu"))
 	}
 	
-	val handler = ParadoxScriptIntroduceLocalScriptedVariableHandler()
+	val handler = IntroduceLocalScriptedVariableHandler()
 	
 	override fun isAvailableInEditorOnly(): Boolean {
 		return true

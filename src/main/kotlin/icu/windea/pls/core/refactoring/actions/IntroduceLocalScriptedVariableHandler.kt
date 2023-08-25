@@ -1,4 +1,4 @@
-package icu.windea.pls.script.refactoring
+package icu.windea.pls.core.refactoring.actions
 
 import com.intellij.codeInsight.template.*
 import com.intellij.codeInsight.template.impl.*
@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 声明本地封装变量的重构。
  */
-class ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandler() {
+class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandler() {
 	override fun isAvailable(editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return false

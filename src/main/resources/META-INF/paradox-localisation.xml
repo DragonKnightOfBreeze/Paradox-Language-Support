@@ -35,8 +35,6 @@
     <navbar implementation="icu.windea.pls.localisation.navigation.ParadoxLocalisationNavBar"/>
     <lang.psiStructureViewFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.structureView.ParadoxLocalisationStructureViewFactory"/>
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.localisation.usages.ParadoxLocalisationLocaleFileStructureGroupRuleProvider"/>
-    <lang.refactoringSupport language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.refactoring.ParadoxLocalisationRefactoringSupportProvider"/>
-    <renameInputValidator implementation="icu.windea.pls.localisation.refactoring.ParadoxLocalisationPropertyRenameInputValidator"/>
     <lang.unwrapDescriptor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.unwrap.ParadoxLocalisationUnwrapDescriptor"/>
 
     <!--floating toolbar-->

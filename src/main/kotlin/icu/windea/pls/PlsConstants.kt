@@ -47,9 +47,9 @@ object PlsConstants {
     //val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
     
     object Patterns {
-        val scriptParameterNameRegex = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
         val scriptedVariableNameRegex = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
         val localisationPropertyNameRegex = """[a-zA-Z0-9_.\-']+""".toRegex()
+        val parameterNameRegex = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
     }
     
     object Paths {

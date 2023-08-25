@@ -1,4 +1,4 @@
-package icu.windea.pls.script.refactoring
+package icu.windea.pls.core.refactoring.actions
 
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.command.*
@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 声明全局封装变量的重构。
  */
-class ParadoxScriptIntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHandler() {
+class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHandler() {
 	override fun isAvailable(editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
 		if(file.virtualFile == null) return false
 		val offset = editor.caretModel.offset

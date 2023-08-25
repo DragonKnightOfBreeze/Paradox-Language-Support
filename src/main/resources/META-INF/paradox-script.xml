@@ -60,12 +60,6 @@
     <navbar implementation="icu.windea.pls.script.navigation.ParadoxScriptNavBar"/>
     <lang.psiStructureViewFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.script.usages.ParadoxDefinitionFileStructureGroupRuleProvider"/>
-    <lang.refactoringSupport language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptRefactoringSupportProvider"/>
-    <renameInputValidator implementation="icu.windea.pls.script.refactoring.ParadoxScriptVariableRenameInputValidator"/>
-    <renameInputValidator implementation="icu.windea.pls.script.refactoring.ParadoxScriptParameterRenameInputValidator"/>
-    <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceLocalScriptedVariableHandler"/>
-    <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceGlobalScriptedVariableHandler"/>
-    <refactoring.inlineHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptInlineHandler"/>
     <fileIconProvider implementation="icu.windea.pls.core.ParadoxFileIconProvider"/>
     <openapi.vcs.changes.ui.filePathIconProvider implementation="icu.windea.pls.core.ParadoxFilePathIconProvider"/>
     <lang.surroundDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.surroundWith.ParadoxScriptSurroundDescriptor"/>
@@ -127,17 +121,4 @@
     <additionalTextAttributes scheme="High contrast" file="colorSchemes/ParadoxScriptHighContrast.xml"/>
     <additionalTextAttributes scheme="IntelliJ Light" file="colorSchemes/ParadoxScriptIntellijLight.xml"/>
   </extensions>
-  
-  <actions>
-    <group id="Pls.ParadoxScript.RefactoringGroup" popup="false">
-      <action id="Pls.Script.IntroduceLocalScriptedVariable" class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceLocalScriptedVariableAction">
-        <keyboard-shortcut keymap="$default" first-keystroke="control alt v"/>
-        <add-to-group group-id="IntroduceActionsGroup" anchor="first"/>
-      </action>
-      <action id="Pls.ParadoxScript.IntroduceGlobalScriptedVariable" class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceGlobalScriptedVariableAction">
-        <keyboard-shortcut keymap="$default" first-keystroke="control alt g"/>
-        <add-to-group group-id="IntroduceActionsGroup" anchor="after" relative-to-action="Pls.Script.IntroduceLocalScriptedVariable"/>
-      </action>
-    </group>
-  </actions>
 </idea-plugin>
