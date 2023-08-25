@@ -114,6 +114,7 @@
 
     <definitionSupportedScopesProvider implementation="icu.windea.pls.lang.scope.impl.StellarisScriptedModifierSupportedScopesProvider"/>
 
+    <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.ParadoxSpriteDataProvider"/>
     <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.StellarisGameConceptDataProvider"/>
     <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.StellarisTechnologyDataProvider"/>
     <definitionDataProvider implementation="icu.windea.pls.lang.data.impl.StellarisEventDataProvider"/>

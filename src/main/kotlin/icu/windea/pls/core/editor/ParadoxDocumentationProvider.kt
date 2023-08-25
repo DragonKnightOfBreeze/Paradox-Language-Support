@@ -272,7 +272,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         }
         if(sections != null && render) {
             if(iconFile != null) {
-                val url = ParadoxImageResolver.resolveUrlByFile(iconFile)
+                val url = ParadoxImageResolver.resolveUrlByFile(iconFile) ?: ParadoxImageResolver.getDefaultUrl()
                 sections.put("<code>icon</code>", buildString { appendImgTag(url) })
             }
         }

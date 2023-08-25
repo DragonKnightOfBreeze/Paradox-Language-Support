@@ -14,21 +14,16 @@ object ImageManager {
 	
 	private val ddsImageDecoder: DdsImageDecoder by lazy { DdsImageDecoder() }
 	
-	/**
-	 * @param frame 帧数，用于切割DDS图片。默认为0，表示不切割。
-	 */
-	fun convertDdsToPng(inputStream: InputStream, frame: Int = 0): ByteArray? {
+	fun convertDdsToPng(inputStream: InputStream, frameInfo: FrameInfo? = null): ByteArray? {
 		val dds = Dds()
 		dds.read(inputStream)
-		return ddsImageDecoder.convertToPNG(dds, frame)
+		return ddsImageDecoder.convertToPNG(dds, frameInfo)
 	}
 	
-	/**
-	 * @param frame 帧数，用于切割DDS图片。默认为0，表示不切割。
-	 */
-	fun convertDdsToPng(inputStream: InputStream, outputStream: OutputStream, frame: Int = 0) {
+	fun convertDdsToPng(inputStream: InputStream, outputStream: OutputStream, frameInfo: FrameInfo? = null) {
 		val dds = Dds()
 		dds.read(inputStream)
-		ddsImageDecoder.convertToPNG(dds, outputStream, frame)
+		ddsImageDecoder.convertToPNG(dds, outputStream, frameInfo)
 	}
 }
+

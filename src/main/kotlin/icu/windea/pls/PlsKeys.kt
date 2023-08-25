@@ -8,6 +8,7 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.tool.*
 import java.awt.*
 
 object PlsKeys : KeyAware
@@ -55,5 +56,5 @@ val PlsKeys.isIncomplete by createKey<Boolean>("paradox.isIncomplete")
 val PlsKeys.scopeMismatched by createKey<Boolean>("paradox.scopeMismatched")
 //用于在进行颜色高亮时标记参数在脚本表达式中的文本范围
 val PlsKeys.parameterRanges by createKey<List<TextRange>>("paradox.parameterRanges")
-//用于标记图标的帧数以便后续对原始的DDS图片进行切分
-val PlsKeys.iconFrame by createKey<Int>("paradox.icon.frame") 
+//用于标记图片的帧数信息以便后续进行切分
+val PlsKeys.frameInfo by createKey<FrameInfo>("paradox.frameInfo") 
