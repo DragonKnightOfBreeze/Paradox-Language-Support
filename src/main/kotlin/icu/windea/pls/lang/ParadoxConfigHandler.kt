@@ -147,7 +147,7 @@ object ParadoxConfigHandler {
             append('#').append(orDefault.toInt())
             append('#').append(matchOptions)
         }
-        return configsMap.getOrPut(cacheKey) {
+        return configsMap.computeIfAbsent(cacheKey) {
             val result = doGetConfigs(memberElement, orDefault, matchOptions)
             result.sortedByPriority({ it.expression }, { it.info.configGroup })
         }
@@ -341,7 +341,7 @@ object ParadoxConfigHandler {
         val childOccurrenceMap = doGetChildOccurrenceMapCacheFromCache(element) ?: return emptyMap()
         //NOTE cacheKey基于childConfigs即可，key相同而value不同的规则，上面的cardinality应当保证是一样的 
         val cacheKey = childConfigs.joinToString(" ")
-        return childOccurrenceMap.getOrPut(cacheKey) { doGetChildOccurrenceMap(element, configs) }
+        return childOccurrenceMap.computeIfAbsent(cacheKey) { doGetChildOccurrenceMap(element, configs) }
     }
     
     private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMemberElement): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
@@ -760,11 +760,11 @@ object ParadoxConfigHandler {
                 if(skipRootKeyConfig.isNullOrEmpty()) {
                     if(elementPath.isEmpty()) {
                         typeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
-                            infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
+                            infoMap.computeIfAbsent(it) { mutableListOf() }.add(typeConfig to null)
                         }
                         typeConfig.subtypes.values.forEach { subtypeConfig ->
                             subtypeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
-                                infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
+                                infoMap.computeIfAbsent(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
                             }
                         }
                     }
@@ -773,15 +773,15 @@ object ParadoxConfigHandler {
                         val relative = elementPath.relativeTo(skipConfig) ?: continue
                         if(relative.isEmpty()) {
                             typeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
-                                infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
+                                infoMap.computeIfAbsent(it) { mutableListOf() }.add(typeConfig to null)
                             }
                             typeConfig.subtypes.values.forEach { subtypeConfig ->
                                 subtypeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
-                                    infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
+                                    infoMap.computeIfAbsent(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
                                 }
                             }
                         } else {
-                            infoMap.getOrPut(relative) { mutableListOf() }
+                            infoMap.computeIfAbsent(relative) { mutableListOf() }
                         }
                         break
                     }

@@ -46,7 +46,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
             override fun getTargetArrow() = DELTA
         }
         val REL_REPEAT_CACHE = ConcurrentHashMap<String, DiagramRelationshipInfoAdapter>()
-        fun REL_REPEAT(label: String) = REL_REPEAT_CACHE.getOrPut(label) {
+        fun REL_REPEAT(label: String) = REL_REPEAT_CACHE.computeIfAbsent(label) {
             object : DiagramRelationshipInfoAdapter("REPEAT", DiagramLineType.DOTTED, label) {
                 override fun getTargetArrow() = DELTA
             }

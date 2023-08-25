@@ -26,7 +26,7 @@ class ParadoxPsiModificationTracker(project: Project) {
      * @param keyString 例子：`path`, `path:txt`, `path1:txt|path2:txt,yml`
      */
     fun ScriptFileTracker(keyString: String): PathModificationTracker {
-        return ScriptFileTrackers.getOrPut(keyString) { PathModificationTracker(keyString) }
+        return ScriptFileTrackers.computeIfAbsent(keyString) { PathModificationTracker(keyString) }
     }
     
     val ScriptedVariablesTracker = ScriptFileTracker("common/scripted_variables:txt")
