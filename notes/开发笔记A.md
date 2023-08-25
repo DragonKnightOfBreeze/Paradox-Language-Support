@@ -73,3 +73,10 @@ ide.completion.variant.limit=1000
 ```
 FileDocumentManager.saveDocument(FileDocumentManager.getDocument(VirtualFile))
 ```
+
+## 备注
+
+```
+// 为什么这里是HashMap而非LinkedHashMap？
+com.intellij.refactoring.rename.RenameDialog.myAutoRenamerFactories
+```
