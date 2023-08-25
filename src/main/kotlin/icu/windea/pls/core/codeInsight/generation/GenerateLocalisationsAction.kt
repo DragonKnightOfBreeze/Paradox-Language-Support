@@ -12,6 +12,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -41,15 +42,28 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
             presentation.isEnabled = true
             return
         }
-        val offset = editor.caretModel.offset
-        val element = findElement(file, offset)
-        val isEnabled = when {
-            element == null -> false
-            element.isDefinitionRootKeyOrName() -> true
-            ParadoxModifierHandler.resolveModifier(element) != null -> true
-            else -> false
-        }
+        val context = getContext(file, editor)
+        handler.context = context
+        val isEnabled = context != null
         presentation.isEnabled = isEnabled
+    }
+    
+    private fun getContext(file: PsiFile, editor: Editor): ParadoxLocalisationCodeInsightContext? {
+        val locales = ParadoxLocaleHandler.getLocaleConfigs()
+        val element = findElement(file, editor.caretModel.offset)
+        val contextElement = when {
+            element == null -> null
+            element.isDefinitionRootKeyOrName() -> element.findParentDefinition()
+            ParadoxModifierHandler.resolveModifier(element) != null -> element
+            else -> null
+        }
+        val context = when {
+            contextElement == null -> null
+            contextElement is ParadoxScriptDefinitionElement -> ParadoxLocalisationCodeInsightContext.fromDefinition(contextElement, locales)
+            contextElement is ParadoxScriptStringExpressionElement -> ParadoxLocalisationCodeInsightContext.fromExpression(contextElement, locales)
+            else -> null
+        }
+        return context
     }
     
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {

@@ -13,14 +13,12 @@ import icu.windea.pls.core.ui.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.codeInsight.*
-import icu.windea.pls.script.inspections.general.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxGenerateLocalisationsHandler(
-    private val context: ParadoxLocalisationCodeInsightContext? = null,
-    private val inspection: MissingLocalisationInspection? = null,
-    private val forFile: Boolean = false,
-    private val fromInspection: Boolean = false,
+    var context: ParadoxLocalisationCodeInsightContext? = null,
+    val forFile: Boolean = false,
+    val fromInspection: Boolean = false,
 ) : CodeInsightActionHandler {
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
         val onChosen = action@{ selected: CwtLocalisationLocaleConfig ->
@@ -43,26 +41,14 @@ class ParadoxGenerateLocalisationsHandler(
         
         val selectedLocale = ParadoxLocaleHandler.getPreferredLocale()
         val allLocales = ParadoxLocaleHandler.getLocaleConfigs()
-        val localePopup = ParadoxLocalePopup(selectedLocale, allLocales, onChosen = onChosen)
+        val localePopup = ParadoxLocalePopup(selectedLocale, allLocales, onChosen)
         JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
     }
     
     private fun getContext(file: PsiFile, editor: Editor): ParadoxLocalisationCodeInsightContext? {
-        if(context != null) return context
-        val locales = ParadoxLocaleHandler.getLocaleConfigs()
-        if(forFile) return ParadoxLocalisationCodeInsightContext.fromFile(file, locales, fromInspection = fromInspection)
-        val element = findElement(file, editor.caretModel.offset)
-        val contextElement = when {
-            element == null -> null
-            element.isDefinitionRootKeyOrName() -> element.findParentDefinition()
-            ParadoxModifierHandler.resolveModifier(element) != null -> element
-            else -> null
-        }
-        val context = when {
-            contextElement == null -> null
-            contextElement is ParadoxScriptDefinitionElement -> ParadoxLocalisationCodeInsightContext.fromDefinition(contextElement, locales, fromInspection = fromInspection)
-            contextElement is ParadoxScriptStringExpressionElement -> ParadoxLocalisationCodeInsightContext.fromExpression(contextElement, locales, fromInspection = fromInspection)
-            else -> null
+        if(forFile) {
+            val locales = ParadoxLocaleHandler.getLocaleConfigs()
+            return ParadoxLocalisationCodeInsightContext.fromFile(file, locales, fromInspection)
         }
         return context
     }

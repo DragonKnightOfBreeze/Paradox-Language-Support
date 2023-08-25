@@ -22,7 +22,7 @@ class GenerateLocalisationsInFileFix(
     
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if(editor == null) return
-        val handler = ParadoxGenerateLocalisationsHandler(null, forFile = true, fromInspection = true)
+        val handler = ParadoxGenerateLocalisationsHandler(forFile = true, fromInspection = true)
         handler.invoke(project, editor, file)
     }
     
