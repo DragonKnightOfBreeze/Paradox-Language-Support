@@ -25,10 +25,6 @@ class ParadoxDefinitionNavigationElement(
         return _name
     }
     
-    override fun setName(name: String): PsiElement {
-        throw IncorrectOperationException() //cannot rename
-    }
-    
     override fun getTypeName(): String {
         return PlsBundle.message("script.description.definition")
     }

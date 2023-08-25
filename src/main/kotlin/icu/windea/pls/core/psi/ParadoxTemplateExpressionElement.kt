@@ -21,6 +21,8 @@ class ParadoxTemplateExpressionElement(
     private val project: Project,
     val references: List<ParadoxTemplateSnippetExpressionReference>,
 ) : ParadoxFakePsiElement(parent) {
+    var canRename = false
+    
     override fun getIcon(): Icon {
         return PlsIcons.TemplateExpression
     }
@@ -29,8 +31,9 @@ class ParadoxTemplateExpressionElement(
         return name
     }
     
-    override fun setName(name: String): PsiElement {
-        throw IncorrectOperationException() //cannot rename
+    override fun setName(name: String): PsiElement? {
+        if(!canRename) throw IncorrectOperationException() //cannot rename
+        return null
     }
     
     override fun getTypeName(): String {

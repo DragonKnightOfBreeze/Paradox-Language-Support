@@ -25,6 +25,8 @@ class ParadoxModifierElement(
     val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxFakePsiElement(parent) {
+    var canRename = false
+    
     override fun getIcon(): Icon {
         return PlsIcons.Modifier
     }
@@ -33,8 +35,9 @@ class ParadoxModifierElement(
         return name
     }
     
-    override fun setName(name: String): PsiElement {
-        throw IncorrectOperationException() //cannot rename
+    override fun setName(name: String): PsiElement? {
+        if(!canRename) throw IncorrectOperationException() //cannot rename
+        return null
     }
     
     override fun getTypeName(): String {

@@ -4,6 +4,7 @@ import com.intellij.lang.*
 import com.intellij.lang.cacheBuilder.*
 import com.intellij.lang.findUsages.*
 import com.intellij.psi.*
+import com.intellij.refactoring.util.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -25,6 +26,7 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
 	}
 	
 	override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
+		if(element is RefactoringDescriptionLocation) return null
 		return when(element) {
 			is ParadoxLocalisationProperty -> {
 				val localisationInfo = element.localisationInfo

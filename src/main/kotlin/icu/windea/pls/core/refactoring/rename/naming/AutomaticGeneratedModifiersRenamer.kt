@@ -45,6 +45,7 @@ class AutomaticGeneratedModifiersRenamer(element: PsiElement, newName: String) :
             val modifierName = info.name
             val newModifierName = info.config.template.extract(newName)
             val modifierElement = ParadoxModifierElement(element, modifierName, definitionInfo.gameType, definitionInfo.project)
+            modifierElement.canRename = true
             allRenames[modifierElement] = newModifierName
         }
     }

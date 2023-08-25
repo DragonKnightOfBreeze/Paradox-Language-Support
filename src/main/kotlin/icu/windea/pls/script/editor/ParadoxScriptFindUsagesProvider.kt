@@ -4,6 +4,7 @@ import com.intellij.lang.*
 import com.intellij.lang.cacheBuilder.*
 import com.intellij.lang.findUsages.*
 import com.intellij.psi.*
+import com.intellij.refactoring.util.RefactoringDescriptionLocation
 import com.intellij.usageView.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -24,6 +25,7 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 	}
 	
 	override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
+		if(element is RefactoringDescriptionLocation) return null
 		return when(element) {
 			is ParadoxScriptScriptedVariable -> {
 				when(location) {

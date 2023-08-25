@@ -57,6 +57,7 @@
     
     <lang.refactoringSupport language="PARADOX" implementationClass="icu.windea.pls.core.refactoring.ParadoxRefactoringSupportProvider"/>
     <applicationService serviceImplementation="icu.windea.pls.core.refactoring.ParadoxRefactoringSettings"/>
+    <elementDescriptionProvider implementation="icu.windea.pls.core.refactoring.ParadoxRefactoringElementDescriptorProvider"/>
     <renameInputValidator implementation="icu.windea.pls.core.refactoring.rename.ParadoxScriptedVariableRenameInputValidator"/>
     <renameInputValidator implementation="icu.windea.pls.core.refactoring.rename.ParadoxParameterRenameInputValidator"/>
     <renameInputValidator implementation="icu.windea.pls.core.refactoring.rename.ParadoxLocalisationPropertyRenameInputValidator"/>

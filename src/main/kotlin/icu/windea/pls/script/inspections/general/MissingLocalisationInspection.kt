@@ -27,9 +27,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField var checkForDefinitions = true
     @JvmField var checkPrimaryForDefinitions = false
     @JvmField var checkOptionalForDefinitions = false
-    @JvmField var checkGeneratedModifierNamesForDefinitions = false
+    @JvmField var checkGeneratedModifierNamesForDefinitions = true
     @JvmField var checkGeneratedModifierDescriptionsForDefinitions = false
-    @JvmField var checkForModifiers = true
+    @JvmField var checkForModifiers = false    
     @JvmField var checkModifierNames = true
     @JvmField var checkModifierDescriptions = false
     

@@ -34,14 +34,14 @@ class AutomaticRelatedImagesRenamer(element: PsiElement, newName: String) : Auto
     override fun entityName() = PlsBundle.message("rename.relatedImages.entityName")
     
     private fun prepareRenaming(element: ParadoxScriptDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
-        //TODO 1.0.7 可能需要直接重命名sprite
         val definitionInfo = element.definitionInfo ?: return
         val infos = definitionInfo.images.takeIfNotEmpty() ?: return
         for(info in infos) {
             ProgressManager.checkCanceled()
             val result = info.locationExpression.resolveAll(element, definitionInfo) ?: continue
             val rename =  info.locationExpression.resolvePlaceholder(newName) ?: continue
-            result.elements.forEach { allRenames[it] = rename }
+            val finalRename = if(rename.startsWith("GFX_")) rename else rename.substringAfterLast('/')
+            result.elements.forEach { allRenames[it] = finalRename }
         }
     }
 }
