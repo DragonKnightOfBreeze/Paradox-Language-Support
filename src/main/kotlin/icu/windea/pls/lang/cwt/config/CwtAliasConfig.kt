@@ -23,10 +23,8 @@ class CwtAliasConfig(
     val supportedScopes get() = config.supportedScopes
     val outputScope get() = config.pushScope
     
-    private val inlinedConfigCache by lazy { ContainerUtil.createConcurrentSoftKeySoftValueMap<CwtPropertyConfig, CwtPropertyConfig>() }
-    
     fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
-        return inlinedConfigCache.computeIfAbsent(config) { doInline(config) }
+        return doInline(config)
     }
     
     private fun doInline(config: CwtPropertyConfig): CwtPropertyConfig {
