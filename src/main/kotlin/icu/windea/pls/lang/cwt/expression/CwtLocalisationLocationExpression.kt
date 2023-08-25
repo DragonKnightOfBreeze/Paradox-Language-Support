@@ -45,7 +45,7 @@ class CwtLocalisationLocationExpression private constructor(
     
     data class ResolveResult(
         val name: String,
-        val localisation: ParadoxLocalisationProperty?,
+        val element: ParadoxLocalisationProperty?,
         val message: String? = null
     )
     
@@ -55,10 +55,9 @@ class CwtLocalisationLocationExpression private constructor(
     fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveResult? {
         if(placeholder != null) {
             if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
-            
             val name = resolvePlaceholder(definitionInfo.name)!!
-            val localisation = ParadoxLocalisationSearch.search(name, selector).find()
-            return ResolveResult(name, localisation)
+            val resolved = ParadoxLocalisationSearch.search(name, selector).find()
+            return ResolveResult(name, resolved)
         } else if(propertyName != null) {
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
@@ -73,8 +72,8 @@ class CwtLocalisationLocationExpression private constructor(
                 return ResolveResult("", null, PlsBundle.message("inlined"))
             }
             val name = propertyValue.value
-            val localisation = ParadoxLocalisationSearch.search(name, selector).find()
-            return ResolveResult(name, localisation)
+            val resolved = ParadoxLocalisationSearch.search(name, selector).find()
+            return ResolveResult(name, resolved)
         } else {
             throw IllegalStateException() //不期望的结果
         }
@@ -82,7 +81,7 @@ class CwtLocalisationLocationExpression private constructor(
     
     data class ResolveAllResult(
         val name: String,
-        val localisations: Set<ParadoxLocalisationProperty>,
+        val elements: Set<ParadoxLocalisationProperty>,
         val message: String? = null
     )
     
@@ -91,8 +90,8 @@ class CwtLocalisationLocationExpression private constructor(
             if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             
             val name = resolvePlaceholder(definitionInfo.name)!!
-            val localisations = ParadoxLocalisationSearch.search(name, selector).findAll()
-            return ResolveAllResult(name, localisations)
+            val resolved = ParadoxLocalisationSearch.search(name, selector).findAll()
+            return ResolveAllResult(name, resolved)
         } else if(propertyName != null) {
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
@@ -107,8 +106,8 @@ class CwtLocalisationLocationExpression private constructor(
                 return ResolveAllResult("", emptySet(), PlsBundle.message("inlined"))
             }
             val name = propertyValue.value
-            val localisations = ParadoxLocalisationSearch.search(name, selector).findAll()
-            return ResolveAllResult(name, localisations)
+            val resolved = ParadoxLocalisationSearch.search(name, selector).findAll()
+            return ResolveAllResult(name, resolved)
         } else {
             throw IllegalStateException() //不期望的结果
         }

@@ -36,15 +36,15 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : RelatedItemLineMarkerPr
 		for((key, locationExpression) in imageInfos) {
 			ProgressManager.checkCanceled()
 			val resolved = locationExpression.resolveAll(element, definitionInfo) ?: continue
-			if(resolved.files.isNotEmpty()) {
-				targets.addAll(resolved.files)
+			if(resolved.elements.isNotEmpty()) {
+				targets.addAll(resolved.elements)
 			}
 			if(resolved.message != null) {
 				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
 				tooltipBuilder.append(PlsBundle.message("prefix.relatedImage")).append(" ").append(key).append(" = ").append(resolved.message)
-			} else if(resolved.files.isNotEmpty() && keys.add(key)) {
+			} else if(resolved.elements.isNotEmpty() && keys.add(key)) {
 				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
-				tooltipBuilder.append(PlsBundle.message("prefix.relatedImage")).append(" ").append(key).append(" = ").append(resolved.filePath)
+				tooltipBuilder.append(PlsBundle.message("prefix.relatedImage")).append(" ").append(key).append(" = ").append(resolved.nameOrFilePath)
 			}
 		}
 		if(keys.isEmpty()) return

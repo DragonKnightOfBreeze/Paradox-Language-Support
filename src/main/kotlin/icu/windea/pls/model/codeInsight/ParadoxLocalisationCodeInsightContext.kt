@@ -92,7 +92,7 @@ data class ParadoxLocalisationCodeInsightContext(
                         (inspection == null || inspection.checkOptionalForDefinitions) && !info.required -> true
                         else -> false
                     }
-                    val missing = resolved?.localisation == null && resolved?.message == null
+                    val missing = resolved?.element == null && resolved?.message == null
                     val dynamic = resolved?.message != null
                     val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, info, locale, check, missing, dynamic)
                     codeInsightInfos += codeInsightInfo

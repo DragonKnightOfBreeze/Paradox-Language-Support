@@ -41,7 +41,7 @@ class AutomaticRelatedImagesRenamer(element: PsiElement, newName: String) : Auto
             ProgressManager.checkCanceled()
             val result = info.locationExpression.resolveAll(element, definitionInfo) ?: continue
             val rename =  info.locationExpression.resolvePlaceholder(newName) ?: continue
-            result.files.forEach { allRenames[it] = rename }
+            result.elements.forEach { allRenames[it] = rename }
         }
     }
 }

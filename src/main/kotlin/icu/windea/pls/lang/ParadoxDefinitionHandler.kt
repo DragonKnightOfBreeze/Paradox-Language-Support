@@ -732,7 +732,7 @@ object ParadoxDefinitionHandler {
         for(primaryLocalisation in primaryLocalisations) {
             val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
             val resolved = primaryLocalisation.locationExpression.resolve(element, definitionInfo, selector)
-            val localisation = resolved?.localisation ?: continue
+            val localisation = resolved?.element ?: continue
             return localisation
         }
         return null
@@ -760,7 +760,7 @@ object ParadoxDefinitionHandler {
         for(primaryLocalisation in primaryLocalisations) {
             val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
             val resolved = primaryLocalisation.locationExpression.resolveAll(element, definitionInfo, selector)
-            val localisations = resolved?.localisations ?: continue
+            val localisations = resolved?.elements ?: continue
             result.addAll(localisations)
         }
         return result
@@ -783,10 +783,9 @@ object ParadoxDefinitionHandler {
         val definitionInfo = element.definitionInfo ?: return null
         val primaryImages = definitionInfo.primaryImages
         if(primaryImages.isEmpty()) return null //没有或者CWT规则不完善
-        val project = definitionInfo.project
         for(primaryImage in primaryImages) {
-            val resolved = primaryImage.locationExpression.resolve(element, definitionInfo)
-            val file = resolved?.file
+            val resolved = primaryImage.locationExpression.resolve(element, definitionInfo, toFile = true)
+            val file = resolved?.element?.castOrNull<PsiFile>()
             if(file == null) continue
             element.putUserData(PlsKeys.frameInfo, resolved.frameInfo)
             return file

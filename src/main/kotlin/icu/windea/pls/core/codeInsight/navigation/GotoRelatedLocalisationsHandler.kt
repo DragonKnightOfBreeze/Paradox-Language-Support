@@ -42,8 +42,8 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     runReadAction {
                         val selector = localisationSelector(project, definition).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
                         val resolved = locationExpression.resolveAll(definition, definitionInfo, selector)
-                        if(resolved != null && resolved.localisations.isNotEmpty()) {
-                            targets.addAll(resolved.localisations)
+                        if(resolved != null && resolved.elements.isNotEmpty()) {
+                            targets.addAll(resolved.elements)
                         }
                     }
                 }

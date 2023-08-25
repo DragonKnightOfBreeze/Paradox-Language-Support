@@ -41,8 +41,8 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
                     //need read action here
                     runReadAction {
                         val resolved = locationExpression.resolveAll(definition, definitionInfo)
-                        if(resolved != null && resolved.files.isNotEmpty()) {
-                            targets.addAll(resolved.files)
+                        if(resolved != null && resolved.elements.isNotEmpty()) {
+                            targets.addAll(resolved.elements)
                         }
                     }
                 }

@@ -40,13 +40,13 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
 			ProgressManager.checkCanceled()
 			val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
 			val resolved = locationExpression.resolveAll(element, definitionInfo, selector) ?: continue
-			if(resolved.localisations.isNotEmpty()) {
-				targets.addAll(resolved.localisations)
+			if(resolved.elements.isNotEmpty()) {
+				targets.addAll(resolved.elements)
 			}
 			if(resolved.message != null) {
 				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
 				tooltipBuilder.append(PlsBundle.message("prefix.relatedLocalisation")).append(" ").append(key).append(" = ").append(resolved.message)
-			} else if(resolved.localisations.isNotEmpty() && keys.add(key)) {
+			} else if(resolved.elements.isNotEmpty() && keys.add(key)) {
 				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
 				tooltipBuilder.append(PlsBundle.message("prefix.relatedLocalisation")).append(" ").append(key).append(" = ").append(resolved.name)
 			}

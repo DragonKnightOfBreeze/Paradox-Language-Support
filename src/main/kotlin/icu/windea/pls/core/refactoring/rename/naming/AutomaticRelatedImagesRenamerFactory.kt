@@ -13,7 +13,9 @@ import icu.windea.pls.script.psi.*
  */
 class AutomaticRelatedImagesRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
-        return element is ParadoxScriptDefinitionElement && element.definitionInfo != null
+        if(element !is ParadoxScriptDefinitionElement) return false
+        val definitionInfo = element.definitionInfo ?: return false
+        return definitionInfo.images.isNotEmpty()
     }
     
     override fun getOptionName(): String {

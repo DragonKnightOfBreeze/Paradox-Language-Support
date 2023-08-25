@@ -5,6 +5,7 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import com.intellij.psi.PsiFile
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
@@ -87,11 +88,11 @@ object ParadoxImageResolver {
         //兼容definition不是sprite的情况
         val resolved = runReadAction {
             definitionInfo.primaryImages.firstNotNullOfOrNull {
-                it.locationExpression.resolve(definition, definitionInfo, frameInfo)
+                it.locationExpression.resolve(definition, definitionInfo, frameInfo, toFile = true)
             }
         } ?: return null
-        if(resolved.file == null) return null
-        return doResolveUrlByFile(resolved.file.virtualFile, resolved.frameInfo)
+        val resolvedFile = resolved.element?.castOrNull<PsiFile>() ?: return null
+        return doResolveUrlByFile(resolvedFile.virtualFile, resolved.frameInfo)
     }
     
     private fun doResolveUrlByFile(file: VirtualFile, frameInfo: FrameInfo?): String? {

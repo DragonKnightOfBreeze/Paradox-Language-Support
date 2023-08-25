@@ -70,7 +70,7 @@ data class ParadoxImageCodeInsightContext(
                     info.primary -> ParadoxImageCodeInsightInfo.Type.Primary
                     else -> ParadoxImageCodeInsightInfo.Type.Optional
                 }
-                val name = resolved?.filePath
+                val name = resolved?.nameOrFilePath
                 val gfxName = expression.resolvePlaceholder(definitionInfo.name)?.takeIf { it.startsWith("GFX_") }
                 val check = when {
                     info.required -> true
@@ -78,7 +78,7 @@ data class ParadoxImageCodeInsightContext(
                     (inspection == null || inspection.checkOptionalForDefinitions) && !info.required -> true
                     else -> false
                 }
-                val missing = resolved?.file == null && resolved?.message == null
+                val missing = resolved?.element == null && resolved?.message == null
                 val dynamic = resolved?.message != null
                 val codeInsightInfo = ParadoxImageCodeInsightInfo(type, name, gfxName, info, check, missing, dynamic)
                 codeInsightInfos += codeInsightInfo

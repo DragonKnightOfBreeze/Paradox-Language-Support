@@ -212,16 +212,16 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             val resolved = locationExpression.resolve(element, definitionInfo, selector) ?: continue //发生意外，直接跳过
             if(resolved.message != null) {
                 map.put(key, resolved.message)
-            } else if(resolved.localisation != null) {
+            } else if(resolved.element != null) {
                 map.put(key, buildString { appendLocalisationLink(definitionInfo.gameType, resolved.name, element) })
             } else if(required) {
                 map.putIfAbsent(key, resolved.name)
             }
-            if(resolved.localisation != null) {
+            if(resolved.element != null) {
                 sectionKeys.add(key)
                 if(sections != null && getSettings().documentation.renderRelatedLocalisationsForDefinitions) {
                     //加上渲染后的相关本地化文本
-                    val richText = ParadoxLocalisationTextHtmlRenderer.render(resolved.localisation, forDoc = true)
+                    val richText = ParadoxLocalisationTextHtmlRenderer.render(resolved.element, forDoc = true)
                     sections.put("<code>$key</code>", richText)
                 }
             }
@@ -237,7 +237,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         val render = getSettings().documentation.renderRelatedImagesForDefinitions
         val imagesInfos = definitionInfo.images
         if(imagesInfos.isEmpty()) return
-        val project = element.project
         val map = mutableMapOf<String, String>()
         val sectionKeys = mutableSetOf<String>()
         for((key, locationExpression, required) in imagesInfos) {
@@ -245,17 +244,32 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             val resolved = locationExpression.resolve(element, definitionInfo) ?: continue //发生意外，直接跳过
             if(resolved.message != null) {
                 map.putIfAbsent(key, resolved.message)
-            } else if(resolved.file != null) {
-                map.put(key, buildString { appendFilePathLink(definitionInfo.gameType, resolved.filePath, resolved.filePath, element) })
+            } else if(resolved.element != null) {
+                val nameOrFilePath = resolved.nameOrFilePath
+                val gameType = definitionInfo.gameType
+                val v = when{
+                    nameOrFilePath.startsWith("GFX") -> buildString { appendDefinitionLink(gameType, nameOrFilePath, "sprite", element) }
+                    else -> buildString { appendFilePathLink(gameType, nameOrFilePath, nameOrFilePath, element) }
+                }
+                map.put(key, v)
             } else if(required) {
-                map.putIfAbsent(key, resolved.filePath)
+                map.putIfAbsent(key, resolved.nameOrFilePath)
             }
-            if(resolved.file != null) {
+            if(resolved.element != null) {
                 sectionKeys.add(key)
                 if(render && sections != null) {
-                    //加上DDS图片预览图
-                    val url = ParadoxImageResolver.resolveUrlByFile(resolved.file.virtualFile, resolved.frameInfo)
-                        ?: ParadoxImageResolver.getDefaultUrl()
+                    //渲染图片
+                    val url = when {
+                        resolved.element is ParadoxScriptDefinitionElement && resolved.element.definitionInfo != null -> {
+                            ParadoxImageResolver.resolveUrlByDefinition(resolved.element, resolved.frameInfo)
+                                ?: ParadoxImageResolver.getDefaultUrl()
+                        }
+                        resolved.element is PsiFile -> {
+                            ParadoxImageResolver.resolveUrlByFile(resolved.element.virtualFile, resolved.frameInfo)
+                                ?: ParadoxImageResolver.getDefaultUrl()
+                        }
+                        else -> continue
+                    }
                     sections.put("<code>$key</code>", buildString { appendImgTag(url) })
                 }
             }
