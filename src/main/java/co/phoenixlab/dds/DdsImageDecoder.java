@@ -172,37 +172,27 @@ public class DdsImageDecoder {
     }
     
     public void convertToPNG(Dds dds, OutputStream outputStream, String swizzle) throws IOException {
-        DdsHeader header = dds.getHeader();
-        FormatDecoder decoder = Decoders.getDecoder(dds);
-        ImageInfo imageInfo = new ImageInfo(header.getDwWidth(), header.getDwHeight(), 8, true);
-        PngWriter pngWriter = new PngWriter(outputStream, imageInfo);
-        ImageLineInt imageLine = new ImageLineInt(imageInfo);
-        for (int[] ints : decoder) {
-            swizzle(ints, swizzle);
-            ImageLineHelper.setPixelsRGBA8(imageLine, ints);
-            pngWriter.writeRow(imageLine);
-        }
-
-        pngWriter.end();
+        convertToPNG(dds, outputStream, swizzle, null);
     }
+    
     public void convertToPNG(Dds dds, OutputStream outputStream, String swizzle, FrameInfo frameInfo) throws IOException {
-        if(frameInfo == null || frameInfo.getFrame() <= 0) {
-            convertToPNG(dds, outputStream, swizzle);
-            return;
-        }
         DdsHeader header = dds.getHeader();
         FormatDecoder decoder = Decoders.getDecoder(dds);
-        int width = header.getDwWidth();
-        int height = header.getDwHeight();
-        int frame = frameInfo.getFrame();
-        int frames = (frameInfo.getFrames() <= 0 || frameInfo.getFrames() < frameInfo.getFrame()) ? width / height : frameInfo.getFrames();
-        ImageInfo imageInfo = new ImageInfo(height, height, 8, true);
+        int cols = frameInfo == null ? header.getDwWidth() : header.getDwWidth() / frameInfo.getFrames();
+        int rows = header.getDwHeight();
+        ImageInfo imageInfo = new ImageInfo(cols, rows, 8, true);
         PngWriter pngWriter = new PngWriter(outputStream, imageInfo);
         ImageLineInt imageLine = new ImageLineInt(imageInfo);
         for (int[] ints : decoder) {
-            int finalLength = ints.length / frames;
-            int[] finalInts = new int[finalLength];
-            System.arraycopy(ints,finalLength * (frame -1),finalInts, 0, finalLength);
+            int [] finalInts;
+            if(frameInfo == null) {
+                finalInts = ints;
+            } else {
+                int finalLength = ints.length / frameInfo.getFrames();
+                int finalSrcPos = finalLength * (frameInfo.getFrame() - 1);
+                finalInts = new int[finalLength];
+                System.arraycopy(ints, finalSrcPos,finalInts, 0, finalLength);
+            }
             swizzle(finalInts, swizzle);
             ImageLineHelper.setPixelsRGBA8(imageLine, finalInts);
             pngWriter.writeRow(imageLine);

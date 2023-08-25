@@ -23,7 +23,7 @@ object ParadoxFileManager {
     @JvmStatic
     fun createTempFile(file: VirtualFile): VirtualFile? {
         try {
-            val diffDirPath = PlsConstants.Paths.tmpDirectoryPath
+            val diffDirPath = PlsConstants.Paths.diffDirectoryPath
             val fileName = UUID.randomUUID().toString()
             Files.createDirectories(diffDirPath)
             val diffDirFile = VfsUtil.findFile(diffDirPath, false) ?: return null
@@ -44,7 +44,7 @@ object ParadoxFileManager {
     @JvmStatic
     fun createTempFile(text: String, fileInfo: ParadoxFileInfo): VirtualFile? {
         try {
-            val diffDirPath = PlsConstants.Paths.tmpDirectoryPath
+            val diffDirPath = PlsConstants.Paths.diffDirectoryPath
             val fileName = UUID.randomUUID().toString()
             val path = diffDirPath.resolve(fileName)
             Files.writeString(path, text)

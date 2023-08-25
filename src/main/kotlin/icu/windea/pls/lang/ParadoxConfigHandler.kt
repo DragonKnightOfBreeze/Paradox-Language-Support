@@ -143,7 +143,7 @@ object ParadoxConfigHandler {
             append('#').append(orDefault.toInt())
             append('#').append(matchOptions)
         }
-        return configsMap.computeIfAbsent(cacheKey) {
+        return configsMap.getOrPut(cacheKey) {
             val result = doGetConfigs(memberElement, orDefault, matchOptions)
             result.sortedByPriority({ it.expression }, { it.info.configGroup })
         }

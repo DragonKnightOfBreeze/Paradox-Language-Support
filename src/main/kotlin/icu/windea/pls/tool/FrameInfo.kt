@@ -8,4 +8,11 @@ package icu.windea.pls.tool
 data class FrameInfo(
 	val frame: Int = 0,
 	val frames: Int = 0
-)
+){
+	fun normalize() : FrameInfo? {
+		val frames = if(frames <= 0) 0 else frames
+		val frame = if(frame <= 0 || frame > frames) 0 else frame
+		if(frame == 0) return null
+		return FrameInfo(frame, frames)
+	}
+}

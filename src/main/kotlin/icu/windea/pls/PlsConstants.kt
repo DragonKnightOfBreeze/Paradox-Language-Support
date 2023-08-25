@@ -1,6 +1,5 @@
 package icu.windea.pls
 
-import com.intellij.codeInsight.hints.presentation.*
 import icons.*
 import icu.windea.pls.core.*
 
@@ -55,21 +54,20 @@ object PlsConstants {
     
     object Paths {
         val userHome = System.getProperty("user.home")
+        val userHomePath by lazy { userHome.toPath() }
         
         const val dataDirectoryName = ".pls"
+        val dataDirectoryPath by lazy { userHomePath.resolve(dataDirectoryName) }
         
         const val imagesDirectoryName = "images"
-        const val unknownPngName = "unknown.png"
-        
-        val userHomePath by lazy { userHome.toPath() }
-        val dataDirectoryPath by lazy { userHomePath.resolve(dataDirectoryName) }
         val imagesDirectoryPath by lazy { dataDirectoryPath.resolve(imagesDirectoryName) }
+        
+        const val unknownPngName = "unknown.png"
         val unknownPngPath by lazy { imagesDirectoryPath.resolve(unknownPngName) }
         val unknownPngUrl by lazy { unknownPngPath.toUri().toURL() }
-        
         val unknownPngClasspathUrl = "/$unknownPngName".toClasspathUrl()
         
-        const val tmpDirectoryName = "tmp"
-        val tmpDirectoryPath by lazy { dataDirectoryPath.resolve(tmpDirectoryName) }
+        const val diffDirectoryName = "diff"
+        val diffDirectoryPath by lazy { dataDirectoryPath.resolve(diffDirectoryName) }
     }
 }

@@ -7,6 +7,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import java.lang.invoke.*
 import java.nio.file.*
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.io.path.*
 
 object ParadoxDdsResolver {
@@ -22,15 +24,16 @@ object ParadoxDdsResolver {
      * @param frameInfo 帧数信息，用于切分图片。
      */
     fun resolveUrl(absPath: String, relPath: String? = null, frameInfo: FrameInfo? = null): String? {
+        val finalFrameInfo = frameInfo?.normalize()
         try {
             //如果存在基于DDS文件绝对路径的缓存数据，则使用缓存的PNG文件绝对路径
-            val pngAbsPath = getPngAbsPath(absPath.replace('\\', '/'), relPath, frameInfo)
+            val pngAbsPath = getPngAbsPath(absPath.replace('\\', '/'), relPath, finalFrameInfo)
             if(pngAbsPath.notExists()) {
-                doConvertDdsToPng(absPath, pngAbsPath, frameInfo)
+                doConvertDdsToPng(absPath, pngAbsPath, finalFrameInfo)
             }
             return pngAbsPath.absolutePathString()
         } catch(e: Exception) {
-            logger.warn("Convert dds image to png image failed. (dds absolute path: $absPath, dds relative path: $relPath, frame info: $frameInfo)", e)
+            logger.warn("Convert dds image to png image failed. (dds absolute path: $absPath, dds relative path: $relPath, frame info: $finalFrameInfo)", e)
             return null
         }
     }
@@ -43,7 +46,7 @@ object ParadoxDdsResolver {
     
     private fun getCacheKey(absPath: String, frameInfo: FrameInfo?): String {
         if(frameInfo != null) {
-            return "$absPath@${frameInfo.frame}"
+            return "$absPath@${frameInfo.frame}_${frameInfo.frames}"
         } else {
             return absPath
         }
@@ -57,22 +60,22 @@ object ParadoxDdsResolver {
     
     private fun doGetRelatedPngPath(absPath: String, relPath: String?, frameInfo: FrameInfo?): Path {
         if(relPath != null) {
-            //路径：~/.pls/images/${relPathWithoutExtension}@${frame}@${uuid}.png
+            //路径：~/.pls/images/${relPathWithoutExtension}@${frame}_${frames}@${uuid}.png
             //UUID：基于游戏或模组目录的绝对路径
             val relPathWithoutExtension = relPath.substringBeforeLast('.')
             val uuid = absPath.removeSuffix(relPath).trim('/').toUUID().toString()
-            val frameText = if(frameInfo != null) "@${frameInfo.frame}" else ""
+            val frameText = if(frameInfo != null) "@${frameInfo.frame}_${frameInfo.frames}" else ""
             val finalPath = "${relPathWithoutExtension}${frameText}@${uuid}.png"
             return PlsConstants.Paths.imagesDirectoryPath.resolve(finalPath)
         } else {
-            //路径：~/.pls/images/_external/{fileNameWithoutExtension}@${frame}@${uuid}.png
+            //路径：~/.pls/images/_external/{fileNameWithoutExtension}@${frame}_${frames}@${uuid}.png
             //UUID：基于DDS文件所在目录
             val index = absPath.lastIndexOf('/')
             val parent = if(index == -1) "" else absPath.substring(0, index)
             val fileName = if(index == -1) absPath else absPath.substring(index + 1)
             val fileNameWithoutExtension = fileName.substringBeforeLast('.')
             val uuid = if(parent.isEmpty()) "" else parent.toUUID().toString()
-            val frameText = if(frameInfo != null) "@${frameInfo.frame}" else ""
+            val frameText = if(frameInfo != null) "@${frameInfo.frame}_${frameInfo.frames}" else ""
             val finalPath = "_external/${fileNameWithoutExtension}${frameText}@${uuid}.png"
             return PlsConstants.Paths.imagesDirectoryPath.resolve(finalPath)
         }
@@ -94,15 +97,19 @@ object ParadoxDdsResolver {
      * @param frameInfo 帧数信息，用于切分图片。
      */
     fun invalidateUrl(absPath: String, frameInfo: FrameInfo? = null) {
-        val cacheKey = getCacheKey(absPath.replace('\\', '/'), frameInfo)
+        val finalFrameInfo = frameInfo?.normalize()
+        val cacheKey = getCacheKey(absPath.replace('\\', '/'), finalFrameInfo)
         ddsCache.invalidate(cacheKey)
         externalDdsCache.invalidate(cacheKey)
     }
     
+    private val clearUnknownPng = AtomicBoolean(true) 
+    
     fun getUnknownPngUrl(): String {
-        if(PlsConstants.Paths.unknownPngPath.notExists()) {
+        //如果首次获取或者图片路径不存在，则将jar包中的unknown.png复制到~/.pls/images中
+        if(clearUnknownPng.getAndSet(false) || PlsConstants.Paths.unknownPngPath.notExists()) {
             PlsConstants.Paths.unknownPngClasspathUrl.openStream().use { inputStream ->
-                Files.copy(inputStream, PlsConstants.Paths.unknownPngPath) //将jar包中的unknown.png复制到~/.pls/images中
+                Files.copy(inputStream, PlsConstants.Paths.unknownPngPath, StandardCopyOption.REPLACE_EXISTING)
             }
         }
         return PlsConstants.Paths.unknownPngPath.toString()
