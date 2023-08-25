@@ -22,7 +22,6 @@ interface ParadoxElementPath : Iterable<Info> {
     val rawSubPaths: List<String>
     val subPaths: List<Info>
     val length: Int
-    val isParameterized: Boolean
     
     fun isEmpty(): Boolean = length == 0
     
@@ -111,7 +110,6 @@ class ParadoxElementPathImplA(
     override val rawSubPaths: List<String> = doGetRawSubPaths()
     override val subPaths: List<Info> = rawSubPaths.map { Info.resolve(it) }
     override val length: Int = subPaths.size
-    override val isParameterized: Boolean = length != 0 && subPaths.any { it.subPath.isParameterized() }
     
     override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
     override fun hashCode() = path.hashCode()
@@ -151,7 +149,6 @@ class ParadoxElementPathImplB(
     override val path: String = doGetPath()
     override val subPaths: List<Info> = rawSubPaths.map { Info.resolve(it) }
     override val length: Int = subPaths.size
-    override val isParameterized: Boolean = length != 0 && subPaths.any { it.subPath.isParameterized() }
     
     override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
     override fun hashCode() = path.hashCode()
@@ -176,7 +173,6 @@ object EmptyParadoxElementPath : ParadoxElementPath {
     override val rawSubPaths: List<String> = emptyList()
     override val subPaths: List<Info> = emptyList()
     override val length: Int = 0
-    override val isParameterized: Boolean = false
     
     override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
     override fun hashCode() = path.hashCode()
