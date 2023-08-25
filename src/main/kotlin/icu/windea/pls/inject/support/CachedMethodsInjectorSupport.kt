@@ -46,7 +46,7 @@ class CachedMethodsInjectorSupport : CodeInjectorSupport {
                 val emptyObjectField = CtField.make("private static final Object __EMPTY_OBJECT__ = new Object();", targetClass)
                 targetClass.addField(emptyObjectField)
             }
-            val field = CtField.make("public volatile Object ${fieldName} = __EMPTY_OBJECT__;", targetClass)
+            val field = CtField.make("private volatile Object ${fieldName} = __EMPTY_OBJECT__;", targetClass)
             targetClass.addField(field)
             val code1 = "{ if(${fieldName} != __EMPTY_OBJECT__) { return (${returnTypeName}) ${fieldName}; } }"
             method.insertBefore(code1)
@@ -69,7 +69,7 @@ class CachedMethodsInjectorSupport : CodeInjectorSupport {
                 return
             }
         }
-        val s = finalMethodNames.joinToString("\n") { methodName -> "__${methodName}__ = null;" }
+        val s = finalMethodNames.joinToString("\n") { methodName -> "__${methodName}__ = __EMPTY_OBJECT__;" }
         val code = "{\n$s\n}"
         cleanupMethod.insertBefore(code)
     }
