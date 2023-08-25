@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.cwt.config
 
 import com.intellij.psi.*
+import com.intellij.util.containers.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
@@ -22,10 +23,10 @@ class CwtAliasConfig(
     val supportedScopes get() = config.supportedScopes
     val outputScope get() = config.pushScope
     
-    //private val inlinedConfigCache by lazy { ContainerUtil.createConcurrentSoftKeySoftValueMap<CwtPropertyConfig, CwtPropertyConfig>() }
+    private val inlinedConfigCache by lazy { ContainerUtil.createConcurrentSoftKeySoftValueMap<CwtPropertyConfig, CwtPropertyConfig>() }
     
     fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
-        return doInline(config)
+        return inlinedConfigCache.computeIfAbsent(config) { doInline(config) }
     }
     
     private fun doInline(config: CwtPropertyConfig): CwtPropertyConfig {
