@@ -220,6 +220,8 @@ inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: KeyAware, prope
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getUserData(this)
 @Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T = thisRef.getUserData(this)!!
+@Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T?) = thisRef.putUserData(this, value)
 
 @Suppress("NOTHING_TO_INLINE")

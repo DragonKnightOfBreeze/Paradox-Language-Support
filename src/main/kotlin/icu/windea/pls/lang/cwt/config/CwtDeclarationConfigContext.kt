@@ -2,8 +2,10 @@ package icu.windea.pls.lang.cwt.config
 
 import com.google.common.cache.*
 import com.intellij.openapi.application.*
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
@@ -24,11 +26,6 @@ class CwtDeclarationConfigContext(
     
     val injectors = CwtDeclarationConfigInjector.EP_NAME.extensionList.filter { it.supports(this) }
     
-    companion object {
-        //use soft values to optimize memory
-        private val configCache: Cache<String, CwtPropertyConfig> = CacheBuilder.newBuilder().softValues().buildCache()
-    }
-    
     /**
      * 得到根据子类型列表进行合并后的配置。
      */
@@ -36,8 +33,10 @@ class CwtDeclarationConfigContext(
         //处理定义的值不为代码块的情况
         if(!declarationConfig.propertyConfig.isBlock) return declarationConfig.propertyConfig
         
+        val project = declarationConfig.info.configGroup.project
+        val cache = project.declarationConfigCache
         val cacheKey = ooGetCacheKey(declarationConfig)
-        return configCache.getOrPut(cacheKey) {
+        return cache.getOrPut(cacheKey) {
             runReadAction {
                 val config = doGetConfig(declarationConfig)
                 CwtDeclarationConfigInjector.handleDeclarationMergedConfig(config, this, injectors)
@@ -79,6 +78,10 @@ class CwtDeclarationConfigContext(
         //declarationConfig.propertyConfig.parent should be null here
     }
 }
+
+//use soft values to optimize memory
+private val PlsKeys.declarationConfigCache by createKey<Cache<String, CwtPropertyConfig>>("cwt.declarationConfig.cache") { CacheBuilder.newBuilder().softValues().buildCache() }
+private val Project.declarationConfigCache by PlsKeys.declarationConfigCache
 
 val CwtMemberConfig.Keys.declarationConfigCacheKey by createKey<String>("cwt.declarationConfig.cacheKey")
 var CwtMemberConfig<*>.declarationConfigCacheKey by CwtMemberConfig.Keys.declarationConfigCacheKey

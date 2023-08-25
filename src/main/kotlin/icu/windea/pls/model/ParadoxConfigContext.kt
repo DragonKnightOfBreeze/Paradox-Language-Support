@@ -1,6 +1,7 @@
 package icu.windea.pls.model
 
 import com.google.common.cache.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -30,16 +31,13 @@ class ParadoxConfigContext(
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup
 ) : UserDataHolderBase() {
-    companion object {
-        //use soft values to optimize memory
-        private val configsCache: Cache<String, List<CwtMemberConfig<*>>> = CacheBuilder.newBuilder().softValues().buildCache()
-    }
-    
     fun getConfigs(matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
+        val project = configGroup.project
+        val cache = project.configsCache
         val cachedKey = doGetCachedKey(matchOptions) ?: return emptyList()
-        val cached = configsCache.getOrPut(cachedKey) { doGetConfigs(matchOptions) }
+        val cached = cache.getOrPut(cachedKey) { doGetConfigs(matchOptions) }
         //some configs cannot be cached (e.g. from overridden configs)
-        if(PlsContext.overrideConfigStatus.get() == true) configsCache.invalidate(cachedKey)
+        if(PlsContext.overrideConfigStatus.get() == true) cache.invalidate(cachedKey)
         PlsContext.overrideConfigStatus.remove()
         return cached
     }
@@ -63,6 +61,10 @@ class ParadoxConfigContext(
     
     object Keys: KeyAware
 }
+
+//use soft values to optimize memory
+private val PlsKeys.configsCache by createKey<Cache<String, List<CwtMemberConfig<*>>>>("paradox.configContext.configs") { CacheBuilder.newBuilder().softValues().buildCache() }
+private val Project.configsCache by PlsKeys.configsCache
 
 val ParadoxConfigContext.Keys.definitionInfo by createKey<ParadoxDefinitionInfo>("paradox.configContext.definitionInfo")
 val ParadoxConfigContext.Keys.elementPathFromRoot by createKey<ParadoxElementPath>("paradox.configContext.elementPathFromRoot")
