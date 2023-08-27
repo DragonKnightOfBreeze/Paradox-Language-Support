@@ -12,8 +12,8 @@ object ParadoxConfigGenerator {
         if(config.configs.isNullOrEmpty()) return config.configs
         return config.configs?.mapFast { c1 ->
             when(c1) {
-                is CwtPropertyConfig -> c1.copyDelegated(deepCopyConfigs(c1), c1.parentConfig)
-                is CwtValueConfig -> c1.copyDelegated(deepCopyConfigs(c1), c1.parentConfig)
+                is CwtPropertyConfig -> c1.delegated(deepCopyConfigs(c1), c1.parentConfig)
+                is CwtValueConfig -> c1.delegated(deepCopyConfigs(c1), c1.parentConfig)
             }
         }
     }
@@ -32,14 +32,14 @@ object ParadoxConfigGenerator {
         }
         when(config) {
             is CwtValueConfig -> {
-                val mergedConfig = config.copyDelegated(mergedConfigs, config.parentConfig)
+                val mergedConfig = config.delegated(mergedConfigs, config.parentConfig)
                 if(configContext.injectors.isNotEmpty()) return mutableListOf(mergedConfig)
                 return mergedConfig.toSingletonList()
             }
             is CwtPropertyConfig -> {
                 val subtypeExpression = config.key.removeSurroundingOrNull("subtype[", "]")
                 if(subtypeExpression == null) {
-                    val mergedConfig = config.copyDelegated(mergedConfigs, config.parentConfig)
+                    val mergedConfig = config.delegated(mergedConfigs, config.parentConfig)
                     if(configContext.injectors.isNotEmpty()) return mutableListOf(mergedConfig)
                     return mergedConfig.toSingletonList()
                 } else {
