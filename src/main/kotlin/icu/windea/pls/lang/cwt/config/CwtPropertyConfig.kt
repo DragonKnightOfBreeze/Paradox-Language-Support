@@ -30,13 +30,13 @@ fun CwtPropertyConfig.Companion.resolve(
     documentation: String? = null
 ): CwtPropertyConfig {
     return if(configs.isNotNullOrEmpty()) {
-        if(options != null && documentation != null) {
+        if(options != null || documentation != null) {
             CwtPropertyConfigImpls.Impl1(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
         } else {
             CwtPropertyConfigImpls.Impl2(pointer, info, key, value, valueTypeId, separatorTypeId, configs)
         }
     } else {
-        if(options != null && documentation != null) {
+        if(options != null || documentation != null) {
             CwtPropertyConfigImpls.Impl3(pointer, info, key, value, valueTypeId, separatorTypeId, options, documentation)
         } else {
             CwtPropertyConfigImpls.Impl4(pointer, info, key, value, valueTypeId, separatorTypeId)
@@ -170,7 +170,7 @@ private object CwtPropertyConfigImpls {
         override fun resolved(): CwtPropertyConfig = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>() ?: this
         override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>()
         
-        override fun <T : Any?> getUserData(key: Key<T>) = super.getUserData(key) ?: delegate.getUserData(key)
+        override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
         override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
         
         override fun toString(): String = "$key ${separatorType.text} $value"

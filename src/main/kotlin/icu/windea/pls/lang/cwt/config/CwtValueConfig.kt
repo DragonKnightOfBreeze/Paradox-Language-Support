@@ -27,13 +27,13 @@ fun CwtValueConfig.Companion.resolve(
     propertyConfig: CwtPropertyConfig? = null
 ): CwtValueConfig {
     return if(configs.isNotNullOrEmpty()) {
-        if(options != null && documentation != null) {
+        if(options != null || documentation != null) {
             CwtValueConfigImpls.Impl1(pointer, info, value, valueTypeId, configs, options, documentation, propertyConfig)
         } else {
             CwtValueConfigImpls.Impl2(pointer, info, value, valueTypeId, configs, propertyConfig)
         }
     } else {
-        if(options != null && documentation != null) {
+        if(options != null || documentation != null) {
             CwtValueConfigImpls.Impl3(pointer, info, value, valueTypeId, options, documentation, propertyConfig)
         } else {
             CwtValueConfigImpls.Impl4(pointer, info, value, valueTypeId, propertyConfig)
@@ -171,7 +171,7 @@ private object CwtValueConfigImpls {
         override fun resolved(): CwtValueConfig = inlineableConfig?.config?.castOrNull<CwtValueConfig>() ?: this
         override fun resolvedOrNull(): CwtValueConfig? = inlineableConfig?.config?.castOrNull<CwtValueConfig>()
         
-        override fun <T : Any?> getUserData(key: Key<T>) = super.getUserData(key) ?: delegate.getUserData(key)
+        override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
         override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
         
         override fun toString(): String = value
