@@ -1,6 +1,5 @@
 package icu.windea.pls.core
 
-import com.google.common.cache.CacheBuilder
 import com.intellij.codeInsight.documentation.*
 import com.intellij.extapi.psi.*
 import com.intellij.injected.editor.*
@@ -27,7 +26,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.lang.Integer.*
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.*
 
 //region Stdlib Extensions
 inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {
@@ -51,11 +50,11 @@ fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
 fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
 
-private val _settings by lazy { service<ParadoxSettings>().state }
-fun getSettings() = _settings
+//from official documentation: Never acquire service instances prematurely or store them in fields for later use.
 
-private val _profilesSettings by lazy { service<ParadoxProfilesSettings>().state }
-fun getProfilesSettings() = _profilesSettings
+fun getSettings() = service<ParadoxSettings>().state
+
+fun getProfilesSettings() = service<ParadoxProfilesSettings>().state
 
 private val _configGroups by lazy { getDefaultProject().service<CwtConfigProvider>().configGroups }
 fun getConfigGroups() = _configGroups
