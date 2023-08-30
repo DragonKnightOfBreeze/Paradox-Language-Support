@@ -61,13 +61,13 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
     
     private fun getValueSetValueInfo(element: ParadoxValueSetValueElement, originalElement: PsiElement?): String {
         return buildString {
-            buildValueSetValueDefinition(element)
+            buildValueSetValueDefinition(element, null)
         }
     }
     
     private fun getComplexEnumValueInfo(element: ParadoxComplexEnumValueElement, originalElement: PsiElement?): String {
         return buildString {
-            buildComplexEnumValueDefinition(element)
+            buildComplexEnumValueDefinition(element, null)
         }
     }
     
@@ -100,20 +100,19 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun getValueSetValueDoc(element: PsiElement, originalElement: PsiElement?): String? {
-        val resolved = element.references.firstOrNull()?.resolve() as? ParadoxValueSetValueElement ?: return null
-        return getValueSetValueInfo(resolved, originalElement)
-    }
-    
     private fun getValueSetValueDoc(element: ParadoxValueSetValueElement, originalElement: PsiElement?): String {
         return buildString {
-            buildValueSetValueDefinition(element)
+            val sectionsList = List(1) { mutableMapOf<String, String>() }
+            buildValueSetValueDefinition(element, sectionsList)
+            buildSections(sectionsList)
         }
     }
     
     private fun getComplexEnumValueDoc(element: ParadoxComplexEnumValueElement, originalElement: PsiElement?): String {
         return buildString {
-            buildComplexEnumValueDefinition(element)
+            val sectionsList = List(1) { mutableMapOf<String, String>() }
+            buildComplexEnumValueDefinition(element, sectionsList)
+            buildSections(sectionsList)
         }
     }
     
@@ -147,7 +146,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun StringBuilder.buildValueSetValueDefinition(element: ParadoxValueSetValueElement) {
+    private fun StringBuilder.buildValueSetValueDefinition(element: ParadoxValueSetValueElement, sectionsList: List<MutableMap<String, String>>?) {
         val name = element.name
         val valueSetNames = element.valueSetNames
         val gameType = element.gameType
@@ -166,10 +165,12 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
                     append(valueSetName)
                 }
             }
+            
+            addScopeContext(element, name, configGroup, sectionsList?.get(0))
         }
     }
     
-    private fun StringBuilder.buildComplexEnumValueDefinition(element: ParadoxComplexEnumValueElement) {
+    private fun StringBuilder.buildComplexEnumValueDefinition(element: ParadoxComplexEnumValueElement, sectionsList: List<MutableMap<String, String>>?) {
         definition {
             val name = element.name
             val enumName = element.enumName
@@ -183,6 +184,8 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             } else {
                 append(": ").append(enumName)
             }
+            
+            addScopeContext(element, name, configGroup, sectionsList?.get(0))
         }
     }
     
@@ -301,7 +304,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
     }
     
     private fun StringBuilder.addScopeContext(
-        element: ParadoxModifierElement,
+        element: PsiElement,
         name: String,
         configGroup: CwtConfigGroup,
         sections: MutableMap<String, String>?

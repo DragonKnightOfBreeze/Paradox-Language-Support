@@ -12,7 +12,7 @@ import icu.windea.pls.lang.cwt.expression.*
  * @property prefix prefix: string
  * @property forDefinitionType for_definition_type: string
  * @property inputScopes input_scopes | input_scopes: string[]
- * @property outputScope output_scope: string? - 为null时表示会传递scope
+ * @property outputScope output_scope: string?
  */
 class CwtLinkConfig(
 	override val pointer: SmartPsiElementPointer<out CwtProperty>,

@@ -6,7 +6,7 @@ import icu.windea.pls.cwt.psi.*
 /**
  * @property desc desc: string
  * @property inputScopes input_scopes | input_scopes: string[]
- * @property outputScope output_scope: string? - 为null时表示会传递scope
+ * @property outputScope output_scope: string?
  */
 class CwtLocalisationLinkConfig(
 	override val pointer: SmartPsiElementPointer<out CwtProperty>,

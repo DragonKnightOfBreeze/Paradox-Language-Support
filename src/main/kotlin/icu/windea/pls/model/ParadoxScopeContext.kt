@@ -75,7 +75,7 @@ class ParadoxScopeContext private constructor(
     }
     
     fun resolve(pushScope: String?): ParadoxScopeContext {
-        //push_scope = null > transfer scope
+        //push_scope = null -> transfer scope
         if(pushScope == null) return this
         val result = ParadoxScopeContext(ParadoxScope.of(pushScope))
         result.root = this.root

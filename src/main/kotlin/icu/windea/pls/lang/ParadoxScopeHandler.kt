@@ -339,15 +339,20 @@ object ParadoxScopeHandler {
     private fun doGetScopeByScopeLinkFromDataNode(node: ParadoxScopeLinkFromDataExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext {
         val linkConfig = node.linkConfigs.firstOrNull() // first is ok
         if(linkConfig == null) return inputScopeContext //unexpected
-        if(linkConfig.outputScope == null && linkConfig.expression?.type?.isScopeFieldType() == true) {
-            //hidden:owner = {...}
-            //hidden:event_target:xxx = {...}
-            val nestedNode = node.dataSourceNode.nodes.findIsInstance<ParadoxScopeFieldExpressionNode>()
-            if(nestedNode != null) {
-                return getScopeContext(nestedNode, inputScopeContext, inExpression)
+        if(linkConfig.outputScope == null) {
+            if(linkConfig.expression?.type?.isScopeFieldType() == true) {
+                val nestedNode = node.dataSourceNode.nodes.findIsInstance<ParadoxScopeFieldExpressionNode>()
+                if(nestedNode != null) {
+                    //hidden:event_target:xxx = {...}
+                    return getScopeContext(nestedNode, inputScopeContext, inExpression)
+                }
             }
+            //event_target:xxx = {...}
+            val outputScope = anyScopeId //TODO 1.1.8+
+            return inputScopeContext.resolve(outputScope)
+        } else {
+            return inputScopeContext.resolve(linkConfig.outputScope)
         }
-        return inputScopeContext.resolve(linkConfig.outputScope)
     }
     
     private fun doGetScopeContextBySystemLinkNode(node: ParadoxSystemLinkExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext? {
@@ -462,12 +467,12 @@ object ParadoxScopeHandler {
     
     private fun optimizeScopeMap(scopeMap: MutableMap<String, String?>) {
         val thisScope = scopeMap["this"]
-        if(thisScope == null || thisScope == ParadoxScopeHandler.unknownScopeId) {
-            scopeMap["this"] = ParadoxScopeHandler.anyScopeId
+        if(thisScope == null || thisScope == unknownScopeId) {
+            scopeMap["this"] = anyScopeId
         }
         val rootScope = scopeMap["root"]
-        if(rootScope == null || rootScope == ParadoxScopeHandler.unknownScopeId) {
-            scopeMap["root"] = ParadoxScopeHandler.anyScopeId
+        if(rootScope == null || rootScope == unknownScopeId) {
+            scopeMap["root"] = anyScopeId
         }
     }
     
