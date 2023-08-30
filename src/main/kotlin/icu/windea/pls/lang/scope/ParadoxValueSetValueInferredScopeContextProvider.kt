@@ -22,7 +22,7 @@ interface ParadoxValueSetValueInferredScopeContextProvider{
     //因此插件目前不提供相关的代码检查
     
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxValueSetValueInferredScopeContextProvider>("icu.windea.pls.definitionInferredScopeContextProvider")
+        val EP_NAME = ExtensionPointName.create<ParadoxValueSetValueInferredScopeContextProvider>("icu.windea.pls.valueSetValueInferredScopeContextProvider")
         
         fun getScopeContext(valueSetValue: ParadoxValueSetValueElement): ParadoxScopeContext? {
             val gameType = valueSetValue.gameType
