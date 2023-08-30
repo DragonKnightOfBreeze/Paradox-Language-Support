@@ -8,9 +8,10 @@ import icu.windea.pls.script.psi.*
 
 @WithGameTypeEP
 interface ParadoxDefinitionScopeContextProvider {
+    fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
+    
     /**
-     * 得到作用域。
-     * @return 得到的作用域上下文信息。
+     * 得到作用域上下文。
      */
     fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext?
     
@@ -21,6 +22,7 @@ interface ParadoxDefinitionScopeContextProvider {
             val gameType = definitionInfo.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
+                if(!ep.supports(definition, definitionInfo)) return@f null
                 ep.getScopeContext(definition, definitionInfo)
             }
         }

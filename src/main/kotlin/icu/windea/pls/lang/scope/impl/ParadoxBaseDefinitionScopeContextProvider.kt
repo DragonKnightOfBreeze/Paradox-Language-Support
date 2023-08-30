@@ -6,6 +6,10 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxBaseDefinitionScopeContextProvider: ParadoxDefinitionScopeContextProvider {
+    override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
+        return true
+    }
+    
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val declarationConfig = definitionInfo.declarationConfig?.propertyConfig ?: return null
         val subtypeConfigs = definitionInfo.subtypeConfigs

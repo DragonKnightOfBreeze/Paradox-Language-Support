@@ -26,9 +26,12 @@ private  val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<Paradox
  * 则将此on_action的from, fromfrom...作用域推断为此event的from, fromfrom...作用域。
  */
 class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
+    override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
+        return definitionInfo.type == "event"
+    }
+    
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if(!getSettings().inference.eventScopeContext) return null
-        if(definitionInfo.type != "event") return null
         return doGetScopeContextFromCache(definition)
     }
     

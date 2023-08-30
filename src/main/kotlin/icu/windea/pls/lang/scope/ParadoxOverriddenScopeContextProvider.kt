@@ -8,13 +8,14 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.*
 
 /**
- * 用于在某些极个别情况下基于另外的逻辑获取脚本表达式对应的作用域上下文。
+ * 用于为某些特定的脚本表达式提供重载后的作用域上下文。
+ *
  * 这里获取的作用域上下文会覆盖原始的作用域上下文。
  */
 @WithGameTypeEP
 interface ParadoxOverriddenScopeContextProvider {
     /**
-     * 从指定的上下文元素[contextElement]和对应的CWT规则[config]获取重载后的CWT规则。
+     * 从指定的上下文元素[contextElement]和对应的CWT规则[config]获取重载后的作用域上下文。
      */
     fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>,parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext?
     

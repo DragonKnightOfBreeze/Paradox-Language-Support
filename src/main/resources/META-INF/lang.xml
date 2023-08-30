@@ -22,6 +22,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.definitionSupportedScopesProvider" interface="icu.windea.pls.lang.scope.ParadoxDefinitionSupportedScopesProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionPresentationProvider" interface="icu.windea.pls.lang.presentation.ParadoxDefinitionPresentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionDataProvider" interface="icu.windea.pls.lang.data.ParadoxDefinitionDataProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.valueSetValueInferredScopeContextProvider" interface="icu.windea.pls.lang.scope.ParadoxValueSetValueInferredScopeContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.priorityProvider" interface="icu.windea.pls.lang.priority.ParadoxPriorityProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modImporter" interface="icu.windea.pls.core.tool.importer.ParadoxModImporter" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.core.tool.exporter.ParadoxModExporter" dynamic="true"/>

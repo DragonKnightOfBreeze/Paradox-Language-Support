@@ -9,8 +9,11 @@ import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisScriptedModifierSupportedScopesProvider : ParadoxDefinitionSupportedScopesProvider {
+    override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
+        return definitionInfo.type == "scripted_modifier"
+    }
+    
     override fun getSupportedScopes(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String>? {
-        if(definitionInfo.type != "scripted_modifier") return null
         val modifierCategory = ParadoxScriptedModifierHandler.Stellaris.resolveModifierCategory(definition, definitionInfo) ?: return null
         return modifierCategory.getSupportedScopes()
     }

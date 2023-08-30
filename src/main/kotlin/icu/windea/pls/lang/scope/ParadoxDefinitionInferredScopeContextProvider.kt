@@ -14,9 +14,10 @@ import icu.windea.pls.script.psi.*
  */
 @WithGameTypeEP
 interface ParadoxDefinitionInferredScopeContextProvider {
+    fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
+    
     /**
-     * 得到推断的作用域。
-     * @return 推断得到的作用域上下文信息。
+     * 得到推断的作用域上下文。
      */
     fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo?
     
@@ -38,6 +39,7 @@ interface ParadoxDefinitionInferredScopeContextProvider {
             var map: Map<String, String?>? = null
             EP_NAME.extensionList.forEachFast f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
+                if(!ep.supports(definition, definitionInfo)) return@f
                 val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
                 if(info.hasConflict) return null //只要任何推断方式的推断结果存在冲突，就不要继续推断scopeContext
                 if(map == null) {
@@ -58,6 +60,7 @@ interface ParadoxDefinitionInferredScopeContextProvider {
             var errorMessage: String? = null
             EP_NAME.extensionList.forEachFast f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
+                if(!ep.supports(definition, definitionInfo)) return@f
                 val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
                 if(!info.hasConflict) return@f
                 if(errorMessage == null) {
@@ -74,6 +77,7 @@ interface ParadoxDefinitionInferredScopeContextProvider {
             var message: String? = null
             EP_NAME.extensionList.forEachFast f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
+                if(!ep.supports(definition, definitionInfo)) return@f
                 val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
                 if(info.hasConflict) return@f
                 if(message == null) {

@@ -10,11 +10,9 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 
 /**
- * 用于在某些极个别情况下基于另外的逻辑获取脚本表达式对应的CWT规则。
+ * 用于为某些特定的脚本表达式提供重载后的CWT规则。
  * 
  * 这里获取的CWT规则会覆盖原始的CWT规则。
- *
- * 这里的处理逻辑不是向下或者向上内联脚本成员元素，获取的相关元素路径、定义信息等是不会发生变化的。
  */
 @WithGameTypeEP
 interface ParadoxOverriddenConfigProvider {

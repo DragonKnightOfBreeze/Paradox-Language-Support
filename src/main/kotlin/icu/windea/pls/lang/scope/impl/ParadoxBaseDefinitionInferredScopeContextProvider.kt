@@ -26,9 +26,12 @@ private val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect")
  * 推断scripted_trigger、scripted_effect等的作用域上下文（仅限this和root）。
  */
 class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
+    override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
+        return definitionInfo.type in DEFINITION_TYPES
+    }
+    
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if(!getSettings().inference.scopeContext) return null
-        if(definitionInfo.type !in DEFINITION_TYPES) return null
         return doGetScopeContextFromCache(definition)
     }
     

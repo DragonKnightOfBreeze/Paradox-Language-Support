@@ -30,10 +30,12 @@ private val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxS
  * 依此类推直到fromfromfromfrom作用域。
  */
 class ParadoxOnActionInEffectInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
+    override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
+        return definitionInfo.type == "on_action"
+    }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if(!getSettings().inference.onActionScopeContext) return null
-        if(definitionInfo.type != "on_action") return null
         return doGetScopeContextFromCache(definition)
     }
     

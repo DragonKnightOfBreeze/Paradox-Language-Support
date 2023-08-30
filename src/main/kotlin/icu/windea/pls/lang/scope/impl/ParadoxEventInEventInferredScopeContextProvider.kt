@@ -30,9 +30,12 @@ private val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxS
  * 依此类推直到fromfromfromfrom作用域。
  */
 class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
+    override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
+        return definitionInfo.type == "event"
+    }
+    
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if(!getSettings().inference.eventScopeContext) return null
-        if(definitionInfo.type != "event") return null
         return doGetScopeContextFromCache(definition)
     }
     
@@ -75,11 +78,11 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
         return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxEventInEventInferredScopeContextProvider.doProcessQuery") {
-            if(depth == 1) stackTrace.addLast(thisEventName) 
+            if(depth == 1) stackTrace.addLast(thisEventName)
             
             val toRef = "from".repeat(depth)
             val index = findIndex<ParadoxEventInEventDefinitionHierarchyIndex>()
-            ParadoxDefinitionHierarchyHandler.processQuery(index , project, gameType, searchScope) p@{ file, fileData ->
+            ParadoxDefinitionHierarchyHandler.processQuery(index, project, gameType, searchScope) p@{ file, fileData ->
                 val infos = fileData.values.firstOrNull() ?: return@p true
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEachFast f@{ info ->
