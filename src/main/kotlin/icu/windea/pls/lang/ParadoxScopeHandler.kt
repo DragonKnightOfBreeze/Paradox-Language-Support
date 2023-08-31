@@ -26,7 +26,6 @@ import kotlin.collections.set
 /**
  * 用于处理作用域。
  */
-@Suppress("UNUSED_PARAMETER")
 object ParadoxScopeHandler {
     const val maxScopeLinkSize = 5
     
@@ -310,10 +309,10 @@ object ParadoxScopeHandler {
     fun getScopeContext(scopeNode: ParadoxScopeFieldExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext {
         return when(scopeNode) {
             is ParadoxScopeLinkExpressionNode -> {
-                doGetScopeByScopeLinkNode(scopeNode, inputScopeContext, inExpression)
+                doGetScopeContextByScopeLinkNode(scopeNode, inputScopeContext, inExpression)
             }
             is ParadoxScopeLinkFromDataExpressionNode -> {
-                doGetScopeByScopeLinkFromDataNode(scopeNode, inputScopeContext, inExpression)
+                doGetScopeContextByScopeLinkFromDataNode(scopeNode, inputScopeContext, inExpression)
             }
             is ParadoxSystemLinkExpressionNode -> {
                 doGetScopeContextBySystemLinkNode(scopeNode, inputScopeContext, inExpression)
@@ -331,12 +330,12 @@ object ParadoxScopeHandler {
         return inputScopeContext.resolve(linkConfig.outputScope)
     }
     
-    private fun doGetScopeByScopeLinkNode(node: ParadoxScopeLinkExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext {
+    private fun doGetScopeContextByScopeLinkNode(node: ParadoxScopeLinkExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext {
         val outputScope = node.config.outputScope
         return inputScopeContext.resolve(outputScope)
     }
     
-    private fun doGetScopeByScopeLinkFromDataNode(node: ParadoxScopeLinkFromDataExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext {
+    private fun doGetScopeContextByScopeLinkFromDataNode(node: ParadoxScopeLinkFromDataExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext {
         val linkConfig = node.linkConfigs.firstOrNull() // first is ok
         if(linkConfig == null) return inputScopeContext //unexpected
         if(linkConfig.outputScope == null) {
@@ -454,7 +453,7 @@ object ParadoxScopeHandler {
         doMergeScopeContextMap(result, map, otherMap, "fromfrom", false)
         doMergeScopeContextMap(result, map, otherMap, "fromfromfrom", false)
         doMergeScopeContextMap(result, map, otherMap, "fromfromfromfrom", false)
-        if(optimized) optimizeScopeMap(result)
+        if(optimized) doOptimizeScopeMap(result)
         return result.takeIfNotEmpty()
     }
     
@@ -465,7 +464,7 @@ object ParadoxScopeHandler {
         return r != null
     }
     
-    private fun optimizeScopeMap(scopeMap: MutableMap<String, String?>) {
+    private fun doOptimizeScopeMap(scopeMap: MutableMap<String, String?>) {
         val thisScope = scopeMap["this"]
         if(thisScope == null || thisScope == unknownScopeId) {
             scopeMap["this"] = anyScopeId

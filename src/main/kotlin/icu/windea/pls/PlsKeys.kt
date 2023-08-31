@@ -42,6 +42,8 @@ val PlsKeys.cachedConfigContext by createKey<CachedValue<ParadoxConfigContext>>(
 val PlsKeys.cachedConfigsCache by createKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>("paradox.cached.configs.cache")
 val PlsKeys.cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>("paradox.cached.childOccurrenceMap.cache")
 val PlsKeys.cachedScopeContext by createKey<CachedValue<ParadoxScopeContext>>("paradox.cached.scopeContext")
+val PlsKeys.cachedScopeContextInferenceInfoOfDefinition = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.of.definition")
+val PlsKeys.cachedScopeContextInferenceInfoOfValueSetValue = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.of.valueSetValue")
 val PlsKeys.cachedTextColorInfo by createKey<CachedValue<ParadoxTextColorInfo>>("paradox.cached.textColorInfo")
 val PlsKeys.cachedDefineValues by createKey<CachedValue<MutableMap<String, Any?>>>("paradox.cached.defineValues")
 val PlsKeys.cachedColor by createKey<CachedValue<Color>>("paradox.cached.color")

@@ -40,9 +40,18 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
             val tracker0 = ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker
-            val tracker = ParadoxPsiModificationTracker.getInstance(definition.project).ScriptFileTracker
+            val tracker = getTracker(definition)
             CachedValueProvider.Result.create(value, tracker0, tracker)
         }
+    }
+    
+    private fun getTracker(definition: ParadoxScriptDefinitionElement): ModificationTracker {
+        val configGroup = definition.definitionInfo?.configGroup
+            ?: return ParadoxPsiModificationTracker.getInstance(definition.project).ScriptFileTracker
+        val keyString = DEFINITION_TYPES
+            .mapNotNull { configGroup.types[it] }
+            .joinToString("|") { it.path.orEmpty() + it.pathExtension?.let { e -> ":$e" }.orEmpty() }
+        return ParadoxPsiModificationTracker.getInstance(definition.project).ScriptFileTracker(keyString)
     }
     
     private fun doGetScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {

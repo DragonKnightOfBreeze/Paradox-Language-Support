@@ -53,8 +53,6 @@ interface ParadoxDefinitionInferredScopeContextProvider {
             return result
         }
         
-   
-        
         fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
             val gameType = definitionInfo.gameType
             var errorMessage: String? = null

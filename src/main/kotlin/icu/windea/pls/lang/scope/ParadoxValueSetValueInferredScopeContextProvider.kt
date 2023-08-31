@@ -7,7 +7,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 用于为特定类型的valueSetValue提供推断的作用域上下文。
@@ -18,7 +17,7 @@ interface ParadoxValueSetValueInferredScopeContextProvider{
     
     fun getScopeContext(valueSetValue: ParadoxValueSetValueElement): ParadoxScopeContextInferenceInfo?
     
-    //特定类型的valueSetValue，例如event_target、variable，即使同名，也完全有可能拥有不同的作用域上下文
+    //特定类型的valueSetValue，例如event_target、variable，即使同名，也完全可能拥有不同的作用域上下文
     //因此插件目前不提供相关的代码检查
     
     companion object INSTANCE {

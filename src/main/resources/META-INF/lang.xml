@@ -109,7 +109,7 @@
     <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxBaseDefinitionInferredScopeContextProvider"/>
     <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxEventInOnActionInferredScopeContextProvider"/>
     <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxEventInEventInferredScopeContextProvider"/>
-    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxOnActionInEffectInferredScopeContextProvider"/>
+    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxOnActionInEventInferredScopeContextProvider"/>
     
     <definitionPresentationProvider implementation="icu.windea.pls.lang.presentation.impl.StellarisTechnologyPresentationProvider"/>
 

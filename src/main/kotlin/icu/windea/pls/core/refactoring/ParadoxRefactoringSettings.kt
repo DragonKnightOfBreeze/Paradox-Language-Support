@@ -3,7 +3,7 @@ package icu.windea.pls.core.refactoring
 import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.*
 
-@State(name = "RefactoringSettings", storages = [Storage("baseRefactoring.xml")], category = SettingsCategory.CODE)
+@State(name = "ParadoxRefactoringSettings", storages = [Storage("baseRefactoring.xml")], category = SettingsCategory.CODE)
 class ParadoxRefactoringSettings : PersistentStateComponent<ParadoxRefactoringSettings> {
     @JvmField var renameRelatedLocalisations = true
     @JvmField var renameRelatedImages = true

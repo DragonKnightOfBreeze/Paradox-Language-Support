@@ -19,17 +19,17 @@ import icu.windea.pls.lang.scope.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-private val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.from.effect")
+private val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.onAction.in.event")
 
 /**
- * 如果某个on_action在一个effect子句中被调用，
+ * 如果某个on_action在一个event声明中被调用，
  * 则将此另一个event的root作用域推断为此event的from作用域，
  * 将调用此另一个event的event的root作用域推断为此event的fromfrom作用域，
  * 依此类推直到fromfromfromfrom作用域。
  * 如果有声明scopes = { from = ... }，则将此on_action的from作用域推断为这个声明中from对应的作用域，
  * 依此类推直到fromfromfromfrom作用域。
  */
-class ParadoxOnActionInEffectInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
+class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
         return definitionInfo.type == "on_action"
     }
@@ -80,7 +80,7 @@ class ParadoxOnActionInEffectInferredScopeContextProvider : ParadoxDefinitionInf
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
-        return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxOnActionInEffectInferredScopeContextProvider.doProcessQuery") {
+        return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxOnActionInEventInferredScopeContextProvider.doProcessQuery") {
             if(depth == 1) stackTrace.addLast(thisOnActionName)
             
             val toRef = "from".repeat(depth)
