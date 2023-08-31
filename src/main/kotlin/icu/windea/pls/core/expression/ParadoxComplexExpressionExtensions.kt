@@ -64,6 +64,7 @@ private fun ParadoxExpressionNode.doGetReferences(element: ParadoxScriptStringEx
  * @return 是否已经输入了前缀。
  */
 fun completeForScopeExpressionNode(node: ParadoxScopeFieldExpressionNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
+    val contextElement = context.contextElement!!
     val offsetInParent = context.offsetInParent!!
     val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
     val nodeRange = node.rangeInExpression
@@ -73,7 +74,7 @@ fun completeForScopeExpressionNode(node: ParadoxScopeFieldExpressionNode, contex
     val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
     val endOffset = dataSourceNode?.rangeInExpression?.startOffset ?: -1
     if(prefixNode != null && dataSourceNode != null && offsetInParent >= dataSourceNode.rangeInExpression.startOffset) {
-        val scopeContextResult = ParadoxScopeHandler.getScopeContext(prefixNode, scopeContext)
+        val scopeContextResult = ParadoxScopeHandler.getScopeContext(contextElement, prefixNode, scopeContext)
         context.scopeContext = scopeContextResult
         
         val keywordToUse = dataSourceNode.text.substring(0, offsetInParent - endOffset)
@@ -112,6 +113,7 @@ fun completeForScopeExpressionNode(node: ParadoxScopeFieldExpressionNode, contex
  * @return 是否已经输入了前缀。
  */
 fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
+    val contextElement = context.contextElement!!
     val keyword = context.keyword
     val startOffset = context.startOffset!!
     val offsetInParent = context.offsetInParent!!
@@ -123,7 +125,7 @@ fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, contex
     val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
     val endOffset = dataSourceNode?.rangeInExpression?.startOffset ?: -1
     if(prefixNode != null && dataSourceNode != null && offsetInParent >= dataSourceNode.rangeInExpression.startOffset) {
-        val scopeContextResult = ParadoxScopeHandler.getScopeContext(prefixNode, scopeContext)
+        val scopeContextResult = ParadoxScopeHandler.getScopeContext(contextElement, prefixNode, scopeContext)
         context.scopeContext = scopeContextResult
         
         val keywordToUse = dataSourceNode.text.substring(0, offsetInParent - endOffset)

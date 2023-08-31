@@ -116,7 +116,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                                 if(scopeField.isLeftQuoted()) return@pp true
                                 val textRange = TextRange.create(0, scopeField.length)
                                 val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup) ?: return@pp true
-                                val scopeContextOfEachScope = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, scopeContextOfScopesElement)
+                                val scopeContextOfEachScope = ParadoxScopeHandler.getScopeContext(it, scopeFieldExpression, scopeContextOfScopesElement)
                                 map.put(n, scopeContextOfEachScope.scope.id)
                                 
                                 true

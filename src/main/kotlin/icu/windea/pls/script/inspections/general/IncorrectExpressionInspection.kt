@@ -78,7 +78,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup) ?: return
                         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
                         val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return
-                        val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
+                        val scopeContext = ParadoxScopeHandler.getScopeContext(element, scopeFieldExpression, parentScopeContext)
                         if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return
                         val expression = element.expression ?: return
                         val message = PlsBundle.message("inspection.script.general.incorrectExpression.description.5", expression, expectedScope, scopeContext.scope.id)
@@ -93,7 +93,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup) ?: return
                         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
                         val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return
-                        val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
+                        val scopeContext = ParadoxScopeHandler.getScopeContext(element, scopeFieldExpression, parentScopeContext)
                         if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return
                         val expression = element.expression ?: return
                         val message = PlsBundle.message("inspection.script.general.incorrectExpression.description.6", expression, expectedScopeGroup, scopeContext.scope.id)

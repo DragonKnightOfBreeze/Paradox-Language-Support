@@ -44,8 +44,6 @@ class ParadoxScriptValueSetExpressionSupport : ParadoxScriptExpressionSupport() 
         val configExpression = config.expression ?: return null
         val configGroup = config.info.configGroup
         val name = expression
-        val predefinedResolved = ParadoxConfigHandler.resolvePredefinedValueSetValue(name, configExpression, configGroup)
-        if(predefinedResolved != null) return predefinedResolved
         return ParadoxValueSetValueHandler.resolveValueSetValue(element, name, configExpression, configGroup)
     }
     

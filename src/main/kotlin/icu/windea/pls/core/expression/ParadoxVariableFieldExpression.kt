@@ -139,6 +139,7 @@ class ParadoxVariableFieldExpressionImpl(
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        val contextElement = context.contextElement!!
         val keyword = context.keyword
         val startOffset = context.startOffset!!
         val offsetInParent = context.offsetInParent!!
@@ -162,7 +163,7 @@ class ParadoxVariableFieldExpressionImpl(
                     break
                 } else {
                     val inExpression = i != 0
-                    scopeContextInExpression = ParadoxScopeHandler.getScopeContext(node, scopeContextInExpression, inExpression)
+                    scopeContextInExpression = ParadoxScopeHandler.getScopeContext(contextElement, node, scopeContextInExpression, inExpression)
                 }
             } else if(node is ParadoxDataExpressionNode) {
                 if(inRange) {

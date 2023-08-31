@@ -43,7 +43,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
                 val textRange = TextRange.create(0, scopeField.length)
                 val configGroup = config.info.configGroup
                 val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup) ?: return null
-                return ParadoxScopeHandler.getScopeContext(scopeFieldExpression, scopeContext)
+                return ParadoxScopeHandler.getScopeContext(contextElement, scopeFieldExpression, scopeContext)
             }
             config.key == PARAMETERS_KEY -> {
                 //基于trigger的值得到最终的scopeContext，然后推断作为parameters的值的scopeContext

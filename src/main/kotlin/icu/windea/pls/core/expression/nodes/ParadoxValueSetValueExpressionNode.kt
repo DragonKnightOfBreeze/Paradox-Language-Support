@@ -52,8 +52,6 @@ class ParadoxValueSetValueExpressionNode(
         }
         
         override fun resolve(): PsiElement? {
-            val predefinedResolved = ParadoxConfigHandler.resolvePredefinedValueSetValue(element, name, configExpressions, configGroup)
-            if(predefinedResolved != null) return predefinedResolved
             val configExpressions = configs.mapNotNullTo(mutableSetOf()) { it.expression }
             return ParadoxValueSetValueHandler.resolveValueSetValue(element, name, configExpressions, configGroup)
         }

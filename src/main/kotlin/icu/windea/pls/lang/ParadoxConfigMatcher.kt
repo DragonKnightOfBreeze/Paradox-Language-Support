@@ -462,7 +462,7 @@ object ParadoxConfigMatcher {
                 return Result.LazyScopeAwareMatch p@{
                     val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
                     val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return@p true
-                    val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
+                    val scopeContext = ParadoxScopeHandler.getScopeContext(element, scopeFieldExpression, parentScopeContext)
                     if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return@p true
                     false
                 }
@@ -472,7 +472,7 @@ object ParadoxConfigMatcher {
                 return Result.LazyScopeAwareMatch p@{
                     val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
                     val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return@p true
-                    val scopeContext = ParadoxScopeHandler.getScopeContext(scopeFieldExpression, parentScopeContext)
+                    val scopeContext = ParadoxScopeHandler.getScopeContext(element, scopeFieldExpression, parentScopeContext)
                     if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return@p true
                     false
                 }

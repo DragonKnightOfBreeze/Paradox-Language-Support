@@ -1490,38 +1490,6 @@ object ParadoxConfigHandler {
         return resolved
     }
     
-    fun resolvePredefinedValueSetValue(name: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): PsiElement? {
-        val valueSetName = configExpression.value ?: return null
-        if(configExpression.type == CwtDataType.Value || configExpression.type == CwtDataType.ValueOrValueSet) {
-            //首先尝试解析为预定义的value
-            val valueSetConfig = configGroup.values.get(valueSetName)
-            val valueSetValueConfig = valueSetConfig?.valueConfigMap?.get(name)
-            val predefinedResolved = valueSetValueConfig?.pointer?.element
-            if(predefinedResolved != null) {
-                predefinedResolved.putUserData(PlsKeys.cwtConfig, valueSetValueConfig)
-                return predefinedResolved
-            }
-        }
-        return null
-    }
-    
-    fun resolvePredefinedValueSetValue(element: ParadoxScriptExpressionElement, name: String, configExpressions: Iterable<CwtDataExpression>, configGroup: CwtConfigGroup): PsiElement? {
-        for(configExpression in configExpressions) {
-            val valueSetName = configExpression.value ?: return null
-            if(configExpression.type == CwtDataType.Value || configExpression.type == CwtDataType.ValueOrValueSet) {
-                //首先尝试解析为预定义的value
-                val valueSetConfig = configGroup.values.get(valueSetName)
-                val valueSetValueConfig = valueSetConfig?.valueConfigMap?.get(name)
-                val predefinedResolved = valueSetValueConfig?.pointer?.element
-                if(predefinedResolved != null) {
-                    predefinedResolved.putUserData(PlsKeys.cwtConfig, valueSetValueConfig)
-                    return predefinedResolved
-                }
-            }
-        }
-        return null
-    }
-    
     fun resolvePredefinedLocalisationScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.localisationLinks[name] ?: return null
         val resolved = linkConfig.pointer.element ?: return null
