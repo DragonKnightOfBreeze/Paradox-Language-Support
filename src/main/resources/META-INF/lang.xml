@@ -103,6 +103,7 @@
     <modifierNameDescProvider implementation="icu.windea.pls.lang.modifier.impl.ParadoxBaseModifierNameDescProvider"/>
     
     <modifierIconProvider implementation="icu.windea.pls.lang.modifier.impl.ParadoxBaseModifierIconProvider"/>
+    <modifierIconProvider implementation="icu.windea.pls.lang.modifier.impl.ParadoxDelegateDefinitionBasedModifierIconProvider"/>
     
     <definitionModifierProvider implementation="icu.windea.pls.lang.modifier.impl.StellarisScriptedModifierDefinitionModifierProvider"/>
     
