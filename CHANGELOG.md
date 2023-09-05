@@ -2,12 +2,12 @@
 
 ## PROCESSING
 
+* [ ] #46 优化：尝试基于使用推断特定类型的`valueSetValue`对应的作用域上下文（如`event_target`和`global_event_target`）
 * [ ] 尝试支持脚本文件的一些高级插值语法（如，`a[[b]c]d`，`a$b|c$d`）
 * [ ] 尝试优化插件性能
 
 ## 1.1.8
 
-* [ ] #46 优化：尝试基于使用推断特定类型的`valueSetValue`对应的作用域上下文（如`event_target`和`global_event_target`）
 
 ## 1.1.7
 

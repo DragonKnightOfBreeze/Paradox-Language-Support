@@ -11,8 +11,8 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.index.hierarchy.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.scope.*

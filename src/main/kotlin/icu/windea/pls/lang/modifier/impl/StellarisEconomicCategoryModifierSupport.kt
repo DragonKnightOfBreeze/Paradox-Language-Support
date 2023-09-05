@@ -13,6 +13,7 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
@@ -118,10 +119,6 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         }
     }
     
-    override fun getModificationTracker(resolved: ParadoxModifierElement): ModificationTracker {
-        return ParadoxPsiModificationTracker.getInstance(resolved.project).ScriptFileTracker("common/economic_categories:txt")
-    }
-    
     override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
         val economicCategoryInfo = element.getUserData(ParadoxModifierSupport.Keys.economicCategoryInfo) ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory //may be null
@@ -183,5 +180,9 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
             }
         }
         return true
+    }
+    
+    override fun getModificationTracker(element: ParadoxModifierElement): ModificationTracker {
+        return ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker("common/economic_categories:txt")
     }
 }

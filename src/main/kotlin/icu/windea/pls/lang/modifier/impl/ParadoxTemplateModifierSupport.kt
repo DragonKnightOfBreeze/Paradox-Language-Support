@@ -11,6 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
@@ -87,11 +88,6 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                 true
             }
         }
-    }
-    
-    override fun getModificationTracker(resolved: ParadoxModifierElement): ModificationTracker {
-        //TODO 可以进一步缩小范围
-        return ParadoxPsiModificationTracker.getInstance(resolved.project).ScriptFileTracker(":txt")
     }
     
     override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
@@ -201,5 +197,10 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             }
         }
         return true
+    }
+    
+    override fun getModificationTracker(element: ParadoxModifierElement): ModificationTracker {
+        //TODO 可以进一步缩小范围
+        return ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker(":txt")
     }
 }

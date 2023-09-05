@@ -8,6 +8,7 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
@@ -149,11 +150,11 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return result
     }
     
-    override fun processContext(element: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-        val expression = element.getUserData(ParadoxParameterSupport.Keys.inlineScriptExpression) ?: return false
+    override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+        val expression = parameterElement.getUserData(ParadoxParameterSupport.Keys.inlineScriptExpression) ?: return false
         if(expression.isParameterized()) return false //skip if context name is parameterized
-        val project = element.project
-        ParadoxInlineScriptHandler.processInlineScriptFile(expression, element, project, onlyMostRelevant, processor)
+        val project = parameterElement.project
+        ParadoxInlineScriptHandler.processInlineScriptFile(expression, parameterElement, project, onlyMostRelevant, processor)
         return true
     }
     
@@ -165,31 +166,31 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return true
     }
     
-    override fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker {
-        return ParadoxPsiModificationTracker.getInstance(parameterElement.project).InlineScriptsTracker
-    }
-    
-    override fun buildDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {
-        val inlineScriptExpression = element.getUserData(ParadoxParameterSupport.Keys.inlineScriptExpression) ?: return false
+    override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {
+        val inlineScriptExpression = parameterElement.getUserData(ParadoxParameterSupport.Keys.inlineScriptExpression) ?: return false
         if(inlineScriptExpression.isEmpty()) return false
         val filePath = ParadoxInlineScriptHandler.getInlineScriptFilePath(inlineScriptExpression) ?: return false
         
         //不加上文件信息
         
         //加上名字
-        val name = element.name
+        val name = parameterElement.name
         append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上推断得到的规则信息
-        val inferredConfig = ParadoxParameterHandler.getInferredConfig(element)
+        val inferredConfig = ParadoxParameterHandler.getInferredConfig(parameterElement)
         if(inferredConfig != null) {
             append(": ")
             append(inferredConfig.expression.expressionString.escapeXml())
         }
         //加上所属内联脚本信息
-        val gameType = element.gameType
+        val gameType = parameterElement.gameType
         appendBr().appendIndent()
         append(PlsBundle.message("ofInlineScript")).append(" ")
-        appendFilePathLink(gameType, filePath, inlineScriptExpression, element)
+        appendFilePathLink(gameType, filePath, inlineScriptExpression, parameterElement)
         return true
+    }
+    
+    override fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker {
+        return ParadoxPsiModificationTracker.getInstance(parameterElement.project).InlineScriptsTracker
     }
 }

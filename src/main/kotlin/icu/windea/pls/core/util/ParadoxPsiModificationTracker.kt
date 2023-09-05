@@ -1,12 +1,6 @@
-package icu.windea.pls.core.psi
+package icu.windea.pls.core.util
 
-import com.intellij.openapi.components.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
-import com.intellij.psi.util.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.script.*
-import java.util.concurrent.*
 
 //com.intellij.psi.util.PsiModificationTracker
 //com.intellij.psi.impl.PsiModificationTrackerImpl

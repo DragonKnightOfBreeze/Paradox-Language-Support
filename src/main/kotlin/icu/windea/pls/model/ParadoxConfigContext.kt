@@ -3,10 +3,12 @@ package icu.windea.pls.model
 import com.google.common.cache.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.ParadoxConfigMatcher.Options
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.*
@@ -33,8 +35,9 @@ class ParadoxConfigContext(
     val configGroup: CwtConfigGroup
 ) : UserDataHolderBase() {
     fun getConfigs(matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
+        val rootFile = selectRootFile(element) ?: return emptyList()
         val project = configGroup.project
-        val cache = project.configsCache.value
+        val cache = project.configsCache.value.get(rootFile)
         val cachedKey = doGetCacheKey(matchOptions) ?: return emptyList()
         val cached = cache.getOrPut(cachedKey) {
             doGetConfigs(matchOptions)
@@ -65,10 +68,12 @@ class ParadoxConfigContext(
     object Keys : KeyAware
 }
 
+//project -> rootFile -> cacheKey -> configs
+//depends on (definition, localisation, etc.) indices
 //use soft values to optimize memory
-private val PlsKeys.configsCache by createCachedValueKey<Cache<String, List<CwtMemberConfig<*>>>>("paradox.configContext.configs") {
-    //NOTE 1.1.8 处理后的CWT规则可能依赖于定义索引、本地化索引等
-    CacheBuilder.newBuilder().softValues().buildCache<String, List<CwtMemberConfig<*>>>().withDependencyItems(PsiModificationTracker.MODIFICATION_COUNT)
+private val PlsKeys.configsCache by createCachedValueKey("paradox.configContext.configs") {
+    NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, List<CwtMemberConfig<*>>>() }
+        .withDependencyItems(PsiModificationTracker.MODIFICATION_COUNT)
 }
 private val Project.configsCache by PlsKeys.configsCache
 

@@ -389,7 +389,8 @@ object ParadoxConfigMatcher {
         ProgressManager.checkCanceled()
         if(indexStatus.get() == true) return Result.ExactMatch // indexing -> should not visit indices -> treat as exact match
         val rootFile = selectRootFile(element) ?: return Result.NotMatch
-        val cache = rootFile.configMatchResultCache.value
+        val project = element.project
+        val cache = project.configMatchResultCache.value.get(rootFile)
         return cache.getOrPut(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
     }
     
@@ -503,8 +504,10 @@ object ParadoxConfigMatcher {
     private fun Boolean.toFallbackResult() = if(this) Result.FallbackMatch else Result.NotMatch
 }
 
-private val PlsKeys.configMatchResultCache by createCachedValueKey<Cache<String, Result>>("paradox.configMatchResult.cache") {
-    //NOTE 1.1.8 CWT规则匹配结果可能依赖于定义索引、本地化索引等
-    CacheBuilder.newBuilder().buildCache<String, Result>().withDependencyItems(PsiModificationTracker.MODIFICATION_COUNT)
+//project -> rootFile -> cacheKey -> configMatchResult
+//depends on (definition, localisation, etc.) indices
+private val PlsKeys.configMatchResultCache by createCachedValueKey("paradox.configMatchResult.cache") {
+    NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, Result>() }
+        .withDependencyItems(PsiModificationTracker.MODIFICATION_COUNT)
 }
-private val VirtualFile.configMatchResultCache by PlsKeys.configMatchResultCache
+private val Project.configMatchResultCache by PlsKeys.configMatchResultCache

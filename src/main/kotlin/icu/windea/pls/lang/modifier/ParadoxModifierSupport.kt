@@ -32,25 +32,21 @@ interface ParadoxModifierSupport {
     
     fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>)
     
-    /**
-     * 如果返回值不为null，表示修正的解析结果可以通过一定条件进行缓存。
-     */
-    fun getModificationTracker(resolved: ParadoxModifierElement): ModificationTracker? = null
-    
     fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>?
     
-    //TODO 获取icon
-    
     /**
-     * 构建参数的快速文档中的定义部分。
+     * 构建修正的快速文档中的定义部分。
      * @return 此解析器是否适用。
      */
     fun buildDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean = false
     
     /**
-     * 构建定义的快速文档中的生成修正修正部分。
+     * 构建定义的快速文档中的定义部分中的对应的生成的修正的那一部分。
+     * @return 此解析器是否适用。
      */
     fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean = false
+    
+    fun getModificationTracker(element: ParadoxModifierElement): ModificationTracker? = null
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxModifierSupport>("icu.windea.pls.modifierSupport")

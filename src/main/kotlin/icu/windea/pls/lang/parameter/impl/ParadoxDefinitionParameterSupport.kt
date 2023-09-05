@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
@@ -156,13 +157,13 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return result
     }
     
-    override fun processContext(element: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-        val definitionName = element.getUserData(ParadoxParameterSupport.Keys.definitionName) ?: return false
-        val definitionTypes = element.getUserData(ParadoxParameterSupport.Keys.definitionTypes) ?: return false
+    override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+        val definitionName = parameterElement.getUserData(ParadoxParameterSupport.Keys.definitionName) ?: return false
+        val definitionTypes = parameterElement.getUserData(ParadoxParameterSupport.Keys.definitionTypes) ?: return false
         if(definitionName.isParameterized()) return false //skip if context name is parameterized
         val definitionType = definitionTypes.joinToString(".")
-        val project = element.project
-        val selector = definitionSelector(project, element).contextSensitive()
+        val project = parameterElement.project
+        val selector = definitionSelector(project, parameterElement).contextSensitive()
         ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync(onlyMostRelevant, processor)
         return true
     }
@@ -175,6 +176,40 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val project = contextReferenceInfo.project
         val selector = definitionSelector(project, element).contextSensitive()
         ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync(onlyMostRelevant, processor)
+        return true
+    }
+    
+    override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {
+        val definitionName = parameterElement.getUserData(ParadoxParameterSupport.Keys.definitionName) ?: return false
+        val definitionType = parameterElement.getUserData(ParadoxParameterSupport.Keys.definitionTypes) ?: return false
+        if(definitionType.isEmpty()) return false
+        
+        //不加上文件信息
+        
+        //加上名字
+        val name = parameterElement.name
+        append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        //加上推断得到的规则信息
+        val inferredConfig = ParadoxParameterHandler.getInferredConfig(parameterElement)
+        if(inferredConfig != null) {
+            append(": ")
+            append(inferredConfig.expression.expressionString.escapeXml())
+        }
+        //加上所属定义信息
+        val gameType = parameterElement.gameType
+        appendBr().appendIndent()
+        append(PlsBundle.message("ofDefinition")).append(" ")
+        appendDefinitionLink(gameType, definitionName, definitionType.first(), parameterElement)
+        append(": ")
+        val type = definitionType.first()
+        val typeLink = "${gameType.linkToken}types/${type}"
+        appendCwtLink(typeLink, type)
+        for((index, t) in definitionType.withIndex()) {
+            if(index == 0) continue
+            append(", ")
+            val subtypeLink = "$typeLink/${t}"
+            appendCwtLink(subtypeLink, t)
+        }
         return true
     }
     
@@ -195,39 +230,5 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
             }
             ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker(builder.toString())
         }
-    }
-    
-    override fun buildDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {
-        val definitionName = element.getUserData(ParadoxParameterSupport.Keys.definitionName) ?: return false
-        val definitionType = element.getUserData(ParadoxParameterSupport.Keys.definitionTypes) ?: return false
-        if(definitionType.isEmpty()) return false
-        
-        //不加上文件信息
-        
-        //加上名字
-        val name = element.name
-        append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-        //加上推断得到的规则信息
-        val inferredConfig = ParadoxParameterHandler.getInferredConfig(element)
-        if(inferredConfig != null) {
-            append(": ")
-            append(inferredConfig.expression.expressionString.escapeXml())
-        }
-        //加上所属定义信息
-        val gameType = element.gameType
-        appendBr().appendIndent()
-        append(PlsBundle.message("ofDefinition")).append(" ")
-        appendDefinitionLink(gameType, definitionName, definitionType.first(), element)
-        append(": ")
-        val type = definitionType.first()
-        val typeLink = "${gameType.linkToken}types/${type}"
-        appendCwtLink(typeLink, type)
-        for((index, t) in definitionType.withIndex()) {
-            if(index == 0) continue
-            append(", ")
-            val subtypeLink = "$typeLink/${t}"
-            appendCwtLink(subtypeLink, t)
-        }
-        return true
     }
 }

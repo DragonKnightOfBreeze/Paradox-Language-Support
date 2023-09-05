@@ -72,15 +72,13 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
         }
     }
     
-    override fun getModificationTracker(resolved: ParadoxModifierElement): ModificationTracker {
-        return ModificationTracker.NEVER_CHANGED
-    }
-    
     override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
         return element.getUserData(ParadoxModifierSupport.Keys.modifierConfig)?.categoryConfigMap
     }
     
-    //这里需要返回null，以便尝试适用接下来的扩展点，如果全部无法适用，会使用默认的处理逻辑
-    
     override fun buildDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder) = false
+    
+    override fun getModificationTracker(element: ParadoxModifierElement): ModificationTracker {
+        return ModificationTracker.NEVER_CHANGED
+    }
 }

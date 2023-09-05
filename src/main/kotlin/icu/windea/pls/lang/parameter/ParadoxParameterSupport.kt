@@ -40,7 +40,7 @@ interface ParadoxParameterSupport {
      * @param onlyMostRelevant 只获取最相关的上下文。
      * @return 此扩展点是否适用。
      */
-    fun processContext(element: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
+    fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
     
     /**
      * @param onlyMostRelevant 只获取最相关的上下文。
@@ -49,15 +49,12 @@ interface ParadoxParameterSupport {
     fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
     
     /**
-     * 如果返回值不为null，则表示推断得到的CWT规则可以通过一定条件进行缓存。
-     */
-    fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker? = null
-    
-    /**
      * 构建参数的快速文档中的定义部分。
      * @return 此扩展点是否适用。
      */
-    fun buildDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean = false
+    fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean = false
+    
+    fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker? = null
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxParameterSupport>("icu.windea.pls.parameterSupport")
@@ -100,9 +97,9 @@ interface ParadoxParameterSupport {
             }
         }
         
-        fun processContext(element: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+        fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
             return EP_NAME.extensionList.any { ep ->
-                ep.processContext(element, onlyMostRelevant, processor)
+                ep.processContext(parameterElement, onlyMostRelevant, processor)
             }
         }
         
@@ -112,9 +109,9 @@ interface ParadoxParameterSupport {
             }
         }
         
-        fun getDocumentationDefinition(element: ParadoxParameterElement, builder: StringBuilder): Boolean {
+        fun getDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean {
             return EP_NAME.extensionList.any { ep ->
-                ep.buildDocumentationDefinition(element, builder)
+                ep.buildDocumentationDefinition(parameterElement, builder)
             }
         }
     }
