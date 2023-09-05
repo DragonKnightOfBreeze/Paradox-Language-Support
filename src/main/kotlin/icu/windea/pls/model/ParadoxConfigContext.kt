@@ -33,16 +33,18 @@ class ParadoxConfigContext(
 ) : UserDataHolderBase() {
     fun getConfigs(matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
         val project = configGroup.project
-        val cache = project.configsCache
-        val cachedKey = doGetCachedKey(matchOptions) ?: return emptyList()
-        val cached = cache.getOrPut(cachedKey) { doGetConfigs(matchOptions) }
+        val cache = project.configsCache.value
+        val cachedKey = doGetCacheKey(matchOptions) ?: return emptyList()
+        val cached = cache.getOrPut(cachedKey) {
+            doGetConfigs(matchOptions)
+        }
         //some configs cannot be cached (e.g. from overridden configs)
         if(PlsContext.overrideConfigStatus.get() == true) cache.invalidate(cachedKey)
         PlsContext.overrideConfigStatus.remove()
         return cached
     }
     
-    private fun doGetCachedKey(matchOptions: Int): String? {
+    private fun doGetCacheKey(matchOptions: Int): String? {
         return provider?.getCacheKey(this, matchOptions)
             ?.let { if(element is ParadoxScriptValue && element.isPropertyValue()) "pv#$it" else it }
     }
@@ -59,11 +61,13 @@ class ParadoxConfigContext(
         return provider?.skipTooManyExpressionCheck(this) ?: false
     }
     
-    object Keys: KeyAware
+    object Keys : KeyAware
 }
 
 //use soft values to optimize memory
-private val PlsKeys.configsCache by createKey<Cache<String, List<CwtMemberConfig<*>>>>("paradox.configContext.configs") { CacheBuilder.newBuilder().softValues().buildCache() }
+private val PlsKeys.configsCache by createCachedValueKey<Cache<String, List<CwtMemberConfig<*>>>>("paradox.configContext.configs") {
+    CacheBuilder.newBuilder().softValues().buildCache<String, List<CwtMemberConfig<*>>>().withDependencyItems()
+}
 private val Project.configsCache by PlsKeys.configsCache
 
 val ParadoxConfigContext.Keys.definitionInfo by createKey<ParadoxDefinitionInfo>("paradox.configContext.definitionInfo")

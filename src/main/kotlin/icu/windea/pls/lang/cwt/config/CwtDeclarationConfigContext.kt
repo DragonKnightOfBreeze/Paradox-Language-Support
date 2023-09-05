@@ -1,8 +1,7 @@
 package icu.windea.pls.lang.cwt.config
 
 import com.google.common.cache.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -34,15 +33,13 @@ class CwtDeclarationConfigContext(
         if(!declarationConfig.propertyConfig.isBlock) return declarationConfig.propertyConfig
         
         val project = declarationConfig.info.configGroup.project
-        val cache = project.declarationConfigCache
+        val cache = project.declarationConfigCache.value
         val cacheKey = ooGetCacheKey(declarationConfig)
         return cache.getOrPut(cacheKey) {
-            runReadAction {
-                val config = doGetConfig(declarationConfig)
-                CwtDeclarationConfigInjector.handleDeclarationMergedConfig(config, this, injectors)
-                config.declarationConfigCacheKey = cacheKey
-                config
-            }
+            val config = doGetConfig(declarationConfig)
+            CwtDeclarationConfigInjector.handleDeclarationMergedConfig(config, this, injectors)
+            config.declarationConfigCacheKey = cacheKey
+            config
         }
     }
     
@@ -80,8 +77,11 @@ class CwtDeclarationConfigContext(
 }
 
 //use soft values to optimize memory
-private val PlsKeys.declarationConfigCache by createKey<Cache<String, CwtPropertyConfig>>("cwt.declarationConfig.cache") { CacheBuilder.newBuilder().softValues().buildCache() }
+private val PlsKeys.declarationConfigCache by createCachedValueKey<Cache<String, CwtPropertyConfig>>("cwt.declarationConfig.cache") {
+    CacheBuilder.newBuilder().softValues().buildCache<String, CwtPropertyConfig>().withDependencyItems()
+}
 private val Project.declarationConfigCache by PlsKeys.declarationConfigCache
 
 val CwtMemberConfig.Keys.declarationConfigCacheKey by createKey<String>("cwt.declarationConfig.cacheKey")
+
 var CwtMemberConfig<*>.declarationConfigCacheKey by CwtMemberConfig.Keys.declarationConfigCacheKey

@@ -237,6 +237,26 @@ inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KPro
 inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.dataContext.getData(this)
 //endregion
 
+//region CachedValue Extensions
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> createCachedValueKey(
+    name: String,
+    trackValue: Boolean = false,
+    project: Project = getDefaultProject(),
+    provider: CachedValueProvider<T>
+) = CachedValueKey(name, trackValue, project, provider)
+
+fun <T> T.withDependencyItems(vararg dependencyItems: Any): CachedValueProvider.Result<T> {
+    if(dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
+    return CachedValueProvider.Result.create(this, *dependencyItems)
+}
+
+fun <T> T.withDependencyItems(dependencyItems: List<Any>): CachedValueProvider.Result<T> {
+    if(dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
+    return CachedValueProvider.Result.create(this, dependencyItems)
+}
+//endregion
+
 //region Documentation Extensions
 inline fun StringBuilder.definition(block: StringBuilder.() -> Unit): StringBuilder {
     append(DocumentationMarkup.DEFINITION_START)
