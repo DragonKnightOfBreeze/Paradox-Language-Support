@@ -11,7 +11,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.index.hierarchy.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
@@ -21,8 +20,6 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 private val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.in.event")
-
-private val tracker = ParadoxPsiModificationTracker.getInstance(definition.project).ScriptFileTracker("events:txt")
 
 /**
  * 如果某个event在一个event声明中被调用，
@@ -47,7 +44,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
             val tracker0 = ParadoxPsiModificationTracker.DefinitionScopeContextInferenceTracker
-            val tracker = tracker
+            val tracker = ParadoxPsiModificationTracker.getInstance(definition.project).ScriptFileTracker("events:txt")
             CachedValueProvider.Result.create(value, tracker0, tracker)
         }
     }
