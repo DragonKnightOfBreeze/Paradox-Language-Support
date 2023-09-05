@@ -16,7 +16,7 @@ data class ParadoxModifierData(
     val modificationTracker by lazy { support?.getModificationTracker(this) }
     
     fun toModifierElement(element: PsiElement) : ParadoxModifierElement{
-        return ParadoxModifierElement(element, name, gameType, project).also { copyCopyableDataTo(it) }
+        return ParadoxModifierElement(element, name, gameType, project).also { copyUserDataTo(it) }
     }
     
     companion object {

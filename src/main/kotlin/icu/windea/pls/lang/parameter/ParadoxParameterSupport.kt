@@ -48,13 +48,13 @@ interface ParadoxParameterSupport {
      */
     fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
     
+    fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker? = null
+    
     /**
      * 构建参数的快速文档中的定义部分。
      * @return 此扩展点是否适用。
      */
     fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean = false
-    
-    fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker? = null
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxParameterSupport>("icu.windea.pls.parameterSupport")

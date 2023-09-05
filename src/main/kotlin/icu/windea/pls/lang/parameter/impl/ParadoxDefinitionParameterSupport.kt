@@ -179,6 +179,25 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return true
     }
     
+    override fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker {
+        val project = parameterElement.project
+        val configGroup = getConfigGroups(project).get(parameterElement.gameType)
+        return configGroup.getOrPutUserData(CwtConfigGroup.Keys.parameterModificationTracker) {
+            val definitionTypes = configGroup.definitionTypesSupportParameters
+            val builder = StringBuilder()
+            var isFirst = true
+            for(definitionType in definitionTypes) {
+                val typeConfig = configGroup.types.get(definitionType) ?: continue
+                val filePath = typeConfig.pathFile ?: typeConfig.path ?: continue
+                val fileExtension = typeConfig.pathExtension
+                if(isFirst) isFirst = false else builder.append('|')
+                builder.append(filePath)
+                if(fileExtension != null) builder.append(':').append(fileExtension)
+            }
+            ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker(builder.toString())
+        }
+    }
+    
     override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {
         val definitionName = parameterElement.getUserData(ParadoxParameterSupport.Keys.definitionName) ?: return false
         val definitionType = parameterElement.getUserData(ParadoxParameterSupport.Keys.definitionTypes) ?: return false
@@ -211,24 +230,5 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
             appendCwtLink(subtypeLink, t)
         }
         return true
-    }
-    
-    override fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker {
-        val project = parameterElement.project
-        val configGroup = getConfigGroups(project).get(parameterElement.gameType)
-        return configGroup.getOrPutUserData(CwtConfigGroup.Keys.parameterModificationTracker) {
-            val definitionTypes = configGroup.definitionTypesSupportParameters
-            val builder = StringBuilder()
-            var isFirst = true
-            for(definitionType in definitionTypes) {
-                val typeConfig = configGroup.types.get(definitionType) ?: continue
-                val filePath = typeConfig.pathFile ?: typeConfig.path ?: continue
-                val fileExtension = typeConfig.pathExtension
-                if(isFirst) isFirst = false else builder.append('|')
-                builder.append(filePath)
-                if(fileExtension != null) builder.append(':').append(fileExtension)
-            }
-            ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker(builder.toString())
-        }
     }
 }

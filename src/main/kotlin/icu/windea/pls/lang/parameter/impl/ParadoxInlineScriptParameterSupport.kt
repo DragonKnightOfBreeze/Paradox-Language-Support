@@ -166,6 +166,10 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return true
     }
     
+    override fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker {
+        return ParadoxPsiModificationTracker.getInstance(parameterElement.project).InlineScriptsTracker
+    }
+    
     override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {
         val inlineScriptExpression = parameterElement.getUserData(ParadoxParameterSupport.Keys.inlineScriptExpression) ?: return false
         if(inlineScriptExpression.isEmpty()) return false
@@ -188,9 +192,5 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         append(PlsBundle.message("ofInlineScript")).append(" ")
         appendFilePathLink(gameType, filePath, inlineScriptExpression, parameterElement)
         return true
-    }
-    
-    override fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker {
-        return ParadoxPsiModificationTracker.getInstance(parameterElement.project).InlineScriptsTracker
     }
 }
