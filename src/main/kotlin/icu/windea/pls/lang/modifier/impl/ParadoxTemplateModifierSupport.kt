@@ -32,7 +32,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         }
     }
     
-    override fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierData? {
+    override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierData? {
         val modifierName = name
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
@@ -73,7 +73,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                 //排除重复的
                 if(!modifierNames.add(name)) return@p true
                 
-                val modifierElement = ParadoxModifierHandler.resolveModifier(element, name, configGroup, this@ParadoxTemplateModifierSupport)
+                val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
                     .withIcon(PlsIcons.Modifier)
                     .withTailText(tailText)
@@ -82,7 +82,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                     .withScopeMatched(scopeMatched)
                     .letIf(getSettings().completion.completeByLocalizedName) {
                         //如果启用，也基于修正的本地化名字进行代码补全
-                        val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, configGroup.project, element)
+                        val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, element, configGroup.project)
                         it.withLocalizedNames(localizedNames)
                     }
                 result.addScriptExpressionElement(context, builder)

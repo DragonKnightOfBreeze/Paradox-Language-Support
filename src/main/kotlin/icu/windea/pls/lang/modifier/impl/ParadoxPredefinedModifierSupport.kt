@@ -24,7 +24,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
         return configGroup.predefinedModifiers[modifierName] != null
     }
     
-    override fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierData? {
+    override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierData? {
         val modifierName = name
         val modifierConfig = configGroup.predefinedModifiers[modifierName] ?: return null
         val gameType = configGroup.gameType ?: return null
@@ -56,7 +56,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
             if(template.isNotEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
             val name = modifierConfig.name
-            val modifierElement = ParadoxModifierHandler.resolveModifier(element, name, configGroup, this@ParadoxPredefinedModifierSupport)
+            val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxPredefinedModifierSupport)
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
                 .withIcon(PlsIcons.Modifier)
                 .withTailText(tailText)
@@ -65,7 +65,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
                 .withScopeMatched(scopeMatched)
                 .letIf(getSettings().completion.completeByLocalizedName) {
                     //如果启用，也基于修正的本地化名字进行代码补全
-                    val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, configGroup.project, element)
+                    val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, element, configGroup.project)
                     it.withLocalizedNames(localizedNames)
                 }
             result.addScriptExpressionElement(context, builder)

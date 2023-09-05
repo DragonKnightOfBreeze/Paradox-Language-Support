@@ -9,6 +9,7 @@ import com.intellij.pom.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
@@ -57,20 +58,24 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
                 runReadAction {
                     run {
-                        val key = ParadoxModifierHandler.getModifierNameKey(modifierElement.name)
-                        val selector = localisationSelector(project, element).contextSensitive()
-                            .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
-                            .withConstraint(ParadoxLocalisationConstraint.Modifier)
-                        val result = ParadoxLocalisationSearch.search(key, selector).findAll()
-                        targets.addAll(result)
+                        val keys = ParadoxModifierHandler.getModifierNameKeys(modifierElement.name, modifierElement)
+                        val result = keys.firstNotNullOfOrNull { key ->
+                            val selector = localisationSelector(project, element).contextSensitive()
+                                .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+                                .withConstraint(ParadoxLocalisationConstraint.Modifier)
+                            ParadoxLocalisationSearch.search(key, selector).findAll().takeIfNotEmpty()
+                        }
+                        if(result != null) targets.addAll(result)
                     }
                     run {
-                        val key = ParadoxModifierHandler.getModifierDescKey(modifierElement.name)
-                        val selector = localisationSelector(project, element).contextSensitive()
-                            .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
-                            .withConstraint(ParadoxLocalisationConstraint.Modifier)
-                        val result = ParadoxLocalisationSearch.search(key, selector).findAll()
-                        targets.addAll(result)
+                        val keys = ParadoxModifierHandler.getModifierDescKeys(modifierElement.name, modifierElement)
+                        val result = keys.firstNotNullOfOrNull { key ->
+                            val selector = localisationSelector(project, element).contextSensitive()
+                                .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+                                .withConstraint(ParadoxLocalisationConstraint.Modifier)
+                            ParadoxLocalisationSearch.search(key, selector).findAll().takeIfNotEmpty()
+                        }
+                        if(result != null) targets.addAll(result)
                     }
                 }
             }, PlsBundle.message("script.goto.relatedLocalisations.search.2", modifierElement.name), true, project)

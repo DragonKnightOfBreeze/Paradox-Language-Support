@@ -197,18 +197,22 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         val gameType = configGroup.gameType ?: return
         val project = configGroup.project
         val nameLocalisation = run {
-            val key = ParadoxModifierHandler.getModifierNameKey(name)
-            val selector = localisationSelector(project, contextElement).contextSensitive()
-                .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
-                .withConstraint(ParadoxLocalisationConstraint.Modifier)
-            ParadoxLocalisationSearch.search(key, selector).find()
+            val keys = ParadoxModifierHandler.getModifierNameKeys(name, contextElement)
+            keys.firstNotNullOfOrNull { key ->
+                val selector = localisationSelector(project, contextElement).contextSensitive()
+                    .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+                    .withConstraint(ParadoxLocalisationConstraint.Modifier)
+                ParadoxLocalisationSearch.search(key, selector).find()
+            }
         }
         val descLocalisation = run {
-            val key = ParadoxModifierHandler.getModifierDescKey(name)
-            val selector = localisationSelector(project, contextElement).contextSensitive()
-                .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
-                .withConstraint(ParadoxLocalisationConstraint.Modifier)
-            ParadoxLocalisationSearch.search(key, selector).find()
+            val keys = ParadoxModifierHandler.getModifierDescKeys(name, contextElement)
+            keys.firstNotNullOfOrNull { key ->
+                val selector = localisationSelector(project, contextElement).contextSensitive()
+                    .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+                    .withConstraint(ParadoxLocalisationConstraint.Modifier)
+                ParadoxLocalisationSearch.search(key, selector).find()
+            }
         }
         //如果没找到的话，不要在文档中显示相关信息
         if(nameLocalisation != null) {
@@ -238,13 +242,16 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         val contextElement = referenceElement
         val gameType = configGroup.gameType ?: return
         val project = configGroup.project
-        val iconPath = ParadoxModifierHandler.getModifierIconPath(name)
         val iconFile = run {
-            val iconSelector = fileSelector(project, element).contextSensitive()
-            ParadoxFilePathSearch.search(iconPath, null, iconSelector).find()
+            val paths = ParadoxModifierHandler.getModifierIconPaths(name, element)
+            paths.firstNotNullOfOrNull { path ->
+                val iconSelector = fileSelector(project, element).contextSensitive()
+                ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
+            }
         }
         //如果没找到的话，不要在文档中显示相关信息
         if(iconFile != null) {
+            val iconPath = iconFile.fileInfo?.path?.path ?: return
             appendBr()
             append(PlsBundle.message("prefix.relatedImage")).append(" ")
             append("icon = ").appendFilePathLink(gameType, iconPath, iconPath, contextElement)

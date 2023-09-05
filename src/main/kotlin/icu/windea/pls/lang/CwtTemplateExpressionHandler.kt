@@ -59,7 +59,7 @@ object CwtTemplateExpressionHandler {
         }.toRegex(RegexOption.IGNORE_CASE)
     }
     
-    fun matches(text: String, element: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): Boolean {
+    fun matches(text: String, contextElement: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): Boolean {
         val snippetExpressions = configExpression.snippetExpressions
         if(snippetExpressions.isEmpty()) return false
         val expressionString = text.unquote()
@@ -73,30 +73,32 @@ object CwtTemplateExpressionHandler {
                 val matchGroup = matchResult.groups.get(i++) ?: return false
                 val referenceName = matchGroup.value
                 val expression = ParadoxDataExpression.resolve(referenceName, false)
-                val matched = ParadoxConfigMatcher.matches(element, expression, snippetExpression, null, configGroup, matchOptions).get(matchOptions)
+                val matched = ParadoxConfigMatcher.matches(contextElement, expression, snippetExpression, null, configGroup, matchOptions).get(matchOptions)
                 if(!matched) return false
             }
         }
         return true
     }
     
-    fun resolve(text: String, element: ParadoxScriptStringExpressionElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
+    fun resolve(text: String, contextElement: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
         //需要保证里面的每个引用都能解析
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return null
-        val references = resolveReferences(text, element, configExpression, configGroup)
+        val references = resolveReferences(text, configExpression, configGroup)
         if(references.isEmpty()) return null
-        return ParadoxTemplateExpressionElement(element, text, configExpression, gameType, project, references)
+        return ParadoxTemplateExpressionElement(contextElement, text, configExpression, gameType, project, references)
     }
     
-    fun resolveReferences(text: String, element: ParadoxScriptStringExpressionElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): List<ParadoxTemplateSnippetExpressionReference> {
+    fun resolveReferences(text: String, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): List<ParadoxTemplateSnippetExpressionReference> {
         val snippetExpressions = configExpression.snippetExpressions
         if(snippetExpressions.isEmpty()) return emptyList()
         val expressionString = text
         val regex = toRegex(configExpression)
         val matchResult = regex.matchEntire(expressionString) ?: return emptyList()
         if(configExpression.referenceExpressions.size != matchResult.groups.size - 1) return emptyList()
-        val references = mutableListOf<ParadoxTemplateSnippetExpressionReference>()
+        //element仅仅表示上下文元素，因此这里需要生成ParadoxScriptStringExpressionElement并传给ParadoxTemplateSnippetExpressionReference
+        val templateElement by lazy { ParadoxScriptElementFactory.createString(configGroup.project, text) }
+        val templateReferences = mutableListOf<ParadoxTemplateSnippetExpressionReference>()
         var i = 1
         for(snippetExpression in snippetExpressions) {
             ProgressManager.checkCanceled()
@@ -104,13 +106,13 @@ object CwtTemplateExpressionHandler {
                 val matchGroup = matchResult.groups.get(i++) ?: return emptyList()
                 val referenceName = matchGroup.value
                 val range = TextRange.create(matchGroup.range.first, matchGroup.range.last)
-                val reference = ParadoxTemplateSnippetExpressionReference(element, range, referenceName, snippetExpression, configGroup)
-                references.add(reference)
+                val reference = ParadoxTemplateSnippetExpressionReference(templateElement, range, referenceName, snippetExpression, configGroup)
+                templateReferences.add(reference)
             } else {
                 //ignore
             }
         }
-        return references
+        return templateReferences
     }
     
     fun processResolveResult(contextElement: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, processor: Processor<String>) {

@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.cwt.expression
 
 import com.google.common.cache.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 
 class CwtTemplateExpression(
@@ -25,6 +26,7 @@ class CwtTemplateExpression(
         private fun doResolve(expressionString: String): CwtTemplateExpression {
             return when {
                 expressionString.isEmpty() -> EmptyExpression
+                expressionString.containsBlank() -> EmptyExpression //不允许包含空白（同时防止后续的处理逻辑出现意外错误）
                 else -> {
                     var snippets: MutableList<CwtDataExpression>? = null
                     var startIndex = 0

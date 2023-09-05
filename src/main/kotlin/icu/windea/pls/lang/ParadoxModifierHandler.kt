@@ -19,6 +19,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.modifier.*
+import icu.windea.pls.lang.modifier.impl.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
@@ -38,10 +39,17 @@ object ParadoxModifierHandler {
         val gameType = selectGameType(element) ?: return null
         val project = element.project
         val configGroup = getConfigGroups(project).get(gameType)
-        return resolveModifier(element, name, configGroup)
+        return resolveModifier(name, element, configGroup)
     }
     
-    fun resolveModifier(element: ParadoxScriptStringExpressionElement, name: String, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierElement? {
+    fun resolveModifier(name: String, element: PsiElement): ParadoxModifierElement? {
+        val gameType = selectGameType(element) ?: return null
+        val project = element.project
+        val configGroup = getConfigGroups(project).get(gameType)
+        return resolveModifier(name, element, configGroup)
+    }
+    
+    fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierElement? {
         val modifierData = getModifierData(element, name, configGroup, useSupport)
         return modifierData?.toModifierElement(element)
     }
@@ -54,7 +62,7 @@ object ParadoxModifierHandler {
         ParadoxModifierSupport.completeModifier(context, result, modifierNames)
     }
     
-    fun getModifierData(element: ParadoxScriptStringExpressionElement, name: String, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierData? {
+    fun getModifierData(element: PsiElement, name: String, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierData? {
         val rootFile = selectRootFile(element) ?: return null
         val project = configGroup.project
         val cache = project.modifierDataCache.get(rootFile)
@@ -69,68 +77,49 @@ object ParadoxModifierHandler {
         return modifierData
     }
     
-    fun getResolvedModifierData(element: PsiElement, name: String): ParadoxModifierData? {
-        val rootFile = selectRootFile(element) ?: return null
-        val project = element.project
-        val cache = project.modifierDataCache.get(rootFile)
-        val cacheKey = name
-        val modifierData = cache.getIfPresent(cacheKey)
-        if(modifierData == ParadoxModifierData.EMPTY) return null
-        return modifierData
-    }
-    
-    fun getModifierNameKeys(name: String): MutableSet<String> {
-        val keys = mutableSetOf<String>()
-        ParadoxModifierNameDescProvider.EP_NAME.extensionList.forEachFast { it.addModifierNameKey(, keys) }
-        return keys
-    }
-    
-    fun getModifierNameKey(name: String): String {
-        //mod_$, ALL_UPPER_CASE is ok.
-        return "mod_${name}"
-    }
-    
-    fun getModifierDescKeys(name: String): MutableSet<String> {
-        val keys = mutableSetOf<String>()
-        ParadoxModifierNameDescProvider.EP_NAME.extensionList.forEachFast { it.addModifierDescKey(, keys) }
-        return keys
-    }
-    
-    fun getModifierDescKey(name: String): String {
-        //mod_$_desc, ALL_UPPER_CASE is ok.
-        return "mod_${name}_desc"
-    }
-    
-    fun getModifierIconPaths(name: String): MutableSet<String> {
-        val paths = mutableSetOf<String>()
-        ParadoxModifierIconProvider.EP_NAME.extensionList.forEachFast { it.addModifierIconPath(, paths) }
-        return paths
-    }
-    
-    fun getModifierIconName(name: String): String {
-        //mod_$.dds
-        return "mod_${name}.dds"
-    }
-    
-    fun getModifierIconPath(name: String): String {
-        //gfx/interface/icons/modifiers/mod_$.dds
-        return "gfx/interface/icons/modifiers/mod_${name}.dds"
-    }
-    
-    fun getModifierLocalizedNames(name: String, project: Project, contextElement: PsiElement?): Set<String> {
-        ProgressManager.checkCanceled()
-        val nameKey = getModifierNameKey(name)
-        val localizedNames = mutableSetOf<String>()
-        val selector = localisationSelector(project, contextElement)
-            .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
-            .withConstraint(ParadoxLocalisationConstraint.Modifier)
-        ParadoxLocalisationSearch.search(nameKey, selector).processQueryAsync { localisation ->
-            ProgressManager.checkCanceled()
-            val r = ParadoxLocalisationTextRenderer.render(localisation).takeIfNotEmpty()
-            if(r != null) localizedNames.add(r)
-            true
+    fun getModifierNameKeys(name: String, element: PsiElement, onlyBase: Boolean = false): Set<String> {
+        return buildSet {
+            ParadoxModifierNameDescProvider.EP_NAME.extensionList.forEachFast { 
+                it.addModifierNameKey(name, element, this)
+                if(onlyBase) return@buildSet
+            }
         }
-        return localizedNames
+    }
+    
+    fun getModifierDescKeys(name: String, element: PsiElement, onlyBase: Boolean = false): Set<String> {
+        return buildSet {
+            ParadoxModifierNameDescProvider.EP_NAME.extensionList.forEachFast {
+                it.addModifierDescKey(name, element, this)
+                if(onlyBase) return@buildSet
+            }
+        }
+    }
+    
+    fun getModifierIconPaths(name: String, element: PsiElement, onlyBase: Boolean = false): Set<String> {
+        return buildSet {
+            ParadoxModifierIconProvider.EP_NAME.extensionList.forEachFast { 
+                it.addModifierIconPath(name, element, this)
+                if(onlyBase) return@buildSet
+            }
+        }
+    }
+    
+    fun getModifierLocalizedNames(name: String, element: PsiElement, project: Project): Set<String> {
+        ProgressManager.checkCanceled()
+        val keys = getModifierNameKeys(name, element)
+        return keys.firstNotNullOfOrNull { key ->
+            val selector = localisationSelector(project, element)
+                .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+                .withConstraint(ParadoxLocalisationConstraint.Modifier)
+            val localizedNames = mutableSetOf<String>()
+            ParadoxLocalisationSearch.search(key, selector).processQueryAsync { localisation ->
+                ProgressManager.checkCanceled()
+                val r = ParadoxLocalisationTextRenderer.render(localisation).takeIfNotEmpty()
+                if(r != null) localizedNames.add(r)
+                true
+            }
+            localizedNames.takeIfNotEmpty()
+        }.orEmpty()
     }
 }
 

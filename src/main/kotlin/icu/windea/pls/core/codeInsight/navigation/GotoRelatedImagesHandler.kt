@@ -53,18 +53,16 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
         val modifierElement = ParadoxModifierHandler.resolveModifier(element)
         if(modifierElement != null) {
             val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
-            val name = modifierElement.name
             val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
                 runReadAction {
-                    val iconPath = ParadoxModifierHandler.getModifierIconPath(name)
-                    val iconFiles = run {
+                    val paths = ParadoxModifierHandler.getModifierIconPaths(modifierElement.name, modifierElement)
+                    val iconFiles = paths.firstNotNullOfOrNull { path ->
                         val iconSelector = fileSelector(project, element).contextSensitive()
-                        val result = ParadoxFilePathSearch.search(iconPath, null, iconSelector).findAll()
-                        result.takeIfNotEmpty()
+                        ParadoxFilePathSearch.searchIcon(path, iconSelector).findAll().takeIfNotEmpty()
                     }
                     if(iconFiles != null) targets.addAll(targets)
                 }
-            }, PlsBundle.message("script.goto.relatedImages.search.2", name), true, project)
+            }, PlsBundle.message("script.goto.relatedImages.search.2", modifierElement.name), true, project)
             if(!runResult) return null
             return GotoData(element, targets.toTypedArray(), emptyList())
         }

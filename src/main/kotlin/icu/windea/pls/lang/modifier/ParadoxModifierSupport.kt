@@ -27,7 +27,7 @@ interface ParadoxModifierSupport {
      */
     fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean
     
-    fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierData?
+    fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierData?
     
     fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>)
     
@@ -58,7 +58,7 @@ interface ParadoxModifierSupport {
             }
         }
         
-        fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierData? {
+        fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierData? {
             val gameType = configGroup.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null

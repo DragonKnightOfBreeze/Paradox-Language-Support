@@ -90,9 +90,10 @@ data class ParadoxImageCodeInsightContext(
                 run {
                     val type = ParadoxImageCodeInsightInfo.Type.GeneratedModifierIcon
                     val check = inspection == null || inspection.checkGeneratedModifierIconsForDefinitions
-                    val iconPath = ParadoxModifierHandler.getModifierIconPath(modifierName)
-                    val missing = isMissing(iconPath, project, definition)
-                    val codeInsightInfo = ParadoxImageCodeInsightInfo(type, iconPath, null, null, check, missing, false)
+                    val paths = ParadoxModifierHandler.getModifierIconPaths(modifierName, definition)
+                    val pathToUse = paths.firstOrNull() ?: return@run
+                    val missing = paths.all { path -> isMissing(path, project, definition) }
+                    val codeInsightInfo = ParadoxImageCodeInsightInfo(type, pathToUse, null, null, check, missing, false)
                     codeInsightInfos += codeInsightInfo
                 }
             }
@@ -127,9 +128,10 @@ data class ParadoxImageCodeInsightContext(
             run {
                 val type = ParadoxImageCodeInsightInfo.Type.ModifierIcon
                 val check = inspection == null || inspection.checkModifierIcons
-                val iconPath = ParadoxModifierHandler.getModifierIconPath(modifierName)
-                val missing = isMissing(iconPath, project, element)
-                val codeInsightInfo = ParadoxImageCodeInsightInfo(type, iconPath, null, null, check, missing, false)
+                val paths = ParadoxModifierHandler.getModifierIconPaths(modifierName, element)
+                val pathToUse = paths.firstOrNull() ?: return@run
+                val missing = paths.all { path -> isMissing(path, project, element) }
+                val codeInsightInfo = ParadoxImageCodeInsightInfo(type, pathToUse, null, null, check, missing, false)
                 codeInsightInfos += codeInsightInfo
             }
             

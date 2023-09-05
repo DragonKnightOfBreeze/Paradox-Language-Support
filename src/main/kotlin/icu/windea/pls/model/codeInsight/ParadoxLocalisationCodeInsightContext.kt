@@ -105,22 +105,24 @@ data class ParadoxLocalisationCodeInsightContext(
                 run {
                     val type = ParadoxLocalisationCodeInsightInfo.Type.GeneratedModifierName
                     val check = inspection == null || inspection.checkGeneratedModifierNamesForDefinitions
-                    val name = ParadoxModifierHandler.getModifierNameKey(modifierName)
+                    val keys = ParadoxModifierHandler.getModifierNameKeys(modifierName, definition)
+                    val keyToUse = keys.firstOrNull() ?: return@run
                     for(locale in locales) {
                         ProgressManager.checkCanceled()
-                        val missing = isMissing(name, project, definition, locale)
-                        val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, check, missing, false)
+                        val missing = keys.all { key -> isMissing(key, project, definition, locale) }
+                        val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, keyToUse, null, locale, check, missing, false)
                         codeInsightInfos += codeInsightInfo
                     }
                 }
                 run {
                     val type = ParadoxLocalisationCodeInsightInfo.Type.GeneratedModifierDesc
                     val check = inspection == null || inspection.checkGeneratedModifierDescriptionsForDefinitions
-                    val name = ParadoxModifierHandler.getModifierDescKey(modifierName)
+                    val keys = ParadoxModifierHandler.getModifierDescKeys(modifierName, definition)
+                    val keyToUse = keys.firstOrNull() ?: return@run
                     for(locale in locales) {
                         ProgressManager.checkCanceled()
-                        val missing = isMissing(name, project, definition, locale)
-                        val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, check, missing, false)
+                        val missing = keys.all { key -> isMissing(key, project, definition, locale) }
+                        val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, keyToUse, null, locale, check, missing, false)
                         codeInsightInfos += codeInsightInfo
                     }
                 }
@@ -163,22 +165,24 @@ data class ParadoxLocalisationCodeInsightContext(
             run {
                 val type = ParadoxLocalisationCodeInsightInfo.Type.ModifierName
                 val check = inspection == null || inspection.checkModifierNames
-                val name = ParadoxModifierHandler.getModifierNameKey(modifierName)
+                val keys = ParadoxModifierHandler.getModifierNameKeys(modifierName, element)
+                val keyToUse = keys.firstOrNull() ?: return@run
                 for(locale in locales) {
                     ProgressManager.checkCanceled()
-                    val missing = isMissing(name, project, element, locale)
-                    val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, check, missing, false)
+                    val missing = keys.all { key -> isMissing(key, project, element, locale) }
+                    val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, keyToUse, null, locale, check, missing, false)
                     codeInsightInfos += codeInsightInfo
                 }
             }
             run {
                 val type = ParadoxLocalisationCodeInsightInfo.Type.ModifierDesc
                 val check = inspection == null || inspection.checkModifierDescriptions
-                val name = ParadoxModifierHandler.getModifierDescKey(modifierName)
+                val keys = ParadoxModifierHandler.getModifierDescKeys(modifierName, element)
+                val keyToUse = keys.firstOrNull() ?: return@run
                 for(locale in locales) {
                     ProgressManager.checkCanceled()
-                    val missing = isMissing(name, project, element, locale)
-                    val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, check, missing, false)
+                    val missing = keys.all { key -> isMissing(key, project, element, locale) }
+                    val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, keyToUse, null, locale, check, missing, false)
                     codeInsightInfos += codeInsightInfo
                 }
             }
