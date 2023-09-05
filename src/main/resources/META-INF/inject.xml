@@ -1,7 +1,9 @@
 <idea-plugin>
-  <applicationListeners>
-    <listener class="icu.windea.pls.inject.CodeInjectorServiceListener" topic="com.intellij.ide.AppLifecycleListener"/>
-  </applicationListeners>
+  <extensions defaultExtensionNs="com.intellij">
+    <!--these services MUST be non-light and preload (IGNORE compatibility verification unless incompatible)-->
+    <!--suppress PluginXmlValidity -->
+    <applicationService serviceImplementation="icu.windea.pls.inject.CodeInjectorService" preload="true"/>
+  </extensions>
   
   <extensionPoints>
     <!--these extension points are not dynamic in fact, but we just mark them as dynamic-->
