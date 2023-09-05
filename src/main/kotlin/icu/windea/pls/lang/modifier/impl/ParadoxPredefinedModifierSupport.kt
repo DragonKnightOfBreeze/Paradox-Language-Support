@@ -12,6 +12,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.modifier.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -23,16 +24,15 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
         return configGroup.predefinedModifiers[modifierName] != null
     }
     
-    override fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
+    override fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierData? {
         val modifierName = name
-        val modifierConfig = configGroup.predefinedModifiers[modifierName]
-        if(modifierConfig == null) return null
-        val project = configGroup.project
+        val modifierConfig = configGroup.predefinedModifiers[modifierName] ?: return null
         val gameType = configGroup.gameType ?: return null
-        val resolved = ParadoxModifierElement(element, modifierName, gameType, project)
-        resolved.putUserData(ParadoxModifierSupport.Keys.modifierConfig, modifierConfig)
-        resolved.putUserData(ParadoxModifierSupport.Keys.support, this)
-        return resolved
+        val project = configGroup.project
+        val modifierData = ParadoxModifierData(modifierName, gameType, project)
+        modifierData.support = this
+        modifierData.modifierConfig = modifierConfig
+        return modifierData
     }
     
     override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
@@ -56,7 +56,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
             if(template.isNotEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
             val name = modifierConfig.name
-            val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxPredefinedModifierSupport)
+            val modifierElement = ParadoxModifierHandler.resolveModifier(element, name, configGroup, this@ParadoxPredefinedModifierSupport)
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
                 .withIcon(PlsIcons.Modifier)
                 .withTailText(tailText)
@@ -72,13 +72,11 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
         }
     }
     
-    override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
-        return element.getUserData(ParadoxModifierSupport.Keys.modifierConfig)?.categoryConfigMap
+    override fun getModificationTracker(modifierData: ParadoxModifierData): ModificationTracker {
+        return ModificationTracker.NEVER_CHANGED
     }
     
-    override fun buildDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder) = false
-    
-    override fun getModificationTracker(element: ParadoxModifierElement): ModificationTracker {
-        return ModificationTracker.NEVER_CHANGED
+    override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
+        return modifierElement.modifierConfig?.categoryConfigMap
     }
 }

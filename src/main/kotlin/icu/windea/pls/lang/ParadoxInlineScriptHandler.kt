@@ -96,7 +96,7 @@ object ParadoxInlineScriptHandler {
     
     fun getInlineScriptFilePath(pathReference: String): String? {
         val configExpression = inlineScriptPathExpression
-        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.resolvePath(configExpression, pathReference.normalizePath())
+        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.resolvePath(configExpression, pathReference.normalizePath())?.firstOrNull()
     }
     
     fun getInlineScriptExpression(file: VirtualFile): String? {

@@ -11,6 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.util.*
@@ -26,11 +27,6 @@ import icu.windea.pls.script.psi.*
  */
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
-    companion object {
-        const val economicCategoriesDirPath = "common/economic_categories"
-        const val economicCategoriesPathExpression = "common/economic_categories/,.txt"
-    }
-    
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         val project = configGroup.project
@@ -50,7 +46,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         return r
     }
     
-    override fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
+    override fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierData? {
         val modifierName = name
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
@@ -70,11 +66,11 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
             true
         }
         if(economicCategoryInfo == null || economicCategoryModifierInfo == null) return null
-        val resolved = ParadoxModifierElement(element, modifierName, gameType, project)
-        resolved.putUserData(ParadoxModifierSupport.Keys.economicCategoryInfo, economicCategoryInfo)
-        resolved.putUserData(ParadoxModifierSupport.Keys.economicCategoryModifierInfo, economicCategoryModifierInfo)
-        resolved.putUserData(ParadoxModifierSupport.Keys.support, this)
-        return resolved
+        val modifierData = ParadoxModifierData(modifierName, gameType, project)
+        modifierData.support = this
+        modifierData.economicCategoryInfo = economicCategoryInfo
+        modifierData.economicCategoryModifierInfo = economicCategoryModifierInfo
+        return modifierData
     }
     
     override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
@@ -101,7 +97,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
                 //排除重复的
                 if(!modifierNames.add(name)) continue
                 
-                val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@StellarisEconomicCategoryModifierSupport)
+                val modifierElement = ParadoxModifierHandler.resolveModifier(element, name, configGroup, this@StellarisEconomicCategoryModifierSupport)
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
                     .withIcon(PlsIcons.Modifier)
                     .withTailText(tailText)
@@ -119,31 +115,35 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         }
     }
     
-    override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
-        val economicCategoryInfo = element.getUserData(ParadoxModifierSupport.Keys.economicCategoryInfo) ?: return null
+    override fun getModificationTracker(modifierData: ParadoxModifierData): ModificationTracker {
+        return ParadoxPsiModificationTracker.getInstance(modifierData.project).ScriptFileTracker("common/economic_categories:txt")
+    }
+    
+    override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
+        val economicCategoryInfo = modifierElement.economicCategoryInfo ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory //may be null
-        val configGroup = getConfigGroups(element.project).get(element.gameType)
+        val configGroup = getConfigGroups(modifierElement.project).get(modifierElement.gameType)
         return StellarisEconomicCategoryHandler.resolveModifierCategory(modifierCategory, configGroup)
     }
     
-    override fun buildDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean = with(builder) {
-        val gameType = element.gameType
-        val economicCategoryInfo = element.getUserData(ParadoxModifierSupport.Keys.economicCategoryInfo) ?: return false
-        val modifierInfo = element.getUserData(ParadoxModifierSupport.Keys.economicCategoryModifierInfo) ?: return false
+    override fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: StringBuilder): Boolean = with(builder) {
+        val gameType = modifierElement.gameType
+        val economicCategoryInfo = modifierElement.economicCategoryInfo ?: return false
+        val modifierInfo = modifierElement.economicCategoryModifierInfo ?: return false
         
         //加上名字
-        val name = element.name
+        val name = modifierElement.name
         append(PlsBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上经济类型信息
         appendBr().appendIndent()
         append(PlsBundle.message("generatedFromEconomicCategory"))
         append(" ")
-        appendDefinitionLink(gameType, economicCategoryInfo.name, "economic_category", element)
+        appendDefinitionLink(gameType, economicCategoryInfo.name, "economic_category", modifierElement)
         if(modifierInfo.resource != null) {
             appendBr().appendIndent()
             append(PlsBundle.message("generatedFromResource"))
             append(" ")
-            appendDefinitionLink(gameType, modifierInfo.resource, "resource", element)
+            appendDefinitionLink(gameType, modifierInfo.resource, "resource", modifierElement)
         } else {
             appendBr().appendIndent()
             append(PlsBundle.message("forAiBudget"))
@@ -181,8 +181,12 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         }
         return true
     }
-    
-    override fun getModificationTracker(element: ParadoxModifierElement): ModificationTracker {
-        return ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker("common/economic_categories:txt")
-    }
 }
+
+val ParadoxModifierData.Keys.economicCategoryInfo by createKey<StellarisEconomicCategoryInfo>("paradox.modifier.data.economicCategoryInfo")
+val ParadoxModifierData.Keys.economicCategoryModifierInfo by createKey<StellarisEconomicCategoryModifierInfo>("paradox.modifier.data.economicCategoryModifierInfo")
+
+var ParadoxModifierData.economicCategoryInfo by ParadoxModifierData.Keys.economicCategoryInfo
+var ParadoxModifierElement.economicCategoryInfo by ParadoxModifierData.Keys.economicCategoryInfo
+var ParadoxModifierData.economicCategoryModifierInfo by ParadoxModifierData.Keys.economicCategoryModifierInfo
+var ParadoxModifierElement.economicCategoryModifierInfo by ParadoxModifierData.Keys.economicCategoryModifierInfo

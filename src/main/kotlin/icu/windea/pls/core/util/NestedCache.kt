@@ -1,9 +1,9 @@
 package icu.windea.pls.core.util
 
-import com.google.common.cache.Cache
+import com.google.common.cache.*
 import com.jetbrains.rd.util.*
 
-class NestedCache<RK, K, V, C: Cache<K,V>>(
+class NestedCache<RK, K: Any, V: Any, C: Cache<K,V>>(
     private val cacheProvider: () -> C
 ) {
     private val cacheMap = ConcurrentHashMap<RK, C>()
@@ -12,3 +12,4 @@ class NestedCache<RK, K, V, C: Cache<K,V>>(
         return cacheMap.computeIfAbsent(key) { cacheProvider() }
     }
 }
+

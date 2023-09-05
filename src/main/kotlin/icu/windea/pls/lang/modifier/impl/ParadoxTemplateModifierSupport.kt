@@ -11,6 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.references.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
@@ -31,23 +32,23 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         }
     }
     
-    override fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
+    override fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierData? {
         val modifierName = name
-        val project = configGroup.project
         val gameType = configGroup.gameType ?: return null
+        val project = configGroup.project
         var modifierConfig: CwtModifierConfig? = null
-        val references = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
+        val templateReferences = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
             ProgressManager.checkCanceled()
             val resolvedReferences = config.template.resolveReferences(modifierName, element, configGroup).takeIfNotEmpty()
             if(resolvedReferences != null) modifierConfig = config
             resolvedReferences
         }.orEmpty()
         if(modifierConfig == null) return null
-        val resolved = ParadoxModifierElement(element, modifierName, gameType, project)
-        resolved.putUserData(ParadoxModifierSupport.Keys.modifierConfig, modifierConfig)
-        resolved.putUserData(ParadoxModifierSupport.Keys.references, references)
-        resolved.putUserData(ParadoxModifierSupport.Keys.support, this)
-        return resolved
+        val modifierData = ParadoxModifierData(modifierName, gameType, project)
+        modifierData.support = this
+        modifierData.modifierConfig = modifierConfig
+        modifierData.templateReferences = templateReferences
+        return modifierData
     }
     
     override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
@@ -72,7 +73,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                 //排除重复的
                 if(!modifierNames.add(name)) return@p true
                 
-                val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
+                val modifierElement = ParadoxModifierHandler.resolveModifier(element, name, configGroup, this@ParadoxTemplateModifierSupport)
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
                     .withIcon(PlsIcons.Modifier)
                     .withTailText(tailText)
@@ -90,22 +91,27 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         }
     }
     
-    override fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
-        return element.getUserData(ParadoxModifierSupport.Keys.modifierConfig)?.categoryConfigMap
+    override fun getModificationTracker(modifierData: ParadoxModifierData): ModificationTracker {
+        //TODO 可以进一步缩小范围
+        return ParadoxPsiModificationTracker.getInstance(modifierData.project).ScriptFileTracker(":txt")
     }
     
-    override fun buildDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean = with(builder) {
-        val modifierConfig = element.getUserData(ParadoxModifierSupport.Keys.modifierConfig) ?: return false
-        val references = element.getUserData(ParadoxModifierSupport.Keys.references) ?: return false
+    override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
+        return modifierElement.modifierConfig?.categoryConfigMap
+    }
+    
+    override fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: StringBuilder): Boolean = with(builder) {
+        val modifierConfig = modifierElement.modifierConfig ?: return false
+        val templateReferences = modifierElement.templateReferences ?: return false
         
         //加上名字
         val configGroup = modifierConfig.info.configGroup
-        val name = element.name
+        val name = modifierElement.name
         append(PlsBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上模版信息
         val templateConfigExpression = modifierConfig.template
         if(templateConfigExpression.isNotEmpty()) {
-            val gameType = element.gameType
+            val gameType = modifierElement.gameType
             val templateString = templateConfigExpression.expressionString
             
             appendBr().appendIndent()
@@ -113,8 +119,8 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             appendCwtLink("${gameType.linkToken}modifiers/$templateString", templateString)
             
             //加上生成源信息
-            if(references.isNotEmpty()) {
-                for(reference in references) {
+            if(templateReferences.isNotEmpty()) {
+                for(reference in templateReferences) {
                     appendBr().appendIndent()
                     val configExpression = reference.configExpression
                     when(configExpression.type) {
@@ -124,7 +130,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             val definitionTypes = definitionType.split('.')
                             append(PlsBundle.message("generatedFromDefinition"))
                             append(" ")
-                            appendDefinitionLink(gameType, definitionName, definitionType, element)
+                            appendDefinitionLink(gameType, definitionName, definitionType, modifierElement)
                             append(": ")
                             
                             val type = definitionTypes.first()
@@ -143,13 +149,13 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             append(PlsBundle.message("generatedFromEnumValue"))
                             append(" ")
                             if(configGroup.enums.containsKey(enumName)) {
-                                appendCwtLink("${gameType.linkToken}enums/${enumName}/${enumValueName}", enumName, element)
+                                appendCwtLink("${gameType.linkToken}enums/${enumName}/${enumValueName}", enumName, modifierElement)
                                 append(": ")
-                                appendCwtLink("${gameType.linkToken}enums/${enumName}", enumName, element)
+                                appendCwtLink("${gameType.linkToken}enums/${enumName}", enumName, modifierElement)
                             } else if(configGroup.complexEnums.containsKey(enumName)) {
                                 append(enumValueName.escapeXml())
                                 append(": ")
-                                appendCwtLink("${gameType.linkToken}complex_enums/${enumName}", enumName, element)
+                                appendCwtLink("${gameType.linkToken}complex_enums/${enumName}", enumName, modifierElement)
                             } else {
                                 //unexpected
                                 append(enumValueName.escapeXml())
@@ -162,9 +168,9 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             val valueName = configExpression.value!!
                             append(PlsBundle.message("generatedFromValueSetValue"))
                             if(configGroup.values.containsKey(valueName)) {
-                                appendCwtLink("${gameType.linkToken}values/${valueSetName}/${valueName}", valueName, element)
+                                appendCwtLink("${gameType.linkToken}values/${valueSetName}/${valueName}", valueName, modifierElement)
                                 append(": ")
-                                appendCwtLink("${gameType.linkToken}values/${valueSetName}", valueName, element)
+                                appendCwtLink("${gameType.linkToken}values/${valueSetName}", valueName, modifierElement)
                             } else {
                                 append(valueName.escapeXml())
                                 append(": ")
@@ -198,9 +204,9 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         }
         return true
     }
-    
-    override fun getModificationTracker(element: ParadoxModifierElement): ModificationTracker {
-        //TODO 可以进一步缩小范围
-        return ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker(":txt")
-    }
 }
+
+val ParadoxModifierData.Keys.templateReferences by createKey<List<ParadoxTemplateSnippetExpressionReference>>("paradox.modifier.data.templateReferences")
+
+var ParadoxModifierData.templateReferences by ParadoxModifierData.Keys.templateReferences
+var ParadoxModifierElement.templateReferences by ParadoxModifierData.Keys.templateReferences

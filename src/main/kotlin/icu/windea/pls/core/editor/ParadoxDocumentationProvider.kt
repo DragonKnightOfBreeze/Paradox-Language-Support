@@ -292,7 +292,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         
         if(sections == null) return
         val gameType = configGroup.gameType ?: return
-        val modifierCategories = ParadoxModifierHandler.getModifierCategories(element) ?: return
+        val modifierCategories = ParadoxModifierSupport.getModifierCategories(element) ?: return
         val contextElement = element
         val categoryNames = modifierCategories.keys
         if(categoryNames.isNotEmpty()) {

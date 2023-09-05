@@ -32,14 +32,14 @@ abstract class ParadoxPathReferenceExpressionSupport {
      * @param configExpression 对应的CWT规则表达式。拥有数种写法的文件路径表达式。
      * @param pathReference 作为值的字符串。即脚本文件中使用的路径表达式。
      */
-    abstract fun resolvePath(configExpression: CwtDataExpression, pathReference: String): String?
+    abstract fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>?
     
     /**
      * 解析指定的文件路径表达式，得到文件名。
      * @param configExpression 对应的CWT规则表达式。拥有数种写法的文件路径表达式。
      * @param pathReference 作为值的字符串。即脚本文件中使用的路径表达式。
      */
-    abstract fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): String
+    abstract fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): Set<String>?
     
     abstract fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String
     

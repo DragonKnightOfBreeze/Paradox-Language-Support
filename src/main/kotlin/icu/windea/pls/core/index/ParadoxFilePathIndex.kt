@@ -86,9 +86,7 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
         if(extension.isEmpty()) return false
         return extension in PlsConstants.scriptFileExtensions
             || extension in PlsConstants.localisationFileExtensions
-            || extension in PlsConstants.ddsFileExtensions
-            || extension == "png"
-            || extension == "tga"
+            || extension in PlsConstants.imageFileExtensions
     }
 }
 

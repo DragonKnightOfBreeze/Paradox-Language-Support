@@ -10,7 +10,6 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.references.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.*
@@ -28,25 +27,25 @@ interface ParadoxModifierSupport {
      */
     fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean
     
-    fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement?
+    fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierData?
     
     fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>)
     
-    fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>?
+    fun getModificationTracker(modifierData: ParadoxModifierData): ModificationTracker? = null
+    
+    fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>?
     
     /**
      * 构建修正的快速文档中的定义部分。
      * @return 此解析器是否适用。
      */
-    fun buildDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean = false
+    fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: StringBuilder): Boolean = false
     
     /**
      * 构建定义的快速文档中的定义部分中的对应的生成的修正的那一部分。
      * @return 此解析器是否适用。
      */
     fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean = false
-    
-    fun getModificationTracker(element: ParadoxModifierElement): ModificationTracker? = null
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxModifierSupport>("icu.windea.pls.modifierSupport")
@@ -59,7 +58,7 @@ interface ParadoxModifierSupport {
             }
         }
         
-        fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierElement? {
+        fun resolveModifier(name: String, element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxModifierData? {
             val gameType = configGroup.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
@@ -76,25 +75,19 @@ interface ParadoxModifierSupport {
         }
         
         fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
-            val ep = element.getUserData(Keys.support) ?: return null
-            return ep.getModifierCategories(element)
-            
-            //val gameType = element.gameType
-            //return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            //    if(!gameType.supportsByAnnotation(ep)) return@f null
-            //    ep.getModifierCategories(element)
-            //}
+            val gameType = element.gameType
+            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+                if(!gameType.supportsByAnnotation(ep)) return@f null
+                ep.getModifierCategories(element)
+            }
         }
         
         fun getDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean {
-            val ep = element.getUserData(Keys.support) ?: return false
-            return ep.buildDocumentationDefinition(element, builder)
-            
-            //val gameType = element.gameType
-            //return EP_NAME.extensionList.any f@{ ep ->
-            //    if(!gameType.supportsByAnnotation(ep)) return@f false
-            //    ep.buildDocumentationDefinition(element, builder)
-            //}
+            val gameType = element.gameType
+            return EP_NAME.extensionList.any f@{ ep ->
+                if(!gameType.supportsByAnnotation(ep)) return@f false
+                ep.buildDocumentationDefinition(element, builder)
+            }
         }
         
         fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean {
@@ -104,13 +97,5 @@ interface ParadoxModifierSupport {
                 ep.buildDDocumentationDefinitionForDefinition(definition, definitionInfo, builder)
             }
         }
-    }
-    
-    object Keys {
-        val support = Key.create<ParadoxModifierSupport>("paradox.modifierElement.support")
-        val modifierConfig = Key.create<CwtModifierConfig>("paradox.modifierElement.config")
-        val references = Key.create<List<ParadoxTemplateSnippetExpressionReference>>("paradox.modifierElement.references")
-        val economicCategoryInfo = Key.create<StellarisEconomicCategoryInfo>("paradox.modifierElement.economicCategoryInfo")
-        val economicCategoryModifierInfo = Key.create<StellarisEconomicCategoryModifierInfo>("paradox.modifierElement.economicCategoryModifierInfo")
     }
 }

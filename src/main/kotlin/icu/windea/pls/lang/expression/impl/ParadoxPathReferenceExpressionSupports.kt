@@ -3,6 +3,7 @@ package icu.windea.pls.lang.expression.impl
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.expression.*
 
@@ -14,22 +15,36 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
         return configExpression.type == CwtDataType.Icon
     }
     
+    //icon filePath需要是不带扩展名的文件名（其扩展名必须是合法的图片的扩展名）
+    //icon[foo/bar] - filePath需要是不带扩展名的文件名且该文件需要位于目录foo/bar或其子目录下（其扩展名必须是合法的图片的扩展名）
+    
     override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean {
-        val expression = configExpression.value ?: return false
-        return expression.matchesPath(filePath, trim = true) && filePath.endsWith(".dds", true)
+        val filePathWithoutExtension = getFilePathWithoutExtension(filePath) ?: return false
+        val expression = configExpression.value ?: return true
+        return expression.matchesPath(filePathWithoutExtension, trim = true)
     }
     
     override fun extract(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean): String? {
-        val expression = configExpression.value ?: return null
-        return filePath.removeSurroundingOrNull(expression, ".dds", ignoreCase)?.substringAfterLast('/')
+        val filePathWithoutExtension = getFilePathWithoutExtension(filePath) ?: return null
+        val expression = configExpression.value ?: return filePathWithoutExtension
+        return filePathWithoutExtension.removePrefixOrNull(expression, ignoreCase)?.trimFast('/')
     }
     
-    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): String? {
+    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>? {
         return null //信息不足
     }
     
-    override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): String {
-        return pathReference.substringAfterLast('/') + ".dds"
+    override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): Set<String> {
+        val fileNameWithoutExtension = pathReference.substringAfterLast('/')
+        return PlsConstants.imageFileExtensions.mapTo(mutableSetOf()) { "$fileNameWithoutExtension.$it" }
+    }
+    
+    private fun getFilePathWithoutExtension(filePath: String) : String? {
+        val i = filePath.lastIndexOf('.')
+        if(i == -1) return null
+        val extension = filePath.substring(i + 1).lowercase()
+        if(extension !in PlsConstants.imageFileExtensions) return null
+        return filePath.substring(0, i)
     }
     
     override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {
@@ -90,8 +105,8 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         }
     }
     
-    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): String? {
-        val expression = configExpression.value ?: return pathReference
+    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>? {
+        val expression = configExpression.value ?: return pathReference.toSingletonSet()
         val expressionRel = expression.removePrefixOrNull("./")
         if(expressionRel != null) {
             return null //信息不足
@@ -99,22 +114,22 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         val index = configExpression.lastIndexOf(',') //","应当最多出现一次
         if(index == -1) {
             if(expression.endsWith('/')) {
-                return expression + pathReference
+                return "$expression$pathReference".toSingletonSet()
             } else {
-                return "$expression/$pathReference"
+                return "$expression/$pathReference".toSingletonSet()
             }
         } else {
-            return expression.replace(",", pathReference)
+            return expression.replace(",", pathReference).toSingletonSet()
         }
     }
     
-    override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): String {
-        val expression = configExpression.value ?: return pathReference.substringAfterLast('/')
+    override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): Set<String> {
+        val expression = configExpression.value ?: return pathReference.substringAfterLast('/').toSingletonSet()
         val index = expression.lastIndexOf(',') //","应当最多出现一次
         if(index == -1) {
-            return pathReference.substringAfterLast('/')
+            return pathReference.substringAfterLast('/').toSingletonSet()
         } else {
-            return expression.replace(",", pathReference).substringAfterLast('/')
+            return expression.replace(",", pathReference).substringAfterLast('/').toSingletonSet()
         }
     }
     
@@ -143,12 +158,12 @@ class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpression
         return filePath.substringAfterLast('/')
     }
     
-    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): String? {
+    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>? {
         return null //信息不足
     }
     
-    override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): String {
-        return pathReference.substringAfterLast('/')
+    override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): Set<String> {
+        return pathReference.substringAfterLast('/').toSingletonSet()
     }
     
     override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {

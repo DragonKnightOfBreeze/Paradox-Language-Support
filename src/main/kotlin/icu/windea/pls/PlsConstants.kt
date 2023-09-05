@@ -21,7 +21,7 @@ object PlsConstants {
     
     val scriptFileExtensions = arrayOf("txt", "gfx", "gui", "asset", "dlc", "settings")
     val localisationFileExtensions = arrayOf("yml")
-    val ddsFileExtensions = arrayOf("dds")
+    val imageFileExtensions = arrayOf("dds", "png", "tga")
     
     const val launcherSettingsFileName = "launcher-settings.json"
     const val descriptorFileName = "descriptor.mod"
