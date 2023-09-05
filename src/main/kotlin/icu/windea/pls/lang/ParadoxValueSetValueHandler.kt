@@ -181,6 +181,6 @@ object ParadoxValueSetValueHandler {
     }
     
     fun getInferredScopeContext(element: ParadoxValueSetValueElement): ParadoxScopeContext? {
-        return ParadoxScopeHandler.getAnyScopeContext() //TODo 1.1.8+
+        return ParadoxScopeHandler.getAnyScopeContext() //TODO 1.1.8+
     }
 }

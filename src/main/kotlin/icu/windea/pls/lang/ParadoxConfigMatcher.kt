@@ -5,15 +5,18 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.PlsContext.indexStatus
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.ParadoxConfigMatcher.Result
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
@@ -382,15 +385,12 @@ object ParadoxConfigMatcher {
         return actualKeys.any { it in keys }
     }
     
-    private val configMatchResultCache = CacheBuilder.newBuilder().buildCache<String, Result>()
-    
     private fun getCachedMatchResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
         ProgressManager.checkCanceled()
         if(indexStatus.get() == true) return Result.ExactMatch // indexing -> should not visit indices -> treat as exact match
         val rootFile = selectRootFile(element) ?: return Result.NotMatch
-        val rootPath = rootFile.rootInfo?.rootPath?.toString() ?: return Result.NotMatch
-        val globalCacheKey = "$rootPath:$cacheKey"
-        return configMatchResultCache.getOrPut(globalCacheKey) { Result.LazyIndexAwareMatch(predicate) }
+        val cache = rootFile.configMatchResultCache.value
+        return cache.getOrPut(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
     }
     
     private fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {
@@ -501,10 +501,10 @@ object ParadoxConfigMatcher {
     private fun Boolean.toResult() = if(this) Result.ExactMatch else Result.NotMatch
     
     private fun Boolean.toFallbackResult() = if(this) Result.FallbackMatch else Result.NotMatch
-    
-    class Listener : PsiModificationTracker.Listener {
-        override fun modificationCountChanged() {
-            configMatchResultCache.invalidateAll()
-        }
-    }
 }
+
+private val PlsKeys.configMatchResultCache by createCachedValueKey<Cache<String, Result>>("paradox.configMatchResult.cache") {
+    //NOTE 1.1.8 CWT规则匹配结果可能依赖于定义索引、本地化索引等
+    CacheBuilder.newBuilder().buildCache<String, Result>().withDependencyItems(PsiModificationTracker.MODIFICATION_COUNT)
+}
+private val VirtualFile.configMatchResultCache by PlsKeys.configMatchResultCache

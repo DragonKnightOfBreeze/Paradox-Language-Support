@@ -32,7 +32,7 @@
     <registryKey key="run.convert.dds.to.png.under.progress" defaultValue="true" restartRequired="true"
                  description="Run convert DDS to PNG write action under progress, not to freeze the UI during long operations"/>
     
-    <vfs.asyncListener implementation="icu.windea.pls.core.listeners.ParadoxCoreFileListener"/>
+    <vfs.asyncListener implementation="icu.windea.pls.core.listeners.vfs.ParadoxCoreFileListener"/>
 
     <projectViewPane implementation="icu.windea.pls.core.projectView.ParadoxFilesViewPane"/>
     <projectViewNodeDecorator implementation="icu.windea.pls.core.projectView.ParadoxProjectViewDecorator"/>
@@ -147,9 +147,6 @@
               topic="icu.windea.pls.core.listeners.ParadoxModSettingsListener"/>
     <listener class="icu.windea.pls.core.listeners.ParadoxUpdateSettingsOnRootInfoChangedListener"
               topic="icu.windea.pls.core.listeners.ParadoxRootInfoListener"/>
-
-    <listener class="icu.windea.pls.lang.ParadoxConfigMatcher$Listener"
-              topic="com.intellij.psi.util.PsiModificationTracker$Listener"/>
   </applicationListeners>
   
   <projectListeners>
