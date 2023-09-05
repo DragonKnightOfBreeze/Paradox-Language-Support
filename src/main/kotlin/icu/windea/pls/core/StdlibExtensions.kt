@@ -102,7 +102,7 @@ fun Number.format(digits: Int): String {
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun <T : CharSequence> T.takeIfNotEmpty() = this.takeIf { it.isNotEmpty() }
+inline fun <T : CharSequence> T.orNull() = this.takeIf { it.isNotEmpty() }
 
 fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {
     return startsWith(prefix, ignoreCase) && endsWith(suffix, ignoreCase)
@@ -242,11 +242,11 @@ fun String.isRightQuoted(): Boolean {
 }
 
 fun String.toCommaDelimitedStringList(destination: MutableList<String> = mutableListOf()): MutableList<String> {
-    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().takeIfNotEmpty() }
+    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().orNull() }
 }
 
 fun String.toCommaDelimitedStringSet(destination: MutableSet<String> = mutableSetOf()): MutableSet<String> {
-    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().takeIfNotEmpty() }
+    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().orNull() }
 }
 
 fun Collection<String>.toCommaDelimitedString(): String {

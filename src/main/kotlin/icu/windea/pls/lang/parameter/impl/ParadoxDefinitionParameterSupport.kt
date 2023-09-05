@@ -80,7 +80,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val configGroup = contextConfig.info.configGroup
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
-        val definitionName = contextReferenceElement.name.takeIfNotEmpty() ?: return null
+        val definitionName = contextReferenceElement.name.orNull() ?: return null
         if(definitionName.isParameterized()) return null //skip if context name is parameterized
         val definitionTypes = contextConfig.expression.value?.split('.') ?: return null
         val contextName = definitionName
@@ -139,7 +139,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
         if(contextConfig.expression.type != CwtDataType.Definition) return null
         val contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
-        val definitionName = contextReferenceElement.name.takeIfNotEmpty() ?: return null
+        val definitionName = contextReferenceElement.name.orNull() ?: return null
         if(definitionName.isParameterized()) return null //skip if context name is parameterized
         val definitionTypes = contextConfig.expression.value?.split('.') ?: return null
         val name = element.name

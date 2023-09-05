@@ -253,7 +253,7 @@ class CwtImageLocationExpression private constructor(
                 }
                 else -> {
                     val propertyName = expressionString.substringBefore('|').intern()
-                    val framePropertyNames = expressionString.substringAfter('|', "").takeIfNotEmpty()
+                    val framePropertyNames = expressionString.substringAfter('|', "").orNull()
                         ?.toCommaDelimitedStringList()
                     CwtImageLocationExpression(expressionString, propertyName = propertyName, framePropertyNames = framePropertyNames)
                 }

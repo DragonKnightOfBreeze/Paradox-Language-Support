@@ -70,7 +70,7 @@ class ParadoxDataExpressionNode(
         
         override fun getReferences(): Array<out PsiReference>? {
             return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-                ParadoxConfigHandler.getReferences(element, rangeInElement, linkConfig, linkConfig.expression, linkConfig.info.configGroup).takeIfNotEmpty()
+                ParadoxConfigHandler.getReferences(element, rangeInElement, linkConfig, linkConfig.expression, linkConfig.info.configGroup).orNull()
             }
         }
         

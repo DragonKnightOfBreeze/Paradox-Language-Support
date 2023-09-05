@@ -56,7 +56,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     //某些情况下我们需要忽略一些未解析的表达式
                     if(expectedConfigs.isNotEmpty() && expectedConfigs.all { isIgnored(it) }) return true
                     val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.expression }
-                    expectedExpressions.takeIfNotEmpty()?.joinToString()
+                    expectedExpressions.orNull()?.joinToString()
                     val expect = if(showExpectInfo) expectedExpressions.joinToString() else null
                     val message = when {
                         expect == null -> PlsBundle.message("inspection.script.general.unresolvedExpression.description.1.1", propertyKey.expression)

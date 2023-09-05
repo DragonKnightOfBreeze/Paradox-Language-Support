@@ -53,7 +53,7 @@ class CwtOnActionConfigFromCsvGenerator(
                 val name = info.key
                 val event = info.event
                 val scopeContext = info.scopeContext
-                val comment = info.comment?.takeIfNotEmpty()
+                val comment = info.comment?.orNull()
                 if(name.isEmpty() || event.isEmpty() || scopeContext == null) return@forEach
                 if(isFirst) {
                     isFirst = false

@@ -21,7 +21,7 @@ interface ParadoxDefinitionExtendedDocumentationProvider {
             val gameType = definitionInfo.gameType
             EP_NAME.extensionList.forEachFast f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
-                val documentation = ep.getDocumentation(definition, definitionInfo)?.takeIfNotEmpty()
+                val documentation = ep.getDocumentation(definition, definitionInfo)?.orNull()
                 if(documentation != null) {
                     action(documentation)
                 }

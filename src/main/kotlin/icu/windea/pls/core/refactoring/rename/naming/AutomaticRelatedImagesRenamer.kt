@@ -35,7 +35,7 @@ class AutomaticRelatedImagesRenamer(element: PsiElement, newName: String) : Auto
     
     private fun prepareRenaming(element: ParadoxScriptDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
         val definitionInfo = element.definitionInfo ?: return
-        val infos = definitionInfo.images.takeIfNotEmpty() ?: return
+        val infos = definitionInfo.images.orNull() ?: return
         for(info in infos) {
             ProgressManager.checkCanceled()
             val result = info.locationExpression.resolveAll(element, definitionInfo) ?: continue

@@ -151,7 +151,7 @@ class ParadoxModSettingsDialog(
     }
     
     private fun doGetGameVersionFromGameDirectory(): String? {
-        val gameDirectory = gameDirectory.takeIfNotEmpty() ?: return null
+        val gameDirectory = gameDirectory.orNull() ?: return null
         val rootFile = gameDirectory.toVirtualFile(false)?.takeIf { it.exists() } ?: return null
         val rootInfo = rootFile.rootInfo
         if(rootInfo !is ParadoxGameRootInfo) return null

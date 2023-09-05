@@ -32,7 +32,7 @@ interface ParadoxOverriddenConfigProvider {
             val gameType = config.info.configGroup.gameType ?: return null
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
-                ep.getOverriddenConfigs(contextElement, config).takeIfNotEmpty()
+                ep.getOverriddenConfigs(contextElement, config).orNull()
                     ?.onEach { it.overriddenProvider = ep }
                     ?.also { PlsContext.overrideConfigStatus.set(true) } //set overrideConfigStatus
             }

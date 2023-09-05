@@ -121,8 +121,8 @@ object ParadoxConfigMerger {
     }
     
     private fun mergeDocumentations(c1: CwtDocumentationAware, c2: CwtDocumentationAware): String? {
-        val d1 = c1.documentation?.takeIfNotEmpty()
-        val d2 = c2.documentation?.takeIfNotEmpty()
+        val d1 = c1.documentation?.orNull()
+        val d2 = c2.documentation?.orNull()
         if(d1 == null || d2 == null) return d1 ?: d2
         if(d1 == d2) return d1
         return "$d1\n<br><br>\n$d2"

@@ -18,7 +18,7 @@ import java.util.concurrent.*
 private val steamPathCache = ConcurrentHashMap<String, String>()
 
 fun getSteamPath(): String? {
-    val result = steamPathCache.getOrPut("") { doGetSteamPath() }.takeIfNotEmpty()
+    val result = steamPathCache.getOrPut("") { doGetSteamPath() }.orNull()
     return result
 }
 
@@ -36,7 +36,7 @@ private fun doGetSteamPath(): String {
 }
 
 fun getSteamGamePath(steamId: String, gameName: String): String? {
-    val result = steamPathCache.getOrPut(steamId) { doGetSteamGamePath(steamId) }.takeIfNotEmpty()
+    val result = steamPathCache.getOrPut(steamId) { doGetSteamGamePath(steamId) }.orNull()
     if(result != null) return result
     //不准确，可以放在不同库目录下
     return getSteamPath()?.let { steamPath -> """$steamPath\steamapps\common\$gameName""" }

@@ -68,7 +68,7 @@ class ParadoxPathImplA(
 	override val parent: String = path.substringBeforeLast('/', "")
 	override val root: String = path.substringBefore('/', "")
 	override val fileName: String = subPaths.lastOrNull().orEmpty()
-	override val fileExtension: String? = fileName.substringAfterLast('.', "").takeIfNotEmpty()
+	override val fileExtension: String? = fileName.substringAfterLast('.', "").orNull()
 	override val length: Int = subPaths.size
 	
 	override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path
@@ -84,7 +84,7 @@ class ParadoxPathImplB(
 	override val parent: String = path.substringBeforeLast('/', "")
 	override val root: String = path.substringBefore('/', "")
 	override val fileName: String = subPaths.lastOrNull().orEmpty()
-	override val fileExtension: String? = fileName.substringAfterLast('.', "").takeIfNotEmpty()
+	override val fileExtension: String? = fileName.substringAfterLast('.', "").orNull()
 	override val length: Int = subPaths.size
 	
 	override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path

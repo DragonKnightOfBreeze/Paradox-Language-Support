@@ -81,25 +81,25 @@ class CwtKeyExpression private constructor(
                 }
                 //EXTENDED BY PLS
                 expressionString.surroundsWith("filename[", "]") -> {
-                    val value = expressionString.substring(9, expressionString.length - 1).takeIfNotEmpty()
+                    val value = expressionString.substring(9, expressionString.length - 1).orNull()
                     CwtKeyExpression(expressionString, CwtDataType.FileName, value)
                 }
                 expressionString == "filepath" -> {
                     CwtKeyExpression(expressionString, CwtDataType.FilePath)
                 }
                 expressionString.surroundsWith("filepath[", "]") -> {
-                    val value = expressionString.substring(9, expressionString.length - 1).takeIfNotEmpty()
+                    val value = expressionString.substring(9, expressionString.length - 1).orNull()
                     CwtKeyExpression(expressionString, CwtDataType.FilePath, value)
                 }
                 expressionString.surroundsWith("icon[", "]") -> {
-                    val value = expressionString.substring(5, expressionString.length - 1).takeIfNotEmpty()
+                    val value = expressionString.substring(5, expressionString.length - 1).orNull()
                     CwtKeyExpression(expressionString, CwtDataType.Icon, value)
                 }
                 expressionString == "<modifier>" -> {
                     CwtKeyExpression(expressionString, CwtDataType.Modifier)
                 }
                 expressionString.surroundsWith('<', '>') -> {
-                    val value = expressionString.substring(1, expressionString.length - 1).takeIfNotEmpty()
+                    val value = expressionString.substring(1, expressionString.length - 1).orNull()
                     CwtKeyExpression(expressionString, CwtDataType.Definition, value)
                 }
                 //EXTENDED BY PLS
@@ -115,20 +115,20 @@ class CwtKeyExpression private constructor(
                     CwtKeyExpression("localisation_parameter", CwtDataType.LocalisationParameter)
                 }
                 expressionString.surroundsWith("value[", "]") -> {
-                    val value = expressionString.substring(6, expressionString.length - 1).takeIfNotEmpty()
+                    val value = expressionString.substring(6, expressionString.length - 1).orNull()
                     CwtKeyExpression(expressionString, CwtDataType.Value, value)
                 }
                 expressionString.surroundsWith("value_set[", "]") -> {
-                    val value = expressionString.substring(10, expressionString.length - 1).takeIfNotEmpty()
+                    val value = expressionString.substring(10, expressionString.length - 1).orNull()
                     CwtKeyExpression(expressionString, CwtDataType.ValueSet, value)
                 }
                 //EXTENDED BY PLS
                 expressionString.surroundsWith("value_or_value_set[", "]") -> {
-                    val value = expressionString.substring(19, expressionString.length - 1).takeIfNotEmpty()
+                    val value = expressionString.substring(19, expressionString.length - 1).orNull()
                     CwtKeyExpression(expressionString, CwtDataType.ValueOrValueSet, value)
                 }
                 expressionString.surroundsWith("enum[", "]") -> {
-                    val value = expressionString.substring(5, expressionString.length - 1).takeIfNotEmpty()
+                    val value = expressionString.substring(5, expressionString.length - 1).orNull()
                     CwtKeyExpression(expressionString, CwtDataType.EnumValue, value)
                 }
                 expressionString == "scope_field" -> {
@@ -136,25 +136,25 @@ class CwtKeyExpression private constructor(
                 }
                 expressionString.surroundsWith("scope[", "]") -> {
                     //value需要是有效的scope_type
-                    val value = expressionString.substring(6, expressionString.length - 1).takeIfNotEmpty().takeIf { it != "any" }
+                    val value = expressionString.substring(6, expressionString.length - 1).orNull().takeIf { it != "any" }
                     CwtKeyExpression(expressionString, CwtDataType.Scope, value)
                 }
                 expressionString.surroundsWith("scope_group[", "]") -> {
-                    val value = expressionString.substring(12, expressionString.length - 1).takeIfNotEmpty()
+                    val value = expressionString.substring(12, expressionString.length - 1).orNull()
                     CwtKeyExpression(expressionString, CwtDataType.ScopeGroup, value)
                 }
                 expressionString == "value_field" -> {
                     CwtKeyExpression(expressionString, CwtDataType.ValueField)
                 }
                 expressionString.surroundsWith("value_field[", "]") -> {
-                    val value = expressionString.substring(12, expressionString.length - 1).takeIfNotEmpty()
+                    val value = expressionString.substring(12, expressionString.length - 1).orNull()
                     CwtKeyExpression(expressionString, CwtDataType.ValueField, value)
                 }
                 expressionString == "int_value_field" -> {
                     CwtKeyExpression(expressionString, CwtDataType.IntValueField)
                 }
                 expressionString.surroundsWith("int_value_field[", "]") -> {
-                    val value = expressionString.substring(16, expressionString.length - 1).takeIfNotEmpty()
+                    val value = expressionString.substring(16, expressionString.length - 1).orNull()
                     CwtKeyExpression(expressionString, CwtDataType.IntValueField, value)
                 }
                 expressionString == "variable_field" -> {
@@ -164,7 +164,7 @@ class CwtKeyExpression private constructor(
                     CwtKeyExpression(expressionString, CwtDataType.VariableField)
                 }
                 expressionString.surroundsWith("variable_field[", "]") -> {
-                    val value = expressionString.substring(15, expressionString.length - 1).takeIfNotEmpty()
+                    val value = expressionString.substring(15, expressionString.length - 1).orNull()
                     CwtKeyExpression(expressionString, CwtDataType.VariableField, value)
                 }
                 expressionString == "int_variable_field" -> {
@@ -174,15 +174,15 @@ class CwtKeyExpression private constructor(
                     CwtKeyExpression(expressionString, CwtDataType.IntVariableField)
                 }
                 expressionString.surroundsWith("int_variable_field[", "]") -> {
-                    val value = expressionString.substring(19, expressionString.length - 1).takeIfNotEmpty()
+                    val value = expressionString.substring(19, expressionString.length - 1).orNull()
                     CwtKeyExpression(expressionString, CwtDataType.IntVariableField, value)
                 }
                 expressionString.surroundsWith("alias_keys_field[", "]") -> {
-                    val value = expressionString.substring(17, expressionString.length - 1).takeIfNotEmpty()
+                    val value = expressionString.substring(17, expressionString.length - 1).orNull()
                     CwtKeyExpression(expressionString, CwtDataType.AliasKeysField, value)
                 }
                 expressionString.surroundsWith("alias_name[", "]") -> {
-                    val value = expressionString.substring(11, expressionString.length - 1).takeIfNotEmpty()
+                    val value = expressionString.substring(11, expressionString.length - 1).orNull()
                     CwtKeyExpression(expressionString, CwtDataType.AliasName, value)
                 }
                 CwtTemplateExpression.resolve(expressionString).isNotEmpty() -> {

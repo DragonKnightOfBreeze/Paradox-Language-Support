@@ -24,7 +24,7 @@ class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
         
         val triggerName = element.stringValue() ?: return
         val configGroup = config.info.configGroup
-        val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.takeIfNotEmpty() ?: return
+        val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
         if(resultTriggerConfigs.none { !it.config.isBlock }) {
             holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.simpleTrigger", element.expression.orEmpty()))
         }

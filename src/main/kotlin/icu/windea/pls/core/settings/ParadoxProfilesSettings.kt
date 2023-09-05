@@ -82,7 +82,7 @@ class ParadoxModDescriptorSettingsState : BaseState() {
         if(inferredGameType != null) gameType = inferredGameType
         
         val descriptorInfo = rootInfo.descriptorInfo
-        name = descriptorInfo.name.takeIfNotEmpty() ?: PlsBundle.message("mod.name.unnamed")
+        name = descriptorInfo.name.orNull() ?: PlsBundle.message("mod.name.unnamed")
         version = descriptorInfo.version
         supportedVersion = descriptorInfo.supportedVersion
         picture = descriptorInfo.picture

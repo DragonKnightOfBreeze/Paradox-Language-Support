@@ -17,7 +17,7 @@ sealed class ParadoxRootInfo {
     abstract val rootPath: Path
     abstract val gameRootPath: Path
     
-    val gameEntry: String? by lazy { rootPath.relativize(gameRootPath).toString().takeIfNotEmpty() }
+    val gameEntry: String? by lazy { rootPath.relativize(gameRootPath).toString().orNull() }
     
     abstract val qualifiedName: String
 }

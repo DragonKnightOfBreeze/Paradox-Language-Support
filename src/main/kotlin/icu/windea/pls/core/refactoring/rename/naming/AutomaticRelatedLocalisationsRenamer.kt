@@ -36,7 +36,7 @@ class AutomaticRelatedLocalisationsRenamer(element: PsiElement, newName: String)
     
     private fun prepareRenaming(element: ParadoxScriptDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
         val definitionInfo = element.definitionInfo ?: return
-        val infos = definitionInfo.localisations.takeIfNotEmpty() ?: return
+        val infos = definitionInfo.localisations.orNull() ?: return
         for(info in infos) {
             ProgressManager.checkCanceled()
             val result = info.locationExpression.resolveAll(element, definitionInfo, localisationSelector(definitionInfo.project, element)) ?: continue

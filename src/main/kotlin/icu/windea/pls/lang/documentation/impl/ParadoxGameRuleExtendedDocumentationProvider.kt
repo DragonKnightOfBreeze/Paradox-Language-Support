@@ -10,7 +10,7 @@ class ParadoxGameRuleExtendedDocumentationProvider : ParadoxDefinitionExtendedDo
         //如果是game_rule，尝试从game_rules.cwt中得到对应的文档文本
         if(definitionInfo.type == "game_rule") {
             val config = definitionInfo.configGroup.gameRules.get(definitionInfo.name)
-            val comment = config?.config?.documentation?.takeIfNotEmpty()
+            val comment = config?.config?.documentation?.orNull()
             return comment
         }
         return null

@@ -238,7 +238,7 @@ object ParadoxParameterHandler {
         ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
             ProgressManager.checkCanceled()
             val contextInfo = ParadoxParameterSupport.getContextInfo(context) ?: return@p true
-            val contextConfigs = getInferredContextConfigs(parameterElement.name, contextInfo).takeIfNotEmpty()
+            val contextConfigs = getInferredContextConfigs(parameterElement.name, contextInfo).orNull()
             result.mergeValue(contextConfigs) { v1, v2 -> ParadoxConfigMerger.mergeConfigs(v1, v2) }
         }
         val resolved = result.get().orEmpty()
@@ -263,7 +263,7 @@ object ParadoxParameterHandler {
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         parameterInfos.process { parameterInfo ->
             ProgressManager.checkCanceled()
-            val contextConfigs = ParadoxParameterInferredConfigProvider.getContextConfigs(parameterInfo, parameterContextInfo).takeIfNotEmpty()
+            val contextConfigs = ParadoxParameterInferredConfigProvider.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
             result.mergeValue(contextConfigs) { v1,v2 -> ParadoxConfigMerger.mergeConfigs(v1, v2) }
         }
         return result.get().orEmpty()

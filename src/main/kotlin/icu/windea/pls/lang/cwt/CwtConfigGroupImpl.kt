@@ -770,7 +770,7 @@ class CwtConfigGroupImpl(
                 "output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) }
             }
         }
-        inputScopes = inputScopes.takeIfNotEmpty() ?: ParadoxScopeHandler.anyScopeIdSet
+        inputScopes = inputScopes.orNull() ?: ParadoxScopeHandler.anyScopeIdSet
         return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, fromData, type, dataSource, prefix, forDefinitionType, inputScopes, outputScope)
     }
     
@@ -789,7 +789,7 @@ class CwtConfigGroupImpl(
                 "output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) }
             }
         }
-        inputScopes = inputScopes.takeIfNotEmpty() ?: ParadoxScopeHandler.anyScopeIdSet
+        inputScopes = inputScopes.orNull() ?: ParadoxScopeHandler.anyScopeIdSet
         return CwtLocalisationLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, inputScopes, outputScope)
     }
     

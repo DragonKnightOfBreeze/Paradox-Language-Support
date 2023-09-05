@@ -35,7 +35,7 @@ class ParadoxSwitchOverriddenConfigProvider : ParadoxOverriddenConfigProvider {
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
         if(CwtValueExpression.resolve(triggerName).type != CwtDataType.Constant) return null //must be predefined trigger
         val configGroup = config.info.configGroup
-        val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.takeIfNotEmpty() ?: return null
+        val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
         for(resultTriggerConfig in resultTriggerConfigs) {
             if(resultTriggerConfig.config.isBlock) continue //not simple trigger, skip

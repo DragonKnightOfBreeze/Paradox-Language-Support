@@ -11,7 +11,7 @@ class ParadoxOnActionExtendedDocumentationProvider : ParadoxDefinitionExtendedDo
         //如果是on_action，尝试从on_actions.cwt中得到对应的文档文本
         if(definitionInfo.type == "on_action") {
             val config = definitionInfo.configGroup.onActions.getByTemplate(definitionInfo.name, definition, definitionInfo.configGroup)
-            val comment = config?.config?.documentation?.takeIfNotEmpty()
+            val comment = config?.config?.documentation?.orNull()
             return comment
         }
         return null

@@ -92,7 +92,7 @@ class ParadoxOnActionInEventDefinitionHierarchyIndex : ParadoxDefinitionHierarch
         repeat(size) {
             val onActionName = storage.readUTFFast()
             val containingEventName = storage.readUTFFast()
-            val containingEventScope = storage.readUTFFast().takeIfNotEmpty()
+            val containingEventScope = storage.readUTFFast().orNull()
             val scopesElementOffset = storage.readIntFast()
             val elementOffset = storage.readIntFast()
             val info = Info(onActionName, containingEventName, containingEventScope, scopesElementOffset, elementOffset, gameType)

@@ -48,7 +48,7 @@ object StellarisEconomicCategoryHandler {
         //兼容继承的mult修正
         try {
             val data = ParadoxScriptDataResolver.resolveProperty(definition, inline = true) ?: return null
-            val name = definition.name.takeIfNotEmpty() ?: return null
+            val name = definition.name.orNull() ?: return null
             val parent = data.getData("parent")?.value?.stringValue()
             val useForAiBudget = data.getData("use_for_ai_budget")?.value?.booleanValue()
                 ?: getUseForAiBudgetFromParent(name, parent, definition)
@@ -56,7 +56,7 @@ object StellarisEconomicCategoryHandler {
             val modifierCategory = data.getData("modifier_category")?.value?.stringValue()
             
             val resources = getResources(definition)
-                .takeIfNotEmpty() ?: return null //unexpected
+                .orNull() ?: return null //unexpected
             val generateAddModifiers = data.getAllData("generate_add_modifiers/-")
                 .mapNotNull { it.value?.stringValue() }
             val generateMultModifiers = data.getAllData("generate_mult_modifiers/-")
@@ -161,7 +161,7 @@ object StellarisEconomicCategoryHandler {
         //key, modifier_types, use_parent_icon
         val key = data.getData("key")?.value?.stringValue() ?: return null
         val useParentIcon = data.getData("use_parent_icon")?.value?.booleanValue() ?: false
-        val modifierTypes = data.getAllData("modifier_types/-").mapNotNull { it.value?.stringValue() }.takeIfNotEmpty() ?: return null
+        val modifierTypes = data.getAllData("modifier_types/-").mapNotNull { it.value?.stringValue() }.orNull() ?: return null
         return StellarisTriggeredModifierInfo(key, useParentIcon, modifierTypes)
     }
     

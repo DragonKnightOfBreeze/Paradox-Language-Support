@@ -24,7 +24,7 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
         
         val triggerName = element.stringValue() ?: return
         val configGroup = config.info.configGroup
-        val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.takeIfNotEmpty() ?: return
+        val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
         if(hasParameters(element)) {
             if(resultTriggerConfigs.none { it.config.isBlock }) {
                 holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.complexTrigger", element.expression.orEmpty()))

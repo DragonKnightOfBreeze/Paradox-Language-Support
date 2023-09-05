@@ -90,7 +90,7 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
                     if(!p.name.equals(ParadoxInlineScriptHandler.inlineScriptKey, true)) return@p true
                     val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p true
                     val usageConfigContext = ParadoxConfigHandler.getConfigContext(memberElement) ?: return@p true
-                    val usageConfigs = usageConfigContext.getConfigs(matchOptions).takeIfNotEmpty()
+                    val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
                     // merge
                     result.mergeValue(usageConfigs) { v1, v2 -> ParadoxConfigMerger.mergeConfigs(v1, v2) }.also {
                         if(it) return@also

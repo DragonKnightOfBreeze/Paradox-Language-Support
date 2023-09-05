@@ -135,7 +135,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getName(element: ParadoxScriptScriptedVariableName): String? {
         // 不包含作为前缀的"@"
-        return element.text.removePrefix("@").takeIfNotEmpty()
+        return element.text.removePrefix("@").orNull()
     }
     
     @JvmStatic

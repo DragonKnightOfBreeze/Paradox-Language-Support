@@ -158,7 +158,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             append("<b>").append(shortName.escapeXml().orAnonymous()).append("</b>")
             if(typeCategory != null) {
                 val typeElement = element.parentOfType<CwtProperty>()
-                val typeName = typeElement?.name?.substringIn('[', ']')?.takeIfNotEmpty()
+                val typeName = typeElement?.name?.substringIn('[', ']')?.orNull()
                 if(typeName.isNotNullOrEmpty()) {
                     //在脚本文件中显示为链接
                     if(configGroup != null) {
@@ -277,7 +277,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         when(configType) {
             CwtConfigType.Link -> {
                 val linkConfig = configGroup.links[name] ?: return
-                val descToUse = linkConfig.desc?.takeIfNotEmpty()
+                val descToUse = linkConfig.desc?.orNull()
                 if(descToUse != null) {
                     content { appendBr().append(descToUse) }
                 }
@@ -291,7 +291,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             }
             CwtConfigType.LocalisationLink -> {
                 val linkConfig = configGroup.localisationLinks[name] ?: return
-                val descToUse = linkConfig.desc?.takeIfNotEmpty()
+                val descToUse = linkConfig.desc?.orNull()
                 if(descToUse != null) {
                     content { appendBr().append(descToUse) }
                 }

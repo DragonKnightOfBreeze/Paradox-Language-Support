@@ -45,7 +45,7 @@ class ParadoxScriptInjector : MultiHostInjector {
         applyInjectionForArgumentValue(host, allInjectionInfos)
         applyInjectionForParameterDefaultValue(host, allInjectionInfos)
         
-        host.putUserData(Keys.parameterValueInjectionInfos, allInjectionInfos.takeIfNotEmpty())
+        host.putUserData(Keys.parameterValueInjectionInfos, allInjectionInfos.orNull())
         if(allInjectionInfos.isEmpty()) return
         allInjectionInfos.forEach { injectionInfo ->
             registrar.startInjecting(ParadoxScriptLanguage)

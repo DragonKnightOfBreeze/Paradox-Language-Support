@@ -198,7 +198,7 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getName(element: ParadoxLocalisationScriptedVariableReference): String? {
-        return element.text.removePrefix("@").takeIfNotEmpty()
+        return element.text.removePrefix("@").orNull()
     }
     
     @JvmStatic

@@ -39,7 +39,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         var modifierConfig: CwtModifierConfig? = null
         val templateReferences = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
             ProgressManager.checkCanceled()
-            val resolvedReferences = config.template.resolveReferences(modifierName, element, configGroup).takeIfNotEmpty()
+            val resolvedReferences = config.template.resolveReferences(modifierName, element, configGroup).orNull()
             if(resolvedReferences != null) modifierConfig = config
             resolvedReferences
         }.orEmpty()

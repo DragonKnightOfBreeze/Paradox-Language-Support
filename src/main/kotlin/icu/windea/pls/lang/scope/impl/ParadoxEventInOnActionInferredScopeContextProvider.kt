@@ -59,7 +59,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         var hasConflict = false
         val r = doProcessQuery(thisEventName, thisEventType, searchScope, scopeContextMap, configGroup)
         if(!r) hasConflict = true
-        val resultScopeContextMap = scopeContextMap.takeIfNotEmpty() ?: return null
+        val resultScopeContextMap = scopeContextMap.orNull() ?: return null
         return ParadoxScopeContextInferenceInfo(resultScopeContextMap, hasConflict)
     }
     

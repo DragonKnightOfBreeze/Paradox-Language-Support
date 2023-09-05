@@ -72,7 +72,7 @@ abstract class ParadoxScriptExpressionSupport {
                 EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
                     if(!ep.supports(config)) return@p null
                     withCheckRecursion("${ep.javaClass.name}@multiResolve@${expression}") {
-                        ep.multiResolve(element, rangeInElement, expression, config, isKey).takeIfNotEmpty()
+                        ep.multiResolve(element, rangeInElement, expression, config, isKey).orNull()
                     }
                 }
             }.orEmpty()
@@ -83,7 +83,7 @@ abstract class ParadoxScriptExpressionSupport {
                 EP_NAME.extensionList.firstNotNullOfOrNull p@{ ep ->
                     if(!ep.supports(config)) return@p null
                     withCheckRecursion("${ep.javaClass.name}@multiResolve@${expression}") {
-                        ep.getReferences(element, rangeInElement, expression, config, isKey).takeIfNotEmpty()
+                        ep.getReferences(element, rangeInElement, expression, config, isKey).orNull()
                     }
                 }
             }

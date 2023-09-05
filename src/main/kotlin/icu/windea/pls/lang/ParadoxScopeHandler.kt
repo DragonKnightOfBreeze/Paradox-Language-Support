@@ -460,7 +460,7 @@ object ParadoxScopeHandler {
         doMergeScopeContextMap(result, map, otherMap, "fromfromfrom", false)
         doMergeScopeContextMap(result, map, otherMap, "fromfromfromfrom", false)
         if(optimized) doOptimizeScopeMap(result)
-        return result.takeIfNotEmpty()
+        return result.orNull()
     }
     
     private fun doMergeScopeContextMap(result: MutableMap<String, String?>, m1: Map<String, String?>, m2: Map<String, String?>, key: String, orUnknown: Boolean): Boolean {

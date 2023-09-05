@@ -114,11 +114,11 @@ object ParadoxModifierHandler {
             val localizedNames = mutableSetOf<String>()
             ParadoxLocalisationSearch.search(key, selector).processQueryAsync { localisation ->
                 ProgressManager.checkCanceled()
-                val r = ParadoxLocalisationTextRenderer.render(localisation).takeIfNotEmpty()
+                val r = ParadoxLocalisationTextRenderer.render(localisation).orNull()
                 if(r != null) localizedNames.add(r)
                 true
             }
-            localizedNames.takeIfNotEmpty()
+            localizedNames.orNull()
         }.orEmpty()
     }
 }

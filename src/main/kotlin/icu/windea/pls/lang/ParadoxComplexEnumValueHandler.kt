@@ -217,6 +217,6 @@ object ParadoxComplexEnumValueHandler {
     }
     
     fun getName(expression: String): String? {
-        return expression.takeIfNotEmpty()
+        return expression.orNull()
     }
 }

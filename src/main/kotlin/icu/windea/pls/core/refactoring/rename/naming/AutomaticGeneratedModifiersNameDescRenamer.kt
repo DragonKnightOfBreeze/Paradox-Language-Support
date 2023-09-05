@@ -41,7 +41,7 @@ class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: S
     
     private fun prepareRenaming(element: ParadoxScriptDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
         val definitionInfo = element.definitionInfo ?: return
-        val infos = definitionInfo.modifiers.takeIfNotEmpty() ?: return
+        val infos = definitionInfo.modifiers.orNull() ?: return
         val project = definitionInfo.project
         for(info in infos) {
             ProgressManager.checkCanceled()
