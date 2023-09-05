@@ -24,7 +24,7 @@ sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig
     
     override fun toString(): String
     
-    object Keys : KeyAware
+    object Keys : KeysAware
 }
 
 val <T : PsiElement> CwtMemberConfig<T>.isBlock: Boolean

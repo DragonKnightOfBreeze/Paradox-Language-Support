@@ -183,10 +183,10 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
     }
 }
 
-val ParadoxModifierData.Keys.economicCategoryInfo by createKey<StellarisEconomicCategoryInfo>("paradox.modifier.data.economicCategoryInfo")
-val ParadoxModifierData.Keys.economicCategoryModifierInfo by createKey<StellarisEconomicCategoryModifierInfo>("paradox.modifier.data.economicCategoryModifierInfo")
+val ParadoxModifierSupport.Keys.economicCategoryInfo by createKey<StellarisEconomicCategoryInfo>("paradox.modifier.support.economicCategoryInfo")
+val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by createKey<StellarisEconomicCategoryModifierInfo>("paradox.modifier.support.economicCategoryModifierInfo")
 
-var ParadoxModifierData.economicCategoryInfo by ParadoxModifierData.Keys.economicCategoryInfo
-var ParadoxModifierElement.economicCategoryInfo by ParadoxModifierData.Keys.economicCategoryInfo
-var ParadoxModifierData.economicCategoryModifierInfo by ParadoxModifierData.Keys.economicCategoryModifierInfo
-var ParadoxModifierElement.economicCategoryModifierInfo by ParadoxModifierData.Keys.economicCategoryModifierInfo
+var ParadoxModifierData.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
+var ParadoxModifierElement.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
+var ParadoxModifierData.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
+var ParadoxModifierElement.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo

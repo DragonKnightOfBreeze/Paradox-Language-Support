@@ -99,8 +99,8 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
             arguments += ParadoxParameterContextReferenceInfo.Argument(argumentName, pointer, nameNode.rangeInExpression.shiftRight(startOffset), pointer, valueNode?.rangeInExpression?.shiftRight(startOffset))
         }
         val info = ParadoxParameterContextReferenceInfo(pointer, contextName, pointer, contextNameRange, arguments, gameType, project)
-        info.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
-        info.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
+        info.definitionName = definitionName
+        info.definitionTypes = definitionTypes
         return info
     }
     
@@ -133,8 +133,8 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
-        result.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
-        result.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
+        result.definitionName = definitionName
+        result.definitionTypes = definitionTypes
         return result
     }
     

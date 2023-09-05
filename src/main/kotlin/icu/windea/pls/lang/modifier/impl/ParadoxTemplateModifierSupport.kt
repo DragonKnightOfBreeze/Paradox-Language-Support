@@ -206,7 +206,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     }
 }
 
-val ParadoxModifierData.Keys.templateReferences by createKey<List<ParadoxTemplateSnippetExpressionReference>>("paradox.modifier.data.templateReferences")
+val ParadoxModifierSupport.Keys.templateReferences by createKey<List<ParadoxTemplateSnippetExpressionReference>>("paradox.modifier.support.templateReferences")
 
-var ParadoxModifierData.templateReferences by ParadoxModifierData.Keys.templateReferences
-var ParadoxModifierElement.templateReferences by ParadoxModifierData.Keys.templateReferences
+var ParadoxModifierData.templateReferences by ParadoxModifierSupport.Keys.templateReferences
+var ParadoxModifierElement.templateReferences by ParadoxModifierSupport.Keys.templateReferences

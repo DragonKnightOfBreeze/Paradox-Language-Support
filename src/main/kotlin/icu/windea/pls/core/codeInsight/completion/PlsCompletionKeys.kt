@@ -8,7 +8,7 @@ import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.*
 
-object PlsCompletionKeys : KeyAware
+object PlsCompletionKeys : KeysAware
 
 val PlsCompletionKeys.completionIds by createKey<MutableSet<String>>("paradoxCompletion.completionIds")
 val PlsCompletionKeys.parameters by createKey<CompletionParameters>("paradoxCompletion.parameters")

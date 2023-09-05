@@ -65,7 +65,7 @@ class ParadoxConfigContext(
         return provider?.skipTooManyExpressionCheck(this) ?: false
     }
     
-    object Keys : KeyAware
+    object Keys : KeysAware
 }
 
 //project -> rootFile -> cacheKey -> configs

@@ -11,7 +11,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.tool.*
 import java.awt.*
 
-object PlsKeys : KeyAware
+object PlsKeys : KeysAware
 
 val PlsKeys.library by createKey<ParadoxLibrary>("paradox.library")
 

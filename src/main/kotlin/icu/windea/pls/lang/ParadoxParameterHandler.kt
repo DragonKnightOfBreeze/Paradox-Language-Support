@@ -28,7 +28,6 @@ import java.util.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxParameterHandler {
-    
     object Keys {
         val inferredConfig = Key.create<CwtValueConfig>("paradox.parameter.inferredConfig")
         val inferredContextConfigs = Key.create<List<CwtMemberConfig<*>>>("paradox.parameter.inferredContextConfigs")
@@ -36,6 +35,7 @@ object ParadoxParameterHandler {
         val parameterModificationTracker = Key.create<ModificationTracker>("paradox.parameter.modificationTracker")
         val parameterModificationCount = Key.create<Long>("paradox.parameter.modificationCount")
     }
+    
     /**
      * 得到[element]对应的参数上下文信息。
      *

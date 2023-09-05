@@ -95,8 +95,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
             true
         }
         val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(project), contextName, contextNameElement.createPointer(project), contextNameElement.textRange, arguments, gameType, project)
-        info.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
-        info.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
+        info.definitionName = definitionName
+        info.definitionTypes = definitionTypes
         return info
     }
     
@@ -123,10 +123,10 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val gameType = definitionInfo.gameType
         val project = definitionInfo.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
-        result.putUserData(ParadoxParameterSupport.Keys.containingContext, context.createPointer(project))
-        result.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
-        result.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
-        result.putUserData(ParadoxParameterSupport.Keys.support, this)
+        result.containingContext = context.createPointer(project)
+        result.definitionName = definitionName
+        result.definitionTypes = definitionTypes
+        result.support = this
         return result
     }
     
@@ -151,15 +151,15 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val gameType = config.info.configGroup.gameType ?: return null
         val project = config.info.configGroup.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
-        result.putUserData(ParadoxParameterSupport.Keys.definitionName, definitionName)
-        result.putUserData(ParadoxParameterSupport.Keys.definitionTypes, definitionTypes)
-        result.putUserData(ParadoxParameterSupport.Keys.support, this)
+        result.definitionName = definitionName
+        result.definitionTypes = definitionTypes
+        result.support = this
         return result
     }
     
     override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-        val definitionName = parameterElement.getUserData(ParadoxParameterSupport.Keys.definitionName) ?: return false
-        val definitionTypes = parameterElement.getUserData(ParadoxParameterSupport.Keys.definitionTypes) ?: return false
+        val definitionName = parameterElement.definitionName ?: return false
+        val definitionTypes = parameterElement.definitionTypes ?: return false
         if(definitionName.isParameterized()) return false //skip if context name is parameterized
         val definitionType = definitionTypes.joinToString(".")
         val project = parameterElement.project
@@ -169,8 +169,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
     
     override fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-        val definitionName = contextReferenceInfo.getUserData(ParadoxParameterSupport.Keys.definitionName) ?: return false
-        val definitionTypes = contextReferenceInfo.getUserData(ParadoxParameterSupport.Keys.definitionTypes) ?: return false
+        val definitionName = contextReferenceInfo.definitionName ?: return false
+        val definitionTypes = contextReferenceInfo.definitionTypes ?: return false
         if(definitionName.isParameterized()) return false //skip if context name is parameterized
         val definitionType = definitionTypes.joinToString(".")
         val project = contextReferenceInfo.project
@@ -199,8 +199,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
     
     override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {
-        val definitionName = parameterElement.getUserData(ParadoxParameterSupport.Keys.definitionName) ?: return false
-        val definitionType = parameterElement.getUserData(ParadoxParameterSupport.Keys.definitionTypes) ?: return false
+        val definitionName = parameterElement.definitionName ?: return false
+        val definitionType = parameterElement.definitionTypes ?: return false
         if(definitionType.isEmpty()) return false
         
         //不加上文件信息

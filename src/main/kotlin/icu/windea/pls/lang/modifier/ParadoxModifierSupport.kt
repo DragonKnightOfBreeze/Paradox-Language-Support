@@ -98,4 +98,14 @@ interface ParadoxModifierSupport {
             }
         }
     }
+    
+    object Keys: KeysAware
 }
+
+val ParadoxModifierSupport.Keys.support by createKey<ParadoxModifierSupport>("paradox.modifier.support.support")
+val ParadoxModifierSupport.Keys.modifierConfig by createKey<CwtModifierConfig>("paradox.modifier.support.modifierConfig")
+
+var ParadoxModifierData.support by ParadoxModifierSupport.Keys.support
+var ParadoxModifierElement.support by ParadoxModifierSupport.Keys.support
+var ParadoxModifierData.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig
+var ParadoxModifierElement.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig

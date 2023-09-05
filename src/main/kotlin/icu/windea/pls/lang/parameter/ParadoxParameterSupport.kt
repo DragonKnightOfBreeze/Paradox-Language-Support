@@ -3,6 +3,7 @@ package icu.windea.pls.lang.parameter
 import com.intellij.openapi.extensions.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.*
@@ -116,12 +117,25 @@ interface ParadoxParameterSupport {
         }
     }
     
-    object Keys {
-        val support = Key.create<ParadoxParameterSupport>("paradox.parameterElement.support")
-        val containingContext = Key.create<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>("paradox.parameterElement.containingContext")
-        val containingContextReference = Key.create<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>("paradox.parameterElement.contextReference")
-        val definitionName = Key.create<String>("paradox.parameterElement.definitionName")
-        val definitionTypes = Key.create<List<String>>("paradox.parameterElement.definitionTypes")
-        val inlineScriptExpression = Key.create<String>("paradox.parameterElement.inlineScriptExpression")
-    }
+    object Keys : KeysAware
 }
+
+val ParadoxParameterSupport.Keys.support by createKey<ParadoxParameterSupport>("paradox.parameter.support.support")
+val ParadoxParameterSupport.Keys.containingContext by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>("paradox.parameter.support.containingContext")
+val ParadoxParameterSupport.Keys.containingContextReference by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>("paradox.parameter.support.contextReference")
+val ParadoxParameterSupport.Keys.definitionName by createKey<String>("paradox.parameter.support.definitionName")
+val ParadoxParameterSupport.Keys.definitionTypes by createKey<List<String>>("paradox.parameter.support.definitionTypes")
+val ParadoxParameterSupport.Keys.inlineScriptExpression by createKey<String>("paradox.parameter.support.inlineScriptExpression")
+
+var ParadoxParameterElement.support by ParadoxParameterSupport.Keys.support
+var ParadoxParameterContextReferenceInfo.support by ParadoxParameterSupport.Keys.support
+var ParadoxParameterElement.containingContext by ParadoxParameterSupport.Keys.containingContext
+var ParadoxParameterContextReferenceInfo.containingContext by ParadoxParameterSupport.Keys.containingContext
+var ParadoxParameterElement.containingContextReference by ParadoxParameterSupport.Keys.containingContextReference
+var ParadoxParameterContextReferenceInfo.containingContextReference by ParadoxParameterSupport.Keys.containingContextReference
+var ParadoxParameterElement.definitionName by ParadoxParameterSupport.Keys.definitionName
+var ParadoxParameterContextReferenceInfo.definitionName by ParadoxParameterSupport.Keys.definitionName
+var ParadoxParameterElement.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
+var ParadoxParameterContextReferenceInfo.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
+var ParadoxParameterElement.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression
+var ParadoxParameterContextReferenceInfo.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression

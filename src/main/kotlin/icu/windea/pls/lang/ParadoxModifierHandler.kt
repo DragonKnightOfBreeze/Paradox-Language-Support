@@ -123,7 +123,7 @@ object ParadoxModifierHandler {
     }
 }
 
-private val PlsKeys.modifierDataCache by createKey("paradox.modifier.data.cache") {
+private val PlsKeys.modifierDataCache by createKey("paradox.modifier.support.cache") {
     NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, ParadoxModifierData>().trackedBy { it.modificationTracker } }
 }
 private val Project.modifierDataCache by PlsKeys.modifierDataCache

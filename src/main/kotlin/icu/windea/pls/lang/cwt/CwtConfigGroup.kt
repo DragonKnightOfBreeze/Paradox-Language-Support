@@ -2,7 +2,6 @@ package icu.windea.pls.lang.cwt
 
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
-import com.intellij.util.containers.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.cwt.config.*
@@ -96,5 +95,5 @@ interface CwtConfigGroup: UserDataHolder {
 	//支持参数的定义类型
 	val definitionTypesSupportParameters: Set<String>
 	
-	object Keys: KeyAware
+	object Keys: KeysAware
 }

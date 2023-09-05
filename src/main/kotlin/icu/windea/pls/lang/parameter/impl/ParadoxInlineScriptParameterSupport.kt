@@ -93,7 +93,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
             true
         }
         val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(project), contextName, contextNameElement.createPointer(project), contextNameElement.textRange, arguments, gameType, project)
-        info.putUserData(ParadoxParameterSupport.Keys.inlineScriptExpression, expression)
+        info.inlineScriptExpression = expression
         return info
     }
     
@@ -118,9 +118,9 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val gameType = selectGameType(context) ?: return null
         val project = context.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
-        result.putUserData(ParadoxParameterSupport.Keys.containingContext, context.createPointer(project))
-        result.putUserData(ParadoxParameterSupport.Keys.inlineScriptExpression, expression)
-        result.putUserData(ParadoxParameterSupport.Keys.support, this)
+        result.containingContext = context.createPointer(project)
+        result.inlineScriptExpression = expression
+        result.support = this
         return result
     }
     
@@ -145,13 +145,13 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val gameType = config.info.configGroup.gameType ?: return null
         val project = config.info.configGroup.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
-        result.putUserData(ParadoxParameterSupport.Keys.inlineScriptExpression, expression)
-        result.putUserData(ParadoxParameterSupport.Keys.support, this)
+        result.inlineScriptExpression = expression
+        result.support = this
         return result
     }
     
     override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-        val expression = parameterElement.getUserData(ParadoxParameterSupport.Keys.inlineScriptExpression) ?: return false
+        val expression = parameterElement.inlineScriptExpression ?: return false
         if(expression.isParameterized()) return false //skip if context name is parameterized
         val project = parameterElement.project
         ParadoxInlineScriptHandler.processInlineScriptFile(expression, parameterElement, project, onlyMostRelevant, processor)
@@ -159,7 +159,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     }
     
     override fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-        val expression = contextReferenceInfo.getUserData(ParadoxParameterSupport.Keys.inlineScriptExpression) ?: return false
+        val expression = contextReferenceInfo.inlineScriptExpression ?: return false
         if(expression.isParameterized()) return false //skip if context name is parameterized
         val project = contextReferenceInfo.project
         ParadoxInlineScriptHandler.processInlineScriptFile(expression, element, project, onlyMostRelevant, processor)
@@ -171,7 +171,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     }
     
     override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {
-        val inlineScriptExpression = parameterElement.getUserData(ParadoxParameterSupport.Keys.inlineScriptExpression) ?: return false
+        val inlineScriptExpression = parameterElement.inlineScriptExpression ?: return false
         if(inlineScriptExpression.isEmpty()) return false
         val filePath = ParadoxInlineScriptHandler.getInlineScriptFilePath(inlineScriptExpression) ?: return false
         

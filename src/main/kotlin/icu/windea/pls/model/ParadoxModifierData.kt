@@ -22,14 +22,4 @@ data class ParadoxModifierData(
     companion object {
         val EMPTY = ParadoxModifierData("", ParadoxGameType.placeholder(), getDefaultProject())
     }
-    
-    object Keys: KeyAware
 }
-
-val ParadoxModifierData.Keys.support by createKey<ParadoxModifierSupport>("paradox.modifier.data.support")
-val ParadoxModifierData.Keys.modifierConfig by createKey<CwtModifierConfig>("paradox.modifier.data.modifierConfig")
-
-var ParadoxModifierData.support by ParadoxModifierData.Keys.support
-var ParadoxModifierElement.support by ParadoxModifierData.Keys.support
-var ParadoxModifierData.modifierConfig by ParadoxModifierData.Keys.modifierConfig
-var ParadoxModifierElement.modifierConfig by ParadoxModifierData.Keys.modifierConfig

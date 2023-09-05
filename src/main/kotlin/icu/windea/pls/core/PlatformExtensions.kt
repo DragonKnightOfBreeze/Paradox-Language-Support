@@ -213,9 +213,9 @@ inline fun <T> createKey(name: String) = Key.create<T>(name)
 inline fun <T> createKey(name: String, noinline defaultValueProvider: () -> T) = KeyWithDefaultValue.create(name, defaultValueProvider)
 
 @Suppress("NOTHING_TO_INLINE")
-inline operator fun <T> Key<T>.getValue(thisRef: KeyAware, property: KProperty<*>) = this
+inline operator fun <T> Key<T>.getValue(thisRef: KeysAware, property: KProperty<*>) = this
 @Suppress("NOTHING_TO_INLINE")
-inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: KeyAware, property: KProperty<*>) = this
+inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: KeysAware, property: KProperty<*>) = this
 
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getUserData(this)
