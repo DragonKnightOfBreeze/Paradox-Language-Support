@@ -50,7 +50,7 @@ object ParadoxModifierHandler {
     }
     
     fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierElement? {
-        val modifierData = getModifierData(element, name, configGroup, useSupport)
+        val modifierData = getModifierData(name, element, configGroup, useSupport)
         return modifierData?.toModifierElement(element)
     }
     
@@ -62,7 +62,14 @@ object ParadoxModifierHandler {
         ParadoxModifierSupport.completeModifier(context, result, modifierNames)
     }
     
-    fun getModifierData(element: PsiElement, name: String, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierData? {
+    fun getModifierData(name: String, element: PsiElement): ParadoxModifierData? {
+        val gameType = selectGameType(element) ?: return null
+        val project = element.project
+        val configGroup = getConfigGroups(project).get(gameType)
+        return getModifierData(name, element, configGroup)
+    }
+    
+    fun getModifierData(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierData? {
         val rootFile = selectRootFile(element) ?: return null
         val project = configGroup.project
         val cache = project.modifierDataCache.get(rootFile)
