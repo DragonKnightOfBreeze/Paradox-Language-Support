@@ -10,12 +10,13 @@ import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.modifier.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {
-    override fun addModifierIconPath(name: String, element: PsiElement, registry: MutableSet<String>) {
+    override fun addModifierIconPath(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>) {
         //gfx/interface/icons/modifiers/mod_$
-        registry += "gfx/interface/icons/modifiers/mod_${name}"
+        registry += "gfx/interface/icons/modifiers/mod_${modifierData.name}"
     }
 }
 
@@ -23,8 +24,7 @@ class ParadoxDefinitionDelegateBasedModifierIconProvider: ParadoxModifierIconPro
     //如果修正M由定义D生成，而定义D的作为图标的图片又委托给了定义D1
     //那么修正M的作为图标的图片也可以委托给定义D1的对应修正
     
-    override fun addModifierIconPath(name: String, element: PsiElement, registry: MutableSet<String>) {
-        val modifierData = ParadoxModifierHandler.getModifierData(name, element) ?: return
+    override fun addModifierIconPath(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>) {
         val modifierConfig = modifierData.modifierConfig ?: return
         val templateReferences = modifierData.templateReferences ?: return
         val templateReference = templateReferences.singleOrNull()?.takeIf { it.configExpression.type == CwtDataType.Definition } ?: return
@@ -68,7 +68,7 @@ class ParadoxDefinitionDelegateBasedModifierIconProvider: ParadoxModifierIconPro
 class ParadoxEconomicCategoryBasedModifierIconProvider: ParadoxModifierIconProvider {
     //对于由economic_category生成的那些修正，需要应用特定的图标继承逻辑
     
-    override fun addModifierIconPath(name: String, element: PsiElement, registry: MutableSet<String>) {
+    override fun addModifierIconPath(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>) {
         //TODO
     }
 }

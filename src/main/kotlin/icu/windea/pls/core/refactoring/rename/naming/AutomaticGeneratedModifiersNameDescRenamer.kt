@@ -6,7 +6,6 @@ import com.intellij.refactoring.rename.naming.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
@@ -49,8 +48,8 @@ class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: S
             val newModifierName = info.config.template.extract(newName)
             run {
                 //use first key only -> $_name
-                val key = ParadoxModifierHandler.getModifierNameKeys(modifierName, element, onlyBase = true).firstOrNull() ?: return@run
-                val newKey = ParadoxModifierHandler.getModifierNameKeys(newModifierName, element, onlyBase = true).firstOrNull() ?: return@run
+                val key = ParadoxModifierHandler.getModifierNameKeys(modifierName, element).firstOrNull() ?: return@run
+                val newKey = ParadoxModifierHandler.getModifierNameKeys(newModifierName, element).firstOrNull() ?: return@run
                 val selector = localisationSelector(project, element)
                     .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
                     .withConstraint(ParadoxLocalisationConstraint.Modifier)
@@ -59,8 +58,8 @@ class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: S
             }
             run {
                 //use first key only -> $_desc
-                val key = ParadoxModifierHandler.getModifierNameKeys(modifierName, element, onlyBase = true).firstOrNull() ?: return@run
-                val newKey = ParadoxModifierHandler.getModifierDescKeys(newModifierName, element, onlyBase = true).firstOrNull() ?: return@run
+                val key = ParadoxModifierHandler.getModifierNameKeys(modifierName, element).firstOrNull() ?: return@run
+                val newKey = ParadoxModifierHandler.getModifierDescKeys(newModifierName, element).firstOrNull() ?: return@run
                 val selector = localisationSelector(project, element)
                     .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
                     .withConstraint(ParadoxLocalisationConstraint.Modifier)

@@ -2,15 +2,16 @@ package icu.windea.pls.lang.modifier.impl
 
 import com.intellij.psi.*
 import icu.windea.pls.lang.modifier.*
+import icu.windea.pls.model.*
 
 class ParadoxBaseModifierNameDescProvider : ParadoxModifierNameDescProvider {
-    override fun addModifierNameKey(name: String, element: PsiElement, registry: MutableSet<String>) {
+    override fun addModifierNameKey(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>) {
         //mod_$, ALL_UPPER_CASE is ok.
-        registry += "mod_${name}"
+        registry += "mod_${modifierData.name}"
     }
     
-    override fun addModifierDescKey(name: String, element: PsiElement, registry: MutableSet<String>) {
+    override fun addModifierDescKey(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>) {
         //mod_$_desc, ALL_UPPER_CASE is ok.
-        registry += "mod_${name}_desc"
+        registry += "mod_${modifierData.name}_desc"
     }
 }

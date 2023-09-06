@@ -84,30 +84,27 @@ object ParadoxModifierHandler {
         return modifierData
     }
     
-    fun getModifierNameKeys(name: String, element: PsiElement, onlyBase: Boolean = false): Set<String> {
-        return buildSet {
-            ParadoxModifierNameDescProvider.EP_NAME.extensionList.forEachFast { 
-                it.addModifierNameKey(name, element, this)
-                if(onlyBase) return@buildSet
-            }
+    fun getModifierNameKeys(name: String, element: PsiElement): Set<String> {
+        val modifierData = getModifierData(name, element) ?: return emptySet()
+        return modifierData.getOrPutUserData(PlsKeys.modifierNameKeys) {
+            val epName = ParadoxModifierNameDescProvider.EP_NAME
+            buildSet { epName.extensionList.forEachFast { it.addModifierNameKey(modifierData, element, this) } }
         }
     }
     
-    fun getModifierDescKeys(name: String, element: PsiElement, onlyBase: Boolean = false): Set<String> {
-        return buildSet {
-            ParadoxModifierNameDescProvider.EP_NAME.extensionList.forEachFast {
-                it.addModifierDescKey(name, element, this)
-                if(onlyBase) return@buildSet
-            }
+    fun getModifierDescKeys(name: String, element: PsiElement): Set<String> {
+        val modifierData = getModifierData(name, element) ?: return emptySet()
+        return modifierData.getOrPutUserData(PlsKeys.modifierDescKeys) {
+            val epName = ParadoxModifierNameDescProvider.EP_NAME
+            buildSet { epName.extensionList.forEachFast { it.addModifierDescKey(modifierData, element, this) } }
         }
     }
     
-    fun getModifierIconPaths(name: String, element: PsiElement, onlyBase: Boolean = false): Set<String> {
-        return buildSet {
-            ParadoxModifierIconProvider.EP_NAME.extensionList.forEachFast { 
-                it.addModifierIconPath(name, element, this)
-                if(onlyBase) return@buildSet
-            }
+    fun getModifierIconPaths(name: String, element: PsiElement): Set<String> {
+        val modifierData = getModifierData(name, element) ?: return emptySet()
+        return modifierData.getOrPutUserData(PlsKeys.modifierIconPaths) {
+            val epName = ParadoxModifierIconProvider.EP_NAME
+            buildSet { epName.extensionList.forEachFast { it.addModifierIconPath(modifierData, element, this) } }
         }
     }
     
@@ -130,7 +127,11 @@ object ParadoxModifierHandler {
     }
 }
 
-private val PlsKeys.modifierDataCache by createKey("paradox.modifier.support.cache") {
+private val PlsKeys.modifierDataCache by createKey("paradox.modifierDataCache") {
     NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, ParadoxModifierData>().trackedBy { it.modificationTracker } }
 }
 private val Project.modifierDataCache by PlsKeys.modifierDataCache
+
+private val PlsKeys.modifierNameKeys by createKey<Set<String>>("paradox.modifierNameKeys")
+private val PlsKeys.modifierDescKeys by createKey<Set<String>>("paradox.modifierDescKeys")
+private val PlsKeys.modifierIconPaths by createKey<Set<String>>("paradox.modifierIconPaths")
