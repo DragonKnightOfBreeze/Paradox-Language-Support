@@ -95,6 +95,9 @@ class CwtImageLocationExpression private constructor(
             if(config.expression.type !in validValueTypes) {
                 return ResolveResult("", null, null, PlsBundle.message("dynamic"))
             }
+            if(propertyValue !is ParadoxScriptString) {
+                return null
+            }
             if(propertyValue.text.isParameterized()) {
                 return ResolveResult("", null, null, PlsBundle.message("parameterized"))
             }
@@ -197,11 +200,12 @@ class CwtImageLocationExpression private constructor(
             if(config.expression.type !in validValueTypes) {
                 return ResolveAllResult("", emptySet(), null, PlsBundle.message("dynamic"))
             }
+            if(propertyValue !is ParadoxScriptString) {
+                return null
+            }
             if(propertyValue.text.isParameterized()) {
                 return ResolveAllResult("", emptySet(), null, PlsBundle.message("parameterized"))
             }
-            val name = propertyValue.value
-            if(definitionInfo.name.equals(name, true)) return null //防止出现SOF
             val resolved = ParadoxConfigHandler.resolveScriptExpression(propertyValue, null, config, config.expression, config.info.configGroup, false)
             when {
                 //由filePath解析为图片文件

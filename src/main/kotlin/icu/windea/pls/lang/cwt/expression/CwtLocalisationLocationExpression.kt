@@ -65,6 +65,9 @@ class CwtLocalisationLocationExpression private constructor(
             if(config.expression.type !in validValueTypes) {
                 return ResolveResult("", null, PlsBundle.message("dynamic"))
             }
+            if(propertyValue !is ParadoxScriptString) {
+                return null
+            }
             if(propertyValue.text.isParameterized()) {
                 return ResolveResult("", null, PlsBundle.message("parameterized"))
             }
@@ -98,6 +101,9 @@ class CwtLocalisationLocationExpression private constructor(
             val config = ParadoxConfigHandler.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
             if(config.expression.type !in validValueTypes) {
                 return ResolveAllResult("", emptySet(), PlsBundle.message("dynamic"))
+            }
+            if(propertyValue !is ParadoxScriptString) {
+                return null
             }
             if(propertyValue.text.isParameterized()) {
                 return ResolveAllResult("", emptySet(), PlsBundle.message("parameterized"))
