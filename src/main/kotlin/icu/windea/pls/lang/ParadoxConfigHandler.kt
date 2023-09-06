@@ -864,17 +864,18 @@ object ParadoxConfigHandler {
         val config = context.config!!
         val configs = context.configs!!
         
+        //注意这里需要先按照优先级进行排序
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return
-        for(aliasConfigs in aliasGroup.values) {
+        val sortedAliasConfigsList = aliasGroup.values.filter { it.isNotEmpty() }.sortedByPriority({ it.first().expression }, { configGroup })
+        for(aliasConfigs in sortedAliasConfigsList) {
             //aliasConfigs的名字是相同的 
-            val aliasConfig = aliasConfigs.firstOrNull() ?: continue
             //aliasSubName是一个表达式
             if(context.isKey == true) {
-                context.config = aliasConfig
+                context.config = aliasConfigs.first()
                 context.configs = aliasConfigs
                 completeScriptExpression(context, result)
             } else {
-                context.config = aliasConfig
+                context.config = aliasConfigs.first()
                 completeScriptExpression(context, result)
             }
             context.config = config
