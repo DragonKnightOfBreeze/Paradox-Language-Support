@@ -66,9 +66,9 @@ class ParadoxDefinitionDelegateBasedModifierIconProvider: ParadoxModifierIconPro
 }
 
 class ParadoxEconomicCategoryBasedModifierIconProvider: ParadoxModifierIconProvider {
-    //对于由economic_category生成的那些修正，需要应用特定的图标继承逻辑
+    //对于由economic_category生成的那些修正，需要应用特殊的图标继承逻辑
     
     override fun addModifierIconPath(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>) {
-        //TODO
+        //TODO 1.1.8+
     }
 }
