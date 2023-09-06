@@ -114,18 +114,13 @@ fun String.isInlineUsage(): Boolean {
     return this.equals(ParadoxInlineScriptHandler.inlineScriptKey, true)
 }
 
-//use cache to optimize performance (~4% of ParadoxConfigHandler.getConfigs())
-private val supportsByAnnotationCache = ConcurrentHashMap<Any, Boolean>()
-
 /**
  * 基于注解[WithGameType]判断目标对象是否支持当前游戏类型。
  */
 fun ParadoxGameType?.supportsByAnnotation(target: Any): Boolean {
     if(this == null) return true
-    return supportsByAnnotationCache.getOrPut(target) {
-        val targetGameType = target.javaClass.getAnnotation(WithGameType::class.java)?.value
-        targetGameType == null || this in targetGameType
-    }
+    val targetGameType = target.javaClass.getAnnotation(WithGameType::class.java)?.value
+    return targetGameType == null || this in targetGameType
 }
 //endregion
 
