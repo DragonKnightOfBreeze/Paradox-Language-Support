@@ -8,6 +8,7 @@ import com.intellij.codeInsight.template.impl.*
 import com.intellij.openapi.command.*
 import com.intellij.openapi.command.impl.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import com.intellij.util.*
@@ -46,6 +47,7 @@ fun CompletionResultSet.addExpressionElement(
 ) {
     val id = lookupElement.lookupString
     if(context.completionIds?.add(id) == false) return
+    ProgressManager.checkCanceled()
     addElement(lookupElement)
 }
 
@@ -160,6 +162,7 @@ fun CompletionResultSet.addScriptExpressionElement(
         val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
             applyKeyOrValueInsertHandler(context, c)
         }.withPriority(priority)
+        ProgressManager.checkCanceled()
         addElement(resultLookupElement)
         return
     }
@@ -168,6 +171,7 @@ fun CompletionResultSet.addScriptExpressionElement(
         val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
             applyKeyAndValueInsertHandler(c, context, constantValue, insertCurlyBraces)
         }.withPriority(priority)
+        ProgressManager.checkCanceled()
         addElement(resultLookupElement)
     }
     
@@ -254,7 +258,7 @@ private fun applyKeyAndValueInsertHandler(c: InsertionContext, context: Processi
 }
 
 @Suppress("UnstableApiUsage", "DialogTitleCapitalization")
-fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
+private fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
     context: ProcessingContext,
     builder: LookupElementBuilder,
     entryConfigs: List<CwtMemberConfig<*>>,
@@ -377,6 +381,7 @@ fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
             WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.expandClauseTemplate.name"), null, command, file)
         }
     }
+    ProgressManager.checkCanceled()
     addElement(resultLookupElement.callback())
 }
 

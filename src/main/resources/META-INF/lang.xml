@@ -103,7 +103,8 @@
     <modifierNameDescProvider implementation="icu.windea.pls.lang.modifier.impl.ParadoxBaseModifierNameDescProvider"/>
     
     <modifierIconProvider implementation="icu.windea.pls.lang.modifier.impl.ParadoxBaseModifierIconProvider"/>
-    <modifierIconProvider implementation="icu.windea.pls.lang.modifier.impl.ParadoxDelegateDefinitionBasedModifierIconProvider"/>
+    <modifierIconProvider implementation="icu.windea.pls.lang.modifier.impl.ParadoxDefinitionDelegateBasedModifierIconProvider"/>
+    <modifierIconProvider implementation="icu.windea.pls.lang.modifier.impl.ParadoxEconomicCategoryBasedModifierIconProvider"/>
     
     <definitionModifierProvider implementation="icu.windea.pls.lang.modifier.impl.StellarisScriptedModifierDefinitionModifierProvider"/>
     
