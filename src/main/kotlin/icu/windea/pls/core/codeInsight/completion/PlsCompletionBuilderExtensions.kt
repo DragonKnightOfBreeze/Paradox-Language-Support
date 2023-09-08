@@ -311,7 +311,7 @@ private fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
             val hasRemain = descriptorsContext.descriptorsInfo.hasRemain
             
             val customSettings = CodeStyle.getCustomSettings(file, ParadoxScriptCodeStyleSettings::class.java)
-            val multiline = descriptors.size > getSettings().completion.maxExpressionCountInOneLine
+            val multiline = descriptors.size > getSettings().completion.maxMemberCountInOneLine
             val around = customSettings.SPACE_AROUND_PROPERTY_SEPARATOR
             
             val documentManager = PsiDocumentManager.getInstance(project)

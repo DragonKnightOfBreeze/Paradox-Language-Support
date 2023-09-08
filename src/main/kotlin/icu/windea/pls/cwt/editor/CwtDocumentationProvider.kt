@@ -192,7 +192,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
     }
     
     private fun StringBuilder.addModifierRelatedLocalisations(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
-        val render = getSettings().documentation.renderRelatedLocalisationsForModifiers
+        val render = getSettings().documentation.renderNameDescForModifiers
         val contextElement = referenceElement
         val gameType = configGroup.gameType ?: return
         val project = configGroup.project

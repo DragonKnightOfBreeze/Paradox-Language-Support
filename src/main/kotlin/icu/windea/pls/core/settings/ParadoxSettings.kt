@@ -44,7 +44,7 @@ class ParadoxSettingsState : BaseState() {
      * @property renderLineComment 是否需要渲染之前的单行注释文本到文档中。
      * @property renderRelatedLocalisationsForDefinitions 是否需要为定义渲染相关本地化文本到文档中。
      * @property renderRelatedImagesForDefinitions 是否需要为定义渲染相关图片到文档中。
-     * @property renderRelatedLocalisationsForModifiers 是否需要为修正渲染相关本地化文本到文档中。
+     * @property renderNameDescForModifiers 是否需要为修正渲染相关本地化文本到文档中。
      * @property renderIconForModifiers 是否需要为修正渲染图标到文档中。
      * @property renderLocalisationForLocalisations 是否需要为本地化渲染本地化文本到文档中。
      * @property showScopes 是否需要在文档中显示作用域信息（如果支持且存在）。
@@ -56,7 +56,7 @@ class ParadoxSettingsState : BaseState() {
         var renderLineComment by property(false)
         var renderRelatedLocalisationsForDefinitions by property(true)
         var renderRelatedImagesForDefinitions by property(true)
-        var renderRelatedLocalisationsForModifiers by property(true)
+        var renderNameDescForModifiers by property(true)
         var renderIconForModifiers by property(true)
         var renderLocalisationForLocalisations by property(true)
         var showScopes by property(true)
@@ -68,7 +68,7 @@ class ParadoxSettingsState : BaseState() {
      * @property completeVariableNames 进行代码补全时，是否需要在效果的子句中提示变量名。
      * @property completeWithValue 进行代码补全时，如果可能，将会另外提供提示项，自动插入常量字符串或者花括号。
      * @property completeWithClauseTemplate 进行代码补全时，如果可能，将会另外提供提示项，自动插入从句内联模版。
-     * @property maxExpressionCountInOneLine 当插入从句内联模版时，当要插入的从句中的属性的个数不超过时，会把所有属性放到同一行。
+     * @property maxMemberCountInOneLine 当插入从句内联模版时，当要插入的从句中的属性的个数不超过时，会把所有属性放到同一行。
      * @property completeOnlyScopeIsMatched 如果存在，是否仅提供匹配当前作用域的提示项。
      * @property completeByLocalizedName 是否也根据定义和修正的本地化名字来进行代码补全。
      */
@@ -80,7 +80,7 @@ class ParadoxSettingsState : BaseState() {
         var completeVariableNames by property(true)
         var completeWithValue by property(true)
         var completeWithClauseTemplate by property(true)
-        var maxExpressionCountInOneLine by property(2)
+        var maxMemberCountInOneLine by property(2)
         var completeOnlyScopeIsMatched by property(true)
         var completeByLocalizedName by property(false)
     }

@@ -97,11 +97,11 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.documentation::renderRelatedImagesForDefinitions)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderRelatedImagesForDefinitions.tooltip") }
                 }
-                //renderRelatedLocalisationsForModifiers
+                //renderNameDescForModifiers
                 row {
-                    checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForModifiers"))
-                        .bindSelected(settings.documentation::renderRelatedLocalisationsForModifiers)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderRelatedLocalisationsForModifiers.tooltip") }
+                    checkBox(PlsBundle.message("settings.documentation.renderNameDescForModifiers"))
+                        .bindSelected(settings.documentation::renderNameDescForModifiers)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderNameDescForModifiers.tooltip") }
                 }
                 //renderLocalisationForLocalisations
                 row {
@@ -173,10 +173,10 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 indent {
                     //maxExpressionCountInOneLine
                     row {
-                        label(PlsBundle.message("settings.completion.maxExpressionCountInOneLine")).applyToComponent {
-                            toolTipText = PlsBundle.message("settings.completion.maxExpressionCountInOneLine.tooltip")
+                        label(PlsBundle.message("settings.completion.maxMemberCountInOneLine")).applyToComponent {
+                            toolTipText = PlsBundle.message("settings.completion.maxMemberCountInOneLine.tooltip")
                         }
-                        intTextField(0..10).bindIntText(settings.completion::maxExpressionCountInOneLine)
+                        intTextField(0..10).bindIntText(settings.completion::maxMemberCountInOneLine)
                     }
                 }.enabledIf(completeWithClauseTemplateCb.selected)
                 //completeOnlyScopeIsMatched

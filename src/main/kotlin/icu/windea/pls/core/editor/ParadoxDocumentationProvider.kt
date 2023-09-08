@@ -213,7 +213,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         configGroup: CwtConfigGroup,
         sections: MutableMap<String, String>?
     ) {
-        val render = getSettings().documentation.renderRelatedLocalisationsForModifiers
+        val render = getSettings().documentation.renderNameDescForModifiers
         val gameType = configGroup.gameType ?: return
         val project = configGroup.project
         val nameLocalisation = run {
