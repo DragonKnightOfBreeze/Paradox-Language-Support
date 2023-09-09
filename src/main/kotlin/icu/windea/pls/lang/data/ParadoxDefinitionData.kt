@@ -1,11 +1,14 @@
 package icu.windea.pls.lang.data
 
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.script.*
 
 /**
  * @see ParadoxDefinitionDataProvider
  */
-interface ParadoxDefinitionData
+abstract class ParadoxDefinitionData {
+    lateinit var data: ParadoxScriptData
+}
 
 /**
  * 获取定义的指定类型的数据。

@@ -10,16 +10,8 @@ data class StellarisEconomicCategoryInfo(
     val name: String,
     val parent: String? = null,
     val useForAiBudget: Boolean = false,
-    val modifiers: Set<StellarisEconomicCategoryModifierInfo> = emptySet(),
     val modifierCategory: String? = null,
-)
-
-@WithGameType(ParadoxGameType.Stellaris)
-data class StellarisEconomicCategoryModifierInfo(
-    val name: String,
-    val resource: String?,
-    val triggered: Boolean = false,
-    val useParentIcon: Boolean = false,
+    val modifiers: Set<StellarisEconomicCategoryModifierInfo> = emptySet(),
 ) {
     override fun equals(other: Any?): Boolean {
         return this === other || (other is StellarisEconomicCategoryInfo && name == other.name)
@@ -31,8 +23,24 @@ data class StellarisEconomicCategoryModifierInfo(
 }
 
 @WithGameType(ParadoxGameType.Stellaris)
-data class StellarisTriggeredModifierInfo(
+data class StellarisEconomicCategoryModifierInfo(
     val key: String,
+    val resource: String?,
+    val category: String,
+    val type: String,
+    val triggered: Boolean = false,
     val useParentIcon: Boolean = false,
-    val modifierTypes: List<String>
-)
+) {
+    val name = when {
+        resource == null -> "${key}_${category}_${type}"
+        else -> "${key}_${resource}_${category}_${type}"
+    }
+    
+    override fun equals(other: Any?): Boolean {
+        return this === other || (other is StellarisEconomicCategoryInfo && name == other.name)
+    }
+    
+    override fun hashCode(): Int {
+        return name.hashCode()
+    }
+}

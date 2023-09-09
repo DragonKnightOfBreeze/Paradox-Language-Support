@@ -13,7 +13,6 @@ import icu.windea.pls.script.psi.impl.*
 /**
  * 用于处理封装变量。
  */
-@Suppress("unused")
 object ParadoxScriptedVariableHandler {
     val localScriptedVariableKey = Key.create<CachedValue<List<SmartPsiElementPointer<ParadoxScriptScriptedVariable>>>>("paradox.localScriptedVariables")
     

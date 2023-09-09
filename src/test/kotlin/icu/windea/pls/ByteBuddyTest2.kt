@@ -7,7 +7,6 @@ import net.bytebuddy.implementation.*
 import net.bytebuddy.matcher.*
 import org.junit.*
 
-@Suppress("unused")
 class ByteBuddyTest2  {
     //目标类型已加载 + subtype + 方法调用 - 测试失败
     

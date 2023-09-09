@@ -3,7 +3,6 @@ package icu.windea.pls.lang
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -14,9 +13,10 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
+import icu.windea.pls.lang.data.*
+import icu.windea.pls.lang.data.impl.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.script.*
 import java.lang.invoke.*
 
 @WithGameType(ParadoxGameType.Stellaris)
@@ -47,26 +47,11 @@ object StellarisEconomicCategoryHandler {
         //这种写法可能存在一定性能问题，但是问题不大
         //兼容继承的mult修正
         try {
-            val data = ParadoxScriptDataResolver.resolveProperty(definition, inline = true) ?: return null
             val name = definition.name.orNull() ?: return null
-            val parent = data.getData("parent")?.value?.stringValue()
-            val useForAiBudget = data.getData("use_for_ai_budget")?.value?.booleanValue()
-                ?: getUseForAiBudgetFromParent(name, parent, definition)
-            val modifiers = mutableSetOf<StellarisEconomicCategoryModifierInfo>()
-            val modifierCategory = data.getData("modifier_category")?.value?.stringValue()
+            val resources = getResources(definition).orNull() ?: return null //unexpected
+            val data = definition.getData<StellarisEconomicCategoryDataProvider.Data>() ?: return null
             
-            val resources = getResources(definition)
-                .orNull() ?: return null //unexpected
-            val generateAddModifiers = data.getAllData("generate_add_modifiers/-")
-                .mapNotNull { it.value?.stringValue() }
-            val generateMultModifiers = data.getAllData("generate_mult_modifiers/-")
-                .mapNotNull { it.value?.stringValue() }
-            val triggeredProducesModifiers = data.getAllData("triggered_produces_modifier")
-                .mapNotNull { resolveTriggeredModifier(it) }
-            val triggeredCostModifiers = data.getAllData("triggered_cost_modifier")
-                .mapNotNull { resolveTriggeredModifier(it) }
-            val triggeredUpkeepModifiers = data.getAllData("triggered_upkeep_modifier")
-                .mapNotNull { resolveTriggeredModifier(it) }
+            val modifiers = mutableSetOf<StellarisEconomicCategoryModifierInfo>()
             
             // will generate if use_for_ai_budget = yes (inherited by parent property for _mult modifiers)
             // <economic_category>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
@@ -74,56 +59,37 @@ object StellarisEconomicCategoryHandler {
             // <economic_category>_<resource>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
             
             fun addModifier(key: String, category: String, type: String, triggered: Boolean, useParentIcon: Boolean) {
-                fun addModifier(modifierName: String, resource: String?) {
-                    modifiers.add(StellarisEconomicCategoryModifierInfo(modifierName, resource, triggered, useParentIcon))
-                }
-                
-                if(useForAiBudget && triggered) {
-                    addModifier("${key}_${category}_${type}", null)
+                if(data.useForAiBudget) {
+                    modifiers.add(StellarisEconomicCategoryModifierInfo(key, null, category, type, triggered, useParentIcon))
                 }
                 resources.forEach { resource ->
-                    addModifier("${key}_${resource}_${category}_${type}", resource)
-                }
-                if(useForAiBudget && !triggered) {
-                    addModifier("${key}_${category}_${type}", null)
+                    modifiers.add(StellarisEconomicCategoryModifierInfo(key, resource, category, type, triggered, useParentIcon))
                 }
             }
             
-            generateAddModifiers.forEach { category ->
-                val type = "add"
-                val triggered = false
-                val useParentIcon = false
-                addModifier(name, category, type, triggered, useParentIcon)
+            data.generateAddModifiers.forEach { category ->
+                addModifier(name, category, "add", false, false)
             }
-            generateMultModifiers.forEach { category ->
-                val type = "mult"
-                val triggered = false
-                val useParentIcon = false
-                addModifier(name, category, type, triggered, useParentIcon)
+            data.generateMultModifiers.forEach { category ->
+                addModifier(name, category, "mult", false, false)
             }
-            triggeredProducesModifiers.forEach { (key, useParentIcon, types) ->
-                val category = "produces"
-                val triggered = false
-                types.forEach { type ->
-                    addModifier(key, category, type, triggered, useParentIcon)
+            data.triggeredProducesModifiers.forEach {
+                it.modifierTypes.forEach { type ->
+                    addModifier(it.key, "produces", type, true, it.useParentIcon)
                 }
             }
-            triggeredCostModifiers.forEach { (key, useParentIcon, types) ->
-                val category = "cost"
-                val triggered = false
-                types.forEach { type ->
-                    addModifier(key, category, type, triggered, useParentIcon)
+            data.triggeredCostModifiers.forEach {
+                it.modifierTypes.forEach { type ->
+                    addModifier(it.key, "cost", type, true, it.useParentIcon)
                 }
             }
-            triggeredUpkeepModifiers.forEach { (key, useParentIcon, types) ->
-                val category = "upkeep"
-                val triggered = false
-                types.forEach { type ->
-                    addModifier(key, category, type, triggered, useParentIcon)
+            data.triggeredUpkeepModifiers.forEach {
+                it.modifierTypes.forEach { type ->
+                    addModifier(it.key, "upkeep", type, true, it.useParentIcon)
                 }
             }
             
-            return StellarisEconomicCategoryInfo(name, parent, useForAiBudget, modifiers, modifierCategory)
+            return StellarisEconomicCategoryInfo(name, data.parent, data.useForAiBudget, data.modifierCategory, modifiers)
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
             logger.error(e)
@@ -131,38 +97,11 @@ object StellarisEconomicCategoryHandler {
         }
     }
     
-    private fun getUseForAiBudgetFromParent(source: String, parent: String?, contextElement: ParadoxScriptProperty): Boolean {
-        if(parent == null) return false // no parent > return false
-        if(source == parent) return false //recursive parent > invalid, return false
-        val project = contextElement.project
-        val selector = definitionSelector(project, contextElement).contextSensitive()
-        return doGetUseForAiBudgetFromParent(source, parent, parent, project, selector)
-    }
-    
-    private fun doGetUseForAiBudgetFromParent(source: String, current: String, parent: String, project: Project, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): Boolean {
-        val parentElement = ParadoxDefinitionSearch.search(parent, "economic_category", selector).find()
-        val newParent = parentElement?.findProperty("parent", inline = true)?.propertyValue?.stringValue()
-        if(source == newParent) return false //recursive parent > invalid, return false
-        if(current == newParent) return false //recursive parent > invalid, return false
-        if(parent == newParent) return false //recursive parent > invalid, return false
-        if(newParent != null) return doGetUseForAiBudgetFromParent(source, parent, newParent, project, selector)
-        val useForAiBudget = parentElement?.findProperty("use_for_ai_budget", inline = true)?.propertyValue?.booleanValue()
-        return useForAiBudget ?: false
-    }
-    
     private fun getResources(contextElement: PsiElement): Set<String> {
         val project = contextElement.project
         val selector = definitionSelector(project, contextElement)
         return ParadoxDefinitionSearch.search("resource", selector)
             .mapNotNullTo(mutableSetOf()) { it.name }  //it.name is ok
-    }
-    
-    private fun resolveTriggeredModifier(data: ParadoxScriptData): StellarisTriggeredModifierInfo? {
-        //key, modifier_types, use_parent_icon
-        val key = data.getData("key")?.value?.stringValue() ?: return null
-        val useParentIcon = data.getData("use_parent_icon")?.value?.booleanValue() ?: false
-        val modifierTypes = data.getAllData("modifier_types/-").mapNotNull { it.value?.stringValue() }.orNull() ?: return null
-        return StellarisTriggeredModifierInfo(key, useParentIcon, modifierTypes)
     }
     
     fun resolveModifierCategory(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
@@ -175,7 +114,7 @@ object StellarisEconomicCategoryHandler {
         return keys.associateWith { modifierCategories.getValue(it) }
     }
     
-    fun getModifierCategoryOptionValues(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
+    private fun getModifierCategoryOptionValues(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
         val valueConfig = enumConfig.valueConfigMap.getValue(finalValue)
         return valueConfig.getOrPutUserData(modifierCategoriesKey, emptySet()) {
             valueConfig.findOption("modifier_categories")?.getOptionValues()

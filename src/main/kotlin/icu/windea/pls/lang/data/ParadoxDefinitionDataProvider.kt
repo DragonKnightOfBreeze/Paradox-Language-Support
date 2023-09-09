@@ -37,7 +37,7 @@ abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
         }
     }
     
-    fun doGetData(definition: ParadoxScriptDefinitionElement): T? {
+    private fun doGetData(definition: ParadoxScriptDefinitionElement): T? {
         val data = when {
             definition is ParadoxScriptFile -> ParadoxScriptDataResolver.resolve(definition, inline = true)
             definition is ParadoxScriptProperty -> ParadoxScriptDataResolver.resolveProperty(definition, inline = true)
@@ -47,8 +47,10 @@ abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
         return doGetData(data)
     }
     
-    fun doGetData(data: ParadoxScriptData): T? {
-        return dataType.getConstructor(ParadoxScriptData::class.java).newInstance(data)
+    private fun doGetData(data: ParadoxScriptData): T {
+        val definitionData = dataType.getConstructor().newInstance()
+        (definitionData as ParadoxDefinitionData).data = data
+        return definitionData
     }
     
     companion object INSTANCE {

@@ -1,21 +1,22 @@
 package icu.windea.pls.tool.script
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.core.*
+import icu.windea.pls.lang.data.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 import kotlin.reflect.*
 import kotlin.reflect.full.*
 
-inline operator fun <reified T> ParadoxScriptData.get(path: String): ParadoxScriptDataDelegateProvider<T?> {
+inline fun <reified T> ParadoxScriptData.get(path: String): ParadoxScriptDataDelegateProvider<T?> {
     return ParadoxScriptDataDelegateProvider(getData(path), typeOf<T>(), null)
 }
 
-inline operator fun <reified T> ParadoxScriptData.get(path: String, defaultValue: T): ParadoxScriptDataDelegateProvider<T> {
+inline fun <reified T> ParadoxScriptData.get(path: String, defaultValue: T): ParadoxScriptDataDelegateProvider<T> {
     return ParadoxScriptDataDelegateProvider(getData(path), typeOf<T>(), defaultValue)
 }
 
-val ParadoxScriptData.Keys.propertyValuesKey by createKey<MutableMap<KProperty<*>, Any?>>("paradox.data.property.values")
+inline fun <reified T> ParadoxScriptData.getAll(path: String): ParadoxScriptAllDataDelegateProvider<T> {
+    return ParadoxScriptAllDataDelegateProvider(getAllData(path), typeOf<T>())
+}
 
 class ParadoxScriptDataDelegateProvider<T>(
     val delegate: ParadoxScriptData?,
@@ -25,32 +26,49 @@ class ParadoxScriptDataDelegateProvider<T>(
     @Suppress("UNCHECKED_CAST")
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
         if(delegate == null) return defaultValue
-        val map = delegate.getOrPutUserData(ParadoxScriptData.Keys.propertyValuesKey) { mutableMapOf() }
-        val value = map.getOrPut(property) { getValueOfType(delegate.value, type) } as? T?
-        return value ?: defaultValue
+        return getValueOfType(delegate, type) as? T? ?: defaultValue
     }
-    
-    private fun getValueOfType(value: ParadoxScriptValue?, type: KType): Any? {
-        if(value == null) return null
-        val kClass = type.classifier as? KClass<*> ?: return null
-        return when {
-            kClass == Any::class -> value.value()
-            kClass == Boolean::class -> value.booleanValue()
-            kClass == Int::class -> value.intValue()
-            kClass == Float::class -> value.floatValue()
-            kClass == String::class -> value.stringValue()
-            kClass == Color::class -> value.colorValue()
-            kClass.isSubclassOf(List::class) -> value.castOrNull<ParadoxScriptBlock>()?.valueList
-                ?.mapNotNullTo(mutableListOf()) t@{
-                    val elementType = type.arguments.first().type ?: return@t null
-                    getValueOfType(it, elementType)
-                }
-            kClass.isSubclassOf(Collection::class) -> value.castOrNull<ParadoxScriptBlock>()?.valueList
-                ?.mapNotNullTo(mutableSetOf()) t@{
-                    val elementType = type.arguments.first().type ?: return@t null
-                    getValueOfType(it, elementType)
-                }
-            else -> null
+}
+
+class ParadoxScriptAllDataDelegateProvider<T>(
+    val delegate: List<ParadoxScriptData>,
+    val type: KType,
+) {
+    @Suppress("UNCHECKED_CAST")
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): List<T> {
+        if(delegate.isEmpty()) return emptyList()
+        return delegate.mapNotNull { getValueOfType(it, type) as? T? }
+    }
+}
+
+private fun getValueOfType(data: ParadoxScriptData, type: KType): Any? {
+    val value = data.value ?: return null
+    val kClass = type.classifier as? KClass<*> ?: return null
+    return when {
+        kClass == Any::class -> value.value()
+        kClass == Boolean::class -> value.booleanValue()
+        kClass == Int::class -> value.intValue()
+        kClass == Float::class -> value.floatValue()
+        kClass == String::class -> value.stringValue()
+        kClass == Color::class -> value.colorValue()
+        kClass.isSubclassOf(List::class) -> {
+            val elementType = type.arguments.first().type ?: return null
+            data.children?.mapNotNullTo(mutableListOf()) { getValueOfType(it, elementType) }.orEmpty()
         }
+        kClass.isSubclassOf(Collection::class) -> {
+            val elementType = type.arguments.first().type ?: return null
+            data.children?.mapNotNullTo(mutableSetOf()) { getValueOfType(it, elementType) }.orEmpty()
+        }
+        kClass.isSubclassOf(ParadoxDefinitionData::class) -> {
+            getDefinitionData(data, kClass.java)
+        }
+        else -> null
     }
+}
+
+private fun getDefinitionData(data: ParadoxScriptData, dataType: Class<out Any>): ParadoxDefinitionData {
+    val definitionData = dataType.getConstructor().newInstance()
+    definitionData as ParadoxDefinitionData
+    definitionData.data = data
+    return definitionData
 }

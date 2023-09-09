@@ -9,7 +9,6 @@ import net.bytebuddy.matcher.*
 import net.bytebuddy.pool.*
 import org.junit.*
 
-@Suppress("unused")
 class ByteBuddyTest1  {
     //目标类型未加载 + rebase + 方法调用 - 测试通过
     

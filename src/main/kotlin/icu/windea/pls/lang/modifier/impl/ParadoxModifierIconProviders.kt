@@ -22,7 +22,7 @@ class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {
 
 class ParadoxDefinitionDelegateBasedModifierIconProvider: ParadoxModifierIconProvider {
     //如果修正M由定义D生成，而定义D的作为图标的图片又委托给了定义D1
-    //那么修正M的作为图标的图片也可以委托给定义D1的对应修正
+    //那么它的作为图标的图片也可以委托给定义D1的对应修正
     
     override fun addModifierIconPath(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>) {
         val modifierConfig = modifierData.modifierConfig ?: return
@@ -67,8 +67,13 @@ class ParadoxDefinitionDelegateBasedModifierIconProvider: ParadoxModifierIconPro
 
 class ParadoxEconomicCategoryBasedModifierIconProvider: ParadoxModifierIconProvider {
     //对于由economic_category生成的那些修正，需要应用特殊的图标继承逻辑
+    //如过修正M由经济分类EC生成，并且指定了`use_parent_icon = yes`和`parent = EC1`
+    //那么它的作为图标的图片也可以委托给经济分类EC1的对应修正
     
     override fun addModifierIconPath(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>) {
-        //TODO 1.1.8+
+        val economicCategoryInfo = modifierData.economicCategoryInfo ?: return
+        val economicCategoryModifierInfo = modifierData.economicCategoryModifierInfo ?: return
+        if(!economicCategoryModifierInfo.useParentIcon) return
+        val parent = economicCategoryInfo.parent
     }
 }

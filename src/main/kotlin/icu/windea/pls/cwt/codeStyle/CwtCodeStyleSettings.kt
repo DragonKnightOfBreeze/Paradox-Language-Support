@@ -3,7 +3,6 @@ package icu.windea.pls.cwt.codeStyle
 import com.intellij.psi.codeStyle.*
 import icu.windea.pls.cwt.*
 
-@Suppress("unused")
 class CwtCodeStyleSettings(
 	container: CodeStyleSettings
 ) : CustomCodeStyleSettings(CwtLanguage.id, container) {
