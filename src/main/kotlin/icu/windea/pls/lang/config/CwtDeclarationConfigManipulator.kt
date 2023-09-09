@@ -9,7 +9,7 @@ import icu.windea.pls.lang.cwt.config.*
  * 某些情况下，需要基于上下文对CWT规则进行添加、删除和修改。
  */
 @WithGameTypeEP
-interface CwtDeclarationConfigInjector {
+interface CwtDeclarationConfigManipulator {
     /**
      * 是否支持此上下文。
      */
@@ -38,30 +38,30 @@ interface CwtDeclarationConfigInjector {
     fun replaceConfigExpression(configExpression: String, configContext: CwtDeclarationConfigContext): String? = null
     
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<CwtDeclarationConfigInjector>("icu.windea.pls.declarationConfigInjector")
+        val EP_NAME = ExtensionPointName.create<CwtDeclarationConfigManipulator>("icu.windea.pls.declarationConfigManipulator")
         
-        fun getDeclarationMergedConfig(configContext: CwtDeclarationConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList): CwtPropertyConfig? {
-            if(injectors.isEmpty()) return null
+        fun getDeclarationMergedConfig(configContext: CwtDeclarationConfigContext, manipulators: List<CwtDeclarationConfigManipulator> = EP_NAME.extensionList): CwtPropertyConfig? {
+            if(manipulators.isEmpty()) return null
             val gameType = configContext.configGroup.gameType
-            return injectors.firstNotNullOfOrNull f@{ ep ->
+            return manipulators.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
                 ep.getDeclarationMergedConfig(configContext)
             }
         }
         
-        fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtDeclarationConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList) {
-            if(injectors.isEmpty()) return
+        fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, configContext: CwtDeclarationConfigContext, manipulators: List<CwtDeclarationConfigManipulator> = EP_NAME.extensionList) {
+            if(manipulators.isEmpty()) return
             val gameType = configContext.configGroup.gameType
-            injectors.forEach f@{ ep ->
+            manipulators.forEach f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 ep.handleDeclarationMergedConfig(declarationConfig, configContext)
             }
         }
         
-        fun getCacheKey(configContext: CwtDeclarationConfigContext, injectors: List<CwtDeclarationConfigInjector> = EP_NAME.extensionList): String? {
-            if(injectors.isEmpty()) return null
+        fun getCacheKey(configContext: CwtDeclarationConfigContext, manipulators: List<CwtDeclarationConfigManipulator> = EP_NAME.extensionList): String? {
+            if(manipulators.isEmpty()) return null
             val gameType = configContext.configGroup.gameType
-            return injectors.firstNotNullOfOrNull f@{ ep ->
+            return manipulators.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
                 ep.getCacheKey(configContext)
             }

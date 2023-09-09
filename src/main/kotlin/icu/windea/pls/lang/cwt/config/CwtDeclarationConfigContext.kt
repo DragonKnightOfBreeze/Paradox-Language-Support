@@ -24,7 +24,7 @@ class CwtDeclarationConfigContext(
     
     val element: PsiElement? get() = elementPointer.element
     
-    val injectors = CwtDeclarationConfigInjector.EP_NAME.extensionList.filter { it.supports(this) }
+    val manipulators = CwtDeclarationConfigManipulator.EP_NAME.extensionList.filter { it.supports(this) }
     
     /**
      * 得到根据子类型列表进行合并后的配置。
@@ -38,15 +38,15 @@ class CwtDeclarationConfigContext(
         val cacheKey = ooGetCacheKey(declarationConfig)
         return cache.getOrPut(cacheKey) {
             val config = doGetConfig(declarationConfig)
-            CwtDeclarationConfigInjector.handleDeclarationMergedConfig(config, this, injectors)
+            CwtDeclarationConfigManipulator.handleDeclarationMergedConfig(config, this, manipulators)
             config.declarationConfigCacheKey = cacheKey
             config
         }
     }
     
     private fun ooGetCacheKey(declarationConfig: CwtDeclarationConfig): String {
-        val cacheKeyFromInjectors = CwtDeclarationConfigInjector.getCacheKey(this, injectors)
-        if(cacheKeyFromInjectors != null) return cacheKeyFromInjectors
+        val cacheKeyFromManipulators = CwtDeclarationConfigManipulator.getCacheKey(this, manipulators)
+        if(cacheKeyFromManipulators != null) return cacheKeyFromManipulators
         
         //optimized
         return buildString {
@@ -68,7 +68,7 @@ class CwtDeclarationConfigContext(
     }
     
     private fun doGetConfig(declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        val injectedResult = CwtDeclarationConfigInjector.getDeclarationMergedConfig(this, injectors)
+        val injectedResult = CwtDeclarationConfigManipulator.getDeclarationMergedConfig(this, manipulators)
         if(injectedResult != null) return injectedResult
         
         val configs = declarationConfig.propertyConfig.configs?.flatMap { ParadoxConfigGenerator.deepCopyConfigsInDeclarationConfig(it, this) }

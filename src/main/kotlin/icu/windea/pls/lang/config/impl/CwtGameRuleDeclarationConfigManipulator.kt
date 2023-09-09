@@ -8,7 +8,7 @@ import icu.windea.pls.model.*
 
 private val configKey = Key.create<CwtGameRuleConfig>("cwt.config.injector.gameRule.config")
 
-class CwtGameRuleDeclarationConfigInjector : CwtDeclarationConfigInjector {
+class CwtGameRuleDeclarationConfigManipulator : CwtDeclarationConfigManipulator {
     //某些game_rule的声明规则需要重载
     
     override fun supports(configContext: CwtDeclarationConfigContext): Boolean {
