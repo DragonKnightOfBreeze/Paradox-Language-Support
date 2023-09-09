@@ -87,24 +87,21 @@ object ParadoxModifierHandler {
     fun getModifierNameKeys(name: String, element: PsiElement): Set<String> {
         val modifierData = getModifierData(name, element) ?: return emptySet()
         return modifierData.getOrPutUserData(PlsKeys.modifierNameKeys) {
-            val epName = ParadoxModifierNameDescProvider.EP_NAME
-            buildSet { epName.extensionList.forEachFast { it.addModifierNameKey(modifierData, element, this) } }
+            ParadoxModifierNameDescProvider.getModifierNameKeys(element, modifierData)
         }
     }
     
     fun getModifierDescKeys(name: String, element: PsiElement): Set<String> {
         val modifierData = getModifierData(name, element) ?: return emptySet()
         return modifierData.getOrPutUserData(PlsKeys.modifierDescKeys) {
-            val epName = ParadoxModifierNameDescProvider.EP_NAME
-            buildSet { epName.extensionList.forEachFast { it.addModifierDescKey(modifierData, element, this) } }
+            ParadoxModifierNameDescProvider.getModifierDescKeys(element, modifierData)
         }
     }
     
     fun getModifierIconPaths(name: String, element: PsiElement): Set<String> {
         val modifierData = getModifierData(name, element) ?: return emptySet()
         return modifierData.getOrPutUserData(PlsKeys.modifierIconPaths) {
-            val epName = ParadoxModifierIconProvider.EP_NAME
-            buildSet { epName.extensionList.forEachFast { it.addModifierIconPath(modifierData, element, this) } }
+            ParadoxModifierIconProvider.getModifierIconPaths(element, modifierData)
         }
     }
     

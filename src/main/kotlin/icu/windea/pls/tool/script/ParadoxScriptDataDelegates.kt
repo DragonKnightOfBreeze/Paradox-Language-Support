@@ -1,5 +1,6 @@
 package icu.windea.pls.tool.script
 
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
@@ -39,6 +40,13 @@ class ParadoxScriptAllDataDelegateProvider<T>(
         if(delegate.isEmpty()) return emptyList()
         return delegate.mapNotNull { getValueOfType(it, type) as? T? }
     }
+}
+
+private val ParadoxScriptData.Keys.propertyValuesKey by createKey<MutableMap<KType, Any?>>("paradox.data.property.values")
+
+private fun getValueOfTypeFromCache(data: ParadoxScriptData, type: KType) : Any? {
+    val propertyValues = data.getUserData(ParadoxScriptData.Keys.propertyValuesKey)!!
+    return propertyValues.getOrPut(type) { getValueOfType(data, type) ?: EMPTY_OBJECT }.takeUnless { it == EMPTY_OBJECT }
 }
 
 private fun getValueOfType(data: ParadoxScriptData, type: KType): Any? {

@@ -2,7 +2,9 @@ package icu.windea.pls.lang.modifier
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.model.*
 
 /**
@@ -20,5 +22,25 @@ interface ParadoxModifierNameDescProvider {
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxModifierNameDescProvider>("icu.windea.pls.modifierNameDescProvider")
+        
+        fun getModifierNameKeys(element: PsiElement, modifierData: ParadoxModifierData): Set<String> {
+            val gameType = modifierData.gameType
+            return buildSet {
+                EP_NAME.extensionList.forEachFast f@{ ep ->
+                    if(!gameType.supportsByAnnotation(ep)) return@f
+                    ep.addModifierNameKey(modifierData, element, this)
+                }
+            }
+        }
+        
+        fun getModifierDescKeys(element: PsiElement, modifierData: ParadoxModifierData): Set<String> {
+            val gameType = modifierData.gameType
+            return buildSet {
+                EP_NAME.extensionList.forEachFast f@{ ep ->
+                    if(!gameType.supportsByAnnotation(ep)) return@f
+                    ep.addModifierDescKey(modifierData, element, this)
+                }
+            }
+        }
     }
 }

@@ -14,7 +14,7 @@ import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.data.*
-import icu.windea.pls.lang.data.impl.*
+import icu.windea.pls.lang.data.impl.StellarisEconomicCategoryDataProvider.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.lang.invoke.*
@@ -49,17 +49,22 @@ object StellarisEconomicCategoryHandler {
         try {
             val name = definition.name.orNull() ?: return null
             val resources = getResources(definition).orNull() ?: return null //unexpected
-            val data = definition.getData<StellarisEconomicCategoryDataProvider.Data>() ?: return null
+            val data = definition.getData<Data>() ?: return null
+            val parentDataMap = collectParentData(definition, data)
             
+            val useForAiBudget = data.useForAiBudget
+            val useForAiBudgetForMult = parentDataMap.values.all { it.useForAiBudget }
+            
+            val parents = parentDataMap.keys
             val modifiers = mutableSetOf<StellarisEconomicCategoryModifierInfo>()
             
-            // will generate if use_for_ai_budget = yes (inherited by parent property for _mult modifiers)
+            // will generate where use_for_ai_budget = yes (inherited by parent property for _mult modifiers)
             // <economic_category>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
             // will generate:
             // <economic_category>_<resource>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
             
             fun addModifier(key: String, category: String, type: String, triggered: Boolean, useParentIcon: Boolean) {
-                if(data.useForAiBudget) {
+                if(useForAiBudget || (type == "mult" && useForAiBudgetForMult)) {
                     modifiers.add(StellarisEconomicCategoryModifierInfo(key, null, category, type, triggered, useParentIcon))
                 }
                 resources.forEach { resource ->
@@ -73,6 +78,7 @@ object StellarisEconomicCategoryHandler {
             data.generateMultModifiers.forEach { category ->
                 addModifier(name, category, "mult", false, false)
             }
+            
             data.triggeredProducesModifiers.forEach {
                 it.modifierTypes.forEach { type ->
                     addModifier(it.key, "produces", type, true, it.useParentIcon)
@@ -89,7 +95,7 @@ object StellarisEconomicCategoryHandler {
                 }
             }
             
-            return StellarisEconomicCategoryInfo(name, data.parent, data.useForAiBudget, data.modifierCategory, modifiers)
+            return StellarisEconomicCategoryInfo(name, data.parent, useForAiBudget, data.modifierCategory, parents, modifiers)
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
             logger.error(e)
@@ -98,10 +104,26 @@ object StellarisEconomicCategoryHandler {
     }
     
     private fun getResources(contextElement: PsiElement): Set<String> {
-        val project = contextElement.project
-        val selector = definitionSelector(project, contextElement)
-        return ParadoxDefinitionSearch.search("resource", selector)
-            .mapNotNullTo(mutableSetOf()) { it.name }  //it.name is ok
+        val selector = definitionSelector(contextElement.project, contextElement)
+        return ParadoxDefinitionSearch.search("resource", selector).findAll()
+            .mapTo(mutableSetOf()) { it.name }  //it.name is ok
+    }
+    
+    private fun collectParentData(contextElement: PsiElement, data: Data, map: MutableMap<String, Data> = mutableMapOf()): Map<String, Data> {
+        val parent = data.parent ?: return map
+        withRecursionGuard("icu.windea.pls.lang.StellarisEconomicCategoryHandler.collectParentData") {
+            withCheckRecursion(parent) {
+                val selector = definitionSelector(contextElement.project, contextElement).contextSensitive()
+                ParadoxDefinitionSearch.search(parent, "economic_category", selector).processQuery p@{
+                    ProgressManager.checkCanceled()
+                    val parentData = it.getData<Data>() ?: return@p true
+                    map.put(parent, parentData)
+                    collectParentData(contextElement, parentData, map)
+                    true
+                }
+            }
+        }
+        return map
     }
     
     fun resolveModifierCategory(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {

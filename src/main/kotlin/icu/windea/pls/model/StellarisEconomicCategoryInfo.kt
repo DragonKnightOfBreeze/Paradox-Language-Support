@@ -11,6 +11,7 @@ data class StellarisEconomicCategoryInfo(
     val parent: String? = null,
     val useForAiBudget: Boolean = false,
     val modifierCategory: String? = null,
+    val parents: Set<String> = emptySet(),
     val modifiers: Set<StellarisEconomicCategoryModifierInfo> = emptySet(),
 ) {
     override fun equals(other: Any?): Boolean {
@@ -31,9 +32,13 @@ data class StellarisEconomicCategoryModifierInfo(
     val triggered: Boolean = false,
     val useParentIcon: Boolean = false,
 ) {
-    val name = when {
-        resource == null -> "${key}_${category}_${type}"
-        else -> "${key}_${resource}_${category}_${type}"
+    val name = resolveName(key)
+    
+    fun resolveName(key: String): String {
+        return when {
+            resource == null -> "${key}_${category}_${type}"
+            else -> "${key}_${resource}_${category}_${type}"
+        }
     }
     
     override fun equals(other: Any?): Boolean {

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.modifier.impl
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
@@ -65,7 +66,8 @@ class ParadoxDefinitionDelegateBasedModifierIconProvider: ParadoxModifierIconPro
     }
 }
 
-class ParadoxEconomicCategoryBasedModifierIconProvider: ParadoxModifierIconProvider {
+@WithGameType(ParadoxGameType.Stellaris)
+class StellarisEconomicCategoryBasedModifierIconProvider: ParadoxModifierIconProvider {
     //对于由economic_category生成的那些修正，需要应用特殊的图标继承逻辑
     //如过修正M由经济分类EC生成，并且指定了`use_parent_icon = yes`和`parent = EC1`
     //那么它的作为图标的图片也可以委托给经济分类EC1的对应修正
@@ -74,6 +76,9 @@ class ParadoxEconomicCategoryBasedModifierIconProvider: ParadoxModifierIconProvi
         val economicCategoryInfo = modifierData.economicCategoryInfo ?: return
         val economicCategoryModifierInfo = modifierData.economicCategoryModifierInfo ?: return
         if(!economicCategoryModifierInfo.useParentIcon) return
-        val parent = economicCategoryInfo.parent
+        economicCategoryInfo.parents.forEach { parent ->
+            val delegateName = economicCategoryModifierInfo.resolveName(parent)
+            registry += "gfx/interface/icons/modifiers/mod_${delegateName}"
+        }
     }
 }
