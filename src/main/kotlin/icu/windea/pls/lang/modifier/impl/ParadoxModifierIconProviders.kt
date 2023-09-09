@@ -55,8 +55,8 @@ class ParadoxDefinitionDelegateBasedModifierIconProvider: ParadoxModifierIconPro
                         val resolvedDefinitionInfo = resolvedDefinition.definitionInfo ?: return@f
                         val resolvedDefinitionName = resolvedDefinitionInfo.name
                         val resolvedDefinitionType = resolvedDefinitionInfo.type
-                        val delegateName = modifierConfig.template.extract(resolvedDefinitionName)
-                        registry += "gfx/interface/icons/modifiers/mod_${delegateName}"
+                        val name = modifierConfig.template.extract(resolvedDefinitionName)
+                        registry += "gfx/interface/icons/modifiers/mod_${name}"
                         processDelegateDefinitions(resolvedDefinitionName, resolvedDefinitionType, element, modifierConfig, registry)
                     }
                     true
@@ -69,16 +69,20 @@ class ParadoxDefinitionDelegateBasedModifierIconProvider: ParadoxModifierIconPro
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisEconomicCategoryBasedModifierIconProvider: ParadoxModifierIconProvider {
     //对于由economic_category生成的那些修正，需要应用特殊的图标继承逻辑
-    //如过修正M由经济分类EC生成，并且指定了`use_parent_icon = yes`和`parent = EC1`
-    //那么它的作为图标的图片也可以委托给经济分类EC1的对应修正
     
     override fun addModifierIconPath(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>) {
         val economicCategoryInfo = modifierData.economicCategoryInfo ?: return
         val economicCategoryModifierInfo = modifierData.economicCategoryModifierInfo ?: return
-        if(!economicCategoryModifierInfo.useParentIcon) return
-        economicCategoryInfo.parents.forEach { parent ->
-            val delegateName = economicCategoryModifierInfo.resolveName(parent)
-            registry += "gfx/interface/icons/modifiers/mod_${delegateName}"
+        if(economicCategoryModifierInfo.useParentIcon) {
+            //去除默认的对应图标
+            val economicCategoryName = economicCategoryModifierInfo.name
+            registry -= "gfx/interface/icons/modifiers/mod_$economicCategoryName"
+            //加入所属经济分类的对应图标
+            val name = economicCategoryModifierInfo.resolveName(economicCategoryInfo.name)
+            registry += "gfx/interface/icons/modifiers/mod_${name}"
         }
+        //使用全局的对应图标
+        val name = economicCategoryModifierInfo.resolveName(null)
+        registry += "gfx/interface/icons/modifiers/mod_${name}"
     }
 }

@@ -54,6 +54,7 @@ object StellarisEconomicCategoryHandler {
             
             val useForAiBudget = data.useForAiBudget
             val useForAiBudgetForMult = parentDataMap.values.any { it.useForAiBudget }
+                || name == "knights_independent_category" //NOTE hardcoded
             
             val parents = parentDataMap.keys
             val modifiers = mutableSetOf<StellarisEconomicCategoryModifierInfo>()
