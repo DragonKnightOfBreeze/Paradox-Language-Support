@@ -49,7 +49,7 @@ abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
     
     private fun doGetData(data: ParadoxScriptData): T {
         val definitionData = dataType.getConstructor().newInstance()
-        (definitionData as ParadoxDefinitionData).data = data
+        definitionData.init(data)
         return definitionData
     }
     

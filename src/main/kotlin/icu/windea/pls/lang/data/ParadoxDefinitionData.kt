@@ -7,7 +7,12 @@ import icu.windea.pls.tool.script.*
  * @see ParadoxDefinitionDataProvider
  */
 abstract class ParadoxDefinitionData {
-    lateinit var data: ParadoxScriptData
+    private var _data: ParadoxScriptData? = null
+    protected val data: ParadoxScriptData get() = _data!!
+    
+    fun init(data: ParadoxScriptData) {
+        this._data = data
+    }
 }
 
 /**
