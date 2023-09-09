@@ -47,7 +47,7 @@ interface ParadoxPriorityProvider {
                 if(file1 == file2) {
                     //同一文件中后面的总是会覆盖前面的
                     if(searchParameters is ParadoxFilePathSearch.SearchParameters) return@c 0
-                    return@c -1
+                    return@c 1
                 }
                 val fileInfo1 = file1.fileInfo ?: return@c 1
                 val fileInfo2 = file2.fileInfo ?: return@c -1
