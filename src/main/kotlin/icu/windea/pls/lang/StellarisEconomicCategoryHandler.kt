@@ -65,6 +65,7 @@ object StellarisEconomicCategoryHandler {
             // <economic_category>_<resource>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
             
             fun addModifier(key: String, category: String, type: String, triggered: Boolean, useParentIcon: Boolean) {
+                if(key.isEmpty()) return //skip invalid keys
                 if(useForAiBudget || (type == "mult" && useForAiBudgetForMult)) {
                     modifiers.add(StellarisEconomicCategoryModifierInfo(key, null, category, type, triggered, useParentIcon))
                 }

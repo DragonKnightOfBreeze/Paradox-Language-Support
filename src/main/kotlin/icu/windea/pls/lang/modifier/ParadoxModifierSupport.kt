@@ -13,6 +13,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.data.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -106,6 +107,7 @@ val ParadoxModifierSupport.Keys.support by createKey<ParadoxModifierSupport>("pa
 val ParadoxModifierSupport.Keys.modifierConfig by createKey<CwtModifierConfig>("paradox.modifier.support.modifierConfig")
 
 var ParadoxModifierData.support by ParadoxModifierSupport.Keys.support
-var ParadoxModifierElement.support by ParadoxModifierSupport.Keys.support
 var ParadoxModifierData.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig
+
+var ParadoxModifierElement.support by ParadoxModifierSupport.Keys.support
 var ParadoxModifierElement.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig

@@ -22,6 +22,7 @@ import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.lang.modifier.impl.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
+import icu.windea.pls.model.data.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*
 
@@ -51,7 +52,7 @@ object ParadoxModifierHandler {
     
     fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierElement? {
         val modifierData = getModifierData(name, element, configGroup, useSupport)
-        return modifierData?.toModifierElement(element)
+        return modifierData?.toPsiElement(element)
     }
     
     fun completeModifier(context: ProcessingContext, result: CompletionResultSet) {
@@ -60,13 +61,6 @@ object ParadoxModifierHandler {
         
         val modifierNames = mutableSetOf<String>()
         ParadoxModifierSupport.completeModifier(context, result, modifierNames)
-    }
-    
-    fun getModifierData(name: String, element: PsiElement): ParadoxModifierData? {
-        val gameType = selectGameType(element) ?: return null
-        val project = element.project
-        val configGroup = getConfigGroups(project).get(gameType)
-        return getModifierData(name, element, configGroup)
     }
     
     fun getModifierData(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierData? {
@@ -81,6 +75,31 @@ object ParadoxModifierHandler {
                 ?: ParadoxModifierData.EMPTY
         }
         if(modifierData == ParadoxModifierData.EMPTY) return null
+        return modifierData
+    }
+    
+    fun getModifierData(name: String, element: PsiElement): ParadoxModifierData? {
+        val gameType = selectGameType(element) ?: return null
+        val rootFile = selectRootFile(element) ?: return null
+        val project = element.project
+        val cache = project.modifierDataCache.get(rootFile)
+        val configGroup = getConfigGroups(project).get(gameType)
+        val cacheKey = name
+        val modifierData = cache.getOrPut(cacheKey) {
+            ParadoxModifierSupport.resolveModifier(name, element, configGroup) ?: ParadoxModifierData.EMPTY
+        }
+        if(modifierData == ParadoxModifierData.EMPTY) return null
+        return modifierData
+    }
+    
+    fun getModifierData(modifierElement: ParadoxModifierElement): ParadoxModifierData? {
+        val rootFile = selectRootFile(modifierElement) ?: return null
+        val project = modifierElement.project
+        val cache = project.modifierDataCache.get(rootFile)
+        val cacheKey = modifierElement.name
+        val modifierData = cache.getOrPut(cacheKey) {
+            modifierElement.toData()
+        }
         return modifierData
     }
     

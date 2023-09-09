@@ -7,7 +7,9 @@ import com.intellij.codeInsight.highlighting.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
@@ -22,20 +24,13 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.data.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxParameterHandler {
-    object Keys {
-        val inferredConfig = Key.create<CwtValueConfig>("paradox.parameter.inferredConfig")
-        val inferredContextConfigs = Key.create<List<CwtMemberConfig<*>>>("paradox.parameter.inferredContextConfigs")
-        val parameterCache = KeyWithDefaultValue.create<Cache<String, ParadoxParameterElement>>("paradox.parameter.cache") { CacheBuilder.newBuilder().buildCache() }
-        val parameterModificationTracker = Key.create<ModificationTracker>("paradox.parameter.modificationTracker")
-        val parameterModificationCount = Key.create<Long>("paradox.parameter.modificationCount")
-    }
-    
     /**
      * 得到[element]对应的参数上下文信息。
      *
@@ -166,47 +161,32 @@ object ParadoxParameterHandler {
         }
     }
     
+    fun getParameterData(parameterElement: ParadoxParameterElement): ParadoxParameterData? {
+        val rootFile = selectRootFile(parameterElement) ?: return null
+        val project = parameterElement.project
+        val cache = project.parameterDataCache.get(rootFile)
+        val cacheKey = parameterElement.name + "@" + parameterElement.contextKey
+        val parameterData = cache.getOrPut(cacheKey) {
+            parameterElement.toData()
+        }
+        return parameterData
+    }
+    
     /**
      * 尝试推断得到参数对应的CWT规则。
      */
     fun getInferredConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
-        val cacheKey = parameterElement.contextKey + "@" + parameterElement.name
-        val parameterCache = selectRootFile(parameterElement.parent)?.getUserData(Keys.parameterCache) ?: return null
-        val cached = parameterCache.get(cacheKey)
-        if(cached != null) {
-            val modificationTracker = cached.getUserData(Keys.parameterModificationTracker)
-            if(modificationTracker != null) {
-                val modificationCount = cached.getUserData(Keys.parameterModificationCount) ?: 0
-                if(modificationCount == modificationTracker.modificationCount) {
-                    val resolved = cached.getUserData(Keys.inferredConfig)
-                    if(resolved != null) {
-                        return resolved.takeIf { it !== CwtValueConfig.EmptyConfig }
-                    }
-                }
+        val parameterData = getParameterData(parameterElement) ?: return null
+        return parameterData.getOrPutUserData(PlsKeys.parameterInferredConfig, CwtValueConfig.EmptyConfig) {
+            val result = Ref.create<CwtValueConfig>()
+            ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
+                ProgressManager.checkCanceled()
+                val contextInfo = ParadoxParameterSupport.getContextInfo(context) ?: return@p true
+                val config = getInferredConfig(parameterElement.name, contextInfo)
+                result.mergeValue(config) { v1, v2 -> ParadoxConfigMerger.mergeValueConfig(v1, v2) }
             }
+            result.get()
         }
-        
-        val result = Ref.create<CwtValueConfig>()
-        ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
-            ProgressManager.checkCanceled()
-            val contextInfo = ParadoxParameterSupport.getContextInfo(context) ?: return@p true
-            val config = getInferredConfig(parameterElement.name, contextInfo)
-            result.mergeValue(config) { v1, v2 -> ParadoxConfigMerger.mergeValueConfig(v1, v2) }
-        }
-        val resolved = result.get()
-        
-        val ep = parameterElement.getUserData(ParadoxParameterSupport.Keys.support)
-        if(ep != null) {
-            val modificationTracker = ep.getModificationTracker(parameterElement)
-            if(modificationTracker != null) {
-                parameterElement.putUserData(Keys.inferredConfig, resolved ?: CwtValueConfig.EmptyConfig)
-                parameterElement.putUserData(Keys.parameterModificationTracker, modificationTracker)
-                parameterElement.putUserData(Keys.parameterModificationCount, modificationTracker.modificationCount)
-                parameterCache.put(cacheKey, parameterElement)
-            }
-        }
-        
-        return resolved
     }
     
     fun getInferredConfig(parameterName: String, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig? {
@@ -226,43 +206,17 @@ object ParadoxParameterHandler {
      * 尝试推断得到参数对应的上下文CWT规则。
      */
     fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        val cacheKey = parameterElement.contextKey + "@" + parameterElement.name
-        val parameterCache = selectRootFile(parameterElement.parent)?.getUserData(Keys.parameterCache) ?: return emptyList()
-        val cached = parameterCache.get(cacheKey)
-        if(cached != null) {
-            val modificationTracker = cached.getUserData(Keys.parameterModificationTracker)
-            if(modificationTracker != null) {
-                val modificationCount = cached.getUserData(Keys.parameterModificationCount) ?: 0
-                if(modificationCount == modificationTracker.modificationCount) {
-                    val resolved = cached.getUserData(Keys.inferredContextConfigs)
-                    if(resolved != null) {
-                        return resolved
-                    }
-                }
+        val parameterData = getParameterData(parameterElement) ?: return emptyList()
+        return parameterData.getOrPutUserData(PlsKeys.parameterInferredContextConfigs) {
+            val result = Ref.create<List<CwtMemberConfig<*>>>()
+            ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
+                ProgressManager.checkCanceled()
+                val contextInfo = ParadoxParameterSupport.getContextInfo(context) ?: return@p true
+                val contextConfigs = getInferredContextConfigs(parameterElement.name, contextInfo).orNull()
+                result.mergeValue(contextConfigs) { v1, v2 -> ParadoxConfigMerger.mergeConfigs(v1, v2) }
             }
+            return result.get().orEmpty()
         }
-        
-        val result = Ref.create<List<CwtMemberConfig<*>>>()
-        ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
-            ProgressManager.checkCanceled()
-            val contextInfo = ParadoxParameterSupport.getContextInfo(context) ?: return@p true
-            val contextConfigs = getInferredContextConfigs(parameterElement.name, contextInfo).orNull()
-            result.mergeValue(contextConfigs) { v1, v2 -> ParadoxConfigMerger.mergeConfigs(v1, v2) }
-        }
-        val resolved = result.get().orEmpty()
-        
-        val ep = parameterElement.getUserData(ParadoxParameterSupport.Keys.support)
-        if(ep != null) {
-            val modificationTracker = ep.getModificationTracker(parameterElement)
-            if(modificationTracker != null) {
-                parameterElement.putUserData(Keys.inferredContextConfigs, resolved)
-                parameterElement.putUserData(Keys.parameterModificationTracker, modificationTracker)
-                parameterElement.putUserData(Keys.parameterModificationCount, modificationTracker.modificationCount)
-                parameterCache.put(cacheKey, parameterElement)
-            }
-        }
-        
-        return resolved
     }
     
     fun getInferredContextConfigs(parameterName: String, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>> {
@@ -272,7 +226,7 @@ object ParadoxParameterHandler {
         parameterInfos.process { parameterInfo ->
             ProgressManager.checkCanceled()
             val contextConfigs = ParadoxParameterInferredConfigProvider.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
-            result.mergeValue(contextConfigs) { v1,v2 -> ParadoxConfigMerger.mergeConfigs(v1, v2) }
+            result.mergeValue(contextConfigs) { v1, v2 -> ParadoxConfigMerger.mergeConfigs(v1, v2) }
         }
         return result.get().orEmpty()
     }
@@ -284,3 +238,11 @@ object ParadoxParameterHandler {
         }
     }
 }
+
+private val PlsKeys.parameterDataCache by createKey("paradox.parameterDataCache") {
+    NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, ParadoxParameterData>().trackedBy { it.modificationTracker } }
+}
+private val Project.parameterDataCache by PlsKeys.parameterDataCache
+
+private val PlsKeys.parameterInferredConfig by Key.create<CwtValueConfig>("paradox.parameterInferredConfig")
+private val PlsKeys.parameterInferredContextConfigs by Key.create<List<CwtMemberConfig<*>>>("paradox.parameterInferredContextConfigs")

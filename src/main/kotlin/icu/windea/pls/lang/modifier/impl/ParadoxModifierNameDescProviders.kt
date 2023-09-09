@@ -2,7 +2,7 @@ package icu.windea.pls.lang.modifier.impl
 
 import com.intellij.psi.*
 import icu.windea.pls.lang.modifier.*
-import icu.windea.pls.model.*
+import icu.windea.pls.model.data.*
 
 class ParadoxBaseModifierNameDescProvider : ParadoxModifierNameDescProvider {
     override fun addModifierNameKey(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>) {

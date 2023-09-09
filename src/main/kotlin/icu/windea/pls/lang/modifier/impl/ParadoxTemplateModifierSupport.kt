@@ -19,6 +19,7 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.data.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -209,4 +210,5 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 val ParadoxModifierSupport.Keys.templateReferences by createKey<List<ParadoxTemplateSnippetExpressionReference>>("paradox.modifier.support.templateReferences")
 
 var ParadoxModifierData.templateReferences by ParadoxModifierSupport.Keys.templateReferences
+
 var ParadoxModifierElement.templateReferences by ParadoxModifierSupport.Keys.templateReferences

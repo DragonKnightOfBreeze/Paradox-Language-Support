@@ -119,7 +119,7 @@ enum class CwtConfigType(
 		return when(this) {
 			Type, Subtype, Enum, ComplexEnum, ValueSet -> name.substringIn('[',']')
 			SingleAlias -> name.substringIn('[',']')
-			Alias, Modifier, Trigger, Effect -> name.substringIn('[',']').substringAfter(':')
+			Alias, Trigger, Effect -> name.substringIn('[',']').substringAfter(':')
 			else -> name
 		}
 	}

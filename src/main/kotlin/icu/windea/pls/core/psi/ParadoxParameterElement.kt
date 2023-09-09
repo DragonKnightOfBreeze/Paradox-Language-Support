@@ -23,7 +23,7 @@ class ParadoxParameterElement(
     parent: PsiElement,
     private val name: String,
     val contextName: String,
-    val contextIcon: Icon,
+    val contextIcon: Icon?,
     val contextKey: String,
     val rangeInParent: TextRange?,
     val readWriteAccess: ReadWriteAccessDetector.Access,

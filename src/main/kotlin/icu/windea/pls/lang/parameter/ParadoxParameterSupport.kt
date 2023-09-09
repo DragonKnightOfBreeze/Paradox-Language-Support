@@ -7,6 +7,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.data.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -49,7 +50,7 @@ interface ParadoxParameterSupport {
      */
     fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
     
-    fun getModificationTracker(parameterElement: ParadoxParameterElement): ModificationTracker? = null
+    fun getModificationTracker(parameterData: ParadoxParameterData): ModificationTracker? = null
     
     /**
      * 构建参数的快速文档中的定义部分。
@@ -127,15 +128,23 @@ val ParadoxParameterSupport.Keys.definitionName by createKey<String>("paradox.pa
 val ParadoxParameterSupport.Keys.definitionTypes by createKey<List<String>>("paradox.parameter.support.definitionTypes")
 val ParadoxParameterSupport.Keys.inlineScriptExpression by createKey<String>("paradox.parameter.support.inlineScriptExpression")
 
+var ParadoxParameterData.support by ParadoxParameterSupport.Keys.support
+var ParadoxParameterData.containingContext by ParadoxParameterSupport.Keys.containingContext
+var ParadoxParameterData.containingContextReference by ParadoxParameterSupport.Keys.containingContextReference
+var ParadoxParameterData.definitionName by ParadoxParameterSupport.Keys.definitionName
+var ParadoxParameterData.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
+var ParadoxParameterData.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression
+
 var ParadoxParameterElement.support by ParadoxParameterSupport.Keys.support
-var ParadoxParameterContextReferenceInfo.support by ParadoxParameterSupport.Keys.support
 var ParadoxParameterElement.containingContext by ParadoxParameterSupport.Keys.containingContext
-var ParadoxParameterContextReferenceInfo.containingContext by ParadoxParameterSupport.Keys.containingContext
 var ParadoxParameterElement.containingContextReference by ParadoxParameterSupport.Keys.containingContextReference
-var ParadoxParameterContextReferenceInfo.containingContextReference by ParadoxParameterSupport.Keys.containingContextReference
 var ParadoxParameterElement.definitionName by ParadoxParameterSupport.Keys.definitionName
-var ParadoxParameterContextReferenceInfo.definitionName by ParadoxParameterSupport.Keys.definitionName
 var ParadoxParameterElement.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
-var ParadoxParameterContextReferenceInfo.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
 var ParadoxParameterElement.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression
+
+var ParadoxParameterContextReferenceInfo.support by ParadoxParameterSupport.Keys.support
+var ParadoxParameterContextReferenceInfo.containingContext by ParadoxParameterSupport.Keys.containingContext
+var ParadoxParameterContextReferenceInfo.containingContextReference by ParadoxParameterSupport.Keys.containingContextReference
+var ParadoxParameterContextReferenceInfo.definitionName by ParadoxParameterSupport.Keys.definitionName
+var ParadoxParameterContextReferenceInfo.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
 var ParadoxParameterContextReferenceInfo.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression

@@ -89,10 +89,7 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
         
         val parameterElement = configContext.parameterElement ?: return null
         
-        //unsupported -> return null
-        val inferredContextConfigs = ParadoxParameterHandler.getInferredContextConfigs(parameterElement)
-        if(inferredContextConfigs.singleOrNull() == CwtValueConfig.EmptyConfig) return null
-        return inferredContextConfigs
+        return ParadoxParameterHandler.getInferredContextConfigs(parameterElement)
     }
     
     //skip MissingExpressionInspection and TooManyExpressionInspection at root level

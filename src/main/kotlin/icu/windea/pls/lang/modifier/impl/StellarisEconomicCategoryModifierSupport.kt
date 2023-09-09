@@ -19,6 +19,7 @@ import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.data.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -186,6 +187,7 @@ val ParadoxModifierSupport.Keys.economicCategoryInfo by createKey<StellarisEcono
 val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by createKey<StellarisEconomicCategoryModifierInfo>("paradox.modifier.support.economicCategoryModifierInfo")
 
 var ParadoxModifierData.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
-var ParadoxModifierElement.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
 var ParadoxModifierData.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
+
+var ParadoxModifierElement.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
 var ParadoxModifierElement.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
