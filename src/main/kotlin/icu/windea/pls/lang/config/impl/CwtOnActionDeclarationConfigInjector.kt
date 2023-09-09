@@ -1,7 +1,8 @@
-package icu.windea.pls.lang.cwt.impl
+package icu.windea.pls.lang.config.impl
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.*
