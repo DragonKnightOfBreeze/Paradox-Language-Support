@@ -112,13 +112,15 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val parentConfigContext = ParadoxConfigHandler.getConfigContext(parentMemberElement) ?: return emptyList()
                 return buildList {
                     val contextConfigs = parentConfigContext.getConfigs()
-                    contextConfigs.forEachFast f@{
-                        val c = if(it is CwtPropertyConfig) it else return@f
-                        val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, c)
-                        if(overriddenConfigs.isNotNullOrEmpty()) {
-                            addAll(overriddenConfigs)
-                        } else {
-                            add(c)
+                    contextConfigs.forEachFast f@{contextConfig ->
+                        contextConfig.configs?.forEachFast f1@{ c1 ->
+                            val c = if(c1 is CwtPropertyConfig) c1 else return@f1
+                            val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, c)
+                            if(overriddenConfigs.isNotNullOrEmpty()) {
+                                addAll(overriddenConfigs)
+                            } else {
+                                add(c)
+                            }
                         }
                     }
                 }
@@ -127,8 +129,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             private fun getExpectedConfigs(element: ParadoxScriptValue, configContext: ParadoxConfigContext): List<CwtValueConfig> {
                 return buildList {
                     val contextConfigs = configContext.getConfigs()
-                    contextConfigs.forEachFast f@{
-                        val c = if(it is CwtValueConfig) it else return@f
+                    contextConfigs.forEachFast f@{ contextConfig ->
+                        val c = if(contextConfig is CwtValueConfig) contextConfig else return@f
                         val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, c)
                         if(overriddenConfigs.isNotNullOrEmpty()) {
                             addAll(overriddenConfigs)
