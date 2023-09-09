@@ -18,12 +18,12 @@ object ParadoxConfigGenerator {
         }
     }
     
-    fun deepCopyConfigsInDeclarationConfig(config: CwtMemberConfig<*>, configContext: CwtDeclarationConfigContext): List<CwtMemberConfig<*>> {
+    fun deepCopyConfigsInDeclarationConfig(config: CwtMemberConfig<*>, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>> {
         //因为之后可能需要对得到的声明规则进行注入，需要保证当注入时所有规则列表都是可变的
         
         val mergedConfigs: MutableList<CwtMemberConfig<*>>? = if(config.configs != null) mutableListOf() else null
         config.configs?.forEachFast { c1 ->
-            val c2s = deepCopyConfigsInDeclarationConfig(c1, configContext)
+            val c2s = deepCopyConfigsInDeclarationConfig(c1, context)
             if(c2s.isNotEmpty()) {
                 for(c2 in c2s) {
                     mergedConfigs?.add(c2)
@@ -33,25 +33,25 @@ object ParadoxConfigGenerator {
         when(config) {
             is CwtValueConfig -> {
                 val mergedConfig = config.delegated(mergedConfigs, config.parentConfig)
-                if(configContext.manipulators.isNotEmpty()) return mutableListOf(mergedConfig)
+                if(context.manipulators.isNotEmpty()) return mutableListOf(mergedConfig)
                 return mergedConfig.toSingletonList()
             }
             is CwtPropertyConfig -> {
                 val subtypeExpression = config.key.removeSurroundingOrNull("subtype[", "]")
                 if(subtypeExpression == null) {
                     val mergedConfig = config.delegated(mergedConfigs, config.parentConfig)
-                    if(configContext.manipulators.isNotEmpty()) return mutableListOf(mergedConfig)
+                    if(context.manipulators.isNotEmpty()) return mutableListOf(mergedConfig)
                     return mergedConfig.toSingletonList()
                 } else {
-                    val subtypes = configContext.definitionSubtypes
+                    val subtypes = context.definitionSubtypes
                     if(subtypes == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
                         mergedConfigs?.forEachFast { mergedConfig ->
                             mergedConfig.parentConfig = config.parentConfig
                         }
-                        if(configContext.manipulators.isNotEmpty()) return mergedConfigs ?: mutableListOf()
+                        if(context.manipulators.isNotEmpty()) return mergedConfigs ?: mutableListOf()
                         return mergedConfigs.orEmpty()
                     } else {
-                        if(configContext.manipulators.isNotEmpty()) return mutableListOf()
+                        if(context.manipulators.isNotEmpty()) return mutableListOf()
                         return emptyList()
                     }
                 }

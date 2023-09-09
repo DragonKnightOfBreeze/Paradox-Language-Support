@@ -11,27 +11,27 @@ private val configKey = Key.create<CwtGameRuleConfig>("cwt.config.injector.gameR
 class CwtGameRuleDeclarationConfigManipulator : CwtDeclarationConfigManipulator {
     //某些game_rule的声明规则需要重载
     
-    override fun supports(configContext: CwtDeclarationConfigContext): Boolean {
-        val configGroup = configContext.configGroup
-        if(configContext.definitionType == "game_rule") {
-            if(configContext.definitionName == null) return false
-            val config = configGroup.gameRules.get(configContext.definitionName)
-            configContext.putUserData(configKey, config)
+    override fun supports(context: CwtDeclarationConfigContext): Boolean {
+        val configGroup = context.configGroup
+        if(context.definitionType == "game_rule") {
+            if(context.definitionName == null) return false
+            val config = configGroup.gameRules.get(context.definitionName)
+            context.putUserData(configKey, config)
             return config != null
         }
         return false
     }
     
-    override fun getCacheKey(configContext: CwtDeclarationConfigContext): String? {
-        val config = configContext.getUserData(configKey)
+    override fun getCacheKey(context: CwtDeclarationConfigContext): String? {
+        val config = context.getUserData(configKey)
         if(config == null) return null
         if(doGetDeclarationMergedConfig(config) == null) return null
-        val gameTypeId = configContext.configGroup.gameType.id
-        return "$gameTypeId:${configContext.matchOptions}#game_rule@${configContext.definitionName}"
+        val gameTypeId = context.configGroup.gameType.id
+        return "$gameTypeId:${context.matchOptions}#game_rule@${context.definitionName}"
     }
     
-    override fun getDeclarationMergedConfig(configContext: CwtDeclarationConfigContext): CwtPropertyConfig? {
-        val config = configContext.getUserData(configKey)
+    override fun getDeclarationMergedConfig(context: CwtDeclarationConfigContext): CwtPropertyConfig? {
+        val config = context.getUserData(configKey)
         if(config == null) return null
         return doGetDeclarationMergedConfig(config)
     }

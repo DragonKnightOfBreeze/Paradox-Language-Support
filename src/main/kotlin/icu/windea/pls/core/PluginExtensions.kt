@@ -14,7 +14,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.settings.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
@@ -26,7 +25,6 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.lang.Integer.*
-import java.util.concurrent.*
 
 //region Stdlib Extensions
 inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {
@@ -56,8 +54,7 @@ fun getSettings() = service<ParadoxSettings>().state
 
 fun getProfilesSettings() = service<ParadoxProfilesSettings>().state
 
-private val _configGroups by lazy { getDefaultProject().service<CwtConfigProvider>().configGroups }
-fun getConfigGroups() = _configGroups
+fun getConfigGroups() = getDefaultProject().service<CwtConfigProvider>().configGroups
 fun getConfigGroups(project: Project) = project.service<CwtConfigProvider>().configGroups
 
 /**

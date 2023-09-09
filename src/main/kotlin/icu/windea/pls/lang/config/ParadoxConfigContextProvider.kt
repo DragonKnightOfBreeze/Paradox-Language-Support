@@ -9,7 +9,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 用于基于通用的逻辑获取脚本表达式所在的CWT规则上下文。
+ * 用于提供脚本表达式所在的CWT规则上下文。
  *
  * @see ParadoxConfigContext
  */
