@@ -10,7 +10,7 @@ import java.lang.invoke.*
 /**
  * 提供CWT规则。
  *
- * CWT规则来自目录`config/cwt`中的配置文件。使用内置且经过扩展和修改的CWT配置文件。
+ * CWT规则来自目录`config`中的配置文件。使用内置且经过扩展和修改的CWT配置文件。
  */
 @Service(Service.Level.PROJECT)
 class CwtConfigProvider(
@@ -19,7 +19,7 @@ class CwtConfigProvider(
 	companion object {
 		private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
 		
-		private const val cwtConfigPath = "/config/cwt"
+		private const val cwtConfigPath = "/config"
 		//private val configFileExtensions = arrayOf("cwt", "csv")
 		private val configFileExtensions = arrayOf("cwt")
 	}

@@ -1531,7 +1531,7 @@ object ParadoxConfigHandler {
         val virtualFile = file.virtualFile ?: return null
         val path = virtualFile.path
         //这里的key可能是"core"，而这不是gameType
-        val key = path.substringAfter("config/cwt/", "").substringBefore("/", "")
+        val key = path.substringAfter("config/", "").substringBefore("/", "")
         if(key.isEmpty()) return null
         return getConfigGroups(project).get(key)
     }

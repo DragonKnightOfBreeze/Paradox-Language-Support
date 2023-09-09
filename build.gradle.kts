@@ -142,7 +142,7 @@ tasks {
 					val i = path.indexOf("/config", ignoreCase = true)
 					if(i != -1) path = path.removeRange(i, i + 7)
 				}
-				into("config/cwt/$toDir")
+				into("config/$toDir")
 			}
 		}
 	}
