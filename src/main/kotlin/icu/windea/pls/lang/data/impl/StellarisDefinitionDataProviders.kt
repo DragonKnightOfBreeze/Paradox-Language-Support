@@ -8,7 +8,7 @@ import icu.windea.pls.tool.script.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisEconomicCategoryDataProvider: ParadoxDefinitionDataProvider<StellarisEconomicCategoryDataProvider.Data>() {
-    class Data : ParadoxDefinitionData() {
+    class Data(data: ParadoxScriptData) : ParadoxDefinitionData {
         val parent : String? by data.get("parent")
         val useForAiBudget : Boolean by data.get("use_for_ai_budget", false)
         val modifierCategory: String? by data.get("modifier_category")
@@ -18,7 +18,7 @@ class StellarisEconomicCategoryDataProvider: ParadoxDefinitionDataProvider<Stell
         val triggeredCostModifiers: List<TriggeredModifier> by data.getAll("triggered_cost_modifier")
         val triggeredUpkeepModifiers: List<TriggeredModifier> by data.getAll("triggered_upkeep_modifier")
         
-        class TriggeredModifier(data: ParadoxScriptData): ParadoxDefinitionData() {
+        class TriggeredModifier(data: ParadoxScriptData): ParadoxDefinitionData {
             val key: String by data.get("key", "")
             val useParentIcon: Boolean by data.get("use_parent_icon", false)
             val modifierTypes: Set<String> by data.get("modifier_types", emptySet())
@@ -32,7 +32,7 @@ class StellarisEconomicCategoryDataProvider: ParadoxDefinitionDataProvider<Stell
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisGameConceptDataProvider : ParadoxDefinitionDataProvider<StellarisGameConceptDataProvider.Data>() {
-    class Data : ParadoxDefinitionData() {
+    class Data(data: ParadoxScriptData) : ParadoxDefinitionData {
         val icon: String? by data.get("icon")
         val alias: Set<String>? by data.get("alias")
     }
@@ -44,7 +44,7 @@ class StellarisGameConceptDataProvider : ParadoxDefinitionDataProvider<Stellaris
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyDataProvider : ParadoxDefinitionDataProvider<StellarisTechnologyDataProvider.Data>() {
-    class Data : ParadoxDefinitionData() {
+    class Data(data: ParadoxScriptData) : ParadoxDefinitionData {
         val icon: String? by data.get("icon")
         val tier: String? by data.get("tier")
         val area: String? by data.get("area")
@@ -70,7 +70,7 @@ class StellarisTechnologyDataProvider : ParadoxDefinitionDataProvider<StellarisT
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisEventDataProvider: ParadoxDefinitionDataProvider<StellarisEventDataProvider.Data>() {
-    class Data : ParadoxDefinitionData() {
+    class Data(data: ParadoxScriptData) : ParadoxDefinitionData {
         val base: String? by data.get("base")
         val desc_clear: Boolean by data.get("desc_clear", false)
         val option_clear: Boolean by data.get("option_clear", false)

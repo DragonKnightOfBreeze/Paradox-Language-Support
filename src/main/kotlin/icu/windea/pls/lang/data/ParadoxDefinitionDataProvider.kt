@@ -48,9 +48,7 @@ abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
     }
     
     private fun doGetData(data: ParadoxScriptData): T {
-        val definitionData = dataType.getConstructor().newInstance()
-        definitionData.init(data)
-        return definitionData
+        return dataType.getConstructor(ParadoxScriptData::class.java).newInstance(data)
     }
     
     companion object INSTANCE {

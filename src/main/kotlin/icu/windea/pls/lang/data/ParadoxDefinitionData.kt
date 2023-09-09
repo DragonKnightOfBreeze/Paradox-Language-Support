@@ -6,13 +6,8 @@ import icu.windea.pls.tool.script.*
 /**
  * @see ParadoxDefinitionDataProvider
  */
-abstract class ParadoxDefinitionData {
-    private var _data: ParadoxScriptData? = null
-    protected val data: ParadoxScriptData get() = _data!!
+interface ParadoxDefinitionData {
     
-    fun init(data: ParadoxScriptData) {
-        this._data = data
-    }
 }
 
 /**

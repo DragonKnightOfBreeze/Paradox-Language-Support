@@ -75,7 +75,5 @@ private fun getValueOfType(data: ParadoxScriptData, type: KType): Any? {
 }
 
 private fun getDefinitionData(data: ParadoxScriptData, dataType: Class<out Any>): ParadoxDefinitionData {
-    val definitionData = dataType.getConstructor().newInstance() as ParadoxDefinitionData
-    definitionData.init(data)
-    return definitionData
+    return dataType.getConstructor(ParadoxScriptData::class.java).newInstance(data) as ParadoxDefinitionData
 }

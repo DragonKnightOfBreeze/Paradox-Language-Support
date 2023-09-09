@@ -6,7 +6,7 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
 
 class ParadoxSpriteDataProvider : ParadoxDefinitionDataProvider<ParadoxSpriteDataProvider.Data>() {
-    class Data : ParadoxDefinitionData() {
+    class Data(data: ParadoxScriptData): ParadoxDefinitionData {
         val textureFile: String? by data.get("textureFile")
         val sprite_sheet_sprite_type: String? by data.get("sprite_sheet_sprite_type")
         val noOfFrames: Int? by data.get("noOfFrames")
