@@ -53,7 +53,7 @@ object StellarisEconomicCategoryHandler {
             val parentDataMap = collectParentData(definition, data)
             
             val useForAiBudget = data.useForAiBudget
-            val useForAiBudgetForMult = parentDataMap.values.all { it.useForAiBudget }
+            val useForAiBudgetForMult = parentDataMap.values.any { it.useForAiBudget }
             
             val parents = parentDataMap.keys
             val modifiers = mutableSetOf<StellarisEconomicCategoryModifierInfo>()
