@@ -32,6 +32,7 @@
     <registryKey key="run.convert.dds.to.png.under.progress" defaultValue="true" restartRequired="true"
                  description="Run convert DDS to PNG write action under progress, not to freeze the UI during long operations"/>
     
+    <vfs.asyncListener implementation="icu.windea.pls.core.listeners.vfs.ProjectBasedCwtConfigFileListener"/>
     <vfs.asyncListener implementation="icu.windea.pls.core.listeners.vfs.ParadoxCoreFileListener"/>
 
     <projectViewPane implementation="icu.windea.pls.core.projectView.ParadoxFilesViewPane"/>
