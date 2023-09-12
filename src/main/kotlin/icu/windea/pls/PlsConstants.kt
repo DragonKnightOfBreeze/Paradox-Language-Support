@@ -65,7 +65,7 @@ object PlsConstants {
         const val unknownPngName = "unknown.png"
         val unknownPngPath by lazy { imagesDirectoryPath.resolve(unknownPngName) }
         val unknownPngUrl by lazy { unknownPngPath.toUri().toURL() }
-        val unknownPngClasspathUrl = "/$unknownPngName".toClasspathUrl()
+        val unknownPngClasspathUrl = "/images/$unknownPngName".toClasspathUrl()
         
         const val diffDirectoryName = "diff"
         val diffDirectoryPath by lazy { dataDirectoryPath.resolve(diffDirectoryName) }
