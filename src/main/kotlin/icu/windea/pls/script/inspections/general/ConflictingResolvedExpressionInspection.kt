@@ -23,7 +23,8 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
             }
             
             private fun visitBlock(element: ParadoxScriptBlock) {
-                ProgressManager.checkCanceled()
+                if(!element.isExpression()) return // skip check if element is not a expression
+                
                 //skip checking property if its property key may contain parameters
                 //position: (in property) property key / (standalone) left curly brace
                 val property = element.parent

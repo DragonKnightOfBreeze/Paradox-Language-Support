@@ -72,9 +72,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             }
             
             private fun visitValue(element: ParadoxScriptValue): Boolean {
+                if(!element.isExpression()) return false // skip check if element is not a expression
+                
                 if(suppressed != null && suppressed.isAncestor(element)) return true
                 
-                //also check if element is a scripted_variable
+                //also check if element is a scripted_variable_reference
                 //skip checking value if it may contain parameters
                 if(element is ParadoxScriptString && element.text.isParameterized()) return false
                 if(element is ParadoxScriptScriptedVariableReference && element.text.isParameterized()) return false
