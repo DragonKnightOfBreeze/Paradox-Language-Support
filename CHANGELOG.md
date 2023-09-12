@@ -892,9 +892,9 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   * [X] 优化：提示valueLinkPrefix和valueFieldDataSource时排除其input_scopes不匹配上一个scope的output_scope的
   * [X] 优化：`scope_field`支持`event_target:revolt_situation.owner`的写法
 * ~~不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）~~（没有必要提供）
-  * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）
-  * 包括官方Github链接~~和镜像Github链接（https://github.com.cnpmjs.org）~~
-  * 检查Github上最新的CWT配置文件仓库，提高CWT配置文件语法解析的兼容性
+  * 可以通过内置的GitHub链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）
+  * 包括官方GitHub链接~~和镜像GitHub链接（https://github.com.cnpmjs.org）~~
+  * 检查GitHub上最新的CWT配置文件仓库，提高CWT配置文件语法解析的兼容性
   * 每次打开项目时，检查已添加的CWT配置库的更新（`git pull`）
 
 ## 0.5

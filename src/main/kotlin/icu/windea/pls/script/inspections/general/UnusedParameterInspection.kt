@@ -24,8 +24,6 @@ import kotlin.collections.set
  * 例如：有`some_effect = {PARAM = some_value}`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。
  */
 class UnusedParameterInspection : LocalInspectionTool() {
-    //may be very slow for ReferencesSearch
-    
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
         val project = holder.project
         val file = holder.file

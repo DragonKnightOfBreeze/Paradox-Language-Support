@@ -24,7 +24,7 @@ This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtool
 
 If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md).
 
-If you encounter any problems during use, feel free to provide feedback via Github.
+If you encounter any problems during use, feel free to provide feedback via GitHub.
 
 ![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_en.png)
 
@@ -51,6 +51,10 @@ Tips:
   * Click `Navigate` or `Go To` in the editor's right-click menu, and choose the target to navigate to.
   * Click `Navigate > Definition Hierarchy` to open the definition hierarchy window, to view the definition implementation relationship of a specific definition type.
   * Click `Navigate > Call Hierarchy` to open the call hierarchy window, to view the call relationship of definitions, localizations, scripted variables, etc.
+* To run a global code inspection, refer to the following method:
+  * Click `Alt 6` or `Problems` Tool window, open the problems panel ,then view problems of current file, or run a global code inspection for whole project.
+  * Click `Code > Inspect Code...`, run a global code inspection for whole project.
+  * When code inspection is finished ,IDE will show detail inspection result in problems panel.
 * To change the global configuration of the plugin, refer to the following method:
   * Click `Settings > Languages & Frameworks > Paradox Language Support` to open the settings page for the plugin.
 * To change the configuration of mod types, game directories, mod dependencies, etc., open the Mod Configuration dialog using one of the following methods:
@@ -60,7 +64,7 @@ Tips:
 * If the IDE freezes, or its indices encounter some problems,  or it throws an error caused by the plugin, try the following:
   * Update the IDE and plugin to the latest version.
   * Click `File -> Invalidate Caches... -> Invalidate and Restart` to rebuild the index and restart the IDE.
-  * Provide feedback via Github.
+  * Provide feedback via GitHub.
 
 ## FAQ
 

@@ -11,7 +11,7 @@
 
 <p>This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>. These rule files are currently built into the plugin with some modifications and extensions.</p>
 <p>If <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a> is also installed, this plugin can provide some <a href="https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md">additional features</a>.</p>
-<p>If you encounter any problems during use, feel free to provide feedback via Github.</p>
+<p>If you encounter any problems during use, feel free to provide feedback via GitHub.</p>
 
 <p>Paradox语言支持。</p>
 <p>特性：</p>
@@ -25,10 +25,10 @@
 </ul>
 <p>此插件与 <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a> 共享规则文件（<code>*.cwt</code>）。这些规则文件目前由插件内置，并且经过一定的修改和扩展。</p>
 <p>如果同时安装了 <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a> ，此插件可以提供一些<a href="https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md">额外的功能</a>。</p>
-<p>如果在使用过程中遇到任何问题，欢迎通过Github或者QQ群进行反馈。</p>
+<p>如果在使用过程中遇到任何问题，欢迎通过GitHub或者QQ群进行反馈。</p>
 
 <p>
-  <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">Github</a> |
+  <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">GitHub</a> |
   <a href="https://windea.icu/Paradox-Language-Support">Reference Documentation</a> |
   <a href="https://plugins.jetbrains.com/plugin/16825-paradox-language-support">Plugin Marketplace Page</a> |
   QQ群：653824651

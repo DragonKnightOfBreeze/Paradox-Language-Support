@@ -25,7 +25,7 @@ IDEA插件：Paradox语言支持。
 
 如果同时安装了 [Translation](https://github.com/YiiGuxing/TranslationPlugin) ，此插件可以提供一些[额外的功能](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md)。
 
-如果在使用过程中遇到任何问题，欢迎通过Github或者QQ群进行反馈。
+如果在使用过程中遇到任何问题，欢迎通过GitHub或者QQ群进行反馈。
 
 ![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_zh.png)
 
@@ -55,7 +55,7 @@ IDEA插件：Paradox语言支持。
 * 如果需要进行全局代码检查，请参考以下方式：
   * 点击`Alt 6`或者侧边栏中的`Problems`图标，打开问题面板，然后查看当前文件存在的问题，或者进行整个项目的全局代码检查。
   * 点击`Code > Inspect Code...`，进行整个项目的全局代码检查。
-  * 请注意某些代码检查可能非常耗时，以及完成代码检查后，IDE将会在下方面板中显示详细的检查结果。
+  * 完成代码检查后，IDE将会在问题面板中显示详细的检查结果。
 * 如果需要更改插件的全局配置，请参考以下方式：
   * 点击`Settings > Languages & Frameworks > Paradox Language Support`，打开插件的配置页面。
 * 如果需要更改模组类型、游戏目录、模组依赖等配置，请通过以下方式之一打开模组配置对话框：
@@ -65,7 +65,7 @@ IDEA插件：Paradox语言支持。
 * 如果IDE卡死，或者IDE索引出现问题，或者发生了插件引起的报错，请尝试通过以下方式解决：
   * 更新IDE和插件到最新版本。
   * 点击`File -> Invalidate Caches... -> Invalidate and Restart`，重建索引并重启IDE。
-  * 通过Github或者QQ群进行反馈。
+  * 通过GitHub或者QQ群进行反馈。
 
 ## FAQ
 
