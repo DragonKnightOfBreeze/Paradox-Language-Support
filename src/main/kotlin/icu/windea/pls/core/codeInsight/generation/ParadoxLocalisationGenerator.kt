@@ -55,7 +55,7 @@ object ParadoxLocalisationGenerator {
         }
         context.infos.forEach f@{ info ->
             if(info.locale != locale) return@f
-            if(onlyMissing && !info.missing) return@f
+            if(onlyMissing && !info.missing) return@f //if from inspection, only missing localisations should be included here
             val name = info.name ?: return@f
             members += ParadoxGenerateLocalisationsChooser.Localisation(name, info, context)
         }

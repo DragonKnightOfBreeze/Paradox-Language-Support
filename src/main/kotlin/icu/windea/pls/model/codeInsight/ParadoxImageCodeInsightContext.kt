@@ -41,8 +41,8 @@ data class ParadoxImageCodeInsightContext(
             file.accept(object : PsiRecursiveElementWalkingVisitor() {
                 override fun visitElement(element: PsiElement) {
                     when(element) {
-                        is ParadoxScriptDefinitionElement -> fromDefinition(element, fromInspection)?.let { children.add(it) }
-                        is ParadoxScriptStringExpressionElement -> fromExpression(element, fromInspection)?.let { children.add(it) }
+                        is ParadoxScriptDefinitionElement -> fromDefinition(element, fromInspection = fromInspection)?.let { children.add(it) }
+                        is ParadoxScriptStringExpressionElement -> fromExpression(element, fromInspection = fromInspection)?.let { children.add(it) }
                     }
                     if(element.isExpressionOrMemberContext()) super.visitElement(element)
                 }
@@ -108,7 +108,7 @@ data class ParadoxImageCodeInsightContext(
             val expression = element.value
             if(expression.isEmpty() || expression.isParameterized()) return null
             val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return null
-            fromModifier(element, config, fromInspection)?.let { return it }
+            fromModifier(element, config, fromInspection = fromInspection)?.let { return it }
             return null
         }
         
