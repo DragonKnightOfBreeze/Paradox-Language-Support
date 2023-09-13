@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.expression.checker
+package icu.windea.pls.lang.expressionChecker
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.extensions.*

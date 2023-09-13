@@ -1,11 +1,11 @@
-package icu.windea.pls.lang.expression.checker.impl
+package icu.windea.pls.lang.expressionChecker.impl
 
 import com.intellij.codeInspection.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.expression.checker.*
+import icu.windea.pls.lang.expressionChecker.*
 import icu.windea.pls.script.psi.*
 
 private const val TRIGGER_KEY = "trigger"

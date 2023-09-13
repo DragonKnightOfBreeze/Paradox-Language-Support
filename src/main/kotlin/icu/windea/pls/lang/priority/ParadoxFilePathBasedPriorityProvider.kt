@@ -1,19 +1,18 @@
-package icu.windea.pls.lang.priority.impl
+package icu.windea.pls.lang.priority
 
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.priority.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 abstract class ParadoxFilePathBasedPriorityProvider : ParadoxPriorityProvider {
-    open val FIOS_PATHS: List<String> = emptyList()
+    open val fiosPaths: List<String> = emptyList()
     
-    open val ORDERED_PATHS: List<String> = emptyList()
+    open val orderedPaths: List<String> = emptyList()
     
     override fun getPriority(target: Any): ParadoxPriority? {
         val forcedDefinitionPriority = getForcedDefinitionPriority(target)
@@ -21,8 +20,8 @@ abstract class ParadoxFilePathBasedPriorityProvider : ParadoxPriorityProvider {
         
         val filePath = getFilePath(target) ?: return null
         return when {
-            filePath in FIOS_PATHS -> ParadoxPriority.FIOS
-            filePath in ORDERED_PATHS -> ParadoxPriority.ORDERED
+            filePath in fiosPaths -> ParadoxPriority.FIOS
+            filePath in orderedPaths -> ParadoxPriority.ORDERED
             else -> null
         }
     }
@@ -33,8 +32,8 @@ abstract class ParadoxFilePathBasedPriorityProvider : ParadoxPriorityProvider {
         
         val filePath = getFilePath(searchParameters) ?: return null
         return when {
-            filePath in FIOS_PATHS -> ParadoxPriority.FIOS
-            filePath in ORDERED_PATHS -> ParadoxPriority.ORDERED
+            filePath in fiosPaths -> ParadoxPriority.FIOS
+            filePath in orderedPaths -> ParadoxPriority.ORDERED
             else -> null
         }
     }

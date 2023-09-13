@@ -1,11 +1,12 @@
 package icu.windea.pls.lang.priority.impl
 
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.lang.priority.*
 import icu.windea.pls.model.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisPriorityProvider : ParadoxFilePathBasedPriorityProvider() {
-    override val FIOS_PATHS = listOf(
+    override val fiosPaths = listOf(
         "common/component_sets",
         "common/component_templates",
         "common/event_chains",
@@ -22,7 +23,7 @@ class StellarisPriorityProvider : ParadoxFilePathBasedPriorityProvider() {
         "common/strategic_resources",
         "events"
     )
-    override val ORDERED_PATHS = listOf(
+    override val orderedPaths = listOf(
         "common/on_actions"
     )
 }

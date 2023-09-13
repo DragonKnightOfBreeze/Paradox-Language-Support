@@ -10,7 +10,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.cwt.expression.*
-import icu.windea.pls.lang.expression.checker.*
+import icu.windea.pls.lang.expressionChecker.*
 import icu.windea.pls.script.psi.*
 
 /**
