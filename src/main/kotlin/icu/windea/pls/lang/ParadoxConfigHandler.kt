@@ -800,8 +800,8 @@ object ParadoxConfigHandler {
             val config = if(typeToUse == null) null else {
                 val declarationConfig = configGroup.declarations.get(typeToUse)
                 if(declarationConfig == null) null else {
-                    val configContext = CwtDeclarationConfigContext(context.contextElement!!, null, typeToUse, subtypesToUse, configGroup)
-                    configContext.getConfig(declarationConfig)
+                    val configContext = CwtDeclarationConfigContextProvider.getContext(context.contextElement!!, null, typeToUse, subtypesToUse, configGroup)
+                    configContext?.getConfig(declarationConfig)
                 }
             }
             val element = config?.pointer?.element
@@ -866,8 +866,6 @@ object ParadoxConfigHandler {
         
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return
         for(aliasConfigs in aliasGroup.values) {
-            //aliasConfigs的名字都是相同的 
-            val aliasConfig = aliasConfigs.firstOrNull() ?: continue
             if(context.isKey == true) {
                 context.config = aliasConfigs.first()
                 context.configs = aliasConfigs

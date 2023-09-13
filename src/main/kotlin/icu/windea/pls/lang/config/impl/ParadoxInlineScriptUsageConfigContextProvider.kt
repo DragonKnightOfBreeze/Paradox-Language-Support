@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxInlineScriptUsageConfigContextProvider: ParadoxConfigContextProvider {
     //注意：内联脚本调用可以在定义声明之外
     
-    override fun getConfigContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
+    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
         val vFile = selectFile(file) ?: return null
         
         //要求当前位置相对于文件的元素路径中包含子路径"inline_script"
@@ -32,17 +32,19 @@ class ParadoxInlineScriptUsageConfigContextProvider: ParadoxConfigContextProvide
         return configContext
     }
     
-    override fun getCacheKey(configContext: ParadoxConfigContext, matchOptions: Int): String? {
-        val path = configContext.fileInfo?.path ?: return null // null -> unexpected
-        val elementPathFromRoot = configContext.elementPathFromRoot ?: return null // null -> unexpected
-        return "isu@${configContext.gameType.id}:${matchOptions}#${path.path}\n${elementPathFromRoot.path}"
+    override fun getCacheKey(context: ParadoxConfigContext, matchOptions: Int): String? {
+        val gameTypeId = context.gameType.id
+        val path = context.fileInfo?.path ?: return null // null -> unexpected
+        val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
+        val isPropertyValue = context.element is ParadoxScriptValue && context.element.isPropertyValue()
+        return "isu@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${path.path}\n${elementPathFromRoot.path}"
     }
     
-    override fun getConfigs(configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
-        val elementPathFromRoot = configContext.elementPathFromRoot ?: return null
-        val configGroup = configContext.configGroup
+    override fun getConfigs(context: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+        val elementPathFromRoot = context.elementPathFromRoot ?: return null
+        val configGroup = context.configGroup
         val inlineConfigs = configGroup.inlineConfigGroup[ParadoxInlineScriptHandler.inlineScriptKey] ?: return null
-        val element = configContext.element
+        val element = context.element
         val rootConfigs = inlineConfigs.map { ParadoxConfigGenerator.inlineWithInlineConfig(it) }
         return ParadoxConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
     }

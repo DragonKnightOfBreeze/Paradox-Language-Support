@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.*
  * 用于获取直接的CWT规则上下文。
  */
 class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
-    override fun getConfigContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
+    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
         val vFile = selectFile(file) ?: return null
         if(ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
         
@@ -38,22 +38,24 @@ class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
         }
     }
     
-    override fun getCacheKey(configContext: ParadoxConfigContext, matchOptions: Int): String? {
-        val definitionInfo = configContext.definitionInfo ?: return null
+    override fun getCacheKey(context: ParadoxConfigContext, matchOptions: Int): String? {
+        val gameTypeId = context.gameType.id
+        val definitionInfo = context.definitionInfo ?: return null
         val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null
         val declarationConfigContextCacheKey = declarationConfig.declarationConfigCacheKey ?: return null // null -> unexpected
-        val elementPathFromRoot = configContext.elementPathFromRoot ?: return null // null -> unexpected
-        return "b@${matchOptions}#${declarationConfigContextCacheKey}\n${elementPathFromRoot}"
+        val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
+        val isPropertyValue = context.element is ParadoxScriptValue && context.element.isPropertyValue()
+        return "b@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${declarationConfigContextCacheKey.substringAfterLast('#')}\n${elementPathFromRoot}"
     }
     
-    override fun getConfigs(configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getConfigs(context: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
-        val elementPathFromRoot = configContext.elementPathFromRoot ?: return null
-        val definitionInfo = configContext.definitionInfo ?: return null
+        val elementPathFromRoot = context.elementPathFromRoot ?: return null
+        val definitionInfo = context.definitionInfo ?: return null
         val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null
         val rootConfigs = declarationConfig.toSingletonList()
-        val configGroup = configContext.configGroup
-        val element = configContext.element
+        val configGroup = context.configGroup
+        val element = context.element
         return ParadoxConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
     }
 }

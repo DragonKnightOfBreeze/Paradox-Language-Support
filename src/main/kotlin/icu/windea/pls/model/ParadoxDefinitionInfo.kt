@@ -3,6 +3,7 @@ package icu.windea.pls.model
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
@@ -137,8 +138,8 @@ class ParadoxDefinitionInfo(
     private fun doGetDeclaration(matchOptions: Int): CwtPropertyConfig? {
         val declarationConfig = configGroup.declarations.get(type) ?: return null
         val subtypes = getSubtypeConfigs(matchOptions).map { it.name }
-        val configContext = CwtDeclarationConfigContext(element, name, type, subtypes, configGroup, matchOptions)
-        return configContext.getConfig(declarationConfig)
+        val configContext = CwtDeclarationConfigContextProvider.getContext(element, name, type, subtypes, configGroup, matchOptions)
+        return configContext?.getConfig(declarationConfig)
     }
     
     override fun equals(other: Any?): Boolean {

@@ -24,7 +24,7 @@ import icu.windea.pls.script.psi.*
  * @see ParadoxScriptInjector
  */
 class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider {
-    override fun getConfigContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
+    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
         if(!getSettings().inference.parameterConfig) return null
         
         //unnecessary check
@@ -69,38 +69,40 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
         }
     }
     
-    override fun getCacheKey(configContext: ParadoxConfigContext, matchOptions: Int): String? {
-        val parameterElement = configContext.parameterElement ?: return null // null -> unexpected
-        val elementPathFromRoot = configContext.elementPathFromRoot ?: return null // null -> unexpected
-        return "is@${configContext.gameType.id}:${matchOptions}#${parameterElement.contextKey}@${parameterElement.name}\n${elementPathFromRoot.path}"
+    override fun getCacheKey(context: ParadoxConfigContext, matchOptions: Int): String? {
+        val gameTypeId = context.gameType.id
+        val parameterElement = context.parameterElement ?: return null // null -> unexpected
+        val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
+        val isPropertyValue = context.element is ParadoxScriptValue && context.element.isPropertyValue()
+        return "is@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${parameterElement.contextKey}@${parameterElement.name}\n${elementPathFromRoot.path}"
     }
     
-    override fun getConfigs(configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getConfigs(context: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
-        val elementPathFromRoot = configContext.elementPathFromRoot ?: return null
+        val elementPathFromRoot = context.elementPathFromRoot ?: return null
         
         if(elementPathFromRoot.isNotEmpty()) {
-            val rootConfigContext = configContext.snippetFromParameterValueRootConfigContext ?: return null
-            val element = configContext.element
+            val rootConfigContext = context.snippetFromParameterValueRootConfigContext ?: return null
+            val element = context.element
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
-            val configGroup = configContext.configGroup
+            val configGroup = context.configGroup
             return ParadoxConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         }
         
-        val parameterElement = configContext.parameterElement ?: return null
+        val parameterElement = context.parameterElement ?: return null
         
         return ParadoxParameterHandler.getInferredContextConfigs(parameterElement)
     }
     
     //skip MissingExpressionInspection and TooManyExpressionInspection at root level
     
-    override fun skipMissingExpressionCheck(configContext: ParadoxConfigContext): Boolean {
-        val elementPathFromRoot = configContext.elementPathFromRoot ?: return false
+    override fun skipMissingExpressionCheck(context: ParadoxConfigContext): Boolean {
+        val elementPathFromRoot = context.elementPathFromRoot ?: return false
         return elementPathFromRoot.isEmpty()
     }
     
-    override fun skipTooManyExpressionCheck(configContext: ParadoxConfigContext): Boolean {
-        val elementPathFromRoot = configContext.elementPathFromRoot ?: return false
+    override fun skipTooManyExpressionCheck(context: ParadoxConfigContext): Boolean {
+        val elementPathFromRoot = context.elementPathFromRoot ?: return false
         return elementPathFromRoot.isEmpty()
     }
 }

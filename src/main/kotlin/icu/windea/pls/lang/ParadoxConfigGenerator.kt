@@ -6,6 +6,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
+import icu.windea.pls.model.*
 
 object ParadoxConfigGenerator {
     fun deepCopyConfigs(config: CwtMemberConfig<*>): List<CwtMemberConfig<*>>? {
@@ -33,14 +34,12 @@ object ParadoxConfigGenerator {
         when(config) {
             is CwtValueConfig -> {
                 val mergedConfig = config.delegated(mergedConfigs, config.parentConfig)
-                if(context.manipulators.isNotEmpty()) return mutableListOf(mergedConfig)
                 return mergedConfig.toSingletonList()
             }
             is CwtPropertyConfig -> {
                 val subtypeExpression = config.key.removeSurroundingOrNull("subtype[", "]")
                 if(subtypeExpression == null) {
                     val mergedConfig = config.delegated(mergedConfigs, config.parentConfig)
-                    if(context.manipulators.isNotEmpty()) return mutableListOf(mergedConfig)
                     return mergedConfig.toSingletonList()
                 } else {
                     val subtypes = context.definitionSubtypes
@@ -48,10 +47,8 @@ object ParadoxConfigGenerator {
                         mergedConfigs?.forEachFast { mergedConfig ->
                             mergedConfig.parentConfig = config.parentConfig
                         }
-                        if(context.manipulators.isNotEmpty()) return mergedConfigs ?: mutableListOf()
                         return mergedConfigs.orEmpty()
                     } else {
-                        if(context.manipulators.isNotEmpty()) return mutableListOf()
                         return emptyList()
                     }
                 }

@@ -1,46 +1,42 @@
 package icu.windea.pls.lang.config.impl
 
 import com.intellij.openapi.util.*
+import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.*
 
-private val configKey = Key.create<CwtOnActionConfig>("cwt.config.injector.onAction.config")
+private val configKey = Key.create<CwtOnActionConfig>("cwt.declarationConfigProvider.onAction.config")
 
-class CwtOnActionDeclarationConfigManipulator : CwtDeclarationConfigManipulator {
-    //预定义的on_action如果指定了事件类型，声明规则中需要在"<event>"规则后加上对应的规则
-    
-    override fun supports(context: CwtDeclarationConfigContext): Boolean {
-        val configGroup = context.configGroup
-        if(context.definitionType == "on_action") {
-            if(context. definitionName == null) return false
-            val contextElement = context.element ?: return false
-            val config = configGroup.onActions.getByTemplate(context.definitionName, contextElement, configGroup, context.matchOptions)
-            context.putUserData(configKey, config)
-            return config != null
-        }
-        return false
+class CwtOnActionDeclarationConfigContextProvider: CwtDeclarationConfigContextProvider {
+    override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
+        if(definitionName == null) return null
+        if(definitionType != "on_action") return null
+        val onActionConfig = configGroup.onActions.getByTemplate(definitionName, element, configGroup) ?: return null
+        return CwtDeclarationConfigContext(element, definitionName, definitionType, definitionSubtypes, configGroup)
+            .apply { putUserData(configKey, onActionConfig) }
     }
     
-    override fun getCacheKey(context: CwtDeclarationConfigContext): String? {
-        val config = context.getUserData(configKey)
-        if(config == null) return null
+    override fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String {
         val gameTypeId = context.configGroup.gameType.id
-        return "$gameTypeId:${context.matchOptions}#on_action@${context.definitionName}"
+        val definitionName = context.definitionName
+        return "oa@$gameTypeId#$definitionName"
     }
     
-    //override fun getDeclarationMergedConfig(configContext: CwtDeclarationConfigContext): CwtPropertyConfig? {
-    //    val config = configContext.getUserData(configKey) ?: return null
-    //    return doGetDeclarationMergedConfig(config)
-    //}
-    //
-    //private fun doGetDeclarationMergedConfig(config: CwtGameRuleConfig): CwtPropertyConfig? {
-    //    return config.config.takeIf { it.configs.isNotNullOrEmpty() }
-    //}
+    override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
+        if(!declarationConfig.propertyConfig.isBlock) return declarationConfig.propertyConfig
+        
+        val rootConfigs = declarationConfig.propertyConfig.configs
+        val configs = rootConfigs?.flatMap { ParadoxConfigGenerator.deepCopyConfigsInDeclarationConfig(it, context) }
+        return declarationConfig.propertyConfig.copy(configs = configs)
+        //declarationConfig.propertyConfig.parent should be null here
+    }
     
-    override fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, context: CwtDeclarationConfigContext) {
+    //TODO
+    private fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, context: CwtDeclarationConfigContext) {
         val config = context.getUserData(configKey)
         if(config == null) return
         val expressions = buildSet {
@@ -82,7 +78,7 @@ class CwtOnActionDeclarationConfigManipulator : CwtDeclarationConfigManipulator 
                     }
                 }
             }
-            if(i != -1) { 
+            if(i != -1) {
                 cs.removeAt(i)
                 cs.addAll(i, ccs)
             }
@@ -90,4 +86,3 @@ class CwtOnActionDeclarationConfigManipulator : CwtDeclarationConfigManipulator 
         }
     }
 }
-

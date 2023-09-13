@@ -29,7 +29,7 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
     //首先推断内联脚本文件的CWT规则上下文：汇总内联脚本调用处的上下文，然后合并得到最终的CWT规则上下文
     //然后再得到当前位置的CWT规则上下文
     
-    override fun getConfigContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
+    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
         if(!getSettings().inference.inlineScriptConfig) return null
         
         val vFile = selectFile(file) ?: return null
@@ -52,36 +52,38 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
         return configContext
     }
     
-    override fun getCacheKey(configContext: ParadoxConfigContext, matchOptions: Int): String? {
-        val inlineScriptExpression = configContext.inlineScriptExpression ?: return null // null -> unexpected
-        val elementPathFromRoot = configContext.elementPathFromRoot ?: return null // null -> unexpected
-        return "is@${configContext.gameType.id}:${matchOptions}#${inlineScriptExpression}\n${elementPathFromRoot.path}"
+    override fun getCacheKey(context: ParadoxConfigContext, matchOptions: Int): String? {
+        val gameTypeId = context.gameType.id
+        val inlineScriptExpression = context.inlineScriptExpression ?: return null // null -> unexpected
+        val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
+        val isPropertyValue = context.element is ParadoxScriptValue && context.element.isPropertyValue()
+        return "is@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${inlineScriptExpression}\n${elementPathFromRoot.path}"
     }
     
     //获取CWT规则后才能确定是否存在冲突以及是否存在递归
     
-    override fun getConfigs(configContext: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getConfigs(context: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
-        val elementPathFromRoot = configContext.elementPathFromRoot ?: return null
+        val elementPathFromRoot = context.elementPathFromRoot ?: return null
         
         if(elementPathFromRoot.isNotEmpty()) {
-            val rootConfigContext = configContext.inlineScriptRootConfigContext ?: return null
-            val element = configContext.element
+            val rootConfigContext = context.inlineScriptRootConfigContext ?: return null
+            val element = context.element
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
-            val configGroup = configContext.configGroup
+            val configGroup = context.configGroup
             return ParadoxConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         }
         
-        val inlineScriptExpression = configContext.inlineScriptExpression ?: return null
+        val inlineScriptExpression = context.inlineScriptExpression ?: return null
         
         // infer & merge
         val result = Ref.create<List<CwtMemberConfig<*>>>()
-        configContext.inlineScriptHasConflict = false
-        configContext.inlineScriptHasRecursion = false
+        context.inlineScriptHasConflict = false
+        context.inlineScriptHasRecursion = false
         withRecursionGuard("icu.windea.pls.lang.config.impl.ParadoxInlineScriptConfigContextProvider.getConfigsForConfigContext") {
             withCheckRecursion(inlineScriptExpression) {
-                val project = configContext.configGroup.project
-                val selector = inlineScriptSelector(project, configContext.element)
+                val project = context.configGroup.project
+                val selector = inlineScriptSelector(project, context.element)
                 ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQueryAsync p@{ info ->
                     ProgressManager.checkCanceled()
                     val file = info.virtualFile?.toPsiFile(project) ?: return@p true
@@ -94,12 +96,12 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
                     // merge
                     result.mergeValue(usageConfigs) { v1, v2 -> ParadoxConfigMerger.mergeConfigs(v1, v2) }.also {
                         if(it) return@also
-                        configContext.inlineScriptHasConflict = true
+                        context.inlineScriptHasConflict = true
                         result.set(null)
                     }
                 }
             } ?: run {
-                configContext.inlineScriptHasRecursion = true
+                context.inlineScriptHasRecursion = true
                 result.set(null)
             }
         }
@@ -108,13 +110,13 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
     
     //skip MissingExpressionInspection and TooManyExpressionInspection at root level
     
-    override fun skipMissingExpressionCheck(configContext: ParadoxConfigContext): Boolean {
-        val elementPathFromRoot = configContext.elementPathFromRoot ?: return false
+    override fun skipMissingExpressionCheck(context: ParadoxConfigContext): Boolean {
+        val elementPathFromRoot = context.elementPathFromRoot ?: return false
         return elementPathFromRoot.isEmpty()
     }
     
-    override fun skipTooManyExpressionCheck(configContext: ParadoxConfigContext): Boolean {
-        val elementPathFromRoot = configContext.elementPathFromRoot ?: return false
+    override fun skipTooManyExpressionCheck(context: ParadoxConfigContext): Boolean {
+        val elementPathFromRoot = context.elementPathFromRoot ?: return false
         return elementPathFromRoot.isEmpty()
     }
 }

@@ -1,7 +1,7 @@
 <idea-plugin>
   <extensionPoints>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupProvider" interface="icu.windea.pls.lang.configGroup.CwtConfigGroupProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.declarationConfigManipulator" interface="icu.windea.pls.lang.config.CwtDeclarationConfigManipulator" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.declarationConfigContextProvider" interface="icu.windea.pls.lang.config.CwtDeclarationConfigContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configContextProvider" interface="icu.windea.pls.lang.config.ParadoxConfigContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.overriddenConfigProvider" interface="icu.windea.pls.lang.config.ParadoxOverriddenConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.documentationElementLinkProvider" interface="icu.windea.pls.lang.documentation.DocumentationElementLinkProvider" dynamic="true"/>
@@ -34,9 +34,10 @@
   <extensions defaultExtensionNs="icu.windea.pls">
     <configGroupProvider implementation="icu.windea.pls.lang.configGroup.BuiltInCwtConfigGroupProvider"/>
     
-    <declarationConfigManipulator implementation="icu.windea.pls.lang.config.impl.CwtGameRuleDeclarationConfigManipulator"/>
-    <declarationConfigManipulator implementation="icu.windea.pls.lang.config.impl.CwtOnActionDeclarationConfigManipulator"/>
-
+    <declarationConfigContextProvider implementation="icu.windea.pls.lang.config.impl.CwtBaseDeclarationConfigContextProvider" order="last"/>
+    <declarationConfigContextProvider implementation="icu.windea.pls.lang.config.impl.CwtGameRuleOverriddenDeclarationConfigContextProvider"/>
+    <declarationConfigContextProvider implementation="icu.windea.pls.lang.config.impl.CwtOnActionDeclarationConfigContextProvider"/>
+    
     <configContextProvider implementation="icu.windea.pls.lang.config.impl.ParadoxBaseConfigContextProvider" order="last"/>
     <configContextProvider implementation="icu.windea.pls.lang.config.impl.ParadoxInlineScriptUsageConfigContextProvider"/>
     <configContextProvider implementation="icu.windea.pls.lang.config.impl.ParadoxInlineScriptConfigContextProvider"/>

@@ -32,7 +32,7 @@ class ParadoxConfigContext(
     val fileInfo: ParadoxFileInfo?,
     val elementPath: ParadoxElementPath?,
     val gameType: ParadoxGameType,
-    val configGroup: CwtConfigGroup
+    val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {
     fun getConfigs(matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
         val rootFile = selectRootFile(element) ?: return emptyList()
@@ -49,20 +49,19 @@ class ParadoxConfigContext(
     }
     
     private fun doGetCacheKey(matchOptions: Int): String? {
-        return provider?.getCacheKey(this, matchOptions)
-            ?.let { if(element is ParadoxScriptValue && element.isPropertyValue()) "pv#$it" else it }
+        return provider!!.getCacheKey(this, matchOptions)
     }
     
     private fun doGetConfigs(matchOptions: Int): List<CwtMemberConfig<*>> {
-        return provider?.getConfigs(this, matchOptions).orEmpty()
+        return provider!!.getConfigs(this, matchOptions).orEmpty()
     }
     
     fun skipMissingExpressionCheck(): Boolean {
-        return provider?.skipMissingExpressionCheck(this) ?: false
+        return provider!!.skipMissingExpressionCheck(this)
     }
     
     fun skipTooManyExpressionCheck(): Boolean {
-        return provider?.skipTooManyExpressionCheck(this) ?: false
+        return provider!!.skipTooManyExpressionCheck(this)
     }
     
     object Keys : KeysAware

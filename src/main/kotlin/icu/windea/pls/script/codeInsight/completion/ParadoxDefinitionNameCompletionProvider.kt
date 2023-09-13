@@ -12,6 +12,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.script.psi.*
 
@@ -68,8 +69,8 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 						val type = typeConfig.name
 						val declarationConfig = configGroup.declarations.get(type) ?: continue
 						//需要考虑不指定子类型的情况
-						val configContext = CwtDeclarationConfigContext(element, null, type, null, configGroup)
-						val config = configContext.getConfig(declarationConfig)
+						val configContext = CwtDeclarationConfigContextProvider.getContext(element, null, type, null, configGroup)
+						val config = configContext?.getConfig(declarationConfig)
 						doAddCompletions(type, config, true, element, null)
 					}
 				}
