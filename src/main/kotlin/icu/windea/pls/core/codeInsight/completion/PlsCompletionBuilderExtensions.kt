@@ -103,7 +103,10 @@ fun CompletionResultSet.addScriptExpressionElement(
         completeWithValue -> targetConfig?.isBlock ?: false
         else -> false
     }
-    val finalLookupString = lookupString.quoteIfNecessary()
+    val finalLookupString = when {
+        context.keywordOffset == 0 -> lookupString.quoteIfNecessary()
+        else -> lookupString
+    }
     //这里ID不一定等同于lookupString
     val id = when {
         constantValue != null -> "$finalLookupString = $constantValue"

@@ -204,7 +204,6 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
         if(tokenIndex == -1) {
             tokenIndex = textLength
         }
-        if(index == tokenIndex && tokenIndex == textLength) break
         //resolve node
         val nodeText = expression.substring(startIndex, tokenIndex)
         val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)

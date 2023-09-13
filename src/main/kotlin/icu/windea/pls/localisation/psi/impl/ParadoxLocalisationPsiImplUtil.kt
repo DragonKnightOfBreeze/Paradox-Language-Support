@@ -361,14 +361,19 @@ object ParadoxLocalisationPsiImplUtil {
             val value = run {
                 val idElement = element.idElement
                 val rangeInElement = idElement.textRangeInParent
-                //兼容"event_target:"前缀
-                val text = idElement.text
-                val prefix = ParadoxValueSetValueHandler.EVENT_TARGET_PREFIX
-                if(text.startsWith(prefix)) {
-                    ParadoxLocalisationCommandScopePsiReference(element, rangeInElement.let { TextRange.create(it.startOffset + prefix.length, it.endOffset) }, prefix)
-                } else {
-                    ParadoxLocalisationCommandScopePsiReference(element, rangeInElement, null)
+                
+                //兼容"event_target:"前缀（解析引用时，去除前缀后面的空白）
+                run r@{
+                    val text = idElement.text
+                    val prefix = ParadoxValueSetValueHandler.EVENT_TARGET_PREFIX
+                    val expression = text.removePrefixOrNull(prefix)?.trimStart()
+                    if(expression.isNotNullOrEmpty()) {
+                        val finalRangeInElement = TextRange.create(rangeInElement.endOffset - expression.length, rangeInElement.endOffset)
+                        return@run ParadoxLocalisationCommandScopePsiReference(element, finalRangeInElement, prefix)
+                    }
                 }
+                
+                ParadoxLocalisationCommandScopePsiReference(element, rangeInElement, null)
             }
             CachedValueProvider.Result.create(value, element)
         }

@@ -150,7 +150,6 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
         if(tokenIndex == -1) {
             tokenIndex = textLength
         }
-        if(index == tokenIndex && tokenIndex == textLength) break
         //resolve valueSetValueNode
         val nodeText = expression.substring(0, tokenIndex)
         val nodeTextRange = TextRange.create(offset, tokenIndex + offset)

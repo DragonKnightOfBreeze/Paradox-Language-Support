@@ -90,7 +90,7 @@ object ParadoxValueSetValueHandler {
     }
     
     private fun doGetInfoFromExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>): List<ParadoxValueSetValueInfo> {
-        val name = element.value
+        val name = element.value.let { getName(it) } ?: return emptyList() //skip if name is invalid
         val configExpression = config.expression
         val valueSetName = configExpression.value?.orNull() ?: return emptyList()
         val readWriteAccess = getReadWriteAccess(configExpression)
@@ -109,7 +109,7 @@ object ParadoxValueSetValueHandler {
                         reference.linkConfigs.forEachFast { config ->
                             if(config.expression?.type?.isValueSetValueType() != true) return@p true
                             val configExpression = config.expression!!
-                            val name = reference.rangeInElement.substring(element.text)
+                            val name = reference.rangeInElement.substring(element.text).let { getName(it) } ?: return@p true //skip if name is invalid
                             val valueSetName = configExpression.value?.orNull() ?: return@p true
                             val readWriteAccess = getReadWriteAccess(configExpression)
                             //elementOffset has not been used yet
@@ -124,7 +124,7 @@ object ParadoxValueSetValueHandler {
                         reference.configs.forEachFast { config ->
                             if(config.expression?.type?.isValueSetValueType() != true) return@p true
                             val configExpression = config.expression!!
-                            val name = reference.rangeInElement.substring(element.text)
+                            val name = reference.rangeInElement.substring(element.text).let { getName(it) } ?: return@p true //skip if name is invalid
                             val valueSetName = configExpression.value?.orNull() ?: return@p true
                             val readWriteAccess = getReadWriteAccess(configExpression)
                             //elementOffset has not been used yet
@@ -150,8 +150,7 @@ object ParadoxValueSetValueHandler {
     }
     
     fun getName(expression: String): String? {
-        //exclude if name contains invalid chars
-        return expression.substringBefore('@').takeIf { it.isExactIdentifier('.') }?.orNull()
+        return expression.substringBefore('@').orNull()
     }
     
     fun getReadWriteAccess(configExpression: CwtDataExpression): Access {
