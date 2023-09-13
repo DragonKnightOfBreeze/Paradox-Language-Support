@@ -86,7 +86,7 @@ class ParadoxValueSetValueExpressionImpl(
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val keyword = context.keyword
-        val startOffset = context.startOffset!!
+        val keywordOffset = context.keywordOffset
         val offsetInParent = context.offsetInParent!!
         val isKey = context.isKey
         val config = context.config
@@ -106,7 +106,7 @@ class ParadoxValueSetValueExpressionImpl(
                     val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
-                    context.startOffset = node.rangeInExpression.startOffset
+                    context.keywordOffset = node.rangeInExpression.startOffset
                     ParadoxConfigHandler.completeValueSetValue(context, resultToUse)
                     break
                 }
@@ -115,7 +115,7 @@ class ParadoxValueSetValueExpressionImpl(
                     val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
-                    context.startOffset = node.rangeInExpression.startOffset
+                    context.keywordOffset = node.rangeInExpression.startOffset
                     node.complete(context, resultToUse)
                     break
                 }
@@ -123,7 +123,7 @@ class ParadoxValueSetValueExpressionImpl(
         }
         
         context.keyword = keyword
-        context.startOffset = startOffset
+        context.keywordOffset = keywordOffset
         context.isKey = isKey
         context.config = config
         context.configs = configs

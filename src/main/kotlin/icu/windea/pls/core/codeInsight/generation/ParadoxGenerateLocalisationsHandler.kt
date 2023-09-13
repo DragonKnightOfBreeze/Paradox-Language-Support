@@ -22,7 +22,7 @@ class ParadoxGenerateLocalisationsHandler(
 ) : CodeInsightActionHandler {
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
         val onChosen = action@{ selected: CwtLocalisationLocaleConfig ->
-            val context = getContext(file, editor)
+            val context = getFinalContext(file)
             if(context == null) {
                 HintManager.getInstance().showErrorHint(editor, PlsBundle.message("generation.localisation.noMembersHint"))
                 return@action
@@ -45,7 +45,7 @@ class ParadoxGenerateLocalisationsHandler(
         JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
     }
     
-    private fun getContext(file: PsiFile, editor: Editor): ParadoxLocalisationCodeInsightContext? {
+    private fun getFinalContext(file: PsiFile): ParadoxLocalisationCodeInsightContext? {
         if(forFile) {
             val locales = ParadoxLocaleHandler.getLocaleConfigs()
             return ParadoxLocalisationCodeInsightContext.fromFile(file, locales, fromInspection)

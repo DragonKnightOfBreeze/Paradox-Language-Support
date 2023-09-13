@@ -218,7 +218,7 @@ data class ParadoxLocalisationCodeInsightContext(
                 val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, null, locale, true, missing, false)
                 codeInsightInfos += codeInsightInfo
             }
-            return ParadoxLocalisationCodeInsightContext(contextType, name, codeInsightInfos)
+            return ParadoxLocalisationCodeInsightContext(contextType, name, codeInsightInfos, fromInspection = fromInspection)
         }
         
         private fun isMissing(name: String, project: Project, context: PsiElement, locale: CwtLocalisationLocaleConfig): Boolean {

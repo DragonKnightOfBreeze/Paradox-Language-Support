@@ -146,7 +146,7 @@ class ParadoxScopeFieldExpressionImpl(
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val contextElement = context.contextElement!!
         val keyword = context.keyword
-        val startOffset = context.startOffset!!
+        val keywordOffset = context.keywordOffset
         val offsetInParent = context.offsetInParent!!
         val isKey = context.isKey
         val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
@@ -174,7 +174,7 @@ class ParadoxScopeFieldExpressionImpl(
         }
         
         context.keyword = keyword
-        context.startOffset = startOffset
+        context.keywordOffset = keywordOffset
         context.isKey = isKey
         context.scopeContext = scopeContext
     }

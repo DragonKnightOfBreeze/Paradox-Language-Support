@@ -18,7 +18,7 @@ val PlsCompletionKeys.quoted by createKey<Boolean>("paradoxCompletion.quoted") {
 val PlsCompletionKeys.rightQuoted by createKey<Boolean>("paradoxCompletion.rightQuoted")
 val PlsCompletionKeys.offsetInParent by createKey<Int>("paradoxCompletion.offsetInParent")
 val PlsCompletionKeys.keyword by createKey<String>("paradoxCompletion.keyword") { "" }
-val PlsCompletionKeys.startOffset by createKey<Int>("paradoxCompletion.startOffset")
+val PlsCompletionKeys.keywordOffset by createKey<Int>("paradoxCompletion.keywordOffset") { 0 }
 val PlsCompletionKeys.isKey by createKey<Boolean>("paradoxCompletion.isKey")
 val PlsCompletionKeys.config by createKey<CwtConfig<*>>("paradoxCompletion.config")
 val PlsCompletionKeys.configs by createKey<Collection<CwtConfig<*>>>("paradoxCompletion.configs")
@@ -37,7 +37,7 @@ var ProcessingContext.quoted by PlsCompletionKeys.quoted
 var ProcessingContext.rightQuoted by PlsCompletionKeys.rightQuoted
 var ProcessingContext.offsetInParent by PlsCompletionKeys.offsetInParent
 var ProcessingContext.keyword by PlsCompletionKeys.keyword
-var ProcessingContext.startOffset by PlsCompletionKeys.startOffset
+var ProcessingContext.keywordOffset by PlsCompletionKeys.keywordOffset
 var ProcessingContext.isKey by PlsCompletionKeys.isKey
 var ProcessingContext.config by PlsCompletionKeys.config
 var ProcessingContext.configs by PlsCompletionKeys.configs

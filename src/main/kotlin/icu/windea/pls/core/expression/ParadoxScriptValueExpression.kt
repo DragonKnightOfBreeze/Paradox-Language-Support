@@ -108,7 +108,7 @@ class ParadoxScriptValueExpressionImpl(
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val keyword = context.keyword
-        val startOffset = context.startOffset!!
+        val keywordOffset = context.keywordOffset
         val offsetInParent = context.offsetInParent!!
         val isKey = context.isKey
         val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
@@ -124,7 +124,7 @@ class ParadoxScriptValueExpressionImpl(
                     val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
-                    context.startOffset = node.rangeInExpression.startOffset
+                    context.keywordOffset = node.rangeInExpression.startOffset
                     val config = context.config
                     val configs = context.configs
                     context.config = this.config
@@ -138,7 +138,7 @@ class ParadoxScriptValueExpressionImpl(
                     val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
-                    context.startOffset = node.rangeInExpression.startOffset
+                    context.keywordOffset = node.rangeInExpression.startOffset
                     ParadoxParameterHandler.completeArguments(context.contextElement!!, context, resultToUse)
                 }
             } else if(node is ParadoxScriptValueArgumentValueExpressionNode && getSettings().inference.parameterConfig) {
@@ -153,7 +153,7 @@ class ParadoxScriptValueExpressionImpl(
                         val config = context.config
                         val configs = context.configs
                         context.keyword = keywordToUse
-                        context.startOffset = node.rangeInExpression.startOffset
+                        context.keywordOffset = node.rangeInExpression.startOffset
                         context.config = inferredConfig
                         context.configs = null
                         ParadoxConfigHandler.completeScriptExpression(context, resultToUse)
@@ -164,7 +164,7 @@ class ParadoxScriptValueExpressionImpl(
             }
         }
         context.keyword = keyword
-        context.startOffset = startOffset
+        context.keywordOffset = keywordOffset
         context.isKey = isKey
         context.scopeContext = scopeContext
         context.scopeMatched = scopeMatched

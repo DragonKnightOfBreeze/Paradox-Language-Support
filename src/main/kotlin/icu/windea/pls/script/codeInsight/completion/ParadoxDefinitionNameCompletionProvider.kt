@@ -98,7 +98,6 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 			.withIcon(icon)
 			.withTypeText(typeFile?.name)
 			.withTypeIcon(typeFile?.icon)
-			.withPriority(PlsCompletionPriorities.definitionNamePriority)
 			.letIf(getSettings().completion.completeByLocalizedName) {
 				//如果启用，也基于定义的本地化名字进行代码补全
 				ProgressManager.checkCanceled()

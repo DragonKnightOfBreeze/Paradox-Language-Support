@@ -864,12 +864,10 @@ object ParadoxConfigHandler {
         val config = context.config!!
         val configs = context.configs!!
         
-        //注意这里需要先按照优先级进行排序
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return
-        val sortedAliasConfigsList = aliasGroup.values.filter { it.isNotEmpty() }.sortedByPriority({ it.first().expression }, { configGroup })
-        for(aliasConfigs in sortedAliasConfigsList) {
-            //aliasConfigs的名字是相同的 
-            //aliasSubName是一个表达式
+        for(aliasConfigs in aliasGroup.values) {
+            //aliasConfigs的名字都是相同的 
+            val aliasConfig = aliasConfigs.firstOrNull() ?: continue
             if(context.isKey == true) {
                 context.config = aliasConfigs.first()
                 context.configs = aliasConfigs
@@ -914,8 +912,8 @@ object ParadoxConfigHandler {
         
         //基于当前位置的代码补全
         if(quoted) return
-        val startOffset = context.startOffset ?: 0
-        val textRange = TextRange.create(startOffset, startOffset + keyword.length)
+        val keywordOffset = context.keywordOffset
+        val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup, true) ?: return
         //合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，目前不基于此进行过滤
         return scopeFieldExpression.complete(context, result)
@@ -929,8 +927,8 @@ object ParadoxConfigHandler {
         
         //基于当前位置的代码补全
         if(quoted) return
-        val startOffset = context.startOffset ?: 0
-        val textRange = TextRange.create(startOffset, startOffset + keyword.length)
+        val keywordOffset = context.keywordOffset
+        val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup, true) ?: return
         return valueFieldExpression.complete(context, result)
     }
@@ -943,8 +941,8 @@ object ParadoxConfigHandler {
         
         //基于当前位置的代码补全
         if(quoted) return
-        val startOffset = context.startOffset ?: 0
-        val textRange = TextRange.create(startOffset, startOffset + keyword.length)
+        val keywordOffset = context.keywordOffset
+        val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         val variableFieldExpression = ParadoxVariableFieldExpression.resolve(keyword, textRange, configGroup, true) ?: return
         return variableFieldExpression.complete(context, result)
     }
@@ -958,8 +956,8 @@ object ParadoxConfigHandler {
         
         //基于当前位置的代码补全
         if(quoted) return
-        val startOffset = context.startOffset ?: 0
-        val textRange = TextRange.create(startOffset, startOffset + keyword.length)
+        val keywordOffset = context.keywordOffset
+        val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(keyword, textRange, configGroup, config, true) ?: return
         return valueSetValueExpression.complete(context, result)
     }
@@ -980,7 +978,7 @@ object ParadoxConfigHandler {
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
-                .withPriority(PlsCompletionPriorities.systemLinkPriority)
+                .withPriority(PlsCompletionPriorities.systemScopePriority)
             result.addElement(lookupElement)
         }
     }
@@ -1088,7 +1086,6 @@ object ParadoxConfigHandler {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
                 .withScopeMatched(scopeMatched)
-                .withPriority(PlsCompletionPriorities.valueLinkValuePriority)
             result.addElement(lookupElement)
         }
     }
@@ -1112,7 +1109,7 @@ object ParadoxConfigHandler {
                 .withBoldness(true)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(PlsCompletionPriorities.scopeLinkPrefixPriority)
+                .withPriority(PlsCompletionPriorities.valueLinkPrefixPriority)
             result.addElement(lookupElement)
         }
     }
@@ -1215,7 +1212,6 @@ object ParadoxConfigHandler {
                 .withTailText(tailText)
                 .withTypeText(typeFile?.name)
                 .withTypeIcon(typeFile?.icon)
-                .withPriority(PlsCompletionPriorities.predefinedValueSetValuePriority)
             result.addScriptExpressionElement(context, builder)
         }
     }
@@ -1265,7 +1261,6 @@ object ParadoxConfigHandler {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
                 .withScopeMatched(scopeMatched)
-                .withPriority(PlsCompletionPriorities.localisationCommandPriority)
             result.addElement(lookupElement)
         }
     }

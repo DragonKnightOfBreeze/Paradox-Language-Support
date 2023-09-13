@@ -408,7 +408,6 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
                     .withTypeText(typeFile?.name)
                     .withTypeIcon(typeFile?.icon)
                     .caseInsensitive()
-                    .withScopeMatched(context.scopeMatched)
                     .withPriority(PlsCompletionPriorities.enumPriority)
                 result.addScriptExpressionElement(context, builder)
             }
@@ -432,6 +431,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
                     .withTailText(tailText)
                     .withTypeText(typeFile?.name)
                     .withTypeIcon(typeFile?.icon)
+                    .withPriority(PlsCompletionPriorities.complexEnumPriority)
                 result.addScriptExpressionElement(context, builder)
                 true
             }
