@@ -53,7 +53,7 @@ class ParadoxValueLinkDataSourceExpressionNode(
                     } else {
                         val configGroup = linkConfigs.first().info.configGroup
                         val node = ParadoxScriptValueExpression.resolve(text, textRange, configGroup, scriptValueConfig)
-                        nodes.add(node)
+                        if(node != null) nodes.add(node)
                     }
                     break
                 }

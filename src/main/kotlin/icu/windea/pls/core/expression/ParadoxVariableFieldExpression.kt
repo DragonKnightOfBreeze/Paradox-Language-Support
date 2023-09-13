@@ -184,13 +184,15 @@ class ParadoxVariableFieldExpressionImpl(
     }
 }
 
-fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, canBeMismatched: Boolean = false): ParadoxVariableFieldExpression? {
+fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {
     //skip if text represents an int or float
     if(isNumber(expression)) return null
     
     val parameterRanges = ParadoxConfigHandler.getParameterRangesInExpression(expression)
     //skip if text is a parameter with unary operator prefix
-    if(isUnaryOperatorAwareParameter(expression, parameterRanges)) return null
+    if(ParadoxConfigHandler.isUnaryOperatorAwareParameter(expression, parameterRanges)) return null
+    
+    val incomplete = PlsContext.incompleteComplexExpression.get() ?: false
     
     val nodes = mutableListOf<ParadoxExpressionNode>()
     val offset = range.startOffset
@@ -224,7 +226,7 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
             else -> ParadoxScopeFieldExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
         }
         //handle mismatch situation
-        if(!canBeMismatched && nodes.isEmpty() && node is ParadoxErrorExpressionNode) return null
+        if(!incomplete && nodes.isEmpty() && node is ParadoxErrorExpressionNode) return null
         nodes.add(node)
         if(dotNode != null) nodes.add(dotNode)
     }
@@ -233,9 +235,4 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
 
 private fun isNumber(text: String): Boolean {
     return ParadoxDataExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
-}
-
-private fun isUnaryOperatorAwareParameter(text: String, parameterRanges: List<TextRange>): Boolean {
-    return text.firstOrNull()?.let { it == '+' || it == '-' } == true
-        && parameterRanges.singleOrNull()?.let { it.startOffset == 1 && it.endOffset == text.length } == true
 }

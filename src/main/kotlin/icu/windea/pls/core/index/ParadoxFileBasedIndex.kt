@@ -83,11 +83,9 @@ abstract class ParadoxFileBasedIndex<T>: FileBasedIndexExtension<String, T>() {
         return buildMap { 
             try {
                 PlsContext.indexStatus.set(true)
-                PlsContext.globalCacheKeyPrefix.set(PlsContext.buildGlobalCacheKeyPrefix(file))
                 indexData(file, this)
             } finally {
                 PlsContext.indexStatus.remove()
-                PlsContext.globalCacheKeyPrefix.remove()
             }
         }
     }

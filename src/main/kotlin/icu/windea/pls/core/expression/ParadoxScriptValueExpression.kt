@@ -171,8 +171,12 @@ class ParadoxScriptValueExpressionImpl(
     }
 }
 
-fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression {
+fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
     val parameterRanges = ParadoxConfigHandler.getParameterRangesInExpression(expression)
+    //skip if text is a parameter with unary operator prefix
+    if(ParadoxConfigHandler.isUnaryOperatorAwareParameter(expression, parameterRanges)) return null
+    
+    val incomplete = PlsContext.incompleteComplexExpression.get() ?: false
     
     val nodes = mutableListOf<ParadoxExpressionNode>()
     val offset = range.startOffset
@@ -196,6 +200,7 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
         if(tokenIndex == -1) {
             tokenIndex = textLength
         }
+        if(!incomplete && index == tokenIndex && tokenIndex == textLength) break
         //resolve node
         val nodeText = expression.substring(startIndex, tokenIndex)
         val nodeRange = TextRange.create(startIndex + offset, tokenIndex + offset)

@@ -518,6 +518,11 @@ object ParadoxConfigHandler {
         return indices.windowed(2, 2, false) { TextRange.create(it[0], it[1] + 1) }
     }
     
+    fun isUnaryOperatorAwareParameter(text: String, parameterRanges: List<TextRange>): Boolean {
+        return text.firstOrNull()?.let { it == '+' || it == '-' } == true
+            && parameterRanges.singleOrNull()?.let { it.startOffset == 1 && it.endOffset == text.length } == true
+    }
+    
     fun inParameterRanges(parameterRanges: List<TextRange>, index: Int): Boolean {
         return parameterRanges.any { index in it }
     }
@@ -907,14 +912,18 @@ object ParadoxConfigHandler {
         val quoted = context.quoted!!
         val keyword = context.keyword!!
         val configGroup = context.configGroup!!
+        if(quoted) return
         
         //基于当前位置的代码补全
-        if(quoted) return
         val keywordOffset = context.keywordOffset
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
-        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup, true) ?: return
-        //合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，目前不基于此进行过滤
-        return scopeFieldExpression.complete(context, result)
+        try {
+            PlsContext.incompleteComplexExpression.set(true)
+            val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup) ?: return
+            return scopeFieldExpression.complete(context, result)
+        } finally {
+            PlsContext.incompleteComplexExpression.remove()
+        }
     }
     
     fun completeValueFieldExpression(context: ProcessingContext, result: CompletionResultSet) {
@@ -923,12 +932,18 @@ object ParadoxConfigHandler {
         val keyword = context.keyword!!
         val configGroup = context.configGroup!!
         
-        //基于当前位置的代码补全
         if(quoted) return
+        
+        //基于当前位置的代码补全
         val keywordOffset = context.keywordOffset
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
-        val valueFieldExpression = ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup, true) ?: return
-        return valueFieldExpression.complete(context, result)
+        try {
+            PlsContext.incompleteComplexExpression.set(true)
+            val valueFieldExpression = ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup) ?: return
+            return valueFieldExpression.complete(context, result)
+        } finally {
+            PlsContext.incompleteComplexExpression.remove()
+        }
     }
     
     fun completeVariableFieldExpression(context: ProcessingContext, result: CompletionResultSet) {
@@ -937,12 +952,18 @@ object ParadoxConfigHandler {
         val keyword = context.keyword!!
         val configGroup = context.configGroup!!
         
-        //基于当前位置的代码补全
         if(quoted) return
+        
+        //基于当前位置的代码补全
         val keywordOffset = context.keywordOffset
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
-        val variableFieldExpression = ParadoxVariableFieldExpression.resolve(keyword, textRange, configGroup, true) ?: return
-        return variableFieldExpression.complete(context, result)
+        try {
+            PlsContext.incompleteComplexExpression.set(true)
+            val variableFieldExpression = ParadoxVariableFieldExpression.resolve(keyword, textRange, configGroup) ?: return
+            return variableFieldExpression.complete(context, result)
+        } finally {
+            PlsContext.incompleteComplexExpression.remove()
+        }
     }
     
     fun completeValueSetValueExpression(context: ProcessingContext, result: CompletionResultSet) {
@@ -952,12 +973,18 @@ object ParadoxConfigHandler {
         val configGroup = context.configGroup!!
         val config = context.config!!
         
-        //基于当前位置的代码补全
         if(quoted) return
+        
+        //基于当前位置的代码补全
         val keywordOffset = context.keywordOffset
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
-        val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(keyword, textRange, configGroup, config, true) ?: return
-        return valueSetValueExpression.complete(context, result)
+        try {
+            PlsContext.incompleteComplexExpression.set(true)
+            val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(keyword, textRange, configGroup, config, true) ?: return
+            return valueSetValueExpression.complete(context, result)
+        } finally {
+            PlsContext.incompleteComplexExpression.remove()
+        }
     }
     
     fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet) {

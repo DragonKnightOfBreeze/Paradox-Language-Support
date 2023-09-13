@@ -21,7 +21,7 @@ val PlsCompletionKeys.keyword by createKey<String>("paradoxCompletion.keyword") 
 val PlsCompletionKeys.keywordOffset by createKey<Int>("paradoxCompletion.keywordOffset") { 0 }
 val PlsCompletionKeys.isKey by createKey<Boolean>("paradoxCompletion.isKey")
 val PlsCompletionKeys.config by createKey<CwtConfig<*>>("paradoxCompletion.config")
-val PlsCompletionKeys.configs by createKey<Collection<CwtConfig<*>>>("paradoxCompletion.configs")
+val PlsCompletionKeys.configs by createKey<Collection<CwtConfig<*>>>("paradoxCompletion.configs") { emptyList() }
 val PlsCompletionKeys.configGroup by createKey<CwtConfigGroup>("paradoxCompletion.configGroup")
 val PlsCompletionKeys.scopeContext by createKey<ParadoxScopeContext>("paradoxCompletion.scopeContext")
 val PlsCompletionKeys.scopeMatched by createKey<Boolean>("paradoxCompletion.scopeMatched") { true }

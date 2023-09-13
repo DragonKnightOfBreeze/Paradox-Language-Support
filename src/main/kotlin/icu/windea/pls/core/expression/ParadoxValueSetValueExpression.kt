@@ -132,11 +132,15 @@ class ParadoxValueSetValueExpressionImpl(
 }
 
 fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>, canBeMismatched: Boolean = false): ParadoxValueSetValueExpression? {
-    return resolve(expression, range, configGroup, config.toSingletonList(), canBeMismatched)
+    return resolve(expression, range, configGroup, config.toSingletonList())
 }
 
-fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>, canBeMismatched: Boolean = false): ParadoxValueSetValueExpression? {
+fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxValueSetValueExpression? {
     val parameterRanges = ParadoxConfigHandler.getParameterRangesInExpression(expression)
+    //skip if text is a parameter with unary operator prefix
+    if(ParadoxConfigHandler.isUnaryOperatorAwareParameter(expression, parameterRanges)) return null
+    
+    val incomplete = PlsContext.incompleteComplexExpression.get() ?: false
     
     val nodes = mutableListOf<ParadoxExpressionNode>()
     val offset = range.startOffset
@@ -163,12 +167,13 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
             //resolve scope expression
             val expText = expression.substring(tokenIndex + 1)
             val expTextRange = TextRange.create(tokenIndex + 1 + offset, textLength + offset)
-            val expNode = ParadoxScopeFieldExpression.resolve(expText, expTextRange, configGroup, true)!!
+            val expNode = ParadoxScopeFieldExpression.resolve(expText, expTextRange, configGroup)!!
             nodes.add(expNode)
         }
         break
     }
-    if(!canBeMismatched && nodes.isEmpty()) return null
+    //handle mismatch situation
+    if(!incomplete && nodes.isEmpty()) return null
     return ParadoxValueSetValueExpressionImpl(expression, range, nodes, configGroup, configs)
 }
 

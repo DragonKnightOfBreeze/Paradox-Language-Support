@@ -180,8 +180,12 @@ class ParadoxScopeFieldExpressionImpl(
     }
 }
 
-fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, canBeMismatched: Boolean = false): ParadoxScopeFieldExpression? {
+fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
     val parameterRanges = ParadoxConfigHandler.getParameterRangesInExpression(expression)
+    //skip if text is a parameter with unary operator prefix
+    if(ParadoxConfigHandler.isUnaryOperatorAwareParameter(expression, parameterRanges)) return null
+    
+    val incomplete = PlsContext.incompleteComplexExpression.get() ?: false
     
     val nodes = mutableListOf<ParadoxExpressionNode>()
     val offset = range.startOffset
@@ -210,7 +214,7 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
         startIndex = tokenIndex + 1
         val node = ParadoxScopeFieldExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
         //handle mismatch situation
-        if(!canBeMismatched && nodes.isEmpty() && node is ParadoxErrorExpressionNode) return null
+        if(!incomplete && nodes.isEmpty() && node is ParadoxErrorExpressionNode) return null
         nodes.add(node)
         if(dotNode != null) nodes.add(dotNode)
     }
