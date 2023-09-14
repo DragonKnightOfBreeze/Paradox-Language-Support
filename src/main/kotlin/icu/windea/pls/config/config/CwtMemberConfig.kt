@@ -7,7 +7,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.expression.CwtDataType.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.config.*
+import icu.windea.pls.lang.overridden.*
 import icu.windea.pls.model.*
 
 sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig<T>, CwtValueAware, CwtConfigsAware, CwtDocumentationAware, CwtOptionsAware {

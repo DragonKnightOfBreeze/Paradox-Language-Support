@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.scope.impl
+package icu.windea.pls.lang.overridden.impl
 
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
@@ -10,7 +10,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.scope.*
+import icu.windea.pls.lang.overridden.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 

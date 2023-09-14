@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.scope
+package icu.windea.pls.lang.overridden
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*

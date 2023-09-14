@@ -37,6 +37,7 @@ import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.data.impl.*
 import icu.windea.pls.lang.expression.*
+import icu.windea.pls.lang.overridden.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*

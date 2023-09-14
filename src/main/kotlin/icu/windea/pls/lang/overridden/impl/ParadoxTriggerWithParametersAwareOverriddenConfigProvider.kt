@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.config.impl
+package icu.windea.pls.lang.overridden.impl
 
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
@@ -8,7 +8,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.config.*
+import icu.windea.pls.lang.overridden.*
 import icu.windea.pls.script.psi.*
 
 private const val TRIGGER_KEY = "trigger"
