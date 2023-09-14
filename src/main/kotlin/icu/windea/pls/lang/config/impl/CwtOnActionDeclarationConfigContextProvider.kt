@@ -28,59 +28,48 @@ class CwtOnActionDeclarationConfigContextProvider: CwtDeclarationConfigContextPr
     
     
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        val rootConfig = declarationConfig.propertyConfig
-        return rootConfig.delegated(CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context), null)
-        //parentConfig should be null here
-    }
-    
-    //TODO
-    private fun handleDeclarationMergedConfig(declarationConfig: CwtPropertyConfig, context: CwtDeclarationConfigContext) {
-        val config = context.getUserData(configKey)
-        if(config == null) return
+        val config = context.getUserData(configKey)!!
         val expressions = buildSet {
             if(context.configGroup.types.get("event")?.subtypes?.containsKey("scopeless") == true) {
                 add("<event.scopeless>")
             }
             add("<event.${config.eventType}>")
         }
-        declarationConfig.processDescendants p@{ c ->
-            val cs = c.configs ?: return@p true
-            cs as MutableList
-            val ccs = mutableListOf<CwtMemberConfig<*>>()
-            var i = -1
-            for((index, cc) in cs.withIndex()) {
-                when(cc) {
-                    is CwtPropertyConfig -> {
-                        val isKey = cc.key == "<event>"
-                        val isValue = cc.stringValue == "<event>"
-                        if(isKey || isValue) {
-                            for(expression in expressions) {
-                                val keyArg = if(isKey) expression else cc.key
-                                val valueArg = if(isValue) expression else cc.stringValue.orEmpty()
-                                val cc0 = cc.copy(key = keyArg, value = valueArg).also { it.parentConfig = cc.parentConfig }
-                                ccs.add(cc0)
-                                i = index
-                            }
-                            break
+        
+        val rootConfig = declarationConfig.propertyConfig
+        val configs = CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context) a@{ result, c1 ->
+            fun asDelegated(config: CwtMemberConfig<*>): CwtMemberConfig<*> {
+                return config.delegated(CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(config, context), config.parentConfig)
+            }
+            
+            when(c1) {
+                is CwtPropertyConfig -> {
+                    val isKey = c1.key == "<event>"
+                    val isValue = c1.stringValue == "<event>"
+                    if(isKey || isValue) {
+                        for(expression in expressions) {
+                            val keyArg = if(isKey) expression else c1.key
+                            val valueArg = if(isValue) expression else c1.stringValue.orEmpty()
+                            val cc1 = c1.copy(key = keyArg, value = valueArg).also { it.parentConfig = c1.parentConfig }
+                            result += asDelegated(cc1)
                         }
+                        return@a
                     }
-                    is CwtValueConfig -> {
-                        if(cc.stringValue == "<event>") {
-                            for(expression in expressions) {
-                                val cc0 = cc.copy(pointer = emptyPointer(), value = expression).also { it.parentConfig = cc.parentConfig }
-                                ccs.add(cc0)
-                                i = index
-                            }
-                            break
+                }
+                is CwtValueConfig -> {
+                    if(c1.stringValue == "<event>") {
+                        for(expression in expressions) {
+                            val cc1 = c1.copy(pointer = emptyPointer(), value = expression).also { it.parentConfig = c1.parentConfig }
+                            result += asDelegated(cc1)
                         }
+                        return@a
                     }
                 }
             }
-            if(i != -1) {
-                cs.removeAt(i)
-                cs.addAll(i, ccs)
-            }
-            true
+            
+            result += asDelegated(c1)
         }
+        return rootConfig.delegated(configs, null)
+        //parentConfig should be null here
     }
 }

@@ -31,7 +31,8 @@ class CwtGameRuleOverriddenDeclarationConfigContextProvider : CwtDeclarationConf
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val gameRuleConfig = context.getUserData(configKey)!!
         val rootConfig = gameRuleConfig.config
-        return rootConfig.delegated(CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context), null)
+        val configs = CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context)
+        return rootConfig.delegated(configs, null)
         //parentConfig should be null here
     }
 }

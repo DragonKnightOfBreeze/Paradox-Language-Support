@@ -27,21 +27,29 @@ sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig
     object Keys : KeysAware
 }
 
+fun CwtMemberConfig<*>.delegated(
+    configs: List<CwtMemberConfig<*>>? = this.configs,
+    parentConfig: CwtMemberConfig<*>? = this.parentConfig
+): CwtMemberConfig<*> {
+    return when(this) {
+        is CwtPropertyConfig -> this.delegated(configs, parentConfig)
+        is CwtValueConfig -> this.delegated(configs, parentConfig)
+    }
+}
+
 val <T : PsiElement> CwtMemberConfig<T>.isBlock: Boolean
     get() = configs != null
 
 val CwtMemberConfig<*>.isRoot: Boolean
-    get() = when {
-        this is CwtPropertyConfig -> this.parentConfig == null
-        this is CwtValueConfig -> this.parentConfig == null && this.propertyConfig == null
-        else -> false
+    get() = when(this) {
+        is CwtPropertyConfig -> this.parentConfig == null
+        is CwtValueConfig -> this.parentConfig == null && this.propertyConfig == null
     }
 
 val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<PsiElement>
-    get() = when {
-        this is CwtPropertyConfig -> this
-        this is CwtValueConfig -> propertyConfig ?: this
-        else -> this
+    get() = when(this) {
+        is CwtPropertyConfig -> this
+        is CwtValueConfig -> propertyConfig ?: this
     }
 
 val CwtValueConfig.isTagConfig: Boolean

@@ -11,49 +11,44 @@ import icu.windea.pls.core.expression.*
 object CwtConfigManipulator {
     //region Deep Copy Methods
     fun deepCopyConfigs(config: CwtMemberConfig<*>): List<CwtMemberConfig<*>>? {
-        return doDeepCopyConfigs(config)
+        val cs1 = config.configs
+        if(cs1.isNullOrEmpty()) return cs1
+        val result = mutableListOf<CwtMemberConfig<*>>()
+        cs1.forEachFast f1@{ c1 ->
+            result += c1.delegated(deepCopyConfigs(c1), c1.parentConfig)
+        }
+        return result
     }
     
-    private fun doDeepCopyConfigs(config: CwtMemberConfig<*>): List<CwtMemberConfig<*>>? {
-        return config.configs?.mapFast { c1 ->
-            when(c1) {
-                is CwtPropertyConfig -> c1.delegated(doDeepCopyConfigs(c1), c1.parentConfig)
-                is CwtValueConfig -> c1.delegated(doDeepCopyConfigs(c1), c1.parentConfig)
-            }
-        }
-    }
-    
-    fun deepCopyConfigsInDeclarationConfig(config: CwtMemberConfig<*>, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>>? {
-        val mergedConfigs: MutableList<CwtMemberConfig<*>>? = if(config.configs != null) mutableListOf() else null
-        config.configs?.forEachFast { c1 ->
-            val c2s = deepCopyConfigsInDeclarationConfig(c1, context)
-            c2s?.forEachFast { c2 ->
-                mergedConfigs?.add(c2)
-            }
-        }
-        when(config) {
-            is CwtPropertyConfig -> {
-                val subtypeExpression = config.key.removeSurroundingOrNull("subtype[", "]")
-                if(subtypeExpression == null) {
-                    val mergedConfig = config.delegated(mergedConfigs, config.parentConfig)
-                    return mergedConfig.toSingletonList()
-                } else {
+    fun deepCopyConfigsInDeclarationConfig(
+        config: CwtMemberConfig<*>,
+        context: CwtDeclarationConfigContext,
+        action: ((result: MutableList<CwtMemberConfig<*>>, config: CwtMemberConfig<*>) -> Unit)? = null
+    ): List<CwtMemberConfig<*>>? {
+        val cs1 = config.configs
+        if(cs1.isNullOrEmpty()) return cs1
+        val result = mutableListOf<CwtMemberConfig<*>>()
+        cs1.forEachFast f1@{ c1 ->
+            if(c1 is CwtPropertyConfig) {
+                val subtypeExpression = c1.key.removeSurroundingOrNull("subtype[", "]")
+                if(subtypeExpression != null) {
                     val subtypes = context.definitionSubtypes
                     if(subtypes == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
-                        mergedConfigs?.forEachFast { mergedConfig ->
-                            mergedConfig.parentConfig = config.parentConfig
-                        }
-                        return mergedConfigs.orEmpty()
-                    } else {
-                        return emptyList()
+                        val cs2 = deepCopyConfigsInDeclarationConfig(c1, context)
+                        if(cs2.isNullOrEmpty()) return@f1
+                        result += cs2
                     }
+                    return@f1
                 }
             }
-            is CwtValueConfig -> {
-                val mergedConfig = config.delegated(mergedConfigs, config.parentConfig)
-                return mergedConfig.toSingletonList()
+            
+            if(action == null) {
+                result += c1.delegated(deepCopyConfigsInDeclarationConfig(c1, context), c1.parentConfig)
+            } else {
+                action(result, c1)
             }
         }
+        return result
     }
     //endregion
     
@@ -134,8 +129,8 @@ object CwtConfigManipulator {
         
         //merge multiple configs
         val result = mutableListOf<CwtMemberConfig<*>>()
-        cs1.forEach f1@{ config ->
-            cs2.forEach f2@{ otherConfig ->
+        cs1.forEachFast f1@{ config ->
+            cs2.forEachFast f2@{ otherConfig ->
                 val resultConfig = mergeConfig(config, otherConfig)
                 if(resultConfig != null) result.add(resultConfig)
             }

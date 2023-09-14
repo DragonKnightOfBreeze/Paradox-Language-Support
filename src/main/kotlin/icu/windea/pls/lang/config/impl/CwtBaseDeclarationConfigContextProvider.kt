@@ -23,7 +23,8 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
     
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val rootConfig = declarationConfig.propertyConfig
-        return rootConfig.delegated(CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context), null)
+        val configs = CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context)
+        return rootConfig.delegated(configs, null)
         //parentConfig should be null here
     }
 }
