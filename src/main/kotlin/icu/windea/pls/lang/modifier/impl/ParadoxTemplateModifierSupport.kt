@@ -40,7 +40,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         var modifierConfig: CwtModifierConfig? = null
         val templateReferences = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
             ProgressManager.checkCanceled()
-            val resolvedReferences = config.template.resolveReferences(modifierName, element, configGroup).orNull()
+            val resolvedReferences = config.template.resolveReferences(modifierName, configGroup).orNull()
             if(resolvedReferences != null) modifierConfig = config
             resolvedReferences
         }.orEmpty()
@@ -65,7 +65,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
             
-            val tailText = ParadoxConfigHandler.getScriptExpressionTailText(modifierConfig.config, withExpression = true)
+            val tailText = CwtConfigHandler.getScriptExpressionTailText(modifierConfig.config, withExpression = true)
             val template = modifierConfig.template
             if(template.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile

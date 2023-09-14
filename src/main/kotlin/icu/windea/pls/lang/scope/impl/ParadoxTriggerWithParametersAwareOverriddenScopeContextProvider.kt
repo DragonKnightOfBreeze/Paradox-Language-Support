@@ -31,7 +31,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         ProgressManager.checkCanceled()
         val complexTriggerModifierProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
             .filter { it.name.lowercase() in CONTEXT_NAMES }
-            .find { ParadoxConfigHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
+            .find { CwtConfigHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
             ?: return null
         when {
             config.key == TRIGGER_KEY -> {

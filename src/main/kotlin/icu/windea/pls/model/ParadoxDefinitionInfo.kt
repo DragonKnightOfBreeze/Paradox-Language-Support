@@ -112,7 +112,7 @@ class ParadoxDefinitionInfo(
     
     val project get() = configGroup.project
     
-    fun getSubtypeConfigs(matchOptions: Int = ParadoxConfigMatcher.Options.Default): List<CwtSubtypeConfig> {
+    fun getSubtypeConfigs(matchOptions: Int = CwtConfigMatcher.Options.Default): List<CwtSubtypeConfig> {
         return subtypeConfigsCache.computeIfAbsent(matchOptions) { doGetSubtypeConfigs(matchOptions) }
     }
     
@@ -129,7 +129,7 @@ class ParadoxDefinitionInfo(
         return result
     }
     
-    fun getDeclaration(matchOptions: Int = ParadoxConfigMatcher.Options.Default): CwtPropertyConfig? {
+    fun getDeclaration(matchOptions: Int = CwtConfigMatcher.Options.Default): CwtPropertyConfig? {
         return declarationConfigsCache.computeIfAbsent(matchOptions) { doGetDeclaration(matchOptions) }
     }
     

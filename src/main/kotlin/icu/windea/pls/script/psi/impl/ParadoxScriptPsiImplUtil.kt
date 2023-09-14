@@ -223,7 +223,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getConfigExpression(element: ParadoxScriptProperty): String? {
-        val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() as? CwtPropertyConfig ?: return null
+        val config = CwtConfigHandler.getConfigs(element).firstOrNull() as? CwtPropertyConfig ?: return null
         return "${config.key} = ${config.value}"
     }
     
@@ -283,7 +283,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getConfigExpression(element: ParadoxScriptPropertyKey): String? {
-        val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() as? CwtPropertyConfig ?: return null
+        val config = CwtConfigHandler.getConfigs(element).firstOrNull() as? CwtPropertyConfig ?: return null
         return config.key
     }
     
@@ -380,7 +380,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getConfigExpression(element: ParadoxScriptValue): String? {
-        val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() as? CwtValueConfig ?: return null
+        val config = CwtConfigHandler.getConfigs(element).firstOrNull() as? CwtValueConfig ?: return null
         return config.value
     }
     //endregion

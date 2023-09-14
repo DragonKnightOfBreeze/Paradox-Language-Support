@@ -59,7 +59,7 @@ object CwtTemplateExpressionHandler {
         }.toRegex(RegexOption.IGNORE_CASE)
     }
     
-    fun matches(text: String, contextElement: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxConfigMatcher.Options.Default): Boolean {
+    fun matches(text: String, contextElement: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, matchOptions: Int = CwtConfigMatcher.Options.Default): Boolean {
         val snippetExpressions = configExpression.snippetExpressions
         if(snippetExpressions.isEmpty()) return false
         val expressionString = text.unquote()
@@ -73,7 +73,7 @@ object CwtTemplateExpressionHandler {
                 val matchGroup = matchResult.groups.get(i++) ?: return false
                 val referenceName = matchGroup.value
                 val expression = ParadoxDataExpression.resolve(referenceName, false)
-                val matched = ParadoxConfigMatcher.matches(contextElement, expression, snippetExpression, null, configGroup, matchOptions).get(matchOptions)
+                val matched = CwtConfigMatcher.matches(contextElement, expression, snippetExpression, null, configGroup, matchOptions).get(matchOptions)
                 if(!matched) return false
             }
         }

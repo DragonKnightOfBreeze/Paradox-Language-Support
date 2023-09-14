@@ -68,7 +68,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
                 val parentProperties = parentBlock.parentsOfType<ParadoxScriptProperty>(withSelf = false)
                 for(prop in parentProperties) {
                     //infer context config
-                    val propConfig = ParadoxConfigHandler.getConfigs(prop).firstOrNull() as? CwtPropertyConfig ?: continue
+                    val propConfig = CwtConfigHandler.getConfigs(prop).firstOrNull() as? CwtPropertyConfig ?: continue
                     if(propConfig.expression.type != CwtDataType.Definition) continue
                     if(propConfig.configs?.any { it is CwtPropertyConfig && it.expression.type == CwtDataType.Parameter } != true) continue
                     contextConfig = propConfig

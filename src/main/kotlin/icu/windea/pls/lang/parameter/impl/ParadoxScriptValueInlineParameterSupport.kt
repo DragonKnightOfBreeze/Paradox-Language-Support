@@ -74,7 +74,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
                 val pipeIndex = text.indexOf('|', text.indexOf("value:").let { if(it != -1) it + 6 else return null })
                 if(pipeIndex == -1) return null
                 if(offset != -1 && pipeIndex >= offset - expressionElement.startOffset) return null //要求光标在管道符之后（如果offset不为-1）
-                expressionElementConfig = ParadoxConfigHandler.getConfigs(expressionElement).firstOrNull() ?: return null
+                expressionElementConfig = CwtConfigHandler.getConfigs(expressionElement).firstOrNull() ?: return null
             }
         }
         if(!expressionElementConfig.expression.type.isValueFieldType()) return null

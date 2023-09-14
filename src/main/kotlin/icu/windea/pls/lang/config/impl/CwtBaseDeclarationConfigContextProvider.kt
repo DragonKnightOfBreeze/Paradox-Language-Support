@@ -22,11 +22,8 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
     }
     
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        if(!declarationConfig.propertyConfig.isBlock) return declarationConfig.propertyConfig
-        
-        val rootConfigs = declarationConfig.propertyConfig.configs
-        val configs = rootConfigs?.flatMap { ParadoxConfigGenerator.deepCopyConfigsInDeclarationConfig(it, context) }
-        return declarationConfig.propertyConfig.copy(configs = configs)
-        //declarationConfig.propertyConfig.parent should be null here
+        val rootConfig = declarationConfig.propertyConfig
+        return rootConfig.delegated(CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context), null)
+        //parentConfig should be null here
     }
 }

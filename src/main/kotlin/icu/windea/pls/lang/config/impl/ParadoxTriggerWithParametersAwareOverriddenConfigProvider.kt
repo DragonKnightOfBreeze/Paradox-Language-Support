@@ -28,7 +28,7 @@ class ParadoxTriggerWithParametersAwareOverriddenConfigProvider : ParadoxOverrid
         ProgressManager.checkCanceled()
         val contextProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
             .filter { it.name.lowercase() in CONTEXT_NAMES }
-            .find { ParadoxConfigHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
+            .find { CwtConfigHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
             ?: return null
         val triggerProperty = contextProperty.findProperty(TRIGGER_KEY, inline = true) ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
@@ -38,7 +38,7 @@ class ParadoxTriggerWithParametersAwareOverriddenConfigProvider : ParadoxOverrid
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
         for(resultTriggerConfig in resultTriggerConfigs) {
             if(!resultTriggerConfig.config.isBlock) continue //not complex trigger, skip
-            val inlined = ParadoxConfigGenerator.inlineWithConfig(config, resultTriggerConfig.config, ParadoxConfigGenerator.InlineMode.VALUE_TO_VALUE) ?: continue
+            val inlined = CwtConfigManipulator.inlineWithConfig(config, resultTriggerConfig.config, CwtConfigManipulator.InlineMode.VALUE_TO_VALUE) ?: continue
             resultConfigs.add(inlined)
         }
         return resultConfigs as List<T>

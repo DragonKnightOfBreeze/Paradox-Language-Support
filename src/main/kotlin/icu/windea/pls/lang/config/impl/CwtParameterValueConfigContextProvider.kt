@@ -23,8 +23,8 @@ import icu.windea.pls.script.psi.*
  *
  * @see ParadoxScriptInjector
  */
-class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider {
-    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
+class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
+    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
         if(!getSettings().inference.parameterConfig) return null
         
         //unnecessary check
@@ -40,9 +40,9 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
         val gameType = parameterElement.gameType
         val elementPathFromRoot = elementPath
         val configGroup = getConfigGroups(file.project).get(gameType)
-        val configContext = ParadoxConfigContext(element, null, elementPath, gameType, configGroup)
+        val configContext = CwtConfigContext(element, null, elementPath, gameType, configGroup)
         if(elementPathFromRoot.isNotEmpty()) {
-            configContext.snippetFromParameterValueRootConfigContext = ParadoxConfigHandler.getConfigContext(file) ?: return null
+            configContext.snippetFromParameterValueRootConfigContext = CwtConfigHandler.getConfigContext(file) ?: return null
         }
         configContext.elementPathFromRoot = elementPathFromRoot
         configContext.parameterElement = parameterElement
@@ -69,7 +69,7 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
         }
     }
     
-    override fun getCacheKey(context: ParadoxConfigContext, matchOptions: Int): String? {
+    override fun getCacheKey(context: CwtConfigContext, matchOptions: Int): String? {
         val gameTypeId = context.gameType.id
         val parameterElement = context.parameterElement ?: return null // null -> unexpected
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
@@ -77,7 +77,7 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
         return "is@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${parameterElement.contextKey}@${parameterElement.name}\n${elementPathFromRoot.path}"
     }
     
-    override fun getConfigs(context: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
         
@@ -86,7 +86,7 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
             val element = context.element
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
             val configGroup = context.configGroup
-            return ParadoxConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+            return CwtConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         }
         
         val parameterElement = context.parameterElement ?: return null
@@ -96,19 +96,19 @@ class ParadoxParameterValueConfigContextProvider : ParadoxConfigContextProvider 
     
     //skip MissingExpressionInspection and TooManyExpressionInspection at root level
     
-    override fun skipMissingExpressionCheck(context: ParadoxConfigContext): Boolean {
+    override fun skipMissingExpressionCheck(context: CwtConfigContext): Boolean {
         val elementPathFromRoot = context.elementPathFromRoot ?: return false
         return elementPathFromRoot.isEmpty()
     }
     
-    override fun skipTooManyExpressionCheck(context: ParadoxConfigContext): Boolean {
+    override fun skipTooManyExpressionCheck(context: CwtConfigContext): Boolean {
         val elementPathFromRoot = context.elementPathFromRoot ?: return false
         return elementPathFromRoot.isEmpty()
     }
 }
 
-val ParadoxConfigContext.Keys.snippetFromParameterValueRootConfigContext by createKey<ParadoxConfigContext>("paradox.configContext.snippetFromParameterValue.rootConfigContext")
-val ParadoxConfigContext.Keys.parameterElement by createKey<ParadoxParameterElement>("paradox.configContext.snippetFromParameterValue.parameterElement")
+val CwtConfigContext.Keys.snippetFromParameterValueRootConfigContext by createKey<CwtConfigContext>("paradox.configContext.snippetFromParameterValue.rootConfigContext")
+val CwtConfigContext.Keys.parameterElement by createKey<ParadoxParameterElement>("paradox.configContext.snippetFromParameterValue.parameterElement")
 
-var ParadoxConfigContext.snippetFromParameterValueRootConfigContext by ParadoxConfigContext.Keys.snippetFromParameterValueRootConfigContext
-var ParadoxConfigContext.parameterElement by ParadoxConfigContext.Keys.parameterElement
+var CwtConfigContext.snippetFromParameterValueRootConfigContext by CwtConfigContext.Keys.snippetFromParameterValueRootConfigContext
+var CwtConfigContext.parameterElement by CwtConfigContext.Keys.parameterElement

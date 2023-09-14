@@ -4,7 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.ParadoxConfigMatcher.Options
+import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.script.psi.*
@@ -28,7 +28,7 @@ class ParadoxScriptConfigAwareInspectionSuppressor : InspectionSuppressor {
         }
         
         if(element is ParadoxScriptProperty || (element is ParadoxScriptExpressionElement && element.isExpression())) {
-            val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
+            val configs = CwtConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
             if(configs.isNotEmpty()) {
                 for(config in configs) {
                     //检查对应的规则

@@ -14,7 +14,7 @@ class RecursiveInlineScriptUsageInspection: LocalInspectionTool() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if(!getSettings().inference.inlineScriptConfig) return null
         val inlineScriptExpression = ParadoxInlineScriptHandler.getInlineScriptExpression(file) ?: return null
-        val configContext = ParadoxConfigHandler.getConfigContext(file) ?: return null
+        val configContext = CwtConfigHandler.getConfigContext(file) ?: return null
         if(configContext.inlineScriptHasRecursion != true) return null
         
         val holder = ProblemsHolder(manager, file, isOnTheFly)

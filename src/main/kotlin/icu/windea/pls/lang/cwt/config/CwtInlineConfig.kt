@@ -12,15 +12,10 @@ class CwtInlineConfig(
     override val name: String
 ) : CwtInlineableConfig<CwtProperty> {
     fun inline(): CwtPropertyConfig {
-        //don't cache here
-        return doInline()
-    }
-    
-    private fun doInline(): CwtPropertyConfig {
-        val other = this.config
+        val other = config
         val inlined = other.copy(
-            key = this.name,
-            configs = ParadoxConfigGenerator.deepCopyConfigs(other)
+            key = name,
+            configs = CwtConfigManipulator.deepCopyConfigs(other)
         )
         inlined.configs?.forEachFast { it.parentConfig = inlined }
         inlined.inlineableConfig = this

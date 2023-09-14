@@ -75,12 +75,12 @@ class ParadoxParameterContextInfo(
             if(expressionElement == null) return@lazy emptyList()
             when {
                 expressionElement is ParadoxScriptPropertyKey -> {
-                    val configs = ParadoxConfigHandler.getConfigs(expressionElement)
+                    val configs = CwtConfigHandler.getConfigs(expressionElement)
                     configs.mapNotNull { if(it is CwtPropertyConfig) it else null }
                     configs
                 }
                 expressionElement is ParadoxScriptString && expressionElement.isExpression() -> {
-                    val configs = ParadoxConfigHandler.getConfigs(expressionElement)
+                    val configs = CwtConfigHandler.getConfigs(expressionElement)
                     configs.mapNotNull { if(it is CwtValueConfig) it else null }
                 }
                 else -> {

@@ -46,7 +46,7 @@ object UnknownParadoxDataExpression : AbstractExpression(PlsConstants.unknownStr
     override val isKey: Boolean = false
 }
 
-fun Resolver.resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = ParadoxConfigMatcher.Options.Default): ParadoxDataExpression {
+fun Resolver.resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = CwtConfigMatcher.Options.Default): ParadoxDataExpression {
     return when {
         element is ParadoxScriptBlock -> {
             BlockParadoxDataExpression
@@ -54,7 +54,7 @@ fun Resolver.resolve(element: ParadoxScriptExpressionElement, matchOptions: Int 
         element is ParadoxScriptScriptedVariableReference -> {
             ProgressManager.checkCanceled()
             val valueElement = when {
-                BitUtil.isSet(matchOptions, ParadoxConfigMatcher.Options.SkipIndex) -> return UnknownParadoxDataExpression
+                BitUtil.isSet(matchOptions, CwtConfigMatcher.Options.SkipIndex) -> return UnknownParadoxDataExpression
                 else -> element.referenceValue ?: return UnknownParadoxDataExpression
             }
             ParadoxDataExpressionImpl(valueElement.value, valueElement.type, valueElement.text.isLeftQuoted(), false)

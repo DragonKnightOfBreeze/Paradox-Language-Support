@@ -16,7 +16,7 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.ParadoxConfigMatcher.Result
+import icu.windea.pls.lang.CwtConfigMatcher.Result
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.*
 import java.util.logging.*
 import java.util.logging.Logger
 
-object ParadoxConfigMatcher {
+object CwtConfigMatcher {
     object Options {
         /** 默认的匹配方式，先尝试通过[Result.ExactMatch]进行匹配，然后再尝试通过其他匹配方式进行匹配。 */
         const val Default = 0x00
@@ -327,14 +327,14 @@ object ParadoxConfigMatcher {
                 if(!expression.type.isStringLikeType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val aliasName = configExpression.value ?: return Result.NotMatch
-                val aliasSubName = ParadoxConfigHandler.getAliasSubName(element, expression.text, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
+                val aliasSubName = CwtConfigHandler.getAliasSubName(element, expression.text, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
                 return matches(element, expression, CwtKeyExpression.resolve(aliasSubName), null, configGroup)
             }
             dataType == CwtDataType.AliasName -> {
                 if(!expression.type.isStringLikeType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val aliasName = configExpression.value ?: return Result.NotMatch
-                val aliasSubName = ParadoxConfigHandler.getAliasSubName(element, expression.text, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
+                val aliasSubName = CwtConfigHandler.getAliasSubName(element, expression.text, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
                 return matches(element, expression, CwtKeyExpression.resolve(aliasSubName), null, configGroup)
             }
             dataType == CwtDataType.AliasMatchLeft -> {
@@ -374,7 +374,7 @@ object ParadoxConfigMatcher {
         } ?: return false
         //简单判断：如果block中包含configsInBlock声明的必须的任意propertyKey（作为常量字符串，忽略大小写），则认为匹配
         //注意：不同的子句规则可以拥有部分相同的propertyKey
-        val keys = ParadoxConfigHandler.getInBlockKeys(config)
+        val keys = CwtConfigHandler.getInBlockKeys(config)
         if(keys.isEmpty()) return true
         val actualKeys = mutableSetOf<String>()
         //注意这里需要考虑内联和可选的情况

@@ -9,7 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.ParadoxConfigMatcher.Options
+import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
@@ -25,9 +25,9 @@ import icu.windea.pls.script.psi.*
  * @property fileInfo 所在文件的文件信息。
  * @property definitionInfo 所在定义的定义信息。
  *
- * @see ParadoxConfigContextProvider
+ * @see CwtConfigContextProvider
  */
-class ParadoxConfigContext(
+class CwtConfigContext(
     val element: ParadoxScriptMemberElement,
     val fileInfo: ParadoxFileInfo?,
     val elementPath: ParadoxElementPath?,
@@ -76,18 +76,18 @@ private val PlsKeys.configsCache by createCachedValueKey("paradox.configContext.
 }
 private val Project.configsCache by PlsKeys.configsCache
 
-val ParadoxConfigContext.Keys.definitionInfo by createKey<ParadoxDefinitionInfo>("paradox.configContext.definitionInfo")
-val ParadoxConfigContext.Keys.elementPathFromRoot by createKey<ParadoxElementPath>("paradox.configContext.elementPathFromRoot")
-val ParadoxConfigContext.Keys.provider by createKey<ParadoxConfigContextProvider>("paradox.configContext.provider")
+val CwtConfigContext.Keys.definitionInfo by createKey<ParadoxDefinitionInfo>("paradox.configContext.definitionInfo")
+val CwtConfigContext.Keys.elementPathFromRoot by createKey<ParadoxElementPath>("paradox.configContext.elementPathFromRoot")
+val CwtConfigContext.Keys.provider by createKey<CwtConfigContextProvider>("paradox.configContext.provider")
 
-var ParadoxConfigContext.definitionInfo by ParadoxConfigContext.Keys.definitionInfo
-var ParadoxConfigContext.elementPathFromRoot by ParadoxConfigContext.Keys.elementPathFromRoot
-var ParadoxConfigContext.provider by ParadoxConfigContext.Keys.provider
+var CwtConfigContext.definitionInfo by CwtConfigContext.Keys.definitionInfo
+var CwtConfigContext.elementPathFromRoot by CwtConfigContext.Keys.elementPathFromRoot
+var CwtConfigContext.provider by CwtConfigContext.Keys.provider
 
-fun ParadoxConfigContext.isDefinition(): Boolean {
+fun CwtConfigContext.isDefinition(): Boolean {
     return definitionInfo != null && elementPathFromRoot.let { it != null && it.isEmpty() }
 }
 
-fun ParadoxConfigContext.isRootOrMember(): Boolean {
+fun CwtConfigContext.isRootOrMember(): Boolean {
     return elementPathFromRoot != null
 }

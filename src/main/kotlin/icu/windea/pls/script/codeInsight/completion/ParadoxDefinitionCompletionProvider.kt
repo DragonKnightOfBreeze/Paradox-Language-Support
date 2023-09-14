@@ -47,7 +47,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
             val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
             if(memberElement != null) {
                 //进行提示
-                ParadoxConfigHandler.addKeyCompletions(memberElement, context, resultToUse)
+                CwtConfigHandler.addKeyCompletions(memberElement, context, resultToUse)
             }
         }
         if(mayBeValue) {
@@ -56,7 +56,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
             val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
             if(memberElement != null) {
                 //进行提示
-                ParadoxConfigHandler.addValueCompletions(memberElement, context, resultToUse)
+                CwtConfigHandler.addValueCompletions(memberElement, context, resultToUse)
             }
         }
         if(mayBePropertyValue) {
@@ -68,7 +68,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
                 try {
                     propertyElement.putUserData(PlsKeys.isIncomplete, incomplete)
                     //进行提示
-                    ParadoxConfigHandler.addPropertyValueCompletions(element, propertyElement, context, resultToUse)
+                    CwtConfigHandler.addPropertyValueCompletions(element, propertyElement, context, resultToUse)
                 } finally {
                     propertyElement.putUserData(PlsKeys.isIncomplete, null)
                 }

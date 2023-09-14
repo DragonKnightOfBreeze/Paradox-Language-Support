@@ -40,6 +40,7 @@ inline fun <T, R, C : MutableCollection<in R>> List<T>.mapToFast(destination: C,
 }
 
 inline fun <T, R> List<T>.mapFast(transform: (T) -> R): List<R> {
+    if(isEmpty()) return emptyList() //optimize
     return mapToFast(ArrayList(collectionSizeOrDefault(10)), transform)
 }
 
@@ -52,6 +53,7 @@ inline fun <T, R, C : MutableCollection<in R>> List<T>.mapNotNullToFast(destinat
 }
 
 inline fun <T, R> List<T>.mapNotNullFast(transform: (T) -> R?): List<R> {
+    if(isEmpty()) return emptyList() //optimize
     return mapNotNullToFast(ArrayList(), transform)
 }
 
@@ -63,11 +65,8 @@ inline fun <T, C : MutableCollection<in T>> List<T>.filterToFast(destination: C,
 }
 
 inline fun <T> List<T>.filterFast(predicate: (T) -> Boolean): List<T> {
+    if(isEmpty()) return emptyList() //optimize
     return filterToFast(ArrayList(), predicate)
-}
-
-inline fun <reified R> List<*>.filterIsInstanceFast(): List<R> {
-    return filterIsInstanceToFast(ArrayList())
 }
 
 inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceToFast(destination: C): C {
@@ -75,6 +74,11 @@ inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceToFa
         if(e is R) destination.add(e)
     }
     return destination
+}
+
+inline fun <reified R> List<*>.filterIsInstanceFast(): List<R> {
+    if(isEmpty()) return emptyList() //optimize
+    return filterIsInstanceToFast(ArrayList())
 }
 
 inline fun <T> List<T>.findFast(predicate: (T) -> Boolean): T? {

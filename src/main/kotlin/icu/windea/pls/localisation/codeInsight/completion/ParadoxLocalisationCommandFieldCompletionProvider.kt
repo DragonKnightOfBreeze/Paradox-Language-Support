@@ -29,19 +29,19 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
         context.scopeContext = ParadoxScopeHandler.getScopeContext(element)
         
         //提示scope
-        ParadoxConfigHandler.completeSystemScope(context, result)
-        ParadoxConfigHandler.completePredefinedLocalisationScope(context, result)
+        CwtConfigHandler.completeSystemScope(context, result)
+        CwtConfigHandler.completePredefinedLocalisationScope(context, result)
         
         //提示command
-        ParadoxConfigHandler.completePredefinedLocalisationCommand(context, result)
+        CwtConfigHandler.completePredefinedLocalisationCommand(context, result)
         
         //提示<scripted_loc>
-        ParadoxConfigHandler.completeScriptedLoc(context, result)
+        CwtConfigHandler.completeScriptedLoc(context, result)
         
         //提示value[event_target]和value[global_event_target]
-        ParadoxConfigHandler.completeEventTarget(context, result)
+        CwtConfigHandler.completeEventTarget(context, result)
         
         //提示value[variable]
-        ParadoxConfigHandler.completeVariable(context, result)
+        CwtConfigHandler.completeVariable(context, result)
     }
 }

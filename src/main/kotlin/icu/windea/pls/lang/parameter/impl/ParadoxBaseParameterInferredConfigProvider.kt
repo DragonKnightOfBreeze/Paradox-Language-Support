@@ -23,7 +23,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val expressionElement = parameterInfo.expressionElement ?: return null
-        val expressionContextConfigs = ParadoxConfigHandler.getConfigContext(expressionElement)?.getConfigs().orEmpty()
+        val expressionContextConfigs = CwtConfigHandler.getConfigContext(expressionElement)?.getConfigs().orEmpty()
         val contextConfigs = doGetContextConfigsFromExpressionContextConfigs(expressionContextConfigs, parameterInfo)
         return contextConfigs
     }
@@ -71,8 +71,8 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             valueTypeId = CwtType.Block.id,
             configs = expressionContextConfigs.map { config ->
                 when(config) {
-                    is CwtPropertyConfig -> config.delegated(ParadoxConfigGenerator.deepCopyConfigs(config), config.parentConfig)
-                    is CwtValueConfig -> config.delegated(ParadoxConfigGenerator.deepCopyConfigs(config), config.parentConfig)
+                    is CwtPropertyConfig -> config.delegated(CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
+                    is CwtValueConfig -> config.delegated(CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
                 }
             }
         )

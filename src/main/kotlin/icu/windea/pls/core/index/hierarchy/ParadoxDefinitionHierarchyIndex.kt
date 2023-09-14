@@ -55,8 +55,8 @@ abstract class ParadoxDefinitionHierarchyIndex<T> : ParadoxFileBasedIndex<List<T
             }
             
             private fun doIndexData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<T>>) {
-                val matchOptions = ParadoxConfigMatcher.Options.SkipIndex or ParadoxConfigMatcher.Options.SkipScope
-                val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = matchOptions)
+                val matchOptions = CwtConfigMatcher.Options.SkipIndex or CwtConfigMatcher.Options.SkipScope
+                val configs = CwtConfigHandler.getConfigs(element, matchOptions = matchOptions)
                 if(configs.isEmpty()) return
                 val definitionInfo = definitionInfoStack.peekLast() ?: return
                 configs.forEachFast { config ->

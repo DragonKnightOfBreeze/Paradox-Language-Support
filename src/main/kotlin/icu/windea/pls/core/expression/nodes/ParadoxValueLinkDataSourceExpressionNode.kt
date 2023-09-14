@@ -16,7 +16,7 @@ class ParadoxValueLinkDataSourceExpressionNode(
     
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxValueLinkDataSourceExpressionNode {
-            val parameterRanges = ParadoxConfigHandler.getParameterRangesInExpression(text)
+            val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(text)
             
             //text may contain parameters
             //child node can be valueSetValueExpression / scriptValueExpression
@@ -38,7 +38,7 @@ class ParadoxValueLinkDataSourceExpressionNode(
                 while(tokenIndex < textLength) {
                     index = tokenIndex + 1
                     tokenIndex = text.indexOf('|', index)
-                    if(tokenIndex != -1 && ParadoxConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
+                    if(tokenIndex != -1 && CwtConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
                     if(tokenIndex == -1) break
                     val scriptValueConfig = linkConfigs.find { it.name == "script_value" }
                     if(scriptValueConfig == null) {

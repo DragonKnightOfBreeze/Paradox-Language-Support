@@ -12,7 +12,7 @@ import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.ParadoxConfigMatcher.Options
+import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
@@ -125,7 +125,7 @@ object ParadoxScopeHandler {
         
         //child config can be "alias_name[X] = ..." and "alias[X:scope_field]" is valid
         //or root config in config tree is "alias[X:xxx] = ..."
-        val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
+        val configs = CwtConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
         configs.forEach { config ->
             val configGroup = config.info.configGroup
             if(config.expression.type == CwtDataType.AliasKeysField) return true
@@ -220,7 +220,7 @@ object ParadoxScopeHandler {
         //should be a definition member
         val parentMember = findParentMember(element) ?: return null
         val parentScopeContext = getScopeContext(parentMember)
-        val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
+        val configs = CwtConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
         val config = configs.firstOrNull() ?: return null
         
         val overriddenScopeContext = ParadoxOverriddenScopeContextProvider.getOverriddenScopeContext(element, config, parentScopeContext)

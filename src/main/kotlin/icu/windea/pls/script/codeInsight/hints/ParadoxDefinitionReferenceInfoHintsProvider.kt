@@ -38,12 +38,12 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<N
         if(element !is ParadoxScriptExpressionElement) return true
         if(element !is ParadoxScriptStringExpressionElement && element !is ParadoxScriptInt) return true
         if(!element.isExpression()) return true
-        val config = ParadoxConfigHandler.getConfigs(element).firstOrNull()
+        val config = CwtConfigHandler.getConfigs(element).firstOrNull()
             ?.takeIf { it.expression.type in expressionTypes }
             ?: return true
         val configGroup = config.info.configGroup
         val isKey = element is ParadoxScriptPropertyKey
-        val resolved = ParadoxConfigHandler.resolveScriptExpression(element, null, config, config.expression, configGroup, isKey)
+        val resolved = CwtConfigHandler.resolveScriptExpression(element, null, config, config.expression, configGroup, isKey)
         if(resolved is ParadoxScriptDefinitionElement) {
             val definitionInfo = resolved.definitionInfo
             if(definitionInfo != null) {

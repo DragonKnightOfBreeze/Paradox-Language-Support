@@ -2,7 +2,6 @@ package icu.windea.pls.lang
 
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -123,7 +122,7 @@ object ParadoxEventHandler {
                 val value = element.value
                 if(result.contains(value)) return
                 if(!isValidEventId(value)) return //排除非法的事件ID
-                val configs = ParadoxConfigHandler.getConfigs(element)
+                val configs = CwtConfigHandler.getConfigs(element)
                 val isEventConfig = configs.any { isEventConfig(it) }
                 if(isEventConfig) {
                     result.add(value)
@@ -139,7 +138,7 @@ object ParadoxEventHandler {
     }
 }
 
-val PlsKeys.cachedEventInvocations by createKey<CachedValue<Set<String>>>("paradox.cached.event.invocations")
-val CwtMemberConfig.Keys.eventEventTypes by createKey<Set<String>>("paradox.event.types")
-val ParadoxDefinitionInfo.Keys.eventEventType by createKey<String>("paradox.event.type")
-val ParadoxDefinitionInfo.Keys.eventEventScope by createKey<String>("paradox.event.scope") 
+private val PlsKeys.cachedEventInvocations by createKey<CachedValue<Set<String>>>("paradox.cached.event.invocations")
+private val CwtMemberConfig.Keys.eventEventTypes by createKey<Set<String>>("paradox.event.types")
+private val ParadoxDefinitionInfo.Keys.eventEventType by createKey<String>("paradox.event.type")
+private val ParadoxDefinitionInfo.Keys.eventEventScope by createKey<String>("paradox.event.scope") 

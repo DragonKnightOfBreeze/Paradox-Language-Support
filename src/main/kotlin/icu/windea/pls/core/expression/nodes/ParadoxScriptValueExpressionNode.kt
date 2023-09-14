@@ -82,11 +82,11 @@ class ParadoxScriptValueExpressionNode(
         }
         
         private fun doResolve(): PsiElement? {
-            return ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, configGroup)
+            return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, configGroup)
         }
         
         private fun doMultiResolve(): Array<out ResolveResult> {
-            return ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, configGroup)
+            return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, configGroup)
                 .mapToArray { PsiElementResolveResult(it) }
         }
     }

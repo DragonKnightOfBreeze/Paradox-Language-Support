@@ -11,7 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
-import icu.windea.pls.lang.ParadoxConfigMatcher.Options
+import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.expression.*
@@ -42,7 +42,7 @@ object ParadoxInlineScriptHandler {
     }
     
     private fun doGetUsageInfo(element: ParadoxScriptProperty, file: PsiFile = element.containingFile): ParadoxInlineScriptUsageInfo? {
-        //这里不能调用ParadoxConfigHandler.getConfigs，因为需要处理内联的情况，会导致StackOverflow
+        //这里不能调用CwtConfigHandler.getConfigs，因为需要处理内联的情况，会导致StackOverflow
         
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
@@ -53,7 +53,7 @@ object ParadoxInlineScriptHandler {
         val matchOptions = Options.SkipIndex or Options.SkipScope
         val inlineConfig = inlineConfigs.find {
             val expression = ParadoxDataExpression.resolve(propertyValue, matchOptions)
-            ParadoxConfigMatcher.matches(propertyValue, expression, it.config.valueExpression, it.config, configGroup).get(matchOptions)
+            CwtConfigMatcher.matches(propertyValue, expression, it.config.valueExpression, it.config, configGroup).get(matchOptions)
         }
         if(inlineConfig == null) return null
         val expression = getExpressionFromInlineConfig(propertyValue, inlineConfig) ?: return null

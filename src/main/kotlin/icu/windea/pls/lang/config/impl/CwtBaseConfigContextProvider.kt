@@ -13,8 +13,8 @@ import icu.windea.pls.script.psi.*
 /**
  * 用于获取直接的CWT规则上下文。
  */
-class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
-    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
+class CwtBaseConfigContextProvider : CwtConfigContextProvider {
+    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
         val vFile = selectFile(file) ?: return null
         if(ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
         
@@ -24,21 +24,21 @@ class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
         val definition = element.findParentDefinition()
         if(definition == null) {
             val configGroup = getConfigGroups(file.project).get(gameType)
-            val configContext = ParadoxConfigContext(element, fileInfo, elementPath, gameType, configGroup)
+            val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
             return configContext
         } else {
             val definitionInfo = definition.definitionInfo ?: return null
             val definitionElementPath = definitionInfo.elementPath
             val elementPathFromRoot = definitionElementPath.relativeTo(elementPath) ?: return null
             val configGroup = getConfigGroups(file.project).get(gameType)
-            val configContext = ParadoxConfigContext(element, fileInfo, elementPath, gameType, configGroup)
+            val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
             configContext.definitionInfo = definitionInfo
             configContext.elementPathFromRoot = elementPathFromRoot
             return configContext
         }
     }
     
-    override fun getCacheKey(context: ParadoxConfigContext, matchOptions: Int): String? {
+    override fun getCacheKey(context: CwtConfigContext, matchOptions: Int): String? {
         val gameTypeId = context.gameType.id
         val definitionInfo = context.definitionInfo ?: return null
         val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null
@@ -48,7 +48,7 @@ class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
         return "b@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${declarationConfigContextCacheKey.substringAfterLast('#')}\n${elementPathFromRoot}"
     }
     
-    override fun getConfigs(context: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
         val definitionInfo = context.definitionInfo ?: return null
@@ -56,6 +56,6 @@ class ParadoxBaseConfigContextProvider : ParadoxConfigContextProvider {
         val rootConfigs = declarationConfig.toSingletonList()
         val configGroup = context.configGroup
         val element = context.element
-        return ParadoxConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+        return CwtConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
     }
 }

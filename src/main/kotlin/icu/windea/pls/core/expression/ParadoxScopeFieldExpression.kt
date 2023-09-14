@@ -181,9 +181,9 @@ class ParadoxScopeFieldExpressionImpl(
 }
 
 fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
-    val parameterRanges = ParadoxConfigHandler.getParameterRangesInExpression(expression)
+    val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expression)
     //skip if text is a parameter with unary operator prefix
-    if(ParadoxConfigHandler.isUnaryOperatorAwareParameter(expression, parameterRanges)) return null
+    if(CwtConfigHandler.isUnaryOperatorAwareParameter(expression, parameterRanges)) return null
     
     val incomplete = PlsContext.incompleteComplexExpression.get() ?: false
     
@@ -196,9 +196,9 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
     while(tokenIndex < textLength) {
         index = tokenIndex + 1
         tokenIndex = expression.indexOf('.', index)
-        if(tokenIndex != -1 && ParadoxConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
-        if(tokenIndex != -1 && expression.indexOf('@', index).let { it != -1 && it < tokenIndex && !ParadoxConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
-        if(tokenIndex != -1 && expression.indexOf('|', index).let { it != -1 && it < tokenIndex && !ParadoxConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
+        if(tokenIndex != -1 && CwtConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
+        if(tokenIndex != -1 && expression.indexOf('@', index).let { it != -1 && it < tokenIndex && !CwtConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
+        if(tokenIndex != -1 && expression.indexOf('|', index).let { it != -1 && it < tokenIndex && !CwtConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
         val dotNode = if(tokenIndex != -1) {
             val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
             ParadoxOperatorExpressionNode(".", dotRange)

@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.cwt.config
 
 import com.intellij.psi.*
-import com.intellij.util.containers.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
@@ -24,15 +23,11 @@ class CwtAliasConfig(
     val outputScope get() = config.pushScope
     
     fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
-        return doInline(config)
-    }
-    
-    private fun doInline(config: CwtPropertyConfig): CwtPropertyConfig {
         val other = this.config
         val inlined = config.copy(
-            key = this.subName,
+            key = subName,
             value = other.value,
-            configs = ParadoxConfigGenerator.deepCopyConfigs(other),
+            configs = CwtConfigManipulator.deepCopyConfigs(other),
             documentation = other.documentation,
             options = other.options
         )
@@ -41,5 +36,6 @@ class CwtAliasConfig(
         inlined.inlineableConfig = config.inlineableConfig ?: this
         return inlined
     }
+    
 }
 

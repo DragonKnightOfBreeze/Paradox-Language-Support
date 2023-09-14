@@ -6,7 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.ParadoxConfigMatcher.Options
+import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.script.psi.*
 
@@ -34,7 +34,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
                 val expression = property?.expression ?: element.expression
-                val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
+                val configs = CwtConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(element, position, configs, expression)
             }
             

@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.*
  * * 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`和`TooManyExpressionInspection`。
  * * 会将内联脚本内容内联到对应的调用处，然后再进行相关代码检查。
  */
-class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
+class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
     //注意：内联脚本调用可以在定义声明之外
     
     //TODO 1.1.0+ 支持解析内联脚本文件中的定义声明
@@ -29,7 +29,7 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
     //首先推断内联脚本文件的CWT规则上下文：汇总内联脚本调用处的上下文，然后合并得到最终的CWT规则上下文
     //然后再得到当前位置的CWT规则上下文
     
-    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): ParadoxConfigContext? {
+    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
         if(!getSettings().inference.inlineScriptConfig) return null
         
         val vFile = selectFile(file) ?: return null
@@ -43,16 +43,16 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
         val gameType = fileInfo.rootInfo.gameType
         val elementPathFromRoot = elementPath
         val configGroup = getConfigGroups(file.project).get(gameType)
-        val configContext = ParadoxConfigContext(element, fileInfo, elementPath, gameType, configGroup)
+        val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
         if(elementPathFromRoot.isNotEmpty()) {
-            configContext.inlineScriptRootConfigContext = ParadoxConfigHandler.getConfigContext(file) ?: return null
+            configContext.inlineScriptRootConfigContext = CwtConfigHandler.getConfigContext(file) ?: return null
         }
         configContext.inlineScriptExpression = inlineScriptExpression
         configContext.elementPathFromRoot = elementPathFromRoot
         return configContext
     }
     
-    override fun getCacheKey(context: ParadoxConfigContext, matchOptions: Int): String? {
+    override fun getCacheKey(context: CwtConfigContext, matchOptions: Int): String? {
         val gameTypeId = context.gameType.id
         val inlineScriptExpression = context.inlineScriptExpression ?: return null // null -> unexpected
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
@@ -62,7 +62,7 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
     
     //获取CWT规则后才能确定是否存在冲突以及是否存在递归
     
-    override fun getConfigs(context: ParadoxConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
         
@@ -71,7 +71,7 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
             val element = context.element
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
             val configGroup = context.configGroup
-            return ParadoxConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+            return CwtConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         }
         
         val inlineScriptExpression = context.inlineScriptExpression ?: return null
@@ -80,7 +80,7 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         context.inlineScriptHasConflict = false
         context.inlineScriptHasRecursion = false
-        withRecursionGuard("icu.windea.pls.lang.config.impl.ParadoxInlineScriptConfigContextProvider.getConfigsForConfigContext") {
+        withRecursionGuard("icu.windea.pls.lang.config.impl.CwtInlineScriptConfigContextProvider.getConfigsForConfigContext") {
             withCheckRecursion(inlineScriptExpression) {
                 val project = context.configGroup.project
                 val selector = inlineScriptSelector(project, context.element)
@@ -91,10 +91,10 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
                     val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true
                     if(!p.name.equals(ParadoxInlineScriptHandler.inlineScriptKey, true)) return@p true
                     val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p true
-                    val usageConfigContext = ParadoxConfigHandler.getConfigContext(memberElement) ?: return@p true
+                    val usageConfigContext = CwtConfigHandler.getConfigContext(memberElement) ?: return@p true
                     val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
                     // merge
-                    result.mergeValue(usageConfigs) { v1, v2 -> ParadoxConfigMerger.mergeConfigs(v1, v2) }.also {
+                    result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
                         if(it) return@also
                         context.inlineScriptHasConflict = true
                         result.set(null)
@@ -110,23 +110,23 @@ class ParadoxInlineScriptConfigContextProvider : ParadoxConfigContextProvider {
     
     //skip MissingExpressionInspection and TooManyExpressionInspection at root level
     
-    override fun skipMissingExpressionCheck(context: ParadoxConfigContext): Boolean {
+    override fun skipMissingExpressionCheck(context: CwtConfigContext): Boolean {
         val elementPathFromRoot = context.elementPathFromRoot ?: return false
         return elementPathFromRoot.isEmpty()
     }
     
-    override fun skipTooManyExpressionCheck(context: ParadoxConfigContext): Boolean {
+    override fun skipTooManyExpressionCheck(context: CwtConfigContext): Boolean {
         val elementPathFromRoot = context.elementPathFromRoot ?: return false
         return elementPathFromRoot.isEmpty()
     }
 }
 
-val ParadoxConfigContext.Keys.inlineScriptRootConfigContext by createKey<ParadoxConfigContext>("paradox.configContext.inlineScript.rootConfigContext")
-val ParadoxConfigContext.Keys.inlineScriptExpression by createKey<String>("paradox.configContext.inlineScript.expression")
-val ParadoxConfigContext.Keys.inlineScriptHasConflict by createKey<Boolean>("paradox.configContext.inlineScript.hasConflict")
-val ParadoxConfigContext.Keys.inlineScriptHasRecursion by createKey<Boolean>("paradox.configContext.inlineScript.hasRecursion")
+val CwtConfigContext.Keys.inlineScriptRootConfigContext by createKey<CwtConfigContext>("paradox.configContext.inlineScript.rootConfigContext")
+val CwtConfigContext.Keys.inlineScriptExpression by createKey<String>("paradox.configContext.inlineScript.expression")
+val CwtConfigContext.Keys.inlineScriptHasConflict by createKey<Boolean>("paradox.configContext.inlineScript.hasConflict")
+val CwtConfigContext.Keys.inlineScriptHasRecursion by createKey<Boolean>("paradox.configContext.inlineScript.hasRecursion")
 
-var ParadoxConfigContext.inlineScriptRootConfigContext by ParadoxConfigContext.Keys.inlineScriptRootConfigContext
-var ParadoxConfigContext.inlineScriptExpression by ParadoxConfigContext.Keys.inlineScriptExpression
-var ParadoxConfigContext.inlineScriptHasConflict by ParadoxConfigContext.Keys.inlineScriptHasConflict
-var ParadoxConfigContext.inlineScriptHasRecursion by ParadoxConfigContext.Keys.inlineScriptHasRecursion
+var CwtConfigContext.inlineScriptRootConfigContext by CwtConfigContext.Keys.inlineScriptRootConfigContext
+var CwtConfigContext.inlineScriptExpression by CwtConfigContext.Keys.inlineScriptExpression
+var CwtConfigContext.inlineScriptHasConflict by CwtConfigContext.Keys.inlineScriptHasConflict
+var CwtConfigContext.inlineScriptHasRecursion by CwtConfigContext.Keys.inlineScriptHasRecursion

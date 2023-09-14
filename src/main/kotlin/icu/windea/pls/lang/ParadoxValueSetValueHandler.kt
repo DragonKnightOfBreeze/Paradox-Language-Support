@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.lang.ParadoxConfigMatcher.Options
+import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
@@ -34,7 +34,7 @@ object ParadoxValueSetValueHandler {
     
     private fun doGetInfos(element: ParadoxScriptStringExpressionElement): List<ParadoxValueSetValueInfo> {
         val matchOptions = Options.SkipIndex or Options.SkipScope
-        val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = matchOptions)
+        val configs = CwtConfigHandler.getConfigs(element, matchOptions = matchOptions)
         if(configs.isEmpty()) return emptyList()
         
         configs.forEachFast { config ->

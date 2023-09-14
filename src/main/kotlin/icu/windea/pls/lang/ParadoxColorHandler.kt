@@ -3,7 +3,7 @@ package icu.windea.pls.lang
 import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.ParadoxConfigMatcher.Options
+import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.cwt.config.*
 import java.awt.*
 
@@ -60,7 +60,7 @@ object ParadoxColorHandler {
     }
     
     fun getColorType(element: PsiElement): String? {
-        val configToGetOption = ParadoxConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
+        val configToGetOption = CwtConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
             .firstOrNull()
         if(configToGetOption == null) return null
         return getColorType(configToGetOption)

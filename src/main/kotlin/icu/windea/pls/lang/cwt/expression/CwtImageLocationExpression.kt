@@ -91,7 +91,7 @@ class CwtImageLocationExpression private constructor(
             //propertyName可以为空字符串，这时直接查找定义的字符串类型的值（如果存在）
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
-            val config = ParadoxConfigHandler.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
+            val config = CwtConfigHandler.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
             if(config.expression.type !in validValueTypes) {
                 return ResolveResult("", null, null, PlsBundle.message("dynamic"))
             }
@@ -101,7 +101,7 @@ class CwtImageLocationExpression private constructor(
             if(propertyValue.text.isParameterized()) {
                 return ResolveResult("", null, null, PlsBundle.message("parameterized"))
             }
-            val resolved = ParadoxConfigHandler.resolveScriptExpression(propertyValue, null, config, config.expression, config.info.configGroup, false)
+            val resolved = CwtConfigHandler.resolveScriptExpression(propertyValue, null, config, config.expression, config.info.configGroup, false)
             when {
                 //由filePath解析为图片文件
                 resolved is PsiFile && resolved.fileType == DdsFileType -> {
@@ -196,7 +196,7 @@ class CwtImageLocationExpression private constructor(
             //dynamic -> returns ("", null, 0)
             val property = definition.findProperty(propertyName, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
-            val config = ParadoxConfigHandler.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
+            val config = CwtConfigHandler.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
             if(config.expression.type !in validValueTypes) {
                 return ResolveAllResult("", emptySet(), null, PlsBundle.message("dynamic"))
             }
@@ -206,7 +206,7 @@ class CwtImageLocationExpression private constructor(
             if(propertyValue.text.isParameterized()) {
                 return ResolveAllResult("", emptySet(), null, PlsBundle.message("parameterized"))
             }
-            val resolved = ParadoxConfigHandler.resolveScriptExpression(propertyValue, null, config, config.expression, config.info.configGroup, false)
+            val resolved = CwtConfigHandler.resolveScriptExpression(propertyValue, null, config, config.expression, config.info.configGroup, false)
             when {
                 //由filePath解析为图片文件
                 resolved is PsiFile && resolved.fileType == DdsFileType -> {

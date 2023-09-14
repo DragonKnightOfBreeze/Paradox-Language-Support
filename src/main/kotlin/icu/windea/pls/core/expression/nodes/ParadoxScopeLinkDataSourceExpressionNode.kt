@@ -15,7 +15,7 @@ class ParadoxScopeLinkDataSourceExpressionNode(
     
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkDataSourceExpressionNode {
-            //val parameterRanges = ParadoxConfigHandler.getParameterRangesInExpression(text)
+            //val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(text)
             
             //text may contain parameters
             //child node can be valueSetValueExpression

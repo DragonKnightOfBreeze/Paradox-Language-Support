@@ -48,7 +48,7 @@ class ParadoxScriptValueArgumentExpressionNode(
         }
         
         override fun resolve(): ParadoxParameterElement? {
-            val config = ParadoxConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return null
+            val config = CwtConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return null
             return ParadoxParameterSupport.resolveArgument(element, rangeInElement, config)
         }
     }

@@ -45,9 +45,9 @@ class ParadoxLocalisationCommandScopePsiReference(
         
         if(prefix == null) {
             //尝试识别为system_link或者localisation_scope
-            val systemLink = ParadoxConfigHandler.resolvePredefinedScope(name, configGroup)
+            val systemLink = CwtConfigHandler.resolvePredefinedScope(name, configGroup)
             if(systemLink != null) return systemLink
-            val localisationScope = ParadoxConfigHandler.resolvePredefinedLocalisationScope(name, configGroup)
+            val localisationScope = CwtConfigHandler.resolvePredefinedLocalisationScope(name, configGroup)
             if(localisationScope != null) return localisationScope
         }
         
@@ -71,9 +71,9 @@ class ParadoxLocalisationCommandScopePsiReference(
         
         if(prefix == null) {
             //尝试识别为system_link或者localisation_scope
-            val systemLink = ParadoxConfigHandler.resolvePredefinedScope(name, configGroup)
+            val systemLink = CwtConfigHandler.resolvePredefinedScope(name, configGroup)
             if(systemLink != null) return ParadoxScriptAttributesKeys.SYSTEM_LINK_KEY
-            val localisationScope = ParadoxConfigHandler.resolvePredefinedLocalisationScope(name, configGroup)
+            val localisationScope = CwtConfigHandler.resolvePredefinedLocalisationScope(name, configGroup)
             if(localisationScope != null) return ParadoxScriptAttributesKeys.SCOPE_KEY
         }
         

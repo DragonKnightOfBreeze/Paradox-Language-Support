@@ -21,7 +21,7 @@ class ParadoxDataExpressionNode(
     override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
         if(text.isParameterized()) return null
         return linkConfigs.find { linkConfig ->
-            ParadoxConfigHandler.resolveScriptExpression(element, rangeInExpression, linkConfig, linkConfig.expression, linkConfig.info.configGroup, exact = false) != null
+            CwtConfigHandler.resolveScriptExpression(element, rangeInExpression, linkConfig, linkConfig.expression, linkConfig.info.configGroup, exact = false) != null
         } ?: linkConfigs.firstOrNull()
     }
     
@@ -70,7 +70,7 @@ class ParadoxDataExpressionNode(
         
         override fun getReferences(): Array<out PsiReference>? {
             return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-                ParadoxConfigHandler.getReferences(element, rangeInElement, linkConfig, linkConfig.expression, linkConfig.info.configGroup).orNull()
+                CwtConfigHandler.getReferences(element, rangeInElement, linkConfig, linkConfig.expression, linkConfig.info.configGroup).orNull()
             }
         }
         
@@ -99,14 +99,14 @@ class ParadoxDataExpressionNode(
         private fun doResolve(): PsiElement? {
             val element = element
             return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-                ParadoxConfigHandler.resolveScriptExpression(element, rangeInElement, linkConfig, linkConfig.expression, linkConfig.info.configGroup)
+                CwtConfigHandler.resolveScriptExpression(element, rangeInElement, linkConfig, linkConfig.expression, linkConfig.info.configGroup)
             }
         }
         
         private fun doMultiResolve(): Array<out ResolveResult> {
             val element = element
             return linkConfigs.flatMap { linkConfig ->
-                ParadoxConfigHandler.multiResolveScriptExpression(element, rangeInElement, linkConfig, configExpression = linkConfig.expression, linkConfig.info.configGroup)
+                CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, linkConfig, configExpression = linkConfig.expression, linkConfig.info.configGroup)
             }.mapToArray { PsiElementResolveResult(it) }
         }
     }

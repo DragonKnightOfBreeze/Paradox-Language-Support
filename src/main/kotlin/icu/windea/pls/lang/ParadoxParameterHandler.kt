@@ -183,7 +183,7 @@ object ParadoxParameterHandler {
                 ProgressManager.checkCanceled()
                 val contextInfo = ParadoxParameterSupport.getContextInfo(context) ?: return@p true
                 val config = getInferredConfig(parameterElement.name, contextInfo)
-                result.mergeValue(config) { v1, v2 -> ParadoxConfigMerger.mergeValueConfig(v1, v2) }
+                result.mergeValue(config) { v1, v2 -> CwtConfigManipulator.mergeValueConfig(v1, v2) }
             }
             result.get()
         }
@@ -197,7 +197,7 @@ object ParadoxParameterHandler {
         parameterInfos.process { parameterInfo ->
             ProgressManager.checkCanceled()
             val config = ParadoxParameterInferredConfigProvider.getConfig(parameterInfo, parameterContextInfo)
-            result.mergeValue(config) { v1, v2 -> ParadoxConfigMerger.mergeValueConfig(v1, v2) }
+            result.mergeValue(config) { v1, v2 -> CwtConfigManipulator.mergeValueConfig(v1, v2) }
         }
         return result.get()
     }
@@ -213,7 +213,7 @@ object ParadoxParameterHandler {
                 ProgressManager.checkCanceled()
                 val contextInfo = ParadoxParameterSupport.getContextInfo(context) ?: return@p true
                 val contextConfigs = getInferredContextConfigs(parameterElement.name, contextInfo).orNull()
-                result.mergeValue(contextConfigs) { v1, v2 -> ParadoxConfigMerger.mergeConfigs(v1, v2) }
+                result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
             }
             return result.get().orEmpty()
         }
@@ -226,7 +226,7 @@ object ParadoxParameterHandler {
         parameterInfos.process { parameterInfo ->
             ProgressManager.checkCanceled()
             val contextConfigs = ParadoxParameterInferredConfigProvider.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
-            result.mergeValue(contextConfigs) { v1, v2 -> ParadoxConfigMerger.mergeConfigs(v1, v2) }
+            result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
         }
         return result.get().orEmpty()
     }

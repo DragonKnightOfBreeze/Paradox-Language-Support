@@ -21,7 +21,7 @@ class ParadoxScriptExpressionReferenceProvider : PsiReferenceProvider() {
         run {
             if(element !is ParadoxScriptStringExpressionElement) return@run
             val complexEnumValueInfo = ParadoxComplexEnumValueHandler.getInfo(element) ?: return@run
-            val textRange = ParadoxConfigHandler.getExpressionTextRange(element) //unquoted text
+            val textRange = CwtConfigHandler.getExpressionTextRange(element) //unquoted text
             val reference = ParadoxComplexEnumValuePsiReference(element, textRange, complexEnumValueInfo, element.project)
             return arrayOf(reference)
         }
@@ -29,9 +29,9 @@ class ParadoxScriptExpressionReferenceProvider : PsiReferenceProvider() {
         //尝试基于CWT规则进行解析
         run {
             val isKey = element is ParadoxScriptPropertyKey
-            val configs = ParadoxConfigHandler.getConfigs(element, orDefault = isKey)
+            val configs = CwtConfigHandler.getConfigs(element, orDefault = isKey)
             val config = configs.firstOrNull() ?: return@run
-            val textRange = ParadoxConfigHandler.getExpressionTextRange(element) //unquoted text
+            val textRange = CwtConfigHandler.getExpressionTextRange(element) //unquoted text
             val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
             return collectReferences(reference)
         }

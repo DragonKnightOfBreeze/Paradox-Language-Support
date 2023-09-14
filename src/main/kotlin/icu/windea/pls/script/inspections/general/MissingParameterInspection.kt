@@ -26,7 +26,7 @@ class MissingParameterInspection : LocalInspectionTool() {
                 if(!shouldVisit(element)) return
                 
                 val from = ParadoxParameterContextReferenceInfo.From.ContextReference
-                val contextConfig = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return
+                val contextConfig = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, contextConfig) ?: return
                 if(contextReferenceInfo.contextName.isParameterized()) return //skip if context name is parameterized
                 val argumentNames = contextReferenceInfo.arguments.mapTo(mutableSetOf()) { it.argumentName }

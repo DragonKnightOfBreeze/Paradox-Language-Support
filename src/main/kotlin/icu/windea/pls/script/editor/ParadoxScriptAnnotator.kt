@@ -6,7 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.ParadoxConfigHandler.getParameterRanges
+import icu.windea.pls.lang.CwtConfigHandler.getParameterRanges
 import icu.windea.pls.lang.config.impl.*
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
@@ -41,7 +41,7 @@ class ParadoxScriptAnnotator : Annotator {
     private fun annotateInlineScriptFile(file: ParadoxScriptFile, holder: AnnotationHolder) {
         if(!getSettings().inference.inlineScriptConfig) return
         val inlineScriptExpression = ParadoxInlineScriptHandler.getInlineScriptExpression(file) ?: return
-        val configContext = ParadoxConfigHandler.getConfigContext(file) ?: return
+        val configContext = CwtConfigHandler.getConfigContext(file) ?: return
         if(configContext.inlineScriptHasConflict == true) return
         if(configContext.inlineScriptHasRecursion == true) return
         val message = PlsBundle.message("script.annotator.inlineScript", inlineScriptExpression)
@@ -98,7 +98,7 @@ class ParadoxScriptAnnotator : Annotator {
         }
         
         val isKey = element is ParadoxScriptPropertyKey
-        val config = ParadoxConfigHandler.getConfigs(element, orDefault = isKey).firstOrNull()
+        val config = CwtConfigHandler.getConfigs(element, orDefault = isKey).firstOrNull()
         if(config != null) {
             //高亮特殊标签
             if(config is CwtValueConfig && config.isTagConfig) {
@@ -122,7 +122,7 @@ class ParadoxScriptAnnotator : Annotator {
                     }
                 }
             }
-            ParadoxConfigHandler.annotateScriptExpression(element, null, config, holder)
+            CwtConfigHandler.annotateScriptExpression(element, null, config, holder)
         }
     }
     

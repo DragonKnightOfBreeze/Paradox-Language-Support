@@ -34,7 +34,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                  if(element is ParadoxScriptBoolean) return
                 
                 //得到完全匹配的CWT规则
-                val config = ParadoxConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return
+                val config = CwtConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return
                 val configExpression = config.expression
                 val dataType = configExpression.type
                 when {

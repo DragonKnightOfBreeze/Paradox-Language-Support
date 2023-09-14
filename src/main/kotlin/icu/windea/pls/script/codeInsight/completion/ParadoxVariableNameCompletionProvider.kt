@@ -8,7 +8,7 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.ParadoxConfigMatcher.Options
+import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.script.psi.*
 
@@ -40,7 +40,7 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         val stringElement = element
         if(!stringElement.isBlockValue()) return
         val parentProperty = stringElement.findParentProperty() ?: return
-        val configs = ParadoxConfigHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
+        val configs = CwtConfigHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
         if(configs.isEmpty()) return
         val configGroup = configs.first().info.configGroup
         context.configGroup = configGroup
@@ -52,6 +52,6 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         if(!matched) return
         val mockConfig = CwtValueConfig.resolve(emptyPointer(), configGroup.info, "value[variable]")
         context.config = mockConfig
-        ParadoxConfigHandler.completeValueSetValueExpression(context, result)
+        CwtConfigHandler.completeValueSetValueExpression(context, result)
     }
 }

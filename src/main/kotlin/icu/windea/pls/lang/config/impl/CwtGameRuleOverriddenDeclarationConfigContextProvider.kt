@@ -29,18 +29,9 @@ class CwtGameRuleOverriddenDeclarationConfigContextProvider : CwtDeclarationConf
     }
     
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        if(!declarationConfig.propertyConfig.isBlock) return declarationConfig.propertyConfig
-        
         val gameRuleConfig = context.getUserData(configKey)!!
-        val rootConfigs = gameRuleConfig.config.configs!!
-        val configs = rootConfigs.flatMap { ParadoxConfigGenerator.deepCopyConfigsInDeclarationConfig(it, context) }
-        return declarationConfig.propertyConfig.copy(configs = configs)
-        //declarationConfig.propertyConfig.parent should be null here
-    }
-    
-    private fun getGameRuleRootConfigs(definitionName: String?, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>>? {
-        if(definitionName == null) return null
-        val gameRuleConfig = configGroup.gameRules.get(definitionName) ?: return null
-        return gameRuleConfig.config.configs
+        val rootConfig = gameRuleConfig.config
+        return rootConfig.delegated(CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context), null)
+        //parentConfig should be null here
     }
 }

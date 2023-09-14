@@ -51,7 +51,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
             
-            val tailText = ParadoxConfigHandler.getScriptExpressionTailText(modifierConfig.config, withExpression = false)
+            val tailText = CwtConfigHandler.getScriptExpressionTailText(modifierConfig.config, withExpression = false)
             val template = modifierConfig.template
             if(template.isNotEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile

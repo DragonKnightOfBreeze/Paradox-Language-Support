@@ -71,14 +71,14 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                         val name = e.name
                         if(!name.isExactIdentifier()) return
                         if(resolvedNames.contains(name)) return //不需要重复解析引用
-                        val configs = ParadoxConfigHandler.getConfigs(e)
+                        val configs = CwtConfigHandler.getConfigs(e)
                         val config = configs.firstOrNull() ?: return
                         val configExpression = config.expression
                         if(configExpression.type != CwtDataType.Definition) return
                         val definitionType = configExpression.value
                         if(definitionType != "scripted_trigger" && definitionType != "scripted_effect") return
                         ProgressManager.checkCanceled()
-                        val resolved = ParadoxConfigHandler.resolveScriptExpression(e, null, config, config.expression, config.info.configGroup, isKey)
+                        val resolved = CwtConfigHandler.resolveScriptExpression(e, null, config, config.expression, config.info.configGroup, isKey)
                         if(resolved !is ParadoxScriptDefinitionElement) return
                         val resolvedInfo = resolved.definitionInfo ?: return
                         if(resolvedInfo.type != definitionInfo.type) return

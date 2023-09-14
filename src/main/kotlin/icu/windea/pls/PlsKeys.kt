@@ -38,15 +38,18 @@ val PlsKeys.cachedLocalisationInfo by createKey<CachedValue<ParadoxLocalisationI
 val PlsKeys.cachedComplexEnumValueInfo by createKey<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cached.complexEnumValueInfo")
 val PlsKeys.cachedValueSetValueInfos by createKey<CachedValue<List<ParadoxValueSetValueInfo>>>("paradox.cached.valueSetValueInfos")
 val PlsKeys.cachedElementPath by createKey<CachedValue<ParadoxElementPath>>("paradox.cached.elementPath")
-val PlsKeys.cachedConfigContext by createKey<CachedValue<ParadoxConfigContext>>("paradox.cached.configContext")
-val PlsKeys.cachedConfigsCache by createKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>("paradox.cached.configs.cache")
-val PlsKeys.cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>("paradox.cached.childOccurrenceMap.cache")
 val PlsKeys.cachedScopeContext by createKey<CachedValue<ParadoxScopeContext>>("paradox.cached.scopeContext")
 val PlsKeys.cachedTextColorInfo by createKey<CachedValue<ParadoxTextColorInfo>>("paradox.cached.textColorInfo")
 val PlsKeys.cachedDefineValues by createKey<CachedValue<MutableMap<String, Any?>>>("paradox.cached.defineValues")
 val PlsKeys.cachedColor by createKey<CachedValue<Color>>("paradox.cached.color")
 val PlsKeys.cachedParameterContextInfo by createKey<CachedValue<ParadoxParameterContextInfo>>("paradox.cached.parameterContextInfo")
 val PlsKeys.cachedGameConceptAlias by createKey<CachedValue<Set<String>>>("paradox.cached.gameConcept.alias")
+
+val PlsKeys.cachedConfigPath by createKey<CachedValue<CwtConfigPath>>("cwt.cached.configPath")
+val PlsKeys.cachedConfigType by createKey<CachedValue<CwtConfigType>>("cwt.cached.configType")
+val PlsKeys.cachedConfigContext by createKey<CachedValue<CwtConfigContext>>("cwt.cached.configContext")
+val PlsKeys.cachedConfigsCache by createKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>("cwt.cached.configs.cache")
+val PlsKeys.cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>("cwt.cached.childOccurrenceMap.cache")
 
 //用于将CWT规则临时写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
 val PlsKeys.cwtConfig by createKey<CwtConfig<*>>("paradox.cwtConfig")

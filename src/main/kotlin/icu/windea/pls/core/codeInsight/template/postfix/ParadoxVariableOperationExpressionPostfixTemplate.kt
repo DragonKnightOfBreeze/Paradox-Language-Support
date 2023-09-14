@@ -9,7 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.ParadoxConfigMatcher.Options
+import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.setting.*
 import icu.windea.pls.script.psi.*
@@ -33,14 +33,14 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         val stringElement = context.parent?.castOrNull<ParadoxScriptValue>() ?: return emptyList()
         if(!stringElement.isBlockValue()) return emptyList()
         val parentProperty = stringElement.findParentProperty() ?: return emptyList()
-        val configs = ParadoxConfigHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
+        val configs = CwtConfigHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
         if(configs.isEmpty()) return emptyList()
         val configGroup = configs.first().info.configGroup
         val expression = ParadoxDataExpression.resolve(setting.id, isQuoted = false, isKey = true)
         val configsToMatch = configs.flatMapTo(mutableListOf()) { it.configs.orEmpty() }
         val matched = configsToMatch.find p@{ config ->
             if(config !is CwtPropertyConfig) return@p false
-            ParadoxConfigMatcher.matches(context, expression, config.keyExpression, config, configGroup).get()
+            CwtConfigMatcher.matches(context, expression, config.keyExpression, config, configGroup).get()
         }
         if(matched == null) return emptyList()
         return stringElement.toSingletonList()

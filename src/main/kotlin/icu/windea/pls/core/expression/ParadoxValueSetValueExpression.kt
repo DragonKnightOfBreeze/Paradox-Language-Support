@@ -107,7 +107,7 @@ class ParadoxValueSetValueExpressionImpl(
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
                     context.keywordOffset = node.rangeInExpression.startOffset
-                    ParadoxConfigHandler.completeValueSetValue(context, resultToUse)
+                    CwtConfigHandler.completeValueSetValue(context, resultToUse)
                     break
                 }
             } else if(node is ParadoxScopeFieldExpression) {
@@ -136,9 +136,9 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
 }
 
 fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxValueSetValueExpression? {
-    val parameterRanges = ParadoxConfigHandler.getParameterRangesInExpression(expression)
+    val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expression)
     //skip if text is a parameter with unary operator prefix
-    if(ParadoxConfigHandler.isUnaryOperatorAwareParameter(expression, parameterRanges)) return null
+    if(CwtConfigHandler.isUnaryOperatorAwareParameter(expression, parameterRanges)) return null
     
     val incomplete = PlsContext.incompleteComplexExpression.get() ?: false
     
@@ -150,7 +150,7 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
     while(tokenIndex < textLength) {
         index = tokenIndex + 1
         tokenIndex = expression.indexOf('@', index)
-        if(tokenIndex != -1 && ParadoxConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
+        if(tokenIndex != -1 && CwtConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
         if(tokenIndex == -1) {
             tokenIndex = textLength
         }

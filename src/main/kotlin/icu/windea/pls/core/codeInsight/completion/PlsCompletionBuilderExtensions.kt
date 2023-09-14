@@ -66,7 +66,7 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
     //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
     val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
     if(completeWithClauseTemplate) {
-        val entryConfigs = ParadoxConfigHandler.getEntryConfigs(config)
+        val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
         if(entryConfigs.isNotEmpty()) {
             val tailText1 = "{ <generate via template> }"
             val lookupElement1 = LookupElementBuilder.create("")
@@ -181,7 +181,7 @@ fun CompletionResultSet.addScriptExpressionElement(
     //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
     val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
     if(isKey && isBlock && completeWithClauseTemplate) {
-        val entryConfigs = ParadoxConfigHandler.getEntryConfigs(config)
+        val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
         if(entryConfigs.isNotEmpty()) {
             val tailText1 = buildString {
                 append(" = { <generate via template> }")
@@ -288,7 +288,7 @@ private fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
     }
     if(constantConfigGroupList.isEmpty()) return
     val config = context.config!!
-    val propertyName = ParadoxConfigHandler.getEntryName(config)
+    val propertyName = CwtConfigHandler.getEntryName(config)
     
     val resultLookupElement = builder.withInsertHandler { c, _ ->
         if(context.isKey == true) {

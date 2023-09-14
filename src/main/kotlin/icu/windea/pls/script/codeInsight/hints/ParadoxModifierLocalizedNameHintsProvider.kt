@@ -62,7 +62,7 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Set
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
         if(element !is ParadoxScriptStringExpressionElement) return true
         if(!element.isExpression()) return true
-        val config = ParadoxConfigHandler.getConfigs(element).firstOrNull() ?: return true
+        val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return true
         val type = config.expression.type
         if(type == CwtDataType.Modifier) {
             val name = element.value

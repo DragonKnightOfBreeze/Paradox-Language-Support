@@ -7,7 +7,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.ParadoxConfigMatcher.Options
+import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.cwt.*
 import icu.windea.pls.lang.cwt.config.*
@@ -34,9 +34,9 @@ class MissingExpressionInspection : LocalInspectionTool() {
             
             override fun visitFile(file: PsiFile) {
                 if(file !is ParadoxScriptFile) return
-                val configContext = ParadoxConfigHandler.getConfigContext(file) ?: return
+                val configContext = CwtConfigHandler.getConfigContext(file) ?: return
                 if(configContext.skipMissingExpressionCheck()) return
-                val configs = ParadoxConfigHandler.getConfigs(file, matchOptions = Options.Default or Options.AcceptDefinition)
+                val configs = CwtConfigHandler.getConfigs(file, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(file, file, configs)
             }
             
@@ -51,15 +51,15 @@ class MissingExpressionInspection : LocalInspectionTool() {
                     ?.also { if(it.text.isParameterized()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
-                val configContext = ParadoxConfigHandler.getConfigContext(element) ?: return
+                val configContext = CwtConfigHandler.getConfigContext(element) ?: return
                 if(configContext.skipMissingExpressionCheck()) return
-                val configs = ParadoxConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
+                val configs = CwtConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(element, position, configs)
             }
             
             private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement, configs: List<CwtMemberConfig<*>>) {
                 if(skipCheck(element, configs)) return
-                val occurrenceMap = ParadoxConfigHandler.getChildOccurrenceMap(element, configs)
+                val occurrenceMap = CwtConfigHandler.getChildOccurrenceMap(element, configs)
                 if(occurrenceMap.isEmpty()) return
                 val overriddenProvider = getOverriddenProvider(configs)
                 occurrenceMap.forEach { (configExpression, occurrence) ->
