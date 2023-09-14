@@ -7,8 +7,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import java.lang.invoke.*
 import java.nio.file.*
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.atomic.*
 import kotlin.io.path.*
 
 object ParadoxDdsResolver {

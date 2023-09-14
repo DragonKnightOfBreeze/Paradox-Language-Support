@@ -8,7 +8,7 @@ import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInsight.template.*
 import com.intellij.codeInsight.template.impl.*
 import com.intellij.codeInspection.*
-import com.intellij.codeInspection.ex.ScopeToolState
+import com.intellij.codeInspection.ex.*
 import com.intellij.extapi.psi.*
 import com.intellij.injected.editor.*
 import com.intellij.lang.*

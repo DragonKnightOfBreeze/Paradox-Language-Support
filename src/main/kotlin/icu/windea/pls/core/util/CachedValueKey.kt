@@ -1,9 +1,8 @@
 package icu.windea.pls.core.util
 
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.KeyWithDefaultValue
+import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
-import icu.windea.pls.core.*
 
 class CachedValueKey<T>(
     val name: String,

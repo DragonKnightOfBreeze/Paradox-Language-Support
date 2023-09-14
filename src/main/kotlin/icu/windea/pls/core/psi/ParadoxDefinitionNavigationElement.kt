@@ -2,7 +2,6 @@ package icu.windea.pls.core.psi
 
 import com.intellij.navigation.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*

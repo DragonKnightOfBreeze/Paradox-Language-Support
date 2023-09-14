@@ -4,7 +4,7 @@ import com.intellij.lang.*
 import com.intellij.lang.cacheBuilder.*
 import com.intellij.lang.findUsages.*
 import com.intellij.psi.*
-import com.intellij.refactoring.util.RefactoringDescriptionLocation
+import com.intellij.refactoring.util.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*

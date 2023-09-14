@@ -1,6 +1,5 @@
 package icu.windea.pls.inject.annotations
 
-import icu.windea.pls.inject.*
 import icu.windea.pls.inject.support.*
 
 /**
