@@ -5,15 +5,15 @@ import com.intellij.openapi.extensions.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.lang.cwt.*
-import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.data.*
+import icu.windea.pls.model.stub.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -28,11 +28,11 @@ interface ParadoxModifierSupport {
      */
     fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean
     
-    fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierData?
+    fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierStub?
     
     fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>)
     
-    fun getModificationTracker(modifierData: ParadoxModifierData): ModificationTracker? = null
+    fun getModificationTracker(modifierData: ParadoxModifierStub): ModificationTracker? = null
     
     fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>?
     
@@ -59,7 +59,7 @@ interface ParadoxModifierSupport {
             }
         }
         
-        fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierData? {
+        fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierStub? {
             val gameType = configGroup.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
@@ -106,8 +106,8 @@ interface ParadoxModifierSupport {
 val ParadoxModifierSupport.Keys.support by createKey<ParadoxModifierSupport>("paradox.modifier.support.support")
 val ParadoxModifierSupport.Keys.modifierConfig by createKey<CwtModifierConfig>("paradox.modifier.support.modifierConfig")
 
-var ParadoxModifierData.support by ParadoxModifierSupport.Keys.support
-var ParadoxModifierData.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig
+var ParadoxModifierStub.support by ParadoxModifierSupport.Keys.support
+var ParadoxModifierStub.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig
 
 var ParadoxModifierElement.support by ParadoxModifierSupport.Keys.support
 var ParadoxModifierElement.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig

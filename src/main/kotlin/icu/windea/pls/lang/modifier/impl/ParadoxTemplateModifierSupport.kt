@@ -7,6 +7,9 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -14,12 +17,9 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.cwt.*
-import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.data.*
+import icu.windea.pls.model.stub.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -33,7 +33,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         }
     }
     
-    override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierData? {
+    override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierStub? {
         val modifierName = name
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
@@ -45,7 +45,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             resolvedReferences
         }.orEmpty()
         if(modifierConfig == null) return null
-        val modifierData = ParadoxModifierData(modifierName, gameType, project)
+        val modifierData = ParadoxModifierStub(modifierName, gameType, project)
         modifierData.support = this
         modifierData.modifierConfig = modifierConfig
         modifierData.templateReferences = templateReferences
@@ -92,7 +92,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         }
     }
     
-    override fun getModificationTracker(modifierData: ParadoxModifierData): ModificationTracker {
+    override fun getModificationTracker(modifierData: ParadoxModifierStub): ModificationTracker {
         //TODO 可以进一步缩小范围
         return ParadoxPsiModificationTracker.getInstance(modifierData.project).ScriptFileTracker(":txt")
     }
@@ -209,6 +209,6 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
 val ParadoxModifierSupport.Keys.templateReferences by createKey<List<ParadoxTemplateSnippetExpressionReference>>("paradox.modifier.support.templateReferences")
 
-var ParadoxModifierData.templateReferences by ParadoxModifierSupport.Keys.templateReferences
+var ParadoxModifierStub.templateReferences by ParadoxModifierSupport.Keys.templateReferences
 
 var ParadoxModifierElement.templateReferences by ParadoxModifierSupport.Keys.templateReferences

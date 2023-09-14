@@ -17,6 +17,9 @@ import com.intellij.util.containers.ContainerUtil
 import com.intellij.util.text.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.api.*
 import icu.windea.pls.core.codeInsight.completion.*
@@ -31,9 +34,6 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.CwtConfigMatcher.ResultValue
 import icu.windea.pls.lang.config.*
-import icu.windea.pls.lang.cwt.*
-import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.data.impl.*
 import icu.windea.pls.lang.expression.*

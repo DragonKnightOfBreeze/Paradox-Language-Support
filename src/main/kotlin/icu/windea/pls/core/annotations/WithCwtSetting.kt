@@ -1,6 +1,6 @@
 package icu.windea.pls.core.annotations
 
-import icu.windea.pls.lang.cwt.setting.*
+import icu.windea.pls.config.setting.*
 import kotlin.reflect.*
 
 /**

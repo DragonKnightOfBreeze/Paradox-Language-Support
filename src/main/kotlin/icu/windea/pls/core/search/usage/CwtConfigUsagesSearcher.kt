@@ -6,10 +6,10 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.cwt.*
-import icu.windea.pls.lang.cwt.config.*
 
 /**
  * CWT规则的查询。

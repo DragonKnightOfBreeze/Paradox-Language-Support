@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.model.data.*
+import icu.windea.pls.model.stub.*
 
 /**
  * 用于为修正提供图标的图片。
@@ -13,12 +13,12 @@ import icu.windea.pls.model.data.*
 @WithGameTypeEP
 interface ParadoxModifierIconProvider {
     /** 注意：这里加入的文件路径是不包含扩展名的。实际上，允许任何合法的扩展名（.dds, .png, .tga）。 */
-    fun addModifierIconPath(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>)
+    fun addModifierIconPath(modifierData: ParadoxModifierStub, element: PsiElement, registry: MutableSet<String>)
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxModifierIconProvider>("icu.windea.pls.modifierIconProvider")
         
-        fun getModifierIconPaths(element: PsiElement, modifierData: ParadoxModifierData): Set<String> {
+        fun getModifierIconPaths(element: PsiElement, modifierData: ParadoxModifierStub): Set<String> {
             val gameType = modifierData.gameType
             return buildSet {
                 EP_NAME.extensionList.forEachFast f@{ ep ->

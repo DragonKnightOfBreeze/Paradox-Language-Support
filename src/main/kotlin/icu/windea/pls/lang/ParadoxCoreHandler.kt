@@ -16,11 +16,11 @@ import com.intellij.util.*
 import com.intellij.util.concurrency.annotations.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.data.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.listeners.*
-import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*

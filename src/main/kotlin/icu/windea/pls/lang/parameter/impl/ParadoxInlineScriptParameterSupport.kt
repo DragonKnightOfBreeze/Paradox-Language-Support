@@ -6,15 +6,15 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.data.*
+import icu.windea.pls.model.stub.*
 import icu.windea.pls.script.psi.*
 
 open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
@@ -167,7 +167,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return true
     }
     
-    override fun getModificationTracker(parameterData: ParadoxParameterData): ModificationTracker {
+    override fun getModificationTracker(parameterData: ParadoxParameterStub): ModificationTracker {
         return ParadoxPsiModificationTracker.getInstance(parameterData.project).InlineScriptsTracker
     }
     

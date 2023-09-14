@@ -3,12 +3,12 @@ package icu.windea.pls.core.expression
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.ParadoxComplexExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
-import icu.windea.pls.lang.cwt.*
-import icu.windea.pls.lang.cwt.config.*
 
 /**
  * 用于表达式脚本语言中的复杂表达式，对应匹配特定CWT规则类型的key或value（或者它们的特定部分）。

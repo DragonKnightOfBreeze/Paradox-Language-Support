@@ -1,6 +1,6 @@
 package icu.windea.pls.model
 
-import icu.windea.pls.lang.cwt.config.*
+import icu.windea.pls.config.config.*
 
 data class ParadoxDefinitionModifierInfo(
 	val name: String,

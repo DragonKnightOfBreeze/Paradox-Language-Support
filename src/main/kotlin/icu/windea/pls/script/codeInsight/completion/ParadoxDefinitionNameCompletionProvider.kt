@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -13,7 +14,6 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
-import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.script.psi.*
 
 /**

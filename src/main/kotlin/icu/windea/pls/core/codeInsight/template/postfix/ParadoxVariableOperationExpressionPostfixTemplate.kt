@@ -5,13 +5,13 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.setting.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.CwtConfigMatcher.Options
-import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.cwt.setting.*
 import icu.windea.pls.script.psi.*
 
 /**

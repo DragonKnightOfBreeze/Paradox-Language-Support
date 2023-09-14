@@ -2,11 +2,10 @@ package icu.windea.pls.lang.config
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.cwt.*
-import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.model.*
 
 /**
  * 用于提供CWT声明规则上下文。

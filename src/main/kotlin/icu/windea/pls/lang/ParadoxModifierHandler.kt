@@ -9,6 +9,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -22,7 +23,7 @@ import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.lang.modifier.impl.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
-import icu.windea.pls.model.data.*
+import icu.windea.pls.model.stub.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*
 
@@ -63,7 +64,7 @@ object ParadoxModifierHandler {
         ParadoxModifierSupport.completeModifier(context, result, modifierNames)
     }
     
-    fun getModifierData(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierData? {
+    fun getModifierData(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierStub? {
         val rootFile = selectRootFile(element) ?: return null
         val project = configGroup.project
         val cache = project.modifierDataCache.get(rootFile)
@@ -72,13 +73,13 @@ object ParadoxModifierHandler {
             //进行代码补全时，可能需要使用指定的扩展点解析修正
             useSupport?.resolveModifier(name, element, configGroup)
                 ?: ParadoxModifierSupport.resolveModifier(name, element, configGroup)
-                ?: ParadoxModifierData.EMPTY
+                ?: ParadoxModifierStub.EMPTY
         }
-        if(modifierData == ParadoxModifierData.EMPTY) return null
+        if(modifierData == ParadoxModifierStub.EMPTY) return null
         return modifierData
     }
     
-    fun getModifierData(name: String, element: PsiElement): ParadoxModifierData? {
+    fun getModifierData(name: String, element: PsiElement): ParadoxModifierStub? {
         val gameType = selectGameType(element) ?: return null
         val rootFile = selectRootFile(element) ?: return null
         val project = element.project
@@ -86,19 +87,19 @@ object ParadoxModifierHandler {
         val configGroup = getConfigGroups(project).get(gameType)
         val cacheKey = name
         val modifierData = cache.getOrPut(cacheKey) {
-            ParadoxModifierSupport.resolveModifier(name, element, configGroup) ?: ParadoxModifierData.EMPTY
+            ParadoxModifierSupport.resolveModifier(name, element, configGroup) ?: ParadoxModifierStub.EMPTY
         }
-        if(modifierData == ParadoxModifierData.EMPTY) return null
+        if(modifierData == ParadoxModifierStub.EMPTY) return null
         return modifierData
     }
     
-    fun getModifierData(modifierElement: ParadoxModifierElement): ParadoxModifierData? {
+    fun getModifierData(modifierElement: ParadoxModifierElement): ParadoxModifierStub? {
         val rootFile = selectRootFile(modifierElement) ?: return null
         val project = modifierElement.project
         val cache = project.modifierDataCache.get(rootFile)
         val cacheKey = modifierElement.name
         val modifierData = cache.getOrPut(cacheKey) {
-            modifierElement.toData()
+            modifierElement.toStub()
         }
         return modifierData
     }
@@ -144,7 +145,7 @@ object ParadoxModifierHandler {
 }
 
 private val PlsKeys.modifierDataCache by createKey("paradox.modifierDataCache") {
-    NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, ParadoxModifierData>().trackedBy { it.modificationTracker } }
+    NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, ParadoxModifierStub>().trackedBy { it.modificationTracker } }
 }
 private val Project.modifierDataCache by PlsKeys.modifierDataCache
 

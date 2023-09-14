@@ -3,11 +3,11 @@ package icu.windea.pls.lang.parameter
 import com.intellij.openapi.extensions.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.data.*
+import icu.windea.pls.model.stub.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -50,7 +50,7 @@ interface ParadoxParameterSupport {
      */
     fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
     
-    fun getModificationTracker(parameterData: ParadoxParameterData): ModificationTracker? = null
+    fun getModificationTracker(parameterData: ParadoxParameterStub): ModificationTracker? = null
     
     /**
      * 构建参数的快速文档中的定义部分。
@@ -128,12 +128,12 @@ val ParadoxParameterSupport.Keys.definitionName by createKey<String>("paradox.pa
 val ParadoxParameterSupport.Keys.definitionTypes by createKey<List<String>>("paradox.parameter.support.definitionTypes")
 val ParadoxParameterSupport.Keys.inlineScriptExpression by createKey<String>("paradox.parameter.support.inlineScriptExpression")
 
-var ParadoxParameterData.support by ParadoxParameterSupport.Keys.support
-var ParadoxParameterData.containingContext by ParadoxParameterSupport.Keys.containingContext
-var ParadoxParameterData.containingContextReference by ParadoxParameterSupport.Keys.containingContextReference
-var ParadoxParameterData.definitionName by ParadoxParameterSupport.Keys.definitionName
-var ParadoxParameterData.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
-var ParadoxParameterData.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression
+var ParadoxParameterStub.support by ParadoxParameterSupport.Keys.support
+var ParadoxParameterStub.containingContext by ParadoxParameterSupport.Keys.containingContext
+var ParadoxParameterStub.containingContextReference by ParadoxParameterSupport.Keys.containingContextReference
+var ParadoxParameterStub.definitionName by ParadoxParameterSupport.Keys.definitionName
+var ParadoxParameterStub.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
+var ParadoxParameterStub.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression
 
 var ParadoxParameterElement.support by ParadoxParameterSupport.Keys.support
 var ParadoxParameterElement.containingContext by ParadoxParameterSupport.Keys.containingContext

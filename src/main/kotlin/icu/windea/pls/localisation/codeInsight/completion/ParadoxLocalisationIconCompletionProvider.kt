@@ -6,10 +6,10 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
-import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.script.psi.*
 
 /**

@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.scope.impl
 
-import icu.windea.pls.lang.cwt.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*

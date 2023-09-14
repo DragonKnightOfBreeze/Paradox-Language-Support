@@ -2,9 +2,9 @@ package icu.windea.pls.lang.scope
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.*
 
 /**

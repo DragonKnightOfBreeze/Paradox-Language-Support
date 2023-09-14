@@ -1,8 +1,8 @@
 package icu.windea.pls.core.expression.nodes
 
 import com.intellij.openapi.util.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.script.highlighter.*
 
 class ParadoxScopeLinkDataSourceExpressionNode(

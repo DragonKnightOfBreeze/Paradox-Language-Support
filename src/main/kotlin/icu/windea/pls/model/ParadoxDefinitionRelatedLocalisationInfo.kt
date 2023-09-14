@@ -1,7 +1,7 @@
 package icu.windea.pls.model
 
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.annotations.api.*
-import icu.windea.pls.lang.cwt.expression.*
 
 data class ParadoxDefinitionRelatedLocalisationInfo(
 	val key: String,

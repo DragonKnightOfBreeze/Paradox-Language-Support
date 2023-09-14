@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.model.data.*
+import icu.windea.pls.model.stub.*
 
 /**
  * 用于为修正提供名字和描述的本地化。
@@ -15,15 +15,15 @@ import icu.windea.pls.model.data.*
 @WithGameTypeEP
 interface ParadoxModifierNameDescProvider {
     /** 注意：这里加入的本地化的名字是忽略大小写的。 */
-    fun addModifierNameKey(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>)
+    fun addModifierNameKey(modifierData: ParadoxModifierStub, element: PsiElement, registry: MutableSet<String>)
     
     /** 注意：这里加入的本地化的名字是忽略大小写的。 */
-    fun addModifierDescKey(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>)
+    fun addModifierDescKey(modifierData: ParadoxModifierStub, element: PsiElement, registry: MutableSet<String>)
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxModifierNameDescProvider>("icu.windea.pls.modifierNameDescProvider")
         
-        fun getModifierNameKeys(element: PsiElement, modifierData: ParadoxModifierData): Set<String> {
+        fun getModifierNameKeys(element: PsiElement, modifierData: ParadoxModifierStub): Set<String> {
             val gameType = modifierData.gameType
             return buildSet {
                 EP_NAME.extensionList.forEachFast f@{ ep ->
@@ -33,7 +33,7 @@ interface ParadoxModifierNameDescProvider {
             }
         }
         
-        fun getModifierDescKeys(element: PsiElement, modifierData: ParadoxModifierData): Set<String> {
+        fun getModifierDescKeys(element: PsiElement, modifierData: ParadoxModifierStub): Set<String> {
             val gameType = modifierData.gameType
             return buildSet {
                 EP_NAME.extensionList.forEachFast f@{ ep ->

@@ -3,11 +3,11 @@ package icu.windea.pls.core.hierarchy.type
 import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.hierarchy.type.ParadoxDefinitionHierarchyNodeDescriptor.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
-import icu.windea.pls.lang.cwt.config.*
 
 /**
  * @property withSubtypes 是否在层级树中显示定义的子类型。

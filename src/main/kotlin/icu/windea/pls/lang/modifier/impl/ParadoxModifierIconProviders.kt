@@ -2,19 +2,19 @@ package icu.windea.pls.lang.modifier.impl
 
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
-import icu.windea.pls.lang.cwt.*
-import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.data.*
+import icu.windea.pls.model.stub.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {
-    override fun addModifierIconPath(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>) {
+    override fun addModifierIconPath(modifierData: ParadoxModifierStub, element: PsiElement, registry: MutableSet<String>) {
         //gfx/interface/icons/modifiers/mod_$
         registry += "gfx/interface/icons/modifiers/mod_${modifierData.name}"
     }
@@ -24,7 +24,7 @@ class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {
 class StellarisJobBasedModifierIconProvider: ParadoxModifierIconProvider {
     //对于由job生成的那些修正，需要应用特殊的图标继承逻辑
     
-    override fun addModifierIconPath(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>) {
+    override fun addModifierIconPath(modifierData: ParadoxModifierStub, element: PsiElement, registry: MutableSet<String>) {
         val modifierConfig = modifierData.modifierConfig ?: return
         val templateReferences = modifierData.templateReferences ?: return
         val templateReference = templateReferences.singleOrNull()?.takeIf { it.configExpression.type == CwtDataType.Definition } ?: return
@@ -49,7 +49,7 @@ class StellarisJobBasedModifierIconProvider: ParadoxModifierIconProvider {
 class StellarisEconomicCategoryBasedModifierIconProvider: ParadoxModifierIconProvider {
     //对于由economic_category生成的那些修正，需要应用特殊的图标继承逻辑
     
-    override fun addModifierIconPath(modifierData: ParadoxModifierData, element: PsiElement, registry: MutableSet<String>) {
+    override fun addModifierIconPath(modifierData: ParadoxModifierStub, element: PsiElement, registry: MutableSet<String>) {
         val economicCategoryInfo = modifierData.economicCategoryInfo ?: return
         val economicCategoryModifierInfo = modifierData.economicCategoryModifierInfo ?: return
         if(economicCategoryModifierInfo.useParentIcon) {

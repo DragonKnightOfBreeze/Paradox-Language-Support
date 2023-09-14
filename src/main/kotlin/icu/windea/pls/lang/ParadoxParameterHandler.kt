@@ -15,6 +15,8 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -24,7 +26,7 @@ import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.data.*
+import icu.windea.pls.model.stub.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import java.util.*
@@ -161,13 +163,13 @@ object ParadoxParameterHandler {
         }
     }
     
-    fun getParameterData(parameterElement: ParadoxParameterElement): ParadoxParameterData? {
+    fun getParameterData(parameterElement: ParadoxParameterElement): ParadoxParameterStub? {
         val rootFile = selectRootFile(parameterElement) ?: return null
         val project = parameterElement.project
         val cache = project.parameterDataCache.get(rootFile)
         val cacheKey = parameterElement.name + "@" + parameterElement.contextKey
         val parameterData = cache.getOrPut(cacheKey) {
-            parameterElement.toData()
+            parameterElement.toStub()
         }
         return parameterData
     }
@@ -240,7 +242,7 @@ object ParadoxParameterHandler {
 }
 
 private val PlsKeys.parameterDataCache by createKey("paradox.parameterDataCache") {
-    NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, ParadoxParameterData>().trackedBy { it.modificationTracker } }
+    NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, ParadoxParameterStub>().trackedBy { it.modificationTracker } }
 }
 private val Project.parameterDataCache by PlsKeys.parameterDataCache
 

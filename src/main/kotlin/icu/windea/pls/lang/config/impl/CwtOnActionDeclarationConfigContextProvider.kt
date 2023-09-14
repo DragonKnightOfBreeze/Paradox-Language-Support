@@ -2,11 +2,11 @@ package icu.windea.pls.lang.config.impl
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
-import icu.windea.pls.lang.cwt.*
-import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.model.*
 
 private val configKey = Key.create<CwtOnActionConfig>("cwt.declarationConfigProvider.onAction.config")

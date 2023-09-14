@@ -3,9 +3,10 @@ package icu.windea.pls
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.tool.*
