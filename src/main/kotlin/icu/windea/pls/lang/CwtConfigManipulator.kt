@@ -7,6 +7,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
+import java.util.function.*
 
 object CwtConfigManipulator {
     //region Deep Copy Methods
@@ -23,7 +24,7 @@ object CwtConfigManipulator {
     fun deepCopyConfigsInDeclarationConfig(
         config: CwtMemberConfig<*>,
         context: CwtDeclarationConfigContext,
-        action: ((result: MutableList<CwtMemberConfig<*>>, config: CwtMemberConfig<*>) -> Unit)? = null
+        action: BiConsumer<MutableList<CwtMemberConfig<*>>, CwtMemberConfig<*>>? = null
     ): List<CwtMemberConfig<*>>? {
         val cs1 = config.configs
         if(cs1.isNullOrEmpty()) return cs1
@@ -43,9 +44,9 @@ object CwtConfigManipulator {
             }
             
             if(action == null) {
-                result += c1.delegated(deepCopyConfigsInDeclarationConfig(c1, context, action), c1.parentConfig)
+                result += c1.delegated(deepCopyConfigsInDeclarationConfig(c1, context), c1.parentConfig)
             } else {
-                action(result, c1)
+                action.accept(result, c1)
             }
         }
         return result
