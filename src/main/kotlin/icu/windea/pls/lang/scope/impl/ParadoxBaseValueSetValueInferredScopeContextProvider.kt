@@ -12,7 +12,7 @@ class ParadoxBaseValueSetValueInferredScopeContextProvider: ParadoxValueSetValue
     }
     
     override fun getScopeContext(valueSetValue: ParadoxValueSetValueElement): ParadoxScopeContextInferenceInfo? {
+        //TODO 1.1.10+
         return null
-        //TODO("Not yet implemented")
     }
 }
