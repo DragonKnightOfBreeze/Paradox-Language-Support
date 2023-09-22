@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.*
  * 
  * @see icu.windea.pls.lang.config.impl.CwtParameterValueConfigContextProvider
  */
-class ParadoxScriptInjector : MultiHostInjector {
+class ParadoxScriptLanguageInjector : MultiHostInjector {
     //see: com.intellij.util.InjectionUtils
     //see: com.intellij.psi.impl.source.tree.injected.InjectedFileViewProvider
     //see: org.intellij.plugins.intelliLang.inject.InjectorUtils

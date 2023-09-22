@@ -14,7 +14,7 @@ class ParadoxScriptValueArgumentValueExpressionNode(
     val configGroup: CwtConfigGroup
 ) : ParadoxExpressionNode {
     //相关高级语言功能（代码高亮、引用解析等）改为使用语言注入实现
-    //see: icu.windea.pls.script.injection.ParadoxScriptInjector
+    //see: icu.windea.pls.script.injection.ParadoxScriptLanguageInjector
     
     //override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
     //    if(!getSettings().inference.parameterConfig) return null
