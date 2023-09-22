@@ -14,18 +14,18 @@ import java.lang.reflect.*
 class CodeInjectorService : UserDataHolderBase() {
     companion object {
         //for Application / CodeInjector
-        @JvmField val codeInjectorServiceKey = Key.create<CodeInjectorService>("CODE_INJECTOR_SERVICE_BY_WINDEA")
+        @JvmField val codeInjectorServiceKey = createKey<CodeInjectorService>("CODE_INJECTOR_SERVICE_BY_WINDEA")
         //for CodeInjectorService
-        @JvmField val classPoolKey = Key.create<ClassPool>("CLASS_POOL_BY_WINDEA")
+        @JvmField val classPoolKey = createKey<ClassPool>("CLASS_POOL_BY_WINDEA")
         //for CodeInjectorService
-        @JvmField val codeInjectorsKey = Key.create<Map<String, CodeInjector>>("CODE_INJECTORS_BY_WINDEA")
+        @JvmField val codeInjectorsKey = createKey<Map<String, CodeInjector>>("CODE_INJECTORS_BY_WINDEA")
         
         //for CodeInjector
-        @JvmField val targetClassKey = Key.create<CtClass>("TARGET_CLASS_BY_WINDEA")
+        @JvmField val targetClassKey = createKey<CtClass>("TARGET_CLASS_BY_WINDEA")
         //for CodeInjector
-        @JvmField val codeInjectorInfoKey = Key.create<CodeInjectorInfo>("CODE_INJECTOR_INFO_BY_WINDEA")
+        @JvmField val codeInjectorInfoKey = createKey<CodeInjectorInfo>("CODE_INJECTOR_INFO_BY_WINDEA")
         //for CodeInjectorService
-        @JvmField val invokeMethodKey = Key.create<Method>("INVOKE_METHOD_BY_WINDEA")
+        @JvmField val invokeMethodKey = createKey<Method>("INVOKE_METHOD_BY_WINDEA")
     }
     
     init {

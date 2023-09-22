@@ -23,7 +23,7 @@ object ParadoxInlineScriptHandler {
     
     val inlineScriptPathExpression = CwtValueExpression.resolve("filepath[common/inline_scripts/,.txt]")
     
-    val cachedInlineScriptUsageInfoKey = Key.create<CachedValue<ParadoxInlineScriptUsageInfo>>("paradox.cached.inlineScriptUsageInfo")
+    val cachedInlineScriptUsageInfoKey = createKey<CachedValue<ParadoxInlineScriptUsageInfo>>("paradox.cached.inlineScriptUsageInfo")
     
     fun getUsageInfo(element: ParadoxScriptProperty): ParadoxInlineScriptUsageInfo? {
         val name = element.name.lowercase()

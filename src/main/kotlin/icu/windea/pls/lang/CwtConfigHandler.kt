@@ -1757,7 +1757,7 @@ object CwtConfigHandler {
         }
     }
     
-    val inBlockKeysKey = Key.create<Set<String>>("cwt.config.inBlockKeys")
+    val inBlockKeysKey = createKey<Set<String>>("cwt.config.inBlockKeys")
     
     fun getInBlockKeys(config: CwtMemberConfig<*>): Set<String> {
         return config.getOrPutUserData(inBlockKeysKey) {

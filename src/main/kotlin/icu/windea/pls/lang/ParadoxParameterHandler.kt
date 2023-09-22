@@ -246,5 +246,5 @@ private val PlsKeys.parameterDataCache by createKey("paradox.parameterDataCache"
 }
 private val Project.parameterDataCache by PlsKeys.parameterDataCache
 
-private val PlsKeys.parameterInferredConfig by Key.create<CwtValueConfig>("paradox.parameterInferredConfig")
-private val PlsKeys.parameterInferredContextConfigs by Key.create<List<CwtMemberConfig<*>>>("paradox.parameterInferredContextConfigs")
+private val PlsKeys.parameterInferredConfig by createKey<CwtValueConfig>("paradox.parameterInferredConfig")
+private val PlsKeys.parameterInferredContextConfigs by createKey<List<CwtMemberConfig<*>>>("paradox.parameterInferredContextConfigs")

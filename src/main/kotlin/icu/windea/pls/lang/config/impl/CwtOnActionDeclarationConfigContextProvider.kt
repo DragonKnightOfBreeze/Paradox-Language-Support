@@ -10,7 +10,7 @@ import icu.windea.pls.lang.config.*
 import icu.windea.pls.model.*
 import java.util.function.*
 
-private val configKey = Key.create<CwtOnActionConfig>("cwt.declarationConfigProvider.onAction.config")
+private val configKey = createKey<CwtOnActionConfig>("cwt.declarationConfigProvider.onAction.config")
 
 class CwtOnActionDeclarationConfigContextProvider: CwtDeclarationConfigContextProvider {
     //如果预定义的on_action可以确定事件类型，其声明规则需要经过修改（将其中匹配"<event>"的规则，替换为此事件类型对应的规则）

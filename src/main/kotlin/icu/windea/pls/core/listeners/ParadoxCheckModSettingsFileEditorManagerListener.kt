@@ -16,7 +16,7 @@ import icu.windea.pls.model.*
  */
 class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListener {
     companion object {
-        val modPathsKey = Key.create<MutableSet<String>>("paradox.modSettings.check.modPaths")
+        val modPathsKey = createKey<MutableSet<String>>("paradox.modSettings.check.modPaths")
     }
     
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {

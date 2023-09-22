@@ -1,14 +1,14 @@
 package icu.windea.pls.lang.config.impl
 
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.model.*
 
-private val configKey = Key.create<CwtGameRuleConfig>("cwt.declarationConfigProvider.gameRule.config")
+private val configKey = createKey<CwtGameRuleConfig>("cwt.declarationConfigProvider.gameRule.config")
 
 class CwtGameRuleOverriddenDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
     //某些game_rule的声明规则需要重载

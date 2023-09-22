@@ -125,7 +125,7 @@ fun <T : ThreeStateCheckBox> Cell<T>.bindState(property: KMutableProperty0<Three
     return bind(ThreeStateCheckBox::getState, ThreeStateCheckBox::setState, property.toMutableProperty())
 }
 
-val checkBoxListKey = Key.create<MutableList<JBCheckBox>>("checkBoxList")
+val checkBoxListKey = createKey<MutableList<JBCheckBox>>("checkBoxList")
 
 fun <T : Cell<JBCheckBox>> T.threeStateCheckBox(threeStateCheckBox: Cell<ThreeStateCheckBox>): T {
     val checkBoxList = threeStateCheckBox.component.getOrPutUserData(checkBoxListKey) { mutableListOf() }

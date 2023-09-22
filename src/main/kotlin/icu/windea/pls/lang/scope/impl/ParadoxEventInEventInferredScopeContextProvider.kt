@@ -19,7 +19,7 @@ import icu.windea.pls.lang.scope.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-private val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.in.event")
+private val cachedScopeContextInferenceInfoKey = createKey<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.in.event")
 
 /**
  * 如果某个event在一个event声明中被调用，

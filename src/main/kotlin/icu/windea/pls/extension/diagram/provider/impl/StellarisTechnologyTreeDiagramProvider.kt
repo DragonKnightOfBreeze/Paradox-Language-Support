@@ -24,7 +24,7 @@ private const val ID = "Stellaris.TechnologyTree"
 
 private val ITEM_PROPERTY_KEYS = arrayOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels")
 
-private val nodeDataKey = Key.create<StellarisTechnologyDataProvider.Data>("stellaris.technologyTree.node.data")
+private val nodeDataKey = createKey<StellarisTechnologyDataProvider.Data>("stellaris.technologyTree.node.data")
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvider(ParadoxGameType.Stellaris) {

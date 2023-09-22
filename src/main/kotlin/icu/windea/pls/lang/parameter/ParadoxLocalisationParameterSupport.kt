@@ -52,8 +52,4 @@ interface ParadoxLocalisationParameterSupport {
             }
         }
     }
-    
-    object Keys {
-        val localisationName = Key.create<String>("paradox.localisationParameterElement.localisationName")
-    }
 }
