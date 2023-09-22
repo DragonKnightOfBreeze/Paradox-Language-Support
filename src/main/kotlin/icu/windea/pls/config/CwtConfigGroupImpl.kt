@@ -14,9 +14,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.cwt.expression.*
-import icu.windea.pls.lang.cwt.setting.*
 import icu.windea.pls.model.*
 import kotlin.Pair
 import kotlin.collections.component1

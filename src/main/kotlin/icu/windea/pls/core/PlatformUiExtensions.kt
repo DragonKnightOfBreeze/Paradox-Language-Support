@@ -7,7 +7,6 @@ import com.intellij.openapi.keymap.*
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.observable.util.*
 import com.intellij.openapi.ui.*
-import com.intellij.openapi.util.*
 import com.intellij.refactoring.*
 import com.intellij.ui.*
 import com.intellij.ui.components.*
@@ -22,6 +21,15 @@ import java.awt.image.*
 import javax.swing.*
 import javax.swing.table.*
 import javax.swing.text.*
+import kotlin.collections.MutableList
+import kotlin.collections.MutableMap
+import kotlin.collections.all
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.forEach
+import kotlin.collections.getOrPut
+import kotlin.collections.mutableListOf
+import kotlin.collections.none
 import kotlin.properties.*
 import kotlin.reflect.*
 

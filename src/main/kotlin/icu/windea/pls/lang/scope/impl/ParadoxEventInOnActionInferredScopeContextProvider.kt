@@ -2,7 +2,6 @@ package icu.windea.pls.lang.scope.impl
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*

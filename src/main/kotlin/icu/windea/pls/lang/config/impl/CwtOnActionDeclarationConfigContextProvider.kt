@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.config.impl
 
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*

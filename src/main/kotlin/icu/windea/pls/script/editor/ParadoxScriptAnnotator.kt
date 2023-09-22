@@ -12,7 +12,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.CwtConfigHandler.getParameterRanges
 import icu.windea.pls.lang.config.impl.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys
+import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.inspections.inference.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
@@ -142,7 +142,7 @@ class ParadoxScriptAnnotator : Annotator {
         val defaultValueToken = element.defaultValueToken ?: return
         if(defaultValueToken.text.startsWith('@')) {
             holder.newSilentAnnotation(INFORMATION).range(defaultValueToken)
-                .textAttributes(ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_KEY)
+                .textAttributes(Keys.SCRIPTED_VARIABLE_KEY)
                 .create()
         }
     }

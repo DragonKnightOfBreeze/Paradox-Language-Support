@@ -1,6 +1,5 @@
 package icu.windea.pls.core.index.hierarchy
 
-import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
