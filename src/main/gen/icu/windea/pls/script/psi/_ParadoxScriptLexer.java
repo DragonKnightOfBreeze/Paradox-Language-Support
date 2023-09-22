@@ -928,11 +928,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 92: break;
           case 18:
-            { if(parameterPosition == ParameterPosition.SCRIPTED_VARIABLE_NAME) {
-          return SCRIPTED_VARIABLE_NAME_SNIPPET;
-      } else {
-		  return SCRIPTED_VARIABLE_NAME_TOKEN;
-      }
+            { return SCRIPTED_VARIABLE_NAME_TOKEN;
             }
           // fall through
           case 93: break;
@@ -966,11 +962,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 98: break;
           case 24:
-            { if(parameterPosition == ParameterPosition.KEY) {
-          return PROPERTY_KEY_SNIPPET;
-	  } else {
-		  return PROPERTY_KEY_TOKEN;
-	  }
+            { return PROPERTY_KEY_TOKEN;
             }
           // fall through
           case 99: break;
@@ -988,17 +980,12 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 101: break;
           case 27:
-            { boolean isQuoted = parameterPosition == ParameterPosition.QUOTED_KEY;
-	if(yycharat(yylength() -1) == '"') {
+            { if(yycharat(yylength() -1) == '"') {
         parameterPosition = ParameterPosition.NONE;
 	    quoted = false;
 		yybegin(WAITING_QUOTED_KEY_END);
 	}
-    if(isQuoted) {
-        return PROPERTY_KEY_SNIPPET;
-    } else {
-  	    return PROPERTY_KEY_TOKEN;
-    }
+    return PROPERTY_KEY_TOKEN;
             }
           // fall through
           case 102: break;
@@ -1018,11 +1005,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
           case 104: break;
           case 30:
             { valueStarted=true;
-	  if(parameterPosition == ParameterPosition.STRING) {
-		  return STRING_SNIPPET;
-	  } else {
-	      return STRING_TOKEN;
-	  }
+      return STRING_TOKEN;
             }
           // fall through
           case 105: break;
@@ -1045,18 +1028,13 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 107: break;
           case 33:
-            { boolean isQuoted = parameterPosition == ParameterPosition.QUOTED_STRING;
-      if(yycharat(yylength() -1) == '"') {
+            { if(yycharat(yylength() -1) == '"') {
           parameterPosition = ParameterPosition.NONE;
 		  quoted = false;
 		  valueStarted = false;
 		  beginNextState();
       }
-      if(isQuoted) {  
-          return STRING_SNIPPET;
-      } else {
-  	      return STRING_TOKEN;
-      }
+      return STRING_TOKEN;
             }
           // fall through
           case 108: break;
@@ -1088,11 +1066,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 112: break;
           case 38:
-            { if(parameterPosition == ParameterPosition.SCRIPTED_VARIABLE_REFERENCE) {
-          return SCRIPTED_VARIABLE_REFERENCE_SNIPPET;
-      } else {
-		  return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
-      }
+            { return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
             }
           // fall through
           case 113: break;

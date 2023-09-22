@@ -216,11 +216,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 	  return PARAMETER_START;
   }
   {SCRIPTED_VARIABLE_NAME_TOKEN} {
-      if(parameterPosition == ParameterPosition.SCRIPTED_VARIABLE_NAME) {
-          return SCRIPTED_VARIABLE_NAME_SNIPPET;
-      } else {
-		  return SCRIPTED_VARIABLE_NAME_TOKEN;
-      }
+      return SCRIPTED_VARIABLE_NAME_TOKEN;
   }
 }
 <WAITING_SCRIPTED_VARIABLE_VALUE> {
@@ -275,11 +271,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 	  return PARAMETER_START;
   }
   {SCRIPTED_VARIABLE_NAME_TOKEN} {
-      if(parameterPosition == ParameterPosition.SCRIPTED_VARIABLE_REFERENCE) {
-          return SCRIPTED_VARIABLE_REFERENCE_SNIPPET;
-      } else {
-		  return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
-      }
+      return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
   }
 }
 
@@ -468,11 +460,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 	  return PARAMETER_START;
   }
   {PROPERTY_KEY_TOKEN} {
-	  if(parameterPosition == ParameterPosition.KEY) {
-          return PROPERTY_KEY_SNIPPET;
-	  } else {
-		  return PROPERTY_KEY_TOKEN;
-	  }
+	  return PROPERTY_KEY_TOKEN;
   }
 }
 <WAITING_QUOTED_KEY> {
@@ -487,17 +475,12 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
     return PARAMETER_START;
   }
   \"|{QUOTED_PROPERTY_KEY_TOKEN}\"? {
-	boolean isQuoted = parameterPosition == ParameterPosition.QUOTED_KEY;
 	if(yycharat(yylength() -1) == '"') {
         parameterPosition = ParameterPosition.NONE;
 	    quoted = false;
 		yybegin(WAITING_QUOTED_KEY_END);
 	}
-    if(isQuoted) {
-        return PROPERTY_KEY_SNIPPET;
-    } else {
-  	    return PROPERTY_KEY_TOKEN;
-    }
+    return PROPERTY_KEY_TOKEN;
   }
 }
 <WAITING_QUOTED_KEY_END>{
@@ -541,11 +524,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   }
   {STRING_TOKEN} {
 	  valueStarted=true;
-	  if(parameterPosition == ParameterPosition.STRING) {
-		  return STRING_SNIPPET;
-	  } else {
-	      return STRING_TOKEN;
-	  }
+      return STRING_TOKEN;
   }
 }
 <WAITING_QUOTED_STRING> {
@@ -564,18 +543,13 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
       return PARAMETER_START;
   }
   \"|{QUOTED_STRING_TOKEN}\"? {
-	  boolean isQuoted = parameterPosition == ParameterPosition.QUOTED_STRING;
       if(yycharat(yylength() -1) == '"') {
           parameterPosition = ParameterPosition.NONE;
 		  quoted = false;
 		  valueStarted = false;
 		  beginNextState();
       }
-      if(isQuoted) {  
-          return STRING_SNIPPET;
-      } else {
-  	      return STRING_TOKEN;
-      }
+      return STRING_TOKEN;
   }
 }
 
