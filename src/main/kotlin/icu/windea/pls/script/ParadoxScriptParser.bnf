@@ -50,7 +50,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
     isEquivalentTo toString
   ]
 }
-scripted_variable_name ::= AT (SCRIPTED_VARIABLE_NAME_TOKEN | (SCRIPTED_VARIABLE_NAME_TOKEN | parameter) +) {
+scripted_variable_name ::= AT ( SCRIPTED_VARIABLE_NAME_TOKEN | parameter ) + {
   pin=1;
   implements=[
     "icu.windea.pls.core.psi.ParadoxParameterAwareElement"
@@ -78,7 +78,7 @@ property ::= property_key property_separator property_value {
     isEquivalentTo toString
   ]
 }
-property_key ::= PROPERTY_KEY_TOKEN | ( PROPERTY_KEY_TOKEN | parameter ) + {
+property_key ::= ( PROPERTY_KEY_TOKEN | parameter ) + {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
@@ -106,7 +106,7 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
     getType getExpression getConfigExpression
   ]
 }
-scripted_variable_reference ::= AT (SCRIPTED_VARIABLE_REFERENCE_TOKEN | (SCRIPTED_VARIABLE_REFERENCE_TOKEN | parameter) +) {
+scripted_variable_reference ::= AT ( SCRIPTED_VARIABLE_REFERENCE_TOKEN | parameter ) + {
   extends=value
   implements=[
     "icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
@@ -140,7 +140,7 @@ float ::= FLOAT_TOKEN {
   ]
   methods=[getName getValue getFloatValue getType]
 }
-string ::= STRING_TOKEN | ( STRING_TOKEN | parameter) + {
+string ::= ( STRING_TOKEN | parameter) + {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
@@ -276,7 +276,6 @@ inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERE
 //* values (can be quoted)
 //* inline math expressions
 
-//这里需要特殊处理解析逻辑
 //icu.windea.pls.script.psi.ParadoxScriptParserUtil.doParameter
 parameter ::= PARAMETER_START <<doParameter>> PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END {
   pin=2
@@ -288,9 +287,8 @@ parameter ::= PARAMETER_START <<doParameter>> PARAMETER_TOKEN [PIPE parameter_de
 }
 private parameter_default_value ::= BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
 
-//这里需要特殊处理解析逻辑
 //icu.windea.pls.script.psi.ParadoxScriptParserUtil.doInlineMathParameter
-inline_math_parameter ::= PARAMETER_START <<doInlineMathParameter>>  PARAMETER_TOKEN [PIPE inline_math_parameter_default_value] PARAMETER_END {
+inline_math_parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE inline_math_parameter_default_value] PARAMETER_END {
   extends=inline_math_factor
   pin=2
   recoverWhile="#auto"

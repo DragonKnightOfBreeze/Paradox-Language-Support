@@ -36,10 +36,4 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
         }
         return true
     }
-    
-    @JvmStatic
-    fun doInlineMathParameter(b: PsiBuilder, l: Int): Boolean {
-        //与普通参数保持一致，目前不需要做进一步的处理
-        return true
-    }
 }
