@@ -7,10 +7,12 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.CwtConfigHandler.getParameterRanges
 import icu.windea.pls.lang.config.impl.*
 import icu.windea.pls.model.*
+import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.inspections.inference.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
@@ -29,6 +31,7 @@ class ParadoxScriptAnnotator : Annotator {
             is ParadoxScriptProperty -> annotateProperty(element, holder)
             is ParadoxScriptStringExpressionElement -> annotateExpressionElement(element, holder)
             is ParadoxScriptInt -> annotateExpressionElement(element, holder)
+            is ParadoxParameter -> annotateParameter(element, holder)
         }
     }
     
@@ -131,6 +134,16 @@ class ParadoxScriptAnnotator : Annotator {
         if(text.isLeftQuoted() && !text.isRightQuoted()) {
             //missing closing quote
             holder.newAnnotation(ERROR, PlsBundle.message("syntax.error.missing.closing.quote")).create()
+        }
+    }
+    
+    private fun annotateParameter(element: ParadoxParameter, holder: AnnotationHolder) {
+        //为参数的默认值提供基础代码高亮
+        val defaultValueToken = element.defaultValueToken ?: return
+        if(defaultValueToken.text.startsWith('@')) {
+            holder.newSilentAnnotation(INFORMATION).range(defaultValueToken)
+                .textAttributes(ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_KEY)
+                .create()
         }
     }
 }

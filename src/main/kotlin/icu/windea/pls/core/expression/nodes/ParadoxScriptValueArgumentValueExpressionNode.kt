@@ -23,10 +23,12 @@ class ParadoxScriptValueArgumentValueExpressionNode(
     //}
     
     override fun getAttributesKey(): TextAttributesKey {
+        //为参数值提供基础代码高亮
         val type = ParadoxType.resolve(text)
         return when {
             type.isBooleanType() -> ParadoxScriptAttributesKeys.KEYWORD_KEY
             type.isFloatType() -> ParadoxScriptAttributesKeys.NUMBER_KEY
+            text.startsWith('@') -> ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_KEY
             else -> ParadoxScriptAttributesKeys.STRING_KEY
         }
     }

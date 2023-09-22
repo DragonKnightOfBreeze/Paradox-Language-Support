@@ -143,6 +143,7 @@ WILDCARD_STRING_TOKEN=[^#@={}\[\]\s\"][^#={}\[\]\s]*
 WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\.)*?\"?
 STRING_TOKEN=[^#@$={}\[\]\s\"][^#$={}\[\]\s]*
 QUOTED_STRING_TOKEN=([^\"$\\]|\\.)+
+RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 
 %%
 
@@ -330,7 +331,7 @@ QUOTED_STRING_TOKEN=([^\"$\\]|\\.)+
   {BOOLEAN_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return BOOLEAN_TOKEN;}
   {INT_TOKEN} {yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return INT_TOKEN;}
   {FLOAT_TOKEN} {yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END);; return FLOAT_TOKEN;}
-  {STRING_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return STRING_TOKEN;} 
+  {RELAX_STRING_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return STRING_TOKEN;} 
 }
 <WAITING_PARAMETER_DEFAULT_VALUE_END>{
   \s|"#" { yypushback(yylength()); beginNextStateForParameter();}

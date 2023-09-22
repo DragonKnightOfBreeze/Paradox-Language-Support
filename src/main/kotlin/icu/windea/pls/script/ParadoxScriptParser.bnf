@@ -279,7 +279,7 @@ inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERE
 
 //这里需要特殊处理解析逻辑
 //icu.windea.pls.script.psi.ParadoxScriptParserUtil.doParameter
-parameter ::= PARAMETER_START <<doParameter>> PARAMETER_TOKEN [PIPE parameter_value] PARAMETER_END {
+parameter ::= PARAMETER_START <<doParameter>> PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END {
   pin=2
   recoverWhile="#auto"
   implements=[
@@ -287,15 +287,15 @@ parameter ::= PARAMETER_START <<doParameter>> PARAMETER_TOKEN [PIPE parameter_va
   ]
   methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
 }
-private parameter_value ::= BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
+private parameter_default_value ::= BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
 
 //这里需要特殊处理解析逻辑
 //icu.windea.pls.script.psi.ParadoxScriptParserUtil.doInlineMathParameter
-inline_math_parameter ::= PARAMETER_START <<doInlineMathParameter>>  PARAMETER_TOKEN [PIPE inline_math_parameter_value] PARAMETER_END {
+inline_math_parameter ::= PARAMETER_START <<doInlineMathParameter>>  PARAMETER_TOKEN [PIPE inline_math_parameter_default_value] PARAMETER_END {
   extends=inline_math_factor
   pin=2
   recoverWhile="#auto"
   implements="icu.windea.pls.core.psi.ParadoxParameter"
   methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
 }
-private inline_math_parameter_value ::= INT_TOKEN | FLOAT_TOKEN
+private inline_math_parameter_default_value ::= INT_TOKEN | FLOAT_TOKEN
