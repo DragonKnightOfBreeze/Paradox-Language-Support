@@ -7,8 +7,10 @@ import com.intellij.lang.parser.*
 import com.intellij.psi.*
 
 object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
+    // a_$PARAM$_b - 高级插值语法 A - 特殊处理
+    
     @JvmStatic
-    fun doParameter(b: PsiBuilder, l: Int): Boolean {
+    fun processParameter(b: PsiBuilder, l: Int): Boolean {
         //currentStep: PARAMETER_START
         if(b !is Builder) return true
         val parameterAwareFrame = b.state.currentFrame.parentFrame

@@ -416,7 +416,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, PARAMETER, "<parameter>");
     r = consumeToken(b, PARAMETER_START);
-    r = r && doParameter(b, l + 1);
+    r = r && processParameter(b, l + 1);
     p = r; // pin = 2
     r = r && report_error_(b, consumeToken(b, PARAMETER_TOKEN));
     r = p && report_error_(b, parameter_3(b, l + 1)) && r;
