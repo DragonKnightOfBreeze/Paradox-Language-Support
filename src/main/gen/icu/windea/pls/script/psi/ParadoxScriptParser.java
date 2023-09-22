@@ -506,7 +506,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COMMENT | parameter_condition_value | property
+  // COMMENT | parameter_condition_value | property | parameter_condition
   static boolean parameter_condition_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_condition_item")) return false;
     boolean r;
@@ -514,6 +514,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, COMMENT);
     if (!r) r = parameter_condition_value(b, l + 1);
     if (!r) r = property(b, l + 1);
+    if (!r) r = parameter_condition(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }

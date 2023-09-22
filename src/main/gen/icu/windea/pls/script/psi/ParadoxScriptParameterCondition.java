@@ -13,6 +13,9 @@ import javax.swing.Icon;
 
 public interface ParadoxScriptParameterCondition extends PsiListLikeElement {
 
+  @NotNull
+  List<ParadoxScriptParameterCondition> getParameterConditionList();
+
   @Nullable
   ParadoxScriptParameterConditionExpression getParameterConditionExpression();
 

@@ -33,6 +33,12 @@ public class ParadoxScriptParameterConditionImpl extends ASTWrapperPsiElement im
   }
 
   @Override
+  @NotNull
+  public List<ParadoxScriptParameterCondition> getParameterConditionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameterCondition.class);
+  }
+
+  @Override
   @Nullable
   public ParadoxScriptParameterConditionExpression getParameterConditionExpression() {
     return PsiTreeUtil.getChildOfType(this, ParadoxScriptParameterConditionExpression.class);

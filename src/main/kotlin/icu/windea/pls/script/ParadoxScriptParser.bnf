@@ -189,7 +189,6 @@ private block_value ::= scripted_variable_reference | boolean | int | float | st
 
 //parameter condition
 //should in definition declaration (script_value / scripted_effect / scripted_trigger)
-//currently nested parameter_condition is not supported
 parameter_condition ::= LEFT_BRACKET parameter_condition_expr parameter_condition_item * RIGHT_BRACKET{
   pin=1
   recoverWhile="#auto"
@@ -207,7 +206,7 @@ parameter_condition_parameter ::= CONDITION_PARAMETER_TOKEN {
   implements="icu.windea.pls.core.psi.ParadoxConditionParameter"
   methods=[getIcon getName setName getValue getTextOffset getReference]
 }
-private parameter_condition_item ::= COMMENT | parameter_condition_value | property
+private parameter_condition_item ::= COMMENT | parameter_condition_value | property | parameter_condition
 private parameter_condition_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
 // inline math rules
