@@ -82,6 +82,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitInlineMathExpression(o);
   }
 
+  public void visitInlineParameterCondition(@NotNull ParadoxScriptInlineParameterCondition o) {
+    visitPsiElement(o);
+  }
+
   public void visitInt(@NotNull ParadoxScriptInt o) {
     visitValue(o);
     // visitPsiLiteralValue(o);

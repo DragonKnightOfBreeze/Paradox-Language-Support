@@ -4,12 +4,13 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.core.psi.ParadoxParameterAwareElement;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import javax.swing.Icon;
 
-public interface ParadoxScriptScriptedVariableName extends ParadoxParameterAwareElement {
+public interface ParadoxScriptInlineParameterCondition extends PsiElement {
 
   @NotNull
   List<ParadoxScriptInlineParameterCondition> getInlineParameterConditionList();
@@ -18,10 +19,13 @@ public interface ParadoxScriptScriptedVariableName extends ParadoxParameterAware
   List<ParadoxScriptParameter> getParameterList();
 
   @Nullable
-  String getName();
+  ParadoxScriptParameterConditionExpression getParameterConditionExpression();
+
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
   @Nullable
-  String getValue();
+  String getConditionExpression();
 
   @NotNull
   ItemPresentation getPresentation();

@@ -11,17 +11,19 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import javax.swing.Icon;
 
-public class ParadoxScriptScriptedVariableNameImpl extends ASTWrapperPsiElement implements ParadoxScriptScriptedVariableName {
+public class ParadoxScriptInlineParameterConditionImpl extends ASTWrapperPsiElement implements ParadoxScriptInlineParameterCondition {
 
-  public ParadoxScriptScriptedVariableNameImpl(@NotNull ASTNode node) {
+  public ParadoxScriptInlineParameterConditionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitScriptedVariableName(this);
+    visitor.visitInlineParameterCondition(this);
   }
 
   @Override
@@ -44,14 +46,20 @@ public class ParadoxScriptScriptedVariableNameImpl extends ASTWrapperPsiElement 
 
   @Override
   @Nullable
-  public String getName() {
-    return ParadoxScriptPsiImplUtil.getName(this);
+  public ParadoxScriptParameterConditionExpression getParameterConditionExpression() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptParameterConditionExpression.class);
+  }
+
+  @Override
+  @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
   @Nullable
-  public String getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
+  public String getConditionExpression() {
+    return ParadoxScriptPsiImplUtil.getConditionExpression(this);
   }
 
   @Override

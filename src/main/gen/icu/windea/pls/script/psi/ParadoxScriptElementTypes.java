@@ -22,6 +22,7 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_PAR_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_PAR_EXPRESSION");
   IElementType INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE");
   IElementType INLINE_MATH_UNARY_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_UNARY_EXPRESSION");
+  IElementType INLINE_PARAMETER_CONDITION = ParadoxScriptElementTypeFactory.getElementType("INLINE_PARAMETER_CONDITION");
   IElementType INT = ParadoxScriptElementTypeFactory.getElementType("INT");
   IElementType PARAMETER = ParadoxScriptElementTypeFactory.getElementType("PARAMETER");
   IElementType PARAMETER_CONDITION = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION");
@@ -117,6 +118,9 @@ public interface ParadoxScriptElementTypes {
       }
       else if (type == INLINE_MATH_UNARY_EXPRESSION) {
         return new ParadoxScriptInlineMathUnaryExpressionImpl(node);
+      }
+      else if (type == INLINE_PARAMETER_CONDITION) {
+        return new ParadoxScriptInlineParameterConditionImpl(node);
       }
       else if (type == INT) {
         return new ParadoxScriptIntImpl(node);

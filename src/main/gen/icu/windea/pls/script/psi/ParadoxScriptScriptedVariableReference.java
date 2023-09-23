@@ -17,6 +17,9 @@ import javax.swing.Icon;
 public interface ParadoxScriptScriptedVariableReference extends ParadoxScriptValue, ParadoxScriptedVariableReference, ParadoxParameterAwareElement {
 
   @NotNull
+  List<ParadoxScriptInlineParameterCondition> getInlineParameterConditionList();
+
+  @NotNull
   List<ParadoxScriptParameter> getParameterList();
 
   @NotNull

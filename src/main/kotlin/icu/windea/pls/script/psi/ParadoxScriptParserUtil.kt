@@ -8,9 +8,11 @@ import com.intellij.psi.*
 
 object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
-    fun skipWhitespace(b: PsiBuilder, l: Int): Boolean {
-        val tokenType = b.rawLookup(0)
-        if(tokenType == TokenType.WHITE_SPACE || tokenType == ParadoxScriptElementTypes.COMMENT) return false
+    fun processTemplate(b: PsiBuilder, l: Int): Boolean {
+        val tokenType = b.rawLookup(-1)
+        if(tokenType == TokenType.WHITE_SPACE) return false
+        if(tokenType == ParadoxScriptElementTypes.COMMENT) return false
+        if(tokenType in ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS) return false
         return true
     }
 }

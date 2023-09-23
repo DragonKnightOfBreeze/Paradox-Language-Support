@@ -621,6 +621,35 @@ object ParadoxScriptPsiImplUtil {
     }
     //endregion
     
+    //region ParadoxScriptInlineParameterCondition
+    @JvmStatic
+    fun getIcon(element: ParadoxScriptInlineParameterCondition, @Iconable.IconFlags flags: Int): Icon {
+        return PlsIcons.ScriptParameterCondition
+    }
+    
+    @JvmStatic
+    fun getConditionExpression(element: ParadoxScriptInlineParameterCondition): String? {
+        val conditionExpression = element.parameterConditionExpression ?: return null
+        var builder: StringBuilder? = null
+        conditionExpression.processChild {
+            when {
+                it.elementType == NOT_EQUAL_SIGN -> {
+                    val builderToUse = builder ?: StringBuilder().apply { builder = this }
+                    builderToUse.append("!")
+                    true
+                }
+                it is ParadoxScriptParameterConditionParameter -> {
+                    val builderToUse = builder ?: StringBuilder().apply { builder = this }
+                    builderToUse.append(it.name)
+                    false
+                }
+                else -> true
+            }
+        }
+        return builder?.toString()
+    }
+    //endregion
+    
     //region ParadoxScriptParameterConditionParameter
     @JvmStatic
     fun getIcon(element: ParadoxScriptParameterConditionParameter, @Iconable.IconFlags flags: Int): Icon {

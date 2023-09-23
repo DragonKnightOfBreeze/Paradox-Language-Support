@@ -17,6 +17,9 @@ import javax.swing.Icon;
 public interface ParadoxScriptPropertyKey extends PsiLiteralValue, ParadoxScriptStringExpressionElement, ParadoxParameterAwareElement {
 
   @NotNull
+  List<ParadoxScriptInlineParameterCondition> getInlineParameterConditionList();
+
+  @NotNull
   List<ParadoxScriptParameter> getParameterList();
 
   @NotNull

@@ -51,13 +51,14 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
     isEquivalentTo toString
   ]
 }
-scripted_variable_name ::= AT ( SCRIPTED_VARIABLE_NAME_TOKEN | parameter ) + {
+scripted_variable_name ::= AT scripted_variable_name_part (<<processTemplate>> scripted_variable_name_part) * {
   pin=1;
   implements=[
     "icu.windea.pls.core.psi.ParadoxParameterAwareElement"
   ]
   methods=[getName getValue]
 }
+private scripted_variable_name_part ::= SCRIPTED_VARIABLE_NAME_TOKEN | parameter | inline_parameter_condition
 private scripted_variable_separator ::= EQUAL_SIGN
 private scripted_variable_value ::= boolean | int | float | string
 
@@ -79,7 +80,7 @@ property ::= property_key property_separator property_value {
     isEquivalentTo toString
   ]
 }
-property_key ::= ( PROPERTY_KEY_TOKEN | parameter ) + {
+property_key ::= property_key_part (<<processTemplate>> property_key_part) * {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
@@ -91,6 +92,7 @@ property_key ::= ( PROPERTY_KEY_TOKEN | parameter ) + {
     getReference getReferences toString
   ]
 }
+private property_key_part ::= PROPERTY_KEY_TOKEN | parameter | inline_parameter_condition
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 private property_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
@@ -107,7 +109,7 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
     getType getExpression getConfigExpression
   ]
 }
-scripted_variable_reference ::= AT ( SCRIPTED_VARIABLE_REFERENCE_TOKEN | parameter ) + {
+scripted_variable_reference ::= AT scripted_variable_reference_part (<<processTemplate>> scripted_variable_reference_part) * {
   extends=value
   implements=[
     "icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
@@ -115,6 +117,7 @@ scripted_variable_reference ::= AT ( SCRIPTED_VARIABLE_REFERENCE_TOKEN | paramet
   ]
   methods=[getIcon getName setName getValue getReference getType getExpression]
 }
+private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | parameter | inline_parameter_condition
 boolean ::= BOOLEAN_TOKEN {
   extends=value
   implements=[
@@ -141,7 +144,7 @@ float ::= FLOAT_TOKEN {
   ]
   methods=[getName getValue getFloatValue getType]
 }
-string ::= ( STRING_TOKEN <<skipWhitespace>> | parameter) + {
+string ::= string_part (<<processTemplate>> string_part) * {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
@@ -154,6 +157,7 @@ string ::= ( STRING_TOKEN <<skipWhitespace>> | parameter) + {
     getReference getReferences toString
   ]
 }
+private string_part ::= STRING_TOKEN | parameter | inline_parameter_condition
 color ::= COLOR_TOKEN {
   extends=value
   methods=[getValue getColorType getColorArgs getColor setColor getType]
@@ -209,6 +213,14 @@ parameter_condition_parameter ::= CONDITION_PARAMETER_TOKEN {
 }
 private parameter_condition_item ::= COMMENT | parameter_condition_value | property | parameter_condition
 private parameter_condition_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
+
+//inline parameter condition
+inline_parameter_condition ::= LEFT_BRACKET parameter_condition_expr inline_parameter_condition_item * RIGHT_BRACKET{
+  pin=1
+  recoverWhile="#auto"
+  methods=[getIcon getConditionExpression]
+}
+private inline_parameter_condition_item ::= STRING_TOKEN | parameter | inline_parameter_condition
 
 // inline math rules
 
@@ -280,7 +292,6 @@ inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERE
 //icu.windea.pls.script.psi.ParadoxScriptParserUtil.doParameter
 parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END {
   pin=2
-  recoverWhile="#auto"
   implements=[
     "icu.windea.pls.core.psi.ParadoxParameter"
   ]
@@ -292,7 +303,6 @@ private parameter_default_value ::= BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | ST
 inline_math_parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE inline_math_parameter_default_value] PARAMETER_END {
   extends=inline_math_factor
   pin=2
-  recoverWhile="#auto"
   implements="icu.windea.pls.core.psi.ParadoxParameter"
   methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
 }

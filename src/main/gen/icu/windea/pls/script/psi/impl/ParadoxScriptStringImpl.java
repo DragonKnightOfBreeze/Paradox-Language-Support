@@ -36,6 +36,12 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
 
   @Override
   @NotNull
+  public List<ParadoxScriptInlineParameterCondition> getInlineParameterConditionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineParameterCondition.class);
+  }
+
+  @Override
+  @NotNull
   public List<ParadoxScriptParameter> getParameterList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameter.class);
   }

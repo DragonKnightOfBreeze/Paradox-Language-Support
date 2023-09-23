@@ -83,11 +83,9 @@ object ParadoxParameterHandler {
             }
             
             override fun elementFinished(element: PsiElement?) {
-                if(element is ParadoxScriptParameterCondition) finishParadoxCondition()
-            }
-            
-            private fun finishParadoxCondition() {
-                fileConditionStack.removeLast()
+                if(element is ParadoxScriptParameterCondition || element is ParadoxScriptInlineParameterCondition) {
+                    fileConditionStack.removeLast()
+                }
             }
         })
         return ParadoxParameterContextInfo(parameters, file.project, gameType)

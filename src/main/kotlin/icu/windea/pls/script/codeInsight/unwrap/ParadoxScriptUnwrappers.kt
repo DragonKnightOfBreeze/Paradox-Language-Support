@@ -56,4 +56,17 @@ object ParadoxScriptUnwrappers {
             return e is ParadoxScriptParameterCondition
         }
     }
+    
+    class ParadoxScriptInlineParameterConditionRemover(key: String) : ParadoxScriptRemover(key) {
+        override fun getName(e: PsiElement): String {
+            return when(e) {
+                is ParadoxScriptInlineParameterCondition -> e.conditionExpression?.let { PlsConstants.parameterConditionFolder(it) } ?: PlsConstants.unresolvedString
+                else -> ""
+            }
+        }
+        
+        override fun isApplicableTo(e: PsiElement): Boolean {
+            return e is ParadoxScriptInlineParameterCondition
+        }
+    }
 }
