@@ -40,6 +40,10 @@ class ParadoxScriptParserDefinition : ParserDefinition {
             leftType == AT && rightType == SCRIPTED_VARIABLE_NAME_TOKEN -> MUST_NOT
             leftType == AT && rightType == SCRIPTED_VARIABLE_REFERENCE_TOKEN -> MUST_NOT
             leftType == PIPE || rightType == PIPE -> MUST_NOT
+            leftType == SCRIPTED_VARIABLE_NAME_TOKEN && rightType == SCRIPTED_VARIABLE_NAME_TOKEN -> MUST_NOT
+            leftType == SCRIPTED_VARIABLE_REFERENCE_TOKEN && rightType == SCRIPTED_VARIABLE_REFERENCE_TOKEN -> MUST_NOT
+            leftType == PROPERTY_KEY_TOKEN && rightType == PROPERTY_KEY_TOKEN -> MUST_NOT
+            leftType == STRING_TOKEN && rightType == STRING_TOKEN -> MUST_NOT
             else -> MAY
         }
     }

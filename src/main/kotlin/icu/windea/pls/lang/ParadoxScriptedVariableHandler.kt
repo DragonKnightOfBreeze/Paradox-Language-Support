@@ -54,7 +54,11 @@ object ParadoxScriptedVariableHandler {
     
     private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {
         //这里认为名字是不带参数的
-        return node.firstChild(tree, SCRIPTED_VARIABLE_NAME)?.firstChild(tree, SCRIPTED_VARIABLE_NAME_TOKEN)?.internNode(tree)?.toString()
+        return node.firstChild(tree, SCRIPTED_VARIABLE_NAME)
+            ?.children(tree)
+            ?.takeIf { it.size == 2 && it.first().tokenType == AT }
+            ?.last()
+            ?.internNode(tree)?.toString()
     }
     
     fun shouldCreateStub(node: ASTNode): Boolean {

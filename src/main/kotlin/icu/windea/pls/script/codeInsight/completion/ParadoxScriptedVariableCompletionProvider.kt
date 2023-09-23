@@ -15,7 +15,9 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         //同时需要同时查找当前文件中的和全局的
-        val element = parameters.position.parent
+        val position = parameters.position
+        if(position.prevSibling?.takeIf { it != ParadoxScriptElementTypes.AT } != null || position.nextSibling != null) return
+        val element = position.parent
         val file = parameters.originalFile
         val project = file.project
         val selector = scriptedVariableSelector(project, element).contextSensitive().distinctByName()

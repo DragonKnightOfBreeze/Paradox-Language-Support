@@ -10,6 +10,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
 import com.intellij.lang.LightPsiParser;
+import static com.intellij.lang.WhitespacesBinders.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class ParadoxScriptParser implements PsiParser, LightPsiParser {
@@ -307,7 +308,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PARAMETER_START  PARAMETER_TOKEN [PIPE inline_math_parameter_default_value] PARAMETER_END
+  // PARAMETER_START PARAMETER_TOKEN [PIPE inline_math_parameter_default_value] PARAMETER_END
   public static boolean inline_math_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_parameter")) return false;
     boolean r, p;
@@ -410,31 +411,29 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PARAMETER_START <<doParameter>> PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END
+  // PARAMETER_START PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END
   public static boolean parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, PARAMETER, "<parameter>");
-    r = consumeToken(b, PARAMETER_START);
-    r = r && processParameter(b, l + 1);
+    r = consumeTokens(b, 2, PARAMETER_START, PARAMETER_TOKEN);
     p = r; // pin = 2
-    r = r && report_error_(b, consumeToken(b, PARAMETER_TOKEN));
-    r = p && report_error_(b, parameter_3(b, l + 1)) && r;
+    r = r && report_error_(b, parameter_2(b, l + 1));
     r = p && consumeToken(b, PARAMETER_END) && r;
     exit_section_(b, l, m, r, p, parameter_auto_recover_);
     return r || p;
   }
 
   // [PIPE parameter_default_value]
-  private static boolean parameter_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_3")) return false;
-    parameter_3_0(b, l + 1);
+  private static boolean parameter_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_2")) return false;
+    parameter_2_0(b, l + 1);
     return true;
   }
 
   // PIPE parameter_default_value
-  private static boolean parameter_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_3_0")) return false;
+  private static boolean parameter_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, PIPE);
@@ -801,12 +800,12 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ( STRING_TOKEN | parameter) +
+  // ( STRING_TOKEN <<skipWhitespace>> | parameter) +
   public static boolean string(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string")) return false;
     if (!nextTokenIs(b, "<string>", PARAMETER_START, STRING_TOKEN)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, STRING, "<string>");
+    Marker m = enter_section_(b, l, _COLLAPSE_, STRING, "<string>");
     r = string_0(b, l + 1);
     while (r) {
       int c = current_position_(b);
@@ -817,13 +816,24 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // STRING_TOKEN | parameter
+  // STRING_TOKEN <<skipWhitespace>> | parameter
   private static boolean string_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, STRING_TOKEN);
+    r = string_0_0(b, l + 1);
     if (!r) r = parameter(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // STRING_TOKEN <<skipWhitespace>>
+  private static boolean string_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "string_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, STRING_TOKEN);
+    r = r && skipWhitespace(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }

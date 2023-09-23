@@ -1,4 +1,5 @@
 {
+  parserImports="static com.intellij.lang.WhitespacesBinders.*"
   parserClass="icu.windea.pls.script.psi.ParadoxScriptParser"
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
   psiClassPrefix="ParadoxScript"
@@ -140,7 +141,7 @@ float ::= FLOAT_TOKEN {
   ]
   methods=[getName getValue getFloatValue getType]
 }
-string ::= ( STRING_TOKEN | parameter) + {
+string ::= ( STRING_TOKEN <<skipWhitespace>> | parameter) + {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
@@ -277,7 +278,7 @@ inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERE
 //* inline math expressions
 
 //icu.windea.pls.script.psi.ParadoxScriptParserUtil.doParameter
-parameter ::= PARAMETER_START <<processParameter>> PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END {
+parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END {
   pin=2
   recoverWhile="#auto"
   implements=[

@@ -540,6 +540,18 @@ inline fun LighterASTNode.firstChild(tree: LighterAST, predicate: (LighterASTNod
     return null
 }
 
+fun LighterASTNode.children(tree: LighterAST): List<LighterASTNode> {
+    return tree.getChildren(this)
+}
+
+fun LighterASTNode.childrenOfType(tree: LighterAST, type: IElementType): List<LighterASTNode> {
+    return LightTreeUtil.getChildrenOfType(tree, this, type)
+}
+
+fun LighterASTNode.childrenOfType(tree: LighterAST, types: TokenSet): List<LighterASTNode> {
+    return LightTreeUtil.getChildrenOfType(tree, this, types)
+}
+
 fun LighterASTNode.internNode(tree: LighterAST): CharSequence? {
     if(this !is LighterASTTokenNode) return null
     return tree.charTable.intern(this.text).toString()
