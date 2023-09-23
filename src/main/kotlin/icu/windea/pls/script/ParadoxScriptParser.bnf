@@ -220,7 +220,7 @@ inline_parameter_condition ::= LEFT_BRACKET <<processInlineParameterCondition>> 
   methods=[getIcon getConditionExpression]
 }
 private inline_parameter_condition_item ::= inline_parameter_condition_item_part (<<processTemplate>> inline_parameter_condition_item_part) *
-private inline_parameter_condition_item_part ::= STRING_TOKEN | parameter | inline_parameter_condition
+private inline_parameter_condition_item_part ::= PROPERTY_KEY_TOKEN | STRING_TOKEN | SCRIPTED_VARIABLE_NAME_TOKEN | SCRIPTED_VARIABLE_REFERENCE_TOKEN  | parameter | inline_parameter_condition
 
 // inline math rules
 
