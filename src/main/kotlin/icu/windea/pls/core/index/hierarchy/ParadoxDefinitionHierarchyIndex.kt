@@ -1,6 +1,5 @@
 package icu.windea.pls.core.index.hierarchy
 
-import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
@@ -22,7 +21,7 @@ import java.util.*
  */
 abstract class ParadoxDefinitionHierarchyIndex<T> : ParadoxFileBasedIndex<List<T>>() {
     companion object {
-        private val markKey = Key.create<Boolean>("paradox.definition.hierarchy.index.mark")
+        private val markKey = createKey<Boolean>("paradox.definition.hierarchy.index.mark")
     }
     
     override fun indexData(file: PsiFile, fileData: MutableMap<String, List<T>>) {

@@ -22,8 +22,6 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.cwt.config.*
-import icu.windea.pls.lang.cwt.expression.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.stub.*
@@ -246,5 +244,5 @@ private val PlsKeys.parameterDataCache by createKey("paradox.parameterDataCache"
 }
 private val Project.parameterDataCache by PlsKeys.parameterDataCache
 
-private val PlsKeys.parameterInferredConfig by Key.create<CwtValueConfig>("paradox.parameterInferredConfig")
-private val PlsKeys.parameterInferredContextConfigs by Key.create<List<CwtMemberConfig<*>>>("paradox.parameterInferredContextConfigs")
+private val PlsKeys.parameterInferredConfig by createKey<CwtValueConfig>("paradox.parameterInferredConfig")
+private val PlsKeys.parameterInferredContextConfigs by createKey<List<CwtMemberConfig<*>>>("paradox.parameterInferredContextConfigs")

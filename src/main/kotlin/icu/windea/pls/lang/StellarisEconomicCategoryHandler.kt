@@ -3,7 +3,6 @@ package icu.windea.pls.lang
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.*
@@ -23,8 +22,8 @@ import java.lang.invoke.*
 object StellarisEconomicCategoryHandler {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
-    val cachedEconomicCategoryInfoKey = Key.create<CachedValue<StellarisEconomicCategoryInfo>>("paradox.cached.economicCategoryInfo")
-    val modifierCategoriesKey = Key.create<Set<String>>("stellaris.economicCategory.modifierCategories")
+    val cachedEconomicCategoryInfoKey = createKey<CachedValue<StellarisEconomicCategoryInfo>>("paradox.cached.economicCategoryInfo")
+    val modifierCategoriesKey = createKey<Set<String>>("stellaris.economicCategory.modifierCategories")
     
     /**
      * 输入[definition]的定义类型应当保证是`economic_category`。

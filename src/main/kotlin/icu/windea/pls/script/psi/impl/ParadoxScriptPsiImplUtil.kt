@@ -541,7 +541,9 @@ object ParadoxScriptPsiImplUtil {
     }
     
     private fun isBlockComponent(element: PsiElement): Boolean {
-        return element is ParadoxScriptScriptedVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
+        return element is ParadoxScriptScriptedVariable
+            || element is ParadoxScriptProperty
+            || element is ParadoxScriptValue
             || element is ParadoxScriptParameterCondition
     }
     
@@ -613,7 +615,8 @@ object ParadoxScriptPsiImplUtil {
     }
     
     private fun isParameterConditionComponent(element: PsiElement): Boolean {
-        return element is ParadoxScriptScriptedVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
+        return element is ParadoxScriptProperty
+            || element is ParadoxScriptValue
             || element is ParadoxScriptParameterCondition
     }
     //endregion

@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.*
  * 
  * @see icu.windea.pls.lang.config.impl.CwtParameterValueConfigContextProvider
  */
-class ParadoxScriptInjector : MultiHostInjector {
+class ParadoxScriptLanguageInjector : MultiHostInjector {
     //see: com.intellij.util.InjectionUtils
     //see: com.intellij.psi.impl.source.tree.injected.InjectedFileViewProvider
     //see: org.intellij.plugins.intelliLang.inject.InjectorUtils
@@ -58,7 +58,6 @@ class ParadoxScriptInjector : MultiHostInjector {
     
     private fun applyInjectionForArgumentValue(host: PsiElement, allInjectionInfos: MutableList<ParameterValueInjectionInfo>) {
         if(host !is ParadoxScriptString) return
-        if(!getSettings().inference.parameterConfig) return
         val injectionInfos = getInjectionInfosForArgumentValue(host)
         if(injectionInfos.isEmpty()) return
         
@@ -93,7 +92,6 @@ class ParadoxScriptInjector : MultiHostInjector {
     
     private fun applyInjectionForParameterDefaultValue(host: PsiElement, allInjectionInfos: MutableList<ParameterValueInjectionInfo>) {
         if(host !is ParadoxParameter) return
-        if(!getSettings().inference.parameterConfig) return
         val injectionInfo = getInjectionInfoForParameterDefaultValue(host)
         if(injectionInfo == null) return
         
@@ -122,6 +120,6 @@ class ParadoxScriptInjector : MultiHostInjector {
     }
     
     object Keys {
-        val parameterValueInjectionInfos = Key.create<List<ParameterValueInjectionInfo>>("paradox.script.injection.parameterValueInjectionInfo")
+        val parameterValueInjectionInfos = createKey<List<ParameterValueInjectionInfo>>("paradox.script.injection.parameterValueInjectionInfo")
     }
 }

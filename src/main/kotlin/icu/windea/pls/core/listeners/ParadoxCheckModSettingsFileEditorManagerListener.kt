@@ -4,7 +4,6 @@ import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.roots.*
-import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -16,7 +15,7 @@ import icu.windea.pls.model.*
  */
 class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListener {
     companion object {
-        val modPathsKey = Key.create<MutableSet<String>>("paradox.modSettings.check.modPaths")
+        val modPathsKey = createKey<MutableSet<String>>("paradox.modSettings.check.modPaths")
     }
     
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {

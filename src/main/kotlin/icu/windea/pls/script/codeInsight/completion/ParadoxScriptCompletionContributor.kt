@@ -20,7 +20,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		
 		//当用户可能正在输入一个propertyKey或string时提示
 		val definitionPattern = psiElement()
-			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_OR_SNIPPET_TOKENS)
+			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
 		extend(definitionPattern, ParadoxDefinitionCompletionProvider())
 		
 		//当用户可能正在输入一个eventId时提示
@@ -44,7 +44,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		
 		//当用户可能正在输入一个定义的名字时提示
 		val definitionNamePattern = psiElement()
-			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_OR_SNIPPET_TOKENS)
+			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
 		extend(CompletionType.BASIC, definitionNamePattern, ParadoxDefinitionNameCompletionProvider())
 		
 		//当用户可能正在输入一个变量名时提示

@@ -9,11 +9,11 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 val ParadoxScriptScriptedVariableName.idElement: PsiElement? get() = firstChild?.nextSibling?.takeIf { it.elementType == SCRIPTED_VARIABLE_NAME_TOKEN }
 
-val ParadoxScriptPropertyKey.idElement: PsiElement? get() = firstChild?.takeIf { it.elementType == PROPERTY_KEY_TOKEN }
+val ParadoxScriptPropertyKey.idElement: PsiElement? get() = firstChild?.takeIf { it.nextSibling == null && it.elementType == PROPERTY_KEY_TOKEN }
 
 val ParadoxScriptScriptedVariableReference.idElement: PsiElement? get() = firstChild?.nextSibling?.takeIf { it.elementType == SCRIPTED_VARIABLE_REFERENCE_TOKEN }
 
-val ParadoxScriptString.idElement: PsiElement? get() = firstChild?.takeIf { it.elementType == STRING_TOKEN }
+val ParadoxScriptString.idElement: PsiElement? get() = firstChild?.takeIf { it.nextSibling == null && it.elementType == STRING_TOKEN }
 
 val ParadoxScriptParameterConditionParameter.idElement: PsiElement get() = findChild(CONDITION_PARAMETER_TOKEN)!!
 

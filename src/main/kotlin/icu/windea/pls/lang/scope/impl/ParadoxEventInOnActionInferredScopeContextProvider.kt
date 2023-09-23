@@ -2,7 +2,6 @@ package icu.windea.pls.lang.scope.impl
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -19,7 +18,7 @@ import icu.windea.pls.lang.scope.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-private  val cachedScopeContextInferenceInfoKey = Key.create<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.in.onAction")
+private  val cachedScopeContextInferenceInfoKey = createKey<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.in.onAction")
 
 /**
  * 如果某个event在某个on_action中被调用，

@@ -17,8 +17,6 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.cwt.*
-import icu.windea.pls.lang.cwt.config.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.documentation.impl.*
 import icu.windea.pls.localisation.*
@@ -100,7 +98,12 @@ fun String.isParameterized(): Boolean {
                 isEscaped = true
                 return@forEachFast
             }
+            // a_$PARAM$_b - 高级插值语法 A
             c == '$' -> {
+                if(!isEscaped) return true
+            }
+            // a_[[PARAM]b]_c - 高级插值语法 B
+            c == '[' -> {
                 if(!isEscaped) return true
             }
         }

@@ -2,7 +2,6 @@ package icu.windea.pls.lang
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icons.*
@@ -20,7 +19,7 @@ import icu.windea.pls.script.psi.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationParameterHandler {
-    val cachedParameterNamesKey = Key.create<CachedValue<Set<String>>>("paradox.localisation.property.cached.parameterNames")
+    val cachedParameterNamesKey = createKey<CachedValue<Set<String>>>("paradox.localisation.property.cached.parameterNames")
     
     fun getParameterNames(element: ParadoxLocalisationProperty): Set<String> {
         return doGetParameterNamesFromCache(element)
