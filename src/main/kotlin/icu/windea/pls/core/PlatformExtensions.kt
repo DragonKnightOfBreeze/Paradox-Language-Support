@@ -922,6 +922,7 @@ fun PsiFile.getShreds(): Place? {
     //why it's deprecated and internal???
     //@Suppress("UnstableApiUsage", "DEPRECATION")
     //return InjectedLanguageUtilBase.getShreds(this)
+    
     return viewProvider.document.castOrNull<DocumentWindow>()?.getShreds()
 }
 //endregion

@@ -19,10 +19,9 @@ val SearchRequestCollector.wordRequests: MutableList<PsiSearchRequest> by member
 val SearchRequestCollector.queryRequests: MutableList<QuerySearchRequest> by memberProperty<SearchRequestCollector, _>("myQueryRequests")
 
 //com.intellij.psi.impl.source.tree.injected.DocumentWindowImpl.getShreds
-private val DocumentWindow_getShreds = memberFunction<DocumentWindow>("getShreds", "com.intellij.psi.impl.source.tree.injected.DocumentWindowImpl")
+private val DocumentWindow_getShreds = memberFunction("getShreds", "com.intellij.psi.impl.source.tree.injected.DocumentWindowImpl")
 fun DocumentWindow.getShreds(): Place? = runCatching { DocumentWindow_getShreds(this) }.getOrNull()?.cast()
 
-//TODO 1.1.7+ unsupported by kotlin yet
 //com.intellij.codeInsight.documentation.DocumentationFontSize.getDocumentationFontSize
-//private val _getDocumentationFontSize = staticFunction<Any>("getDocumentationFontSize", "com.intellij.codeInsight.documentation.DocumentationFontSize")
-//fun getDocumentationFontSize(): FontSize = _getDocumentationFontSize().cast()
+private val _getDocumentationFontSize = staticFunction("getDocumentationFontSize", "com.intellij.codeInsight.documentation.DocumentationFontSize")
+fun getDocumentationFontSize(): FontSize = runCatching {  _getDocumentationFontSize() }.getOrNull()?.cast() ?: FontSize.SMALL
