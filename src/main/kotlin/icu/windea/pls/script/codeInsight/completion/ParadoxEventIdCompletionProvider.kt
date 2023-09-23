@@ -14,7 +14,9 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		val element = parameters.position.parent?.castOrNull<ParadoxScriptString>() ?: return
+		val position = parameters.position
+		val element = position.parent?.castOrNull<ParadoxScriptString>() ?: return
+		if(element.text.isParameterized()) return
 		val offsetInParent = parameters.offset - element.startOffset
 		val keyword = element.getKeyword(offsetInParent)
 		if(keyword.contains('.')) return

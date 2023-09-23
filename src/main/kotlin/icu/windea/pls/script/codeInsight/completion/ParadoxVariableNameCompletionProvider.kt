@@ -20,8 +20,9 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         if(!getSettings().completion.completeVariableNames) return
         
-        val element = parameters.position.parent.castOrNull<ParadoxScriptString>() ?: return
-        
+        val position = parameters.position
+        val element = position.parent.castOrNull<ParadoxScriptString>() ?: return
+        if(element.text.isParameterized()) return
         val file = parameters.originalFile
         val quoted = element.text.isLeftQuoted()
         val rightQuoted = element.text.isRightQuoted()

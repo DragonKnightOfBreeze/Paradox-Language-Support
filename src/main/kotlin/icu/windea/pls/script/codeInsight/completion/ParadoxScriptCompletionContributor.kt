@@ -5,12 +5,13 @@ import com.intellij.patterns.PlatformPatterns.*
 import icu.windea.pls.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptCompletionContributor : CompletionContributor() {
 	init {
 		//当用户可能正在输入一个关键字（布尔值或子句）时提示
-		val keywordPattern = psiElement(STRING_TOKEN)
+		val keywordPattern = psiElement()
+			.withElementType(ParadoxScriptTokenSets.STRING_TOKENS)
+			.withParent(psiElement(ParadoxScriptString::class.java))
 		extend(CompletionType.BASIC, keywordPattern, ParadoxKeywordCompletionProvider())
 		
 		//当用户可能正在输入一个scriptedVariableReference的名字时提示
@@ -40,7 +41,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		
 		//当用户可能正在输入一个scriptedVariable的名字时提示（除非用户也可能正在输入一个引用的名字）
 		val scriptedVariableNamePattern = psiElement()
-			.withElementType(SCRIPTED_VARIABLE_NAME_TOKEN)
+			.withElementType(ParadoxScriptTokenSets.SCRIPTED_VARIABLE_NAME_TOKENS)
 		extend(CompletionType.BASIC, scriptedVariableNamePattern, ParadoxScriptedVariableNameCompletionProvider())
 		
 		//当用户可能正在输入一个定义的名字时提示

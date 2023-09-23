@@ -12,11 +12,11 @@ import icu.windea.pls.script.psi.*
 class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val position = parameters.position
-		if(position.prevSibling != null || position.nextSibling != null) return
-		val stringElement = position.parent?.castOrNull<ParadoxScriptString>() ?: return
-		if(stringElement.text.isLeftQuoted()) return
-		if(stringElement.isExpression()) {
-			if(stringElement.findParentDefinition() != null) return
+		val element = position.parent?.castOrNull<ParadoxScriptString>() ?: return
+		if(element.text.isLeftQuoted()) return
+		if(element.text.isParameterized()) return
+		if(element.isExpression()) {
+			if(element.findParentDefinition() != null) return
 		}
 		
 		result.addElement(PlsLookupElements.yesLookupElement)

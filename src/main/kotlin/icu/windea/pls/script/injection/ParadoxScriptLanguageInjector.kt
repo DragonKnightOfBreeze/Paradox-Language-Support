@@ -1,6 +1,7 @@
 package icu.windea.pls.script.injection
 
 import com.intellij.lang.injection.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -42,7 +43,9 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         
         val allInjectionInfos = mutableListOf<ParameterValueInjectionInfo>()
         
+        ProgressManager.checkCanceled()
         applyInjectionForArgumentValue(host, allInjectionInfos)
+        ProgressManager.checkCanceled()
         applyInjectionForParameterDefaultValue(host, allInjectionInfos)
         
         host.putUserData(Keys.parameterValueInjectionInfos, allInjectionInfos.orNull())

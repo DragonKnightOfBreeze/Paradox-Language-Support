@@ -32,6 +32,12 @@ public class ParadoxScriptRootBlockImpl extends ASTWrapperPsiElement implements 
 
   @Override
   @NotNull
+  public List<ParadoxScriptParameterCondition> getParameterConditionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameterCondition.class);
+  }
+
+  @Override
+  @NotNull
   public List<ParadoxScriptProperty> getPropertyList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptProperty.class);
   }

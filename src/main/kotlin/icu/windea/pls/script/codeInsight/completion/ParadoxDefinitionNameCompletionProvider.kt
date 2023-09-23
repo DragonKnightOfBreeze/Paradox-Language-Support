@@ -23,8 +23,9 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		if(!getSettings().completion.completeDefinitionNames) return
 		
-		val element = parameters.position.parent.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
-		
+		val position = parameters.position
+		val element = position.parent.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
+		if(element.text.isParameterized()) return
 		val file = parameters.originalFile
 		val project = file.project
 		val quoted = element.text.isLeftQuoted()

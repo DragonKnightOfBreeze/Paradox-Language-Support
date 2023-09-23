@@ -5,6 +5,7 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.script.psi.*
@@ -16,14 +17,13 @@ class ParadoxScriptedVariableNameCompletionProvider: CompletionProvider<Completi
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		if(!getSettings().completion.completeScriptedVariableNames) return
 		
-		//这里不需要查找本地的封装变量（即当前文件中声明的封装变量）
-		
-		//查找全局的
 		val position = parameters.position
-		if(position.prevSibling?.takeIf { it != ParadoxScriptElementTypes.AT } != null || position.nextSibling != null) return
-		val element = position.parent
+		val element = position.parent?.castOrNull<ParadoxScriptScriptedVariable>() ?: return
+		if(element.text.isParameterized()) return
 		val file = parameters.originalFile
 		val project = file.project
+		
+		//这里不需要查找本地的封装变量（即当前文件中声明的封装变量）
 		val selector = scriptedVariableSelector(project, element).contextSensitive().notSamePosition(element).distinctByName()
 		ParadoxGlobalScriptedVariableSearch.search(selector).processQuery { processScriptedVariable(it, result) }
 	}
