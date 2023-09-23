@@ -22,6 +22,7 @@ class ParadoxScriptFileTreeElement(
 				it is ParadoxScriptScriptedVariable -> result.add(ParadoxScriptVariableTreeElement(it))
 				it is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
 				it is ParadoxScriptValue -> result.add(ParadoxScriptValueTreeElement(it))
+				it is ParadoxScriptParameterCondition -> result.add(ParadoxScriptParameterConditionTreeElement(it))
 			}
 		}
 		return result
