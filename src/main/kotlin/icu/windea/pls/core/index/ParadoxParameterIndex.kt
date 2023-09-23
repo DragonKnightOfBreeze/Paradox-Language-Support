@@ -13,7 +13,7 @@ import icu.windea.pls.script.*
 import java.io.*
 
 private val NAME = ID.create<String, List<ParadoxParameterInfo>>("paradox.parameter.index")
-private const val VERSION = 38 //1.1.8
+private const val VERSION = 39 //1.1.11
 
 class ParadoxParameterIndex : ParadoxFileBasedIndex<List<ParadoxParameterInfo>>() {
     override fun getName() = NAME
