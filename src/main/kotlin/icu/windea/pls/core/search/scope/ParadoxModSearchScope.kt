@@ -19,11 +19,6 @@ class ParadoxModSearchScope(
         return PlsBundle.message("search.scope.name.mod")
     }
     
-    override fun getModelBranchesAffectingScope(): Collection<ModelBranch> {
-        if(modDirectory == null) return emptySet()
-        return ModelBranch.getFileBranch(modDirectory).toSingletonSetOrEmpty()
-    }
-    
     override fun contains(file: VirtualFile): Boolean {
         val contextFile0 = file.findTopHostFileOrThis()
         if(!ParadoxFileHandler.canReference(contextFile, contextFile0)) return false //判断上下文文件能否引用另一个文件中的内容

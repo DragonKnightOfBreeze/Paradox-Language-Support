@@ -19,11 +19,6 @@ class ParadoxGameSearchScope(
         return PlsBundle.message("search.scope.name.game")
     }
     
-    override fun getModelBranchesAffectingScope(): Collection<ModelBranch> {
-        if(gameDirectory == null) return emptySet()
-        return ModelBranch.getFileBranch(gameDirectory).toSingletonSetOrEmpty()
-    }
-    
     override fun contains(file: VirtualFile): Boolean {
         val contextFile0 = file.findTopHostFileOrThis()
         if(!ParadoxFileHandler.canReference(contextFile, contextFile0)) return false //判断上下文文件能否引用另一个文件中的内容

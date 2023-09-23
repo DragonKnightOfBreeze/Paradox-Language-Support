@@ -1,7 +1,7 @@
 package icu.windea.pls.lang
 
 import com.fasterxml.jackson.module.kotlin.*
-import com.intellij.codeInsight.hints.*
+import com.intellij.codeInsight.daemon.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileEditor.*
@@ -311,7 +311,6 @@ object ParadoxCoreHandler {
         FileContentUtil.reparseOpenedFiles()
     }
     
-    @Suppress("UnstableApiUsage")
     fun refreshInlayHints(predicate: (VirtualFile, Project) -> Boolean = { _, _ -> true }) {
         //刷新符合条件的所有项目的所有已打开的文件的内嵌提示
         //com.intellij.codeInsight.hints.VcsCodeAuthorInlayHintsProviderKt.refreshCodeAuthorInlayHints
@@ -325,8 +324,11 @@ object ParadoxCoreHandler {
                     if(fileEditor is TextEditor) {
                         val file = fileEditor.file
                         if(predicate(file, project)) {
-                            val editor = fileEditor.editor
-                            InlayHintsPassFactory.clearModificationStamp(editor)
+                            val psiFile = file.toPsiFile(project) ?: continue
+                            DaemonCodeAnalyzer.getInstance(project).restart(psiFile)
+                            
+                            //removed in IU-233
+                            //InlayHintsPassFactory.clearModificationStamp(fileEditor.editor)
                         }
                     }
                 }
