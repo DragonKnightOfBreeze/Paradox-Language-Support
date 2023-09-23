@@ -20,7 +20,7 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
         var i1 = -2
         run {
             val t1 = b.rawLookup(i1) ?: return@run
-            if(t1 == ParadoxScriptElementTypes.STRING_TOKEN) return true
+            if(t1 in ParadoxScriptTokenSets.TEMPLATE_PARTS) return true
             if(t1 == ParadoxScriptElementTypes.PARAMETER_END) return true
             if(t1 == TokenType.WHITE_SPACE) i1--
             if(b.rawLookup(i1) in ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS) return true
@@ -30,7 +30,7 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
         while(true) {
             val t2 = b.rawLookup(i2) ?: break
             if(n == 0) {
-                if(t2 == ParadoxScriptElementTypes.STRING_TOKEN) return true
+                if(t2 in ParadoxScriptTokenSets.TEMPLATE_PARTS) return true
                 if(t2 == ParadoxScriptElementTypes.PARAMETER_START) return true
                 if(t2 == TokenType.WHITE_SPACE) i2++
                 if(b.rawLookup(i2) in ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS) return true
