@@ -3,6 +3,7 @@ package icu.windea.pls.script.psi;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 
+import java.util.*;
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
@@ -44,59 +45,52 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 %{
     private int depth = 0;
-	private boolean scriptedVariableValueStarted = false;
-	private boolean valueStarted = false;
+    private boolean scriptedVariableValueStarted = false;
+    private boolean valueStarted = false;
     private boolean inParameterCondition = false;
     private boolean leftAbsSign = true;
-	
-	private int nextStateForParameter = 0;
-	private int nextStateForParameterCondition = 0;
+    
+    private LinkedList<Integer> nextStateForParameterStack = new LinkedList<>();
+    private LinkedList<Integer> nextStateForParameterConditionStack = new LinkedList<>();
     
     public _ParadoxScriptLexer() {
         this((java.io.Reader)null);
     }
-	
-	private void beginNextState(){
-	    if(inParameterCondition){
-		    yybegin(WAITING_PARAMETER_CONDITION);
-	    } else {
+    
+    private void beginNextState(){
+        if(inParameterCondition){
+	        yybegin(WAITING_PARAMETER_CONDITION);
+        } else {
             if(depth <= 0){
-	            yybegin(YYINITIAL);
+                yybegin(YYINITIAL);
             } else {
-	            yybegin(WAITING_PROPERTY_OR_VALUE);
+                yybegin(WAITING_PROPERTY_OR_VALUE);
             }
-	    }
+        }
     }
-	
-	private void beginParameter() {
-		nextStateForParameter = yystate();
-		yybegin(WAITING_PARAMETER);
-	}
-	
-	private void finishParameter() {
-        yybegin(nextStateForParameter);
-	}
-	
-	private void beginParameterCondition() {
-		inParameterCondition=true;
-		nextStateForParameterCondition = yystate();
-		yybegin(WAITING_PARAMETER_CONDITION);
-	}
-	
-	private void finishParameterCondition(){
-		inParameterCondition=false;
-        yybegin(nextStateForParameterCondition);
+    
+    private void beginParameter() {
+	    nextStateForParameterStack.addLast(yystate());
+	    yybegin(WAITING_PARAMETER);
     }
-	
-	private boolean isParameterized() {
-		int length = yylength();
-		for(int i = 0; i < length; i++) {
-		  char c1 = yycharat(i);
-		  if(c1 == '$') return true;
-		}
-		return false;
-	}
-	
+    
+    private void finishParameter() {
+		int nextState = nextStateForParameterStack.isEmpty() ? 0 : nextStateForParameterStack.removeLast();
+        yybegin(nextState);
+    }
+    
+    private void beginParameterCondition() {
+	    inParameterCondition=true;
+	    nextStateForParameterConditionStack.addLast(yystate());
+	    yybegin(WAITING_PARAMETER_CONDITION);
+    }
+    
+    private void finishParameterCondition(){
+	    inParameterCondition=false;
+		int nextState = nextStateForParameterConditionStack.isEmpty() ? 0 : nextStateForParameterConditionStack.removeLast();
+        yybegin(nextState);
+    }
+    
     private void pushbackUntilBeforeBlank(int from){
         //回退到末尾可能出现的空白之前
         int length = yylength();
@@ -308,19 +302,12 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 }
 
 <WAITING_PARAMETER_CONDITION>{
-  {BLANK} {
-	  if(valueStarted) {
-		  valueStarted = false;
-		  beginNextState();
-	  }
-	  return WHITE_SPACE;
-  }
+  {BLANK} {return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "[" {yybegin(WAITING_PARAMETER_CONDITION_EXPRESSION); return NESTED_LEFT_BRACKET;}
   "]" {finishParameterCondition(); return RIGHT_BRACKET;}
-  "@" {yybegin(WAITING_SCRIPTED_VARIABLE); return AT;}
 }
 <WAITING_PARAMETER_CONDITION_EXPRESSION>{
   {BLANK} {return WHITE_SPACE;}
@@ -332,19 +319,12 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   {PARAMETER_TOKEN} { return CONDITION_PARAMETER_TOKEN; }
 }
 <WAITING_PARAMETER_CONDITION_BODY>{
-  {BLANK} {
-	  if(valueStarted) {
-		  valueStarted = false;
-		  beginNextState();
-	  }
-	  return WHITE_SPACE;
-  }
+  {BLANK} {return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "[" {beginParameterCondition(); return LEFT_BRACKET;}
   "]" {finishParameterCondition(); return RIGHT_BRACKET;}
-  "@" {yybegin(WAITING_SCRIPTED_VARIABLE); return AT;}
 }
 
 <WAITING_INLINE_MATH>{
