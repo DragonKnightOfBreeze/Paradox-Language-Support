@@ -260,7 +260,7 @@ fun StringBuilder.appendPsiLink(refText: String, label: String, plainLink: Boole
 }
 
 fun StringBuilder.appendCwtLink(shortLink: String, linkText: String, context: PsiElement? = null): StringBuilder {
-    //如果context不为null切链接无法被解析，则显示未解析的链接
+    //如果context不为null且链接无法被解析，则显示未解析的链接
     val linkPrefix = CwtConfigLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix$shortLink".escapeXml()
     val finalLinkText = linkText.escapeXml()
@@ -269,7 +269,7 @@ fun StringBuilder.appendCwtLink(shortLink: String, linkText: String, context: Ps
 }
 
 fun StringBuilder.appendDefinitionLink(gameType: ParadoxGameType, name: String, typeExpression: String, context: PsiElement? = null, label: String = name.escapeXml()): StringBuilder {
-    //如果context不为null切链接无法被解析，则显示未解析的链接
+    //如果context不为null且链接无法被解析，则显示未解析的链接
     val linkPrefix = ParadoxDefinitionLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix${gameType.linkToken}$typeExpression/$name".escapeXml()
     val finalLinkText = label
@@ -278,7 +278,7 @@ fun StringBuilder.appendDefinitionLink(gameType: ParadoxGameType, name: String, 
 }
 
 fun StringBuilder.appendLocalisationLink(gameType: ParadoxGameType, name: String, context: PsiElement? = null, label: String = name.escapeXml()): StringBuilder {
-    //如果context不为null切链接无法被解析，则显示未解析的链接
+    //如果context不为null且链接无法被解析，则显示未解析的链接
     val linkPrefix = ParadoxLocalisationLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix${gameType.linkToken}$name".escapeXml()
     val finalLinkText = label
@@ -287,11 +287,18 @@ fun StringBuilder.appendLocalisationLink(gameType: ParadoxGameType, name: String
 }
 
 fun StringBuilder.appendFilePathLink(gameType: ParadoxGameType, filePath: String, linkText: String, context: PsiElement? = null, label: String = linkText.escapeXml()): StringBuilder {
-    //如果context不为null切链接无法被解析，则显示未解析的链接
+    //如果context不为null且链接无法被解析，则显示未解析的链接
     val linkPrefix = ParadoxFilePathLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix${gameType.linkToken}$filePath".escapeXml()
     val finalLinkText = label
     if(context != null && DocumentationElementLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    return appendPsiLink(finalLink, finalLinkText)
+}
+
+fun StringBuilder.appendModifierLink(name: String, label: String = name.escapeXml()) : StringBuilder {
+    val linkPrefix = ParadoxFilePathLinkProvider.LINK_PREFIX
+    val finalLink = "$linkPrefix$name".escapeXml()
+    val finalLinkText = label
     return appendPsiLink(finalLink, finalLinkText)
 }
 

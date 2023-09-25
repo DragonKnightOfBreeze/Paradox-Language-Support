@@ -48,6 +48,7 @@
     <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxScriptedVariableLinkProvider"/>
     <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxLocalisationLinkProvider"/>
     <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxFilePathLinkProvider"/>
+    <documentationElementLinkProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxModifierLinkProvider"/>
     
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxBaseDefinitionExtendedDocumentationProvider" order="last"/>
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.lang.documentation.impl.ParadoxOnActionExtendedDocumentationProvider"/>

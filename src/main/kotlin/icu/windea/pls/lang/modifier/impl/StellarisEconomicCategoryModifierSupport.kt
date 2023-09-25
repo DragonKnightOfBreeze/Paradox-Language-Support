@@ -164,7 +164,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         for(modifierInfo in economicCategoryInfo.modifiers) {
             appendBr()
             append(PlsBundle.message("prefix.generatedModifier")).append(" ")
-            append(modifierInfo.name)
+            appendModifierLink(modifierInfo.name)
             if(modifierInfo.resource != null) {
                 grayed {
                     append(" ")

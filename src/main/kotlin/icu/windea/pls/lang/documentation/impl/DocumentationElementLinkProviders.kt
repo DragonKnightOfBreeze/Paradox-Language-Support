@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
@@ -301,6 +302,31 @@ class ParadoxFilePathLinkProvider: DocumentationElementLinkProvider {
     
     override fun getUnresolvedMessage(link: String): String {
         return PlsBundle.message("path.reference.unresolved.path", link)
+    }
+    
+    override fun create(element: PsiElement, plainLink: Boolean): String? {
+        return null //unsupported since unnecessary
+    }
+}
+
+class ParadoxModifierLinkProvider: DocumentationElementLinkProvider {
+    // e.g.
+    // modifier:job_researcher_add
+    
+    companion object {
+        const val LINK_PREFIX = "modifier:"
+    }
+    
+    override val linkPrefix = LINK_PREFIX
+    
+    override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
+        ProgressManager.checkCanceled()
+        val name = link.drop(LINK_PREFIX.length)
+        return ParadoxModifierHandler.resolveModifier(name, contextElement)
+    }
+    
+    override fun getUnresolvedMessage(link: String): String {
+        return PlsBundle.message("path.reference.unresolved.modifier", link)
     }
     
     override fun create(element: PsiElement, plainLink: Boolean): String? {

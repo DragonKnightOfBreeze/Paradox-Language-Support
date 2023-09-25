@@ -193,7 +193,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         for(modifier in modifiers) {
             appendBr()
             append(PlsBundle.message("prefix.generatedModifier")).append(" ")
-            append(modifier.name)
+            appendModifierLink(modifier.name)
             grayed {
                 append(" ")
                 append(PlsBundle.message("byTemplate"))
