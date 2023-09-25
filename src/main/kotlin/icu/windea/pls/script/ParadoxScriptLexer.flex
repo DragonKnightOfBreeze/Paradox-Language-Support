@@ -21,7 +21,6 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %state WAITING_SCRIPTED_VARIABLE_VALUE
 
 %state WAITING_PROPERTY_OR_VALUE
-%state WAITING_PROPERTY
 %state WAITING_PROPERTY_VALUE
 
 %state WAITING_KEY
@@ -47,7 +46,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     private int depth = 0;
     private boolean scriptedVariableValueStarted = false;
     private boolean valueStarted = false;
-    private boolean inParameterCondition = false;
+    private boolean isParameterConditionBody = false;
     private boolean leftAbsSign = true;
     
     private LinkedList<Integer> nextStateForParameterStack = new LinkedList<>();
@@ -56,10 +55,10 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     public _ParadoxScriptLexer() {
         this((java.io.Reader)null);
     }
-    
+	
     private void beginNextState(){
-        if(inParameterCondition){
-	        yybegin(WAITING_PARAMETER_CONDITION);
+        if(isParameterConditionBody){
+	        yybegin(WAITING_PARAMETER_CONDITION_BODY);
         } else {
             if(depth <= 0){
                 yybegin(YYINITIAL);
@@ -80,13 +79,17 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     }
     
     private void beginParameterCondition() {
-	    inParameterCondition=true;
 	    nextStateForParameterConditionStack.addLast(yystate());
 	    yybegin(WAITING_PARAMETER_CONDITION);
     }
     
-    private void finishParameterCondition(){
-	    inParameterCondition=false;
+	private void beginParameterConditionBody() {
+		isParameterConditionBody=true;
+		yybegin(WAITING_PARAMETER_CONDITION_BODY);
+	}
+	
+    private void finishParameterConditionBody(){
+	    isParameterConditionBody=false;
 		int nextState = nextStateForParameterConditionStack.isEmpty() ? 0 : nextStateForParameterConditionStack.removeLast();
         yybegin(nextState);
     }
@@ -151,7 +154,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterCondition(); return RIGHT_BRACKET;}
+  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
   "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
   "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
   ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
@@ -167,7 +170,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterCondition(); return RIGHT_BRACKET;}
+  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
   "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
   "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
   ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
@@ -191,7 +194,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "}" { depth--; beginNextState(); return RIGHT_BRACE;}
   "{" { depth++; beginNextState(); return LEFT_BRACE;}
   "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterCondition(); return RIGHT_BRACKET;}
+  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
   "=" { yybegin(WAITING_SCRIPTED_VARIABLE_VALUE); return EQUAL_SIGN;}
   "$" { beginParameter();return PARAMETER_START; }
   {SCRIPTED_VARIABLE_NAME_TOKEN} { return SCRIPTED_VARIABLE_NAME_TOKEN; }
@@ -208,7 +211,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterCondition(); return RIGHT_BRACKET;}
+  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
   {BOOLEAN_TOKEN} {scriptedVariableValueStarted=true; return BOOLEAN_TOKEN;}
   {INT_TOKEN} {scriptedVariableValueStarted=true; return INT_TOKEN;}
   {FLOAT_TOKEN} {scriptedVariableValueStarted=true; return FLOAT_TOKEN;}
@@ -222,7 +225,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterCondition(); return RIGHT_BRACKET;}
+  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
   {CHECK_SCRIPTED_VARIABLE_REFERENCE} {
       yypushback(yylength());
       yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME);
@@ -234,7 +237,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterCondition(); return RIGHT_BRACKET;}
+  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
   "$" { beginParameter(); return PARAMETER_START; }
   {SCRIPTED_VARIABLE_NAME_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
 }
@@ -251,7 +254,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterCondition(); return RIGHT_BRACKET;}
+  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
   "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
   "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
   ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
@@ -272,7 +275,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterCondition(); return RIGHT_BRACKET;}
+  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
   "@" {yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE); return AT;}
 }
 
@@ -307,7 +310,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "[" {yybegin(WAITING_PARAMETER_CONDITION_EXPRESSION); return NESTED_LEFT_BRACKET;}
-  "]" {finishParameterCondition(); return RIGHT_BRACKET;}
+  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
 }
 <WAITING_PARAMETER_CONDITION_EXPRESSION>{
   {BLANK} {return WHITE_SPACE;}
@@ -315,7 +318,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "!" {return NOT_SIGN;}
-  "]" { yybegin(WAITING_PARAMETER_CONDITION_BODY); return NESTED_RIGHT_BRACKET;}
+  "]" { beginParameterConditionBody(); return NESTED_RIGHT_BRACKET;}
   {PARAMETER_TOKEN} { return CONDITION_PARAMETER_TOKEN; }
 }
 <WAITING_PARAMETER_CONDITION_BODY>{
@@ -324,7 +327,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterCondition(); return RIGHT_BRACKET;}
+  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
 }
 
 <WAITING_INLINE_MATH>{
@@ -389,15 +392,15 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterCondition(); return RIGHT_BRACKET;}
+  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
+  "$" {beginParameter();return PARAMETER_START;}
+  {PROPERTY_KEY_TOKEN} {return PROPERTY_KEY_TOKEN;}
   "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
   "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
   ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
   "<=" {yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;}
   ">=" {yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;}
   "!="|"<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
-  "$" {beginParameter();return PARAMETER_START;}
-  {PROPERTY_KEY_TOKEN} {return PROPERTY_KEY_TOKEN;}
 }
 <WAITING_QUOTED_KEY> {
   {EOL} {
@@ -419,7 +422,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterCondition(); return RIGHT_BRACKET;}
+  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
   "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
   "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
   ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
@@ -439,8 +442,8 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterCondition(); return RIGHT_BRACKET;}
+  "[" {valueStarted=true; beginParameterCondition(); return LEFT_BRACKET;}
+  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
   "$" {valueStarted=true;beginParameter();return PARAMETER_START;}
   {STRING_TOKEN} {valueStarted=true;return STRING_TOKEN;}
 }
