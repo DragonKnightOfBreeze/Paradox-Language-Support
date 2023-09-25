@@ -93,7 +93,21 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 		int nextState = nextStateForParameterConditionStack.isEmpty() ? 0 : nextStateForParameterConditionStack.removeLast();
         yybegin(nextState);
     }
+	
+	private void checkValueStarted() {
+		if(valueStarted) {
+			  valueStarted = false;
+			  beginNextState();
+		}
+	}
     
+	private void checkScriptedVariableValueStarted() {
+		if(scriptedVariableValueStarted) {
+		    scriptedVariableValueStarted = false;
+		    beginNextState();
+		}
+	}
+	
     private void pushbackUntilBeforeBlank(int from){
         //回退到末尾可能出现的空白之前
         int length = yylength();
@@ -143,13 +157,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 %%
 
 <YYINITIAL> {
-  {BLANK} {
-	  if(valueStarted) {
-		  valueStarted = false;
-		  beginNextState();
-	  }
-	  return WHITE_SPACE;
-  }
+  {BLANK} { checkValueStarted();return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
@@ -200,13 +208,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   {SCRIPTED_VARIABLE_NAME_TOKEN} { return SCRIPTED_VARIABLE_NAME_TOKEN; }
 }
 <WAITING_SCRIPTED_VARIABLE_VALUE> {
-  {BLANK} {
-      if(scriptedVariableValueStarted) {
-          scriptedVariableValueStarted = false;
-          beginNextState();
-      }
-	  return WHITE_SPACE;
-  }
+  {BLANK} {checkScriptedVariableValueStarted();return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
@@ -243,13 +245,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 }
 
 <WAITING_PROPERTY_OR_VALUE> {
-  {BLANK} {
-	  if(valueStarted) {
-		  valueStarted = false;
-		  beginNextState();
-	  }
-	  return WHITE_SPACE;
-  }
+  {BLANK} { checkValueStarted();return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
@@ -264,13 +260,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "@" {yybegin(WAITING_SCRIPTED_VARIABLE); return AT;}
 }
 <WAITING_PROPERTY_VALUE>{
-  {BLANK} {
-	  if(valueStarted) {
-		  valueStarted = false;
-		  beginNextState();
-	  }
-	  return WHITE_SPACE;
-  }
+  {BLANK} { checkValueStarted();return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
@@ -305,7 +295,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 }
 
 <WAITING_PARAMETER_CONDITION>{
-  {BLANK} {return WHITE_SPACE;}
+  {BLANK} { checkValueStarted();return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
@@ -313,7 +303,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
 }
 <WAITING_PARAMETER_CONDITION_EXPRESSION>{
-  {BLANK} {return WHITE_SPACE;}
+  {BLANK} { checkValueStarted();return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
@@ -322,7 +312,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   {PARAMETER_TOKEN} { return CONDITION_PARAMETER_TOKEN; }
 }
 <WAITING_PARAMETER_CONDITION_BODY>{
-  {BLANK} {return WHITE_SPACE;}
+  {BLANK} { checkValueStarted();return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
@@ -393,14 +383,14 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "[" {beginParameterCondition(); return LEFT_BRACKET;}
   "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
-  "$" {beginParameter();return PARAMETER_START;}
-  {PROPERTY_KEY_TOKEN} {return PROPERTY_KEY_TOKEN;}
   "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
   "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
   ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
   "<=" {yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;}
   ">=" {yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;}
   "!="|"<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
+  "$" {beginParameter();return PARAMETER_START;}
+  {PROPERTY_KEY_TOKEN} {return PROPERTY_KEY_TOKEN;}
 }
 <WAITING_QUOTED_KEY> {
   {EOL} {
@@ -432,13 +422,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 }
 
 <WAITING_STRING>{
-  {BLANK} {
-	  if(valueStarted) {
-		  valueStarted = false;
-		  beginNextState();
-	  }
-	  return WHITE_SPACE;
-  }
+  {BLANK} { checkValueStarted();return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
@@ -449,13 +433,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 }
 <WAITING_QUOTED_STRING> {
   //quoted multiline string is allowed
-  //{EOL} {
-  //    if(valueStarted) {
-  //        valueStarted = false;
-  //        beginNextState();
-  //    }
-  //    return WHITE_SPACE;
-  //}
+  //{EOL} {checkValueStarted();return WHITE_SPACE;}
   "$" {beginParameter();return PARAMETER_START;}
   \"|{QUOTED_STRING_TOKEN}\"? {
 	  boolean rightQuoted = yycharat(yylength() -1) == '"';

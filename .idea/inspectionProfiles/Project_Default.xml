@@ -187,6 +187,5 @@
     <inspection_tool class="UseJBColor" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="WarningOnMainUnusedParameterMigration" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="WhenWithOnlyElse" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="ktPropBy" enabled="false" level="WARNING" enabled_by_default="false" />
   </profile>
 </component>
