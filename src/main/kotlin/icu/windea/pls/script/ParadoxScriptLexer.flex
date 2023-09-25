@@ -295,7 +295,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 }
 
 <WAITING_PARAMETER_CONDITION>{
-  {BLANK} { checkValueStarted();return WHITE_SPACE;}
+  {BLANK} { return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
@@ -303,7 +303,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
 }
 <WAITING_PARAMETER_CONDITION_EXPRESSION>{
-  {BLANK} { checkValueStarted();return WHITE_SPACE;}
+  {BLANK} { return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
@@ -312,7 +312,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
   {PARAMETER_TOKEN} { return CONDITION_PARAMETER_TOKEN; }
 }
 <WAITING_PARAMETER_CONDITION_BODY>{
-  {BLANK} { checkValueStarted();return WHITE_SPACE;}
+  {BLANK} { return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
