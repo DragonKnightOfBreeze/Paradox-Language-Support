@@ -575,12 +575,12 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   static boolean parameter_condition_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_condition_item")) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_);
     r = consumeToken(b, COMMENT);
     if (!r) r = parameter_condition_value(b, l + 1);
     if (!r) r = property(b, l + 1);
     if (!r) r = parameter_condition(b, l + 1);
-    exit_section_(b, m, null, r);
+    exit_section_(b, l, m, r, false, parameter_condition_item_auto_recover_);
     return r;
   }
 
@@ -970,6 +970,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   static final Parser block_item_auto_recover_ = block_auto_recover_;
   static final Parser inline_math_auto_recover_ = block_auto_recover_;
   static final Parser parameter_condition_auto_recover_ = block_auto_recover_;
+  static final Parser parameter_condition_item_auto_recover_ = block_auto_recover_;
   static final Parser property_auto_recover_ = block_auto_recover_;
   static final Parser root_block_item_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
     COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, LEFT_BRACE,

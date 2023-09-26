@@ -210,7 +210,9 @@ parameter_condition_parameter ::= CONDITION_PARAMETER_TOKEN {
   implements="icu.windea.pls.core.psi.ParadoxConditionParameter"
   methods=[getIcon getName setName getValue getTextOffset getReference]
 }
-private parameter_condition_item ::= COMMENT | parameter_condition_value | property | parameter_condition
+private parameter_condition_item ::= COMMENT | parameter_condition_value | property | parameter_condition {
+  recoverWhile="#auto"
+}
 private parameter_condition_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
 //inline parameter condition
