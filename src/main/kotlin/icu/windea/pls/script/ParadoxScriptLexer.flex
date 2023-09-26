@@ -28,12 +28,6 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     private void exitState(Deque<Integer> stack, int defaultState) {
         Integer state = stack.pollLast();
         if(state != null) {
-			if(templateStateRef.get() == -1) {
-				state = stack.isEmpty() ? YYINITIAL : stack.pollLast();
-				if(state != YYINITIAL && stack != IN_PROPERTY_OR_VALUE && stack != IN_PARAMETER_CONDITION_BODY) {
-					state = YYINITIAL;
-				}
-			}
             yybegin(state);
         } else {
             yybegin(defaultState);
@@ -47,12 +41,6 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     private void exitState(AtomicInteger stateRef) {
         int state = stateRef.getAndSet(-1);
         if(state != -1) {
-			if(stateRef == templateStateRef) {
-				state = stack.isEmpty() ? YYINITIAL : stack.pollLast();
-			    if(state != YYINITIAL && stack != IN_PROPERTY_OR_VALUE && stack != IN_PARAMETER_CONDITION_BODY) {
-					state = YYINITIAL;
-				}
-			} 
             yybegin(state);
         }
     }
