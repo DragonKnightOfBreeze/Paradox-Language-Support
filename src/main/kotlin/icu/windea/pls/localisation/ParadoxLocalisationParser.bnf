@@ -42,7 +42,7 @@ private property_item ::= COMMENT | property {
   recoverWhile="#auto"
 }
 
-locale ::= LOCALE_ID COLON {
+locale ::= LOCALE_TOKEN COLON {
   pin=1
   recoverWhile="#auto"
   implements=[
@@ -106,7 +106,7 @@ property_reference ::= PROPERTY_REFERENCE_START [property_reference_name] [PIPE 
   methods=[getName setName getReference]
 }
 //token / command (e.g. "[Root.GetName]") / scripted_variable (e.g. "@v") 
-private property_reference_name ::= PROPERTY_REFERENCE_ID | command | scripted_variable_reference
+private property_reference_name ::= PROPERTY_REFERENCE_TOKEN | command | scripted_variable_reference
 private property_reference_parameter ::= PROPERTY_REFERENCE_PARAMETER_TOKEN //TODO check syntax
 
 //scripted variable reference rules
@@ -130,7 +130,7 @@ icon ::= ICON_START icon_name [PIPE icon_frame] ICON_END {
   ]
   methods=[getIcon getName setName getFrame getReference]
 }
-private icon_name ::= command | property_reference | ICON_ID //can be command / property reference
+private icon_name ::= command | property_reference | ICON_TOKEN //can be command / property reference
 private icon_frame ::= ICON_FRAME | property_reference //can be property reference (resolved as parameter)
 
 //command rules
@@ -156,18 +156,18 @@ command_identifier ::= {
   ]
   methods=[getPrevIdentifier getNextIdentifier]
 }
-command_scope ::= COMMAND_SCOPE_ID {
+command_scope ::= COMMAND_SCOPE_TOKEN {
   extends=command_identifier
   methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
 }
-command_field ::= COMMAND_FIELD_ID | property_reference { //can be property reference (resolved as parameter)
+command_field ::= COMMAND_FIELD_TOKEN | property_reference { //can be property reference (resolved as parameter)
   extends=command_identifier
   methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
 }
 private concept_expression ::= concept_name (COMMA concept_text) ? {
   pin=1
 }
-concept_name ::= LEFT_SINGLE_QUOTE CONCEPT_NAME_ID RIGHT_SINGLE_QUOTE {
+concept_name ::= LEFT_SINGLE_QUOTE CONCEPT_NAME_TOKEN RIGHT_SINGLE_QUOTE {
   pin=1
   methods=[getIcon getName setName getReference]
 }
@@ -176,7 +176,7 @@ concept_text ::= rich_text *
 //colorful text rules
 
 //see: https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes
-colorful_text ::= COLORFUL_TEXT_START COLOR_ID colorful_text_item [COLORFUL_TEXT_END]{
+colorful_text ::= COLORFUL_TEXT_START COLOR_TOKEN colorful_text_item [COLORFUL_TEXT_END]{
   pin=1
   extends=rich_text
   methods=[getName setName getReference]

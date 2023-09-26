@@ -25,7 +25,7 @@ class ParadoxLocalisationColorCompletionProvider : CompletionProvider<Completion
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val file = parameters.originalFile
 		val originalColorId = file.findElementAt(parameters.offset)
-			?.takeIf { it.elementType == ParadoxLocalisationElementTypes.COLOR_ID }
+			?.takeIf { it.elementType == ParadoxLocalisationElementTypes.COLOR_TOKEN }
 		val project = file.project
 		val colorConfigs = ParadoxTextColorHandler.getInfos(project, file)
 		val lookupElements = mutableListOf<LookupElement>()

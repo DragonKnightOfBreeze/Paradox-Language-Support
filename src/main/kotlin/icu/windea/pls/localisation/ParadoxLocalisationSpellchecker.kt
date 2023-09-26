@@ -12,10 +12,10 @@ class ParadoxLocalisationSpellchecker : SpellcheckingStrategy() {
     
     override fun getTokenizer(element: PsiElement): Tokenizer<*> {
         return when(element.elementType) {
-            LOCALE_ID -> emptyTokenizer
+            LOCALE_TOKEN -> emptyTokenizer
             PROPERTY_KEY_TOKEN -> compactTextTokenizer
-            PROPERTY_REFERENCE_ID -> emptyTokenizer
-            COMMAND_SCOPE, COMMAND_FIELD, ICON_ID -> textTokenizer
+            PROPERTY_REFERENCE_TOKEN -> emptyTokenizer
+            COMMAND_SCOPE, COMMAND_FIELD, ICON_TOKEN -> textTokenizer
             STRING_TOKEN -> textTokenizer
             COMMENT -> textTokenizer
             else -> emptyTokenizer

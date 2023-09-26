@@ -36,10 +36,10 @@ class ParadoxLocalisationParserDefinition : ParserDefinition {
         val rightType = right?.elementType
         return when {
             leftType == COMMENT -> MUST_LINE_BREAK
-            leftType == LOCALE_ID && rightType == COLON -> MUST_NOT
-            rightType == LOCALE_ID -> MUST_LINE_BREAK
+            leftType == LOCALE_TOKEN && rightType == COLON -> MUST_NOT
+            rightType == LOCALE_TOKEN -> MUST_LINE_BREAK
             rightType == PROPERTY_KEY_TOKEN -> MUST_LINE_BREAK
-            leftType == COLORFUL_TEXT_START && rightType == COLOR_ID -> MUST_NOT
+            leftType == COLORFUL_TEXT_START && rightType == COLOR_TOKEN -> MUST_NOT
             leftType == ICON_START || rightType == ICON_END -> MUST_NOT 
             leftType == PROPERTY_REFERENCE_START || rightType == PROPERTY_REFERENCE_END -> MUST_NOT
             leftType == PIPE || rightType == PIPE -> MUST_NOT

@@ -108,14 +108,14 @@ object ParadoxPsiFinder {
     
     fun findLocalisationColorfulText(file: PsiFile, offset: Int, fromNameToken: Boolean = false): ParadoxLocalisationColorfulText? {
         return file.findElementAt(offset) t@{
-            if(fromNameToken && it.elementType != ParadoxLocalisationElementTypes.COLOR_ID) return@t null
+            if(fromNameToken && it.elementType != ParadoxLocalisationElementTypes.COLOR_TOKEN) return@t null
             it.parentOfType<ParadoxLocalisationColorfulText>(false)
         }
     }
     
     fun findLocalisationLocale(file: PsiFile, offset: Int, fromNameToken: Boolean = false): ParadoxLocalisationLocale? {
         return file.findElementAt(offset) p@{
-            if(fromNameToken && it.elementType != ParadoxLocalisationElementTypes.LOCALE_ID) return@p null
+            if(fromNameToken && it.elementType != ParadoxLocalisationElementTypes.LOCALE_TOKEN) return@p null
             it.parentOfType<ParadoxLocalisationLocale>(false)
         }
     }

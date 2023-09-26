@@ -5,14 +5,14 @@ import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
-val ParadoxLocalisationLocale.localeId: PsiElement get() = findChild(LOCALE_ID)!!
+val ParadoxLocalisationLocale.localeId: PsiElement get() = findChild(LOCALE_TOKEN)!!
 
 val ParadoxLocalisationPropertyKey.propertyKeyId: PsiElement get() = findChild(PROPERTY_KEY_TOKEN)!!
 
-val ParadoxLocalisationPropertyReference.propertyReferenceId: PsiElement? get() = findChild(PROPERTY_REFERENCE_ID)
+val ParadoxLocalisationPropertyReference.propertyReferenceId: PsiElement? get() = findChild(PROPERTY_REFERENCE_TOKEN)
 val ParadoxLocalisationPropertyReference.propertyReferenceParameter: PsiElement? get() = findChild(PROPERTY_REFERENCE_PARAMETER_TOKEN)
 
-val ParadoxLocalisationIcon.iconId: PsiElement? get() = findChild(ICON_ID)
+val ParadoxLocalisationIcon.iconId: PsiElement? get() = findChild(ICON_TOKEN)
 val ParadoxLocalisationIcon.iconIdReference: ParadoxLocalisationPropertyReference?
 	get() {
 		forEachChild {
@@ -32,12 +32,12 @@ val ParadoxLocalisationIcon.iconFrameReference: ParadoxLocalisationPropertyRefer
 		return null
 	}
 
-val ParadoxLocalisationColorfulText.idElement: PsiElement? get() = findChild(COLOR_ID)
+val ParadoxLocalisationColorfulText.idElement: PsiElement? get() = findChild(COLOR_TOKEN)
 
-val ParadoxLocalisationCommandScope.idElement: PsiElement get() = findChild(COMMAND_SCOPE_ID)!!
+val ParadoxLocalisationCommandScope.idElement: PsiElement get() = findChild(COMMAND_SCOPE_TOKEN)!!
 
-val ParadoxLocalisationCommandField.idElement: PsiElement? get() = findChild(COMMAND_FIELD_ID)
+val ParadoxLocalisationCommandField.idElement: PsiElement? get() = findChild(COMMAND_FIELD_TOKEN)
 
-val ParadoxLocalisationConceptName.idElement: PsiElement? get() = findChild(CONCEPT_NAME_ID)
+val ParadoxLocalisationConceptName.idElement: PsiElement? get() = findChild(CONCEPT_NAME_TOKEN)
 
 val ParadoxLocalisationScriptedVariableReference.idElement: PsiElement? get() = findChild(SCRIPTED_VARIABLE_REFERENCE_TOKEN)

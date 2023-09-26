@@ -31,7 +31,7 @@ object ParadoxPsiManager {
                 }
                 return true
             }
-            elementType == ParadoxLocalisationElementTypes.LOCALE_ID -> {
+            elementType == ParadoxLocalisationElementTypes.LOCALE_TOKEN -> {
                 return true
             }
             else -> {

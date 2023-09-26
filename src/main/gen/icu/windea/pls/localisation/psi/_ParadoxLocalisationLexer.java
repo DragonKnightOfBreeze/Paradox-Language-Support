@@ -22,31 +22,31 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
 
   /** lexical states */
   public static final int YYINITIAL = 0;
-  public static final int WAITING_LOCALE_COLON = 2;
-  public static final int WAITING_LOCALE_END = 4;
-  public static final int WAITING_PROPERTY_COLON = 6;
-  public static final int WAITING_PROPERTY_NUMBER = 8;
-  public static final int WAITING_PROPERTY_VALUE = 10;
-  public static final int WAITING_PROPERTY_END = 12;
-  public static final int WAITING_RICH_TEXT = 14;
-  public static final int WAITING_PROPERTY_REFERENCE = 16;
-  public static final int WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN = 18;
-  public static final int WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME = 20;
-  public static final int WAITING_ICON = 22;
-  public static final int WAITING_ICON_ID_FINISHED = 24;
-  public static final int WAITING_ICON_FRAME = 26;
-  public static final int WAITING_ICON_FRAME_FINISHED = 28;
-  public static final int WAITING_COMMAND = 30;
-  public static final int WAITING_COMMAND_SCOPE_OR_FIELD = 32;
-  public static final int WAITING_CONCEPT = 34;
-  public static final int WAITING_CONCEPT_TEXT = 36;
-  public static final int WAITING_COLOR_ID = 38;
-  public static final int WAITING_COLORFUL_TEXT = 40;
-  public static final int CHECKING_PROPERTY_REFERENCE_START = 42;
-  public static final int CHECKING_ICON_START = 44;
-  public static final int CHECKING_COMMAND_START = 46;
-  public static final int WAITING_CHECK_COLORFUL_TEXT_START = 48;
-  public static final int WAITING_CHECK_RIGHT_QUOTE = 50;
+  public static final int IN_LOCALE_COLON = 2;
+  public static final int IN_LOCALE_END = 4;
+  public static final int IN_PROPERTY_COLON = 6;
+  public static final int IN_PROPERTY_NUMBER = 8;
+  public static final int IN_PROPERTY_VALUE = 10;
+  public static final int IN_PROPERTY_END = 12;
+  public static final int IN_RICH_TEXT = 14;
+  public static final int IN_PROPERTY_REFERENCE = 16;
+  public static final int IN_PROPERTY_REFERENCE_PARAMETER_TOKEN = 18;
+  public static final int IN_SCRIPTED_VARIABLE_REFERENCE_NAME = 20;
+  public static final int IN_ICON = 22;
+  public static final int IN_ICON_ID_FINISHED = 24;
+  public static final int IN_ICON_FRAME = 26;
+  public static final int IN_ICON_FRAME_FINISHED = 28;
+  public static final int IN_COMMAND = 30;
+  public static final int IN_COMMAND_SCOPE_OR_FIELD = 32;
+  public static final int IN_CONCEPT = 34;
+  public static final int IN_CONCEPT_TEXT = 36;
+  public static final int IN_COLOR_ID = 38;
+  public static final int IN_COLORFUL_TEXT = 40;
+  public static final int CHECK_PROPERTY_REFERENCE_START = 42;
+  public static final int CHECK_ICON_START = 44;
+  public static final int CHECK_COMMAND_START = 46;
+  public static final int IN_CHECK_COLORFUL_TEXT_START = 48;
+  public static final int IN_CHECK_RIGHT_QUOTE = 50;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -428,7 +428,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     }
     
     private int nextStateForText(){
-      return depth <= 0 ? WAITING_RICH_TEXT : WAITING_COLORFUL_TEXT;
+      return depth <= 0 ? IN_RICH_TEXT : IN_COLORFUL_TEXT;
     }
     
 	private enum CommandLocation {
@@ -438,8 +438,8 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     private int nextStateForCommand(){
 		return switch(commandLocation) {
 			case NORMAL -> nextStateForText();
-			case REFERENCE -> WAITING_PROPERTY_REFERENCE;
-			case ICON -> WAITING_ICON;
+			case REFERENCE -> IN_PROPERTY_REFERENCE;
+			case ICON -> IN_ICON;
 		};
     }
 	
@@ -450,9 +450,9 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     private int nextStateForPropertyReference(){
 		return switch(referenceLocation) {
 			case NORMAL -> nextStateForText();
-			case ICON -> WAITING_ICON_ID_FINISHED;
-			case ICON_FRAME -> WAITING_ICON_FRAME_FINISHED;
-			case COMMAND -> WAITING_COMMAND_SCOPE_OR_FIELD;
+			case ICON -> IN_ICON_ID_FINISHED;
+			case ICON_FRAME -> IN_ICON_FRAME_FINISHED;
+			case COMMAND -> IN_COMMAND_SCOPE_OR_FIELD;
 		};
     }
     
@@ -768,7 +768,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 60: break;
           case 3:
-            { depth=0;inConceptText=false; yybegin(YYINITIAL); return WHITE_SPACE;
+            { depth=0; inConceptText=false; yybegin(YYINITIAL); return WHITE_SPACE;
             }
           // fall through
           case 61: break;
@@ -778,38 +778,38 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 62: break;
           case 5:
-            { yybegin(WAITING_PROPERTY_COLON);
+            { yybegin(IN_PROPERTY_COLON);
     return PROPERTY_KEY_TOKEN;
             }
           // fall through
           case 63: break;
           case 6:
-            { yybegin(WAITING_LOCALE_END); return COLON;
+            { yybegin(IN_LOCALE_END); return COLON;
             }
           // fall through
           case 64: break;
           case 7:
-            { yybegin(WAITING_PROPERTY_NUMBER); return COLON;
+            { yybegin(IN_PROPERTY_NUMBER); return COLON;
             }
           // fall through
           case 65: break;
           case 8:
-            { yybegin(WAITING_PROPERTY_VALUE); return WHITE_SPACE;
+            { yybegin(IN_PROPERTY_VALUE); return WHITE_SPACE;
             }
           // fall through
           case 66: break;
           case 9:
-            { yybegin(WAITING_RICH_TEXT); return LEFT_QUOTE;
+            { yybegin(IN_RICH_TEXT); return LEFT_QUOTE;
             }
           // fall through
           case 67: break;
           case 10:
-            { yybegin(WAITING_PROPERTY_VALUE); return PROPERTY_NUMBER;
+            { yybegin(IN_PROPERTY_VALUE); return PROPERTY_NUMBER;
             }
           // fall through
           case 68: break;
           case 11:
-            { yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);
+            { yypushback(yylength()); yybegin(IN_CHECK_RIGHT_QUOTE);
             }
           // fall through
           case 69: break;
@@ -819,12 +819,12 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 70: break;
           case 13:
-            { referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);
+            { referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);
             }
           // fall through
           case 71: break;
           case 14:
-            { increaseDepth(); commandLocation=CommandLocation.NORMAL; yybegin(WAITING_COMMAND); return COMMAND_START;
+            { increaseDepth(); commandLocation=CommandLocation.NORMAL; yybegin(IN_COMMAND); return COMMAND_START;
             }
           // fall through
           case 72: break;
@@ -840,12 +840,12 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 73: break;
           case 16:
-            { yypushback(yylength()); yybegin(CHECKING_ICON_START);
+            { yypushback(yylength()); yybegin(CHECK_ICON_START);
             }
           // fall through
           case 74: break;
           case 17:
-            { yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);
+            { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);
             }
           // fall through
           case 75: break;
@@ -860,22 +860,22 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 77: break;
           case 20:
-            { return PROPERTY_REFERENCE_ID;
+            { return PROPERTY_REFERENCE_TOKEN;
             }
           // fall through
           case 78: break;
           case 21:
-            { yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME); return AT;
+            { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_NAME); return AT;
             }
           // fall through
           case 79: break;
           case 22:
-            { increaseDepth();commandLocation=CommandLocation.REFERENCE; yybegin(WAITING_COMMAND); return COMMAND_START;
+            { increaseDepth();commandLocation=CommandLocation.REFERENCE; yybegin(IN_COMMAND); return COMMAND_START;
             }
           // fall through
           case 80: break;
           case 23:
-            { yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE;
+            { yybegin(IN_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE;
             }
           // fall through
           case 81: break;
@@ -890,27 +890,27 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 83: break;
           case 26:
-            { increaseDepth();commandLocation=CommandLocation.REFERENCE; yybegin(WAITING_COMMAND);return COMMAND_START;
+            { increaseDepth();commandLocation=CommandLocation.REFERENCE; yybegin(IN_COMMAND);return COMMAND_START;
             }
           // fall through
           case 84: break;
           case 27:
-            { referenceLocation=ReferenceLocation.ICON; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);
+            { referenceLocation=ReferenceLocation.ICON; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);
             }
           // fall through
           case 85: break;
           case 28:
-            { yybegin(WAITING_ICON_ID_FINISHED); return ICON_ID;
+            { yybegin(IN_ICON_ID_FINISHED); return ICON_TOKEN;
             }
           // fall through
           case 86: break;
           case 29:
-            { increaseDepth(); commandLocation=CommandLocation.ICON; yybegin(WAITING_COMMAND); return COMMAND_START;
+            { increaseDepth(); commandLocation=CommandLocation.ICON; yybegin(IN_COMMAND); return COMMAND_START;
             }
           // fall through
           case 87: break;
           case 30:
-            { yybegin(WAITING_ICON_FRAME); return PIPE;
+            { yybegin(IN_ICON_FRAME); return PIPE;
             }
           // fall through
           case 88: break;
@@ -920,33 +920,33 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 89: break;
           case 32:
-            { referenceLocation=ReferenceLocation.ICON_FRAME; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);
+            { referenceLocation=ReferenceLocation.ICON_FRAME; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);
             }
           // fall through
           case 90: break;
           case 33:
-            { yybegin(WAITING_ICON_FRAME_FINISHED); return ICON_FRAME;
+            { yybegin(IN_ICON_FRAME_FINISHED); return ICON_FRAME;
             }
           // fall through
           case 91: break;
           case 34:
             { if(yycharat(0) == '\'') {
-		  yybegin(WAITING_CONCEPT);
+		  yybegin(IN_CONCEPT);
 		  return LEFT_SINGLE_QUOTE;
 	  } else {
 		  yypushback(1);
-		  yybegin(WAITING_COMMAND_SCOPE_OR_FIELD);
+		  yybegin(IN_COMMAND_SCOPE_OR_FIELD);
 	  }
             }
           // fall through
           case 92: break;
           case 35:
-            { referenceLocation=ReferenceLocation.COMMAND; yypushback(yylength()); yybegin(CHECKING_PROPERTY_REFERENCE_START);
+            { referenceLocation=ReferenceLocation.COMMAND; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);
             }
           // fall through
           case 93: break;
           case 36:
-            { yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return DOT;
+            { yybegin(IN_COMMAND_SCOPE_OR_FIELD); return DOT;
             }
           // fall through
           case 94: break;
@@ -961,12 +961,12 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 96: break;
           case 39:
-            { inConceptText=true; yybegin(WAITING_CONCEPT_TEXT); return COMMA;
+            { inConceptText=true; yybegin(IN_CONCEPT_TEXT); return COMMA;
             }
           // fall through
           case 97: break;
           case 40:
-            { return CONCEPT_NAME_ID;
+            { return CONCEPT_NAME_TOKEN;
             }
           // fall through
           case 98: break;
@@ -976,32 +976,32 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 99: break;
           case 42:
-            { increaseDepth();commandLocation=CommandLocation.NORMAL; yybegin(WAITING_COMMAND);return COMMAND_START;
+            { increaseDepth();commandLocation=CommandLocation.NORMAL; yybegin(IN_COMMAND);return COMMAND_START;
             }
           // fall through
           case 100: break;
           case 43:
-            { yypushback(yylength()); yybegin(WAITING_COLORFUL_TEXT);
+            { yypushback(yylength()); yybegin(IN_COLORFUL_TEXT);
             }
           // fall through
           case 101: break;
           case 44:
-            { yybegin(WAITING_COLORFUL_TEXT); return WHITE_SPACE;
+            { yybegin(IN_COLORFUL_TEXT); return WHITE_SPACE;
             }
           // fall through
           case 102: break;
           case 45:
-            { yybegin(WAITING_COLORFUL_TEXT); return COLOR_ID;
+            { yybegin(IN_COLORFUL_TEXT); return COLOR_TOKEN;
             }
           // fall through
           case 103: break;
           case 46:
             { //特殊处理
-    //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_ID或者command，或者是@，则认为代表属性引用的开始
+    //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_TOKEN或者command，或者是@，则认为代表属性引用的开始
     boolean isReferenceStart = isReferenceStart();
 	yypushback(yylength()-1);
 	if(isReferenceStart){
-		yybegin(WAITING_PROPERTY_REFERENCE);
+		yybegin(IN_PROPERTY_REFERENCE);
         return PROPERTY_REFERENCE_START;
 	} else {
         yybegin(nextStateForText());
@@ -1017,7 +1017,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     boolean isIconStart = isIconStart();
     yypushback(yylength()-1);
     if(isIconStart){
-    	  yybegin(WAITING_ICON);
+    	  yybegin(IN_ICON);
     	  return ICON_START;
     }else{
         yybegin(nextStateForText());
@@ -1033,7 +1033,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     boolean isColorfulTextStart = isColorfulTextStart();
     yypushback(yylength()-1);
     if(isColorfulTextStart){
-        yybegin(WAITING_COLOR_ID);
+        yybegin(IN_COLOR_ID);
         increaseDepth();
         return COLORFUL_TEXT_START;
     }else{
@@ -1050,7 +1050,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
       boolean isRightQuote = isRightQuote();
       yypushback(yylength()-1);
       if(isRightQuote){
-          yybegin(WAITING_PROPERTY_END);
+          yybegin(IN_PROPERTY_END);
           return RIGHT_QUOTE;
       }else{
           yybegin(nextStateForText());
@@ -1080,12 +1080,12 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 111: break;
           case 54:
-            { yypushback(1); return COMMAND_SCOPE_ID;
+            { yypushback(1); return COMMAND_SCOPE_TOKEN;
             }
           // fall through
           case 112: break;
           case 55:
-            { yypushback(1); return COMMAND_FIELD_ID;
+            { yypushback(1); return COMMAND_FIELD_TOKEN;
             }
           // fall through
           case 113: break;
@@ -1108,8 +1108,8 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
 		n++;
 	}
 	yypushback(n);
-    yybegin(WAITING_LOCALE_COLON);
-    return LOCALE_ID;
+    yybegin(IN_LOCALE_COLON);
+    return LOCALE_TOKEN;
             }
           // fall through
           case 115: break;
@@ -1127,8 +1127,8 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
 		n++;
 	}
 	yypushback(n);
-    yybegin(WAITING_LOCALE_COLON);
-    return LOCALE_ID;
+    yybegin(IN_LOCALE_COLON);
+    return LOCALE_TOKEN;
             }
           // fall through
           case 116: break;
