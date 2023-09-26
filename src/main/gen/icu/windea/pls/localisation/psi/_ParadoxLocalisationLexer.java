@@ -248,8 +248,8 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     "\22\34\1\76\1\77\1\60\3\34\1\61\1\36\1\61"+
     "\1\36\1\34\1\50\1\34\1\100\6\34\1\101\12\34"+
     "\1\77\1\60\3\34\1\61\1\36\1\61\1\36\1\34"+
-    "\1\50\23\34\1\77\1\60\2\34\1\102\1\35\1\36"+
-    "\1\35\1\36\30\102\1\34\1\103\1\104\1\36\1\104"+
+    "\1\50\23\34\1\77\1\60\3\34\1\35\1\36\1\35"+
+    "\1\36\7\34\1\102\21\34\1\103\1\104\1\36\1\104"+
     "\1\36\1\103\1\105\1\103\1\106\3\103\1\107\6\103"+
     "\1\34\1\103\1\110\5\103\1\111\2\103\1\34\1\35"+
     "\1\36\1\35\1\36\1\34\1\50\2\34\1\112\1\113"+
@@ -414,72 +414,72 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     private boolean inConceptText = false;
     private CommandLocation commandLocation = CommandLocation.NORMAL;
     private ReferenceLocation referenceLocation = ReferenceLocation.NORMAL;
-	
+    
     public _ParadoxLocalisationLexer() {
         this((java.io.Reader)null);
     }
-	
+    
     private void increaseDepth(){
-	    depth++;
+        depth++;
     }
     
     private void decreaseDepth(){
-	    if(depth > 0) depth--;
+        if(depth > 0) depth--;
     }
     
     private int nextStateForText(){
       return depth <= 0 ? IN_RICH_TEXT : IN_COLORFUL_TEXT;
     }
     
-	private enum CommandLocation {
-		NORMAL, REFERENCE, ICON;
-	}
-	
-    private int nextStateForCommand(){
-		return switch(commandLocation) {
-			case NORMAL -> nextStateForText();
-			case REFERENCE -> IN_PROPERTY_REFERENCE;
-			case ICON -> IN_ICON;
-		};
+    private enum CommandLocation {
+        NORMAL, REFERENCE, ICON;
     }
-	
-	private enum ReferenceLocation {
-		NORMAL, ICON, ICON_FRAME, COMMAND;
-	}
+    
+    private int nextStateForCommand(){
+        return switch(commandLocation) {
+            case NORMAL -> nextStateForText();
+            case REFERENCE -> IN_PROPERTY_REFERENCE;
+            case ICON -> IN_ICON;
+        };
+    }
+    
+    private enum ReferenceLocation {
+        NORMAL, ICON, ICON_FRAME, COMMAND;
+    }
     
     private int nextStateForPropertyReference(){
-		return switch(referenceLocation) {
-			case NORMAL -> nextStateForText();
-			case ICON -> IN_ICON_ID_FINISHED;
-			case ICON_FRAME -> IN_ICON_FRAME_FINISHED;
-			case COMMAND -> IN_COMMAND_SCOPE_OR_FIELD;
-		};
+        return switch(referenceLocation) {
+            case NORMAL -> nextStateForText();
+            case ICON -> IN_ICON_ID_FINISHED;
+            case ICON_FRAME -> IN_ICON_FRAME_FINISHED;
+            case COMMAND -> IN_COMMAND_SCOPE_OR_FIELD;
+        };
     }
     
-	private boolean isReferenceStart(){
-	    if(yylength() <= 1) return false;
-	    return true;
-	}
-	
+    private boolean isReferenceStart(){
+        if(yylength() <= 1) return false;
+        return true;
+    }
+    
     private boolean isIconStart(){
-	    if(yylength() <= 1) return false;
-	    char c = yycharat(1);
-	    return isExactLetter(c) || isExactDigit(c) || c == '_' || c == '$';
+        if(yylength() <= 1) return false;
+        char c = yycharat(1);
+        return isExactLetter(c) || isExactDigit(c) || c == '_' || c == '$';
     }
     
     private boolean isCommandStart(){
-		if(yylength() <= 1) return false;
-	    return yycharat(yylength()-1) == ']';
+        if(yylength() <= 1) return false;
+        return yycharat(yylength()-1) == ']';
     }
     
     private boolean isColorfulTextStart(){
-		if(yylength() <= 1) return false;
-	    return isExactLetter(yycharat(1));
+        if(yylength() <= 1) return false;
+        return isExactLetter(yycharat(1));
     }
     
     private boolean isRightQuote(){
-		if(yylength() == 1) return true;
-	    return yycharat(yylength()-1) != '"';
+        if(yylength() == 1) return true;
+        return yycharat(yylength()-1) != '"';
     }
 
 
@@ -779,7 +779,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           case 62: break;
           case 5:
             { yybegin(IN_PROPERTY_COLON);
-    return PROPERTY_KEY_TOKEN;
+        return PROPERTY_KEY_TOKEN;
             }
           // fall through
           case 63: break;
@@ -830,12 +830,12 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           case 72: break;
           case 15:
             { if(inConceptText) {
-		  inConceptText = false;
-          decreaseDepth();
-          yybegin(nextStateForCommand());
-          return COMMAND_END;
-	  }
-	  return STRING_TOKEN;
+            inConceptText = false;
+            decreaseDepth();
+            yybegin(nextStateForCommand());
+            return COMMAND_END;
+        }
+        return STRING_TOKEN;
             }
           // fall through
           case 73: break;
@@ -931,12 +931,12 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           case 91: break;
           case 34:
             { if(yycharat(0) == '\'') {
-		  yybegin(IN_CONCEPT);
-		  return LEFT_SINGLE_QUOTE;
-	  } else {
-		  yypushback(1);
-		  yybegin(IN_COMMAND_SCOPE_OR_FIELD);
-	  }
+            yybegin(IN_CONCEPT);
+            return LEFT_SINGLE_QUOTE;
+        } else {
+            yypushback(1);
+            yybegin(IN_COMMAND_SCOPE_OR_FIELD);
+        }
             }
           // fall through
           case 92: break;
@@ -997,65 +997,65 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           case 103: break;
           case 46:
             { //特殊处理
-    //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_TOKEN或者command，或者是@，则认为代表属性引用的开始
-    boolean isReferenceStart = isReferenceStart();
-	yypushback(yylength()-1);
-	if(isReferenceStart){
-		yybegin(IN_PROPERTY_REFERENCE);
-        return PROPERTY_REFERENCE_START;
-	} else {
-        yybegin(nextStateForText());
-        return STRING_TOKEN;
-    }
+        //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_TOKEN或者command，或者是@，则认为代表属性引用的开始
+        boolean isReferenceStart = isReferenceStart();
+        yypushback(yylength()-1);
+        if(isReferenceStart){
+            yybegin(IN_PROPERTY_REFERENCE);
+            return PROPERTY_REFERENCE_START;
+        } else {
+            yybegin(nextStateForText());
+            return STRING_TOKEN;
+        }
             }
           // fall through
           case 104: break;
           case 47:
             { //特殊处理
-    //如果匹配到的字符串的第2个字符存在且为字母、数字或下划线或者$，则认为代表图标的开始
-    //否则认为是常规字符串
-    boolean isIconStart = isIconStart();
-    yypushback(yylength()-1);
-    if(isIconStart){
-    	  yybegin(IN_ICON);
-    	  return ICON_START;
-    }else{
-        yybegin(nextStateForText());
-        return STRING_TOKEN;
-    }
+        //如果匹配到的字符串的第2个字符存在且为字母、数字或下划线或者$，则认为代表图标的开始
+        //否则认为是常规字符串
+        boolean isIconStart = isIconStart();
+        yypushback(yylength()-1);
+        if(isIconStart){
+            yybegin(IN_ICON);
+            return ICON_START;
+        }else{
+            yybegin(nextStateForText());
+            return STRING_TOKEN;
+        }
             }
           // fall through
           case 105: break;
           case 48:
             { //特殊处理
-    //如果匹配到的字符串的第2个字符存在且为字母，则认为代表彩色文本的开始
-    //否则认为是常规字符串
-    boolean isColorfulTextStart = isColorfulTextStart();
-    yypushback(yylength()-1);
-    if(isColorfulTextStart){
-        yybegin(IN_COLOR_ID);
-        increaseDepth();
-        return COLORFUL_TEXT_START;
-    }else{
-        yybegin(nextStateForText());
-        return STRING_TOKEN;
-    }
+        //如果匹配到的字符串的第2个字符存在且为字母，则认为代表彩色文本的开始
+        //否则认为是常规字符串
+        boolean isColorfulTextStart = isColorfulTextStart();
+        yypushback(yylength()-1);
+        if(isColorfulTextStart) {
+            yybegin(IN_COLOR_ID);
+            increaseDepth();
+            return COLORFUL_TEXT_START;
+        } else {
+            yybegin(nextStateForText());
+            return STRING_TOKEN;
+        }
             }
           // fall through
           case 106: break;
           case 49:
             { //特殊处理
-      //如果匹配到的字符串长度为1，或者最后一个字符不是双引号，则认为代表本地化富文本的结束
-      //否则认为是常规字符串
-      boolean isRightQuote = isRightQuote();
-      yypushback(yylength()-1);
-      if(isRightQuote){
-          yybegin(IN_PROPERTY_END);
-          return RIGHT_QUOTE;
-      }else{
-          yybegin(nextStateForText());
-          return STRING_TOKEN;
-      }
+        //如果匹配到的字符串长度为1，或者最后一个字符不是双引号，则认为代表本地化富文本的结束
+        //否则认为是常规字符串
+        boolean isRightQuote = isRightQuote();
+        yypushback(yylength()-1);
+        if(isRightQuote) {
+            yybegin(IN_PROPERTY_END);
+            return RIGHT_QUOTE;
+        } else {
+            yybegin(nextStateForText());
+            return STRING_TOKEN;
+        }
             }
           // fall through
           case 107: break;
@@ -1099,17 +1099,17 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
             zzMarkedPos = Character.offsetByCodePoints
                 (zzBufferL, zzMarkedPos, -1);
             { //本地化文件中可以没有，或者有多个locale - 主要是为了兼容localisation/languages.yml
-	//locale之前必须没有任何缩进
-	//locale之后的冒号和换行符之间应当没有任何字符或者只有空白字符
-	//采用最简单的实现方式，尽管JFlex手册中说 "^" "$" 性能不佳
-	int n = 1;
-	int l = yylength();
-	while(Character.isWhitespace(yycharat(l - n))) {
-		n++;
-	}
-	yypushback(n);
-    yybegin(IN_LOCALE_COLON);
-    return LOCALE_TOKEN;
+        //locale之前必须没有任何缩进
+        //locale之后的冒号和换行符之间应当没有任何字符或者只有空白字符
+        //采用最简单的实现方式，尽管JFlex手册中说 "^" "$" 性能不佳
+        int n = 1;
+        int l = yylength();
+        while(Character.isWhitespace(yycharat(l - n))) {
+            n++;
+        }
+        yypushback(n);
+        yybegin(IN_LOCALE_COLON);
+        return LOCALE_TOKEN;
             }
           // fall through
           case 115: break;
@@ -1118,17 +1118,17 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
             zzMarkedPos = Character.offsetByCodePoints
                 (zzBufferL, zzMarkedPos, -2);
             { //本地化文件中可以没有，或者有多个locale - 主要是为了兼容localisation/languages.yml
-	//locale之前必须没有任何缩进
-	//locale之后的冒号和换行符之间应当没有任何字符或者只有空白字符
-	//采用最简单的实现方式，尽管JFlex手册中说 "^" "$" 性能不佳
-	int n = 1;
-	int l = yylength();
-	while(Character.isWhitespace(yycharat(l - n))) {
-		n++;
-	}
-	yypushback(n);
-    yybegin(IN_LOCALE_COLON);
-    return LOCALE_TOKEN;
+        //locale之前必须没有任何缩进
+        //locale之后的冒号和换行符之间应当没有任何字符或者只有空白字符
+        //采用最简单的实现方式，尽管JFlex手册中说 "^" "$" 性能不佳
+        int n = 1;
+        int l = yylength();
+        while(Character.isWhitespace(yycharat(l - n))) {
+            n++;
+        }
+        yypushback(n);
+        yybegin(IN_LOCALE_COLON);
+        return LOCALE_TOKEN;
             }
           // fall through
           case 116: break;

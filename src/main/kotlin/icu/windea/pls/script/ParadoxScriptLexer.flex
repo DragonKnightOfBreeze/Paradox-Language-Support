@@ -2,125 +2,85 @@ package icu.windea.pls.script.psi;
 
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
-
 import java.util.*;
+import java.util.concurrent.atomic.*;
+
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 %%
+
+%{
+    private boolean leftAbsSign = true;
+    private final Deque<Integer> stack = new ArrayDeque<>();
+    private final AtomicInteger templateStateRef = new AtomicInteger(-1);
+    private final AtomicInteger parameterStateRef = new AtomicInteger(-1);
+
+    public _ParadoxScriptLexer() {
+        this((java.io.Reader)null);
+    }
+
+    private void enterState(Deque<Integer> stack, int state) {
+        stack.offerLast(state);
+        yybegin(state);
+    }
+
+    private void exitState(Deque<Integer> stack, int defaultState) {
+        Integer state = stack.pollLast();
+        if(state != null) {
+            yybegin(state);
+        } else {
+            yybegin(defaultState);
+        }
+    }
+    
+    private void enterState(AtomicInteger stateRef, int state) {
+        stateRef.set(state);
+    }
+    
+    private void exitState(AtomicInteger stateRef) {
+        int state = stateRef.getAndSet(-1);
+        if(state != -1) {
+			if(stateRef == templateStateRef) {
+				state = stack.isEmpty() ? YYINITIAL : stack.pollLast();
+			} 
+            yybegin(state);
+        }
+    }
+%}
 
 %public
 %class _ParadoxScriptLexer
 %implements FlexLexer
 %function advance
 %type IElementType
+
+%s IN_SCRIPTED_VARIABLE
+%s IN_SCRIPTED_VARIABLE_NAME
+%s IN_SCRIPTED_VARIABLE_VALUE
+
+%s IN_PROPERTY_OR_VALUE
+%s IN_PROPERTY_VALUE
+
+%s IN_KEY
+%s IN_QUOTED_KEY
+%s IN_STRING
+%s IN_QUOTED_STRING
+
+%s IN_SCRIPTED_VARIABLE_REFERENCE
+%s IN_SCRIPTED_VARIABLE_REFERENCE_NAME
+
+%s IN_PARAMETER
+%s IN_PARAMETER_DEFAULT_VALUE
+%s IN_PARAMETER_DEFAULT_VALUE_END
+
+%s IN_PARAMETER_CONDITION
+%s IN_PARAMETER_CONDITION_EXPRESSION
+%s IN_PARAMETER_CONDITION_BODY
+
+%s IN_INLINE_MATH
+
 %unicode
-
-%state WAITING_SCRIPTED_VARIABLE
-%state WAITING_SCRIPTED_VARIABLE_NAME
-%state WAITING_SCRIPTED_VARIABLE_VALUE
-
-%state WAITING_PROPERTY_OR_VALUE
-%state WAITING_PROPERTY_VALUE
-
-%state WAITING_KEY
-%state WAITING_QUOTED_KEY
-%state WAITING_QUOTED_KEY_END
-%state WAITING_STRING
-%state WAITING_QUOTED_STRING
-
-%state WAITING_SCRIPTED_VARIABLE_REFERENCE
-%state WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME
-
-%state WAITING_PARAMETER
-%state WAITING_PARAMETER_DEFAULT_VALUE
-%state WAITING_PARAMETER_DEFAULT_VALUE_END
-
-%state WAITING_PARAMETER_CONDITION
-%state WAITING_PARAMETER_CONDITION_EXPRESSION
-%state WAITING_PARAMETER_CONDITION_BODY
-
-%state WAITING_INLINE_MATH
-
-%{
-    private int depth = 0;
-    private boolean scriptedVariableValueStarted = false;
-    private boolean valueStarted = false;
-    private boolean isParameterConditionBody = false;
-    private boolean leftAbsSign = true;
-    
-    private LinkedList<Integer> nextStateForParameterStack = new LinkedList<>();
-    private LinkedList<Integer> nextStateForParameterConditionStack = new LinkedList<>();
-    
-    public _ParadoxScriptLexer() {
-        this((java.io.Reader)null);
-    }
-	
-    private void beginNextState(){
-        if(isParameterConditionBody){
-	        yybegin(WAITING_PARAMETER_CONDITION_BODY);
-        } else {
-            if(depth <= 0){
-                yybegin(YYINITIAL);
-            } else {
-                yybegin(WAITING_PROPERTY_OR_VALUE);
-            }
-        }
-    }
-    
-    private void beginParameter() {
-	    nextStateForParameterStack.addLast(yystate());
-	    yybegin(WAITING_PARAMETER);
-    }
-    
-    private void finishParameter() {
-		int nextState = nextStateForParameterStack.isEmpty() ? 0 : nextStateForParameterStack.removeLast();
-        yybegin(nextState);
-    }
-    
-    private void beginParameterCondition() {
-	    nextStateForParameterConditionStack.addLast(yystate());
-	    yybegin(WAITING_PARAMETER_CONDITION);
-    }
-    
-	private void beginParameterConditionBody() {
-		isParameterConditionBody=true;
-		yybegin(WAITING_PARAMETER_CONDITION_BODY);
-	}
-	
-    private void finishParameterConditionBody(){
-	    isParameterConditionBody=false;
-		int nextState = nextStateForParameterConditionStack.isEmpty() ? 0 : nextStateForParameterConditionStack.removeLast();
-        yybegin(nextState);
-    }
-	
-	private void checkValueStarted() {
-		if(valueStarted) {
-			  valueStarted = false;
-			  beginNextState();
-		}
-	}
-    
-	private void checkScriptedVariableValueStarted() {
-		if(scriptedVariableValueStarted) {
-		    scriptedVariableValueStarted = false;
-		    beginNextState();
-		}
-	}
-	
-    private void pushbackUntilBeforeBlank(int from){
-        //回退到末尾可能出现的空白之前
-        int length = yylength();
-        int i;
-        for (i = from; i < length ; i++) {
-          char c = yycharat(length-i-1);
-          if(!Character.isWhitespace(c)) break;
-        }
-        if(i != 0){
-            yypushback(i);
-        }
-    }
-%}
 
 EOL=\s*\R
 WHITE_SPACE=[\s&&[^\r\n]]+
@@ -131,10 +91,10 @@ PARAMETER_TOKEN=[a-zA-Z_][a-zA-Z0-9_]*
 
 WILDCARD_SCRIPTED_VARIABLE_NAME_TOKEN=[^#@={}\s\"]+
 SCRIPTED_VARIABLE_NAME_TOKEN=[a-zA-Z0-9_]+
-CHECK_SCRIPTED_VARIABLE_NAME={WILDCARD_SCRIPTED_VARIABLE_NAME_TOKEN}(\s*=)? //判断接下来是变量还是变量引用的名字
+CHECK_SCRIPTED_VARIABLE_NAME={WILDCARD_SCRIPTED_VARIABLE_NAME_TOKEN}(\s*=)?
 CHECK_SCRIPTED_VARIABLE_REFERENCE={WILDCARD_SCRIPTED_VARIABLE_NAME_TOKEN}
 
-CHECK_PROPERTY_KEY=({WILDCARD_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_TOKEN})\s*[!=<>] //判断接下来是否是属性的键
+CHECK_PROPERTY_KEY=({WILDCARD_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_TOKEN})\s*[!=<>]
 WILDCARD_KEY_TOKEN=[^#@={}\s\"][^#={}\s]*
 WILDCARD_QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
 PROPERTY_KEY_TOKEN=[^#@$={}\[\]\s\"][^#$={}\[\]\s]*
@@ -147,7 +107,7 @@ FLOAT_NUMBER_TOKEN=[0-9]*(\.[0-9]+) //leading zero is permitted
 FLOAT_TOKEN=[+-]?{FLOAT_NUMBER_TOKEN}
 COLOR_TOKEN=(rgb|hsv)[ \t]*\{[\d.\s&&[^\r\n]]*}
 
-CHECK_STRING={WILDCARD_STRING_TOKEN}|{WILDCARD_QUOTED_STRING_TOKEN} //判断接下来是否是字符串
+CHECK_STRING={WILDCARD_STRING_TOKEN}|{WILDCARD_QUOTED_STRING_TOKEN}
 WILDCARD_STRING_TOKEN=[^#@={}\s\"][^#={}\s]*
 WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\.)*?\"?
 STRING_TOKEN=[^#@$={}\[\]\s\"][^#$={}\[\]\s]*
@@ -157,292 +117,299 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 %%
 
 <YYINITIAL> {
-  {BLANK} { checkValueStarted();return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
-  "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
-  "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
-  ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
-  "<=" {yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;}
-  ">=" {yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;}
-  "!="|"<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
-  "@" {yybegin(WAITING_SCRIPTED_VARIABLE); return AT;}
+    {BLANK} { return WHITE_SPACE; }
+    "{" { enterState(stack, YYINITIAL); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "[" { enterState(stack, yystate()); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
+    "]" { exitState(stack, YYINITIAL); return RIGHT_BRACKET; }
+    "=" { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
+    "<" { yybegin(IN_PROPERTY_VALUE); return LT_SIGN; }
+    ">" { yybegin(IN_PROPERTY_VALUE); return GT_SIGN; }
+    "<=" { yybegin(IN_PROPERTY_VALUE); return LE_SIGN; }
+    ">=" { yybegin(IN_PROPERTY_VALUE); return GE_SIGN; }
+    "!="|"<>" { yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
+    "@" { yybegin(IN_SCRIPTED_VARIABLE); return AT; }
+
+    {COMMENT} { return COMMENT; }
 }
 
-<WAITING_SCRIPTED_VARIABLE>{
-  {BLANK} {beginNextState(); return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
-  "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
-  "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
-  ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
-  "<=" {yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;}
-  ">=" {yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;}
-  "!="|"<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
-  {CHECK_SCRIPTED_VARIABLE_NAME} {
-        //如果匹配到的文本以等号结尾，则作为scriptedVariable进行解析，否则作为scriptedVariableReference解析
+<IN_SCRIPTED_VARIABLE>{
+    {BLANK} { return WHITE_SPACE; }
+    "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "[" { enterState(stack, yystate()); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
+    "]" { exitState(stack, YYINITIAL); return RIGHT_BRACKET; }
+    "=" { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
+    "<" { yybegin(IN_PROPERTY_VALUE); return LT_SIGN; }
+    ">" { yybegin(IN_PROPERTY_VALUE); return GT_SIGN; }
+    "<=" { yybegin(IN_PROPERTY_VALUE); return LE_SIGN; }
+    ">=" { yybegin(IN_PROPERTY_VALUE); return GE_SIGN; }
+    "!="|"<>" { yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
+    {CHECK_SCRIPTED_VARIABLE_NAME} {
+        //如果匹配到的文本以等号结尾，则作为scriptedVariable进行解析，否则作为scriptedVariableReference进行解析
         if(yycharat(yylength() -1) == '='){
             yypushback(yylength());
-            yybegin(WAITING_SCRIPTED_VARIABLE_NAME);
+			enterState(templateStateRef, yystate());
+            yybegin(IN_SCRIPTED_VARIABLE_NAME);
         } else {
             yypushback(yylength());
-            yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME);
+			enterState(templateStateRef, yystate());
+            yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_NAME);
+        }
+    }
+
+    {COMMENT} { return COMMENT; }
+}
+<IN_SCRIPTED_VARIABLE_NAME>{
+    {BLANK} { return WHITE_SPACE; }
+    "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "[" { enterState(stack, yystate()); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
+    "]" { exitState(stack, YYINITIAL); return RIGHT_BRACKET; }
+    "=" { yybegin(IN_SCRIPTED_VARIABLE_VALUE); return EQUAL_SIGN; }
+    "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
+    {SCRIPTED_VARIABLE_NAME_TOKEN} { return SCRIPTED_VARIABLE_NAME_TOKEN; }
+
+    {COMMENT} { return COMMENT; }
+}
+<IN_SCRIPTED_VARIABLE_VALUE> {
+    {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }
+    "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "[" { enterState(stack, yystate()); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
+    "]" { exitState(stack, YYINITIAL); return RIGHT_BRACKET; }
+    {BOOLEAN_TOKEN} { return BOOLEAN_TOKEN; }
+    {INT_TOKEN} { return INT_TOKEN; }
+    {FLOAT_TOKEN} { return FLOAT_TOKEN; }
+    {STRING_TOKEN} { return STRING_TOKEN; }
+    {WILDCARD_QUOTED_STRING_TOKEN} { return STRING_TOKEN; }
+
+    {COMMENT} { return COMMENT; }
+}
+
+<IN_SCRIPTED_VARIABLE_REFERENCE>{
+    {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }
+    "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "[" { enterState(stack, yystate()); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
+    "]" { exitState(stack, YYINITIAL); return RIGHT_BRACKET; }
+    {CHECK_SCRIPTED_VARIABLE_REFERENCE} {
+        yypushback(yylength());
+	    enterState(templateStateRef, yystate());
+        yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_NAME);
+    }
+
+    {COMMENT} { return COMMENT; }
+}
+<IN_SCRIPTED_VARIABLE_REFERENCE_NAME>{
+    {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }
+    "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "[" { enterState(stack, yystate()); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
+    "]" { exitState(stack, YYINITIAL); return RIGHT_BRACKET; }
+    "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
+    {SCRIPTED_VARIABLE_NAME_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
+
+    {COMMENT} { return COMMENT; }
+}
+
+<IN_PROPERTY_OR_VALUE> {
+    {BLANK} { return WHITE_SPACE; }
+    "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "[" { enterState(stack, yystate()); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
+    "]" { exitState(stack, YYINITIAL); return RIGHT_BRACKET; }
+    "=" { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
+    "<" { yybegin(IN_PROPERTY_VALUE); return LT_SIGN; }
+    ">" { yybegin(IN_PROPERTY_VALUE); return GT_SIGN; }
+    "<=" { yybegin(IN_PROPERTY_VALUE); return LE_SIGN; }
+    ">=" { yybegin(IN_PROPERTY_VALUE); return GE_SIGN; }
+    "!="|"<>" { yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
+    "@" { yybegin(IN_SCRIPTED_VARIABLE); return AT; }
+
+    {COMMENT} { return COMMENT; }
+}
+<IN_PROPERTY_VALUE>{
+    {BLANK} { return WHITE_SPACE; }
+    "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "[" { enterState(stack, yystate()); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
+    "]" { exitState(stack, YYINITIAL); return RIGHT_BRACKET; }
+    "@" { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE); return AT; }
+
+    {COMMENT} { return COMMENT; }
+}
+
+<IN_PARAMETER>{
+    \s|"#" { yypushback(yylength()); exitState(parameterStateRef); }
+    "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "[" { enterState(stack, yystate()); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
+    "]" { exitState(stack, YYINITIAL); return RIGHT_BRACKET; }
+    "|" { yybegin(IN_PARAMETER_DEFAULT_VALUE); return PIPE; }
+    "$" { exitState(parameterStateRef); return PARAMETER_END; }
+    {PARAMETER_TOKEN} { return PARAMETER_TOKEN; }
+}
+<IN_PARAMETER_DEFAULT_VALUE>{
+    \s|"#" { yypushback(yylength()); exitState(parameterStateRef); }
+    "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "[" { enterState(stack, yystate()); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
+    "]" { exitState(stack, YYINITIAL); return RIGHT_BRACKET; }
+    "$" { exitState(parameterStateRef); return PARAMETER_END; }
+    {BOOLEAN_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return BOOLEAN_TOKEN; }
+    {INT_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return INT_TOKEN; }
+    {FLOAT_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END);; return FLOAT_TOKEN; }
+    {RELAX_STRING_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return STRING_TOKEN; } 
+}
+<IN_PARAMETER_DEFAULT_VALUE_END>{
+    \s|"#" { yypushback(yylength()); exitState(parameterStateRef); }
+    "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "[" { enterState(stack, yystate()); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
+    "]" { exitState(stack, YYINITIAL); return RIGHT_BRACKET; }
+    "$" { exitState(parameterStateRef); return PARAMETER_END; }
+}
+
+<IN_PARAMETER_CONDITION>{
+    {BLANK} { return WHITE_SPACE; }
+    "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "[" { yybegin(IN_PARAMETER_CONDITION_EXPRESSION); return NESTED_LEFT_BRACKET; }
+    "]" {exitState(stack, YYINITIAL); return RIGHT_BRACKET; }
+
+    {COMMENT} { return COMMENT; }
+}
+<IN_PARAMETER_CONDITION_EXPRESSION>{
+    {BLANK} { return WHITE_SPACE; }
+    "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "!" { return NOT_SIGN; }
+    "]" { yybegin(IN_PARAMETER_CONDITION_BODY); return NESTED_RIGHT_BRACKET; }
+    {PARAMETER_TOKEN} { return CONDITION_PARAMETER_TOKEN; }
+
+    {COMMENT} { return COMMENT; }
+}
+<IN_PARAMETER_CONDITION_BODY>{
+    {BLANK} { return WHITE_SPACE; }
+    "{" { enterState(stack, IN_PARAMETER_CONDITION_BODY); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "[" { enterState(stack, yystate()); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
+    "]" { exitState(stack, YYINITIAL); return RIGHT_BRACKET; }
+
+    {COMMENT} { return COMMENT; }
+}
+
+<IN_INLINE_MATH>{
+    {BLANK} { return WHITE_SPACE; }
+    "|" {
+        if(leftAbsSign) {
+            leftAbsSign=false; 
+            return LABS_SIGN;
+        } else {
+            leftAbsSign=true;
+            return RABS_SIGN;
+        }
+    }
+    "(" { return LP_SIGN; }
+    ")" { return RP_SIGN; }
+    "+" { yybegin(IN_INLINE_MATH); return PLUS_SIGN; }
+    "-" { yybegin(IN_INLINE_MATH); return MINUS_SIGN; }
+    "*" { yybegin(IN_INLINE_MATH); return TIMES_SIGN; }
+    "/" { yybegin(IN_INLINE_MATH); return DIV_SIGN; }
+    "%" { yybegin(IN_INLINE_MATH); return MOD_SIGN; }
+    "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
+    "]" { leftAbsSign = true; exitState(stack, YYINITIAL); return INLINE_MATH_END; }
+    {INT_NUMBER_TOKEN} { return INT_NUMBER_TOKEN; }
+    {FLOAT_NUMBER_TOKEN} { return FLOAT_NUMBER_TOKEN; }
+    {SCRIPTED_VARIABLE_NAME_TOKEN} { return INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
+
+    {COMMENT} { return COMMENT; }
+}
+
+<YYINITIAL, IN_PROPERTY_OR_VALUE, IN_PROPERTY_VALUE, IN_PARAMETER_CONDITION_BODY> {
+    "@["|"@\\[" { enterState(stack, yystate()); yybegin(IN_INLINE_MATH); return INLINE_MATH_START; }
+    {CHECK_PROPERTY_KEY} {
+        boolean leftQuoted = yycharat(0) == '"';
+        if(leftQuoted) {
+            yypushback(yylength() - 1);
+            enterState(templateStateRef, yystate());
+            yybegin(IN_QUOTED_KEY);
+        } else {
+            yypushback(yylength());
+            enterState(templateStateRef, yystate());
+            yybegin(IN_KEY);
+        }
+    }
+    {BOOLEAN_TOKEN} { return BOOLEAN_TOKEN; }
+    {INT_TOKEN} { return INT_TOKEN; }
+    {FLOAT_TOKEN} { return FLOAT_TOKEN; }
+    {COLOR_TOKEN} { return COLOR_TOKEN; }
+    {CHECK_STRING} {
+        boolean leftQuoted = yycharat(0) == '"';
+        if(leftQuoted) {
+            yypushback(yylength() - 1);
+            enterState(templateStateRef, yystate());
+            yybegin(IN_QUOTED_STRING);
+        } else {
+            yypushback(yylength());
+            enterState(templateStateRef, yystate());
+            yybegin(IN_STRING);
         }
     }
 }
-<WAITING_SCRIPTED_VARIABLE_NAME>{
-  {BLANK} {return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "}" { depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" { depth++; beginNextState(); return LEFT_BRACE;}
-  "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
-  "=" { yybegin(WAITING_SCRIPTED_VARIABLE_VALUE); return EQUAL_SIGN;}
-  "$" { beginParameter();return PARAMETER_START; }
-  {SCRIPTED_VARIABLE_NAME_TOKEN} { return SCRIPTED_VARIABLE_NAME_TOKEN; }
-}
-<WAITING_SCRIPTED_VARIABLE_VALUE> {
-  {BLANK} {checkScriptedVariableValueStarted();return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
-  {BOOLEAN_TOKEN} {scriptedVariableValueStarted=true; return BOOLEAN_TOKEN;}
-  {INT_TOKEN} {scriptedVariableValueStarted=true; return INT_TOKEN;}
-  {FLOAT_TOKEN} {scriptedVariableValueStarted=true; return FLOAT_TOKEN;}
-  {STRING_TOKEN} {scriptedVariableValueStarted=true; return STRING_TOKEN;}
-  {WILDCARD_QUOTED_STRING_TOKEN} {scriptedVariableValueStarted=true; return STRING_TOKEN;}
-}
 
-<WAITING_SCRIPTED_VARIABLE_REFERENCE>{
-  {BLANK} {beginNextState();return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
-  {CHECK_SCRIPTED_VARIABLE_REFERENCE} {
-      yypushback(yylength());
-      yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME);
- }
-}
-<WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME>{
-  {BLANK} {beginNextState();return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
-  "$" { beginParameter(); return PARAMETER_START; }
-  {SCRIPTED_VARIABLE_NAME_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
-}
+<IN_KEY>{
+    {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }
+    "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "[" { enterState(stack, yystate()); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
+    "]" { exitState(stack, YYINITIAL); return RIGHT_BRACKET; }
+    "=" { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
+    "<" { yybegin(IN_PROPERTY_VALUE); return LT_SIGN; }
+    ">" { yybegin(IN_PROPERTY_VALUE); return GT_SIGN; }
+    "<=" { yybegin(IN_PROPERTY_VALUE); return LE_SIGN; }
+    ">=" { yybegin(IN_PROPERTY_VALUE); return GE_SIGN; }
+    "!="|"<>" { yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
+    "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
+    {PROPERTY_KEY_TOKEN} { return PROPERTY_KEY_TOKEN; }
 
-<WAITING_PROPERTY_OR_VALUE> {
-  {BLANK} { checkValueStarted();return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
-  "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
-  "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
-  ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
-  "<=" {yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;}
-  ">=" {yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;}
-  "!="|"<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
-  "@" {yybegin(WAITING_SCRIPTED_VARIABLE); return AT;}
+    {COMMENT} { return COMMENT; }
 }
-<WAITING_PROPERTY_VALUE>{
-  {BLANK} { checkValueStarted();return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
-  "@" {yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE); return AT;}
-}
-
-<WAITING_PARAMETER>{
-  \s|"#" { yypushback(yylength()); finishParameter();}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "|" {yybegin(WAITING_PARAMETER_DEFAULT_VALUE); return PIPE;}
-  "$" {finishParameter(); return PARAMETER_END;}
-  {PARAMETER_TOKEN} { return PARAMETER_TOKEN; }
-}
-<WAITING_PARAMETER_DEFAULT_VALUE>{
-  \s|"#" { yypushback(yylength()); finishParameter();}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "$" {finishParameter(); return PARAMETER_END;}
-  {BOOLEAN_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return BOOLEAN_TOKEN;}
-  {INT_TOKEN} {yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return INT_TOKEN;}
-  {FLOAT_TOKEN} {yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END);; return FLOAT_TOKEN;}
-  {RELAX_STRING_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return STRING_TOKEN;} 
-}
-<WAITING_PARAMETER_DEFAULT_VALUE_END>{
-  \s|"#" { yypushback(yylength()); finishParameter();}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "$" {finishParameter(); return PARAMETER_END;}
-}
-
-<WAITING_PARAMETER_CONDITION>{
-  {BLANK} { return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "[" {yybegin(WAITING_PARAMETER_CONDITION_EXPRESSION); return NESTED_LEFT_BRACKET;}
-  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
-}
-<WAITING_PARAMETER_CONDITION_EXPRESSION>{
-  {BLANK} { return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "!" {return NOT_SIGN;}
-  "]" { beginParameterConditionBody(); return NESTED_RIGHT_BRACKET;}
-  {PARAMETER_TOKEN} { return CONDITION_PARAMETER_TOKEN; }
-}
-<WAITING_PARAMETER_CONDITION_BODY>{
-  {BLANK} { return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
-}
-
-<WAITING_INLINE_MATH>{
-  {BLANK} {return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "|" {
-    if(leftAbsSign){
-      leftAbsSign=false; 
-      return LABS_SIGN;
-    }else{
-      leftAbsSign=true;
-      return RABS_SIGN;
+<IN_QUOTED_KEY> {
+    {EOL} { exitState(templateStateRef); return WHITE_SPACE; }
+    "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
+    \"|{QUOTED_PROPERTY_KEY_TOKEN}\"? {
+        boolean rightQuoted = yycharat(yylength() -1) == '"';
+        if(rightQuoted) {
+            exitState(templateStateRef);
+        }
+        return PROPERTY_KEY_TOKEN;
     }
-  }
-  "(" {return LP_SIGN;}
-  ")" {return RP_SIGN;}
-  "+" {yybegin(WAITING_INLINE_MATH); return PLUS_SIGN;}
-  "-" {yybegin(WAITING_INLINE_MATH); return MINUS_SIGN;}
-  "*" {yybegin(WAITING_INLINE_MATH); return TIMES_SIGN;}
-  "/" {yybegin(WAITING_INLINE_MATH); return DIV_SIGN;}
-  "%" {yybegin(WAITING_INLINE_MATH); return MOD_SIGN;}
-  "$" { beginParameter(); return PARAMETER_START;}
-  "]" { beginNextState(); return INLINE_MATH_END;}
-  {INT_NUMBER_TOKEN} {return INT_NUMBER_TOKEN;}
-  {FLOAT_NUMBER_TOKEN} {return FLOAT_NUMBER_TOKEN;}
-  {SCRIPTED_VARIABLE_NAME_TOKEN} {
-	  return INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN;
-  }
 }
 
-<YYINITIAL, WAITING_PROPERTY_OR_VALUE, WAITING_PROPERTY_VALUE, WAITING_PARAMETER_CONDITION_BODY> {
-  "@["|"@\\[" { yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
-  {CHECK_PROPERTY_KEY} {
-    boolean leftQuoted = yycharat(0) == '"';
-	if(leftQuoted) {
-        yypushback(yylength() - 1);
-        yybegin(WAITING_QUOTED_KEY);
-	} else {
-        yypushback(yylength());
-        yybegin(WAITING_KEY);
-	}
-  }
-  {BOOLEAN_TOKEN} {valueStarted=true; return BOOLEAN_TOKEN;}
-  {INT_TOKEN} {valueStarted=true; return INT_TOKEN;}
-  {FLOAT_TOKEN} {valueStarted=true; return FLOAT_TOKEN;}
-  {COLOR_TOKEN} {valueStarted=true; return COLOR_TOKEN;}
-  {CHECK_STRING} {
-    boolean leftQuoted = yycharat(0) == '"';
-	if(leftQuoted) {
-        yypushback(yylength() - 1);
-        yybegin(WAITING_QUOTED_STRING);
-	} else {
-        yypushback(yylength());
-        yybegin(WAITING_STRING);
-	}
-  }
+<IN_STRING>{
+    {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }
+    "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
+    "[" { enterState(stack, yystate()); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
+    "]" { exitState(stack, YYINITIAL); return RIGHT_BRACKET; }
+    "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
+    {STRING_TOKEN} { return STRING_TOKEN; }
+
+    {COMMENT} { return COMMENT; }
+}
+<IN_QUOTED_STRING> {
+    //quoted multiline string is allowed
+    //{EOL} { exitState(templateStateRef); return WHITE_SPACE; }
+    "$" { enterState(stack, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
+    \"|{QUOTED_STRING_TOKEN}\"? {
+        boolean rightQuoted = yycharat(yylength() -1) == '"';
+        if(rightQuoted) {
+            exitState(templateStateRef);
+        }
+        return STRING_TOKEN;
+    }
 }
 
-<WAITING_KEY>{
-  {BLANK} {return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
-  "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
-  "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
-  ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
-  "<=" {yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;}
-  ">=" {yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;}
-  "!="|"<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
-  "$" {beginParameter();return PARAMETER_START;}
-  {PROPERTY_KEY_TOKEN} {return PROPERTY_KEY_TOKEN;}
-}
-<WAITING_QUOTED_KEY> {
-  {EOL} {
-      yybegin(WAITING_QUOTED_KEY_END);
-      return WHITE_SPACE;
-  }
-  "$" {beginParameter();return PARAMETER_START;}
-  \"|{QUOTED_PROPERTY_KEY_TOKEN}\"? {
-	boolean rightQuoted = yycharat(yylength() -1) == '"';
-    if(rightQuoted) {
-		yybegin(WAITING_QUOTED_KEY_END);
-	}
-    return PROPERTY_KEY_TOKEN;
-  }
-}
-<WAITING_QUOTED_KEY_END>{
-  {BLANK} {return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "[" {beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
-  "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
-  "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
-  ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
-  "<=" {yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;}
-  ">=" {yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;}
-  "!="|"<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
-}
-
-<WAITING_STRING>{
-  {BLANK} { checkValueStarted();return WHITE_SPACE;}
-  {COMMENT} {return COMMENT;}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "[" {valueStarted=true; beginParameterCondition(); return LEFT_BRACKET;}
-  "]" {finishParameterConditionBody(); return RIGHT_BRACKET;}
-  "$" {valueStarted=true;beginParameter();return PARAMETER_START;}
-  {STRING_TOKEN} {valueStarted=true;return STRING_TOKEN;}
-}
-<WAITING_QUOTED_STRING> {
-  //quoted multiline string is allowed
-  //{EOL} {checkValueStarted();return WHITE_SPACE;}
-  "$" {beginParameter();return PARAMETER_START;}
-  \"|{QUOTED_STRING_TOKEN}\"? {
-	  boolean rightQuoted = yycharat(yylength() -1) == '"';
-      if(rightQuoted) {
-		  valueStarted = false;
-		  beginNextState();
-      }
-      return STRING_TOKEN;
-  }
-}
-
-[^] {return BAD_CHARACTER;}
+[^] { return BAD_CHARACTER; }

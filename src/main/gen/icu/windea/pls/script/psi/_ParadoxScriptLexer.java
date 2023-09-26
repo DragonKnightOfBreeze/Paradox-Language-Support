@@ -5,8 +5,9 @@ package icu.windea.pls.script.psi;
 
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
-
 import java.util.*;
+import java.util.concurrent.atomic.*;
+
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
@@ -21,25 +22,24 @@ public class _ParadoxScriptLexer implements FlexLexer {
 
   /** lexical states */
   public static final int YYINITIAL = 0;
-  public static final int WAITING_SCRIPTED_VARIABLE = 2;
-  public static final int WAITING_SCRIPTED_VARIABLE_NAME = 4;
-  public static final int WAITING_SCRIPTED_VARIABLE_VALUE = 6;
-  public static final int WAITING_PROPERTY_OR_VALUE = 8;
-  public static final int WAITING_PROPERTY_VALUE = 10;
-  public static final int WAITING_KEY = 12;
-  public static final int WAITING_QUOTED_KEY = 14;
-  public static final int WAITING_QUOTED_KEY_END = 16;
-  public static final int WAITING_STRING = 18;
-  public static final int WAITING_QUOTED_STRING = 20;
-  public static final int WAITING_SCRIPTED_VARIABLE_REFERENCE = 22;
-  public static final int WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME = 24;
-  public static final int WAITING_PARAMETER = 26;
-  public static final int WAITING_PARAMETER_DEFAULT_VALUE = 28;
-  public static final int WAITING_PARAMETER_DEFAULT_VALUE_END = 30;
-  public static final int WAITING_PARAMETER_CONDITION = 32;
-  public static final int WAITING_PARAMETER_CONDITION_EXPRESSION = 34;
-  public static final int WAITING_PARAMETER_CONDITION_BODY = 36;
-  public static final int WAITING_INLINE_MATH = 38;
+  public static final int IN_SCRIPTED_VARIABLE = 2;
+  public static final int IN_SCRIPTED_VARIABLE_NAME = 4;
+  public static final int IN_SCRIPTED_VARIABLE_VALUE = 6;
+  public static final int IN_PROPERTY_OR_VALUE = 8;
+  public static final int IN_PROPERTY_VALUE = 10;
+  public static final int IN_KEY = 12;
+  public static final int IN_QUOTED_KEY = 14;
+  public static final int IN_STRING = 16;
+  public static final int IN_QUOTED_STRING = 18;
+  public static final int IN_SCRIPTED_VARIABLE_REFERENCE = 20;
+  public static final int IN_SCRIPTED_VARIABLE_REFERENCE_NAME = 22;
+  public static final int IN_PARAMETER = 24;
+  public static final int IN_PARAMETER_DEFAULT_VALUE = 26;
+  public static final int IN_PARAMETER_DEFAULT_VALUE_END = 28;
+  public static final int IN_PARAMETER_CONDITION = 30;
+  public static final int IN_PARAMETER_CONDITION_EXPRESSION = 32;
+  public static final int IN_PARAMETER_CONDITION_BODY = 34;
+  public static final int IN_INLINE_MATH = 36;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -48,9 +48,9 @@ public class _ParadoxScriptLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  3,  3,  0,  0,  4,  4,  5,  5,  6,  6, 
-     7,  7,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 
-    15, 15, 16, 16, 17, 17, 18, 18
+     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7, 
+     8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 
+    16, 16, 17, 17, 18, 18
   };
 
   /**
@@ -142,22 +142,21 @@ public class _ParadoxScriptLexer implements FlexLexer {
   private static final String ZZ_ACTION_PACKED_0 =
     "\23\0\1\1\1\2\2\1\1\3\2\1\1\4\1\5"+
     "\1\6\1\7\1\10\1\11\1\12\4\1\1\13\1\14"+
-    "\1\15\1\16\1\15\1\17\1\5\1\7\1\11\1\12"+
-    "\1\20\1\21\1\22\1\23\1\11\1\12\1\24\1\25"+
-    "\3\24\1\26\2\24\1\27\2\30\1\5\1\7\2\31"+
-    "\2\32\1\31\2\17\1\5\1\7\1\33\1\34\1\35"+
-    "\2\36\1\17\1\37\1\40\1\11\1\12\1\41\1\42"+
-    "\1\43\1\44\1\45\1\46\3\47\1\50\2\47\1\51"+
-    "\1\52\1\53\1\54\1\17\1\55\1\56\1\57\1\60"+
-    "\1\61\1\62\1\17\1\63\1\64\1\65\1\66\1\67"+
-    "\1\0\2\70\1\71\1\1\1\70\1\1\1\0\1\72"+
-    "\1\73\1\71\1\74\1\75\1\0\1\1\1\76\2\1"+
-    "\1\0\1\15\1\71\1\24\1\0\1\77\1\100\1\24"+
-    "\1\71\3\0\1\101\1\102\1\47\1\103\1\0\1\1"+
-    "\1\70\1\1\1\0\1\1\2\0\1\104";
+    "\2\15\1\16\1\5\1\7\1\11\1\12\1\17\1\20"+
+    "\1\21\1\22\1\11\1\12\1\23\1\24\3\23\1\4"+
+    "\2\23\1\25\2\26\1\5\1\7\2\27\2\24\1\27"+
+    "\1\16\2\30\1\31\1\16\1\32\1\11\1\12\1\33"+
+    "\1\34\1\35\1\36\1\37\3\40\1\41\2\40\1\42"+
+    "\1\43\1\44\1\45\1\16\1\46\1\47\1\50\1\51"+
+    "\1\52\1\53\1\54\1\16\1\55\1\56\1\57\1\60"+
+    "\1\61\1\0\2\62\1\63\1\1\1\62\1\1\1\0"+
+    "\1\64\1\65\1\63\1\66\1\67\1\0\1\1\1\70"+
+    "\2\1\1\0\1\15\1\63\1\23\1\0\1\64\1\70"+
+    "\1\23\1\63\3\0\1\71\1\72\1\40\1\73\1\0"+
+    "\1\1\1\62\1\1\1\0\1\1\2\0\1\74";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[157];
+    int [] result = new int[150];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -187,24 +186,23 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\0\u0290\0\u02b9\0\u02e2\0\u030b\0\u0334\0\u035d\0\u0386\0\u03af"+
     "\0\u03d8\0\u0401\0\u03d8\0\u042a\0\u0453\0\u047c\0\u04a5\0\u030b"+
     "\0\u030b\0\u04ce\0\u04f7\0\u0520\0\u0549\0\u0453\0\u0453\0\u0572"+
-    "\0\u059b\0\u05c4\0\u0453\0\u05ed\0\u0616\0\u0572\0\u0572\0\u063f"+
-    "\0\u0453\0\u0668\0\u0453\0\u0453\0\u0453\0\u0691\0\u06ba\0\u06e3"+
-    "\0\u070c\0\u0735\0\u070c\0\u075e\0\u0787\0\u04a5\0\u07b0\0\u07d9"+
-    "\0\u0802\0\u082b\0\u0854\0\u087d\0\u08a6\0\u087d\0\u0453\0\u08cf"+
-    "\0\u08f8\0\u0921\0\u094a\0\u0973\0\u0453\0\u0453\0\u099c\0\u0453"+
-    "\0\u09c5\0\u09ee\0\u0a17\0\u09ee\0\u09ee\0\u0453\0\u0a40\0\u0453"+
-    "\0\u0453\0\u0a69\0\u0453\0\u0a92\0\u0abb\0\u0ae4\0\u0abb\0\u0b0d"+
-    "\0\u0b36\0\u0453\0\u0453\0\u0b5f\0\u0453\0\u04a5\0\u0453\0\u0453"+
-    "\0\u0453\0\u0453\0\u0453\0\u0453\0\u0b88\0\u0453\0\u0bb1\0\u0bda"+
-    "\0\u0453\0\u0453\0\u0c03\0\u030b\0\u0453\0\u0453\0\u0c2c\0\u0386"+
-    "\0\u0c03\0\u0c55\0\u0401\0\u0453\0\u030b\0\u0453\0\u0453\0\u0c7e"+
-    "\0\u0ca7\0\u030b\0\u0cd0\0\u0cf9\0\u0d22\0\u0453\0\u0572\0\u0453"+
-    "\0\u0d4b\0\u0735\0\u0691\0\u0d74\0\u07b0\0\u08cf\0\u08a6\0\u09c5"+
-    "\0\u0ae4\0\u0a92\0\u0d9d\0\u0b88\0\u0b88\0\u0dc6\0\u0dc6\0\u0453"+
-    "\0\u0def\0\u0e18\0\u0e41\0\u0e6a\0\u0453";
+    "\0\u059b\0\u0453\0\u05c4\0\u05ed\0\u0572\0\u0572\0\u0453\0\u0453"+
+    "\0\u0616\0\u0453\0\u0453\0\u0453\0\u063f\0\u0668\0\u0691\0\u06ba"+
+    "\0\u06e3\0\u06ba\0\u070c\0\u0735\0\u04a5\0\u075e\0\u0787\0\u07b0"+
+    "\0\u07d9\0\u0802\0\u082b\0\u0854\0\u082b\0\u0453\0\u087d\0\u08a6"+
+    "\0\u0453\0\u0453\0\u08cf\0\u08f8\0\u08f8\0\u08f8\0\u0921\0\u0453"+
+    "\0\u0453\0\u094a\0\u0453\0\u0973\0\u099c\0\u09c5\0\u099c\0\u09ee"+
+    "\0\u0a17\0\u0453\0\u0453\0\u0a40\0\u0453\0\u04a5\0\u0453\0\u0453"+
+    "\0\u0453\0\u0453\0\u0453\0\u0453\0\u0453\0\u0a69\0\u0453\0\u0a92"+
+    "\0\u0abb\0\u0453\0\u0453\0\u0ae4\0\u030b\0\u0453\0\u0453\0\u0b0d"+
+    "\0\u0386\0\u0ae4\0\u0b36\0\u0401\0\u0453\0\u030b\0\u0453\0\u0453"+
+    "\0\u0b5f\0\u0b88\0\u030b\0\u0bb1\0\u0bda\0\u0c03\0\u0453\0\u0572"+
+    "\0\u0453\0\u0c2c\0\u06e3\0\u063f\0\u0c55\0\u075e\0\u087d\0\u0854"+
+    "\0\u08cf\0\u09c5\0\u0973\0\u0c7e\0\u0a69\0\u0a69\0\u0ca7\0\u0ca7"+
+    "\0\u0453\0\u0cd0\0\u0cf9\0\u0d22\0\u0d4b\0\u0453";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[157];
+    int [] result = new int[150];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -230,148 +228,146 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\1\24\3\25\1\26\1\27\1\30\5\24\2\31\1\32"+
     "\1\24\1\33\1\34\1\35\1\36\1\37\1\24\1\40"+
     "\1\24\1\41\3\24\1\42\1\43\1\24\1\44\2\24"+
-    "\1\45\1\46\1\24\1\47\1\25\2\24\1\50\3\51"+
-    "\1\52\1\53\1\30\12\50\1\54\1\35\1\55\1\53"+
-    "\1\50\1\56\1\50\1\57\12\50\1\46\1\50\1\47"+
-    "\1\51\2\50\1\53\3\60\2\53\1\30\1\61\10\53"+
-    "\1\62\1\53\1\63\2\53\1\62\1\64\1\53\1\65"+
-    "\12\62\1\46\1\53\1\47\1\60\2\53\1\66\3\67"+
-    "\1\66\1\70\1\30\1\53\4\66\2\71\1\72\1\66"+
-    "\1\73\1\66\1\53\1\66\1\53\1\66\1\64\1\66"+
-    "\1\65\4\66\1\74\4\66\1\75\1\46\1\66\1\47"+
-    "\1\67\2\66\1\24\3\25\1\24\1\27\1\30\5\24"+
-    "\2\31\1\32\1\24\1\33\1\24\1\53\1\24\1\76"+
+    "\1\45\1\46\1\24\1\47\1\25\2\24\1\50\3\25"+
+    "\1\51\1\52\1\30\12\50\1\53\1\35\1\54\1\52"+
+    "\1\50\1\55\1\50\1\56\12\50\1\57\1\50\1\47"+
+    "\1\25\2\50\1\52\3\25\2\52\1\30\1\60\10\52"+
+    "\1\61\1\52\1\62\2\52\1\61\1\63\1\52\1\64"+
+    "\12\61\1\57\1\52\1\47\1\25\2\52\1\65\3\66"+
+    "\1\65\1\67\1\30\1\52\4\65\2\70\1\71\1\65"+
+    "\1\72\1\65\1\52\1\65\1\52\1\65\1\63\1\65"+
+    "\1\64\4\65\1\73\4\65\1\74\1\57\1\65\1\47"+
+    "\1\66\2\65\1\24\3\25\1\26\1\27\1\30\5\24"+
+    "\2\31\1\32\1\24\1\33\1\34\1\35\1\36\1\37"+
     "\1\24\1\40\1\24\1\41\3\24\1\42\1\43\1\24"+
-    "\1\44\2\24\1\45\1\46\1\24\1\47\1\25\2\24"+
-    "\1\77\3\60\1\100\1\53\1\30\1\61\11\77\1\101"+
-    "\1\35\1\102\1\53\1\77\1\64\1\77\1\65\12\77"+
-    "\1\46\1\77\1\47\1\60\2\77\1\103\1\104\1\105"+
-    "\1\106\1\103\1\107\1\103\1\61\17\103\1\110\16\103"+
-    "\1\104\2\103\1\53\3\60\1\111\1\53\1\30\12\53"+
-    "\1\112\1\35\1\113\2\53\1\64\1\53\1\65\12\53"+
-    "\1\46\1\53\1\47\1\60\2\53\1\114\3\25\1\114"+
-    "\1\53\1\30\1\115\12\114\1\53\1\114\1\53\1\114"+
-    "\1\116\1\114\1\65\12\114\1\46\1\114\1\47\1\25"+
-    "\2\114\5\117\1\120\1\117\1\61\17\117\1\121\21\117"+
-    "\1\122\3\123\1\122\1\53\1\30\13\122\1\53\1\122"+
-    "\1\53\1\122\1\124\1\122\1\125\12\122\1\46\1\122"+
-    "\1\47\1\123\2\122\1\53\3\123\2\53\1\30\1\126"+
-    "\10\53\1\127\4\53\1\127\1\64\1\53\1\65\12\127"+
-    "\1\46\1\53\1\47\1\123\3\53\3\130\2\53\1\130"+
-    "\1\131\15\53\1\132\3\53\12\132\1\46\1\133\1\47"+
-    "\1\130\2\53\1\134\3\130\2\134\1\130\1\131\4\134"+
-    "\2\135\1\136\1\134\1\137\1\134\1\53\3\134\1\53"+
-    "\1\134\1\53\4\134\1\140\4\134\1\141\1\46\1\134"+
-    "\1\47\1\130\2\134\1\53\3\130\2\53\1\130\1\131"+
-    "\33\53\1\46\1\53\1\47\1\130\3\53\3\60\2\53"+
-    "\1\30\17\53\1\142\1\53\1\65\12\53\1\46\1\53"+
-    "\1\47\1\60\3\53\3\60\1\143\1\53\1\30\16\53"+
-    "\1\144\2\53\1\145\12\144\1\46\1\53\1\47\1\60"+
-    "\2\53\1\24\3\60\1\24\1\27\1\30\5\24\2\31"+
-    "\1\32\1\24\1\33\1\24\1\53\1\24\1\146\1\24"+
+    "\1\44\2\24\1\45\1\57\1\24\1\47\1\25\3\24"+
+    "\3\25\1\24\1\27\1\30\5\24\2\31\1\32\1\24"+
+    "\1\33\1\24\1\52\1\24\1\75\1\24\1\40\1\24"+
+    "\1\41\3\24\1\42\1\43\1\24\1\44\2\24\1\45"+
+    "\1\57\1\24\1\47\1\25\2\24\1\76\3\66\1\77"+
+    "\1\52\1\30\1\60\11\76\1\100\1\35\1\101\1\52"+
+    "\1\76\1\63\1\76\1\64\12\76\1\57\1\76\1\47"+
+    "\1\66\2\76\1\102\1\103\1\104\1\105\1\102\1\106"+
+    "\1\102\1\60\17\102\1\107\16\102\1\103\2\102\1\65"+
+    "\3\66\1\65\1\52\1\30\1\60\12\65\1\52\1\65"+
+    "\1\52\1\65\1\63\1\65\1\64\12\65\1\57\1\65"+
+    "\1\47\1\66\2\65\5\110\1\111\1\110\1\112\17\110"+
+    "\1\113\21\110\1\114\3\66\1\114\1\52\1\30\13\114"+
+    "\1\52\1\114\1\52\1\114\1\115\1\114\1\116\12\114"+
+    "\1\57\1\114\1\47\1\66\2\114\1\52\3\66\2\52"+
+    "\1\30\1\60\10\52\1\117\4\52\1\117\1\63\1\52"+
+    "\1\64\12\117\1\57\1\52\1\47\1\66\3\52\3\120"+
+    "\2\52\1\120\1\121\15\52\1\122\1\63\1\52\1\64"+
+    "\12\122\1\57\1\123\1\47\1\120\2\52\1\124\3\120"+
+    "\2\124\1\120\1\121\4\124\2\125\1\126\1\124\1\127"+
+    "\1\124\1\52\3\124\1\63\1\124\1\64\4\124\1\130"+
+    "\4\124\1\131\1\57\1\124\1\47\1\120\2\124\1\52"+
+    "\3\120\2\52\1\120\1\121\16\52\1\63\1\52\1\64"+
+    "\12\52\1\57\1\52\1\47\1\120\3\52\3\25\2\52"+
+    "\1\30\17\52\1\132\1\52\1\64\12\52\1\57\1\52"+
+    "\1\47\1\25\3\52\3\25\1\133\1\52\1\30\16\52"+
+    "\1\134\2\52\1\135\12\134\1\57\1\52\1\47\1\25"+
+    "\2\52\1\24\3\25\1\24\1\27\1\30\5\24\2\31"+
+    "\1\32\1\24\1\33\1\24\1\52\1\24\1\136\1\24"+
     "\1\40\1\24\1\41\3\24\1\42\1\43\1\24\1\44"+
-    "\2\24\1\45\1\46\1\24\1\47\1\60\2\24\1\53"+
-    "\3\60\2\53\1\30\1\126\1\147\1\150\1\151\1\152"+
-    "\1\153\1\154\1\155\1\156\1\157\4\53\1\160\2\53"+
-    "\1\161\12\160\1\53\1\162\1\53\1\60\2\53\1\24"+
-    "\3\163\1\164\1\24\1\0\12\24\1\164\1\165\1\164"+
-    "\17\24\1\0\1\24\1\0\1\163\2\24\1\0\3\25"+
-    "\42\0\1\25\2\0\1\24\3\163\1\164\1\24\1\0"+
-    "\12\24\1\164\1\166\1\164\17\24\1\0\1\24\1\0"+
-    "\1\163\2\24\2\27\1\167\1\27\1\170\1\171\13\27"+
-    "\3\170\3\27\1\172\21\27\2\30\1\0\46\30\1\24"+
-    "\3\163\1\164\1\24\1\0\7\24\1\32\1\24\1\33"+
-    "\1\164\1\165\1\164\17\24\1\0\1\24\1\0\1\163"+
-    "\3\24\3\163\1\164\1\24\1\0\11\24\1\173\1\164"+
-    "\1\165\1\164\17\24\1\0\1\24\1\0\1\163\3\24"+
-    "\3\163\1\164\1\24\1\0\12\24\1\164\1\174\1\175"+
-    "\17\24\1\0\1\24\1\0\1\163\2\24\51\0\1\24"+
-    "\3\163\1\164\1\24\1\0\12\24\1\164\1\176\1\164"+
-    "\17\24\1\0\1\24\1\0\1\163\2\24\26\0\1\177"+
-    "\1\200\21\0\1\24\3\163\1\164\1\24\1\0\12\24"+
-    "\1\164\1\165\1\164\14\24\1\201\2\24\1\0\1\24"+
-    "\1\0\1\163\3\24\3\163\1\164\1\24\1\0\12\24"+
-    "\1\164\1\165\1\164\12\24\1\202\4\24\1\0\1\24"+
-    "\1\0\1\163\3\24\3\163\1\164\1\24\1\0\12\24"+
-    "\1\164\1\165\1\164\7\24\1\203\7\24\1\0\1\24"+
-    "\1\0\1\163\3\24\3\163\1\164\1\24\1\0\12\24"+
-    "\1\164\1\165\1\164\6\24\1\204\10\24\1\0\1\24"+
-    "\1\0\1\163\2\24\1\50\3\205\1\50\2\0\13\50"+
-    "\1\206\1\50\1\0\16\50\1\0\1\50\1\0\1\205"+
-    "\2\50\1\0\3\51\42\0\1\51\2\0\1\50\3\205"+
-    "\1\50\2\0\13\50\1\166\1\50\1\0\16\50\1\0"+
-    "\1\50\1\0\1\205\3\50\3\205\1\50\2\0\13\50"+
-    "\1\174\1\207\1\0\16\50\1\0\1\50\1\0\1\205"+
-    "\3\50\3\205\1\50\2\0\13\50\1\176\1\50\1\0"+
-    "\16\50\1\0\1\50\1\0\1\205\2\50\1\0\3\60"+
-    "\42\0\1\60\22\0\1\62\4\0\1\62\3\0\12\62"+
-    "\6\0\1\66\3\0\2\66\2\0\12\66\1\0\3\66"+
-    "\1\0\1\66\1\0\12\66\1\0\1\66\2\0\2\66"+
-    "\1\0\3\67\42\0\1\67\2\0\5\70\1\210\21\70"+
-    "\1\211\21\70\1\66\3\0\2\66\2\0\6\66\1\72"+
-    "\1\66\1\73\1\66\1\0\3\66\1\0\1\66\1\0"+
-    "\12\66\1\0\1\66\2\0\3\66\3\0\2\66\2\0"+
-    "\10\66\1\212\1\66\1\0\3\66\1\0\1\66\1\0"+
-    "\12\66\1\0\1\66\2\0\3\66\3\0\2\66\2\0"+
-    "\12\66\1\0\3\66\1\0\1\66\1\0\5\66\1\213"+
-    "\4\66\1\0\1\66\2\0\3\66\3\0\2\66\2\0"+
-    "\12\66\1\0\3\66\1\0\1\66\1\0\1\66\1\214"+
-    "\10\66\1\0\1\66\2\0\2\66\1\77\3\0\2\77"+
-    "\2\0\12\77\1\0\3\77\1\0\1\77\1\0\12\77"+
-    "\1\0\1\77\2\0\3\77\3\0\2\77\2\0\12\77"+
-    "\1\166\3\77\1\0\1\77\1\0\12\77\1\0\1\77"+
-    "\2\0\3\77\3\0\2\77\2\0\12\77\1\174\1\215"+
-    "\2\77\1\0\1\77\1\0\12\77\1\0\1\77\2\0"+
-    "\3\77\3\0\2\77\2\0\12\77\1\176\3\77\1\0"+
-    "\1\77\1\0\12\77\1\0\1\77\2\0\2\77\2\103"+
-    "\1\0\2\103\1\107\1\103\1\0\17\103\1\216\22\103"+
-    "\1\104\1\105\1\106\1\103\1\107\1\103\1\0\17\103"+
-    "\1\216\16\103\1\104\2\103\1\0\1\217\2\105\42\0"+
-    "\1\217\2\0\2\103\2\0\44\103\23\0\1\166\50\0"+
-    "\1\174\1\166\47\0\1\176\26\0\1\114\3\0\2\114"+
-    "\2\0\12\114\1\0\3\114\1\0\1\114\1\0\12\114"+
-    "\1\0\1\114\2\0\2\114\5\117\1\120\1\117\1\0"+
-    "\17\117\1\220\23\117\2\0\44\117\1\0\1\122\3\0"+
-    "\1\122\2\0\13\122\1\0\1\122\1\0\16\122\1\0"+
-    "\1\122\2\0\2\122\1\0\3\123\42\0\1\123\22\0"+
-    "\1\127\4\0\1\127\3\0\12\127\26\0\1\132\4\0"+
-    "\1\132\3\0\12\132\6\0\1\134\3\0\2\134\2\0"+
-    "\12\134\1\0\3\134\1\0\1\134\1\0\12\134\1\0"+
-    "\1\134\2\0\3\134\3\0\2\134\2\0\6\134\1\136"+
-    "\1\134\1\137\1\134\1\0\3\134\1\0\1\134\1\0"+
-    "\12\134\1\0\1\134\2\0\3\134\3\0\2\134\2\0"+
-    "\10\134\1\221\1\134\1\0\3\134\1\0\1\134\1\0"+
-    "\12\134\1\0\1\134\2\0\3\134\3\0\2\134\2\0"+
-    "\12\134\1\0\3\134\1\0\1\134\1\0\5\134\1\222"+
-    "\4\134\1\0\1\134\2\0\3\134\3\0\2\134\2\0"+
-    "\12\134\1\0\3\134\1\0\1\134\1\0\1\134\1\223"+
-    "\10\134\1\0\1\134\2\0\2\134\20\0\1\144\4\0"+
-    "\1\144\3\0\12\144\26\0\1\224\46\0\1\225\1\0"+
-    "\1\157\4\0\1\160\3\0\12\160\26\0\1\160\4\0"+
-    "\1\160\3\0\12\160\7\0\3\163\1\165\14\0\3\165"+
-    "\22\0\1\163\2\0\1\226\3\167\1\227\1\230\13\226"+
-    "\3\227\3\226\1\231\16\226\1\167\2\226\2\27\2\0"+
-    "\44\27\27\0\1\177\22\0\1\24\3\163\1\164\1\24"+
-    "\1\0\12\24\1\164\1\165\1\164\15\24\1\232\1\24"+
-    "\1\0\1\24\1\0\1\163\3\24\3\163\1\164\1\24"+
-    "\1\0\12\24\1\164\1\165\1\164\5\24\1\232\11\24"+
-    "\1\0\1\24\1\0\1\163\3\24\3\163\1\164\1\24"+
-    "\1\0\12\24\1\164\1\165\1\164\14\24\1\202\2\24"+
-    "\1\0\1\24\1\0\1\163\2\24\1\0\3\205\16\0"+
-    "\1\206\23\0\1\205\2\0\2\70\2\0\44\70\1\0"+
-    "\1\66\3\0\2\66\2\0\12\66\1\0\3\66\1\0"+
-    "\1\66\1\0\7\66\1\213\2\66\1\0\1\66\2\0"+
-    "\2\66\1\134\3\0\2\134\2\0\12\134\1\0\3\134"+
-    "\1\0\1\134\1\0\7\134\1\222\2\134\1\0\1\134"+
-    "\2\0\2\134\5\226\1\230\21\226\1\231\23\226\2\0"+
-    "\44\226\1\0\1\24\1\233\2\163\1\164\1\24\1\0"+
-    "\12\24\1\164\1\165\1\164\17\24\1\234\1\24\1\0"+
-    "\1\163\2\24\1\0\1\233\2\163\1\165\14\0\3\165"+
-    "\17\0\1\234\2\0\1\163\3\0\1\234\1\0\1\234"+
-    "\12\0\1\234\1\0\1\234\24\0\1\235\2\234\1\0";
+    "\2\24\1\45\1\137\1\24\1\47\1\25\2\24\1\52"+
+    "\3\25\2\52\1\30\1\60\1\140\1\141\1\142\1\143"+
+    "\1\144\1\145\1\146\1\147\1\150\4\52\1\151\2\52"+
+    "\1\152\12\151\1\52\1\153\1\52\1\25\2\52\1\24"+
+    "\3\154\1\155\1\24\1\0\12\24\1\155\1\156\1\155"+
+    "\17\24\1\0\1\24\1\0\1\154\2\24\1\0\3\25"+
+    "\42\0\1\25\2\0\1\24\3\154\1\155\1\24\1\0"+
+    "\12\24\1\155\1\157\1\155\17\24\1\0\1\24\1\0"+
+    "\1\154\2\24\2\27\1\160\1\27\1\161\1\162\13\27"+
+    "\3\161\3\27\1\163\21\27\2\30\1\0\46\30\1\24"+
+    "\3\154\1\155\1\24\1\0\7\24\1\32\1\24\1\33"+
+    "\1\155\1\156\1\155\17\24\1\0\1\24\1\0\1\154"+
+    "\3\24\3\154\1\155\1\24\1\0\11\24\1\164\1\155"+
+    "\1\156\1\155\17\24\1\0\1\24\1\0\1\154\3\24"+
+    "\3\154\1\155\1\24\1\0\12\24\1\155\1\165\1\166"+
+    "\17\24\1\0\1\24\1\0\1\154\2\24\51\0\1\24"+
+    "\3\154\1\155\1\24\1\0\12\24\1\155\1\167\1\155"+
+    "\17\24\1\0\1\24\1\0\1\154\2\24\26\0\1\170"+
+    "\1\171\21\0\1\24\3\154\1\155\1\24\1\0\12\24"+
+    "\1\155\1\156\1\155\14\24\1\172\2\24\1\0\1\24"+
+    "\1\0\1\154\3\24\3\154\1\155\1\24\1\0\12\24"+
+    "\1\155\1\156\1\155\12\24\1\173\4\24\1\0\1\24"+
+    "\1\0\1\154\3\24\3\154\1\155\1\24\1\0\12\24"+
+    "\1\155\1\156\1\155\7\24\1\174\7\24\1\0\1\24"+
+    "\1\0\1\154\3\24\3\154\1\155\1\24\1\0\12\24"+
+    "\1\155\1\156\1\155\6\24\1\175\10\24\1\0\1\24"+
+    "\1\0\1\154\2\24\1\50\3\176\1\50\2\0\13\50"+
+    "\1\177\1\50\1\0\16\50\1\0\1\50\1\0\1\176"+
+    "\3\50\3\176\1\50\2\0\13\50\1\157\1\50\1\0"+
+    "\16\50\1\0\1\50\1\0\1\176\3\50\3\176\1\50"+
+    "\2\0\13\50\1\165\1\200\1\0\16\50\1\0\1\50"+
+    "\1\0\1\176\3\50\3\176\1\50\2\0\13\50\1\167"+
+    "\1\50\1\0\16\50\1\0\1\50\1\0\1\176\2\50"+
+    "\20\0\1\61\4\0\1\61\3\0\12\61\6\0\1\65"+
+    "\3\0\2\65\2\0\12\65\1\0\3\65\1\0\1\65"+
+    "\1\0\12\65\1\0\1\65\2\0\2\65\1\0\3\66"+
+    "\42\0\1\66\2\0\5\67\1\201\21\67\1\202\21\67"+
+    "\1\65\3\0\2\65\2\0\6\65\1\71\1\65\1\72"+
+    "\1\65\1\0\3\65\1\0\1\65\1\0\12\65\1\0"+
+    "\1\65\2\0\3\65\3\0\2\65\2\0\10\65\1\203"+
+    "\1\65\1\0\3\65\1\0\1\65\1\0\12\65\1\0"+
+    "\1\65\2\0\3\65\3\0\2\65\2\0\12\65\1\0"+
+    "\3\65\1\0\1\65\1\0\5\65\1\204\4\65\1\0"+
+    "\1\65\2\0\3\65\3\0\2\65\2\0\12\65\1\0"+
+    "\3\65\1\0\1\65\1\0\1\65\1\205\10\65\1\0"+
+    "\1\65\2\0\2\65\1\76\3\0\2\76\2\0\12\76"+
+    "\1\0\3\76\1\0\1\76\1\0\12\76\1\0\1\76"+
+    "\2\0\3\76\3\0\2\76\2\0\12\76\1\157\3\76"+
+    "\1\0\1\76\1\0\12\76\1\0\1\76\2\0\3\76"+
+    "\3\0\2\76\2\0\12\76\1\165\1\206\2\76\1\0"+
+    "\1\76\1\0\12\76\1\0\1\76\2\0\3\76\3\0"+
+    "\2\76\2\0\12\76\1\167\3\76\1\0\1\76\1\0"+
+    "\12\76\1\0\1\76\2\0\2\76\2\102\1\0\2\102"+
+    "\1\106\1\102\1\0\17\102\1\207\22\102\1\103\1\104"+
+    "\1\105\1\102\1\106\1\102\1\0\17\102\1\207\16\102"+
+    "\1\103\2\102\1\0\1\210\2\104\42\0\1\210\2\0"+
+    "\2\102\2\0\44\102\1\0\5\110\1\111\1\110\1\0"+
+    "\17\110\1\211\23\110\2\0\44\110\1\0\1\114\3\0"+
+    "\1\114\2\0\13\114\1\0\1\114\1\0\16\114\1\0"+
+    "\1\114\2\0\2\114\20\0\1\117\4\0\1\117\3\0"+
+    "\12\117\26\0\1\122\4\0\1\122\3\0\12\122\6\0"+
+    "\1\124\3\0\2\124\2\0\12\124\1\0\3\124\1\0"+
+    "\1\124\1\0\12\124\1\0\1\124\2\0\3\124\3\0"+
+    "\2\124\2\0\6\124\1\126\1\124\1\127\1\124\1\0"+
+    "\3\124\1\0\1\124\1\0\12\124\1\0\1\124\2\0"+
+    "\3\124\3\0\2\124\2\0\10\124\1\212\1\124\1\0"+
+    "\3\124\1\0\1\124\1\0\12\124\1\0\1\124\2\0"+
+    "\3\124\3\0\2\124\2\0\12\124\1\0\3\124\1\0"+
+    "\1\124\1\0\5\124\1\213\4\124\1\0\1\124\2\0"+
+    "\3\124\3\0\2\124\2\0\12\124\1\0\3\124\1\0"+
+    "\1\124\1\0\1\124\1\214\10\124\1\0\1\124\2\0"+
+    "\2\124\20\0\1\134\4\0\1\134\3\0\12\134\26\0"+
+    "\1\215\46\0\1\216\1\0\1\150\4\0\1\151\3\0"+
+    "\12\151\26\0\1\151\4\0\1\151\3\0\12\151\7\0"+
+    "\3\154\1\156\14\0\3\156\22\0\1\154\2\0\1\217"+
+    "\3\160\1\220\1\221\13\217\3\220\3\217\1\222\16\217"+
+    "\1\160\2\217\2\27\2\0\44\27\27\0\1\170\22\0"+
+    "\1\24\3\154\1\155\1\24\1\0\12\24\1\155\1\156"+
+    "\1\155\15\24\1\223\1\24\1\0\1\24\1\0\1\154"+
+    "\3\24\3\154\1\155\1\24\1\0\12\24\1\155\1\156"+
+    "\1\155\5\24\1\223\11\24\1\0\1\24\1\0\1\154"+
+    "\3\24\3\154\1\155\1\24\1\0\12\24\1\155\1\156"+
+    "\1\155\14\24\1\173\2\24\1\0\1\24\1\0\1\154"+
+    "\2\24\1\0\3\176\16\0\1\177\23\0\1\176\2\0"+
+    "\2\67\2\0\44\67\1\0\1\65\3\0\2\65\2\0"+
+    "\12\65\1\0\3\65\1\0\1\65\1\0\7\65\1\204"+
+    "\2\65\1\0\1\65\2\0\2\65\1\124\3\0\2\124"+
+    "\2\0\12\124\1\0\3\124\1\0\1\124\1\0\7\124"+
+    "\1\213\2\124\1\0\1\124\2\0\2\124\5\217\1\221"+
+    "\21\217\1\222\23\217\2\0\44\217\1\0\1\24\1\224"+
+    "\2\154\1\155\1\24\1\0\12\24\1\155\1\156\1\155"+
+    "\17\24\1\225\1\24\1\0\1\154\2\24\1\0\1\224"+
+    "\2\154\1\156\14\0\3\156\17\0\1\225\2\0\1\154"+
+    "\3\0\1\225\1\0\1\225\12\0\1\225\1\0\1\225"+
+    "\24\0\1\226\2\225\1\0";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[3731];
+    int [] result = new int[3444];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -409,17 +405,16 @@ public class _ParadoxScriptLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\23\0\11\1\1\11\10\1\2\11\3\1\1\11\5\1"+
-    "\1\11\1\1\3\11\21\1\1\11\5\1\2\11\1\1"+
-    "\1\11\5\1\1\11\1\1\2\11\1\1\1\11\6\1"+
-    "\2\11\1\1\1\11\1\1\6\11\1\1\1\11\2\1"+
-    "\2\11\1\0\1\1\2\11\3\1\1\0\1\1\1\11"+
-    "\1\1\2\11\1\0\4\1\1\0\1\11\1\1\1\11"+
-    "\1\0\4\1\3\0\4\1\1\0\2\1\1\11\1\0"+
-    "\1\1\2\0\1\11";
+    "\23\0\11\1\1\11\10\1\2\11\2\1\1\11\4\1"+
+    "\2\11\1\1\3\11\21\1\1\11\2\1\2\11\5\1"+
+    "\2\11\1\1\1\11\6\1\2\11\1\1\1\11\1\1"+
+    "\7\11\1\1\1\11\2\1\2\11\1\0\1\1\2\11"+
+    "\3\1\1\0\1\1\1\11\1\1\2\11\1\0\4\1"+
+    "\1\0\1\11\1\1\1\11\1\0\4\1\3\0\4\1"+
+    "\1\0\2\1\1\11\1\0\1\1\2\0\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[157];
+    int [] result = new int[150];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -487,81 +482,40 @@ public class _ParadoxScriptLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-    private int depth = 0;
-    private boolean scriptedVariableValueStarted = false;
-    private boolean valueStarted = false;
-    private boolean isParameterConditionBody = false;
     private boolean leftAbsSign = true;
-    
-    private LinkedList<Integer> nextStateForParameterStack = new LinkedList<>();
-    private LinkedList<Integer> nextStateForParameterConditionStack = new LinkedList<>();
-    
+    private final Deque<Integer> stack = new ArrayDeque<>();
+    private final AtomicInteger templateStateRef = new AtomicInteger(-1);
+    private final AtomicInteger parameterStateRef = new AtomicInteger(-1);
+
     public _ParadoxScriptLexer() {
         this((java.io.Reader)null);
     }
-	
-    private void beginNextState(){
-        if(isParameterConditionBody){
-	        yybegin(WAITING_PARAMETER_CONDITION_BODY);
+
+    private void enterState(Deque<Integer> stack, int state) {
+        stack.offerLast(state);
+        yybegin(state);
+    }
+
+    private void exitState(Deque<Integer> stack, int defaultState) {
+        Integer state = stack.pollLast();
+        if(state != null) {
+            yybegin(state);
         } else {
-            if(depth <= 0){
-                yybegin(YYINITIAL);
-            } else {
-                yybegin(WAITING_PROPERTY_OR_VALUE);
-            }
+            yybegin(defaultState);
         }
     }
     
-    private void beginParameter() {
-	    nextStateForParameterStack.addLast(yystate());
-	    yybegin(WAITING_PARAMETER);
+    private void enterState(AtomicInteger stateRef, int state) {
+        stateRef.set(state);
     }
     
-    private void finishParameter() {
-		int nextState = nextStateForParameterStack.isEmpty() ? 0 : nextStateForParameterStack.removeLast();
-        yybegin(nextState);
-    }
-    
-    private void beginParameterCondition() {
-	    nextStateForParameterConditionStack.addLast(yystate());
-	    yybegin(WAITING_PARAMETER_CONDITION);
-    }
-    
-	private void beginParameterConditionBody() {
-		isParameterConditionBody=true;
-		yybegin(WAITING_PARAMETER_CONDITION_BODY);
-	}
-	
-    private void finishParameterConditionBody(){
-	    isParameterConditionBody=false;
-		int nextState = nextStateForParameterConditionStack.isEmpty() ? 0 : nextStateForParameterConditionStack.removeLast();
-        yybegin(nextState);
-    }
-	
-	private void checkValueStarted() {
-		if(valueStarted) {
-			  valueStarted = false;
-			  beginNextState();
-		}
-	}
-    
-	private void checkScriptedVariableValueStarted() {
-		if(scriptedVariableValueStarted) {
-		    scriptedVariableValueStarted = false;
-		    beginNextState();
-		}
-	}
-	
-    private void pushbackUntilBeforeBlank(int from){
-        //回退到末尾可能出现的空白之前
-        int length = yylength();
-        int i;
-        for (i = from; i < length ; i++) {
-          char c = yycharat(length-i-1);
-          if(!Character.isWhitespace(c)) break;
-        }
-        if(i != 0){
-            yypushback(i);
+    private void exitState(AtomicInteger stateRef) {
+        int state = stateRef.getAndSet(-1);
+        if(state != -1) {
+			if(stateRef == templateStateRef) {
+				state = stack.isEmpty() ? YYINITIAL : stack.pollLast();
+			} 
+            yybegin(state);
         }
     }
 
@@ -809,382 +763,347 @@ public class _ParadoxScriptLexer implements FlexLexer {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
             { boolean leftQuoted = yycharat(0) == '"';
-	if(leftQuoted) {
-        yypushback(yylength() - 1);
-        yybegin(WAITING_QUOTED_STRING);
-	} else {
-        yypushback(yylength());
-        yybegin(WAITING_STRING);
-	}
+        if(leftQuoted) {
+            yypushback(yylength() - 1);
+            enterState(templateStateRef, yystate());
+            yybegin(IN_QUOTED_STRING);
+        } else {
+            yypushback(yylength());
+            enterState(templateStateRef, yystate());
+            yybegin(IN_STRING);
+        }
             }
           // fall through
-          case 69: break;
+          case 61: break;
           case 2:
-            { checkValueStarted();return WHITE_SPACE;
+            { return WHITE_SPACE;
             }
           // fall through
-          case 70: break;
+          case 62: break;
           case 3:
             { return COMMENT;
             }
           // fall through
-          case 71: break;
+          case 63: break;
           case 4:
-            { valueStarted=true; return INT_TOKEN;
+            { return INT_TOKEN;
+            }
+          // fall through
+          case 64: break;
+          case 5:
+            { yybegin(IN_PROPERTY_VALUE); return LT_SIGN;
+            }
+          // fall through
+          case 65: break;
+          case 6:
+            { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN;
+            }
+          // fall through
+          case 66: break;
+          case 7:
+            { yybegin(IN_PROPERTY_VALUE); return GT_SIGN;
+            }
+          // fall through
+          case 67: break;
+          case 8:
+            { yybegin(IN_SCRIPTED_VARIABLE); return AT;
+            }
+          // fall through
+          case 68: break;
+          case 9:
+            { enterState(stack, yystate()); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET;
+            }
+          // fall through
+          case 69: break;
+          case 10:
+            { exitState(stack, YYINITIAL); return RIGHT_BRACKET;
+            }
+          // fall through
+          case 70: break;
+          case 11:
+            { enterState(stack, YYINITIAL); return LEFT_BRACE;
+            }
+          // fall through
+          case 71: break;
+          case 12:
+            { exitState(stack, YYINITIAL); return RIGHT_BRACE;
             }
           // fall through
           case 72: break;
-          case 5:
-            { yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;
-            }
-          // fall through
-          case 73: break;
-          case 6:
-            { yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;
-            }
-          // fall through
-          case 74: break;
-          case 7:
-            { yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;
-            }
-          // fall through
-          case 75: break;
-          case 8:
-            { yybegin(WAITING_SCRIPTED_VARIABLE); return AT;
-            }
-          // fall through
-          case 76: break;
-          case 9:
-            { beginParameterCondition(); return LEFT_BRACKET;
-            }
-          // fall through
-          case 77: break;
-          case 10:
-            { finishParameterConditionBody(); return RIGHT_BRACKET;
-            }
-          // fall through
-          case 78: break;
-          case 11:
-            { depth++; beginNextState(); return LEFT_BRACE;
-            }
-          // fall through
-          case 79: break;
-          case 12:
-            { depth--; beginNextState(); return RIGHT_BRACE;
-            }
-          // fall through
-          case 80: break;
           case 13:
-            { //如果匹配到的文本以等号结尾，则作为scriptedVariable进行解析，否则作为scriptedVariableReference解析
+            { //如果匹配到的文本以等号结尾，则作为scriptedVariable进行解析，否则作为scriptedVariableReference进行解析
         if(yycharat(yylength() -1) == '='){
             yypushback(yylength());
-            yybegin(WAITING_SCRIPTED_VARIABLE_NAME);
+			enterState(templateStateRef, yystate());
+            yybegin(IN_SCRIPTED_VARIABLE_NAME);
         } else {
             yypushback(yylength());
-            yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME);
+			enterState(templateStateRef, yystate());
+            yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_NAME);
         }
             }
           // fall through
-          case 81: break;
+          case 73: break;
           case 14:
-            { beginNextState(); return WHITE_SPACE;
-            }
-          // fall through
-          case 82: break;
-          case 15:
             { return BAD_CHARACTER;
             }
           // fall through
-          case 83: break;
+          case 74: break;
+          case 15:
+            { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE;
+            }
+          // fall through
+          case 75: break;
           case 16:
-            { return WHITE_SPACE;
+            { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START;
             }
           // fall through
-          case 84: break;
+          case 76: break;
           case 17:
-            { beginParameter();return PARAMETER_START;
-            }
-          // fall through
-          case 85: break;
-          case 18:
             { return SCRIPTED_VARIABLE_NAME_TOKEN;
             }
           // fall through
-          case 86: break;
+          case 77: break;
+          case 18:
+            { yybegin(IN_SCRIPTED_VARIABLE_VALUE); return EQUAL_SIGN;
+            }
+          // fall through
+          case 78: break;
           case 19:
-            { yybegin(WAITING_SCRIPTED_VARIABLE_VALUE); return EQUAL_SIGN;
+            { return STRING_TOKEN;
             }
           // fall through
-          case 87: break;
+          case 79: break;
           case 20:
-            { scriptedVariableValueStarted=true; return STRING_TOKEN;
+            { exitState(templateStateRef); return WHITE_SPACE;
             }
           // fall through
-          case 88: break;
+          case 80: break;
           case 21:
-            { checkScriptedVariableValueStarted();return WHITE_SPACE;
+            { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE); return AT;
             }
           // fall through
-          case 89: break;
+          case 81: break;
           case 22:
-            { scriptedVariableValueStarted=true; return INT_TOKEN;
-            }
-          // fall through
-          case 90: break;
-          case 23:
-            { yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE); return AT;
-            }
-          // fall through
-          case 91: break;
-          case 24:
             { return PROPERTY_KEY_TOKEN;
             }
           // fall through
-          case 92: break;
+          case 82: break;
+          case 23:
+            { boolean rightQuoted = yycharat(yylength() -1) == '"';
+        if(rightQuoted) {
+            exitState(templateStateRef);
+        }
+        return PROPERTY_KEY_TOKEN;
+            }
+          // fall through
+          case 83: break;
+          case 24:
+            { boolean rightQuoted = yycharat(yylength() -1) == '"';
+        if(rightQuoted) {
+            exitState(templateStateRef);
+        }
+        return STRING_TOKEN;
+            }
+          // fall through
+          case 84: break;
           case 25:
-            { boolean rightQuoted = yycharat(yylength() -1) == '"';
-    if(rightQuoted) {
-		yybegin(WAITING_QUOTED_KEY_END);
-	}
-    return PROPERTY_KEY_TOKEN;
+            { enterState(stack, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START;
             }
           // fall through
-          case 93: break;
+          case 85: break;
           case 26:
-            { yybegin(WAITING_QUOTED_KEY_END);
-      return WHITE_SPACE;
-            }
-          // fall through
-          case 94: break;
-          case 27:
-            { valueStarted=true;return STRING_TOKEN;
-            }
-          // fall through
-          case 95: break;
-          case 28:
-            { valueStarted=true;beginParameter();return PARAMETER_START;
-            }
-          // fall through
-          case 96: break;
-          case 29:
-            { valueStarted=true; beginParameterCondition(); return LEFT_BRACKET;
-            }
-          // fall through
-          case 97: break;
-          case 30:
-            { boolean rightQuoted = yycharat(yylength() -1) == '"';
-      if(rightQuoted) {
-		  valueStarted = false;
-		  beginNextState();
-      }
-      return STRING_TOKEN;
-            }
-          // fall through
-          case 98: break;
-          case 31:
             { yypushback(yylength());
-      yybegin(WAITING_SCRIPTED_VARIABLE_REFERENCE_NAME);
+	    enterState(templateStateRef, yystate());
+        yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_NAME);
             }
           // fall through
-          case 99: break;
-          case 32:
-            { beginNextState();return WHITE_SPACE;
-            }
-          // fall through
-          case 100: break;
-          case 33:
-            { beginParameter(); return PARAMETER_START;
-            }
-          // fall through
-          case 101: break;
-          case 34:
+          case 86: break;
+          case 27:
             { return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
             }
           // fall through
-          case 102: break;
-          case 35:
-            { yypushback(yylength()); finishParameter();
+          case 87: break;
+          case 28:
+            { yypushback(yylength()); exitState(parameterStateRef);
             }
           // fall through
-          case 103: break;
-          case 36:
-            { finishParameter(); return PARAMETER_END;
+          case 88: break;
+          case 29:
+            { exitState(parameterStateRef); return PARAMETER_END;
             }
           // fall through
-          case 104: break;
-          case 37:
+          case 89: break;
+          case 30:
             { return PARAMETER_TOKEN;
             }
           // fall through
-          case 105: break;
-          case 38:
-            { yybegin(WAITING_PARAMETER_DEFAULT_VALUE); return PIPE;
+          case 90: break;
+          case 31:
+            { yybegin(IN_PARAMETER_DEFAULT_VALUE); return PIPE;
             }
           // fall through
-          case 106: break;
-          case 39:
-            { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return STRING_TOKEN;
+          case 91: break;
+          case 32:
+            { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return STRING_TOKEN;
             }
           // fall through
-          case 107: break;
-          case 40:
-            { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return INT_TOKEN;
+          case 92: break;
+          case 33:
+            { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return INT_TOKEN;
             }
           // fall through
-          case 108: break;
-          case 41:
-            { yybegin(WAITING_PARAMETER_CONDITION_EXPRESSION); return NESTED_LEFT_BRACKET;
+          case 93: break;
+          case 34:
+            { yybegin(IN_PARAMETER_CONDITION_EXPRESSION); return NESTED_LEFT_BRACKET;
             }
           // fall through
-          case 109: break;
-          case 42:
+          case 94: break;
+          case 35:
             { return NOT_SIGN;
             }
           // fall through
-          case 110: break;
-          case 43:
+          case 95: break;
+          case 36:
             { return CONDITION_PARAMETER_TOKEN;
             }
           // fall through
-          case 111: break;
-          case 44:
-            { beginParameterConditionBody(); return NESTED_RIGHT_BRACKET;
+          case 96: break;
+          case 37:
+            { yybegin(IN_PARAMETER_CONDITION_BODY); return NESTED_RIGHT_BRACKET;
             }
           // fall through
-          case 112: break;
-          case 45:
-            { yybegin(WAITING_INLINE_MATH); return MOD_SIGN;
+          case 97: break;
+          case 38:
+            { enterState(stack, IN_PARAMETER_CONDITION_BODY); return LEFT_BRACE;
             }
           // fall through
-          case 113: break;
-          case 46:
+          case 98: break;
+          case 39:
+            { yybegin(IN_INLINE_MATH); return MOD_SIGN;
+            }
+          // fall through
+          case 99: break;
+          case 40:
             { return LP_SIGN;
             }
           // fall through
-          case 114: break;
-          case 47:
+          case 100: break;
+          case 41:
             { return RP_SIGN;
             }
           // fall through
-          case 115: break;
-          case 48:
-            { yybegin(WAITING_INLINE_MATH); return TIMES_SIGN;
+          case 101: break;
+          case 42:
+            { yybegin(IN_INLINE_MATH); return TIMES_SIGN;
             }
           // fall through
-          case 116: break;
-          case 49:
-            { yybegin(WAITING_INLINE_MATH); return PLUS_SIGN;
+          case 102: break;
+          case 43:
+            { yybegin(IN_INLINE_MATH); return PLUS_SIGN;
             }
           // fall through
-          case 117: break;
-          case 50:
-            { yybegin(WAITING_INLINE_MATH); return MINUS_SIGN;
+          case 103: break;
+          case 44:
+            { yybegin(IN_INLINE_MATH); return MINUS_SIGN;
             }
           // fall through
-          case 118: break;
-          case 51:
-            { yybegin(WAITING_INLINE_MATH); return DIV_SIGN;
+          case 104: break;
+          case 45:
+            { yybegin(IN_INLINE_MATH); return DIV_SIGN;
             }
           // fall through
-          case 119: break;
-          case 52:
+          case 105: break;
+          case 46:
             { return INT_NUMBER_TOKEN;
             }
           // fall through
-          case 120: break;
-          case 53:
+          case 106: break;
+          case 47:
             { return INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN;
             }
           // fall through
-          case 121: break;
-          case 54:
-            { beginNextState(); return INLINE_MATH_END;
+          case 107: break;
+          case 48:
+            { leftAbsSign = true; exitState(stack, YYINITIAL); return INLINE_MATH_END;
             }
           // fall through
-          case 122: break;
-          case 55:
-            { if(leftAbsSign){
-      leftAbsSign=false; 
-      return LABS_SIGN;
-    }else{
-      leftAbsSign=true;
-      return RABS_SIGN;
-    }
+          case 108: break;
+          case 49:
+            { if(leftAbsSign) {
+            leftAbsSign=false; 
+            return LABS_SIGN;
+        } else {
+            leftAbsSign=true;
+            return RABS_SIGN;
+        }
             }
           // fall through
-          case 123: break;
-          case 56:
+          case 109: break;
+          case 50:
             { boolean leftQuoted = yycharat(0) == '"';
-	if(leftQuoted) {
-        yypushback(yylength() - 1);
-        yybegin(WAITING_QUOTED_KEY);
-	} else {
-        yypushback(yylength());
-        yybegin(WAITING_KEY);
-	}
+        if(leftQuoted) {
+            yypushback(yylength() - 1);
+            enterState(templateStateRef, yystate());
+            yybegin(IN_QUOTED_KEY);
+        } else {
+            yypushback(yylength());
+            enterState(templateStateRef, yystate());
+            yybegin(IN_KEY);
+        }
             }
           // fall through
-          case 124: break;
+          case 110: break;
+          case 51:
+            { yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN;
+            }
+          // fall through
+          case 111: break;
+          case 52:
+            { return FLOAT_TOKEN;
+            }
+          // fall through
+          case 112: break;
+          case 53:
+            { yybegin(IN_PROPERTY_VALUE); return LE_SIGN;
+            }
+          // fall through
+          case 113: break;
+          case 54:
+            { yybegin(IN_PROPERTY_VALUE); return GE_SIGN;
+            }
+          // fall through
+          case 114: break;
+          case 55:
+            { enterState(stack, yystate()); yybegin(IN_INLINE_MATH); return INLINE_MATH_START;
+            }
+          // fall through
+          case 115: break;
+          case 56:
+            { return BOOLEAN_TOKEN;
+            }
+          // fall through
+          case 116: break;
           case 57:
-            { yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;
+            { yybegin(IN_PARAMETER_DEFAULT_VALUE_END);; return FLOAT_TOKEN;
             }
           // fall through
-          case 125: break;
+          case 117: break;
           case 58:
-            { valueStarted=true; return FLOAT_TOKEN;
+            { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return BOOLEAN_TOKEN;
             }
           // fall through
-          case 126: break;
+          case 118: break;
           case 59:
-            { yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;
-            }
-          // fall through
-          case 127: break;
-          case 60:
-            { yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;
-            }
-          // fall through
-          case 128: break;
-          case 61:
-            { yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;
-            }
-          // fall through
-          case 129: break;
-          case 62:
-            { valueStarted=true; return BOOLEAN_TOKEN;
-            }
-          // fall through
-          case 130: break;
-          case 63:
-            { scriptedVariableValueStarted=true; return FLOAT_TOKEN;
-            }
-          // fall through
-          case 131: break;
-          case 64:
-            { scriptedVariableValueStarted=true; return BOOLEAN_TOKEN;
-            }
-          // fall through
-          case 132: break;
-          case 65:
-            { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END);; return FLOAT_TOKEN;
-            }
-          // fall through
-          case 133: break;
-          case 66:
-            { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return BOOLEAN_TOKEN;
-            }
-          // fall through
-          case 134: break;
-          case 67:
             { return FLOAT_NUMBER_TOKEN;
             }
           // fall through
-          case 135: break;
-          case 68:
-            { valueStarted=true; return COLOR_TOKEN;
+          case 119: break;
+          case 60:
+            { return COLOR_TOKEN;
             }
           // fall through
-          case 136: break;
+          case 120: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }
