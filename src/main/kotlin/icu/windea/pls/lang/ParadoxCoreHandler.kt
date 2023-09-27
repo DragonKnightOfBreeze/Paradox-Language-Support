@@ -12,6 +12,7 @@ import com.intellij.openapi.vcs.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
+import com.intellij.testFramework.LightVirtualFile
 import com.intellij.util.*
 import com.intellij.util.concurrency.annotations.*
 import com.intellij.util.indexing.*
@@ -24,7 +25,6 @@ import icu.windea.pls.core.listeners.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
-import java.nio.file.*
 import kotlin.io.path.*
 
 object ParadoxCoreHandler {
@@ -179,21 +179,18 @@ object ParadoxCoreHandler {
         val cachedFileInfo = cachedFileInfoOrEmpty.castOrNull<ParadoxFileInfo>()
         if(cachedFileInfoOrEmpty != null) return cachedFileInfo
         
-        //这里不能直接获取file.parent，需要基于filePath尝试获取parent，因为file可能是内存文件
-        val isLightFile = ParadoxFileManager.isLightFile(file)
         val fileName = file.name
         val filePath = file.path
-        var currentFilePath = filePath.toPathOrNull() ?: return null
-        var currentFile = if(isLightFile) VfsUtil.findFile(currentFilePath, false) else file
+        var currentFile = if(file is LightVirtualFile) file.originalFile else file
+        if(currentFile == null) return null
         while(true) {
-            val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
+            val rootInfo = getRootInfo(currentFile)
             if(rootInfo != null) {
                 val fileInfo = doGetFileInfo(file, filePath, fileName, rootInfo)
                 file.tryPutUserData(PlsKeys.fileInfo, fileInfo)
                 return fileInfo
             }
-            currentFilePath = currentFilePath.parent ?: break
-            currentFile = currentFile?.parent ?: if(isLightFile) VfsUtil.findFile(currentFilePath, false) else null
+            currentFile = currentFile.parent ?: break
         }
         file.tryPutUserData(PlsKeys.fileInfo, EMPTY_OBJECT)
         return null
