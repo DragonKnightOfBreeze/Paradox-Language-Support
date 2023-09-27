@@ -121,7 +121,8 @@ WILDCARD_STRING_TOKEN=[^#@={}\s\"][^#={}\s]*
 WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\.)*?\"?
 STRING_TOKEN=[^#@$={}\[\]\s\"][^#$={}\[\]\s]*
 QUOTED_STRING_TOKEN=([^\"$\\]|\\.)+
-RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
+
+SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 
 %%
 
@@ -266,10 +267,9 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
     "$" { exitState(parameterStateRef); return PARAMETER_END; }
-    {BOOLEAN_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return BOOLEAN_TOKEN; }
     {INT_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return INT_TOKEN; }
     {FLOAT_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END);; return FLOAT_TOKEN; }
-    {RELAX_STRING_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return STRING_TOKEN; } 
+    {SNIPPET_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return SNIPPET_TOKEN; } 
 }
 <IN_PARAMETER_DEFAULT_VALUE_END>{
     \s|"#" { yypushback(yylength()); exitState(parameterStateRef); }

@@ -190,6 +190,36 @@ private block_value ::= scripted_variable_reference | boolean | int | float | st
 //should in definition declaration (scripted_effect / scripted_trigger)
 //resolved from a string, before any scripted variables, (non-tag) strings and properties
 
+//parameter rules
+
+//Currently, parameters can be used in:
+//* scripted variable names
+//* scripted variable reference names
+//* keys (can be quoted)
+//* values (can be quoted)
+//* inline math expressions
+
+//icu.windea.pls.script.psi.ParadoxScriptParserUtil.doParameter
+parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END {
+  pin=2
+  implements=[
+    "icu.windea.pls.core.psi.ParadoxParameter"
+  ]
+  methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
+}
+//INT_TOKEN and FLOAT_TOKEN will be remapping to SNIPPET_TOKEN
+private parameter_default_value ::= <<processSnippet>> SNIPPET_TOKEN <<postProcessSnippet>>
+
+//icu.windea.pls.script.psi.ParadoxScriptParserUtil.doInlineMathParameter
+inline_math_parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE inline_math_parameter_default_value] PARAMETER_END {
+  extends=inline_math_factor
+  pin=2
+  implements="icu.windea.pls.core.psi.ParadoxParameter"
+  methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
+}
+//SNIPPET_TOKEN is invalid
+private inline_math_parameter_default_value ::= INT_TOKEN | FLOAT_TOKEN
+
 //parameter condition rules
 
 //parameter condition
@@ -221,8 +251,9 @@ inline_parameter_condition ::= LEFT_BRACKET <<processInlineParameterCondition>> 
   pin=2
   methods=[getIcon getConditionExpression]
 }
-private inline_parameter_condition_item ::= inline_parameter_condition_item_part (<<processTemplate>> inline_parameter_condition_item_part) *
-private inline_parameter_condition_item_part ::= PROPERTY_KEY_TOKEN | STRING_TOKEN | SCRIPTED_VARIABLE_NAME_TOKEN | SCRIPTED_VARIABLE_REFERENCE_TOKEN  | parameter | inline_parameter_condition
+private inline_parameter_condition_item ::= <<processSnippet>> inline_parameter_condition_snippet <<postProcessSnippet>>
+private inline_parameter_condition_snippet ::= inline_parameter_condition_item_part (<<processTemplate>> inline_parameter_condition_item_part) *
+private inline_parameter_condition_item_part ::= SNIPPET_TOKEN  | parameter | inline_parameter_condition
 
 // inline math rules
 
@@ -282,30 +313,3 @@ inline_math_scripted_variable_reference ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERE
   methods=[getIcon getName setName getValue getReference getType getExpression]
 }
 
-//parameter rules
-
-//Currently, parameters can be used in:
-//* scripted variable names
-//* scripted variable reference names
-//* keys (can be quoted)
-//* values (can be quoted)
-//* inline math expressions
-
-//icu.windea.pls.script.psi.ParadoxScriptParserUtil.doParameter
-parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END {
-  pin=2
-  implements=[
-    "icu.windea.pls.core.psi.ParadoxParameter"
-  ]
-  methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
-}
-private parameter_default_value ::= BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
-
-//icu.windea.pls.script.psi.ParadoxScriptParserUtil.doInlineMathParameter
-inline_math_parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE inline_math_parameter_default_value] PARAMETER_END {
-  extends=inline_math_factor
-  pin=2
-  implements="icu.windea.pls.core.psi.ParadoxParameter"
-  methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
-}
-private inline_math_parameter_default_value ::= INT_TOKEN | FLOAT_TOKEN

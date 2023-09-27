@@ -417,50 +417,60 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // inline_parameter_condition_item_part (<<processTemplate>> inline_parameter_condition_item_part) *
+  // <<processSnippet>> inline_parameter_condition_snippet <<postProcessSnippet>>
   static boolean inline_parameter_condition_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_parameter_condition_item")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = inline_parameter_condition_item_part(b, l + 1);
-    r = r && inline_parameter_condition_item_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (<<processTemplate>> inline_parameter_condition_item_part) *
-  private static boolean inline_parameter_condition_item_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_parameter_condition_item_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!inline_parameter_condition_item_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "inline_parameter_condition_item_1", c)) break;
-    }
-    return true;
-  }
-
-  // <<processTemplate>> inline_parameter_condition_item_part
-  private static boolean inline_parameter_condition_item_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_parameter_condition_item_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = processTemplate(b, l + 1);
-    r = r && inline_parameter_condition_item_part(b, l + 1);
+    r = processSnippet(b, l + 1);
+    r = r && inline_parameter_condition_snippet(b, l + 1);
+    r = r && postProcessSnippet(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // PROPERTY_KEY_TOKEN | STRING_TOKEN | SCRIPTED_VARIABLE_NAME_TOKEN | SCRIPTED_VARIABLE_REFERENCE_TOKEN  | parameter | inline_parameter_condition
+  // SNIPPET_TOKEN  | parameter | inline_parameter_condition
   static boolean inline_parameter_condition_item_part(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_parameter_condition_item_part")) return false;
     boolean r;
-    r = consumeToken(b, PROPERTY_KEY_TOKEN);
-    if (!r) r = consumeToken(b, STRING_TOKEN);
-    if (!r) r = consumeToken(b, SCRIPTED_VARIABLE_NAME_TOKEN);
-    if (!r) r = consumeToken(b, SCRIPTED_VARIABLE_REFERENCE_TOKEN);
+    r = consumeToken(b, SNIPPET_TOKEN);
     if (!r) r = parameter(b, l + 1);
     if (!r) r = inline_parameter_condition(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // inline_parameter_condition_item_part (<<processTemplate>> inline_parameter_condition_item_part) *
+  static boolean inline_parameter_condition_snippet(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_parameter_condition_snippet")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = inline_parameter_condition_item_part(b, l + 1);
+    r = r && inline_parameter_condition_snippet_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (<<processTemplate>> inline_parameter_condition_item_part) *
+  private static boolean inline_parameter_condition_snippet_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_parameter_condition_snippet_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!inline_parameter_condition_snippet_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "inline_parameter_condition_snippet_1", c)) break;
+    }
+    return true;
+  }
+
+  // <<processTemplate>> inline_parameter_condition_item_part
+  private static boolean inline_parameter_condition_snippet_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_parameter_condition_snippet_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = processTemplate(b, l + 1);
+    r = r && inline_parameter_condition_item_part(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -615,14 +625,15 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
+  // <<processSnippet>> SNIPPET_TOKEN <<postProcessSnippet>>
   static boolean parameter_default_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_default_value")) return false;
     boolean r;
-    r = consumeToken(b, BOOLEAN_TOKEN);
-    if (!r) r = consumeToken(b, INT_TOKEN);
-    if (!r) r = consumeToken(b, FLOAT_TOKEN);
-    if (!r) r = consumeToken(b, STRING_TOKEN);
+    Marker m = enter_section_(b);
+    r = processSnippet(b, l + 1);
+    r = r && consumeToken(b, SNIPPET_TOKEN);
+    r = r && postProcessSnippet(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
