@@ -24,6 +24,7 @@ import icu.windea.pls.core.listeners.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
+import java.nio.file.*
 import kotlin.io.path.*
 
 object ParadoxCoreHandler {
@@ -192,7 +193,7 @@ object ParadoxCoreHandler {
                 return fileInfo
             }
             currentFilePath = currentFilePath.parent ?: break
-            currentFile = currentFile?.parent ?: if(isLightFile) VfsUtil.findFile(currentFilePath, false) else break
+            currentFile = currentFile?.parent ?: if(isLightFile) VfsUtil.findFile(currentFilePath, false) else null
         }
         file.tryPutUserData(PlsKeys.fileInfo, EMPTY_OBJECT)
         return null
