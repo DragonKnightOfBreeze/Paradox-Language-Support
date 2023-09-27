@@ -12,7 +12,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 %{
     private boolean leftAbsSign = true;
-    private final Deque<Integer> stack = new LinkedList<>();
+    private final Deque<Integer> stack = new ArrayDeque<>();
     private final AtomicInteger templateStateRef = new AtomicInteger(-1);
     private final AtomicInteger parameterStateRef = new AtomicInteger(-1);
 
@@ -411,7 +411,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 <IN_QUOTED_STRING> {
     //quoted multiline string is allowed
     //{EOL} { exitState(templateStateRef); return WHITE_SPACE; }
-    "$" { enterState(stack, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
+    "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
     \"|{QUOTED_STRING_TOKEN}\"? {
         boolean rightQuoted = yycharat(yylength() -1) == '"';
         if(rightQuoted) {

@@ -11,7 +11,7 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 %%
 
 %{
-    private final Deque<Integer> stack = new LinkedList<>();
+    private final Deque<Integer> stack = new ArrayDeque<>();
     private final Deque<Integer> optionStack = new ArrayDeque<>();
 
     public _CwtLexer() {
