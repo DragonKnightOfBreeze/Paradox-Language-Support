@@ -39,7 +39,6 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
                 if(b.rawLookup(i2) in ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS) return true
                 break
             } else {
-                //inline parameter condition cannot contain any whitespace (or comment)
                 if(t2 == TokenType.WHITE_SPACE) return false
                 if(t2 == COMMENT) return false
             }
@@ -56,7 +55,7 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
         if(b !is Builder) return true
         val containerType = b.state.currentFrame.elementType
         val templateType = b.state.currentFrame.parentFrame.elementType
-        if(templateType !in ParadoxScriptTokenSets.TEMPLATE_TYPES) return true
+        if(templateType !in ParadoxScriptTokenSets.TEMPLATE_TYPES && templateType != PROPERTY) return true
         b.setTokenTypeRemapper m@{ t, _, _, _ ->
             if(t in ParadoxScriptTokenSets.SNIPPET_TYPES) return@m SNIPPET_TOKEN
             if(containerType == PARAMETER) {
@@ -71,7 +70,7 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     fun postProcessSnippet(b: PsiBuilder, l: Int) : Boolean {
         if(b !is Builder) return true
         val templateType = b.state.currentFrame.parentFrame.elementType
-        if(templateType !in ParadoxScriptTokenSets.TEMPLATE_TYPES) return true
+        if(templateType !in ParadoxScriptTokenSets.TEMPLATE_TYPES && templateType != PROPERTY) return true
         b.setTokenTypeRemapper(null)
         return true
     }
