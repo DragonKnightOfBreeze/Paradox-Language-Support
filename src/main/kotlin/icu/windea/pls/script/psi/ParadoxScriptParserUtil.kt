@@ -9,6 +9,26 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
+    fun checkRightTemplate(b: PsiBuilder, l: Int): Boolean {
+        //cannot be parsed to a string or scripted variable reference when with a trailing separator
+        if(b !is Builder) return true
+        val templateType = b.state.currentFrame.elementType
+        var s = -1
+        var end = false
+        while(true) {
+            s++
+            val t = b.rawLookup(s)
+            when{
+                t == null -> break
+                t == TokenType.WHITE_SPACE -> end = true
+                t in ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS -> return false
+                else -> if(end) break
+            }
+        }
+        return true
+    }
+    
+    @JvmStatic
     fun processTemplate(b: PsiBuilder, l: Int): Boolean {
         //interrupt parsing when contains whitespaces or comments
         val tokenType = b.rawLookup(-1)
@@ -53,12 +73,11 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     fun processSnippet(b: PsiBuilder, l: Int): Boolean {
         //remapping token types for parameter default values and inline parameter condition snippets
         if(b !is Builder) return true
-        val containerType = b.state.currentFrame.elementType
         val templateType = b.state.currentFrame.parentFrame.elementType
         if(templateType !in ParadoxScriptTokenSets.TEMPLATE_TYPES && templateType != PROPERTY) return true
         b.setTokenTypeRemapper m@{ t, _, _, _ ->
             if(t in ParadoxScriptTokenSets.SNIPPET_TYPES) return@m SNIPPET_TOKEN
-            if(containerType == PARAMETER) {
+            if(b.state.currentFrame.elementType == PARAMETER) {
                 if(t == INT_TOKEN || t == FLOAT_TOKEN) return@m SNIPPET_TOKEN
             }
             t

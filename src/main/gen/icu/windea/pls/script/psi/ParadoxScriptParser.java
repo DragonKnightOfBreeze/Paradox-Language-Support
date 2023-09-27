@@ -848,7 +848,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // AT scripted_variable_reference_part (<<processTemplate>> scripted_variable_reference_part) *
+  // AT scripted_variable_reference_part <<checkRightTemplate>> (<<processTemplate>> scripted_variable_reference_part) *
   public static boolean scripted_variable_reference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scripted_variable_reference")) return false;
     if (!nextTokenIs(b, AT)) return false;
@@ -856,25 +856,26 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, AT);
     r = r && scripted_variable_reference_part(b, l + 1);
-    r = r && scripted_variable_reference_2(b, l + 1);
+    r = r && checkRightTemplate(b, l + 1);
+    r = r && scripted_variable_reference_3(b, l + 1);
     exit_section_(b, m, SCRIPTED_VARIABLE_REFERENCE, r);
     return r;
   }
 
   // (<<processTemplate>> scripted_variable_reference_part) *
-  private static boolean scripted_variable_reference_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "scripted_variable_reference_2")) return false;
+  private static boolean scripted_variable_reference_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "scripted_variable_reference_3")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!scripted_variable_reference_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "scripted_variable_reference_2", c)) break;
+      if (!scripted_variable_reference_3_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "scripted_variable_reference_3", c)) break;
     }
     return true;
   }
 
   // <<processTemplate>> scripted_variable_reference_part
-  private static boolean scripted_variable_reference_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "scripted_variable_reference_2_0")) return false;
+  private static boolean scripted_variable_reference_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "scripted_variable_reference_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = processTemplate(b, l + 1);
@@ -913,31 +914,32 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // string_part (<<processTemplate>> string_part) *
+  // string_part <<checkRightTemplate>> (<<processTemplate>> string_part) *
   public static boolean string(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, STRING, "<string>");
     r = string_part(b, l + 1);
-    r = r && string_1(b, l + 1);
+    r = r && checkRightTemplate(b, l + 1);
+    r = r && string_2(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   // (<<processTemplate>> string_part) *
-  private static boolean string_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_1")) return false;
+  private static boolean string_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "string_2")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!string_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "string_1", c)) break;
+      if (!string_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "string_2", c)) break;
     }
     return true;
   }
 
   // <<processTemplate>> string_part
-  private static boolean string_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_1_0")) return false;
+  private static boolean string_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "string_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = processTemplate(b, l + 1);

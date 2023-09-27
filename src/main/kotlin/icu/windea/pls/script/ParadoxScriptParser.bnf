@@ -109,7 +109,7 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
     getType getExpression getConfigExpression
   ]
 }
-scripted_variable_reference ::= AT scripted_variable_reference_part (<<processTemplate>> scripted_variable_reference_part) * {
+scripted_variable_reference ::= AT scripted_variable_reference_part <<checkRightTemplate>> (<<processTemplate>> scripted_variable_reference_part) * {
   extends=value
   implements=[
     "icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
@@ -144,7 +144,7 @@ float ::= FLOAT_TOKEN {
   ]
   methods=[getName getValue getFloatValue getType]
 }
-string ::= string_part (<<processTemplate>> string_part) * {
+string ::= string_part <<checkRightTemplate>> (<<processTemplate>> string_part) * {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
