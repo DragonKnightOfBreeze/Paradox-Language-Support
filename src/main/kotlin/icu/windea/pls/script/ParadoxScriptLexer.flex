@@ -126,7 +126,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 %%
 
 <YYINITIAL> {
-    {BLANK} { return WHITE_SPACE; }
+    {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }
     "{" { enterState(stack, YYINITIAL); return LEFT_BRACE; }
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, YYINITIAL); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
@@ -143,7 +143,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 }
 
 <IN_SCRIPTED_VARIABLE>{
-    {BLANK} { return WHITE_SPACE; }
+    {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }
     "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
@@ -197,7 +197,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 }
 
 <IN_SCRIPTED_VARIABLE_REFERENCE>{
-    {BLANK} { return WHITE_SPACE; }
+    {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }
     "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
@@ -223,7 +223,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 }
 
 <IN_PROPERTY_OR_VALUE> {
-    {BLANK} { return WHITE_SPACE; }
+    {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }
     "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
@@ -239,7 +239,7 @@ RELAX_STRING_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
     {COMMENT} { return COMMENT; }
 }
 <IN_PROPERTY_VALUE>{
-    {BLANK} { return WHITE_SPACE; }
+    {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }
     "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
