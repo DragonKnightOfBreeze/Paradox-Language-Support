@@ -3,7 +3,6 @@
 package icu.windea.pls.core
 
 import com.google.common.cache.*
-import com.intellij.util.io.*
 import icu.windea.pls.*
 import icu.windea.pls.core.util.*
 import java.io.*
@@ -12,6 +11,7 @@ import java.nio.charset.*
 import java.nio.file.*
 import java.util.*
 import kotlin.contracts.*
+import kotlin.io.path.*
 import kotlin.math.*
 
 val EMPTY_OBJECT = Any()

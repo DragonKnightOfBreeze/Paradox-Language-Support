@@ -8,6 +8,10 @@
 * [ ] #46 优化：尝试基于使用推断特定类型的`valueSetValue`对应的作用域上下文（如`event_target`和`global_event_target`）
 * [ ] 尝试优化插件性能
 
+## 1.1.12
+
+
+
 ## 1.1.11
 
 * [X] 修复 #51 - 无法解析使用了scripted_variables的参数预设值

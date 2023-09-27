@@ -5,10 +5,10 @@ package icu.windea.pls.core.tool.actions
 import com.intellij.ide.actions.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*
-import com.intellij.util.io.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import java.nio.file.*
+import kotlin.io.path.*
 
 //com.intellij.ide.actions.RevealFileAction
 
