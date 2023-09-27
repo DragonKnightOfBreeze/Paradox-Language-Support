@@ -1,6 +1,7 @@
 package icu.windea.pls.inject
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import javassist.*
@@ -44,12 +45,16 @@ class CodeInjectorService : UserDataHolderBase() {
         putUserData(invokeMethodKey, invokeMethod)
         
         val codeInjectors = mutableMapOf<String, CodeInjector>()
+        putUserData(codeInjectorsKey, codeInjectors)
         CodeInjector.EP_NAME.extensionList.forEach { codeInjector ->
             codeInjector.putUserData(codeInjectorServiceKey, this)
-            codeInjector.inject()
+            try {
+                codeInjector.inject()
+            } catch(e: Exception) {
+                thisLogger().error(e.message, e)
+            }
             codeInjectors.put(codeInjector.id, codeInjector)
         }
-        putUserData(codeInjectorsKey, codeInjectors)
         
         putUserData(classPoolKey, null)
     }
