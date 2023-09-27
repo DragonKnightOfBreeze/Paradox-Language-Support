@@ -25,6 +25,7 @@ import icu.windea.pls.core.listeners.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
+import java.nio.file.*
 import kotlin.io.path.*
 
 object ParadoxCoreHandler {
@@ -181,19 +182,28 @@ object ParadoxCoreHandler {
         
         val fileName = file.name
         val filePath = file.path
-        var currentFile = if(file is LightVirtualFile) file.originalFile else file
-        if(currentFile == null) return null
+        var currentFilePath = filePath.toPathOrNull() ?: return null
+        var currentFile = doGetFile(file, currentFilePath)
         while(true) {
-            val rootInfo = getRootInfo(currentFile)
+            val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
             if(rootInfo != null) {
                 val fileInfo = doGetFileInfo(file, filePath, fileName, rootInfo)
                 file.tryPutUserData(PlsKeys.fileInfo, fileInfo)
                 return fileInfo
             }
-            currentFile = currentFile.parent ?: break
+            currentFilePath = currentFilePath.parent ?: break
+            currentFile = doGetFile(currentFile?.parent, currentFilePath)
         }
         file.tryPutUserData(PlsKeys.fileInfo, EMPTY_OBJECT)
         return null
+    }
+    
+    private fun doGetFile(file: VirtualFile?, filePath: Path): VirtualFile? {
+        //尝试兼容某些file是LightVirtualFile的情况（例如，file位于VCS DIFF视图中）
+        if(file is LightVirtualFile) {
+            return file.originalFile ?: runCatching { VfsUtil.findFile(filePath, false) }.getOrNull()
+        }
+        return file
     }
     
     private fun doGetFileInfo(file: VirtualFile, filePath: String, fileName: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo {
