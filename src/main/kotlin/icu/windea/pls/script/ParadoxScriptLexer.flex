@@ -12,7 +12,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 %{
     private boolean leftAbsSign = true;
-    private final Deque<Integer> stack = new ArrayDeque<>();
+    private final Deque<Integer> stack = new LinkedList<>();
     private final AtomicInteger templateStateRef = new AtomicInteger(-1);
     private final AtomicInteger parameterStateRef = new AtomicInteger(-1);
 

@@ -42,7 +42,7 @@ public class _CwtLexer implements FlexLexer {
    */
   private static final int ZZ_LEXSTATE[] = {
      0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7, 
-     8,  8,  9,  9, 10, 10, 11, 11
+     8,  8,  6,  6,  9,  9, 10, 10
   };
 
   /**
@@ -113,19 +113,18 @@ public class _CwtLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\14\0\1\1\1\2\1\1\1\3\2\1\1\4\1\1"+
+    "\13\0\1\1\1\2\1\1\1\3\2\1\1\4\1\1"+
     "\1\5\2\1\1\6\1\7\1\10\1\11\1\10\1\3"+
     "\3\12\1\13\1\11\1\3\1\14\1\15\1\11\3\15"+
     "\1\16\1\15\1\17\2\15\1\20\1\21\2\22\2\12"+
-    "\1\23\4\24\1\16\3\24\2\25\3\0\2\1\1\5"+
-    "\1\0\1\26\1\27\1\5\1\30\1\1\1\10\1\0"+
-    "\1\31\1\13\4\0\2\15\1\17\1\0\1\32\1\17"+
-    "\1\33\1\15\1\22\1\0\1\34\1\23\2\24\1\17"+
-    "\1\0\1\32\1\17\1\33\1\24\1\0\1\25\1\0"+
-    "\1\35\1\0\1\17";
+    "\1\23\2\24\3\0\2\1\1\5\1\0\1\25\1\26"+
+    "\1\5\1\27\1\1\1\10\1\0\1\30\1\13\4\0"+
+    "\2\15\1\17\1\0\1\31\1\17\1\32\1\15\1\22"+
+    "\1\0\1\33\1\23\1\0\1\24\1\0\1\34\1\0"+
+    "\1\17";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[109];
+    int [] result = new int[92];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -152,21 +151,19 @@ public class _CwtLexer implements FlexLexer {
   private static final String ZZ_ROWMAP_PACKED_0 =
     "\0\0\0\26\0\54\0\102\0\130\0\156\0\204\0\232"+
     "\0\260\0\306\0\334\0\362\0\u0108\0\u011e\0\u0134\0\u014a"+
-    "\0\u0160\0\u0176\0\u0160\0\u018c\0\u01a2\0\u01b8\0\u01ce\0\u01a2"+
-    "\0\u01a2\0\u01e4\0\u01fa\0\u0210\0\u0226\0\u01a2\0\u023c\0\u0252"+
+    "\0\u0160\0\u014a\0\u0176\0\u018c\0\u01a2\0\u01b8\0\u018c\0\u018c"+
+    "\0\u01ce\0\u01e4\0\u01fa\0\u0210\0\u018c\0\u0226\0\u023c\0\u0252"+
     "\0\u0268\0\u027e\0\u0294\0\u02aa\0\u02c0\0\u02d6\0\u02ec\0\u0302"+
-    "\0\u0318\0\u0302\0\u032e\0\u01a2\0\u0344\0\u035a\0\u01a2\0\u01a2"+
+    "\0\u02ec\0\u0318\0\u018c\0\u032e\0\u0344\0\u018c\0\u018c\0\u035a"+
     "\0\u0370\0\u0386\0\u039c\0\u03b2\0\u03c8\0\u03de\0\u03f4\0\u040a"+
-    "\0\u0420\0\u040a\0\u0436\0\u044c\0\u0462\0\u0478\0\u048e\0\u04a4"+
-    "\0\u04ba\0\u04d0\0\u04a4\0\u04e6\0\u0134\0\u04fc\0\u0512\0\u0176"+
-    "\0\u0108\0\u0108\0\u0528\0\u01a2\0\u053e\0\u01a2\0\u01a2\0\u0554"+
-    "\0\u056a\0\u0580\0\u0596\0\u0554\0\u05ac\0\u02ec\0\u05c2\0\u0318"+
-    "\0\u02c0\0\u02c0\0\u05d8\0\u01a2\0\u05ee\0\u01a2\0\u01a2\0\u0554"+
-    "\0\u0604\0\u03f4\0\u061a\0\u0420\0\u03de\0\u03de\0\u0630\0\u0478"+
-    "\0\u01a2\0\u0646\0\u01a2\0\u065c\0\u056a";
+    "\0\u0420\0\u03f4\0\u0436\0\u011e\0\u044c\0\u0462\0\u0160\0\362"+
+    "\0\362\0\u0478\0\u018c\0\u048e\0\u018c\0\u018c\0\u04a4\0\u04ba"+
+    "\0\u04d0\0\u04e6\0\u04a4\0\u04fc\0\u02d6\0\u0512\0\u0302\0\u02aa"+
+    "\0\u02aa\0\u0528\0\u018c\0\u053e\0\u018c\0\u018c\0\u03c8\0\u018c"+
+    "\0\u0554\0\u018c\0\u056a\0\u04ba";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[109];
+    int [] result = new int[92];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -189,84 +186,69 @@ public class _CwtLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpacktrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\15\3\16\1\15\1\17\1\20\1\21\1\22\1\23"+
-    "\1\24\1\25\3\15\1\26\2\15\1\27\1\30\1\31"+
-    "\1\15\1\32\3\33\1\32\1\34\1\35\4\32\1\36"+
-    "\7\32\1\30\1\31\1\32\1\36\3\33\1\37\1\36"+
-    "\1\35\3\36\1\40\1\41\7\36\1\30\1\31\1\36"+
-    "\1\15\3\42\1\15\1\17\1\20\1\21\1\22\1\23"+
-    "\1\24\1\25\3\15\1\26\2\15\1\27\1\30\1\31"+
-    "\1\15\1\36\3\33\2\36\1\43\14\36\1\30\1\31"+
-    "\1\36\1\44\3\33\22\44\1\45\3\46\1\45\1\47"+
-    "\1\43\1\50\1\51\1\52\1\53\1\54\3\45\1\55"+
-    "\2\45\1\56\1\57\1\60\1\45\1\61\3\33\1\61"+
-    "\1\62\1\43\4\61\1\36\7\61\1\57\1\60\1\61"+
-    "\1\36\3\33\1\63\1\36\1\43\3\36\1\64\1\65"+
-    "\7\36\1\57\1\60\1\36\1\66\3\46\1\66\1\67"+
-    "\1\43\1\70\1\71\1\72\1\73\1\54\3\66\1\74"+
-    "\2\66\1\75\1\57\1\60\1\66\1\76\3\33\1\76"+
-    "\1\77\1\43\4\76\1\36\7\76\1\57\1\60\1\76"+
-    "\1\36\3\33\2\36\1\43\14\36\1\57\1\60\1\36"+
-    "\1\15\3\100\2\15\1\0\3\15\1\24\1\25\7\15"+
-    "\2\0\1\15\1\0\3\16\1\101\5\0\1\102\1\25"+
-    "\12\0\2\17\1\100\2\17\1\103\4\17\1\104\1\105"+
-    "\1\17\1\106\10\17\2\43\1\0\3\43\1\107\17\43"+
-    "\1\15\3\100\2\15\1\0\1\15\1\22\1\23\1\24"+
-    "\1\25\7\15\2\0\2\15\3\100\2\15\1\0\2\15"+
-    "\1\110\1\24\1\25\7\15\2\0\2\15\3\100\2\15"+
-    "\1\0\3\15\1\24\1\25\1\111\6\15\2\0\1\15"+
-    "\26\0\1\15\3\100\2\15\1\0\3\15\1\24\1\25"+
-    "\4\15\1\112\2\15\2\0\2\15\3\100\2\15\1\0"+
-    "\3\15\1\24\1\25\2\15\1\113\4\15\2\0\1\15"+
-    "\1\32\3\0\2\32\1\0\4\32\1\0\7\32\2\0"+
-    "\1\32\1\0\3\33\22\0\2\34\1\0\2\34\1\114"+
-    "\7\34\1\115\10\34\2\43\1\0\3\43\1\0\17\43"+
-    "\13\0\1\116\26\0\1\116\24\0\1\117\13\0\3\42"+
-    "\1\101\5\0\1\102\1\25\12\0\2\43\1\0\23\43"+
-    "\2\44\1\0\23\44\1\45\3\120\2\45\1\121\3\45"+
-    "\1\53\1\54\7\45\2\0\1\45\1\0\3\46\1\122"+
-    "\5\0\1\123\1\54\12\0\2\47\1\120\2\47\1\124"+
-    "\4\47\1\125\1\126\1\47\1\127\10\47\1\45\3\120"+
-    "\2\45\1\121\1\45\1\51\1\52\1\53\1\54\7\45"+
-    "\2\0\2\45\3\120\2\45\1\121\2\45\1\130\1\53"+
-    "\1\54\7\45\2\0\2\45\3\120\2\45\1\121\3\45"+
-    "\1\53\1\54\1\131\6\45\2\0\2\45\3\120\2\45"+
-    "\1\121\3\45\1\53\1\54\4\45\1\132\2\45\2\0"+
-    "\2\45\3\120\2\45\1\121\3\45\1\53\1\54\2\45"+
-    "\1\133\4\45\2\0\1\45\1\61\3\0\7\61\1\0"+
-    "\7\61\2\0\1\61\2\62\1\0\2\62\1\134\7\62"+
-    "\1\135\10\62\13\0\1\136\26\0\1\136\24\0\1\137"+
-    "\12\0\1\66\3\120\2\66\1\121\3\66\1\73\1\54"+
-    "\7\66\2\0\1\66\2\67\1\120\2\67\1\140\4\67"+
-    "\1\141\1\142\1\67\1\143\10\67\1\66\3\120\2\66"+
-    "\1\121\1\66\1\71\1\72\1\73\1\54\7\66\2\0"+
-    "\2\66\3\120\2\66\1\121\2\66\1\144\1\73\1\54"+
-    "\7\66\2\0\2\66\3\120\2\66\1\121\3\66\1\73"+
-    "\1\54\1\145\6\66\2\0\2\66\3\120\2\66\1\121"+
-    "\3\66\1\73\1\54\4\66\1\146\2\66\2\0\2\66"+
-    "\3\120\2\66\1\121\3\66\1\73\1\54\2\66\1\147"+
-    "\4\66\2\0\1\66\1\76\1\150\1\0\1\150\2\76"+
-    "\1\0\4\76\1\0\7\76\2\0\1\76\2\77\1\0"+
-    "\2\77\1\151\7\77\1\152\10\77\1\0\3\100\1\101"+
-    "\5\0\1\102\1\25\25\0\1\25\26\0\1\25\11\0"+
-    "\2\17\1\100\2\17\1\103\4\17\1\104\2\105\1\106"+
-    "\12\17\2\0\21\17\7\0\1\153\17\0\1\15\3\100"+
-    "\2\15\1\0\3\15\1\24\1\25\5\15\1\112\1\15"+
-    "\2\0\1\15\2\34\2\0\21\34\2\0\3\120\1\122"+
-    "\5\0\1\123\1\54\12\0\1\121\3\120\6\121\1\154"+
-    "\1\54\7\121\2\0\1\121\13\0\1\54\26\0\1\54"+
-    "\11\0\2\47\1\120\2\47\1\124\4\47\1\125\2\126"+
-    "\1\127\12\47\2\0\21\47\1\0\1\45\3\120\2\45"+
-    "\1\121\3\45\1\53\1\54\5\45\1\132\1\45\2\0"+
-    "\1\45\2\62\2\0\21\62\1\0\2\67\1\120\2\67"+
-    "\1\140\4\67\1\141\2\142\1\143\12\67\2\0\21\67"+
-    "\1\0\1\66\3\120\2\66\1\121\3\66\1\73\1\54"+
-    "\5\66\1\146\1\66\2\0\1\66\2\77\2\0\21\77"+
-    "\1\0\1\121\3\120\6\121\1\154\1\54\1\155\6\121"+
-    "\2\0\1\121";
+    "\1\14\3\15\1\14\1\16\1\17\1\20\1\21\1\22"+
+    "\1\23\1\24\3\14\1\25\2\14\1\26\1\27\1\30"+
+    "\1\14\1\31\3\32\1\31\1\33\1\34\4\31\1\35"+
+    "\7\31\1\27\1\30\1\31\1\35\3\32\1\36\1\35"+
+    "\1\34\3\35\1\37\1\40\7\35\1\27\1\30\1\35"+
+    "\1\14\3\41\1\14\1\16\1\17\1\20\1\21\1\22"+
+    "\1\23\1\24\3\14\1\25\2\14\1\26\1\27\1\30"+
+    "\1\14\1\35\3\32\2\35\1\42\14\35\1\27\1\30"+
+    "\1\35\1\43\3\32\22\43\1\44\3\45\1\44\1\46"+
+    "\1\42\1\47\1\50\1\51\1\52\1\53\3\44\1\54"+
+    "\2\44\1\55\1\56\1\57\1\44\1\60\3\32\1\60"+
+    "\1\61\1\42\4\60\1\35\7\60\1\56\1\57\1\60"+
+    "\1\35\3\32\1\62\1\35\1\42\3\35\1\63\1\64"+
+    "\7\35\1\56\1\57\1\35\1\65\3\32\1\65\1\66"+
+    "\1\42\4\65\1\35\7\65\1\56\1\57\1\65\1\35"+
+    "\3\32\2\35\1\42\14\35\1\56\1\57\1\35\1\14"+
+    "\3\67\2\14\1\0\3\14\1\23\1\24\7\14\2\0"+
+    "\1\14\1\0\3\15\1\70\5\0\1\71\1\24\12\0"+
+    "\2\16\1\67\2\16\1\72\4\16\1\73\1\74\1\16"+
+    "\1\75\10\16\2\42\1\0\3\42\1\76\17\42\1\14"+
+    "\3\67\2\14\1\0\1\14\1\21\1\22\1\23\1\24"+
+    "\7\14\2\0\2\14\3\67\2\14\1\0\2\14\1\77"+
+    "\1\23\1\24\7\14\2\0\2\14\3\67\2\14\1\0"+
+    "\3\14\1\23\1\24\1\100\6\14\2\0\1\14\26\0"+
+    "\1\14\3\67\2\14\1\0\3\14\1\23\1\24\4\14"+
+    "\1\101\2\14\2\0\2\14\3\67\2\14\1\0\3\14"+
+    "\1\23\1\24\2\14\1\102\4\14\2\0\1\14\1\31"+
+    "\3\0\2\31\1\0\4\31\1\0\7\31\2\0\1\31"+
+    "\1\0\3\32\22\0\2\33\1\0\2\33\1\103\7\33"+
+    "\1\104\10\33\2\42\1\0\3\42\1\0\17\42\13\0"+
+    "\1\105\26\0\1\105\24\0\1\106\13\0\3\41\1\70"+
+    "\5\0\1\71\1\24\12\0\2\42\1\0\23\42\2\43"+
+    "\1\0\23\43\1\44\3\107\2\44\1\110\3\44\1\52"+
+    "\1\53\7\44\2\0\1\44\1\0\3\45\1\111\5\0"+
+    "\1\112\1\53\12\0\2\46\1\107\2\46\1\113\4\46"+
+    "\1\114\1\115\1\46\1\116\10\46\1\44\3\107\2\44"+
+    "\1\110\1\44\1\50\1\51\1\52\1\53\7\44\2\0"+
+    "\2\44\3\107\2\44\1\110\2\44\1\117\1\52\1\53"+
+    "\7\44\2\0\2\44\3\107\2\44\1\110\3\44\1\52"+
+    "\1\53\1\120\6\44\2\0\2\44\3\107\2\44\1\110"+
+    "\3\44\1\52\1\53\4\44\1\121\2\44\2\0\2\44"+
+    "\3\107\2\44\1\110\3\44\1\52\1\53\2\44\1\122"+
+    "\4\44\2\0\1\44\1\60\3\0\7\60\1\0\7\60"+
+    "\2\0\1\60\2\61\1\0\2\61\1\123\7\61\1\124"+
+    "\10\61\13\0\1\125\26\0\1\125\24\0\1\126\12\0"+
+    "\1\65\1\127\1\0\1\127\2\65\1\0\4\65\1\0"+
+    "\7\65\2\0\1\65\2\66\1\0\2\66\1\130\7\66"+
+    "\1\131\10\66\1\0\3\67\1\70\5\0\1\71\1\24"+
+    "\25\0\1\24\26\0\1\24\11\0\2\16\1\67\2\16"+
+    "\1\72\4\16\1\73\2\74\1\75\12\16\2\0\21\16"+
+    "\7\0\1\132\17\0\1\14\3\67\2\14\1\0\3\14"+
+    "\1\23\1\24\5\14\1\101\1\14\2\0\1\14\2\33"+
+    "\2\0\21\33\2\0\3\107\1\111\5\0\1\112\1\53"+
+    "\12\0\1\110\3\107\6\110\1\133\1\53\7\110\2\0"+
+    "\1\110\13\0\1\53\26\0\1\53\11\0\2\46\1\107"+
+    "\2\46\1\113\4\46\1\114\2\115\1\116\12\46\2\0"+
+    "\21\46\1\0\1\44\3\107\2\44\1\110\3\44\1\52"+
+    "\1\53\5\44\1\121\1\44\2\0\1\44\2\61\2\0"+
+    "\21\61\1\0\2\66\2\0\21\66\1\0\1\110\3\107"+
+    "\6\110\1\133\1\53\1\134\6\110\2\0\1\110";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[1650];
+    int [] result = new int[1408];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -304,14 +286,13 @@ public class _CwtLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\14\0\10\1\1\11\2\1\2\11\4\1\1\11\15\1"+
-    "\1\11\2\1\2\11\17\1\3\0\3\1\1\0\5\1"+
+    "\13\0\10\1\1\11\2\1\2\11\4\1\1\11\15\1"+
+    "\1\11\2\1\2\11\7\1\3\0\3\1\1\0\5\1"+
     "\1\11\1\0\2\11\4\0\3\1\1\0\4\1\1\11"+
-    "\1\0\2\11\3\1\1\0\4\1\1\0\1\11\1\0"+
-    "\1\11\1\0\1\1";
+    "\1\0\2\11\1\0\1\11\1\0\1\11\1\0\1\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[109];
+    int [] result = new int[92];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -379,47 +360,48 @@ public class _CwtLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-    private final Deque<Integer> stack = new ArrayDeque<>();
+    private final Deque<Integer> stack = new LinkedList<>();
     private final Deque<Integer> optionStack = new ArrayDeque<>();
-    
+
     public _CwtLexer() {
-		this((java.io.Reader)null);
+        this((java.io.Reader)null);
     }
-    
-	private void enterState(Deque<Integer> stack, int state) {
-		stack.offerLast(state);
-	}
-	
-	private void exitState(Deque<Integer> stack, int defaultState) {
-		int state = stack.pollLast();
-		if(stack != null) {
-			yybegin(state);
-		} else {
-			yybegin(defaultState);
-		}
-	}
-	
-	private void processBlank() {
-		boolean lineBreak = false;
-		for (int i = 0; i < yylength(); i++) {
-			char c = yycharat(i);
-			if(c == '\r' || c == '\n') {
-				lineBreak = true;
-				break;
-			}
-		}
-		if(lineBreak) {
-			yybegin(YYINITIAL);
-			optionStack.clear();
-		} else {
-			if(yystate() == EXPECT_NEXT) { 
-				yybegin(YYINITIAL);
-				optionStack.clear();
-			} else if(yystate() == EXPECT_NEXT_OPTION) {
-				yybegin(IN_OPTION);
-			}
-		}
-	}
+
+    private void enterState(Deque<Integer> stack, int state) {
+        stack.offerLast(state);
+        yybegin(state);
+    }
+
+    private void exitState(Deque<Integer> stack, int defaultState) {
+        Integer state = stack.pollLast();
+        if(state != null) {
+            yybegin(state);
+        } else {
+            yybegin(defaultState);
+        }
+    }
+
+    private void processBlank() {
+        boolean lineBreak = false;
+        for (int i = 0; i < yylength(); i++) {
+            char c = yycharat(i);
+            if(c == '\r' || c == '\n') {
+                lineBreak = true;
+                break;
+            }
+        }
+        if(lineBreak) {
+            yybegin(YYINITIAL);
+            optionStack.clear();
+        } else {
+            if(yystate() == EXPECT_NEXT) { 
+                yybegin(YYINITIAL);
+                optionStack.clear();
+            } else if(yystate() == EXPECT_NEXT_OPTION) {
+                yybegin(IN_OPTION);
+            }
+        }
+    }
 
 
   /**
@@ -667,155 +649,146 @@ public class _CwtLexer implements FlexLexer {
             { yybegin(EXPECT_NEXT); return STRING_TOKEN;
             }
           // fall through
-          case 30: break;
+          case 29: break;
           case 2:
             { return WHITE_SPACE;
             }
           // fall through
-          case 31: break;
+          case 30: break;
           case 3:
             { return COMMENT;
             }
           // fall through
-          case 32: break;
+          case 31: break;
           case 4:
             { yybegin(EXPECT_NEXT); return INT_TOKEN;
             }
           // fall through
-          case 33: break;
+          case 32: break;
           case 5:
             { yypushback(yylength()); yybegin(IN_PROPERTY_KEY);
             }
           // fall through
-          case 34: break;
+          case 33: break;
           case 6:
             { enterState(stack, YYINITIAL); return LEFT_BRACE;
             }
           // fall through
-          case 35: break;
+          case 34: break;
           case 7:
             { exitState(stack, YYINITIAL); return RIGHT_BRACE;
             }
           // fall through
-          case 36: break;
+          case 35: break;
           case 8:
             { yybegin(IN_PROPERTY_SEPARATOR); return PROPERTY_KEY_TOKEN;
             }
           // fall through
-          case 37: break;
+          case 36: break;
           case 9:
             { processBlank(); return WHITE_SPACE;
             }
           // fall through
-          case 38: break;
+          case 37: break;
           case 10:
             { return BAD_CHARACTER;
             }
           // fall through
-          case 39: break;
+          case 38: break;
           case 11:
             { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN;
             }
           // fall through
-          case 40: break;
+          case 39: break;
           case 12:
             { yybegin(YYINITIAL); return DOCUMENTATION_TOKEN;
             }
           // fall through
-          case 41: break;
+          case 40: break;
           case 13:
             { if(optionStack.isEmpty()){
-      	    yypushback(yylength()); yybegin(IN_OPTION_VALUE_TOP_STRING);
-     	} else {
-      	    yybegin(EXPECT_NEXT_OPTION); return STRING_TOKEN;
-    	}
+              yypushback(yylength()); yybegin(IN_OPTION_VALUE_TOP_STRING);
+         } else {
+              yybegin(EXPECT_NEXT_OPTION); return STRING_TOKEN;
+        }
             }
           // fall through
-          case 42: break;
+          case 41: break;
           case 14:
             { yybegin(EXPECT_NEXT_OPTION); return INT_TOKEN;
             }
           // fall through
-          case 43: break;
+          case 42: break;
           case 15:
             { yypushback(yylength()); yybegin(IN_OPTION_KEY);
             }
           // fall through
-          case 44: break;
+          case 43: break;
           case 16:
             { enterState(optionStack, IN_OPTION); return LEFT_BRACE;
             }
           // fall through
-          case 45: break;
+          case 44: break;
           case 17:
             { exitState(optionStack, IN_OPTION); return RIGHT_BRACE;
             }
           // fall through
-          case 46: break;
+          case 45: break;
           case 18:
             { yybegin(IN_OPTION_SEPARATOR); return OPTION_KEY_TOKEN;
             }
           // fall through
-          case 47: break;
+          case 46: break;
           case 19:
             { yybegin(IN_OPTION_VALUE); return EQUAL_SIGN;
             }
           // fall through
-          case 48: break;
+          case 47: break;
           case 20:
-            { if(optionStack.isEmpty()){
-      	    yypushback(yylength()); yybegin(IN_OPTION_VALUE_TOP_STRING);
-     	} else {
-      	    yybegin(EXPECT_NEXT_OPTION); return STRING_TOKEN;
-        }
-            }
-          // fall through
-          case 49: break;
-          case 21:
             { yybegin(EXPECT_NEXT_OPTION); return STRING_TOKEN;
             }
           // fall through
-          case 50: break;
-          case 22:
+          case 48: break;
+          case 21:
             { yybegin(IN_OPTION); return OPTION_START;
             }
           // fall through
-          case 51: break;
-          case 23:
+          case 49: break;
+          case 22:
             { yybegin(EXPECT_NEXT); return FLOAT_TOKEN;
             }
           // fall through
-          case 52: break;
-          case 24:
+          case 50: break;
+          case 23:
             { yybegin(EXPECT_NEXT); return BOOLEAN_TOKEN;
             }
           // fall through
-          case 53: break;
-          case 25:
+          case 51: break;
+          case 24:
             { yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN;
             }
           // fall through
-          case 54: break;
-          case 26:
+          case 52: break;
+          case 25:
             { yybegin(EXPECT_NEXT_OPTION); return FLOAT_TOKEN;
             }
           // fall through
-          case 55: break;
-          case 27:
+          case 53: break;
+          case 26:
             { yybegin(EXPECT_NEXT_OPTION); return BOOLEAN_TOKEN;
             }
           // fall through
-          case 56: break;
-          case 28:
+          case 54: break;
+          case 27:
             { yybegin(IN_OPTION_VALUE); return NOT_EQUAL_SIGN;
             }
           // fall through
-          case 57: break;
-          case 29:
+          case 55: break;
+          case 28:
             { yybegin(IN_DOCUMENTATION); return DOCUMENTATION_START;
             }
           // fall through
-          case 58: break;
+          case 56: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }
