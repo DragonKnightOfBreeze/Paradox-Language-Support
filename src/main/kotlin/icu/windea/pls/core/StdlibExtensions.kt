@@ -566,11 +566,11 @@ fun String.toUuidString(): String {
 
 fun String.toFile() = File(this)
 
-fun String.toFileOrNull() = runCatching { File(this) }.getOrNull()
+fun String.toFileOrNull() = runCatchingCancelable { File(this) }.getOrNull()
 
 fun String.toPath() = Path.of(this)
 
-fun String.toPathOrNull() = runCatching { Path.of(this) }.getOrNull()
+fun String.toPathOrNull() = runCatchingCancelable { Path.of(this) }.getOrNull()
 
 /**
  * 得到当前文件绝对路径对应的URL。
@@ -582,9 +582,9 @@ fun String.toFileUrl() = File(this).toURI().toURL()
  */
 fun String.toClasspathUrl() = PlsConstants.locationClass.getResource(this)!!
 
-//fun String.toIntRangeOrNull(): IntRange? = runCatching { split("..", limit = 2).let { (a, b) -> a.toInt()..b.toInt() } }.getOrNull()
+//fun String.toIntRangeOrNull(): IntRange? = runCatchingCancelable { split("..", limit = 2).let { (a, b) -> a.toInt()..b.toInt() } }.getOrNull()
 //
-//fun String.toFloatRangeOrNull(): FloatRange? = runCatching { split("..", limit = 2).let { (a, b) -> a.toFloat()..b.toFloat() } }.getOrNull()
+//fun String.toFloatRangeOrNull(): FloatRange? = runCatchingCancelable { split("..", limit = 2).let { (a, b) -> a.toFloat()..b.toFloat() } }.getOrNull()
 
 fun String.toClass() = Class.forName(this)
 

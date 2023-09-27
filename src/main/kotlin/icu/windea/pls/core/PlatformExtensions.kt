@@ -39,6 +39,7 @@ import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
+import com.intellij.testFramework.common.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
@@ -61,6 +62,8 @@ import java.io.*
 import java.nio.file.*
 import java.util.*
 import java.util.Arrays
+import java.util.logging.*
+import java.util.logging.Logger
 import javax.swing.*
 import javax.swing.text.*
 import kotlin.reflect.*
@@ -72,6 +75,25 @@ fun String.compareToIgnoreCase(other: String): Int {
 //endregion
 
 //region Common Extensions
+inline fun <R> runCatchingCancelable(block: () -> R): Result<R> {
+    return runCatching(block).onFailure { if(it is ProcessCanceledException) throw it }
+}
+
+inline fun <T, R> T.runCatchingCancelable(block: T.() -> R): Result<R> {
+    return runCatching(block).onFailure { if(it is ProcessCanceledException) throw it }
+}
+
+inline fun <R> disableLogger(block: () -> R): R {
+    val globalLogger = Logger.getLogger("") //DO NOT use Logger.getGlobalLogger(), it's incorrect
+    val loggerLevel = globalLogger.level
+    try {
+        globalLogger.level = Level.OFF
+        return block()
+    } finally {
+        globalLogger.level = loggerLevel
+    }
+}
+
 object CaseInsensitiveStringHashingStrategy : Hash.Strategy<String?> {
     override fun hashCode(s: String?): Int {
         return if(s == null) 0 else StringUtilRt.stringHashCodeInsensitive(s)
@@ -169,11 +191,8 @@ inline fun <T> Query<T>.processQueryAsync(onlyMostRelevant: Boolean = false, con
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun <T> Result<T>.cancelable() = onFailure { if(it is ProcessCanceledException) throw it }
-
-@Suppress("NOTHING_TO_INLINE")
 inline fun <T> UserDataHolder.tryPutUserData(key: Key<T>, value: T?) {
-    runCatching { putUserData(key, value) }.cancelable()
+    runCatchingCancelable { putUserData(key, value) }
 }
 
 inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, action: () -> T): T {

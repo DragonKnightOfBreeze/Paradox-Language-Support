@@ -18,7 +18,7 @@ import icu.windea.pls.model.*
 object ParadoxLocalisationHandler {
     fun getInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         //快速判断
-        if(runCatching { element.greenStub }.getOrNull()?.isValid() == false) return null
+        if(runCatchingCancelable { element.greenStub }.getOrNull()?.isValid() == false) return null
         //从缓存中获取
         return doGetInfoFromCache(element)
     }
@@ -76,7 +76,7 @@ object ParadoxLocalisationHandler {
     }
     
     fun getInfoFromStub(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        val stub = runCatching { element.greenStub }.getOrNull() ?: return null
+        val stub = runCatchingCancelable { element.greenStub }.getOrNull() ?: return null
         //if(!stub.isValid()) return null //这里不用再次判断
         val name = stub.name
         val category = stub.category

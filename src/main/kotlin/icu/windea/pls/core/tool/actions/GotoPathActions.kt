@@ -36,23 +36,23 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
         val presentation = e.presentation
         presentation.isVisible = setVisible(e)
         if(presentation.isEnabled) {
-            presentation.isEnabled = presentation.isVisible && runCatching {
-                val targetPath = targetPath ?: return@runCatching false
-                val file = VfsUtil.findFile(targetPath, false) ?: return@runCatching false
+            presentation.isEnabled = presentation.isVisible && runCatchingCancelable {
+                val targetPath = targetPath ?: return@runCatchingCancelable false
+                val file = VfsUtil.findFile(targetPath, false) ?: return@runCatchingCancelable false
                 fileChooser.isUnderRoots(file)
             }.getOrElse { false }
         }
     }
     
     override fun actionPerformed(panel: FileChooserPanel, e: AnActionEvent) {
-        runCatching {
+        runCatchingCancelable {
             val targetPath = targetPath ?: return
             panel.load(targetPath)
         }
     }
     
     override fun actionPerformed(fileChooser: FileSystemTree, e: AnActionEvent) {
-        runCatching {
+        runCatchingCancelable {
             val targetPath = targetPath ?: return
             val file = VfsUtil.findFile(targetPath, true) ?: return
             fileChooser.select(file, if(expand) Runnable { fileChooser.expand(file, null) } else null)

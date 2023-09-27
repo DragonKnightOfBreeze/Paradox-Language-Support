@@ -39,7 +39,7 @@ abstract class CodeInjectorBase : CodeInjector() {
         if(injectPluginId.isEmpty()) {
             targetClass.toClass()
         } else {
-            val pluginClassLoader = runCatching {
+            val pluginClassLoader = runCatchingCancelable {
                 PluginManager.getInstance().findEnabledPlugin(PluginId.findId(injectPluginId)!!)!!.pluginClassLoader
             }.getOrElse { PluginDescriptor::class.java.classLoader }
             targetClass.toClass(pluginClassLoader, null)

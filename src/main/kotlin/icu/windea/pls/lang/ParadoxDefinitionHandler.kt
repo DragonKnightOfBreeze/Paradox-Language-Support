@@ -33,7 +33,7 @@ object ParadoxDefinitionHandler {
     
     fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
         //快速判断
-        if(runCatching { element.greenStub }.getOrNull()?.isValidDefinition == false) return null
+        if(runCatchingCancelable { element.greenStub }.getOrNull()?.isValidDefinition == false) return null
         //如果不能使用缓存，需要重新获取
         val notUseCache = element.getUserData(PlsKeys.isIncomplete) == true
         if(notUseCache) {
@@ -521,11 +521,11 @@ object ParadoxDefinitionHandler {
     }
     
     fun getName(element: ParadoxScriptDefinitionElement): String? {
-        return runCatching { element.greenStub }.getOrNull()?.name ?: element.definitionInfo?.name
+        return runCatchingCancelable { element.greenStub }.getOrNull()?.name ?: element.definitionInfo?.name
     }
     
     fun getType(element: ParadoxScriptDefinitionElement): String? {
-        return runCatching { element.greenStub }.getOrNull()?.type ?: element.definitionInfo?.type
+        return runCatchingCancelable { element.greenStub }.getOrNull()?.type ?: element.definitionInfo?.type
     }
     
     fun getSubtypes(element: ParadoxScriptDefinitionElement): List<String>? {
@@ -565,7 +565,7 @@ object ParadoxDefinitionHandler {
         if(!checkRootKeyWhenCreateDefinitionStub(rootKey, parentStub)) return null
         val name = definitionInfo.name
         val type = definitionInfo.type
-        val subtypes = runCatching { definitionInfo.subtypes }.getOrNull() //如果无法在索引时获取，之后再懒加载
+        val subtypes = runCatchingCancelable { definitionInfo.subtypes }.getOrNull() //如果无法在索引时获取，之后再懒加载
         val elementPath = definitionInfo.elementPath
         val gameType = definitionInfo.gameType
         return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
@@ -668,7 +668,7 @@ object ParadoxDefinitionHandler {
     }
     
     fun getInfoFromStub(element: ParadoxScriptDefinitionElement, project: Project): ParadoxDefinitionInfo? {
-        val stub = runCatching { element.greenStub }.getOrNull() ?: return null
+        val stub = runCatchingCancelable { element.greenStub }.getOrNull() ?: return null
         //if(!stub.isValid()) return null //这里不用再次判断
         val name = stub.name
         val type = stub.type

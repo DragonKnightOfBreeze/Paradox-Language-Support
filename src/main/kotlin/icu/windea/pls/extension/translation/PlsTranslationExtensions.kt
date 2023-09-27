@@ -11,7 +11,7 @@ fun CwtLocalisationLocaleConfig.toLang(): Lang? {
 	if(this.id == "l_default") {
 		//基于OS得到对应的语言区域，或者使用英文
 		val userLanguage = System.getProperty("user.language") ?: return null
-		return runCatching { Lang[userLanguage] }.getOrNull()
+		return runCatchingCancelable { Lang[userLanguage] }.getOrNull()
 	}
 	for(code in this.codes) {
 		try {

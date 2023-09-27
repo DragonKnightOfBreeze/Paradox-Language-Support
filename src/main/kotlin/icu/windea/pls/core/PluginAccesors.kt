@@ -20,8 +20,8 @@ val SearchRequestCollector.queryRequests: MutableList<QuerySearchRequest> by mem
 
 //com.intellij.psi.impl.source.tree.injected.DocumentWindowImpl.getShreds
 private val DocumentWindow_getShreds = memberFunction("getShreds", "com.intellij.psi.impl.source.tree.injected.DocumentWindowImpl")
-fun DocumentWindow.getShreds(): Place? = runCatching { DocumentWindow_getShreds(this) }.getOrNull()?.cast()
+fun DocumentWindow.getShreds(): Place? = runCatchingCancelable { DocumentWindow_getShreds(this) }.getOrNull()?.cast()
 
 //com.intellij.codeInsight.documentation.DocumentationFontSize.getDocumentationFontSize
 private val _getDocumentationFontSize = staticFunction("getDocumentationFontSize", "com.intellij.codeInsight.documentation.DocumentationFontSize")
-fun getDocumentationFontSize(): FontSize = runCatching {  _getDocumentationFontSize() }.getOrNull()?.cast() ?: FontSize.SMALL
+fun getDocumentationFontSize(): FontSize = runCatchingCancelable {  _getDocumentationFontSize() }.getOrNull()?.cast() ?: FontSize.SMALL

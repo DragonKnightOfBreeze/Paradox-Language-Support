@@ -23,7 +23,6 @@ import icu.windea.pls.lang.CwtConfigMatcher.Result
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.util.logging.*
-import java.util.logging.Logger
 
 object CwtConfigMatcher {
     object Options {
@@ -87,27 +86,17 @@ object CwtConfigMatcher {
             }
             
             private fun doGetCatching(): Boolean {
-                //it's necessary to suppress outputting error logs and throwing certain exceptions here
-                //it's unexpected to throw index related exceptions here (but it's hard to prevent) 
+                //it's necessary to suppress outputting error logs and throwing exceptions here
                 
                 //java.lang.Throwable: Indexing process should not rely on non-indexed file data.
                 //java.lang.AssertionError: Reentrant indexing
                 //com.intellij.openapi.project.IndexNotReadyException
                 
-                var error: Throwable? = null
-                val globalLogger = Logger.getLogger("") //DO NOT use Logger.getGlobalLogger(), it's incorrect
-                val loggerLevel = globalLogger.level
-                try {
-                    globalLogger.level = Level.OFF
-                    @Suppress("UNCHECKED_CAST")
-                    return (value as () -> Boolean)()
-                } catch(e: Throwable) {
-                    if(e is ProcessCanceledException) throw e
-                    error = e
-                    return true
-                } finally {
-                    globalLogger.level = loggerLevel
-                    if(error != null) thisLogger().info(error)
+                return disableLogger { 
+                    runCatchingCancelable {
+                        @Suppress("UNCHECKED_CAST")
+                        (value as () -> Boolean)()
+                    }.onFailure { e -> thisLogger().info(e) }.getOrDefault(true)
                 }
             }
         }

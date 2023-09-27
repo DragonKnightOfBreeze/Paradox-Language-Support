@@ -12,10 +12,11 @@ import com.intellij.openapi.vcs.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
-import com.intellij.testFramework.LightVirtualFile
+import com.intellij.testFramework.*
 import com.intellij.util.*
 import com.intellij.util.concurrency.annotations.*
 import com.intellij.util.indexing.*
+import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
@@ -148,16 +149,16 @@ object ParadoxCoreHandler {
     
     fun getInferredGameType(rootInfo: ParadoxModRootInfo): ParadoxGameType? {
         val parentDir = rootInfo.rootFile.parent
-        runCatching {
+        runCatchingCancelable {
             //如果模组目录直接位于游戏创意工坊目录下，直接推断为对应的游戏类型
-            val steamWorkshopDir = parentDir ?: return@runCatching null
+            val steamWorkshopDir = parentDir ?: return@runCatchingCancelable null
             val steamId = steamWorkshopDir.name
             ParadoxGameType.resolveBySteamId(steamId)?.takeIf { getSteamWorkshopPath(steamId) == steamWorkshopDir.toNioPath().absolutePathString() }
         }.getOrNull()?.let { return it }
-        runCatching {
+        runCatchingCancelable {
             //如果模组目录直接位于游戏数据目录下的mod子目录下，直接推断为对应的游戏类型
-            val modDir = parentDir.takeIf { it.name == "mod" } ?: return@runCatching null
-            val gameDataDir = modDir.parent ?: return@runCatching null
+            val modDir = parentDir.takeIf { it.name == "mod" } ?: return@runCatchingCancelable null
+            val gameDataDir = modDir.parent ?: return@runCatchingCancelable null
             val gameName = gameDataDir.name
             ParadoxGameType.resolveByTitle(gameName)?.takeIf { getGameDataPath(gameName) == gameDataDir.toNioPath().absolutePathString() }
         }.getOrNull()?.let { return it }
@@ -201,7 +202,11 @@ object ParadoxCoreHandler {
     private fun doGetFile(file: VirtualFile?, filePath: Path): VirtualFile? {
         //尝试兼容某些file是LightVirtualFile的情况（例如，file位于VCS DIFF视图中）
         if(file is LightVirtualFile) {
-            return file.originalFile ?: runCatching { VfsUtil.findFile(filePath, false) }.getOrNull()
+            file.originalFile?.let { return it }
+            //since 223-EAP, call 'VfsUtil.findFile(Path, boolean)' may cause:
+            //java.lang.Throwable: Slow operations are prohibited on EDT. See SlowOperations.assertSlowOperationsAreAllowed javadoc.
+            disableLogger { runCatchingCancelable { VfsUtil.findFile(filePath, false) } }.getOrNull()?.let { return it }
+            return null
         }
         return file
     }
