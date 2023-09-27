@@ -311,7 +311,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
  
 <IN_COMMAND>{
     {WHITE_SPACE} {return WHITE_SPACE; }
-    "." {
+    . {
         if(yycharat(0) == '\'') {
             yybegin(IN_CONCEPT);
             return LEFT_SINGLE_QUOTE;
