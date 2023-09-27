@@ -3,6 +3,7 @@ package icu.windea.pls.inject
 import com.intellij.ide.plugins.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.extensions.*
+import icu.windea.pls.core.*
 import icu.windea.pls.inject.annotations.*
 import javassist.*
 import javassist.Modifier
