@@ -1,8 +1,8 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <!--these services MUST be non-light and preload (IGNORE compatibility verification unless incompatible)-->
+    <!--these services MUST be non-light, first-order and preload (IGNORE compatibility verification unless incompatible)-->
     <!--suppress PluginXmlValidity -->
-    <applicationService serviceImplementation="icu.windea.pls.inject.CodeInjectorService" preload="true"/>
+    <applicationService serviceImplementation="icu.windea.pls.inject.CodeInjectorService" order="first" preload="true"/>
   </extensions>
   
   <extensionPoints>
@@ -16,16 +16,16 @@
   </extensions>
   
   <extensions defaultExtensionNs="icu.windea.pls.inject">
-    <!--core injectors-->
+    <!--core code injectors-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.LowLevelSearchUtilCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.IfsUtilCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.RefManagerImplCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.SymbolNavigationServiceImplCodeInjector"/>
     
-    <!--injectors to provide additional features-->
+    <!--code injectors to provide additional features-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
     
-    <!--injectors to optimize performance-->
+    <!--code injectors to optimize performance-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptPropertyCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptPropertyKeyCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptBooleanCodeInjector"/>

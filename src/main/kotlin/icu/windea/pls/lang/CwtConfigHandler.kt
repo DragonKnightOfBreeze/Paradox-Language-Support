@@ -1129,7 +1129,7 @@ object CwtConfigHandler {
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         try {
             PlsContext.incompleteComplexExpression.set(true)
-            val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(keyword, textRange, configGroup, config, true) ?: return
+            val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(keyword, textRange, configGroup, config) ?: return
             return valueSetValueExpression.complete(context, result)
         } finally {
             PlsContext.incompleteComplexExpression.remove()
