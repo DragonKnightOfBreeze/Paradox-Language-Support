@@ -33,7 +33,7 @@ class ParadoxCoreFileListener : AsyncFileListener {
                         }
                     }
                     is VFileDeleteEvent -> {
-                        clearFileInfo(event.file)
+                        event.file.let { filesToClearFileInfo.add(it) }
                         if(event.file.name.equals(PlsConstants.descriptorFileName, true)) {
                             event.file.parent.let { filesToClearRootInfo.add(it) }
                             reparseOpenedFiles = true
@@ -46,7 +46,7 @@ class ParadoxCoreFileListener : AsyncFileListener {
                         }
                     }
                     is VFileMoveEvent -> {
-                        clearFileInfo(event.file)
+                        event.file.let { filesToClearFileInfo.add(it) }
                         if(event.file.name.equals(PlsConstants.descriptorFileName, true)) {
                             event.oldParent?.let { filesToClearRootInfo.add(it) }
                             event.newParent.let { filesToClearRootInfo.add(it) }
