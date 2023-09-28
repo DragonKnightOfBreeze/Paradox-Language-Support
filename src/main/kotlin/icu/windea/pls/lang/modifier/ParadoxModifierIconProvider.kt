@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.model.stub.*
+import icu.windea.pls.model.stubs.*
 
 /**
  * 用于为修正提供图标的图片。

@@ -1,4 +1,4 @@
-package icu.windea.pls.model.stub
+package icu.windea.pls.model.stubs
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.project.*
@@ -11,13 +11,13 @@ import icu.windea.pls.model.*
 import javax.swing.*
 
 data class ParadoxParameterStub(
-    val name: String,
+    override val name: String,
     val contextName: String,
     val contextIcon: Icon?,
     val contextKey: String,
-    val gameType: ParadoxGameType,
-    val project: Project,
-) : UserDataHolderBase() {
+    override val gameType: ParadoxGameType,
+    override val project: Project,
+) : UserDataHolderBase(), ParadoxStub {
     val modificationTracker by lazy { support?.getModificationTracker(this) }
     
     companion object {

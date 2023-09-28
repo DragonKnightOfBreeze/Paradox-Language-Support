@@ -1,7 +1,8 @@
-package icu.windea.pls.model
+package icu.windea.pls.model.expression
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.model.*
 
 data class ParadoxParameterInfo(
     val name: String,

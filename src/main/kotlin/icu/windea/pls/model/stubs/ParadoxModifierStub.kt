@@ -1,4 +1,4 @@
-package icu.windea.pls.model.stub
+package icu.windea.pls.model.stubs
 
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -9,10 +9,10 @@ import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.model.*
 
 data class ParadoxModifierStub(
-    val name: String,
-    val gameType: ParadoxGameType,
-    val project: Project,
-) : UserDataHolderBase() {
+    override val name: String,
+    override val gameType: ParadoxGameType,
+    override val project: Project,
+) : UserDataHolderBase(), ParadoxStub {
     val modificationTracker by lazy { support?.getModificationTracker(this) }
     
     companion object {

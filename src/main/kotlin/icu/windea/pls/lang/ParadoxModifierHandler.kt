@@ -21,7 +21,7 @@ import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.lang.modifier.impl.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
-import icu.windea.pls.model.stub.*
+import icu.windea.pls.model.stubs.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*
 

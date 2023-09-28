@@ -10,6 +10,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.expression.*
 import java.util.*
 import javax.swing.*
 

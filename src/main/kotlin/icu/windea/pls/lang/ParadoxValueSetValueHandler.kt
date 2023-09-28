@@ -15,6 +15,7 @@ import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
+import icu.windea.pls.model.expression.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxValueSetValueHandler {

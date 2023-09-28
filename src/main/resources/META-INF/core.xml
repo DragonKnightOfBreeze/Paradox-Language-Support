@@ -82,6 +82,7 @@
     
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFilePathIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFileLocaleIndex"/>
+    
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxComplexEnumValueIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxValueSetValueFastIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxInlineScriptUsageIndex"/>

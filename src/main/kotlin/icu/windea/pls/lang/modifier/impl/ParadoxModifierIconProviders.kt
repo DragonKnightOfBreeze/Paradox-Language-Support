@@ -10,7 +10,7 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.stub.*
+import icu.windea.pls.model.stubs.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {

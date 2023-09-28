@@ -13,7 +13,7 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.stub.*
+import icu.windea.pls.model.stubs.*
 import icu.windea.pls.script.psi.*
 
 /**

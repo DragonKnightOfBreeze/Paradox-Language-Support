@@ -16,7 +16,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.stub.*
+import icu.windea.pls.model.stubs.*
 import icu.windea.pls.script.psi.*
 
 open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {

@@ -17,26 +17,26 @@ import icu.windea.pls.script.psi.*
  *
  * 用于实现代码高亮、引用解析、代码补全等功能。
  */
-abstract class ParadoxScriptExpressionSupport {
-    abstract fun supports(config: CwtConfig<*>): Boolean
+interface ParadoxScriptExpressionSupport {
+    fun supports(config: CwtConfig<*>): Boolean
     
-    open fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         
     }
     
-    open fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+    fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
         return null
     }
     
-    open fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
+    fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
         return resolve(element, rangeInElement, expression, config, isKey, false).toSingletonSetOrEmpty()
     }
     
-    open fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {
+    fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {
         return null
     }
     
-    open fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    fun complete(context: ProcessingContext, result: CompletionResultSet) {
         
     }
     

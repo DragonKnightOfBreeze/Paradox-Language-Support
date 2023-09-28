@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
+import icu.windea.pls.model.expression.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
