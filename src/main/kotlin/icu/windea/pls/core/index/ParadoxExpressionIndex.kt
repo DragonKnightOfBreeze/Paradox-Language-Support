@@ -26,6 +26,9 @@ private val markerKey = createKey<Boolean>("paradox.expression.index.marker")
  * 用于基于文件层级索引各种表达式信息。
  *
  * * 这个索引兼容需要内联的情况（此时使用懒加载的索引）。
+ * 
+ * @see ParadoxExpressionInfo
+ * @see ParadoxExpressionIndexSupport
  */
 class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>>() {
     override fun getName() = NAME
