@@ -18,7 +18,7 @@ import java.io.*
 import kotlin.collections.ArrayDeque
 
 private val NAME = ID.create<String, List<ParadoxExpressionInfo>>("paradox.expression.index")
-private const val VERSION = 39 //1.1.11
+private const val VERSION = 40 //1.1.12
 
 private val markerKey = createKey<Boolean>("paradox.expression.index.marker")
 
@@ -125,7 +125,6 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         storage.writeByte(gameType.toByte())
         var previousInfo: ParadoxExpressionInfo? = null
         value.forEachFast { info ->
-            storage.writeByte(support.id().toInt())
             support.writeData(storage, info, previousInfo, gameType)
             previousInfo = info
         }

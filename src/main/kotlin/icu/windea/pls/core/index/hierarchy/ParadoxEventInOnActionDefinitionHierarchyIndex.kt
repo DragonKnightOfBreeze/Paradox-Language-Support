@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 private val NAME = ID.create<String, List<ParadoxEventInOnActionDefinitionHierarchyIndex.Info>>("paradox.eventInOnAction.definitionHierarchy.index")
-private const val VERSION = 39 //1.1.11
+private const val VERSION = 40 //1.1.12
 
 class ParadoxEventInOnActionDefinitionHierarchyIndex : ParadoxDefinitionHierarchyIndex<ParadoxEventInOnActionDefinitionHierarchyIndex.Info>() {
     data class Info(
