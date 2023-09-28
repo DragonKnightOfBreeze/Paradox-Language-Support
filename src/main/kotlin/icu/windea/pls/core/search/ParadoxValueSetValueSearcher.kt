@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.script.*
@@ -33,17 +34,13 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
             ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
-            val fileData = findIndex<ParadoxValueSetValueFastIndex>().getFileData(file, project)
+            val fileData = ParadoxExpressionIndexInstance.getFileData(file, project, ParadoxExpressionIndexId.ValueSetValue)
             if(fileData.isEmpty()) return@p true
-            valueSetNames.forEach f@{ valueSetName ->
-                val valueSetValueInfoList = fileData[valueSetName]
-                if(valueSetValueInfoList.isNullOrEmpty()) return@f
-                valueSetValueInfoList.forEachFast { info ->
-                    if(name == null || name == info.name) {
-                        val r = info.withVirtualFile(file) { consumer.process(info) }
-                        if(!r) return@p false
-                    }
-                }
+            fileData.forEachFast f@{ info ->
+                if(info.valueSetName !in valueSetNames) return@f
+                if(name != null && name != info.name) return@f
+                val r = info.withVirtualFile(file) { consumer.process(info) }
+                if(!r) return@p false
             }
             
             true

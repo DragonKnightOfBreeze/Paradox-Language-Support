@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.script.*
 
@@ -28,15 +29,13 @@ class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisati
             ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
-            val fileData = findIndex<ParadoxLocalisationParameterIndex>().getFileData(file, project)
+            val fileData = ParadoxExpressionIndexInstance.getFileData(file, project, ParadoxExpressionIndexId.LocalisationParameter)
             if(fileData.isEmpty()) return@p true
-            val localisationParameterInfoList = fileData[localisationName]
-            if(localisationParameterInfoList.isNullOrEmpty()) return@p true
-            localisationParameterInfoList.forEachFast { info ->
-                if(name == null || name == info.name) {
-                    val r = info.withVirtualFile(file) { consumer.process(info) }
-                    if(!r) return@p false
-                }
+            fileData.forEachFast f@{ info ->
+                if(localisationName != info.localisationName) return@f
+                if(name != null && name != info.name) return@f
+                val r = info.withVirtualFile(file) { consumer.process(info) }
+                if(!r) return@p false
             }
             
             true

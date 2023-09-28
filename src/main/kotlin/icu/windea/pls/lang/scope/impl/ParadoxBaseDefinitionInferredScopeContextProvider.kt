@@ -9,11 +9,10 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.*
-import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -80,9 +79,8 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         val gameType = configGroup.gameType ?: return true
         return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxBaseDefinitionInferredScopeContextProvider.doProcessQuery") {
             withCheckRecursion(definitionInfo.name + "@" + definitionInfo.type) {
-                val index = findIndex<ParadoxInferredScopeContextAwareDefinitionHierarchyIndex>()
-                ParadoxDefinitionHierarchyHandler.processQuery(index , project, gameType, searchScope) p@{ file, fileData ->
-                    val infos = fileData.values.firstOrNull() ?: return@p true
+                val indexId = ParadoxExpressionIndexId.InferredScopeContextAwareDefinition
+                ParadoxExpressionIndexHandler.processQuery(indexId, project, gameType, searchScope) p@{ file, infos ->
                     val psiFile = file.toPsiFile(project) ?: return@p true
                     infos.forEachFast f@{ info ->
                         //TODO 1.0.6+ 这里对应的引用可能属于某个复杂表达式的一部分（目前不需要考虑兼容这种情况）

@@ -271,7 +271,7 @@ object ParadoxCoreHandler {
         val cachedLocaleConfig = file.getUserData(PlsKeys.localeConfig)
         if(cachedLocaleConfig != null) return cachedLocaleConfig.castOrNull()
         
-        val indexKey = ParadoxFileLocaleIndexName
+        val indexKey = ParadoxFileLocaleIndexInstance.name
         val localeId = FileBasedIndex.getInstance().getFileData(indexKey, file, project).keys.singleOrNull() ?: return null
         val localeConfig = getConfigGroups(project).core.localisationLocalesById.get(localeId)
         file.tryPutUserData(PlsKeys.localeConfig, localeConfig ?: EMPTY_OBJECT)

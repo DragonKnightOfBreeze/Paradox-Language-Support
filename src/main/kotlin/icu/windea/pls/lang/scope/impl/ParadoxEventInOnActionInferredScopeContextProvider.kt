@@ -9,16 +9,15 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.*
-import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-private  val cachedScopeContextInferenceInfoKey = createKey<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.in.onAction")
+private val cachedScopeContextInferenceInfoKey = createKey<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.in.onAction")
 
 /**
  * 如果某个event在某个on_action中被调用，
@@ -76,9 +75,8 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxEventInEventInferredScopeContextProvider.doProcessQuery") {
             if(depth == 1) stackTrace.addLast(thisEventName)
             
-            val index = findIndex<ParadoxEventInOnActionDefinitionHierarchyIndex>()
-            ParadoxDefinitionHierarchyHandler.processQuery(index, project, gameType, searchScope) p@{ file, fileData ->
-                val infos = fileData.values.firstOrNull() ?: return@p true
+            val indexId = ParadoxExpressionIndexId.EventInOnAction
+            ParadoxExpressionIndexHandler.processQuery(indexId, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEachFast f@{ info ->
                     val eventName = info.eventName

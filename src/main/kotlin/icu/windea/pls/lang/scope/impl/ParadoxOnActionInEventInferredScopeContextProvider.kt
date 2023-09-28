@@ -10,11 +10,10 @@ import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.index.*
-import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -84,9 +83,8 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
             if(depth == 1) stackTrace.addLast(thisOnActionName)
             
             val toRef = "from".repeat(depth)
-            val index = findIndex<ParadoxOnActionInEventDefinitionHierarchyIndex>()
-            ParadoxDefinitionHierarchyHandler.processQuery(index, project, gameType, searchScope) p@{ file, fileData ->
-                val infos = fileData.values.firstOrNull() ?: return@p true
+            val indexId = ParadoxExpressionIndexId.OnActionInEvent
+            ParadoxExpressionIndexHandler.processQuery(indexId, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEachFast f@{ info ->
                     val onActionName = info.onActionName

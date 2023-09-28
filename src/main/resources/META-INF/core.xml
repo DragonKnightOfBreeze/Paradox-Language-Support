@@ -82,17 +82,7 @@
     
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFilePathIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFileLocaleIndex"/>
-    
-    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxComplexEnumValueIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxValueSetValueFastIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxInlineScriptUsageIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxParameterIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxLocalisationParameterIndex"/>
-    
-    <fileBasedIndex implementation="icu.windea.pls.core.index.hierarchy.ParadoxInferredScopeContextAwareDefinitionHierarchyIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.core.index.hierarchy.ParadoxEventInOnActionDefinitionHierarchyIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.core.index.hierarchy.ParadoxEventInEventDefinitionHierarchyIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.core.index.hierarchy.ParadoxOnActionInEventDefinitionHierarchyIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxExpressionIndex"/>
     
     <searchScopesProvider implementation="icu.windea.pls.core.search.ParadoxSearchScopeProvider"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxScriptedVariableImplementationsSearch"/>

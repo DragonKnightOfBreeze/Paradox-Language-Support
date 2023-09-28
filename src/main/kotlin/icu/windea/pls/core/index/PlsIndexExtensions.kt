@@ -37,6 +37,6 @@ val ParadoxLocalisationNameIndexKey by lazy { findStubIndex<ParadoxLocalisationN
 val ParadoxLocalisationNameIndexModifierKey by lazy { findStubIndex<ParadoxLocalisationNameIndex.ModifierIndex>().getKey() }
 val ParadoxSyncedLocalisationNameIndexKey by lazy { findStubIndex<ParadoxSyncedLocalisationNameIndex>().getKey() }
 
-val ParadoxFilePathIndexName by lazy { findIndex<ParadoxFilePathIndex>().name }
-val ParadoxFileLocaleIndexName by lazy { findIndex<ParadoxFileLocaleIndex>().name }
-val ParadoxExpressionIndexName by lazy { findIndex<ParadoxExpressionIndex>().name }
+val ParadoxFilePathIndexInstance by lazy { findIndex<ParadoxFilePathIndex>() }
+val ParadoxFileLocaleIndexInstance by lazy { findIndex<ParadoxFileLocaleIndex>() }
+val ParadoxExpressionIndexInstance by lazy { findIndex<ParadoxExpressionIndex>() }

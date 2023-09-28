@@ -160,8 +160,8 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         return false
     }
     
-    fun <T: ParadoxExpressionInfo> getFileData(file: VirtualFile, project: Project, id: ParadoxExpressionIndexId<T>): List<ParadoxExpressionInfo>? {
+    fun <T: ParadoxExpressionInfo> getFileData(file: VirtualFile, project: Project, id: ParadoxExpressionIndexId<T>): List<T> {
         val allFileData = getFileData(file, project)
-        return allFileData.get(id.id.toString()).castOrNull<List<T>>().orEmpty()
+        return allFileData.get(id.id.toString())?.castOrNull<List<T>>().orEmpty()
     }
 }

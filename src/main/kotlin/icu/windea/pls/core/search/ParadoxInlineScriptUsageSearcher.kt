@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.script.*
 
@@ -30,13 +31,14 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
             ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
-            val fileData = findIndex<ParadoxInlineScriptUsageIndex>().getFileData(file, project)
+            val fileData = ParadoxExpressionIndexInstance.getFileData(file, project, ParadoxExpressionIndexId.InlineScriptUsage)
             if(fileData.isEmpty()) return@p true
-            val inlineScriptUsageInfos = fileData[expression]
-            if(inlineScriptUsageInfos.isNullOrEmpty()) return@p true
-            inlineScriptUsageInfos.forEachFast { info ->
-                info.withVirtualFile(file) { consumer.process(info) }
+            fileData.forEachFast f@{ info ->
+                if(expression != info.expression) return@f
+                val r = info.withVirtualFile(file) { consumer.process(info) }
+                if(!r) return@p false
             }
+            
             true
         }
     }
