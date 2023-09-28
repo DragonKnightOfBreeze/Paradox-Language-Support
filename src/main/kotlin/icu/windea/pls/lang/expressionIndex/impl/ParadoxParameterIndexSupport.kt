@@ -31,7 +31,7 @@ class ParadoxParameterIndexSupport : ParadoxExpressionIndexSupport<ParadoxParame
         }
     }
     
-    override fun compress(value: List<ParadoxParameterInfo>): List<ParadoxParameterInfo> {
+    override fun compressData(value: List<ParadoxParameterInfo>): List<ParadoxParameterInfo> {
         return value.sortedWith(compressComparator)
     }
     

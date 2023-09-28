@@ -32,7 +32,7 @@ class ParadoxEventInOnActionIndexSupport: ParadoxExpressionIndexSupport<ParadoxE
         addToFileData(info, fileData)
     }
     
-    override fun compress(value: List<ParadoxEventInOnActionInfo>): List<ParadoxEventInOnActionInfo> {
+    override fun compressData(value: List<ParadoxEventInOnActionInfo>): List<ParadoxEventInOnActionInfo> {
         return value
     }
     

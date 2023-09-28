@@ -37,13 +37,14 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
     
     override fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         when(file) {
-            is ParadoxScriptFile -> doIndexData(file, fileData)
-            is ParadoxLocalisationFile -> doIndexData(file, fileData)
+            is ParadoxScriptFile -> indexDataForScriptFile(file, fileData)
+            is ParadoxLocalisationFile -> indexDataForLocalisationFile(file, fileData)
         }
-        postIndexData(fileData)
+        postIndexData(file, fileData)
+        compressData(fileData)
     }
     
-    private fun doIndexData(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+    private fun indexDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         val extensionList = ParadoxExpressionIndexSupport.EP_NAME.extensionList
         val definitionInfoStack = ArrayDeque<ParadoxDefinitionInfo>()
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
@@ -87,8 +88,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         })
     }
     
-    
-    private fun doIndexData(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+    private fun indexDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         val extensionList = ParadoxExpressionIndexSupport.EP_NAME.extensionList
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -102,7 +102,11 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         })
     }
     
-    private fun postIndexData(fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+    private fun postIndexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+        ParadoxExpressionIndexHandler.postIndexData(file, fileData)
+    }
+    
+    private fun compressData(fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         if(fileData.isEmpty()) return
         val extensionList = ParadoxExpressionIndexSupport.EP_NAME.extensionList
         fileData.mapValues { (k, v) ->
@@ -110,7 +114,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
             val support = extensionList.findFast { it.id() == id }
                 ?.castOrNull<ParadoxExpressionIndexSupport<ParadoxExpressionInfo>>()
                 ?: throw UnsupportedOperationException()
-            support.compress(v)
+            support.compressData(v)
         }
     }
     

@@ -22,7 +22,7 @@ class ParadoxInlineScriptUsageIndexSupport : ParadoxExpressionIndexSupport<Parad
         addToFileData(info, fileData)
     }
     
-    override fun compress(value: List<ParadoxInlineScriptUsageInfo>): List<ParadoxInlineScriptUsageInfo> {
+    override fun compressData(value: List<ParadoxInlineScriptUsageInfo>): List<ParadoxInlineScriptUsageInfo> {
         return value.sortedWith(compressComparator)
     }
     

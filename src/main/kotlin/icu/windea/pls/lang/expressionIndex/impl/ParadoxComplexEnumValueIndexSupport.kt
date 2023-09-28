@@ -24,7 +24,7 @@ class ParadoxComplexEnumValueIndexSupport : ParadoxExpressionIndexSupport<Parado
         addToFileData(info, fileData)
     }
     
-    override fun compress(value: List<ParadoxComplexEnumValueInfo>): List<ParadoxComplexEnumValueInfo> {
+    override fun compressData(value: List<ParadoxComplexEnumValueInfo>): List<ParadoxComplexEnumValueInfo> {
         return value.sortedWith(compressComparator)
     }
     

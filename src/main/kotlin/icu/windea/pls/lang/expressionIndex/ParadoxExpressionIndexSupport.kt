@@ -23,7 +23,7 @@ interface ParadoxExpressionIndexSupport<T : ParadoxExpressionInfo> {
     
     fun indexLocalisationCommandIdentifier(element: ParadoxLocalisationCommandIdentifier, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {}
     
-    fun compress(value: List<T>): List<T> = value
+    fun compressData(value: List<T>): List<T> = value
     
     fun writeData(storage: DataOutput, info: T, previousInfo: T?, gameType: ParadoxGameType)
     

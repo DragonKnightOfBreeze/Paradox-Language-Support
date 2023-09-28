@@ -52,7 +52,7 @@ class ParadoxEventInEventIndexSupport: ParadoxExpressionIndexSupport<ParadoxEven
         return scopesElement.startOffset
     }
     
-    override fun compress(value: List<ParadoxEventInEventInfo>): List<ParadoxEventInEventInfo> {
+    override fun compressData(value: List<ParadoxEventInEventInfo>): List<ParadoxEventInEventInfo> {
         return value
     }
     

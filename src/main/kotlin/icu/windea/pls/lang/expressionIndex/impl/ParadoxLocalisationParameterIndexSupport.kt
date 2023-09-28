@@ -29,7 +29,7 @@ class ParadoxLocalisationParameterIndexSupport : ParadoxExpressionIndexSupport<P
         }
     }
     
-    override fun compress(value: List<ParadoxLocalisationParameterInfo>): List<ParadoxLocalisationParameterInfo> {
+    override fun compressData(value: List<ParadoxLocalisationParameterInfo>): List<ParadoxLocalisationParameterInfo> {
         return value.sortedWith(compressComparator)
     }
     

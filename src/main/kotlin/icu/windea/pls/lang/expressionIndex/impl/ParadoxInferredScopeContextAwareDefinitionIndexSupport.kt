@@ -31,7 +31,7 @@ class ParadoxInferredScopeContextAwareDefinitionIndexSupport: ParadoxExpressionI
         addToFileData(info, fileData)
     }
     
-    override fun compress(value: List<ParadoxInferredScopeContextAwareDefinitionInfo>): List<ParadoxInferredScopeContextAwareDefinitionInfo> {
+    override fun compressData(value: List<ParadoxInferredScopeContextAwareDefinitionInfo>): List<ParadoxInferredScopeContextAwareDefinitionInfo> {
         return value
     }
     

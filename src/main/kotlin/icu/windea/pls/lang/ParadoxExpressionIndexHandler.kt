@@ -3,11 +3,11 @@ package icu.windea.pls.lang
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import com.intellij.psi.PsiFile
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
-import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
@@ -38,5 +38,9 @@ object ParadoxExpressionIndexHandler {
     
     private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
         return FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
+    }
+    
+    fun postIndexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+        
     }
 }

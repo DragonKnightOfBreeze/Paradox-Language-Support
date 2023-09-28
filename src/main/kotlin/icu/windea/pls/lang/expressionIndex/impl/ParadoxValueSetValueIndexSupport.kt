@@ -31,7 +31,7 @@ class ParadoxValueSetValueIndexSupport: ParadoxExpressionIndexSupport<ParadoxVal
         infos.forEachFast { info -> addToFileData(info, fileData) }
     }
     
-    override fun compress(value: List<ParadoxValueSetValueInfo>): List<ParadoxValueSetValueInfo> {
+    override fun compressData(value: List<ParadoxValueSetValueInfo>): List<ParadoxValueSetValueInfo> {
         return value.sortedWith(compressComparator)
     }
     
