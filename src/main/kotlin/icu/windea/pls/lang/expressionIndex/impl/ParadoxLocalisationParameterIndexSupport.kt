@@ -10,8 +10,7 @@ import icu.windea.pls.model.constraints.*
 import icu.windea.pls.model.expression.*
 import java.io.*
 
-//private val compressComparator = compareBy<ParadoxLocalisationParameterInfo>({ it.localisationName }, { it.name })
-private val compressComparator = compareBy<ParadoxLocalisationParameterInfo> { it.localisationName }
+private val compressComparator = compareBy<ParadoxLocalisationParameterInfo>({ it.localisationName }, { it.name })
 
 class ParadoxLocalisationParameterIndexSupport : ParadoxExpressionIndexSupport<ParadoxLocalisationParameterInfo> {
     override fun id() = ParadoxExpressionIndexId.LocalisationParameter.id

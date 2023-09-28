@@ -11,8 +11,7 @@ import icu.windea.pls.model.constraints.*
 import icu.windea.pls.model.expression.*
 import java.io.*
 
-//private val compressComparator = compareBy<ParadoxParameterInfo>({ it.contextKey }, { it.name })
-private val compressComparator = compareBy<ParadoxParameterInfo>{ it.contextKey }
+private val compressComparator = compareBy<ParadoxParameterInfo>({ it.contextKey }, { it.name })
 
 class ParadoxParameterIndexSupport : ParadoxExpressionIndexSupport<ParadoxParameterInfo> {
     override fun id() = ParadoxExpressionIndexId.Parameter.id
