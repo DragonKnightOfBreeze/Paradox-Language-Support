@@ -18,7 +18,7 @@ import icu.windea.pls.script.references.*
 
 //提供对复杂表达式的高级语言功能支持
 
-class ParadoxScriptValueSetExpressionSupport : ParadoxScriptExpressionSupport() {
+class ParadoxScriptValueSetExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type?.isValueSetValueType() == true
     }
@@ -71,7 +71,7 @@ class ParadoxScriptValueSetExpressionSupport : ParadoxScriptExpressionSupport() 
     }
 }
 
-class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport() {
+class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type?.isScopeFieldType() == true
     }
@@ -119,7 +119,7 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport(
     }
 }
 
-class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport() {
+class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type?.isValueFieldType() == true
     }
@@ -160,7 +160,7 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport(
     }
 }
 
-class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSupport() {
+class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type?.isVariableFieldType() == true
     }

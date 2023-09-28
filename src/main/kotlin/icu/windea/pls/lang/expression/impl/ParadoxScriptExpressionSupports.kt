@@ -20,11 +20,12 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
+import icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSupport() {
+class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataType.Localisation
     }
@@ -80,7 +81,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     }
 }
 
-class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpressionSupport() {
+class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataType.Localisation
     }
@@ -135,7 +136,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
     }
 }
 
-class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpressionSupport() {
+class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataType.InlineLocalisation
     }
@@ -194,7 +195,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
     }
 }
 
-class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport() {
+class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataType.Definition
     }
@@ -263,7 +264,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport(
     }
 }
 
-class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSupport() {
+class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type?.isPathReferenceType() == true
     }
@@ -340,7 +341,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
     }
 }
 
-class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport() {
+class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataType.EnumValue
     }
@@ -439,7 +440,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport()
     }
 }
 
-class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport() {
+class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataType.Modifier
     }
@@ -464,7 +465,7 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport() 
     }
 }
 
-class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport() {
+class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         val type = config.expression?.type ?: return false
         return type == CwtDataType.AliasName || type == CwtDataType.AliasKeysField
@@ -507,7 +508,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport()
     }
 }
 
-abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpressionSupport() {
+abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpressionSupport {
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         val annotated = annotateByAliasName(element, rangeInElement, holder, config)
         if(annotated) return

@@ -10,7 +10,7 @@ import icu.windea.pls.lang.expression.*
 /**
  * @see CwtDataType.Icon
  */
-class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport() {
+class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
     override fun supports(configExpression: CwtDataExpression): Boolean {
         return configExpression.type == CwtDataType.Icon
     }
@@ -55,7 +55,7 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
 /**
  * @see CwtDataType.FilePath
  */
-class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport() {
+class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
     override fun supports(configExpression: CwtDataExpression): Boolean {
         return configExpression.type == CwtDataType.FilePath
     }
@@ -141,7 +141,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
 /**
  * @see CwtDataType.FileName
  */
-class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport() {
+class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
     override fun supports(configExpression: CwtDataExpression): Boolean {
         return configExpression.type == CwtDataType.FileName
     }

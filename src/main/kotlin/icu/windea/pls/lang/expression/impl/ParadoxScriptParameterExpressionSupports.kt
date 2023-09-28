@@ -15,7 +15,7 @@ import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport() {
+class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataType.Parameter
     }
@@ -43,7 +43,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport()
     }
 }
 
-class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpressionSupport() {
+class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataType.LocalisationParameter
     }
