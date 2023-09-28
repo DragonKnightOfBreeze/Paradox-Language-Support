@@ -1,15 +1,35 @@
 package icu.windea.pls.lang.expressionIndex.impl
 
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
+import icu.windea.pls.script.psi.*
 import java.io.*
 
 class ParadoxInferredScopeContextAwareDefinitionIndexSupport: ParadoxExpressionIndexSupport<ParadoxInferredScopeContextAwareDefinitionInfo> {
     override fun id() = ParadoxExpressionIndexIds.InferredScopeContextAwareDefinition
     
     override fun type() = ParadoxInferredScopeContextAwareDefinitionInfo::class.java
+    
+    override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+        run {
+            val expression = element.value
+            if(expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
+            val dataType = config.expression.type
+            if(dataType != CwtDataType.Definition) return
+            val definitionType = config.expression.value?.substringBefore('.') ?: return
+            if(definitionType !in ParadoxExpressionIndexHandler.inferredScopeContextAwareDefinitionTypes) return
+        }
+        
+        val definitionName = element.value
+        val typeExpression = config.expression.value ?: return
+        val info = ParadoxInferredScopeContextAwareDefinitionInfo(definitionName, typeExpression, element.startOffset, definitionInfo.gameType)
+        addToFileData(info, fileData)
+    }
     
     override fun compress(value: List<ParadoxInferredScopeContextAwareDefinitionInfo>): List<ParadoxInferredScopeContextAwareDefinitionInfo> {
         return value

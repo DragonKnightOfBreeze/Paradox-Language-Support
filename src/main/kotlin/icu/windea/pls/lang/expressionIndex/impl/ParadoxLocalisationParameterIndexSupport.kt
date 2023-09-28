@@ -1,8 +1,12 @@
 package icu.windea.pls.lang.expressionIndex.impl
 
+import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constraints.*
 import icu.windea.pls.model.expression.*
 import java.io.*
 
@@ -13,6 +17,18 @@ class ParadoxLocalisationParameterIndexSupport : ParadoxExpressionIndexSupport<P
     override fun id() = ParadoxExpressionIndexIds.LocalisationParameter
     
     override fun type() = ParadoxLocalisationParameterInfo::class.java
+    
+    override fun indexElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+        val constraint = ParadoxResolveConstraint.LocalisationParameter
+        if(!constraint.canResolveReference(element)) return
+        element.references.forEachFast f@{ reference ->
+            if(!constraint.canResolve(reference)) return@f
+            val resolved = reference.resolve()
+            if(resolved !is ParadoxLocalisationParameterElement) return@f
+            val info = ParadoxLocalisationParameterInfo(resolved.name, resolved.localisationName, element.startOffset, resolved.gameType)
+            addToFileData(info, fileData)
+        }
+    }
     
     override fun compress(value: List<ParadoxLocalisationParameterInfo>): List<ParadoxLocalisationParameterInfo> {
         return value.sortedWith(compressComparator)

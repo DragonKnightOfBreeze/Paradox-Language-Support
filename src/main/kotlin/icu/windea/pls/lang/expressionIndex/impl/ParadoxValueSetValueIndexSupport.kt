@@ -1,8 +1,11 @@
 package icu.windea.pls.lang.expressionIndex.impl
 
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expressionIndex.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
 import java.io.*
@@ -13,6 +16,11 @@ class ParadoxValueSetValueIndexSupport: ParadoxExpressionIndexSupport<ParadoxVal
     override fun id() = ParadoxExpressionIndexIds.ValueSetValue
     
     override fun type() = ParadoxValueSetValueInfo::class.java
+    
+    override fun indexLocalisationCommandIdentifier(element: ParadoxLocalisationCommandIdentifier, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+        val infos = ParadoxValueSetValueHandler.getInfos(element)
+        infos.forEachFast { info -> addToFileData(info, fileData) }
+    }
     
     override fun compress(value: List<ParadoxValueSetValueInfo>): List<ParadoxValueSetValueInfo> {
         return value.sortedWith(compressComparator)

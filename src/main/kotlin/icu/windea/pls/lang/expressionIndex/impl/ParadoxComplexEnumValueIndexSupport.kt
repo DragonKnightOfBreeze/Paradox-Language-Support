@@ -1,10 +1,13 @@
 package icu.windea.pls.lang.expressionIndex.impl
 
+import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
+import icu.windea.pls.script.psi.*
 import java.io.*
 
 private val compressComparator = compareBy<ParadoxComplexEnumValueInfo>({ it.enumName }, { it.name })
@@ -13,6 +16,13 @@ class ParadoxComplexEnumValueIndexSupport : ParadoxExpressionIndexSupport<Parado
     override fun id() = ParadoxExpressionIndexIds.ComplexEnumValue
     
     override fun type() = ParadoxComplexEnumValueInfo::class.java
+    
+    override fun indexElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+        if(element !is ParadoxScriptStringExpressionElement) return
+        if(!element.isExpression()) return
+        val info = ParadoxComplexEnumValueHandler.getInfo(element) ?: return
+        addToFileData(info, fileData)
+    }
     
     override fun compress(value: List<ParadoxComplexEnumValueInfo>): List<ParadoxComplexEnumValueInfo> {
         return value.sortedWith(compressComparator)

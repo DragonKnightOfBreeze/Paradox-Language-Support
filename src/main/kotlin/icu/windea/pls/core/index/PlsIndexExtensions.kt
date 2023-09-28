@@ -21,6 +21,7 @@ fun ParadoxLocalisationCategory.toByte() = this.ordinal
 
 fun Byte.toLocalisationCategory() = ParadoxLocalisationCategory.values[this.toInt()]
 
+
 inline fun <reified T: StubIndexExtension<*,*>> findStubIndex(): T{
     return StubIndexExtension.EP_NAME.findExtensionOrFail(T::class.java)
 }
@@ -38,3 +39,4 @@ val ParadoxSyncedLocalisationNameIndexKey by lazy { findStubIndex<ParadoxSyncedL
 
 val ParadoxFilePathIndexName by lazy { findIndex<ParadoxFilePathIndex>().name }
 val ParadoxFileLocaleIndexName by lazy { findIndex<ParadoxFileLocaleIndex>().name }
+val ParadoxExpressionIndexName by lazy { findIndex<ParadoxExpressionIndex>().name }

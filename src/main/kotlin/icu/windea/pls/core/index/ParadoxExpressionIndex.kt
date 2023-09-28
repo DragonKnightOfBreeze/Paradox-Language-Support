@@ -8,12 +8,18 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.localisation.*
+import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.script.*
+import icu.windea.pls.script.psi.*
 import java.io.*
+import kotlin.collections.ArrayDeque
 
 private val NAME = ID.create<String, List<ParadoxExpressionInfo>>("paradox.expression.index")
 private const val VERSION = 39 //1.1.11
+
+private val markerKey = createKey<Boolean>("paradox.expression.index.marker")
 
 /**
  * 用于基于文件层级索引各种表达式信息。
@@ -26,8 +32,73 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
     override fun getVersion() = VERSION
     
     override fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
-        //TODO
-        
+        when(file) {
+            is ParadoxScriptFile -> doIndexData(file, fileData)
+            is ParadoxLocalisationFile -> doIndexData(file, fileData)
+        }
+        postIndexData(fileData)
+    }
+    
+    private fun doIndexData(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+        val extensionList = ParadoxExpressionIndexSupport.EP_NAME.extensionList
+        val definitionInfoStack = ArrayDeque<ParadoxDefinitionInfo>()
+        file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+            override fun visitElement(element: PsiElement) {
+                extensionList.forEachFast { ep ->
+                    ep.indexElement(element, fileData)
+                }
+                
+                if(element is ParadoxScriptDefinitionElement) {
+                    val definitionInfo = element.definitionInfo
+                    if(definitionInfo != null) {
+                        element.putUserData(markerKey, true)
+                        definitionInfoStack.addLast(definitionInfo)
+                    }
+                }
+                
+                run {
+                    if(definitionInfoStack.isEmpty()) return@run
+                    if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
+                        val matchOptions = CwtConfigMatcher.Options.SkipIndex or CwtConfigMatcher.Options.SkipScope
+                        val configs = CwtConfigHandler.getConfigs(element, matchOptions = matchOptions)
+                        if(configs.isEmpty()) return@run
+                        val definitionInfo = definitionInfoStack.lastOrNull() ?: return@run
+                        extensionList.forEachFast { ep ->
+                            configs.forEachFast { config ->
+                                ep.indexScriptExpression(element, config, definitionInfo, fileData)
+                            }
+                        }
+                    }
+                }
+                
+                super.visitElement(element)
+            }
+            
+            override fun elementFinished(element: PsiElement) {
+                if(element.getUserData(markerKey) == true) {
+                    element.putUserData(markerKey, null)
+                    definitionInfoStack.removeLastOrNull()
+                }
+            }
+        })
+    }
+    
+    
+    private fun doIndexData(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+        val extensionList = ParadoxExpressionIndexSupport.EP_NAME.extensionList
+        file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+            override fun visitElement(element: PsiElement) {
+                if(element is ParadoxLocalisationCommandIdentifier) {
+                    extensionList.forEachFast f@{ ep -> 
+                        ep.indexLocalisationCommandIdentifier(element, fileData)
+                    }
+                }
+                if(element.isRichTextContext()) super.visitElement(element)
+            }
+        })
+    }
+    
+    private fun postIndexData(fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         if(fileData.isEmpty()) return
         val extensionList = ParadoxExpressionIndexSupport.EP_NAME.extensionList
         fileData.mapValues { (k, v) ->

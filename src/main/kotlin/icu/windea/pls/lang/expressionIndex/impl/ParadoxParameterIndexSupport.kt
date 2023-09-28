@@ -1,9 +1,13 @@
 package icu.windea.pls.lang.expressionIndex.impl
 
+import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constraints.*
 import icu.windea.pls.model.expression.*
 import java.io.*
 
@@ -14,6 +18,19 @@ class ParadoxParameterIndexSupport : ParadoxExpressionIndexSupport<ParadoxParame
     override fun id() = ParadoxExpressionIndexIds.Parameter
     
     override fun type() = ParadoxParameterInfo::class.java
+    
+    override fun indexElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+        val constraint = ParadoxResolveConstraint.Parameter
+        if(!constraint.canResolveReference(element)) return
+        element.references.forEachFast f@{ reference ->
+            if(!constraint.canResolve(reference)) return@f
+            val resolved = reference.resolve()
+            if(resolved !is ParadoxParameterElement) return@f
+            //note that element.startOffset may not equal to actual parameterElement.startOffset (e.g. in a script value expression)
+            val info = ParadoxParameterInfo(resolved.name, resolved.contextKey, resolved.readWriteAccess, element.startOffset, resolved.gameType)
+            addToFileData(info, fileData)
+        }
+    }
     
     override fun compress(value: List<ParadoxParameterInfo>): List<ParadoxParameterInfo> {
         return value.sortedWith(compressComparator)

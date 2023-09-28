@@ -1,9 +1,12 @@
 package icu.windea.pls.lang.expressionIndex.impl
 
+import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
+import icu.windea.pls.script.psi.*
 import java.io.*
 
 private val compressComparator = compareBy<ParadoxInlineScriptUsageInfo> { it.expression }
@@ -12,6 +15,12 @@ class ParadoxInlineScriptUsageIndexSupport : ParadoxExpressionIndexSupport<Parad
     override fun id() = ParadoxExpressionIndexIds.InlineScriptUsage
     
     override fun type() = ParadoxInlineScriptUsageInfo::class.java
+    
+    override fun indexElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+        if(element !is ParadoxScriptProperty) return
+        val info = ParadoxInlineScriptHandler.getUsageInfo(element) ?: return
+        addToFileData(info, fileData)
+    }
     
     override fun compress(value: List<ParadoxInlineScriptUsageInfo>): List<ParadoxInlineScriptUsageInfo> {
         return value.sortedWith(compressComparator)
