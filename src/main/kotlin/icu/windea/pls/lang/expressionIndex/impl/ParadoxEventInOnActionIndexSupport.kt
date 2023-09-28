@@ -10,7 +10,7 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 class ParadoxEventInOnActionIndexSupport: ParadoxExpressionIndexSupport<ParadoxEventInOnActionInfo> {
-    override fun id() = ParadoxExpressionIndexIds.EventInOnAction
+    override fun id() = ParadoxExpressionIndexId.EventInOnAction.id
     
     override fun type() = ParadoxEventInOnActionInfo::class.java
     

@@ -13,7 +13,7 @@ import java.io.*
 private val compressComparator = compareBy<ParadoxComplexEnumValueInfo>({ it.enumName }, { it.name })
 
 class ParadoxComplexEnumValueIndexSupport : ParadoxExpressionIndexSupport<ParadoxComplexEnumValueInfo> {
-    override fun id() = ParadoxExpressionIndexIds.ComplexEnumValue
+    override fun id() = ParadoxExpressionIndexId.ComplexEnumValue.id
     
     override fun type() = ParadoxComplexEnumValueInfo::class.java
     

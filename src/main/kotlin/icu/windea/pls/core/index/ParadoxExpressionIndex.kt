@@ -1,5 +1,6 @@
 package icu.windea.pls.core.index
 
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.indexing.*
@@ -157,5 +158,10 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         if(ParadoxFileManager.isInjectedFile(file)) return true
         if(ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null) return true
         return false
+    }
+    
+    fun <T: ParadoxExpressionInfo> getFileData(file: VirtualFile, project: Project, id: ParadoxExpressionIndexId<T>): List<ParadoxExpressionInfo>? {
+        val allFileData = getFileData(file, project)
+        return allFileData.get(id.id.toString()).castOrNull<List<T>>().orEmpty()
     }
 }

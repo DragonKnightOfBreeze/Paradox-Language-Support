@@ -13,7 +13,7 @@ import java.io.*
 private val compressComparator = compareBy<ParadoxValueSetValueInfo>({ it.valueSetName }, { it.name })
 
 class ParadoxValueSetValueIndexSupport: ParadoxExpressionIndexSupport<ParadoxValueSetValueInfo> {
-    override fun id() = ParadoxExpressionIndexIds.ValueSetValue
+    override fun id() = ParadoxExpressionIndexId.ValueSetValue.id
     
     override fun type() = ParadoxValueSetValueInfo::class.java
     

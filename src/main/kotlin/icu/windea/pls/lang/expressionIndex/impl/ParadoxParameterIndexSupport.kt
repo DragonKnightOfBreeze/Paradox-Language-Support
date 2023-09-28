@@ -15,7 +15,7 @@ import java.io.*
 private val compressComparator = compareBy<ParadoxParameterInfo>{ it.contextKey }
 
 class ParadoxParameterIndexSupport : ParadoxExpressionIndexSupport<ParadoxParameterInfo> {
-    override fun id() = ParadoxExpressionIndexIds.Parameter
+    override fun id() = ParadoxExpressionIndexId.Parameter.id
     
     override fun type() = ParadoxParameterInfo::class.java
     

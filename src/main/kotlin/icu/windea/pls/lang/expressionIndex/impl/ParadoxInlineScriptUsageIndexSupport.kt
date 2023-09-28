@@ -12,7 +12,7 @@ import java.io.*
 private val compressComparator = compareBy<ParadoxInlineScriptUsageInfo> { it.expression }
 
 class ParadoxInlineScriptUsageIndexSupport : ParadoxExpressionIndexSupport<ParadoxInlineScriptUsageInfo> {
-    override fun id() = ParadoxExpressionIndexIds.InlineScriptUsage
+    override fun id() = ParadoxExpressionIndexId.InlineScriptUsage.id
     
     override fun type() = ParadoxInlineScriptUsageInfo::class.java
     

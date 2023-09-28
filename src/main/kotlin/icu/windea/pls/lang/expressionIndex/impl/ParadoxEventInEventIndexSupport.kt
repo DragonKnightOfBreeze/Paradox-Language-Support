@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 class ParadoxEventInEventIndexSupport: ParadoxExpressionIndexSupport<ParadoxEventInEventInfo> {
-    override fun id() = ParadoxExpressionIndexIds.EventInEvent
+    override fun id() = ParadoxExpressionIndexId.EventInEvent.id
     
     override fun type() = ParadoxEventInEventInfo::class.java
     

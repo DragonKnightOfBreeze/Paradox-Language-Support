@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 class ParadoxInferredScopeContextAwareDefinitionIndexSupport: ParadoxExpressionIndexSupport<ParadoxInferredScopeContextAwareDefinitionInfo> {
-    override fun id() = ParadoxExpressionIndexIds.InferredScopeContextAwareDefinition
+    override fun id() = ParadoxExpressionIndexId.InferredScopeContextAwareDefinition.id
     
     override fun type() = ParadoxInferredScopeContextAwareDefinitionInfo::class.java
     

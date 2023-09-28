@@ -3,7 +3,6 @@ package icu.windea.pls.lang.expressionIndex.impl
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.index.hierarchy.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.model.*
@@ -12,7 +11,7 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 class ParadoxOnActionInEventIndexSupport: ParadoxExpressionIndexSupport<ParadoxOnActionInEventInfo> {
-    override fun id() = ParadoxExpressionIndexIds.OnActionInEvent
+    override fun id() = ParadoxExpressionIndexId.OnActionInEvent.id
     
     override fun type() = ParadoxOnActionInEventInfo::class.java
     

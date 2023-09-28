@@ -14,7 +14,7 @@ import java.io.*
 private val compressComparator = compareBy<ParadoxLocalisationParameterInfo> { it.localisationName }
 
 class ParadoxLocalisationParameterIndexSupport : ParadoxExpressionIndexSupport<ParadoxLocalisationParameterInfo> {
-    override fun id() = ParadoxExpressionIndexIds.LocalisationParameter
+    override fun id() = ParadoxExpressionIndexId.LocalisationParameter.id
     
     override fun type() = ParadoxLocalisationParameterInfo::class.java
     
