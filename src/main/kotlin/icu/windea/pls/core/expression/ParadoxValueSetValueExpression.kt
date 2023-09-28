@@ -131,7 +131,7 @@ class ParadoxValueSetValueExpressionImpl(
     }
 }
 
-fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>, canBeMismatched: Boolean = false): ParadoxValueSetValueExpression? {
+fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxValueSetValueExpression? {
     return resolve(expression, range, configGroup, config.toSingletonList())
 }
 

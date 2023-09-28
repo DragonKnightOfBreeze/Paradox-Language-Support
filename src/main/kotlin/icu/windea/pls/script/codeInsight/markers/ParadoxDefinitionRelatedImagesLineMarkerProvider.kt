@@ -32,7 +32,6 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : RelatedItemLineMarkerPr
 		val keys = mutableSetOf<String>()
 		val targets = mutableSetOf<PsiElement>() //这里需要考虑基于引用相等去重
 		var isFirst = true
-		val project = element.project
 		for((key, locationExpression) in imageInfos) {
 			ProgressManager.checkCanceled()
 			val resolved = locationExpression.resolveAll(element, definitionInfo) ?: continue
