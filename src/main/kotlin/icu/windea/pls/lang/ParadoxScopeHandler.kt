@@ -281,16 +281,11 @@ object ParadoxScopeHandler {
             }
             prevResolved is ParadoxValueSetValueElement -> {
                 val prevScopeContext = prevElement.prevIdentifier?.let { getScopeContext(it) } ?: getAnyScopeContext()
-                val scopeContext = getScopeContext(prevResolved)
+                val scopeContext = ParadoxValueSetValueHandler.getInferredScopeContext(prevResolved)
                 return prevScopeContext.resolve(scopeContext)
             }
         }
         return getUnknownScopeContext()
-    }
-    
-    fun getScopeContext(element: ParadoxValueSetValueElement): ParadoxScopeContext {
-        val inferredScopeContext = ParadoxValueSetValueHandler.getInferredScopeContext(element)
-        return inferredScopeContext ?: getAnyScopeContext()
     }
     
     fun getScopeContext(contextElement: PsiElement, scopeFieldExpression: ParadoxScopeFieldExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
@@ -353,7 +348,7 @@ object ParadoxScopeHandler {
                     dataType.isValueSetValueType() -> {
                         val valueSetValueExpression = node.dataSourceNode.nodes.findIsInstance<ParadoxValueSetValueExpression>()
                         if(valueSetValueExpression == null) return getUnknownScopeContext(inputScopeContext) //unexpected
-                        return getScopeContext(contextElement, valueSetValueExpression, inputScopeContext)
+                        return ParadoxValueSetValueHandler.getInferredScopeContext(contextElement, valueSetValueExpression, inputScopeContext)
                     }
                 }
             }
@@ -385,10 +380,6 @@ object ParadoxScopeHandler {
         } ?: return null
         val isFrom = baseId == "From"
         return inputScopeContext.resolve(systemLinkContext, isFrom)
-    }
-    
-    fun getScopeContext(element: PsiElement, valueSetValueExpression: ParadoxValueSetValueExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
-        return getAnyScopeContext() //TODO 1.1.8+
     }
     
     fun getAnyScopeContext(): ParadoxScopeContext {

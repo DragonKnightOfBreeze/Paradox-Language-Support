@@ -20,135 +20,8 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxValueSetValueHandler {
     const val EVENT_TARGET_PREFIX = "event_target:"
+    
     val EVENT_TARGETS = setOf("event_target", "global_event_target")
-    
-    fun getInfos(element: ParadoxValueSetValueElement): List<ParadoxValueSetValueInfo> {
-        return element.valueSetNames.map { valueSetName ->
-            ParadoxValueSetValueInfo(element.name, valueSetName, element.readWriteAccess, element.parent.startOffset, element.gameType)
-        }
-    }
-    
-    fun getInfos(element: ParadoxScriptStringExpressionElement): List<ParadoxValueSetValueInfo> {
-        if(!element.isExpression()) return emptyList()
-        return doGetInfos(element)
-    }
-    
-    private fun doGetInfos(element: ParadoxScriptStringExpressionElement): List<ParadoxValueSetValueInfo> {
-        val matchOptions = Options.SkipIndex or Options.SkipScope
-        val configs = CwtConfigHandler.getConfigs(element, matchOptions = matchOptions)
-        if(configs.isEmpty()) return emptyList()
-        
-        configs.forEachFast { config ->
-            val configGroup = config.info.configGroup
-            val configExpression = config.expression
-            when {
-                configExpression.type.isValueSetValueType() -> {
-                    val text = element.text
-                    val textRange = getTextRange(element, text)
-                    //quoted -> only value set value name, no scope info
-                    if(text.isLeftQuoted()) {
-                        return doGetInfoFromExpression(element, config)
-                    }
-                    val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(text, textRange, configGroup, config)
-                    if(valueSetValueExpression == null) return emptyList()
-                    return doGetInfoFromComplexExpression(element, valueSetValueExpression)
-                }
-                configExpression.type.isScopeFieldType() -> {
-                    val text = element.text
-                    val textRange = getTextRange(element, text)
-                    if(text.isLeftQuoted()) return emptyList()
-                    val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup)
-                    if(scopeFieldExpression == null) return emptyList()
-                    return doGetInfoFromComplexExpression(element, scopeFieldExpression)
-                }
-                configExpression.type.isValueFieldType() -> {
-                    val text = element.text
-                    val textRange = getTextRange(element, text)
-                    if(text.isLeftQuoted()) return emptyList()
-                    val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup)
-                    if(valueFieldExpression == null) return emptyList()
-                    return doGetInfoFromComplexExpression(element, valueFieldExpression)
-                }
-                configExpression.type.isVariableFieldType() -> {
-                    val text = element.text
-                    val textRange = getTextRange(element, text)
-                    if(text.isLeftQuoted()) return emptyList()
-                    val variableFieldExpression = ParadoxVariableFieldExpression.resolve(text, textRange, configGroup)
-                    if(variableFieldExpression == null) return emptyList()
-                    return doGetInfoFromComplexExpression(element, variableFieldExpression)
-                }
-                else -> pass() //continue to check next config
-            }
-        }
-        return emptyList()
-    }
-    
-    private fun getTextRange(element: PsiElement, text: String): TextRange {
-        return when {
-            element is ParadoxScriptBlock -> TextRange.create(0, 1) //left curly brace
-            else -> TextRange.create(0, text.length).unquote(text) //unquoted text
-        }
-    }
-    
-    private fun doGetInfoFromExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>): List<ParadoxValueSetValueInfo> {
-        val name = element.value.let { getName(it) } ?: return emptyList() //skip if name is invalid
-        val configExpression = config.expression
-        val valueSetName = configExpression.value?.orNull() ?: return emptyList()
-        val readWriteAccess = getReadWriteAccess(configExpression)
-        //elementOffset has not been used yet
-        val elementOffset = -1 /*element.startOffset*/
-        val gameType = config.info.configGroup.gameType ?: return emptyList()
-        return ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, elementOffset, gameType).toSingletonList()
-    }
-    
-    private fun doGetInfoFromComplexExpression(element: ParadoxScriptStringExpressionElement, expression: ParadoxComplexExpression): List<ParadoxValueSetValueInfo> {
-        return buildList {
-            expression.processAllNodes p@{ node ->
-                when {
-                    node is ParadoxDataExpressionNode -> {
-                        val reference = node.getReference(element) ?: return@p true
-                        reference.linkConfigs.forEachFast { config ->
-                            if(config.expression?.type?.isValueSetValueType() != true) return@p true
-                            val configExpression = config.expression!!
-                            val name = reference.rangeInElement.substring(element.text).let { getName(it) } ?: return@p true //skip if name is invalid
-                            val valueSetName = configExpression.value?.orNull() ?: return@p true
-                            val readWriteAccess = getReadWriteAccess(configExpression)
-                            //elementOffset has not been used yet
-                            val elementOffset = -1 /*element.startOffset + reference.rangeInElement.startOffset*/
-                            val gameType = config.info.configGroup.gameType ?: return@p true
-                            val info = ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, elementOffset, gameType)
-                            add(info)
-                        }
-                    }
-                    node is ParadoxValueSetValueExpressionNode -> {
-                        val reference = node.getReference(element) ?: return@p true
-                        reference.configs.forEachFast { config ->
-                            if(config.expression?.type?.isValueSetValueType() != true) return@p true
-                            val configExpression = config.expression!!
-                            val name = reference.rangeInElement.substring(element.text).let { getName(it) } ?: return@p true //skip if name is invalid
-                            val valueSetName = configExpression.value?.orNull() ?: return@p true
-                            val readWriteAccess = getReadWriteAccess(configExpression)
-                            //elementOffset has not been used yet
-                            val elementOffset = -1 /*element.startOffset + reference.rangeInElement.startOffset*/
-                            val gameType = config.info.configGroup.gameType ?: return@p true
-                            val info = ParadoxValueSetValueInfo(name, valueSetName, readWriteAccess, elementOffset, gameType)
-                            add(info)
-                        }
-                    }
-                }
-                true
-            }
-        }
-    }
-    
-    fun getInfos(element: ParadoxLocalisationCommandIdentifier): List<ParadoxValueSetValueInfo> {
-        val reference = element.reference ?: return emptyList()
-        if(reference.canResolve(ParadoxResolveConstraint.ValueSetValue)) {
-            val resolved = reference.resolve()
-            if(resolved is ParadoxValueSetValueElement) return getInfos(resolved)
-        }
-        return emptyList()
-    }
     
     fun getName(expression: String): String? {
         return expression.substringBefore('@').orNull()
@@ -180,7 +53,13 @@ object ParadoxValueSetValueHandler {
         return ParadoxValueSetValueElement(element, name, valueSetNames, readWriteAccess, gameType, configGroup.project)
     }
     
-    fun getInferredScopeContext(element: ParadoxValueSetValueElement): ParadoxScopeContext? {
+    @Suppress("UNUSED_PARAMETER")
+    fun getInferredScopeContext(element: ParadoxValueSetValueElement): ParadoxScopeContext {
+        return ParadoxScopeHandler.getAnyScopeContext() //TODO 1.1.8+
+    }
+    
+    @Suppress("UNUSED_PARAMETER")
+    fun getInferredScopeContext(element: PsiElement, valueSetValueExpression: ParadoxValueSetValueExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         return ParadoxScopeHandler.getAnyScopeContext() //TODO 1.1.8+
     }
 }

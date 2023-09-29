@@ -18,7 +18,7 @@ class ParadoxParameterIndexSupport : ParadoxExpressionIndexSupport<ParadoxParame
     
     override fun type() = ParadoxParameterInfo::class.java
     
-    override fun indexElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         val constraint = ParadoxResolveConstraint.Parameter
         if(!constraint.canResolveReference(element)) return
         element.references.forEachFast f@{ reference ->

@@ -1,6 +1,7 @@
 package icu.windea.pls.core.index
 
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.indexing.*
@@ -15,7 +16,6 @@ import icu.windea.pls.model.expression.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
-import kotlin.collections.ArrayDeque
 
 private val NAME = ID.create<String, List<ParadoxExpressionInfo>>("paradox.expression.index")
 private const val VERSION = 40 //1.1.12
@@ -50,7 +50,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 extensionList.forEachFast { ep ->
-                    ep.indexElement(element, fileData)
+                    ep.indexScriptElement(element, fileData)
                 }
                 
                 if(element is ParadoxScriptDefinitionElement) {
@@ -64,6 +64,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
                 run {
                     if(definitionInfoStack.isEmpty()) return@run
                     if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
+                        ProgressManager.checkCanceled()
                         val matchOptions = CwtConfigMatcher.Options.SkipIndex or CwtConfigMatcher.Options.SkipScope
                         val configs = CwtConfigHandler.getConfigs(element, matchOptions = matchOptions)
                         if(configs.isEmpty()) return@run

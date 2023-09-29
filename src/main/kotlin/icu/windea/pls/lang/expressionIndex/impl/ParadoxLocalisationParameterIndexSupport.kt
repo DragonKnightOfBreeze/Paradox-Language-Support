@@ -17,7 +17,7 @@ class ParadoxLocalisationParameterIndexSupport : ParadoxExpressionIndexSupport<P
     
     override fun type() = ParadoxLocalisationParameterInfo::class.java
     
-    override fun indexElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         val constraint = ParadoxResolveConstraint.LocalisationParameter
         if(!constraint.canResolveReference(element)) return
         element.references.forEachFast f@{ reference ->

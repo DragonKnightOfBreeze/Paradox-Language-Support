@@ -17,7 +17,7 @@ interface ParadoxExpressionIndexSupport<T : ParadoxExpressionInfo> {
     
     fun type(): Class<T>
     
-    fun indexElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {}
+    fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {}
     
     fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {}
     
