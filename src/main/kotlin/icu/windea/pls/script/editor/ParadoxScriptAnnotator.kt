@@ -1,19 +1,17 @@
 package icu.windea.pls.script.editor
 
-import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.lang.annotation.*
 import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.CwtConfigHandler.getParameterRanges
 import icu.windea.pls.lang.config.impl.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.inspections.inference.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
