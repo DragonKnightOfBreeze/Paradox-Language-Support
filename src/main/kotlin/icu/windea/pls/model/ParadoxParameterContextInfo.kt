@@ -4,6 +4,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
@@ -31,15 +32,14 @@ class ParadoxParameterContextInfo(
             }
         }
         //基于参数对应的CWT规则，判断参数是否被认为是可选的
-        //TODO 1.1.12 这会导致全局代码检查被卡住！
-        //for(parameterInfo in parameterInfos) {
-        //    val configs = parameterInfo.expressionConfigs
-        //    if(configs.isNotEmpty()) {
-        //        //如果作为传入参数的值，直接认为是可选的，没有太大必要进一步检查……
-        //        val r = configs.any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataType.Parameter }
-        //        if(r) return true
-        //    }
-        //}
+        for(parameterInfo in parameterInfos) {
+            val configs = parameterInfo.expressionConfigs
+            if(configs.isNotEmpty()) {
+                //如果作为传入参数的值，直接认为是可选的，没有太大必要进一步检查……
+                val r = configs.any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataType.Parameter }
+                if(r) return true
+            }
+        }
         return false
     }
     
@@ -55,38 +55,41 @@ class ParadoxParameterContextInfo(
         val element: ParadoxParameter? get() = elementPointer.element
         val expressionElement: ParadoxScriptStringExpressionElement? get() = elementPointer.element?.parent?.castOrNull()
         
-        val rangeInExpressionElement: TextRange? by lazy {
-            if(expressionElement == null) return@lazy null
-            element?.textRangeInParent
-        }
+        val rangeInExpressionElement: TextRange?
+            get() {
+                if(expressionElement == null) return null
+                return element?.textRangeInParent
+            }
         
-        val isEntireExpression: Boolean by lazy {
-            val element = element
-            element != null
-                && element.prevSibling.let { it == null || it.text == "\"" }
-                && element.nextSibling.let { it == null || it.text == "\"" }
-        }
+        val isEntireExpression: Boolean
+            get() {
+                val element = element
+                return element != null
+                    && element.prevSibling.let { it == null || it.text == "\"" }
+                    && element.nextSibling.let { it == null || it.text == "\"" }
+            }
         
         /**
          * 获取此参数对应的脚本表达式所对应的CWT规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
          */
-        val expressionConfigs: List<CwtMemberConfig<*>> by lazy {
-            val expressionElement = element?.parent?.castOrNull<ParadoxScriptStringExpressionElement>()
-            if(expressionElement == null) return@lazy emptyList()
-            when {
-                expressionElement is ParadoxScriptPropertyKey -> {
-                    val configs = CwtConfigHandler.getConfigs(expressionElement)
-                    configs.mapNotNull { if(it is CwtPropertyConfig) it else null }
-                    configs
-                }
-                expressionElement is ParadoxScriptString && expressionElement.isExpression() -> {
-                    val configs = CwtConfigHandler.getConfigs(expressionElement)
-                    configs.mapNotNull { if(it is CwtValueConfig) it else null }
-                }
-                else -> {
-                    emptyList()
+        val expressionConfigs: List<CwtMemberConfig<*>>
+            get() {
+                val expressionElement = element?.parent?.castOrNull<ParadoxScriptStringExpressionElement>()
+                if(expressionElement == null) return emptyList()
+                return when {
+                    expressionElement is ParadoxScriptPropertyKey -> {
+                        val configs = CwtConfigHandler.getConfigs(expressionElement)
+                        configs.mapNotNull { if(it is CwtPropertyConfig) it else null }
+                        configs
+                    }
+                    expressionElement is ParadoxScriptString && expressionElement.isExpression() -> {
+                        val configs = CwtConfigHandler.getConfigs(expressionElement)
+                        configs.mapNotNull { if(it is CwtValueConfig) it else null }
+                    }
+                    else -> {
+                        emptyList()
+                    }
                 }
             }
-        }
     }
 }
