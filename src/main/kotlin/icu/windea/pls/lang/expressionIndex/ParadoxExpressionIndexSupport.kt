@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.expressionIndex
 
 import com.intellij.openapi.extensions.*
-import com.intellij.psi.PsiElement
+import com.intellij.psi.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
