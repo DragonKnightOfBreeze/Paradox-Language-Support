@@ -10,7 +10,9 @@ import icu.windea.pls.model.expression.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-class ParadoxOnActionInEventIndexSupport: ParadoxExpressionIndexSupport<ParadoxOnActionInEventInfo> {
+private val compressComparator = compareBy<ParadoxOnActionInEventInfo> { it.containingEventName }
+
+class ParadoxOnActionInEventIndexSupport : ParadoxExpressionIndexSupport<ParadoxOnActionInEventInfo> {
     override fun id() = ParadoxExpressionIndexId.OnActionInEvent.id
     
     override fun type() = ParadoxOnActionInEventInfo::class.java
@@ -53,12 +55,12 @@ class ParadoxOnActionInEventIndexSupport: ParadoxExpressionIndexSupport<ParadoxO
     }
     
     override fun compressData(value: List<ParadoxOnActionInEventInfo>): List<ParadoxOnActionInEventInfo> {
-        return value
+        return value.sortedWith(compressComparator)
     }
     
     override fun writeData(storage: DataOutput, info: ParadoxOnActionInEventInfo, previousInfo: ParadoxOnActionInEventInfo?, gameType: ParadoxGameType) {
         storage.writeUTFFast(info.onActionName)
-        storage.writeUTFFast(info.containingEventName)
+        storage.writeOrWriteFrom(info, previousInfo, { it.containingEventName }, { storage.writeUTFFast(it) })
         storage.writeUTFFast(info.containingEventScope.orEmpty())
         storage.writeIntFast(info.scopesElementOffset)
         storage.writeIntFast(info.elementOffset)
@@ -66,7 +68,7 @@ class ParadoxOnActionInEventIndexSupport: ParadoxExpressionIndexSupport<ParadoxO
     
     override fun readData(storage: DataInput, previousInfo: ParadoxOnActionInEventInfo?, gameType: ParadoxGameType): ParadoxOnActionInEventInfo {
         val onActionName = storage.readUTFFast()
-        val containingEventName = storage.readUTFFast()
+        val containingEventName = storage.readOrReadFrom(previousInfo, { it.containingEventName }, { storage.readUTFFast() })
         val containingEventScope = storage.readUTFFast().orNull()
         val scopesElementOffset = storage.readIntFast()
         val elementOffset = storage.readIntFast()

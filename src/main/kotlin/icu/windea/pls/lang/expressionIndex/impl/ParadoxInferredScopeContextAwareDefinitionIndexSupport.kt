@@ -10,7 +10,9 @@ import icu.windea.pls.model.expression.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-class ParadoxInferredScopeContextAwareDefinitionIndexSupport: ParadoxExpressionIndexSupport<ParadoxInferredScopeContextAwareDefinitionInfo> {
+private val compressComparator = compareBy<ParadoxInferredScopeContextAwareDefinitionInfo> { it.typeExpression }
+
+class ParadoxInferredScopeContextAwareDefinitionIndexSupport : ParadoxExpressionIndexSupport<ParadoxInferredScopeContextAwareDefinitionInfo> {
     override fun id() = ParadoxExpressionIndexId.InferredScopeContextAwareDefinition.id
     
     override fun type() = ParadoxInferredScopeContextAwareDefinitionInfo::class.java
@@ -37,13 +39,13 @@ class ParadoxInferredScopeContextAwareDefinitionIndexSupport: ParadoxExpressionI
     
     override fun writeData(storage: DataOutput, info: ParadoxInferredScopeContextAwareDefinitionInfo, previousInfo: ParadoxInferredScopeContextAwareDefinitionInfo?, gameType: ParadoxGameType) {
         storage.writeUTFFast(info.definitionName)
-        storage.writeUTFFast(info.typeExpression)
+        storage.writeOrWriteFrom(info, previousInfo, { it.typeExpression }, { storage.writeUTFFast(it) })
         storage.writeIntFast(info.elementOffset)
     }
     
     override fun readData(storage: DataInput, previousInfo: ParadoxInferredScopeContextAwareDefinitionInfo?, gameType: ParadoxGameType): ParadoxInferredScopeContextAwareDefinitionInfo {
         val definitionName = storage.readUTFFast()
-        val typeExpression = storage.readUTFFast()
+        val typeExpression = storage.readOrReadFrom(previousInfo, { it.typeExpression }, { storage.readUTFFast() })
         val elementOffset = storage.readIntFast()
         return ParadoxInferredScopeContextAwareDefinitionInfo(definitionName, typeExpression, elementOffset, gameType)
     }
