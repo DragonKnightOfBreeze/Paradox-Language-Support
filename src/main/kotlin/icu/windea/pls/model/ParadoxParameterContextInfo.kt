@@ -4,7 +4,6 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
@@ -32,14 +31,15 @@ class ParadoxParameterContextInfo(
             }
         }
         //基于参数对应的CWT规则，判断参数是否被认为是可选的
-        for(parameterInfo in parameterInfos) {
-            val configs = parameterInfo.expressionConfigs
-            if(configs.isNotEmpty()) {
-                //如果作为传入参数的值，直接认为是可选的，没有太大必要进一步检查……
-                val r = configs.any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataType.Parameter }
-                if(r) return true
-            }
-        }
+        //TODO 1.1.12 这会导致全局代码检查被卡住！
+        //for(parameterInfo in parameterInfos) {
+        //    val configs = parameterInfo.expressionConfigs
+        //    if(configs.isNotEmpty()) {
+        //        //如果作为传入参数的值，直接认为是可选的，没有太大必要进一步检查……
+        //        val r = configs.any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataType.Parameter }
+        //        if(r) return true
+        //    }
+        //}
         return false
     }
     
