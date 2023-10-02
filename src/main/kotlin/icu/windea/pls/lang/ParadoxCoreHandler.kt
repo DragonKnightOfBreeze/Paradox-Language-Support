@@ -16,7 +16,6 @@ import com.intellij.testFramework.*
 import com.intellij.util.*
 import com.intellij.util.concurrency.annotations.*
 import com.intellij.util.indexing.*
-import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*

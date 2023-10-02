@@ -132,7 +132,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     .bindSelected(::checkForSpecificLocales)
                     .actionListener { _, component -> checkForSpecificLocales = component.isSelected }
                 cell(ActionLink(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForSpecificLocales.configure")) {
-                    val allLocaleMap = ParadoxLocaleHandler.getLocaleConfigMapById(pingPreferred = false)
+                    val allLocaleMap = ParadoxLocaleHandler.getLocaleConfigMapById()
                     val selectedLocales = locales.mapNotNull { allLocaleMap.get(it) }
                     val dialog = ParadoxLocaleCheckBoxDialog(selectedLocales, allLocaleMap.values)
                     if(dialog.showAndGet()) {

@@ -1,11 +1,9 @@
 package icu.windea.pls.core.search.scope
 
-import com.intellij.model.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 
 @Suppress("UnstableApiUsage", "EqualsOrHashCode")

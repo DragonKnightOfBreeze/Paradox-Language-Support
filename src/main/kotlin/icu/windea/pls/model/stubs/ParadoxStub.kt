@@ -1,6 +1,6 @@
 package icu.windea.pls.model.stubs
 
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.*
 import icu.windea.pls.model.*
 
 interface ParadoxStub {

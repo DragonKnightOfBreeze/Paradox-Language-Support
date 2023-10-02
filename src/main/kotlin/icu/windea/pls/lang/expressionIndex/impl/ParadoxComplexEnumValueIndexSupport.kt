@@ -17,7 +17,7 @@ class ParadoxComplexEnumValueIndexSupport : ParadoxExpressionIndexSupport<Parado
     
     override fun type() = ParadoxComplexEnumValueInfo::class.java
     
-    override fun indexElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         if(element !is ParadoxScriptStringExpressionElement) return
         if(!element.isExpression()) return
         val info = ParadoxComplexEnumValueHandler.getInfo(element) ?: return

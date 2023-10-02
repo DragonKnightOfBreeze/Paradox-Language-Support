@@ -16,7 +16,7 @@ class ParadoxInlineScriptUsageIndexSupport : ParadoxExpressionIndexSupport<Parad
     
     override fun type() = ParadoxInlineScriptUsageInfo::class.java
     
-    override fun indexElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         if(element !is ParadoxScriptProperty) return
         val info = ParadoxInlineScriptHandler.getUsageInfo(element) ?: return
         addToFileData(info, fileData)

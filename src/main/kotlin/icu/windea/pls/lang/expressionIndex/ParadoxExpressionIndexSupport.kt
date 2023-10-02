@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.expressionIndex
 
 import com.intellij.openapi.extensions.*
-import com.intellij.psi.PsiElement
+import com.intellij.psi.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
@@ -17,7 +17,7 @@ interface ParadoxExpressionIndexSupport<T : ParadoxExpressionInfo> {
     
     fun type(): Class<T>
     
-    fun indexElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {}
+    fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {}
     
     fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {}
     

@@ -9,7 +9,9 @@ import icu.windea.pls.model.expression.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-class ParadoxEventInOnActionIndexSupport: ParadoxExpressionIndexSupport<ParadoxEventInOnActionInfo> {
+private val compressComparator = compareBy<ParadoxEventInOnActionInfo> { it.containingOnActionName }
+
+class ParadoxEventInOnActionIndexSupport : ParadoxExpressionIndexSupport<ParadoxEventInOnActionInfo> {
     override fun id() = ParadoxExpressionIndexId.EventInOnAction.id
     
     override fun type() = ParadoxEventInOnActionInfo::class.java
@@ -33,20 +35,20 @@ class ParadoxEventInOnActionIndexSupport: ParadoxExpressionIndexSupport<ParadoxE
     }
     
     override fun compressData(value: List<ParadoxEventInOnActionInfo>): List<ParadoxEventInOnActionInfo> {
-        return value
+        return value.sortedWith(compressComparator)
     }
     
     override fun writeData(storage: DataOutput, info: ParadoxEventInOnActionInfo, previousInfo: ParadoxEventInOnActionInfo?, gameType: ParadoxGameType) {
         storage.writeUTFFast(info.eventName)
         storage.writeUTFFast(info.typeExpression)
-        storage.writeUTFFast(info.containingOnActionName)
+        storage.writeOrWriteFrom(info, previousInfo, { it.containingOnActionName }, { storage.writeUTFFast(it) })
         storage.writeIntFast(info.elementOffset)
     }
     
     override fun readData(storage: DataInput, previousInfo: ParadoxEventInOnActionInfo?, gameType: ParadoxGameType): ParadoxEventInOnActionInfo {
         val eventName = storage.readUTFFast()
         val typeExpression = storage.readUTFFast()
-        val containingOnActionName = storage.readUTFFast()
+        val containingOnActionName = storage.readOrReadFrom(previousInfo, { it.containingOnActionName }, { storage.readUTFFast() })
         val elementOffset = storage.readIntFast()
         return ParadoxEventInOnActionInfo(eventName, typeExpression, containingOnActionName, elementOffset, gameType)
     }

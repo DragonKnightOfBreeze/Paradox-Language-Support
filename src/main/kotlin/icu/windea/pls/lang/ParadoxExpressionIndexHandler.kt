@@ -3,7 +3,7 @@ package icu.windea.pls.lang
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import com.intellij.psi.PsiFile
+import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
@@ -16,7 +16,7 @@ import icu.windea.pls.script.*
 object ParadoxExpressionIndexHandler {
     val inferredScopeContextAwareDefinitionTypes = arrayOf("scripted_trigger", "scripted_effect")
     
-    fun <ID : ParadoxExpressionIndexId<T>, T: ParadoxExpressionInfo> processQuery(
+    fun <ID : ParadoxExpressionIndexId<T>, T : ParadoxExpressionInfo> processQuery(
         id: ID,
         project: Project,
         gameType: ParadoxGameType,
@@ -40,6 +40,7 @@ object ParadoxExpressionIndexHandler {
         return FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
     }
     
+    @Suppress("UNUSED_PARAMETER")
     fun postIndexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         
     }
