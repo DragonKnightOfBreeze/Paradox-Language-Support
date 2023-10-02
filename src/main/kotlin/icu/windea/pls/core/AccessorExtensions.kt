@@ -34,9 +34,11 @@ class SmartMemberProperty<T : Any, V>(
     
     private fun doGetDelegateProperty(): DelegateProperty<T, V> {
         try {
-            val property = targetClass.declaredMemberProperties.find { it.name == propertyName }?.also { it.isAccessible = true }
-            val getter = targetClass.declaredMemberFunctions.find { it.isGetter(propertyName) }?.also { it.isAccessible = true }
-            val setter = targetClass.declaredMemberFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true }
+            val memberProperties = buildSet { addAll(targetClass.declaredMemberProperties); addAll(targetClass.memberProperties) }
+            val memberFunctions = buildSet { addAll(targetClass.declaredMemberFunctions); addAll(targetClass.memberFunctions) }
+            val property = memberProperties.find { it.name == propertyName }?.also { it.isAccessible = true }
+            val getter = memberFunctions.find { it.isGetter(propertyName) }?.also { it.isAccessible = true }
+            val setter = memberFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true }
             return DelegateProperty({ target ->
                 if(!targetClass.isInstance(target)) cannotCast(target, targetClass)
                 when {
@@ -79,9 +81,11 @@ class SmartStaticProperty<T : Any, V>(
     
     private fun doGetDelegateProperty(): DelegateProperty<V> {
         try {
-            val property = targetClass.staticProperties.find { it.name == propertyName }?.also { it.isAccessible = true }
-            val getter = targetClass.staticFunctions.find { it.isGetter(propertyName) }?.also { it.isAccessible = true }
-            val setter = targetClass.staticFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true }
+            val staticProperties = targetClass.staticProperties
+            val staticFunctions = targetClass.staticFunctions
+            val property = staticProperties.find { it.name == propertyName }?.also { it.isAccessible = true }
+            val getter = staticFunctions.find { it.isGetter(propertyName) }?.also { it.isAccessible = true }
+            val setter = staticFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true }
             return DelegateProperty({
                 when {
                     property != null -> property.get() as V
@@ -109,7 +113,7 @@ class SmartFunction<T : Any>(
     val target: T,
     val function: SmartMemberFunction<T>
 ) {
-    operator fun invoke(vararg args: Any?): Any? = function.invoke(target, args)
+    operator fun invoke(vararg args: Any?): Any? = function.invoke(target, *args)
 }
 
 class SmartMemberFunction<T : Any>(
@@ -121,7 +125,8 @@ class SmartMemberFunction<T : Any>(
         val expectedArgsSize = args.size + 1
         
         try {
-            for(function in targetClass.declaredFunctions) {
+            val declaredFunctions = buildSet { addAll(targetClass.declaredFunctions); addAll(targetClass.functions) }
+            for(function in declaredFunctions) {
                 if(function.name != functionName) continue
                 if(function.parameters.size != expectedArgsSize) continue
                 try {
@@ -135,7 +140,9 @@ class SmartMemberFunction<T : Any>(
         } catch(e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
             
-            for(method in targetClass.java.declaredMethods) {
+            val targetJavaClass = targetClass.java
+            val declaredMethods = buildSet { addAll(targetJavaClass.declaredMethods); addAll(targetJavaClass.methods) }
+            for(method in declaredMethods) {
                 if(Modifier.isStatic(method.modifiers)) continue
                 if(method.name != functionName) continue
                 if(method.parameters.size != expectedArgsSize) continue
@@ -161,7 +168,8 @@ class SmartStaticFunction<T : Any>(
         val expectedArgsSize = args.size
         
         try {
-            for(function in targetClass.staticFunctions) {
+            val staticFunctions = targetClass.staticFunctions
+            for(function in staticFunctions) {
                 if(function.name != functionName) continue
                 if(function.parameters.size != expectedArgsSize) continue
                 try {
@@ -175,8 +183,9 @@ class SmartStaticFunction<T : Any>(
         } catch(e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
             
-            for(method in targetClass.java.declaredMethods) {
-                if(!Modifier.isStatic(method.modifiers)) continue
+            val targetJavaClass = targetClass.java
+            val staticMethods = targetJavaClass.declaredMethods.filter { Modifier.isStatic(it.modifiers) }
+            for(method in staticMethods) {
                 if(method.name != functionName) continue
                 if(method.parameters.size != expectedArgsSize) continue
                 try {

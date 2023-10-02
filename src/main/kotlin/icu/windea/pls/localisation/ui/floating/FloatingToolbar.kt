@@ -97,7 +97,7 @@ class FloatingToolbar(
                 //NOTE 这是必要的，否则显示悬浮工具栏时，其中的颜色图标不会立即全部显示
                 //@Suppress("UnstableApiUsage")
                 //updateActionsImmediately(true)
-                function("updateActionsImmediately")(true)
+                function<ActionToolbarImpl>("updateActionsImmediately")(true)
             }
         }
         toolbar.targetComponent = targetComponent
