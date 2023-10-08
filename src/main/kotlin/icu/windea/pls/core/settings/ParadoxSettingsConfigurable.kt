@@ -313,6 +313,11 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.others.showEditorContextToolbar"))
                         .bindSelected(settings.others::showEditorContextToolbar)
                 }
+                //showLocalisationFloatingToolbar
+                row {
+                    checkBox(PlsBundle.message("settings.others.showLocalisationFloatingToolbar"))
+                        .bindSelected(settings.others::showLocalisationFloatingToolbar)
+                }
             }
         }
     }

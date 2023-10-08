@@ -142,11 +142,13 @@ class ParadoxSettingsState : BaseState() {
     }
     
     /**
-     * @property showEditorContextToolbar 是否在编辑器右上角显示上下文悬浮工具栏。
+     * @property showEditorContextToolbar 是否在编辑器右上角显示上下文工具栏。
+     * @property showLocalisationFloatingToolbar 是否在选中本地化文本时显示悬浮工具栏。
      */
     @Tag("others")
     class OthersState : BaseState() {
         var showEditorContextToolbar by property(true)
+        var showLocalisationFloatingToolbar by property(true)
     }
     
     val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet(caseInsensitiveStringSet()).orEmpty() }

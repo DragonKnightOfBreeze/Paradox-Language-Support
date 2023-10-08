@@ -6,13 +6,14 @@ import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.fileEditor.impl.text.*
 import com.intellij.openapi.options.advanced.*
 import com.intellij.openapi.util.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.*
 
 //org.intellij.plugins.markdown.ui.floating.AddFloatingToolbarTextEditorCustomizer
 
 class AddFloatingToolbarTextEditorCustomizer: TextEditorCustomizer {
     override fun customize(textEditor: TextEditor) {
-        if (shouldAcceptEditor(textEditor) && !AdvancedSettings.getBoolean("paradoxLocalisation.hide.floating.toolbar")) {
+        if (shouldAcceptEditor(textEditor) && shouldShowFloatingToolbar()) {
             val toolbar = FloatingToolbar(textEditor, "Pls.ParadoxLocalisation.Toolbar.Floating")
             Disposer.register(textEditor, toolbar)
         }
@@ -27,5 +28,9 @@ class AddFloatingToolbarTextEditorCustomizer: TextEditorCustomizer {
         val file = editor.file
         val project = editor.editor.project ?: return false
         return ScratchUtil.isScratch(file) && LanguageUtil.getLanguageForPsi(project, file, file.fileType) == ParadoxLocalisationLanguage
+    }
+    
+    private fun shouldShowFloatingToolbar(): Boolean {
+        return getSettings().others.showLocalisationFloatingToolbar
     }
 }

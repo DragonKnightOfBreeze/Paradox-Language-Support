@@ -38,7 +38,6 @@
     <lang.unwrapDescriptor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.unwrap.ParadoxLocalisationUnwrapDescriptor"/>
 
     <!--floating toolbar-->
-    <advancedSetting id="paradoxLocalisation.hide.floating.toolbar" default="false" groupKey="settings"/>
     <customizableActionGroupProvider
         implementation="icu.windea.pls.localisation.ui.floating.FloatingToolbarCustomizableGroupProvider"/>
     <textEditorCustomizer

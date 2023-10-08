@@ -8,6 +8,10 @@
 * [ ] #46 优化：尝试基于使用推断特定类型的`valueSetValue`对应的作用域上下文（如`event_target`和`global_event_target`）
 * [ ] 尝试优化插件性能
 
+## 1.1.14
+
+
+
 ## 1.1.13
 
 * [X] BUG修复
