@@ -34,19 +34,18 @@ class ParadoxDefinitionInfo(
     
     val name: String by lazy {
         //NOTE 这里不处理需要内联的情况
-        if(name0 != null) return@lazy name0
         
         //name_from_file = yes -> 返回不包含扩展名的文件名，即rootKey
-        val nameFromFileConfig = typeConfig0.nameFromFile
-        if(nameFromFileConfig) return@lazy rootKey
         //name_field = xxx -> 返回对应名字（xxx）的property的stringValue，如果不存在则为匿名
-        val nameField = typeConfig0.nameField
-        if(nameField != null) {
-            val nameProperty = element.findProperty(nameField)
-            return@lazy nameProperty?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
+        
+        when {
+            name0 != null -> name0
+            typeConfig0.nameFromFile -> rootKey
+            typeConfig0.nameField == null -> rootKey
+            typeConfig0.nameField.isEmpty() -> ""
+            typeConfig0.nameField == "-" -> element.castOrNull<ParadoxScriptProperty>()?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
+            else -> element.findProperty(typeConfig0.nameField)?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
         }
-        //直接返回rootKey
-        rootKey
     }
     
     val type: String = typeConfig0.name

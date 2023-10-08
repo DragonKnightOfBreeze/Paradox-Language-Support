@@ -627,16 +627,13 @@ object ParadoxDefinitionHandler {
     private fun getNameWhenCreateDefinitionStub(typeConfig: CwtTypeConfig, rootKey: String, node: LighterASTNode, tree: LighterAST): String {
         return when {
             typeConfig.nameFromFile -> rootKey
-            typeConfig.nameField == "" -> {
-                getValueFromNode(node, tree).orEmpty()
-            }
-            typeConfig.nameField != null -> {
-                node.firstChild(tree, ParadoxScriptTokenSets.BLOCK_OR_ROOT_BLOCK)
-                    ?.firstChild(tree) { it.tokenType == PROPERTY && getNameFromNode(it, tree)?.equals(typeConfig.nameField, true) == true }
-                    ?.let { getValueFromNode(it, tree) }
-                    .orEmpty()
-            }
-            else -> rootKey
+            typeConfig.nameField == null -> rootKey
+            typeConfig.nameField.isEmpty() -> ""
+            typeConfig.nameField == "-" -> getValueFromNode(node, tree).orEmpty()
+            else -> node.firstChild(tree, ParadoxScriptTokenSets.BLOCK_OR_ROOT_BLOCK)
+                ?.firstChild(tree) { it.tokenType == PROPERTY && getNameFromNode(it, tree)?.equals(typeConfig.nameField, true) == true }
+                ?.let { getValueFromNode(it, tree) }
+                .orEmpty()
         }
     }
     

@@ -153,7 +153,7 @@ private fun ParadoxScriptProperty.doProcessPropertyChild(conditional: Boolean, i
 
 /**
  * 得到指定名字的属性。
- * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果为空字符串且自身是脚本属性，则返回自身
+ * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果为空字符串且自身是脚本属性，则返回自身。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
