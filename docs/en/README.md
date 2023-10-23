@@ -63,6 +63,11 @@ Tips:
   * Click `File -> Invalidate Caches... -> Invalidate and Restart` to rebuild the index and restart the IDE.
   * Provide feedback via GitHub.
 
+Known issues:
+
+* Importing local rule files is not yet supported.
+* Support for games exclude Stellaris is not yet perfect.
+
 ## FAQ
 
 **Why it is suggested to use Intellij IDEA + this plugin, instead of VSCode + CWTools?**

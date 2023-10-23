@@ -67,6 +67,11 @@ IDEA插件：Paradox语言支持。
   * 点击`File -> Invalidate Caches... -> Invalidate and Restart`，重建索引并重启IDE。
   * 通过GitHub或者QQ群进行反馈。
 
+已知问题：
+
+* 暂不支持导入本地的规则文件。
+* 对于Stellaris以外的游戏的支持尚不完善。
+
 ## FAQ
 
 **为什么推荐使用Intellij IDEA + 此插件，而不是传统的VSCode + CWTools？**
