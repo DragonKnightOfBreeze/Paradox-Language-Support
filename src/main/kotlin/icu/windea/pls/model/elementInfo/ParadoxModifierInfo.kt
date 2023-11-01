@@ -1,4 +1,4 @@
-package icu.windea.pls.model.stubs
+package icu.windea.pls.model.elementInfo
 
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -8,23 +8,22 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.model.*
 
-data class ParadoxModifierStub(
+data class ParadoxModifierInfo(
     override val name: String,
     override val gameType: ParadoxGameType,
     override val project: Project,
-) : UserDataHolderBase(), ParadoxStub {
+) : UserDataHolderBase(), ParadoxElementInfo {
     val modificationTracker by lazy { support?.getModificationTracker(this) }
     
     companion object {
-        val EMPTY = ParadoxModifierStub("", ParadoxGameType.placeholder(), getDefaultProject())
+        val EMPTY = ParadoxModifierInfo("", ParadoxGameType.placeholder(), getDefaultProject())
     }
 }
 
-fun ParadoxModifierStub.toPsiElement(parent: PsiElement): ParadoxModifierElement {
+fun ParadoxModifierInfo.toPsiElement(parent: PsiElement): ParadoxModifierElement {
     return ParadoxModifierElement(parent, name, gameType, project).also { copyUserDataTo(it) }
 }
 
-fun ParadoxModifierElement.toStub(): ParadoxModifierStub {
-    return ParadoxModifierStub(name, gameType, project).also { copyUserDataTo(it) }
+fun ParadoxModifierElement.toInfo(): ParadoxModifierInfo {
+    return ParadoxModifierInfo(name, gameType, project).also { copyUserDataTo(it) }
 }
-

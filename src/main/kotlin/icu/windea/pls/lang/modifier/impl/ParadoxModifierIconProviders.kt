@@ -10,13 +10,13 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.stubs.*
+import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {
-    override fun addModifierIconPath(modifierData: ParadoxModifierStub, element: PsiElement, registry: MutableSet<String>) {
+    override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         //gfx/interface/icons/modifiers/mod_$
-        registry += "gfx/interface/icons/modifiers/mod_${modifierData.name}"
+        registry += "gfx/interface/icons/modifiers/mod_${modifierInfo.name}"
     }
 }
 
@@ -24,9 +24,9 @@ class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {
 class StellarisJobBasedModifierIconProvider: ParadoxModifierIconProvider {
     //对于由job生成的那些修正，需要应用特殊的图标继承逻辑
     
-    override fun addModifierIconPath(modifierData: ParadoxModifierStub, element: PsiElement, registry: MutableSet<String>) {
-        val modifierConfig = modifierData.modifierConfig ?: return
-        val templateReferences = modifierData.templateReferences ?: return
+    override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
+        val modifierConfig = modifierInfo.modifierConfig ?: return
+        val templateReferences = modifierInfo.templateReferences ?: return
         val templateReference = templateReferences.singleOrNull()?.takeIf { it.configExpression.type == CwtDataType.Definition } ?: return
         val definitionName = templateReference.name
         val definitionType = templateReference.configExpression.value ?: return
@@ -49,9 +49,9 @@ class StellarisJobBasedModifierIconProvider: ParadoxModifierIconProvider {
 class StellarisEconomicCategoryBasedModifierIconProvider: ParadoxModifierIconProvider {
     //对于由economic_category生成的那些修正，需要应用特殊的图标继承逻辑
     
-    override fun addModifierIconPath(modifierData: ParadoxModifierStub, element: PsiElement, registry: MutableSet<String>) {
-        val economicCategoryInfo = modifierData.economicCategoryInfo ?: return
-        val economicCategoryModifierInfo = modifierData.economicCategoryModifierInfo ?: return
+    override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
+        val economicCategoryInfo = modifierInfo.economicCategoryInfo ?: return
+        val economicCategoryModifierInfo = modifierInfo.economicCategoryModifierInfo ?: return
         if(economicCategoryModifierInfo.useParentIcon) {
             //去除默认的对应图标
             val economicCategoryName = economicCategoryModifierInfo.name

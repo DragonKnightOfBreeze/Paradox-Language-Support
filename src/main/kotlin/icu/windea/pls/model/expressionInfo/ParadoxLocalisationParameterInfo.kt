@@ -1,4 +1,4 @@
-package icu.windea.pls.model.expression
+package icu.windea.pls.model.expressionInfo
 
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.model.*

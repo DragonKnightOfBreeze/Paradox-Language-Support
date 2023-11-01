@@ -22,7 +22,8 @@ import icu.windea.pls.lang.documentation.impl.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expression.*
+import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.info.expression.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.lang.Integer.*

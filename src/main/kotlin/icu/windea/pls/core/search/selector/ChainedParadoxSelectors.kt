@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.constraints.*
-import icu.windea.pls.model.expression.*
+import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.psi.*
 
 //region nopSelector

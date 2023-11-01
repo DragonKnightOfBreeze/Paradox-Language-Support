@@ -13,7 +13,7 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.stubs.*
+import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -28,11 +28,11 @@ interface ParadoxModifierSupport {
      */
     fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean
     
-    fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierStub?
+    fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo?
     
     fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>)
     
-    fun getModificationTracker(modifierData: ParadoxModifierStub): ModificationTracker? = null
+    fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker? = null
     
     fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>?
     
@@ -59,7 +59,7 @@ interface ParadoxModifierSupport {
             }
         }
         
-        fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierStub? {
+        fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
             val gameType = configGroup.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
@@ -106,8 +106,8 @@ interface ParadoxModifierSupport {
 val ParadoxModifierSupport.Keys.support by createKey<ParadoxModifierSupport>("paradox.modifier.support.support")
 val ParadoxModifierSupport.Keys.modifierConfig by createKey<CwtModifierConfig>("paradox.modifier.support.modifierConfig")
 
-var ParadoxModifierStub.support by ParadoxModifierSupport.Keys.support
-var ParadoxModifierStub.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig
+var ParadoxModifierInfo.support by ParadoxModifierSupport.Keys.support
+var ParadoxModifierInfo.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig
 
 var ParadoxModifierElement.support by ParadoxModifierSupport.Keys.support
 var ParadoxModifierElement.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig

@@ -19,7 +19,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.stubs.*
+import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -33,7 +33,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         }
     }
     
-    override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierStub? {
+    override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
         val modifierName = name
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
@@ -45,11 +45,11 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             resolvedReferences
         }.orEmpty()
         if(modifierConfig == null) return null
-        val modifierData = ParadoxModifierStub(modifierName, gameType, project)
-        modifierData.support = this
-        modifierData.modifierConfig = modifierConfig
-        modifierData.templateReferences = templateReferences
-        return modifierData
+        val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
+        modifierInfo.support = this
+        modifierInfo.modifierConfig = modifierConfig
+        modifierInfo.templateReferences = templateReferences
+        return modifierInfo
     }
     
     override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
@@ -92,9 +92,9 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         }
     }
     
-    override fun getModificationTracker(modifierData: ParadoxModifierStub): ModificationTracker {
+    override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
         //TODO 可以进一步缩小范围
-        return ParadoxPsiModificationTracker.getInstance(modifierData.project).ScriptFileTracker(":txt")
+        return ParadoxPsiModificationTracker.getInstance(modifierInfo.project).ScriptFileTracker(":txt")
     }
     
     override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
@@ -209,6 +209,6 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
 val ParadoxModifierSupport.Keys.templateReferences by createKey<List<ParadoxTemplateSnippetExpressionReference>>("paradox.modifier.support.templateReferences")
 
-var ParadoxModifierStub.templateReferences by ParadoxModifierSupport.Keys.templateReferences
+var ParadoxModifierInfo.templateReferences by ParadoxModifierSupport.Keys.templateReferences
 
 var ParadoxModifierElement.templateReferences by ParadoxModifierSupport.Keys.templateReferences

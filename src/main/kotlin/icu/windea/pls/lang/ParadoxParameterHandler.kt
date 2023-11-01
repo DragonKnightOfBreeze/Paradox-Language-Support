@@ -24,7 +24,9 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.stubs.*
+import icu.windea.pls.model.elementInfo.*
+import icu.windea.pls.model.info.*
+import icu.windea.pls.model.info.element.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import java.util.*
@@ -159,23 +161,23 @@ object ParadoxParameterHandler {
         }
     }
     
-    fun getParameterData(parameterElement: ParadoxParameterElement): ParadoxParameterStub? {
+    fun getParameterInfo(parameterElement: ParadoxParameterElement): ParadoxParameterInfo? {
         val rootFile = selectRootFile(parameterElement) ?: return null
         val project = parameterElement.project
-        val cache = project.parameterDataCache.get(rootFile)
+        val cache = project.parameterInfoCache.get(rootFile)
         val cacheKey = parameterElement.name + "@" + parameterElement.contextKey
-        val parameterData = cache.getOrPut(cacheKey) {
-            parameterElement.toStub()
+        val parameterInfo = cache.getOrPut(cacheKey) {
+            parameterElement.toInfo()
         }
-        return parameterData
+        return parameterInfo
     }
     
     /**
      * 尝试推断得到参数对应的CWT规则。
      */
     fun getInferredConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
-        val parameterData = getParameterData(parameterElement) ?: return null
-        return parameterData.getOrPutUserData(PlsKeys.parameterInferredConfig, CwtValueConfig.EmptyConfig) {
+        val parameterInfo = getParameterInfo(parameterElement) ?: return null
+        return parameterInfo.getOrPutUserData(PlsKeys.parameterInferredConfig, CwtValueConfig.EmptyConfig) {
             val result = Ref.create<CwtValueConfig>()
             ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
                 ProgressManager.checkCanceled()
@@ -204,8 +206,8 @@ object ParadoxParameterHandler {
      * 尝试推断得到参数对应的上下文CWT规则。
      */
     fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        val parameterData = getParameterData(parameterElement) ?: return emptyList()
-        return parameterData.getOrPutUserData(PlsKeys.parameterInferredContextConfigs) {
+        val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
+        return parameterInfo.getOrPutUserData(PlsKeys.parameterInferredContextConfigs) {
             val result = Ref.create<List<CwtMemberConfig<*>>>()
             ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
                 ProgressManager.checkCanceled()
@@ -237,10 +239,10 @@ object ParadoxParameterHandler {
     }
 }
 
-private val PlsKeys.parameterDataCache by createKey("paradox.parameterDataCache") {
-    NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, ParadoxParameterStub>().trackedBy { it.modificationTracker } }
+private val PlsKeys.parameterInfoCache by createKey("paradox.parameterInfoCache") {
+    NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, ParadoxParameterInfo>().trackedBy { it.modificationTracker } }
 }
-private val Project.parameterDataCache by PlsKeys.parameterDataCache
+private val Project.parameterInfoCache by PlsKeys.parameterInfoCache
 
 private val PlsKeys.parameterInferredConfig by createKey<CwtValueConfig>("paradox.parameterInferredConfig")
 private val PlsKeys.parameterInferredContextConfigs by createKey<List<CwtMemberConfig<*>>>("paradox.parameterInferredContextConfigs")

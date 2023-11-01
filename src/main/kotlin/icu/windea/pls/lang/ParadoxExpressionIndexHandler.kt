@@ -10,7 +10,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expression.*
+import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.*
 
 object ParadoxExpressionIndexHandler {

@@ -7,7 +7,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.stubs.*
+import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -50,7 +50,7 @@ interface ParadoxParameterSupport {
      */
     fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
     
-    fun getModificationTracker(parameterData: ParadoxParameterStub): ModificationTracker? = null
+    fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker? = null
     
     /**
      * 构建参数的快速文档中的定义部分。
@@ -128,12 +128,12 @@ val ParadoxParameterSupport.Keys.definitionName by createKey<String>("paradox.pa
 val ParadoxParameterSupport.Keys.definitionTypes by createKey<List<String>>("paradox.parameter.support.definitionTypes")
 val ParadoxParameterSupport.Keys.inlineScriptExpression by createKey<String>("paradox.parameter.support.inlineScriptExpression")
 
-var ParadoxParameterStub.support by ParadoxParameterSupport.Keys.support
-var ParadoxParameterStub.containingContext by ParadoxParameterSupport.Keys.containingContext
-var ParadoxParameterStub.containingContextReference by ParadoxParameterSupport.Keys.containingContextReference
-var ParadoxParameterStub.definitionName by ParadoxParameterSupport.Keys.definitionName
-var ParadoxParameterStub.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
-var ParadoxParameterStub.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression
+var ParadoxParameterInfo.support by ParadoxParameterSupport.Keys.support
+var ParadoxParameterInfo.containingContext by ParadoxParameterSupport.Keys.containingContext
+var ParadoxParameterInfo.containingContextReference by ParadoxParameterSupport.Keys.containingContextReference
+var ParadoxParameterInfo.definitionName by ParadoxParameterSupport.Keys.definitionName
+var ParadoxParameterInfo.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
+var ParadoxParameterInfo.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression
 
 var ParadoxParameterElement.support by ParadoxParameterSupport.Keys.support
 var ParadoxParameterElement.containingContext by ParadoxParameterSupport.Keys.containingContext

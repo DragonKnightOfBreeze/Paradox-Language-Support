@@ -1,13 +1,13 @@
-package icu.windea.pls.model.expression
+package icu.windea.pls.model.expressionInfo
 
-import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.model.*
 
-data class ParadoxParameterInfo(
-    val name: String,
-    val contextKey: String,
-    val readWriteAccess: ReadWriteAccessDetector.Access,
+data class ParadoxOnActionInEventInfo(
+    val onActionName: String,
+    val containingEventName: String,
+    val containingEventScope: String?,
+    val scopesElementOffset: Int,
     override val elementOffset: Int,
     override val gameType: ParadoxGameType
 ) : ParadoxExpressionInfo {

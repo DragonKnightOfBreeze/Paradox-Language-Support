@@ -1,4 +1,4 @@
-package icu.windea.pls.config
+package icu.windea.pls.model
 
 enum class CwtSeparatorType(
     val id: Byte,

@@ -14,7 +14,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.stubs.*
+import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
 
 open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
@@ -167,8 +167,8 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return true
     }
     
-    override fun getModificationTracker(parameterData: ParadoxParameterStub): ModificationTracker {
-        return ParadoxPsiModificationTracker.getInstance(parameterData.project).InlineScriptsTracker
+    override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker {
+        return ParadoxPsiModificationTracker.getInstance(parameterInfo.project).InlineScriptsTracker
     }
     
     override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {

@@ -15,7 +15,7 @@ import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expression.*
+import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxInlineScriptHandler {

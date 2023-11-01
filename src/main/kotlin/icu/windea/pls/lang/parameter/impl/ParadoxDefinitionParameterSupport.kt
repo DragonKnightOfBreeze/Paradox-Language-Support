@@ -16,7 +16,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.stubs.*
+import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
 
 open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
@@ -180,9 +180,9 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return true
     }
     
-    override fun getModificationTracker(parameterData: ParadoxParameterStub): ModificationTracker? {
-        val project = parameterData.project
-        val configGroup = getConfigGroups(project).get(parameterData.gameType)
+    override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker? {
+        val project = parameterInfo.project
+        val configGroup = getConfigGroups(project).get(parameterInfo.gameType)
         return configGroup.getOrPutUserData(CwtConfigGroup.Keys.parameterModificationTracker) {
             val definitionTypes = configGroup.definitionTypesSupportParameters
             val builder = StringBuilder()

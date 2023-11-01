@@ -10,7 +10,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expressionIndex.*
-import icu.windea.pls.model.expression.*
+import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.*
 
 /**

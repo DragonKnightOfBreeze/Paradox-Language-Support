@@ -9,7 +9,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expression.*
+import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.tool.*
 import java.awt.*
 

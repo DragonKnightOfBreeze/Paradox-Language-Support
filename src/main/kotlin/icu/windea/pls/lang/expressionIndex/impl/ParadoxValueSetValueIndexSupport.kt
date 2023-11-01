@@ -9,7 +9,7 @@ import icu.windea.pls.lang.expressionIndex.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
-import icu.windea.pls.model.expression.*
+import icu.windea.pls.model.expressionInfo.*
 import java.io.*
 
 private val compressComparator = compareBy<ParadoxValueSetValueInfo>({ it.valueSetName }, { it.name })

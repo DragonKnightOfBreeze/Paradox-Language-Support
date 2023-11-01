@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.expressionIndex
 
-import icu.windea.pls.model.expression.*
+import icu.windea.pls.model.expressionInfo.*
 
 sealed class ParadoxExpressionIndexId<T: ParadoxExpressionInfo>(val id: Byte) {
     object ComplexEnumValue: ParadoxExpressionIndexId<ParadoxComplexEnumValueInfo>(1)

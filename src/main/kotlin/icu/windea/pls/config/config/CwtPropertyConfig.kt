@@ -2,11 +2,11 @@ package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.model.*
 
 interface CwtPropertyConfig : CwtMemberConfig<CwtProperty>, CwtKeyAware {
     val keyExpression: CwtKeyExpression

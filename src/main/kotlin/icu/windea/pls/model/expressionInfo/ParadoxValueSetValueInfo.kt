@@ -1,4 +1,4 @@
-package icu.windea.pls.model.expression
+package icu.windea.pls.model.expressionInfo
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.project.*

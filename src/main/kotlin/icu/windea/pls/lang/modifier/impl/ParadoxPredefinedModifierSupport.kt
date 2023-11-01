@@ -12,7 +12,7 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.modifier.*
-import icu.windea.pls.model.stubs.*
+import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -24,15 +24,15 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
         return configGroup.predefinedModifiers[modifierName] != null
     }
     
-    override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierStub? {
+    override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
         val modifierName = name
         val modifierConfig = configGroup.predefinedModifiers[modifierName] ?: return null
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
-        val modifierData = ParadoxModifierStub(modifierName, gameType, project)
-        modifierData.support = this
-        modifierData.modifierConfig = modifierConfig
-        return modifierData
+        val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
+        modifierInfo.support = this
+        modifierInfo.modifierConfig = modifierConfig
+        return modifierInfo
     }
     
     override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
@@ -72,7 +72,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
         }
     }
     
-    override fun getModificationTracker(modifierData: ParadoxModifierStub): ModificationTracker {
+    override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
         return ModificationTracker.NEVER_CHANGED
     }
     

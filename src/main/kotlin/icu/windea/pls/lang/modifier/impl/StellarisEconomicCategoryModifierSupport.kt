@@ -19,7 +19,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.stubs.*
+import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -46,7 +46,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         return r
     }
     
-    override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierStub? {
+    override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
         val modifierName = name
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
@@ -66,11 +66,11 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
             true
         }
         if(economicCategoryInfo == null || economicCategoryModifierInfo == null) return null
-        val modifierData = ParadoxModifierStub(modifierName, gameType, project)
-        modifierData.support = this
-        modifierData.economicCategoryInfo = economicCategoryInfo
-        modifierData.economicCategoryModifierInfo = economicCategoryModifierInfo
-        return modifierData
+        val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
+        modifierInfo.support = this
+        modifierInfo.economicCategoryInfo = economicCategoryInfo
+        modifierInfo.economicCategoryModifierInfo = economicCategoryModifierInfo
+        return modifierInfo
     }
     
     override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
@@ -115,8 +115,8 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         }
     }
     
-    override fun getModificationTracker(modifierData: ParadoxModifierStub): ModificationTracker {
-        return ParadoxPsiModificationTracker.getInstance(modifierData.project).ScriptFileTracker("common/economic_categories:txt")
+    override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
+        return ParadoxPsiModificationTracker.getInstance(modifierInfo.project).ScriptFileTracker("common/economic_categories:txt")
     }
     
     override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
@@ -186,8 +186,8 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
 val ParadoxModifierSupport.Keys.economicCategoryInfo by createKey<StellarisEconomicCategoryInfo>("paradox.modifier.support.economicCategoryInfo")
 val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by createKey<StellarisEconomicCategoryModifierInfo>("paradox.modifier.support.economicCategoryModifierInfo")
 
-var ParadoxModifierStub.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
-var ParadoxModifierStub.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
+var ParadoxModifierInfo.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
+var ParadoxModifierInfo.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
 
 var ParadoxModifierElement.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
 var ParadoxModifierElement.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
