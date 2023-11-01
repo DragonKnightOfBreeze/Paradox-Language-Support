@@ -14,7 +14,6 @@ import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
 import icu.windea.pls.extension.diagram.settings.impl.*
 import icu.windea.pls.lang.data.*
-import icu.windea.pls.lang.data.impl.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.awt.*

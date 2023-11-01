@@ -35,7 +35,6 @@ import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.CwtConfigMatcher.ResultValue
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.data.*
-import icu.windea.pls.lang.data.impl.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.overridden.*
 import icu.windea.pls.model.*

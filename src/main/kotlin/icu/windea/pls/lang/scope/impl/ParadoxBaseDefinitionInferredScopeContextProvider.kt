@@ -12,7 +12,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expressionIndex.*
+import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.scope.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*

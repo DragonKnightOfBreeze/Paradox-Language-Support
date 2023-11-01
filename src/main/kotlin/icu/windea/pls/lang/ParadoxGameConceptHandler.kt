@@ -7,7 +7,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.data.*
-import icu.windea.pls.lang.data.impl.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 

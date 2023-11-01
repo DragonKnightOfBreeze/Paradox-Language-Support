@@ -13,7 +13,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.data.*
-import icu.windea.pls.lang.data.impl.StellarisEconomicCategoryDataProvider.*
+import icu.windea.pls.lang.data.StellarisEconomicCategoryDataProvider.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.lang.invoke.*

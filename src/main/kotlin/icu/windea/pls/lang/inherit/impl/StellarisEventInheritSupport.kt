@@ -6,7 +6,6 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
-import icu.windea.pls.lang.data.impl.*
 import icu.windea.pls.lang.inherit.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*

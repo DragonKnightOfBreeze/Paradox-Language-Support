@@ -8,7 +8,7 @@ import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expressionIndex.*
+import icu.windea.pls.lang.index.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
