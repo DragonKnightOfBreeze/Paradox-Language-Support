@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.parameter.impl
+package icu.windea.pls.lang.parameter
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.util.*
@@ -9,7 +9,6 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 

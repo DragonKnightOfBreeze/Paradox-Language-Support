@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.presentation.impl
+package icu.windea.pls.lang.presentation
 
 import com.intellij.ui.*
 import icu.windea.pls.core.*
@@ -8,7 +8,6 @@ import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.data.StellarisTechnologyDataProvider.*
-import icu.windea.pls.lang.presentation.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*

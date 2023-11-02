@@ -118,7 +118,7 @@ interface ParadoxParameterSupport {
         }
     }
     
-    object Keys : KeysAware
+    object Keys : KeyHolder
 }
 
 val ParadoxParameterSupport.Keys.support by createKey<ParadoxParameterSupport>("paradox.parameter.support.support")

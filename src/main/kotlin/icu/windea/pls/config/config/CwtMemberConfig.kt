@@ -24,7 +24,7 @@ sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig
     
     override fun toString(): String
     
-    object Keys : KeysAware
+    object Keys : KeyHolder
 }
 
 fun CwtMemberConfig<*>.delegated(

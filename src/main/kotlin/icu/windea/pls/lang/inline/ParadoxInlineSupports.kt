@@ -1,8 +1,7 @@
-package icu.windea.pls.lang.inline.impl
+package icu.windea.pls.lang.inline
 
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.inline.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxInlineScriptInlineSupport : ParadoxInlineSupport {
@@ -12,7 +11,7 @@ class ParadoxInlineScriptInlineSupport : ParadoxInlineSupport {
         if(element !is ParadoxScriptProperty) return null
         val info = ParadoxInlineScriptHandler.getUsageInfo(element) ?: return null
         val expression = info.expression
-        return withRecursionGuard("icu.windea.pls.lang.inline.impl.ParadoxInlineScriptInlineSupport.inlineElement") a1@{
+        return withRecursionGuard("icu.windea.pls.lang.inline.ParadoxInlineScriptInlineSupport.inlineElement") a1@{
             withCheckRecursion(expression) a2@{
                 val configContext = CwtConfigHandler.getConfigContext(element) ?: return@a2 null
                 val project = configContext.configGroup.project

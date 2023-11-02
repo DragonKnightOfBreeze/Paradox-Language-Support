@@ -1,7 +1,6 @@
-package icu.windea.pls.lang.modifier.impl
+package icu.windea.pls.lang.modifier
 
 import com.intellij.psi.*
-import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.model.elementInfo.*
 
 class ParadoxBaseModifierNameDescProvider : ParadoxModifierNameDescProvider {

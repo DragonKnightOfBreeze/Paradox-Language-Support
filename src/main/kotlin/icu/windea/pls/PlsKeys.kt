@@ -13,7 +13,7 @@ import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.tool.*
 import java.awt.*
 
-object PlsKeys : KeysAware
+object PlsKeys : KeyHolder
 
 val PlsKeys.library by createKey<ParadoxLibrary>("paradox.library")
 

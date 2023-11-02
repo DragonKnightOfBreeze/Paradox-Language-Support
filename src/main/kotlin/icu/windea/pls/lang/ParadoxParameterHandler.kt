@@ -25,8 +25,6 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
-import icu.windea.pls.model.info.*
-import icu.windea.pls.model.info.element.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import java.util.*

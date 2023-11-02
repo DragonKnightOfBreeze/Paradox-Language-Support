@@ -153,7 +153,7 @@ class ParadoxScopeContext private constructor(
         }
     }
     
-    object Keys: KeysAware
+    object Keys: KeyHolder
 }
 
 val ParadoxScopeContext.Keys.overriddenProvider by createKey<ParadoxOverriddenScopeContextProvider>("paradox.scopeContext.overriddenProvider")

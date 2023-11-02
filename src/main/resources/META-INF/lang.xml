@@ -13,20 +13,20 @@
     <extensionPoint qualifiedName="icu.windea.pls.expressionIndexSupport" interface="icu.windea.pls.lang.index.ParadoxExpressionIndexSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionInheritSupport" interface="icu.windea.pls.lang.inherit.ParadoxDefinitionInheritSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inlineSupport" interface="icu.windea.pls.lang.inline.ParadoxInlineSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.parameterSupport" interface="icu.windea.pls.lang.parameter.ParadoxParameterSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.parameterInferredConfigProvider" interface="icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.localisationParameterSupport" interface="icu.windea.pls.lang.parameter.ParadoxLocalisationParameterSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modifierSupport" interface="icu.windea.pls.lang.modifier.ParadoxModifierSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modifierNameDescProvider" interface="icu.windea.pls.lang.modifier.ParadoxModifierNameDescProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modifierIconProvider" interface="icu.windea.pls.lang.modifier.ParadoxModifierIconProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionModifierProvider" interface="icu.windea.pls.lang.modifier.ParadoxDefinitionModifierProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.overriddenConfigProvider" interface="icu.windea.pls.lang.overridden.ParadoxOverriddenConfigProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.overriddenScopeContextProvider" interface="icu.windea.pls.lang.overridden.ParadoxOverriddenScopeContextProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.definitionScopeContextProvider" interface="icu.windea.pls.lang.scope.ParadoxDefinitionScopeContextProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.parameterSupport" interface="icu.windea.pls.lang.parameter.ParadoxParameterSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.parameterInferredConfigProvider" interface="icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.localisationParameterSupport" interface="icu.windea.pls.lang.parameter.ParadoxLocalisationParameterSupport" dynamic="true"/>
+   <extensionPoint qualifiedName="icu.windea.pls.definitionScopeContextProvider" interface="icu.windea.pls.lang.scope.ParadoxDefinitionScopeContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionInferredScopeContextProvider" interface="icu.windea.pls.lang.scope.ParadoxDefinitionInferredScopeContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionSupportedScopesProvider" interface="icu.windea.pls.lang.scope.ParadoxDefinitionSupportedScopesProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.definitionPresentationProvider" interface="icu.windea.pls.lang.presentation.ParadoxDefinitionPresentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.valueSetValueInferredScopeContextProvider" interface="icu.windea.pls.lang.scope.ParadoxValueSetValueInferredScopeContextProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.overriddenConfigProvider" interface="icu.windea.pls.lang.overridden.ParadoxOverriddenConfigProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.overriddenScopeContextProvider" interface="icu.windea.pls.lang.overridden.ParadoxOverriddenScopeContextProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.definitionPresentationProvider" interface="icu.windea.pls.lang.presentation.ParadoxDefinitionPresentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.priorityProvider" interface="icu.windea.pls.lang.priority.ParadoxPriorityProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modImporter" interface="icu.windea.pls.core.tool.importer.ParadoxModImporter" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.core.tool.exporter.ParadoxModExporter" dynamic="true"/>
@@ -70,6 +70,7 @@
 
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptBlockExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptBoolExpressionSupport"/>
+    
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptLocalisationExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptSyncedLocalisationExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptInlineLocalisationExpressionSupport"/>
@@ -80,8 +81,10 @@
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptAliasNameExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptConstantExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptTemplateExpressionSupport"/>
+    
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptParameterExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptLocalisationParameterExpressionSupport"/>
+    
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptValueSetExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptScopeFieldExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptValueFieldExpressionSupport"/>
@@ -102,52 +105,54 @@
     <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxEventInEventIndexSupport"/>
     <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxOnActionInEventIndexSupport"/>
     
-    <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.ParadoxSwappedTypeInheritSupport"/>
-    <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.impl.StellarisEventInheritSupport"/>
+    <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.ParadoxSwappedTypeInheritSupport"/>
+    <definitionInheritSupport implementation="icu.windea.pls.lang.inherit.StellarisEventInheritSupport"/>
     
-    <inlineSupport implementation="icu.windea.pls.lang.inline.impl.ParadoxInlineScriptInlineSupport"/>
+    <inlineSupport implementation="icu.windea.pls.lang.inline.ParadoxInlineScriptInlineSupport"/>
     
-    <parameterSupport implementation="icu.windea.pls.lang.parameter.impl.ParadoxDefinitionParameterSupport"/>
-    <parameterSupport implementation="icu.windea.pls.lang.parameter.impl.ParadoxScriptValueInlineParameterSupport"/>
-    <parameterSupport implementation="icu.windea.pls.lang.parameter.impl.ParadoxInlineScriptParameterSupport"/>
+    <modifierSupport implementation="icu.windea.pls.lang.modifier.ParadoxPredefinedModifierSupport"/>
+    <modifierSupport implementation="icu.windea.pls.lang.modifier.ParadoxTemplateModifierSupport"/>
+    <modifierSupport implementation="icu.windea.pls.lang.modifier.StellarisEconomicCategoryModifierSupport"/>
     
-    <parameterInferredConfigProvider implementation="icu.windea.pls.lang.parameter.impl.ParadoxBaseParameterInferredConfigProvider"/>
-    <parameterInferredConfigProvider implementation="icu.windea.pls.lang.parameter.impl.ParadoxComplexExpressionNodeInferredConfigProvider"/>
+    <modifierNameDescProvider implementation="icu.windea.pls.lang.modifier.ParadoxBaseModifierNameDescProvider"/>
     
-    <localisationParameterSupport implementation="icu.windea.pls.lang.parameter.impl.ParadoxBaseLocalisationParameterSupport"/>
+    <modifierIconProvider implementation="icu.windea.pls.lang.modifier.ParadoxBaseModifierIconProvider"/>
+    <modifierIconProvider implementation="icu.windea.pls.lang.modifier.StellarisJobBasedModifierIconProvider"/>
+    <modifierIconProvider implementation="icu.windea.pls.lang.modifier.StellarisEconomicCategoryBasedModifierIconProvider"/>
     
-    <modifierSupport implementation="icu.windea.pls.lang.modifier.impl.ParadoxPredefinedModifierSupport"/>
-    <modifierSupport implementation="icu.windea.pls.lang.modifier.impl.ParadoxTemplateModifierSupport"/>
-    <modifierSupport implementation="icu.windea.pls.lang.modifier.impl.StellarisEconomicCategoryModifierSupport"/>
-    
-    <modifierNameDescProvider implementation="icu.windea.pls.lang.modifier.impl.ParadoxBaseModifierNameDescProvider"/>
-    
-    <modifierIconProvider implementation="icu.windea.pls.lang.modifier.impl.ParadoxBaseModifierIconProvider"/>
-    <modifierIconProvider implementation="icu.windea.pls.lang.modifier.impl.StellarisJobBasedModifierIconProvider"/>
-    <modifierIconProvider implementation="icu.windea.pls.lang.modifier.impl.StellarisEconomicCategoryBasedModifierIconProvider"/>
-    
-    <definitionModifierProvider implementation="icu.windea.pls.lang.modifier.impl.StellarisScriptedModifierDefinitionModifierProvider"/>
-    
-    <overriddenConfigProvider implementation="icu.windea.pls.lang.overridden.impl.ParadoxSwitchOverriddenConfigProvider"/>
-    <overriddenConfigProvider implementation="icu.windea.pls.lang.overridden.impl.ParadoxTriggerWithParametersAwareOverriddenConfigProvider"/>
-    
-    <overriddenScopeContextProvider implementation="icu.windea.pls.lang.overridden.impl.ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider"/>
-    
-    <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxBaseDefinitionScopeContextProvider" order="last"/>
-    <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxGameRuleScopeContextProvider"/>
-    <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxOnActionScopeContextProvider"/>
+    <definitionModifierProvider implementation="icu.windea.pls.lang.modifier.StellarisScriptedModifierDefinitionModifierProvider"/>
 
-    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxBaseDefinitionInferredScopeContextProvider"/>
-    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxEventInOnActionInferredScopeContextProvider"/>
-    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxEventInEventInferredScopeContextProvider"/>
-    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.impl.ParadoxOnActionInEventInferredScopeContextProvider"/>
-    
-    <definitionPresentationProvider implementation="icu.windea.pls.lang.presentation.impl.StellarisTechnologyPresentationProvider"/>
+    <parameterSupport implementation="icu.windea.pls.lang.parameter.ParadoxDefinitionParameterSupport"/>
+    <parameterSupport implementation="icu.windea.pls.lang.parameter.ParadoxScriptValueInlineParameterSupport"/>
+    <parameterSupport implementation="icu.windea.pls.lang.parameter.ParadoxInlineScriptParameterSupport"/>
 
-    <definitionSupportedScopesProvider implementation="icu.windea.pls.lang.scope.impl.StellarisScriptedModifierSupportedScopesProvider"/>
+    <parameterInferredConfigProvider implementation="icu.windea.pls.lang.parameter.ParadoxBaseParameterInferredConfigProvider"/>
+    <parameterInferredConfigProvider implementation="icu.windea.pls.lang.parameter.ParadoxComplexExpressionNodeInferredConfigProvider"/>
     
-    <priorityProvider implementation="icu.windea.pls.lang.priority.impl.ParadoxBasePriorityProvider" order="last"/>
-    <priorityProvider implementation="icu.windea.pls.lang.priority.impl.StellarisPriorityProvider"/>
+    <localisationParameterSupport implementation="icu.windea.pls.lang.parameter.ParadoxBaseLocalisationParameterSupport"/>
+    
+    <overriddenConfigProvider implementation="icu.windea.pls.lang.overridden.ParadoxSwitchOverriddenConfigProvider"/>
+    <overriddenConfigProvider implementation="icu.windea.pls.lang.overridden.ParadoxTriggerWithParametersAwareOverriddenConfigProvider"/>
+    
+    <overriddenScopeContextProvider implementation="icu.windea.pls.lang.overridden.ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider"/>
+    
+    <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxBaseDefinitionScopeContextProvider" order="last"/>
+    <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxGameRuleScopeContextProvider"/>
+    <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxOnActionScopeContextProvider"/>
+
+    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxBaseDefinitionInferredScopeContextProvider"/>
+    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxEventInOnActionInferredScopeContextProvider"/>
+    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxEventInEventInferredScopeContextProvider"/>
+    <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxOnActionInEventInferredScopeContextProvider"/>
+    
+    <definitionSupportedScopesProvider implementation="icu.windea.pls.lang.scope.StellarisScriptedModifierSupportedScopesProvider"/>
+
+    <valueSetValueInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxBaseValueSetValueInferredScopeContextProvider"/>
+    
+    <definitionPresentationProvider implementation="icu.windea.pls.lang.presentation.StellarisTechnologyPresentationProvider"/>
+
+    <priorityProvider implementation="icu.windea.pls.lang.priority.ParadoxBasePriorityProvider" order="last"/>
+    <priorityProvider implementation="icu.windea.pls.lang.priority.StellarisPriorityProvider"/>
     
     <modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromGameImporter"/>
     <!--<modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherImporter"/>-->

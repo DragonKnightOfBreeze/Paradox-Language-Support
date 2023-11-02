@@ -65,7 +65,7 @@ class CwtConfigContext(
         return provider!!.skipTooManyExpressionCheck(this)
     }
     
-    object Keys : KeysAware
+    object Keys : KeyHolder
 }
 
 //project -> rootFile -> cacheKey -> configs

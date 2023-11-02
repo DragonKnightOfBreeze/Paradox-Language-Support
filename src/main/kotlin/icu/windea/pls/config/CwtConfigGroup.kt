@@ -95,5 +95,5 @@ interface CwtConfigGroup: UserDataHolder {
 	//支持参数的定义类型
 	val definitionTypesSupportParameters: Set<String>
 	
-	object Keys: KeysAware
+	object Keys: KeyHolder
 }

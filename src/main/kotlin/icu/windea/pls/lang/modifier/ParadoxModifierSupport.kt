@@ -100,7 +100,7 @@ interface ParadoxModifierSupport {
         }
     }
     
-    object Keys: KeysAware
+    object Keys: KeyHolder
 }
 
 val ParadoxModifierSupport.Keys.support by createKey<ParadoxModifierSupport>("paradox.modifier.support.support")

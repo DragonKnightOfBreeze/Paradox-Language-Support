@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.modifier.impl
+package icu.windea.pls.lang.modifier
 
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
@@ -8,7 +8,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
-import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*

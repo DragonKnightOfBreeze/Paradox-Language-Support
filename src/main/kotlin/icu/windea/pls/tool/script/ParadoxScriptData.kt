@@ -18,5 +18,5 @@ interface ParadoxScriptData : UserDataHolder {
     
     fun getAllData(path: String): List<ParadoxScriptData> = emptyList()
     
-    object Keys: KeysAware
+    object Keys: KeyHolder
 }
