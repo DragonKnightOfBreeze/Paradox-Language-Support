@@ -6,7 +6,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
-import icu.windea.pls.lang.config.impl.*
 
 /**
  * 检查内联脚本的使用位置是否存在递归。

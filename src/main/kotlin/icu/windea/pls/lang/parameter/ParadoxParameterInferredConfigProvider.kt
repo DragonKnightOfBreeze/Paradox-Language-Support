@@ -13,7 +13,7 @@ import icu.windea.pls.model.*
  * 
  * 基于语言注入功能为参数值对应的脚本片段提供高级语言功能。
  *
- * @see icu.windea.pls.lang.config.impl.CwtParameterValueConfigContextProvider
+ * @see icu.windea.pls.lang.config.CwtParameterValueConfigContextProvider
  */
 @WithGameTypeEP
 interface ParadoxParameterInferredConfigProvider {

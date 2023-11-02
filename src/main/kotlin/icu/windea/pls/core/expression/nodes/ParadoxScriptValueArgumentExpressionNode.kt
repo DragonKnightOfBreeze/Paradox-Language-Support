@@ -36,7 +36,7 @@ class ParadoxScriptValueArgumentExpressionNode(
     }
     
     /**
-     * @see icu.windea.pls.lang.parameter.impl.ParadoxScriptValueInlineParameterSupport
+     * @see icu.windea.pls.lang.parameter.ParadoxScriptValueInlineParameterSupport
      */
     class Reference(
         element: ParadoxScriptStringExpressionElement,

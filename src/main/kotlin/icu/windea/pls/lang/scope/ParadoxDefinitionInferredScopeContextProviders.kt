@@ -80,7 +80,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
-        return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxBaseDefinitionInferredScopeContextProvider.doProcessQuery") {
+        return withRecursionGuard("icu.windea.pls.lang.scope.ParadoxBaseDefinitionInferredScopeContextProvider.doProcessQuery") {
             withCheckRecursion(definitionInfo.name + "@" + definitionInfo.type) {
                 val indexId = ParadoxExpressionIndexId.InferredScopeContextAwareDefinition
                 ParadoxExpressionIndexHandler.processQuery(indexId, project, gameType, searchScope) p@{ file, infos ->
@@ -185,7 +185,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
-        return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxEventInEventInferredScopeContextProvider.doProcessQuery") {
+        return withRecursionGuard("icu.windea.pls.lang.scope.ParadoxEventInEventInferredScopeContextProvider.doProcessQuery") {
             if(depth == 1) stackTrace.addLast(thisEventName)
             
             val indexId = ParadoxExpressionIndexId.EventInOnAction
@@ -290,7 +290,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
-        return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxEventInEventInferredScopeContextProvider.doProcessQuery") {
+        return withRecursionGuard("icu.windea.pls.lang.scope.ParadoxEventInEventInferredScopeContextProvider.doProcessQuery") {
             if(depth == 1) stackTrace.addLast(thisEventName)
             
             val toRef = "from".repeat(depth)
@@ -441,7 +441,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
-        return withRecursionGuard("icu.windea.pls.lang.scope.impl.ParadoxOnActionInEventInferredScopeContextProvider.doProcessQuery") {
+        return withRecursionGuard("icu.windea.pls.lang.scope.ParadoxOnActionInEventInferredScopeContextProvider.doProcessQuery") {
             if(depth == 1) stackTrace.addLast(thisOnActionName)
             
             val toRef = "from".repeat(depth)

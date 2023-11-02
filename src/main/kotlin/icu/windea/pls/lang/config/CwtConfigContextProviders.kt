@@ -192,7 +192,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         context.inlineScriptHasConflict = false
         context.inlineScriptHasRecursion = false
-        withRecursionGuard("icu.windea.pls.lang.config.impl.CwtInlineScriptConfigContextProvider.getConfigsForConfigContext") {
+        withRecursionGuard("icu.windea.pls.lang.config.CwtInlineScriptConfigContextProvider.getConfigsForConfigContext") {
             withCheckRecursion(inlineScriptExpression) {
                 val project = context.configGroup.project
                 val selector = inlineScriptSelector(project, context.element)

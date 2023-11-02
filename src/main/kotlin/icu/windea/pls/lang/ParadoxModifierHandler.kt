@@ -18,7 +18,6 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.modifier.*
-import icu.windea.pls.lang.modifier.impl.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.model.elementInfo.*

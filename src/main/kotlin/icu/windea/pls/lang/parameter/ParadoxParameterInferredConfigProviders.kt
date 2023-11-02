@@ -38,7 +38,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return null
             val argumentNameConfig = expressionConfig.propertyConfig ?: return null
             val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return null
-            val passingConfig = withRecursionGuard("icu.windea.pls.lang.parameter.impl.ParadoxBaseParameterInferredConfigProvider.doGetConfigFromExpressionConfig") {
+            val passingConfig = withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxBaseParameterInferredConfigProvider.doGetConfigFromExpressionConfig") {
                 withCheckRecursion(passingParameterElement.contextKey) {
                     ParadoxParameterHandler.getInferredConfig(passingParameterElement)
                 }
@@ -58,7 +58,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return emptyList()
             val argumentNameConfig = expressionContextConfig.propertyConfig ?: return emptyList()
             val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return emptyList()
-            val passingContextConfigs = withRecursionGuard("icu.windea.pls.lang.parameter.impl.ParadoxBaseParameterInferredConfigProvider.doGetContextConfigsFromExpressionContextConfigs") {
+            val passingContextConfigs = withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxBaseParameterInferredConfigProvider.doGetContextConfigsFromExpressionContextConfigs") {
                 withCheckRecursion(passingParameterElement.contextKey) {
                     ParadoxParameterHandler.getInferredContextConfigs(passingParameterElement)
                 }

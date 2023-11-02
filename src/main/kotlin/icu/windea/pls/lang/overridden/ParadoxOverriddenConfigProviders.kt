@@ -81,10 +81,10 @@ class ParadoxTriggerWithParametersAwareOverriddenConfigProvider : ParadoxOverrid
     }
     
     override fun skipMissingExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression): Boolean {
-        // for export_trigger_value_to_variable, skip all properties
+        //for export_trigger_value_to_variable, skip all properties
         // 
-        // for complex_trigger_modifier, skip properties whose value config type is one of the following types:
-        // int / float / value_field / int_value_field / variable_field / int_variable_field
+        //for complex_trigger_modifier, skip properties whose value config type is one of the following types:
+        //int / float / value_field / int_value_field / variable_field / int_variable_field
         
         if(configExpression !is CwtKeyExpression) return false
         configs.forEach { c1 ->
