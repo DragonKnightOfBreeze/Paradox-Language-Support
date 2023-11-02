@@ -4,6 +4,7 @@ import com.google.common.cache.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
@@ -23,13 +24,16 @@ class CwtConfigGroupProvider(
     }
     
     fun refreshConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
+        //不替换configGroup，而是替换其中的userData
         val newConfigGroup = createConfigGroup(gameType)
-        cache.put(gameType.id, newConfigGroup)
-        return newConfigGroup
+        val configGroup = cache.getCancelable(gameType.id)
+        newConfigGroup.copyUserDataTo(configGroup)
+        return configGroup
     }
     
     private fun createConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
-        val configGroup = CwtConfigGroup(gameType, project)
+        val info = CwtConfigGroupInfo(gameType.id)
+        val configGroup = CwtConfigGroup(info, gameType, project)
         initConfigGroup(configGroup)
         return configGroup
     }

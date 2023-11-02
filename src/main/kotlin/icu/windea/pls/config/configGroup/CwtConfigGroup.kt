@@ -2,6 +2,7 @@ package icu.windea.pls.config.configGroup
 
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 
@@ -11,6 +12,7 @@ import icu.windea.pls.model.*
  * @property project 对应的项目。如果不需要访问PSI，可以直接传入默认项目。
  */
 class CwtConfigGroup(
+    val info: CwtConfigGroupInfo,
     val gameType: ParadoxGameType?,
     val project: Project,
 ) : UserDataHolderBase() {

@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.configGroup
 
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.setting.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
@@ -136,17 +136,22 @@ val CwtConfigGroup.Keys.linksAsVariable
     by createKey<List<CwtLinkConfig>> { mutableListOf() }
 
 //必定支持作用域的CWT别名规则
+@Tags(Tag.Computed)
 val CwtConfigGroup.Keys.aliasNamesSupportScope
     by createKey<Set<String>> { mutableSetOf() }
 //必定支持作用域的定义类型
+@Tags(Tag.Computed)
 val CwtConfigGroup.Keys.definitionTypesSupportScope
     by createKey<Set<String>> { mutableSetOf() }
 //必定间接支持作用域的定义类型
+@Tags(Tag.Computed)
 val CwtConfigGroup.Keys.definitionTypesIndirectSupportScope
     by createKey<Set<String>> { mutableSetOf() }
 //不需要检查系统作用域切换的定义类型（应当是固定的，不允许在检查选项中配置）
+@Tags(Tag.Computed)
 val CwtConfigGroup.Keys.definitionTypesSkipCheckSystemLink
     by createKey<Set<String>> { mutableSetOf() }
 //支持参数的定义类型
+@Tags(Tag.Computed)
 val CwtConfigGroup.Keys.definitionTypesSupportParameters
     by createKey<Set<String>> { mutableSetOf() }
