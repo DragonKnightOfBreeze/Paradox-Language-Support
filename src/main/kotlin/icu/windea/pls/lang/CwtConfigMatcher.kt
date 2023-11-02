@@ -380,7 +380,7 @@ object CwtConfigMatcher {
         val rootFile = selectRootFile(element) ?: return Result.NotMatch
         val project = element.project
         val cache = project.configMatchResultCache.value.get(rootFile)
-        return cache.getOrPut(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
+        return cache.getCancelable(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
     }
     
     private fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {

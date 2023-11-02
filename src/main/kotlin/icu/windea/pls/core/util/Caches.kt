@@ -3,8 +3,7 @@
 package icu.windea.pls.core.util
 
 import com.google.common.cache.*
-import com.google.common.util.concurrent.*
-import com.intellij.openapi.progress.*
+import icu.windea.pls.core.*
 import java.util.concurrent.*
 
 inline fun <K : Any, V : Any> CacheBuilder<in K, in V>.buildCache(): Cache<K, V> {
@@ -19,42 +18,15 @@ inline fun <K : Any, V : Any> CacheBuilder<in K, in V>.buildCache(crossinline lo
     })
 }
 
-inline fun <K : Any, V : Any> Cache<K, V>.getOrPut(key: K, crossinline defaultValue: (K) -> V): V {
-    try {
-        return get(key) { defaultValue(key) }
-    } catch(e: ExecutionException) {
-        val cause = e.cause
-        if(cause is ProcessCanceledException) throw cause
-        throw cause ?: e
-    } catch(e: UncheckedExecutionException) {
-        val cause = e.cause
-        if(cause is ProcessCanceledException) throw cause
-        throw cause ?: e
-    } catch(e: ProcessCanceledException) {
-        throw e
-    }
+inline fun <K : Any, V : Any> Cache<K, V>.getCancelable(key: K, loader: Callable<out V>): V {
+    return cancelable { get(key, loader) }
 }
 
-inline fun <K : Any, V : Any> Cache<K, V>.getOrPut(key: K, defaultValueOnException: (Throwable) -> V, crossinline defaultValue: (K) -> V): V {
-    try {
-        return get(key) { defaultValue(key) }
-    } catch(e: ExecutionException) {
-        val cause = e.cause
-        if(cause is ProcessCanceledException) throw cause
-        return defaultValueOnException(cause ?: e)
-    } catch(e: UncheckedExecutionException) {
-        val cause = e.cause
-        if(cause is ProcessCanceledException) throw cause
-        return defaultValueOnException(cause ?: e)
-    } catch(e: ProcessCanceledException) {
-        throw e
-    }
+inline fun <K : Any, V : Any> Cache<K, V>.getCancelable(key: K, defaultValueOnException: (Throwable) -> V, loader: Callable<out V>): V {
+    return cancelable(defaultValueOnException) { get(key, loader) }
 }
 
-inline operator fun <K : Any, V : Any> Cache<K, V>.get(key: K): V? {
-    return getIfPresent(key)
+inline fun <K : Any, V : Any> LoadingCache<K, V>.getCancelable(key: K): V {
+    return cancelable { get(key) }
 }
 
-inline operator fun <K : Any, V : Any> Cache<K, V>.set(key: K, value: V) {
-    put(key, value)
-}

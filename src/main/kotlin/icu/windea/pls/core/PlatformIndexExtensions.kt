@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package icu.windea.pls.core
 
 import com.intellij.extapi.psi.*
@@ -23,16 +25,12 @@ inline fun <T, V> DataOutput.writeOrWriteFrom(value: T, from: T?, selector: (T) 
     writeAction(selector(value))
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun DataInput.readIntFast(): Int = DataInputOutputUtil.readINT(this)
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun DataOutput.writeIntFast(value: Int) = DataInputOutputUtil.writeINT(this, value)
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun DataInput.readUTFFast(): String = IOUtil.readUTF(this)
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun DataOutput.writeUTFFast(value: String) = IOUtil.writeUTF(this, value)
 
 inline fun <T> DataInput.readList(action: () -> T): MutableList<T> {

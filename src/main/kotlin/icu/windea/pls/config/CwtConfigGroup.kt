@@ -29,7 +29,7 @@ interface CwtConfigGroup: UserDataHolder {
 	//type - typeConfig
 	val swappedTypes: Map<String, CwtTypeConfig>
 	//typeExpression - modifierTemplate - modifierConfig
-	val typeToModifiersMap: Map<String, Map<String, CwtModifierConfig>>
+	val type2ModifiersMap: Map<String, Map<String, CwtModifierConfig>>
 	
 	//type - declarationConfig
 	val declarations: Map<String, CwtDeclarationConfig>

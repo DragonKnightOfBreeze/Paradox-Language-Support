@@ -66,7 +66,7 @@ object ParadoxModifierHandler {
         val project = configGroup.project
         val cache = project.modifierInfoCache.get(rootFile)
         val cacheKey = name
-        val modifierInfo = cache.getOrPut(cacheKey) {
+        val modifierInfo = cache.getCancelable(cacheKey) {
             //进行代码补全时，可能需要使用指定的扩展点解析修正
             useSupport?.resolveModifier(name, element, configGroup)?.also { it.support = useSupport }
                 ?: ParadoxModifierSupport.resolveModifier(name, element, configGroup)
@@ -83,7 +83,7 @@ object ParadoxModifierHandler {
         val cache = project.modifierInfoCache.get(rootFile)
         val configGroup = getConfigGroups(project).get(gameType)
         val cacheKey = name
-        val modifierInfo = cache.getOrPut(cacheKey) {
+        val modifierInfo = cache.getCancelable(cacheKey) {
             ParadoxModifierSupport.resolveModifier(name, element, configGroup) ?: ParadoxModifierInfo.EMPTY
         }
         if(modifierInfo == ParadoxModifierInfo.EMPTY) return null
@@ -95,7 +95,7 @@ object ParadoxModifierHandler {
         val project = modifierElement.project
         val cache = project.modifierInfoCache.get(rootFile)
         val cacheKey = modifierElement.name
-        val modifierInfo = cache.getOrPut(cacheKey) {
+        val modifierInfo = cache.getCancelable(cacheKey) {
             modifierElement.toInfo()
         }
         return modifierInfo

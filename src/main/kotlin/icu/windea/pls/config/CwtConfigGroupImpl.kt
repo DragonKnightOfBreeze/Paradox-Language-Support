@@ -39,7 +39,7 @@ class CwtConfigGroupImpl(
     
     override val types: MutableMap<String, CwtTypeConfig> = mutableMapOf()
     override val swappedTypes: MutableMap<String, CwtTypeConfig> = mutableMapOf()
-    override val typeToModifiersMap: MutableMap<String, MutableMap<String, CwtModifierConfig>> = mutableMapOf()
+    override val type2ModifiersMap: MutableMap<String, MutableMap<String, CwtModifierConfig>> = mutableMapOf()
     
     override val declarations: MutableMap<String, CwtDeclarationConfig> = mutableMapOf()
     
@@ -404,7 +404,7 @@ class CwtConfigGroupImpl(
                         for(snippetExpression in modifierConfig.template.snippetExpressions) {
                             if(snippetExpression.type == CwtDataType.Definition) {
                                 val typeExpression = snippetExpression.value ?: continue
-                                typeToModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(modifierName, modifierConfig)
+                                type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(modifierName, modifierConfig)
                             }
                         }
                     }
@@ -586,13 +586,13 @@ class CwtConfigGroupImpl(
                                     val typeExpression = "$name.$subtypeName"
                                     val modifierConfig = resolveDefinitionModifierConfig(pp, pp.key, typeExpression) ?: continue
                                     modifiers[modifierConfig.name] = modifierConfig
-                                    typeToModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(pp.key, modifierConfig)
+                                    type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(pp.key, modifierConfig)
                                 }
                             } else {
                                 val typeExpression = name
                                 val modifierConfig = resolveDefinitionModifierConfig(p, p.key, typeExpression) ?: continue
                                 modifiers[modifierConfig.name] = modifierConfig
-                                typeToModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(p.key, modifierConfig)
+                                type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(p.key, modifierConfig)
                             }
                         }
                     }

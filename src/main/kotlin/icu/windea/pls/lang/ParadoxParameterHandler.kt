@@ -164,7 +164,7 @@ object ParadoxParameterHandler {
         val project = parameterElement.project
         val cache = project.parameterInfoCache.get(rootFile)
         val cacheKey = parameterElement.name + "@" + parameterElement.contextKey
-        val parameterInfo = cache.getOrPut(cacheKey) {
+        val parameterInfo = cache.getCancelable(cacheKey) {
             parameterElement.toInfo()
         }
         return parameterInfo

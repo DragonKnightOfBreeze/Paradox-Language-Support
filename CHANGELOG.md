@@ -2,15 +2,15 @@
 
 ## PROCESSING
 
-* [ ] 优化：允许导入本地化的CWT规则
-  * CWT规则文件需要放到项目根目录的`.config/${gameType}`目录下，如，`.config/stellaris/test.cwt`
-  * 点击编辑器右上角的导入按钮后，导入的CWT规则才会生效
 * [ ] #46 优化：尝试基于使用推断特定类型的`valueSetValue`对应的作用域上下文（如`event_target`和`global_event_target`）
 * [ ] 尝试优化插件性能
 
-## 1.1.14
+## 1.2.0
 
-* [X] 优化与修复
+* [ ] 优化对CWT规则分组的支持
+  * 内置的CWT规则分组 - 位于插件jar包中的`config/${gameType}`目录下，始终启用
+  * 项目本地化的CWT规则分组 - 需要放到项目根目录的`.config/${gameType}`目录下，需要手动确认导入。
+* [X] 其他优化与BUG修复
 
 ## 1.1.13
 

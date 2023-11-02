@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package icu.windea.pls.config.config
 
 import icu.windea.pls.core.*
@@ -32,23 +34,18 @@ interface CwtOptionsAware {
     val options: List<CwtOptionMemberConfig<*>>?
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun CwtOptionsAware.findOption(key: String): CwtOptionConfig? = options?.findFast { it is CwtOptionConfig && it.key == key }?.cast()
 
 inline fun CwtOptionsAware.findOption(predicate: (CwtOptionConfig) -> Boolean): CwtOptionConfig? = options?.findFast { it is CwtOptionConfig && predicate(it) }?.cast()
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun CwtOptionsAware.findOptions(key: String): List<CwtOptionConfig>? = options?.filterFast { it is CwtOptionConfig && it.key == key }?.cast()
 
 inline fun CwtOptionsAware.findOptions(predicate: (CwtOptionConfig) -> Boolean): List<CwtOptionConfig> = options?.filterFast { it is CwtOptionConfig && predicate(it) }.orEmpty().cast()
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun CwtOptionsAware.findOptions(): List<CwtOptionConfig>? = options?.filterIsInstanceFast<CwtOptionConfig>()
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun CwtOptionsAware.findOptionValue(value: String): CwtOptionValueConfig? = options?.findFast { it is CwtOptionValueConfig && it.value == value }?.cast()
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun CwtOptionsAware.findOptionValues(): List<CwtOptionValueConfig>? = options?.filterIsInstanceFast<CwtOptionValueConfig>()
 
 interface CwtConfigsAware {

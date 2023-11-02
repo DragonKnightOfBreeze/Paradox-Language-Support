@@ -1,7 +1,8 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 
 package icu.windea.pls.core
 
+import com.google.common.util.concurrent.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.codeInsight.navigation.*
@@ -62,6 +63,8 @@ import java.io.*
 import java.nio.file.*
 import java.util.*
 import java.util.Arrays
+import java.util.concurrent.*
+import java.util.function.Supplier
 import java.util.logging.*
 import java.util.logging.Logger
 import javax.swing.*
@@ -75,6 +78,38 @@ fun String.compareToIgnoreCase(other: String): Int {
 //endregion
 
 //region Common Extensions
+inline fun <T> cancelable(block: () -> T): T {
+    try {
+        return block()
+    } catch(e: ExecutionException) {
+        val cause = e.cause
+        if(cause is ProcessCanceledException) throw cause
+        throw cause ?: e
+    } catch(e: UncheckedExecutionException) {
+        val cause = e.cause
+        if(cause is ProcessCanceledException) throw cause
+        throw cause ?: e
+    } catch(e: ProcessCanceledException) {
+        throw e
+    }
+}
+
+inline fun <T> cancelable(defaultValueOnException: (Throwable) -> T, block: () -> T): T {
+    try {
+        return block()
+    } catch(e: ExecutionException) {
+        val cause = e.cause
+        if(cause is ProcessCanceledException) throw cause
+        return defaultValueOnException(cause ?: e)
+    } catch(e: UncheckedExecutionException) {
+        val cause = e.cause
+        if(cause is ProcessCanceledException) throw cause
+        return defaultValueOnException(cause ?: e)
+    } catch(e: ProcessCanceledException) {
+        throw e
+    }
+}
+
 inline fun <R> runCatchingCancelable(block: () -> R): Result<R> {
     return runCatching(block).onFailure { if(it is ProcessCanceledException) throw it }
 }
@@ -172,7 +207,7 @@ fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiE
     return NavigationGutterIconBuilder.create(icon, DEFAULT_PSI_CONVERTOR, gotoRelatedItemProvider)
 }
 
-@Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST")
 inline fun <T> Query<T>.processQuery(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
     if(onlyMostRelevant && this is ParadoxQuery<*, *>) {
         find()?.let { consumer.process(it as T) }
@@ -181,7 +216,7 @@ inline fun <T> Query<T>.processQuery(onlyMostRelevant: Boolean = false, consumer
     return forEach(consumer)
 }
 
-@Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST")
 inline fun <T> Query<T>.processQueryAsync(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
     if(onlyMostRelevant && this is ParadoxQuery<*, *>) {
         find()?.let { consumer.process(it as T) }
@@ -190,7 +225,6 @@ inline fun <T> Query<T>.processQueryAsync(onlyMostRelevant: Boolean = false, con
     return allowParallelProcessing().forEach(consumer)
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun <T> UserDataHolder.tryPutUserData(key: Key<T>, value: T?) {
     runCatchingCancelable { putUserData(key, value) }
 }
@@ -211,7 +245,6 @@ inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, nullValue: T, action
     return newValue
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun <T> UserDataHolder.putUserDataIfAbsent(key: Key<T>, value: T) {
     if(getUserData(key) == null) putUserData(key, value)
 }
@@ -226,38 +259,25 @@ fun <T> ProcessingContext.getOrDefault(key: Key<T>): T? {
     return value
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun <T> createKey(name: String) = Key.create<T>(name)
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T> createKey(name: String, noinline defaultValueProvider: () -> T) = KeyWithDefaultValue.create(name, defaultValueProvider)
+inline fun <T> createKey(name: String, noinline factory: () -> T) = KeyWithDefaultValue.create(name, factory)
 
-@Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.getValue(thisRef: KeyHolder, property: KProperty<*>) = this
-@Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: KeyHolder, property: KProperty<*>) = this
 
-@Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getUserData(this)
-@Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T = thisRef.getUserData(this)!!
-@Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T?) = thisRef.putUserData(this, value)
 
-@Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T? = thisRef.getOrDefault(this)
-@Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T = thisRef.getOrDefault(this)!!
-@Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> Key<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T?) = thisRef.put(this, value)
 
-@Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)
-@Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.dataContext.getData(this)
 //endregion
 
 //region CachedValue Extensions
-@Suppress("NOTHING_TO_INLINE")
 inline fun <T> createCachedValueKey(
     name: String,
     trackValue: Boolean = false,
@@ -298,7 +318,6 @@ inline fun StringBuilder.sections(block: StringBuilder.() -> Unit): StringBuilde
     return this
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun StringBuilder.section(title: CharSequence, value: CharSequence): StringBuilder {
     append(DocumentationMarkup.SECTION_HEADER_START)
     append(title).append(": ")
@@ -425,19 +444,16 @@ fun Path.toVirtualFile(refreshIfNeed: Boolean = false): VirtualFile? {
 }
 
 /** 将VirtualFile转化为指定类型的PsiFile。 */
-@Suppress("NOTHING_TO_INLINE")
 inline fun VirtualFile.toPsiFile(project: Project): PsiFile? {
     return PsiManager.getInstance(project).findFile(this)
 }
 
 /** 将VirtualFile转化为指定类型的PsiDirectory。 */
-@Suppress("NOTHING_TO_INLINE")
 inline fun VirtualFile.toPsiDirectory(project: Project): PsiDirectory? {
     return PsiManager.getInstance(project).findDirectory(this)
 }
 
 /** 将VirtualFile转化为指定类型的PsiFile或者PsiDirectory。 */
-@Suppress("NOTHING_TO_INLINE")
 inline fun VirtualFile.toPsiFileSystemItem(project: Project): PsiFileSystemItem? {
     return if(this.isFile) PsiManager.getInstance(project).findFile(this) else PsiManager.getInstance(project).findDirectory(this)
 }

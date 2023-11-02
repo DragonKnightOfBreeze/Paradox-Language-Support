@@ -2,6 +2,7 @@ package icu.windea.pls.config.config
 
 import com.google.common.cache.*
 import com.intellij.psi.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
@@ -18,7 +19,7 @@ class CwtTypeImagesConfig(
 	 */
 	fun getConfigs(subtypes: List<String>): List<CwtLocationConfig> {
 		val cacheKey = subtypes.joinToString(",")
-		return configsCache.getOrPut(cacheKey){
+		return configsCache.getCancelable(cacheKey){
 			val result = mutableListOf<CwtLocationConfig>()
 			for((subtypeExpression, locationConfig) in configs) {
 				if(subtypeExpression == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {

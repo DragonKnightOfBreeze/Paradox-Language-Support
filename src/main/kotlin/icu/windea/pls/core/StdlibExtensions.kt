@@ -100,7 +100,6 @@ fun Number.format(digits: Int): String {
     }
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun <T : CharSequence> T.orNull() = this.takeIf { it.isNotEmpty() }
 
 fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {

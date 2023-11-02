@@ -18,7 +18,7 @@ class CwtTypeLocalisationConfig(
 	 */
 	fun getConfigs(subtypes: List<String>): List<CwtLocationConfig> {
 		val cacheKey = subtypes.joinToString(",")
-		return configsCache.getOrPut(cacheKey){
+		return configsCache.getCancelable(cacheKey){
 			val result = mutableListOf<CwtLocationConfig>()
 			for((subtypeExpression, locationConfig) in configs) {
 				if(subtypeExpression == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {

@@ -11,7 +11,7 @@ import icu.windea.pls.lang.configGroup.*
 /**
  * 监听CWT规则文件的更改以更新项目特定的本地CWT规则分组。
  * 
- * @see ProjectBasedCwtConfigGroupProvider
+ * @see ProjectBasedCwtConfigGroupProvider1
  */
 class ProjectBasedCwtConfigFileListener : AsyncFileListener {
     object Context {

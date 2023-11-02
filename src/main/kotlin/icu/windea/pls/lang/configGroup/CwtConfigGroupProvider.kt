@@ -1,48 +1,69 @@
 package icu.windea.pls.lang.configGroup
 
-import com.intellij.openapi.extensions.*
+import com.google.common.cache.*
+import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.*
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 
 /**
  * 用于提供CWT规则分组。
  */
-interface CwtConfigGroupProvider {
-    /**
-     * 得到规则分组。
-     * @param gameType 对应的游戏类型。如果为null，则会得到共用的核心规则分组。
-     * @param project 对应的项目。如果不需要访问PSI，可以直接传入默认项目。
-     */
-    fun getConfigGroup(gameType: ParadoxGameType?, project: Project): CwtConfigGroup
+@Service(Service.Level.PROJECT)
+class CwtConfigGroupProvider(
+    private val project: Project
+) {
+    val cache = CacheBuilder.newBuilder().buildCache<String, CwtConfigGroup> { createConfigGroup(ParadoxGameType.resolve(it)) }
     
-    object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<CwtConfigGroupProvider>("icu.windea.pls.configGroupProvider")
-    }
-}
-
-interface CwtConfigGroup : UserDataHolder {
-    val gameType: ParadoxGameType?
-    val project: Project
-    
-    object Keys : KeyHolder
-}
-
-val CwtConfigGroup.Keys.provider by createKey<CwtConfigGroupProvider>("cwt.configGroup.provider")
-
-var CwtConfigGroup.provider by CwtConfigGroup.Keys.provider
-
-interface FileBasedCwtConfigGroupProvider : CwtConfigGroupProvider {
-    override fun getConfigGroup(gameType: ParadoxGameType?, project: Project): CwtConfigGroup {
-        return FileBasedCwtConfigGroup(gameType, project)
+    fun getConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
+        return cache.getCancelable(gameType.id)
     }
     
-    fun getCwtConfigFiles(project: Project, gameType: ParadoxGameType?): List<VirtualFile>
+    fun refreshConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
+        val newConfigGroup = createConfigGroup(gameType)
+        cache.put(gameType.id, newConfigGroup)
+        return newConfigGroup
+    }
+    
+    private fun createConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
+        val configGroup = CwtConfigGroup(gameType, project)
+        initConfigGroup(configGroup)
+        return configGroup
+    }
+    
+    private fun initConfigGroup(configGroup: CwtConfigGroup) {
+        //按照文件路径（相对于规则文件的根目录）正序读取所有规则文件
+        //后加入的规则文件会覆盖先加入的同路径的规则文件
+        //后加入的数据项会覆盖先加入的同名同类型的数据项
+        
+        val supports = CwtConfigGroupSupport.EP_NAME.extensionList
+        
+        supports.all f@{ support ->
+            if(support is FileBasedCwtConfigGroupSupport) return@f true
+            if(support is PostCwtConfigGroupSupport) return@f true
+            support.process(configGroup)
+        }
+        
+        val allFilesAndSupports = mutableMapOf<String, Tuple2<VirtualFile, FileBasedCwtConfigGroupSupport>>()
+        
+        supports.all f@{ support ->
+            if(support !is FileBasedCwtConfigGroupSupport) return@f true
+            support.processFiles(configGroup) { path, file ->
+                allFilesAndSupports[path] = tupleOf(file, support)
+                true
+            }
+        }
+        
+        allFilesAndSupports.values.all f@{ (file, ep) ->
+            ep.processFile(file, configGroup)
+        }
+        
+        supports.all f@{ support ->
+            if(support !is PostCwtConfigGroupSupport) return@f true
+            support.process(configGroup)
+        }
+    }
 }
-
-class FileBasedCwtConfigGroup(
-    override val gameType: ParadoxGameType?,
-    override val project: Project,
-) : UserDataHolderBase(), CwtConfigGroup

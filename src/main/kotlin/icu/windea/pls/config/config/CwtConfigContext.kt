@@ -40,7 +40,7 @@ class CwtConfigContext(
         val project = configGroup.project
         val cache = project.configsCache.value.get(rootFile)
         val cachedKey = doGetCacheKey(matchOptions) ?: return emptyList()
-        val cached = cache.getOrPut(cachedKey) {
+        val cached = cache.getCancelable(cachedKey) {
             doGetConfigs(matchOptions)
         }
         //some configs cannot be cached (e.g. from overridden configs)
