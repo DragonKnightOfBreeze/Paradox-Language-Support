@@ -8,7 +8,3 @@ class TranslatableStringSnippets(
 	}
 }
 
-data class TranslatableStringSnippet(
-	var text: String,
-	val shouldTranslate: Boolean
-)

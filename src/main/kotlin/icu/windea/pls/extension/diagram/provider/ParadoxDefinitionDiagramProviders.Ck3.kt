@@ -1,4 +1,4 @@
-package icu.windea.pls.extension.diagram.provider.impl
+package icu.windea.pls.extension.diagram.provider
 
 import com.intellij.diagram.*
 import com.intellij.openapi.components.*
@@ -10,28 +10,28 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.extension.diagram.provider.*
-import icu.windea.pls.extension.diagram.settings.impl.*
+import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-private const val ID = "Ir.EventTree"
-
-private val ITEM_PROPERTY_KEYS = arrayOf("picture")
-
-@WithGameType(ParadoxGameType.Ir)
-class IrEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Ir) {
-    override fun getID() = ID
+@WithGameType(ParadoxGameType.Ck3)
+class Ck3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Ck3) {
+    object Data {
+        const val ID = "Ck3.EventTree"
+        val ITEM_PROPERTY_KEYS = arrayOf("picture")
+    }
+    
+    override fun getID() = Data.ID
     
     @Suppress("DialogTitleCapitalization")
-    override fun getPresentableName() = PlsDiagramBundle.message("ir.eventTree.name")
+    override fun getPresentableName() = PlsDiagramBundle.message("ck3.eventTree.name")
     
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
     
-    override fun getItemPropertyKeys() = ITEM_PROPERTY_KEYS
+    override fun getItemPropertyKeys() = Data.ITEM_PROPERTY_KEYS
     
-    override fun getDiagramSettings(project: Project) = project.service<IrEventTreeDiagramSettings>()
+    override fun getDiagramSettings(project: Project) = project.service<Ck3EventTreeDiagramSettings>()
     
     class DataModel(
         project: Project,
@@ -39,7 +39,7 @@ class IrEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameTy
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
         override fun updateDataModel(indicator: ProgressIndicator?) {
-            provider as IrEventTreeDiagramProvider
+            provider as Ck3EventTreeDiagramProvider
             val events = getDefinitions("event")
             if(events.isEmpty()) return
             //群星原版事件有5000+
@@ -70,7 +70,7 @@ class IrEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameTy
         }
         
         private fun showNode(definition: ParadoxScriptDefinitionElement): Boolean {
-            provider as IrEventTreeDiagramProvider
+            provider as Ck3EventTreeDiagramProvider
             
             val definitionInfo = definition.definitionInfo ?: return false
             val settings = provider.getDiagramSettings(project).state

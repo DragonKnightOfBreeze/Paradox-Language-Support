@@ -1,4 +1,4 @@
-package icu.windea.pls.extension.diagram.provider.impl
+package icu.windea.pls.extension.diagram.provider
 
 import com.intellij.diagram.*
 import com.intellij.openapi.components.*
@@ -10,26 +10,26 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.extension.diagram.provider.*
-import icu.windea.pls.extension.diagram.settings.impl.*
+import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-private const val ID = "Vic3.EventTree"
-
-private val ITEM_PROPERTY_KEYS = arrayOf("picture", "icon", "left_icon", "right_icon", "minor_left_icon", "minor_right_icon", "gui_window")
-
 @WithGameType(ParadoxGameType.Vic3)
 class Vic3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Vic3) {
-    override fun getID() = ID
+    object Data {
+        const val ID = "Vic3.EventTree"
+        val ITEM_PROPERTY_KEYS = arrayOf("picture", "icon", "left_icon", "right_icon", "minor_left_icon", "minor_right_icon", "gui_window")
+    }
+    
+    override fun getID() = Data.ID
     
     @Suppress("DialogTitleCapitalization")
     override fun getPresentableName() = PlsDiagramBundle.message("vic3.eventTree.name")
     
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
     
-    override fun getItemPropertyKeys() = ITEM_PROPERTY_KEYS
+    override fun getItemPropertyKeys() = Data.ITEM_PROPERTY_KEYS
     
     override fun getDiagramSettings(project: Project) = project.service<Vic3EventTreeDiagramSettings>()
     

@@ -1,4 +1,4 @@
-package icu.windea.ut.markdown
+package icu.windea.pls.extension.markdown
 
 import com.intellij.lang.*
 import com.intellij.lang.folding.*
@@ -10,16 +10,17 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.annotations.api.*
 import org.intellij.plugins.markdown.lang.psi.impl.*
 
-private const val GROUP_NAME = "ut.markdown.emptyLink"
-private val FOLDING_GROUP = FoldingGroup.newGroup(GROUP_NAME)
-
 /**
  * 用于折叠标签文本为空的Markdown内联链接。（`[](...)`）
  */
 @HiddenApi
-@WithExtension("org.intellij.plugins.markdown")
 @Suppress("UnstableApiUsage")
 class MarkdownEmptyLinkFoldingBuilder: FoldingBuilderEx(), DumbAware {
+    object Data {
+        const val GROUP_NAME = "markdown.emptyLink"
+        val FOLDING_GROUP = FoldingGroup.newGroup(GROUP_NAME)
+    }
+    
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         val descriptors = mutableListOf<FoldingDescriptor>()
         root.accept(object : PsiRecursiveElementWalkingVisitor(){
@@ -28,7 +29,7 @@ class MarkdownEmptyLinkFoldingBuilder: FoldingBuilderEx(), DumbAware {
                 if(element is MarkdownInlineLink && element.parent !is MarkdownImage) {
                     val linkText = element.linkText
                     if(linkText != null && linkText.contentElements.none()) {
-                        descriptors.add(FoldingDescriptor(element.node, element.textRange, FOLDING_GROUP))
+                        descriptors.add(FoldingDescriptor(element.node, element.textRange, Data.FOLDING_GROUP))
                     }
                 }
                 super.visitElement(element)
@@ -39,5 +40,5 @@ class MarkdownEmptyLinkFoldingBuilder: FoldingBuilderEx(), DumbAware {
     
     override fun getPlaceholderText(node: ASTNode) = ""
     
-    override fun isCollapsedByDefault(node: ASTNode) = Registry.`is`("ut.markdown.fold.empty.link.by.default")
+    override fun isCollapsedByDefault(node: ASTNode) = Registry.`is`("markdown.fold.empty.link.by.default")
 }

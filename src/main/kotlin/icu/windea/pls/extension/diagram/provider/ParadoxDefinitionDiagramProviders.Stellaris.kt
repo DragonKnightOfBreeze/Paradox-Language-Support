@@ -1,4 +1,4 @@
-package icu.windea.pls.extension.diagram.provider.impl
+package icu.windea.pls.extension.diagram.provider
 
 import com.intellij.diagram.*
 import com.intellij.openapi.components.*
@@ -11,24 +11,105 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.extension.diagram.provider.*
-import icu.windea.pls.extension.diagram.settings.impl.*
+import icu.windea.pls.extension.diagram.settings.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 
-private const val ID = "Stellaris.TechnologyTree"
-
-private val ITEM_PROPERTY_KEYS = arrayOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels")
-
-private val nodeDataKey = createKey<StellarisTechnologyDataProvider.Data>("stellaris.technologyTree.node.data")
+@WithGameType(ParadoxGameType.Stellaris)
+class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Stellaris) {
+    object Data {
+        const val ID = "Stellaris.EventTree"
+        val ITEM_PROPERTY_KEYS = arrayOf("picture")
+    }
+    
+    override fun getID() = Data.ID
+    
+    @Suppress("DialogTitleCapitalization")
+    override fun getPresentableName() = PlsDiagramBundle.message("stellaris.eventTree.name")
+    
+    override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
+    
+    override fun getItemPropertyKeys() = Data.ITEM_PROPERTY_KEYS
+    
+    override fun getDiagramSettings(project: Project) = project.service<StellarisEventTreeDiagramSettings>()
+    
+    class DataModel(
+        project: Project,
+        file: VirtualFile?, //umlFile
+        provider: ParadoxDefinitionDiagramProvider
+    ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
+        override fun updateDataModel(indicator: ProgressIndicator?) {
+            provider as StellarisEventTreeDiagramProvider
+            val events = getDefinitions("event")
+            if(events.isEmpty()) return
+            //群星原版事件有5000+
+            val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
+            val eventMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
+            for(event in events) {
+                ProgressManager.checkCanceled()
+                if(!showNode(event)) continue
+                val node = Node(event, provider)
+                nodeMap.put(event, node)
+                val name = event.definitionInfo?.name.orAnonymous()
+                eventMap.put(name, event)
+                nodes.add(node)
+            }
+            for(event in events) {
+                ProgressManager.checkCanceled()
+                val invocations = ParadoxEventHandler.getInvocations(event)
+                if(invocations.isEmpty()) continue
+                //事件 --> 调用的事件
+                for(invocation in invocations) {
+                    ProgressManager.checkCanceled()
+                    val source = nodeMap.get(event) ?: continue
+                    val target = eventMap.get(invocation)?.let { nodeMap.get(it) } ?: continue
+                    val edge = Edge(source, target, REL_INVOKE)
+                    edges.add(edge)
+                }
+            }
+        }
+        
+        private fun showNode(definition: ParadoxScriptDefinitionElement): Boolean {
+            provider as StellarisEventTreeDiagramProvider
+            
+            val definitionInfo = definition.definitionInfo ?: return false
+            val settings = provider.getDiagramSettings(project).state
+            
+            //对于每组配置，只要其中任意一个配置匹配即可
+            with(settings.typeSettings) {
+                val v = definitionInfo.subtypes.orNull() ?: return@with
+                var enabled = false
+                if(v.contains("hidden")) enabled = enabled || this.hidden
+                if(v.contains("triggered")) enabled = enabled || this.triggered
+                if(v.contains("major")) enabled = enabled || this.major
+                if(v.contains("diplomatic")) enabled = enabled || this.diplomatic
+                if(!enabled) return false
+            }
+            with(settings.eventType) {
+                val v = definitionInfo.subtypes.orNull() ?: return@with
+                val enabled = v.any { this[it] ?: false }
+                if(!enabled) return false
+            }
+            return true
+        }
+    }
+}
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvider(ParadoxGameType.Stellaris) {
+    object Data {
+        const val ID = "Stellaris.TechnologyTree"
+        val ITEM_PROPERTY_KEYS = arrayOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels")
+        
+        val nodeDataKey = createKey<StellarisTechnologyDataProvider.Data>("stellaris.technologyTree.node.data")
+    }
+    
     private val _colorManager = ColorManager()
     
-    override fun getID() = ID
+    override fun getID() = Data.ID
     
     @Suppress("DialogTitleCapitalization")
     override fun getPresentableName() = PlsDiagramBundle.message("stellaris.technologyTree.name")
@@ -37,7 +118,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
     
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
     
-    override fun getItemPropertyKeys() = ITEM_PROPERTY_KEYS
+    override fun getItemPropertyKeys() = Data.ITEM_PROPERTY_KEYS
     
     override fun getDiagramSettings(project: Project) = project.service<StellarisTechnologyTreeDiagramSettings>()
     
@@ -51,7 +132,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
         private fun doGetNodeBorderColor(node: Node): Color? {
             //这里使用的颜色是来自灰机wiki的特殊字体颜色
             //https://qunxing.huijiwiki.com/wiki/%E7%A7%91%E6%8A%80
-            val data = node.getUserData(nodeDataKey) ?: return null
+            val data = node.getUserData(Data.nodeDataKey) ?: return null
             val definitionInfo = node.definitionInfo ?: return null
             val types = definitionInfo.subtypes
             return when {
@@ -82,7 +163,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
                 ProgressManager.checkCanceled()
                 if(!showNode(technology)) continue
                 val node = Node(technology, provider)
-                node.putUserData(nodeDataKey, technology.getData())
+                node.putUserData(Data.nodeDataKey, technology.getData())
                 nodeMap.put(technology, node)
                 val name = technology.definitionInfo?.name.orAnonymous()
                 techMap.put(name, technology)
