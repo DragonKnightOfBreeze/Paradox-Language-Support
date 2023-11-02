@@ -129,7 +129,6 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         result.containingContext = context.createPointer(project)
         result.definitionName = definitionName
         result.definitionTypes = definitionTypes
-        result.support = this
         return result
     }
     
@@ -156,7 +155,6 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
         result.definitionName = definitionName
         result.definitionTypes = definitionTypes
-        result.support = this
         return result
     }
     
@@ -468,7 +466,6 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
         result.containingContext = context.createPointer(project)
         result.inlineScriptExpression = expression
-        result.support = this
         return result
     }
     
@@ -494,7 +491,6 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val project = config.info.configGroup.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
         result.inlineScriptExpression = expression
-        result.support = this
         return result
     }
     

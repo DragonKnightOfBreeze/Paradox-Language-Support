@@ -55,7 +55,6 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
         val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
-        modifierInfo.support = this
         modifierInfo.modifierConfig = modifierConfig
         return modifierInfo
     }
@@ -130,7 +129,6 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         }.orEmpty()
         if(modifierConfig == null) return null
         val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
-        modifierInfo.support = this
         modifierInfo.modifierConfig = modifierConfig
         modifierInfo.templateReferences = templateReferences
         return modifierInfo
@@ -336,7 +334,6 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         }
         if(economicCategoryInfo == null || economicCategoryModifierInfo == null) return null
         val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
-        modifierInfo.support = this
         modifierInfo.economicCategoryInfo = economicCategoryInfo
         modifierInfo.economicCategoryModifierInfo = economicCategoryModifierInfo
         return modifierInfo

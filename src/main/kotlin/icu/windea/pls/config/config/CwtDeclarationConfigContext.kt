@@ -9,6 +9,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.config.*
+import icu.windea.pls.model.*
 
 /**
  * CWT声明规则上下文。
@@ -18,6 +19,7 @@ class CwtDeclarationConfigContext(
     val definitionName: String?,
     val definitionType: String,
     val definitionSubtypes: List<String>?,
+    val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {
     /**

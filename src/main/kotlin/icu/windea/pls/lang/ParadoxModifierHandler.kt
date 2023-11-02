@@ -68,7 +68,7 @@ object ParadoxModifierHandler {
         val cacheKey = name
         val modifierInfo = cache.getOrPut(cacheKey) {
             //进行代码补全时，可能需要使用指定的扩展点解析修正
-            useSupport?.resolveModifier(name, element, configGroup)
+            useSupport?.resolveModifier(name, element, configGroup)?.also { it.support = useSupport }
                 ?: ParadoxModifierSupport.resolveModifier(name, element, configGroup)
                 ?: ParadoxModifierInfo.EMPTY
         }

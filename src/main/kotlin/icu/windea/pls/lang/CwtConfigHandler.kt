@@ -904,6 +904,7 @@ object CwtConfigHandler {
     
     fun completeRootKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxElementPath) {
         val fileInfo = context.originalFile!!.fileInfo ?: return
+        val gameType = fileInfo.rootInfo.gameType
         val configGroup = context.configGroup!!
         val path = fileInfo.pathToEntry //这里使用pathToEntry
         val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
@@ -953,7 +954,7 @@ object CwtConfigHandler {
             val config = if(typeToUse == null) null else {
                 val declarationConfig = configGroup.declarations.get(typeToUse)
                 if(declarationConfig == null) null else {
-                    val configContext = CwtDeclarationConfigContextProvider.getContext(context.contextElement!!, null, typeToUse, subtypesToUse, configGroup)
+                    val configContext = CwtDeclarationConfigContextProvider.getContext(context.contextElement!!, null, typeToUse, subtypesToUse, gameType, configGroup)
                     configContext?.getConfig(declarationConfig)
                 }
             }

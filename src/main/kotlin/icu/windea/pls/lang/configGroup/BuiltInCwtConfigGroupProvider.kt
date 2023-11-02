@@ -27,8 +27,4 @@ class BuiltInCwtConfigGroupProvider: FileBasedCwtConfigGroupProvider {
         })
         return result
     }
-    
-    override fun getModificationTracker(project: Project, gameType: ParadoxGameType?): ModificationTracker {
-        return ModificationTracker.NEVER_CHANGED
-    }
 }

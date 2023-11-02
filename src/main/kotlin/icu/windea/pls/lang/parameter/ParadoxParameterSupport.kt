@@ -78,24 +78,28 @@ interface ParadoxParameterSupport {
         fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
                 ep.getContextReferenceInfo(element, from, *extraArgs)
+                    ?.also { it.support = ep }
             }
         }
         
         fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
                 ep.resolveParameter(element)
+                    ?.also { it.support = ep }
             }
         }
         
         fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
                 ep.resolveConditionParameter(element)
+                    ?.also { it.support = ep }
             }
         }
         
         fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
                 ep.resolveArgument(element, rangeInElement, config)
+                    ?.also { it.support = ep }
             }
         }
         

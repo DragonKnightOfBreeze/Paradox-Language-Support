@@ -26,9 +26,9 @@ data class ParadoxParameterInfo(
 }
 
 fun ParadoxParameterInfo.toPsiElement(parent: PsiElement, rangeInParent: TextRange?, readWriteAccess: ReadWriteAccessDetector.Access): ParadoxParameterElement {
-    return ParadoxParameterElement(parent, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
+    return ParadoxParameterElement(parent, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project).also { copyUserDataTo(it) }
 }
 
 fun ParadoxParameterElement.toInfo(): ParadoxParameterInfo {
-    return ParadoxParameterInfo(name, contextName, contextIcon, contextKey, gameType, project)
+    return ParadoxParameterInfo(name, contextName, contextIcon, contextKey, gameType, project).also { copyUserDataTo(it) }
 }

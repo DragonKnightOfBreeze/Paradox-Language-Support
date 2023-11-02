@@ -6,6 +6,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.model.*
 
 /**
  * 用于提供CWT声明规则上下文。
@@ -14,7 +15,7 @@ import icu.windea.pls.core.annotations.*
  */
 @WithGameTypeEP
 interface CwtDeclarationConfigContextProvider {
-    fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext?
+    fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext?
     
     fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String
     
@@ -23,11 +24,10 @@ interface CwtDeclarationConfigContextProvider {
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtDeclarationConfigContextProvider>("icu.windea.pls.declarationConfigContextProvider")
         
-        fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
-            val gameType = configGroup.gameType
+        fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
-                ep.getContext(element, definitionName, definitionType, definitionSubtypes, configGroup)
+                ep.getContext(element, definitionName, definitionType, definitionSubtypes, gameType, configGroup)
                     ?.also { it.provider = ep }
             }
         }

@@ -63,7 +63,8 @@ interface ParadoxModifierSupport {
             val gameType = configGroup.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
-                ep.resolveModifier(name, element, configGroup) ?: return@f null
+                ep.resolveModifier(name, element, configGroup)
+                    ?.also { it.support = ep }
             }
         }
         

@@ -29,8 +29,4 @@ class ProjectBasedCwtConfigGroupProvider: FileBasedCwtConfigGroupProvider {
         })
         return result
     }
-    
-    override fun getModificationTracker(project: Project, gameType: ParadoxGameType?): ModificationTracker {
-        TODO("Not yet implemented")
-    }
 }

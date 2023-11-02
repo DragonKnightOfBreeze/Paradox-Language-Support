@@ -4,7 +4,6 @@ import com.intellij.ide.scratch.*
 import com.intellij.lang.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.fileEditor.impl.text.*
-import com.intellij.openapi.options.advanced.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.*
