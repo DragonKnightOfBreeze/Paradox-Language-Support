@@ -64,7 +64,7 @@ import java.nio.file.*
 import java.util.*
 import java.util.Arrays
 import java.util.concurrent.*
-import java.util.function.Supplier
+import java.util.function.*
 import java.util.logging.*
 import java.util.logging.Logger
 import javax.swing.*
@@ -260,10 +260,20 @@ fun <T> ProcessingContext.getOrDefault(key: Key<T>): T? {
 }
 
 inline fun <T> createKey(name: String) = Key.create<T>(name)
-inline fun <T> createKey(name: String, noinline factory: () -> T) = KeyWithDefaultValue.create(name, factory)
+inline fun <T> createKey(name: String, factory: Supplier<T>) = KeyWithDefaultValue.create(name, factory)
 
 inline operator fun <T> Key<T>.getValue(thisRef: KeyHolder, property: KProperty<*>) = this
 inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: KeyHolder, property: KProperty<*>) = this
+
+class KeyDelegate<T>
+
+class KeyWithDefaultValueDelegate<T>(val factory: Supplier<T>)
+
+inline fun <T> createKey() = KeyDelegate<T>()
+inline fun <T> createKey(factory: Supplier<T>) = KeyWithDefaultValueDelegate(factory)
+
+inline operator fun <T> KeyDelegate<T>.provideDelegate(thisRef: Any?, property: KProperty<*>) = createKey<T>(property.name)
+inline operator fun <T> KeyWithDefaultValueDelegate<T>.provideDelegate(thisRef: Any?, property: KProperty<*>) = createKey(property.name, factory)
 
 inline operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getUserData(this)
 inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T = thisRef.getUserData(this)!!
