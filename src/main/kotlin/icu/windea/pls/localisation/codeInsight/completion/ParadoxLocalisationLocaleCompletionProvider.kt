@@ -8,6 +8,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.ui.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.*

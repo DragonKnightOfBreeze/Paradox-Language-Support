@@ -3,6 +3,7 @@ package icu.windea.pls.config.config
 import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.cwt.psi.*
 

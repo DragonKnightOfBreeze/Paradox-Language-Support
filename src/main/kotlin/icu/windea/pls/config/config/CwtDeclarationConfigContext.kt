@@ -8,6 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.model.*
 
@@ -44,7 +45,7 @@ class CwtDeclarationConfigContext(
         return provider!!.getConfig(this, declarationConfig)
     }
     
-    object Keys: KeyRegistry
+    object Keys: KeyRegistry("CwtDeclarationConfigContext")
 }
 
 //project -> cacheKey -> declarationConfig
@@ -55,10 +56,6 @@ private val PlsKeys.declarationConfigCache by createCachedValueKey("cwt.declarat
 }
 private val Project.declarationConfigCache by PlsKeys.declarationConfigCache
 
-val CwtDeclarationConfigContext.Keys.provider by createKey<CwtDeclarationConfigContextProvider>("cwt.declarationConfigContext.provider")
+var CwtDeclarationConfigContext.provider: CwtDeclarationConfigContextProvider? by createKeyDelegate(CwtDeclarationConfigContext.Keys)
 
-var CwtDeclarationConfigContext.provider by CwtDeclarationConfigContext.Keys.provider
-
-val CwtMemberConfig.Keys.declarationConfigCacheKey by createKey<String>("cwt.declarationConfig.cacheKey")
-
-var CwtMemberConfig<*>.declarationConfigCacheKey by CwtMemberConfig.Keys.declarationConfigCacheKey
+var CwtMemberConfig<*>.declarationConfigCacheKey: String? by createKeyDelegate(CwtMemberConfig.Keys)

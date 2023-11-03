@@ -4,6 +4,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxPsiIntroducer {

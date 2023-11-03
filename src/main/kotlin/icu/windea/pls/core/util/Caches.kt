@@ -4,6 +4,7 @@ package icu.windea.pls.core.util
 
 import com.google.common.cache.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import java.util.concurrent.*
 
 inline fun <K : Any, V : Any> CacheBuilder<in K, in V>.buildCache(): Cache<K, V> {

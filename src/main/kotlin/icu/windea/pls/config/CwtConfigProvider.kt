@@ -5,6 +5,7 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import java.lang.invoke.*
 
 /**

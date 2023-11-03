@@ -7,6 +7,7 @@ import com.intellij.openapi.fileChooser.tree.*
 import com.intellij.openapi.vfs.*
 import com.intellij.ui.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*
 

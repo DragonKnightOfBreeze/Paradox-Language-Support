@@ -8,6 +8,7 @@ import com.intellij.psi.codeStyle.*
 import com.intellij.psi.formatter.common.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 

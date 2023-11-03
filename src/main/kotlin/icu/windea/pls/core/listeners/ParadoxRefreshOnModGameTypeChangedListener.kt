@@ -2,6 +2,7 @@ package icu.windea.pls.core.listeners
 
 import com.intellij.openapi.application.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*

@@ -2,6 +2,7 @@ package icu.windea.pls.core.tool.actions
 
 import com.intellij.openapi.actionSystem.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 
 @Suppress("MissingActionUpdateThread")
 class PlsToolsActionGroup: DefaultActionGroup() {

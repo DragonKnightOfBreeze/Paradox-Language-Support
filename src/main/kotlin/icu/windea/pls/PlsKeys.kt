@@ -8,13 +8,14 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.tool.*
 import java.awt.*
 
-object PlsKeys : KeyRegistry
+object PlsKeys : KeyHolder
 
 val PlsKeys.library by createKey<ParadoxLibrary>("paradox.library")
 

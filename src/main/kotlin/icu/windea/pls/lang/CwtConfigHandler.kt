@@ -21,6 +21,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.annotations.api.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -800,7 +801,7 @@ object CwtConfigHandler {
         }
         
         context.config = null
-        context.configs = null
+        context.configs = emptyList()
         return
     }
     
@@ -844,7 +845,7 @@ object CwtConfigHandler {
         }
         
         context.config = null
-        context.configs = null
+        context.configs = emptyList()
         return
     }
     
@@ -1003,12 +1004,12 @@ object CwtConfigHandler {
                 else -> ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
             }
             if(!scopeMatched1 && getSettings().completion.completeOnlyScopeIsMatched) return
-            context.put(PlsCompletionKeys.scopeMatched, scopeMatched1)
+            context.scopeMatched = scopeMatched1
         }
         
         ParadoxScriptExpressionSupport.complete(context, result)
         
-        context.scopeMatched = null
+        context.scopeMatched = true
         context.scopeContext = scopeContext
     }
     
@@ -1016,7 +1017,7 @@ object CwtConfigHandler {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val config = context.config!!
-        val configs = context.configs!!
+        val configs = context.configs
         
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return
         for(aliasConfigs in aliasGroup.values) {
@@ -1236,7 +1237,7 @@ object CwtConfigHandler {
         }
         context.config = config
         context.configs = configs
-        context.scopeMatched = null
+        context.scopeMatched = true
     }
     
     fun completeValueLinkValue(context: ProcessingContext, result: CompletionResultSet) {
@@ -1315,7 +1316,7 @@ object CwtConfigHandler {
         }
         context.config = config
         context.configs = configs
-        context.scopeMatched = null
+        context.scopeMatched = true
     }
     
     fun completeValueSetValue(context: ProcessingContext, result: CompletionResultSet) {

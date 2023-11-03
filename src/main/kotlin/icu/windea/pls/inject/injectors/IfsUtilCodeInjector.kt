@@ -3,6 +3,7 @@ package icu.windea.pls.inject.injectors
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*

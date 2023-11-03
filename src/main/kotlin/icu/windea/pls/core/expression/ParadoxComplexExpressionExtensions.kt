@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.*

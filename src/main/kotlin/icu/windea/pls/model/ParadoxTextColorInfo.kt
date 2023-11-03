@@ -4,6 +4,7 @@ import com.intellij.psi.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 

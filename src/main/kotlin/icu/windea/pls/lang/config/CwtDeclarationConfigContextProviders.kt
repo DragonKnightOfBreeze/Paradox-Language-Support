@@ -4,17 +4,16 @@ import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import java.util.function.*
 
 //region Extensions
 
-val CwtDeclarationConfigContext.Keys.gameRuleConfig by createKey<CwtGameRuleConfig>("gameRuleConfig")
-val CwtDeclarationConfigContext.Keys.onActionConfig by createKey<CwtOnActionConfig>("onActionConfig")
-
-var CwtDeclarationConfigContext.gameRuleConfig by CwtDeclarationConfigContext.Keys.gameRuleConfig
-var CwtDeclarationConfigContext.onActionConfig by CwtDeclarationConfigContext.Keys.onActionConfig
+var CwtDeclarationConfigContext.gameRuleConfig: CwtGameRuleConfig? by createKeyDelegate(CwtDeclarationConfigContext.Keys)
+var CwtDeclarationConfigContext.onActionConfig: CwtOnActionConfig? by createKeyDelegate(CwtDeclarationConfigContext.Keys)
 
 //endregion
 

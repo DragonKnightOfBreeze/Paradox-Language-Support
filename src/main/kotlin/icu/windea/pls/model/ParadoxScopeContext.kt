@@ -2,6 +2,7 @@ package icu.windea.pls.model
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.overridden.*
@@ -154,7 +155,7 @@ class ParadoxScopeContext private constructor(
         }
     }
     
-    object Keys: KeyRegistry
+    object Keys: KeyHolder
 }
 
 val ParadoxScopeContext.Keys.overriddenProvider by createKey<ParadoxOverriddenScopeContextProvider>("paradox.scopeContext.overriddenProvider")

@@ -12,10 +12,12 @@ import com.intellij.ui.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
+import com.intellij.ui.dsl.builder.MutableProperty
 import com.intellij.ui.scale.*
 import com.intellij.ui.table.*
 import com.intellij.util.*
 import com.intellij.util.ui.*
+import icu.windea.pls.core.util.*
 import java.awt.*
 import java.awt.image.*
 import javax.swing.*

@@ -48,6 +48,7 @@ import com.intellij.util.io.*
 import com.intellij.util.xmlb.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -276,13 +277,6 @@ inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KP
 //endregion
 
 //region CachedValue Extensions
-inline fun <T> createCachedValueKey(
-    name: String,
-    trackValue: Boolean = false,
-    project: Project = getDefaultProject(),
-    provider: CachedValueProvider<T>
-) = CachedValueKey(name, trackValue, project, provider)
-
 fun <T> T.withDependencyItems(vararg dependencyItems: Any): CachedValueProvider.Result<T> {
     if(dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
     return CachedValueProvider.Result.create(this, *dependencyItems)

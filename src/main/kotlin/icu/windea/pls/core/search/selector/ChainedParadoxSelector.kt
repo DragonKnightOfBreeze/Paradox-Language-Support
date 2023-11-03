@@ -3,6 +3,7 @@ package icu.windea.pls.core.search.selector
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.core.settings.*

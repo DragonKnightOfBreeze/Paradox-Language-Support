@@ -10,6 +10,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.config.*
@@ -65,7 +66,7 @@ class CwtConfigContext(
         return provider!!.skipTooManyExpressionCheck(this)
     }
     
-    object Keys : KeyRegistry
+    object Keys : KeyRegistry("CwtConfigContext")
 }
 
 //project -> rootFile -> cacheKey -> configs
@@ -77,13 +78,9 @@ private val PlsKeys.configsCache by createCachedValueKey("paradox.configContext.
 }
 private val Project.configsCache by PlsKeys.configsCache
 
-val CwtConfigContext.Keys.definitionInfo by createKey<ParadoxDefinitionInfo>("paradox.configContext.definitionInfo")
-val CwtConfigContext.Keys.elementPathFromRoot by createKey<ParadoxElementPath>("paradox.configContext.elementPathFromRoot")
-val CwtConfigContext.Keys.provider by createKey<CwtConfigContextProvider>("paradox.configContext.provider")
-
-var CwtConfigContext.definitionInfo by CwtConfigContext.Keys.definitionInfo
-var CwtConfigContext.elementPathFromRoot by CwtConfigContext.Keys.elementPathFromRoot
-var CwtConfigContext.provider by CwtConfigContext.Keys.provider
+var CwtConfigContext.definitionInfo: ParadoxDefinitionInfo? by createKeyDelegate(CwtConfigContext.Keys)
+var CwtConfigContext.elementPathFromRoot: ParadoxElementPath? by createKeyDelegate(CwtConfigContext.Keys)
+var CwtConfigContext.provider: CwtConfigContextProvider? by createKeyDelegate(CwtConfigContext.Keys)
 
 fun CwtConfigContext.isDefinition(): Boolean {
     return definitionInfo != null && elementPathFromRoot.let { it != null && it.isEmpty() }

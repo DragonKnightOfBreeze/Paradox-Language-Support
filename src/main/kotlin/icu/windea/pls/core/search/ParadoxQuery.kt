@@ -2,6 +2,7 @@ package icu.windea.pls.core.search
 
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.priority.*

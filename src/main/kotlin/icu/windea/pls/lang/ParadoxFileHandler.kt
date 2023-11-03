@@ -2,6 +2,7 @@ package icu.windea.pls.lang
 
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 
 object ParadoxFileHandler {
     const val scriptedVariablesPath = "common/scripted_variables"

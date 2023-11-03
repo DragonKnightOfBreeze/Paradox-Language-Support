@@ -16,5 +16,5 @@ class CwtConfigGroup(
     val gameType: ParadoxGameType?,
     val project: Project,
 ) : UserDataHolderBase() {
-    object Keys : KeyRegistry
+    object Keys : KeyRegistry("CwtConfigGroup")
 }

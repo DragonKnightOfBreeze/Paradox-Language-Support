@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.model.*

@@ -6,7 +6,9 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.localisation.*

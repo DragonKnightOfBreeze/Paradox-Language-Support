@@ -6,6 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.ParadoxScopeFieldExpression.*
 import icu.windea.pls.core.expression.errors.*

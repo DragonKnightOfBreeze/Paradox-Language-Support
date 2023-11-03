@@ -1,6 +1,7 @@
 package icu.windea.pls.config.expression
 
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 
 /**
  * @property type 表达式类型，即CWT规则中的dataType。

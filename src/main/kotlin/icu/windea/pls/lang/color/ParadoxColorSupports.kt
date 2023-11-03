@@ -7,6 +7,7 @@ import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import java.awt.*

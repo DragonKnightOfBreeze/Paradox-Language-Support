@@ -3,6 +3,7 @@ package icu.windea.pls.core.psi
 import com.intellij.psi.impl.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxPsiTreeChangePreprocessor: PsiTreeChangePreprocessor {

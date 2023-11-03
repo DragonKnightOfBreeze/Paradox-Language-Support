@@ -7,10 +7,12 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.injection.*
@@ -18,19 +20,12 @@ import icu.windea.pls.script.psi.*
 
 //region Extensions
 
-val CwtConfigContext.Keys.inlineScriptRootConfigContext by createKey<CwtConfigContext>("inlineScriptRootConfigContext")
-val CwtConfigContext.Keys.inlineScriptExpression by createKey<String>("inlineScriptExpression")
-val CwtConfigContext.Keys.inlineScriptHasConflict by createKey<Boolean>("inlineScriptHasConflict")
-val CwtConfigContext.Keys.inlineScriptHasRecursion by createKey<Boolean>("inlineScriptHasRecursion")
-val CwtConfigContext.Keys.parameterValueRootConfigContext by createKey<CwtConfigContext>("parameterValueRootConfigContext")
-val CwtConfigContext.Keys.parameterElement by createKey<ParadoxParameterElement>("parameterElement")
-
-var CwtConfigContext.inlineScriptRootConfigContext by CwtConfigContext.Keys.inlineScriptRootConfigContext
-var CwtConfigContext.inlineScriptExpression by CwtConfigContext.Keys.inlineScriptExpression
-var CwtConfigContext.inlineScriptHasConflict by CwtConfigContext.Keys.inlineScriptHasConflict
-var CwtConfigContext.inlineScriptHasRecursion by CwtConfigContext.Keys.inlineScriptHasRecursion
-var CwtConfigContext.parameterValueRootConfigContext by CwtConfigContext.Keys.parameterValueRootConfigContext
-var CwtConfigContext.parameterElement by CwtConfigContext.Keys.parameterElement
+var CwtConfigContext.inlineScriptRootConfigContext: CwtConfigContext? by createKeyDelegate(CwtConfigContext.Keys)
+var CwtConfigContext.inlineScriptExpression: String? by createKeyDelegate(CwtConfigContext.Keys)
+var CwtConfigContext.inlineScriptHasConflict: Boolean? by createKeyDelegate(CwtConfigContext.Keys)
+var CwtConfigContext.inlineScriptHasRecursion: Boolean? by createKeyDelegate(CwtConfigContext.Keys)
+var CwtConfigContext.parameterValueRootConfigContext: CwtConfigContext? by createKeyDelegate(CwtConfigContext.Keys)
+var CwtConfigContext.parameterElement: ParadoxParameterElement? by createKeyDelegate(CwtConfigContext.Keys)
 
 //endregion
 

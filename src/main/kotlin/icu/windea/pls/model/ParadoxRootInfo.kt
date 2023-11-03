@@ -2,6 +2,7 @@ package icu.windea.pls.model
 
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import java.nio.file.*
 

@@ -11,6 +11,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -26,9 +27,9 @@ import icu.windea.pls.script.psi.*
 
 //region Extensions
 
-val ParadoxModifierSupport.Keys.templateReferences by createKey<List<ParadoxTemplateSnippetExpressionReference>>("modifierSupport.templateReferences")
-val ParadoxModifierSupport.Keys.economicCategoryInfo by createKey<StellarisEconomicCategoryInfo>("modifierSupport.economicCategoryInfo")
-val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by createKey<StellarisEconomicCategoryModifierInfo>("modifierSupport.economicCategoryModifierInfo")
+val ParadoxModifierSupport.Keys.templateReferences by createKey<List<ParadoxTemplateSnippetExpressionReference>>("paradox.modifier.support.templateReferences")
+val ParadoxModifierSupport.Keys.economicCategoryInfo by createKey<StellarisEconomicCategoryInfo>("paradox.modifier.support.economicCategoryInfo")
+val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by createKey<StellarisEconomicCategoryModifierInfo>("paradox.modifier.support.economicCategoryModifierInfo")
 
 var ParadoxModifierInfo.templateReferences by ParadoxModifierSupport.Keys.templateReferences
 var ParadoxModifierInfo.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo

@@ -2,6 +2,7 @@ package icu.windea.pls.script.psi
 
 import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import java.awt.*
 

@@ -3,6 +3,7 @@ package icu.windea.pls.config.config
 import icu.windea.pls.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 
 data class CwtConfigGroupInfo(
     val groupName: String

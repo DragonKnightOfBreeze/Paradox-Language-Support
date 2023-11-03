@@ -2,6 +2,7 @@ package icu.windea.pls.dds
 
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.tool.*
 import kotlin.io.path.*
 

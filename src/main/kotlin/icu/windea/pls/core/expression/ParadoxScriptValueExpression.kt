@@ -7,6 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.ParadoxScriptValueExpression.*
 import icu.windea.pls.core.expression.errors.*
@@ -128,7 +129,7 @@ class ParadoxScriptValueExpressionImpl(
                     val config = context.config
                     val configs = context.configs
                     context.config = this.config
-                    context.configs = null
+                    context.configs = emptyList()
                     CwtConfigHandler.completeScriptExpression(context, resultToUse)
                     context.config = config
                     context.configs = configs
@@ -155,7 +156,7 @@ class ParadoxScriptValueExpressionImpl(
                         context.keyword = keywordToUse
                         context.keywordOffset = node.rangeInExpression.startOffset
                         context.config = inferredConfig
-                        context.configs = null
+                        context.configs = emptyList()
                         CwtConfigHandler.completeScriptExpression(context, resultToUse)
                         context.config = config
                         context.configs = configs

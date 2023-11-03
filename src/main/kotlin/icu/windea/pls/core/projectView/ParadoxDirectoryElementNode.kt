@@ -9,6 +9,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*

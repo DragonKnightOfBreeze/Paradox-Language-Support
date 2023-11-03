@@ -7,6 +7,7 @@ import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDe
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.model.*
 import java.awt.*

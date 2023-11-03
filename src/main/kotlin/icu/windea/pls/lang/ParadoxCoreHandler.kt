@@ -19,6 +19,7 @@ import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.data.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.listeners.*

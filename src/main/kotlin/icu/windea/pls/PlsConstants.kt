@@ -2,6 +2,7 @@ package icu.windea.pls
 
 import icons.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 
 object PlsConstants {
     val locationClass = PlsIcons::class.java

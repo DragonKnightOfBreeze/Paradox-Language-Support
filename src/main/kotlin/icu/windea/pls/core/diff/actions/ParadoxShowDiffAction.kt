@@ -6,6 +6,7 @@ import com.intellij.diff.util.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.settings.*
 
 //com.intellij.diff.actions.BaseShowDiffAction

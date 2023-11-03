@@ -3,6 +3,7 @@ package icu.windea.pls.tool.script
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
 @Suppress("unused")
