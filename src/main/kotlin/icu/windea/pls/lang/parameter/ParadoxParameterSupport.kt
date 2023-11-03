@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
@@ -122,7 +123,7 @@ interface ParadoxParameterSupport {
         }
     }
     
-    object Keys : KeyHolder
+    object Keys : KeyRegistry
 }
 
 val ParadoxParameterSupport.Keys.support by createKey<ParadoxParameterSupport>("paradox.parameter.support.support")

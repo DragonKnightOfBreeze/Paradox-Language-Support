@@ -4,8 +4,8 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.setting.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 
 interface CwtConfigGroup: UserDataHolder {
@@ -95,5 +95,5 @@ interface CwtConfigGroup: UserDataHolder {
 	//支持参数的定义类型
 	val definitionTypesSupportParameters: Set<String>
 	
-	object Keys: KeyHolder
+	object Keys: KeyRegistry
 }

@@ -11,7 +11,7 @@ import icu.windea.pls.core.util.*
 /**
  * 用于CWT规则分组的初始化的最后，对其进行一些必要的处理。
  */
-abstract class PostCwtConfigGroupSupport : CwtConfigGroupSupportBase()
+abstract class PostCwtConfigGroupSupport : CwtConfigGroupSupport
 
 /**
  * 用于初始化需要经过计算的那些数据。
@@ -134,4 +134,7 @@ class BasePostCwtConfigGroupSupport : PostCwtConfigGroupSupport() {
         return true
     }
     
+    private fun resolveDeclarationConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDeclarationConfig {
+        return CwtDeclarationConfig(propertyConfig.pointer, propertyConfig.info, name, propertyConfig)
+    }
 }

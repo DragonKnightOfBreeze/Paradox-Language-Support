@@ -44,7 +44,7 @@ class CwtDeclarationConfigContext(
         return provider!!.getConfig(this, declarationConfig)
     }
     
-    object Keys: KeyHolder
+    object Keys: KeyRegistry
 }
 
 //project -> cacheKey -> declarationConfig

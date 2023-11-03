@@ -9,7 +9,7 @@ import icu.windea.pls.model.*
 /**
  * 用于支持基于CWT规则文件的CWT规则分组。
  */
-abstract class FileBasedCwtConfigGroupSupport: CwtConfigGroupSupportBase() {
+abstract class FileBasedCwtConfigGroupSupport: CwtConfigGroupSupport {
     override fun process(configGroup: CwtConfigGroup): Boolean {
         //do nothing
         return true

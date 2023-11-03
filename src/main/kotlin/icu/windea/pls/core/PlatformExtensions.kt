@@ -259,29 +259,13 @@ fun <T> ProcessingContext.getOrDefault(key: Key<T>): T? {
     return value
 }
 
-inline fun <T> createKey(name: String) = Key.create<T>(name)
-inline fun <T> createKey(name: String, factory: Supplier<T>) = KeyWithDefaultValue.create(name, factory)
-
-inline operator fun <T> Key<T>.getValue(thisRef: KeyHolder, property: KProperty<*>) = this
-inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: KeyHolder, property: KProperty<*>) = this
-
-class KeyDelegate<T>
-
-class KeyWithDefaultValueDelegate<T>(val factory: Supplier<T>)
-
-inline fun <T> createKey() = KeyDelegate<T>()
-inline fun <T> createKey(factory: Supplier<T>) = KeyWithDefaultValueDelegate(factory)
-
-inline operator fun <T> KeyDelegate<T>.provideDelegate(thisRef: Any?, property: KProperty<*>) = createKey<T>(property.name)
-inline operator fun <T> KeyWithDefaultValueDelegate<T>.provideDelegate(thisRef: Any?, property: KProperty<*>) = createKey(property.name, factory)
+inline operator fun <T> UserDataHolder.get(key: Key<T>) = this.getUserData(key)
+inline operator fun <T> UserDataHolder.get(key: KeyWithDefaultValue<T>) = this.getUserData(key)!!
+inline operator fun <T> UserDataHolder.set(key: KeyWithDefaultValue<T>, value: T?) = this.putUserData(key, value)
 
 inline operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getUserData(this)
 inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T = thisRef.getUserData(this)!!
 inline operator fun <T> Key<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T?) = thisRef.putUserData(this, value)
-
-inline operator fun <T> UserDataHolder.get(key: Key<T>) = this.getUserData(key)
-inline operator fun <T> UserDataHolder.get(key: KeyWithDefaultValue<T>) = this.getUserData(key)!!
-inline operator fun <T> UserDataHolder.set(key: KeyWithDefaultValue<T>, value: T?) = this.putUserData(key, value)
 
 inline operator fun <T> Key<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T? = thisRef.getOrDefault(this)
 inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T = thisRef.getOrDefault(this)!!

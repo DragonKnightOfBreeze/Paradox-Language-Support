@@ -12,6 +12,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
@@ -101,7 +102,7 @@ interface ParadoxModifierSupport {
         }
     }
     
-    object Keys: KeyHolder
+    object Keys: KeyRegistry
 }
 
 val ParadoxModifierSupport.Keys.support by createKey<ParadoxModifierSupport>("paradox.modifier.support.support")

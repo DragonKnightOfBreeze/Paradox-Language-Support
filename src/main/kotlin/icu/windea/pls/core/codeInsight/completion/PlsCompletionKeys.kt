@@ -6,9 +6,10 @@ import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 
-object PlsCompletionKeys : KeyHolder
+object PlsCompletionKeys : KeyRegistry
 
 val PlsCompletionKeys.completionIds by createKey<MutableSet<String>>("paradoxCompletion.completionIds")
 val PlsCompletionKeys.parameters by createKey<CompletionParameters>("paradoxCompletion.parameters")

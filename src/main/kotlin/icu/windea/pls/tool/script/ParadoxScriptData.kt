@@ -1,7 +1,7 @@
 package icu.windea.pls.tool.script
 
 import com.intellij.openapi.util.*
-import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -18,5 +18,5 @@ interface ParadoxScriptData : UserDataHolder {
     
     fun getAllData(path: String): List<ParadoxScriptData> = emptyList()
     
-    object Keys: KeyHolder
+    object Keys: KeyRegistry
 }
