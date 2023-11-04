@@ -2,6 +2,7 @@ package icu.windea.pls.lang
 
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.core.annotations.*
@@ -36,7 +37,7 @@ object ParadoxTechnologyHandler {
         }
         
         fun getResearchAreas(): Set<String> {
-            return getConfigGroups().stellaris.enums.get("research_area")?.values.orEmpty()
+            return getConfigGroup(ParadoxGameType.Stellaris).enums.get("research_area")?.values.orEmpty()
         }
         
         fun getTechnologyCategories(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {

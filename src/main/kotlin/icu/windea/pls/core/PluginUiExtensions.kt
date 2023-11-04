@@ -2,6 +2,7 @@ package icu.windea.pls.core
 
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.settings.*
 
 fun Row.localeComboBox(settings: ParadoxSettingsState) =
@@ -9,6 +10,6 @@ fun Row.localeComboBox(settings: ParadoxSettingsState) =
         if(value == "auto") {
             text = PlsBundle.message("locale.auto")
         } else {
-            text = getConfigGroups().core.localisationLocalesById.getValue(value).description
+            text = getConfigGroup(null).localisationLocalesById.getValue(value).description
         }
     })

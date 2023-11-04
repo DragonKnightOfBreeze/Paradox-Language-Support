@@ -1,16 +1,21 @@
 package icu.windea.pls.lang.configGroup
 
 import com.google.common.cache.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
+import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.progress.impl.*
 import com.intellij.openapi.project.*
+import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
+import java.util.concurrent.*
 
 @Service(Service.Level.PROJECT)
 class CwtConfigGroupService(
-    private val project: Project
+    val project: Project
 ) {
     val cache = CacheBuilder.newBuilder().buildCache<String, CwtConfigGroup> { createConfigGroup(ParadoxGameType.resolve(it)) }
     
@@ -34,9 +39,22 @@ class CwtConfigGroupService(
     }
     
     private fun initConfigGroup(configGroup: CwtConfigGroup) {
-        val supports = CwtConfigGroupDataProvider.EP_NAME.extensionList
-        supports.all f@{ support ->
-            support.process(configGroup)
+        //需要在背景进度指示器中显示初始化的进度
+        
+        val name = configGroup.name
+        thisLogger().info("Initialize CWT config group '$name'...")
+        val start = System.currentTimeMillis()
+        
+        val indicator = BackgroundableProcessIndicator(project, PlsBundle.message("configGroup.init", name), null, "", false)
+        val callable =  Callable {
+            val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
+            dataProviders.all f@{ dataProvider ->
+                dataProvider.process(configGroup)
+            }
         }
+        ReadAction.nonBlocking(callable).wrapProgress(indicator).expireWhen { project.isDisposed }.executeSynchronously()
+        
+        val end = System.currentTimeMillis()
+        thisLogger().info("Initialize CWT config group '$name' finished in ${end - start} ms.")
     }
 }

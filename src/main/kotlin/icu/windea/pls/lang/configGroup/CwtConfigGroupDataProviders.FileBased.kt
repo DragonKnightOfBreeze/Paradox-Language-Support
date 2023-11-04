@@ -1,6 +1,10 @@
 package icu.windea.pls.lang.configGroup
 
+import com.intellij.openapi.application.*
+import com.intellij.openapi.progress.ProgressIndicatorProvider
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
@@ -19,6 +23,12 @@ import kotlin.collections.set
  */
 class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {
+        withProgressIndicator {
+            text = PlsBundle.message("configGroup.processFiles")
+            text2 = ""
+            isIndeterminate = false
+        }
+        
         //按照文件路径（相对于规则分组的根目录）正序读取所有规则文件
         //后加入的规则文件会覆盖先加入的同路径的规则文件
         //后加入的数据项会覆盖先加入的同名同类型的数据项
@@ -32,8 +42,13 @@ class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
             }
         }
         
+        var i = 0
         allFiles.all f@{ (filePath, tuple) ->
             val (file, fileProcessor) = tuple
+            withProgressIndicator {
+                text2 = PlsBundle.message("configGroup.processFile", file.path)
+                fraction = i++ / allFiles.size.toDouble() 
+            }
             processFile(filePath, file, fileProcessor, configGroup)
         }
         

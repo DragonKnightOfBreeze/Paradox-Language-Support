@@ -2,6 +2,7 @@ package icu.windea.pls.lang.configGroup
 
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
@@ -16,6 +17,11 @@ class BuiltInCwtConfigGroupFileProvider: CwtConfigGroupFileProvider {
         val rootPath = "/config/${configGroup.gameType.id}"
         val rootUrl = rootPath.toClasspathUrl()
         val rootDir = VfsUtil.findFileByURL(rootUrl) ?: return true
+        withProgressIndicator {
+            text = PlsBundle.message("configGroup.collectBuiltinFiles")
+            text2 = ""
+            isIndeterminate = true
+        }
         VfsUtil.visitChildrenRecursively(rootDir, object: VirtualFileVisitor<Void>() {
             override fun visitFile(file: VirtualFile): Boolean {
                 if(file.extension?.lowercase() == "cwt") {
@@ -39,6 +45,11 @@ class ProjectCwtConfigGroupFileProvider: CwtConfigGroupFileProvider {
         val projectRootDir = configGroup.project.guessProjectDir() ?: return true
         val rootPath = ".config/${configGroup.gameType.id}"
         val rootDir = VfsUtil.findRelativeFile(projectRootDir, rootPath) ?: return true
+        withProgressIndicator {
+            text = PlsBundle.message("configGroup.collectFiles", rootPath)
+            text2 = ""
+            isIndeterminate = true
+        }
         VfsUtil.visitChildrenRecursively(rootDir, object: VirtualFileVisitor<Void>() {
             override fun visitFile(file: VirtualFile): Boolean {
                 if(file.extension?.lowercase() == "cwt") {

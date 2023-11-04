@@ -7,8 +7,8 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.ui.*
 import com.intellij.util.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.*
@@ -49,7 +49,7 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
         val localeIdFromFileName = file.castOrNull<ParadoxLocalisationFile>()?.getLocaleIdFromFileName()
         //批量提示
         val lookupElements = mutableSetOf<LookupElement>()
-        val locales = getConfigGroups(project).core.localisationLocalesById.values
+        val locales = getConfigGroup(project, null).localisationLocalesById.values
         for(locale in locales) {
             ProgressManager.checkCanceled()
             val element = locale.pointer.element ?: continue

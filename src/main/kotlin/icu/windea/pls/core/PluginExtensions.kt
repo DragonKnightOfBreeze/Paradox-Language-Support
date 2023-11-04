@@ -189,7 +189,7 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
     }
 }
 
-private fun String.toLocale(from: PsiElement): CwtLocalisationLocaleConfig {
+private fun String.toLocale(from: PsiElement): CwtLocalisationLocaleConfig? {
     return getConfigGroup(from.project, null).localisationLocalesById.get(this)
 }
 //endregion

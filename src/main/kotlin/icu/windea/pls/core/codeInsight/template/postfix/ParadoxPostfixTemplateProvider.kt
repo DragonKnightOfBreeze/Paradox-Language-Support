@@ -4,14 +4,14 @@ import com.intellij.codeInsight.template.postfix.templates.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 
 class ParadoxPostfixTemplateProvider: PostfixTemplateProvider {
 	private val defaultTemplates by lazy {
 		buildSet<PostfixTemplate> {
 			val provider = this@ParadoxPostfixTemplateProvider
-			val postfixTemplateSettings = getConfigGroups().core.postfixTemplateSettings
+			val postfixTemplateSettings = getConfigGroup(null).postfixTemplateSettings
 			for((groupName, settings) in postfixTemplateSettings) {
 				when(groupName) {
 					ParadoxVariableOperationExpressionPostfixTemplate.Data.GROUP_NAME -> {

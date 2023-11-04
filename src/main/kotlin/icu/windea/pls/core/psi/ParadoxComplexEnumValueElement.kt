@@ -6,8 +6,8 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.model.*
@@ -29,7 +29,8 @@ class ParadoxComplexEnumValueElement(
     constructor(parent: PsiElement, info: ParadoxComplexEnumValueInfo, project: Project)
         : this(parent, info.name, info.enumName, info.readWriteAccess, info.gameType, project)
     
-    val searchScopeType = ParadoxSearchScopeTypes.get(getConfigGroup(project, gameType).complexEnums.get(enumName)?.searchScopeType)
+    val searchScopeType: ParadoxSearchScopeType
+        get() = ParadoxSearchScopeTypes.get(getConfigGroup(project, gameType).complexEnums.get(enumName)?.searchScopeType)
     
     override fun getIcon(): Icon {
         return PlsIcons.ComplexEnumValue

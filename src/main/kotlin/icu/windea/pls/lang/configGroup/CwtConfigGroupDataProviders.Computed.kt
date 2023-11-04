@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.configGroup
 
+import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -13,6 +14,12 @@ import icu.windea.pls.core.util.*
  */
 class CwtConfigGroupComputedDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {
+        withProgressIndicator { 
+            text = PlsBundle.message("configGroup.computeData")
+            text2 = ""
+            isIndeterminate = true
+        }
+        
         run {
             configGroup.modifiers.values
                 .filter { it.template.isNotEmpty() }

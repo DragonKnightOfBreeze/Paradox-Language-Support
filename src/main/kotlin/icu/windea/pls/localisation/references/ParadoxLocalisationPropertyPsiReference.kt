@@ -5,6 +5,7 @@ package icu.windea.pls.localisation.references
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.core.collections.*
@@ -75,7 +76,7 @@ class ParadoxLocalisationPropertyPsiReference(
         if(resolvedParameter != null) return resolvedParameter
         
         //尝试解析成predefined_parameter
-        val resolvedPredefinedParameter = getConfigGroups(project).core.localisationLocalesById.get(name)?.pointer?.element
+        val resolvedPredefinedParameter = getConfigGroup(project, null).localisationLocalesById.get(name)?.pointer?.element
         if(resolvedPredefinedParameter != null) return resolvedPredefinedParameter
         
         return null
@@ -101,7 +102,7 @@ class ParadoxLocalisationPropertyPsiReference(
         if(resolvedParameter != null) return resolvedParameter.let { arrayOf(PsiElementResolveResult(it)) }
         
         //尝试解析成predefined_parameter
-        val resolvedPredefinedParameter = getConfigGroups(project).core.localisationLocalesById.get(name)?.pointer?.element
+        val resolvedPredefinedParameter = getConfigGroup(project, null).localisationLocalesById.get(name)?.pointer?.element
         if(resolvedPredefinedParameter != null) return resolvedPredefinedParameter.let { arrayOf(PsiElementResolveResult(it)) }
         
         return ResolveResult.EMPTY_ARRAY

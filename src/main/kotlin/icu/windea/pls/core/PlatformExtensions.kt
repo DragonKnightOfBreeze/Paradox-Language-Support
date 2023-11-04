@@ -48,7 +48,6 @@ import com.intellij.util.io.*
 import com.intellij.util.xmlb.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -974,6 +973,13 @@ fun getInspectionToolState(shortName: String, element: PsiElement?, project: Pro
 }
 
 val ScopeToolState.enabledTool: InspectionProfileEntry? get() = if(isEnabled) tool.tool else null
+//endregion
+
+//region Progress Extensions
+inline fun withProgressIndicator(action: ProgressIndicator.() -> Unit) {
+    val progressIndicator = ProgressIndicatorProvider.getInstance().progressIndicator ?: return
+    progressIndicator.action()
+}
 //endregion
 
 //region Xml Converters

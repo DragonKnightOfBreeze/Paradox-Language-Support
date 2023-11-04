@@ -14,13 +14,13 @@ import icu.windea.pls.core.util.*
 annotation class Tags(vararg val value: Tag)
 
 enum class Tag {
-    Computed, Extended
+    Computed, Builtin, Extended
 }
 
-@Tags(Tag.Extended)
+@Tags(Tag.Builtin, Tag.Extended)
 val CwtConfigGroup.foldingSettings: Map<@CaseInsensitive String, Map<String, CwtFoldingSettings>>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-@Tags(Tag.Extended)
+@Tags(Tag.Builtin, Tag.Extended)
 val CwtConfigGroup.postfixTemplateSettings: Map<String, Map<@CaseInsensitive String, CwtPostfixTemplateSettings>>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
