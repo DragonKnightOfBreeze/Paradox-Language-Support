@@ -19,7 +19,7 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
         val file = parameters.originalFile
         val project = file.project
         val gameType = file.fileInfo?.rootInfo?.gameType ?: return
-        val configGroup = getConfigGroups(project).get(gameType)
+        val configGroup = getConfigGroup(project, gameType)
         
         context.parameters = parameters
         context.contextElement = element

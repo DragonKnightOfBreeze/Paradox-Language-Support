@@ -1,182 +1,67 @@
-package icu.windea.pls.config
+package icu.windea.pls.lang.configGroup
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
-import com.intellij.util.containers.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
-import icu.windea.pls.config.setting.*
+import icu.windea.pls.config.settings.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
-import kotlin.Pair
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.isNullOrEmpty
 import kotlin.collections.set
 
-class CwtConfigGroupImpl(
-    override val project: Project,
-    override val gameType: ParadoxGameType?,
-    override val info: CwtConfigGroupInfo,
-    fileGroup: MutableMap<String, VirtualFile>
-) : CwtConfigGroup, UserDataHolderBase() {
-    override val foldingSettings: MutableMap<String, MutableMap<String, CwtFoldingSetting>> = mutableMapOf()
-    override val postfixTemplateSettings: MutableMap<String, MutableMap<String, CwtPostfixTemplateSetting>> = mutableMapOf()
-    
-    override val systemLinks: MutableMap<@CaseInsensitive String, CwtSystemLinkConfig> = caseInsensitiveStringKeyMap()
-    override val localisationLocalesById: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
-    override val localisationLocalesByCode: MutableMap<String, CwtLocalisationLocaleConfig> = mutableMapOf()
-    override val localisationPredefinedParameters: MutableMap<String, CwtLocalisationPredefinedParameterConfig> = mutableMapOf()
-    
-    override val folders: MutableSet<String> = mutableSetOf()
-    
-    override val types: MutableMap<String, CwtTypeConfig> = mutableMapOf()
-    override val swappedTypes: MutableMap<String, CwtTypeConfig> = mutableMapOf()
-    override val type2ModifiersMap: MutableMap<String, MutableMap<String, CwtModifierConfig>> = mutableMapOf()
-    
-    override val declarations: MutableMap<String, CwtDeclarationConfig> = mutableMapOf()
-    
-    override val values: MutableMap<String, CwtEnumConfig> = mutableMapOf()
-    //enumValue可以是int、float、bool类型，统一用字符串表示
-    override val enums: MutableMap<String, CwtEnumConfig> = mutableMapOf()
-    //基于enum_name进行定位，对应的可能是key/value
-    override val complexEnums: MutableMap<String, CwtComplexEnumConfig> = mutableMapOf()
-    
-    override val links: MutableMap<@CaseInsensitive String, CwtLinkConfig> = caseInsensitiveStringKeyMap()
-    override val linksAsScopeNotData: MutableMap<@CaseInsensitive String, CwtLinkConfig> = caseInsensitiveStringKeyMap()
-    override val linksAsScopeWithPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig> = caseInsensitiveStringKeyMap()
-    override val linksAsScopeWithoutPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig> = caseInsensitiveStringKeyMap()
-    override val linksAsValueNotData: MutableMap<@CaseInsensitive String, CwtLinkConfig> = caseInsensitiveStringKeyMap()
-    override val linksAsValueWithPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig> = caseInsensitiveStringKeyMap()
-    override val linksAsValueWithoutPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig> = caseInsensitiveStringKeyMap()
-    
-    override val localisationLinks: MutableMap<@CaseInsensitive String, CwtLocalisationLinkConfig> = caseInsensitiveStringKeyMap()
-    override val localisationCommands: MutableMap<@CaseInsensitive String, CwtLocalisationCommandConfig> = caseInsensitiveStringKeyMap()
-    
-    override val scopes: MutableMap<@CaseInsensitive String, CwtScopeConfig> = caseInsensitiveStringKeyMap()
-    override val scopeAliasMap: MutableMap<@CaseInsensitive String, CwtScopeConfig> = caseInsensitiveStringKeyMap()
-    override val scopeGroups: MutableMap<String, CwtScopeGroupConfig> = mutableMapOf()
-    
-    override val singleAliases: MutableMap<String, CwtSingleAliasConfig> = mutableMapOf()
-    override val aliasGroups: MutableMap<String, MutableMap<String, MutableList<CwtAliasConfig>>> = mutableMapOf()
-    override val inlineConfigGroup: MutableMap<String, MutableList<CwtInlineConfig>> = mutableMapOf()
-    
-    override val gameRules: MutableMap<String, CwtGameRuleConfig> = mutableMapOf()
-    override val onActions: MutableMap<String, CwtOnActionConfig> = mutableMapOf()
-    
-    override val modifierCategories: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
-    override val modifiers: MutableMap<@CaseInsensitive String, CwtModifierConfig> = caseInsensitiveStringKeyMap()
-    override val generatedModifiers: Map<@CaseInsensitive String, CwtModifierConfig> by lazy {
-        //put xxx_<xxx>_xxx before xxx_<xxx>
-        modifiers.values
-            .filter { it.template.isNotEmpty() }
-            .sortedByDescending { it.template.snippetExpressions.size }
-            .associateByTo(caseInsensitiveStringKeyMap()) { it.name }
-    }
-    override val predefinedModifiers: Map<@CaseInsensitive String, CwtModifierConfig> by lazy {
-        modifiers.values
-            .filter { it.template.isEmpty() }
-            .associateByTo(caseInsensitiveStringKeyMap()) { it.name }
-    }
-    
-    init {
-        runReadAction {
-            for(virtualFile in fileGroup.values) {
-                var result: Boolean
-                //val fileName = virtualFile.name
-                val fileExtension = virtualFile.extension?.lowercase()
-                when {
-                    fileExtension == "cwt" -> {
-                        val file = virtualFile.toPsiFile(project) ?: continue
-                        if(file !is CwtFile) continue
-                        val fileConfig = CwtConfigResolver.resolve(file, info)
-                        
-                        result = resolveCwtSettingInCwtFile(fileConfig)
-                        if(!result) continue
-                        
-                        result = resolveExtendedCwtConfigInCwtFile(fileConfig)
-                        if(!result) continue
-                        
-                        resolveCwtConfigInCwtFile(fileConfig)
-                    }
-                }
+/**
+ * 用于初始CWT规则分组中基于文件内容的那些数据。
+ */
+class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
+    override fun process(configGroup: CwtConfigGroup): Boolean {
+        //按照文件路径（相对于规则分组的根目录）正序读取所有规则文件
+        //后加入的规则文件会覆盖先加入的同路径的规则文件
+        //后加入的数据项会覆盖先加入的同名同类型的数据项
+        
+        val allFiles = mutableMapOf<String, Tuple2<VirtualFile, CwtConfigGroupFileProvider>>()
+        val fileProcessors = CwtConfigGroupFileProvider.EP_NAME.extensionList
+        fileProcessors.all f@{ fileProcessor ->
+            fileProcessor.processFiles(configGroup) { filePath, file ->
+                allFiles[filePath] = tupleOf(file, fileProcessor)
+                true
             }
         }
-    }
-    
-    init {
-        bindMissingDeclarationsOfSwappedTypes()
-        bindMissingLocalisationLinks()
-        bindModifierCategories()
-    }
-    
-    override val aliasKeysGroupConst: MutableMap<String, Map<@CaseInsensitive String, String>> = mutableMapOf()
-    override val aliasKeysGroupNoConst: MutableMap<String, Set<String>> = mutableMapOf()
-    
-    init {
-        bindAliasKeysGroup()
-    }
-    
-    override val linksAsScopeWithPrefixSorted: List<CwtLinkConfig> by lazy {
-        linksAsScopeWithPrefix.values.sortedByPriority({ it.dataSource!! }, { this })
-    }
-    override val linksAsValueWithPrefixSorted: List<CwtLinkConfig> by lazy {
-        linksAsValueWithPrefix.values.sortedByPriority({ it.dataSource!! }, { this })
-    }
-    override val linksAsScopeWithoutPrefixSorted: List<CwtLinkConfig> by lazy {
-        linksAsScopeWithoutPrefix.values.sortedByPriority({ it.dataSource!! }, { this })
-    }
-    override val linksAsValueWithoutPrefixSorted: List<CwtLinkConfig> by lazy {
-        linksAsValueWithoutPrefix.values.sortedByPriority({ it.dataSource!! }, { this })
-    }
-    override val linksAsVariable: List<CwtLinkConfig> by lazy {
-        linksAsValueWithoutPrefix["variable"].toSingletonListOrEmpty()
-    }
-    
-    override val aliasNamesSupportScope: MutableSet<String> = mutableSetOf()
-    override val definitionTypesSupportScope: MutableSet<String> = mutableSetOf()
-    override val definitionTypesIndirectSupportScope: MutableSet<String> = mutableSetOf()
-    override val definitionTypesSkipCheckSystemLink: MutableSet<String> = mutableSetOf()
-    override val definitionTypesSupportParameters: MutableSet<String> = mutableSetOf()
-    
-    init {
-        bindAliasNamesSupportScope()
-        bindDefinitionTypesSupportScope()
-        bindDefinitionTypesIndirectSupportScope()
-        bindDefinitionTypesSkipCheckSystemLink()
-        bindDefinitionTypesSupportParameters()
-    }
-    
-    //解析CWT设置
-    
-    private fun resolveCwtSettingInCwtFile(fileConfig: CwtFileConfig): Boolean {
-        when(fileConfig.key) {
-            //解析代码折叠配置
-            "folding_settings" -> {
-                resolveFoldingSettings(fileConfig)
-                return false
-            }
-            "postfix_template_settings" -> {
-                resolvePostfixTemplateSettings(fileConfig)
-                return false
-            }
+        
+        allFiles.all f@{ (filePath, tuple) ->
+            val (file, fileProcessor) = tuple
+            processFile(filePath, file, fileProcessor, configGroup)
         }
+        
         return true
     }
     
-    private fun resolveFoldingSettings(fileConfig: CwtFileConfig) {
+    private fun processFile(filePath: String, file: VirtualFile, fileProcessor: CwtConfigGroupFileProvider, configGroup: CwtConfigGroup): Boolean {
+        val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return true
+        val fileConfig = CwtConfigResolver.resolve(psiFile, configGroup.info)
+        if(fileProcessor is BuiltInCwtConfigGroupFileProvider) {
+            doProcessBuiltInFile(filePath, fileConfig, configGroup)
+        }
+        doProcessFile(fileConfig, configGroup)
+        return true
+    }
+    
+    private fun doProcessBuiltInFile(filePath: String, fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
+        when(filePath) {
+            "builtin/folding_settings.pls.cwt" -> resolveFoldingSettingsInFile(fileConfig, configGroup)
+            "builtin/postfix_template_settings.pls.cwt" -> resolvePostfixTemplateSettingsInFile(fileConfig, configGroup)
+        }
+    }
+    
+    private fun resolveFoldingSettingsInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         val configs = fileConfig.properties
         configs.forEach { groupProperty ->
             val groupName = groupProperty.key
-            val map = CollectionFactory.createCaseInsensitiveStringMap<CwtFoldingSetting>()
+            val map = caseInsensitiveStringKeyMap<CwtFoldingSettings>()
             groupProperty.properties?.forEach { property ->
                 val id = property.key
                 var key: String? = null
@@ -190,19 +75,19 @@ class CwtConfigGroupImpl(
                     }
                 }
                 if(placeholder != null) {
-                    val foldingSetting = CwtFoldingSetting(id, key, keys, placeholder!!)
+                    val foldingSetting = CwtFoldingSettings(id, key, keys, placeholder!!)
                     map.put(id, foldingSetting)
                 }
             }
-            foldingSettings.put(groupName, map)
+            configGroup.foldingSettings.asMutable()[groupName] = map
         }
     }
     
-    private fun resolvePostfixTemplateSettings(fileConfig: CwtFileConfig) {
+    private fun resolvePostfixTemplateSettingsInFile(fileConfig: CwtFileConfig,configGroup: CwtConfigGroup ) {
         val configs = fileConfig.properties
         configs.forEach { groupProperty ->
             val groupName = groupProperty.key
-            val map = CollectionFactory.createCaseInsensitiveStringMap<CwtPostfixTemplateSetting>()
+            val map = caseInsensitiveStringKeyMap<CwtPostfixTemplateSettings>()
             groupProperty.properties?.forEach { property ->
                 val id = property.key
                 var key: String? = null
@@ -222,38 +107,29 @@ class CwtConfigGroupImpl(
                     }
                 }
                 if(key != null && expression != null) {
-                    val foldingSetting = CwtPostfixTemplateSetting(id, key!!, example, variables.orEmpty(), expression!!)
+                    val foldingSetting = CwtPostfixTemplateSettings(id, key!!, example, variables.orEmpty(), expression!!)
                     map.put(id, foldingSetting)
                 }
             }
-            postfixTemplateSettings.put(groupName, map)
+            configGroup.postfixTemplateSettings.asMutable()[groupName] = map
         }
     }
     
-    //解析扩展的CWT规则
-    
-    private fun resolveExtendedCwtConfigInCwtFile(fileConfig: CwtFileConfig): Boolean {
+    private fun doProcessFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         when(fileConfig.key) {
             //解析系统作用域规则
-            "system_links" -> {
-                resolveSystemLinks(fileConfig)
-                return false
-            }
+            "system_links" -> resolveSystemLinks(fileConfig, configGroup)
             //解析本地化语言区域规则
-            "localisation_locales" -> {
-                resolveLocalisationLocales(fileConfig)
-                return false
-            }
+            "localisation_locales" -> resolveLocalisationLocalesInFile(fileConfig, configGroup)
             //解析本地化预定义参数规则
-            "localisation_predefined_parameters" -> {
-                resolveLocalisationPredefinedParameters(fileConfig)
-                return false
-            }
+            "localisation_predefined_parameters" -> resolveLocalisationPredefinedParametersInFile(fileConfig, configGroup)
+            //解析要将其中的文件识别为脚本文件的目录列表 - 仅作记录，插件目前并不基于这个来将文件识别为脚本文件
+            "folders" -> resolveFoldersInFile(fileConfig, configGroup)
+            else -> resolveOthersInFile(fileConfig, configGroup)
         }
-        return true
     }
     
-    private fun resolveSystemLinks(fileConfig: CwtFileConfig) {
+    private fun resolveSystemLinks(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         val configs = fileConfig.properties.find { it.key == "system_links" }?.properties ?: return
         configs.forEach { property ->
             val id = property.key
@@ -261,43 +137,39 @@ class CwtConfigGroupImpl(
             val description = property.documentation.orEmpty()
             val name = property.stringValue ?: id
             val config = CwtSystemLinkConfig(property.pointer, fileConfig.info, id, baseId, description, name)
-            systemLinks.put(id, config)
+            configGroup.systemLinks.asMutable().put(id, config)
         }
     }
     
-    private fun resolveLocalisationLocales(fileConfig: CwtFileConfig) {
+    private fun resolveLocalisationLocalesInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         val configs = fileConfig.properties.find { it.key == "localisation_locales" }?.properties ?: return
         configs.forEach { property ->
             val id = property.key
             val description = property.documentation.orEmpty()
             val codes = property.properties?.find { p -> p.key == "codes" }?.values?.mapNotNull { v -> v.stringValue }.orEmpty()
             val config = CwtLocalisationLocaleConfig(property.pointer, fileConfig.info, id, description, codes)
-            localisationLocalesById.put(id, config)
-            codes.forEach { code -> localisationLocalesByCode.put(code, config) }
+            configGroup.localisationLocalesById.asMutable().put(id, config)
+            codes.forEach { code -> configGroup.localisationLocalesByCode.asMutable()[code] = config }
         }
     }
     
-    private fun resolveLocalisationPredefinedParameters(fileConfig: CwtFileConfig) {
+    private fun resolveLocalisationPredefinedParametersInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         val configs = fileConfig.properties.find { it.key == "localisation_predefined_parameters" }?.properties ?: return
         configs.forEach { property ->
             val id = property.key
             val mockValue = property.value
             val description = property.documentation.orEmpty()
             val config = CwtLocalisationPredefinedParameterConfig(property.pointer, fileConfig.info, id, mockValue, description)
-            localisationPredefinedParameters.put(id, config)
+            configGroup.localisationPredefinedParameters.asMutable()[id] = config
         }
     }
     
-    //解析CWT规则
+    private fun resolveFoldersInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
+        fileConfig.values.mapTo(configGroup.folders.asMutable()) { it.value }
+    }
     
-    private fun resolveCwtConfigInCwtFile(fileConfig: CwtFileConfig): Boolean {
+    private fun resolveOthersInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         val fileKey = fileConfig.key
-        //解析要识别为脚本文件的文件夹列表
-        if(fileKey == "folders") {
-            resolveFolders(fileConfig)
-            return false
-        }
-        //处理fileConfig的properties
         for(property in fileConfig.properties) {
             val key = property.key
             when {
@@ -308,7 +180,7 @@ class CwtConfigGroupImpl(
                         val typeName = prop.key.removeSurroundingOrNull("type[", "]")
                         if(!typeName.isNullOrEmpty()) {
                             val typeConfig = resolveTypeConfig(prop, typeName)
-                            types[typeName] = typeConfig
+                            configGroup.types.asMutable()[typeName] = typeConfig
                         }
                     }
                 }
@@ -320,7 +192,7 @@ class CwtConfigGroupImpl(
                         val valueName = prop.key.removeSurroundingOrNull("value[", "]")
                         if(!valueName.isNullOrEmpty()) {
                             val valueConfig = resolveEnumConfig(prop, valueName) ?: continue
-                            values[valueName] = valueConfig
+                            configGroup.values.asMutable()[valueName] = valueConfig
                         }
                     }
                 }
@@ -332,12 +204,12 @@ class CwtConfigGroupImpl(
                         val enumName = prop.key.removeSurroundingOrNull("enum[", "]")
                         if(!enumName.isNullOrEmpty()) {
                             val enumConfig = resolveEnumConfig(prop, enumName) ?: continue
-                            enums[enumName] = enumConfig
+                            configGroup.enums.asMutable()[enumName] = enumConfig
                         }
                         val complexEnumName = prop.key.removeSurroundingOrNull("complex_enum[", "]")
                         if(!complexEnumName.isNullOrEmpty()) {
                             val complexEnumConfig = resolveComplexEnumConfig(prop, complexEnumName) ?: continue
-                            complexEnums[complexEnumName] = complexEnumConfig
+                            configGroup.complexEnums.asMutable()[complexEnumName] = complexEnumConfig
                         }
                     }
                 }
@@ -347,23 +219,23 @@ class CwtConfigGroupImpl(
                     for(prop in props) {
                         val linkName = prop.key
                         val linkConfig = resolveLinkConfig(prop, linkName) ?: continue
-                        links[linkName] = linkConfig
+                        configGroup.links.asMutable()[linkName] = linkConfig
                         //要求data_source存在
                         val fromData = linkConfig.fromData && linkConfig.dataSource != null
                         val withPrefix = linkConfig.prefix != null
                         val type = linkConfig.type
                         if(type == null || type == "scope" || type == "both") {
                             when {
-                                !fromData -> linksAsScopeNotData[linkName] = linkConfig
-                                withPrefix -> linksAsScopeWithPrefix[linkName] = linkConfig
-                                else -> linksAsScopeWithoutPrefix[linkName] = linkConfig
+                                !fromData -> configGroup.linksAsScopeNotData.asMutable()[linkName] = linkConfig
+                                withPrefix -> configGroup.linksAsScopeWithPrefix.asMutable()[linkName] = linkConfig
+                                else -> configGroup.linksAsScopeWithoutPrefix.asMutable()[linkName] = linkConfig
                             }
                         }
                         if(type == "value" || type == "both") {
                             when {
-                                !fromData -> linksAsValueNotData[linkName] = linkConfig
-                                withPrefix -> linksAsValueWithPrefix[linkName] = linkConfig
-                                else -> linksAsValueWithoutPrefix[linkName] = linkConfig
+                                !fromData -> configGroup.linksAsValueNotData.asMutable()[linkName] = linkConfig
+                                withPrefix -> configGroup.linksAsValueWithPrefix.asMutable()[linkName] = linkConfig
+                                else -> configGroup.linksAsValueWithoutPrefix.asMutable()[linkName] = linkConfig
                             }
                         }
                     }
@@ -374,7 +246,7 @@ class CwtConfigGroupImpl(
                     for(prop in props) {
                         val linkName = prop.key
                         val linkConfig = resolveLocalisationLinkConfig(prop, linkName) ?: continue
-                        localisationLinks[linkName] = linkConfig
+                        configGroup.localisationLinks.asMutable()[linkName] = linkConfig
                     }
                 }
                 //找到配置文件中的顶级的key为"localisation_commands"的属性，然后解析它的子属性，添加到localisationCommands中
@@ -383,7 +255,7 @@ class CwtConfigGroupImpl(
                     for(prop in props) {
                         val commandName = prop.key
                         val commandConfig = resolveLocalisationCommandConfig(prop, commandName)
-                        localisationCommands[commandName] = commandConfig
+                        configGroup.localisationCommands.asMutable()[commandName] = commandConfig
                     }
                 }
                 //找到配置文件中的顶级的key为"modifier_categories"的属性，然后解析它的子属性，添加到modifierCategories中
@@ -392,7 +264,7 @@ class CwtConfigGroupImpl(
                     for(prop in props) {
                         val modifierCategoryName = prop.key
                         val categoryConfig = resolveModifierCategoryConfig(prop, modifierCategoryName) ?: continue
-                        modifierCategories[modifierCategoryName] = categoryConfig
+                        configGroup.modifierCategories.asMutable()[modifierCategoryName] = categoryConfig
                     }
                 }
                 //找到配置文件中的顶级的key为"modifiers"的属性，然后解析它的子属性，添加到modifiers中
@@ -401,11 +273,11 @@ class CwtConfigGroupImpl(
                     for(prop in props) {
                         val modifierName = prop.key
                         val modifierConfig = resolveModifierConfig(prop, modifierName) ?: continue
-                        modifiers[modifierName] = modifierConfig
+                        configGroup.modifiers.asMutable()[modifierName] = modifierConfig
                         for(snippetExpression in modifierConfig.template.snippetExpressions) {
                             if(snippetExpression.type == CwtDataType.Definition) {
                                 val typeExpression = snippetExpression.value ?: continue
-                                type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(modifierName, modifierConfig)
+                                configGroup.type2ModifiersMap.asMutable().getOrPut(typeExpression) { mutableMapOf() }.asMutable().put(modifierName, modifierConfig)
                             }
                         }
                     }
@@ -416,9 +288,9 @@ class CwtConfigGroupImpl(
                     for(prop in props) {
                         val scopeName = prop.key
                         val scopeConfig = resolveScopeConfig(prop, scopeName) ?: continue
-                        scopes[scopeName] = scopeConfig
+                        configGroup.scopes.asMutable()[scopeName] = scopeConfig
                         for(alias in scopeConfig.aliases) {
-                            scopeAliasMap[alias] = scopeConfig
+                            configGroup.scopeAliasMap.asMutable()[alias] = scopeConfig
                         }
                     }
                 }
@@ -428,7 +300,7 @@ class CwtConfigGroupImpl(
                     for(prop in props) {
                         val scopeGroupName = prop.key
                         val scopeGroupConfig = resolveScopeGroupConfig(prop, scopeGroupName) ?: continue
-                        scopeGroups[scopeGroupName] = scopeGroupConfig
+                        configGroup.scopeGroups.asMutable()[scopeGroupName] = scopeGroupConfig
                     }
                 }
                 fileKey == "game_rules" && key == "game_rules" -> {
@@ -436,7 +308,7 @@ class CwtConfigGroupImpl(
                     for(prop in props) {
                         val onActionName = prop.key
                         val onActionConfig = resolveGameRuleConfig(prop, onActionName)
-                        gameRules[onActionName] = onActionConfig
+                        configGroup.gameRules.asMutable()[onActionName] = onActionConfig
                     }
                 }
                 fileKey == "on_actions" && key == "on_actions" -> {
@@ -444,7 +316,7 @@ class CwtConfigGroupImpl(
                     for(prop in props) {
                         val onActionName = prop.key
                         val onActionConfig = resolveOnActionConfig(prop, onActionName) ?: continue
-                        onActions[onActionName] = onActionConfig
+                        configGroup.onActions.asMutable()[onActionName] = onActionConfig
                     }
                 }
                 else -> {
@@ -452,7 +324,7 @@ class CwtConfigGroupImpl(
                     val singleAliasName = key.removeSurroundingOrNull("single_alias[", "]")
                     if(singleAliasName != null) {
                         val singleAliasConfig = resolveSingleAliasConfig(property, singleAliasName)
-                        singleAliases[singleAliasName] = singleAliasConfig
+                        configGroup.singleAliases.asMutable()[singleAliasName] = singleAliasConfig
                         continue
                     }
                     
@@ -467,8 +339,8 @@ class CwtConfigGroupImpl(
                         //	modifiers.put(modifierConfig.name, modifierConfig)
                         //	continue
                         //} 
-                        val map = aliasGroups.getOrPut(aliasName) { mutableMapOf() }
-                        val list = map.getOrPut(aliasSubName) { mutableListOf() }
+                        val map = configGroup.aliasGroups.asMutable().getOrPut(aliasName) { mutableMapOf() }
+                        val list = map.asMutable().getOrPut(aliasSubName) { mutableListOf() }.asMutable()
                         list.add(aliasConfig)
                         continue
                     }
@@ -476,25 +348,22 @@ class CwtConfigGroupImpl(
                     val inlineConfigName = key.removeSurroundingOrNull("inline[", "]")
                     if(inlineConfigName != null) {
                         val inlineConfig = resolveInlineConfig(property, inlineConfigName)
-                        val list = inlineConfigGroup.getOrPut(inlineConfigName) { mutableListOf() }
+                        val list = configGroup.inlineConfigGroup.asMutable().getOrPut(inlineConfigName) { mutableListOf() }.asMutable()
                         list.add(inlineConfig)
                         continue
                     }
                     
                     //其他情况，放到definition中
                     val declarationConfig = resolveDeclarationConfig(property, key)
-                    declarations[key] = declarationConfig
+                    configGroup.declarations.asMutable()[key] = declarationConfig
                 }
             }
         }
-        return true
-    }
-    
-    private fun resolveFolders(fileConfig: CwtFileConfig) {
-        fileConfig.values.mapTo(folders) { it.value }
     }
     
     private fun resolveTypeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTypeConfig {
+        val configGroup = propertyConfig.info.configGroup
+        
         var baseType: String? = null
         var path: String? = null
         var pathStrict = false
@@ -586,14 +455,14 @@ class CwtConfigGroupImpl(
                                 for(pp in pps) {
                                     val typeExpression = "$name.$subtypeName"
                                     val modifierConfig = resolveDefinitionModifierConfig(pp, pp.key, typeExpression) ?: continue
-                                    modifiers[modifierConfig.name] = modifierConfig
-                                    type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(pp.key, modifierConfig)
+                                    configGroup.modifiers.asMutable()[modifierConfig.name] = modifierConfig
+                                    configGroup.type2ModifiersMap.asMutable().getOrPut(typeExpression) { mutableMapOf() }.asMutable().put(pp.key, modifierConfig)
                                 }
                             } else {
                                 val typeExpression = name
                                 val modifierConfig = resolveDefinitionModifierConfig(p, p.key, typeExpression) ?: continue
-                                modifiers[modifierConfig.name] = modifierConfig
-                                type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }.put(p.key, modifierConfig)
+                                configGroup.modifiers.asMutable()[modifierConfig.name] = modifierConfig
+                                configGroup.type2ModifiersMap.asMutable().getOrPut(typeExpression) { mutableMapOf() }.asMutable().put(p.key, modifierConfig)
                             }
                         }
                     }
@@ -713,7 +582,7 @@ class CwtConfigGroupImpl(
             return CwtEnumConfig(pointer, info, name, emptySet(), emptyMap())
         }
         val values = caseInsensitiveStringSet() //忽略大小写
-        val valueConfigMap = CollectionFactory.createCaseInsensitiveStringMap<CwtValueConfig>() //忽略大小写
+        val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() //忽略大小写
         for(propertyConfigValue in propertyConfigValues) {
             values.add(propertyConfigValue.value)
             valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)
@@ -843,7 +712,7 @@ class CwtConfigGroupImpl(
         val propertyConfigValues = propertyConfig.values ?: return null
         if(propertyConfigValues.isEmpty()) return CwtScopeGroupConfig(pointer, info, name, emptySet(), emptyMap())
         val values = caseInsensitiveStringSet() //忽略大小写
-        val valueConfigMap = CollectionFactory.createCaseInsensitiveStringMap<CwtValueConfig>() //忽略大小写
+        val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() //忽略大小写
         for(propertyConfigValue in propertyConfigValues) {
             values.add(propertyConfigValue.value)
             valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)
@@ -886,114 +755,5 @@ class CwtConfigGroupImpl(
     
     private fun resolveDeclarationConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDeclarationConfig {
         return CwtDeclarationConfig(propertyConfig.pointer, propertyConfig.info, name, propertyConfig)
-    }
-    
-    //绑定CWT配置
-    
-    private fun bindMissingDeclarationsOfSwappedTypes() {
-        for(typeConfig in types.values) {
-            if(typeConfig.baseType == null) continue
-            val typeName = typeConfig.name
-            swappedTypes[typeName] = typeConfig
-            val baseTypeName = typeConfig.baseType.substringBefore('.')
-            val baseDeclarationConfig = declarations[baseTypeName] ?: continue
-            val typeKey = typeConfig.typeKeyFilter?.takeIfTrue()?.singleOrNull() ?: continue
-            val declarationConfig = baseDeclarationConfig.propertyConfig.configs
-                ?.find { it is CwtPropertyConfig && it.key.equals(typeKey, true) }?.castOrNull<CwtPropertyConfig>()
-                ?.let { resolveDeclarationConfig(it, typeName) }
-                ?: continue
-            declarations[typeName] = declarationConfig
-        }
-    }
-    
-    private fun bindMissingLocalisationLinks() {
-        for((key, linkConfig) in linksAsScopeNotData) {
-            val localisationLinkConfig = CwtLocalisationLinkConfig(
-                linkConfig.pointer, linkConfig.info, linkConfig.config,
-                linkConfig.name, linkConfig.desc, linkConfig.inputScopes, linkConfig.outputScope
-            )
-            localisationLinks[key] = localisationLinkConfig
-        }
-    }
-    
-    private fun bindModifierCategories() {
-        for(modifier in modifiers.values) {
-            //category可能是modifierCategory的name，也可能是modifierCategory的internalId
-            for(category in modifier.categories) {
-                val categoryConfig = modifierCategories[category] ?: continue
-                modifier.categoryConfigMap[categoryConfig.name] = categoryConfig
-            }
-        }
-    }
-    
-    private fun bindAliasKeysGroup() {
-        for((k, v) in aliasGroups) {
-            var keysConst: MutableMap<String, String>? = null
-            var keysNoConst: MutableSet<String>? = null
-            for(key in v.keys) {
-                if(CwtKeyExpression.resolve(key).type == CwtDataType.Constant) {
-                    if(keysConst == null) keysConst = caseInsensitiveStringKeyMap()
-                    keysConst[key] = key
-                } else {
-                    if(keysNoConst == null) keysNoConst = mutableSetOf()
-                    keysNoConst += key
-                }
-            }
-            if(!keysConst.isNullOrEmpty()) {
-                aliasKeysGroupConst[k] = keysConst
-            }
-            if(!keysNoConst.isNullOrEmpty()) {
-                aliasKeysGroupNoConst[k] = keysNoConst.sortedByPriority({ CwtKeyExpression.resolve(it) }, { this }).toSet()
-            }
-        }
-    }
-    
-    private fun bindAliasNamesSupportScope() {
-        with(aliasNamesSupportScope) {
-            this += "modifier" //也支持，但不能切换作用域
-            this += "trigger"
-            this += "effect"
-            info.aliasNamesSupportScope.forEach { this += it }
-        }
-    }
-    
-    private fun bindDefinitionTypesSupportScope() {
-        with(definitionTypesSupportScope) {
-            this += "scripted_effect"
-            this += "scripted_trigger"
-            this += "game_rule"
-        }
-    }
-    
-    private fun bindDefinitionTypesIndirectSupportScope() {
-        with(definitionTypesIndirectSupportScope) {
-            this += "on_action" //也支持，其中调用的事件的类型要匹配
-            this += "event" //事件
-        }
-    }
-    
-    private fun bindDefinitionTypesSkipCheckSystemLink() {
-        with(definitionTypesSkipCheckSystemLink) {
-            this += "event"
-            this += "scripted_trigger"
-            this += "scripted_effect"
-            this += "script_value"
-            this += "game_rule"
-        }
-    }
-    
-    private fun bindDefinitionTypesSupportParameters() {
-        with(definitionTypesSupportParameters) {
-            this += "script_value" //SV也支持参数
-            //this += "inline_script" //内联脚本也支持参数（并且可以表示多条语句）（但不是定义）
-            for(parameterConfig in info.parameterConfigs) {
-                val propertyConfig = parameterConfig.parentConfig as? CwtPropertyConfig ?: continue
-                val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
-                val contextExpression = if(aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression else CwtKeyExpression.resolve(aliasSubName)
-                if(contextExpression.type == CwtDataType.Definition && contextExpression.value != null) {
-                    this += contextExpression.value
-                }
-            }
-        }
     }
 }

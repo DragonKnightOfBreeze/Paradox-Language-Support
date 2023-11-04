@@ -6,10 +6,10 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
@@ -151,7 +151,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         val name = element.name
         val valueSetNames = element.valueSetNames
         val gameType = element.gameType
-        val configGroup = getConfigGroups(element.project).get(gameType)
+        val configGroup = getConfigGroup(element.project, gameType)
         definition {
             append(PlsBundle.message("prefix.valueSetValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             append(": ")
@@ -176,7 +176,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             val name = element.name
             val enumName = element.enumName
             val gameType = element.gameType
-            val configGroup = getConfigGroups(element.project).get(gameType)
+            val configGroup = getConfigGroup(element.project, gameType)
             append(PlsBundle.message("prefix.complexEnumValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             val complexEnumConfig = configGroup.complexEnums[enumName]
             if(complexEnumConfig != null) {
@@ -199,7 +199,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
                 append(PlsBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             }
             
-            val configGroup = getConfigGroups(element.project).get(element.gameType)
+            val configGroup = getConfigGroup(element.project, element.gameType)
             addModifierRelatedLocalisations(element, name, configGroup, sectionsList?.get(2))
             
             addModifierIcon(element, name, configGroup, sectionsList?.get(1))

@@ -6,6 +6,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.core.collections.*
@@ -42,14 +43,14 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
         val gameType = fileInfo.rootInfo.gameType
         val definition = element.findParentDefinition()
         if(definition == null) {
-            val configGroup = getConfigGroups(file.project).get(gameType)
+            val configGroup = getConfigGroup(file.project, gameType)
             val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
             return configContext
         } else {
             val definitionInfo = definition.definitionInfo ?: return null
             val definitionElementPath = definitionInfo.elementPath
             val elementPathFromRoot = definitionElementPath.relativeTo(elementPath) ?: return null
-            val configGroup = getConfigGroups(file.project).get(gameType)
+            val configGroup = getConfigGroup(file.project, gameType)
             val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
             configContext.definitionInfo = definitionInfo
             configContext.elementPathFromRoot = elementPathFromRoot
@@ -97,7 +98,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         val elementPathFromRoot = ParadoxElementPath.resolve(elementPath.rawSubPaths.let { it.subList(rootIndex + 1, it.size) })
-        val configGroup = getConfigGroups(file.project).get(gameType)
+        val configGroup = getConfigGroup(file.project, gameType)
         val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
         configContext.elementPathFromRoot = elementPathFromRoot
         return configContext
@@ -149,7 +150,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         val elementPathFromRoot = elementPath
-        val configGroup = getConfigGroups(file.project).get(gameType)
+        val configGroup = getConfigGroup(file.project, gameType)
         val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
         if(elementPathFromRoot.isNotEmpty()) {
             configContext.inlineScriptRootConfigContext = CwtConfigHandler.getConfigContext(file) ?: return null
@@ -255,7 +256,7 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         ProgressManager.checkCanceled()
         val gameType = parameterElement.gameType
         val elementPathFromRoot = elementPath
-        val configGroup = getConfigGroups(file.project).get(gameType)
+        val configGroup = getConfigGroup(file.project, gameType)
         val configContext = CwtConfigContext(element, null, elementPath, gameType, configGroup)
         if(elementPathFromRoot.isNotEmpty()) {
             configContext.parameterValueRootConfigContext = CwtConfigHandler.getConfigContext(file) ?: return null

@@ -2,6 +2,7 @@ package icu.windea.pls.lang.documentation
 
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*

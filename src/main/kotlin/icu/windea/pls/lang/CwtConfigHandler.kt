@@ -18,7 +18,10 @@ import com.intellij.util.text.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.api.*
@@ -744,7 +747,7 @@ object CwtConfigHandler {
         val originalFile = context.originalFile!!
         val project = originalFile.project
         val gameType = selectGameType(originalFile) ?: return
-        val configGroup = getConfigGroups(project).get(gameType)
+        val configGroup = getConfigGroup(project, gameType)
         val elementPath = ParadoxElementPathHandler.get(memberElement, PlsConstants.maxDefinitionDepth) ?: return
         
         context.isKey = true
@@ -1702,7 +1705,7 @@ object CwtConfigHandler {
         //这里的key可能是"core"，而这不是gameType
         val key = path.substringAfter("config/", "").substringBefore("/", "")
         if(key.isEmpty()) return null
-        return getConfigGroups(project).get(key)
+        return getConfigGroup(project, key)
     }
     
     fun getAliasSubName(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = Options.Default): String? {

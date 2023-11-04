@@ -10,6 +10,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.core.codeInsight.completion.*
@@ -17,7 +18,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
@@ -38,14 +38,14 @@ object ParadoxModifierHandler {
         val name = element.value
         val gameType = selectGameType(element) ?: return null
         val project = element.project
-        val configGroup = getConfigGroups(project).get(gameType)
+        val configGroup = getConfigGroup(project, gameType)
         return resolveModifier(name, element, configGroup)
     }
     
     fun resolveModifier(name: String, element: PsiElement): ParadoxModifierElement? {
         val gameType = selectGameType(element) ?: return null
         val project = element.project
-        val configGroup = getConfigGroups(project).get(gameType)
+        val configGroup = getConfigGroup(project, gameType)
         return resolveModifier(name, element, configGroup)
     }
     
@@ -82,7 +82,7 @@ object ParadoxModifierHandler {
         val rootFile = selectRootFile(element) ?: return null
         val project = element.project
         val cache = project.modifierInfoCache.get(rootFile)
-        val configGroup = getConfigGroups(project).get(gameType)
+        val configGroup = getConfigGroup(project, gameType)
         val cacheKey = name
         val modifierInfo = cache.getCancelable(cacheKey) {
             ParadoxModifierSupport.resolveModifier(name, element, configGroup) ?: ParadoxModifierInfo.EMPTY

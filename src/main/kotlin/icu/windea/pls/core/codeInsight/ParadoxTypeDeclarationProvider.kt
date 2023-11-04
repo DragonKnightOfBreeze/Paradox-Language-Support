@@ -3,7 +3,9 @@ package icu.windea.pls.core.codeInsight
 import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.psi.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.core.collections.*
@@ -50,7 +52,7 @@ class ParadoxTypeDeclarationProvider : TypeDeclarationProvider {
 				val complexEnumValueInfo = symbol.complexEnumValueInfo
 				if(complexEnumValueInfo != null) {
 					val gameType = complexEnumValueInfo.gameType
-					val configGroup = getConfigGroups(symbol.project).get(gameType)
+					val configGroup = getConfigGroup(symbol.project, gameType)
 					val enumName = complexEnumValueInfo.enumName
 					val config = configGroup.complexEnums[enumName] ?: return null //unexpected
 					val resolved = config.pointer.element ?: return null

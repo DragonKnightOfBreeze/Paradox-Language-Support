@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.core.search.*
@@ -38,8 +39,8 @@ class CwtConfigLinkProvider : DocumentationElementLinkProvider {
                 val subtypeName = tokens.getOrNull(2)
                 val config = when {
                     name == null -> null
-                    subtypeName == null -> getConfigGroups(project).get(gameType).types[name]
-                    else -> getConfigGroups(project).get(gameType).types.getValue(name).subtypes[subtypeName]
+                    subtypeName == null -> getConfigGroup(project, gameType).types[name]
+                    else -> getConfigGroup(project, gameType).types.getValue(name).subtypes[subtypeName]
                 } ?: return null
                 return config.pointer.element
             }
@@ -48,7 +49,7 @@ class CwtConfigLinkProvider : DocumentationElementLinkProvider {
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
                 val valueName = tokens.getOrNull(2)
-                val config = getConfigGroups(project).get(gameType).values[name] ?: return null
+                val config = getConfigGroup(project, gameType).values[name] ?: return null
                 if(valueName == null) return config.pointer.element
                 return config.valueConfigMap.get(valueName)?.pointer?.element
             }
@@ -57,7 +58,7 @@ class CwtConfigLinkProvider : DocumentationElementLinkProvider {
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
                 val valueName = tokens.getOrNull(2)
-                val config = getConfigGroups(project).get(gameType).enums[name] ?: return null
+                val config = getConfigGroup(project, gameType).enums[name] ?: return null
                 if(valueName == null) return config.pointer.element
                 return config.valueConfigMap.get(valueName)?.pointer?.element
             }
@@ -65,56 +66,56 @@ class CwtConfigLinkProvider : DocumentationElementLinkProvider {
                 if(tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroups(project).get(gameType).complexEnums[name] ?: return null
+                val config = getConfigGroup(project, gameType).complexEnums[name] ?: return null
                 return config.pointer.element
             }
             "scopes" -> {
                 if(tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroups(project).get(gameType).scopeAliasMap[name] ?: return null
+                val config = getConfigGroup(project, gameType).scopeAliasMap[name] ?: return null
                 return config.pointer.element
             }
             "system_links" -> {
                 if(tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroups(project).get(gameType).systemLinks[name] ?: return null
+                val config = getConfigGroup(project, gameType).systemLinks[name] ?: return null
                 return config.pointer.element
             }
             "links" -> {
                 if(tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroups(project).get(gameType).links[name] ?: return null
+                val config = getConfigGroup(project, gameType).links[name] ?: return null
                 return config.pointer.element
             }
             "localisation_links" -> {
                 if(tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroups(project).get(gameType).localisationLinks[name] ?: return null
+                val config = getConfigGroup(project, gameType).localisationLinks[name] ?: return null
                 return config.pointer.element
             }
             "localisation_commands" -> {
                 if(tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroups(project).get(gameType).localisationCommands[name] ?: return null
+                val config = getConfigGroup(project, gameType).localisationCommands[name] ?: return null
                 return config.pointer.element
             }
             "modifier_categories" -> {
                 if(tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroups(project).get(gameType).modifierCategories[name] ?: return null
+                val config = getConfigGroup(project, gameType).modifierCategories[name] ?: return null
                 return config.pointer.element
             }
             "modifiers" -> {
                 if(tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroups(project).get(gameType).modifiers[name] ?: return null
+                val config = getConfigGroup(project, gameType).modifiers[name] ?: return null
                 return config.pointer.element
             }
             else -> null

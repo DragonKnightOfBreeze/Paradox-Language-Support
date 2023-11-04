@@ -8,13 +8,14 @@ import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.selector.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -71,7 +72,7 @@ object ParadoxDefinitionHandler {
         val elementPath = ParadoxElementPathHandler.get(element, PlsConstants.maxDefinitionDepth)
         if(elementPath == null) return null
         val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
-        val configGroup = getConfigGroups(project).get(gameType) //这里需要指定project
+        val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val typeConfig = getMatchedTypeConfig(element, path, elementPath, rootKey, configGroup)
         if(typeConfig == null) return null
         return ParadoxDefinitionInfo(null, typeConfig, null, rootKey, elementPath, gameType, configGroup, element)
@@ -546,7 +547,7 @@ object ParadoxDefinitionHandler {
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.pathToEntry //这里使用pathToEntry
         val elementPath = ParadoxElementPathHandler.get(node, tree, vFile) ?: return null
-        val configGroup = getConfigGroups(project).get(gameType) //这里需要指定project
+        val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
         if(typeConfig == null) return null
         //NOTE 这里不处理需要内联的情况
@@ -589,7 +590,7 @@ object ParadoxDefinitionHandler {
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.pathToEntry //这里使用pathToEntry
         val elementPath = ParadoxElementPathHandler.get(node, tree, vFile) ?: return null
-        val configGroup = getConfigGroups(project).get(gameType) //这里需要指定project
+        val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
         if(typeConfig == null) return null
         //NOTE 这里不处理需要内联的情况
@@ -671,7 +672,7 @@ object ParadoxDefinitionHandler {
         val name = stub.name
         val type = stub.type
         val gameType = stub.gameType
-        val configGroup = getConfigGroups(project).get(gameType) //这里需要指定project
+        val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val typeConfig = configGroup.types[type] ?: return null
         val subtypes = stub.subtypes
         val subtypeConfigs = subtypes?.mapNotNull { typeConfig.subtypes[it] }

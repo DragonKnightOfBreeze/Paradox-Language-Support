@@ -8,7 +8,9 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
@@ -19,7 +21,6 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
@@ -389,7 +390,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
         val economicCategoryInfo = modifierElement.economicCategoryInfo ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory //may be null
-        val configGroup = getConfigGroups(modifierElement.project).get(modifierElement.gameType)
+        val configGroup = getConfigGroup(modifierElement.project, modifierElement.gameType)
         return StellarisEconomicCategoryHandler.resolveModifierCategory(modifierCategory, configGroup)
     }
     

@@ -6,8 +6,8 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
@@ -25,7 +25,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         val name = queryParameters.name
         val typeExpression = queryParameters.typeExpression?.let { ParadoxDefinitionTypeExpression.resolve(it) }
         val project = queryParameters.project
-        val configGroup = getConfigGroups(project).get(queryParameters.selector.gameType ?: return)
+        val configGroup = getConfigGroup(project, queryParameters.selector.gameType ?: return)
         
         processQueryForFileDefinitions(name, typeExpression, project, scope, configGroup) { consumer.process(it) }
         processQueryForStubDefinitions(name, typeExpression, project, scope) { consumer.process(it) }

@@ -12,11 +12,15 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.configGroup.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
@@ -54,8 +58,9 @@ fun getSettings() = service<ParadoxSettings>().state
 
 fun getProfilesSettings() = service<ParadoxProfilesSettings>().state
 
-fun getConfigGroups() = getDefaultProject().service<CwtConfigProvider>().configGroups
-fun getConfigGroups(project: Project) = project.service<CwtConfigProvider>().configGroups
+fun getConfigGroup(gameType: ParadoxGameType?) = getDefaultProject().service<CwtConfigGroupService>().getConfigGroup(gameType)
+
+fun getConfigGroup(project: Project, gameType: ParadoxGameType?) = project.service<CwtConfigGroupService>().getConfigGroup(gameType)
 
 /**
  * 比较游戏版本。允许通配符，如："3.3.*"
@@ -184,8 +189,8 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
     }
 }
 
-private fun String.toLocale(from: PsiElement): CwtLocalisationLocaleConfig? {
-    return getConfigGroups(from.project).core.localisationLocalesById.get(this)
+private fun String.toLocale(from: PsiElement): CwtLocalisationLocaleConfig {
+    return getConfigGroup(from.project, null).localisationLocalesById.get(this)
 }
 //endregion
 

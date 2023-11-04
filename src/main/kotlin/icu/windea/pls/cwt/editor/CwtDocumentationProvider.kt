@@ -8,9 +8,10 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
@@ -72,7 +73,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             val name = element.name
             val configType = null
             val project = element.project
-            val configGroup = getConfigGroups(project).get(element.gameType)
+            val configGroup = getConfigGroup(project, element.gameType)
             buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
         }
     }
@@ -121,7 +122,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             val name = element.name
             val configType = null
             val project = element.project
-            val configGroup = getConfigGroups(project).get(element.gameType)
+            val configGroup = getConfigGroup(project, element.gameType)
             //images, localisations, scope infos
             val sectionsList = List(3) { mutableMapOf<String, String>() }
             buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
@@ -419,7 +420,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
     
     private fun getConfigGroup(element: PsiElement, originalElement: PsiElement?, project: Project): CwtConfigGroup? {
         val gameType = selectGameType(originalElement?.takeIf { it.language.isParadoxLanguage() })
-        val configGroup = gameType?.let { getConfigGroups(project).get(it) }
+        val configGroup = gameType?.let { getConfigGroup(project, it) }
             ?: CwtConfigHandler.getConfigGroupFromCwtFile(element.containingFile, project)
         return configGroup
     }

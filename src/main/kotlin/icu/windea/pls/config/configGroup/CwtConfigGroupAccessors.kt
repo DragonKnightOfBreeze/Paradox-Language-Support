@@ -1,12 +1,12 @@
-package icu.windea.pls.lang.configGroup
+package icu.windea.pls.config.configGroup
 
+import com.intellij.openapi.util.*
+import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.setting.*
+import icu.windea.pls.config.settings.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.util.*
 
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
@@ -18,10 +18,10 @@ enum class Tag {
 }
 
 @Tags(Tag.Extended)
-val CwtConfigGroup.foldingSettings: Map<@CaseInsensitive String, Map<String, CwtFoldingSetting>>
+val CwtConfigGroup.foldingSettings: Map<@CaseInsensitive String, Map<String, CwtFoldingSettings>>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 @Tags(Tag.Extended)
-val CwtConfigGroup.postfixTemplateSettings: Map<String, Map<@CaseInsensitive String, CwtPostfixTemplateSetting>>
+val CwtConfigGroup.postfixTemplateSettings: Map<String, Map<@CaseInsensitive String, CwtPostfixTemplateSettings>>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
 @Tags(Tag.Extended)
@@ -100,40 +100,53 @@ val CwtConfigGroup.aliasGroups: Map<String, Map<String, List<CwtAliasConfig>>>
 val CwtConfigGroup.inlineConfigGroup: Map<String, List<CwtInlineConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
-// key
+// key: scalar
 val CwtConfigGroup.gameRules: Map<String, CwtGameRuleConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-// key
+// key: scalar / template_expression
 val CwtConfigGroup.onActions: Map<String, CwtOnActionConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
 val CwtConfigGroup.modifierCategories: Map<String, CwtModifierCategoryConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-// key
+// key: scalar / template_expression
 val CwtConfigGroup.modifiers: Map<@CaseInsensitive String, CwtModifierConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
+
+@Tags(Tag.Computed)
 val CwtConfigGroup.predefinedModifiers: Map<@CaseInsensitive String, CwtModifierConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
+@Tags(Tag.Computed)
 val CwtConfigGroup.generatedModifiers: Map<@CaseInsensitive String, CwtModifierConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
 //常量字符串的别名的组名的映射
+@Tags(Tag.Computed)
 val CwtConfigGroup.aliasKeysGroupConst: Map<@CaseInsensitive String, Map<String, String>>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 //非常量字符串的别名的组名的映射
+@Tags(Tag.Computed)
 val CwtConfigGroup.aliasKeysGroupNoConst: Map<String, Set<String>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
 //处理后的连接规则
-
+@Tags(Tag.Computed)
 val CwtConfigGroup.linksAsScopeWithPrefixSorted: List<CwtLinkConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableListOf() }
+//处理后的连接规则
+@Tags(Tag.Computed)
 val CwtConfigGroup.linksAsValueWithPrefixSorted: List<CwtLinkConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableListOf() }
+//处理后的连接规则
+@Tags(Tag.Computed)
 val CwtConfigGroup.linksAsScopeWithoutPrefixSorted: List<CwtLinkConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableListOf() }
+//处理后的连接规则
+@Tags(Tag.Computed)
 val CwtConfigGroup.linksAsValueWithoutPrefixSorted: List<CwtLinkConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableListOf() }
+//处理后的连接规则
+@Tags(Tag.Computed)
 val CwtConfigGroup.linksAsVariable: List<CwtLinkConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableListOf() }
 
@@ -157,3 +170,7 @@ val CwtConfigGroup.definitionTypesSkipCheckSystemLink: Set<String>
 @Tags(Tag.Computed)
 val CwtConfigGroup.definitionTypesSupportParameters: Set<String>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableSetOf() }
+
+@Tags(Tag.Computed)
+var CwtConfigGroup.parameterModificationTracker: ModificationTracker
+    by createKeyDelegate(CwtConfigGroup.Keys) { PsiModificationTracker.NEVER_CHANGED }

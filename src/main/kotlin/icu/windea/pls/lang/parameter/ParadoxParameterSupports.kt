@@ -6,11 +6,10 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.psi.*
@@ -183,21 +182,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     
     override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker? {
         val project = parameterInfo.project
-        val configGroup = getConfigGroups(project).get(parameterInfo.gameType)
-        return configGroup.getOrPutUserData(CwtConfigGroup.Keys.parameterModificationTracker) {
-            val definitionTypes = configGroup.definitionTypesSupportParameters
-            val builder = StringBuilder()
-            var isFirst = true
-            for(definitionType in definitionTypes) {
-                val typeConfig = configGroup.types.get(definitionType) ?: continue
-                val filePath = typeConfig.pathFile ?: typeConfig.path ?: continue
-                val fileExtension = typeConfig.pathExtension
-                if(isFirst) isFirst = false else builder.append('|')
-                builder.append(filePath)
-                if(fileExtension != null) builder.append(':').append(fileExtension)
-            }
-            ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker(builder.toString())
-        }
+        val configGroup = getConfigGroup(project, parameterInfo.gameType)
+        return configGroup.parameterModificationTracker
     }
     
     override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {

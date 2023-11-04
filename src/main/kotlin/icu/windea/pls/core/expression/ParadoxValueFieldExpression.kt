@@ -5,6 +5,7 @@ import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.core.codeInsight.completion.*
@@ -12,7 +13,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.ParadoxValueFieldExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 

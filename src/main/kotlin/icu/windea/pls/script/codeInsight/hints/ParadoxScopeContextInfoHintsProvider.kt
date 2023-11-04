@@ -7,8 +7,8 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
@@ -61,7 +61,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 			if(settings.showOnlyIfScopeIsChanged && !ParadoxScopeHandler.isScopeContextChanged(element, scopeContext)) return true
 			
 			val gameType = selectGameType(file) ?: return true
-			val configGroup = getConfigGroups(file.project).get(gameType)
+			val configGroup = getConfigGroup(file.project, gameType)
 			val presentation = doCollect(scopeContext, configGroup)
 			val finalPresentation = presentation.toFinalPresentation(this, file.project)
 			sink.addInlineElement(offset, true, finalPresentation, true)

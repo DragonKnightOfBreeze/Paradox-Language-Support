@@ -7,6 +7,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
@@ -48,7 +49,7 @@ object ParadoxInlineScriptHandler {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         val project = file.project
-        val configGroup = getConfigGroups(project).get(gameType)
+        val configGroup = getConfigGroup(project, gameType)
         val inlineConfigs = configGroup.inlineConfigGroup[inlineScriptKey] ?: return null
         val propertyValue = element.propertyValue ?: return null
         val matchOptions = Options.SkipIndex or Options.SkipScope

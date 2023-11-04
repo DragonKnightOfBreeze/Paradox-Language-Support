@@ -7,6 +7,7 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.core.codeInsight.completion.*
@@ -62,7 +63,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 			element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockValue()) -> {
 				val fileInfo = file.fileInfo ?: return
 				val gameType = fileInfo.rootInfo.gameType
-				val configGroup = getConfigGroups(project).get(gameType)
+				val configGroup = getConfigGroup(project, gameType)
 				val path = fileInfo.pathToEntry //这里使用pathToEntry
 				val elementPath = ParadoxElementPathHandler.get(element, PlsConstants.maxDefinitionDepth) ?: return
 				for(typeConfig in configGroup.types.values) {

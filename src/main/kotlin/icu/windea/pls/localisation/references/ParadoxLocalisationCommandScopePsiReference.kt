@@ -42,7 +42,7 @@ class ParadoxLocalisationCommandScopePsiReference(
         val element = element
         val name = rangeInElement.substring(element.text)
         val gameType = selectGameType(element) ?: return null
-        val configGroup = getConfigGroups(project).get(gameType)
+        val configGroup = getConfigGroup(project, gameType)
         
         if(prefix == null) {
             //尝试识别为system_link或者localisation_scope
@@ -68,7 +68,7 @@ class ParadoxLocalisationCommandScopePsiReference(
         val element = element
         val name = rangeInElement.substring(element.text)
         val gameType = selectGameType(element) ?: return null
-        val configGroup = getConfigGroups(project).get(gameType)
+        val configGroup = getConfigGroup(project, gameType)
         
         if(prefix == null) {
             //尝试识别为system_link或者localisation_scope

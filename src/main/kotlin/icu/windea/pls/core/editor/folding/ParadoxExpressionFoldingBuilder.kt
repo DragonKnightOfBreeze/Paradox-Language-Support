@@ -4,16 +4,16 @@ import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.config.setting.*
+import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.settings.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
-@WithCwtSetting("folding_settings.pls.cwt", CwtFoldingSetting::class)
+@WithCwtSettings("builtin/folding_settings.pls.cwt", CwtFoldingSettings::class)
 abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
 	abstract fun getGroupName(): String
 	
@@ -24,7 +24,7 @@ abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
 		if(!root.language.isKindOf(ParadoxScriptLanguage)) return FoldingDescriptor.EMPTY_ARRAY
 		val project = root.project
 		val gameType = selectGameType(root) ?: return FoldingDescriptor.EMPTY_ARRAY
-		val configGroup = getConfigGroups(project).get(gameType)
+		val configGroup = getConfigGroup(project, gameType)
 		val foldingSettings = configGroup.foldingSettings
 		if(foldingSettings.isEmpty()) return FoldingDescriptor.EMPTY_ARRAY
 		val settings = foldingSettings.get(getGroupName()) ?: return FoldingDescriptor.EMPTY_ARRAY
@@ -40,26 +40,26 @@ abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
                 val configs = CwtConfigHandler.getConfigs(element)
                 if(configs.isEmpty()) return  //must match
                 val propertyKey = element.name
-                val setting = settings.get(propertyKey) ?: return
+                val settings = settings.get(propertyKey) ?: return
                 //property key is ignore case, properties must be kept in order (declared by keys)
                 val propertyValue = element.propertyValue ?: return
                 val elementsToKeep: List<PsiElement> = when {
-                    setting.key != null && propertyValue !is ParadoxScriptBlock -> {
+                    settings.key != null && propertyValue !is ParadoxScriptBlock -> {
                         propertyValue.toSingletonListOrEmpty()
                     }
-                    setting.keys != null && propertyValue is ParadoxScriptBlock -> {
+                    settings.keys != null && propertyValue is ParadoxScriptBlock -> {
                         var i = -1
                         val r = mutableListOf<ParadoxScriptProperty>()
                         propertyValue.processProperty(conditional = false) {
                             i++
-                            if(it.name.equals(setting.keys.getOrNull(i), true)) {
+                            if(it.name.equals(settings.keys.getOrNull(i), true)) {
                                 r.add(it)
                                 true
                             } else {
                                 false
                             }
                         }
-                        if(setting.keys.size != r.size) return
+                        if(settings.keys.size != r.size) return
                         r
                     }
                     else -> {
@@ -76,8 +76,8 @@ abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
                 val endOffset = rootRange.endOffset
                 var valueRange: TextRange? = null
                 val descriptors = mutableListOf<FoldingDescriptor>()
-                val list = setting.placeholder.split('$')
-                val keys = setting.key?.toSingletonList() ?: setting.keys ?: emptyList()
+                val list = settings.placeholder.split('$')
+                val keys = settings.key?.toSingletonList() ?: settings.keys ?: emptyList()
                 for((index, s) in list.withIndex()) {
                     if(index % 2 == 0) {
                         //'{ k = v }' will be folded by ParadoxScriptFoldingBuilder
