@@ -1,13 +1,10 @@
 package icu.windea.pls.lang.configGroup
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.progress.ProgressIndicatorProvider
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.settings.*
 import icu.windea.pls.core.*
@@ -26,7 +23,7 @@ class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
         withProgressIndicator {
             text = PlsBundle.message("configGroup.processFiles")
             text2 = ""
-            isIndeterminate = false
+            isIndeterminate = true
         }
         
         //按照文件路径（相对于规则分组的根目录）正序读取所有规则文件
@@ -47,6 +44,7 @@ class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
             val (file, fileProcessor) = tuple
             withProgressIndicator {
                 text2 = PlsBundle.message("configGroup.processFile", file.path)
+                isIndeterminate = false
                 fraction = i++ / allFiles.size.toDouble() 
             }
             processFile(filePath, file, fileProcessor, configGroup)

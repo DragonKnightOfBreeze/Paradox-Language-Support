@@ -4,7 +4,7 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.localisation.psi.*
 
 private val KEY = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
-private const val VERSION = 42 //1.1.12
+private const val VERSION = 43 //1.2.0
 private const val CACHE_SIZE = 2 * 1024
 
 /**

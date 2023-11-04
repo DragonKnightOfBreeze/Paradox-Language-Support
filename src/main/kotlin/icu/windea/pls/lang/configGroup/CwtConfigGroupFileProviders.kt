@@ -5,7 +5,6 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
 
 /**
  * 用于支持插件内置的CWT规则分组。
@@ -14,15 +13,22 @@ import icu.windea.pls.model.*
  */
 class BuiltInCwtConfigGroupFileProvider: CwtConfigGroupFileProvider {
     override fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean {
-        val rootPath = "/config/${configGroup.gameType.id}"
+        val rootPath = "/config"
         val rootUrl = rootPath.toClasspathUrl()
         val rootDir = VfsUtil.findFileByURL(rootUrl) ?: return true
+        if(!configGroup.isCore) rootDir.findChild("core")?.let { doProcessFiles(it, consumer) }
+        rootDir.findChild(configGroup.name)?.let { doProcessFiles(it, consumer) }
+        return true
+    }
+    
+    private fun doProcessFiles(rootDir: VirtualFile, consumer: (String, VirtualFile) -> Boolean) {
+        if(!rootDir.isDirectory) return
         withProgressIndicator {
             text = PlsBundle.message("configGroup.collectBuiltinFiles")
             text2 = ""
             isIndeterminate = true
         }
-        VfsUtil.visitChildrenRecursively(rootDir, object: VirtualFileVisitor<Void>() {
+        VfsUtil.visitChildrenRecursively(rootDir, object : VirtualFileVisitor<Void>() {
             override fun visitFile(file: VirtualFile): Boolean {
                 if(file.extension?.lowercase() == "cwt") {
                     val path = file.relativePathTo(rootDir)
@@ -31,7 +37,6 @@ class BuiltInCwtConfigGroupFileProvider: CwtConfigGroupFileProvider {
                 return true
             }
         })
-        return true
     }
 }
 
@@ -43,14 +48,21 @@ class BuiltInCwtConfigGroupFileProvider: CwtConfigGroupFileProvider {
 class ProjectCwtConfigGroupFileProvider: CwtConfigGroupFileProvider {
     override fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean {
         val projectRootDir = configGroup.project.guessProjectDir() ?: return true
-        val rootPath = ".config/${configGroup.gameType.id}"
+        val rootPath = ".config"
         val rootDir = VfsUtil.findRelativeFile(projectRootDir, rootPath) ?: return true
+        if(!configGroup.isCore) rootDir.findChild("core")?.let { doProcessFiles(it, consumer) }
+        rootDir.findChild(configGroup.name)?.let { doProcessFiles(it, consumer) }
+        return true
+    }
+    
+    private fun doProcessFiles(rootDir: VirtualFile, consumer: (String, VirtualFile) -> Boolean) {
+        if(!rootDir.isDirectory) return
         withProgressIndicator {
-            text = PlsBundle.message("configGroup.collectFiles", rootPath)
+            text = PlsBundle.message("configGroup.collectFiles", rootDir.path)
             text2 = ""
             isIndeterminate = true
         }
-        VfsUtil.visitChildrenRecursively(rootDir, object: VirtualFileVisitor<Void>() {
+        VfsUtil.visitChildrenRecursively(rootDir, object : VirtualFileVisitor<Void>() {
             override fun visitFile(file: VirtualFile): Boolean {
                 if(file.extension?.lowercase() == "cwt") {
                     val path = file.relativePathTo(rootDir)
@@ -59,6 +71,5 @@ class ProjectCwtConfigGroupFileProvider: CwtConfigGroupFileProvider {
                 return true
             }
         })
-        return true
     }
 }

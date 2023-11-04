@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 private val NAME = ID.create<String, List<ParadoxExpressionInfo>>("paradox.expression.index")
-private const val VERSION = 42 //1.1.12
+private const val VERSION = 43 //1.2.0
 
 private val markerKey = createKey<Boolean>("paradox.expression.index.marker")
 

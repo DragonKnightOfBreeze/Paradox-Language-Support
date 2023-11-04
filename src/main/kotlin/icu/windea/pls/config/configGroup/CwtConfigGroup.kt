@@ -3,7 +3,6 @@ package icu.windea.pls.config.configGroup
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 
@@ -18,6 +17,8 @@ class CwtConfigGroup(
     val project: Project,
 ) : UserDataHolderBase() {
     val name = gameType.id
+    
+    val isCore get() = name == "core"
     
     object Keys : KeyRegistry("CwtConfigGroup")
 }
