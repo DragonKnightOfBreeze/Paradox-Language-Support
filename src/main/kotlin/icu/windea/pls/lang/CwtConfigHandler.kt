@@ -21,7 +21,6 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.annotations.api.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -986,7 +985,7 @@ object CwtConfigHandler {
         val configExpression = context.config!!.expression ?: return
         val config = context.config!!
         val configGroup = context.configGroup!!
-        val scopeMatched = context.scopeMatched!!
+        val scopeMatched = context.scopeMatched
         val scopeContext = context.scopeContext
         
         if(configExpression.isEmpty()) return
@@ -1039,7 +1038,7 @@ object CwtConfigHandler {
         val contextElement = context.contextElement!!
         val configGroup = context.configGroup!!
         val config = context.config!!
-        val scopeMatched = context.scopeMatched!!
+        val scopeMatched = context.scopeMatched
         
         if(contextElement !is ParadoxScriptStringExpressionElement) return
         val configExpression = config.expression ?: return
@@ -1059,8 +1058,8 @@ object CwtConfigHandler {
     
     fun completeScopeFieldExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val quoted = context.quoted!!
-        val keyword = context.keyword!!
+        val quoted = context.quoted
+        val keyword = context.keyword
         val configGroup = context.configGroup!!
         if(quoted) return
         
@@ -1078,8 +1077,8 @@ object CwtConfigHandler {
     
     fun completeValueFieldExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val quoted = context.quoted!!
-        val keyword = context.keyword!!
+        val quoted = context.quoted
+        val keyword = context.keyword
         val configGroup = context.configGroup!!
         
         if(quoted) return
@@ -1098,8 +1097,8 @@ object CwtConfigHandler {
     
     fun completeVariableFieldExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val quoted = context.quoted!!
-        val keyword = context.keyword!!
+        val quoted = context.quoted
+        val keyword = context.keyword
         val configGroup = context.configGroup!!
         
         if(quoted) return
@@ -1118,8 +1117,8 @@ object CwtConfigHandler {
     
     fun completeValueSetValueExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val quoted = context.quoted!!
-        val keyword = context.keyword!!
+        val quoted = context.quoted
+        val keyword = context.keyword
         val configGroup = context.configGroup!!
         val config = context.config!!
         
@@ -1443,7 +1442,7 @@ object CwtConfigHandler {
     fun completeEventTarget(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val contextElement = context.contextElement!!
-        val keyword = context.keyword!!
+        val keyword = context.keyword
         val file = context.originalFile!!
         val project = file.project
         
@@ -1487,7 +1486,7 @@ object CwtConfigHandler {
     fun completeVariable(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val contextElement = context.contextElement!!
-        val keyword = context.keyword!!
+        val keyword = context.keyword
         val file = context.originalFile!!
         val project = file.project
         
