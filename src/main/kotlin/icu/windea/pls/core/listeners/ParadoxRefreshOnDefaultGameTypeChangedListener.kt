@@ -2,7 +2,6 @@ package icu.windea.pls.core.listeners
 
 import com.intellij.openapi.application.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
@@ -20,10 +19,8 @@ class ParadoxRefreshOnDefaultGameTypeChangedListener : ParadoxDefaultGameTypeLis
             }
         }
         
-        //重新解析文件
-        val files = runWriteAction { ParadoxCoreHandler.reparseFilesByRootFilePaths(modDirectories) }
-        //请求重新索引
-        ParadoxCoreHandler.requestReindex(files)
+        //重新解析文件（IDE之后会自动请求重新索引）
+        runWriteAction { ParadoxCoreHandler.reparseFilesByRootFilePaths(modDirectories) }
         
         //此时不需要刷新内嵌提示
     }

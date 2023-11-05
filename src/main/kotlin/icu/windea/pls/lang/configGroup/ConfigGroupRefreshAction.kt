@@ -42,13 +42,21 @@ class ConfigGroupRefreshAction : DumbAwareAction() {
             configGroupService.refreshConfigGroup(configGroup.gameType)
         }
         
-        val rootFilePaths = getRootFilePaths(configGroups)
-        ParadoxCoreHandler.reparseFilesByRootFilePaths(rootFilePaths)
+        //重新解析已打开的文件
+        ParadoxCoreHandler.reparseOpenedFiles()
+        
+        val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
+            //重新解析文件（IDE之后会自动请求重新索引）
+            //TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
+            val rootFilePaths = getRootFilePaths(configGroups)
+            ParadoxCoreHandler.reparseFilesByRootFilePaths(rootFilePaths)
+        }
         
         NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
+            PlsBundle.message("configGroup.refresh.notification.title"),
             PlsBundle.message("configGroup.refresh.notification.content"),
             NotificationType.INFORMATION
-        ).notify(project)
+        ).addAction(action).notify(project)
         
         configGroupService.getConfigGroups().values.forEach { it.changed.set(false) }
         

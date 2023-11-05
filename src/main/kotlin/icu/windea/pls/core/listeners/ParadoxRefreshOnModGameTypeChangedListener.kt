@@ -2,7 +2,6 @@ package icu.windea.pls.core.listeners
 
 import com.intellij.openapi.application.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
@@ -19,13 +18,11 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> refreshGameType(modDirectory, gameType) } }
         getProfilesSettings().updateSettings()
         
-        //重新解析文件
+        //重新解析文件（IDE之后会自动请求重新索引）
         val modDirectories = mutableSetOf<String>()
         modSettings.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) }
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) } }
         val files = runWriteAction { ParadoxCoreHandler.reparseFilesByRootFilePaths(modDirectories) }
-        //请求重新索引
-        ParadoxCoreHandler.requestReindex(files)
         
         //此时不需要刷新内嵌提示
     }

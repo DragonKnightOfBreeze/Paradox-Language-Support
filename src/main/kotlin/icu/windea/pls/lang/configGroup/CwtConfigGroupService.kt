@@ -29,7 +29,6 @@ class CwtConfigGroupService(
     
     fun refreshConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
         //不替换configGroup，而是替换其中的userData
-        //TODO 1.2.0+ 目前的实现会导致刷新CWT规则分组后，IDE强制开始重新索引
         val configGroup = cache.computeIfAbsent(gameType.id) { createConfigGroup(gameType, false) }
         if(!configGroup.changed.get()) return configGroup
         synchronized(configGroup) {

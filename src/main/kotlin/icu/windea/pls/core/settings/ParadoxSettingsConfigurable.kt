@@ -325,10 +325,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
     @Suppress("CompanionObjectInExtension")
     companion object {
         fun reparseFilesByFileNames(fileNames: Set<String>) {
-            //设置中的被忽略文件名被更改时，需要重新解析相关文件
+            //设置中的被忽略文件名被更改时，需要重新解析相关文件（IDE之后会自动请求重新索引）
             val files = runWriteAction { ParadoxCoreHandler.reparseFilesByFileNames(fileNames) }
-            //请求重新索引
-            ParadoxCoreHandler.requestReindex(files)
         }
         
         fun refreshInlayHints() {
