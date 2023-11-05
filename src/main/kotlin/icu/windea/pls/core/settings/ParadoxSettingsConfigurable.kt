@@ -8,7 +8,6 @@ import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.listeners.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
@@ -236,7 +235,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.inference.inlineScriptConfig"))
                         .bindSelected(settings.inference::inlineScriptConfig)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.inlineScriptConfig.tooltip") }
-                        .onApply { refreshInlineScripts() }
+                        .onApply { refreshInlineScriptInlayHints() }
                 }
                 //scopeContext
                 row {
@@ -326,9 +325,10 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
     @Suppress("CompanionObjectInExtension")
     companion object {
         fun reparseFilesByFileNames(fileNames: Set<String>) {
-            //重新解析指定文件名的文件
             //设置中的被忽略文件名被更改时，需要重新解析相关文件
-            runWriteAction { ParadoxCoreHandler.reparseFilesByFileNames(fileNames) }
+            val files = runWriteAction { ParadoxCoreHandler.reparseFilesByFileNames(fileNames) }
+            //请求重新索引
+            ParadoxCoreHandler.requestReindex(files)
         }
         
         fun refreshInlayHints() {
@@ -339,7 +339,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
             }
         }
         
-        fun refreshInlineScripts() {
+        fun refreshInlineScriptInlayHints() {
             //重新解析内联脚本文件
             ProjectManager.getInstance().openProjects.forEach { project ->
                 ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker.incModificationCount()

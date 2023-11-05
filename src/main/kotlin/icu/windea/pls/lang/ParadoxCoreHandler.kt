@@ -20,7 +20,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.data.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.listeners.*
@@ -280,49 +279,47 @@ object ParadoxCoreHandler {
     }
     
     @RequiresWriteLock
-    fun reparseFilesByRootFilePaths(rootFilePaths: Set<String>) {
+    fun reparseFilesByRootFilePaths(rootFilePaths: Set<String>): MutableSet<VirtualFile> {
         //重新解析指定的根目录中的所有文件，包括非脚本非本地化文件
-        try {
-            FileTypeManagerEx.getInstanceEx().makeFileTypesChange("Root of paradox files $rootFilePaths changed.") { }
-        } catch(e: Exception) {
-            if(e is ProcessCanceledException) throw e
-            thisLogger().warn(e.message)
-        } finally {
-            //要求重新索引
-            for(rootFilePath in rootFilePaths) {
-                val path = rootFilePath.toPathOrNull() ?: continue
-                val rootFile = VfsUtil.findFile(path, false) ?: continue
-                FileBasedIndex.getInstance().requestReindex(rootFile)
-            }
+        val files = mutableSetOf<VirtualFile>()
+        rootFilePaths.forEach f@{ rootFilePath ->
+            val rootFile = VfsUtil.findFile(rootFilePath.toPathOrNull() ?: return@f, true) ?: return@f
+            VfsUtil.visitChildrenRecursively(rootFile, object : VirtualFileVisitor<Void>() {
+                override fun visitFile(file: VirtualFile): Boolean {
+                    if(file.isFile) files.add(file)
+                    return true
+                }
+            })
         }
+        FileContentUtil.reparseFiles(getDefaultProject(), files, false)
+        return files
     }
     
     @RequiresWriteLock
-    fun reparseFilesByFileNames(fileNames: Set<String>) {
+    fun reparseFilesByFileNames(fileNames: Set<String>): Set<VirtualFile> {
         //重新解析指定的根目录中的所有文件，包括非脚本非本地化文件
         val files = mutableSetOf<VirtualFile>()
-        try {
-            val project = getTheOnlyOpenOrDefaultProject()
-            FilenameIndex.processFilesByNames(fileNames, false, GlobalSearchScope.allScope(project), null) { file ->
-                files.add(file)
-                true
-            }
-            FileContentUtil.reparseFiles(project, files, true)
-        } catch(e: Exception) {
-            if(e is ProcessCanceledException) throw e
-            thisLogger().warn(e.message)
-        } finally {
-            //要求重新索引
-            for(file in files) {
-                FileBasedIndex.getInstance().requestReindex(file)
-            }
+        val project = getTheOnlyOpenOrDefaultProject()
+        FilenameIndex.processFilesByNames(fileNames, false, GlobalSearchScope.allScope(project), null) { file ->
+            if(file.isFile) files.add(file)
+            true
         }
+        FileContentUtil.reparseFiles(getDefaultProject(), files, false)
+        return files
     }
     
     @RequiresWriteLock
     fun reparseOpenedFiles() {
         //重新解析所有项目的所有已打开的文件
         FileContentUtil.reparseOpenedFiles()
+    }
+    
+    fun requestReindex(files: Collection<VirtualFile>) {
+        //请求重新索引
+        val fileBasedIndex = FileBasedIndex.getInstance()
+        files.forEach { file ->
+            fileBasedIndex.requestReindex(file)
+        }
     }
     
     fun refreshInlayHints(predicate: (VirtualFile, Project) -> Boolean = { _, _ -> true }) {

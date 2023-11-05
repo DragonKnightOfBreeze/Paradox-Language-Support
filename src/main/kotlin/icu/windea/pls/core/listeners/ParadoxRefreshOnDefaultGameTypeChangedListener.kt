@@ -21,7 +21,9 @@ class ParadoxRefreshOnDefaultGameTypeChangedListener : ParadoxDefaultGameTypeLis
         }
         
         //重新解析文件
-        runWriteAction { ParadoxCoreHandler.reparseFilesByRootFilePaths(modDirectories) }
+        val files = runWriteAction { ParadoxCoreHandler.reparseFilesByRootFilePaths(modDirectories) }
+        //请求重新索引
+        ParadoxCoreHandler.requestReindex(files)
         
         //此时不需要刷新内嵌提示
     }

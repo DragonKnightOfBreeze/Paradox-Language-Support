@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.configGroup
 
-import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
@@ -38,11 +37,6 @@ class CwtConfigGroupService(
             newConfigGroup.copyUserDataTo(configGroup)
             newConfigGroup.changed.set(false)
             newConfigGroup.modificationTracker.incModificationCount()
-            
-            NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
-                PlsBundle.message("configGroup.refresh.notification.title"),
-                NotificationType.INFORMATION
-            ).notify(project)
         }
         return configGroup
     }

@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.configGroup
 
+import com.intellij.notification.*
 import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import icons.*
@@ -13,7 +13,7 @@ import icu.windea.pls.lang.*
 //com.intellij.openapi.externalSystem.autoimport.ProjectRefreshAction
 
 @Suppress("DialogTitleCapitalization")
-class ConfigGroupRefreshAction : DumbAwareAction(){
+class ConfigGroupRefreshAction : DumbAwareAction() {
     init {
         templatePresentation.icon = PlsIcons.Actions.RefreshConfigGroup
         templatePresentation.text = PlsBundle.message("configGroup.refresh.action.text")
@@ -36,19 +36,28 @@ class ConfigGroupRefreshAction : DumbAwareAction(){
         val project = e.project ?: return
         val configGroupService = project.service<CwtConfigGroupService>()
         val configGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
-        refreshConfigGroups(configGroups, configGroupService)
-        reparseFiles(configGroups)
-    }
-    
-    private fun refreshConfigGroups(configGroups: List<CwtConfigGroup>, configGroupService: CwtConfigGroupService) {
+        if(configGroups.isNotEmpty()) return
+        
         configGroups.forEach { configGroup ->
             configGroupService.refreshConfigGroup(configGroup.gameType)
         }
+        
+        val rootFilePaths = getRootFilePaths(configGroups)
+        val files = ParadoxCoreHandler.reparseFilesByRootFilePaths(rootFilePaths)
+        
+        val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
+            //TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
+            ParadoxCoreHandler.requestReindex(files)
+        }
+        
+        NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
+            PlsBundle.message("configGroup.refresh.notification.title"),
+            PlsBundle.message("configGroup.refresh.notification.content"),
+            NotificationType.INFORMATION
+        ).addAction(action).notify(project)
     }
     
-    private fun reparseFiles(configGroups: List<CwtConfigGroup>) {
-        //TODO 1.2.0+ 这里需要考虑优化：刷新CWT规则分组会导致重新索引相关文件，重新编制相关索引，刷新相关内嵌提示，等等
-        
+    private fun getRootFilePaths(configGroups: List<CwtConfigGroup>): Set<String> {
         val gameTypes = configGroups.mapNotNullTo(mutableSetOf()) { it.gameType }
         val rootFilePaths = mutableSetOf<String>()
         getProfilesSettings().gameDescriptorSettings.values.forEach f@{ settings ->
@@ -61,9 +70,7 @@ class ConfigGroupRefreshAction : DumbAwareAction(){
             if(gameType !in gameTypes) return@f
             settings.modDirectory?.let { rootFilePaths.add(it) }
         }
-        
-        //重新解析文件
-        runWriteAction { ParadoxCoreHandler.reparseFilesByRootFilePaths(rootFilePaths) }
+        return rootFilePaths
     }
     
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

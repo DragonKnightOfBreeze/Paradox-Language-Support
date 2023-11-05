@@ -4,9 +4,9 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
@@ -150,7 +150,10 @@ class ParadoxCoreFileListener : AsyncFileListener {
     }
     
     private fun reparseOpenedFiles() {
-        runReadAction { ParadoxCoreHandler.reparseOpenedFiles() }
+        runReadAction {
+            //重新解析所有项目的所有已打开的文件
+            ParadoxCoreHandler.reparseOpenedFiles()
+        }
     }
     
     private fun refreshInlineScripts() {
