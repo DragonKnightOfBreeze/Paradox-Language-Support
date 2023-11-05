@@ -3,13 +3,13 @@ package icu.windea.pls.lang.configGroup
 import com.intellij.icons.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.components.*
+import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 
 //com.intellij.openapi.externalSystem.autoimport.HideProjectRefreshActions
 
-@Suppress("DialogTitleCapitalization")
 class HideConfigGroupRefreshAction: DumbAwareAction() {
     init {
         templatePresentation.icon = AllIcons.Actions.Close
@@ -33,6 +33,9 @@ class HideConfigGroupRefreshAction: DumbAwareAction() {
         val project = e.project ?: return
         val configGroupService = project.service<CwtConfigGroupService>()
         configGroupService.getConfigGroups().values.forEach { it.changed.set(false) }
+        
+        FloatingToolbarProvider.getProvider<ConfigGroupRefreshFloatingProvider>()
+            .updateToolbarComponents(project)
     }
     
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

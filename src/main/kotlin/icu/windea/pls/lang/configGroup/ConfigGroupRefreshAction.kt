@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.configGroup
 
-import com.intellij.icons.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -15,7 +15,7 @@ import icu.windea.pls.lang.*
 @Suppress("DialogTitleCapitalization")
 class ConfigGroupRefreshAction : DumbAwareAction(){
     init {
-        templatePresentation.icon = AllIcons.Actions.Refresh
+        templatePresentation.icon = PlsIcons.Actions.RefreshConfigGroup
         templatePresentation.text = PlsBundle.message("configGroup.refresh.action.text")
         templatePresentation.description = PlsBundle.message("configGroup.refresh.action.desc")
     }

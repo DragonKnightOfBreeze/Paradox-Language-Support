@@ -100,6 +100,8 @@ object PlsIcons {
 		@JvmField val CreateReference = LocalisationProperty
 		@JvmField val CreateIcon = LocalisationIcon
 		@JvmField val CreateCommand = LocalisationCommand
+		
+		@JvmField val RefreshConfigGroup = loadIcon("/icons/actions/refreshConfigGroup.svg")
 	}
 	
 	object Gutter {

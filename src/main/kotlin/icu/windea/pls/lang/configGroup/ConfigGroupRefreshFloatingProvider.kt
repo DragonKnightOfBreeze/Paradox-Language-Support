@@ -2,14 +2,14 @@ package icu.windea.pls.lang.configGroup
 
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.components.*
 import com.intellij.openapi.editor.toolbar.floating.*
-import com.intellij.openapi.externalSystem.autoimport.*
 import com.intellij.openapi.project.*
 import com.intellij.util.containers.*
 
 //com.intellij.openapi.externalSystem.autoimport.ProjectRefreshFloatingProvider
 
-class ConfigGroupRefreshFloatingProvider: AbstractFloatingToolbarProvider(ACTION_GROUP) {
+class ConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider(ACTION_GROUP) {
     override val autoHideable = false
     
     private val toolbarComponents = DisposableWrapperList<Pair<Project, FloatingToolbarComponent>>()
@@ -25,8 +25,9 @@ class ConfigGroupRefreshFloatingProvider: AbstractFloatingToolbarProvider(ACTION
     }
     
     private fun updateToolbarComponent(project: Project, component: FloatingToolbarComponent) {
-        val notificationAware = ExternalSystemProjectNotificationAware.getInstance(project)
-        when (notificationAware.isNotificationVisible()) {
+        val configGroupService = project.service<CwtConfigGroupService>()
+        val isChanged = configGroupService.getConfigGroups().values.any { it.changed.get() }
+        when(isChanged) {
             true -> component.scheduleShow()
             else -> component.scheduleHide()
         }
@@ -39,14 +40,14 @@ class ConfigGroupRefreshFloatingProvider: AbstractFloatingToolbarProvider(ACTION
     }
     
     private fun forEachToolbarComponent(project: Project, consumer: (FloatingToolbarComponent) -> Unit) {
-        for ((componentProject, component) in toolbarComponents) {
-            if (componentProject === project) {
+        for((componentProject, component) in toolbarComponents) {
+            if(componentProject === project) {
                 consumer(component)
             }
         }
     }
     
     companion object {
-        private const val ACTION_GROUP = "Pls.ConfigGroupRefreshActionGroup" 
+        private const val ACTION_GROUP = "Pls.ConfigGroupRefreshActionGroup"
     }
 }
