@@ -2,7 +2,6 @@ package icu.windea.pls.model
 
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import java.nio.file.*
 
@@ -76,17 +75,15 @@ class ParadoxModRootInfo(
     val descriptorInfo: ParadoxModDescriptorInfo
 ) : ParadoxRootInfo() {
     val inferredGameType: ParadoxGameType? = doGetInferredGameType()
-    override val gameType: ParadoxGameType get() = doGetGameType()
-    override val gameRootFile: VirtualFile get() = rootFile
+    override val gameType: ParadoxGameType
+        get() = inferredGameType
+            ?: getProfilesSettings().modDescriptorSettings.get(rootFile.path)?.gameType
+            ?: getSettings().defaultGameType
+    override val gameRootFile: VirtualFile
+        get() = rootFile
     
     private fun doGetInferredGameType(): ParadoxGameType? {
         return ParadoxCoreHandler.getInferredGameType(this)
-    }
-    
-    private fun doGetGameType(): ParadoxGameType {
-        return inferredGameType 
-            ?: getProfilesSettings().modDescriptorSettings.get(rootFile.path)?.gameType
-            ?: getSettings().defaultGameType
     }
     
     override val rootPath: Path = rootFile.toNioPath()

@@ -20,7 +20,7 @@ class CwtConfigGroupService(
     private val cache = ConcurrentHashMap<String, CwtConfigGroup>()
     
     fun getConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
-        return cache.computeIfAbsent(gameType.id) { createConfigGroup(gameType) }
+        return cache.computeIfAbsent(gameType.id) { createConfigGroup(gameType, false) }
     }
     
     fun getConfigGroups(): Map<String, CwtConfigGroup> {
@@ -29,38 +29,47 @@ class CwtConfigGroupService(
     
     fun refreshConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
         //不替换configGroup，而是替换其中的userData
-        val configGroup = cache.computeIfAbsent(gameType.id) { createConfigGroup(gameType) }
+        val configGroup = cache.computeIfAbsent(gameType.id) { createConfigGroup(gameType, false) }
         if(!configGroup.changed.get()) return configGroup
-        val newConfigGroup = createConfigGroup(gameType)
-        newConfigGroup.copyUserDataTo(configGroup)
-        newConfigGroup.modificationTracker.incModificationCount()
+        synchronized(configGroup) {
+            if(!configGroup.changed.get()) return configGroup
+            val newConfigGroup = createConfigGroup(gameType, true)
+            newConfigGroup.copyUserDataTo(configGroup)
+            newConfigGroup.changed.set(false)
+            newConfigGroup.modificationTracker.incModificationCount()
+        }
         return configGroup
     }
     
-    private fun createConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
+    private fun createConfigGroup(gameType: ParadoxGameType?, refresh: Boolean): CwtConfigGroup {
         val info = CwtConfigGroupInfo(gameType.id)
         val configGroup = CwtConfigGroup(info, gameType, project)
         info.configGroup = configGroup
-        initConfigGroup(configGroup)
+        handleConfigGroup(configGroup, refresh)
         return configGroup
     }
     
-    private fun initConfigGroup(configGroup: CwtConfigGroup) {
-        synchronized(configGroup) {
-            doInitConfigGroup(configGroup)
-        }
-    }
-    
-    private fun doInitConfigGroup(configGroup: CwtConfigGroup) {
+    private fun handleConfigGroup(configGroup: CwtConfigGroup, refresh: Boolean) {
         //需要考虑在背景进度指示器中显示初始化的进度（经测试，通常1s内即可完成）
         
         val name = configGroup.name
-        thisLogger().info("Initialize CWT config group '$name'...")
+        if(refresh) {
+            thisLogger().info("Refresh CWT config group '$name'...")
+        } else {
+            thisLogger().info("Initialize CWT config group '$name'...")
+        }
         val start = System.currentTimeMillis()
         
         val processIndicator = when {
             configGroup.name == "core" || configGroup.project.isDefault -> EmptyProgressIndicator()
-            else -> BackgroundableProcessIndicator(project, PlsBundle.message("configGroup.init", name), null, "", false)
+            else -> {
+                val progressTitle = if(refresh) {
+                    PlsBundle.message("configGroup.refresh", name)
+                } else {
+                    PlsBundle.message("configGroup.init", name)
+                }
+                BackgroundableProcessIndicator(project, progressTitle, null, "", false)
+            }
         }
         val callable = Callable {
             val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
@@ -74,6 +83,10 @@ class CwtConfigGroupService(
         action.executeSynchronously()
         
         val end = System.currentTimeMillis()
-        thisLogger().info("Initialize CWT config group '$name' finished in ${end - start} ms.")
+        if(refresh) {
+            thisLogger().info("Refresh CWT config group '$name' finished in ${end - start} ms.")
+        } else {
+            thisLogger().info("Initialize CWT config group '$name' finished in ${end - start} ms.")
+        }
     }
 }
