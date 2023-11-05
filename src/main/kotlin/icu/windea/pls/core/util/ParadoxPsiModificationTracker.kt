@@ -8,16 +8,13 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 import java.util.concurrent.*
 
-//com.intellij.psi.util.PsiModificationTracker
-//com.intellij.psi.impl.PsiModificationTrackerImpl
-
 /**
  * 用于追踪PSI更改 - 具有更高的精确度，提高缓存命中率。
  */
 @Service(Service.Level.PROJECT)
 class ParadoxPsiModificationTracker(project: Project) {
-    val ScriptFileTracker = DelegatedModificationTracker(PsiModificationTracker.getInstance(project).forLanguage(ParadoxScriptLanguage))
-    val LocalisationFileTracker = DelegatedModificationTracker(PsiModificationTracker.getInstance(project).forLanguage(ParadoxLocalisationLanguage))
+    val ScriptFileTracker = CompositeModificationTracker(PsiModificationTracker.getInstance(project).forLanguage(ParadoxScriptLanguage))
+    val LocalisationFileTracker = CompositeModificationTracker(PsiModificationTracker.getInstance(project).forLanguage(ParadoxLocalisationLanguage))
     
     val ScriptFileTrackers = ConcurrentHashMap<String, PathModificationTracker>()
     
@@ -39,19 +36,3 @@ class ParadoxPsiModificationTracker(project: Project) {
         fun getInstance(project: Project) = project.service<ParadoxPsiModificationTracker>()
     }
 }
-
-class DelegatedModificationTracker(private val delegate: ModificationTracker): SimpleModificationTracker() {
-    override fun getModificationCount(): Long {
-        return super.getModificationCount() + delegate.modificationCount
-    }
-}
-
-class PathModificationTracker(keyString: String) : SimpleModificationTracker() {
-    val keys = keyString.split('|').map {
-        val i = it.indexOf(':')
-        if(i == -1) PathModificationTrackerKey(it, emptySet())
-        else PathModificationTrackerKey(it.substring(0, i), it.substring(i + 1).lowercase().split(',').toSortedSet())
-    }
-}
-
-class PathModificationTrackerKey(val path: String, val extensions: Set<String>)

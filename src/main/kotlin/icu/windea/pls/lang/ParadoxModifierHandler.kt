@@ -10,14 +10,15 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
@@ -64,8 +65,7 @@ object ParadoxModifierHandler {
     
     fun getModifierInfo(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierInfo? {
         val rootFile = selectRootFile(element) ?: return null
-        val project = configGroup.project
-        val cache = project.modifierInfoCache.get(rootFile)
+        val cache = configGroup.modifierInfoCache.get(rootFile)
         val cacheKey = name
         val modifierInfo = cache.getCancelable(cacheKey) {
             //进行代码补全时，可能需要使用指定的扩展点解析修正
@@ -81,8 +81,8 @@ object ParadoxModifierHandler {
         val gameType = selectGameType(element) ?: return null
         val rootFile = selectRootFile(element) ?: return null
         val project = element.project
-        val cache = project.modifierInfoCache.get(rootFile)
         val configGroup = getConfigGroup(project, gameType)
+        val cache = configGroup.modifierInfoCache.get(rootFile)
         val cacheKey = name
         val modifierInfo = cache.getCancelable(cacheKey) {
             ParadoxModifierSupport.resolveModifier(name, element, configGroup) ?: ParadoxModifierInfo.EMPTY
@@ -92,9 +92,11 @@ object ParadoxModifierHandler {
     }
     
     fun getModifierInfo(modifierElement: ParadoxModifierElement): ParadoxModifierInfo? {
+        val gameType = modifierElement.gameType
         val rootFile = selectRootFile(modifierElement) ?: return null
         val project = modifierElement.project
-        val cache = project.modifierInfoCache.get(rootFile)
+        val configGroup = getConfigGroup(project, gameType)
+        val cache = configGroup.modifierInfoCache.get(rootFile)
         val cacheKey = modifierElement.name
         val modifierInfo = cache.getCancelable(cacheKey) {
             modifierElement.toInfo()
@@ -142,10 +144,11 @@ object ParadoxModifierHandler {
     }
 }
 
-private val PlsKeys.modifierInfoCache by createKey("paradox.modifierInfoCache") {
+//rootFile -> cacheKey -> modifierInfo
+//depends on config group
+private val CwtConfigGroup.modifierInfoCache by createKeyDelegate(CwtConfigContext.Keys) {
     NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, ParadoxModifierInfo>().trackedBy { it.modificationTracker } }
 }
-private val Project.modifierInfoCache by PlsKeys.modifierInfoCache
 
 private val PlsKeys.modifierNameKeys by createKey<Set<String>>("paradox.modifierNameKeys")
 private val PlsKeys.modifierDescKeys by createKey<Set<String>>("paradox.modifierDescKeys")

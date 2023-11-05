@@ -16,7 +16,7 @@ class BuiltInCwtConfigGroupFileProvider: CwtConfigGroupFileProvider {
         val rootPath = "/config"
         val rootUrl = rootPath.toClasspathUrl()
         val rootDir = VfsUtil.findFileByURL(rootUrl) ?: return true
-        if(!configGroup.isCore) rootDir.findChild("core")?.let { doProcessFiles(it, consumer) }
+        if(!(configGroup.name == "core")) rootDir.findChild("core")?.let { doProcessFiles(it, consumer) }
         rootDir.findChild(configGroup.name)?.let { doProcessFiles(it, consumer) }
         return true
     }
@@ -50,7 +50,7 @@ class ProjectCwtConfigGroupFileProvider: CwtConfigGroupFileProvider {
         val projectRootDir = configGroup.project.guessProjectDir() ?: return true
         val rootPath = ".config"
         val rootDir = VfsUtil.findRelativeFile(projectRootDir, rootPath) ?: return true
-        if(!configGroup.isCore) rootDir.findChild("core")?.let { doProcessFiles(it, consumer) }
+        if(!(configGroup.name == "core")) rootDir.findChild("core")?.let { doProcessFiles(it, consumer) }
         rootDir.findChild(configGroup.name)?.let { doProcessFiles(it, consumer) }
         return true
     }

@@ -3,9 +3,7 @@ package icu.windea.pls.config
 import com.intellij.openapi.diagnostic.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
@@ -36,7 +34,7 @@ object CwtConfigResolver {
     private fun resolveProperty(propertyElement: CwtProperty, file: CwtFile, fileConfig: CwtFileConfig): CwtPropertyConfig? {
         val valueElement = propertyElement.propertyValue
         if(valueElement == null) {
-            logger.error("Incorrect CWT config in ${fileConfig.name}\n${propertyElement.text}")
+            logger.warn("Incorrect CWT config in ${file.virtualFile.path}")
             return null
         }
         //use CwtPropertyPointer to optimize performance and memory
@@ -211,7 +209,7 @@ object CwtConfigResolver {
     private fun resolveOption(optionElement: CwtOption, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionConfig? {
         val optionValueElement = optionElement.optionValue
         if(optionValueElement == null) {
-            logger.error("Incorrect CWT config in ${fileConfig.name}\n${optionElement.text}")
+            logger.warn("Incorrect CWT config in ${file.virtualFile.path}")
             return null
         }
         val key = optionElement.name.intern() //intern to optimize memory

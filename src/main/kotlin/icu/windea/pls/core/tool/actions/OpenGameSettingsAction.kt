@@ -9,7 +9,6 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.listeners.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.model.*
@@ -35,18 +34,15 @@ class OpenGameSettingsAction : DumbAwareAction() {
         }
         
         val presentation = e.presentation
-        presentation.isVisible = false
-        presentation.isEnabled = false
+        presentation.isEnabledAndVisible = false
         //这里需要兼容直接从项目根目录右键打开菜单的情况
-        val file = getFile(e)
-        val fileInfo = file?.fileInfo ?: return
-        if(fileInfo.rootInfo !is ParadoxGameRootInfo) return
+        val file = getFile(e) ?: return
+        if(file.fileInfo?.rootInfo !is ParadoxGameRootInfo) return
         //必须位于当前项目中
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
         if(!isInProject) return
-        presentation.isVisible = true
-        presentation.isEnabled = true
+        presentation.isEnabledAndVisible = true
     }
     
     private fun getFile(e: AnActionEvent): VirtualFile? {

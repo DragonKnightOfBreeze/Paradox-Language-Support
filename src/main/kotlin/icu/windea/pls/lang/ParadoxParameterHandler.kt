@@ -19,7 +19,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
@@ -164,7 +163,8 @@ object ParadoxParameterHandler {
     fun getParameterInfo(parameterElement: ParadoxParameterElement): ParadoxParameterInfo? {
         val rootFile = selectRootFile(parameterElement) ?: return null
         val project = parameterElement.project
-        val cache = project.parameterInfoCache.get(rootFile)
+        val configGroup = getConfigGroup(project, parameterElement.gameType)
+        val cache = configGroup.parameterInfoCache.get(rootFile)
         val cacheKey = parameterElement.name + "@" + parameterElement.contextKey
         val parameterInfo = cache.getCancelable(cacheKey) {
             parameterElement.toInfo()
@@ -239,10 +239,11 @@ object ParadoxParameterHandler {
     }
 }
 
-private val PlsKeys.parameterInfoCache by createKey("paradox.parameterInfoCache") {
+//rootFile -> cacheKey -> parameterInfo
+//depends on config group
+private val CwtConfigGroup.parameterInfoCache by createKeyDelegate(CwtConfigContext.Keys) {
     NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, ParadoxParameterInfo>().trackedBy { it.modificationTracker } }
 }
-private val Project.parameterInfoCache by PlsKeys.parameterInfoCache
 
 private val PlsKeys.parameterInferredConfig by createKey<CwtValueConfig>("paradox.parameterInferredConfig")
 private val PlsKeys.parameterInferredContextConfigs by createKey<List<CwtMemberConfig<*>>>("paradox.parameterInferredContextConfigs")

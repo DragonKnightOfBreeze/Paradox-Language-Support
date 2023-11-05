@@ -276,6 +276,10 @@ inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KP
 //endregion
 
 //region CachedValue Extensions
+fun <T> createCachedValue(project: Project = getDefaultProject(), trackValue: Boolean = false, provider: CachedValueProvider<T>): CachedValue<T> {
+    return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
+}
+
 fun <T> T.withDependencyItems(vararg dependencyItems: Any): CachedValueProvider.Result<T> {
     if(dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
     return CachedValueProvider.Result.create(this, *dependencyItems)

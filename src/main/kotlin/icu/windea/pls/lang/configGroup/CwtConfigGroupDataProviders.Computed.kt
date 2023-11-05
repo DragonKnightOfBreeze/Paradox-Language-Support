@@ -8,6 +8,9 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.set
 
 /**
  * 用于初始CWT规则分组中需要经过计算的那些数据。
@@ -146,7 +149,7 @@ class CwtConfigGroupComputedDataProvider : CwtConfigGroupDataProvider {
                 if(fileExtension != null) builder.append(':').append(fileExtension)
             }
             val modificationTracker = ParadoxPsiModificationTracker.getInstance(configGroup.project).ScriptFileTracker(builder.toString())
-            configGroup.parameterModificationTracker = modificationTracker
+            configGroup.parameterModificationTracker = MergedModificationTracker(configGroup.modificationTracker, modificationTracker)
         }
 
         return true

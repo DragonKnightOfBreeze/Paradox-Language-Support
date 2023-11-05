@@ -7,9 +7,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
@@ -40,8 +38,7 @@ class CwtConfigContext(
 ) : UserDataHolderBase() {
     fun getConfigs(matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
         val rootFile = selectRootFile(element) ?: return emptyList()
-        val project = configGroup.project
-        val cache = project.configsCache.value.get(rootFile)
+        val cache = configGroup.configsCache.value.get(rootFile)
         val cachedKey = doGetCacheKey(matchOptions) ?: return emptyList()
         val cached = cache.getCancelable(cachedKey) {
             doGetConfigs(matchOptions)
@@ -71,14 +68,14 @@ class CwtConfigContext(
     object Keys : KeyRegistry("CwtConfigContext")
 }
 
-//project -> rootFile -> cacheKey -> configs
-//depends on (definition, localisation, etc.) indices
-//use soft values to optimize memory
-private val PlsKeys.configsCache by createCachedValueKey("paradox.configContext.configs") {
-    NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, List<CwtMemberConfig<*>>>() }
-        .withDependencyItems(PsiModificationTracker.MODIFICATION_COUNT)
+//rootFile -> cacheKey -> configs
+//depends on config group and (definition, localisation, etc.) indices
+private val CwtConfigGroup.configsCache by createKeyDelegate(CwtConfigContext.Keys) {
+    createCachedValue {
+        NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, List<CwtMemberConfig<*>>>() }
+            .withDependencyItems(PsiModificationTracker.MODIFICATION_COUNT)
+    }
 }
-private val Project.configsCache by PlsKeys.configsCache
 
 var CwtConfigContext.definitionInfo: ParadoxDefinitionInfo? by createKeyDelegate(CwtConfigContext.Keys)
 var CwtConfigContext.elementPathFromRoot: ParadoxElementPath? by createKeyDelegate(CwtConfigContext.Keys)

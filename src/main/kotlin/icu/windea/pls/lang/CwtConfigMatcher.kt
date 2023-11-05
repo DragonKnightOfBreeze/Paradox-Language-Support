@@ -12,16 +12,14 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.PlsContext.indexStatus
 import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.CwtConfigMatcher.Result
 import icu.windea.pls.lang.configGroup.*
 import icu.windea.pls.model.*
@@ -381,9 +379,11 @@ object CwtConfigMatcher {
     private fun getCachedMatchResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
         ProgressManager.checkCanceled()
         if(indexStatus.get() == true) return Result.ExactMatch // indexing -> should not visit indices -> treat as exact match
-        val rootFile = selectRootFile(element) ?: return Result.NotMatch
-        val project = element.project
-        val cache = project.configMatchResultCache.value.get(rootFile)
+        val psiFile = element.containingFile ?: return Result.NotMatch
+        val project = psiFile.project
+        val rootFile = selectRootFile(psiFile) ?: return Result.NotMatch
+        val configGroup = getConfigGroup(project, selectGameType(rootFile))
+        val cache = configGroup.configMatchResultCache.value.get(rootFile)
         return cache.getCancelable(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
     }
     
@@ -497,10 +497,11 @@ object CwtConfigMatcher {
     private fun Boolean.toFallbackResult() = if(this) Result.FallbackMatch else Result.NotMatch
 }
 
-//project -> rootFile -> cacheKey -> configMatchResult
-//depends on (definition, localisation, etc.) indices
-private val PlsKeys.configMatchResultCache by createCachedValueKey("paradox.configMatchResult.cache") {
-    NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, Result>() }
-        .withDependencyItems(PsiModificationTracker.MODIFICATION_COUNT)
+//rootFile -> cacheKey -> configMatchResult
+//depends on config group and (definition, localisation, etc.) indices
+private val CwtConfigGroup.configMatchResultCache by createKeyDelegate(CwtConfigContext.Keys) {
+    createCachedValue {
+        NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, Result>() }
+            .withDependencyItems(PsiModificationTracker.MODIFICATION_COUNT)
+    }
 }
-private val Project.configMatchResultCache by PlsKeys.configMatchResultCache

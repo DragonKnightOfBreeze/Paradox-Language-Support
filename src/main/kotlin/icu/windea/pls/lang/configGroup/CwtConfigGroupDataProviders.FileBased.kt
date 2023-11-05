@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.configGroup
 
+import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
@@ -13,6 +14,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
+import kotlin.Pair
 import kotlin.collections.set
 
 /**

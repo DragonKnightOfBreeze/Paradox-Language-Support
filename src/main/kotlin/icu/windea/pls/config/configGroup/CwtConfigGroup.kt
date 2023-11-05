@@ -5,6 +5,7 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
+import java.util.concurrent.atomic.*
 
 /**
  * CWT规则分组。
@@ -16,9 +17,10 @@ class CwtConfigGroup(
     val gameType: ParadoxGameType?,
     val project: Project,
 ) : UserDataHolderBase() {
-    val name = gameType.id
+    val name: String = gameType.id
     
-    val isCore get() = name == "core"
+    val changed = AtomicBoolean()
+    val modificationTracker = SimpleModificationTracker()
     
     object Keys : KeyRegistry("CwtConfigGroup")
 }

@@ -17,17 +17,23 @@ import java.util.concurrent.*
 class CwtConfigGroupService(
     val project: Project
 ) {
-    val cache = ConcurrentHashMap<String, CwtConfigGroup>()
+    private val cache = ConcurrentHashMap<String, CwtConfigGroup>()
     
     fun getConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
         return cache.computeIfAbsent(gameType.id) { createConfigGroup(gameType) }
     }
     
+    fun getConfigGroups(): Map<String, CwtConfigGroup> {
+        return cache
+    }
+    
     fun refreshConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
         //不替换configGroup，而是替换其中的userData
-        val newConfigGroup = createConfigGroup(gameType)
         val configGroup = cache.computeIfAbsent(gameType.id) { createConfigGroup(gameType) }
+        if(!configGroup.changed.get()) return configGroup
+        val newConfigGroup = createConfigGroup(gameType)
         newConfigGroup.copyUserDataTo(configGroup)
+        newConfigGroup.modificationTracker.incModificationCount()
         return configGroup
     }
     
@@ -53,14 +59,14 @@ class CwtConfigGroupService(
         val start = System.currentTimeMillis()
         
         val processIndicator = when {
-            configGroup.isCore || configGroup.project.isDefault -> EmptyProgressIndicator()
+            configGroup.name == "core" || configGroup.project.isDefault -> EmptyProgressIndicator()
             else -> BackgroundableProcessIndicator(project, PlsBundle.message("configGroup.init", name), null, "", false)
         }
-        val callable =  Callable {
+        val callable = Callable {
             val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
             dataProviders.all f@{ dataProvider ->
                 dataProvider.process(configGroup)
-            }.also { 
+            }.also {
                 if(processIndicator is ProgressIndicatorEx) processIndicator.processFinish()
             }
         }

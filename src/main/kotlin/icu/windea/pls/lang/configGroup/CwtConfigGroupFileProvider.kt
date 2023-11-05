@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.configGroup
 
 import com.intellij.openapi.extensions.*
+import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.config.configGroup.*
 
