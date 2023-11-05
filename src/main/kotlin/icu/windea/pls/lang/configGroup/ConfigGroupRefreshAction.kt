@@ -37,7 +37,6 @@ class ConfigGroupRefreshAction : DumbAwareAction() {
         val project = e.project ?: return
         val configGroupService = project.service<CwtConfigGroupService>()
         val configGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
-        if(configGroups.isEmpty()) return
         
         configGroups.forEach { configGroup ->
             configGroupService.refreshConfigGroup(configGroup.gameType)
@@ -50,6 +49,8 @@ class ConfigGroupRefreshAction : DumbAwareAction() {
             PlsBundle.message("configGroup.refresh.notification.content"),
             NotificationType.INFORMATION
         ).notify(project)
+        
+        configGroupService.getConfigGroups().values.forEach { it.changed.set(false) }
         
         FloatingToolbarProvider.getProvider<ConfigGroupRefreshFloatingProvider>()
             .updateToolbarComponents(project)

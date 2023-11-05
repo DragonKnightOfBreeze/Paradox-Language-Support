@@ -36,8 +36,8 @@ class CwtConfigGroupService(
             if(!configGroup.changed.get()) return configGroup
             val newConfigGroup = createConfigGroup(gameType, true)
             newConfigGroup.copyUserDataTo(configGroup)
-            newConfigGroup.changed.set(false)
-            newConfigGroup.modificationTracker.incModificationCount()
+            configGroup.changed.set(false)
+            configGroup.modificationTracker.incModificationCount()
         }
         return configGroup
     }
