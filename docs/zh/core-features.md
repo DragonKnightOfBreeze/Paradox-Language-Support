@@ -1,28 +1,26 @@
-# Core Features
+# 核心功能
 
-### CWT Config Group{#cwt-config-group}
+### CWT规则分组{#cwt-config-group}
 
-### Summary
+### 概述
 
-PLS implements many advanced language functions based on CWT config groups.
+PLS基于CWT规则分组实现了许多高级语言功能。
 
-Different game types have different CWT config groups, and all game types share the core CWT config group.
-The data in these config groups first comes from the CWT rule files in specific directories,
-after merging and computing, it will be used to implement various features of the plugin.
+不同的游戏类型对应不同的CWT规则分组，此外所有游戏类型共享核心的CWT规则分组。
+规则分组中的数据首先来自特定目录下的CWT规则文件，经过合并与计算后，再用于实现插件的各种功能。
 
-The following types of CWT config groups are supported:
+目前支持以下数种CWT规则分组：
 
-* Built-in CWT config groups - their CWT config files are located in the 'config/${gameType}' directory in the plugin jar. Always enabled.
-* Project local config groups - their CWT config files should be placed in the '.config/${gameType}' directory in the project root directory. Require to be manually confirmed and imported.
+* 内置的CWT规则分组 - 其CWT规则文件位于插件jar包中的`config/${gameType}`目录下。始终启用。
+* 项目本地的CWT规则分组 - 其CWT规则文件需要放到项目根目录的`.config/${gameType}`目录下。需要手动确认导入。
 
-When the corresponding change happens, the refresh button will be appeared in the context float toolbar in the upper right corner of the editor.
-Click to confirm and import the changed CWT config group(s).
+当发生对应的更改后，会在编辑器右上角的上下文悬浮工具栏中出现刷新按钮，点击确认导入更改后的CWT规则分组。
 
-Note that the CWT config file use the LIOS overwritten strategy by the file path (relative to the root directory of the CWT config group) and the name and type of the config.
-For example, if you have written some custom configs in the config file `.config/stellaris/modifiers.cwt` (which is in the project root directory), it will completely override the built-in modifier-related rules,
-since the built-in modifier-related configs are located in the config file `config/stellaris/modifiers.cwt` (which is in the plugin jar) , both of their paths are `modifiers.cwt`.
+注意，CWT规则文件会按照文件路径（相对于CWT规则分组的根目录）和规则的名字与类型进行后续覆盖。
+例如，如果你在项目根目录的规则文件`.config/stellaris/modifiers.cwt`编写了自定义的规则，它将完全覆盖插件内置的修正相关规则。
+因为插件内置的修正相关规则位于插件jar包中的规则文件`config/stellaris/modifiers.cwt`中，它们的路径都是`modifiers.cwt`。
 
-Reference Links:
+参考链接：
 
-* [Guidance Documentation](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
-* [GitHub Repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config)
+* [指引文档](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
+* [Github仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config)
