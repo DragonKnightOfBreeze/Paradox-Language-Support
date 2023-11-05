@@ -27,7 +27,7 @@ abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
 		val configGroup = getConfigGroup(project, gameType)
 		val foldingSettings = configGroup.foldingSettings
 		if(foldingSettings.isEmpty()) return FoldingDescriptor.EMPTY_ARRAY
-		val settings = foldingSettings.get(getGroupName()) ?: return FoldingDescriptor.EMPTY_ARRAY
+		val settingsMap = foldingSettings.get(getGroupName()) ?: return FoldingDescriptor.EMPTY_ARRAY
 		val foldingGroup = getFoldingGroup()
 		val allDescriptors = mutableListOf<FoldingDescriptor>()
 		root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
@@ -40,7 +40,7 @@ abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
                 val configs = CwtConfigHandler.getConfigs(element)
                 if(configs.isEmpty()) return  //must match
                 val propertyKey = element.name
-                val settings = settings.get(propertyKey) ?: return
+                val settings = settingsMap.get(propertyKey) ?: return
                 //property key is ignore case, properties must be kept in order (declared by keys)
                 val propertyValue = element.propertyValue ?: return
                 val elementsToKeep: List<PsiElement> = when {

@@ -453,11 +453,6 @@ inline fun VirtualFile.toPsiFileSystemItem(project: Project): PsiFileSystemItem?
     return if(this.isFile) PsiManager.getInstance(project).findFile(this) else PsiManager.getInstance(project).findDirectory(this)
 }
 
-/** 得到当前VirtualFile相对于指定的VirtualFile的路径。去除作为前缀的"/"。 */
-fun VirtualFile.relativePathTo(other: VirtualFile): String {
-    return this.path.removePrefix(other.path).trimStart('/')
-}
-
 /** （物理层面上）判断虚拟文件是否拥有BOM。 */
 fun VirtualFile.hasBom(bom: ByteArray): Boolean {
     return this.bom.let { it != null && it contentEquals bom }
@@ -977,13 +972,6 @@ fun getInspectionToolState(shortName: String, element: PsiElement?, project: Pro
 }
 
 val ScopeToolState.enabledTool: InspectionProfileEntry? get() = if(isEnabled) tool.tool else null
-//endregion
-
-//region Progress Extensions
-inline fun withProgressIndicator(action: ProgressIndicator.() -> Unit) {
-    val progressIndicator = ProgressIndicatorProvider.getInstance().progressIndicator ?: return
-    progressIndicator.action()
-}
 //endregion
 
 //region Xml Converters

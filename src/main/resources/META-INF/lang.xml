@@ -34,7 +34,8 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
-    <vfs.asyncListener implementation="icu.windea.pls.lang.configGroup.CwtConfigGroupFileListener"/>
+    <editorFloatingToolbarProvider implementation="icu.windea.pls.lang.configGroup.ConfigGroupRefreshFloatingProvider"/>
+    <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.configGroup.CwtConfigGroupPsiTreeChangePreprocessor"/>
   </extensions>
   
   <!--ExternalSystem.ProjectRefreshActionGroup-->

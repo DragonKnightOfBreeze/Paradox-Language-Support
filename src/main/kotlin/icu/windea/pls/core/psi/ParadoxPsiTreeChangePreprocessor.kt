@@ -3,16 +3,14 @@ package icu.windea.pls.core.psi
 import com.intellij.psi.impl.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxPsiTreeChangePreprocessor: PsiTreeChangePreprocessor {
     //com.intellij.psi.impl.PsiModificationTrackerImpl.treeChanged
     
+    //这个方法应当尽可能地快
     override fun treeChanged(event: PsiTreeChangeEventImpl) {
         if(!PsiModificationTrackerImpl.canAffectPsi(event)) return
-        
-        //这个方法应当尽可能地快
         
         val file = event.file ?: return
         if(file !is ParadoxScriptFile) return

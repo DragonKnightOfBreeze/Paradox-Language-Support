@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.configGroup
 
-import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
@@ -14,15 +13,41 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
-import kotlin.Pair
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.MutableList
+import kotlin.collections.MutableMap
+import kotlin.collections.MutableSet
+import kotlin.collections.Set
+import kotlin.collections.all
+import kotlin.collections.buildMap
+import kotlin.collections.buildSet
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.emptyMap
+import kotlin.collections.emptySet
+import kotlin.collections.find
+import kotlin.collections.forEach
+import kotlin.collections.getOrPut
+import kotlin.collections.ifEmpty
+import kotlin.collections.isNullOrEmpty
+import kotlin.collections.listOf
+import kotlin.collections.mapNotNull
+import kotlin.collections.mapNotNullTo
+import kotlin.collections.mapTo
+import kotlin.collections.mutableListOf
+import kotlin.collections.mutableMapOf
+import kotlin.collections.mutableSetOf
+import kotlin.collections.orEmpty
 import kotlin.collections.set
+import kotlin.collections.setOf
 
 /**
  * 用于初始CWT规则分组中基于文件内容的那些数据。
  */
 class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {
-        withProgressIndicator {
+        configGroup.progressIndicator?.apply {
             text = PlsBundle.message("configGroup.processFiles")
             text2 = ""
             isIndeterminate = true
@@ -44,8 +69,8 @@ class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
         var i = 0
         allFiles.all f@{ (filePath, tuple) ->
             val (file, fileProcessor) = tuple
-            withProgressIndicator {
-                text2 = PlsBundle.message("configGroup.processFile", file.path)
+            configGroup.progressIndicator?.apply {
+                text2 = PlsBundle.message("configGroup.processFile", file.presentableUrl)
                 isIndeterminate = false
                 fraction = i++ / allFiles.size.toDouble() 
             }

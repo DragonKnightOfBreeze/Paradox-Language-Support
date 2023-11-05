@@ -33,7 +33,7 @@ enum class ParadoxGameType(
         private val valueMapByTitle = values.associateBy { it.title }
         private val valueMapBySteamId = values.associateBy { it.steamId }
         
-        fun resolve(id: String) = valueMap[id.lowercase()]
+        fun resolve(id: String) = valueMap[id]
         
         fun resolveByTitle(title: String) = valueMapByTitle[title]
         

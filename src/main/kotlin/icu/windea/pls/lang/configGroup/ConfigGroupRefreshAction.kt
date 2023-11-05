@@ -47,6 +47,8 @@ class ConfigGroupRefreshAction : DumbAwareAction(){
     }
     
     private fun reparseFiles(configGroups: List<CwtConfigGroup>) {
+        //TODO 1.2.0+ 这里需要考虑优化：刷新CWT规则分组会导致重新索引相关文件，重新编制相关索引，刷新相关内嵌提示，等等
+        
         val gameTypes = configGroups.mapNotNullTo(mutableSetOf()) { it.gameType }
         val rootFilePaths = mutableSetOf<String>()
         getProfilesSettings().gameDescriptorSettings.values.forEach f@{ settings ->

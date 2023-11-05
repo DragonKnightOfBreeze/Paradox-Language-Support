@@ -17,7 +17,7 @@ import kotlin.collections.set
  */
 class CwtConfigGroupComputedDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {
-        withProgressIndicator { 
+        configGroup.progressIndicator?.apply {
             text = PlsBundle.message("configGroup.computeData")
             text2 = ""
             isIndeterminate = true

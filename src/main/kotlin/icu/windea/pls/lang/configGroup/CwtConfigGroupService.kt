@@ -1,15 +1,16 @@
 package icu.windea.pls.lang.configGroup
 
+import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.progress.impl.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.wm.ex.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import java.util.concurrent.*
 
@@ -37,6 +38,11 @@ class CwtConfigGroupService(
             newConfigGroup.copyUserDataTo(configGroup)
             newConfigGroup.changed.set(false)
             newConfigGroup.modificationTracker.incModificationCount()
+            
+            NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
+                PlsBundle.message("configGroup.refresh.notification.title"),
+                NotificationType.INFORMATION
+            ).notify(project)
         }
         return configGroup
     }
@@ -60,26 +66,27 @@ class CwtConfigGroupService(
         }
         val start = System.currentTimeMillis()
         
-        val processIndicator = when {
-            configGroup.name == "core" || configGroup.project.isDefault -> EmptyProgressIndicator()
-            else -> {
-                val progressTitle = if(refresh) {
-                    PlsBundle.message("configGroup.refresh", name)
-                } else {
-                    PlsBundle.message("configGroup.init", name)
-                }
-                BackgroundableProcessIndicator(project, progressTitle, null, "", false)
+        if(configGroup.name != "core" && !configGroup.project.isDefault) {
+            val progressTitle = if(refresh) {
+                PlsBundle.message("configGroup.refresh", name)
+            } else {
+                PlsBundle.message("configGroup.init", name)
             }
+            configGroup.progressIndicator = BackgroundableProcessIndicator(project, progressTitle, null, "", false)
         }
         val callable = Callable {
-            val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
-            dataProviders.all f@{ dataProvider ->
-                dataProvider.process(configGroup)
-            }.also {
-                if(processIndicator is ProgressIndicatorEx) processIndicator.processFinish()
+            try {
+                val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
+                dataProviders.all f@{ dataProvider ->
+                    dataProvider.process(configGroup)
+                }
+            } finally {
+                configGroup.progressIndicator?.castOrNull<ProgressIndicatorEx>()?.processFinish()
+                configGroup.progressIndicator = null
             }
         }
-        val action = ReadAction.nonBlocking(callable).expireWhen { project.isDisposed }.wrapProgress(processIndicator)
+        var action = ReadAction.nonBlocking(callable).expireWhen { project.isDisposed }
+        configGroup.progressIndicator?.apply { action = action.wrapProgress(this) }
         action.executeSynchronously()
         
         val end = System.currentTimeMillis()
