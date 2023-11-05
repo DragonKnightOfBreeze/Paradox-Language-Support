@@ -34,7 +34,7 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
-    <annotator language="CWT" implementationClass="icu.windea.pls.lang.configGroup.CwtConfigGroupAnnotator"/>
+    <editorNotificationProvider implementation="icu.windea.pls.lang.configGroup.CwtConfigGroupEditorNotificationProvider"/>
     <editorFloatingToolbarProvider implementation="icu.windea.pls.lang.configGroup.ConfigGroupRefreshFloatingProvider"/>
     <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.configGroup.CwtConfigGroupPsiTreeChangePreprocessor"/>
   </extensions>
