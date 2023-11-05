@@ -10,12 +10,14 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 
+//com.intellij.openapi.externalSystem.autoimport.ProjectRefreshAction
+
 @Suppress("DialogTitleCapitalization")
-class CwtConfigGroupRefreshAction : DumbAwareAction(){
+class ConfigGroupRefreshAction : DumbAwareAction(){
     init {
         templatePresentation.icon = AllIcons.Actions.Refresh
         templatePresentation.text = PlsBundle.message("configGroup.refresh.action.text")
-        templatePresentation.description = PlsBundle.message("configGroup.refresh.action.desc1")
+        templatePresentation.description = PlsBundle.message("configGroup.refresh.action.desc")
     }
     
     override fun update(e: AnActionEvent) {
@@ -25,25 +27,23 @@ class CwtConfigGroupRefreshAction : DumbAwareAction(){
         if(file?.fileInfo == null) return
         presentation.isVisible = true
         val project = e.project ?: return
-        presentation.description = PlsBundle.message("configGroup.refresh.action.desc2", project.name)
         val configGroupService = project.service<CwtConfigGroupService>()
-        val changedConfigGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
-        presentation.isEnabled = changedConfigGroups.isNotEmpty()
+        val configGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
+        presentation.isEnabled = configGroups.isNotEmpty()
     }
     
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val configGroups = refreshConfigGroups(project)
+        val configGroupService = project.service<CwtConfigGroupService>()
+        val configGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
+        refreshConfigGroups(configGroups, configGroupService)
         reparseFiles(configGroups)
     }
     
-    private fun refreshConfigGroups(project: Project): List<CwtConfigGroup> {
-        val configGroupService = project.service<CwtConfigGroupService>()
-        val changedConfigGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
-        changedConfigGroups.forEach { configGroup ->
+    private fun refreshConfigGroups(configGroups: List<CwtConfigGroup>, configGroupService: CwtConfigGroupService) {
+        configGroups.forEach { configGroup ->
             configGroupService.refreshConfigGroup(configGroup.gameType)
         }
-        return changedConfigGroups
     }
     
     private fun reparseFiles(configGroups: List<CwtConfigGroup>) {

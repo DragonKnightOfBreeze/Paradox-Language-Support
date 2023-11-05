@@ -33,6 +33,22 @@
     <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.core.tool.exporter.ParadoxModExporter" dynamic="true"/>
   </extensionPoints>
 
+  <extensions defaultExtensionNs="com.intellij">
+    <vfs.asyncListener implementation="icu.windea.pls.lang.configGroup.CwtConfigGroupFileListener"/>
+  </extensions>
+  
+  <!--ExternalSystem.ProjectRefreshActionGroup-->
+  <actions>
+    <group id="Pls.ConfigGroupRefreshActionGroup">
+      <action id="Pls.ConfigGroupRefreshAction" class="icu.windea.pls.lang.configGroup.ConfigGroupRefreshAction">
+        <keyboard-shortcut first-keystroke="control shift alt O" keymap="$default"/>
+        <keyboard-shortcut first-keystroke="meta shift alt O" keymap="Mac OS X" replace-all="true"/>
+        <keyboard-shortcut first-keystroke="meta shift alt I" keymap="Mac OS X 10.5+" replace-all="true"/>
+      </action>
+      <action id="Pls.HideConfigGroupRefreshAction" class="icu.windea.pls.lang.configGroup.HideConfigGroupRefreshAction"/>
+    </group>
+  </actions>
+  
   <extensions defaultExtensionNs="icu.windea.pls">
     <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxTriggerInSwitchChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxTriggerInTriggerWithParametersAwareChecker"/>

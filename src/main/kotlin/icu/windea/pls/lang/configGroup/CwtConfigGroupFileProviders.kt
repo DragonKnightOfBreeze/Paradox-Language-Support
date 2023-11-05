@@ -11,14 +11,18 @@ import icu.windea.pls.core.*
  *
  * 对应的规则文件位于插件jar包中的`config/${gameType}`目录下。
  */
-class BuiltInCwtConfigGroupFileProvider: CwtConfigGroupFileProvider {
+class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProvider {
     override fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean {
+        val rootDirectory = getRootDirectory() ?: return true
+        if(configGroup.name != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, consumer) }
+        rootDirectory.findChild(configGroup.name)?.let { doProcessFiles(it, consumer) }
+        return true
+    }
+    
+    private fun getRootDirectory(): VirtualFile? {
         val rootPath = "/config"
         val rootUrl = rootPath.toClasspathUrl()
-        val rootDir = VfsUtil.findFileByURL(rootUrl) ?: return true
-        if(!(configGroup.name == "core")) rootDir.findChild("core")?.let { doProcessFiles(it, consumer) }
-        rootDir.findChild(configGroup.name)?.let { doProcessFiles(it, consumer) }
-        return true
+        return VfsUtil.findFileByURL(rootUrl)
     }
     
     private fun doProcessFiles(rootDir: VirtualFile, consumer: (String, VirtualFile) -> Boolean) {
@@ -38,6 +42,10 @@ class BuiltInCwtConfigGroupFileProvider: CwtConfigGroupFileProvider {
             }
         })
     }
+    
+    override fun isChanged(configGroup: CwtConfigGroup, filePaths: Set<String>): Boolean {
+        return false
+    }
 }
 
 /**
@@ -45,14 +53,18 @@ class BuiltInCwtConfigGroupFileProvider: CwtConfigGroupFileProvider {
  *
  * 对应的规则文件位于项目根目录中的`.config/${gameType}`目录下。
  */
-class ProjectCwtConfigGroupFileProvider: CwtConfigGroupFileProvider {
+class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProvider {
     override fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean {
-        val projectRootDir = configGroup.project.guessProjectDir() ?: return true
-        val rootPath = ".config"
-        val rootDir = VfsUtil.findRelativeFile(projectRootDir, rootPath) ?: return true
-        if(!(configGroup.name == "core")) rootDir.findChild("core")?.let { doProcessFiles(it, consumer) }
-        rootDir.findChild(configGroup.name)?.let { doProcessFiles(it, consumer) }
+        val rootDirectory = getRootDirectory(configGroup) ?: return true
+        if(configGroup.name != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, consumer) }
+        rootDirectory.findChild(configGroup.name)?.let { doProcessFiles(it, consumer) }
         return true
+    }
+    
+    private fun getRootDirectory(configGroup: CwtConfigGroup): VirtualFile? {
+        val projectRootDir = configGroup.project.guessProjectDir() ?: return null
+        val rootPath = ".config"
+        return VfsUtil.findRelativeFile(projectRootDir, rootPath)
     }
     
     private fun doProcessFiles(rootDir: VirtualFile, consumer: (String, VirtualFile) -> Boolean) {
@@ -72,4 +84,11 @@ class ProjectCwtConfigGroupFileProvider: CwtConfigGroupFileProvider {
             }
         })
     }
+    
+    override fun isChanged(configGroup: CwtConfigGroup, filePaths: Set<String>): Boolean {
+        val rootDirectory = getRootDirectory(configGroup) ?: return false
+        val rootPath = rootDirectory.path
+        return filePaths.any { filePath -> rootPath.matchesPath(filePath) }
+    }
 }
+
