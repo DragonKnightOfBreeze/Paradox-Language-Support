@@ -20,7 +20,8 @@ Features:
 * Renders related type information, scope information, localisation text and DDS images through ways such as quick documentation and inlay hints.
 * Automatically recognizes the game directory (containing the launcher settings file `launcher-settings.json`) and mod directory (containing the mod descriptor file `descriptor.mod`).
 
-This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode). These rule files are currently built into the plugin with some modifications and extensions.
+This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode), with some modifications and extensions.
+The config files of latest version are already built into this plugin, besides, [importing local CWT configs](https://windea.icu/Paradox-Language-Support/#/en/core-features.md#cwt-config-group) is also supported.
 
 If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md).
 
@@ -68,7 +69,6 @@ Tips:
 
 Known issues:
 
-* Importing local rule files is not yet supported.
 * Support for games exclude Stellaris is not yet perfect.
 
 ## FAQ

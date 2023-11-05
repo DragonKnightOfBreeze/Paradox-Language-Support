@@ -3,6 +3,7 @@ package icu.windea.pls.lang.configGroup
 import com.intellij.notification.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.components.*
+import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.openapi.project.*
 import icons.*
 import icu.windea.pls.*
@@ -43,18 +44,15 @@ class ConfigGroupRefreshAction : DumbAwareAction() {
         }
         
         val rootFilePaths = getRootFilePaths(configGroups)
-        val files = ParadoxCoreHandler.reparseFilesByRootFilePaths(rootFilePaths)
-        
-        val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
-            //TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
-            ParadoxCoreHandler.requestReindex(files)
-        }
+        ParadoxCoreHandler.reparseFilesByRootFilePaths(rootFilePaths)
         
         NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
-            PlsBundle.message("configGroup.refresh.notification.title"),
             PlsBundle.message("configGroup.refresh.notification.content"),
             NotificationType.INFORMATION
-        ).addAction(action).notify(project)
+        ).notify(project)
+        
+        FloatingToolbarProvider.getProvider<ConfigGroupRefreshFloatingProvider>()
+            .updateToolbarComponents(project)
     }
     
     private fun getRootFilePaths(configGroups: List<CwtConfigGroup>): Set<String> {

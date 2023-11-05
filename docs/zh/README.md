@@ -18,7 +18,8 @@ IDEA插件：Paradox语言支持。
 * 通过快速文档和内嵌提示等方式，渲染相关的类型信息、作用域信息、本地化文本和DDS图片。
 * 自动识别游戏目录（包含启动器配置文件`launcher-settings.json`）和模组目录（包含模组描述符文件`descriptor.mod`）。
 
-此插件与 [CWTools](https://github.com/cwtools/cwtools-vscode) 共享规则文件（`*.cwt`）。这些规则文件目前由插件内置，并且经过一定的修改和扩展。
+此插件与 [CWTools](https://github.com/cwtools/cwtools-vscode) 共享规则文件（`*.cwt`），并且经过一定的修改与扩展。
+插件已经内置了最新版本的规则文件，除此之外也支持[导入本地的CWT规则](https://windea.icu/Paradox-Language-Support/#/zh/core-features.md#cwt-config-group)。
 
 如果同时安装了 [Translation](https://github.com/YiiGuxing/TranslationPlugin) ，此插件可以提供一些[额外的功能](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md)。
 
@@ -66,7 +67,6 @@ IDEA插件：Paradox语言支持。
 
 已知问题：
 
-* 暂不支持导入本地的规则文件。
 * 对于Stellaris以外的游戏的支持尚不完善。
 
 ## FAQ

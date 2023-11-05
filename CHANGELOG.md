@@ -7,11 +7,7 @@
 
 ## 1.2.0
 
-* [ ] 优化对CWT规则分组的支持
-  * 内置的CWT规则分组 - 位于插件jar包中的`config/${gameType}`目录下，始终启用
-  * 项目本地化的CWT规则分组 - 需要放到项目根目录的`.config/${gameType}`目录下，需要手动确认导入。
-  * 当发生对应的更改后，会在编辑器右上角的上下文悬浮工具栏中出现刷新按钮，点击确认导入更改后的CWT规则分组。
-  * 注意规则文件会按照文件路径（相对于规则分组的根目录）和规则的名字与类型进行后续覆盖。
+* [X] 优化对[CWT规则分组](https://windea.icu/Paradox-Language-Support/#/zh/core-features.md#cwt-config-group)的支持
 * [X] 其他优化与BUG修复
 
 ## 1.1.13
