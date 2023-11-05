@@ -34,6 +34,7 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
+    <annotator language="CWT" implementationClass="icu.windea.pls.lang.configGroup.CwtConfigGroupAnnotator"/>
     <editorFloatingToolbarProvider implementation="icu.windea.pls.lang.configGroup.ConfigGroupRefreshFloatingProvider"/>
     <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.configGroup.CwtConfigGroupPsiTreeChangePreprocessor"/>
   </extensions>
@@ -70,7 +71,7 @@
     <configGroupDataProvider implementation="icu.windea.pls.lang.configGroup.CwtConfigGroupFileBasedDataProvider"/>
     <configGroupDataProvider implementation="icu.windea.pls.lang.configGroup.CwtConfigGroupComputedDataProvider" order="last"/>
     
-    <configGroupFileProvider implementation="icu.windea.pls.lang.configGroup.BuiltInCwtConfigGroupFileProvider"/>
+    <configGroupFileProvider implementation="icu.windea.pls.lang.configGroup.BuiltInCwtConfigGroupFileProvider" order="first"/>
     <configGroupFileProvider implementation="icu.windea.pls.lang.configGroup.ProjectCwtConfigGroupFileProvider"/>
     
     <definitionDataProvider implementation="icu.windea.pls.lang.data.ParadoxSpriteDataProvider"/>

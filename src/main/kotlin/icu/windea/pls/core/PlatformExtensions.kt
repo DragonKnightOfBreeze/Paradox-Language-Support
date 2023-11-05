@@ -4,6 +4,7 @@ package icu.windea.pls.core
 
 import com.google.common.util.concurrent.*
 import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.intention.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInsight.template.*
@@ -350,6 +351,18 @@ fun String.escapeBlank(): String {
 //endregion
 
 //region Code Insight Extensions
+fun createIntentionAction(name: String, action: (project: Project, editor: Editor?, file: PsiFile?) -> Unit): IntentionAction {
+    return object : AbstractIntentionAction() {
+        override fun getText(): String {
+            return name
+        }
+        
+        override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
+            return action(project, editor, file)
+        }
+    }
+}
+
 fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
 
 fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()

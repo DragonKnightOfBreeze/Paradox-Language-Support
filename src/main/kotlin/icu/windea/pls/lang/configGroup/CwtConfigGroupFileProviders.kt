@@ -47,8 +47,8 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProvider {
         })
     }
     
-    override fun onFileChange(project: Project, file: VirtualFile): Boolean {
-        return false
+    override fun getConfigGroups(project: Project, file: VirtualFile): Set<CwtConfigGroup> {
+        return emptySet()
     }
 }
 
@@ -91,20 +91,21 @@ class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProvider {
         })
     }
     
-    override fun onFileChange(project: Project, file: VirtualFile): Boolean {
+    override fun getConfigGroups(project: Project, file: VirtualFile): Set<CwtConfigGroup> {
         val rootDirectories = getRootDirectories(project)
-        val relativePath = rootDirectories.firstNotNullOfOrNull { VfsUtil.getRelativePath(file, it) } ?: return false
+        val relativePath = rootDirectories.firstNotNullOfOrNull { VfsUtil.getRelativePath(file, it) } ?: return emptySet()
         val gameTypeId = relativePath.substringBefore('/')
         if(gameTypeId == "core") {
-            getConfigGroup(project, null).changed.set(true)
+            val configGroups = mutableSetOf<CwtConfigGroup>()
+            configGroups += getConfigGroup(project, null)
             ParadoxGameType.values.forEach { gameType ->
-                getConfigGroup(project, gameType).changed.set(true)
+                configGroups += getConfigGroup(project, gameType)
             }
-            return true
+            return configGroups
         } else {
-            val gameType = ParadoxGameType.resolve(gameTypeId) ?: return false
-            getConfigGroup(project, gameType).changed.set(true)
-            return true
+            val gameType = ParadoxGameType.resolve(gameTypeId) ?: return emptySet()
+            val configGroup = getConfigGroup(project, gameType)
+            return configGroup.toSingletonSet()
         }
     }
 }

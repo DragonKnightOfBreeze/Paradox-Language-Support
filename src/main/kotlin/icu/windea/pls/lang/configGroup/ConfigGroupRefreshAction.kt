@@ -36,7 +36,7 @@ class ConfigGroupRefreshAction : DumbAwareAction() {
         val project = e.project ?: return
         val configGroupService = project.service<CwtConfigGroupService>()
         val configGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
-        if(configGroups.isNotEmpty()) return
+        if(configGroups.isEmpty()) return
         
         configGroups.forEach { configGroup ->
             configGroupService.refreshConfigGroup(configGroup.gameType)

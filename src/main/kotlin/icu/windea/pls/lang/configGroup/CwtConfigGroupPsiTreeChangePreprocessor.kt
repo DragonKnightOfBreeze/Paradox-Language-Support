@@ -2,6 +2,7 @@ package icu.windea.pls.lang.configGroup
 
 import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.psi.impl.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtConfigGroupPsiTreeChangePreprocessor: PsiTreeChangePreprocessor {
@@ -14,10 +15,13 @@ class CwtConfigGroupPsiTreeChangePreprocessor: PsiTreeChangePreprocessor {
         val vFile = file.virtualFile ?: return
         val project = file.project
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        val changed = fileProviders.any { fileProvider ->
-            fileProvider.onFileChange(project, vFile)
+        val configGroups = mutableSetOf<CwtConfigGroup>()
+        fileProviders.forEach { fileProvider ->
+            configGroups += fileProvider.getConfigGroups(project, vFile)
         }
-        if(changed) {
+        val configGroupsToChange = configGroups.filter { !it.changed.get() }
+        if(configGroupsToChange.isNotEmpty()) {
+            configGroupsToChange.forEach { configGroup -> configGroup.changed.set(true) }
             FloatingToolbarProvider.getProvider<ConfigGroupRefreshFloatingProvider>()
                 .updateToolbarComponents(project)
         }
