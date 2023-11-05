@@ -1,6 +1,6 @@
 # Core Features
 
-### CWT Config Group{#cwt-config-group}
+## CWT Config Group{#cwt-config-group}
 
 ### Summary
 

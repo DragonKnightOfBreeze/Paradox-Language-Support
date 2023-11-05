@@ -1,6 +1,6 @@
 # 核心功能
 
-### CWT规则分组{#cwt-config-group}
+## CWT规则分组{#cwt-config-group}
 
 ### 概述
 
