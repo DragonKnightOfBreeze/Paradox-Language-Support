@@ -5,7 +5,6 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.model.*

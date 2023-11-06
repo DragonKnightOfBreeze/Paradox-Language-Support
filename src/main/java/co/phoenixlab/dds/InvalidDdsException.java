@@ -1,6 +1,6 @@
 package co.phoenixlab.dds;
 
-import java.io.IOException;
+import java.io.*;
 
 public class InvalidDdsException extends IOException {
 

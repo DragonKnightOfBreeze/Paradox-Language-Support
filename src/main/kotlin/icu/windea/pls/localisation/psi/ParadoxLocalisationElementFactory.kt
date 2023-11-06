@@ -3,7 +3,6 @@ package icu.windea.pls.localisation.psi
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.*
 
 object ParadoxLocalisationElementFactory {

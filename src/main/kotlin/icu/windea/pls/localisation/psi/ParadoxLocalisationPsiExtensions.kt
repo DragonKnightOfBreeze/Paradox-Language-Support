@@ -3,7 +3,6 @@ package icu.windea.pls.localisation.psi
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 
 fun hasLocalisationPropertiesBetween(start: PsiElement, end: PsiElement?): Boolean {
 	val startElement = start.findParentInFile(true) { it.parent is ParadoxLocalisationPropertyList }

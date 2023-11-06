@@ -9,7 +9,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*

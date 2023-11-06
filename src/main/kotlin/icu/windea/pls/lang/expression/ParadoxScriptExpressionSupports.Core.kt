@@ -10,12 +10,10 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*

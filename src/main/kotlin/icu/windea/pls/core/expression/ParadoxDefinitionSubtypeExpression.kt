@@ -1,7 +1,6 @@
 package icu.windea.pls.core.expression
 
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.expression.ParadoxDefinitionSubtypeExpression.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*

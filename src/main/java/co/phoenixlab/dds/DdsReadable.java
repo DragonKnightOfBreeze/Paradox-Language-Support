@@ -1,9 +1,8 @@
 package co.phoenixlab.dds;
 
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.channels.ReadableByteChannel;
+import java.nio.*;
+import java.nio.channels.*;
 
 public interface DdsReadable {
 

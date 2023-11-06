@@ -7,14 +7,13 @@ import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.scope.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.model.*

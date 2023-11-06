@@ -1,9 +1,8 @@
 package co.phoenixlab.dds;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.ReadableByteChannel;
+import java.io.*;
+import java.nio.*;
+import java.nio.channels.*;
 
 public class DdsHeaderDxt10 implements DdsReadable {
 

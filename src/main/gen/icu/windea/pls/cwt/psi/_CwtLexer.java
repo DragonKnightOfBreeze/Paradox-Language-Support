@@ -4,7 +4,8 @@
 package icu.windea.pls.cwt.psi;
 
 import com.intellij.lexer.*;
-import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.*;
+
 import java.util.*;
 
 import static com.intellij.psi.TokenType.BAD_CHARACTER;

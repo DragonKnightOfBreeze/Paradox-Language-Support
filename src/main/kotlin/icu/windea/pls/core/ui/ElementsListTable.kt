@@ -6,7 +6,6 @@ import com.intellij.ui.table.*
 import com.intellij.util.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import javax.swing.*

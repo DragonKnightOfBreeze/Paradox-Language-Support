@@ -8,7 +8,6 @@ import com.intellij.refactoring.util.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {

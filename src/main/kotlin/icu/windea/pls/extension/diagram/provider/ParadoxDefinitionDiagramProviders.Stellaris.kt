@@ -8,9 +8,9 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*

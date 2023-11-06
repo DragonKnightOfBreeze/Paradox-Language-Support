@@ -1,14 +1,10 @@
 package co.phoenixlab.dds.decoder.dxt;
 
-import co.phoenixlab.dds.Dds;
-import co.phoenixlab.dds.DdsHeader;
-import co.phoenixlab.dds.decoder.FormatDecoder;
+import co.phoenixlab.dds.*;
+import co.phoenixlab.dds.decoder.*;
 
-import java.util.Iterator;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.*;
+import java.util.stream.*;
 
 public abstract class AbstractDxtDecoder implements FormatDecoder {
 

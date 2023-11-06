@@ -6,7 +6,6 @@ import com.intellij.ide.actions.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 import java.nio.file.*
 import kotlin.io.path.*

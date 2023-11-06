@@ -8,7 +8,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.concurrency.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.provider.*
 import org.jetbrains.concurrency.*
 import java.util.concurrent.*

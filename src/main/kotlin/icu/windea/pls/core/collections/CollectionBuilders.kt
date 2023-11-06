@@ -3,7 +3,6 @@
 package icu.windea.pls.core.collections
 
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import java.util.*
 
 fun <T> MutableSet(comparator: Comparator<T>? = null): MutableSet<T> {

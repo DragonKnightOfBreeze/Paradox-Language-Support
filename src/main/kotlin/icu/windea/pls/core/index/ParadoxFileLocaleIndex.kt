@@ -3,7 +3,6 @@ package icu.windea.pls.core.index
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import java.util.*

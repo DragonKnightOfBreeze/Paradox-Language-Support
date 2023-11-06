@@ -1,15 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi.impl;
 
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
+import com.intellij.lang.*;
+import com.intellij.navigation.*;
+import com.intellij.psi.*;
+import com.intellij.psi.search.*;
 import icu.windea.pls.cwt.psi.*;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.model.CwtSeparatorType;
-import javax.swing.Icon;
+import icu.windea.pls.model.*;
+import org.jetbrains.annotations.*;
+
+import javax.swing.*;
 
 public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
 

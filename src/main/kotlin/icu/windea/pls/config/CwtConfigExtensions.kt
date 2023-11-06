@@ -6,7 +6,6 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*

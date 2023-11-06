@@ -10,10 +10,10 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*

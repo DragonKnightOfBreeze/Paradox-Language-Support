@@ -5,7 +5,6 @@ import com.intellij.openapi.extensions.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.localisation.psi.*

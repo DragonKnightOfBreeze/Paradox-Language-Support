@@ -2,7 +2,6 @@ package icu.windea.pls.core.expression.nodes
 
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.highlighter.*

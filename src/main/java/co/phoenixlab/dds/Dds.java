@@ -1,13 +1,9 @@
 package co.phoenixlab.dds;
 
-import java.io.DataInputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.channels.ReadableByteChannel;
-import java.util.EnumSet;
-import java.util.Set;
+import java.io.*;
+import java.nio.*;
+import java.nio.channels.*;
+import java.util.*;
 
 import static co.phoenixlab.dds.InternalUtils.verifyThat;
 import static co.phoenixlab.dds.InternalUtils.verifyThatNot;

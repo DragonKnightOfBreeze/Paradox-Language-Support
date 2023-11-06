@@ -4,7 +4,6 @@ import com.intellij.ide.projectView.*
 import com.intellij.ide.projectView.impl.nodes.*
 import icons.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 
 /**
