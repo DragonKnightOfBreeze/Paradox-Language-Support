@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.configGroup
 
 import com.intellij.notification.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.toolbar.floating.*
@@ -49,7 +50,7 @@ class CwtConfigGroupService(
         //不替换configGroup，而是替换其中的userData
         if(configGroups.isEmpty()) return
         val progressTitle = PlsBundle.message("configGroup.progress.refreshAll")
-        val task = object : Task.Backgroundable(project, progressTitle, false) {
+        val task = object : Task.Backgroundable(project, progressTitle, true) {
             override fun run(indicator: ProgressIndicator) {
                 configGroups.forEach { configGroup ->
                     val gameTypeId = configGroup.gameType.id
@@ -58,10 +59,12 @@ class CwtConfigGroupService(
                     logger.info("Refresh CWT config group '$gameTypeId'...")
                     val start = System.currentTimeMillis()
                     
-                    val newConfigGroup = createConfigGroupInProgress(configGroup.gameType, indicator)
-                    newConfigGroup.copyUserDataTo(configGroup)
-                    configGroup.changed.set(false)
-                    configGroup.modificationTracker.incModificationCount()
+                    ReadAction.nonBlocking(Callable {
+                        val newConfigGroup = createConfigGroupInProgress(configGroup.gameType, indicator)
+                        newConfigGroup.copyUserDataTo(configGroup)
+                        configGroup.changed.set(false)
+                        configGroup.modificationTracker.incModificationCount()
+                    }).expireWhen { project.isDisposed }.wrapProgress(indicator).executeSynchronously()
                     
                     val end = System.currentTimeMillis()
                     logger.info("Refresh CWT config group '$gameTypeId' finished in ${end - start} ms.")
