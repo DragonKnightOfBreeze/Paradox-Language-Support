@@ -34,6 +34,7 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
+    <fileIconProvider implementation="icu.windea.pls.lang.configGroup.CwtConfigFileIconProvider"/>
     <editorNotificationProvider implementation="icu.windea.pls.lang.configGroup.CwtConfigGroupEditorNotificationProvider"/>
     <editorFloatingToolbarProvider implementation="icu.windea.pls.lang.configGroup.ConfigGroupRefreshFloatingProvider"/>
     <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.configGroup.CwtConfigGroupPsiTreeChangePreprocessor"/>

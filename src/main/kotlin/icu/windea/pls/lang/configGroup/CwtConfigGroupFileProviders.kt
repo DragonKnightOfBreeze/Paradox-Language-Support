@@ -50,7 +50,21 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProvider {
     }
     
     override fun getConfigGroups(project: Project, file: VirtualFile): Set<CwtConfigGroup> {
-        return emptySet()
+        val rootDirectories = getRootDirectories(project)
+        val relativePath = rootDirectories.firstNotNullOfOrNull { VfsUtil.getRelativePath(file, it) } ?: return emptySet()
+        val gameTypeId = relativePath.substringBefore('/')
+        if(gameTypeId == "core") {
+            val configGroups = mutableSetOf<CwtConfigGroup>()
+            configGroups += getConfigGroup(project, null)
+            ParadoxGameType.values.forEach { gameType ->
+                configGroups += getConfigGroup(project, gameType)
+            }
+            return configGroups
+        } else {
+            val gameType = ParadoxGameType.resolve(gameTypeId) ?: return emptySet()
+            val configGroup = getConfigGroup(project, gameType)
+            return configGroup.toSingletonSet()
+        }
     }
 }
 

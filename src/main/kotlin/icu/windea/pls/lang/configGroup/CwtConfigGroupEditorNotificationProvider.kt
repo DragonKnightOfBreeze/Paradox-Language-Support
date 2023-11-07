@@ -14,7 +14,7 @@ import javax.swing.*
 /**
  * 当用户打开一个可用于自定义CWT规则分组的CWT文件时，给出提示以及一些参考信息。
  */
-class CwtConfigGroupEditorNotificationProvider : EditorNotificationProvider{
+class CwtConfigGroupEditorNotificationProvider : EditorNotificationProvider {
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
         if(file.fileType != CwtFileType) return null
         

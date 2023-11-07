@@ -17,6 +17,7 @@ class CwtConfigGroupPsiTreeChangePreprocessor: PsiTreeChangePreprocessor {
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         val configGroups = mutableSetOf<CwtConfigGroup>()
         fileProviders.forEach { fileProvider ->
+            if(fileProvider is BuiltInCwtConfigGroupFileProvider) return@forEach
             configGroups += fileProvider.getConfigGroups(project, vFile)
         }
         val configGroupsToChange = configGroups.filter { !it.changed.get() }
