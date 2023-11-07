@@ -346,9 +346,9 @@ class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
                     }
                     
                     //判断配置文件中的顶级的key是否匹配"alias[?:?]"，如果匹配，则解析配置并添加到aliases中
-                    val aliasNamePair = key.removeSurroundingOrNull("alias[", "]")?.splitToPair(':')
-                    if(aliasNamePair != null) {
-                        val (aliasName, aliasSubName) = aliasNamePair
+                    val aliasTokens = key.removeSurroundingOrNull("alias[", "]")?.split(':', limit = 2)?.takeIf { it.size == 2 }
+                    if(aliasTokens != null) {
+                        val (aliasName, aliasSubName) = aliasTokens
                         val aliasConfig = resolveAliasConfig(property, aliasName, aliasSubName)
                         //目前不这样处理
                         //if(aliasConfig.name == "modifier" && aliasConfig.expression.type.isConstantLikeType()) {

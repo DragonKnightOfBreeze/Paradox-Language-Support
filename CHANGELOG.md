@@ -6,7 +6,7 @@
 
 ## 1.2.1
 
-* [X] 支持语法`@a = @[ 1 + 2]` - 参见：[The tool cannot recognize in-script flag variables (Vic3) · Issue #76 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/76)
+* [X] 支持语法`@a = @[ 1 + 2 ]` - 参见：[The tool cannot recognize in-script flag variables (Vic3) · Issue #76 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/76)
 * [X] （仅限VIC3）支持操作符`?=` - 参见：[Parsing issues in Vic3 · Issue #53 · cwtools/cwtools (github.com)](https://github.com/cwtools/cwtools/issues/53)
 * [X] 其他优化与BUG修复
 
