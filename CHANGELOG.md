@@ -1,12 +1,8 @@
 # Changelog
 
-## PROCESSING
-
-* [ ] #46 优化：尝试基于使用推断特定类型的`valueSetValue`对应的作用域上下文（如`event_target`和`global_event_target`）
-* [ ] 尝试优化插件性能
-
 ## 1.2.1
 
+* [ ] 提供一种项目视图，用于显示合并后的所有用于自定义CWT规则分组的CWT文件（`Project Pane -> CWT Config Files`）
 * [ ] 支持`@a = @[ 1 + 2]`语法 - 参见：[The tool cannot recognize in-script flag variables (Vic3) · Issue #76 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/76)
 * [ ] （仅限Stellaris）支持`technology@level`语法 - 参见：[[Stellaris\] Could support tech@level grammar? · Issue #58 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/58)
 * [ ] （仅限VIC3）支持比较操作符`?=` - 参见：[Parsing issues in Vic3 · Issue #53 · cwtools/cwtools (github.com)](https://github.com/cwtools/cwtools/issues/53)

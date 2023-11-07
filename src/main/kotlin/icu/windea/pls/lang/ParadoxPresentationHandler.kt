@@ -56,20 +56,20 @@ object ParadoxPresentationHandler {
     fun getIcon(ddsFile: PsiFile): Icon? {
         val iconFile = ddsFile.virtualFile ?: return null
         val iconUrl = ParadoxImageResolver.resolveUrlByFile(iconFile) ?: return null
-        return IconLoader.findIcon(iconUrl.toFileUrl())
+        return iconUrl.toIconOrNull()
     }
     
     fun getIcon(definition: ParadoxScriptDefinitionElement): Icon? {
         val ddsFile = ParadoxDefinitionHandler.getPrimaryImage(definition) ?: return null
         val iconFile = ddsFile.virtualFile ?: return null
         val iconUrl = ParadoxImageResolver.resolveUrlByFile(iconFile) ?: return null
-        return IconLoader.findIcon(iconUrl.toFileUrl())
+        return iconUrl.toIconOrNull()
     }
     
     fun getIcon(definition: ParadoxScriptDefinitionElement, ddsFile: PsiFile): Icon? {
         val iconFile = ddsFile.virtualFile ?: return null
         val frameInfo = definition.getUserData(PlsKeys.frameInfo)
         val iconUrl = ParadoxImageResolver.resolveUrlByFile(iconFile, frameInfo) ?: return null
-        return IconLoader.findIcon(iconUrl.toFileUrl())
+        return iconUrl.toIconOrNull()
     }
 }

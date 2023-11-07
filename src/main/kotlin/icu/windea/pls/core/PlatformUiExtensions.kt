@@ -7,6 +7,7 @@ import com.intellij.openapi.keymap.*
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.observable.util.*
 import com.intellij.openapi.ui.*
+import com.intellij.openapi.util.*
 import com.intellij.refactoring.*
 import com.intellij.ui.*
 import com.intellij.ui.components.*
@@ -17,6 +18,7 @@ import com.intellij.ui.scale.*
 import com.intellij.ui.table.*
 import com.intellij.util.*
 import com.intellij.util.ui.*
+import icu.windea.pls.*
 import icu.windea.pls.core.util.*
 import java.awt.*
 import java.awt.image.*
@@ -27,6 +29,10 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.properties.*
 import kotlin.reflect.*
+
+fun String.toIconOrNull(): Icon? {
+    return IconLoader.findIcon(this, PlsConstants.locationClass)
+}
 
 fun Icon.resize(width: Int, height: Int): Icon {
     return IconUtil.toSize(this, width, height)

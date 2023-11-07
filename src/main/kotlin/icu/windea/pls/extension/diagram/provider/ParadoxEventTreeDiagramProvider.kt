@@ -144,7 +144,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                             //事件图片
                             val frameInfo = nodeElement.getUserData(PlsKeys.frameInfo)
                             val iconUrl = ParadoxImageResolver.resolveUrlByFile(nodeItem.virtualFile, frameInfo) ?: return null
-                            val icon = IconLoader.findIcon(iconUrl.toFileUrl())
+                            val icon = iconUrl.toIconOrNull()
                             icon?.toLabel()
                         }
                         else -> null

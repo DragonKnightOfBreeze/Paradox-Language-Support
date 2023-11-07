@@ -72,6 +72,7 @@ class ParadoxFilesViewPane(project: Project) : AbstractProjectViewPaneWithAsyncS
         return ParadoxFilesPaneSelectInTarget(myProject)
     }
     
+    //TODO 1.2.1+ 233: override fun createStructure(): AbstractTreeStructureBase
     override fun createStructure(): ProjectAbstractTreeStructureBase {
         return object : ProjectTreeStructure(myProject, ID) {
             override fun createRoot(project: Project, settings: ViewSettings): AbstractTreeNode<*> {

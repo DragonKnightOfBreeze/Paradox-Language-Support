@@ -59,7 +59,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
 				else -> null
 			} ?: return true //找不到图标的话就直接跳过
 			
-			val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
+			val icon = iconUrl.toIconOrNull() ?: return true
 			//基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
 			if(icon.iconHeight <= settings.iconHeightLimit) {
 				//点击可以导航到声明处（定义或DDS）
