@@ -24,7 +24,7 @@ import icu.windea.pls.script.psi.*
  * ```
  */
 class ParadoxScriptParameterConditionSurrounder: Surrounder {
-	override fun getTemplateDescription() = PlsBundle.message("cwt.surroundWith.parameterCondition.description")
+	override fun getTemplateDescription() = PlsBundle.message("script.surroundWith.parameterCondition.description")
 	
 	override fun isApplicable(elements: Array<out PsiElement>): Boolean {
 		return true

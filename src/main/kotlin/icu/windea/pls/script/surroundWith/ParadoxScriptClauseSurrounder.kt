@@ -24,7 +24,6 @@ import icu.windea.pls.script.psi.*
  * ```
  */
 class ParadoxScriptClauseSurrounder: Surrounder {
-	@Suppress("DialogTitleCapitalization")
 	override fun getTemplateDescription() = PlsBundle.message("script.surroundWith.clause.description")
 	
 	override fun isApplicable(elements: Array<out PsiElement>): Boolean {

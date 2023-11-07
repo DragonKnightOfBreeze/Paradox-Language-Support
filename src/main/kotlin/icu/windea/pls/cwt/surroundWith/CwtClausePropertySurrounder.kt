@@ -25,7 +25,7 @@ import icu.windea.pls.cwt.psi.*
  */
 class CwtClausePropertySurrounder: Surrounder {
     @Suppress("DialogTitleCapitalization")
-    override fun getTemplateDescription() = PlsBundle.message("script.surroundWith.clauseProperty.description")
+    override fun getTemplateDescription() = PlsBundle.message("cwt.surroundWith.clauseProperty.description")
     
     override fun isApplicable(elements: Array<out PsiElement>): Boolean {
         return true
