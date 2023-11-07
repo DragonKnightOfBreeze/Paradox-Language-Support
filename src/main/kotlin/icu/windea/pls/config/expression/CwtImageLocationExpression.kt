@@ -15,9 +15,9 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 
 private val validValueTypes = arrayOf(
-    CwtDataType.FilePath,
-    CwtDataType.Icon,
-    CwtDataType.Definition
+    CwtDataTypes.FilePath,
+    CwtDataTypes.Icon,
+    CwtDataTypes.Definition
 )
 
 /**

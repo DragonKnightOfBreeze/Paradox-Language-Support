@@ -95,7 +95,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                 val (actual, min, _, relaxMin) = occurrence
                 if(min != null && actual < min) {
                     val isKey = configExpression is CwtKeyExpression
-                    val isConst = configExpression.type == CwtDataType.Constant
+                    val isConst = configExpression.type == CwtDataTypes.Constant
                     val description = if(isKey) {
                         when {
                             isConst -> PlsBundle.message("inspection.script.general.missingExpression.description.1.1", configExpression)

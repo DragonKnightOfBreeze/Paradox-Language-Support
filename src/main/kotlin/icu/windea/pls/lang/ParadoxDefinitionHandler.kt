@@ -132,7 +132,7 @@ object ParadoxDefinitionHandler {
         val propertyValue = element.castOrNull<ParadoxScriptProperty>()?.propertyValue
         val isBlock = propertyValue?.let { it is ParadoxScriptBlock }
         if(declarationConfig != null && isBlock != null) {
-            val isBlockConfig = declarationConfig.valueExpression.type == CwtDataType.Block
+            val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
             if(isBlockConfig != isBlock) return false
         }
         
@@ -166,7 +166,7 @@ object ParadoxDefinitionHandler {
         val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES)
         val isBlock = propertyValue?.tokenType?.let { it == BLOCK }
         if(declarationConfig != null && isBlock != null) {
-            val isBlockConfig = declarationConfig.valueExpression.type == CwtDataType.Block
+            val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
             if(isBlockConfig != isBlock) return false
         }
         

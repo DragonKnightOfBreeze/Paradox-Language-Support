@@ -29,13 +29,13 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
     
     private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxLocalisationReferenceInfoHintsSettingsKey")
     private val expressionTypes: EnumSet<CwtDataType> = enumSetOf(
-        CwtDataType.Localisation,
-        CwtDataType.InlineLocalisation,
-        CwtDataType.SyncedLocalisation,
-        CwtDataType.AliasName, //需要兼容alias
-        CwtDataType.AliasKeysField, //需要兼容alias
-        CwtDataType.AliasMatchLeft, //需要兼容alias
-        CwtDataType.SingleAliasRight, //需要兼容single_alias
+        CwtDataTypes.Localisation,
+        CwtDataTypes.InlineLocalisation,
+        CwtDataTypes.SyncedLocalisation,
+        CwtDataTypes.AliasName, //需要兼容alias
+        CwtDataTypes.AliasKeysField, //需要兼容alias
+        CwtDataTypes.AliasMatchLeft, //需要兼容alias
+        CwtDataTypes.SingleAliasRight, //需要兼容single_alias
     )
     
     override val name: String get() = PlsBundle.message("script.hints.localisationReferenceInfo")

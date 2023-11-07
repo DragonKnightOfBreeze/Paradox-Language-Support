@@ -50,7 +50,7 @@ object ParadoxLocalisationParameterHandler {
     }
     
     fun getLocalisationReferenceElement(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>): ParadoxScriptString? {
-        if(config !is CwtPropertyConfig || config.expression.type != CwtDataType.LocalisationParameter) return null
+        if(config !is CwtPropertyConfig || config.expression.type != CwtDataTypes.LocalisationParameter) return null
         val localisationReferencePropertyElement = findLocalisationPropertyFromParameterProperty(element, config)
         return localisationReferencePropertyElement?.propertyValue?.castOrNull()
     }
@@ -105,13 +105,13 @@ object ParadoxLocalisationParameterHandler {
     private fun isLocalisationConfig(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         if(config !is CwtPropertyConfig) return false
         val dataType = config.valueExpression.type
-        return dataType == CwtDataType.Localisation || (dataType == CwtDataType.InlineLocalisation && !element.text.isLeftQuoted())
+        return dataType == CwtDataTypes.Localisation || (dataType == CwtDataTypes.InlineLocalisation && !element.text.isLeftQuoted())
     }
     
     private fun isParameterConfig(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         if(config !is CwtPropertyConfig) return false
         val dataType = config.keyExpression.type
-        return dataType == CwtDataType.LocalisationParameter
+        return dataType == CwtDataTypes.LocalisationParameter
     }
     
     fun completeParameters(localisation: ParadoxLocalisationProperty, result: CompletionResultSet) {

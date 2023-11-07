@@ -208,7 +208,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                     appendBr().appendIndent()
                     val configExpression = reference.configExpression
                     when(configExpression.type) {
-                        CwtDataType.Definition -> {
+                        CwtDataTypes.Definition -> {
                             val definitionName = reference.name
                             val definitionType = configExpression.value!!
                             val definitionTypes = definitionType.split('.')
@@ -227,7 +227,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                                 appendCwtLink(subtypeLink, t)
                             }
                         }
-                        CwtDataType.EnumValue -> {
+                        CwtDataTypes.EnumValue -> {
                             val enumValueName = reference.name
                             val enumName = configExpression.value!!
                             append(PlsBundle.message("generatedFromEnumValue"))
@@ -247,7 +247,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                                 append(enumName.escapeXml())
                             }
                         }
-                        CwtDataType.Value -> {
+                        CwtDataTypes.Value -> {
                             val valueSetName = reference.name
                             val valueName = configExpression.value!!
                             append(PlsBundle.message("generatedFromValueSetValue"))

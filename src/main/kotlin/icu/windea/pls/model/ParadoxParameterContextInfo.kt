@@ -37,7 +37,7 @@ class ParadoxParameterContextInfo(
             val configs = parameterInfo.expressionConfigs
             if(configs.isNotEmpty()) {
                 //如果作为传入参数的值，直接认为是可选的，没有太大必要进一步检查……
-                val r = configs.any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataType.Parameter }
+                val r = configs.any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataTypes.Parameter }
                 if(r) return true
             }
         }

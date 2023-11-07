@@ -95,7 +95,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 val (actual, _, max) = occurrence
                 if(max != null && actual > max) {
                     val isKey = configExpression is CwtKeyExpression
-                    val isConst = configExpression.type == CwtDataType.Constant
+                    val isConst = configExpression.type == CwtDataTypes.Constant
                     val description = if(isKey) {
                         when {
                             isConst -> PlsBundle.message("inspection.script.general.tooManyExpression.description.1.1", configExpression)

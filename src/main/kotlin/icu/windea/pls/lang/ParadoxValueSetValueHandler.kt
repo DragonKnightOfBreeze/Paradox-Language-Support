@@ -21,9 +21,9 @@ object ParadoxValueSetValueHandler {
     
     fun getReadWriteAccess(configExpression: CwtDataExpression): Access {
         return when(configExpression.type) {
-            CwtDataType.Value -> Access.Read
-            CwtDataType.ValueSet -> Access.Write
-            CwtDataType.ValueOrValueSet -> Access.ReadWrite
+            CwtDataTypes.Value -> Access.Read
+            CwtDataTypes.ValueSet -> Access.Write
+            CwtDataTypes.ValueOrValueSet -> Access.ReadWrite
             else -> Access.ReadWrite
         }
     }

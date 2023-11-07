@@ -125,7 +125,7 @@ class ParadoxScriptAnnotator : Annotator {
                 return
             }
             //如果不是字符串，除非是定义引用，否则不作高亮
-            if(element !is ParadoxScriptStringExpressionElement && config.expression.type != CwtDataType.Definition) {
+            if(element !is ParadoxScriptStringExpressionElement && config.expression.type != CwtDataTypes.Definition) {
                 return
             }
             //缓存参数范围

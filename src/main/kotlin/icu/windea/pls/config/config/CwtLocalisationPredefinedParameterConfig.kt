@@ -5,8 +5,6 @@ import icons.*
 import icu.windea.pls.cwt.psi.*
 import javax.swing.*
 
-//EXTENDED BY PLS
-
 class CwtLocalisationPredefinedParameterConfig(
 	override val pointer: SmartPsiElementPointer<out CwtProperty>,
 	override val info: CwtConfigGroupInfo,

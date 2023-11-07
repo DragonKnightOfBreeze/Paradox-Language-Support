@@ -26,7 +26,7 @@ class StellarisJobBasedModifierIconProvider: ParadoxModifierIconProvider {
     override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         val modifierConfig = modifierInfo.modifierConfig ?: return
         val templateReferences = modifierInfo.templateReferences ?: return
-        val templateReference = templateReferences.singleOrNull()?.takeIf { it.configExpression.type == CwtDataType.Definition } ?: return
+        val templateReference = templateReferences.singleOrNull()?.takeIf { it.configExpression.type == CwtDataTypes.Definition } ?: return
         val definitionName = templateReference.name
         val definitionType = templateReference.configExpression.value ?: return
         if(definitionType.substringBefore('.') != "job") return

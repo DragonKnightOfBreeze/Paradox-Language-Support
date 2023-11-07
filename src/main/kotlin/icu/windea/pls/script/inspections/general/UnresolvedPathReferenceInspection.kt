@@ -39,7 +39,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 val valueConfig = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val configExpression = valueConfig.expression
                 val location = element
-                if(configExpression.type == CwtDataType.AbsoluteFilePath) {
+                if(configExpression.type == CwtDataTypes.AbsoluteFilePath) {
                     val filePath = element.value
                     val virtualFile = filePath.toVirtualFile(false)
                     if(virtualFile != null) return

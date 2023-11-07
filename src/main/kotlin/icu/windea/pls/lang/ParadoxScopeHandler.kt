@@ -129,7 +129,7 @@ object ParadoxScopeHandler {
         val configs = CwtConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
         configs.forEach { config ->
             val configGroup = config.info.configGroup
-            if(config.expression.type == CwtDataType.AliasKeysField) return true
+            if(config.expression.type == CwtDataTypes.AliasKeysField) return true
             if(isScopeContextSupportedAsRoot(config, configGroup)) return true
             if(isScopeContextSupportedAsChild(config, configGroup)) return true
         }
@@ -145,7 +145,7 @@ object ParadoxScopeHandler {
         val properties = config.properties ?: return false
         return properties.any {
             val aliasName = when {
-                it.keyExpression.type == CwtDataType.AliasName -> it.keyExpression.value
+                it.keyExpression.type == CwtDataTypes.AliasName -> it.keyExpression.value
                 else -> null
             }
             aliasName != null && aliasName in configGroup.aliasNamesSupportScope
@@ -227,7 +227,7 @@ object ParadoxScopeHandler {
         val overriddenScopeContext = ParadoxOverriddenScopeContextProvider.getOverriddenScopeContext(element, config, parentScopeContext)
         if(overriddenScopeContext != null) return overriddenScopeContext
         
-        if(config is CwtPropertyConfig && config.expression.type == CwtDataType.ScopeField) {
+        if(config is CwtPropertyConfig && config.expression.type == CwtDataTypes.ScopeField) {
             if(parentScopeContext == null) return null
             val scopeField = element.castOrNull<ParadoxScriptProperty>()?.propertyKey?.text ?: return null
             if(scopeField.isLeftQuoted()) return null

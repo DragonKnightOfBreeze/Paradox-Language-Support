@@ -51,7 +51,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
                 //基于trigger的值得到最终的scopeContext，然后推断作为parameters的值的scopeContext
                 val triggerProperty = complexTriggerModifierProperty.findProperty(Data.TRIGGER_KEY, inline = true) ?: return null
                 val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
-                if(CwtValueExpression.resolve(triggerName).type != CwtDataType.Constant) return null //must be predefined trigger
+                if(CwtValueExpression.resolve(triggerName).type != CwtDataTypes.Constant) return null //must be predefined trigger
                 val configGroup = config.info.configGroup
                 val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
                 val pushScope = resultTriggerConfigs.firstOrNull()?.config?.pushScope

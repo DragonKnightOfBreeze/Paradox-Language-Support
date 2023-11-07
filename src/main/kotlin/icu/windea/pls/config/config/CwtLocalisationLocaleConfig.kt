@@ -4,8 +4,6 @@ import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.cwt.psi.*
 
-//EXTENDED BY PLS
-
 class CwtLocalisationLocaleConfig(
 	override val pointer: SmartPsiElementPointer<out CwtProperty>,
 	override val info: CwtConfigGroupInfo,

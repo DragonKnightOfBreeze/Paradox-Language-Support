@@ -87,14 +87,14 @@ object CwtConfigManipulator {
         val configGroup = config.info.configGroup
         val valueExpression = config.valueExpression
         when(valueExpression.type) {
-            CwtDataType.SingleAliasRight -> {
+            CwtDataTypes.SingleAliasRight -> {
                 val singleAliasName = valueExpression.value ?: return emptyList()
                 val singleAlias = configGroup.singleAliases[singleAliasName] ?: return emptyList()
                 val result = mutableListOf<CwtMemberConfig<*>>()
                 result.add(singleAlias.inline(config))
                 return result
             }
-            CwtDataType.AliasMatchLeft -> {
+            CwtDataTypes.AliasMatchLeft -> {
                 val aliasName = valueExpression.value ?: return emptyList()
                 val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptyList()
                 val result = mutableListOf<CwtMemberConfig<*>>()
@@ -103,7 +103,7 @@ object CwtConfigManipulator {
                     val aliases = aliasGroup[aliasSubName] ?: return@f1
                     aliases.forEachFast f2@{ alias ->
                         var inlinedConfig = alias.inline(config)
-                        if(inlinedConfig.valueExpression.type == CwtDataType.SingleAliasRight) {
+                        if(inlinedConfig.valueExpression.type == CwtDataTypes.SingleAliasRight) {
                             val singleAliasName = inlinedConfig.valueExpression.value ?: return@f2
                             val singleAlias = configGroup.singleAliases[singleAliasName] ?: return@f2
                             inlinedConfig = singleAlias.inline(inlinedConfig)
@@ -170,7 +170,7 @@ object CwtConfigManipulator {
     fun mergeValueConfig(c1: CwtValueConfig, c2: CwtValueConfig): CwtValueConfig? {
         if(c1 === c2) return c1 //reference equality
         if(c1.pointer == c2.pointer) return c1 //value equality (should be) 
-        if(c1.expression.type == CwtDataType.Block || c2.expression.type == CwtDataType.Block) return null //cannot merge non-same clauses
+        if(c1.expression.type == CwtDataTypes.Block || c2.expression.type == CwtDataTypes.Block) return null //cannot merge non-same clauses
         val expressionString = mergeExpressionString(c1.expression, c2.expression)
         if(expressionString == null) return null
         return CwtValueConfig.resolve(
@@ -183,7 +183,7 @@ object CwtConfigManipulator {
     }
     
     fun mergeExpressionString(e1: CwtDataExpression, e2: CwtDataExpression): String? {
-        val ignoreCase = e1.type == CwtDataType.Constant && e2.type == CwtDataType.Constant
+        val ignoreCase = e1.type == CwtDataTypes.Constant && e2.type == CwtDataTypes.Constant
         if(e1.expressionString.equals(e2.expressionString, ignoreCase)) return e1.expressionString
         return doMergeExpressionString(e1, e2) ?: doMergeExpressionString(e2, e1)
     }
@@ -192,35 +192,35 @@ object CwtConfigManipulator {
         val t1 = e1.type
         val t2 = e2.type
         return when(t1) {
-            CwtDataType.Any -> e2.expressionString
-            CwtDataType.Int -> when(t2) {
-                CwtDataType.Int, CwtDataType.Float, CwtDataType.ValueField, CwtDataType.IntValueField, CwtDataType.VariableField, CwtDataType.IntVariableField -> "int"
+            CwtDataTypes.Any -> e2.expressionString
+            CwtDataTypes.Int -> when(t2) {
+                CwtDataTypes.Int, CwtDataTypes.Float, CwtDataTypes.ValueField, CwtDataTypes.IntValueField, CwtDataTypes.VariableField, CwtDataTypes.IntVariableField -> "int"
                 else -> null
             }
-            CwtDataType.Float -> when(t2) {
-                CwtDataType.Float, CwtDataType.ValueField, CwtDataType.VariableField -> "float"
+            CwtDataTypes.Float -> when(t2) {
+                CwtDataTypes.Float, CwtDataTypes.ValueField, CwtDataTypes.VariableField -> "float"
                 else -> null
             }
-            CwtDataType.ScopeField, CwtDataType.Scope, CwtDataType.ScopeGroup -> when(t2) {
-                CwtDataType.ScopeField -> e1.expressionString
-                CwtDataType.Scope -> if(e2.value == "any") e1.expressionString else null
+            CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> when(t2) {
+                CwtDataTypes.ScopeField -> e1.expressionString
+                CwtDataTypes.Scope -> if(e2.value == "any") e1.expressionString else null
                 else -> null
             }
-            CwtDataType.Value, CwtDataType.ValueSet, CwtDataType.ValueOrValueSet -> when(t2) {
-                CwtDataType.Value, CwtDataType.ValueSet, CwtDataType.ValueOrValueSet -> if(e1.value == e2.value) "value_or_value_set[${e1.value}]" else null
-                CwtDataType.ValueField, CwtDataType.IntValueField, CwtDataType.VariableField, CwtDataType.IntVariableField -> "value_or_value_set[${e1.value}]"
+            CwtDataTypes.Value, CwtDataTypes.ValueSet, CwtDataTypes.ValueOrValueSet -> when(t2) {
+                CwtDataTypes.Value, CwtDataTypes.ValueSet, CwtDataTypes.ValueOrValueSet -> if(e1.value == e2.value) "value_or_value_set[${e1.value}]" else null
+                CwtDataTypes.ValueField, CwtDataTypes.IntValueField, CwtDataTypes.VariableField, CwtDataTypes.IntVariableField -> "value_or_value_set[${e1.value}]"
                 else -> null
             }
-            CwtDataType.VariableField -> when(t2) {
-                CwtDataType.VariableField, CwtDataType.ValueField -> "variable_field"
+            CwtDataTypes.VariableField -> when(t2) {
+                CwtDataTypes.VariableField, CwtDataTypes.ValueField -> "variable_field"
                 else -> null
             }
-            CwtDataType.IntVariableField -> when(t2) {
-                CwtDataType.IntVariableField, CwtDataType.ValueField, CwtDataType.IntValueField -> "int_variable_field"
+            CwtDataTypes.IntVariableField -> when(t2) {
+                CwtDataTypes.IntVariableField, CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> "int_variable_field"
                 else -> null
             }
-            CwtDataType.IntValueField -> when(t2) {
-                CwtDataType.ValueField, CwtDataType.IntValueField -> "int_value_field"
+            CwtDataTypes.IntValueField -> when(t2) {
+                CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> "int_value_field"
                 else -> null
             }
             else -> null

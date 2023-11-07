@@ -95,7 +95,7 @@ class CwtTriggerConfigGenerator(
                     setScopeOption(lineIndex, lines, info).let { lineIndex += it }
                     resortOptions(lineIndex, lines).let { lineIndex += it }
                 } else {
-                    if(CwtKeyExpression.resolve(name).type == CwtDataType.Constant) {
+                    if(CwtKeyExpression.resolve(name).type == CwtDataTypes.Constant) {
                         unknownNames.add(name)
                     }
                 }

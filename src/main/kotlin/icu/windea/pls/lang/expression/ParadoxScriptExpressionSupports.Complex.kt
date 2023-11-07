@@ -97,20 +97,20 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val configExpression = context.config?.expression ?: return
         when(configExpression.type) {
-            CwtDataType.Scope -> {
+            CwtDataTypes.Scope -> {
                 context.scopeName = configExpression.value
             }
-            CwtDataType.ScopeGroup -> {
+            CwtDataTypes.ScopeGroup -> {
                 context.scopeGroupName = configExpression.value
             }
             else -> {}
         }
         CwtConfigHandler.completeScopeFieldExpression(context, result)
         when(configExpression.type) {
-            CwtDataType.Scope -> {
+            CwtDataTypes.Scope -> {
                 context.scopeName = null
             }
-            CwtDataType.ScopeGroup -> {
+            CwtDataTypes.ScopeGroup -> {
                 context.scopeGroupName = null
             }
             else -> {}
@@ -144,14 +144,14 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val configExpression = context.config?.expression ?: return
         when(configExpression.type) {
-            CwtDataType.IntValueField -> {
+            CwtDataTypes.IntValueField -> {
                 context.isInt = true
             }
             else -> {}
         }
         CwtConfigHandler.completeValueFieldExpression(context, result)
         when(configExpression.type) {
-            CwtDataType.IntValueField -> {
+            CwtDataTypes.IntValueField -> {
                 context.isInt = null
             }
             else -> {}
@@ -186,14 +186,14 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSuppo
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val configExpression = context.config?.expression ?: return
         when(configExpression.type) {
-            CwtDataType.IntVariableField -> {
+            CwtDataTypes.IntVariableField -> {
                 context.isInt = true
             }
             else -> {}
         }
         CwtConfigHandler.completeVariableFieldExpression(context, result)
         when(configExpression.type) {
-            CwtDataType.IntVariableField -> {
+            CwtDataTypes.IntVariableField -> {
                 context.isInt = null
             }
             else -> {}

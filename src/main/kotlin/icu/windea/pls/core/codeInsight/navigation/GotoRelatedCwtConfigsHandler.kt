@@ -61,14 +61,14 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
                     val name = location.value
                     val configExpression = config.expression
                     when {
-                        configExpression.type == CwtDataType.EnumValue -> {
+                        configExpression.type == CwtDataTypes.EnumValue -> {
                             configGroup.enums[name]?.pointer?.element?.let { add(it) }
                             configGroup.complexEnums[name]?.pointer?.element?.let { add(it) }
                         }
                         configExpression.type.isValueSetValueType() -> {
                             configGroup.values[name]?.pointer?.element?.let { add(it) }
                         }
-                        configExpression.type == CwtDataType.Modifier -> {
+                        configExpression.type == CwtDataTypes.Modifier -> {
                             val modifierElement = ParadoxModifierHandler.resolveModifier(name, location, configGroup)
                             val configElement = modifierElement?.modifierConfig?.pointer?.element
                             configElement?.let { add(it) }

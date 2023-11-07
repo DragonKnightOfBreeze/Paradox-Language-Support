@@ -21,7 +21,7 @@ class ParadoxInferredScopeContextAwareDefinitionIndexSupport : ParadoxExpression
             val expression = element.value
             if(expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
             val dataType = config.expression.type
-            if(dataType != CwtDataType.Definition) return
+            if(dataType != CwtDataTypes.Definition) return
             val definitionType = config.expression.value?.substringBefore('.') ?: return
             if(definitionType !in ParadoxExpressionIndexHandler.inferredScopeContextAwareDefinitionTypes) return
         }
@@ -63,7 +63,7 @@ class ParadoxEventInOnActionIndexSupport : ParadoxExpressionIndexSupport<Paradox
             val expression = element.value
             if(expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
             val dataType = config.expression.type
-            if(dataType != CwtDataType.Definition) return
+            if(dataType != CwtDataTypes.Definition) return
             val definitionType = config.expression.value?.substringBefore('.') ?: return
             if(definitionType != "event") return
         }
@@ -108,7 +108,7 @@ class ParadoxEventInEventIndexSupport : ParadoxExpressionIndexSupport<ParadoxEve
             val expression = element.value
             if(expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
             val dataType = config.expression.type
-            if(dataType != CwtDataType.Definition) return
+            if(dataType != CwtDataTypes.Definition) return
             val definitionType = config.expression.value?.substringBefore('.') ?: return
             if(definitionType != "event") return
         }
@@ -174,7 +174,7 @@ class ParadoxOnActionInEventIndexSupport : ParadoxExpressionIndexSupport<Paradox
             val expression = element.value
             if(expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
             val dataType = config.expression.type
-            if(dataType != CwtDataType.Definition) return
+            if(dataType != CwtDataTypes.Definition) return
             val definitionType = config.expression.value?.substringBefore('.') ?: return
             if(definitionType != "on_action") return
         }

@@ -120,7 +120,7 @@ data class ParadoxImageCodeInsightContext(
             val inspection = if(fromInspection) getMissingImageInspection(element) else null
             
             if(!(inspection == null || inspection.checkForModifiers)) return null
-            if(config.expression.type != CwtDataType.Modifier) return null
+            if(config.expression.type != CwtDataTypes.Modifier) return null
             val modifierName = element.value
             val project = config.info.configGroup.project
             val codeInsightInfos = mutableListOf<ParadoxImageCodeInsightInfo>()

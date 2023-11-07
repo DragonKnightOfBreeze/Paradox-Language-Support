@@ -233,7 +233,7 @@ object ParadoxParameterHandler {
     
     fun isIgnoredInferredConfig(config: CwtValueConfig): Boolean {
         return when(config.expression.type) {
-            CwtDataType.Any, CwtDataType.Other -> true
+            CwtDataTypes.Any, CwtDataTypes.Other -> true
             else -> false
         }
     }

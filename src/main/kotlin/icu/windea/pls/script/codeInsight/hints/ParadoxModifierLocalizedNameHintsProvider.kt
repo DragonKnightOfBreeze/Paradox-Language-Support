@@ -64,7 +64,7 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Set
         if(!element.isExpression()) return true
         val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return true
         val type = config.expression.type
-        if(type == CwtDataType.Modifier) {
+        if(type == CwtDataTypes.Modifier) {
             val name = element.value
             val configGroup = config.info.configGroup
             val project = configGroup.project

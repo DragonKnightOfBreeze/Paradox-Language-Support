@@ -24,7 +24,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
                 val config = CwtConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return
                 val configExpression = config.expression
                 val dataType = configExpression.type
-                if(dataType == CwtDataType.AbsoluteFilePath) return
+                if(dataType == CwtDataTypes.AbsoluteFilePath) return
                 if(!dataType.isPathReferenceType()) return
                 val fileExtensions = ParadoxFilePathHandler.getFileExtensionOptionValues(config)
                 if(fileExtensions.isEmpty()) return

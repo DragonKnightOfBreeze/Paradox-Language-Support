@@ -22,7 +22,7 @@ object CwtTemplateExpressionHandler {
         return buildString {
             for(snippetExpression in expression.snippetExpressions) {
                 when(snippetExpression.type) {
-                    CwtDataType.Constant -> append(snippetExpression.expressionString)
+                    CwtDataTypes.Constant -> append(snippetExpression.expressionString)
                     else -> append(referenceName)
                 }
             }
@@ -34,7 +34,7 @@ object CwtTemplateExpressionHandler {
         return buildString {
             for(snippetExpression in templateExpression.snippetExpressions) {
                 when(snippetExpression.type) {
-                    CwtDataType.Constant -> append(snippetExpression.expressionString)
+                    CwtDataTypes.Constant -> append(snippetExpression.expressionString)
                     else -> append(referenceNames.getValue(snippetExpression))
                 }
             }
@@ -50,7 +50,7 @@ object CwtTemplateExpressionHandler {
     private fun doToRegex(configExpression: CwtTemplateExpression): Regex {
         return buildString {
             configExpression.snippetExpressions.forEach {
-                if(it.type == CwtDataType.Constant) {
+                if(it.type == CwtDataTypes.Constant) {
                     append("\\Q").append(it.expressionString).append("\\E")
                 } else {
                     append("(.*?)")
@@ -69,7 +69,7 @@ object CwtTemplateExpressionHandler {
         var i = 1
         for(snippetExpression in snippetExpressions) {
             ProgressManager.checkCanceled()
-            if(snippetExpression.type != CwtDataType.Constant) {
+            if(snippetExpression.type != CwtDataTypes.Constant) {
                 val matchGroup = matchResult.groups.get(i++) ?: return false
                 val referenceName = matchGroup.value
                 val expression = ParadoxDataExpression.resolve(referenceName, false)
@@ -102,7 +102,7 @@ object CwtTemplateExpressionHandler {
         var i = 1
         for(snippetExpression in snippetExpressions) {
             ProgressManager.checkCanceled()
-            if(snippetExpression.type != CwtDataType.Constant) {
+            if(snippetExpression.type != CwtDataTypes.Constant) {
                 val matchGroup = matchResult.groups.get(i++) ?: return emptyList()
                 val referenceName = matchGroup.value
                 val range = TextRange.create(matchGroup.range.first, matchGroup.range.last)
@@ -137,11 +137,11 @@ object CwtTemplateExpressionHandler {
         }
         val snippetExpression = configExpression.snippetExpressions[index]
         when(snippetExpression.type) {
-            CwtDataType.Constant -> {
+            CwtDataTypes.Constant -> {
                 val text = snippetExpression.expressionString
                 doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + text)
             }
-            CwtDataType.Definition -> {
+            CwtDataTypes.Definition -> {
                 val typeExpression = snippetExpression.value ?: return
                 val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
                 ParadoxDefinitionSearch.search(typeExpression, selector).processQueryAsync p@{ definition ->
@@ -151,7 +151,7 @@ object CwtTemplateExpressionHandler {
                     true
                 }
             }
-            CwtDataType.EnumValue -> {
+            CwtDataTypes.EnumValue -> {
                 val enumName = snippetExpression.value ?: return
                 //提示简单枚举
                 val enumConfig = configGroup.enums[enumName]
@@ -181,7 +181,7 @@ object CwtTemplateExpressionHandler {
                     }
                 }
             }
-            CwtDataType.Value -> {
+            CwtDataTypes.Value -> {
                 val valueSetName = snippetExpression.value ?: return
                 ProgressManager.checkCanceled()
                 val valueConfig = configGroup.values[valueSetName] ?: return

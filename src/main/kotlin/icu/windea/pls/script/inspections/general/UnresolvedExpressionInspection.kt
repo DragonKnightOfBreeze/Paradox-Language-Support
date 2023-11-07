@@ -101,7 +101,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     return false
                 }
                 //any规则不需要再向下检查
-                if(configs.any { it.expression.type == CwtDataType.Any }) {
+                if(configs.any { it.expression.type == CwtDataTypes.Any }) {
                     return false
                 }
                 return true

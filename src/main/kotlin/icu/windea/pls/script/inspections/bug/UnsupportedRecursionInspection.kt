@@ -74,7 +74,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                         val configs = CwtConfigHandler.getConfigs(e)
                         val config = configs.firstOrNull() ?: return
                         val configExpression = config.expression
-                        if(configExpression.type != CwtDataType.Definition) return
+                        if(configExpression.type != CwtDataTypes.Definition) return
                         val definitionType = configExpression.value
                         if(definitionType != "scripted_trigger" && definitionType != "scripted_effect") return
                         ProgressManager.checkCanceled()

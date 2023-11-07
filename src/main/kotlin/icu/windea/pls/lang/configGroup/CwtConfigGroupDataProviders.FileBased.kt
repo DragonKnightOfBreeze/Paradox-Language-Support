@@ -292,7 +292,7 @@ class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
                         val modifierConfig = resolveModifierConfig(prop, modifierName) ?: continue
                         configGroup.modifiers.asMutable()[modifierName] = modifierConfig
                         for(snippetExpression in modifierConfig.template.snippetExpressions) {
-                            if(snippetExpression.type == CwtDataType.Definition) {
+                            if(snippetExpression.type == CwtDataTypes.Definition) {
                                 val typeExpression = snippetExpression.value ?: continue
                                 configGroup.type2ModifiersMap.asMutable().getOrPut(typeExpression) { mutableMapOf() }.asMutable().put(modifierName, modifierConfig)
                             }
