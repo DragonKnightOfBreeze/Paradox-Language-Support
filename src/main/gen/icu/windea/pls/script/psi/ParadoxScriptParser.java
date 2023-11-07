@@ -903,14 +903,17 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // boolean | int | float | string
+  // boolean | int | float | string | inline_math
   static boolean scripted_variable_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scripted_variable_value")) return false;
     boolean r;
+    Marker m = enter_section_(b);
     r = boolean_$(b, l + 1);
     if (!r) r = int_$(b, l + 1);
     if (!r) r = float_$(b, l + 1);
     if (!r) r = string(b, l + 1);
+    if (!r) r = inline_math(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 

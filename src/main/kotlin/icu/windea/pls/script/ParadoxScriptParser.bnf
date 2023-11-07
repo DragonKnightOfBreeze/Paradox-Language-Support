@@ -60,7 +60,7 @@ scripted_variable_name ::= AT scripted_variable_name_part (<<processTemplate>> s
 }
 private scripted_variable_name_part ::= SCRIPTED_VARIABLE_NAME_TOKEN | parameter  | inline_parameter_condition
 private scripted_variable_separator ::= EQUAL_SIGN
-private scripted_variable_value ::= boolean | int | float | string
+private scripted_variable_value ::= boolean | int | float | string | inline_math
 
 //property related
 property ::= property_key property_separator property_value {
