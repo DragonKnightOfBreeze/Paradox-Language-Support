@@ -153,8 +153,8 @@ fun <V> caseInsensitiveStringKeyMap(): MutableMap<@CaseInsensitive String, V> {
 fun TextRange.unquote(text: String): TextRange {
     val leftQuoted = text.isLeftQuoted()
     val rightQuoted = text.isRightQuoted()
-    val startOffset = if(leftQuoted) 1 else 0
-    val endOffset = if(rightQuoted) length - 1 else length
+    val startOffset = if(leftQuoted) this.startOffset + 1 else this.startOffset
+    val endOffset = if(rightQuoted) this.endOffset - 1 else this.endOffset
     return TextRange.create(startOffset, endOffset)
 }
 

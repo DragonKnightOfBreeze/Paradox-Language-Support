@@ -17,7 +17,7 @@ interface CwtDataExpressionResolver {
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtDataExpressionResolver>("icu.windea.pls.dataExpressionResolver")
         
-        fun resolve(expressionString: String, isKey: Boolean): Result? {
+        fun resolve(expressionString: String): Result? {
             EP_NAME.extensionList.forEachFast f@{ ep ->
                 val r = ep.resolve(expressionString)
                 if(r != null) return r

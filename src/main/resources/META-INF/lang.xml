@@ -102,7 +102,7 @@
     <dataExpressionResolver implementation="icu.windea.pls.lang.expression.BaseCwtDataExpressionResolver"/>
     <dataExpressionResolver implementation="icu.windea.pls.lang.expression.CoreCwtDataExpressionResolver"/>
     <dataExpressionResolver implementation="icu.windea.pls.lang.expression.ExtendedCwtDataExpressionResolver"/>
-    <dataExpressionResolver implementation="icu.windea.pls.lang.expression.ConstantCwtDataExpressionResolver"/>
+    <dataExpressionResolver implementation="icu.windea.pls.lang.expression.ConstantCwtDataExpressionResolver" order="last"/>
     
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptBlockExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptBoolExpressionSupport"/>

@@ -28,8 +28,8 @@ class CwtKeyExpression private constructor(
         
         private fun doResolve(expressionString: String): CwtKeyExpression {
             if(expressionString.isEmpty()) return EmptyExpression
-            return CwtDataExpressionResolver.resolve(expressionString, true)
-                ?.run { CwtKeyExpression(expressionString, type, value, extraValue) }
+            return CwtDataExpressionResolver.resolve(expressionString)
+                ?.let { CwtKeyExpression(it.expressionString, it.type, it.value, it.extraValue) }
                 ?: CwtKeyExpression(expressionString, CwtDataTypes.Other)
         }
     }

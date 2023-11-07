@@ -22,7 +22,7 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
         val modDirectories = mutableSetOf<String>()
         modSettings.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) }
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) } }
-        val files = runWriteAction { ParadoxCoreHandler.reparseFilesByRootFilePaths(modDirectories) }
+        runWriteAction { ParadoxCoreHandler.reparseFilesByRootFilePaths(modDirectories) }
         
         //此时不需要刷新内嵌提示
     }

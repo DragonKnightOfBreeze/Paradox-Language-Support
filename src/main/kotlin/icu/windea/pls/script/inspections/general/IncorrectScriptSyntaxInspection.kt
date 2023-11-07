@@ -17,6 +17,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
         override fun visitElement(element: PsiElement) {
             ProgressManager.checkCanceled()
             checkComparisonOperator(element)
+            checkQuestionEqualSign(element)
         }
         
         private fun checkComparisonOperator(element: PsiElement) {

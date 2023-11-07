@@ -156,7 +156,7 @@ class CoreCwtDataExpressionResolver : CwtDataExpressionResolver {
                 Result(expressionString, CwtDataTypes.SingleAliasRight, value)
             }
             expressionString.surroundsWith("alias_name[", "]") -> {
-                val value = expressionString.substring(17, expressionString.length - 1).orNull()
+                val value = expressionString.substring(11, expressionString.length - 1).orNull()
                 Result(expressionString, CwtDataTypes.AliasKeysField, value)
             }
             expressionString.surroundsWith("alias_match_left[", "]") -> {
@@ -206,8 +206,10 @@ class ExtendedCwtDataExpressionResolver : CwtDataExpressionResolver {
 }
 
 class ConstantCwtDataExpressionResolver : CwtDataExpressionResolver {
+    private val excludeCharacters = "$[]<>".toCharArray()
+    
     override fun resolve(expressionString: String): Result? {
-        if(expressionString.isExactIdentifier()) return Result(expressionString, CwtDataTypes.Constant)
+        if(expressionString.none { c -> c in excludeCharacters }) return Result(expressionString, CwtDataTypes.Constant, expressionString)
         return null
     }
 }

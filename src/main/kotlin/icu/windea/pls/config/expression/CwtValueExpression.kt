@@ -31,8 +31,8 @@ class CwtValueExpression private constructor(
         
         private fun doResolve(expressionString: String): CwtValueExpression {
             if(expressionString.isEmpty()) return EmptyExpression
-            return CwtDataExpressionResolver.resolve(expressionString, false)
-                ?.run { CwtValueExpression(expressionString, type, value, extraValue) }
+            return CwtDataExpressionResolver.resolve(expressionString)
+                ?.let { CwtValueExpression(it.expressionString, it.type, it.value, it.extraValue) }
                 ?: CwtValueExpression(expressionString, CwtDataTypes.Other)
         }
     }
