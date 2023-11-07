@@ -1,5 +1,17 @@
 # TODO
 
+## BUG记录
+
+来自Github仓库：
+
+
+
+来自CWTools的Github仓库：
+
+* [ ] [The tool cannot recognize in-script flag variables (Vic3) · Issue #76 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/76)
+* [ ] [[Stellaris\] Could support tech@level grammar? · Issue #58 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/58)
+* [ ] [Parsing issues in Vic3 · Issue #53 · cwtools/cwtools (github.com)](https://github.com/cwtools/cwtools/issues/53)
+
 ## 更新计划
 
 * 完善在线参考文档
