@@ -21,18 +21,20 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProvider {
     }
     
     override fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean {
+        val gameTypeId = configGroup.gameType.id
         val rootDirectories = getRootDirectories(configGroup.project)
         rootDirectories.forEach { rootDirectory ->
-            if(configGroup.name != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, configGroup, consumer) }
-            rootDirectory.findChild(configGroup.name)?.let { doProcessFiles(it, configGroup, consumer) }
+            if(gameTypeId != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, configGroup, consumer) }
+            rootDirectory.findChild(gameTypeId)?.let { doProcessFiles(it, configGroup, consumer) }
         }
         return true
     }
     
     private fun doProcessFiles(rootDirectory: VirtualFile, configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean) {
         if(!rootDirectory.isDirectory) return
+        val gameTypeId = configGroup.gameType.id
         configGroup.progressIndicator?.apply {
-            text = PlsBundle.message("configGroup.collectBuiltinFiles")
+            text = PlsBundle.message("configGroup.progress.collectBuiltinFiles", gameTypeId)
             text2 = ""
             isIndeterminate = true
         }
@@ -65,18 +67,20 @@ class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProvider {
     }
     
     override fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean {
+        val gameTypeId = configGroup.gameType.id
         val rootDirectories = getRootDirectories(configGroup.project)
         rootDirectories.forEach { rootDirectory ->
-            if(configGroup.name != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, configGroup, consumer) }
-            rootDirectory.findChild(configGroup.name)?.let { doProcessFiles(it, configGroup, consumer) }
+            if(gameTypeId != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, configGroup, consumer) }
+            rootDirectory.findChild(gameTypeId)?.let { doProcessFiles(it, configGroup, consumer) }
         }
         return true
     }
     
     private fun doProcessFiles(rootDirectory: VirtualFile, configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean) {
         if(!rootDirectory.isDirectory) return
+        val gameTypeId = configGroup.gameType.id
         configGroup.progressIndicator?.apply {
-            text = PlsBundle.message("configGroup.collectFiles", rootDirectory.presentableUrl)
+            text = PlsBundle.message("configGroup.progress.collectFiles", gameTypeId, rootDirectory.presentableUrl)
             text2 = ""
             isIndeterminate = true
         }

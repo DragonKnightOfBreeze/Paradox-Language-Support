@@ -23,8 +23,9 @@ import kotlin.collections.set
  */
 class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {
+        val gameTypeId = configGroup.gameType.id
         configGroup.progressIndicator?.apply {
-            text = PlsBundle.message("configGroup.processFiles")
+            text = PlsBundle.message("configGroup.progress.processFiles", gameTypeId)
             text2 = ""
             isIndeterminate = true
         }
@@ -46,7 +47,7 @@ class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
         allFiles.all f@{ (filePath, tuple) ->
             val (file, fileProcessor) = tuple
             configGroup.progressIndicator?.apply {
-                text2 = PlsBundle.message("configGroup.processFile", file.presentableUrl)
+                text2 = PlsBundle.message("configGroup.progress.processFile", gameTypeId, filePath)
                 isIndeterminate = false
                 fraction = i++ / allFiles.size.toDouble() 
             }

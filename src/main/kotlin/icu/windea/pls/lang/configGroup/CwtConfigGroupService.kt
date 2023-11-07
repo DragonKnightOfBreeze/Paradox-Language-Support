@@ -1,15 +1,17 @@
 package icu.windea.pls.lang.configGroup
 
-import com.intellij.openapi.application.*
+import com.intellij.notification.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.editor.toolbar.floating.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.progress.impl.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.wm.ex.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import java.util.concurrent.*
 
@@ -17,77 +19,117 @@ import java.util.concurrent.*
 class CwtConfigGroupService(
     val project: Project
 ) {
+    private val logger = logger<CwtConfigGroupService>()
     private val cache = ConcurrentHashMap<String, CwtConfigGroup>()
     
     fun getConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
-        return cache.computeIfAbsent(gameType.id) { createConfigGroup(gameType, false) }
+        return cache.computeIfAbsent(gameType.id) { createConfigGroup(gameType) }
     }
     
     fun getConfigGroups(): Map<String, CwtConfigGroup> {
         return cache
     }
     
-    fun refreshConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
-        //不替换configGroup，而是替换其中的userData
-        val configGroup = cache.computeIfAbsent(gameType.id) { createConfigGroup(gameType, false) }
-        if(!configGroup.changed.get()) return configGroup
-        synchronized(configGroup) {
-            if(!configGroup.changed.get()) return configGroup
-            val newConfigGroup = createConfigGroup(gameType, true)
-            newConfigGroup.copyUserDataTo(configGroup)
-            configGroup.changed.set(false)
-            configGroup.modificationTracker.incModificationCount()
-        }
+    fun createConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
+        val gameTypeId = gameType.id
+        
+        logger.info("Initialize CWT config group '$gameTypeId'...")
+        val start = System.currentTimeMillis()
+        
+        val configGroup = createConfigGroupInProgress(gameType, null)
+        
+        val end = System.currentTimeMillis()
+        logger.info("Initialize CWT config group '$gameTypeId' finished in ${end - start} ms.")
+        
         return configGroup
     }
     
-    private fun createConfigGroup(gameType: ParadoxGameType?, refresh: Boolean): CwtConfigGroup {
+    @Synchronized
+    fun refreshConfigGroups(configGroups: Collection<CwtConfigGroup>) {
+        //不替换configGroup，而是替换其中的userData
+        if(configGroups.isEmpty()) return
+        val progressTitle = PlsBundle.message("configGroup.progress.refreshAll")
+        val task = object : Task.Backgroundable(project, progressTitle, false) {
+            override fun run(indicator: ProgressIndicator) {
+                configGroups.forEach { configGroup ->
+                    val gameTypeId = configGroup.gameType.id
+                    if(!configGroup.changed.get()) return
+                    
+                    logger.info("Refresh CWT config group '$gameTypeId'...")
+                    val start = System.currentTimeMillis()
+                    
+                    val newConfigGroup = createConfigGroupInProgress(configGroup.gameType, indicator)
+                    newConfigGroup.copyUserDataTo(configGroup)
+                    configGroup.changed.set(false)
+                    configGroup.modificationTracker.incModificationCount()
+                    
+                    val end = System.currentTimeMillis()
+                    logger.info("Refresh CWT config group '$gameTypeId' finished in ${end - start} ms.")
+                }
+            }
+            
+            override fun onSuccess() {
+                //重新解析已打开的文件
+                ParadoxCoreHandler.reparseOpenedFiles()
+                
+                val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
+                    //重新解析文件（IDE之后会自动请求重新索引）
+                    //TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
+                    val rootFilePaths = getRootFilePaths(configGroups)
+                    ParadoxCoreHandler.reparseFilesByRootFilePaths(rootFilePaths)
+                }
+                
+                configGroups.forEach { configGroup -> configGroup.changed.set(false) }
+                
+                NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
+                    PlsBundle.message("configGroup.refresh.notification.finished.title"),
+                    PlsBundle.message("configGroup.refresh.notification.finished.content"),
+                    NotificationType.INFORMATION
+                ).addAction(action).notify(project)
+                
+                FloatingToolbarProvider.getProvider<ConfigGroupRefreshFloatingProvider>()
+                    .updateToolbarComponents(project)
+            }
+            
+            override fun onCancel() {
+                NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
+                    PlsBundle.message("configGroup.refresh.notification.cancelled.title"),
+                    NotificationType.INFORMATION
+                ).notify(project)
+            }
+        }
+        val progressIndicator = BackgroundableProcessIndicator(task)
+        ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, progressIndicator)
+    }
+    
+    private fun createConfigGroupInProgress(gameType: ParadoxGameType?, processIndicator: ProgressIndicator?): CwtConfigGroup {
         val info = CwtConfigGroupInfo(gameType.id)
         val configGroup = CwtConfigGroup(info, gameType, project)
         info.configGroup = configGroup
-        handleConfigGroup(configGroup, refresh)
+        configGroup.progressIndicator = processIndicator
+        
+        val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
+        dataProviders.all f@{ dataProvider ->
+            dataProvider.process(configGroup)
+        }
+        
+        configGroup.progressIndicator = null
         return configGroup
     }
     
-    private fun handleConfigGroup(configGroup: CwtConfigGroup, refresh: Boolean) {
-        //需要考虑在背景进度指示器中显示初始化的进度（经测试，通常1s内即可完成）
-        
-        val name = configGroup.name
-        if(refresh) {
-            thisLogger().info("Refresh CWT config group '$name'...")
-        } else {
-            thisLogger().info("Initialize CWT config group '$name'...")
+    private fun getRootFilePaths(configGroups: Collection<CwtConfigGroup>): Set<String> {
+        val gameTypes = configGroups.mapNotNullTo(mutableSetOf()) { it.gameType }
+        val rootFilePaths = mutableSetOf<String>()
+        getProfilesSettings().gameDescriptorSettings.values.forEach f@{ settings ->
+            val gameType = settings.gameType ?: return@f
+            if(gameType !in gameTypes) return@f
+            settings.gameDirectory?.let { rootFilePaths.add(it) }
         }
-        val start = System.currentTimeMillis()
-        
-        if(configGroup.name != "core" && !configGroup.project.isDefault) {
-            val progressTitle = if(refresh) {
-                PlsBundle.message("configGroup.refresh", name)
-            } else {
-                PlsBundle.message("configGroup.init", name)
-            }
-            configGroup.progressIndicator = BackgroundableProcessIndicator(project, progressTitle, null, "", false)
+        getProfilesSettings().modDescriptorSettings.values.forEach f@{ settings ->
+            val gameType = settings.inferredGameType ?: settings.finalGameType
+            if(gameType !in gameTypes) return@f
+            settings.modDirectory?.let { rootFilePaths.add(it) }
         }
-        val callable = Callable {
-            try {
-                val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
-                dataProviders.all f@{ dataProvider ->
-                    dataProvider.process(configGroup)
-                }
-            } finally {
-                configGroup.progressIndicator?.castOrNull<ProgressIndicatorEx>()?.processFinish()
-                configGroup.progressIndicator = null
-            }
-        }
-        var action = ReadAction.nonBlocking(callable).expireWhen { project.isDisposed }
-        configGroup.progressIndicator?.apply { action = action.wrapProgress(this) }
-        action.executeSynchronously()
-        
-        val end = System.currentTimeMillis()
-        if(refresh) {
-            thisLogger().info("Refresh CWT config group '$name' finished in ${end - start} ms.")
-        } else {
-            thisLogger().info("Initialize CWT config group '$name' finished in ${end - start} ms.")
-        }
+        return rootFilePaths
     }
 }

@@ -8,6 +8,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.model.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -17,8 +18,9 @@ import kotlin.collections.set
  */
 class CwtConfigGroupComputedDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {
+        val gameTypeId = configGroup.gameType.id
         configGroup.progressIndicator?.apply {
-            text = PlsBundle.message("configGroup.computeData")
+            text = PlsBundle.message("configGroup.progress.computeData", gameTypeId)
             text2 = ""
             isIndeterminate = true
         }
