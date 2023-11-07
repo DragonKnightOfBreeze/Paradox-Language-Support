@@ -16,9 +16,8 @@ class CodeInjectorService : UserDataHolderBase() {
     /**
      * 用于在IDE启动时应用代码注入器。
      */
-    @Suppress("UnstableApiUsage")
-    class Listener: ApplicationLoadListener {
-        override fun beforeApplicationLoaded(application: Application, configPath: Path) {
+    class Listener: AppLifecycleListener {
+        override fun appFrameCreated(commandLineArgs: MutableList<String>) {
             service<CodeInjectorService>().init()
         }
     }

@@ -4,10 +4,9 @@
     <extensionPoint qualifiedName="icu.windea.pls.inject.codeInjector" interface="icu.windea.pls.inject.CodeInjector" dynamic="true"/>
   </extensionPoints>
   
-  <extensions defaultExtensionNs="com.intellij">
-    <!--suppress PluginXmlValidity -->
-    <ApplicationLoadListener implementation="icu.windea.pls.inject.CodeInjectorService$Listener"/>
-  </extensions>
+  <applicationListeners>
+    <listener class="icu.windea.pls.inject.CodeInjectorService$Listener" topic="com.intellij.ide.AppLifecycleListener"/>
+  </applicationListeners>
   
   <extensions defaultExtensionNs="icu.windea.pls.inject">
     <codeInjectorSupport implementation="icu.windea.pls.inject.support.CachedMethodsInjectorSupport"/>
