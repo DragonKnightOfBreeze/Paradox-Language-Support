@@ -1,5 +1,7 @@
 package icu.windea.pls.model;
 
+import icu.windea.pls.core.annotations.*
+
 enum class ParadoxSeparatorType(
     val text: String
 ) {
@@ -8,7 +10,10 @@ enum class ParadoxSeparatorType(
     LT("<"),
     GT(">"),
     LE("<="),
-    GE(">=");
+    GE(">="),
+    //https://github.com/cwtools/cwtools/issues/53
+    @WithGameType(ParadoxGameType.Vic3)
+    COMPARE("?=");
     
     override fun toString(): String {
         return text

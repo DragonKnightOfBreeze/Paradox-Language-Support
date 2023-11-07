@@ -1,13 +1,16 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.navigation.*;
-import com.intellij.psi.search.*;
-import icu.windea.pls.core.psi.*;
-import icu.windea.pls.core.references.*;
+import java.util.List;
 import org.jetbrains.annotations.*;
-
-import javax.swing.*;
+import com.intellij.psi.PsiElement;
+import icu.windea.pls.core.psi.ParadoxConditionParameter;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.core.references.ParadoxConditionParameterPsiReference;
+import javax.swing.Icon;
 
 public interface ParadoxScriptParameterConditionParameter extends ParadoxConditionParameter {
 

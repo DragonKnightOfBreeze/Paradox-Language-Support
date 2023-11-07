@@ -138,6 +138,7 @@ SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
     "<=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return LE_SIGN; }
     ">=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GE_SIGN; }
     "!="|"<>" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
+    "?=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return QUESTION_EQUAL_SIGN; }
     "@" { yybegin(IN_SCRIPTED_VARIABLE); return AT; }
 
     {COMMENT} { return COMMENT; }
@@ -155,6 +156,7 @@ SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
     "<=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return LE_SIGN; }
     ">=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GE_SIGN; }
     "!="|"<>" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
+    "?=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return QUESTION_EQUAL_SIGN; }
     {CHECK_SCRIPTED_VARIABLE_NAME} {
         //如果匹配到的文本以等号结尾，则作为scriptedVariable进行解析，否则作为scriptedVariableReference进行解析
         if(yycharat(yylength() -1) == '='){
@@ -235,6 +237,7 @@ SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
     "<=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return LE_SIGN; }
     ">=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GE_SIGN; }
     "!="|"<>" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
+    "?=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return QUESTION_EQUAL_SIGN; }
     "@" { yybegin(IN_SCRIPTED_VARIABLE); return AT; }
 
     {COMMENT} { return COMMENT; }
@@ -380,6 +383,7 @@ SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
     "<=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return LE_SIGN; }
     ">=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GE_SIGN; }
     "!="|"<>" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
+    "?=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return QUESTION_EQUAL_SIGN; }
     "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
     {PROPERTY_KEY_TOKEN} { return PROPERTY_KEY_TOKEN; }
 

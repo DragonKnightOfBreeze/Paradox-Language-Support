@@ -1,9 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.lang.*;
-import com.intellij.psi.*;
-import com.intellij.psi.tree.*;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.PsiElement;
+import com.intellij.lang.ASTNode;
 import icu.windea.pls.script.psi.impl.*;
 
 public interface ParadoxScriptElementTypes {
@@ -41,6 +41,7 @@ public interface ParadoxScriptElementTypes {
   IElementType BOOLEAN_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("BOOLEAN_TOKEN");
   IElementType COLOR_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("COLOR_TOKEN");
   IElementType COMMENT = ParadoxScriptElementTypeFactory.getTokenType("COMMENT");
+  IElementType QUESTION_EQUAL_SIGN = ParadoxScriptElementTypeFactory.getTokenType("QUESTION_EQUAL_SIGN");
   IElementType CONDITION_PARAMETER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("CONDITION_PARAMETER_TOKEN");
   IElementType DIV_SIGN = ParadoxScriptElementTypeFactory.getTokenType("DIV_SIGN");
   IElementType EQUAL_SIGN = ParadoxScriptElementTypeFactory.getTokenType("EQUAL_SIGN");

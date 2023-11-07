@@ -5,7 +5,7 @@
 * [ ] 提供一种项目视图，用于显示合并后的所有用于自定义CWT规则分组的CWT文件（`Project Pane -> CWT Config Files`）
 * [ ] 支持`@a = @[ 1 + 2]`语法 - 参见：[The tool cannot recognize in-script flag variables (Vic3) · Issue #76 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/76)
 * [ ] （仅限Stellaris）支持`technology@level`语法 - 参见：[[Stellaris\] Could support tech@level grammar? · Issue #58 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/58)
-* [ ] （仅限VIC3）支持比较操作符`?=` - 参见：[Parsing issues in Vic3 · Issue #53 · cwtools/cwtools (github.com)](https://github.com/cwtools/cwtools/issues/53)
+* [X] （仅限VIC3）支持比较操作符`?=` - 参见：[Parsing issues in Vic3 · Issue #53 · cwtools/cwtools (github.com)](https://github.com/cwtools/cwtools/issues/53)
 
 ## 1.2.0
 

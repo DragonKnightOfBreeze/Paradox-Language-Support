@@ -93,7 +93,7 @@ property_key ::= property_key_part (<<processTemplate>> property_key_part) * {
   ]
 }
 private property_key_part ::= PROPERTY_KEY_TOKEN | parameter | inline_parameter_condition
-private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
+private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN | QUESTION_EQUAL_SIGN
 private property_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
 //value related
