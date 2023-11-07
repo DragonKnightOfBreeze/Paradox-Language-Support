@@ -53,6 +53,11 @@
   </actions>
   
   <extensions defaultExtensionNs="icu.windea.pls">
+    <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxRangedIntChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxRangedFloatChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxColorFieldChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxScopeBasedScopeFieldExpressionChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxScopeGroupBasedScopeFieldExpressionChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxTriggerInSwitchChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxTriggerInTriggerWithParametersAwareChecker"/>
     
