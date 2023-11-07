@@ -1,15 +1,13 @@
 <idea-plugin>
-  <extensions defaultExtensionNs="com.intellij">
-    <!--these services MUST be non-light, first-order and preload (IGNORE compatibility verification unless incompatible)-->
-    <!--suppress PluginXmlValidity -->
-    <applicationService serviceImplementation="icu.windea.pls.inject.CodeInjectorService" order="first" preload="true"/>
-  </extensions>
-  
   <extensionPoints>
-    <!--these extension points are not dynamic in fact, but we just mark them as dynamic-->
     <extensionPoint qualifiedName="icu.windea.pls.inject.codeInjectorSupport" interface="icu.windea.pls.inject.CodeInjectorSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inject.codeInjector" interface="icu.windea.pls.inject.CodeInjector" dynamic="true"/>
   </extensionPoints>
+  
+  <extensions defaultExtensionNs="com.intellij">
+    <!--suppress PluginXmlValidity -->
+    <ApplicationLoadListener implementation="icu.windea.pls.inject.CodeInjectorService$Listener"/>
+  </extensions>
   
   <extensions defaultExtensionNs="icu.windea.pls.inject">
     <codeInjectorSupport implementation="icu.windea.pls.inject.support.CachedMethodsInjectorSupport"/>
