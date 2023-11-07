@@ -605,6 +605,7 @@ object CwtConfigHandler {
             CwtDataTypes.Constant -> 100
             CwtDataTypes.Any -> 1
             CwtDataTypes.Other -> 0 //unexpected
+            else -> 10 //TODO 1.2.1+
         }
     }
     

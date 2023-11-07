@@ -3,7 +3,7 @@ package icu.windea.pls.config.expression
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.model.*
 
-class CwtDataType(val name: String)
+data class CwtDataType(val name: String)
 
 object CwtDataTypes
 

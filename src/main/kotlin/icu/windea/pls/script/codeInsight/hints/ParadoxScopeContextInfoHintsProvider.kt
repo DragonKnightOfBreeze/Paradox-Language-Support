@@ -24,7 +24,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		var showOnlyIfScopeIsChanged: Boolean = true
 	)
 	
-	private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxScopeContextInfoHintsSettingsKey")
+	private val settingsKey = SettingsKey<Settings>("ParadoxScopeContextInfoHintsSettingsKey")
 	
 	override val name: String get() = PlsBundle.message("script.hints.scopeContext")
 	override val description: String get() = PlsBundle.message("script.hints.scopeContext.description")

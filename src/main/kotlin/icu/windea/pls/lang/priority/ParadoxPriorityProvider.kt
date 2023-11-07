@@ -8,7 +8,7 @@ import icu.windea.pls.core.settings.*
 import icu.windea.pls.model.*
 
 /**
- * 用于基于覆盖顺序对文件、封装变量、定义、本地化进行排序。
+ * 用于基于覆盖顺序对文件、封装变量、定义、本地化等进行排序。
  *
  * 默认使用后读覆盖排序。（[ParadoxPriority.LIOS]）
  *

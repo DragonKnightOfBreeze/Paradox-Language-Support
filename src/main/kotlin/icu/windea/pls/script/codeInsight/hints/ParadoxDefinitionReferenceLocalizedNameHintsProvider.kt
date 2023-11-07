@@ -26,8 +26,8 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
         var iconHeightLimit: Int = 32
     )
     
-    private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxDefinitionReferenceLocalizedNameHintsSettingsKey")
-    private val expressionTypes: EnumSet<CwtDataType> = enumSetOf(
+    private val settingsKey = SettingsKey<Settings>("ParadoxDefinitionReferenceLocalizedNameHintsSettingsKey")
+    private val expressionTypes = mutableSetOf(
         CwtDataTypes.Definition,
         CwtDataTypes.AliasName, //需要兼容alias
         CwtDataTypes.AliasKeysField, //需要兼容alias

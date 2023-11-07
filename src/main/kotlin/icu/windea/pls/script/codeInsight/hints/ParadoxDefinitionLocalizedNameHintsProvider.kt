@@ -23,7 +23,7 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<S
 		var iconHeightLimit: Int = 32
 	)
 	
-	private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxDefinitionLocalizedNameHintsSettingsKey")
+	private val settingsKey = SettingsKey<Settings>("ParadoxDefinitionLocalizedNameHintsSettingsKey")
 	
 	override val name: String get() = PlsBundle.message("script.hints.definitionLocalizedName")
 	override val description: String get() = PlsBundle.message("script.hints.definitionLocalizedName.description")

@@ -18,8 +18,8 @@ import java.util.*
  */
 @Suppress("UnstableApiUsage")
 class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
-    private val settingsKey: SettingsKey<NoSettings> = SettingsKey("ParadoxDefinitionReferenceInfoHintsSettingsKey")
-    private val expressionTypes: EnumSet<CwtDataType> = enumSetOf(
+    private val settingsKey = SettingsKey<NoSettings>("ParadoxDefinitionReferenceInfoHintsSettingsKey")
+    private val expressionTypes = mutableSetOf(
         CwtDataTypes.Definition,
         CwtDataTypes.AliasName, //需要兼容alias
         CwtDataTypes.AliasKeysField, //需要兼容alias

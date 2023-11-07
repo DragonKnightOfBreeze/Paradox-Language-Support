@@ -23,7 +23,7 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvid
         var iconHeightLimit: Int = 32
     )
     
-    private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxLocalisationReferenceHintsSettingsKey")
+    private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationReferenceHintsSettingsKey")
     
     override val name: String get() = PlsBundle.message("localisation.hints.localisationReference")
     override val description: String get() = PlsBundle.message("localisation.hints.localisationReference.description")

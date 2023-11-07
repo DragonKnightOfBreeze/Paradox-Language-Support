@@ -27,8 +27,8 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
         var iconHeightLimit: Int = 32
     )
     
-    private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxLocalisationReferenceInfoHintsSettingsKey")
-    private val expressionTypes: EnumSet<CwtDataType> = enumSetOf(
+    private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationReferenceInfoHintsSettingsKey")
+    private val expressionTypes = mutableSetOf(
         CwtDataTypes.Localisation,
         CwtDataTypes.InlineLocalisation,
         CwtDataTypes.SyncedLocalisation,
