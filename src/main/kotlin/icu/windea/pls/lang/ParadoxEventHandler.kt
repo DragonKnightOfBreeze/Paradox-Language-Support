@@ -9,10 +9,9 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -133,7 +132,7 @@ object ParadoxEventHandler {
             }
             
             private fun isEventConfig(config: CwtMemberConfig<*>): Boolean {
-                return config.expression.type == CwtDataType.Definition
+                return config.expression.type == CwtDataTypes.Definition
                     && config.expression.value?.substringBefore('.') == "event"
             }
         })

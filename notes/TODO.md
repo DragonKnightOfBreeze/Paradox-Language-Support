@@ -1,5 +1,17 @@
 # TODO
 
+## BUG记录
+
+来自Github仓库：
+
+
+
+来自CWTools的Github仓库：
+
+* [ ] [The tool cannot recognize in-script flag variables (Vic3) · Issue #76 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/76)
+* [ ] [[Stellaris\] Could support tech@level grammar? · Issue #58 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/58)
+* [ ] [Parsing issues in Vic3 · Issue #53 · cwtools/cwtools (github.com)](https://github.com/cwtools/cwtools/issues/53)
+
 ## 更新计划
 
 * 完善在线参考文档
@@ -48,6 +60,9 @@
 ```
 ethic = ethic_$ETHIC$ # 脚本参数作为某个脚本表达式的一部分，这个脚本表达式中仅存在这唯一一个脚本参数，且可以得到这个脚本表达式对应的CWT规则
 ```
+
+* [ ] #46 优化：尝试基于使用推断特定类型的`valueSetValue`对应的作用域上下文（如`event_target`和`global_event_target`）
+* [ ] 提供一种项目视图，用于显示合并后的所有用于自定义CWT规则分组的CWT文件（`Project Pane -> CWT Config Files`）
 
 ## 注意事项
 

@@ -6,7 +6,6 @@ import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.navigation.*
 import javax.swing.*
@@ -22,7 +21,7 @@ class ParadoxScriptFile(
 	
 	override fun getIcon(flags: Int): Icon? {
 		//对模组描述符文件使用特定的图标
-		if(name.equals(PlsConstants.descriptorFileName, true)) return PlsIcons.DescriptorFile
+        if(name.equals(PlsConstants.descriptorFileName, true)) return PlsIcons.FileTypes.ModeDescriptor
 		return super.getIcon(flags)
 	}
 	

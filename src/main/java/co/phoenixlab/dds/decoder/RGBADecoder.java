@@ -1,7 +1,6 @@
 package co.phoenixlab.dds.decoder;
 
-import co.phoenixlab.dds.Dds;
-import co.phoenixlab.dds.DdsPixelFormat;
+import co.phoenixlab.dds.*;
 
 import static java.lang.Integer.numberOfTrailingZeros;
 

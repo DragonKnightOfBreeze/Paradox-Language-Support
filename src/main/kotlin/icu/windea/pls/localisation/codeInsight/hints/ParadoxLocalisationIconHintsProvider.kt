@@ -8,7 +8,6 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationIconHintsProvider.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -60,7 +59,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
 				else -> null
 			} ?: return true //找不到图标的话就直接跳过
 			
-			val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
+			val icon = iconUrl.toIconOrNull() ?: return true
 			//基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
 			if(icon.iconHeight <= settings.iconHeightLimit) {
 				//点击可以导航到声明处（定义或DDS）

@@ -10,12 +10,10 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
@@ -27,9 +25,9 @@ import icu.windea.pls.lang.scope.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxLocalisationScriptExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataType.Localisation
+        return config.expression?.type == CwtDataTypes.Localisation
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -83,9 +81,9 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     }
 }
 
-class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxSyncedLocalisationScriptExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataType.Localisation
+        return config.expression?.type == CwtDataTypes.Localisation
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -138,9 +136,9 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
     }
 }
 
-class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxInlineLocalisationScriptExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataType.InlineLocalisation
+        return config.expression?.type == CwtDataTypes.InlineLocalisation
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -197,9 +195,9 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
     }
 }
 
-class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxDefinitionScriptExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataType.Definition
+        return config.expression?.type == CwtDataTypes.Definition
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -266,7 +264,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport 
     }
 }
 
-class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxPathReferenceScriptExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type?.isPathReferenceType() == true
     }
@@ -282,7 +280,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         val configExpression = config.expression ?: return null
         val configGroup = config.info.configGroup
         val project = configGroup.project
-        if(configExpression.type == CwtDataType.AbsoluteFilePath) {
+        if(configExpression.type == CwtDataTypes.AbsoluteFilePath) {
             return expression.toVirtualFile(false)?.toPsiFile(project)
         } else {
             //if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
@@ -296,7 +294,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         val configExpression = config.expression ?: return emptySet()
         val configGroup = config.info.configGroup
         val project = configGroup.project
-        if(configExpression.type == CwtDataType.AbsoluteFilePath) {
+        if(configExpression.type == CwtDataTypes.AbsoluteFilePath) {
             return expression.toVirtualFile(false)?.toPsiFile(project).toSingletonSetOrEmpty()
         } else {
             //if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
@@ -343,9 +341,9 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
     }
 }
 
-class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxEnumValueScriptExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataType.EnumValue
+        return config.expression?.type == CwtDataTypes.EnumValue
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -442,9 +440,9 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
     }
 }
 
-class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxModifierScriptExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataType.Modifier
+        return config.expression?.type == CwtDataTypes.Modifier
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -467,10 +465,10 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport {
     }
 }
 
-class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxAliasNameScriptExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         val type = config.expression?.type ?: return false
-        return type == CwtDataType.AliasName || type == CwtDataType.AliasKeysField
+        return type == CwtDataTypes.AliasName || type == CwtDataTypes.AliasKeysField
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -547,9 +545,9 @@ abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpress
     }
 }
 
-class ParadoxScriptConstantExpressionSupport : ParadoxScriptConstantLikeExpressionSupport() {
+class ParadoxConstantScriptExpressionSupport : ParadoxScriptConstantLikeExpressionSupport() {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataType.Constant
+        return config.expression?.type == CwtDataTypes.Constant
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
@@ -596,9 +594,9 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptConstantLikeExpressi
     }
 }
 
-class ParadoxScriptTemplateExpressionSupport : ParadoxScriptConstantLikeExpressionSupport() {
+class ParadoxTemplateScriptExpressionSupport : ParadoxScriptConstantLikeExpressionSupport() {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataType.Template
+        return config.expression?.type == CwtDataTypes.Template
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {

@@ -52,13 +52,13 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
                 completionOffset = extraArgs.getOrNull(1)?.castOrNull<Int>() ?: -1
                 //infer context config
                 contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
-                if(contextConfig.expression.type != CwtDataType.Definition) return null
+                if(contextConfig.expression.type != CwtDataTypes.Definition) return null
                 contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
             }
             //extraArgs: contextConfig
             ParadoxParameterContextReferenceInfo.From.ContextReference -> {
                 contextConfig = extraArgs.getOrNull(0)?.castOrNull<CwtPropertyConfig>() ?: return null
-                if(contextConfig.expression.type != CwtDataType.Definition) return null
+                if(contextConfig.expression.type != CwtDataTypes.Definition) return null
                 contextReferenceElement = element.castOrNull() ?: return null
             }
             //extraArgs: offset?
@@ -71,8 +71,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
                 for(prop in parentProperties) {
                     //infer context config
                     val propConfig = CwtConfigHandler.getConfigs(prop).firstOrNull() as? CwtPropertyConfig ?: continue
-                    if(propConfig.expression.type != CwtDataType.Definition) continue
-                    if(propConfig.configs?.any { it is CwtPropertyConfig && it.expression.type == CwtDataType.Parameter } != true) continue
+                    if(propConfig.expression.type != CwtDataTypes.Definition) continue
+                    if(propConfig.configs?.any { it is CwtPropertyConfig && it.expression.type == CwtDataTypes.Parameter } != true) continue
                     contextConfig = propConfig
                     contextReferenceElement = prop
                     break
@@ -133,13 +133,13 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
     
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
-        if(config !is CwtPropertyConfig || config.expression.type != CwtDataType.Parameter) return null
+        if(config !is CwtPropertyConfig || config.expression.type != CwtDataTypes.Parameter) return null
         return doResolveArgument(element, rangeInElement, config)
     }
     
     private fun doResolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtPropertyConfig): ParadoxParameterElement? {
         val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
-        if(contextConfig.expression.type != CwtDataType.Definition) return null
+        if(contextConfig.expression.type != CwtDataTypes.Definition) return null
         val contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
         val definitionName = contextReferenceElement.name.orNull() ?: return null
         if(definitionName.isParameterized()) return null //skip if context name is parameterized
@@ -376,7 +376,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
             ParadoxParameterContextReferenceInfo.From.Argument -> {
                 val config = extraArgs.getOrNull(0)?.castOrNull<CwtMemberConfig<*>>() ?: return null
                 completionOffset = extraArgs.getOrNull(1)?.castOrNull<Int>() ?: -1
-                if(config !is CwtPropertyConfig || config.expression.type != CwtDataType.Parameter) return null
+                if(config !is CwtPropertyConfig || config.expression.type != CwtDataTypes.Parameter) return null
                 //infer inline config
                 val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
                 inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptHandler.inlineScriptKey } ?: return null
@@ -399,7 +399,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
                     //infer context config
                     val propConfig = CwtConfigHandler.getConfigs(prop).firstOrNull() ?: continue
                     val propInlineConfig = propConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptHandler.inlineScriptKey } ?: continue
-                    if(propInlineConfig.config.configs?.any { it is CwtPropertyConfig && it.expression.type == CwtDataType.Parameter } != true) continue
+                    if(propInlineConfig.config.configs?.any { it is CwtPropertyConfig && it.expression.type == CwtDataTypes.Parameter } != true) continue
                     inlineConfig = propInlineConfig
                     contextReferenceElement = prop
                     break
@@ -457,7 +457,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     }
     
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
-        if(config !is CwtPropertyConfig || config.expression.type != CwtDataType.Parameter) return null
+        if(config !is CwtPropertyConfig || config.expression.type != CwtDataTypes.Parameter) return null
         return doResolveArgument(element, rangeInElement, config)
     }
     

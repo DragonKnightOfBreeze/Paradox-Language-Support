@@ -554,65 +554,11 @@ object CwtConfigHandler {
     //endregion
     
     //region Expression Methods
-    fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Int {
-        return when(configExpression.type) {
-            CwtDataType.Block -> 100
-            CwtDataType.Bool -> 100
-            CwtDataType.Int -> 90
-            CwtDataType.Float -> 90
-            CwtDataType.Scalar -> 90
-            CwtDataType.ColorField -> 90
-            CwtDataType.PercentageField -> 90
-            CwtDataType.DateField -> 90
-            CwtDataType.Localisation -> 60
-            CwtDataType.SyncedLocalisation -> 60
-            CwtDataType.InlineLocalisation -> 60
-            CwtDataType.StellarisNameFormat -> 60
-            CwtDataType.AbsoluteFilePath -> 70
-            CwtDataType.Icon -> 70
-            CwtDataType.FilePath -> 70
-            CwtDataType.FileName -> 70
-            CwtDataType.Definition -> 70
-            CwtDataType.EnumValue -> {
-                val enumName = configExpression.value ?: return 0 //unexpected
-                if(configGroup.enums.containsKey(enumName)) return 80
-                if(configGroup.complexEnums.containsKey(enumName)) return 45
-                return 0 //不期望匹配到，规则有误！
-            }
-            CwtDataType.Value, CwtDataType.ValueOrValueSet -> {
-                val valueSetName = configExpression.value ?: return 0 //unexpected
-                if(configGroup.values.containsKey(valueSetName)) return 80
-                return 40
-            }
-            CwtDataType.ValueSet -> 40
-            CwtDataType.ScopeField -> 50
-            CwtDataType.Scope -> 50
-            CwtDataType.ScopeGroup -> 50
-            CwtDataType.ValueField -> 45
-            CwtDataType.IntValueField -> 45
-            CwtDataType.VariableField -> 45
-            CwtDataType.IntVariableField -> 45
-            CwtDataType.Modifier -> 75 //higher than Definition
-            CwtDataType.Parameter -> 10
-            CwtDataType.ParameterValue -> 90 //same to Scalar
-            CwtDataType.LocalisationParameter -> 10
-            CwtDataType.ShaderEffect -> 85 // (80,90)
-            CwtDataType.SingleAliasRight -> 0 //unexpected
-            CwtDataType.AliasName -> 0 //unexpected
-            CwtDataType.AliasKeysField -> 0 //unexpected
-            CwtDataType.AliasMatchLeft -> 0 //unexpected
-            CwtDataType.Template -> 65
-            CwtDataType.Constant -> 100
-            CwtDataType.Any -> 1
-            CwtDataType.Other -> 0 //unexpected
-        }
-    }
-    
     fun getExpressionText(element: ParadoxScriptExpressionElement, rangeInElement: TextRange? = null): String {
         return when {
             element is ParadoxScriptBlock -> "" //should not be used
             element is ParadoxScriptInlineMath -> "" //should not be used
-            else -> rangeInElement?.substring(element.text) ?: element.text
+            else -> rangeInElement?.substring(element.text) ?: element.text.unquote()
         }
     }
     
@@ -680,11 +626,11 @@ object CwtConfigHandler {
     //region Annotate Methods
     fun annotateScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, holder: AnnotationHolder) {
         val expression = getExpressionText(element, rangeInElement)
-        
         ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expression, holder, config)
     }
     
     fun annotateScriptExpression(element: ParadoxScriptExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
+        if(range.isEmpty) return
         if(element !is ParadoxScriptStringExpressionElement) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
             return
@@ -876,13 +822,13 @@ object CwtConfigHandler {
     private fun shouldComplete(config: CwtPropertyConfig, occurrenceMap: Map<CwtDataExpression, Occurrence>): Boolean {
         val expression = config.keyExpression
         //如果类型是aliasName，则无论cardinality如何定义，都应该提供补全（某些cwt规则文件未正确编写）
-        if(expression.type == CwtDataType.AliasName) return true
+        if(expression.type == CwtDataTypes.AliasName) return true
         val actualCount = occurrenceMap[expression]?.actual ?: 0
         //如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
         //如果上限是动态的值（如，基于define的值），也不作限制
         val cardinality = config.cardinality
         val maxCount = when {
-            cardinality == null -> if(expression.type == CwtDataType.Constant) 1 else null
+            cardinality == null -> if(expression.type == CwtDataTypes.Constant) 1 else null
             config.cardinalityMaxDefine != null -> null
             else -> cardinality.max
         }
@@ -896,7 +842,7 @@ object CwtConfigHandler {
         //如果上限是动态的值（如，基于define的值），也不作限制
         val cardinality = config.cardinality
         val maxCount = when {
-            cardinality == null -> if(expression.type == CwtDataType.Constant) 1 else null
+            cardinality == null -> if(expression.type == CwtDataTypes.Constant) 1 else null
             config.cardinalityMaxDefine != null -> null
             else -> cardinality.max
         }
@@ -1344,7 +1290,7 @@ object CwtConfigHandler {
         //提示预定义的value
         run {
             ProgressManager.checkCanceled()
-            if(configExpression.type == CwtDataType.Value || configExpression.type == CwtDataType.ValueOrValueSet) {
+            if(configExpression.type == CwtDataTypes.Value || configExpression.type == CwtDataTypes.ValueOrValueSet) {
                 completePredefinedValueSetValue(valueSetName, result, context)
             }
         }
@@ -1561,7 +1507,7 @@ object CwtConfigHandler {
         ProgressManager.checkCanceled()
         if(configExpression == null) return null
         
-        val expression = getExpressionText(element, rangeInElement).unquote()
+        val expression = getExpressionText(element, rangeInElement)
         
         val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expression, config, isKey)
         if(result.isNotNullOrEmpty()) return result
@@ -1577,7 +1523,7 @@ object CwtConfigHandler {
         ProgressManager.checkCanceled()
         if(configExpression == null) return null
         
-        val expression = getExpressionText(element, rangeInElement).unquote()
+        val expression = getExpressionText(element, rangeInElement)
         if(expression.isParameterized()) return null //排除引用文本带参数的情况
         
         val result = ParadoxScriptExpressionSupport.resolve(element, rangeInElement, expression, config, isKey, exact)
@@ -1600,7 +1546,7 @@ object CwtConfigHandler {
         ProgressManager.checkCanceled()
         if(configExpression == null) return emptySet()
         
-        val expression = getExpressionText(element, rangeInElement).unquote()
+        val expression = getExpressionText(element, rangeInElement)
         if(expression.isParameterized()) return emptySet() //排除引用文本带参数的情况
         
         val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expression, config, isKey)
@@ -1682,18 +1628,18 @@ object CwtConfigHandler {
         if(configExpression is CwtKeyExpression && expression.isKey == false) return false
         if(configExpression is CwtValueExpression && expression.isKey == true) return false
         
-        if(configExpression.type == CwtDataType.Constant) return true
-        if(configExpression.type == CwtDataType.EnumValue && configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.text) } == true) return true
-        if(configExpression.type == CwtDataType.Value && configExpression.value?.let { configGroup.values[it]?.values?.contains(expression.text) } == true) return true
+        if(configExpression.type == CwtDataTypes.Constant) return true
+        if(configExpression.type == CwtDataTypes.EnumValue && configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.text) } == true) return true
+        if(configExpression.type == CwtDataTypes.Value && configExpression.value?.let { configGroup.values[it]?.values?.contains(expression.text) } == true) return true
         return false
     }
     
     fun isAliasEntryConfig(propertyConfig: CwtPropertyConfig): Boolean {
-        return propertyConfig.keyExpression.type == CwtDataType.AliasName && propertyConfig.valueExpression.type == CwtDataType.AliasMatchLeft
+        return propertyConfig.keyExpression.type == CwtDataTypes.AliasName && propertyConfig.valueExpression.type == CwtDataTypes.AliasMatchLeft
     }
     
     fun isSingleAliasEntryConfig(propertyConfig: CwtPropertyConfig): Boolean {
-        return propertyConfig.valueExpression.type == CwtDataType.SingleAliasRight
+        return propertyConfig.valueExpression.type == CwtDataTypes.SingleAliasRight
     }
     
     @InferApi
@@ -1791,7 +1737,7 @@ object CwtConfigHandler {
     }
     
     private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
-        return config.keyExpression.type == CwtDataType.Constant && config.cardinality?.isRequired() != false
+        return config.keyExpression.type == CwtDataTypes.Constant && config.cardinality?.isRequired() != false
     }
     //endregion
 }

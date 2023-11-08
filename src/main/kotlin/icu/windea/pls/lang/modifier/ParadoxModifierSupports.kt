@@ -8,12 +8,10 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -21,6 +19,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
@@ -209,7 +208,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                     appendBr().appendIndent()
                     val configExpression = reference.configExpression
                     when(configExpression.type) {
-                        CwtDataType.Definition -> {
+                        CwtDataTypes.Definition -> {
                             val definitionName = reference.name
                             val definitionType = configExpression.value!!
                             val definitionTypes = definitionType.split('.')
@@ -228,7 +227,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                                 appendCwtLink(subtypeLink, t)
                             }
                         }
-                        CwtDataType.EnumValue -> {
+                        CwtDataTypes.EnumValue -> {
                             val enumValueName = reference.name
                             val enumName = configExpression.value!!
                             append(PlsBundle.message("generatedFromEnumValue"))
@@ -248,7 +247,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                                 append(enumName.escapeXml())
                             }
                         }
-                        CwtDataType.Value -> {
+                        CwtDataTypes.Value -> {
                             val valueSetName = reference.name
                             val valueName = configExpression.value!!
                             append(PlsBundle.message("generatedFromValueSetValue"))

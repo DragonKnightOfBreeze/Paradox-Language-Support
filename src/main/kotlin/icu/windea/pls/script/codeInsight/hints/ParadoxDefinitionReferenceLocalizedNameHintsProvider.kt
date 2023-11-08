@@ -8,7 +8,6 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider.*
@@ -27,13 +26,13 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
         var iconHeightLimit: Int = 32
     )
     
-    private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxDefinitionReferenceLocalizedNameHintsSettingsKey")
-    private val expressionTypes: EnumSet<CwtDataType> = enumSetOf(
-        CwtDataType.Definition,
-        CwtDataType.AliasName, //需要兼容alias
-        CwtDataType.AliasKeysField, //需要兼容alias
-        CwtDataType.AliasMatchLeft, //需要兼容alias
-        CwtDataType.SingleAliasRight, //需要兼容single_alias
+    private val settingsKey = SettingsKey<Settings>("ParadoxDefinitionReferenceLocalizedNameHintsSettingsKey")
+    private val expressionTypes = mutableSetOf(
+        CwtDataTypes.Definition,
+        CwtDataTypes.AliasName, //需要兼容alias
+        CwtDataTypes.AliasKeysField, //需要兼容alias
+        CwtDataTypes.AliasMatchLeft, //需要兼容alias
+        CwtDataTypes.SingleAliasRight, //需要兼容single_alias
     )
     
     override val name: String get() = PlsBundle.message("script.hints.definitionReferenceLocalizedName")

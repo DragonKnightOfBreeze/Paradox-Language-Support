@@ -3,9 +3,7 @@ package icu.windea.pls.config.expression
 import com.google.common.cache.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.util.*
@@ -15,9 +13,9 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 private val validValueTypes = arrayOf(
-    CwtDataType.Localisation,
-    CwtDataType.SyncedLocalisation,
-    CwtDataType.InlineLocalisation
+    CwtDataTypes.Localisation,
+    CwtDataTypes.SyncedLocalisation,
+    CwtDataTypes.InlineLocalisation
 )
 
 /**
@@ -73,7 +71,7 @@ class CwtLocalisationLocationExpression private constructor(
             if(propertyValue.text.isParameterized()) {
                 return ResolveResult("", null, PlsBundle.message("parameterized"))
             }
-            if(config.expression.type == CwtDataType.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
+            if(config.expression.type == CwtDataTypes.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
                 return ResolveResult("", null, PlsBundle.message("inlined"))
             }
             val name = propertyValue.value
@@ -110,7 +108,7 @@ class CwtLocalisationLocationExpression private constructor(
             if(propertyValue.text.isParameterized()) {
                 return ResolveAllResult("", emptySet(), PlsBundle.message("parameterized"))
             }
-            if(config.expression.type == CwtDataType.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
+            if(config.expression.type == CwtDataTypes.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
                 return ResolveAllResult("", emptySet(), PlsBundle.message("inlined"))
             }
             val name = propertyValue.value

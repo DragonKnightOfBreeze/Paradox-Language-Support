@@ -10,10 +10,10 @@ import javax.swing.*
 
 class ParadoxFileIconProvider: FileIconProvider {
 	override fun getIcon(file: VirtualFile, flags: Int, project: Project?): Icon? {
-		//对模组描述符文件使用特定的图标
-		if(file.fileInfo?.fileType == ParadoxFileType.ParadoxScript && file.name.equals(PlsConstants.descriptorFileName, true)){
-			return PlsIcons.DescriptorFile
-		}
+		//对模组描述符文件使用特殊图标
+		if(file.fileInfo?.fileType == ParadoxFileType.ParadoxScript && file.name.equals(PlsConstants.descriptorFileName, true)) {
+            return PlsIcons.FileTypes.ModeDescriptor
+        }
 		return null
 	}
 }

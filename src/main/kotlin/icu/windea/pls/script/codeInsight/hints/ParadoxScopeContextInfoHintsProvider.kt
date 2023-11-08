@@ -6,7 +6,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
@@ -25,7 +24,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		var showOnlyIfScopeIsChanged: Boolean = true
 	)
 	
-	private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxScopeContextInfoHintsSettingsKey")
+	private val settingsKey = SettingsKey<Settings>("ParadoxScopeContextInfoHintsSettingsKey")
 	
 	override val name: String get() = PlsBundle.message("script.hints.scopeContext")
 	override val description: String get() = PlsBundle.message("script.hints.scopeContext.description")

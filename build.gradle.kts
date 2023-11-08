@@ -10,7 +10,7 @@ plugins {
 	id("org.jetbrains.changelog") version "2.0.0"
 }
 
-group = "icu.windea"
+group = providers.gradleProperty("pluginGroup").get()
 version = providers.gradleProperty("pluginVersion").get()
 
 intellij {
@@ -36,9 +36,8 @@ grammarKit {
 }
 
 repositories {
-	maven("https://www.jetbrains.com/intellij-repository/releases")
 	mavenCentral()
-	//maven("https://maven.aliyun.com/nexus/content/groups/public")
+	maven("https://www.jetbrains.com/intellij-repository/releases")
 }
 
 dependencies {
@@ -83,16 +82,14 @@ sourceSets {
 }
 
 kotlin {
-	jvmToolchain {
-		languageVersion.set(JavaLanguageVersion.of(17))
-	}
+	jvmToolchain(17)
 }
 
-val jarExclude = listOf(
+val excludesInJar = listOf(
 	"icu/windea/pls/dev",
 	"icu/windea/pls/core/data/CsvExtensions*.class",
 )
-val zipExclude = listOf(
+val excludesInZip = listOf(
 	"lib/jackson-dataformat-csv-*.jar",
 )
 val cwtConfigDirs = listOf(
@@ -122,14 +119,13 @@ tasks {
 		}
 	}
 	withType<Test> {
-		systemProperty("idea.force.use.core.classloader", true)
 		useJUnitPlatform()
 		isScanForTestClasses = false
 		include("**/*Test.class")
 	}
 	withType<Jar> {
 		//排除特定文件
-		jarExclude.forEach { exclude(it) }
+		excludesInJar.forEach { exclude(it) }
 		//添加项目文档和许可证
 		from("README.md", "README_en.md", "LICENSE")
 		//添加CWT配置文件
@@ -147,26 +143,24 @@ tasks {
 		}
 	}
 	patchPluginXml {
-		sinceBuild.set(providers.gradleProperty("sinceBuild"))
-		untilBuild.set(providers.gradleProperty("untilBuild"))
-		val descriptionText = projectDir.resolve("DESCRIPTION.md").readText()
-		pluginDescription.set(descriptionText)
-		val changelogText = projectDir.resolve("CHANGELOG.md").readText()
-			.lines()
+		fun String.toChangeLogText() = lines()
 			.run {
 				val start = indexOfFirst { it.startsWith("## ${version.get()}") }
 				val end = indexOfFirst(start + 1) { it.startsWith("## ") }.let { if(it != -1) it else size }
 				subList(start + 1, end)
 			}
 			.joinToString("\n")
-			//将任务列表替换为无序列表
-			.let { "\\* \\[[xX ]\\]".toRegex().replace(it, "*") }
+			.let { """^(\s*)[-*] \[[xX ]\]""".toRegex().replace(it, "$1*") }
 			.let { markdownToHTML(it) }
-		changeNotes.set(changelogText)
+		
+		sinceBuild.set(providers.gradleProperty("sinceBuild"))
+		untilBuild.set(providers.gradleProperty("untilBuild"))
+		pluginDescription.set(projectDir.resolve("DESCRIPTION.md").readText())
+		changeNotes.set(projectDir.resolve("CHANGELOG.md").readText().toChangeLogText())
 	}
 	buildPlugin {
 		//排除特定文件
-		zipExclude.forEach { exclude(it) }
+		excludesInZip.forEach { exclude(it) }
 		//重命名插件tar
 		rename("instrumented\\-(.*\\.jar)", "$1")
 		//重命名插件包

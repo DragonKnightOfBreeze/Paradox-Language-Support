@@ -15,10 +15,8 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.codeStyle.*
@@ -97,7 +95,7 @@ fun CompletionResultSet.addScriptExpressionElement(
     }
     val isBlock = targetConfig?.isBlock ?: false
     val constantValue = when {
-        completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataType.Constant }?.value
+        completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value
         else -> null
     }
     val insertCurlyBraces = when {
@@ -277,7 +275,7 @@ private fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
     val hasRemainList = mutableListOf<Boolean>()
     for(entry in entryConfigs) {
         val constantConfigGroup = entry.configs
-            ?.filter { it.expression.type == CwtDataType.Constant }
+            ?.filter { it.expression.type == CwtDataTypes.Constant }
             ?.groupBy { it.expression }
             .orEmpty()
         if(constantConfigGroup.isEmpty()) continue //skip
@@ -401,7 +399,7 @@ private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtM
             is CwtKeyExpression -> {
                 val name = expression.expressionString
                 val constantValueExpressions = constantConfigs
-                    .mapNotNull { it.castOrNull<CwtPropertyConfig>()?.valueExpression?.takeIf { e -> e.type == CwtDataType.Constant } }
+                    .mapNotNull { it.castOrNull<CwtPropertyConfig>()?.valueExpression?.takeIf { e -> e.type == CwtDataTypes.Constant } }
                 val mustBeConstantValue = constantValueExpressions.size == constantConfigs.size
                 val value = if(mustBeConstantValue) constantValueExpressions.first().expressionString else ""
                 val constantValues = if(constantValueExpressions.isEmpty()) emptyList() else buildList {

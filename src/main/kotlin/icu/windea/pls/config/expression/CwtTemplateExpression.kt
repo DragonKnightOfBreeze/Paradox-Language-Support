@@ -3,14 +3,13 @@ package icu.windea.pls.config.expression
 import com.google.common.cache.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.core.util.*
 
 class CwtTemplateExpression(
     expressionString: String,
     val snippetExpressions: List<CwtDataExpression>
 ) : AbstractExpression(expressionString), CwtExpression {
     //allowed: enum[xxx], value[xxx], <xxx>, <modifier>
-    val referenceExpressions = snippetExpressions.filterTo(mutableSetOf()) { it.type != CwtDataType.Constant }
+    val referenceExpressions = snippetExpressions.filterTo(mutableSetOf()) { it.type != CwtDataTypes.Constant }
     
     companion object Resolver {
         val EmptyExpression = CwtTemplateExpression("", emptyList())

@@ -5,7 +5,6 @@ import com.intellij.openapi.diagnostic.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.core.util.*
 import java.lang.invoke.*
 import java.nio.file.*
 import java.util.concurrent.atomic.*
@@ -41,7 +40,7 @@ object ParadoxDdsResolver {
     private fun getPngAbsPath(absPath: String, relPath: String?, frameInfo: FrameInfo?): Path {
         val cache = if(relPath != null) ddsCache else externalDdsCache
         val cacheKey = getCacheKey(absPath, frameInfo)
-        return cache.get(cacheKey) { doGetPngAbsPath(absPath, relPath, frameInfo) }
+        return cache.getCancelable(cacheKey) { doGetPngAbsPath(absPath, relPath, frameInfo) }
     }
     
     private fun getCacheKey(absPath: String, frameInfo: FrameInfo?): String {

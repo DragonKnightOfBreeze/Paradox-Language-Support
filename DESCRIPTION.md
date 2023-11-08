@@ -9,7 +9,8 @@
 <li>Automatically recognizes the game directory (containing the launcher settings file <code>launcher-settings.json</code>) and mod directory (containing the mod descriptor file <code>descriptor.mod</code>).</li>
 </ul>
 <p>This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>, with some modifications and extensions.
-The config files of latest version are already built into this plugin, besides, <a href="https://windea.icu/Paradox-Language-Support/#/en/core-features.md#cwt-config-group">importing local CWT configs</a> is also supported.</p>
+The config files of latest version are already built into this plugin, make it works right out of the box.
+Besides, <a href="https://windea.icu/Paradox-Language-Support/#/en/core-features.md#cwt-config-group">importing local CWT configs</a> is also supported.</p>
 <p>If <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a> is also installed, this plugin can provide some <a href="https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md">additional features</a>.</p>
 <p>If you encounter any problems during use, feel free to provide feedback via GitHub.</p>
 
@@ -24,7 +25,8 @@ The config files of latest version are already built into this plugin, besides, 
 <li>自动识别游戏目录（包含启动器配置文件<code>launcher-settings.json</code>）和模组目录（包含模组描述符文件<code>descriptor.mod</code>）。</li>
 </ul>
 <p>此插件与 <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a> 共享规则文件（<code>*.cwt</code>），并且经过一定的修改与扩展。
-插件已经内置了最新版本的规则文件，除此之外也支持<a href="https://windea.icu/Paradox-Language-Support/#/zh/core-features.md#cwt-config-group">导入本地的CWT规则</a>。</p>
+插件已经内置了最新版本的规则文件，开箱即用。
+除此之外，插件也支持<a href="https://windea.icu/Paradox-Language-Support/#/zh/core-features.md#cwt-config-group">导入本地的CWT规则</a>。</p>
 <p>如果同时安装了 <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a> ，此插件可以提供一些<a href="https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md">额外的功能</a>。</p>
 <p>如果在使用过程中遇到任何问题，欢迎通过GitHub或者QQ群进行反馈。</p>
 

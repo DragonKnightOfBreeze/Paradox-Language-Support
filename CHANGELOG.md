@@ -1,9 +1,14 @@
 # Changelog
 
-## PROCESSING
+## 1.2.2
 
-* [ ] #46 优化：尝试基于使用推断特定类型的`valueSetValue`对应的作用域上下文（如`event_target`和`global_event_target`）
-* [ ] 尝试优化插件性能
+* [X] （仅限Stellaris）支持表达式`technology@level` - 参见：[[Stellaris\] Could support tech@level grammar? · Issue #58 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/58)
+
+## 1.2.1
+
+* [X] 支持语法`@a = @[ 1 + 2 ]` - 参见：[The tool cannot recognize in-script flag variables (Vic3) · Issue #76 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/76)
+* [X] （仅限VIC3）支持操作符`?=` - 参见：[Parsing issues in Vic3 · Issue #53 · cwtools/cwtools (github.com)](https://github.com/cwtools/cwtools/issues/53)
+* [X] 其他优化与BUG修复
 
 ## 1.2.0
 
@@ -685,7 +690,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
     * 需要插入的内容（属性/值）可多选，可排序，可重复（不基于CWT规则判断是否允许重复）
   * [X] 导航到相关的CWT规则时，位置也可以是定义的rootKey
 * 新增功能
-  * [X] 支持CWT规则：`stellaris_name_format[xxx]`
+  * [X] 支持CWT规则：`$stellaris_name_format[xxx]`
     * （需要确定3.6是否仍然支持）如果未用引号括起，则对应一个本地化的名称，本地化文本中可以使用格式化引用`<some_parts>`，而`some_parts`对应CWT规则`value[x]`
     * （3.6开始支持）如果用引号括起，则是一个特殊的表达式，例如`"{AofB{<imperial_mil> [This.Capital.GetName]}}"`
     * 需要进一步完善……

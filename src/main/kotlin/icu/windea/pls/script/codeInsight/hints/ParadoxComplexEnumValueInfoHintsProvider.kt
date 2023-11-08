@@ -9,7 +9,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
@@ -42,7 +41,7 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSe
         val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return true
         val configGroup = config.info.configGroup
         val type = config.expression.type
-        if(type == CwtDataType.EnumValue) {
+        if(type == CwtDataTypes.EnumValue) {
             val enumName = config.expression.value ?: return true
             val complexEnumConfig = configGroup.complexEnums[enumName] ?: return true
             val presentation = doCollect(complexEnumConfig)

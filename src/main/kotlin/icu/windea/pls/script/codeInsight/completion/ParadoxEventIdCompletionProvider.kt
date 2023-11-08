@@ -5,7 +5,6 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*

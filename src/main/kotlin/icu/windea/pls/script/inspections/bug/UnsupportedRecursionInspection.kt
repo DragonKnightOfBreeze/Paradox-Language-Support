@@ -9,7 +9,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -75,7 +74,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                         val configs = CwtConfigHandler.getConfigs(e)
                         val config = configs.firstOrNull() ?: return
                         val configExpression = config.expression
-                        if(configExpression.type != CwtDataType.Definition) return
+                        if(configExpression.type != CwtDataTypes.Definition) return
                         val definitionType = configExpression.value
                         if(definitionType != "scripted_trigger" && definitionType != "scripted_effect") return
                         ProgressManager.checkCanceled()

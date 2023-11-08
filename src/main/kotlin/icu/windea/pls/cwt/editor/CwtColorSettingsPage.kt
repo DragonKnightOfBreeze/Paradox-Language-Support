@@ -28,7 +28,7 @@ class CwtColorSettingsPage : ColorSettingsPage {
     
     override fun getAdditionalHighlightingTagToDescriptorMap() = null
     
-    override fun getIcon() = PlsIcons.CwtFile
+    override fun getIcon() = PlsIcons.FileTypes.Cwt
     
     override fun getAttributeDescriptors() = _attributesDescriptors
     

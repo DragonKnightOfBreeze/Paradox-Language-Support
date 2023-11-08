@@ -13,5 +13,5 @@ object ParadoxScriptFileType : LanguageFileType(ParadoxScriptLanguage) {
 	
 	override fun getDefaultExtension() = "txt"
 	
-	override fun getIcon() = PlsIcons.ParadoxScriptFile
+	override fun getIcon() = PlsIcons.FileTypes.ParadoxScript
 }

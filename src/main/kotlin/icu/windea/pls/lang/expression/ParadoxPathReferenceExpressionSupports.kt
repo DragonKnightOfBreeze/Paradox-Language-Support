@@ -4,15 +4,14 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.collections.*
 
 /**
- * @see CwtDataType.Icon
+ * @see CwtDataTypes.Icon
  */
 class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
     override fun supports(configExpression: CwtDataExpression): Boolean {
-        return configExpression.type == CwtDataType.Icon
+        return configExpression.type == CwtDataTypes.Icon
     }
     
     //icon[] -  filePath需要是不带扩展名的文件名（其扩展名必须是合法的图片的扩展名）
@@ -53,11 +52,11 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
 }
 
 /**
- * @see CwtDataType.FilePath
+ * @see CwtDataTypes.FilePath
  */
 class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
     override fun supports(configExpression: CwtDataExpression): Boolean {
-        return configExpression.type == CwtDataType.FilePath
+        return configExpression.type == CwtDataTypes.FilePath
     }
     
     //filepath[./] - 匹配相对于脚本文件所在目录的路径
@@ -139,11 +138,11 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
 }
 
 /**
- * @see CwtDataType.FileName
+ * @see CwtDataTypes.FileName
  */
 class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpressionSupport {
     override fun supports(configExpression: CwtDataExpression): Boolean {
-        return configExpression.type == CwtDataType.FileName
+        return configExpression.type == CwtDataTypes.FileName
     }
     
     //filename - filePath需要是文件名

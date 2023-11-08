@@ -60,7 +60,7 @@ scripted_variable_name ::= AT scripted_variable_name_part (<<processTemplate>> s
 }
 private scripted_variable_name_part ::= SCRIPTED_VARIABLE_NAME_TOKEN | parameter  | inline_parameter_condition
 private scripted_variable_separator ::= EQUAL_SIGN
-private scripted_variable_value ::= boolean | int | float | string
+private scripted_variable_value ::= boolean | int | float | string | inline_math
 
 //property related
 property ::= property_key property_separator property_value {
@@ -93,7 +93,7 @@ property_key ::= property_key_part (<<processTemplate>> property_key_part) * {
   ]
 }
 private property_key_part ::= PROPERTY_KEY_TOKEN | parameter | inline_parameter_condition
-private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
+private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN | QUESTION_EQUAL_SIGN
 private property_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
 //value related

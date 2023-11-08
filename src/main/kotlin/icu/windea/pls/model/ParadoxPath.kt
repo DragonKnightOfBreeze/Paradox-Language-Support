@@ -1,7 +1,6 @@
 package icu.windea.pls.model
 
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 
 /**
  * 文件或目录相对于游戏或模组根路径的路径。保留大小写。

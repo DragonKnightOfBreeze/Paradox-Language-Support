@@ -7,7 +7,6 @@ import com.intellij.openapi.project.*
 import com.intellij.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.data.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.*

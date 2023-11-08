@@ -4,10 +4,8 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
@@ -122,7 +120,7 @@ data class ParadoxImageCodeInsightContext(
             val inspection = if(fromInspection) getMissingImageInspection(element) else null
             
             if(!(inspection == null || inspection.checkForModifiers)) return null
-            if(config.expression.type != CwtDataType.Modifier) return null
+            if(config.expression.type != CwtDataTypes.Modifier) return null
             val modifierName = element.value
             val project = config.info.configGroup.project
             val codeInsightInfos = mutableListOf<ParadoxImageCodeInsightInfo>()

@@ -2,7 +2,6 @@ package icu.windea.pls.dev.cwt
 
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 import java.io.*
 
@@ -96,7 +95,7 @@ class CwtTriggerConfigGenerator(
                     setScopeOption(lineIndex, lines, info).let { lineIndex += it }
                     resortOptions(lineIndex, lines).let { lineIndex += it }
                 } else {
-                    if(CwtKeyExpression.resolve(name).type == CwtDataType.Constant) {
+                    if(CwtKeyExpression.resolve(name).type == CwtDataTypes.Constant) {
                         unknownNames.add(name)
                     }
                 }

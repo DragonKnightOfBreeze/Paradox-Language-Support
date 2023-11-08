@@ -7,7 +7,6 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.model.*

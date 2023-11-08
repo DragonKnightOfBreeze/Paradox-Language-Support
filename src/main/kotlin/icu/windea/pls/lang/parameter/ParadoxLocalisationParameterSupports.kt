@@ -5,10 +5,8 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
@@ -41,7 +39,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
     }
     
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxLocalisationParameterElement? {
-        if(config !is CwtPropertyConfig || config.expression.type != CwtDataType.LocalisationParameter) return null
+        if(config !is CwtPropertyConfig || config.expression.type != CwtDataTypes.LocalisationParameter) return null
         val localisationReferenceElement = ParadoxLocalisationParameterHandler.getLocalisationReferenceElement(element, config) ?: return null
         val name = rangeInElement?.substring(element.text) ?: element.name
         val localisationName = localisationReferenceElement.name

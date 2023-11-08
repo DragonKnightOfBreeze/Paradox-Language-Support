@@ -12,7 +12,7 @@ data class CwtConfigGroupInfo(
     val filePathExpressions = mutableSetOf<CwtDataExpression>()
     
     /**
-     * @see CwtDataType.Template
+     * @see CwtDataTypes.Template
      * @see CwtTemplateExpression
      */
     val templateExpressions = mutableMapOf<CwtDataExpression, MutableList<CwtTemplateExpression>>()
@@ -24,20 +24,20 @@ data class CwtConfigGroupInfo(
     
     fun acceptConfigExpression(configExpression: CwtDataExpression, config: CwtConfig<*>?) {
         when(configExpression.type) {
-            CwtDataType.FilePath -> {
+            CwtDataTypes.FilePath -> {
                 configExpression.value?.let { filePathExpressions.add(configExpression) }
             }
-            CwtDataType.Icon -> {
+            CwtDataTypes.Icon -> {
                 configExpression.value?.let { filePathExpressions.add(configExpression) }
             }
-            CwtDataType.Template -> {
+            CwtDataTypes.Template -> {
                 val templateExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
                 for(referenceExpression in templateExpression.referenceExpressions) {
                     templateExpressions.getOrPut(referenceExpression) { mutableListOf() }
                         .add(templateExpression)
                 }
             }
-            CwtDataType.Parameter -> {
+            CwtDataTypes.Parameter -> {
                 if(config is CwtPropertyConfig) {
                     parameterConfigs.add(config)
                 }
@@ -48,7 +48,7 @@ data class CwtConfigGroupInfo(
     
     fun acceptAliasSubNameConfigExpression(name: String, configExpression: CwtDataExpression) {
         //加上可以切换作用域的alias
-        if(configExpression.type == CwtDataType.ScopeField) {
+        if(configExpression.type == CwtDataTypes.ScopeField) {
             aliasNamesSupportScope.add(name)
         }
     }

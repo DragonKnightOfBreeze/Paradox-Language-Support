@@ -12,7 +12,6 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
@@ -145,7 +144,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                             //事件图片
                             val frameInfo = nodeElement.getUserData(PlsKeys.frameInfo)
                             val iconUrl = ParadoxImageResolver.resolveUrlByFile(nodeItem.virtualFile, frameInfo) ?: return null
-                            val icon = IconLoader.findIcon(iconUrl.toFileUrl())
+                            val icon = iconUrl.toIconOrNull()
                             icon?.toLabel()
                         }
                         else -> null

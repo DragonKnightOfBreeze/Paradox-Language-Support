@@ -5,10 +5,12 @@ package icu.windea.pls.localisation.psi;
 
 
 import com.intellij.lexer.*;
-import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.*;
 
-import static com.intellij.psi.TokenType.*;
-import static icu.windea.pls.core.StdlibExtensionsKt.*;
+import static com.intellij.psi.TokenType.BAD_CHARACTER;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static icu.windea.pls.core.StdlibExtensionsKt.isExactDigit;
+import static icu.windea.pls.core.StdlibExtensionsKt.isExactLetter;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 

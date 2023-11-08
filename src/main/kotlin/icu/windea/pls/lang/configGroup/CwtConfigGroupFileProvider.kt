@@ -23,3 +23,5 @@ interface CwtConfigGroupFileProvider {
         val EP_NAME = ExtensionPointName.create<CwtConfigGroupFileProvider>("icu.windea.pls.configGroupFileProvider")
     }
 }
+
+fun CwtConfigGroupFileProvider.isBuiltIn() = this is BuiltInCwtConfigGroupFileProvider

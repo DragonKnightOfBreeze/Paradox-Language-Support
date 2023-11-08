@@ -7,7 +7,6 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
@@ -40,7 +39,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 val valueConfig = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val configExpression = valueConfig.expression
                 val location = element
-                if(configExpression.type == CwtDataType.AbsoluteFilePath) {
+                if(configExpression.type == CwtDataTypes.AbsoluteFilePath) {
                     val filePath = element.value
                     val virtualFile = filePath.toVirtualFile(false)
                     if(virtualFile != null) return

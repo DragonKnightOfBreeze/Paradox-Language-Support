@@ -3,7 +3,6 @@ package icu.windea.pls.config.config
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import javax.swing.*
 
 enum class CwtConfigType(

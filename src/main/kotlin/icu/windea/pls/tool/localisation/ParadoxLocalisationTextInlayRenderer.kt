@@ -8,7 +8,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
@@ -151,13 +150,13 @@ object ParadoxLocalisationTextInlayRenderer {
         } ?: ParadoxImageResolver.getDefaultUrl()
         
         //找不到图标的话就直接跳过
-        val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return true
+        val icon = iconUrl.toIconOrNull() ?: return true
         if(icon.iconHeight <= context.iconHeightLimit) {
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
             context.builder.add(presentation)
         } else {
-            val unknownIcon = IconLoader.findIcon(PlsConstants.Paths.unknownPngUrl) ?: return true
+            val unknownIcon = PlsConstants.Paths.unknownPng.toIconOrNull() ?: return true
             val presentation = psiSingleReference(smallScaledIcon(unknownIcon)) { resolved }
             context.builder.add(presentation)
         }

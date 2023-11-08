@@ -10,12 +10,6 @@ object PlsIcons {
 	@JvmField val Library = AllIcons.Nodes.PpLibFolder
 	@JvmField val Steam = loadIcon("/icons/steam.svg")
 	
-	@JvmField val DdsFile = loadIcon("/icons/ddsFile.svg")
-	@JvmField val CwtFile = loadIcon("/icons/cwtFile.svg")
-	@JvmField val ParadoxScriptFile = loadIcon("/icons/paradoxScriptFile.svg")
-	@JvmField val ParadoxLocalisationFile = loadIcon("/icons/paradoxLocalisationFile.svg")
-	@JvmField val DescriptorFile = loadIcon("icons/descriptorFile.svg")
-	
 	@JvmField val CwtProperty = loadIcon("/icons/cwtProperty.svg")
 	@JvmField val CwtValue = loadIcon("/icons/cwtValue.svg")
 	@JvmField val CwtBlock = loadIcon("/icons/cwtBlock.svg")
@@ -79,6 +73,15 @@ object PlsIcons {
 	@JvmStatic fun ValueSetValue(valueSetName: String) = when(valueSetName) {
 		"variable" -> Variable
 		else -> ValueSetValue
+	}
+	
+	object FileTypes {
+		@JvmField val Cwt = loadIcon("/icons/fileTypes/cwt.svg")
+		@JvmField val ParadoxScript = loadIcon("/icons/fileTypes/paradoxScript.svg")
+		@JvmField val ParadoxLocalisation = loadIcon("/icons/fileTypes/paradoxLocalisation.svg")
+		@JvmField val ModeDescriptor = loadIcon("/icons/fileTypes/modDescriptor.svg")
+		@JvmField val CwtConfig = loadIcon("/icons/fileTypes/cwtConfig.svg")
+		@JvmField val Dds = AllIcons.FileTypes.Image
 	}
 	
 	object Actions {

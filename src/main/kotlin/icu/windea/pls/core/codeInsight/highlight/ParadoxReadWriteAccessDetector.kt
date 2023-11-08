@@ -4,7 +4,6 @@ import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.model.constraints.*

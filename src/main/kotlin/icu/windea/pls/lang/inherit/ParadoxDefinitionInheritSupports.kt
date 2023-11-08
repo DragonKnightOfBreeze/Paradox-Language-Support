@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.inherit
 
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*

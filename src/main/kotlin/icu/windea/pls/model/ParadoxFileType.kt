@@ -4,7 +4,6 @@ import com.intellij.openapi.vcs.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 
 enum class ParadoxFileType(
 	val id: String,

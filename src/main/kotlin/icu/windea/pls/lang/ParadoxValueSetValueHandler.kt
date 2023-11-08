@@ -2,7 +2,6 @@ package icu.windea.pls.lang
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.psi.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
@@ -22,9 +21,9 @@ object ParadoxValueSetValueHandler {
     
     fun getReadWriteAccess(configExpression: CwtDataExpression): Access {
         return when(configExpression.type) {
-            CwtDataType.Value -> Access.Read
-            CwtDataType.ValueSet -> Access.Write
-            CwtDataType.ValueOrValueSet -> Access.ReadWrite
+            CwtDataTypes.Value -> Access.Read
+            CwtDataTypes.ValueSet -> Access.Write
+            CwtDataTypes.ValueOrValueSet -> Access.ReadWrite
             else -> Access.ReadWrite
         }
     }

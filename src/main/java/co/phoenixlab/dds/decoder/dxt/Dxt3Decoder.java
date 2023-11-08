@@ -1,6 +1,6 @@
 package co.phoenixlab.dds.decoder.dxt;
 
-import co.phoenixlab.dds.Dds;
+import co.phoenixlab.dds.*;
 
 public class Dxt3Decoder extends AbstractDxtDecoder {
 

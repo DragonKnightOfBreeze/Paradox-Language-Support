@@ -3,7 +3,6 @@ package icu.windea.pls.script.structureView
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptParameterConditionTreeElement(element: ParadoxScriptParameterCondition) : PsiTreeElementBase<ParadoxScriptParameterCondition>(element) {

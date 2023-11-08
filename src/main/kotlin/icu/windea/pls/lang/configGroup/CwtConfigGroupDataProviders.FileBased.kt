@@ -13,42 +13,19 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.MutableList
-import kotlin.collections.MutableMap
-import kotlin.collections.MutableSet
-import kotlin.collections.Set
-import kotlin.collections.all
-import kotlin.collections.buildMap
-import kotlin.collections.buildSet
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.emptyMap
-import kotlin.collections.emptySet
-import kotlin.collections.find
-import kotlin.collections.forEach
-import kotlin.collections.getOrPut
-import kotlin.collections.ifEmpty
-import kotlin.collections.isNullOrEmpty
-import kotlin.collections.listOf
-import kotlin.collections.mapNotNull
 import kotlin.collections.mapNotNullTo
-import kotlin.collections.mapTo
-import kotlin.collections.mutableListOf
-import kotlin.collections.mutableMapOf
-import kotlin.collections.mutableSetOf
-import kotlin.collections.orEmpty
 import kotlin.collections.set
-import kotlin.collections.setOf
 
 /**
  * 用于初始CWT规则分组中基于文件内容的那些数据。
  */
 class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {
+        val gameTypeId = configGroup.gameType.id
         configGroup.progressIndicator?.apply {
-            text = PlsBundle.message("configGroup.processFiles")
+            text = PlsBundle.message("configGroup.progress.processFiles", gameTypeId)
             text2 = ""
             isIndeterminate = true
         }
@@ -70,7 +47,7 @@ class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
         allFiles.all f@{ (filePath, tuple) ->
             val (file, fileProcessor) = tuple
             configGroup.progressIndicator?.apply {
-                text2 = PlsBundle.message("configGroup.processFile", file.presentableUrl)
+                text2 = PlsBundle.message("configGroup.progress.processFile", gameTypeId, filePath)
                 isIndeterminate = false
                 fraction = i++ / allFiles.size.toDouble() 
             }
@@ -83,9 +60,7 @@ class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
     private fun processFile(filePath: String, file: VirtualFile, fileProcessor: CwtConfigGroupFileProvider, configGroup: CwtConfigGroup): Boolean {
         val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return true
         val fileConfig = CwtConfigResolver.resolve(psiFile, configGroup.info)
-        if(fileProcessor is BuiltInCwtConfigGroupFileProvider) {
-            doProcessBuiltInFile(filePath, fileConfig, configGroup)
-        }
+        if(fileProcessor.isBuiltIn()) doProcessBuiltInFile(filePath, fileConfig, configGroup)
         doProcessFile(fileConfig, configGroup)
         return true
     }
@@ -315,7 +290,7 @@ class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
                         val modifierConfig = resolveModifierConfig(prop, modifierName) ?: continue
                         configGroup.modifiers.asMutable()[modifierName] = modifierConfig
                         for(snippetExpression in modifierConfig.template.snippetExpressions) {
-                            if(snippetExpression.type == CwtDataType.Definition) {
+                            if(snippetExpression.type == CwtDataTypes.Definition) {
                                 val typeExpression = snippetExpression.value ?: continue
                                 configGroup.type2ModifiersMap.asMutable().getOrPut(typeExpression) { mutableMapOf() }.asMutable().put(modifierName, modifierConfig)
                             }
@@ -369,9 +344,9 @@ class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
                     }
                     
                     //判断配置文件中的顶级的key是否匹配"alias[?:?]"，如果匹配，则解析配置并添加到aliases中
-                    val aliasNamePair = key.removeSurroundingOrNull("alias[", "]")?.splitToPair(':')
-                    if(aliasNamePair != null) {
-                        val (aliasName, aliasSubName) = aliasNamePair
+                    val aliasTokens = key.removeSurroundingOrNull("alias[", "]")?.split(':', limit = 2)?.takeIf { it.size == 2 }
+                    if(aliasTokens != null) {
+                        val (aliasName, aliasSubName) = aliasTokens
                         val aliasConfig = resolveAliasConfig(property, aliasName, aliasSubName)
                         //目前不这样处理
                         //if(aliasConfig.name == "modifier" && aliasConfig.expression.type.isConstantLikeType()) {

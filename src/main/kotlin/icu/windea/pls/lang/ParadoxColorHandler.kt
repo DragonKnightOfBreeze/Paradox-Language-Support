@@ -3,9 +3,7 @@ package icu.windea.pls.lang
 import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.CwtConfigMatcher.Options
 import java.awt.*
 

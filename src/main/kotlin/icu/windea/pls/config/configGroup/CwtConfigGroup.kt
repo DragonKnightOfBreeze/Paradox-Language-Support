@@ -18,8 +18,6 @@ class CwtConfigGroup(
     val gameType: ParadoxGameType?,
     val project: Project,
 ) : UserDataHolderBase() {
-    val name: String = gameType.id
-    
     var progressIndicator: ProgressIndicator? = null
     val changed = AtomicBoolean()
     val modificationTracker = SimpleModificationTracker()

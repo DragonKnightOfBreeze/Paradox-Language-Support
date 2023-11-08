@@ -8,7 +8,6 @@ import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -25,7 +24,7 @@ import icu.windea.pls.script.psi.*
  * ```
  */
 class ParadoxScriptParameterConditionSurrounder: Surrounder {
-	override fun getTemplateDescription() = PlsBundle.message("cwt.surroundWith.parameterCondition.description")
+	override fun getTemplateDescription() = PlsBundle.message("script.surroundWith.parameterCondition.description")
 	
 	override fun isApplicable(elements: Array<out PsiElement>): Boolean {
 		return true

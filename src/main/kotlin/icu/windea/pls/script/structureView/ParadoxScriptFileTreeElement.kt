@@ -5,7 +5,6 @@ import com.intellij.ide.structureView.impl.common.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*
@@ -33,7 +32,7 @@ class ParadoxScriptFileTreeElement(
 		val element = element ?: return null
 		//如果文件名是descriptor.mod（不区分大小写），则使用特殊图标
 		val name = element.name
-		if(name.equals(PlsConstants.descriptorFileName, true)) return PlsIcons.DescriptorFile
+        if(name.equals(PlsConstants.descriptorFileName, true)) return PlsIcons.FileTypes.ModeDescriptor
 		//如果是定义，则显示定义的图标
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return PlsIcons.Definition

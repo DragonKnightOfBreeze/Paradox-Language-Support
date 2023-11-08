@@ -2,7 +2,6 @@ package icu.windea.pls.tool.localisation
 
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.psi.*
 import kotlin.collections.set
 

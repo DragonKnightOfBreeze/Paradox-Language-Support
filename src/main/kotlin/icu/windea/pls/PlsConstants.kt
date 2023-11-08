@@ -2,7 +2,6 @@ package icu.windea.pls
 
 import icons.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 
 object PlsConstants {
     val locationClass = PlsIcons::class.java
@@ -55,20 +54,18 @@ object PlsConstants {
     
     object Paths {
         val userHome = System.getProperty("user.home")
-        val userHomePath by lazy { userHome.toPath() }
         
-        const val dataDirectoryName = ".pls"
-        val dataDirectoryPath by lazy { userHomePath.resolve(dataDirectoryName) }
+        const val dataDirectory = ".pls"
+        val dataDirectoryPath = userHome.toPath().resolve(dataDirectory)
         
-        const val imagesDirectoryName = "images"
-        val imagesDirectoryPath by lazy { dataDirectoryPath.resolve(imagesDirectoryName) }
+        const val imagesDirectory = "images"
+        val imagesDirectoryPath = dataDirectoryPath.resolve(imagesDirectory)
         
-        const val unknownPngName = "unknown.png"
-        val unknownPngPath by lazy { imagesDirectoryPath.resolve(unknownPngName) }
-        val unknownPngUrl by lazy { unknownPngPath.toUri().toURL() }
-        val unknownPngClasspathUrl = "/images/$unknownPngName".toClasspathUrl()
+        const val diffDirectory = "diff"
+        val diffDirectoryPath = dataDirectoryPath.resolve(diffDirectory)
         
-        const val diffDirectoryName = "diff"
-        val diffDirectoryPath by lazy { dataDirectoryPath.resolve(diffDirectoryName) }
+        const val unknownPng = "unknown.png"
+        val unknownPngPath = imagesDirectoryPath.resolve(unknownPng)
+        val unknownPngClasspathUrl = "/images/$unknownPng".toClasspathUrl()
     }
 }

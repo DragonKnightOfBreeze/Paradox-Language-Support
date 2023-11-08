@@ -8,6 +8,6 @@ enum class ParadoxPriority {
     FIOS,
     /** 后读覆盖（选用最后读取到的那个） */
     LIOS,
-    /** 顺序读取，不作覆盖 */
+    /** 顺序读取 */
     ORDERED
 }

@@ -697,7 +697,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
+  // EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN | QUESTION_EQUAL_SIGN
   static boolean property_separator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_separator")) return false;
     boolean r;
@@ -707,6 +707,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, LE_SIGN);
     if (!r) r = consumeToken(b, GE_SIGN);
     if (!r) r = consumeToken(b, NOT_EQUAL_SIGN);
+    if (!r) r = consumeToken(b, QUESTION_EQUAL_SIGN);
     return r;
   }
 
@@ -902,14 +903,17 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // boolean | int | float | string
+  // boolean | int | float | string | inline_math
   static boolean scripted_variable_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scripted_variable_value")) return false;
     boolean r;
+    Marker m = enter_section_(b);
     r = boolean_$(b, l + 1);
     if (!r) r = int_$(b, l + 1);
     if (!r) r = float_$(b, l + 1);
     if (!r) r = string(b, l + 1);
+    if (!r) r = inline_math(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 

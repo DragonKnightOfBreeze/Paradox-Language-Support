@@ -7,15 +7,13 @@ import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -134,7 +132,7 @@ object ParadoxDefinitionHandler {
         val propertyValue = element.castOrNull<ParadoxScriptProperty>()?.propertyValue
         val isBlock = propertyValue?.let { it is ParadoxScriptBlock }
         if(declarationConfig != null && isBlock != null) {
-            val isBlockConfig = declarationConfig.valueExpression.type == CwtDataType.Block
+            val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
             if(isBlockConfig != isBlock) return false
         }
         
@@ -168,7 +166,7 @@ object ParadoxDefinitionHandler {
         val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES)
         val isBlock = propertyValue?.tokenType?.let { it == BLOCK }
         if(declarationConfig != null && isBlock != null) {
-            val isBlockConfig = declarationConfig.valueExpression.type == CwtDataType.Block
+            val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
             if(isBlockConfig != isBlock) return false
         }
         

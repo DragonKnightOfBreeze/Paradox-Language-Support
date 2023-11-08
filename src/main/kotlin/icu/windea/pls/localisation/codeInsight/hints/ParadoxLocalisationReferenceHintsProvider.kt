@@ -8,7 +8,6 @@ import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationReferenceHintsProvider.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.tool.localisation.*
@@ -24,7 +23,7 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvid
         var iconHeightLimit: Int = 32
     )
     
-    private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxLocalisationReferenceHintsSettingsKey")
+    private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationReferenceHintsSettingsKey")
     
     override val name: String get() = PlsBundle.message("localisation.hints.localisationReference")
     override val description: String get() = PlsBundle.message("localisation.hints.localisationReference.description")

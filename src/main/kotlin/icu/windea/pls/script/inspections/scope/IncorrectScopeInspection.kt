@@ -8,7 +8,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.modifier.*
@@ -39,7 +38,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                             propertyKey.expression, supportedScopes.joinToString(), parentScopeContext.scope.id
                         )
                         holder.registerProblem(propertyKey, description)
-                    } else if(element is ParadoxScriptString && config.expression.type == CwtDataType.AliasKeysField) {
+                    } else if(element is ParadoxScriptString && config.expression.type == CwtDataTypes.AliasKeysField) {
                         val description = PlsBundle.message(
                             "inspection.script.scope.incorrectScope.description.2",
                             element.expression, supportedScopes.joinToString(), parentScopeContext.scope.id
@@ -50,7 +49,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
             }
             
             private fun getSupportedScopes(element: ParadoxScriptMemberElement, config: CwtMemberConfig<*>): Set<String>? {
-                if(config.expression.type == CwtDataType.AliasKeysField) {
+                if(config.expression.type == CwtDataTypes.AliasKeysField) {
                     val configGroup = config.info.configGroup
                     val aliasName = config.expression.value ?: return null
                     val aliasSubName = element.name ?: return null
@@ -58,7 +57,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                     val supportedScopes = aliasConfig.supportedScopes
                     return supportedScopes
                 }
-                if(config.expression.type == CwtDataType.Modifier) {
+                if(config.expression.type == CwtDataTypes.Modifier) {
                     val expressionElement = getExpressionElement(element) ?: return null
                     if(expressionElement !is ParadoxScriptStringExpressionElement) return null
                     ProgressManager.checkCanceled()
@@ -67,7 +66,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                     val modifierCategories = ParadoxModifierSupport.getModifierCategories(resolved)
                     return modifierCategories?.getSupportedScopes()
                 }
-                if(config.expression.type == CwtDataType.Definition) {
+                if(config.expression.type == CwtDataTypes.Definition) {
                     val expressionElement = getExpressionElement(element) ?: return null
                     ProgressManager.checkCanceled()
                     val resolved = expressionElement.reference?.resolve()

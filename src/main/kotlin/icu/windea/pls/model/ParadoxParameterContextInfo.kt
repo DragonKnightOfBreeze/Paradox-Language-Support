@@ -7,7 +7,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
@@ -38,7 +37,7 @@ class ParadoxParameterContextInfo(
             val configs = parameterInfo.expressionConfigs
             if(configs.isNotEmpty()) {
                 //如果作为传入参数的值，直接认为是可选的，没有太大必要进一步检查……
-                val r = configs.any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataType.Parameter }
+                val r = configs.any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataTypes.Parameter }
                 if(r) return true
             }
         }

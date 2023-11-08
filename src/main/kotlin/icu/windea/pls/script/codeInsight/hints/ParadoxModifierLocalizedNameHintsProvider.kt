@@ -8,7 +8,6 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
@@ -65,7 +64,7 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Set
         if(!element.isExpression()) return true
         val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return true
         val type = config.expression.type
-        if(type == CwtDataType.Modifier) {
+        if(type == CwtDataTypes.Modifier) {
             val name = element.value
             val configGroup = config.info.configGroup
             val project = configGroup.project

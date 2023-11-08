@@ -1,19 +1,27 @@
 package icu.windea.pls.inject
 
+import com.intellij.ide.*
 import com.intellij.openapi.application.*
+import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import javassist.*
 import java.lang.reflect.*
+import java.nio.file.*
 
-/**
- * 用于在IDE启动时应用代码注入器。
- *
- * @see CodeInjector
- */
+@Service
 class CodeInjectorService : UserDataHolderBase() {
+    /**
+     * 用于在IDE启动时应用代码注入器。
+     */
+    class Listener: AppLifecycleListener {
+        override fun appFrameCreated(commandLineArgs: MutableList<String>) {
+            service<CodeInjectorService>().init()
+        }
+    }
+    
     companion object {
         //for Application / CodeInjector
         @JvmField val codeInjectorServiceKey = createKey<CodeInjectorService>("CODE_INJECTOR_SERVICE_BY_WINDEA")
@@ -28,10 +36,6 @@ class CodeInjectorService : UserDataHolderBase() {
         @JvmField val codeInjectorInfoKey = createKey<CodeInjectorInfo>("CODE_INJECTOR_INFO_BY_WINDEA")
         //for CodeInjectorService
         @JvmField val invokeMethodKey = createKey<Method>("INVOKE_METHOD_BY_WINDEA")
-    }
-    
-    init {
-        init()
     }
     
     fun init() {

@@ -2,6 +2,9 @@
   <extensionPoints>
     <extensionPoint qualifiedName="icu.windea.pls.incorrectExpressionChecker" interface="icu.windea.pls.lang.checker.ParadoxIncorrectExpressionChecker" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.colorSupport" interface="icu.windea.pls.lang.color.ParadoxColorSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.dataExpressionResolver" interface="icu.windea.pls.lang.expression.CwtDataExpressionResolver" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.dataExpressionPriorityProvider" interface="icu.windea.pls.lang.expression.CwtDataExpressionPriorityProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.dataExpressionMatcher" interface="icu.windea.pls.lang.expression.CwtDataExpressionMatcher" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configContextProvider" interface="icu.windea.pls.lang.config.CwtConfigContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.declarationConfigContextProvider" interface="icu.windea.pls.lang.config.CwtDeclarationConfigContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupDataProvider" interface="icu.windea.pls.lang.configGroup.CwtConfigGroupDataProvider" dynamic="true"/>
@@ -34,6 +37,7 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
+    <fileIconProvider implementation="icu.windea.pls.lang.configGroup.CwtConfigFileIconProvider"/>
     <editorNotificationProvider implementation="icu.windea.pls.lang.configGroup.CwtConfigGroupEditorNotificationProvider"/>
     <editorFloatingToolbarProvider implementation="icu.windea.pls.lang.configGroup.ConfigGroupRefreshFloatingProvider"/>
     <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.configGroup.CwtConfigGroupPsiTreeChangePreprocessor"/>
@@ -43,15 +47,19 @@
   <actions>
     <group id="Pls.ConfigGroupRefreshActionGroup">
       <action id="Pls.ConfigGroupRefreshAction" class="icu.windea.pls.lang.configGroup.ConfigGroupRefreshAction">
-        <keyboard-shortcut first-keystroke="control shift alt O" keymap="$default"/>
-        <keyboard-shortcut first-keystroke="meta shift alt O" keymap="Mac OS X" replace-all="true"/>
-        <keyboard-shortcut first-keystroke="meta shift alt I" keymap="Mac OS X 10.5+" replace-all="true"/>
+        <keyboard-shortcut first-keystroke="control shift G" keymap="$default"/>
       </action>
       <action id="Pls.HideConfigGroupRefreshAction" class="icu.windea.pls.lang.configGroup.HideConfigGroupRefreshAction"/>
     </group>
   </actions>
   
   <extensions defaultExtensionNs="icu.windea.pls">
+    <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxRangedIntChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxRangedFloatChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxColorFieldChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxScopeBasedScopeFieldExpressionChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxScopeGroupBasedScopeFieldExpressionChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.StellarisTechnologyWithLevelChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxTriggerInSwitchChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.lang.checker.ParadoxTriggerInTriggerWithParametersAwareChecker"/>
     
@@ -67,6 +75,7 @@
     <declarationConfigContextProvider implementation="icu.windea.pls.lang.config.CwtBaseDeclarationConfigContextProvider" order="last"/>
     <declarationConfigContextProvider implementation="icu.windea.pls.lang.config.CwtGameRuleOverriddenDeclarationConfigContextProvider"/>
     <declarationConfigContextProvider implementation="icu.windea.pls.lang.config.CwtOnActionDeclarationConfigContextProvider"/>
+    <declarationConfigContextProvider implementation="icu.windea.pls.lang.config.StellarisDelegatedCwtBaseDeclarationConfigContextProvider"/>
     
     <configGroupDataProvider implementation="icu.windea.pls.lang.configGroup.CwtConfigGroupFileBasedDataProvider"/>
     <configGroupDataProvider implementation="icu.windea.pls.lang.configGroup.CwtConfigGroupComputedDataProvider" order="last"/>
@@ -91,27 +100,41 @@
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.lang.documentation.ParadoxOnActionExtendedDocumentationProvider"/>
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.lang.documentation.ParadoxGameRuleExtendedDocumentationProvider"/>
 
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptBlockExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptBoolExpressionSupport"/>
+    <dataExpressionResolver implementation="icu.windea.pls.lang.expression.BaseCwtDataExpressionResolver"/>
+    <dataExpressionResolver implementation="icu.windea.pls.lang.expression.CoreCwtDataExpressionResolver"/>
+    <dataExpressionResolver implementation="icu.windea.pls.lang.expression.ExtendedCwtDataExpressionResolver"/>
+    <dataExpressionResolver implementation="icu.windea.pls.lang.expression.ConstantCwtDataExpressionResolver" order="last"/>
     
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptLocalisationExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptSyncedLocalisationExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptInlineLocalisationExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptDefinitionExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptPathReferenceExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptEnumValueExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptModifierExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptAliasNameExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptConstantExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptTemplateExpressionSupport"/>
+    <dataExpressionPriorityProvider implementation="icu.windea.pls.lang.expression.BaseCwtDataExpressionPriorityProvider"/>
+    <dataExpressionPriorityProvider implementation="icu.windea.pls.lang.expression.ExtendedCwtDataExpressionPriorityProvider"/>
     
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptParameterExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptLocalisationParameterExpressionSupport"/>
+    <dataExpressionMatcher implementation="icu.windea.pls.lang.expression.BaseCwtDataExpressionMatcher"/>
+    <dataExpressionMatcher implementation="icu.windea.pls.lang.expression.CoreCwtDataExpressionMatcher"/>
+    <dataExpressionMatcher implementation="icu.windea.pls.lang.expression.ExtendedCwtDataExpressionMatcher"/>
+    <dataExpressionMatcher implementation="icu.windea.pls.lang.expression.ConstantCwtDataExpressionMatcher" order="first"/>
     
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptValueSetExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptScopeFieldExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptValueFieldExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScriptVariableFieldExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxBlockScriptExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxBoolScriptExpressionSupport"/>
+    
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxLocalisationScriptExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxSyncedLocalisationScriptExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxInlineLocalisationScriptExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxDefinitionScriptExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxPathReferenceScriptExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxEnumValueScriptExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxModifierScriptExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxAliasNameScriptExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxConstantScriptExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxTemplateScriptExpressionSupport"/>
+    
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxParameterScriptExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxLocalisationParameterScriptExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.StellarisTechnologyWithLevelScriptExpressionSupport"/>
+    
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxValueValueSetExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScopeFieldExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxValueFieldExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxVariableFieldExpressionSupport"/>
     
     <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxIconReferenceExpressionSupport"/>
     <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxFilePathReferenceExpressionSupport"/>

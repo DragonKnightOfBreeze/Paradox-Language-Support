@@ -7,7 +7,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
@@ -34,7 +33,7 @@ class ParadoxSwitchOverriddenConfigProvider : ParadoxOverriddenConfigProvider {
             ?.findProperty(triggerConfigKey, inline = true)
             ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
-        if(CwtValueExpression.resolve(triggerName).type != CwtDataType.Constant) return null //must be predefined trigger
+        if(CwtValueExpression.resolve(triggerName).type != CwtDataTypes.Constant) return null //must be predefined trigger
         val configGroup = config.info.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
@@ -70,7 +69,7 @@ class ParadoxTriggerWithParametersAwareOverriddenConfigProvider : ParadoxOverrid
             ?: return null
         val triggerProperty = contextProperty.findProperty(Data.TRIGGER_KEY, inline = true) ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
-        if(CwtValueExpression.resolve(triggerName).type != CwtDataType.Constant) return null //must be predefined trigger
+        if(CwtValueExpression.resolve(triggerName).type != CwtDataTypes.Constant) return null //must be predefined trigger
         val configGroup = config.info.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
@@ -96,8 +95,8 @@ class ParadoxTriggerWithParametersAwareOverriddenConfigProvider : ParadoxOverrid
                 if(c2 is CwtPropertyConfig && c2.expression == configExpression) {
                     val valueExpression = c2.valueExpression
                     when {
-                        valueExpression.type == CwtDataType.Int -> return true
-                        valueExpression.type == CwtDataType.Float -> return true
+                        valueExpression.type == CwtDataTypes.Int -> return true
+                        valueExpression.type == CwtDataTypes.Float -> return true
                         valueExpression.type.isValueFieldType() -> return true
                         valueExpression.type.isVariableFieldType() -> return true
                     }

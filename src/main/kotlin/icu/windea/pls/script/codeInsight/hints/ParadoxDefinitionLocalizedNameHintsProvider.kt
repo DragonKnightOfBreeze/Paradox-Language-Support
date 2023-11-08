@@ -7,7 +7,6 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
@@ -24,7 +23,7 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<S
 		var iconHeightLimit: Int = 32
 	)
 	
-	private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxDefinitionLocalizedNameHintsSettingsKey")
+	private val settingsKey = SettingsKey<Settings>("ParadoxDefinitionLocalizedNameHintsSettingsKey")
 	
 	override val name: String get() = PlsBundle.message("script.hints.definitionLocalizedName")
 	override val description: String get() = PlsBundle.message("script.hints.definitionLocalizedName.description")

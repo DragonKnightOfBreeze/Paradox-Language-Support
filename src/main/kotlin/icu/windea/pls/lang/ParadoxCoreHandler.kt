@@ -5,7 +5,6 @@ import com.intellij.codeInsight.daemon.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.fileTypes.ex.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vcs.*

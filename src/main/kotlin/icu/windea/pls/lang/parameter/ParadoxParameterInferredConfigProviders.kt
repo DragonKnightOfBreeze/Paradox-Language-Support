@@ -3,10 +3,8 @@ package icu.windea.pls.lang.parameter
 import com.intellij.openapi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.lang.*
@@ -33,7 +31,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     }
     
     private fun doGetConfigFromExpressionConfig(expressionConfig: CwtMemberConfig<*>, parameterInfo: ParadoxParameterContextInfo.Parameter): CwtValueConfig? {
-        if(expressionConfig.expression.type == CwtDataType.ParameterValue) {
+        if(expressionConfig.expression.type == CwtDataTypes.ParameterValue) {
             //处理参数传递的情况
             //这里需要尝试避免SOE
             if(expressionConfig !is CwtValueConfig) return null
@@ -52,7 +50,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     
     private fun doGetContextConfigsFromExpressionContextConfigs(expressionContextConfigs: List<CwtMemberConfig<*>>, parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>>{
         if(expressionContextConfigs.isEmpty()) return emptyList()
-        val expressionContextConfig = expressionContextConfigs.find { it.expression.type == CwtDataType.ParameterValue }
+        val expressionContextConfig = expressionContextConfigs.find { it.expression.type == CwtDataTypes.ParameterValue }
         if(expressionContextConfig != null) {
             //处理参数传递的情况
             //这里需要尝试避免SOE

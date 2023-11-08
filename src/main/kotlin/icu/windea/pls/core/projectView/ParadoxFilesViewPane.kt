@@ -11,7 +11,6 @@ import com.intellij.psi.*
 import com.intellij.util.concurrency.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import javax.swing.tree.*
@@ -73,6 +72,7 @@ class ParadoxFilesViewPane(project: Project) : AbstractProjectViewPaneWithAsyncS
         return ParadoxFilesPaneSelectInTarget(myProject)
     }
     
+    //TODO 1.2.1+ 233: override fun createStructure(): AbstractTreeStructureBase
     override fun createStructure(): ProjectAbstractTreeStructureBase {
         return object : ProjectTreeStructure(myProject, ID) {
             override fun createRoot(project: Project, settings: ViewSettings): AbstractTreeNode<*> {

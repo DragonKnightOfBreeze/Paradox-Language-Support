@@ -21,7 +21,8 @@ Features:
 * Automatically recognizes the game directory (containing the launcher settings file `launcher-settings.json`) and mod directory (containing the mod descriptor file `descriptor.mod`).
 
 This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode), with some modifications and extensions.
-The config files of latest version are already built into this plugin, besides, [importing local CWT configs](https://windea.icu/Paradox-Language-Support/#/en/core-features.md#cwt-config-group) is also supported.
+The config files of latest version are already built into this plugin, make it works right out of the box.
+Besides, [importing local CWT configs](https://windea.icu/Paradox-Language-Support/#/en/core-features.md#cwt-config-group) is also supported.
 
 If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md).
 

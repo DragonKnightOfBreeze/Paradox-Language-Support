@@ -8,6 +8,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.model.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -17,8 +18,9 @@ import kotlin.collections.set
  */
 class CwtConfigGroupComputedDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {
+        val gameTypeId = configGroup.gameType.id
         configGroup.progressIndicator?.apply {
-            text = PlsBundle.message("configGroup.computeData")
+            text = PlsBundle.message("configGroup.progress.computeData", gameTypeId)
             text2 = ""
             isIndeterminate = true
         }
@@ -74,7 +76,7 @@ class CwtConfigGroupComputedDataProvider : CwtConfigGroupDataProvider {
                 var keysConst: MutableMap<String, String>? = null
                 var keysNoConst: MutableSet<String>? = null
                 for(key in v.keys) {
-                    if(CwtKeyExpression.resolve(key).type == CwtDataType.Constant) {
+                    if(CwtKeyExpression.resolve(key).type == CwtDataTypes.Constant) {
                         if(keysConst == null) keysConst = caseInsensitiveStringKeyMap()
                         keysConst[key] = key
                     } else {
@@ -129,7 +131,7 @@ class CwtConfigGroupComputedDataProvider : CwtConfigGroupDataProvider {
                     val propertyConfig = parameterConfig.parentConfig as? CwtPropertyConfig ?: continue
                     val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
                     val contextExpression = if(aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression else CwtKeyExpression.resolve(aliasSubName)
-                    if(contextExpression.type == CwtDataType.Definition && contextExpression.value != null) {
+                    if(contextExpression.type == CwtDataTypes.Definition && contextExpression.value != null) {
                         this += contextExpression.value
                     }
                 }

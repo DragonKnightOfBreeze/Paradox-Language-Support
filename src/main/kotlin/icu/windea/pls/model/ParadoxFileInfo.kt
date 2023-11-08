@@ -35,9 +35,9 @@ class ParadoxFileInfo(
     
     fun getIcon(): Icon? {
         return when {
-            fileType == ParadoxFileType.ParadoxScript && name.equals(PlsConstants.descriptorFileName, true) -> PlsIcons.DescriptorFile
-            fileType == ParadoxFileType.ParadoxScript -> PlsIcons.ParadoxScriptFile
-            fileType == ParadoxFileType.ParadoxLocalisation -> PlsIcons.ParadoxLocalisationFile
+            fileType == ParadoxFileType.ParadoxScript && name.equals(PlsConstants.descriptorFileName, true) -> PlsIcons.FileTypes.ModeDescriptor
+            fileType == ParadoxFileType.ParadoxScript -> PlsIcons.FileTypes.ParadoxScript
+            fileType == ParadoxFileType.ParadoxLocalisation -> PlsIcons.FileTypes.ParadoxLocalisation
             else -> null
         }
     }

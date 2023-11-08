@@ -150,24 +150,12 @@ fun <V> caseInsensitiveStringKeyMap(): MutableMap<@CaseInsensitive String, V> {
     return Object2ObjectLinkedOpenCustomHashMap(CaseInsensitiveStringHashingStrategy)
 }
 
-fun String.unquotedTextRange(): TextRange {
-    val leftQuoted = this.isLeftQuoted()
-    val rightQuoted = this.isRightQuoted()
-    val startOffset = if(leftQuoted) 1 else 0
-    val endOffset = if(rightQuoted) length - 1 else length
-    return TextRange.create(startOffset, endOffset)
-}
-
 fun TextRange.unquote(text: String): TextRange {
     val leftQuoted = text.isLeftQuoted()
     val rightQuoted = text.isRightQuoted()
-    val textRange = this
-    return when {
-        leftQuoted && rightQuoted -> TextRange.create(textRange.startOffset + 1, textRange.endOffset - 1)
-        leftQuoted -> TextRange.create(textRange.startOffset + 1, textRange.endOffset)
-        rightQuoted -> TextRange.create(textRange.startOffset, textRange.endOffset - 1)
-        else -> textRange
-    }
+    val startOffset = if(leftQuoted) this.startOffset + 1 else this.startOffset
+    val endOffset = if(rightQuoted) this.endOffset - 1 else this.endOffset
+    return TextRange.create(startOffset, endOffset)
 }
 
 //com.intellij.refactoring.actions.BaseRefactoringAction.findRefactoringTargetInEditor

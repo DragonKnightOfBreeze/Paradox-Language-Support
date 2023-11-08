@@ -1,6 +1,6 @@
 package co.phoenixlab.dds.decoder;
 
-import co.phoenixlab.dds.Dds;
+import co.phoenixlab.dds.*;
 
 public class YUVDecoder extends AbstractBasicDecoder {
 

@@ -9,7 +9,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
@@ -32,7 +31,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                 val config = configs.firstOrNull()
                 if(config == null) return
                 val definitionInfo by lazy { element.findParentDefinition()?.definitionInfo }
-                if(config is CwtPropertyConfig && config.expression.type == CwtDataType.ScopeField) {
+                if(config is CwtPropertyConfig && config.expression.type == CwtDataTypes.ScopeField) {
                     val resultScopeContext = ParadoxScopeHandler.getScopeContext(element)
                     if(resultScopeContext == null) return
                     val scopeFieldInfo = resultScopeContext.scopeFieldInfo

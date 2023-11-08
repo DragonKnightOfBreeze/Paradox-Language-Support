@@ -6,12 +6,9 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.overridden.*
@@ -98,7 +95,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 val (actual, _, max) = occurrence
                 if(max != null && actual > max) {
                     val isKey = configExpression is CwtKeyExpression
-                    val isConst = configExpression.type == CwtDataType.Constant
+                    val isConst = configExpression.type == CwtDataTypes.Constant
                     val description = if(isKey) {
                         when {
                             isConst -> PlsBundle.message("inspection.script.general.tooManyExpression.description.1.1", configExpression)
