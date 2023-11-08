@@ -2,7 +2,7 @@
 
 ## 1.2.2
 
-* [ ] （仅限Stellaris）支持表达式`technology@level` - 参见：[[Stellaris\] Could support tech@level grammar? · Issue #58 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/58)
+* [X] （仅限Stellaris）支持表达式`technology@level` - 参见：[[Stellaris\] Could support tech@level grammar? · Issue #58 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/58)
 
 ## 1.2.1
 

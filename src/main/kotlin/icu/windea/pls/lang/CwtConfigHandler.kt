@@ -558,7 +558,7 @@ object CwtConfigHandler {
         return when {
             element is ParadoxScriptBlock -> "" //should not be used
             element is ParadoxScriptInlineMath -> "" //should not be used
-            else -> rangeInElement?.substring(element.text) ?: element.text
+            else -> rangeInElement?.substring(element.text) ?: element.text.unquote()
         }
     }
     
@@ -1507,7 +1507,7 @@ object CwtConfigHandler {
         ProgressManager.checkCanceled()
         if(configExpression == null) return null
         
-        val expression = getExpressionText(element, rangeInElement).unquote()
+        val expression = getExpressionText(element, rangeInElement)
         
         val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expression, config, isKey)
         if(result.isNotNullOrEmpty()) return result
@@ -1523,7 +1523,7 @@ object CwtConfigHandler {
         ProgressManager.checkCanceled()
         if(configExpression == null) return null
         
-        val expression = getExpressionText(element, rangeInElement).unquote()
+        val expression = getExpressionText(element, rangeInElement)
         if(expression.isParameterized()) return null //排除引用文本带参数的情况
         
         val result = ParadoxScriptExpressionSupport.resolve(element, rangeInElement, expression, config, isKey, exact)
@@ -1546,7 +1546,7 @@ object CwtConfigHandler {
         ProgressManager.checkCanceled()
         if(configExpression == null) return emptySet()
         
-        val expression = getExpressionText(element, rangeInElement).unquote()
+        val expression = getExpressionText(element, rangeInElement)
         if(expression.isParameterized()) return emptySet() //排除引用文本带参数的情况
         
         val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expression, config, isKey)

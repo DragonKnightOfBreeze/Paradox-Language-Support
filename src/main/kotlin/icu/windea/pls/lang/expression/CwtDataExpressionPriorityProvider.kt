@@ -6,9 +6,9 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.collections.*
 
 /**
- * 用于得到CWT表达式的优先级。
- * 
- * 脚本表达式会优先匹配优先级更高的CWT表达式。
+ * 用于得到CWT规则表达式的优先级。
+ *
+ * 脚本表达式会优先匹配优先级更高的CWT规则表达式。
  */
 interface CwtDataExpressionPriorityProvider {
     /**
@@ -19,6 +19,9 @@ interface CwtDataExpressionPriorityProvider {
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtDataExpressionPriorityProvider>("icu.windea.pls.dataExpressionPriorityProvider")
         
+        /**
+         * @see CwtDataExpressionPriorityProvider.getPriority
+         */
         fun getPriority(expression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
             EP_NAME.extensionList.forEachFast f@{ ep ->
                 val r = ep.getPriority(expression, configGroup)

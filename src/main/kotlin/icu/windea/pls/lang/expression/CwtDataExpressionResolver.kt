@@ -5,7 +5,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.collections.*
 
 /**
- * 用于解析CWT表达式。
+ * 用于解析CWT规则表达式。
  */
 interface CwtDataExpressionResolver {
     /**
@@ -16,6 +16,9 @@ interface CwtDataExpressionResolver {
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtDataExpressionResolver>("icu.windea.pls.dataExpressionResolver")
         
+        /**
+         * @see CwtDataExpressionResolver.resolve
+         */
         fun resolve(expressionString: String): Result? {
             EP_NAME.extensionList.forEachFast f@{ ep ->
                 val r = ep.resolve(expressionString)

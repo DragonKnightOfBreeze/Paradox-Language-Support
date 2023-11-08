@@ -1,6 +1,5 @@
 package icu.windea.pls.config.expression
 
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.expression.*
 
 /**
@@ -11,6 +10,7 @@ sealed interface CwtDataExpression : CwtExpression {
     val type: CwtDataType
     val value: String?
     val extraValue: Any?
+    
+    @Suppress("UNCHECKED_CAST")
+    fun <T> extraValue() = extraValue?.let { it as T }
 }
-
-inline fun <reified T> CwtDataExpression.extraValue() = extraValue?.cast<T>()
