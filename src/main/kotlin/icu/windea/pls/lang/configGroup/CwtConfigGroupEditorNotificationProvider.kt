@@ -6,7 +6,6 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.ui.*
 import icu.windea.pls.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.cwt.*
 import java.util.function.Function
 import javax.swing.*
@@ -19,15 +18,15 @@ class CwtConfigGroupEditorNotificationProvider : EditorNotificationProvider {
         if(file.fileType != CwtFileType) return null
         
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        val configGroups = mutableSetOf<CwtConfigGroup>()
-        fileProviders.forEach { fileProvider ->
-            configGroups += fileProvider.getConfigGroups(project, file)
-        }
-        if(configGroups.isEmpty()) return null
+        val fileProvider = fileProviders.find { it.getConfigGroups(project, file).isNotEmpty() }
+        if(fileProvider == null) return null
         
         return Function { fileEditor ->
-            val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info)
-                .text(PlsBundle.message("configGroup.config.file.message"))
+            val message = when {
+                fileProvider.isBuiltIn() -> PlsBundle.message("configGroup.config.file.message.1")
+                else -> PlsBundle.message("configGroup.config.file.message.2")
+            }
+            val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info).text(message)
             panel.createActionLabel(PlsBundle.message("configGroup.config.file.guidance")) {
                 val url = "https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md"
                 //val url = "https://github.com/cwtools/cwtools/wiki/.cwt-config-file-guidance"

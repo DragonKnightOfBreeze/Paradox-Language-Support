@@ -97,6 +97,7 @@ class CwtConfigGroupService(
             override fun onCancel() {
                 NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
                     PlsBundle.message("configGroup.refresh.notification.cancelled.title"),
+                    "",
                     NotificationType.INFORMATION
                 ).notify(project)
             }

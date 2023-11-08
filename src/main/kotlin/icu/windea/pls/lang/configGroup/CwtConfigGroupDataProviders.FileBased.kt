@@ -60,9 +60,7 @@ class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
     private fun processFile(filePath: String, file: VirtualFile, fileProcessor: CwtConfigGroupFileProvider, configGroup: CwtConfigGroup): Boolean {
         val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return true
         val fileConfig = CwtConfigResolver.resolve(psiFile, configGroup.info)
-        if(fileProcessor is BuiltInCwtConfigGroupFileProvider) {
-            doProcessBuiltInFile(filePath, fileConfig, configGroup)
-        }
+        if(fileProcessor.isBuiltIn()) doProcessBuiltInFile(filePath, fileConfig, configGroup)
         doProcessFile(fileConfig, configGroup)
         return true
     }

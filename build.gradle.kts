@@ -150,7 +150,7 @@ tasks {
 				subList(start + 1, end)
 			}
 			.joinToString("\n")
-			.let { """[-*](?: \[[xX ]\])?""".toRegex().replace(it, "*") }
+			.let { """^(\s*)[-*] \[[xX ]\]""".toRegex().replace(it, "$1*") }
 			.let { markdownToHTML(it) }
 		
 		sinceBuild.set(providers.gradleProperty("sinceBuild"))

@@ -5,7 +5,7 @@ import com.intellij.psi.impl.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.cwt.psi.*
 
-class CwtConfigGroupPsiTreeChangePreprocessor: PsiTreeChangePreprocessor {
+class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
     //这个方法应当尽可能地快
     override fun treeChanged(event: PsiTreeChangeEventImpl) {
         if(!PsiModificationTrackerImpl.canAffectPsi(event)) return
@@ -17,7 +17,7 @@ class CwtConfigGroupPsiTreeChangePreprocessor: PsiTreeChangePreprocessor {
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         val configGroups = mutableSetOf<CwtConfigGroup>()
         fileProviders.forEach { fileProvider ->
-            if(fileProvider is BuiltInCwtConfigGroupFileProvider) return@forEach
+            if(fileProvider.isBuiltIn()) return@forEach
             configGroups += fileProvider.getConfigGroups(project, vFile)
         }
         val configGroupsToChange = configGroups.filter { !it.changed.get() }

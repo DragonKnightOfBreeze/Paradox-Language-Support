@@ -45,9 +45,7 @@
   <actions>
     <group id="Pls.ConfigGroupRefreshActionGroup">
       <action id="Pls.ConfigGroupRefreshAction" class="icu.windea.pls.lang.configGroup.ConfigGroupRefreshAction">
-        <keyboard-shortcut first-keystroke="control shift alt O" keymap="$default"/>
-        <keyboard-shortcut first-keystroke="meta shift alt O" keymap="Mac OS X" replace-all="true"/>
-        <keyboard-shortcut first-keystroke="meta shift alt I" keymap="Mac OS X 10.5+" replace-all="true"/>
+        <keyboard-shortcut first-keystroke="control shift G" keymap="$default"/>
       </action>
       <action id="Pls.HideConfigGroupRefreshAction" class="icu.windea.pls.lang.configGroup.HideConfigGroupRefreshAction"/>
     </group>

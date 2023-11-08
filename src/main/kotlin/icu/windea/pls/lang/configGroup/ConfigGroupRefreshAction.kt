@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.configGroup
 
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ex.TooltipDescriptionProvider
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import icons.*
@@ -10,7 +11,7 @@ import icu.windea.pls.core.*
 //com.intellij.openapi.externalSystem.autoimport.ProjectRefreshAction
 
 @Suppress("DialogTitleCapitalization")
-class ConfigGroupRefreshAction : DumbAwareAction() {
+class ConfigGroupRefreshAction : DumbAwareAction(), TooltipDescriptionProvider {
     init {
         templatePresentation.icon = PlsIcons.Actions.RefreshConfigGroup
         templatePresentation.text = PlsBundle.message("configGroup.refresh.action.text")

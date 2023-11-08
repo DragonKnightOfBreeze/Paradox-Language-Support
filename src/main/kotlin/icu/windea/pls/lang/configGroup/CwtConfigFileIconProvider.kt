@@ -17,11 +17,8 @@ class CwtConfigFileIconProvider: FileIconProvider {
         if(file.fileType != CwtFileType) return null
         
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        val configGroups = mutableSetOf<CwtConfigGroup>()
-        fileProviders.forEach { fileProvider ->
-            configGroups += fileProvider.getConfigGroups(project, file)
-        }
-        if(configGroups.isEmpty()) return null
+        val fileProvider = fileProviders.find { it.getConfigGroups(project, file).isNotEmpty() }
+        if(fileProvider == null) return null
         
         return PlsIcons.FileTypes.CwtConfig
     }
