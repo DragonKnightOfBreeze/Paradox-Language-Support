@@ -15,8 +15,6 @@ import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
 
-//提供对复杂表达式的高级语言功能支持
-
 class ParadoxScriptValueSetExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type?.isValueSetValueType() == true

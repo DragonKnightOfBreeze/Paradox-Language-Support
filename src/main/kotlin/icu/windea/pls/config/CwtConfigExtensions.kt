@@ -13,6 +13,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expression.*
 
 inline fun CwtMemberConfig<*>.processParent(inline: Boolean = false, processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
     var parent = this.parentConfig
@@ -49,9 +50,8 @@ fun CwtConfig<*>.findAliasConfig(): CwtAliasConfig? {
 
 inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T) -> CwtDataExpression, crossinline configGroupProvider: (T) -> CwtConfigGroup): List<T> {
     if(size <= 1) return toListOrThis()
-    return sortedByDescending { CwtConfigHandler.getPriority(expressionProvider(it), configGroupProvider(it)) }
+    return sortedByDescending { CwtDataExpressionPriorityProvider.getPriority(expressionProvider(it), configGroupProvider(it)) }
 }
-
 
 val CwtProperty.configPath: CwtConfigPath?
     get() = CwtConfigHandler.getPath(this)

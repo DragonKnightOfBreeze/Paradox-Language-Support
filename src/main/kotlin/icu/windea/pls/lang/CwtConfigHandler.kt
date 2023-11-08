@@ -554,61 +554,6 @@ object CwtConfigHandler {
     //endregion
     
     //region Expression Methods
-    fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Int {
-        return when(configExpression.type) {
-            CwtDataTypes.Block -> 100
-            CwtDataTypes.Bool -> 100
-            CwtDataTypes.Int -> 90
-            CwtDataTypes.Float -> 90
-            CwtDataTypes.Scalar -> 90
-            CwtDataTypes.ColorField -> 90
-            CwtDataTypes.PercentageField -> 90
-            CwtDataTypes.DateField -> 90
-            CwtDataTypes.Localisation -> 60
-            CwtDataTypes.SyncedLocalisation -> 60
-            CwtDataTypes.InlineLocalisation -> 60
-            CwtDataTypes.StellarisNameFormat -> 60
-            CwtDataTypes.AbsoluteFilePath -> 70
-            CwtDataTypes.Icon -> 70
-            CwtDataTypes.FilePath -> 70
-            CwtDataTypes.FileName -> 70
-            CwtDataTypes.Definition -> 70
-            CwtDataTypes.EnumValue -> {
-                val enumName = configExpression.value ?: return 0 //unexpected
-                if(configGroup.enums.containsKey(enumName)) return 80
-                if(configGroup.complexEnums.containsKey(enumName)) return 45
-                return 0 //不期望匹配到，规则有误！
-            }
-            CwtDataTypes.Value, CwtDataTypes.ValueOrValueSet -> {
-                val valueSetName = configExpression.value ?: return 0 //unexpected
-                if(configGroup.values.containsKey(valueSetName)) return 80
-                return 40
-            }
-            CwtDataTypes.ValueSet -> 40
-            CwtDataTypes.ScopeField -> 50
-            CwtDataTypes.Scope -> 50
-            CwtDataTypes.ScopeGroup -> 50
-            CwtDataTypes.ValueField -> 45
-            CwtDataTypes.IntValueField -> 45
-            CwtDataTypes.VariableField -> 45
-            CwtDataTypes.IntVariableField -> 45
-            CwtDataTypes.Modifier -> 75 //higher than Definition
-            CwtDataTypes.Parameter -> 10
-            CwtDataTypes.ParameterValue -> 90 //same to Scalar
-            CwtDataTypes.LocalisationParameter -> 10
-            CwtDataTypes.ShaderEffect -> 85 // (80,90)
-            CwtDataTypes.SingleAliasRight -> 0 //unexpected
-            CwtDataTypes.AliasName -> 0 //unexpected
-            CwtDataTypes.AliasKeysField -> 0 //unexpected
-            CwtDataTypes.AliasMatchLeft -> 0 //unexpected
-            CwtDataTypes.Template -> 65
-            CwtDataTypes.Constant -> 100
-            CwtDataTypes.Any -> 1
-            CwtDataTypes.Other -> 0 //unexpected
-            else -> 10 //TODO 1.2.1+
-        }
-    }
-    
     fun getExpressionText(element: ParadoxScriptExpressionElement, rangeInElement: TextRange? = null): String {
         return when {
             element is ParadoxScriptBlock -> "" //should not be used
