@@ -231,11 +231,6 @@ val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorInfo?
 //endregion
 
 //region Documentation Extensions
-private const val cwtLinkPrefix = "#cwt/"
-private const val definitionLinkPrefix = "#definition/"
-private const val localisationLinkPrefix = "#localisation/"
-private const val filePathLinkPrefix = "#path/"
-
 fun StringBuilder.appendIf(condition: Boolean, text: String): StringBuilder {
     if(condition) append(text)
     return this
@@ -299,7 +294,7 @@ fun StringBuilder.appendFilePathLink(gameType: ParadoxGameType, filePath: String
 }
 
 fun StringBuilder.appendModifierLink(name: String, label: String = name.escapeXml()) : StringBuilder {
-    val linkPrefix = ParadoxFilePathLinkProvider.LINK_PREFIX
+    val linkPrefix = ParadoxModifierLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix$name".escapeXml()
     val finalLinkText = label
     return appendPsiLink(finalLink, finalLinkText)
