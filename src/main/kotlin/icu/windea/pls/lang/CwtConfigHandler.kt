@@ -626,11 +626,11 @@ object CwtConfigHandler {
     //region Annotate Methods
     fun annotateScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, holder: AnnotationHolder) {
         val expression = getExpressionText(element, rangeInElement)
-        
         ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expression, holder, config)
     }
     
     fun annotateScriptExpression(element: ParadoxScriptExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
+        if(range.isEmpty) return
         if(element !is ParadoxScriptStringExpressionElement) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
             return

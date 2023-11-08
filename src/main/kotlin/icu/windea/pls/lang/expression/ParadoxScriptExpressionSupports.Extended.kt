@@ -86,19 +86,23 @@ class StellarisTechnologyWithLevelScriptExpressionSupport : ParadoxScriptExpress
             val offset = separatorIndex
             if(offset <= 0) return@run
             val attributesKey = ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-            val range1 = range.let { TextRange.create(it.startOffset + offset, it.endOffset) }
-            if(range1.isEmpty) return
+            val range1 = range.let { TextRange.create(it.startOffset, it.startOffset + offset) }
             CwtConfigHandler.annotateScriptExpression(element, range1, attributesKey, holder)
         }
         run {
-            val offset = expression.length - separatorIndex + 1
+            val offset = separatorIndex
+            val attributesKey = ParadoxScriptAttributesKeys.MARKER_KEY
+            val range2 = range.let { TextRange.create(it.startOffset + offset, it.startOffset + offset + 1) }
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range2).textAttributes(attributesKey).create()
+        }
+        run {
+            val offset = expression.length - separatorIndex - 1
             if(offset <= 0) return@run
             //annotate only if snippet after '@' is number like
             if(!expression.substring(separatorIndex + 1).all { it.isExactDigit() }) return@run
             val attributesKey = ParadoxScriptAttributesKeys.NUMBER_KEY
-            val range2 = range.let { TextRange.create(it.endOffset - offset, it.endOffset) }
-            if(range2.isEmpty) return
-            CwtConfigHandler.annotateScriptExpression(element, range2, attributesKey, holder)
+            val range3 = range.let { TextRange.create(it.endOffset - offset, it.endOffset) }
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range3).textAttributes(attributesKey).create()
         }
     }
     
@@ -108,7 +112,7 @@ class StellarisTechnologyWithLevelScriptExpressionSupport : ParadoxScriptExpress
         if(separatorIndex == -1) return PsiReference.EMPTY_ARRAY
         val range = rangeInElement ?: TextRange.create(0, expression.length).unquote(expression)
         val offset = separatorIndex
-        val range1 = range.let { TextRange.create(it.startOffset + offset, it.endOffset) }
+        val range1 = range.let { TextRange.create(it.startOffset, it.startOffset + offset) }
         if(range1.isEmpty) return PsiReference.EMPTY_ARRAY
         val config1 = CwtValueConfig.resolve(emptyPointer(), config.info, typeExpression)
         val reference = ParadoxScriptExpressionPsiReference(element, range1, config1, null)
