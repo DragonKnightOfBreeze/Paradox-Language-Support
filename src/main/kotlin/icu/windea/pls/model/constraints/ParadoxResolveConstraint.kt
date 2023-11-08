@@ -43,7 +43,7 @@ enum class ParadoxResolveConstraint {
             return when(reference) {
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.expression ?: return false
-                    configExpression.type == CwtDataTypes.Definition
+                    configExpression.type == CwtDataTypes.Definition || configExpression.type == CwtDataTypes.TechnologyWithLevel
                 }
                 is ParadoxTemplateSnippetExpressionReference -> {
                     val configExpression = reference.configExpression

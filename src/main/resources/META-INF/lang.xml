@@ -74,7 +74,8 @@
     <configContextProvider implementation="icu.windea.pls.lang.config.CwtParameterValueConfigContextProvider"/>
     
     <declarationConfigContextProvider implementation="icu.windea.pls.lang.config.CwtBaseDeclarationConfigContextProvider" order="last"/>
-    <declarationConfigContextProvider implementation="icu.windea.pls.lang.config.CwtGameRuleOverriddenDeclarationConfigContextProvider"/>
+    <declarationConfigContextProvider implementation="icu.windea.pls.lang.config.CwtGameRuleDeclarationConfigContextProvider"/>
+    <declarationConfigContextProvider implementation="icu.windea.pls.lang.config.CwtOnActionDeclarationConfigContextProvider"/>
     
     <injectedConfigProvider implementation="icu.windea.pls.lang.config.CwtTechnologyWithLevelInjectedConfigProvider"/>
     <injectedConfigProvider implementation="icu.windea.pls.lang.config.CwtInOnActionInjectedConfigProvider"/>

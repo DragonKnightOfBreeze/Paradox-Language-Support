@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.config
 
 import com.intellij.psi.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -31,13 +32,14 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
     
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val rootConfig = declarationConfig.propertyConfig
+        rootConfig.declarationConfigContext = context
         val configs = CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context)
         return rootConfig.delegated(configs, null)
         //parentConfig should be null here
     }
 }
 
-class CwtGameRuleOverriddenDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
+class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
     //某些game_rule的声明规则需要重载
     
     override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
@@ -58,9 +60,36 @@ class CwtGameRuleOverriddenDeclarationConfigContextProvider : CwtDeclarationConf
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val gameRuleConfig = context.gameRuleConfig!!
         val rootConfig = gameRuleConfig.config
+        rootConfig.declarationConfigContext = context
         val configs = CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context)
         return rootConfig.delegated(configs, null)
         //parentConfig should be null here
     }
 }
 
+
+class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
+    //如果预定义的on_action可以确定事件类型，其声明规则需要经过修改（将其中匹配"<event>"的规则，替换为此事件类型对应的规则）
+    
+    override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
+        if(definitionName == null) return null
+        if(definitionType != "on_action") return null
+        val onActionConfig = configGroup.onActions.getByTemplate(definitionName, element, configGroup) ?: return null
+        return CwtDeclarationConfigContext(element, definitionName, definitionType, definitionSubtypes, gameType, configGroup)
+            .apply { this.onActionConfig = onActionConfig }
+    }
+    
+    override fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String {
+        val gameTypeId = context.gameType.id
+        val definitionName = context.definitionName
+        return "oa@$gameTypeId#$definitionName"
+    }
+    
+    override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
+        val rootConfig = declarationConfig.propertyConfig
+        rootConfig.declarationConfigContext = context
+        val configs = CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context)
+        return rootConfig.delegated(configs, null)
+        //parentConfig should be null here
+    }
+}
