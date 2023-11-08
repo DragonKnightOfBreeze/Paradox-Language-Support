@@ -7,7 +7,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
-import java.util.function.*
+import icu.windea.pls.lang.config.*
 
 object CwtConfigManipulator {
     //region Deep Copy Methods
@@ -16,16 +16,13 @@ object CwtConfigManipulator {
         if(cs1.isNullOrEmpty()) return cs1
         val result = mutableListOf<CwtMemberConfig<*>>()
         cs1.forEachFast f1@{ c1 ->
-            result += c1.delegated(deepCopyConfigs(c1), c1.parentConfig)
+            result += c1.delegated(deepCopyConfigs(c1), config)
         }
+        CwtInjectedConfigProvider.injectConfigs(config, result)
         return result
     }
     
-    fun deepCopyConfigsInDeclarationConfig(
-        config: CwtMemberConfig<*>,
-        context: CwtDeclarationConfigContext,
-        action: BiConsumer<MutableList<CwtMemberConfig<*>>, CwtMemberConfig<*>>? = null
-    ): List<CwtMemberConfig<*>>? {
+    fun deepCopyConfigsInDeclarationConfig(config: CwtMemberConfig<*>, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>>? {
         val cs1 = config.configs
         if(cs1.isNullOrEmpty()) return cs1
         val result = mutableListOf<CwtMemberConfig<*>>()
@@ -35,7 +32,7 @@ object CwtConfigManipulator {
                 if(subtypeExpression != null) {
                     val subtypes = context.definitionSubtypes
                     if(subtypes == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
-                        val cs2 = deepCopyConfigsInDeclarationConfig(c1, context, action)
+                        val cs2 = deepCopyConfigsInDeclarationConfig(c1, context)
                         if(cs2.isNullOrEmpty()) return@f1
                         result += cs2
                     }
@@ -43,12 +40,9 @@ object CwtConfigManipulator {
                 }
             }
             
-            if(action == null) {
-                result += c1.delegated(deepCopyConfigsInDeclarationConfig(c1, context), c1.parentConfig)
-            } else {
-                action.accept(result, c1)
-            }
+            result += c1.delegated(deepCopyConfigsInDeclarationConfig(c1, context), config)
         }
+        CwtInjectedConfigProvider.injectConfigs(config, result)
         return result
     }
     //endregion

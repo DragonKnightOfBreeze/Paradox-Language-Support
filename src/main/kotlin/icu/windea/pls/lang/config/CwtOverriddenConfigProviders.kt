@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.overridden
+package icu.windea.pls.lang.config
 
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
@@ -11,7 +11,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxSwitchOverriddenConfigProvider : ParadoxOverriddenConfigProvider {
+class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
     object Data {
         const val CASE_KEY = "scalar"
         val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
@@ -46,7 +46,7 @@ class ParadoxSwitchOverriddenConfigProvider : ParadoxOverriddenConfigProvider {
     }
 }
 
-class ParadoxTriggerWithParametersAwareOverriddenConfigProvider : ParadoxOverriddenConfigProvider {
+class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfigProvider {
     object Data {
         const val TRIGGER_KEY = "trigger"
         const val PARAMETERS_KEY = "parameters"

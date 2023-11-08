@@ -55,6 +55,10 @@ fun CwtPropertyConfig.delegated(
     }
 }
 
+fun CwtPropertyConfig.delegatedWith(key: String, value: String): CwtPropertyConfig {
+    return CwtPropertyConfigImpls.DelegateWith(this, key, value)
+}
+
 fun CwtPropertyConfig.copy(
     pointer: SmartPsiElementPointer<out CwtProperty> = this.pointer,
     info: CwtConfigGroupInfo = this.info,
@@ -189,5 +193,19 @@ private object CwtPropertyConfigImpls {
         delegate: CwtPropertyConfig,
     ) : Delegate(delegate) {
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+    }
+    
+    //12 + 6 * 4 = 28 -> 40
+    class DelegateWith(
+        delegate: CwtPropertyConfig,
+        override val key: String,
+        override val value: String,
+        //configs should be always null here
+    ): Delegate(delegate) {
+        override val keyExpression: CwtKeyExpression get() = CwtKeyExpression.resolve(key)
+        override val valueExpression: CwtValueExpression get() = CwtValueExpression.resolve(value)
+        override val expression: CwtDataExpression get() = keyExpression
+        
+        override fun toString(): String = "$key ${separatorType.text} $value"
     }
 }

@@ -12,7 +12,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.overridden.*
+import icu.windea.pls.lang.config.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -116,7 +116,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     contextConfigs.forEachFast f@{contextConfig ->
                         contextConfig.configs?.forEachFast f1@{ c1 ->
                             val c = if(c1 is CwtPropertyConfig) c1 else return@f1
-                            val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, c)
+                            val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, c)
                             if(overriddenConfigs.isNotNullOrEmpty()) {
                                 addAll(overriddenConfigs)
                             } else {
@@ -132,7 +132,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     val contextConfigs = configContext.getConfigs()
                     contextConfigs.forEachFast f@{ contextConfig ->
                         val c = if(contextConfig is CwtValueConfig) contextConfig else return@f
-                        val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, c)
+                        val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, c)
                         if(overriddenConfigs.isNotNullOrEmpty()) {
                             addAll(overriddenConfigs)
                         } else {

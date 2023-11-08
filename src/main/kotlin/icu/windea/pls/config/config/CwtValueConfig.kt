@@ -53,6 +53,10 @@ fun CwtValueConfig.delegated(
     }
 }
 
+fun CwtValueConfig.delegatedWith(value: String): CwtValueConfig {
+    return CwtValueConfigImpls.DelegateWith(this, value)
+}
+
 fun CwtValueConfig.copy(
     pointer: SmartPsiElementPointer<out CwtValue> = this.pointer,
     info: CwtConfigGroupInfo = this.info,
@@ -190,6 +194,18 @@ private object CwtValueConfigImpls {
         delegate: CwtValueConfig,
     ) : Delegate(delegate) {
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+    }
+    
+    //12 + 5 * 4 = 28 -> 32
+    class DelegateWith(
+        delegate: CwtValueConfig,
+        override val value: String,
+        //configs should be always null here
+    ): Delegate(delegate) {
+        override val valueExpression: CwtValueExpression get() = CwtValueExpression.resolve(value)
+        override val expression: CwtDataExpression get() = valueExpression
+        
+        override fun toString(): String = value
     }
     
     //12 + 5 * 4 = 32 => 32 

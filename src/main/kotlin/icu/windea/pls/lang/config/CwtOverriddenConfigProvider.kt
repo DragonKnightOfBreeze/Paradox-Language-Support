@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.overridden
+package icu.windea.pls.lang.config
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
@@ -10,12 +10,12 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 
 /**
- * 用于为某些特定的脚本表达式提供重载后的CWT规则。
+ * 用于基于上下文为某些特定的脚本表达式提供重载后的CWT规则。
  * 
  * 这里获取的CWT规则会覆盖原始的CWT规则。
  */
 @WithGameTypeEP
-interface ParadoxOverriddenConfigProvider {
+interface CwtOverriddenConfigProvider {
     /**
      * 从指定的上下文元素[contextElement]和原始的CWT规则[config]获取重载后的CWT规则。
      */
@@ -26,7 +26,7 @@ interface ParadoxOverriddenConfigProvider {
     fun skipTooManyExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression) = false
     
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxOverriddenConfigProvider>("icu.windea.pls.overriddenConfigProvider")
+        val EP_NAME = ExtensionPointName.create<CwtOverriddenConfigProvider>("icu.windea.pls.overriddenConfigProvider")
         
         fun <T: CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
             val gameType = config.info.configGroup.gameType ?: return null
@@ -39,3 +39,4 @@ interface ParadoxOverriddenConfigProvider {
         }
     }
 }
+

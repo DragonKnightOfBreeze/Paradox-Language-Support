@@ -37,7 +37,6 @@ import icu.windea.pls.lang.CwtConfigMatcher.ResultValue
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.overridden.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
@@ -447,7 +446,7 @@ object CwtConfigHandler {
             if(result.isEmpty()) return@r1
             val optimizedResult = mutableListOf<CwtMemberConfig<*>>()
             result.forEachFast { config ->
-                val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(element, config)
+                val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, config)
                 if(overriddenConfigs.isNotNullOrEmpty()) {
                     //这里需要再次进行匹配
                     overriddenConfigs.forEachFast { overriddenConfig ->
@@ -731,7 +730,7 @@ object CwtConfigHandler {
         configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
             for(config in configsWithSameKey) {
                 if(shouldComplete(config, occurrenceMap)) {
-                    val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(context.contextElement!!, config)
+                    val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(context.contextElement!!, config)
                     if(overriddenConfigs.isNotNullOrEmpty()) {
                         for(overriddenConfig in overriddenConfigs) {
                             context.config = overriddenConfig
@@ -777,7 +776,7 @@ object CwtConfigHandler {
         
         for(config in configs) {
             if(shouldComplete(config, occurrenceMap)) {
-                val overriddenConfigs = ParadoxOverriddenConfigProvider.getOverriddenConfigs(context.contextElement!!, config)
+                val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(context.contextElement!!, config)
                 if(overriddenConfigs.isNotNullOrEmpty()) {
                     for(overriddenConfig in overriddenConfigs) {
                         context.config = overriddenConfig

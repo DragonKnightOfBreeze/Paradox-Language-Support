@@ -28,6 +28,7 @@ class CwtDeclarationConfigContext(
         val cacheKey = ooGetCacheKey(declarationConfig)
         return cache.getCancelable(cacheKey) {
             val config = doGetConfig(declarationConfig)
+            config.declarationConfigContext = this //TODO 1.2.2+ 需要确认这是否会导致内存问题
             config.declarationConfigCacheKey = cacheKey
             config
         }
@@ -56,4 +57,5 @@ val CwtConfigGroup.declarationConfigCache by createKeyDelegate(CwtConfigContext.
 
 var CwtDeclarationConfigContext.provider: CwtDeclarationConfigContextProvider? by createKeyDelegate(CwtDeclarationConfigContext.Keys)
 
+var CwtMemberConfig<*>.declarationConfigContext: CwtDeclarationConfigContext? by createKeyDelegate(CwtMemberConfig.Keys)
 var CwtMemberConfig<*>.declarationConfigCacheKey: String? by createKeyDelegate(CwtMemberConfig.Keys)

@@ -1,15 +1,12 @@
 package icu.windea.pls.lang.config
 
 import com.intellij.psi.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
-import java.util.function.*
 
 //region Extensions
 
@@ -67,115 +64,3 @@ class CwtGameRuleOverriddenDeclarationConfigContextProvider : CwtDeclarationConf
     }
 }
 
-class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
-    //如果预定义的on_action可以确定事件类型，其声明规则需要经过修改（将其中匹配"<event>"的规则，替换为此事件类型对应的规则）
-    
-    override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
-        if(definitionName == null) return null
-        if(definitionType != "on_action") return null
-        val onActionConfig = configGroup.onActions.getByTemplate(definitionName, element, configGroup) ?: return null
-        return CwtDeclarationConfigContext(element, definitionName, definitionType, definitionSubtypes, gameType, configGroup)
-            .apply { this.onActionConfig = onActionConfig }
-    }
-    
-    override fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String {
-        val gameTypeId = context.gameType.id
-        val definitionName = context.definitionName
-        return "oa@$gameTypeId#$definitionName"
-    }
-    
-    override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        val expressions = setOf("<event>")
-        val injectedExpressions = buildSet {
-            if(context.configGroup.types.get("event")?.subtypes?.containsKey("scopeless") == true) {
-                add("<event.scopeless>")
-            }
-            add("<event.${context.onActionConfig!!.eventType}>")
-        }
-        
-        val action = object : BiConsumer<MutableList<CwtMemberConfig<*>>, CwtMemberConfig<*>> {
-            override fun accept(result: MutableList<CwtMemberConfig<*>>, c1: CwtMemberConfig<*>) {
-                fun asDelegated(config: CwtMemberConfig<*>): CwtMemberConfig<*> {
-                    return config.delegated(CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(config, context, this), config.parentConfig)
-                }
-                
-                when(c1) {
-                    is CwtPropertyConfig -> {
-                        val isKey = c1.key in expressions
-                        val isValue = c1.stringValue in expressions
-                        if(isKey || isValue) {
-                            for(expression in injectedExpressions) {
-                                val keyArg = if(isKey) expression else c1.key
-                                val valueArg = if(isValue) expression else c1.stringValue.orEmpty()
-                                val cc1 = c1.copy(key = keyArg, value = valueArg).also { it.parentConfig = c1.parentConfig }
-                                result += asDelegated(cc1)
-                            }
-                            return
-                        }
-                    }
-                    is CwtValueConfig -> {
-                        if(c1.stringValue in expressions) {
-                            for(expression in injectedExpressions) {
-                                val cc1 = c1.copy(pointer = emptyPointer(), value = expression).also { it.parentConfig = c1.parentConfig }
-                                result += asDelegated(cc1)
-                            }
-                            return
-                        }
-                    }
-                }
-                result += asDelegated(c1)
-            }
-        }
-        
-        val rootConfig = declarationConfig.propertyConfig
-        val configs = CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context, action)
-        return rootConfig.delegated(configs, null)
-        //parentConfig should be null here
-    }
-}
-
-@WithGameType(ParadoxGameType.Stellaris)
-class StellarisDelegatedCwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider
-by CwtDeclarationConfigContextProvider.EP_NAME.findExtension(CwtBaseDeclarationConfigContextProvider::class.java)!! {
-    override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        val expressions = setOf("<technology>", "<technology.repeatable>")
-        val injectedExpressions = setOf("\$technology_with_level")
-        
-        val action = object : BiConsumer<MutableList<CwtMemberConfig<*>>, CwtMemberConfig<*>> {
-            override fun accept(result: MutableList<CwtMemberConfig<*>>, c1: CwtMemberConfig<*>) {
-                fun asDelegated(config: CwtMemberConfig<*>): CwtMemberConfig<*> {
-                    return config.delegated(CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(config, context, this), config.parentConfig)
-                }
-                
-                result += asDelegated(c1)
-                when(c1) {
-                    is CwtPropertyConfig -> {
-                        val isKey = c1.key in expressions
-                        val isValue = c1.stringValue in expressions
-                        if(isKey || isValue) {
-                            for(expression in injectedExpressions) {
-                                val keyArg = if(isKey) expression else c1.key
-                                val valueArg = if(isValue) expression else c1.stringValue.orEmpty()
-                                val cc1 = c1.copy(key = keyArg, value = valueArg).also { it.parentConfig = c1.parentConfig }
-                                result += asDelegated(cc1)
-                            }
-                        }
-                    }
-                    is CwtValueConfig -> {
-                        if(c1.stringValue in expressions) {
-                            for(expression in injectedExpressions) {
-                                val cc1 = c1.copy(pointer = emptyPointer(), value = expression).also { it.parentConfig = c1.parentConfig }
-                                result += asDelegated(cc1)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        val rootConfig = declarationConfig.propertyConfig
-        val configs = CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context, action)
-        return rootConfig.delegated(configs, null)
-        //parentConfig should be null here
-    }
-}

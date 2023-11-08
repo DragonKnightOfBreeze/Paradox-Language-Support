@@ -7,7 +7,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.overridden.*
+import icu.windea.pls.lang.config.*
 import icu.windea.pls.model.*
 
 sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig<T>, CwtValueAware, CwtConfigsAware, CwtDocumentationAware, CwtOptionsAware {
@@ -63,7 +63,7 @@ val CwtMemberConfig.Keys.scopeContext by createKey<ParadoxScopeContext>("cwt.mem
 val CwtMemberConfig.Keys.replaceScopes by createKey<Map<String, String?>>("cwt.memberConfig.replaceScopes")
 val CwtMemberConfig.Keys.pushScope by createKey<String>("cwt.memberConfig.pushScope")
 val CwtMemberConfig.Keys.supportedScopes by createKey<Set<String>>("cwt.memberConfig.supportedScopes")
-val CwtMemberConfig.Keys.overriddenProvider by createKey<ParadoxOverriddenConfigProvider>("cwt.memberConfig.overriddenProvider")
+val CwtMemberConfig.Keys.overriddenProvider by createKey<CwtOverriddenConfigProvider>("cwt.memberConfig.overriddenProvider")
 
 //may on:
 // * a config expression in declaration config

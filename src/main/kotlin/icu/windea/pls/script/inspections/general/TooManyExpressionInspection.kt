@@ -11,7 +11,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.CwtConfigMatcher.Options
-import icu.windea.pls.lang.overridden.*
+import icu.windea.pls.lang.config.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -78,7 +78,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 return true
             }
             
-            private fun getOverriddenProvider(configs: List<CwtMemberConfig<*>>): ParadoxOverriddenConfigProvider? {
+            private fun getOverriddenProvider(configs: List<CwtMemberConfig<*>>): CwtOverriddenConfigProvider? {
                 configs.forEach { c1 ->
                     c1.overriddenProvider?.let { return it }
                     val pc1 = c1.castOrNull<CwtValueConfig>()?.propertyConfig

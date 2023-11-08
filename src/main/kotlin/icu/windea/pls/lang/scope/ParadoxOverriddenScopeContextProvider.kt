@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.overridden
+package icu.windea.pls.lang.scope
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
@@ -8,7 +8,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.model.*
 
 /**
- * 用于为某些特定的脚本表达式提供重载后的作用域上下文。
+ * 用于基于上下文为某些特定的脚本表达式提供重载后的作用域上下文。
  *
  * 这里获取的作用域上下文会覆盖原始的作用域上下文。
  */
