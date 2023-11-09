@@ -29,7 +29,7 @@ fun CwtPropertyConfig.Companion.resolve(
     options: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null
 ): CwtPropertyConfig {
-    return if(configs.isNotNullOrEmpty()) {
+    return if(configs != null) {
         if(options != null || documentation != null) {
             CwtPropertyConfigImpls.Impl1(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
         } else {
@@ -48,7 +48,7 @@ fun CwtPropertyConfig.delegated(
     configs: List<CwtMemberConfig<*>>? = this.configs,
     parentConfig: CwtMemberConfig<*>? = this.parentConfig
 ): CwtPropertyConfig {
-    return if(configs.isNotNullOrEmpty()) {
+    return if(configs != null) {
         CwtPropertyConfigImpls.Delegate1(this, configs).apply { this.parentConfig = parentConfig }
     } else {
         CwtPropertyConfigImpls.Delegate2(this).apply { this.parentConfig = parentConfig }

@@ -118,13 +118,13 @@ class StellarisTechnologyWithLevelChecker : ParadoxIncorrectExpressionChecker {
         val separatorIndex = text.indexOf('@')
         if(technologyName.isEmpty() || ParadoxDefinitionSearch.search(technologyName, "technology.repeatable", definitionSelector(project, element)).findFirst() == null) {
             val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(it.startOffset, separatorIndex) }
-            val message = PlsBundle.message("incorrectExpressionChecker.expect.repeatableTechnologyName", expression)
-            holder.registerProblem(element, range, message)
+            val message = PlsBundle.message("incorrectExpressionChecker.expect.repeatableTechnologyName", range.substring(text))
+            holder.registerProblem(element, message, ProblemHighlightType.ERROR, range)
         }
         if(technologyLevel.isEmpty() || !technologyLevel.all { c -> c.isExactDigit() } || technologyLevel.toInt() !in -1..100) {
             val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(separatorIndex + 1, it.endOffset) }
-            val message = PlsBundle.message("incorrectExpressionChecker.expect.repeatableTechnologyLevel", expression)
-            holder.registerProblem(element, range, message)
+            val message = PlsBundle.message("incorrectExpressionChecker.expect.repeatableTechnologyLevel", range.substring(text))
+            holder.registerProblem(element, message, ProblemHighlightType.GENERIC_ERROR, range)
         }
     }
 }

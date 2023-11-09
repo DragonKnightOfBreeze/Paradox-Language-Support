@@ -10,6 +10,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
@@ -34,16 +35,11 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<N
     override fun createSettings() = NoSettings()
     
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
-        //这里需要兼容 ParadoxScriptInt
         if(element !is ParadoxScriptExpressionElement) return true
-        if(element !is ParadoxScriptStringExpressionElement && element !is ParadoxScriptInt) return true
-        if(!element.isExpression()) return true
-        val config = CwtConfigHandler.getConfigs(element).firstOrNull()
-            ?.takeIf { it.expression.type in expressionTypes }
-            ?: return true
-        val configGroup = config.info.configGroup
-        val isKey = element is ParadoxScriptPropertyKey
-        val resolved = CwtConfigHandler.resolveScriptExpression(element, null, config, config.expression, configGroup, isKey)
+        if(!ParadoxResolveConstraint.Definition.canResolveReference(element)) return true
+        val reference = element.reference ?: return true
+        if(!ParadoxResolveConstraint.Definition.canResolve(reference)) return true
+        val resolved = reference.resolve() ?: return true
         if(resolved is ParadoxScriptDefinitionElement) {
             val definitionInfo = resolved.definitionInfo
             if(definitionInfo != null) {

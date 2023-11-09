@@ -10,6 +10,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.localisation.*
@@ -65,16 +66,11 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
     }
     
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-        //这里需要兼容 ParadoxScriptInt
         if(element !is ParadoxScriptExpressionElement) return true
-        if(element !is ParadoxScriptStringExpressionElement && element !is ParadoxScriptInt) return true
-        if(!element.isExpression()) return true
-        val config = CwtConfigHandler.getConfigs(element).firstOrNull()
-            ?.takeIf { it.expression.type in expressionTypes }
-            ?: return true
-        val configGroup = config.info.configGroup
-        val isKey = element is ParadoxScriptPropertyKey
-        val resolved = CwtConfigHandler.resolveScriptExpression(element, null, config, config.expression, configGroup, isKey)
+        if(!ParadoxResolveConstraint.Definition.canResolveReference(element)) return true
+        val reference = element.reference ?: return true
+        if(!ParadoxResolveConstraint.Definition.canResolve(reference)) return true
+        val resolved = reference.resolve() ?: return true
         if(resolved is ParadoxScriptDefinitionElement) {
             val presentation = doCollect(resolved, editor, settings) ?: return true
             val finalPresentation = presentation.toFinalPresentation(this, file.project)

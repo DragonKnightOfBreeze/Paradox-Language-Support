@@ -12,7 +12,7 @@ import icu.windea.pls.lang.CwtConfigMatcher.Result
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-class BaseCwtDataExpressionMatcher: CwtDataExpressionMatcher {
+class BaseCwtDataExpressionMatcher : CwtDataExpressionMatcher {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Any? {
         return when {
             configExpression.type == CwtDataTypes.Block -> {
@@ -89,50 +89,54 @@ class BaseCwtDataExpressionMatcher: CwtDataExpressionMatcher {
     }
 }
 
-class CoreCwtDataExpressionMatcher: CwtDataExpressionMatcher {
+class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Any? {
         val project = configGroup.project
         return when {
             configExpression.type == CwtDataTypes.PercentageField -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 val r = ParadoxType.isPercentageField(expression.text)
-                 Result.of(r)
+                Result.of(r)
             }
             configExpression.type == CwtDataTypes.DateField -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 val r = ParadoxType.isDateField(expression.text)
-                 Result.of(r)
+                Result.of(r)
             }
             configExpression.type == CwtDataTypes.Localisation -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                 CwtConfigMatcher.Impls.getLocalisationMatchResult(element, expression, project)
+                if(!expression.text.isExactIdentifier('-','.')) return Result.NotMatch
+                CwtConfigMatcher.Impls.getLocalisationMatchResult(element, expression, project)
             }
             configExpression.type == CwtDataTypes.SyncedLocalisation -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                 CwtConfigMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
+                if(!expression.text.isExactIdentifier('-','.')) return Result.NotMatch
+                CwtConfigMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
             }
             configExpression.type == CwtDataTypes.InlineLocalisation -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.quoted) return Result.FallbackMatch //"quoted_string" -> any string
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                 CwtConfigMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
-            }
-            configExpression.type == CwtDataTypes.AbsoluteFilePath -> {
-                if(!expression.type.isStringType()) return Result.NotMatch
-                 Result.ExactMatch //总是认为匹配
-            }
-            configExpression.type.isPathReferenceType() -> {
-                if(!expression.type.isStringType()) return Result.NotMatch
-                if(expression.isParameterized()) return Result.ParameterizedMatch
-                CwtConfigMatcher.Impls.getPathReferenceMatchResult(element, expression, configExpression, project)
+                if(!expression.text.isExactIdentifier('-','.')) return Result.NotMatch
+                CwtConfigMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
             }
             configExpression.type == CwtDataTypes.Definition -> {
                 //注意这里可能是一个整数，例如，对于<technology_tier>
                 if(!expression.type.isStringType() && expression.type != ParadoxType.Int) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
+                if(!expression.text.isExactIdentifier()) return Result.NotMatch
                 CwtConfigMatcher.Impls.getDefinitionMatchResult(element, expression, configExpression, project)
+            }
+            configExpression.type == CwtDataTypes.AbsoluteFilePath -> {
+                if(!expression.type.isStringType()) return Result.NotMatch
+                Result.ExactMatch //总是认为匹配
+            }
+            configExpression.type.isPathReferenceType() -> {
+                if(!expression.type.isStringType()) return Result.NotMatch
+                if(expression.isParameterized()) return Result.ParameterizedMatch
+                CwtConfigMatcher.Impls.getPathReferenceMatchResult(element, expression, configExpression, project)
             }
             configExpression.type == CwtDataTypes.EnumValue -> {
                 if(expression.type.isBlockLikeType()) return Result.NotMatch
@@ -238,7 +242,7 @@ class CoreCwtDataExpressionMatcher: CwtDataExpressionMatcher {
     }
 }
 
-class ExtendedCwtDataExpressionMatcher: CwtDataExpressionMatcher{
+class ExtendedCwtDataExpressionMatcher : CwtDataExpressionMatcher {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Any? {
         return when {
             configExpression.type == CwtDataTypes.Any -> {
@@ -261,15 +265,18 @@ class ExtendedCwtDataExpressionMatcher: CwtDataExpressionMatcher{
             configExpression.type == CwtDataTypes.ShaderEffect -> {
                 //TODO 1.2.2+ 暂时作为一般的字符串处理
                 if(expression.type.isStringLikeType()) return Result.ExactMatch
+                if(expression.isParameterized()) return Result.ParameterizedMatch
                 Result.NotMatch
             }
             configExpression.type == CwtDataTypes.StellarisNameFormat -> {
                 //TODO 1.2.2+ 需要考虑进一步的支持
                 if(!expression.type.isStringType()) return Result.NotMatch
+                if(expression.isParameterized()) return Result.ParameterizedMatch
                 Result.FallbackMatch
             }
-            configExpression.type ==CwtDataTypes.TechnologyWithLevel -> {
+            configExpression.type == CwtDataTypes.TechnologyWithLevel -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
+                if(expression.isParameterized()) return Result.ParameterizedMatch
                 val r = expression.length > 1 && expression.indexOf('@') >= 1
                 return Result.of(r)
             }
@@ -278,7 +285,7 @@ class ExtendedCwtDataExpressionMatcher: CwtDataExpressionMatcher{
     }
 }
 
-class ConstantCwtDataExpressionMatcher: CwtDataExpressionMatcher {
+class ConstantCwtDataExpressionMatcher : CwtDataExpressionMatcher {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Any? {
         return when {
             configExpression.type == CwtDataTypes.Constant -> {

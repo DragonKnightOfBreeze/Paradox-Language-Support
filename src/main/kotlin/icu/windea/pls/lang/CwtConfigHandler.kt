@@ -262,6 +262,9 @@ object CwtConfigHandler {
                                 if(inlinedConfigs.isEmpty()) {
                                     nextResult.add(config)
                                 } else {
+                                    if(inlinedConfigs is MutableList) {
+                                        CwtInjectedConfigProvider.injectConfigs(parentConfig, inlinedConfigs)
+                                    }
                                     nextResult.addAll(inlinedConfigs)
                                 }
                             }

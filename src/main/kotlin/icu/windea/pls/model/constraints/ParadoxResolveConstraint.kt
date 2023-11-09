@@ -30,7 +30,7 @@ enum class ParadoxResolveConstraint {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when(element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
-                is ParadoxScriptInt -> true
+                is ParadoxScriptInt -> element.isExpression()
                 is ParadoxLocalisationIcon -> true
                 is ParadoxLocalisationCommandField -> true //<scripted_loc>
                 is ParadoxLocalisationConceptName -> true //<game_concept>

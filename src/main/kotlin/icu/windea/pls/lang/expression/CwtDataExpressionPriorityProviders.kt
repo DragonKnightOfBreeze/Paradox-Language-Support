@@ -62,7 +62,7 @@ class ExtendedCwtDataExpressionPriorityProvider: CwtDataExpressionPriorityProvid
             CwtDataTypes.LocalisationParameter -> 10.0
             CwtDataTypes.ShaderEffect -> 85.0
             CwtDataTypes.StellarisNameFormat -> 60.0
-            CwtDataTypes.TechnologyWithLevel -> 71.0 //higher than Definition
+            CwtDataTypes.TechnologyWithLevel -> 69.0 //lower than Definition
             else -> 0.0
         } 
     }
