@@ -77,11 +77,14 @@ abstract class ExpressionStringBasedCwtInjectedConfigProvider : CwtInjectedConfi
 
 @WithGameType(ParadoxGameType.Stellaris)
 class CwtTechnologyWithLevelInjectedConfigProvider : ExpressionStringBasedCwtInjectedConfigProvider() {
+    private val expressions = listOf("<technology>", "<technology.repeatable>")
+    private val injectedExpressions = listOf("\$technology_with_level")
+    
     override fun doInject(config: CwtMemberConfig<*>, expressionString: String): List<String>? {
         //如果Stellaris中的脚本表达式至少匹配"<technology.repeatable>"，它也可以匹配"technology"
         //https://github.com/cwtools/cwtools-vscode/issues/58
-        if(expressionString != "<technology>") return null
-        return listOf("\$technology_with_level")
+        if(expressionString !in expressions) return null
+        return injectedExpressions
     }
 }
 
