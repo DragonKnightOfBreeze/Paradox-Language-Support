@@ -344,7 +344,7 @@ fun StringBuilder.appendFileInfoHeader(element: PsiElement): StringBuilder {
         appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
         if(remoteFileId != null) {
             append(" | ")
-            appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsBundle.message("text.steamLinkLabel"))
+            appendLink(getSteamWorkshopLinkInSteam(remoteFileId), PlsBundle.message("text.steamLinkLabel"))
             appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
             append(" | ")
             appendLink(getSteamWorkshopLink(remoteFileId), PlsBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标

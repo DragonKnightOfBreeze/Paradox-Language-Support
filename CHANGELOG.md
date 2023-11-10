@@ -2,7 +2,7 @@
 
 ## 1.2.2
 
-* [ ] 可以从项目视图或者模组依赖配置页面中的游戏或模组根目录打开其本地目录或者Steam创意工坊页面，以及复制对应路径/URL
+* [X] 可以从项目视图或者模组依赖配置页面中的游戏或模组根目录打开其本地目录或者Steam创意工坊页面，以及复制对应路径/URL
 * [X] 可以在工具菜单（编辑器右键菜单 -> `Paradox Language Support`）打开和复制数种路径/URL
 * [X] （仅限Stellaris）支持表达式`technology@level` - 参见：[[Stellaris\] Could support tech@level grammar? · Issue #58 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/58)
 * [X] 其他优化与BUG修复

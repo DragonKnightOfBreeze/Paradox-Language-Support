@@ -146,6 +146,26 @@
   </projectListeners>
   
   <actions>
+    <action id="Pls.OpenInSteam" class="icu.windea.pls.core.actions.OpenInSteamAction" icon="PlsIcons.Steam">
+      <add-to-group group-id="RevealGroup" anchor="last"/>
+      <override-text place="EditorTabPopup"/>
+      <override-text place="ProjectViewPopup" use-text-of-place="EditorTabPopup"/>
+      <override-text place="EditorPopup" use-text-of-place="EditorTabPopup"/>
+      <override-text place="FavoritesPopup" use-text-of-place="EditorTabPopup"/>
+      <add-to-group group-id="TouchBarDefault_alt" anchor="last"/>
+    </action>
+    <action id="Pls.OpenInSteamWebsite" class="icu.windea.pls.core.actions.OpenInSteamWebsiteAction" icon="PlsIcons.Steam">
+      <add-to-group group-id="RevealGroup" anchor="last"/>
+      <override-text place="EditorTabPopup"/>
+      <override-text place="ProjectViewPopup" use-text-of-place="EditorTabPopup"/>
+      <override-text place="EditorPopup" use-text-of-place="EditorTabPopup"/>
+      <override-text place="FavoritesPopup" use-text-of-place="EditorTabPopup"/>
+      <add-to-group group-id="TouchBarDefault_alt" anchor="last"/>
+    </action>
+    <action id="Pls.CopySteamPageUrl" class="icu.windea.pls.core.actions.CopySteamPageProvider" icon="PlsIcons.Steam">
+      <add-to-group group-id="CopyFileReference"/>
+    </action>
+    
     <group id="Pls.Tools" popup="true" class="icu.windea.pls.core.tool.actions.PlsToolsActionGroup">
       <add-to-group group-id="ToolsMenu"/>
       <add-to-group group-id="EditorPopupMenu"/>
@@ -175,12 +195,12 @@
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.OpenUrl" popup="true">
-      <action id="Pls.OpenUrl.OpenGameStorePageOnSteamWebsite" class="icu.windea.pls.core.tool.actions.OpenGameStorePageOnSteamWebsiteAction"/>
-      <action id="Pls.OpenUrl.OpenGameStorePageOnSteam" class="icu.windea.pls.core.tool.actions.OpenGameStorePageOnSteamAction"/>
-      <action id="Pls.OpenUrl.OpenGameWorkshopPageOnSteamWebsite" class="icu.windea.pls.core.tool.actions.OpenGameWorkshopPageOnSteamWebsiteAction"/>
-      <action id="Pls.OpenUrl.OpenGameWorkshopPageOnSteam" class="icu.windea.pls.core.tool.actions.OpenGameWorkshopPageOnSteamAction"/>
-      <action id="Pls.OpenUrl.OpenModPageOnSteamWebsite" class="icu.windea.pls.core.tool.actions.OpenModPageOnSteamWebsiteAction"/>
-      <action id="Pls.OpenUrl.OpenModPageOnSteam" class="icu.windea.pls.core.tool.actions.OpenModPageOnSteamAction"/>
+      <action id="Pls.OpenUrl.OpenGameStorePageInSteam" class="icu.windea.pls.core.tool.actions.OpenGameStorePageInSteamAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameStorePageInSteamWebsite" class="icu.windea.pls.core.tool.actions.OpenGameStorePageInSteamWebsiteAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameWorkshopPageInSteam" class="icu.windea.pls.core.tool.actions.OpenGameWorkshopPageInSteamAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameWorkshopPageInSteamWebsite" class="icu.windea.pls.core.tool.actions.OpenGameWorkshopPageInSteamWebsiteAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenModPageInSteam" class="icu.windea.pls.core.tool.actions.OpenModPageInSteamAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenModPageInSteamWebsite" class="icu.windea.pls.core.tool.actions.OpenModPageInSteamWebsiteAction" icon="PlsIcons.Steam"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.CopyPath" popup="true">
@@ -193,9 +213,9 @@
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.CopyUrl" popup="true">
-      <action id="Pls.CopyUrl.CopyGameStorePageUrl" class="icu.windea.pls.core.tool.actions.CopyGameStorePageUrlAction"/>
-      <action id="Pls.CopyUrl.CopyGameWorkshopPageUrl" class="icu.windea.pls.core.tool.actions.CopyGameWorkshopPageUrlAction"/>
-      <action id="Pls.CopyUrl.CopyModPageUrl" class="icu.windea.pls.core.tool.actions.CopyModPageUrlAction"/>
+      <action id="Pls.CopyUrl.CopyGameStorePageUrl" class="icu.windea.pls.core.tool.actions.CopyGameStorePageUrlAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.CopyUrl.CopyGameWorkshopPageUrl" class="icu.windea.pls.core.tool.actions.CopyGameWorkshopPageUrlAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.CopyUrl.CopyModPageUrl" class="icu.windea.pls.core.tool.actions.CopyModPageUrlAction" icon="PlsIcons.Steam"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     

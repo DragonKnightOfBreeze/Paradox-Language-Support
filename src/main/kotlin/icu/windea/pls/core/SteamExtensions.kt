@@ -76,7 +76,7 @@ fun getSteamGameStoreLink(steamId: String): String {
 /**
  * 得到指定ID对应的Steam游戏商店页面链接。（直接在Steam中打开）
  */
-fun getSteamGameStoreLinkOnSteam(steamId: String): String {
+fun getSteamGameStoreLinkInSteam(steamId: String): String {
     return "steam://store/$steamId"
 }
 
@@ -90,7 +90,7 @@ fun getSteamGameWorkshopLink(steamId: String): String {
 /**
  * 得到指定ID对应的Steam游戏创意工坊页面链接。（直接在Steam中打开）
  */
-fun getSteamGameWorkshopLinkOnSteam(steamId: String): String {
+fun getSteamGameWorkshopLinkInSteam(steamId: String): String {
     return "steam://openurl/https://steamcommunity.com/app/$steamId/workshop/"
 }
 
@@ -104,6 +104,6 @@ fun getSteamWorkshopLink(steamId: String): String {
 /**
  * 得到指定ID对应的Steam创意工坊链接。（直接在Steam中打开）
  */
-fun getSteamWorkshopLinkOnSteam(steamId: String): String {
+fun getSteamWorkshopLinkInSteam(steamId: String): String {
     return "steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id=$steamId"
 }

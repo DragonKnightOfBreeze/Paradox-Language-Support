@@ -6,7 +6,6 @@ import com.intellij.openapi.project.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import java.awt.datatransfer.*
-import java.nio.file.*
 
 abstract class CopyUrlAction : DumbAwareAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
@@ -33,7 +32,7 @@ abstract class CopyUrlAction : DumbAwareAction() {
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val fileInfo = virtualFile.fileInfo ?: return
         val targetUrl = getTargetUrl(fileInfo) ?: return //ignore
-        CopyPasteManager.getInstance().setContents(StringSelection(targetUrl.toString()))
+        CopyPasteManager.getInstance().setContents(StringSelection(targetUrl))
     }
     
     protected open fun isVisible(fileInfo: ParadoxFileInfo): Boolean = true
@@ -63,15 +62,11 @@ class CopyModPageUrlAction : CopyUrlAction() {
     }
     
     override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {
-        return getSteamId(fileInfo) != null
+        return getTargetUrl(fileInfo) != null
     }
     
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
-        val steamId = getSteamId(fileInfo) ?: return null
+        val steamId = fileInfo.rootInfo.castOrNull<ParadoxModRootInfo>()?.descriptorInfo?.remoteFileId ?: return null
         return getSteamWorkshopLink(steamId)
-    }
-    
-    private fun getSteamId(fileInfo: ParadoxFileInfo): String? {
-        return fileInfo.rootInfo.castOrNull<ParadoxModRootInfo>()?.descriptorInfo?.remoteFileId
     }
 }

@@ -55,15 +55,59 @@ interface ParadoxModDependenciesPopupActions {
     }
     
     /**
-     * 打开模组的Steam创意工坊页面。
+     * 打开模组的Steam创意工坊页面。（直接在Steam应用中打开）
      */
-    class OpenModPageOnSteamWebsiteAction(
+    class OpenModPageInSteamAction(
         private val tableView: TableView<ParadoxModDependencySettingsState>,
         private val tableModel: ParadoxModDependenciesTableModel
     ) : DumbAwareAction(PlsIcons.Steam) {
         init {
-            templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.OpenModPageOnSteamWebsite.text")
-            templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.OpenModPageOnSteamWebsite.description")
+            templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteam.text")
+            templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteam.description")
+        }
+        
+        override fun getActionUpdateThread(): ActionUpdateThread {
+            return ActionUpdateThread.EDT
+        }
+        
+        override fun update(e: AnActionEvent) {
+            val presentation = e.presentation
+            presentation.isEnabled = getSteamId() != null
+            if(presentation.isVisible) {
+                val targetUrl = getTargetUrl()
+                if(targetUrl != null) {
+                    presentation.description = templatePresentation.description + " (" + targetUrl + ")"
+                }
+            }
+        }
+        
+        override fun actionPerformed(e: AnActionEvent) {
+            val targetUrl = getTargetUrl() ?: return //ignore
+            BrowserUtil.open(targetUrl)
+        }
+        
+        private fun getTargetUrl(): String? {
+            val steamId = getSteamId() ?: return null
+            return getSteamWorkshopLinkInSteam(steamId)
+        }
+        
+        private fun getSteamId(): String? {
+            val selectedRow = tableView.selectedRow
+            val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
+            return getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteId
+        }
+    }
+    
+    /**
+     * 打开模组的Steam创意工坊页面。
+     */
+    class OpenModPageInSteamWebsiteAction(
+        private val tableView: TableView<ParadoxModDependencySettingsState>,
+        private val tableModel: ParadoxModDependenciesTableModel
+    ) : DumbAwareAction(PlsIcons.Steam) {
+        init {
+            templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteamWebsite.text")
+            templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteamWebsite.description")
         }
         
         override fun getActionUpdateThread(): ActionUpdateThread {
@@ -89,51 +133,6 @@ interface ParadoxModDependenciesPopupActions {
         private fun getTargetUrl(): String? {
             val steamId = getSteamId() ?: return null
             return getSteamWorkshopLink(steamId)
-        }
-        
-        private fun getSteamId(): String? {
-            val selectedRow = tableView.selectedRow
-            val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
-            return getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteId
-        }
-    }
-    
-    
-    /**
-     * 打开模组的Steam创意工坊页面。（直接在Steam应用中打开）
-     */
-    class OpenModPageOnSteamAction(
-        private val tableView: TableView<ParadoxModDependencySettingsState>,
-        private val tableModel: ParadoxModDependenciesTableModel
-    ) : DumbAwareAction(PlsIcons.Steam) {
-        init {
-            templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.OpenModPageOnSteam.text")
-            templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.OpenModPageOnSteam.description")
-        }
-        
-        override fun getActionUpdateThread(): ActionUpdateThread {
-            return ActionUpdateThread.EDT
-        }
-        
-        override fun update(e: AnActionEvent) {
-            val presentation = e.presentation
-            presentation.isEnabled = getSteamId() != null
-            if(presentation.isVisible) {
-                val targetUrl = getTargetUrl()
-                if(targetUrl != null) {
-                    presentation.description = templatePresentation.description + " (" + targetUrl + ")"
-                }
-            }
-        }
-        
-        override fun actionPerformed(e: AnActionEvent) {
-            val targetUrl = getTargetUrl() ?: return //ignore
-            BrowserUtil.open(targetUrl)
-        }
-        
-        private fun getTargetUrl(): String? {
-            val steamId = getSteamId() ?: return null
-            return getSteamWorkshopLinkOnSteam(steamId)
         }
         
         private fun getSteamId(): String? {
@@ -215,7 +214,7 @@ interface ParadoxModDependenciesPopupActions {
         
         private fun getTargetUrl(): String? {
             val steamId = getSteamId() ?: return null
-            return getSteamWorkshopLinkOnSteam(steamId)
+            return getSteamWorkshopLinkInSteam(steamId)
         }
         
         private fun getSteamId(): String? {
