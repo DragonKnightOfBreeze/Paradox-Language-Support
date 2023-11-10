@@ -191,9 +191,10 @@ class ParadoxModDependenciesTableModel(
             actionGroup.addAction(exportButton)
             actionGroup.addSeparator()
             actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPathAction(tableView, tableModel))
-            actionGroup.addAction(ParadoxModDependenciesPopupActions.CopyModPathAction(tableView, tableModel))
             actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPageOnSteamWebsiteAction(tableView, tableModel))
             actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPageOnSteamAction(tableView, tableModel))
+            actionGroup.addAction(ParadoxModDependenciesPopupActions.CopyModPathAction(tableView, tableModel))
+            actionGroup.addAction(ParadoxModDependenciesPopupActions.CopyModPageUrlAction(tableView, tableModel))
             PopupHandler.installPopupMenu(tableView, actionGroup, PlsToolsActions.MOD_DEPENDENCIES_POPUP)
             return panel
         }
