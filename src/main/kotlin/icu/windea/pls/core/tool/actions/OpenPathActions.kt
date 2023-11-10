@@ -10,11 +10,6 @@ import icu.windea.pls.model.*
 import java.nio.file.*
 import kotlin.io.path.*
 
-//com.intellij.ide.actions.RevealFileAction
-
-/**
- * 用于在文件浏览器中打开一个路径。
- */
 abstract class OpenPathAction : DumbAwareAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
@@ -77,5 +72,27 @@ class OpenGameDataPathAction : OpenPathAction() {
     override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
         val gameType = fileInfo.rootInfo.gameType
         return getGameDataPath(gameType.title)?.toPathOrNull()
+    }
+}
+
+class OpenGamePathAction : OpenPathAction() {
+    override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
+        return fileInfo.rootInfo is ParadoxModRootInfo
+    }
+    
+    override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
+        if(fileInfo.rootInfo !is ParadoxGameRootInfo) return null
+        return fileInfo.rootInfo.gameRootPath
+    }
+}
+
+class OpenModPathAction : OpenPathAction() {
+    override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
+        return fileInfo.rootInfo is ParadoxModRootInfo
+    }
+    
+    override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
+        if(fileInfo.rootInfo !is ParadoxModRootInfo) return null
+        return fileInfo.rootInfo.gameRootPath
     }
 }

@@ -170,13 +170,8 @@
       <action id="Pls.OpenPath.OpenSteamGamePath" class="icu.windea.pls.core.tool.actions.OpenSteamGamePathAction"/>
       <action id="Pls.OpenPath.OpenSteamWorkshopPath" class="icu.windea.pls.core.tool.actions.OpenSteamWorkshopPathAction"/>
       <action id="Pls.OpenPath.OpenGameDataPath" class="icu.windea.pls.core.tool.actions.OpenGameDataPathAction"/>
-      <add-to-group group-id="Pls.Tools"/>
-    </group>
-    <group id="Pls.CopyPath" popup="true">
-      <action id="Pls.CopyPath.CopySteamPath" class="icu.windea.pls.core.tool.actions.CopySteamPathAction"/>
-      <action id="Pls.CopyPath.CopySteamGamePath" class="icu.windea.pls.core.tool.actions.CopySteamGamePathAction"/>
-      <action id="Pls.CopyPath.CopySteamWorkshopPath" class="icu.windea.pls.core.tool.actions.CopySteamWorkshopPathAction"/>
-      <action id="Pls.CopyPath.CopyGameDataPath" class="icu.windea.pls.core.tool.actions.CopyGameDataPathAction"/>
+      <action id="Pls.OpenPath.OpenGamePath" class="icu.windea.pls.core.tool.actions.OpenGamePathAction"/>
+      <action id="Pls.OpenPath.OpenModPath" class="icu.windea.pls.core.tool.actions.OpenModPathAction"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.OpenUrl" popup="true">
@@ -186,6 +181,21 @@
       <action id="Pls.OpenUrl.OpenGameWorkshopPageOnSteam" class="icu.windea.pls.core.tool.actions.OpenGameWorkshopPageOnSteamAction"/>
       <action id="Pls.OpenUrl.OpenModPageOnSteamWebsite" class="icu.windea.pls.core.tool.actions.OpenModPageOnSteamWebsiteAction"/>
       <action id="Pls.OpenUrl.OpenModPageOnSteam" class="icu.windea.pls.core.tool.actions.OpenModPageOnSteamAction"/>
+      <add-to-group group-id="Pls.Tools"/>
+    </group>
+    <group id="Pls.CopyPath" popup="true">
+      <action id="Pls.CopyPath.CopySteamPath" class="icu.windea.pls.core.tool.actions.CopySteamPathAction"/>
+      <action id="Pls.CopyPath.CopySteamGamePath" class="icu.windea.pls.core.tool.actions.CopySteamGamePathAction"/>
+      <action id="Pls.CopyPath.CopySteamWorkshopPath" class="icu.windea.pls.core.tool.actions.CopySteamWorkshopPathAction"/>
+      <action id="Pls.CopyPath.CopyGameDataPath" class="icu.windea.pls.core.tool.actions.CopyGameDataPathAction"/>
+      <action id="Pls.CopyPath.CopyGamePath" class="icu.windea.pls.core.tool.actions.CopyGamePathAction"/>
+      <action id="Pls.CopyPath.CopyModPath" class="icu.windea.pls.core.tool.actions.CopyModPathAction"/>
+      <add-to-group group-id="Pls.Tools"/>
+    </group>
+    <group id="Pls.CopyUrl" popup="true">
+      <action id="Pls.CopyUrl.CopyGameStorePageUrl" class="icu.windea.pls.core.tool.actions.CopyGameStorePageUrlAction"/>
+      <action id="Pls.CopyUrl.CopyGameWorkshopPageUrl" class="icu.windea.pls.core.tool.actions.CopyGameWorkshopPageUrlAction"/>
+      <action id="Pls.CopyUrl.CopyModPageUrl" class="icu.windea.pls.core.tool.actions.CopyModPageUrlAction"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     

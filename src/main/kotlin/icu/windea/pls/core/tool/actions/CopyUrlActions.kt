@@ -1,14 +1,14 @@
-@file:Suppress("ComponentNotRegistered")
-
 package icu.windea.pls.core.tool.actions
 
-import com.intellij.ide.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
+import java.awt.datatransfer.*
+import java.nio.file.*
 
-abstract class OpenUrlAction : DumbAwareAction() {
+abstract class CopyUrlAction : DumbAwareAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
@@ -33,7 +33,7 @@ abstract class OpenUrlAction : DumbAwareAction() {
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val fileInfo = virtualFile.fileInfo ?: return
         val targetUrl = getTargetUrl(fileInfo) ?: return //ignore
-        BrowserUtil.open(targetUrl)
+        CopyPasteManager.getInstance().setContents(StringSelection(targetUrl.toString()))
     }
     
     protected open fun isVisible(fileInfo: ParadoxFileInfo): Boolean = true
@@ -43,35 +43,21 @@ abstract class OpenUrlAction : DumbAwareAction() {
     protected abstract fun getTargetUrl(fileInfo: ParadoxFileInfo): String?
 }
 
-class OpenGameStorePageOnSteamWebsiteAction : OpenUrlAction() {
+class CopyGameStorePageUrlAction : CopyUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
         return getSteamGameStoreLink(steamId)
     }
 }
 
-class OpenGameStorePageOnSteamAction : OpenUrlAction() {
-    override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
-        val steamId = fileInfo.rootInfo.gameType.steamId
-        return getSteamGameStoreLinkOnSteam(steamId)
-    }
-}
-
-class OpenGameWorkshopPageOnSteamWebsiteAction : OpenUrlAction() {
+class CopyGameWorkshopPageUrlAction : CopyUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
         return getSteamGameWorkshopLink(steamId)
     }
 }
 
-class OpenGameWorkshopPageOnSteamAction : OpenUrlAction() {
-    override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
-        val steamId = fileInfo.rootInfo.gameType.steamId
-        return getSteamGameWorkshopLinkOnSteam(steamId)
-    }
-}
-
-class OpenModPageOnSteamWebsiteAction : OpenUrlAction() {
+class CopyModPageUrlAction : CopyUrlAction() {
     override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
         return fileInfo.rootInfo is ParadoxModRootInfo
     }
@@ -83,25 +69,6 @@ class OpenModPageOnSteamWebsiteAction : OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
         val steamId = getSteamId(fileInfo) ?: return null
         return getSteamWorkshopLink(steamId)
-    }
-    
-    private fun getSteamId(fileInfo: ParadoxFileInfo): String? {
-        return fileInfo.rootInfo.castOrNull<ParadoxModRootInfo>()?.descriptorInfo?.remoteFileId
-    }
-}
-
-class OpenModPageOnSteamAction : OpenUrlAction() {
-    override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
-        return fileInfo.rootInfo is ParadoxModRootInfo
-    }
-    
-    override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {
-        return getSteamId(fileInfo) != null
-    }
-    
-    override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
-        val steamId = getSteamId(fileInfo) ?: return null
-        return getSteamWorkshopLinkOnSteam(steamId)
     }
     
     private fun getSteamId(fileInfo: ParadoxFileInfo): String? {

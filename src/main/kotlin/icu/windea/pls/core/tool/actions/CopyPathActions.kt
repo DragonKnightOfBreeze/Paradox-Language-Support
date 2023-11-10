@@ -10,9 +10,6 @@ import icu.windea.pls.model.*
 import java.awt.datatransfer.*
 import java.nio.file.*
 
-/**
- * 用于复制一个路径到系统剪贴板。
- */
 abstract class CopyPathAction : DumbAwareAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
@@ -72,5 +69,27 @@ class CopyGameDataPathAction : CopyPathAction() {
     override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
         val gameType = fileInfo.rootInfo.gameType
         return getGameDataPath(gameType.title)?.toPathOrNull()
+    }
+}
+
+class CopyGamePathAction : CopyPathAction() {
+    override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
+        return fileInfo.rootInfo is ParadoxModRootInfo
+    }
+    
+    override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
+        if(fileInfo.rootInfo !is ParadoxGameRootInfo) return null
+        return fileInfo.rootInfo.gameRootPath
+    }
+}
+
+class CopyModPathAction : CopyPathAction() {
+    override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
+        return fileInfo.rootInfo is ParadoxModRootInfo
+    }
+    
+    override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
+        if(fileInfo.rootInfo !is ParadoxModRootInfo) return null
+        return fileInfo.rootInfo.gameRootPath
     }
 }
