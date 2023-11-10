@@ -1,87 +1,41 @@
 package icu.windea.pls.localisation.inspections.bug
 
-import com.intellij.codeInsight.intention.preview.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.quickfix.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import java.util.*
 
 /**
- * （对于本地化文件）检查是否存在不支持的递归。例如，递归使用本地化引用。
+ * （对于本地化文件）检查是否存在不支持的递归。
+ * * 对于每个本地化，检查其本地化文本中是否存在递归的本地化引用。
  */
 class UnsupportedRecursionInspection : LocalInspectionTool() {
     //目前仅做检查即可，不需要显示递归的装订线图标
-    //在本地化级别进行此项检查
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         if(!isFileToInspect(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
-        
-        val guardStack = LinkedList<String>()
-        
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
-                if(element is ParadoxLocalisationProperty) {
-                    visitLocalisation(element, element.name)
+                when(element) {
+                    is ParadoxLocalisationProperty -> visitLocalisationProperty(element)
                 }
             }
             
-            private fun visitLocalisation(element: ParadoxLocalisationProperty, name: String) {
-                guardStack.clear()
-                guardStack.addLast(name)
-                try {
-                    doRecursiveVisit(element)
-                } catch(e: RecursionException) {
-                    if(e.resolvedName == name) {
-                        registerProblem(element, e.recursion)
-                    }
-                }
-            }
-            
-            private fun doRecursiveVisit(element: ParadoxLocalisationProperty) {
-                ProgressManager.checkCanceled()
-                val resolvedNames = mutableSetOf<String>()
-                element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
-                    override fun visitElement(e: PsiElement) {
-                        if(e is ParadoxLocalisationPropertyReference) visitPropertyReference(e)
-                        if(e.isRichTextContext()) super.visitElement(e)
-                    }
-                    
-                    private fun visitPropertyReference(e: ParadoxLocalisationPropertyReference) {
-                        //对于相同的语言区域
-                        ProgressManager.checkCanceled()
-                        val name = e.name
-                        if(resolvedNames.contains(name)) return //不需要重复解析引用
-                        guardStack.addLast(name)
-                        try {
-                            val resolved = resolveLocalisation(e) //直接解析为本地化以优化性能
-                            if(resolved !is ParadoxLocalisationProperty) return
-                            val resolvedName = resolved.name
-                            resolvedNames.add(resolvedName)
-                            if(guardStack.contains(resolvedName)) throw RecursionException(e, resolved, resolvedName)
-                            doRecursiveVisit(resolved)
-                        } finally {
-                            guardStack.removeLast()
-                        }
-                    }
-                })
-            }
-            
-            private fun resolveLocalisation(e: ParadoxLocalisationPropertyReference): ParadoxLocalisationProperty? {
-                val reference = e.reference ?: return null
-                return reference.resolveLocalisation()
-            }
-            
-            private fun registerProblem(element: ParadoxLocalisationProperty, recursion: PsiElement) {
+            private fun visitLocalisationProperty(element: ParadoxLocalisationProperty) {
+                val name = element.name
+                if(name.isEmpty()) return
+                
+                val recursions = mutableSetOf<PsiElement>()
+                ParadoxRecursionHandler.isRecursiveLocalisation(element, recursions)
+                if(recursions.isEmpty()) return
                 val message = PlsBundle.message("inspection.localisation.bug.unsupportedRecursion.description.1")
                 val location = element.propertyKey
-                holder.registerProblem(location, message, NavigateToRecursionFix(recursion))
+                holder.registerProblem(location, message, NavigateToRecursionsFix(name, element, recursions))
             }
         }
     }
@@ -92,35 +46,13 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
         return filePath.canBeLocalisationPath()
     }
     
-    private class NavigateToRecursionFix(
-        target: PsiElement,
-    ) : LocalQuickFixAndIntentionActionOnPsiElement(target) {
+    private class NavigateToRecursionsFix(key: String, target: PsiElement, recursions: Collection<PsiElement>) : NavigateToFix(key, target, recursions) {
         override fun getText() = PlsBundle.message("inspection.localisation.bug.unsupportedRecursion.quickFix.1")
         
-        override fun getFamilyName() = text
+        override fun getPopupTitle(editor: Editor) =
+            PlsBundle.message("inspection.localisation.bug.unsupportedRecursion.quickFix.1.popup.title", key)
         
-        override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-            if(editor == null) return
-            navigateTo(editor, startElement)
-        }
-        
-        override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor) = IntentionPreviewInfo.EMPTY
-        
-        override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
-        
-        override fun startInWriteAction() = false
-        
-        override fun availableInBatchMode() = false
-        
-        private fun navigateTo(editor: Editor, toNavigate: PsiElement) {
-            editor.caretModel.moveToOffset(toNavigate.textOffset)
-            editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
-        }
+        override fun getPopupText(editor: Editor, value: PsiElement) =
+            PlsBundle.message("inspection.localisation.bug.unsupportedRecursion.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
     }
-    
-    private class RecursionException(
-        val recursion: PsiElement,
-        val resolved: ParadoxLocalisationProperty,
-        val resolvedName: String,
-    ) : RuntimeException()
 }
