@@ -66,6 +66,9 @@
     <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticGeneratedModifiersRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticGeneratedModifiersNameDescRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticGeneratedModifiersIconRenamerFactory"/>
+    <inlineActionHandler implementation="icu.windea.pls.core.refactoring.inline.ParadoxScriptedVariableInlineActionHandler"/>
+    <inlineActionHandler implementation="icu.windea.pls.core.refactoring.inline.ParadoxScriptedVariableInlineActionHandler"/>
+    <inlineActionHandler implementation="icu.windea.pls.core.refactoring.inline.ParadoxScriptedVariableInlineActionHandler"/>
     <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.refactoring.actions.IntroduceLocalScriptedVariableHandler"/>
     <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.refactoring.actions.IntroduceGlobalScriptedVariableHandler"/>
     
