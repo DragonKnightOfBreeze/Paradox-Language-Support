@@ -710,6 +710,10 @@ fun PsiElement.findChild(tokenSet: TokenSet, forward: Boolean = true): PsiElemen
     return findChildOfType(forward) { it.elementType in tokenSet }
 }
 
+inline fun PsiElement.findChild(forward: Boolean = true, predicate: (PsiElement) -> Boolean): PsiElement? {
+    return findChildOfType(forward, predicate)
+}
+
 inline fun <reified T : PsiElement> PsiElement.findChildren(forward: Boolean = true): List<T> {
     return findChildrenOfType(forward)
 }
@@ -720,6 +724,10 @@ fun PsiElement.findChildren(type: IElementType, forward: Boolean = true): List<P
 
 fun PsiElement.findChildren(tokenSet: TokenSet, forward: Boolean = true): List<PsiElement> {
     return findChildrenOfType(forward) { it.elementType in tokenSet }
+}
+
+inline fun PsiElement.findChildren(forward: Boolean = true, predicate: (PsiElement) -> Boolean): List<PsiElement> {
+    return findChildrenOfType(forward, predicate)
 }
 
 inline fun PsiElement.processChild(forward: Boolean = true, processor: (PsiElement) -> Boolean): Boolean {

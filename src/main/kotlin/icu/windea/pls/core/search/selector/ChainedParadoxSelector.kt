@@ -33,7 +33,7 @@ class ChainedParadoxSelector<T>(
     }
     
     val defaultScope: GlobalSearchScope by lazy {
-        ParadoxSearchScope.fromFile(project, file)
+        ParadoxSearchScope.fromFile(project, file) ?: GlobalSearchScope.allScope(project)
     }
     
     val scope: GlobalSearchScope by lazy {

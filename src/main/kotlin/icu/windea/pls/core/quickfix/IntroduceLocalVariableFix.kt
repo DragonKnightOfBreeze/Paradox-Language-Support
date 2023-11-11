@@ -23,21 +23,21 @@ class IntroduceLocalVariableFix(
 	
 	override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 		val command = Runnable {
-			//声明对应名字的封装变量，默认值给0
-			val element = startElement
-			val parentDefinitionOrFile = element.findParentDefinition() ?: element.containingFile as? ParadoxScriptFile ?: return@Runnable
-			val newVariable = ParadoxPsiIntroducer.introduceLocalScriptedVariable(variableName, "0", parentDefinitionOrFile, project)
-			
-			val document = PsiDocumentManager.getInstance(project).getDocument(file)
-			if(document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) //提交文档更改
-			if(editor != null) {
-				//光标移到newVariableValue的结束位置并选中
-				val newVariableValue = newVariable.scriptedVariableValue ?: return@Runnable
-				editor.caretModel.moveToOffset(newVariableValue.endOffset)
-				editor.selectionModel.setSelection(newVariableValue.startOffset, newVariableValue.endOffset)
-				editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
-			}
-		}
+            //声明对应名字的封装变量，默认值给0
+            val element = startElement
+            val parentDefinitionOrFile = element.findParentDefinition() ?: element.containingFile as? ParadoxScriptFile ?: return@Runnable
+            val newVariable = ParadoxPsiManager.introduceLocalScriptedVariable(variableName, "0", parentDefinitionOrFile, project)
+            
+            val document = PsiDocumentManager.getInstance(project).getDocument(file)
+            if(document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) //提交文档更改
+            if(editor != null) {
+                //光标移到newVariableValue的结束位置并选中
+                val newVariableValue = newVariable.scriptedVariableValue ?: return@Runnable
+                editor.caretModel.moveToOffset(newVariableValue.endOffset)
+                editor.selectionModel.setSelection(newVariableValue.startOffset, newVariableValue.endOffset)
+                editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
+            }
+        }
 		WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"), null, command, file)
 	}
 	

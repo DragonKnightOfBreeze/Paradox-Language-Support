@@ -1,25 +1,62 @@
 package icu.windea.pls.core.refactoring.inline
 
+import com.intellij.codeInsight.*
 import com.intellij.lang.*
 import com.intellij.lang.refactoring.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.refactoring.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptedEffectInlineActionHandler: InlineActionHandler() {
+class ParadoxScriptedEffectInlineActionHandler : InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.scriptedEffect")
     
     override fun isEnabledForLanguage(language: Language) = language == ParadoxScriptLanguage
     
     override fun canInlineElement(element: PsiElement): Boolean {
-        return element.castOrNull<ParadoxScriptProperty>()?.definitionInfo?.type == "scripted_effect"
+        if(element !is ParadoxScriptProperty) return false
+        val definitionInfo = element.definitionInfo ?: return false
+        if(definitionInfo.name.orNull() == null) return false
+        if(definitionInfo.type != "scripted_effect") return false
+        return true
     }
     
-    override fun inlineElement(project: Project?, editor: Editor?, element: PsiElement) {
-        //TODO
+    override fun canInlineElementInEditor(element: PsiElement, editor: Editor?): Boolean {
+        val reference = if(editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
+        val referenceElement = reference?.element
+        if(referenceElement != null && !ParadoxPsiManager.isInvocationReference(element, referenceElement)) return false
+        return super.canInlineElementInEditor(element, editor)
     }
+    
+    override fun inlineElement(project: Project, editor: Editor?, element: PsiElement) {
+        return performInline(project, editor, element.cast())
+    }
+    
+    private fun performInline(project: Project, editor: Editor?, element: ParadoxScriptProperty) {
+        val reference = if(editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
+        
+        val referenceElement = reference?.element
+        if(referenceElement != null && !ParadoxPsiManager.isInvocationReference(element, referenceElement)) {
+            val message = PlsBundle.message("refactoring.scriptedEffect.invocation", getRefactoringName())
+            CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
+            return
+        }
+        val isRecursive = ParadoxRecursionHandler.isRecursiveDefinition(element) { _, re -> ParadoxPsiManager.isInvocationReference(element, re) }
+        if(isRecursive) {
+            val message = PlsBundle.message("refactoring.scriptedEffect.recursive", getRefactoringName())
+            CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
+            return
+        }
+        
+        val dialog = InlineScriptedEffectDialog(project, element, reference, editor)
+        dialog.show()
+    }
+    
+    private fun getRefactoringName() = PlsBundle.message("title.inline.scriptedEffect")
 }

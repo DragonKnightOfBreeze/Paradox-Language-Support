@@ -23,11 +23,11 @@ class AutomaticRelatedImagesRenamerFactory : AutomaticRenamerFactory {
     }
     
     override fun isEnabled(): Boolean {
-        return ParadoxRefactoringSettings.instance.renameRelatedImages
+        return ParadoxRefactoringSettings.getInstance().renameRelatedImages
     }
     
     override fun setEnabled(enabled: Boolean) {
-        ParadoxRefactoringSettings.instance.renameRelatedImages = enabled
+        ParadoxRefactoringSettings.getInstance().renameRelatedImages = enabled
     }
     
     override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {

@@ -51,7 +51,7 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
 			if(document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) //提交文档更改
 			
 			//在指定的文件中声明对应的封装变量
-			ParadoxPsiIntroducer.introduceGlobalScriptedVariable(variableName, variableValue, targetFile, project)
+			ParadoxPsiManager.introduceGlobalScriptedVariable(variableName, variableValue, targetFile, project)
 			val targetDocument = PsiDocumentManager.getInstance(project).getDocument(targetFile)
 			if(targetDocument != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(targetDocument) //提交文档更改
 			

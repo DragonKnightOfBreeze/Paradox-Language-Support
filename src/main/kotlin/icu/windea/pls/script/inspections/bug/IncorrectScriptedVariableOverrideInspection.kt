@@ -51,5 +51,7 @@ class IncorrectScriptedVariableOverrideInspection : LocalInspectionTool() {
             }
         }
     }
+    
+    
 }
 

@@ -21,8 +21,13 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
+	fun createScriptedVariable(project: Project, text: String): ParadoxScriptScriptedVariable {
+		return createRootBlock(project, text).findChild()!!
+	}
+	
+	@JvmStatic
 	fun createScriptedVariable(project: Project, name: String, value: String): ParadoxScriptScriptedVariable {
-		return createRootBlock(project, "@$name=$value").findChild()!!
+		return createRootBlock(project, "@$name = $value").findChild()!!
 	}
 	
 	@JvmStatic
@@ -31,9 +36,14 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
+	fun createProperty(project: Project, text: String): ParadoxScriptProperty {
+		return createRootBlock(project, text).findChild()!!
+	}
+	
+	@JvmStatic
 	fun createProperty(project: Project, key: String, value: String): ParadoxScriptProperty {
 		val usedKey = key.quoteIfNecessary()
-		return createRootBlock(project, "$usedKey=$value").findChild()!!
+		return createRootBlock(project, "$usedKey = $value").findChild()!!
 	}
 	
 	@JvmStatic

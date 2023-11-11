@@ -27,24 +27,12 @@ inline fun <T> MutableSet<T>.synced(): MutableSet<T> = Collections.synchronizedS
 
 inline fun <K,V> MutableMap<K,V>.synced(): MutableMap<K,V> = Collections.synchronizedMap(this)
 
-inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()
-
 inline fun <reified R> Iterable<*>.findIsInstance(): R? {
 	return findIsInstance(R::class.java)
 }
 
 @Suppress("UNCHECKED_CAST")
 fun <R> Iterable<*>.findIsInstance(klass: Class<R>): R? {
-	for(element in this) if(klass.isInstance(element)) return element as R
-	return null
-}
-
-inline fun <reified R> Sequence<*>.findIsInstance(): R? {
-	return findIsInstance(R::class.java)
-}
-
-@Suppress("UNCHECKED_CAST")
-fun <R> Sequence<*>.findIsInstance(klass: Class<R>): R? {
 	for(element in this) if(klass.isInstance(element)) return element as R
 	return null
 }
@@ -96,9 +84,6 @@ inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -
 	}
 }
 
-inline fun <T, reified R> Sequence<T>.mapToArray(transform: (T) -> R): Array<R> {
-	return toList().mapToArray(transform)
-}
 
 
 fun <T, E> List<T>.groupAndCountBy(selector: (T) -> E?): Map<E, Int> {

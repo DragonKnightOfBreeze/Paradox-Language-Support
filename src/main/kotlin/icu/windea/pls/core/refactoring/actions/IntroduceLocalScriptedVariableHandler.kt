@@ -38,35 +38,35 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
 		//要求对应的int_token或float_token在定义声明内
 		val parentDefinition = element.findParentDefinition()?.castOrNull<ParadoxScriptProperty>() ?: return false
 		val command = Runnable {
-			//用封装属性引用（variableReference）替换当前位置的int或float
-			var newVariableReference = ParadoxScriptElementFactory.createVariableReference(project, name)
-			newVariableReference = element.parent.replace(newVariableReference).cast()
-			
-			//声明对应名字的封装变量，以内联模版的方式编辑变量名
-			val variableValue = element.text
-			val newVariable = ParadoxPsiIntroducer.introduceLocalScriptedVariable(name, variableValue, parentDefinition, project)
-			PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document) //提交文档更改
-			
-			val startAction = StartMarkAction.start(editor, project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"))
-			val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(file)
-			val variableName = newVariable.scriptedVariableName
-			templateBuilder.replaceElement(variableName, "variableName", TextExpression(variableName.text), true)
-			templateBuilder.replaceElement(newVariableReference, "variableReference", "variableName", false)
-			val caretMarker = editor.document.createRangeMarker(0, editor.caretModel.offset)
-			caretMarker.isGreedyToRight = true
-			editor.caretModel.moveToOffset(0)
-			val template = templateBuilder.buildInlineTemplate()
-			TemplateManager.getInstance(project).startTemplate(editor, template, TemplateEditingFinishedListener { _, _ ->
-				try {
-					//回到原来的光标位置
-					editor.caretModel.moveToOffset(caretMarker.endOffset)
-					editor.selectionModel.removeSelection()
-					editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
-				} finally {
-					FinishMarkAction.finish(project, editor, startAction)
-				}
-			})
-		}
+            //用封装属性引用（variableReference）替换当前位置的int或float
+            var newVariableReference = ParadoxScriptElementFactory.createVariableReference(project, name)
+            newVariableReference = element.parent.replace(newVariableReference).cast()
+            
+            //声明对应名字的封装变量，以内联模版的方式编辑变量名
+            val variableValue = element.text
+            val newVariable = ParadoxPsiManager.introduceLocalScriptedVariable(name, variableValue, parentDefinition, project)
+            PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document) //提交文档更改
+            
+            val startAction = StartMarkAction.start(editor, project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"))
+            val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(file)
+            val variableName = newVariable.scriptedVariableName
+            templateBuilder.replaceElement(variableName, "variableName", TextExpression(variableName.text), true)
+            templateBuilder.replaceElement(newVariableReference, "variableReference", "variableName", false)
+            val caretMarker = editor.document.createRangeMarker(0, editor.caretModel.offset)
+            caretMarker.isGreedyToRight = true
+            editor.caretModel.moveToOffset(0)
+            val template = templateBuilder.buildInlineTemplate()
+            TemplateManager.getInstance(project).startTemplate(editor, template, TemplateEditingFinishedListener { _, _ ->
+                try {
+                    //回到原来的光标位置
+                    editor.caretModel.moveToOffset(caretMarker.endOffset)
+                    editor.selectionModel.removeSelection()
+                    editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
+                } finally {
+                    FinishMarkAction.finish(project, editor, startAction)
+                }
+            })
+        }
 		WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"), null, command, file)
 		return true
 	}

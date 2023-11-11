@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
@@ -50,12 +51,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 if(type != "scripted_trigger" && type != "scripted_effect") return
                 
                 val recursions = mutableSetOf<PsiElement>()
-                ParadoxRecursionHandler.isRecursiveDefinition(element, recursions) { _, re ->
-                    //必须是**调用**而非其他方式的引用，因此这里我们只检查下面几种情况：
-                    //some_effect = xxx
-                    //some_trigger = xxx
-                    re is ParadoxScriptPropertyKey
-                }
+                ParadoxRecursionHandler.isRecursiveDefinition(element, recursions) { _, re -> ParadoxPsiManager.isInvocationReference(element, re) }
                 if(recursions.isEmpty()) return
                 val message = when {
                     definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.bug.unsupportedRecursion.description.2.1")

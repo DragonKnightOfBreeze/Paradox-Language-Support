@@ -19,7 +19,7 @@ var CwtDeclarationConfigContext.onActionConfig: CwtOnActionConfig? by createKeyD
 
 class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
     override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext {
-        return CwtDeclarationConfigContext(element, definitionName, definitionType, definitionSubtypes, gameType, configGroup)
+        return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, gameType, configGroup)
     }
     
     override fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String {
@@ -51,7 +51,7 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         if(definitionType != "game_rule") return null
         val gameRuleConfig = configGroup.gameRules.get(definitionName) ?: return null
         if(gameRuleConfig.config.configs.isNullOrEmpty()) return null
-        return CwtDeclarationConfigContext(element, definitionName, definitionType, definitionSubtypes, gameType, configGroup)
+        return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, gameType, configGroup)
             .apply { this.gameRuleConfig = gameRuleConfig }
     }
     
@@ -82,7 +82,7 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         if(definitionName == null) return null
         if(definitionType != "on_action") return null
         val onActionConfig = configGroup.onActions.getByTemplate(definitionName, element, configGroup) ?: return null
-        return CwtDeclarationConfigContext(element, definitionName, definitionType, definitionSubtypes, gameType, configGroup)
+        return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, gameType, configGroup)
             .apply { this.onActionConfig = onActionConfig }
     }
     

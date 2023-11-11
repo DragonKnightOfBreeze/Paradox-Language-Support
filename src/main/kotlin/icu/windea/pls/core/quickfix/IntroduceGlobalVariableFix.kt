@@ -37,7 +37,7 @@ class IntroduceGlobalVariableFix(
 		val targetFile = dialog.file.toPsiFile(project) ?: return //不期望的结果
 		if(targetFile !is ParadoxScriptFile) return
 		val command = Runnable {
-			ParadoxPsiIntroducer.introduceGlobalScriptedVariable(variableNameToUse, variableValue, targetFile, project)
+			ParadoxPsiManager.introduceGlobalScriptedVariable(variableNameToUse, variableValue, targetFile, project)
 			
 			val targetDocument = PsiDocumentManager.getInstance(project).getDocument(targetFile)
 			if(targetDocument != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(targetDocument) //提交文档更改

@@ -23,11 +23,11 @@ class AutomaticRelatedLocalisationsRenamerFactory: AutomaticRenamerFactory {
     }
     
     override fun isEnabled(): Boolean {
-        return ParadoxRefactoringSettings.instance.renameRelatedLocalisations
+        return ParadoxRefactoringSettings.getInstance().renameRelatedLocalisations
     }
     
     override fun setEnabled(enabled: Boolean) {
-        ParadoxRefactoringSettings.instance.renameRelatedLocalisations = enabled
+        ParadoxRefactoringSettings.getInstance().renameRelatedLocalisations = enabled
     }
     
     override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {

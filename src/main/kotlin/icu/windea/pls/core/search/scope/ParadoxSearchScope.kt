@@ -31,12 +31,12 @@ sealed class ParadoxSearchScope(
         }
         
         @JvmStatic
-        fun fromFile(project: Project, file: VirtualFile?): GlobalSearchScope {
-            if(file == null) return allScope(project) //use all scope here
+        fun fromFile(project: Project, file: VirtualFile?): GlobalSearchScope? {
+            if(file == null) return null
             val contextFile = file.findTopHostFileOrThis()
             val rootInfo = selectRootFile(contextFile)?.fileInfo?.rootInfo
-            if(rootInfo == null) return allScope(project) //use all scope here
-            if(!ProjectFileIndex.getInstance(project).isInContent(contextFile)) return allScope(project) //use all scope here
+            if(rootInfo == null) return null
+            if(!ProjectFileIndex.getInstance(project).isInContent(contextFile)) return null
             when(rootInfo) {
                 is ParadoxGameRootInfo -> {
                     val gameDirectory = rootInfo.rootFile

@@ -30,12 +30,15 @@ import icu.windea.pls.script.psi.*
  * @see CwtConfigContextProvider
  */
 class CwtConfigContext(
-    val element: ParadoxScriptMemberElement,
+    element: ParadoxScriptMemberElement,
     val fileInfo: ParadoxFileInfo?,
     val elementPath: ParadoxElementPath?,
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {
+    private val elementPointer = element.createPointer()
+    val element get() = elementPointer.element
+    
     fun getConfigs(matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
         val rootFile = selectRootFile(element) ?: return emptyList()
         val cache = configGroup.configsCache.value.get(rootFile)
@@ -69,10 +72,11 @@ class CwtConfigContext(
 }
 
 //rootFile -> cacheKey -> configs
+//use soft values to optimize memory
 //depends on config group and (definition, localisation, etc.) indices
 private val CwtConfigGroup.configsCache by createKeyDelegate(CwtConfigContext.Keys) {
     createCachedValue {
-        NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, List<CwtMemberConfig<*>>>() }
+        NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().softValues().buildCache<String, List<CwtMemberConfig<*>>>() }
             .withDependencyItems(PsiModificationTracker.MODIFICATION_COUNT)
     }
 }

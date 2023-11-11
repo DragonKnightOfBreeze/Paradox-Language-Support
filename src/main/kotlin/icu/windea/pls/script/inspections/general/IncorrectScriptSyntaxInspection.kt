@@ -1,9 +1,9 @@
 package icu.windea.pls.script.inspections.general
 
-import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*

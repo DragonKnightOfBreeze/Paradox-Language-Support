@@ -1,11 +1,218 @@
 package icu.windea.pls.core.psi
 
+import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.psi.*
+import kotlin.Pair
 
 object ParadoxPsiManager {
+    //region Inline Methods
+    
+    fun inlineScriptedVariable(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptScriptedVariable, project: Project) {
+        val toInline = declaration.scriptedVariableValue ?: return
+        var newText = rangeInElement.replace(element.text, toInline.text)
+        //某些情况下newText会以"@"开始，需要去掉
+        if(element !is ParadoxScriptInlineMathScriptedVariableReference && newText.startsWith('@')) {
+            newText = newText.drop(1)
+        }
+        val newRef = ParadoxScriptElementFactory.createValue(project, newText)
+        element.replace(newRef)
+    }
+    
+    fun inlineScriptedTrigger(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptProperty, project: Project) {
+        //必须是一个调用而非任何引用
+        if(element !is ParadoxScriptPropertyKey) return
+        if(element.textLength != rangeInElement.length) return
+        
+        val property = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
+        val toInline = declaration.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return
+        var newText = toInline.text.trim()
+        var reverse = false
+        val value = element.propertyValue?.resolved() ?: return
+        when(value) {
+            is ParadoxScriptBoolean -> {
+                if(!value.booleanValue) {
+                    reverse = true
+                    newText = newText.removeSurroundingOrNull("{", "}")?.trim() ?: return
+                    val multiline = newText.containsLineBreak()
+                    if(multiline) {
+                        newText = "NOT = {\n${newText}\n}"
+                    } else {
+                        newText = "NOT = { ${newText} }"
+                    }
+                }
+            }
+            is ParadoxScriptBlock -> {
+                val args = getArgs(value)
+                if(args.isNotEmpty()) {
+                    val newRef = ParadoxScriptElementFactory.createValue(project, newText).castOrNull<ParadoxScriptBlock>() ?: return
+                    newText = inlineWithArgs(newRef, args)
+                }
+            }
+            else -> return
+        }
+        if(reverse) {
+            val newRef = ParadoxScriptElementFactory.createProperty(project, newText)
+            property.parent.addAfter(newRef, property)
+        } else {
+            val newRef = ParadoxScriptElementFactory.createValue(project, newText)
+            val (start, end) = findMemberElementsToInline(newRef)
+            if(start != null && end != null) {
+                property.parent.addRangeAfter(start, end, property)
+            }
+        }
+        property.delete()
+    }
+    
+    fun inlineScriptedEffect(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptProperty, project: Project) {
+        //必须是一个调用而非任何引用
+        if(element !is ParadoxScriptPropertyKey) return
+        if(element.textLength != rangeInElement.length) return
+        
+        val property = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
+        val toInline = declaration.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return
+        var newText = toInline.text.trim()
+        val value = element.propertyValue?.resolved() ?: return
+        when(value) {
+            is ParadoxScriptBoolean -> {
+                if(!value.booleanValue) {
+                    property.delete()
+                    return
+                }
+            }
+            is ParadoxScriptBlock -> {
+                val args = getArgs(value)
+                if(args.isNotEmpty()) {
+                    val newRef = ParadoxScriptElementFactory.createValue(project, newText).castOrNull<ParadoxScriptBlock>() ?: return
+                    newText = inlineWithArgs(newRef, args)
+                }
+            }
+            else -> return
+        }
+        val newRef = ParadoxScriptElementFactory.createValue(project, newText)
+        val (start, end) = findMemberElementsToInline(newRef)
+        if(start != null && end != null) {
+            property.parent.addRangeAfter(start, end, property)
+        }
+        property.delete()
+    }
+    
+    private fun getArgs(element: ParadoxScriptBlock): Map<String, String> {
+        return buildMap {
+            element.propertyList.forEach f@{ p ->
+                val pk = p.propertyKey.text
+                val pv = p.propertyValue?.text ?: return@f
+                this += tupleOf(pk, pv)
+            }
+        }
+    }
+    
+    private fun inlineWithArgs(element: ParadoxScriptBlock, args: Map<String, String>): String {
+        //参数实际上可以被替换成任何文本（而不仅仅是严格意义上的字符串）
+        //如果必要，也处理条件代码块
+        
+        val offset = element.startOffset
+        val replacements = mutableListOf<Tuple2<TextRange, String>>()
+        
+        element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+            override fun elementFinished(element: PsiElement) {
+                run {
+                    if(element !is ParadoxScriptParameterCondition) return@run
+                    val conditionExpression = element.parameterConditionExpression ?: return@run
+                    val parameter = conditionExpression.parameterConditionParameter
+                    val name = parameter.name
+                    if(!args.containsKey(name)) return@run
+                    val operator = conditionExpression.findChild { it.elementType == ParadoxScriptElementTypes.NOT_SIGN } == null
+                    if(operator) {
+                        val (start, end) = findMemberElementsToInline(element)
+                        if(start != null && end != null) {
+                            element.parent.addRangeAfter(start, end, element)
+                        }
+                    }
+                    element.delete()
+                }
+            }
+        })
+        
+        element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+            override fun visitElement(element: PsiElement) {
+                run {
+                    if(element !is ParadoxParameter) return@run
+                    val name = element.name ?: return@run
+                    val v = args[name] ?: return@run
+                    replacements.add(tupleOf(element.textRange.shiftLeft(offset), v))
+                    return
+                }
+                super.visitElement(element)
+            }
+        })
+        
+        var newText = element.text
+        replacements.reversed().forEach { (range, v) ->
+            newText = newText.replaceRange(range.startOffset, range.endOffset, v)
+        }
+        return newText
+    }
+    
+    //endregion
+    
+    //region Introduce Methods
+    
+    /**
+     * 在所属定义之前另起一行（跳过注释和空白），声明指定名字和值的封装变量。
+     */
+    fun introduceLocalScriptedVariable(name: String, value: String, parentDefinitionOrFile: ParadoxScriptDefinitionElement, project: Project): ParadoxScriptScriptedVariable {
+        val (parent, anchor) = parentDefinitionOrFile.findParentAndAnchorToIntroduceLocalScriptedVariable()
+        var newVariable = ParadoxScriptElementFactory.createScriptedVariable(project, name, value)
+        val newLine = ParadoxScriptElementFactory.createLine(project)
+        newVariable = parent.addAfter(newVariable, anchor).cast()
+        if(anchor != null) parent.addBefore(newLine, newVariable) else parent.addAfter(newLine, newVariable)
+        return newVariable
+    }
+    
+    private fun ParadoxScriptDefinitionElement.findParentAndAnchorToIntroduceLocalScriptedVariable(): Pair<PsiElement, PsiElement?> {
+        if(this is ParadoxScriptFile) {
+            val anchor = this.findChildOfType<ParadoxScriptScriptedVariable>(forward = false)
+                ?: return this to this.lastChild
+            return this to anchor
+        } else {
+            val parent = parent
+            val anchor: PsiElement? = this.siblings(forward = false, withSelf = false).find {
+                it !is PsiWhiteSpace && it !is PsiComment
+            }
+            if(anchor == null && parent is ParadoxScriptRootBlock) {
+                return parent.parent to null //(file, null)
+            }
+            return parent to anchor
+        }
+    }
+    
+    /**
+     * 在指定文件的最后一个封装变量声明后或者最后一个PSI元素后另起一行，声明指定名字和值的封装变量。
+     */
+    fun introduceGlobalScriptedVariable(name: String, value: String, targetFile: ParadoxScriptFile, project: Project): ParadoxScriptScriptedVariable {
+        val (parent, anchor) = targetFile.findParentAndAnchorToIntroduceGlobalScriptedVariable()
+        var newVariable = ParadoxScriptElementFactory.createScriptedVariable(project, name, value)
+        val newLine = ParadoxScriptElementFactory.createLine(project)
+        newVariable = parent.addAfter(newVariable, anchor).cast()
+        parent.addBefore(newLine, newVariable)
+        return newVariable
+    }
+    
+    private fun ParadoxScriptFile.findParentAndAnchorToIntroduceGlobalScriptedVariable(): Pair<PsiElement, PsiElement> {
+        val anchor = this.findChildOfType<ParadoxScriptScriptedVariable>(forward = false)
+            ?: return this to this.lastChild
+        return this to anchor
+    }
+    
+    //endregion
+    
+    //region Misc Methods
+    
     /**
      * 判断当前位置应当是一个[ParadoxLocalisationLocale]，还是一个[ParadoxLocalisationPropertyKey]。
      */
@@ -39,4 +246,50 @@ object ParadoxPsiManager {
             }
         }
     }
+    
+    fun isGlobalScriptedVariable(element: ParadoxScriptScriptedVariable): Boolean {
+        val path = selectFile(element)?.fileInfo?.pathToEntry?.path ?: return false
+        return "common/scripted_variables".matchesPath(path)
+    }
+    
+    fun isInvocationReference(element: PsiElement, referenceElement: PsiElement): Boolean {
+        if(element !is ParadoxScriptProperty) return false
+        if(referenceElement !is ParadoxScriptPropertyKey) return false
+        val name = element.definitionInfo?.name?.orNull() ?: return false
+        if(name != referenceElement.text.unquote()) return false
+        return true
+    }
+    
+    fun findMemberElementsToInline(element: PsiElement): Tuple2<PsiElement?, PsiElement?> {
+        return when {
+            element is ParadoxScriptRootBlock -> {
+                val e1 = element.firstChild?.siblings(forward = true, withSelf = true)
+                    ?.find { it.elementType != TokenType.WHITE_SPACE }
+                val e2 = element.lastChild?.siblings(forward = false, withSelf = true)
+                    ?.find { it.elementType != TokenType.WHITE_SPACE }
+                e1 to e2
+            }
+            element is ParadoxScriptBlock -> {
+                val e1 = element.firstChild?.siblings(forward = true, withSelf = true)
+                    ?.dropWhile { it.elementType != ParadoxScriptElementTypes.LEFT_BRACE }?.drop(1)
+                    ?.find { it.elementType != TokenType.WHITE_SPACE }
+                val e2 = element.lastChild?.siblings(forward = false, withSelf = true)
+                    ?.dropWhile { it.elementType != ParadoxScriptElementTypes.RIGHT_BRACE }?.drop(1)
+                    ?.find { it.elementType != TokenType.WHITE_SPACE }
+                e1 to e2
+            }
+            element is ParadoxScriptParameterCondition -> {
+                val e1 = element.firstChild?.siblings(forward = true, withSelf = true)
+                    ?.dropWhile { it.elementType != ParadoxScriptElementTypes.NESTED_RIGHT_BRACKET }?.drop(1)
+                    ?.find { it.elementType != TokenType.WHITE_SPACE }
+                val e2 = element.lastChild?.siblings(forward = false, withSelf = true)
+                    ?.dropWhile { it.elementType != ParadoxScriptElementTypes.RIGHT_BRACKET }?.drop(1)
+                    ?.find { it.elementType != TokenType.WHITE_SPACE }
+                e1 to e2
+            }
+            else -> null to null
+        }
+    }
+    
+    //endregion
 }

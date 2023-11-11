@@ -29,7 +29,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
         val file = holder.file
         //compute once per file
         val searchScope = runReadAction { ParadoxSearchScope.fromFile(project, file.virtualFile) }
-            .withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
+            ?.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
         //it's unnecessary to make it synced
         val statusMap = mutableMapOf<PsiElement, Boolean>()
         

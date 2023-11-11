@@ -63,7 +63,8 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
         val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null
         val declarationConfigCacheKey = declarationConfig.declarationConfigCacheKey ?: return null // null -> unexpected
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
-        val isPropertyValue = context.element is ParadoxScriptValue && context.element.isPropertyValue()
+        val contextElement = context.element ?: return null
+        val isPropertyValue = contextElement is ParadoxScriptValue && contextElement.isPropertyValue()
         return "b@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${declarationConfigCacheKey.substringAfterLast('#')}\n${elementPathFromRoot}"
     }
     
@@ -74,8 +75,8 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
         val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null
         val rootConfigs = declarationConfig.toSingletonList()
         val configGroup = context.configGroup
-        val element = context.element
-        return CwtConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+        val contextElement = context.element ?: return null
+        return CwtConfigHandler.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
     }
 }
 
@@ -107,7 +108,8 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         val gameTypeId = context.gameType.id
         val path = context.fileInfo?.path ?: return null // null -> unexpected
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
-        val isPropertyValue = context.element is ParadoxScriptValue && context.element.isPropertyValue()
+        val contextElement = context.element ?: return null
+        val isPropertyValue = contextElement is ParadoxScriptValue && contextElement.isPropertyValue()
         return "isu@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${path.path}\n${elementPathFromRoot.path}"
     }
     
@@ -115,9 +117,9 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
         val configGroup = context.configGroup
         val inlineConfigs = configGroup.inlineConfigGroup[ParadoxInlineScriptHandler.inlineScriptKey] ?: return null
-        val element = context.element
+        val contextElement = context.element ?: return null
         val rootConfigs = inlineConfigs.map { it.inline() }
-        return CwtConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+        return CwtConfigHandler.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
     }
 }
 
@@ -163,7 +165,8 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         val gameTypeId = context.gameType.id
         val inlineScriptExpression = context.inlineScriptExpression ?: return null // null -> unexpected
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
-        val isPropertyValue = context.element is ParadoxScriptValue && context.element.isPropertyValue()
+        val contextElement = context.element ?: return null
+        val isPropertyValue = contextElement is ParadoxScriptValue && contextElement.isPropertyValue()
         return "is@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${inlineScriptExpression}\n${elementPathFromRoot.path}"
     }
     
@@ -173,12 +176,12 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         ProgressManager.checkCanceled()
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
         
+        val contextElement = context.element ?: return null
         if(elementPathFromRoot.isNotEmpty()) {
             val rootConfigContext = context.inlineScriptRootConfigContext ?: return null
-            val element = context.element
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
             val configGroup = context.configGroup
-            return CwtConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+            return CwtConfigHandler.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         }
         
         val inlineScriptExpression = context.inlineScriptExpression ?: return null
@@ -190,7 +193,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         withRecursionGuard("icu.windea.pls.lang.config.CwtInlineScriptConfigContextProvider.getConfigsForConfigContext") {
             withCheckRecursion(inlineScriptExpression) {
                 val project = context.configGroup.project
-                val selector = inlineScriptSelector(project, context.element)
+                val selector = inlineScriptSelector(project, contextElement)
                 ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQueryAsync p@{ info ->
                     ProgressManager.checkCanceled()
                     val file = info.virtualFile?.toPsiFile(project) ?: return@p true
@@ -289,7 +292,8 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         val gameTypeId = context.gameType.id
         val parameterElement = context.parameterElement ?: return null // null -> unexpected
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
-        val isPropertyValue = context.element is ParadoxScriptValue && context.element.isPropertyValue()
+        val contextElement = context.element ?: return null
+        val isPropertyValue = contextElement is ParadoxScriptValue && contextElement.isPropertyValue()
         return "is@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${parameterElement.contextKey}@${parameterElement.name}\n${elementPathFromRoot.path}"
     }
     
@@ -297,12 +301,12 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         ProgressManager.checkCanceled()
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
         
+        val contextElement = context.element ?: return null
         if(elementPathFromRoot.isNotEmpty()) {
             val rootConfigContext = context.parameterValueRootConfigContext ?: return null
-            val element = context.element
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
             val configGroup = context.configGroup
-            return CwtConfigHandler.getConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+            return CwtConfigHandler.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         }
         
         val parameterElement = context.parameterElement ?: return null

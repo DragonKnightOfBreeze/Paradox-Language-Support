@@ -11,12 +11,19 @@ class ParadoxRefactoringSettings : PersistentStateComponent<ParadoxRefactoringSe
     @JvmField var renameGeneratedModifierNameDesc = true
     @JvmField var renameGeneratedModifierIcon = true
     
+    @JvmField var inlineScriptedVariableThis = false
+    @JvmField var inlineScriptedVariableKeep = false
+    @JvmField var inlineScriptedTriggerThis = false
+    @JvmField var inlineScriptedTriggerKeep = false
+    @JvmField var inlineScriptedEffectThis = false
+    @JvmField var inlineScriptedEffectKeep = false
+    
     override fun getState() = this
     
     override fun loadState(state: ParadoxRefactoringSettings) = XmlSerializerUtil.copyBean(state, this)
     
     companion object {
         @JvmStatic
-        val instance: ParadoxRefactoringSettings get() = service()
+        fun getInstance(): ParadoxRefactoringSettings = service()
     }
 }
