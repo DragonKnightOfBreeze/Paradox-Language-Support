@@ -167,9 +167,6 @@ class CoreCwtDataExpressionResolver : CwtDataExpressionResolver {
                 val value = expressionString.substring(17, expressionString.length - 1).orNull()
                 Result(expressionString, CwtDataTypes.AliasKeysField, value)
             }
-            CwtTemplateExpression.resolve(expressionString).isNotEmpty() -> {
-                Result(expressionString, CwtDataTypes.Template)
-            }
             else -> null
         }
     }
@@ -210,6 +207,13 @@ class ConstantCwtDataExpressionResolver : CwtDataExpressionResolver {
     
     override fun resolve(expressionString: String): Result? {
         if(expressionString.none { c -> c in excludeCharacters }) return Result(expressionString, CwtDataTypes.Constant, expressionString)
+        return null
+    }
+}
+
+class TemplateCwtDataExpressionResolver : CwtDataExpressionResolver {
+    override fun resolve(expressionString: String): Result? {
+        if(CwtTemplateExpression.resolve(expressionString).isNotEmpty()) return Result(expressionString, CwtDataTypes.Template)
         return null
     }
 }

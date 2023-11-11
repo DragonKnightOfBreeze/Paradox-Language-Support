@@ -19,7 +19,7 @@ class ParadoxScriptedVariableInlineActionHandler: InlineActionHandler() {
     }
     
     override fun inlineElement(project: Project?, editor: Editor?, element: PsiElement) {
-        //TODO
+        
     }
 }
 

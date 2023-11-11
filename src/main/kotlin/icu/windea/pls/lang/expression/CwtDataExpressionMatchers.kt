@@ -106,27 +106,27 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
             configExpression.type == CwtDataTypes.Localisation -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                if(!expression.text.isExactIdentifier('-','.')) return Result.NotMatch
+                if(!expression.text.isExactIdentifier('-', '.')) return Result.NotMatch
                 CwtConfigMatcher.Impls.getLocalisationMatchResult(element, expression, project)
             }
             configExpression.type == CwtDataTypes.SyncedLocalisation -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                if(!expression.text.isExactIdentifier('-','.')) return Result.NotMatch
+                if(!expression.text.isExactIdentifier('-', '.')) return Result.NotMatch
                 CwtConfigMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
             }
             configExpression.type == CwtDataTypes.InlineLocalisation -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.quoted) return Result.FallbackMatch //"quoted_string" -> any string
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                if(!expression.text.isExactIdentifier('-','.')) return Result.NotMatch
+                if(!expression.text.isExactIdentifier('-', '.')) return Result.NotMatch
                 CwtConfigMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
             }
             configExpression.type == CwtDataTypes.Definition -> {
                 //注意这里可能是一个整数，例如，对于<technology_tier>
                 if(!expression.type.isStringType() && expression.type != ParadoxType.Int) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                if(!expression.text.isExactIdentifier()) return Result.NotMatch
+                if(!expression.text.isExactIdentifier('.')) return Result.NotMatch
                 CwtConfigMatcher.Impls.getDefinitionMatchResult(element, expression, configExpression, project)
             }
             configExpression.type == CwtDataTypes.AbsoluteFilePath -> {
@@ -228,15 +228,6 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
             configExpression.type == CwtDataTypes.AliasMatchLeft -> {
                 return Result.NotMatch //不在这里处理
             }
-            configExpression.type == CwtDataTypes.Template -> {
-                if(!expression.type.isStringLikeType()) return Result.NotMatch
-                if(expression.isParameterized()) return Result.ParameterizedMatch
-                //允许用引号括起
-                CwtConfigMatcher.Impls.getTemplateMatchResult(element, expression, configExpression, configGroup)
-            }
-            configExpression.type == CwtDataTypes.Any -> {
-                Result.FallbackMatch
-            }
             else -> null
         }
     }
@@ -298,6 +289,20 @@ class ConstantCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 //这里也用来匹配空字符串
                 val r = expression.text.equals(value, true) //忽略大小写
                 Result.of(r)
+            }
+            else -> null
+        }
+    }
+}
+
+class TemplateCwtDataExpressionMatcher : CwtDataExpressionMatcher {
+    override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Any? {
+        return when {
+            configExpression.type == CwtDataTypes.Template -> {
+                if(!expression.type.isStringLikeType()) return Result.NotMatch
+                if(expression.isParameterized()) return Result.ParameterizedMatch
+                //允许用引号括起
+                CwtConfigMatcher.Impls.getTemplateMatchResult(element, expression, configExpression, configGroup)
             }
             else -> null
         }

@@ -10,7 +10,10 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 /**
- * （对于脚本文件）检查是否存在不支持的递归。例如，递归调用scripted_trigger/scripted_effect。
+ * （对于脚本文件）检查是否存在不支持的递归。
+ * * 对于每个scripted_variable，检测其值中是否存在递归的scripted_variable引用。
+ * * 对于每个scripted_trigger，检测其值中是否存在递归的scripted_trigger调用。
+ * * 对于每个scripted_effect，检测其值中是否存在递归的scripted_effect调用。
  */
 class UnsupportedRecursionInspection : LocalInspectionTool() {
     //目前仅做检查即可，不需要显示递归的装订线图标
@@ -21,6 +24,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 when(element) {
+                    is ParadoxScriptScriptedVariable -> visitScriptedVariable(element)
                     is ParadoxScriptProperty -> visitProperty(element)
                 }
             }
@@ -30,11 +34,11 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 if(name.isNullOrEmpty()) return
                 
                 val recursions = mutableSetOf<PsiElement>()
-                ParadoxRecursionHandler.isRecursiveScriptedVariable(element, recursions) 
+                ParadoxRecursionHandler.isRecursiveScriptedVariable(element, recursions)
                 if(recursions.isEmpty()) return
                 val message = PlsBundle.message("inspection.script.bug.unsupportedRecursion.description.1")
                 val location = element.scriptedVariableName
-                holder.registerProblem(location, message, NavigateToRecursionsFix(name, element, recursions))
+                holder.registerProblem(location, message, NavigateToRecursionFix(name, element, recursions))
             }
             
             @Suppress("KotlinConstantConditions")
@@ -46,7 +50,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 if(type != "scripted_trigger" && type != "scripted_effect") return
                 
                 val recursions = mutableSetOf<PsiElement>()
-                ParadoxRecursionHandler.isRecursiveDefinition(element, recursions) { e, re ->
+                ParadoxRecursionHandler.isRecursiveDefinition(element, recursions) { _, re ->
                     //必须是**调用**而非其他方式的引用，因此这里我们只检查下面几种情况：
                     //some_effect = xxx
                     //some_trigger = xxx
@@ -59,7 +63,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                     else -> return
                 }
                 val location = element.propertyKey
-                holder.registerProblem(location, message, NavigateToRecursionsFix(name, element, recursions))
+                holder.registerProblem(location, message, NavigateToRecursionFix(name, element, recursions))
             }
         }
     }
@@ -70,7 +74,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
         return "txt" == filePath.fileExtension && ("common/scripted_triggers".matchesPath(filePath.path) || "common/scripted_effects".matchesPath(filePath.path))
     }
     
-    private class NavigateToRecursionsFix(key: String, target: PsiElement, recursions: Collection<PsiElement>) : NavigateToFix(key, target, recursions) {
+    private class NavigateToRecursionFix(key: String, target: PsiElement, recursions: Collection<PsiElement>) : NavigateToFix(key, target, recursions) {
         override fun getText() = PlsBundle.message("inspection.script.bug.unsupportedRecursion.quickFix.1")
         
         override fun getPopupTitle(editor: Editor) =
