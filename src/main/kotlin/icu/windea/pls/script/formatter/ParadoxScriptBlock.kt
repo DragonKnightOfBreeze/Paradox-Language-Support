@@ -40,18 +40,18 @@ class ParadoxScriptBlock(
                 .aroundInside(SEPARATORS, SCRIPTED_VARIABLE).spaceIf(customSettings.SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR) //间隔符周围按情况可能需要空格
                 .aroundInside(SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //间隔符周围按情况可能需要空格
                 .around(INLINE_MATH_OPERATORS).spaceIf(customSettings.SPACE_AROUND_INLINE_MATH_OPERATOR) //内联数学表达式操作符周围按情况可能需要空格
-                .between(LEFT_BRACE, RIGHT_BRACE).none()//花括号之间总是不需要空格
-                .withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES) //花括号内侧按情况可能需要空格
                 .between(LEFT_BRACE, MEMBERS).spaceIf(customSettings.SPACE_WITHIN_BRACES, true)
                 .between(MEMBERS, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true)
+                .withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true) //花括号内侧按情况可能需要空格
+                .between(LEFT_BRACE, RIGHT_BRACE).none()//花括号之间总是不需要空格
+                .withinPair(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS, true) //参数条件表达式内侧非换行按情况可能需要空格
                 .between(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).none() //参数条件表达式如果为空则不需要空格（尽管这是语法错误）
-                .withinPair(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS) //参数条件表达式内侧非换行按情况可能需要空格
-                .between(NESTED_RIGHT_BRACKET, RIGHT_BRACKET).none() //参数条件代码块如果为空则不需要空格
-                .withinPair(NESTED_RIGHT_BRACKET, RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS) //参数条件代码块内侧按情况可能需要空格
                 .between(NESTED_RIGHT_BRACKET, MEMBERS).spaceIf(customSettings.SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS, true)
                 .between(MEMBERS, RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS, true)
+                .withinPair(NESTED_RIGHT_BRACKET, RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS) //参数条件代码块内侧按情况可能需要空格
+                .between(NESTED_RIGHT_BRACKET, RIGHT_BRACKET).none() //参数条件代码块如果为空则不需要空格
+                .withinPair(INLINE_MATH_START, INLINE_MATH_END).spaceIf(customSettings.SPACE_WITHIN_INLINE_MATH_BRACKETS, true) //内联数学表达式内侧按情况可能需要空格
                 .between(INLINE_MATH_START, INLINE_MATH_END).none() //内联数字表达式如果为空则不需要空格（尽管这是语法错误）
-                .withinPair(INLINE_MATH_START, INLINE_MATH_END).spaceIf(customSettings.SPACE_WITHIN_INLINE_MATH_BRACKETS) //内联数学表达式内侧按情况可能需要空格
         }
     }
     
