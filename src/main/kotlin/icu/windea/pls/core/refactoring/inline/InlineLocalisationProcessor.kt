@@ -17,12 +17,12 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
-class InlineScriptedEffectProcessor(
+class InlineLocalisationProcessor(
     project: Project,
     scope: GlobalSearchScope,
-    private var element: ParadoxScriptProperty,
+    private var element: ParadoxLocalisationProperty,
     private val reference: PsiReference?,
     private val editor: Editor?,
     private val inlineThisOnly: Boolean,
@@ -30,7 +30,7 @@ class InlineScriptedEffectProcessor(
 ) : BaseRefactoringProcessor(project, scope, null) {
     private val descriptiveName = DescriptiveNameUtil.getDescriptiveName(element)
     
-    override fun getCommandName() = PlsBundle.message("inline.scriptedEffect.command", descriptiveName)
+    override fun getCommandName() = PlsBundle.message("inline.localisation.command", descriptiveName)
     
     override fun createUsageViewDescriptor(usages: Array<out UsageInfo>) = InlineViewDescriptor(element)
     
@@ -44,14 +44,13 @@ class InlineScriptedEffectProcessor(
             usages.add(UsageInfo(reference.element))
         }
         for(reference in ReferencesSearch.search(element, myRefactoringScope, true)) {
-            if(!ParadoxPsiManager.isInvocationReference(element, reference.element)) continue
             usages.add(UsageInfo(reference.element))
         }
         return usages.toTypedArray()
     }
     
     override fun refreshElements(elements: Array<out PsiElement>) {
-        val newElement = elements.singleOrNull()?.castOrNull<ParadoxScriptProperty>() ?: return
+        val newElement = elements.singleOrNull()?.castOrNull<ParadoxLocalisationProperty>() ?: return
         element = newElement
     }
     
@@ -60,7 +59,7 @@ class InlineScriptedEffectProcessor(
     }
     
     override fun getRefactoringId(): String {
-        return "pls.refactoring.inline.scriptedEffect"
+        return "pls.refactoring.inline.localisation"
     }
     
     override fun getBeforeData(): RefactoringEventData {
@@ -102,7 +101,7 @@ class InlineScriptedEffectProcessor(
             val usageElement = usage.element ?: continue
             val rangeInUsageElement = usage.rangeInElement ?: continue
             try {
-                ParadoxPsiManager.inlineScriptedEffect(usageElement, rangeInUsageElement,  element, myProject)
+                ParadoxPsiManager.inlineLocalisation(usageElement, rangeInUsageElement,  element, myProject)
             } catch(e: IncorrectOperationException) {
                 thisLogger().error(e)
             }

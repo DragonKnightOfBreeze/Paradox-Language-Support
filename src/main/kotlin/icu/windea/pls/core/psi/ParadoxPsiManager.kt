@@ -175,6 +175,10 @@ object ParadoxPsiManager {
         return newText
     }
     
+    fun inlineLocalisation(usageElement: PsiElement, rangeInUsageElement: TextRange, element: ParadoxLocalisationProperty, myProject: Project?) {
+        //TODO 1.2.2+
+    }
+    
     //endregion
     
     //region Introduce Methods

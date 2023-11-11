@@ -2,6 +2,7 @@ package icu.windea.pls.core
 
 import com.intellij.openapi.util.*
 import java.util.*
+import kotlin.collections.ArrayDeque
 
 object SmartRecursionGuardContext {
     val recursionGuardCacheThreadLocal: ThreadLocal<MutableMap<String, SmartRecursionGuard>> by lazy { ThreadLocal.withInitial { mutableMapOf() } }
@@ -32,7 +33,7 @@ inline fun <T> withRecursionGuard(key: String, action: SmartRecursionGuard.() ->
  * 用于基于传入的键避免SOE。
  */
 class SmartRecursionGuard {
-    val stackTrace = LinkedList<Any>()
+    val stackTrace = ArrayDeque<Any>()
     var checkStatus = false
     
     /**
