@@ -5,7 +5,9 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import kotlin.Pair
 
@@ -19,8 +21,22 @@ object ParadoxPsiManager {
         if(element !is ParadoxScriptInlineMathScriptedVariableReference && newText.startsWith('@')) {
             newText = newText.drop(1)
         }
-        val newRef = ParadoxScriptElementFactory.createValue(project, newText)
-        element.replace(newRef)
+        val language = element.language
+        when {
+            language == ParadoxScriptLanguage -> {
+                //这里会把newText识别为一个值，但是实际上newText可以是任何文本，目前不进行额外的处理
+                val newRef = ParadoxScriptElementFactory.createValue(project, newText)
+                element.replace(newRef)
+            }
+            language == ParadoxLocalisationLanguage -> {
+                //这里会把newText识别为一个字符串，但是实际上newText可以是任何文本，目前不进行额外的处理
+                newText = newText.unquote() //内联到本地化文本中时，需要先尝试去除周围的双引号
+                val newRef = ParadoxLocalisationElementFactory.createString(project, newText)
+                //element.parent - "$@var$"  
+                element.parent.replace(newRef)
+            }
+            else -> return //unexpected
+        }
     }
     
     fun inlineScriptedTrigger(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptProperty, project: Project) {
@@ -141,6 +157,7 @@ object ParadoxPsiManager {
         element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 run {
+                    //TODO 1.2.2+ 目前不确定这里是否需要在内联后去除参数值周围的双引号（对于内联脚本来说，应当需要）
                     if(element !is ParadoxParameter) return@run
                     val name = element.name ?: return@run
                     val v = args[name] ?: return@run

@@ -36,6 +36,12 @@ object ParadoxLocalisationElementFactory {
     }
     
     @JvmStatic
+    fun createString(project: Project, text: String): ParadoxLocalisationString {
+        return createPropertyValue(project, text)
+            .findChild()!!
+    }
+    
+    @JvmStatic
     fun createPropertyReference(project: Project, name: String): ParadoxLocalisationPropertyReference {
         return createPropertyValue(project, "$$name$")
             .findChild()!!

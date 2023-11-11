@@ -24,11 +24,12 @@ object ParadoxRecursionHandler {
         recursions: MutableCollection<PsiElement>?,
         keys: MutableSet<String>,
     ): Boolean {
+        var result = recursions.isNotNullOrEmpty()
+        if(result) return true
         val name = element.name ?: return false
         keys.add(name)
         val entryElement = element.scriptedVariableValue ?: return false
         ProgressManager.checkCanceled()
-        var result = false
         entryElement.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(e: PsiElement) {
                 run {
@@ -64,11 +65,12 @@ object ParadoxRecursionHandler {
         recursions: MutableCollection<PsiElement>?,
         keys: MutableSet<String>,
     ): Boolean {
+        var result = recursions.isNotNullOrEmpty()
+        if(result) return true
         val name = element.name.orNull() ?: return false
         keys.add(name)
         val entryElement = element.propertyValue ?: return false
         ProgressManager.checkCanceled()
-        var result = false
         entryElement.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(e: PsiElement) {
                 run {
@@ -106,6 +108,8 @@ object ParadoxRecursionHandler {
         keys: MutableSet<String>,
         predicate: ((ParadoxScriptDefinitionElement, PsiElement) -> Boolean)? = null,
     ): Boolean {
+        var result = recursions.isNotNullOrEmpty()
+        if(result) return true
         val definitionInfo = element.definitionInfo ?: return false //skip non-definition
         val name = definitionInfo.name.orNull() ?: return false //skip anonymous definition
         keys.add(name)
@@ -116,7 +120,6 @@ object ParadoxRecursionHandler {
             else -> null
         } ?: return false
         ProgressManager.checkCanceled()
-        var result = false
         entryElement.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(e: PsiElement) {
                 run {
