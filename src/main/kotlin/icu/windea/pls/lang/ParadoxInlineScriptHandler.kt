@@ -16,7 +16,6 @@ import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.expression.*
-import icu.windea.pls.model.*
 import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.psi.*
 
@@ -58,25 +57,10 @@ object ParadoxInlineScriptHandler {
             CwtConfigMatcher.matches(propertyValue, expression, it.config.valueExpression, it.config, configGroup).get(matchOptions)
         }
         if(inlineConfig == null) return null
-        val expression = getExpressionFromInlineConfig(propertyValue, inlineConfig) ?: return null
+        val expression = getInlineScriptExpressionFromInlineConfig(element, inlineConfig) ?: return null
         if(expression.isParameterized()) return null
         val elementOffset = element.startOffset
         return ParadoxInlineScriptUsageInfo(expression, elementOffset, gameType)
-    }
-    
-    private fun getExpressionLocation(it: CwtMemberConfig<*>): String? {
-        return it.findOption { it.key == "inline_script_expression" }?.stringValue
-    }
-    
-    fun getExpressionFromInlineConfig(propertyValue: ParadoxScriptValue, inlineConfig: CwtInlineConfig): String? {
-        if(inlineConfig.name != inlineScriptKey) return null
-        val expressionLocation = getExpressionLocation(inlineConfig.config) ?: return null
-        val expressionElement = if(expressionLocation.isEmpty()) {
-            propertyValue.castOrNull<ParadoxScriptString>()
-        } else {
-            propertyValue.findProperty(expressionLocation, conditional = true)?.propertyValue?.castOrNull<ParadoxScriptString>()
-        }
-        return expressionElement?.stringValue()
     }
     
     fun getInlineScriptFile(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptFile? {
@@ -103,18 +87,31 @@ object ParadoxInlineScriptHandler {
     
     fun getInlineScriptExpression(file: VirtualFile): String? {
         val fileInfo = file.fileInfo ?: return null
-        return doGetInlineScriptExpression(fileInfo)
+        val filePath = fileInfo.pathToEntry.path
+        val configExpression = inlineScriptPathExpression
+        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.extract(configExpression, null, filePath)?.orNull()
     }
     
     fun getInlineScriptExpression(file: PsiFile): String? {
         if(file !is ParadoxScriptFile) return null
-        val fileInfo = file.fileInfo ?: return null
-        return doGetInlineScriptExpression(fileInfo)
+        val vFile = selectFile(file) ?: return null
+        return getInlineScriptExpression(vFile)
     }
     
-    private fun doGetInlineScriptExpression(fileInfo: ParadoxFileInfo): String? {
-        val filePath = fileInfo.pathToEntry.path
-        val configExpression = inlineScriptPathExpression
-        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.extract(configExpression, null, filePath)?.orNull()
+    fun getInlineScriptExpressionFromExpression(element: PsiElement): String? {
+        //TODO 1.2.2+
+        return null
+    }
+    
+    fun getInlineScriptExpressionFromInlineConfig(element: ParadoxScriptProperty, inlineConfig: CwtInlineConfig): String? {
+        val propertyValue = element.propertyValue ?: return null
+        if(inlineConfig.name != inlineScriptKey) return null
+        val expressionLocation = inlineConfig.config.findOption { it.key == "inline_script_expression" }?.stringValue ?: return null
+        val expressionElement = if(expressionLocation.isEmpty()) {
+            propertyValue.castOrNull<ParadoxScriptString>()
+        } else {
+            propertyValue.findProperty(expressionLocation, conditional = true)?.propertyValue?.castOrNull<ParadoxScriptString>()
+        }
+        return expressionElement?.stringValue()
     }
 }

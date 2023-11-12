@@ -4,9 +4,9 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
-import com.intellij.psi.search.searches.*
 import com.intellij.refactoring.inline.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.refactoring.*
 import icu.windea.pls.core.search.scope.*
@@ -20,15 +20,13 @@ class ParadoxScriptedVariableInlineDialog(
     private val reference: PsiReference?,
     private val editor: Editor?
 ) : InlineOptionsDialog(project, true, element) {
-    private val optimizedScope = when{
-        ParadoxPsiManager.isGlobalScriptedVariable(element) ->  ParadoxSearchScope.fromElement(element)
+    private val optimizedScope = when {
+        ParadoxPsiManager.isGlobalScriptedVariable(element) -> ParadoxSearchScope.fromElement(element)
             ?.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
             ?.intersectWith(GlobalSearchScope.projectScope(project))
             ?: GlobalSearchScope.projectScope(project)
         else -> GlobalSearchScope.fileScope(element.containingFile)
     }
-    
-    private val occurrencesNumber = getNumberOfOccurrences(element)
     
     init {
         title = PlsBundle.message("title.inline.scriptedVariable")
@@ -38,11 +36,8 @@ class ParadoxScriptedVariableInlineDialog(
     }
     
     override fun getNameLabelText(): String {
-        val name = element.name.orEmpty()
-        return when {
-            occurrencesNumber > -1 -> PlsBundle.message("inline.scriptedVariable.occurrences", name, occurrencesNumber)
-            else -> PlsBundle.message("inline.scriptedVariable.label", name)
-        }
+        val name = element.name.orAnonymous()
+        return PlsBundle.message("inline.scriptedVariable.label", name)
     }
     
     override fun getBorderTitle(): String {
@@ -67,24 +62,12 @@ class ParadoxScriptedVariableInlineDialog(
         return true
     }
     
-    
     override fun isInlineThis(): Boolean {
         return ParadoxRefactoringSettings.getInstance().inlineScriptedVariableThis
     }
     
     override fun isKeepTheDeclarationByDefault(): Boolean {
         return ParadoxRefactoringSettings.getInstance().inlineScriptedVariableKeep
-    }
-    
-    override fun ignoreOccurrence(reference: PsiReference?): Boolean {
-        return true
-    }
-    
-    override fun getNumberOfOccurrences(nameIdentifierOwner: PsiNameIdentifierOwner): Int {
-        val element = nameIdentifierOwner
-        return getNumberOfOccurrences(element, this::ignoreOccurrence) {
-            ReferencesSearch.search(element, optimizedScope)
-        }
     }
     
     override fun doAction() {

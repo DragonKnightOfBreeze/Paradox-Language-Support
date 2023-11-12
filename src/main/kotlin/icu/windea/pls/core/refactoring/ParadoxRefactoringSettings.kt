@@ -19,6 +19,8 @@ class ParadoxRefactoringSettings : PersistentStateComponent<ParadoxRefactoringSe
     @JvmField var inlineScriptedEffectKeep = false
     @JvmField var inlineLocalisationThis = false
     @JvmField var inlineLocalisationKeep = false
+    @JvmField var inlineInlineScriptThis = false
+    @JvmField var inlineInlineScriptKeep = false
     
     override fun getState() = this
     

@@ -120,6 +120,10 @@ object ParadoxPsiManager {
         property.delete()
     }
     
+    fun inlineInlineScript(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptFile, project: Project) {
+        //TODO 1.2.2+
+    }
+    
     private fun getArgs(element: ParadoxScriptBlock): Map<String, String> {
         return buildMap {
             element.propertyList.forEach f@{ p ->

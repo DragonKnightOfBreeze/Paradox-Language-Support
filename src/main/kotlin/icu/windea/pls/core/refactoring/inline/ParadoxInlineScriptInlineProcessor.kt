@@ -1,7 +1,6 @@
 package icu.windea.pls.core.refactoring.inline
 
 import com.intellij.history.*
-import com.intellij.lang.findUsages.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
@@ -17,20 +16,22 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptedTriggerInlineProcessor(
+class ParadoxInlineScriptInlineProcessor(
     project: Project,
     scope: GlobalSearchScope,
-    private var element: ParadoxScriptProperty,
+    private var element: ParadoxScriptFile,
     private val reference: PsiReference?,
     private val editor: Editor?,
     private val inlineThisOnly: Boolean,
     private val keepTheDeclaration: Boolean,
 ) : BaseRefactoringProcessor(project, scope, null) {
-    private val descriptiveName = DescriptiveNameUtil.getDescriptiveName(element)
+    //do not use DescriptiveNameUtil.getDescriptiveName(element) here
+    private val descriptiveName = ParadoxInlineScriptHandler.getInlineScriptExpression(element).orAnonymous()
     
-    override fun getCommandName() = PlsBundle.message("inline.scriptedTrigger.command", descriptiveName)
+    override fun getCommandName() = PlsBundle.message("inline.inlineScript.command", descriptiveName)
     
     override fun createUsageViewDescriptor(usages: Array<out UsageInfo>) = ParadoxInlineViewDescriptor(element)
     
@@ -41,7 +42,7 @@ class ParadoxScriptedTriggerInlineProcessor(
         }
         if(!inlineThisOnly) {
             for(reference in ReferencesSearch.search(element, myRefactoringScope, true)) {
-                if(!ParadoxPsiManager.isInvocationReference(element, reference.element)) continue
+                if(ParadoxInlineScriptHandler.getInlineScriptExpressionFromExpression(reference.element) == null) continue
                 usages.add(UsageInfo(reference.element))
             }
         }
@@ -49,7 +50,7 @@ class ParadoxScriptedTriggerInlineProcessor(
     }
     
     override fun refreshElements(elements: Array<out PsiElement>) {
-        val newElement = elements.singleOrNull()?.castOrNull<ParadoxScriptProperty>() ?: return
+        val newElement = elements.singleOrNull()?.castOrNull<ParadoxScriptFile>() ?: return
         element = newElement
     }
     
@@ -58,7 +59,7 @@ class ParadoxScriptedTriggerInlineProcessor(
     }
     
     override fun getRefactoringId(): String {
-        return "pls.refactoring.inline.scriptedTrigger"
+        return "pls.refactoring.inline.inlineScript"
     }
     
     override fun getBeforeData(): RefactoringEventData {
@@ -100,7 +101,7 @@ class ParadoxScriptedTriggerInlineProcessor(
             val usageElement = usage.element ?: continue
             val rangeInUsageElement = usage.rangeInElement ?: continue
             try {
-                ParadoxPsiManager.inlineScriptedTrigger(usageElement, rangeInUsageElement,  element, myProject)
+                ParadoxPsiManager.inlineInlineScript(usageElement, rangeInUsageElement,  element, myProject)
             } catch(e: IncorrectOperationException) {
                 thisLogger().error(e)
             }

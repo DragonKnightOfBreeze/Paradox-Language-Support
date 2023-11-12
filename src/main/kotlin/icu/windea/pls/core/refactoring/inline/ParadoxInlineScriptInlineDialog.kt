@@ -4,53 +4,53 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
-import com.intellij.psi.search.searches.*
 import com.intellij.refactoring.inline.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.refactoring.*
 import icu.windea.pls.core.search.scope.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptedTriggerInlineDialog(
+class ParadoxInlineScriptInlineDialog(
     project: Project,
-    private val element: ParadoxScriptProperty,
+    private val element: ParadoxScriptFile,
     private val reference: PsiReference?,
     private val editor: Editor?
-): InlineOptionsDialog(project, true, element) {
+) : InlineOptionsDialog(project, true, element) {
     private val optimizedScope = ParadoxSearchScope.fromElement(element)
         ?.withFileTypes(ParadoxScriptFileType)
         ?.intersectWith(GlobalSearchScope.projectScope(project))
         ?: GlobalSearchScope.projectScope(project)
     
     init {
-        title = PlsBundle.message("title.inline.scriptedTrigger")
+        title = PlsBundle.message("title.inline.inlineScript")
         myInvokedOnReference = reference != null
         init()
         helpAction.isEnabled = false
     }
     
     override fun getNameLabelText(): String {
-        val name = element.definitionInfo?.name.orAnonymous()
-        return PlsBundle.message("inline.scriptedTrigger.label", name)
+        val name = ParadoxInlineScriptHandler.getInlineScriptExpression(element).orAnonymous()
+        return PlsBundle.message("inline.inlineScript.label", name)
     }
     
     override fun getBorderTitle(): String {
-        return PlsBundle.message("inline.scriptedTrigger.border.title")
+        return PlsBundle.message("inline.inlineScript.border.title")
     }
     
     override fun getInlineThisText(): String {
-        return PlsBundle.message("inline.scriptedTrigger.inline.this")
+        return PlsBundle.message("inline.inlineScript.inline.this")
     }
     
     override fun getInlineAllText(): String {
-        return if(element.isWritable) PlsBundle.message("inline.scriptedTrigger.inline.all.remove")
-        else PlsBundle.message("inline.scriptedTrigger.inline.all")
+        return if(element.isWritable) PlsBundle.message("inline.inlineScript.inline.all.remove")
+        else PlsBundle.message("inline.inlineScript.inline.all")
     }
     
     override fun getKeepTheDeclarationText(): String {
-        return if(element.isWritable) PlsBundle.message("inline.scriptedTrigger.inline.all.keep")
+        return if(element.isWritable) PlsBundle.message("inline.inlineScript.inline.all.keep")
         else super.getKeepTheDeclarationText()
     }
     
@@ -59,22 +59,22 @@ class ParadoxScriptedTriggerInlineDialog(
     }
     
     override fun isInlineThis(): Boolean {
-        return ParadoxRefactoringSettings.getInstance().inlineScriptedTriggerThis
+        return ParadoxRefactoringSettings.getInstance().inlineInlineScriptThis
     }
     
     override fun isKeepTheDeclarationByDefault(): Boolean {
-        return ParadoxRefactoringSettings.getInstance().inlineScriptedTriggerKeep
+        return ParadoxRefactoringSettings.getInstance().inlineInlineScriptKeep
     }
     
     override fun doAction() {
-        val processor = ParadoxScriptedTriggerInlineProcessor(project, optimizedScope, element, reference, editor, isInlineThisOnly, isKeepTheDeclaration())
+        val processor = ParadoxInlineScriptInlineProcessor(project, optimizedScope, element, reference, editor, isInlineThisOnly, isKeepTheDeclaration())
         invokeRefactoring(processor)
         val settings = ParadoxRefactoringSettings.getInstance()
         if(myRbInlineThisOnly.isEnabled && myRbInlineAll.isEnabled) {
-            settings.inlineScriptedTriggerThis = isInlineThisOnly
+            settings.inlineInlineScriptThis = isInlineThisOnly
         }
         if(myKeepTheDeclaration != null && myKeepTheDeclaration!!.isEnabled) {
-            settings.inlineScriptedTriggerKeep = isKeepTheDeclaration()
+            settings.inlineInlineScriptKeep = isKeepTheDeclaration()
         }
     }
 }

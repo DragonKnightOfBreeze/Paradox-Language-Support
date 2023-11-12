@@ -410,8 +410,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val configGroup = inlineConfig.info.configGroup
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
-        val propertyValue = contextReferenceElement.propertyValue ?: return null
-        val expression = ParadoxInlineScriptHandler.getExpressionFromInlineConfig(propertyValue, inlineConfig) ?: return null
+        val expression = ParadoxInlineScriptHandler.getInlineScriptExpressionFromInlineConfig(contextReferenceElement, inlineConfig) ?: return null
         if(expression.isParameterized()) return null //skip if context name is parameterized
         val contextName = expression
         val contextNameElement = contextReferenceElement.propertyKey
@@ -465,8 +464,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
         val inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptHandler.inlineScriptKey } ?: return null
         val contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
-        val propertyValue = contextReferenceElement.propertyValue ?: return null
-        val expression = ParadoxInlineScriptHandler.getExpressionFromInlineConfig(propertyValue, inlineConfig) ?: return null
+        val expression = ParadoxInlineScriptHandler.getInlineScriptExpressionFromInlineConfig(contextReferenceElement, inlineConfig) ?: return null
         if(expression.isParameterized()) return null //skip if context name is parameterized
         val name = element.name
         val contextName = expression

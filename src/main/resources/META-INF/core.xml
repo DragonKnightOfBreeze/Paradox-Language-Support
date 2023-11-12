@@ -69,6 +69,7 @@
     <inlineActionHandler implementation="icu.windea.pls.core.refactoring.inline.ParadoxScriptedVariableInlineActionHandler"/>
     <inlineActionHandler implementation="icu.windea.pls.core.refactoring.inline.ParadoxScriptedTriggerInlineActionHandler"/>
     <inlineActionHandler implementation="icu.windea.pls.core.refactoring.inline.ParadoxScriptedEffectInlineActionHandler"/>
+    <inlineActionHandler implementation="icu.windea.pls.core.refactoring.inline.ParadoxInlineScriptInlineActionHandler"/>
     <inlineActionHandler implementation="icu.windea.pls.core.refactoring.inline.ParadoxLocalisationInlineActionHandler"/>
     <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.refactoring.actions.IntroduceLocalScriptedVariableHandler"/>
     <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.refactoring.actions.IntroduceGlobalScriptedVariableHandler"/>

@@ -43,3 +43,4 @@ class ParadoxScriptedVariableInlineActionHandler : InlineActionHandler() {
     
     private fun getRefactoringName() = PlsBundle.message("title.inline.scriptedVariable")
 }
+
