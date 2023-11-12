@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.*
 
 //com.intellij.refactoring.inline.InlineViewDescriptor
 
-class InlineViewDescriptor(
+class ParadoxInlineViewDescriptor(
     private val element: PsiElement
 ) : UsageViewDescriptor {
     override fun getElements(): Array<PsiElement> {

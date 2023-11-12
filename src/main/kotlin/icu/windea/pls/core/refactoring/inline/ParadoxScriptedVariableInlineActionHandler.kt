@@ -12,7 +12,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptedVariableInlineActionHandler: InlineActionHandler() {
+class ParadoxScriptedVariableInlineActionHandler : InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.scriptedVariable")
     
     override fun isEnabledForLanguage(language: Language) = language.isParadoxLanguage()
@@ -37,7 +37,7 @@ class ParadoxScriptedVariableInlineActionHandler: InlineActionHandler() {
             return
         }
         
-        val dialog = InlineScriptedVariableDialog(project, element, reference, editor)
+        val dialog = ParadoxScriptedVariableInlineDialog(project, element, reference, editor)
         dialog.show()
     }
     

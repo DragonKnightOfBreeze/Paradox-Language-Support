@@ -12,6 +12,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.references.*
 
 class ParadoxLocalisationInlineActionHandler: InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.localisation")
@@ -24,12 +25,24 @@ class ParadoxLocalisationInlineActionHandler: InlineActionHandler() {
         return true
     }
     
+    override fun canInlineElementInEditor(element: PsiElement, editor: Editor?): Boolean {
+        val reference = if(editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
+        if(reference != null && reference !is ParadoxLocalisationPropertyPsiReference) return false
+        return super.canInlineElementInEditor(element, editor)
+    }
+    
     override fun inlineElement(project: Project, editor: Editor?, element: PsiElement) {
         return performInline(project, editor, element.cast())
     }
     
     private fun performInline(project: Project, editor: Editor?, element: ParadoxLocalisationProperty) {
         val reference = if(editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
+        
+        if(reference != null && reference !is ParadoxLocalisationPropertyPsiReference) {
+            val message = PlsBundle.message("refactoring.localisation.reference", getRefactoringName())
+            CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
+            return
+        }
         
         val isRecursive = ParadoxRecursionHandler.isRecursiveLocalisation(element)
         if(isRecursive) {
@@ -38,7 +51,18 @@ class ParadoxLocalisationInlineActionHandler: InlineActionHandler() {
             return
         }
         
-        val dialog = InlineLocalisationDialog(project, element, reference, editor)
+        run { 
+            if(reference == null) return@run
+            val referenceElement = reference.element.castOrNull<ParadoxLocalisationPropertyReference>() ?: return@run
+            val parameter = referenceElement.propertyReferenceParameter?.text?.orNull() ?: return@run
+            if(parameter.singleOrNull()?.isExactLetter() != true) {
+                val message = PlsBundle.message("refactoring.localisation.parameter", getRefactoringName())
+                CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
+                return
+            }
+        }
+        
+        val dialog = ParadoxLocalisationInlineDialog(project, element, reference, editor)
         dialog.show()
     }
     

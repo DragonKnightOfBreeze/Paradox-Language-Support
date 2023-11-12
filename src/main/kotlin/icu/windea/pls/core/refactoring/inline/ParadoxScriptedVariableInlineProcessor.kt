@@ -19,10 +19,10 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
-class InlineScriptedTriggerProcessor(
+class ParadoxScriptedVariableInlineProcessor(
     project: Project,
     scope: GlobalSearchScope,
-    private var element: ParadoxScriptProperty,
+    private var element: ParadoxScriptScriptedVariable,
     private val reference: PsiReference?,
     private val editor: Editor?,
     private val inlineThisOnly: Boolean,
@@ -30,26 +30,27 @@ class InlineScriptedTriggerProcessor(
 ) : BaseRefactoringProcessor(project, scope, null) {
     private val descriptiveName = DescriptiveNameUtil.getDescriptiveName(element)
     
-    override fun getCommandName() = PlsBundle.message("inline.scriptedTrigger.command", descriptiveName)
+    override fun getCommandName() = PlsBundle.message("inline.scriptedVariable.command", descriptiveName)
     
-    override fun createUsageViewDescriptor(usages: Array<out UsageInfo>) = InlineViewDescriptor(element)
+    override fun createUsageViewDescriptor(usages: Array<out UsageInfo>) = ParadoxInlineViewDescriptor(element)
     
     override fun findUsages(): Array<UsageInfo> {
+        if(inlineThisOnly) {
+            if(reference == null) return UsageInfo.EMPTY_ARRAY
+            return arrayOf(UsageInfo(reference))
+        }
         val usages = mutableSetOf<UsageInfo>()
         if(reference != null) {
             usages.add(UsageInfo(reference.element))
         }
-        if(!inlineThisOnly) {
-            for(reference in ReferencesSearch.search(element, myRefactoringScope, true)) {
-                if(!ParadoxPsiManager.isInvocationReference(element, reference.element)) continue
-                usages.add(UsageInfo(reference.element))
-            }
+        for(reference in ReferencesSearch.search(element, myRefactoringScope, true)) {
+            usages.add(UsageInfo(reference.element))
         }
         return usages.toTypedArray()
     }
     
     override fun refreshElements(elements: Array<out PsiElement>) {
-        val newElement = elements.singleOrNull()?.castOrNull<ParadoxScriptProperty>() ?: return
+        val newElement = elements.singleOrNull()?.castOrNull<ParadoxScriptScriptedVariable>() ?: return
         element = newElement
     }
     
@@ -58,7 +59,7 @@ class InlineScriptedTriggerProcessor(
     }
     
     override fun getRefactoringId(): String {
-        return "pls.refactoring.inline.scriptedTrigger"
+        return "pls.refactoring.inline.scriptedVariable"
     }
     
     override fun getBeforeData(): RefactoringEventData {
@@ -100,7 +101,7 @@ class InlineScriptedTriggerProcessor(
             val usageElement = usage.element ?: continue
             val rangeInUsageElement = usage.rangeInElement ?: continue
             try {
-                ParadoxPsiManager.inlineScriptedTrigger(usageElement, rangeInUsageElement,  element, myProject)
+                ParadoxPsiManager.inlineScriptedVariable(usageElement, rangeInUsageElement,  element, myProject)
             } catch(e: IncorrectOperationException) {
                 thisLogger().error(e)
             }

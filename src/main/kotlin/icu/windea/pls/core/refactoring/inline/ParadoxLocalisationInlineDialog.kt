@@ -7,14 +7,12 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.refactoring.inline.*
 import icu.windea.pls.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.refactoring.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.*
+import icu.windea.pls.localisation.psi.*
 
-class InlineLocalisationDialog(
+class ParadoxLocalisationInlineDialog(
     project: Project,
     private val element: ParadoxLocalisationProperty,
     private val reference: PsiReference?,
@@ -85,7 +83,7 @@ class InlineLocalisationDialog(
     }
     
     override fun doAction() {
-        val processor = InlineLocalisationProcessor(project, optimizedScope, element, reference, editor, isInlineThisOnly, isKeepTheDeclaration())
+        val processor = ParadoxLocalisationInlineProcessor(project, optimizedScope, element, reference, editor, isInlineThisOnly, isKeepTheDeclaration())
         invokeRefactoring(processor)
         val settings = ParadoxRefactoringSettings.getInstance()
         if(myRbInlineThisOnly.isEnabled && myRbInlineAll.isEnabled) {

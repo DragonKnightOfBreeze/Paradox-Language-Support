@@ -7,55 +7,59 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.refactoring.inline.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.refactoring.*
 import icu.windea.pls.core.search.scope.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
-class InlineScriptedTriggerDialog(
+class ParadoxScriptedVariableInlineDialog(
     project: Project,
-    private val element: ParadoxScriptProperty,
+    private val element: ParadoxScriptScriptedVariable,
     private val reference: PsiReference?,
     private val editor: Editor?
-): InlineOptionsDialog(project, true, element) {
-    private val optimizedScope = ParadoxSearchScope.fromElement(element)
-        ?.withFileTypes(ParadoxScriptFileType)
-        ?.intersectWith(GlobalSearchScope.projectScope(project))
-        ?: GlobalSearchScope.projectScope(project)
+) : InlineOptionsDialog(project, true, element) {
+    private val optimizedScope = when{
+        ParadoxPsiManager.isGlobalScriptedVariable(element) ->  ParadoxSearchScope.fromElement(element)
+            ?.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
+            ?.intersectWith(GlobalSearchScope.projectScope(project))
+            ?: GlobalSearchScope.projectScope(project)
+        else -> GlobalSearchScope.fileScope(element.containingFile)
+    }
     
     private val occurrencesNumber = getNumberOfOccurrences(element)
     
     init {
-        title = PlsBundle.message("title.inline.scriptedTrigger")
+        title = PlsBundle.message("title.inline.scriptedVariable")
         myInvokedOnReference = reference != null
         init()
         helpAction.isEnabled = false
     }
     
     override fun getNameLabelText(): String {
-        val name = element.definitionInfo?.name.orEmpty()
+        val name = element.name.orEmpty()
         return when {
-            occurrencesNumber > -1 -> PlsBundle.message("inline.scriptedTrigger.occurrences", name, occurrencesNumber)
-            else -> PlsBundle.message("inline.scriptedTrigger.label", name)
+            occurrencesNumber > -1 -> PlsBundle.message("inline.scriptedVariable.occurrences", name, occurrencesNumber)
+            else -> PlsBundle.message("inline.scriptedVariable.label", name)
         }
     }
     
     override fun getBorderTitle(): String {
-        return PlsBundle.message("inline.scriptedTrigger.border.title")
+        return PlsBundle.message("inline.scriptedVariable.border.title")
     }
     
     override fun getInlineThisText(): String {
-        return PlsBundle.message("inline.scriptedTrigger.inline.this")
+        return PlsBundle.message("inline.scriptedVariable.inline.this")
     }
     
     override fun getInlineAllText(): String {
-        return if(element.isWritable) PlsBundle.message("inline.scriptedTrigger.inline.all.remove")
-        else PlsBundle.message("inline.scriptedTrigger.inline.all")
+        return if(element.isWritable) PlsBundle.message("inline.scriptedVariable.inline.all.remove")
+        else PlsBundle.message("inline.scriptedVariable.inline.all")
     }
     
     override fun getKeepTheDeclarationText(): String {
-        return if(element.isWritable) PlsBundle.message("inline.scriptedTrigger.inline.all.keep")
+        return if(element.isWritable) PlsBundle.message("inline.scriptedVariable.inline.all.keep")
         else super.getKeepTheDeclarationText()
     }
     
@@ -63,12 +67,13 @@ class InlineScriptedTriggerDialog(
         return true
     }
     
+    
     override fun isInlineThis(): Boolean {
-        return ParadoxRefactoringSettings.getInstance().inlineScriptedTriggerThis
+        return ParadoxRefactoringSettings.getInstance().inlineScriptedVariableThis
     }
     
     override fun isKeepTheDeclarationByDefault(): Boolean {
-        return ParadoxRefactoringSettings.getInstance().inlineScriptedTriggerKeep
+        return ParadoxRefactoringSettings.getInstance().inlineScriptedVariableKeep
     }
     
     override fun ignoreOccurrence(reference: PsiReference?): Boolean {
@@ -83,14 +88,14 @@ class InlineScriptedTriggerDialog(
     }
     
     override fun doAction() {
-        val processor = InlineScriptedTriggerProcessor(project, optimizedScope, element, reference, editor, isInlineThisOnly, isKeepTheDeclaration())
+        val processor = ParadoxScriptedVariableInlineProcessor(project, optimizedScope, element, reference, editor, isInlineThisOnly, isKeepTheDeclaration())
         invokeRefactoring(processor)
         val settings = ParadoxRefactoringSettings.getInstance()
         if(myRbInlineThisOnly.isEnabled && myRbInlineAll.isEnabled) {
-            settings.inlineScriptedTriggerThis = isInlineThisOnly
+            settings.inlineScriptedVariableThis = isInlineThisOnly
         }
         if(myKeepTheDeclaration != null && myKeepTheDeclaration!!.isEnabled) {
-            settings.inlineScriptedTriggerKeep = isKeepTheDeclaration()
+            settings.inlineScriptedVariableKeep = isKeepTheDeclaration()
         }
     }
 }

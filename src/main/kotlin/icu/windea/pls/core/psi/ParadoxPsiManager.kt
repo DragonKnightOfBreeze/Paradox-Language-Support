@@ -11,10 +11,13 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import kotlin.Pair
 
+@Suppress("UNUSED_PARAMETER")
 object ParadoxPsiManager {
     //region Inline Methods
     
     fun inlineScriptedVariable(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptScriptedVariable, project: Project) {
+        if(element !is ParadoxScriptedVariableReference) return
+        
         val toInline = declaration.scriptedVariableValue ?: return
         var newText = rangeInElement.replace(element.text, toInline.text)
         //某些情况下newText会以"@"开始，需要去掉
@@ -32,7 +35,7 @@ object ParadoxPsiManager {
                 //这里会把newText识别为一个字符串，但是实际上newText可以是任何文本，目前不进行额外的处理
                 newText = newText.unquote() //内联到本地化文本中时，需要先尝试去除周围的双引号
                 val newRef = ParadoxLocalisationElementFactory.createString(project, newText)
-                //element.parent - "$@var$"  
+                //element.parent should be something like "$@var$"  
                 element.parent.replace(newRef)
             }
             else -> return //unexpected
@@ -42,7 +45,7 @@ object ParadoxPsiManager {
     fun inlineScriptedTrigger(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptProperty, project: Project) {
         //必须是一个调用而非任何引用
         if(element !is ParadoxScriptPropertyKey) return
-        if(element.textLength != rangeInElement.length) return
+        if(element.text.unquote().length != rangeInElement.length) return
         
         val property = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
         val toInline = declaration.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return
@@ -87,7 +90,7 @@ object ParadoxPsiManager {
     fun inlineScriptedEffect(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptProperty, project: Project) {
         //必须是一个调用而非任何引用
         if(element !is ParadoxScriptPropertyKey) return
-        if(element.textLength != rangeInElement.length) return
+        if(element.text.unquote().length != rangeInElement.length) return
         
         val property = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
         val toInline = declaration.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return
@@ -175,8 +178,17 @@ object ParadoxPsiManager {
         return newText
     }
     
-    fun inlineLocalisation(usageElement: PsiElement, rangeInUsageElement: TextRange, element: ParadoxLocalisationProperty, myProject: Project?) {
-        //TODO 1.2.2+
+    fun inlineLocalisation(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxLocalisationProperty, project: Project) {
+        if(element !is ParadoxLocalisationPropertyReference) return
+        
+        val toInline = declaration.propertyValue ?: return
+        val newText = toInline.text.unquote()
+        val newRef = ParadoxLocalisationElementFactory.createPropertyValue(project, newText)
+        val (start, end) = findRichTextElementsToInline(newRef)
+        if(start != null && end != null) {
+            element.parent.addRangeAfter(start, end, element)
+        }
+        element.delete()
     }
     
     //endregion
@@ -306,6 +318,21 @@ object ParadoxPsiManager {
                 val e2 = element.lastChild?.siblings(forward = false, withSelf = true)
                     ?.dropWhile { it.elementType != ParadoxScriptElementTypes.RIGHT_BRACKET }?.drop(1)
                     ?.find { it.elementType != TokenType.WHITE_SPACE }
+                e1 to e2
+            }
+            else -> null to null
+        }
+    }
+    
+    fun findRichTextElementsToInline(element: PsiElement): Tuple2<PsiElement?, PsiElement?> {
+        return when {
+            element is ParadoxLocalisationPropertyValue -> {
+                val e1 = element.firstChild?.siblings(forward = true, withSelf = true)
+                    ?.dropWhile { it.elementType != ParadoxLocalisationElementTypes.LEFT_QUOTE }?.drop(1)
+                    ?.firstOrNull()
+                val e2 = element.lastChild?.siblings(forward = false, withSelf = true)
+                    ?.dropWhile { it.elementType != ParadoxLocalisationElementTypes.RIGHT_QUOTE }?.drop(1)
+                    ?.firstOrNull()
                 e1 to e2
             }
             else -> null to null

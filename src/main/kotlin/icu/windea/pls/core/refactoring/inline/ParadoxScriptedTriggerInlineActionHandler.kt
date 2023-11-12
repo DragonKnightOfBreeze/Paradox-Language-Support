@@ -14,7 +14,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptedTriggerInlineActionHandler: InlineActionHandler() {
+class ParadoxScriptedTriggerInlineActionHandler : InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.scriptedTrigger")
     
     override fun isEnabledForLanguage(language: Language) = language == ParadoxScriptLanguage
@@ -29,8 +29,7 @@ class ParadoxScriptedTriggerInlineActionHandler: InlineActionHandler() {
     
     override fun canInlineElementInEditor(element: PsiElement, editor: Editor?): Boolean {
         val reference = if(editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
-        val referenceElement = reference?.element
-        if(referenceElement != null && !ParadoxPsiManager.isInvocationReference(element, referenceElement)) return false
+        if(reference != null && !ParadoxPsiManager.isInvocationReference(element, reference.element)) return false
         return super.canInlineElementInEditor(element, editor)
     }
     
@@ -41,8 +40,7 @@ class ParadoxScriptedTriggerInlineActionHandler: InlineActionHandler() {
     private fun performInline(project: Project, editor: Editor?, element: ParadoxScriptProperty) {
         val reference = if(editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
         
-        val referenceElement = reference?.element
-        if(referenceElement != null && !ParadoxPsiManager.isInvocationReference(element, referenceElement)) {
+        if(reference != null && !ParadoxPsiManager.isInvocationReference(element, reference.element)) {
             val message = PlsBundle.message("refactoring.scriptedTrigger.invocation", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
             return
@@ -55,7 +53,7 @@ class ParadoxScriptedTriggerInlineActionHandler: InlineActionHandler() {
             return
         }
         
-        val dialog = InlineScriptedTriggerDialog(project, element, reference, editor)
+        val dialog = ParadoxScriptedTriggerInlineDialog(project, element, reference, editor)
         dialog.show()
     }
     
