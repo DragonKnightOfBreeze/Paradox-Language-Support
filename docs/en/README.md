@@ -10,7 +10,7 @@ IDEA plugin: Support for Paradox language.
 Features:
 
 * Supports script language (mainly `*.txt` files) and localization language (`*.yml` files),  
-  providing many language features such as syntax parsing, reference resolving, quick documentation, code navigation, code inspection, code completion, inlay hints, live templates, code hierarchy, diagram, diff, etc.
+  providing many language features such as code highlight, code navigation, code completion, code inspection, code refactoring, quick ducomentation, inlay hints, live templates, code hierarchy, diagram, diff, etc.
 * Supports CWT language (`*.cwt` files), providing basic language features.
 * Supports viewing DDS images directly in the IDE, providing some useful editor features including converting to PNG images.
 * Provides quite comprehensive support for most advanced features of script language, such as parameters, scopes, inline scripts and various complex expressions.

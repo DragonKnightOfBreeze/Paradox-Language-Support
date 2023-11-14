@@ -2,19 +2,19 @@
 
 ## 1.2.2
 
-* [X] 支持内联`scripted_variable`（即封装变量） （`编辑器右键菜单 -> Refactor -> Inline...`）
+* [X] 支持内联`scripted_variable`（即封装变量）（`编辑器右键菜单 -> Refactor -> Inline...`）
 * [X] 支持内联`scripted_trigger`和`scripted_effect` （`编辑器右键菜单 -> Refactor -> Inline...`，仅限作为调用的引用）
 * [X] 支持内联本地化（`编辑器右键菜单 -> Refactor -> Inline...`，仅限本地化文本中的引用）
 * [ ] 支持内联`inline_script`（即内联脚本）（`编辑器右键菜单 -> Refactor -> Inline...`）
 * [X] 可以从项目视图或者模组依赖配置页面中的游戏或模组根目录打开其本地目录或者Steam创意工坊页面，以及复制对应路径/URL
 * [X] 可以在工具菜单（`编辑器右键菜单 -> Paradox Language Support`）打开和复制数种路径/URL
-* [X] （仅限Stellaris）支持表达式`technology@level` - 参见：[[Stellaris\] Could support tech@level grammar? · Issue #58 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/58)
+* [X] （仅限Stellaris）支持表达式`technology@level` - 参见：[\[Stellaris\] Could support tech@level grammar? · Issue #58](https://github.com/cwtools/cwtools-vscode/issues/58)
 * [X] 其他优化与BUG修复
 
 ## 1.2.1
 
-* [X] 支持语法`@a = @[ 1 + 2 ]` - 参见：[The tool cannot recognize in-script flag variables (Vic3) · Issue #76 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/76)
-* [X] （仅限VIC3）支持操作符`?=` - 参见：[Parsing issues in Vic3 · Issue #53 · cwtools/cwtools (github.com)](https://github.com/cwtools/cwtools/issues/53)
+* [X] 支持语法`@a = @[ 1 + 2 ]` - 参见：[The tool cannot recognize in-script flag variables (Vic3) · Issue #76)](https://github.com/cwtools/cwtools-vscode/issues/76)
+* [X] （仅限VIC3）支持操作符`?=` - 参见：[Parsing issues in Vic3 · Issue #53](https://github.com/cwtools/cwtools/issues/53)
 * [X] 其他优化与BUG修复
 
 ## 1.2.0
