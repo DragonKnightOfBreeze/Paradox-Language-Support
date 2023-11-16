@@ -28,7 +28,7 @@ class IfsUtilCodeInjector : CodeInjectorBase() {
     private val FORMAT_KEY by lazy { staticProperty<IfsUtil, Key<String>>("FORMAT_KEY").get() }
     private val IMAGE_PROVIDER_REF_KEY by lazy { staticProperty<IfsUtil, Key<SoftReference<ImageDocument.ScaledImageProvider>>>("IMAGE_PROVIDER_REF_KEY").get() }
     
-    @InjectMethod(InjectMethod.Pointer.AFTER)
+    @InjectMethod(InjectMethod.Pointer.AFTER, static = true)
     fun refresh(file: VirtualFile, returnValue: Boolean): Boolean {
         if(returnValue) return true
         if(file.fileType != DdsFileType) return false

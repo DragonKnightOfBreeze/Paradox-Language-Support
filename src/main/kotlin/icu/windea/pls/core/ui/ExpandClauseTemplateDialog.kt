@@ -84,11 +84,12 @@ class ExpandClauseTemplateDialog(
         tableView.columnSelectionAllowed = true
         tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
         //快速搜索
-        object : TableViewSpeedSearch<ElementDescriptor>(tableView, null) {
+        val speedSearch = object : TableViewSpeedSearch<ElementDescriptor>(tableView, null) {
             override fun getItemText(element: ElementDescriptor): String {
                 return element.name
             }
         }
+        speedSearch.setupListeners()
         val listTable = ElementsListTable(tableView, elementsTableModel, disposable, context, this)
         val table = listTable.table
         //add, remove, move up, move down, duplicate

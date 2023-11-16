@@ -6,15 +6,17 @@ import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*
 
 /**
- * 重写IDE低层检查字符串是否是标识符的代码逻辑，以便兼容本地化文件中的本地化图标引用（`£unity£`），从而可以正确地查找引用。
+ * 重写IDE底层的检测字符串是否是标识符的代码逻辑，从而可以正确地查找特定类型的引用。
  */
 @InjectTarget("com.intellij.psi.impl.search.LowLevelSearchUtil")
 class LowLevelSearchUtilCodeInjector : CodeInjectorBase() {
     //com.intellij.psi.impl.search.LowLevelSearchUtil
     //com.intellij.psi.impl.search.LowLevelSearchUtil.checkJavaIdentifier
     
-    //rewrite this method to compatible with Paradox localisation icon references (e.g. "£unity£")
-    @InjectMethod
+    //rewrite this method to compatible with:
+    //localisation icon references (e.g. "£unity£")
+    
+    @InjectMethod(static = true)
     fun checkJavaIdentifier(text: CharSequence, searcher: StringSearcher, index: Int): Boolean {
         if(!searcher.isJavaIdentifier) {
             return true

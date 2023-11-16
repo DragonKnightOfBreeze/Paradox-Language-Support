@@ -56,30 +56,29 @@ abstract class CodeInjectorBase : CodeInjector() {
         }
         val injectTargetName = injectTarget.value
         val injectPluginId = injectTarget.pluginId
-        val injectMethods = mutableMapOf<String, Method>()
         val injectMethodInfos = mutableMapOf<String, CodeInjectorInfo.MethodInfo>()
         val functions = this::class.declaredFunctions
         for(function in functions) {
             val injectMethod = function.findAnnotation<InjectMethod>() ?: continue
             val method = function.javaMethod ?: continue
             val uuid = UUID.randomUUID().toString()
-            injectMethods.put(uuid, method)
             val hasReceiver = function.extensionReceiverParameter != null
-            val injectMethodInfo = CodeInjectorInfo.MethodInfo(injectMethod.pointer, hasReceiver)
+            val hasReturnValue = method.returnType != Void.TYPE && (injectMethod.pointer == InjectMethod.Pointer.AFTER || injectMethod.pointer == InjectMethod.Pointer.AFTER_FINALLY)
+            val injectMethodInfo = CodeInjectorInfo.MethodInfo(method, injectMethod.pointer, hasReceiver, hasReturnValue, injectMethod.static)
             injectMethodInfos.put(uuid, injectMethodInfo)
         }
-        return CodeInjectorInfo(this, injectTargetName, injectPluginId, injectMethods, injectMethodInfos)
+        return CodeInjectorInfo(this, injectTargetName, injectPluginId, injectMethodInfos)
     }
     
     private fun doInjectMethods(targetClass: CtClass, codeInjectorInfo: CodeInjectorInfo) {
         var addFields = true
-        codeInjectorInfo.injectMethods.forEach { (methodId, injectMethod) ->
-            val targetMethod = findCtMethod(targetClass, injectMethod)
+        codeInjectorInfo.injectMethodInfos.forEach { (methodId, injectMethodInfo) ->
+            val injectMethod = injectMethodInfo.method
+            val targetMethod = findCtMethod(targetClass, injectMethod, injectMethodInfo)
             if(targetMethod == null) {
                 thisLogger().warn("Inject method ${injectMethod.name} cannot be applied to any method of ${targetClass.name}")
                 return@forEach
             }
-            val injectMethodInfo = codeInjectorInfo.injectMethodInfos.get(methodId) ?: throw IllegalStateException()
             
             if(addFields) {
                 val f1 = "private static volatile UserDataHolder __codeInjectorService__ = " +
@@ -116,22 +115,31 @@ abstract class CodeInjectorBase : CodeInjector() {
         }
     }
     
-    private fun findCtMethod(ctClass: CtClass, method: Method): CtMethod? {
+    private fun findCtMethod(ctClass: CtClass, method: Method, injectMethodInfo: CodeInjectorInfo.MethodInfo): CtMethod? {
         val methodName = method.name
-        return ctClass.getDeclaredMethods(methodName).also { if(it.size == 1) return it[0] }
-            .filter { it.parameterTypes.size <= method.parameterCount }.also { if(it.size == 1) return it[0] }
-            .filter { it.parameterTypes.withIndex().all { (i, p) -> p.name == method.parameters[i].name } }.also { if(it.size == 1) return it[0] }
-            .firstOrNull()
-    }
-    
-    protected fun continueInvocation(): Nothing {
-        throw CONTINUE_INVOCATION
+        var argSize = method.parameterCount
+        if(injectMethodInfo.hasReceiver) argSize--
+        if(injectMethodInfo.hasReturnValue) argSize--
+        if(argSize < 0) return null //unexpected
+        var argIndexOffset = 0
+        if(injectMethodInfo.hasReceiver) argIndexOffset++
+        return ctClass.getDeclaredMethods(methodName).find f@{ ctMethod ->
+            val isStatic = Modifier.isStatic(ctMethod.modifiers)
+            if((injectMethodInfo.static && !isStatic) || (!injectMethodInfo.static && isStatic)) return@f false
+            if(ctMethod.parameterTypes.size != argSize) return@f false
+            if(ctMethod.parameterTypes.withIndex().any { (i, p) -> p.name != method.parameterTypes[i + argIndexOffset].name }) return@f false
+            true
+        }
     }
     
     private fun applyCodeInjectorSupports() {
         CodeInjectorSupport.EP_NAME.extensionList.forEach { ep ->
             ep.apply(this)
         }
+    }
+    
+    protected fun continueInvocation(): Nothing {
+        throw CONTINUE_INVOCATION
     }
     
     companion object {

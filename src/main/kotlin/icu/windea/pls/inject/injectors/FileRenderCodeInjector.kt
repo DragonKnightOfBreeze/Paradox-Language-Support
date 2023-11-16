@@ -2,7 +2,6 @@
 
 package icu.windea.pls.inject.injectors
 
-import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileChooser.tree.*
 import com.intellij.openapi.vfs.*
 import com.intellij.ui.*
@@ -18,21 +17,35 @@ class FileRenderCodeInjector : CodeInjectorBase() {
     //com.intellij.openapi.fileChooser.tree.FileRenderer
     //com.intellij.openapi.fileChooser.tree.FileRenderer.customize
     
-    @InjectMethod(InjectMethod.Pointer.AFTER)
-    fun Any.customize(renderer: SimpleColoredComponent, value: Any, selected: Boolean, focused: Boolean) {
-        try {
-            val file = when {
-                value is FileNode -> value.file
-                value is VirtualFile -> value
-                else -> return
+    @InjectMethod(InjectMethod.Pointer.AFTER, static = true)
+    fun customize(renderer: SimpleColoredComponent, value: Any, selected: Boolean, focused: Boolean) {
+        doCustomizeCatching(value, renderer)
+    }
+    
+    @InjectMethod(InjectMethod.Pointer.AFTER, static = true)
+    fun customize(renderer: SimpleColoredComponent, value: Any) {
+        doCustomizeCatching(value, renderer)
+    }
+    
+    private fun doCustomizeCatching(value: Any, renderer: SimpleColoredComponent) {
+        disableLogger {
+            runCatchingCancelable {
+                if(doCustomize(value, renderer)) return
             }
-            val rootInfo = file.rootInfo
-            if(rootInfo != null && rootInfo.rootFile == file) {
-                val comment = rootInfo.qualifiedName
-                renderer.append(" $comment", SimpleTextAttributes.GRAYED_ATTRIBUTES)
-            }
-        } catch(e: Exception) {
-            thisLogger().warn(e)
         }
+    }
+    
+    private fun doCustomize(value: Any, renderer: SimpleColoredComponent): Boolean {
+        val file = when {
+            value is FileNode -> value.file
+            value is VirtualFile -> value
+            else -> return true
+        }
+        val rootInfo = file.rootInfo
+        if(rootInfo != null && rootInfo.rootFile == file) {
+            val comment = rootInfo.qualifiedName
+            renderer.append(" $comment", SimpleTextAttributes.GRAYED_ATTRIBUTES)
+        }
+        return false
     }
 }

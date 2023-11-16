@@ -9,7 +9,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import javassist.*
 import java.lang.reflect.*
-import java.nio.file.*
 
 @Service
 class CodeInjectorService : UserDataHolderBase() {
@@ -88,8 +87,8 @@ class CodeInjectorService : UserDataHolderBase() {
         //不要在声明和调用注入方法时加载目标类型（例如，将接收者的类型直接指定为目标类型）
         val codeInjector = getUserData(codeInjectorsKey)?.get(codeInjectorId) ?: throw IllegalStateException()
         val codeInjectorInfo = codeInjector.getUserData(codeInjectorInfoKey) ?: throw IllegalStateException()
-        val injectMethod = codeInjectorInfo.injectMethods[methodId] ?: throw IllegalStateException()
         val injectMethodInfo = codeInjectorInfo.injectMethodInfos[methodId] ?: throw IllegalStateException()
+        val injectMethod = injectMethodInfo.method
         val actualArgsSize = injectMethod.parameterCount
         val finalArgs = when(actualArgsSize) {
             args.size -> args
@@ -106,7 +105,7 @@ class CodeInjectorService : UserDataHolderBase() {
                 }.toTypedArray()
             }
         }
-        if(finalArgs.size != injectMethod.parameterCount) throw IllegalStateException()
+        if(finalArgs.size != actualArgsSize) throw IllegalStateException()
         return injectMethod.invoke(codeInjector, *finalArgs)
     }
 }

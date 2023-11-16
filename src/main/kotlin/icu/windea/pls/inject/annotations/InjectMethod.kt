@@ -11,7 +11,8 @@ import icu.windea.pls.inject.*
 @MustBeDocumented
 @Target(AnnotationTarget.FUNCTION)
 annotation class InjectMethod(
-    val pointer: Pointer = Pointer.BODY
+    val pointer: Pointer = Pointer.BODY,
+    val static: Boolean = false,
 ) {
     enum class Pointer {
         BODY, BEFORE, AFTER, AFTER_FINALLY

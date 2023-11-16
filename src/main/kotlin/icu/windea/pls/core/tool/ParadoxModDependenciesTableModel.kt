@@ -3,13 +3,11 @@ package icu.windea.pls.core.tool
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.*
-import com.intellij.ui.table.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.actions.*
-import java.awt.*
 import java.awt.event.*
 import javax.swing.*
 
@@ -124,25 +122,16 @@ class ParadoxModDependenciesTableModel(
         @JvmStatic
         fun createPanel(project: Project, settings: ParadoxGameOrModSettingsState, modDependencies: MutableList<ParadoxModDependencySettingsState>): JPanel {
             val tableModel = ParadoxModDependenciesTableModel(settings, modDependencies)
-            val tableView = TableView(tableModel)
-            tableView.setShowGrid(false)
-            tableView.rowSelectionAllowed = true
-            tableView.columnSelectionAllowed = false
-            tableView.intercellSpacing = Dimension(0, 0)
-            tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
-            //调整列的宽度
-            tableView.setFixedColumnWidth(EnabledItem.columnIndex, EnabledItem.name)
-            tableView.tableHeader.columnModel.getColumn(NameItem.columnIndex).preferredWidth = 10000 // consume all available space
-            tableView.setFixedColumnWidth(VersionItem.columnIndex, VersionItem.name)
-            tableView.setFixedColumnWidth(SupportedVersionItem.columnIndex, SupportedVersionItem.name)
+            val tableView = ParadoxModDependenciesTableView(tableModel)
             //快速搜索
-            object : TableViewSpeedSearch<ParadoxModDependencySettingsState>(tableView, null) {
+            val speedSearch = object : TableViewSpeedSearch<ParadoxModDependencySettingsState>(tableView, null) {
                 override fun getItemText(element: ParadoxModDependencySettingsState): String {
                     val modDirectory = element.modDirectory.orEmpty()
                     val modDescriptorSettings = getProfilesSettings().modDescriptorSettings.getValue(modDirectory)
                     return modDescriptorSettings.name.orEmpty()
                 }
             }
+            speedSearch.setupListeners()
             //双击打开模组依赖信息对话框
             object : DoubleClickListener() {
                 override fun onDoubleClick(event: MouseEvent): Boolean {
