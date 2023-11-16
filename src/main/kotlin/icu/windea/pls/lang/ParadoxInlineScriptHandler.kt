@@ -21,8 +21,10 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxInlineScriptHandler {
     const val inlineScriptKey = "inline_script"
+    const val inlineScriptExpressionOptionName = "inline_script_expression"
+    const val inlineScriptPathExpressionString = "filepath[common/inline_scripts/,.txt]"
     
-    val inlineScriptPathExpression = CwtValueExpression.resolve("filepath[common/inline_scripts/,.txt]")
+    val inlineScriptPathExpression = CwtValueExpression.resolve(inlineScriptPathExpressionString)
     
     val cachedInlineScriptUsageInfoKey = createKey<CachedValue<ParadoxInlineScriptUsageInfo>>("paradox.cached.inlineScriptUsageInfo")
     
@@ -98,20 +100,38 @@ object ParadoxInlineScriptHandler {
         return getInlineScriptExpression(vFile)
     }
     
-    fun getInlineScriptExpressionFromExpression(element: PsiElement): String? {
-        //TODO 1.2.2+
-        return null
+    fun getInlineScriptExpressionFromInlineConfig(element: ParadoxScriptProperty, inlineConfig: CwtInlineConfig): String? {
+        if(element.name.lowercase() != inlineScriptKey) return null
+        if(inlineConfig.name != inlineScriptKey) return null
+        val expressionLocation = inlineConfig.config.findOption { it.key == inlineScriptExpressionOptionName }?.stringValue ?: return null
+        val expressionElement = element.findByPath(expressionLocation, ParadoxScriptValue::class.java)
+        val expression = expressionElement?.stringValue() ?: return null
+        return expression
     }
     
-    fun getInlineScriptExpressionFromInlineConfig(element: ParadoxScriptProperty, inlineConfig: CwtInlineConfig): String? {
-        val propertyValue = element.propertyValue ?: return null
+    fun getExpressionElement(contextReferenceElement: ParadoxScriptProperty):  ParadoxScriptValue? {
+        if(contextReferenceElement.name.lowercase() != inlineScriptKey) return null
+        val config = CwtConfigHandler.getConfigs(contextReferenceElement).firstOrNull() ?: return null
+        val inlineConfig = config.inlineableConfig?.castOrNull<CwtInlineConfig>() ?: return null
         if(inlineConfig.name != inlineScriptKey) return null
-        val expressionLocation = inlineConfig.config.findOption { it.key == "inline_script_expression" }?.stringValue ?: return null
-        val expressionElement = if(expressionLocation.isEmpty()) {
-            propertyValue.castOrNull<ParadoxScriptString>()
-        } else {
-            propertyValue.findProperty(expressionLocation, conditional = true)?.propertyValue?.castOrNull<ParadoxScriptString>()
+        val expressionLocation = inlineConfig.config.findOption { it.key == inlineScriptExpressionOptionName }?.stringValue ?: return null
+        val expressionElement = contextReferenceElement.findByPath(expressionLocation, ParadoxScriptValue::class.java) ?: return null
+        return expressionElement
+    }
+    
+    fun getContextReferenceElement(expressionElement: PsiElement): ParadoxScriptProperty? {
+        if(expressionElement !is ParadoxScriptValue) return null
+        var contextReferenceElement = expressionElement.findParentProperty()?.castOrNull<ParadoxScriptProperty>() ?: return null
+        if(contextReferenceElement.name.lowercase() != inlineScriptKey) {
+            contextReferenceElement = expressionElement.findParentProperty()?.castOrNull<ParadoxScriptProperty>() ?: return null
         }
-        return expressionElement?.stringValue()
+        if(contextReferenceElement.name.lowercase() != inlineScriptKey) return null
+        val config = CwtConfigHandler.getConfigs(contextReferenceElement).firstOrNull() ?: return null
+        val inlineConfig = config.inlineableConfig?.castOrNull<CwtInlineConfig>() ?: return null
+        if(inlineConfig.name != inlineScriptKey) return null
+        val expressionLocation = inlineConfig.config.findOption { it.key == inlineScriptExpressionOptionName }?.stringValue ?: return null
+        val expressionElement0 = contextReferenceElement.findByPath(expressionLocation, ParadoxScriptValue::class.java) ?: return null
+        if(expressionElement0 != expressionElement) return null
+        return contextReferenceElement
     }
 }

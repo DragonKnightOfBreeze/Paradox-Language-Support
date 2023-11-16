@@ -5,6 +5,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
@@ -51,10 +52,10 @@ object ParadoxPsiManager {
         val toInline = declaration.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return
         var newText = toInline.text.trim()
         var reverse = false
-        val value = element.propertyValue?.resolved() ?: return
-        when(value) {
+        val valueElement = element.propertyValue?.resolved() ?: return
+        when(valueElement) {
             is ParadoxScriptBoolean -> {
-                if(!value.booleanValue) {
+                if(!valueElement.booleanValue) {
                     reverse = true
                     newText = newText.removeSurroundingOrNull("{", "}")?.trim() ?: return
                     val multiline = newText.containsLineBreak()
@@ -66,7 +67,7 @@ object ParadoxPsiManager {
                 }
             }
             is ParadoxScriptBlock -> {
-                val args = getArgs(value)
+                val args = getArgs(valueElement)
                 if(args.isNotEmpty()) {
                     val newRef = ParadoxScriptElementFactory.createValue(project, newText).castOrNull<ParadoxScriptBlock>() ?: return
                     newText = inlineWithArgs(newRef, args)
@@ -95,16 +96,16 @@ object ParadoxPsiManager {
         val property = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
         val toInline = declaration.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return
         var newText = toInline.text.trim()
-        val value = element.propertyValue?.resolved() ?: return
-        when(value) {
+        val valueElement = element.propertyValue?.resolved() ?: return
+        when(valueElement) {
             is ParadoxScriptBoolean -> {
-                if(!value.booleanValue) {
+                if(!valueElement.booleanValue) {
                     property.delete()
                     return
                 }
             }
             is ParadoxScriptBlock -> {
-                val args = getArgs(value)
+                val args = getArgs(valueElement)
                 if(args.isNotEmpty()) {
                     val newRef = ParadoxScriptElementFactory.createValue(project, newText).castOrNull<ParadoxScriptBlock>() ?: return
                     newText = inlineWithArgs(newRef, args)
@@ -121,20 +122,37 @@ object ParadoxPsiManager {
     }
     
     fun inlineInlineScript(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptFile, project: Project) {
-        //TODO 1.2.2+
+        if(element !is ParadoxScriptValue) return
+        
+        var newText = declaration.text.trim()
+        val contextReferenceElement = ParadoxInlineScriptHandler.getContextReferenceElement(element) ?: return
+        val valueElement = contextReferenceElement.propertyValue ?: return
+        if(valueElement !is ParadoxScriptBlock) return
+        val args = getArgs(valueElement, "script")
+        if(args.isNotEmpty()) {
+            val newRef = ParadoxScriptElementFactory.createValue(project, newText).castOrNull<ParadoxScriptBlock>() ?: return
+            newText = inlineWithArgs(newRef, args, unquoteValue = true)
+        }
+        val newRef = ParadoxScriptElementFactory.createValue(project, newText)
+        val (start, end) = findMemberElementsToInline(newRef)
+        if(start != null && end != null) {
+            contextReferenceElement.parent.addRangeAfter(start, end, contextReferenceElement)
+        }
+        contextReferenceElement.delete()
     }
     
-    private fun getArgs(element: ParadoxScriptBlock): Map<String, String> {
+    private fun getArgs(element: ParadoxScriptBlock, vararg excludeArgNames: String): Map<String, String> {
         return buildMap {
             element.propertyList.forEach f@{ p ->
                 val pk = p.propertyKey.text
+                if(excludeArgNames.isNotEmpty() && pk.lowercase() in excludeArgNames) return@f
                 val pv = p.propertyValue?.text ?: return@f
                 this += tupleOf(pk, pv)
             }
         }
     }
     
-    private fun inlineWithArgs(element: ParadoxScriptBlock, args: Map<String, String>): String {
+    private fun inlineWithArgs(element: ParadoxScriptBlock, args: Map<String, String>, unquoteValue: Boolean = false): String {
         //参数实际上可以被替换成任何文本（而不仅仅是严格意义上的字符串）
         //如果必要，也处理条件代码块
         
@@ -166,8 +184,9 @@ object ParadoxPsiManager {
                 run {
                     //TODO 1.2.2+ 目前不确定这里是否需要在内联后去除参数值周围的双引号（对于内联脚本来说，应当需要）
                     if(element !is ParadoxParameter) return@run
-                    val name = element.name ?: return@run
-                    val v = args[name] ?: return@run
+                    val n = element.name ?: return@run
+                    val v0 = args[n] ?: return@run
+                    val v = if(unquoteValue) v0.unquote() else v0
                     replacements.add(tupleOf(element.textRange.shiftLeft(offset), v))
                     return
                 }

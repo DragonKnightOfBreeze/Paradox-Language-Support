@@ -42,7 +42,7 @@ class ParadoxInlineScriptInlineProcessor(
         }
         if(!inlineThisOnly) {
             for(reference in ReferencesSearch.search(element, myRefactoringScope, true)) {
-                if(ParadoxInlineScriptHandler.getInlineScriptExpressionFromExpression(reference.element) == null) continue
+                if(ParadoxInlineScriptHandler.getContextReferenceElement(reference.element) == null) continue
                 usages.add(UsageInfo(reference.element))
             }
         }
@@ -108,6 +108,7 @@ class ParadoxInlineScriptInlineProcessor(
         }
         
         if(!inlineThisOnly && !keepTheDeclaration) {
+            //删除对应的内联脚本文件
             try {
                 element.delete()
             } catch(e: IncorrectOperationException) {

@@ -189,22 +189,12 @@ fun PsiElement.findProperty(
  * @see ParadoxElementPath
  * @see ParadoxScriptMemberElement
  */
-inline fun <reified T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
-    path: String = "",
+fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
+    path: String,
+    targetType: Class<T>,
     ignoreCase: Boolean = true,
     conditional: Boolean = false,
     inline: Boolean = false
-): T? {
-    val targetType = T::class.java
-    return findByPath(targetType, path, ignoreCase, conditional, inline)
-}
-
-fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
-    targetType: Class<T>,
-    path: String,
-    ignoreCase: Boolean,
-    conditional: Boolean,
-    inline: Boolean
 ): T? {
     if(language != ParadoxScriptLanguage) return null
     var current: ParadoxScriptMemberElement = this

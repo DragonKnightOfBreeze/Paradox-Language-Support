@@ -26,8 +26,16 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
     }
     
     override fun canInlineElementInEditor(element: PsiElement, editor: Editor?): Boolean {
+        //可以从"inline_script = inline_scripts/xxx"中的"inline_script"发起，也可以从"inline_scripts/xxx"发起 
+        
+        if(element is ParadoxScriptProperty && element.name.lowercase() == ParadoxInlineScriptHandler.inlineScriptKey) {
+            val expressionElement = ParadoxInlineScriptHandler.getExpressionElement(element) ?: return false
+            val resolved = expressionElement.reference?.resolve() ?: return false
+            return canInlineElement(resolved)
+        }
+        
         val reference = if(editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
-        if(reference != null && ParadoxInlineScriptHandler.getInlineScriptExpressionFromExpression(reference.element) == null) return false
+        if(reference != null && ParadoxInlineScriptHandler.getContextReferenceElement(reference.element) == null) return false
         return super.canInlineElementInEditor(element, editor)
     }
     
