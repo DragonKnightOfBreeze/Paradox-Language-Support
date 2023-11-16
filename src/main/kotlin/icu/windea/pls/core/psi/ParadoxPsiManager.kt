@@ -69,7 +69,7 @@ object ParadoxPsiManager {
             is ParadoxScriptBlock -> {
                 val args = getArgs(valueElement)
                 if(args.isNotEmpty()) {
-                    val newRef = ParadoxScriptElementFactory.createValue(project, newText).castOrNull<ParadoxScriptBlock>() ?: return
+                    val newRef = ParadoxScriptElementFactory.createBlock(project, newText)
                     newText = inlineWithArgs(newRef, args)
                 }
             }
@@ -77,9 +77,11 @@ object ParadoxPsiManager {
         }
         if(reverse) {
             val newRef = ParadoxScriptElementFactory.createProperty(project, newText)
+            newRef.block?.let { handleBlockToInline(it, "scripted_trigger") }
             property.parent.addAfter(newRef, property)
         } else {
-            val newRef = ParadoxScriptElementFactory.createValue(project, newText)
+            val newRef = ParadoxScriptElementFactory.createBlock(project, newText)
+            handleBlockToInline(newRef, "scripted_trigger")
             val (start, end) = findMemberElementsToInline(newRef)
             if(start != null && end != null) {
                 property.parent.addRangeAfter(start, end, property)
@@ -107,13 +109,14 @@ object ParadoxPsiManager {
             is ParadoxScriptBlock -> {
                 val args = getArgs(valueElement)
                 if(args.isNotEmpty()) {
-                    val newRef = ParadoxScriptElementFactory.createValue(project, newText).castOrNull<ParadoxScriptBlock>() ?: return
+                    val newRef = ParadoxScriptElementFactory.createBlock(project, newText)
                     newText = inlineWithArgs(newRef, args)
                 }
             }
             else -> return
         }
-        val newRef = ParadoxScriptElementFactory.createValue(project, newText)
+        val newRef = ParadoxScriptElementFactory.createBlock(project, newText)
+        handleBlockToInline(newRef, "scripted_effect")
         val (start, end) = findMemberElementsToInline(newRef)
         if(start != null && end != null) {
             property.parent.addRangeAfter(start, end, property)
@@ -126,14 +129,19 @@ object ParadoxPsiManager {
         
         var newText = declaration.text.trim()
         val contextReferenceElement = ParadoxInlineScriptHandler.getContextReferenceElement(element) ?: return
-        val valueElement = contextReferenceElement.propertyValue ?: return
-        if(valueElement !is ParadoxScriptBlock) return
-        val args = getArgs(valueElement, "script")
-        if(args.isNotEmpty()) {
-            val newRef = ParadoxScriptElementFactory.createValue(project, newText).castOrNull<ParadoxScriptBlock>() ?: return
-            newText = inlineWithArgs(newRef, args, unquoteValue = true)
+        val valueElement = contextReferenceElement.propertyValue?.resolved() ?: return
+        when(valueElement) {
+            is ParadoxScriptString -> pass()
+            is ParadoxScriptBlock -> {
+                val args = getArgs(valueElement, "script")
+                if(args.isNotEmpty()) {
+                    val newRef = ParadoxScriptElementFactory.createRootBlock(project, newText)
+                    newText = inlineWithArgs(newRef, args, unquoteValue = true)
+                }
+            }
+            else -> return
         }
-        val newRef = ParadoxScriptElementFactory.createValue(project, newText)
+        val newRef = ParadoxScriptElementFactory.createRootBlock(project, newText)
         val (start, end) = findMemberElementsToInline(newRef)
         if(start != null && end != null) {
             contextReferenceElement.parent.addRangeAfter(start, end, contextReferenceElement)
@@ -141,7 +149,20 @@ object ParadoxPsiManager {
         contextReferenceElement.delete()
     }
     
-    private fun getArgs(element: ParadoxScriptBlock, vararg excludeArgNames: String): Map<String, String> {
+    fun inlineLocalisation(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxLocalisationProperty, project: Project) {
+        if(element !is ParadoxLocalisationPropertyReference) return
+        
+        val toInline = declaration.propertyValue ?: return
+        val newText = toInline.text.unquote()
+        val newRef = ParadoxLocalisationElementFactory.createPropertyValue(project, newText)
+        val (start, end) = findRichTextElementsToInline(newRef)
+        if(start != null && end != null) {
+            element.parent.addRangeAfter(start, end, element)
+        }
+        element.delete()
+    }
+    
+    private fun getArgs(element: ParadoxScriptBlockElement, vararg excludeArgNames: String): Map<String, String> {
         return buildMap {
             element.propertyList.forEach f@{ p ->
                 val pk = p.propertyKey.text
@@ -152,7 +173,7 @@ object ParadoxPsiManager {
         }
     }
     
-    private fun inlineWithArgs(element: ParadoxScriptBlock, args: Map<String, String>, unquoteValue: Boolean = false): String {
+    private fun inlineWithArgs(element: ParadoxScriptBlockElement, args: Map<String, String>, unquoteValue: Boolean = false): String {
         //参数实际上可以被替换成任何文本（而不仅仅是严格意义上的字符串）
         //如果必要，也处理条件代码块
         
@@ -201,17 +222,11 @@ object ParadoxPsiManager {
         return newText
     }
     
-    fun inlineLocalisation(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxLocalisationProperty, project: Project) {
-        if(element !is ParadoxLocalisationPropertyReference) return
-        
-        val toInline = declaration.propertyValue ?: return
-        val newText = toInline.text.unquote()
-        val newRef = ParadoxLocalisationElementFactory.createPropertyValue(project, newText)
-        val (start, end) = findRichTextElementsToInline(newRef)
-        if(start != null && end != null) {
-            element.parent.addRangeAfter(start, end, element)
+    private fun handleBlockToInline(element: ParadoxScriptBlock, type: String) {
+        if(type == "scripted_trigger" || type == "scripted_effect") {
+            //特殊处理
+            element.findChildren { it is ParadoxScriptString && it.value.lowercase() == "optimize_memory" }.forEach { it.delete() }
         }
-        element.delete()
     }
     
     //endregion

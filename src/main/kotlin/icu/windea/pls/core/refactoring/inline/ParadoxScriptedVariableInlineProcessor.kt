@@ -4,6 +4,7 @@ import com.intellij.history.*
 import com.intellij.lang.findUsages.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -44,6 +45,7 @@ class ParadoxScriptedVariableInlineProcessor(
             usages.add(UsageInfo(reference.element))
         }
         for(reference in ReferencesSearch.search(element, myRefactoringScope, true)) {
+            ProgressManager.checkCanceled()
             usages.add(UsageInfo(reference.element))
         }
         return usages.toTypedArray()

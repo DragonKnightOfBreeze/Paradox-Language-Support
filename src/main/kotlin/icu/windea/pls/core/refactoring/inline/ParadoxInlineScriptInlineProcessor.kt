@@ -3,6 +3,7 @@ package icu.windea.pls.core.refactoring.inline
 import com.intellij.history.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -42,6 +43,7 @@ class ParadoxInlineScriptInlineProcessor(
         }
         if(!inlineThisOnly) {
             for(reference in ReferencesSearch.search(element, myRefactoringScope, true)) {
+                ProgressManager.checkCanceled()
                 if(ParadoxInlineScriptHandler.getContextReferenceElement(reference.element) == null) continue
                 usages.add(UsageInfo(reference.element))
             }

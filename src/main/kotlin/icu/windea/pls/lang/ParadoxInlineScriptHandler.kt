@@ -123,7 +123,7 @@ object ParadoxInlineScriptHandler {
         if(expressionElement !is ParadoxScriptValue) return null
         var contextReferenceElement = expressionElement.findParentProperty()?.castOrNull<ParadoxScriptProperty>() ?: return null
         if(contextReferenceElement.name.lowercase() != inlineScriptKey) {
-            contextReferenceElement = expressionElement.findParentProperty()?.castOrNull<ParadoxScriptProperty>() ?: return null
+            contextReferenceElement = contextReferenceElement.findParentProperty()?.castOrNull<ParadoxScriptProperty>() ?: return null
         }
         if(contextReferenceElement.name.lowercase() != inlineScriptKey) return null
         val config = CwtConfigHandler.getConfigs(contextReferenceElement).firstOrNull() ?: return null

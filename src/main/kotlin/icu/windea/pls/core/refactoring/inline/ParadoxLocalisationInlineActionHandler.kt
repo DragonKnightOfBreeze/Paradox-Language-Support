@@ -14,7 +14,7 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.references.*
 
-class ParadoxLocalisationInlineActionHandler: InlineActionHandler() {
+class ParadoxLocalisationInlineActionHandler : InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.localisation")
     
     override fun isEnabledForLanguage(language: Language) = language == ParadoxLocalisationLanguage
@@ -32,12 +32,11 @@ class ParadoxLocalisationInlineActionHandler: InlineActionHandler() {
     }
     
     override fun inlineElement(project: Project, editor: Editor?, element: PsiElement) {
-        return performInline(project, editor, element.cast())
+        val reference = if(editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
+        return performInline(project, editor, element.castOrNull() ?: return, reference)
     }
     
-    private fun performInline(project: Project, editor: Editor?, element: ParadoxLocalisationProperty) {
-        val reference = if(editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
-        
+    private fun performInline(project: Project, editor: Editor?, element: ParadoxLocalisationProperty, reference: PsiReference?) {
         if(reference != null && reference !is ParadoxLocalisationPropertyPsiReference) {
             val message = PlsBundle.message("refactoring.localisation.reference", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
@@ -51,7 +50,7 @@ class ParadoxLocalisationInlineActionHandler: InlineActionHandler() {
             return
         }
         
-        run { 
+        run {
             if(reference == null) return@run
             val referenceElement = reference.element.castOrNull<ParadoxLocalisationPropertyReference>() ?: return@run
             val parameter = referenceElement.propertyReferenceParameter?.text?.orNull() ?: return@run

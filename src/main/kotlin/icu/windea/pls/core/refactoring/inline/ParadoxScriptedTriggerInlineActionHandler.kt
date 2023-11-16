@@ -34,12 +34,11 @@ class ParadoxScriptedTriggerInlineActionHandler : InlineActionHandler() {
     }
     
     override fun inlineElement(project: Project, editor: Editor?, element: PsiElement) {
-        return performInline(project, editor, element.cast())
+        val reference = if(editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
+        return performInline(project, editor, element.castOrNull() ?: return, reference)
     }
     
-    private fun performInline(project: Project, editor: Editor?, element: ParadoxScriptProperty) {
-        val reference = if(editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
-        
+    private fun performInline(project: Project, editor: Editor?, element: ParadoxScriptProperty, reference: PsiReference?) {
         if(reference != null && !ParadoxPsiManager.isInvocationReference(element, reference.element)) {
             val message = PlsBundle.message("refactoring.scriptedTrigger.invocation", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)

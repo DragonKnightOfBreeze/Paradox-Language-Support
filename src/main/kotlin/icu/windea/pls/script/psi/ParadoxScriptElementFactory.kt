@@ -57,6 +57,11 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
+	fun createBlock(project: Project, value: String): ParadoxScriptBlock {
+		return createValue(project, value).cast()!!
+	}
+	
+	@JvmStatic
 	fun createVariableReference(project: Project, name: String): ParadoxScriptScriptedVariableReference {
 		return createValue(project, "@$name").cast()
 	}

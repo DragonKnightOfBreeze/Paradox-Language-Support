@@ -81,7 +81,8 @@ fun ParadoxScriptExpressionElement.value(valid: Boolean = false): String? {
     return resolved.value
 }
 
-fun ParadoxScriptValue.booleanValue(valid: Boolean = false): Boolean? {
+fun ParadoxScriptExpressionElement.booleanValue(valid: Boolean = false): Boolean? {
+    if(this !is ParadoxScriptValue) return null
     if(valid && !this.isValidExpression()) return null
     val resolved = this.resolved() ?: return null
     return when(resolved) {

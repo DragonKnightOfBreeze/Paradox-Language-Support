@@ -13,11 +13,12 @@ import icu.windea.pls.cwt.psi.*
 
 /**
  * CWT规则的查询。
- *
- * * CWT别名规则对应的属性名是"alias[x:y]"，而脚本文件中对应的属性名是"y"，需要特殊处理。
- * * CWT连接规则的属性名是"script_value"，而脚本文件中可能会使用其前缀"value:"，需要特殊处理。
  */
 class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
+	//* CWT规则的属性名为"alias[x:y]"时，其在脚本文件中匹配的属性名会是"y"，需要特殊处理。
+	//* CWT规则的属性名为"inline[x]"时，其在脚本文件中匹配的属性名会是"x"，需要特殊处理。
+	//* 对于CWT连接规则，其在脚本文件中可能匹配其前缀，需要特殊处理。
+	
 	override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
 		val target = queryParameters.elementToSearch
 		if(target !is CwtProperty) return
@@ -26,13 +27,17 @@ class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
 		when(configType) {
 			CwtConfigType.Alias, CwtConfigType.Modifier, CwtConfigType.Trigger, CwtConfigType.Effect -> {
 				val aliasSubName = target.name.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
-				if(!aliasSubName.isNullOrEmpty()) extraWords.add(aliasSubName)
+				if(aliasSubName.isNotNullOrEmpty()) extraWords.add(aliasSubName)
+			}
+			CwtConfigType.Inline -> {
+				val inlineName = target.name.removeSurroundingOrNull("inline[", "]")
+				if(inlineName.isNotNullOrEmpty()) extraWords.add(inlineName) 
 			}
 			CwtConfigType.Link -> {
 				val prefixProperty = target.propertyValue?.castOrNull<CwtBlock>()
 					?.findChildOfType<CwtProperty> { it.name == "prefix" }
 				val prefix = prefixProperty?.propertyValue?.castOrNull<CwtString>()?.stringValue
-				if(!prefix.isNullOrEmpty()) extraWords.add(prefix)
+				if(prefix.isNotNullOrEmpty()) extraWords.add(prefix)
 			}
 			else -> return
 		}

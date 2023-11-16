@@ -4,6 +4,7 @@ import com.intellij.history.*
 import com.intellij.lang.findUsages.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -17,7 +18,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationInlineProcessor(
     project: Project,
@@ -44,6 +45,7 @@ class ParadoxLocalisationInlineProcessor(
             usages.add(UsageInfo(reference.element))
         }
         for(reference in ReferencesSearch.search(element, myRefactoringScope, true)) {
+            ProgressManager.checkCanceled()
             usages.add(UsageInfo(reference.element))
         }
         return usages.toTypedArray()

@@ -31,6 +31,10 @@ enum class CwtConfigType(
 		override val prefix get() = PlsBundle.message("prefix.onAction")
 		override val icon get() = PlsIcons.OnAction
 	},
+	Inline("inline") {
+		override val prefix get() = PlsBundle.message("prefix.inline")
+		override val icon get() =  PlsIcons.Inline
+	},
 	SingleAlias("single alias") {
 		override val prefix get() = PlsBundle.message("prefix.singleAlias")
 		override val icon get() =  PlsIcons.Alias
@@ -118,6 +122,7 @@ enum class CwtConfigType(
 		//简单判断
 		return when(this) {
 			Type, Subtype, Enum, ComplexEnum, ValueSet -> name.substringIn('[',']')
+			Inline -> name.substringIn('[',']')
 			SingleAlias -> name.substringIn('[',']')
 			Alias, Trigger, Effect -> name.substringIn('[',']').substringAfter(':')
 			else -> name

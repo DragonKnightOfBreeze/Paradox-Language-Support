@@ -134,6 +134,9 @@ object CwtConfigHandler {
             fileKey == "on_actions" && path.matchesAntPath("on_actions/*") -> {
                 CwtConfigType.OnAction
             }
+            path.matchesAntPath("inline[*]") -> {
+                CwtConfigType.Inline
+            }
             path.matchesAntPath("single_alias[*]") -> {
                 CwtConfigType.SingleAlias
             }

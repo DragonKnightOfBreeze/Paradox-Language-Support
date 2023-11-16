@@ -24,12 +24,11 @@ class ParadoxScriptedVariableInlineActionHandler : InlineActionHandler() {
     }
     
     override fun inlineElement(project: Project, editor: Editor?, element: PsiElement) {
-        return performInline(project, editor, element.cast())
+        val reference = if(editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
+        return performInline(project, editor, element.castOrNull() ?: return, reference)
     }
     
-    private fun performInline(project: Project, editor: Editor?, element: ParadoxScriptScriptedVariable) {
-        val reference = if(editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
-        
+    private fun performInline(project: Project, editor: Editor?, element: ParadoxScriptScriptedVariable, reference: PsiReference?) {
         val isRecursive = ParadoxRecursionHandler.isRecursiveScriptedVariable(element)
         if(isRecursive) {
             val message = PlsBundle.message("refactoring.scriptedVariable.recursive", getRefactoringName())
