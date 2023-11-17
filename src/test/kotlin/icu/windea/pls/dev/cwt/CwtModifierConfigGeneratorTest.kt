@@ -16,7 +16,7 @@ class CwtModifierConfigGeneratorTest{
 	
 	@Test
 	fun testForStellaris() {
-		val version = "v3.9.1"
+		val version = "v3.10.0"
 		CwtModifierConfigGenerator(
 			ParadoxGameType.Stellaris,
 			"cwt/cwtools-stellaris-config/script-docs/$version/modifiers.log",

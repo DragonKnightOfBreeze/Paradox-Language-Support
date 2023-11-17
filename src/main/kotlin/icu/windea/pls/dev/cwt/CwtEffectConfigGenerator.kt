@@ -1,6 +1,5 @@
 package icu.windea.pls.dev.cwt
 
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import java.io.*
@@ -14,7 +13,8 @@ class CwtEffectConfigGenerator(
     val cwtPath: String,
 ) {
     var overrideDocumentation = true
-    var generateMissingEffects = true
+    var generateMissing = true
+    val ignoredNames = mutableSetOf<String>()
     
     companion object {
         private const val startMarker = "== EFFECT DOCUMENTATION =="
@@ -80,6 +80,7 @@ class CwtEffectConfigGenerator(
     
     private fun generateCwt(infos: Map<String, EffectInfo>) {
         val missingNames = infos.keys.toMutableSet()
+        missingNames.removeAll(ignoredNames)
         val unknownNames = mutableSetOf<String>()
         val cwtFile = File(cwtPath)
         val lines = cwtFile.bufferedReader().readLines() as MutableList<String>
@@ -95,7 +96,7 @@ class CwtEffectConfigGenerator(
                     setScopeOption(lineIndex, lines, info).let { lineIndex += it }
                     resortOptions(lineIndex, lines).let { lineIndex += it }
                 } else {
-                    if(CwtKeyExpression.resolve(name).type == CwtDataTypes.Constant) {
+                    if(name.isExactIdentifier()) {
                         unknownNames.add(name)
                     }
                 }
@@ -108,7 +109,7 @@ class CwtEffectConfigGenerator(
             for(name in missingNames) {
                 println("- $name")
             }
-            if(generateMissingEffects) {
+            if(generateMissing) {
                 lines.add("")
                 lines.add("# TODO missing effects")
                 for(name in missingNames) {

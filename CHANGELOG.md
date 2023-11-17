@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.2.3
+
+* [X] 更新CWT规则文件以适配Stellaris 3.10.0
+* [X] 优化与BUG修复
+
+```
+Unknown effects:
+- set_sector_focus
+- ai_trade_facility
+- run_in_ai_mode
+
+value[astral_rift_flag]
+on_galaxy_map_during_tutorial
+country_<leader_class.capped>_cap_add
+```
+
 ## 1.2.2
 
 * [X] 支持内联`scripted_variable`（即封装变量）（`编辑器右键菜单 -> Refactor -> Inline...`）

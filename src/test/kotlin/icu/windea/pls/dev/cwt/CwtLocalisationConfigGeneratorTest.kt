@@ -6,7 +6,7 @@ import org.junit.*
 class CwtLocalisationConfigGeneratorTest {
     @Test
     fun testForStellaris() {
-        val version = "v3.9.1"
+        val version = "v3.10.0"
         val generator = CwtLocalisationConfigGenerator(
             ParadoxGameType.Stellaris,
             "cwt/cwtools-stellaris-config/script-docs/$version/localizations.log",
