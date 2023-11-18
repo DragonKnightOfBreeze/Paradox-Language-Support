@@ -4,13 +4,13 @@
 
 来自Github仓库：
 
-
+暂无
 
 来自CWTools的Github仓库：
 
-* [ ] [The tool cannot recognize in-script flag variables (Vic3) · Issue #76 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/76)
-* [ ] [[Stellaris\] Could support tech@level grammar? · Issue #58 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/58)
-* [ ] [Parsing issues in Vic3 · Issue #53 · cwtools/cwtools (github.com)](https://github.com/cwtools/cwtools/issues/53)
+* [X] [The tool cannot recognize in-script flag variables (Vic3) · Issue #76 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/76)
+* [X] [[Stellaris\] Could support tech@level grammar? · Issue #58 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/58)
+* [X] [Parsing issues in Vic3 · Issue #53 · cwtools/cwtools (github.com)](https://github.com/cwtools/cwtools/issues/53)
 
 ## 更新计划
 
@@ -38,8 +38,10 @@
   * [ ] ［低优先级］对于封装变量、定义、本地化和内联脚本实现安全删除功能
   * [ ] ［低优先级］对于封装变量、scripted_trigger、scripted_effect、inline_script等实现内联功能
 
-## 追踪中
+## 更新计划 - 追踪中
 
+* [ ] #46 优化：尝试基于使用推断特定类型的`valueSetValue`对应的作用域上下文（如`event_target`和`global_event_target`）
+* [ ] 提供一种项目视图，用于显示合并后的所有用于自定义CWT规则分组的CWT文件（`Project Pane -> CWT Config Files`）
 * [ ] 兼容直接在键或字符串中使用参数条件块（`foo_[[bar]bar]_desc`） - 兼容语法以及相关功能
 * [X] 完善对定义的作用域上下文推断的支持 - 完善实现逻辑，优化性能，支持`scripted_trigger`、`scripted_effect`和`event`
 * [ ] DDS文件路径以及符合条件的快速文档链接也能作为html/markdown等文件中的图片超链接使用，从而渲染DDS图片和本地化
@@ -54,18 +56,3 @@
   * 对于valueSetValue，只能通过后缀的`@xxx`切换flag和event_target的作用域
   * ~~不能在asset文件中使用scripted_variable和inline_math~~（已实现对应的代码检查）
 * [ ] 在更多情况下尝试推断脚本参数对应的CWT规则，从而提供各种高级语言功能（如，基于CWT规则的代码高亮、引用解析和代码补全）
-
-新增可以通过以下几种情况推断脚本参数对应的CWT规则：
-
-```
-ethic = ethic_$ETHIC$ # 脚本参数作为某个脚本表达式的一部分，这个脚本表达式中仅存在这唯一一个脚本参数，且可以得到这个脚本表达式对应的CWT规则
-```
-
-* [ ] #46 优化：尝试基于使用推断特定类型的`valueSetValue`对应的作用域上下文（如`event_target`和`global_event_target`）
-* [ ] 提供一种项目视图，用于显示合并后的所有用于自定义CWT规则分组的CWT文件（`Project Pane -> CWT Config Files`）
-
-## 注意事项
-
-* 应当尽可能避免在索引中访问索引
-* 应当尽可能避免在索引中解析引用
-* 应当尽可能避免在索引中访问AST，如果可能，使用LighterAST
