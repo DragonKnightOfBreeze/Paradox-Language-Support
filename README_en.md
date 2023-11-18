@@ -12,8 +12,6 @@ IDEA plugin: Support for Paradox language.
 
 Features:
 
-提供代码高亮、代码导航、代码补全、代码检查、代码重构、快速文档、内嵌提示、动态模版、代码层级、图表、差异比较等诸多语言功能。
-
 * Supports script language (mainly `*.txt` files) and localization language (`*.yml` files),
   providing many language features such as code highlight, code navigation, code completion, code inspection, code refactoring, quick ducomentation, inlay hints, live templates, code hierarchy, diagram, diff, etc.
 * Supports CWT language (`*.cwt` files), providing basic language features.
