@@ -16,9 +16,10 @@ PLS基于CWT规则分组实现了许多高级语言功能。
 
 当发生对应的更改后，会在编辑器右上角的上下文悬浮工具栏中出现刷新按钮，点击确认导入更改后的CWT规则分组。
 
-注意，CWT规则文件会按照文件路径（相对于CWT规则分组的根目录）和规则的名字与类型进行后续覆盖。
-例如，如果你在项目根目录的规则文件`.config/stellaris/modifiers.cwt`编写了自定义的规则，它将完全覆盖插件内置的修正相关规则。
-因为插件内置的修正相关规则位于插件jar包中的规则文件`config/stellaris/modifiers.cwt`中，它们的路径都是`modifiers.cwt`。
+注意，CWT规则会按照文件路径和规则ID进行后序覆盖。
+
+例如，如果你在项目根目录下的规则文件`.config/stellaris/modifiers.cwt`中编写了自定义的规则，它将完全覆盖插件内置的修正规则。
+因为插件内置的修正规则位于插件jar包中的规则文件`config/stellaris/modifiers.cwt`中，它们的路径都是`modifiers.cwt`。
 
 参考链接：
 
