@@ -17,9 +17,9 @@ Features:
 * Renders related type information, scope information, localisation text and DDS images through ways such as quick documentation and inlay hints.
 * Automatically recognizes the game directory (containing the launcher settings file `launcher-settings.json`) and mod directory (containing the mod descriptor file `descriptor.mod`).
 
-This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode), with some modifications and extensions.
-The config files of latest version are already built into this plugin, make it works right out of the box.
-Besides, [importing local CWT configs](https://windea.icu/Paradox-Language-Support/#/en/core-features.md#cwt-config-group) is also supported.
+This plugin implements various advanced language features based on [CWT config groups](https://windea.icu/Paradox-Language-Support/#/en/core-features.md#cwt-config-group), which consists of many CWT rule files.
+The latest-version config files are already built into this plugin, make it works right out of the box.
+Besides, importing local config files is also supported.
 
 If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md).
 
@@ -35,8 +35,6 @@ Usage:
 * Open the mod descriptor file, click the mod settings button in the floating toolbar (or editor right-click menu) at the top right of the editor, and configure the game type, game directory, and additional mod dependencies of the mod.
 * Click the OK button to complete the configuration, and then wait for the IDE to complete indexing.
 * Start your mod programming journey!
-
-Tips:
 
 * To perform a global search, please refer to the following methods:
   * Click `Ctrl Shift R` or `Ctrl Shift F` to search within the current project, directory, or specified scope.
@@ -62,8 +60,8 @@ Tips:
   * Click `Tools > Paradox Language Support > Open Mod Settings...`.
 * If the IDE freezes, or its indices encounter some problems,  or it throws an error caused by the plugin, try the following:
   * Update the IDE and plugin to the latest version.
-  * Click `File -> Invalidate Caches... -> Invalidate and Restart` to rebuild the index and restart the IDE.
-  * Provide feedback via GitHub.
+  * Delete the plugin configuration file `paradox-language-support.xml`. (If you don't known the detail file location, use [Everything](https://www.voidtools.com))
+  * Rebuild indices and restart the IDE. (Click `File -> Invalidate Caches... -> Invalidate and Restart`)
 
 Known issues:
 

@@ -18,9 +18,9 @@ IDEA插件：Paradox语言支持。
 * 通过快速文档和内嵌提示等方式，渲染相关的类型信息、作用域信息、本地化文本和DDS图片。
 * 自动识别游戏目录（包含启动器配置文件`launcher-settings.json`）和模组目录（包含模组描述符文件`descriptor.mod`）。
 
-此插件与 [CWTools](https://github.com/cwtools/cwtools-vscode) 共享规则文件（`*.cwt`），并且经过一定的修改与扩展。
-插件已经内置了最新版本的规则文件，开箱即用。
-除此之外，插件也支持[导入本地的CWT规则](https://windea.icu/Paradox-Language-Support/#/zh/core-features.md#cwt-config-group)。
+此插件基于由CWT规则文件组成的[CWT规则分组](https://windea.icu/Paradox-Language-Support/#/zh/core-features.md#cwt-config-group)，实现了许多高级语言功能。
+插件已经内置了最新版本的规则文件，以便开箱即用。
+除此之外，插件也支持导入项目本地的规则文件。
 
 如果同时安装了 [Translation](https://github.com/YiiGuxing/TranslationPlugin) ，此插件可以提供一些[额外的功能](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md)。
 
@@ -36,8 +36,6 @@ IDEA插件：Paradox语言支持。
 * 打开模组描述符文件，点击位于编辑器右上角的悬浮工具栏（或者编辑器右键菜单）中的模组配置按钮，配置模组的游戏类型、游戏目录和额外的模组依赖。
 * 点击确定按钮完成配置，然后等待IDE索引完成。
 * 开始你的模组编程之旅吧！
-
-提示：
 
 * 如果需要进行全局搜索，请参考以下方式：
   * 点击`Ctrl Shift R`或者`Ctrl Shift F`在当前项目、目录或者指定作用域中搜索。
@@ -63,8 +61,8 @@ IDEA插件：Paradox语言支持。
   * 点击`Tools > Paradox Language Support > Open Mod Settings...`。
 * 如果IDE卡死，或者IDE索引出现问题，或者发生了插件引起的报错，请尝试通过以下方式解决：
   * 更新IDE和插件到最新版本。
-  * 点击`File -> Invalidate Caches... -> Invalidate and Restart`，重建索引并重启IDE。
-  * 通过GitHub或者QQ群进行反馈。
+  * 删除插件的配置文件`paradox-language-support.xml`。（如果不知道具体的文件位置，请使用[Everything](https://www.voidtools.com)）
+  * 重建索引并重启IDE。（点击`File -> Invalidate Caches... -> Invalidate and Restart`）
 
 已知问题：
 
