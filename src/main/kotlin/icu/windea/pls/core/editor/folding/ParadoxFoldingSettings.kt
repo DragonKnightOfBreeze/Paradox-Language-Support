@@ -1,4 +1,4 @@
-package icu.windea.pls.core.settings
+package icu.windea.pls.core.editor.folding
 
 import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.*

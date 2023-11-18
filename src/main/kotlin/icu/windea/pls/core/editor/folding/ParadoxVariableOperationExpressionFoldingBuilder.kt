@@ -3,7 +3,6 @@ package icu.windea.pls.core.editor.folding
 import com.intellij.lang.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.editor.*
-import icu.windea.pls.core.settings.*
 
 class ParadoxVariableOperationExpressionFoldingBuilder : ParadoxExpressionFoldingBuilder() {
     object Data {

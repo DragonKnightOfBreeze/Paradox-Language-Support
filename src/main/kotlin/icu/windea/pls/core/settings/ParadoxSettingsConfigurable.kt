@@ -9,11 +9,13 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.listeners.*
+import icu.windea.pls.core.ui.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
+import javax.swing.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
     override fun getId() = "pls"
@@ -276,7 +278,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     val defaultList = settings.hierarchy.definitionTypeBindingsInCallHierarchy.toMutableEntryList()
                     var list = defaultList.toMutableList()
                     link(PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings")) {
-                        val dialog = ParadoxConfigureDefinitionTypeBindingsInCallHierarchyDialog(list)
+                        val dialog = ParadoxDefinitionTypeBindingsInCallHierarchyDialog(list)
                         if(dialog.showAndGet()) {
                             list = dialog.resultList
                         }
@@ -321,31 +323,55 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
             }
         }
     }
+}
+
+private fun reparseFilesByFileNames(fileNames: Set<String>) {
+    //设置中的被忽略文件名被更改时，需要重新解析相关文件（IDE之后会自动请求重新索引）
+    runWriteAction { ParadoxCoreHandler.reparseFilesByFileNames(fileNames) }
+}
+
+private fun refreshInlayHints() {
+    //刷新脚本文件和本地化文件的内嵌提示
+    ParadoxCoreHandler.refreshInlayHints { file, _ ->
+        val fileType = file.fileType
+        fileType == ParadoxScriptFileType || fileType == ParadoxLocalisationFileType
+    }
+}
+
+private fun refreshInlineScriptInlayHints() {
+    //重新解析内联脚本文件
+    ProjectManager.getInstance().openProjects.forEach { project ->
+        ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker.incModificationCount()
+        ParadoxPsiModificationTracker.getInstance(project).InlineScriptsTracker.incModificationCount()
+    }
+    //刷新内联脚本文件的内嵌提示
+    ParadoxCoreHandler.refreshInlayHints { file, _ ->
+        ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null
+    }
+}
+
+class ParadoxDefinitionTypeBindingsInCallHierarchyDialog(
+    val list: MutableList<Entry<String, String>>
+): DialogWrapper(null, null, false , IdeModalityType.IDE) {
+    val resultList = list.toMutableList()
     
-    @Suppress("CompanionObjectInExtension")
-    companion object {
-        fun reparseFilesByFileNames(fileNames: Set<String>) {
-            //设置中的被忽略文件名被更改时，需要重新解析相关文件（IDE之后会自动请求重新索引）
-            runWriteAction { ParadoxCoreHandler.reparseFilesByFileNames(fileNames) }
-        }
-        
-        fun refreshInlayHints() {
-            //刷新脚本文件和本地化文件的内嵌提示
-            ParadoxCoreHandler.refreshInlayHints { file, _ ->
-                val fileType = file.fileType
-                fileType == ParadoxScriptFileType || fileType == ParadoxLocalisationFileType
+    init {
+        title = PlsBundle.message("settings.hierarchy.definitionTypeBindings.title")
+        init()
+    }
+    
+    override fun createCenterPanel(): JComponent {
+        return panel {
+            row {
+                val keyName = PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings.key")
+                val valueName = PlsBundle.message("settings.hierarchy.definitionTypeBindings.value")
+                cell(EntryListTableModel.createStringMapPanel(resultList, keyName, valueName)).align(Align.FILL)
+            }.resizableRow()
+            row {
+                comment(PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings.comment.1"))
             }
-        }
-        
-        fun refreshInlineScriptInlayHints() {
-            //重新解析内联脚本文件
-            ProjectManager.getInstance().openProjects.forEach { project ->
-                ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker.incModificationCount()
-                ParadoxPsiModificationTracker.getInstance(project).InlineScriptsTracker.incModificationCount()
-            }
-            //刷新内联脚本文件的内嵌提示
-            ParadoxCoreHandler.refreshInlayHints { file, _ ->
-                ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null
+            row {
+                comment(PlsBundle.message("ui.comment.definitionTypeExpression"))
             }
         }
     }
