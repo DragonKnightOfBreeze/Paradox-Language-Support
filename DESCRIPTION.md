@@ -1,7 +1,7 @@
 <p>Support for Paradox language.</p>
 <p>Features:</p>
 <ul>
-<li>Supports script language (mainly <code>*.txt</code> files) and localization language (<code>*.yml</code> files), providing many language features such as code highlight, code navigation, code completion, code inspection, code refactoring, quick ducomentation, inlay hints, live templates, code hierarchy, diagram, diff, etc.</li>
+<li>Supports script language (mainly <code>*.txt</code> files) and localization language (<code>*.yml</code> files), providing many language features such as code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff, etc.</li>
 <li>Supports CWT language (<code>*.cwt</code> files), providing basic language features.</li>
 <li>Supports viewing DDS images directly in the IDE, providing some useful editor features including converting to PNG images.</li>
 <li>Provides quite comprehensive support for most advanced features of script language, such as parameters, scopes, inline scripts and various complex expressions.</li>
