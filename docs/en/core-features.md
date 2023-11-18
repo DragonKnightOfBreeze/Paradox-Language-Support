@@ -35,4 +35,4 @@ If these are no content in the custom config file, after applied, the plugin wil
 Reference Links:
 
 * [Guidance Documentation](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
-* [GitHub Repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config)
+* [Summary of Repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config)
