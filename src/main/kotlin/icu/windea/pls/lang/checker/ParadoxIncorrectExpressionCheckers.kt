@@ -113,7 +113,6 @@ class StellarisTechnologyWithLevelChecker : ParadoxIncorrectExpressionChecker {
         if(element !is ParadoxScriptStringExpressionElement) return
         val (technologyName, technologyLevel) = element.value.split('@', limit = 2).takeIf { it.size == 2 } ?: return
         val project = config.info.configGroup.project
-        val expression = element.expression ?: return
         val text = element.text
         val separatorIndex = text.indexOf('@')
         if(technologyName.isEmpty() || ParadoxDefinitionSearch.search(technologyName, "technology.repeatable", definitionSelector(project, element)).findFirst() == null) {
