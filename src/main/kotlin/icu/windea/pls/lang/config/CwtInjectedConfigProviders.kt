@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.config
 
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 abstract class ExpressionStringBasedCwtInjectedConfigProvider : CwtInjectedConfigProvider {
@@ -98,6 +98,7 @@ class CwtInOnActionInjectedConfigProvider: ExpressionStringBasedCwtInjectedConfi
         }
         val declarationConfigContext = currentConfig.declarationConfigContext ?: return null
         val onActionConfig = declarationConfigContext.onActionConfig ?: return null
+        if(onActionConfig.eventType == ParadoxScopeHandler.anyScopeId) return null //ignore
         val configGroup = declarationConfigContext.configGroup
         return buildList {
             if(configGroup.types.get("event")?.subtypes?.containsKey("scopeless") == true) {

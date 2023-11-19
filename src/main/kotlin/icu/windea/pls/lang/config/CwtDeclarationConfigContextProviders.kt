@@ -37,7 +37,7 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
         val finalRootConfig = rootConfig.delegated(configs, null)
         finalRootConfig.declarationConfigContext = context
         if(configs == null) return finalRootConfig
-        configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context).orEmpty()
+        configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
         configs.forEachFast { it.parentConfig = finalRootConfig }
         return finalRootConfig
     }
@@ -68,7 +68,7 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         val finalRootConfig = rootConfig.delegated(configs, null)
         finalRootConfig.declarationConfigContext = context
         if(configs == null) return finalRootConfig
-        configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context).orEmpty()
+        configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
         configs.forEachFast { it.parentConfig = finalRootConfig }
         return finalRootConfig
     }
@@ -94,12 +94,11 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val rootConfig = declarationConfig.propertyConfig
-        rootConfig.declarationConfigContext = context
         val configs = if(rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
         val finalRootConfig = rootConfig.delegated(configs, null)
         finalRootConfig.declarationConfigContext = context
         if(configs == null) return finalRootConfig
-        configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, context).orEmpty()
+        configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
         configs.forEachFast { it.parentConfig = finalRootConfig }
         return finalRootConfig
     }

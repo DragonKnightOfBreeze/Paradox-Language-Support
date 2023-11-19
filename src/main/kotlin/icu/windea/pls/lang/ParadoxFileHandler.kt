@@ -33,17 +33,12 @@ object ParadoxFileHandler {
      *
      * 对于某些蠢驴游戏来说，游戏目录下可以存在多个入口目录（entries）。
      * 认为模组目录以及主要入口目录（根目录或者game目录）不能引用次要入口目录（非根目录或者game目录）下的文件中的内容。
-     * 认为不同的次要入口目录下的文件不能互相引用其内容。
      */
     fun canReference(targetFile: VirtualFile?, otherFile: VirtualFile?): Boolean {
-        //TODO 1.0.0+ 调试发现不存在这样的限制？
 		val target = targetFile?.fileInfo ?: return true
 		val other = otherFile?.fileInfo ?: return true
         if(target.isMainEntry()) {
             if(!other.isMainEntry()) return false
-        } else {
-            if(other.isMainEntry()) return true
-            if(target.entry != other.entry) return false
         }
         return true
     }

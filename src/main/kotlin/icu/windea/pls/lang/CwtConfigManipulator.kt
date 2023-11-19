@@ -11,18 +11,18 @@ import icu.windea.pls.lang.config.*
 
 object CwtConfigManipulator {
     //region Deep Copy Methods
-    fun deepCopyConfigs(config: CwtMemberConfig<*>): List<CwtMemberConfig<*>>? {
+    fun deepCopyConfigs(config: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = config): List<CwtMemberConfig<*>>? {
         val cs1 = config.configs
         if(cs1.isNullOrEmpty()) return cs1
         val result = mutableListOf<CwtMemberConfig<*>>()
         cs1.forEachFast f1@{ c1 ->
-            result += c1.delegated(deepCopyConfigs(c1), config)
+            result += c1.delegated(deepCopyConfigs(c1), parentConfig)
         }
-        CwtInjectedConfigProvider.injectConfigs(config, result)
+        CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
         return result
     }
     
-    fun deepCopyConfigsInDeclarationConfig(config: CwtMemberConfig<*>, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>>? {
+    fun deepCopyConfigsInDeclarationConfig(config: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = config, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>>? {
         val cs1 = config.configs
         if(cs1.isNullOrEmpty()) return cs1
         val result = mutableListOf<CwtMemberConfig<*>>()
@@ -32,7 +32,7 @@ object CwtConfigManipulator {
                 if(subtypeExpression != null) {
                     val subtypes = context.definitionSubtypes
                     if(subtypes == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
-                        val cs2 = deepCopyConfigsInDeclarationConfig(c1, context)
+                        val cs2 = deepCopyConfigsInDeclarationConfig(c1, parentConfig, context)
                         if(cs2.isNullOrEmpty()) return@f1
                         result += cs2
                     }
@@ -40,9 +40,9 @@ object CwtConfigManipulator {
                 }
             }
             
-            result += c1.delegated(deepCopyConfigsInDeclarationConfig(c1, context), config)
+            result += c1.delegated(deepCopyConfigsInDeclarationConfig(c1, parentConfig, context), parentConfig)
         }
-        CwtInjectedConfigProvider.injectConfigs(config, result)
+        CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
         return result
     }
     //endregion

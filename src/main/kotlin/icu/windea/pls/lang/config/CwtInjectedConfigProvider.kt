@@ -15,6 +15,8 @@ import icu.windea.pls.core.collections.*
 interface CwtInjectedConfigProvider {
     /**
      * 注入CWT规则。
+     * @param parentConfig 作为[configs]的父节点的规则。
+     * @param configs 将会加入[parentConfig]的子规则列表的一组规则。
      * @return 是否进行了注入。
      */
     fun injectConfigs(parentConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>) : Boolean

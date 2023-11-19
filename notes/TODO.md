@@ -4,7 +4,9 @@
 
 来自Github仓库：
 
-* [X] 无法及时检测项目本地的规则文件的更改？
+* [X] 无法及时检测项目本地的规则文件的更改 - 基本修复？
+* [ ] 无法正确注入`on_action`中事件引用的事件类型？
+* [ ] 重新打开项目后，IDE无法完成对脚本文件的解析？
 
 来自CWTools的Github仓库：
 
@@ -56,6 +58,7 @@
   * 对于valueSetValue，只能通过后缀的`@xxx`切换flag和event_target的作用域
   * ~~不能在asset文件中使用scripted_variable和inline_math~~（已实现对应的代码检查）
 * [ ] 在更多情况下尝试推断脚本参数对应的CWT规则，从而提供各种高级语言功能（如，基于CWT规则的代码高亮、引用解析和代码补全）
+* [ ] 支持语法`$ARG1|ARG2$`（在3.10.0的更新日志中被提到，但是很神秘）
 
 ## 更新计划 - 规则文件
 
@@ -69,15 +72,12 @@
 * VIC3 - 搁置
 
 ```
-Unknown effects:
-- set_sector_focus
-- ai_trade_facility
-- run_in_ai_mode
+Stellaris:
 
-value[astral_rift_flag]
-on_galaxy_map_during_tutorial
-country_<leader_class.capped>_cap_add
-
-enum[leader_classes]
-enum[leader_classes_no_ruler]
+* 基于日志文件的规则 ✔
+* common目录下的脚本文件对应的规则 ✔
+* events目录下的脚本文件对应的规则
+* 其他目录下的脚本文件对应的规则 ✔
+* 检查官方更新日志 ✔
+* 检查作用域
 ```

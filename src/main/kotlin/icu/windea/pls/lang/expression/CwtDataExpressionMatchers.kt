@@ -126,7 +126,7 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 //注意这里可能是一个整数，例如，对于<technology_tier>
                 if(!expression.type.isStringType() && expression.type != ParadoxType.Int) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                if(!expression.text.isExactIdentifier('.')) return Result.NotMatch
+                if(!expression.text.isExactIdentifier('.', '-')) return Result.NotMatch
                 CwtConfigMatcher.Impls.getDefinitionMatchResult(element, expression, configExpression, project)
             }
             configExpression.type == CwtDataTypes.AbsoluteFilePath -> {
