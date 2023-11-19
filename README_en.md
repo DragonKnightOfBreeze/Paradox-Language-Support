@@ -76,9 +76,10 @@ Known issues:
 
 **Why it is suggested to use Intellij IDEA + this plugin, instead of VSCode + CWTools?**
 
-Introducing Idea, a lovely and vibrant girl, with silver-white hair and amber-colored eyes, while often wears a deep blue wind coat.
+Introducing Idea, a lovely and vibrant girl.
+She is characterized by her long silver-white hair and amber-colored eyes, and often wears a dark blue wind coat.
 Meanwhile, she is also a powerful and intelligent mage, skilled in elemental magic, rune magic and modern programming magic.
-And moreover, she has an additional identity... a dragon knight!
+And even more than that, she does have another identity... a dragon knight from distant galaxy!
 
 ## Reference
 
