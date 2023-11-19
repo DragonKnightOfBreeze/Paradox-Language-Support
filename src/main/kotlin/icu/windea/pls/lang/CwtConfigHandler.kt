@@ -205,7 +205,7 @@ object CwtConfigHandler {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigContext) {
             ProgressManager.checkCanceled()
             //invalidated on ScriptFileTracker
-            val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
+            val tracker = ParadoxModificationTrackerProvider.getInstance(element.project).ScriptFileTracker
             val value = doGetConfigContext(element)
             CachedValueProvider.Result.create(value, tracker)
         }
@@ -310,7 +310,7 @@ object CwtConfigHandler {
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>> {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsCache) {
             //invalidated on ScriptFileTracker
-            val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
+            val tracker = ParadoxModificationTrackerProvider.getInstance(element.project).ScriptFileTracker
             val value = doGetConfigsCache()
             CachedValueProvider.Result.create(value, tracker)
         }
@@ -501,7 +501,7 @@ object CwtConfigHandler {
     private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMemberElement): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedChildOccurrenceMapCache) {
             //invalidated on ScriptFileTracker
-            val tracker = ParadoxPsiModificationTracker.getInstance(element.project).ScriptFileTracker
+            val tracker = ParadoxModificationTrackerProvider.getInstance(element.project).ScriptFileTracker
             val value = doGetChildOccurrenceMapCache()
             CachedValueProvider.Result.create(value, tracker)
         }

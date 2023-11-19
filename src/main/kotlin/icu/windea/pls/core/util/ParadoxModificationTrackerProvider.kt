@@ -12,7 +12,7 @@ import java.util.concurrent.*
  * 用于追踪PSI更改 - 具有更高的精确度，提高缓存命中率。
  */
 @Service(Service.Level.PROJECT)
-class ParadoxPsiModificationTracker(project: Project) {
+class ParadoxModificationTrackerProvider(project: Project) {
     val ScriptFileTracker = CompositeModificationTracker(PsiModificationTracker.getInstance(project).forLanguage(ParadoxScriptLanguage))
     val LocalisationFileTracker = CompositeModificationTracker(PsiModificationTracker.getInstance(project).forLanguage(ParadoxLocalisationLanguage))
     
@@ -33,6 +33,6 @@ class ParadoxPsiModificationTracker(project: Project) {
         @JvmField val DefinitionScopeContextInferenceTracker = SimpleModificationTracker()
         
         @JvmStatic
-        fun getInstance(project: Project) = project.service<ParadoxPsiModificationTracker>()
+        fun getInstance(project: Project) = project.service<ParadoxModificationTrackerProvider>()
     }
 }

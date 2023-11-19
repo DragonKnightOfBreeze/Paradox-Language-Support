@@ -166,7 +166,7 @@ object ParadoxParameterHandler {
         val configGroup = getConfigGroup(project, parameterElement.gameType)
         val cache = configGroup.parameterInfoCache.get(rootFile)
         val cacheKey = parameterElement.name + "@" + parameterElement.contextKey
-        val parameterInfo = cache.getCancelable(cacheKey) {
+        val parameterInfo = cache.get(cacheKey) {
             parameterElement.toInfo()
         }
         return parameterInfo

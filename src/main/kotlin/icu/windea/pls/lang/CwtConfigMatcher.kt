@@ -159,7 +159,7 @@ object CwtConfigMatcher {
             val rootFile = selectRootFile(psiFile) ?: return Result.NotMatch
             val configGroup = getConfigGroup(project, selectGameType(rootFile))
             val cache = configGroup.configMatchResultCache.value.get(rootFile)
-            return cache.getCancelable(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
+            return cache.get(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
         }
         
         fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {

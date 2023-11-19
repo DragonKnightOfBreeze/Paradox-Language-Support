@@ -150,7 +150,7 @@ class CwtConfigGroupComputedDataProvider : CwtConfigGroupDataProvider {
                 builder.append(filePath)
                 if(fileExtension != null) builder.append(':').append(fileExtension)
             }
-            val modificationTracker = ParadoxPsiModificationTracker.getInstance(configGroup.project).ScriptFileTracker(builder.toString())
+            val modificationTracker = ParadoxModificationTrackerProvider.getInstance(configGroup.project).ScriptFileTracker(builder.toString())
             configGroup.parameterModificationTracker = MergedModificationTracker(configGroup.modificationTracker, modificationTracker)
         }
 

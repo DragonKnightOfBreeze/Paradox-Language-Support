@@ -496,7 +496,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     }
     
     override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker {
-        return ParadoxPsiModificationTracker.getInstance(parameterInfo.project).InlineScriptsTracker
+        return ParadoxModificationTrackerProvider.getInstance(parameterInfo.project).InlineScriptsTracker
     }
     
     override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {

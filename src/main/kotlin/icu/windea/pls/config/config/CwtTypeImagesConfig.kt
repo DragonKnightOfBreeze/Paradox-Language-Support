@@ -18,14 +18,14 @@ class CwtTypeImagesConfig(
 	 */
 	fun getConfigs(subtypes: List<String>): List<CwtLocationConfig> {
 		val cacheKey = subtypes.joinToString(",")
-		return configsCache.getCancelable(cacheKey){
-			val result = mutableListOf<CwtLocationConfig>()
-			for((subtypeExpression, locationConfig) in configs) {
-				if(subtypeExpression == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
-					result.add(locationConfig)
-				}
-			}
-			result
-		}
-	}
+		return configsCache.get(cacheKey) {
+            val result = mutableListOf<CwtLocationConfig>()
+            for((subtypeExpression, locationConfig) in configs) {
+                if(subtypeExpression == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
+                    result.add(locationConfig)
+                }
+            }
+            result
+        }
+    }
 }

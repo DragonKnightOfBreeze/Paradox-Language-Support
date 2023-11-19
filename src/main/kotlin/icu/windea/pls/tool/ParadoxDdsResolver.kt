@@ -40,7 +40,7 @@ object ParadoxDdsResolver {
     private fun getPngAbsPath(absPath: String, relPath: String?, frameInfo: FrameInfo?): Path {
         val cache = if(relPath != null) ddsCache else externalDdsCache
         val cacheKey = getCacheKey(absPath, frameInfo)
-        return cache.getCancelable(cacheKey) { doGetPngAbsPath(absPath, relPath, frameInfo) }
+        return cache.get(cacheKey) { doGetPngAbsPath(absPath, relPath, frameInfo) }
     }
     
     private fun getCacheKey(absPath: String, frameInfo: FrameInfo?): String {

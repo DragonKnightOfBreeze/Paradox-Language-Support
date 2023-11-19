@@ -31,11 +31,11 @@ interface CwtConfigPath: Iterable<String> {
 		}
 		
 		fun resolve(path: String): CwtConfigPath {
-			return cache[path]
+			return cache.get(path)
 		}
 		
 		fun resolve(subPaths: List<String>): CwtConfigPath {
-			return cache[subPaths.joinToString("/")]
+			return cache.get(subPaths.joinToString("/"))
 		}
 	}
 }

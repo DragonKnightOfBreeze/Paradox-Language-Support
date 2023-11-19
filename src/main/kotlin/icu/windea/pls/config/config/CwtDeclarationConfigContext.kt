@@ -25,7 +25,7 @@ class CwtDeclarationConfigContext(
     fun getConfig(declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val cache = configGroup.declarationConfigCache.value
         val cacheKey = ooGetCacheKey(declarationConfig)
-        return cache.getCancelable(cacheKey) {
+        return cache.get(cacheKey) {
             val config = doGetConfig(declarationConfig)
             config.declarationConfigCacheKey = cacheKey
             config

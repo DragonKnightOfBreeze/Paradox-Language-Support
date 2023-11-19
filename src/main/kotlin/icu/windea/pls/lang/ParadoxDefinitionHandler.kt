@@ -689,7 +689,7 @@ object ParadoxDefinitionHandler {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisationKey) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisationKey(element)
-            val tracker = ParadoxPsiModificationTracker.getInstance(element.project).LocalisationFileTracker
+            val tracker = ParadoxModificationTrackerProvider.getInstance(element.project).LocalisationFileTracker
             CachedValueProvider.Result.create(value, element, tracker)
         }
     }
@@ -716,7 +716,7 @@ object ParadoxDefinitionHandler {
         CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisation) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisation(element)
-            val tracker = ParadoxPsiModificationTracker.getInstance(element.project).LocalisationFileTracker
+            val tracker = ParadoxModificationTrackerProvider.getInstance(element.project).LocalisationFileTracker
             CachedValueProvider.Result.create(value, element, tracker)
         }
     
@@ -742,7 +742,7 @@ object ParadoxDefinitionHandler {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisations) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisations(element)
-            val tracker = ParadoxPsiModificationTracker.getInstance(element.project).LocalisationFileTracker
+            val tracker = ParadoxModificationTrackerProvider.getInstance(element.project).LocalisationFileTracker
             CachedValueProvider.Result.create(value, element, tracker)
         }
     }
@@ -797,7 +797,7 @@ object ParadoxDefinitionHandler {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionLocalizedNames) {
             ProgressManager.checkCanceled()
             val value = doGetLocalizedNames(element)
-            val tracker = ParadoxPsiModificationTracker.getInstance(element.project).LocalisationFileTracker
+            val tracker = ParadoxModificationTrackerProvider.getInstance(element.project).LocalisationFileTracker
             CachedValueProvider.Result.create(value, element, tracker)
         }
     }
