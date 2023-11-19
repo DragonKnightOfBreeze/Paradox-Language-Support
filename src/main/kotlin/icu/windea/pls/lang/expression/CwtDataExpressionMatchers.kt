@@ -106,20 +106,20 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
             configExpression.type == CwtDataTypes.Localisation -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                if(!expression.text.isExactIdentifier('-', '.')) return Result.NotMatch
+                if(!expression.text.isExactIdentifier('.', '-', '\'')) return Result.NotMatch
                 CwtConfigMatcher.Impls.getLocalisationMatchResult(element, expression, project)
             }
             configExpression.type == CwtDataTypes.SyncedLocalisation -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                if(!expression.text.isExactIdentifier('-', '.')) return Result.NotMatch
+                if(!expression.text.isExactIdentifier('.', '-', '\'')) return Result.NotMatch
                 CwtConfigMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
             }
             configExpression.type == CwtDataTypes.InlineLocalisation -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.quoted) return Result.FallbackMatch //"quoted_string" -> any string
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                if(!expression.text.isExactIdentifier('-', '.')) return Result.NotMatch
+                if(!expression.text.isExactIdentifier('.', '-', '\'')) return Result.NotMatch
                 CwtConfigMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
             }
             configExpression.type == CwtDataTypes.Definition -> {
