@@ -76,7 +76,7 @@ class CwtConfigContext(
 //depends on config group and (definition, localisation, etc.) indices
 private val CwtConfigGroup.configsCache by createKeyDelegate(CwtConfigContext.Keys) {
     createCachedValue {
-        NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().softValues().buildCache<String, List<CwtMemberConfig<*>>>() }
+        NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, List<CwtMemberConfig<*>>>() }
             .withDependencyItems(PsiModificationTracker.MODIFICATION_COUNT)
     }
 }

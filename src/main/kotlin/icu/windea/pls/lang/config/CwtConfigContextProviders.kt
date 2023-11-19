@@ -95,6 +95,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         val rootIndex = elementPath.indexOfFirst { it.subPath.equals(ParadoxInlineScriptHandler.inlineScriptKey, true) }
         if(rootIndex == -1) return null
         
+        ProgressManager.checkCanceled()
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         val elementPathFromRoot = ParadoxElementPath.resolve(elementPath.rawSubPaths.let { it.subList(rootIndex + 1, it.size) })
@@ -173,10 +174,10 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
     //获取CWT规则后才能确定是否存在冲突以及是否存在递归
     
     override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
-        ProgressManager.checkCanceled()
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
-        
         val contextElement = context.element ?: return null
+        
+        ProgressManager.checkCanceled()
         if(elementPathFromRoot.isNotEmpty()) {
             val rootConfigContext = context.inlineScriptRootConfigContext ?: return null
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
@@ -245,6 +246,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
 class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
         if(!getSettings().inference.parameterConfig) return null
+        ProgressManager.checkCanceled()
         
         //unnecessary check
         //val vFile = selectFile(file) ?: return null
@@ -255,7 +257,6 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         val parameterElement = getParameterElement(file, host)
         if(parameterElement == null) return null
         
-        ProgressManager.checkCanceled()
         val gameType = parameterElement.gameType
         val elementPathFromRoot = elementPath
         val configGroup = getConfigGroup(file.project, gameType)

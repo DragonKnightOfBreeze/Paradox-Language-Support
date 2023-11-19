@@ -4,7 +4,7 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.script.psi.*
 
 private val KEY = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.type.index")
-private const val VERSION = 43 //1.2.0
+private const val VERSION = 44 //1.2.3
 private const val CACHE_SIZE = 1024 //180+ in stellaris@3.6
 
 /**

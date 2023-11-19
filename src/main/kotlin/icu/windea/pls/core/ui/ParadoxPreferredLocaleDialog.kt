@@ -4,7 +4,7 @@ import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.settings.*
+import icu.windea.pls.lang.*
 
 class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
     init {
@@ -20,7 +20,7 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
                 .bindItem(settings::preferredLocale.toNullableProperty())
                 .onApply {
                     if(oldPreferredLocale != settings.preferredLocale) {
-                        ParadoxSettingsConfigurable.refreshInlayHints()
+                        ParadoxCoreHandler.refreshInlayHints()
                     }
                 }
         }

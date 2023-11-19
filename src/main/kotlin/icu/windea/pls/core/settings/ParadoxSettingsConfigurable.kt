@@ -2,7 +2,6 @@ package icu.windea.pls.core.settings
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.options.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
@@ -12,9 +11,7 @@ import icu.windea.pls.core.listeners.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.*
 import javax.swing.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
@@ -53,7 +50,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindItem(settings::preferredLocale.toNullableProperty())
                         .onApply {
                             if(oldPreferredLocale != settings.preferredLocale) {
-                                refreshInlayHints()
+                                ParadoxCoreHandler.refreshInlayHints()
                             }
                         }
                 }
@@ -74,7 +71,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                                 val fileNames = mutableSetOf<String>()
                                 fileNames += oldIgnoredFileNameSet
                                 fileNames += settings.ignoredFileNameSet
-                                reparseFilesByFileNames(fileNames)
+                                //设置中的被忽略文件名被更改时，需要重新解析相关文件（IDE之后会自动请求重新索引）
+                                runWriteAction { ParadoxCoreHandler.reparseFilesByFileNames(fileNames) }
                             }
                         }
                 }
@@ -237,7 +235,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.inference.inlineScriptConfig"))
                         .bindSelected(settings.inference::inlineScriptConfig)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.inlineScriptConfig.tooltip") }
-                        .onApply { refreshInlineScriptInlayHints() }
+                        .onApply { ParadoxCoreHandler.refreshInlineScriptInlayHints() }
                 }
                 //scopeContext
                 row {
@@ -322,31 +320,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 }
             }
         }
-    }
-}
-
-private fun reparseFilesByFileNames(fileNames: Set<String>) {
-    //设置中的被忽略文件名被更改时，需要重新解析相关文件（IDE之后会自动请求重新索引）
-    runWriteAction { ParadoxCoreHandler.reparseFilesByFileNames(fileNames) }
-}
-
-private fun refreshInlayHints() {
-    //刷新脚本文件和本地化文件的内嵌提示
-    ParadoxCoreHandler.refreshInlayHints { file, _ ->
-        val fileType = file.fileType
-        fileType == ParadoxScriptFileType || fileType == ParadoxLocalisationFileType
-    }
-}
-
-private fun refreshInlineScriptInlayHints() {
-    //重新解析内联脚本文件
-    ProjectManager.getInstance().openProjects.forEach { project ->
-        ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker.incModificationCount()
-        ParadoxPsiModificationTracker.getInstance(project).InlineScriptsTracker.incModificationCount()
-    }
-    //刷新内联脚本文件的内嵌提示
-    ParadoxCoreHandler.refreshInlayHints { file, _ ->
-        ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null
     }
 }
 

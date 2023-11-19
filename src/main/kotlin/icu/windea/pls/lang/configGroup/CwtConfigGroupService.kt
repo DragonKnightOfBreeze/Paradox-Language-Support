@@ -4,7 +4,6 @@ import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.progress.impl.*
 import com.intellij.openapi.project.*
@@ -54,7 +53,6 @@ class CwtConfigGroupService(
             override fun run(indicator: ProgressIndicator) {
                 configGroups.forEach { configGroup ->
                     val gameTypeId = configGroup.gameType.id
-                    if(!configGroup.changed.get()) return
                     
                     logger.info("Refresh CWT config group '$gameTypeId'...")
                     val start = System.currentTimeMillis()
@@ -62,7 +60,6 @@ class CwtConfigGroupService(
                     ReadAction.nonBlocking(Callable {
                         val newConfigGroup = createConfigGroupInProgress(configGroup.gameType, indicator)
                         newConfigGroup.copyUserDataTo(configGroup)
-                        configGroup.changed.set(false)
                         configGroup.modificationTracker.incModificationCount()
                     }).expireWhen { project.isDisposed }.wrapProgress(indicator).executeSynchronously()
                     
@@ -82,16 +79,11 @@ class CwtConfigGroupService(
                     ParadoxCoreHandler.reparseFilesByRootFilePaths(rootFilePaths)
                 }
                 
-                configGroups.forEach { configGroup -> configGroup.changed.set(false) }
-                
                 NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
                     PlsBundle.message("configGroup.refresh.notification.finished.title"),
                     PlsBundle.message("configGroup.refresh.notification.finished.content"),
                     NotificationType.INFORMATION
                 ).addAction(action).notify(project)
-                
-                FloatingToolbarProvider.getProvider<ConfigGroupRefreshFloatingProvider>()
-                    .updateToolbarComponents(project)
             }
             
             override fun onCancel() {

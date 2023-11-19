@@ -65,17 +65,14 @@ object CwtConfigMatcher {
         
         sealed class LazyMatch(predicate: () -> Boolean) : Result() {
             //use manual lazy implementation instead of kotlin Lazy to optimize memory
-            private var value: Any = predicate
+            @Volatile private var value: Any = predicate
             
             override fun get(options: Int): Boolean {
                 if(skip(options)) return true
                 if(value is Boolean) return value as Boolean
-                return synchronized(this) {
-                    if(value is Boolean) return value as Boolean
-                    val r = doGetCatching()
-                    value = r
-                    r
-                }
+                val r = doGetCatching()
+                value = r
+                return r
             }
             
             private fun skip(options: Int): Boolean {

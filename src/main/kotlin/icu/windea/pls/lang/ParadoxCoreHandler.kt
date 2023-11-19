@@ -22,7 +22,10 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.data.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.listeners.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.model.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.script.*
 import java.nio.file.*
@@ -346,6 +349,26 @@ object ParadoxCoreHandler {
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
             thisLogger().warn(e.message)
+        }
+    }
+    
+    fun refreshInlayHints() {
+        //刷新脚本文件和本地化文件的内嵌提示
+        ParadoxCoreHandler.refreshInlayHints { file, _ ->
+            val fileType = file.fileType
+            fileType == ParadoxScriptFileType || fileType == ParadoxLocalisationFileType
+        }
+    }
+    
+    fun refreshInlineScriptInlayHints() {
+        //重新解析内联脚本文件
+        ProjectManager.getInstance().openProjects.forEach { project ->
+            ParadoxPsiModificationTracker.getInstance(project).ScriptFileTracker.incModificationCount()
+            ParadoxPsiModificationTracker.getInstance(project).InlineScriptsTracker.incModificationCount()
+        }
+        //刷新内联脚本文件的内嵌提示
+        ParadoxCoreHandler.refreshInlayHints { file, _ ->
+            ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null
         }
     }
 }

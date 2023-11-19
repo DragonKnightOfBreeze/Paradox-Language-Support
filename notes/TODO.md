@@ -4,7 +4,7 @@
 
 来自Github仓库：
 
-暂无
+* [ ] 无法及时检测项目本地的规则文件的更改？
 
 来自CWTools的Github仓库：
 
@@ -56,3 +56,28 @@
   * 对于valueSetValue，只能通过后缀的`@xxx`切换flag和event_target的作用域
   * ~~不能在asset文件中使用scripted_variable和inline_math~~（已实现对应的代码检查）
 * [ ] 在更多情况下尝试推断脚本参数对应的CWT规则，从而提供各种高级语言功能（如，基于CWT规则的代码高亮、引用解析和代码补全）
+
+## 更新计划 - 规则文件
+
+* CK2 - 搁置
+* CK3 - 搁置
+* EU4 - 搁置
+* HOI4 - 搁置
+* IR - 搁置
+* Stellaris - 3.9.3 -> 3.10.0
+* VIC2 - 搁置
+* VIC3 - 搁置
+
+```
+Unknown effects:
+- set_sector_focus
+- ai_trade_facility
+- run_in_ai_mode
+
+value[astral_rift_flag]
+on_galaxy_map_during_tutorial
+country_<leader_class.capped>_cap_add
+
+enum[leader_classes]
+enum[leader_classes_no_ruler]
+```
