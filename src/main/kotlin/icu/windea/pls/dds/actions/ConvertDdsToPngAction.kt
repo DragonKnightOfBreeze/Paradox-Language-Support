@@ -28,6 +28,7 @@ import java.util.function.Consumer
 /**
  * 将DDS图片转化为PNG图片。保存到指定的路径。可以批量转化。
  */
+@Suppress("UnstableApiUsage")
 class ConvertDdsToPngAction : DumbAwareAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
@@ -94,11 +95,10 @@ class ConvertDdsToPngAction : DumbAwareAction() {
         
     }
     
-    @Suppress("UnstableApiUsage")
     private fun saveToDirectory(files: List<PsiFile>, newName: String?, targetDirectory: PsiDirectory, choice: IntArray?, title: String, added: MutableList<PsiFile>) {
         val existingFiles = MultiMap<PsiDirectory, PsiFile>()
         val app = ApplicationManagerEx.getApplicationEx()
-        if(Registry.`is`("run.convert.dds.to.png.under.progress")) {
+        if(Registry.`is`("run.refactorings.under.progress")) {
             val thrown = AtomicReference<Throwable>()
             val action = Consumer { pi: ProgressIndicator? ->
                 try {
@@ -109,8 +109,7 @@ class ConvertDdsToPngAction : DumbAwareAction() {
                     thrown.set(e)
                 }
             }
-            CommandProcessor.getInstance().executeCommand(targetDirectory.project,
-				{ app.runWriteActionWithCancellableProgressInDispatchThread(ObjectUtils.notNull(title, PlsBundle.message("dds.command.convert.name")), targetDirectory.project, null, action) }, title, null)
+            CommandProcessor.getInstance().executeCommand(targetDirectory.project, { app.runWriteActionWithCancellableProgressInDispatchThread(ObjectUtils.notNull(title, PlsBundle.message("dds.command.convert.name")), targetDirectory.project, null, action) }, title, null)
             val throwable = thrown.get()
             if(throwable is ProcessCanceledException) {
                 //process was canceled, don't proceed with existing files
@@ -172,7 +171,6 @@ class ConvertDdsToPngAction : DumbAwareAction() {
         }
     }
     
-    @Suppress("UnstableApiUsage")
     private fun handleExistingFiles(
         defaultChoice: SkipOverwriteChoice?, choice: IntArray?, newName: String?,
         targetDirectory: PsiDirectory, title: String, existingFiles: MultiMap<PsiDirectory, PsiFile>,
@@ -195,7 +193,7 @@ class ConvertDdsToPngAction : DumbAwareAction() {
                         val r = Consumer { pi: ProgressIndicator? ->
                             handleExistingFiles(SkipOverwriteChoice.OVERWRITE_ALL, choice, newName, targetDirectory, title, existingFiles, added, pi)
                         }
-                        if(Registry.`is`("run.convert.dds.to.png.under.progress")) {
+                        if(Registry.`is`("run.refactorings.under.progress")) {
                             CommandProcessor.getInstance().executeCommand(project, { ApplicationManagerEx.getApplicationEx().runWriteActionWithCancellableProgressInDispatchThread(title, project, null, r) }, title, null)
                         } else {
                             r.accept(null)
@@ -213,7 +211,7 @@ class ConvertDdsToPngAction : DumbAwareAction() {
                         ContainerUtil.addIfNotNull(added, tDirectory.copyFileFrom(name, replacement))
                     }
                 }
-                if(userChoice == SkipOverwriteChoice.OVERWRITE || userChoice == SkipOverwriteChoice.OVERWRITE_ALL && !Registry.`is`("run.convert.dds.to.png.under.progress")) {
+                if(userChoice == SkipOverwriteChoice.OVERWRITE || userChoice == SkipOverwriteChoice.OVERWRITE_ALL && !Registry.`is`("run.refactorings.under.progress")) {
                     WriteCommandAction.writeCommandAction(project)
                         .withName(title)
                         .run(doCopy)

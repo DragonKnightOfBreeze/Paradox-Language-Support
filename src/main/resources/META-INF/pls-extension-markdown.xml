@@ -1,8 +1,7 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
     <!--@HiddenApi-->
-    <registryKey key="markdown.fold.empty.link.by.default" defaultValue="true"
-                 description="Fold empty links by default in markdown files"/>
+    <registryKey key="markdown.fold.empty.link.by.default" defaultValue="false" description="Fold empty links by default in markdown files"/>
     <!--@HiddenApi-->
     <lang.foldingBuilder language="Markdown" implementationClass="icu.windea.pls.extension.markdown.MarkdownEmptyLinkFoldingBuilder"/>
   </extensions>
