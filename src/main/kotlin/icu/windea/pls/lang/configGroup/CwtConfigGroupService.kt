@@ -102,14 +102,12 @@ class CwtConfigGroupService(
         val info = CwtConfigGroupInfo(gameType.id)
         val configGroup = CwtConfigGroup(info, gameType, project)
         info.configGroup = configGroup
-        configGroup.progressIndicator = processIndicator
         
         val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
         dataProviders.all f@{ dataProvider ->
             dataProvider.process(configGroup)
         }
         
-        configGroup.progressIndicator = null
         return configGroup
     }
     

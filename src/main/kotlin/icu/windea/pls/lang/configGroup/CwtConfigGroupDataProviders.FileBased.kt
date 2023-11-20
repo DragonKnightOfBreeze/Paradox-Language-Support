@@ -24,11 +24,6 @@ import kotlin.collections.set
 class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {
         val gameTypeId = configGroup.gameType.id
-        configGroup.progressIndicator?.apply {
-            text = PlsBundle.message("configGroup.progress.processFiles", gameTypeId)
-            text2 = ""
-            isIndeterminate = true
-        }
         
         //按照文件路径（相对于规则分组的根目录）正序读取所有规则文件
         //后加入的规则文件会覆盖先加入的同路径的规则文件
@@ -46,11 +41,6 @@ class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
         var i = 0
         allFiles.all f@{ (filePath, tuple) ->
             val (file, fileProcessor) = tuple
-            configGroup.progressIndicator?.apply {
-                text2 = PlsBundle.message("configGroup.progress.processFile", gameTypeId, filePath)
-                isIndeterminate = false
-                fraction = i++ / allFiles.size.toDouble() 
-            }
             processFile(filePath, file, fileProcessor, configGroup)
         }
         

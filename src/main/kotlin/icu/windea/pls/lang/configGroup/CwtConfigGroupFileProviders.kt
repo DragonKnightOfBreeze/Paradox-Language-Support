@@ -33,11 +33,6 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProvider {
     private fun doProcessFiles(rootDirectory: VirtualFile, configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean) {
         if(!rootDirectory.isDirectory) return
         val gameTypeId = configGroup.gameType.id
-        configGroup.progressIndicator?.apply {
-            text = PlsBundle.message("configGroup.progress.collectBuiltinFiles", gameTypeId)
-            text2 = ""
-            isIndeterminate = true
-        }
         VfsUtil.visitChildrenRecursively(rootDirectory, object : VirtualFileVisitor<Void>() {
             override fun visitFile(file: VirtualFile): Boolean {
                 if(file.extension?.lowercase() == "cwt") {
@@ -93,11 +88,6 @@ class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProvider {
     private fun doProcessFiles(rootDirectory: VirtualFile, configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean) {
         if(!rootDirectory.isDirectory) return
         val gameTypeId = configGroup.gameType.id
-        configGroup.progressIndicator?.apply {
-            text = PlsBundle.message("configGroup.progress.collectFiles", gameTypeId, rootDirectory.presentableUrl)
-            text2 = ""
-            isIndeterminate = true
-        }
         VfsUtil.visitChildrenRecursively(rootDirectory, object : VirtualFileVisitor<Void>() {
             override fun visitFile(file: VirtualFile): Boolean {
                 if(file.extension?.lowercase() == "cwt") {
