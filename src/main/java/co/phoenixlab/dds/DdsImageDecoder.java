@@ -202,7 +202,7 @@ public class DdsImageDecoder {
         }
 
         //  Build swizzler
-        IntUnaryOperator swizzler = SWIZZLER_CACHE.computeIfAbsent(swizzle, DdsImageDecoder::buildSwizzler);
+        IntUnaryOperator swizzler = SWIZZLER_CACHE.getOrPut(swizzle, DdsImageDecoder::buildSwizzler);
 
         //  Apply
         for (int i = 0; i < ints.length; i++) {

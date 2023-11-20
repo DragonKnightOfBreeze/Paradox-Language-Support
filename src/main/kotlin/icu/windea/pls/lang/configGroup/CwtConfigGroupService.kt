@@ -23,7 +23,7 @@ class CwtConfigGroupService(
     private val cache = ConcurrentHashMap<String, CwtConfigGroup>()
     
     fun getConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
-        return cache.computeIfAbsent(gameType.id) { createConfigGroup(gameType) }
+        return cache.getOrPut(gameType.id) { createConfigGroup(gameType) }
     }
     
     fun getConfigGroups(): Map<String, CwtConfigGroup> {

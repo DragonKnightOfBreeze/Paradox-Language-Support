@@ -37,7 +37,6 @@ fun <R> Iterable<*>.findIsInstance(klass: Class<R>): R? {
 	return null
 }
 
-
 fun <K, V> Map<K, V>.find(predicate: (Map.Entry<K, V>) -> Boolean): V? {
 	for(entry in this) {
 		if(predicate(entry)) return entry.value
@@ -51,7 +50,6 @@ fun <K, V> Map<K, V>.findOrNull(predicate: (Map.Entry<K, V>) -> Boolean): V? {
 	}
 	return null
 }
-
 
 inline fun <T, reified R> Array<out T>.mapToArray(transform: (T) -> R): Array<R> {
 	return Array(size) { transform(this[it]) }
@@ -83,20 +81,6 @@ inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -
 		return Array(size) { transform(list[it]) }
 	}
 }
-
-
-
-fun <T, E> List<T>.groupAndCountBy(selector: (T) -> E?): Map<E, Int> {
-	val result = mutableMapOf<E, Int>()
-	for(e in this) {
-		val k = selector(e)
-		if(k != null) {
-			result.compute(k) { _, v -> if(v == null) 1 else v + 1 }
-		}
-	}
-	return result
-}
-
 
 inline fun <T> Iterable<T>.pinned(predicate: (T) -> Boolean): List<T> {
 	val result = mutableListOf<T>()

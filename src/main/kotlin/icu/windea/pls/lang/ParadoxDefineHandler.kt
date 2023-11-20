@@ -31,7 +31,7 @@ object ParadoxDefineHandler {
                 val file = it.toPsiFile(project) ?: return@p true
                 if(file !is ParadoxScriptFile) return@p true
                 val defines = getDefinesFromFile(file)
-                val defineValue = defines.computeIfAbsent(path) {
+                val defineValue = defines.getOrPut(path) {
                     val property = file.findByPath(path, ParadoxScriptProperty::class.java, ignoreCase = false) ?: return@computeIfAbsent null
                     val propertyValue = property.propertyValue ?: return@computeIfAbsent null
                     ParadoxScriptDataValueResolver.resolveValue(propertyValue, conditional = false)

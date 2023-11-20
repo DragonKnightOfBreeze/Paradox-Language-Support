@@ -29,7 +29,7 @@ class CwtOptionConfig private constructor(
             //use cache if possible to optimize memory
             if(options.isNullOrEmpty()) {
                 val cacheKey = "${valueTypeId}#${separatorTypeId}#${key}#${value}"
-                return cache.computeIfAbsent(cacheKey) {
+                return cache.getOrPut(cacheKey) {
                     CwtOptionConfig(pointer, info, key, value, valueTypeId, separatorTypeId, options)
                 }
             }
