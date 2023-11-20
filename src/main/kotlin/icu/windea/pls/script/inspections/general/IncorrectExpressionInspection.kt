@@ -24,8 +24,6 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                 if(element is ParadoxScriptExpressionElement) visitExpressionElement(element)
             }
             
-            //TODO 提取成扩展点并加入一些极个别情况下的检查
-            
             private fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
                 if(!element.isExpression()) return // skip check if element is not a expression
                 
@@ -36,6 +34,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                 //得到完全匹配的CWT规则
                 val config = CwtConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return
                 
+                //开始检查
                 ParadoxIncorrectExpressionChecker.check(element, config, holder)
             }
         }

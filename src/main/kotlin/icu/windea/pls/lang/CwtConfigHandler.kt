@@ -342,6 +342,7 @@ object CwtConfigHandler {
         val configGroup = configContext.configGroup
         
         //得到所有待匹配的结果
+        ProgressManager.checkCanceled()
         val contextConfigs = configContext.getConfigs(matchOptions)
         if(contextConfigs.isEmpty()) return emptyList()
         val contextConfigsToMatch = contextConfigs
@@ -358,6 +359,7 @@ object CwtConfigHandler {
                 }
             }
             .let { configs -> doOptimizeContextConfigs(element, configs, keyExpression, matchOptions) }
+        //如果无结果，则返回空列表
         if(contextConfigsToMatch.isEmpty()) return emptyList()
         
         //得到所有可能匹配的结果
@@ -376,9 +378,9 @@ object CwtConfigHandler {
         val finalMatchResultValues = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
         doGetFinalResultValues(finalMatchResultValues, matchResultValues, matchOptions)
         if(finalMatchResultValues.isNotEmpty()) return finalMatchResultValues.mapFast { it.value }
-        //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则
-        if(orDefault) return contextConfigsToMatch
         
+        //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则，否则返回空列表
+        if(orDefault) return contextConfigsToMatch
         return emptyList()
     }
     
