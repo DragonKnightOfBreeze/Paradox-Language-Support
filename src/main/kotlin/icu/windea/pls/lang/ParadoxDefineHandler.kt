@@ -22,7 +22,6 @@ object ParadoxDefineHandler {
     @Suppress("UNCHECKED_CAST")
     fun <T> getDefineValue(contextElement: PsiElement, project: Project, path: String, type: Class<T>): T? {
         val gameType = selectGameType(contextElement) ?: return null
-        ProgressManager.checkCanceled()
         try {
             val selector = fileSelector(project, contextElement).contextSensitive()
             var result: Any? = null
@@ -31,9 +30,9 @@ object ParadoxDefineHandler {
                 val file = it.toPsiFile(project) ?: return@p true
                 if(file !is ParadoxScriptFile) return@p true
                 val defines = getDefinesFromFile(file)
-                val defineValue = defines.getOrPut(path) {
-                    val property = file.findByPath(path, ParadoxScriptProperty::class.java, ignoreCase = false) ?: return@computeIfAbsent null
-                    val propertyValue = property.propertyValue ?: return@computeIfAbsent null
+                val defineValue = defines.getOrPut(path) action@{
+                    val property = file.findByPath(path, ParadoxScriptProperty::class.java, ignoreCase = false) ?: return@action null
+                    val propertyValue = property.propertyValue ?: return@action null
                     ParadoxScriptDataValueResolver.resolveValue(propertyValue, conditional = false)
                 }
                 if(defineValue != null) {
@@ -46,7 +45,7 @@ object ParadoxDefineHandler {
             return result as T?
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
-            logger.warn("Cannot get define value of path '$type' in $gameType", e)
+            logger.warn("Cannot get define value of path '$type' for $gameType", e)
             return null
         }
     }
