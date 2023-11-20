@@ -35,7 +35,7 @@ class CwtBlock(
             //变量声明分隔符周围的空格，属性分隔符周围的空格
             val customSettings = settings.getCustomSettings(CwtCodeStyleSettings::class.java)
             return SpacingBuilder(settings, CwtLanguage)
-                .between(MEMBERS, MEMBERS).spaces(1, true) //属性/值之间需要有空格或者换行
+                .between(MEMBERS, MEMBERS).spaces(1) //属性/值之间需要有空格或者换行
                 .aroundInside(SEPARATORS, OPTION).spaceIf(customSettings.SPACE_AROUND_OPTION_SEPARATOR) //间隔符周围按情况可能需要空格
                 .aroundInside(SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //间隔符周围按情况可能需要空格
                 .between(LEFT_BRACE, MEMBERS).spaceIf(customSettings.SPACE_WITHIN_BRACES, true)
