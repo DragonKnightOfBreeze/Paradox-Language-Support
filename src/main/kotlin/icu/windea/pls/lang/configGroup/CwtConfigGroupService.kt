@@ -36,7 +36,7 @@ class CwtConfigGroupService(
         logger.info("Initialize CWT config group '$gameTypeId'...")
         val start = System.currentTimeMillis()
         
-        val configGroup = createConfigGroupInProgress(gameType, null)
+        val configGroup = createConfigGroupInProgress(gameType)
         
         val end = System.currentTimeMillis()
         logger.info("Initialize CWT config group '$gameTypeId' finished in ${end - start} ms.")
@@ -58,7 +58,7 @@ class CwtConfigGroupService(
                     val start = System.currentTimeMillis()
                     
                     ReadAction.nonBlocking(Callable {
-                        val newConfigGroup = createConfigGroupInProgress(configGroup.gameType, indicator)
+                        val newConfigGroup = createConfigGroupInProgress(configGroup.gameType)
                         newConfigGroup.copyUserDataTo(configGroup)
                         configGroup.modificationTracker.incModificationCount()
                     }).expireWhen { project.isDisposed }.wrapProgress(indicator).executeSynchronously()
@@ -98,7 +98,7 @@ class CwtConfigGroupService(
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, progressIndicator)
     }
     
-    private fun createConfigGroupInProgress(gameType: ParadoxGameType?, processIndicator: ProgressIndicator?): CwtConfigGroup {
+    private fun createConfigGroupInProgress(gameType: ParadoxGameType?): CwtConfigGroup {
         val info = CwtConfigGroupInfo(gameType.id)
         val configGroup = CwtConfigGroup(info, gameType, project)
         info.configGroup = configGroup

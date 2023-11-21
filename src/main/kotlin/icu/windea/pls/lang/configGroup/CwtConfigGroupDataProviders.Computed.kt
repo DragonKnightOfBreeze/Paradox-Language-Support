@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.configGroup
 
-import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -16,10 +15,8 @@ import kotlin.collections.set
 /**
  * 用于初始CWT规则分组中需要经过计算的那些数据。
  */
-class CwtConfigGroupComputedDataProvider : CwtConfigGroupDataProvider {
+class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {
-        val gameTypeId = configGroup.gameType.id
-        
         run {
             configGroup.modifiers.values
                 .filter { it.template.isNotEmpty() }

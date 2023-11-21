@@ -11,7 +11,6 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.annotations.*
@@ -361,11 +360,21 @@ fun StringBuilder.appendFileInfoHeader(element: PsiElement): StringBuilder {
 
 fun StringBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): StringBuilder {
     if(element.language != CwtLanguage) return this
-    val file = selectFile(element) ?: return this
-    if(ParadoxFileManager.isInjectedFile(file)) return this //ignored for injected PSI
-    
-    //TODO 1.2.4+
-    
+    val file = element.containingFile ?: return this
+    val vFile = file.virtualFile ?: return this
+    val project = file.project
+    val (fileProvider, rootDirectory) = CwtConfigGroupFileProvider.EP_NAME.extensionList.firstNotNullOfOrNull { fileProvider ->
+        fileProvider.getRootDirectory(project)?.let { fileProvider to it }
+    } ?: return this
+    val configFilePath = VfsUtil.getRelativePath(vFile, rootDirectory) ?: return this
+    append("[")
+    append(configFilePath.escapeXml())
+    append("]")
+    if(fileProvider.isBuiltIn()) {
+        grayed { 
+            append(" ").append(PlsBundle.message("builtIn"))
+        }
+    }
     return this
 }
 

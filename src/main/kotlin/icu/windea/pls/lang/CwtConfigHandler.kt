@@ -9,6 +9,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
@@ -34,6 +35,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.CwtConfigMatcher.ResultValue
 import icu.windea.pls.lang.config.*
+import icu.windea.pls.lang.configGroup.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*
@@ -46,26 +48,30 @@ import kotlin.collections.isNullOrEmpty
 
 object CwtConfigHandler {
     //region Core Methods
-    fun getConfigGroup(element: PsiElement): CwtConfigGroup? {
+    fun getContainingConfigGroup(element: PsiElement): CwtConfigGroup? {
         if(element.language != CwtLanguage) return null
-        //TODO 1.2.4+
-        return null
+        val file = element.containingFile ?: return null
+        val vFile = file.virtualFile ?: return null
+        val project = file.project
+        return CwtConfigGroupFileProvider.EP_NAME.extensionList.firstNotNullOfOrNull { fileProvider -> 
+            fileProvider.getContainingConfigGroup(vFile, project)
+        }
     }
     
-    fun getPath(element: PsiElement): CwtConfigPath? {
+    fun getConfigPath(element: PsiElement): CwtConfigPath? {
         if(element is CwtFile) return EmptyCwtConfigPath
         if(element !is CwtProperty && element !is CwtValue) return null
-        return doGetPathFromCache(element)
+        return doGetConfigPathFromCache(element)
     }
     
-    private fun doGetPathFromCache(element: PsiElement): CwtConfigPath? {
+    private fun doGetConfigPathFromCache(element: PsiElement): CwtConfigPath? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigPath) {
-            val value = doGetPath(element)
+            val value = doGetConfigPath(element)
             CachedValueProvider.Result.create(value, element)
         }
     }
     
-    private fun doGetPath(element: PsiElement): CwtConfigPath? {
+    private fun doGetConfigPath(element: PsiElement): CwtConfigPath? {
         var current: PsiElement = element
         var depth = 0
         val subPaths = LinkedList<String>()
