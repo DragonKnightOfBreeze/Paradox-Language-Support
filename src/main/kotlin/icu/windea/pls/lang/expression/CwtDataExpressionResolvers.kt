@@ -157,7 +157,7 @@ class CoreCwtDataExpressionResolver : CwtDataExpressionResolver {
             }
             expressionString.surroundsWith("alias_name[", "]") -> {
                 val value = expressionString.substring(11, expressionString.length - 1).orNull()
-                Result(expressionString, CwtDataTypes.AliasKeysField, value)
+                Result(expressionString, CwtDataTypes.AliasName, value)
             }
             expressionString.surroundsWith("alias_match_left[", "]") -> {
                 val value = expressionString.substring(17, expressionString.length - 1).orNull()

@@ -124,7 +124,7 @@ object ParadoxScopeHandler {
         }
         
         //child config can be "alias_name[X] = ..." and "alias[X:scope_field]" is valid
-        //or root config in config tree is "alias[X:xxx] = ..."
+        //or root config in config tree is "alias[X:xxx] = ..." and "alias[X:scope_field]" is valid
         val configs = CwtConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
         configs.forEach { config ->
             val configGroup = config.info.configGroup
