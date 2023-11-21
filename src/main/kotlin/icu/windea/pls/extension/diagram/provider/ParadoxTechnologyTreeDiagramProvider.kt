@@ -155,7 +155,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
                             //科技的图标
                             val frameInfo = nodeElement.getUserData(PlsKeys.frameInfo)
                             val iconUrl = ParadoxImageResolver.resolveUrlByFile(nodeItem.virtualFile, frameInfo) ?: return null
-                            val icon = iconUrl.toIconOrNull()
+                            val icon = iconUrl.toFileUrl().toIconOrNull()
                             icon?.toLabel()
                         }
                         nodeItem is ParadoxScriptProperty -> {

@@ -137,7 +137,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         } ?: ParadoxImageResolver.getDefaultUrl()
         
         //找不到图标的话就直接跳过
-        val icon = iconUrl.toIconOrNull() ?: return
+        val icon = iconUrl.toFileUrl().toIconOrNull() ?: return
         //如果图标大小在16*16到32*32之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
         //实际上，本地化文本可以嵌入任意大小的图片
         val docFontSize = getDocumentationFontSize().size

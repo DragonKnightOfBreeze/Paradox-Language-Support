@@ -324,7 +324,6 @@ fun StringBuilder.appendFileInfoHeader(element: PsiElement): StringBuilder {
     val file = selectFile(element) ?: return this
     if(ParadoxFileManager.isInjectedFile(file)) return this //ignored for injected PSI
     val fileInfo = file.fileInfo ?: return this
-    
     val rootInfo = fileInfo.rootInfo
     append("<span>")
     //描述符信息（模组名、版本等）
@@ -363,18 +362,24 @@ fun StringBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): StringBuil
     val file = element.containingFile ?: return this
     val vFile = file.virtualFile ?: return this
     val project = file.project
-    val (fileProvider, rootDirectory) = CwtConfigGroupFileProvider.EP_NAME.extensionList.firstNotNullOfOrNull { fileProvider ->
-        fileProvider.getRootDirectory(project)?.let { fileProvider to it }
+    val (fileProvider, configGroup, filePath) = CwtConfigGroupFileProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ fileProvider ->
+        val configGroup = fileProvider.getContainingConfigGroup(vFile, project) ?: return@f null
+        val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f null
+        val filePath = VfsUtil.getRelativePath(vFile, rootDirectory)?.substringAfter('/') ?: return@f null
+        tupleOf(fileProvider, configGroup, filePath)
     } ?: return this
-    val configFilePath = VfsUtil.getRelativePath(vFile, rootDirectory) ?: return this
-    append("[")
-    append(configFilePath.escapeXml())
-    append("]")
+    //规则分组信息
+    val gameType = configGroup.gameType
+    append("[").append(gameType?.title ?: "Core").append(" Config]")
     if(fileProvider.isBuiltIn()) {
-        grayed { 
-            append(" ").append(PlsBundle.message("builtIn"))
+        grayed {
+            append(" ").append(PlsBundle.message("text.builtIn"))
         }
     }
+    appendBr()
+    //文件信息（相对于规则分组根目录的路径）
+    append("[").append(filePath.escapeXml()).append("]")
+    appendBr()
     return this
 }
 

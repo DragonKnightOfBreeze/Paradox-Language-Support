@@ -555,13 +555,9 @@ fun String.toBooleanYesNo() = this == "yes"
 
 fun String.toBooleanYesNoOrNull() = if(this == "yes") true else if(this == "no") false else null
 
-fun String.toUUID(): UUID {
-    return UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8))
-}
+fun String.toUUID() = UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8))
 
-fun String.toUuidString(): String {
-    return UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8)).toString()
-}
+fun String.toUuidString() = UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8)).toString()
 
 fun String.toFile() = File(this)
 
@@ -581,10 +577,6 @@ fun String.toFileUrl() = File(this).toURI().toURL()
  */
 fun String.toClasspathUrl() = PlsConstants.locationClass.getResource(this)!!
 
-//fun String.toIntRangeOrNull(): IntRange? = runCatchingCancelable { split("..", limit = 2).let { (a, b) -> a.toInt()..b.toInt() } }.getOrNull()
-//
-//fun String.toFloatRangeOrNull(): FloatRange? = runCatchingCancelable { split("..", limit = 2).let { (a, b) -> a.toFloat()..b.toFloat() } }.getOrNull()
-
 fun String.toClass() = Class.forName(this)
 
 fun String.toKClass() = Class.forName(this).kotlin
@@ -593,12 +585,6 @@ fun URL.toFile() = File(this.toURI())
 
 fun URL.toPath() = Paths.get(this.toURI())
 
-//fun <T> Result<T>.getOrThrow(predicate: (Throwable) -> Boolean): T? {
-//	return this.onFailure { if(predicate(it)) throw it }.getOrNull()
-//}
-
 typealias FloatRange = ClosedRange<Float>
 
-operator fun FloatRange.contains(element: Float?): Boolean {
-    return element != null && contains(element)
-}
+operator fun FloatRange.contains(element: Float?) = element != null && contains(element)

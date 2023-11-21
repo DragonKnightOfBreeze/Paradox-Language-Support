@@ -7,7 +7,6 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.model.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set

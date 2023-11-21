@@ -22,6 +22,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.util.*
 import java.awt.*
 import java.awt.image.*
+import java.net.*
 import javax.swing.*
 import javax.swing.table.*
 import javax.swing.text.*
@@ -31,7 +32,12 @@ import kotlin.properties.*
 import kotlin.reflect.*
 
 fun String.toIconOrNull(): Icon? {
+    //注意这里需要使用反射路径（如，Icons.Test）或者文件URL（而非文件路径）
     return IconLoader.findIcon(this, PlsConstants.locationClass)
+}
+
+fun URL.toIconOrNull(): Icon? {
+    return IconLoader.findIcon(this)
 }
 
 fun Icon.resize(width: Int, height: Int): Icon {
