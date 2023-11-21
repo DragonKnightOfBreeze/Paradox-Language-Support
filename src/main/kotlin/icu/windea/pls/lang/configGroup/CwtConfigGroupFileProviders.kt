@@ -2,7 +2,6 @@ package icu.windea.pls.lang.configGroup
 
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -24,15 +23,14 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProvider {
         val gameTypeId = configGroup.gameType.id
         val rootDirectories = getRootDirectories(configGroup.project)
         rootDirectories.forEach { rootDirectory ->
-            if(gameTypeId != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, configGroup, consumer) }
-            rootDirectory.findChild(gameTypeId)?.let { doProcessFiles(it, configGroup, consumer) }
+            if(gameTypeId != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, consumer) }
+            rootDirectory.findChild(gameTypeId)?.let { doProcessFiles(it, consumer) }
         }
         return true
     }
     
-    private fun doProcessFiles(rootDirectory: VirtualFile, configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean) {
+    private fun doProcessFiles(rootDirectory: VirtualFile, consumer: (String, VirtualFile) -> Boolean) {
         if(!rootDirectory.isDirectory) return
-        val gameTypeId = configGroup.gameType.id
         VfsUtil.visitChildrenRecursively(rootDirectory, object : VirtualFileVisitor<Void>() {
             override fun visitFile(file: VirtualFile): Boolean {
                 if(file.extension?.lowercase() == "cwt") {
@@ -79,15 +77,14 @@ class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProvider {
         val gameTypeId = configGroup.gameType.id
         val rootDirectories = getRootDirectories(configGroup.project)
         rootDirectories.forEach { rootDirectory ->
-            if(gameTypeId != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, configGroup, consumer) }
-            rootDirectory.findChild(gameTypeId)?.let { doProcessFiles(it, configGroup, consumer) }
+            if(gameTypeId != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, consumer) }
+            rootDirectory.findChild(gameTypeId)?.let { doProcessFiles(it, consumer) }
         }
         return true
     }
     
-    private fun doProcessFiles(rootDirectory: VirtualFile, configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean) {
+    private fun doProcessFiles(rootDirectory: VirtualFile, consumer: (String, VirtualFile) -> Boolean) {
         if(!rootDirectory.isDirectory) return
-        val gameTypeId = configGroup.gameType.id
         VfsUtil.visitChildrenRecursively(rootDirectory, object : VirtualFileVisitor<Void>() {
             override fun visitFile(file: VirtualFile): Boolean {
                 if(file.extension?.lowercase() == "cwt") {

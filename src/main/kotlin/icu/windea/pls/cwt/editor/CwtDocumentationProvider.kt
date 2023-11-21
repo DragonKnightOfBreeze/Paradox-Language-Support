@@ -14,6 +14,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
@@ -420,9 +421,13 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
     }
     
     private fun getConfigGroup(element: PsiElement, originalElement: PsiElement?, project: Project): CwtConfigGroup? {
-        val gameType = selectGameType(originalElement?.takeIf { it.language.isParadoxLanguage() })
-        val configGroup = gameType?.let { getConfigGroup(project, it) }
-            ?: CwtConfigHandler.getConfigGroupFromCwtFile(element.containingFile, project)
-        return configGroup
+        if(originalElement != null && originalElement.language.isParadoxLanguage()) {
+            val gameType = selectGameType(originalElement)
+            if(gameType != null) return getConfigGroup(project, gameType)
+        }
+        if(element.language == CwtLanguage) {
+            return CwtConfigHandler.getConfigGroup(element)
+        }
+        return null
     }
 }

@@ -8,7 +8,6 @@ import com.intellij.lang.annotation.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -22,7 +21,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.api.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
@@ -31,6 +29,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.CwtConfigMatcher.ResultValue
@@ -47,6 +46,12 @@ import kotlin.collections.isNullOrEmpty
 
 object CwtConfigHandler {
     //region Core Methods
+    fun getConfigGroup(element: PsiElement): CwtConfigGroup? {
+        if(element.language != CwtLanguage) return null
+        //TODO 1.2.4+
+        return null
+    }
+    
     fun getPath(element: PsiElement): CwtConfigPath? {
         if(element is CwtFile) return EmptyCwtConfigPath
         if(element !is CwtProperty && element !is CwtValue) return null
@@ -1647,15 +1652,6 @@ object CwtConfigHandler {
     
     fun isSingleAliasEntryConfig(propertyConfig: CwtPropertyConfig): Boolean {
         return propertyConfig.valueExpression.type == CwtDataTypes.SingleAliasRight
-    }
-    
-    @InferApi
-    fun getConfigGroupFromCwtFile(file: PsiFile, project: Project): CwtConfigGroup? {
-        val virtualFile = file.virtualFile ?: return null
-        val path = virtualFile.path
-        val gameTypeId = path.substringAfter("config/", "").substringBefore("/", "")
-        if(gameTypeId.isEmpty()) return null
-        return getConfigGroup(project, ParadoxGameType.resolve(gameTypeId))
     }
     
     fun getAliasSubName(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = Options.Default): String? {
