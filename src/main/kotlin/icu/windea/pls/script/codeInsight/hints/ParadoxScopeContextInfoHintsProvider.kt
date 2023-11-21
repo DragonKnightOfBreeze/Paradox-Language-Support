@@ -52,11 +52,10 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		val leftCurlyBrace = block.findChild(ParadoxScriptElementTypes.LEFT_BRACE) ?: return true
 		val offset = leftCurlyBrace.endOffset
 		val isAtLineEnd = editor.document.isAtLineEnd(offset, true)
-		if(!isAtLineEnd) return true //仅当作为子句开始的左花括号位于行尾时，才显示此内嵌提示
+		if(!isAtLineEnd) return true //show only if there are no non-blank characters after '{'
 		if(!ParadoxScopeHandler.isScopeContextSupported(element, indirect = true)) return true
 		val scopeContext = ParadoxScopeHandler.getScopeContext(element)
 		if(scopeContext != null) {
-			//don't need show if scope is not changed
 			if(settings.showOnlyIfScopeIsChanged && !ParadoxScopeHandler.isScopeContextChanged(element, scopeContext)) return true
 			
 			val gameType = selectGameType(file) ?: return true

@@ -17,6 +17,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.settings.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.configGroup.*
 import icu.windea.pls.lang.documentation.*
@@ -355,6 +356,16 @@ fun StringBuilder.appendFileInfoHeader(element: PsiElement): StringBuilder {
     //文件信息（相对于游戏或模组根目录的路径）
     append("[").append(fileInfo.path).append("]")
     appendBr()
+    return this
+}
+
+fun StringBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): StringBuilder {
+    if(element.language != CwtLanguage) return this
+    val file = selectFile(element) ?: return this
+    if(ParadoxFileManager.isInjectedFile(file)) return this //ignored for injected PSI
+    
+    //TODO 1.2.4+
+    
     return this
 }
 

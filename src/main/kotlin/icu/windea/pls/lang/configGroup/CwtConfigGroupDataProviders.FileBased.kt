@@ -30,10 +30,10 @@ class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
         //后加入的数据项会覆盖先加入的同名同类型的数据项
         
         val allFiles = mutableMapOf<String, Tuple2<VirtualFile, CwtConfigGroupFileProvider>>()
-        val fileProcessors = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        fileProcessors.all f@{ fileProcessor ->
-            fileProcessor.processFiles(configGroup) { filePath, file ->
-                allFiles[filePath] = tupleOf(file, fileProcessor)
+        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
+        fileProviders.all f@{ fileProvider ->
+            fileProvider.processFiles(configGroup) { filePath, file ->
+                allFiles[filePath] = tupleOf(file, fileProvider)
                 true
             }
         }

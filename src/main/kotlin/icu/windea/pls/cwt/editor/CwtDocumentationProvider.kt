@@ -140,6 +140,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
         sectionsList: List<MutableMap<String, String>>?
     ) {
         definition {
+            appendCwtConfigFileInfoHeader(element)
+            
             val referenceElement = getReferenceElement(originalElement)
             val shortName = configType?.getShortName(name) ?: name
             val byName = if(shortName == name) null else name
