@@ -39,15 +39,6 @@ private fun CwtMemberConfig<*>.doProcessDescendants(processor: (CwtMemberConfig<
     return true
 }
 
-fun CwtConfig<*>.findAliasConfig(): CwtAliasConfig? {
-    return when {
-        this is CwtPropertyConfig -> this.inlineableConfig?.castOrNull()
-        this is CwtValueConfig -> this.propertyConfig?.inlineableConfig?.castOrNull()
-        this is CwtAliasConfig -> this
-        else -> null
-    }
-}
-
 inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T) -> CwtDataExpression, crossinline configGroupProvider: (T) -> CwtConfigGroup): List<T> {
     if(size <= 1) return toListOrThis()
     return sortedByDescending { CwtDataExpressionPriorityProvider.getPriority(expressionProvider(it), configGroupProvider(it)) }

@@ -9,7 +9,7 @@
 * [ ] 重新打开项目后，IDE无法完成对脚本文件的解析？
 * [ ] `scope[species]`应当始终可以匹配`this` - 如果无法准确匹配，直接匹配同类型的第一个规则
 * [ ] 作用域上下文的内嵌提示显示有问题 - 应当显示在`possible = {`后面，且要求`{`之后不存在空白以外的字符
-* [ ] `some_trigger = value`中的`value`不应当被特别高亮
+* [X] `some_trigger = value`中的`value`不应当被特别高亮
 
 来自CWTools的Github仓库：
 

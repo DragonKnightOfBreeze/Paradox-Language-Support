@@ -94,13 +94,6 @@ class ParadoxScriptAnnotator : Annotator {
         }
     }
     
-    private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
-        //高亮复杂枚举值声明对应的表达式
-        holder.newSilentAnnotation(INFORMATION).range(element)
-            .textAttributes(Keys.COMPLEX_ENUM_VALUE_KEY)
-            .create()
-    }
-    
     private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
         //检查是否缺失引号
         if(element is ParadoxScriptStringExpressionElement) {
@@ -119,13 +112,13 @@ class ParadoxScriptAnnotator : Annotator {
         val isKey = element is ParadoxScriptPropertyKey
         val config = CwtConfigHandler.getConfigs(element, orDefault = isKey).firstOrNull()
         if(config != null) {
-            //高亮特殊标签
-            if(config is CwtValueConfig && config.isTagConfig) {
-                holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(Keys.TAG_KEY).create()
-                return
-            }
             //如果不是字符串，除非是定义引用，否则不作高亮
             if(element !is ParadoxScriptStringExpressionElement && config.expression.type != CwtDataTypes.Definition) {
+                return
+            }
+            //高亮特殊标签
+            if(element is ParadoxScriptStringExpressionElement && config is CwtValueConfig && config.isTagConfig) {
+                holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(Keys.TAG_KEY).create()
                 return
             }
             //缓存参数范围
@@ -141,8 +134,20 @@ class ParadoxScriptAnnotator : Annotator {
                     }
                 }
             }
-            CwtConfigHandler.annotateScriptExpression(element, null, config, holder)
+            //高亮脚本表达式
+            annotateScriptExpression(element, config, holder)
         }
+    }
+    
+    private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
+        //高亮复杂枚举值声明对应的表达式
+        holder.newSilentAnnotation(INFORMATION).range(element)
+            .textAttributes(Keys.COMPLEX_ENUM_VALUE_KEY)
+            .create()
+    }
+    
+    private fun annotateScriptExpression(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: AnnotationHolder) {
+        CwtConfigHandler.annotateScriptExpression(element, null, config, holder)
     }
     
     private fun checkLiteralElement(element: PsiElement, holder: AnnotationHolder) {

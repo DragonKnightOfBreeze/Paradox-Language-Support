@@ -9,7 +9,6 @@ import com.intellij.patterns.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
@@ -528,7 +527,11 @@ abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpress
     }
     
     private fun annotateByAliasName(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder, config: CwtConfig<*>): Boolean {
-        val aliasConfig = config.findAliasConfig() ?: return false
+        val aliasConfig = when {
+            config is CwtPropertyConfig -> config.inlineableConfig?.castOrNull<CwtAliasConfig?>()
+            config is CwtAliasConfig -> config
+            else -> null
+        } ?: return false
         val type = aliasConfig.expression.type
         if(!type.isConstantLikeType()) return false
         val aliasName = aliasConfig.name
