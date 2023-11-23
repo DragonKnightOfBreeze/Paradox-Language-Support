@@ -48,7 +48,7 @@ class CwtConfigGroupService(
     fun refreshConfigGroups(configGroups: Collection<CwtConfigGroup>) {
         //不替换configGroup，而是替换其中的userData
         if(configGroups.isEmpty()) return
-        val progressTitle = PlsBundle.message("configGroup.progress.refreshAll")
+        val progressTitle = PlsBundle.message("configGroup.refresh.progressTitle")
         val task = object : Task.Backgroundable(project, progressTitle, true) {
             override fun run(indicator: ProgressIndicator) {
                 configGroups.forEach { configGroup ->
