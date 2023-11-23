@@ -426,7 +426,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             if(gameType != null) return getConfigGroup(project, gameType)
         }
         if(element.language == CwtLanguage) {
-            return CwtConfigHandler.getConfigGroup(element)
+            return CwtConfigHandler.getContainingConfigGroup(element)
         }
         return null
     }

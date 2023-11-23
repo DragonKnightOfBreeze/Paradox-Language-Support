@@ -21,10 +21,8 @@ import kotlin.collections.set
 /**
  * 用于初始CWT规则分组中基于文件内容的那些数据。
  */
-class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
+class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {
-        val gameTypeId = configGroup.gameType.id
-        
         //按照文件路径（相对于规则分组的根目录）正序读取所有规则文件
         //后加入的规则文件会覆盖先加入的同路径的规则文件
         //后加入的数据项会覆盖先加入的同名同类型的数据项
@@ -38,7 +36,6 @@ class CwtConfigGroupFileBasedDataProvider : CwtConfigGroupDataProvider {
             }
         }
         
-        var i = 0
         allFiles.all f@{ (filePath, tuple) ->
             val (file, fileProcessor) = tuple
             processFile(filePath, file, fileProcessor, configGroup)

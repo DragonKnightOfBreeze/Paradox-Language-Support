@@ -7,7 +7,6 @@ import com.intellij.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
@@ -45,10 +44,10 @@ inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T
 }
 
 val CwtProperty.configPath: CwtConfigPath?
-    get() = CwtConfigHandler.getPath(this)
+    get() = CwtConfigHandler.getConfigPath(this)
 
 val CwtValue.configPath: CwtConfigPath?
-    get() = CwtConfigHandler.getPath(this)
+    get() = CwtConfigHandler.getConfigPath(this)
 
 val CwtProperty.configType: CwtConfigType?
     get() = CwtConfigHandler.getConfigType(this)

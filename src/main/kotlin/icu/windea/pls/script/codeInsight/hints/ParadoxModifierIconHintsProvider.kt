@@ -3,7 +3,6 @@ package icu.windea.pls.script.codeInsight.hints
 import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
@@ -69,7 +68,7 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
             if(iconUrl == null) return true
             
             //找不到图标的话就直接跳过
-            val icon = iconUrl.toIconOrNull() ?: return true
+            val icon = iconUrl.toFileUrl().toIconOrNull() ?: return true
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             if(icon.iconHeight <= settings.iconHeightLimit) {
                 //点击可以导航到声明处（DDS）

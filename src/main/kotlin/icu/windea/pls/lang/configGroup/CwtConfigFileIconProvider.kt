@@ -4,7 +4,6 @@ import com.intellij.ide.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icons.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.cwt.*
 import javax.swing.*
 
@@ -17,7 +16,7 @@ class CwtConfigFileIconProvider: FileIconProvider {
         if(file.fileType != CwtFileType) return null
         
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        val fileProvider = fileProviders.find { it.getConfigGroups(project, file).isNotEmpty() }
+        val fileProvider = fileProviders.find { it.getContainingConfigGroup(file, project) != null }
         if(fileProvider == null) return null
         
         return PlsIcons.FileTypes.CwtConfig
