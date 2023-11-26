@@ -1,5 +1,6 @@
 package icu.windea.pls.core.search
 
+import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -19,6 +20,7 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
     var parallel = false
     
     override fun processResults(consumer: Processor<in T>): Boolean {
+        ProgressManager.checkCanceled()
         val processor = CommonProcessors.UniqueProcessor(consumer)
         if(parallel) {
             return delegateProcessResults(original, processor)
@@ -61,38 +63,43 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
     }
     
     override fun findAll(): Set<T> {
-        //这里得到的结果会经过过滤和排序
-        //最终使用的排序器需要将比较结果为0的项按照原有顺序进行排序，除非它们值相等
         val selector = searchParameters.selector
-        val selectorComparator = selector.comparator()
-        val priorityComparator = getPriorityComparator()
-        var comparator = selectorComparator
-        comparator = comparator thenPossible priorityComparator
-        comparator = comparator thenPossible Comparator { o1, o2 -> if(o1 == o2) 0 else 1 }
-        val result =  MutableSet(comparator)
+        val comparator = getFinalComparator()
+        val result = MutableSet(comparator)
         delegateProcessResults(original) {
             result.add(it)
             true
         }
-        val finalResult = result.filterTo(mutableSetOf()) { selector.selectAll(it) }
-        return finalResult
+        return result.filterTo(mutableSetOf()) { selector.selectAll(it) }
     }
     
     override fun forEach(consumer: Processor<in T>): Boolean {
-        //这里得到的结果仅会经过过滤
-        //因此，对于某些要求进行排序的地方（如引用解析），尽量避免使用此方法以及延伸方法（如processQueryAsync）
         val selector = searchParameters.selector
-        return delegateProcessResults(original) {
-            if(selector.selectAll(it)) {
-                val r = consumer.process(it)
-                if(!r) return@delegateProcessResults false
-            }
+        val comparator = getFinalComparator()
+        val result = MutableSet(comparator)
+        delegateProcessResults(original) {
+            result.add(it)
             true
+        }
+        return result.process {
+            if(selector.selectAll(it)) {
+                consumer.process(it)
+            } else {
+                true
+            }
         }
     }
     
     fun getPriorityComparator(): Comparator<T> {
         return ParadoxPriorityProvider.getComparator(searchParameters)
+    }
+    
+    fun getFinalComparator(): Comparator<T>? {
+        //最终使用的排序器需要将比较结果为0的项按照原有顺序进行排序，除非它们值相等
+        var comparator = searchParameters.selector.comparator()
+        comparator = comparator thenPossible getPriorityComparator()
+        comparator = comparator thenPossible Comparator { o1, o2 -> if(o1 == o2) 0 else 1 }
+        return comparator
     }
     
     override fun allowParallelProcessing(): Query<T> {
