@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.5
+
+* [X] 修复覆盖了`economic_category`之后，无法正常解析因覆盖而新生成的修正的问题
+
 ## 1.2.4
 
 * [X] 更新CWT规则文件以适配Stellaris 3.10.0（进一步完善）

@@ -5,13 +5,9 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.priority.*
-import java.util.concurrent.atomic.*
 
 /**
- * 可对查询结果进行进一步的处理。
- * * 进一步的过滤、排序和去重。
- * * 可处理查找单个和查找所有的路基有所不同的情况。
- * * 可处理存在默认值的情况。
+ * 可对查询结果进行进一步的处理，包括排序、过滤、去重等。
  * @see ParadoxSearchParameters
  * @see ParadoxSelector
  * @see ChainedParadoxSelector
@@ -27,7 +23,7 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
         if(parallel) {
             return delegateProcessResults(original, processor)
         } else {
-            val lock = ObjectUtils.sentinel("AbstractQuery lock")
+            val lock = ObjectUtils.sentinel("ParadoxQuery lock")
             return delegateProcessResults(original) {
                 synchronized(lock) {
                     processor.process(it)
@@ -65,8 +61,9 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
     }
     
     override fun findAll(): Set<T> {
-        val selector = searchParameters.selector
+        //这里得到的结果会经过过滤和排序
         //最终使用的排序器需要将比较结果为0的项按照原有顺序进行排序，除非它们值相等
+        val selector = searchParameters.selector
         val selectorComparator = selector.comparator()
         val priorityComparator = getPriorityComparator()
         var comparator = selectorComparator
@@ -74,15 +71,16 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
         comparator = comparator thenPossible Comparator { o1, o2 -> if(o1 == o2) 0 else 1 }
         val result =  MutableSet(comparator)
         delegateProcessResults(original) {
-            if(selector.selectAll(it)) {
-                result.add(it)
-            }
+            result.add(it)
             true
         }
-        return result
+        val finalResult = result.filterTo(mutableSetOf()) { selector.selectAll(it) }
+        return finalResult
     }
     
     override fun forEach(consumer: Processor<in T>): Boolean {
+        //这里得到的结果仅会经过过滤
+        //因此，对于某些要求进行排序的地方（如引用解析），尽量避免使用此方法以及延伸方法（如processQueryAsync）
         val selector = searchParameters.selector
         return delegateProcessResults(original) {
             if(selector.selectAll(it)) {
@@ -95,22 +93,6 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
     
     fun getPriorityComparator(): Comparator<T> {
         return ParadoxPriorityProvider.getComparator(searchParameters)
-    }
-    
-    /**
-     * 是否有多个查询结果。
-     */
-    fun hasMultipleResults(): Boolean {
-        val selector = searchParameters.selector
-        val flag = AtomicBoolean(false)
-        delegateProcessResults(original) {
-            if(selector.selectAll(it)) {
-                if(flag.get()) return@delegateProcessResults false
-                flag.set(true)
-            }
-            true
-        }
-        return flag.get()
     }
     
     override fun allowParallelProcessing(): Query<T> {

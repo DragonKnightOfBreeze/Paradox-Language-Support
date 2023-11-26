@@ -111,6 +111,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
  */
 class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
+        ProgressManager.checkCanceled()
         val modifierName = name
         return configGroup.generatedModifiers.values.any { config ->
             config.template.matches(modifierName, element, configGroup)
@@ -296,48 +297,40 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
+        ProgressManager.checkCanceled()
         val modifierName = name
         val project = configGroup.project
-        val selector = definitionSelector(project, element).distinctByName()
-        var r = false
-        ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{
+        val selector = definitionSelector(project, element).contextSensitive().distinctByName()
+        val economicCategories = ParadoxDefinitionSearch.search("economic_category", selector).findAll()
+        for(economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
-            val info = StellarisEconomicCategoryHandler.getInfo(it) ?: return@p true
-            for(modifierInfo in info.modifiers) {
-                if(modifierInfo.name == modifierName) {
-                    r = true
-                    return@p false
-                }
+            val economicCategoryInfo = StellarisEconomicCategoryHandler.getInfo(economicCategory) ?: continue
+            for(economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
+                if(economicCategoryModifierInfo.name == modifierName) return true
             }
-            true
         }
-        return r
+        return false
     }
     
     override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
         val modifierName = name
         val gameType = configGroup.gameType ?: return null
-        val project = configGroup.project
-        var economicCategoryInfo: StellarisEconomicCategoryInfo? = null
-        var economicCategoryModifierInfo: StellarisEconomicCategoryModifierInfo? = null
+        val project = configGroup.project        
         val selector = definitionSelector(project, element).contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{
+        val economicCategories = ParadoxDefinitionSearch.search("economic_category", selector).findAll()
+        for(economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
-            val info = StellarisEconomicCategoryHandler.getInfo(it) ?: return@p true
-            for(modifierInfo in info.modifiers) {
-                if(modifierInfo.name == modifierName) {
-                    economicCategoryInfo = info
-                    economicCategoryModifierInfo = modifierInfo
-                    return@p false
+            val economicCategoryInfo = StellarisEconomicCategoryHandler.getInfo(economicCategory) ?: continue
+            for(economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
+                if(economicCategoryModifierInfo.name == modifierName) {
+                    val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
+                    modifierInfo.economicCategoryInfo = economicCategoryInfo
+                    modifierInfo.economicCategoryModifierInfo = economicCategoryModifierInfo
+                    return modifierInfo
                 }
             }
-            true
         }
-        if(economicCategoryInfo == null || economicCategoryModifierInfo == null) return null
-        val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
-        modifierInfo.economicCategoryInfo = economicCategoryInfo
-        modifierInfo.economicCategoryModifierInfo = economicCategoryModifierInfo
-        return modifierInfo
+        return null
     }
     
     override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
@@ -346,21 +339,21 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val scopeContext = context.scopeContext
         if(element !is ParadoxScriptStringExpressionElement) return
         
-        val selector = definitionSelector(configGroup.project, element).contextSensitive()
-        ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{ definition ->
+        val selector = definitionSelector(configGroup.project, element).contextSensitive().distinctByName()
+        ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{ economicCategory ->
             ProgressManager.checkCanceled()
-            val info = StellarisEconomicCategoryHandler.getInfo(definition) ?: return@p true
+            val economicCategoryInfo = StellarisEconomicCategoryHandler.getInfo(economicCategory) ?: return@p true
             //排除不匹配modifier的supported_scopes的情况
-            val modifierCategories = StellarisEconomicCategoryHandler.resolveModifierCategory(info.modifierCategory, configGroup)
+            val modifierCategories = StellarisEconomicCategoryHandler.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
             val supportedScopes = modifierCategories.getSupportedScopes()
             val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
             
-            val tailText = " from economic category " + info.name
-            val typeText = info.name
+            val tailText = " from economic category " + economicCategoryInfo.name
+            val typeText = economicCategoryInfo.name
             val typeIcon = PlsIcons.Definition
-            for(modifierInfo in info.modifiers) {
-                val name = modifierInfo.name
+            for(economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
+                val name = economicCategoryModifierInfo.name
                 //排除重复的
                 if(!modifierNames.add(name)) continue
                 
