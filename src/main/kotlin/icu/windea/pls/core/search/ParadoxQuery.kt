@@ -74,6 +74,7 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
     }
     
     override fun forEach(consumer: Processor<in T>): Boolean {
+        //TODO 1.2.5+ 需要验证这里的改动（适用排序）是否会显著影响性能
         val selector = searchParameters.selector
         val comparator = getFinalComparator()
         val result = MutableSet(comparator)
