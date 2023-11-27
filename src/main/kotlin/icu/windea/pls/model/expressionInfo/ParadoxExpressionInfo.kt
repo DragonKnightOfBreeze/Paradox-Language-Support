@@ -17,9 +17,3 @@ interface ParadoxExpressionInfo {
     var virtualFile: VirtualFile?
 }
 
-inline fun <T> ParadoxExpressionInfo.withVirtualFile(virtualFile: VirtualFile, action: () -> T): T {
-    this.virtualFile = virtualFile
-    val r = action()
-    this.virtualFile = null
-    return r
-}

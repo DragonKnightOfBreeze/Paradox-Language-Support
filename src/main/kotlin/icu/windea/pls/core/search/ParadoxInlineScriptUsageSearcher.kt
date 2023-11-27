@@ -35,7 +35,8 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
             if(fileData.isEmpty()) return@p true
             fileData.forEachFast f@{ info ->
                 if(expression != info.expression) return@f
-                val r = info.withVirtualFile(file) { consumer.process(info) }
+                info.virtualFile = file
+                val r = consumer.process(info)
                 if(!r) return@p false
             }
             

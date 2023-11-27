@@ -34,7 +34,8 @@ class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisati
             fileData.forEachFast f@{ info ->
                 if(localisationName != info.localisationName) return@f
                 if(name != null && name != info.name) return@f
-                val r = info.withVirtualFile(file) { consumer.process(info) }
+                info.virtualFile = file
+                val r = consumer.process(info)
                 if(!r) return@p false
             }
             
