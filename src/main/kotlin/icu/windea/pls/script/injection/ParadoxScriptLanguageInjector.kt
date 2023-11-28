@@ -14,6 +14,7 @@ import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import org.jetbrains.kotlin.idea.editor.fixers.*
 
 /**
  * 脚本语言的语言注入器，用于提供以下功能：
@@ -78,6 +79,7 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
             val rangeInsideHost = referenceInfo.argumentValueRange
                 ?.takeIf { it.startOffset >= hostRange.startOffset && it.endOffset <= hostRange.endOffset }
                 ?.shiftLeft(hostRange.startOffset)
+                ?.let { it.unquote(it.substring(host.text)) } //这里需要特殊处理传入参数值被双引号括起的情况
                 ?: return@t1 null
             ParameterValueInjectionInfo(rangeInsideHost) p@{
                 val argumentNameElement = referenceInfo.argumentNameElement ?: return@p null

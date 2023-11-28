@@ -42,11 +42,9 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
         val mayBePropertyValue = element is ParadoxScriptString && element.isPropertyValue()
         
         if(mayBeKey) {
-            //向上得到block或者file
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
             val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
             if(memberElement != null) {
-                //进行提示
                 CwtConfigHandler.addKeyCompletions(memberElement, context, resultToUse)
             }
         }
@@ -55,7 +53,6 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
             val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
             if(memberElement != null) {
-                //进行提示
                 CwtConfigHandler.addValueCompletions(memberElement, context, resultToUse)
             }
         }
@@ -67,7 +64,6 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
                 val incomplete = !quoted && keyword.isEmpty()
                 try {
                     propertyElement.putUserData(PlsKeys.isIncomplete, incomplete)
-                    //进行提示
                     CwtConfigHandler.addPropertyValueCompletions(element, propertyElement, context, resultToUse)
                 } finally {
                     propertyElement.putUserData(PlsKeys.isIncomplete, null)
