@@ -26,6 +26,7 @@ var CwtConfigContext.inlineScriptHasConflict: Boolean? by createKeyDelegate(CwtC
 var CwtConfigContext.inlineScriptHasRecursion: Boolean? by createKeyDelegate(CwtConfigContext.Keys)
 var CwtConfigContext.parameterValueRootConfigContext: CwtConfigContext? by createKeyDelegate(CwtConfigContext.Keys)
 var CwtConfigContext.parameterElement: ParadoxParameterElement? by createKeyDelegate(CwtConfigContext.Keys)
+var CwtConfigContext.parameterValueQuoted: Boolean? by createKeyDelegate(CwtConfigContext.Keys)
 
 //endregion
 
@@ -254,10 +255,11 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         
         val host = InjectedLanguageManager.getInstance(file.project).getInjectionHost(file)
         if(host == null) return null
-        val parameterElement = getParameterElement(file, host)
-        if(parameterElement == null) return null
+        val injectionInfo = getInjectionInfo(file, host) 
+        if(injectionInfo == null) return null
         
-        val gameType = parameterElement.gameType
+        val parameterElement = injectionInfo.parameterElement ?: return null
+        val gameType = selectGameType(file) ?: return null
         val elementPathFromRoot = elementPath
         val configGroup = getConfigGroup(file.project, gameType)
         val configContext = CwtConfigContext(element, null, elementPath, gameType, configGroup)
@@ -266,10 +268,11 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         }
         configContext.elementPathFromRoot = elementPathFromRoot
         configContext.parameterElement = parameterElement
+        configContext.parameterValueQuoted = injectionInfo.parameterValueQuoted
         return configContext
     }
     
-    private fun getParameterElement(file: PsiFile, host: PsiElement): ParadoxParameterElement? {
+    private fun getInjectionInfo(file: PsiFile, host: PsiElement) : ParameterValueInjectionInfo? {
         val injectionInfos = host.getUserData(ParadoxScriptLanguageInjector.Keys.parameterValueInjectionInfos)
         if(injectionInfos.isNullOrEmpty()) return null
         return when {
@@ -277,13 +280,11 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
                 val shreds = file.getShreds()
                 val shred = shreds?.singleOrNull()
                 val rangeInsideHost = shred?.rangeInsideHost ?: return null
-                val injectionInfo = injectionInfos.find { it.rangeInsideHost == rangeInsideHost } ?: return null
-                injectionInfo.parameterElement
+                 injectionInfos.find { it.rangeInsideHost == rangeInsideHost }
             }
             host is ParadoxParameter -> {
                 //just use the only one
-                val injectionInfo = injectionInfos.singleOrNull() ?: return null
-                injectionInfo.parameterElement
+                injectionInfos.singleOrNull()
             }
             else -> null
         }

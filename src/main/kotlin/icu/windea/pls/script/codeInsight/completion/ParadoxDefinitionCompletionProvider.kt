@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.config.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -35,12 +36,14 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
         context.quoted = quoted
         context.rightQuoted = rightQuoted
         
-        val resultToUse = result.withPrefixMatcher(keyword)
+        //兼容参数值（包括整行或多行参数值）和内联脚本文件中内容
         
-        val mayBeKey = element is ParadoxScriptPropertyKey || (element is ParadoxScriptValue && element.isBlockValue())
+        val parameterValueQuoted = CwtConfigHandler.getConfigContext(file)?.parameterValueQuoted
+        val mayBeKey = parameterValueQuoted != false && (element is ParadoxScriptPropertyKey || (element is ParadoxScriptValue && element.isBlockValue()))
         val mayBeValue = element is ParadoxScriptString && element.isBlockValue()
-        val mayBePropertyValue = element is ParadoxScriptString && element.isPropertyValue()
+        val mayBePropertyValue = parameterValueQuoted != false && (element is ParadoxScriptString && element.isPropertyValue())
         
+        val resultToUse = result.withPrefixMatcher(keyword)
         if(mayBeKey) {
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
             val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
