@@ -238,6 +238,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
  *
  * * 基于语言注入功能实现。
  * * 正常提供代码高亮、引用解析、代码补全等高级语言功能。
+ * * 对于由引号括起（且允许由引号括起）的传入值，允许使用整行或多行脚本片段，而非单个值。
  * * 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`和`TooManyExpressionInspection`。
  * * 不会将参数值内容内联到对应的调用处，然后再进行相关代码检查。
  * * 不会将参数值内容内联到对应的调用处，然后检查语法是否合法。
