@@ -10,6 +10,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.testFramework.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -134,6 +135,7 @@ tailrec fun selectRootFile(from: Any?): VirtualFile? {
     return when {
         from == null -> null
         from is VirtualFileWindow -> selectRootFile(from.delegate) //for injected PSI
+        from is LightVirtualFileBase -> selectRootFile(from.originalFile)
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameRootFile
         else -> selectRootFile(selectFile(from))
     }
@@ -142,6 +144,8 @@ tailrec fun selectRootFile(from: Any?): VirtualFile? {
 tailrec fun selectFile(from: Any?): VirtualFile? {
     return when {
         from == null -> null
+        from is VirtualFileWindow -> from.castOrNull() //for injected PSI (and not from.delegate)
+        from is LightVirtualFileBase -> selectFile(from.originalFile)
         from is VirtualFile -> from
         from is PsiDirectory -> from.virtualFile
         from is PsiFile -> from.originalFile.virtualFile
@@ -156,6 +160,8 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
     return when {
         from == null -> null
         from is ParadoxGameType -> from
+        from is VirtualFileWindow -> selectGameType(from.delegate) //for injected PSI
+        from is LightVirtualFileBase -> selectGameType(from.originalFile)
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
         from is PsiDirectory -> selectGameType(selectFile(from))
         from is PsiFile -> selectGameType(selectFile(from))
