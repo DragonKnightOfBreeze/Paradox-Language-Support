@@ -136,16 +136,13 @@ private icon_frame ::= ICON_FRAME | property_reference //can be property referen
 //command rules
 
 //see: https://stellaris.paradoxwikis.com/Localisation_modding#Bracket_Commands
-command ::= COMMAND_START command_expression? COMMAND_END{
+command ::= COMMAND_START (concept_expression | command_expression)? COMMAND_END{
   pin=1
   extends=rich_text
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationRichText"
   methods=[getIcon]
 }
-private command_expression ::= concept_expression | command_invocation_expression {
-  pin=1
-}
-private command_invocation_expression ::= (command_scope DOT)* command_field {
+private command_expression ::= (command_scope DOT)* command_field {
   pin=1
 }
 //noinspection BnfUnusedRule

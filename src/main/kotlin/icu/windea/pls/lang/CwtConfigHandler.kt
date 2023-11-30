@@ -9,7 +9,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
@@ -53,7 +52,7 @@ object CwtConfigHandler {
         val file = element.containingFile ?: return null
         val vFile = file.virtualFile ?: return null
         val project = file.project
-        return CwtConfigGroupFileProvider.EP_NAME.extensionList.firstNotNullOfOrNull { fileProvider -> 
+        return CwtConfigGroupFileProvider.EP_NAME.extensionList.firstNotNullOfOrNull { fileProvider ->
             fileProvider.getContainingConfigGroup(vFile, project)
         }
     }
@@ -101,8 +100,8 @@ object CwtConfigHandler {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigType) {
             val file = element.containingFile ?: return@getCachedValue null
             val value = when(element) {
-                is CwtProperty -> doGetConfigType(element, file)
-                is CwtValue -> doGetConfigType(element, file)
+                is CwtProperty -> doGetConfigType(element)
+                is CwtValue -> doGetConfigType(element)
                 else -> null
             }
             //invalidated on file modification
@@ -110,8 +109,7 @@ object CwtConfigHandler {
         }
     }
     
-    private fun doGetConfigType(element: CwtProperty, file: PsiFile): CwtConfigType? {
-        val fileKey = file.name.substringBefore('.')
+    private fun doGetConfigType(element: CwtProperty): CwtConfigType? {
         val configPath = element.configPath
         if(configPath == null || configPath.isEmpty()) return null
         val path = configPath.path
@@ -140,10 +138,7 @@ object CwtConfigHandler {
                 CwtConfigType.ComplexEnum
             }
             path.matchesAntPath("values/value[*]") -> {
-                CwtConfigType.ValueSet
-            }
-            fileKey == "on_actions" && path.matchesAntPath("on_actions/*") -> {
-                CwtConfigType.OnAction
+                CwtConfigType.DynamicValueType
             }
             path.matchesAntPath("inline[*]") -> {
                 CwtConfigType.Inline
@@ -160,49 +155,56 @@ object CwtConfigHandler {
                 }
                 CwtConfigType.Alias
             }
-            fileKey == "links" && path.matchesAntPath("links/*") -> {
+            path.matchesAntPath("links/*") -> {
                 CwtConfigType.Link
             }
-            fileKey == "localisation" && path.matchesAntPath("localisation_links/*") -> {
+            path.matchesAntPath("localisation_links/*") -> {
                 CwtConfigType.LocalisationLink
             }
-            fileKey == "localisation" && path.matchesAntPath("localisation_commands/*") -> {
+            path.matchesAntPath("localisation_commands/*") -> {
                 CwtConfigType.LocalisationCommand
             }
-            fileKey == "modifier_categories" && path.matchesAntPath("modifier_categories/*") -> {
+            path.matchesAntPath("modifier_categories/*") -> {
                 CwtConfigType.ModifierCategory
             }
-            fileKey == "modifiers" && path.matchesAntPath("modifiers/*") -> {
+            path.matchesAntPath("modifiers/*") -> {
                 CwtConfigType.Modifier
             }
-            fileKey == "scopes" && path.matchesAntPath("scopes/*") -> {
+            path.matchesAntPath("scopes/*") -> {
                 CwtConfigType.Scope
             }
-            fileKey == "scopes" && path.matchesAntPath("scope_groups/*") -> {
+            path.matchesAntPath("scope_groups/*") -> {
                 CwtConfigType.ScopeGroup
             }
-            fileKey == "system_links" && path.matchesAntPath("system_links/*") -> {
+            path.matchesAntPath("system_links/*") -> {
                 CwtConfigType.SystemLink
             }
-            fileKey == "localisation_locales" && path.matchesAntPath("localisation_locales/*") -> {
+            path.matchesAntPath("localisation_locales/*") -> {
                 CwtConfigType.LocalisationLocale
             }
-            fileKey == "localisation_predefined_parameters" && path.matchesAntPath("localisation_predefined_parameters/*") -> {
+            path.matchesAntPath("localisation_predefined_parameters/*") -> {
                 CwtConfigType.LocalisationPredefinedParameter
+            }
+            path.matchesAntPath("definitions/*") -> {
+                CwtConfigType.OnAction
+            }
+            path.matchesAntPath("game_rules/*") -> {
+                CwtConfigType.OnAction
+            }
+            path.matchesAntPath("on_actions/*") -> {
+                CwtConfigType.OnAction
             }
             else -> null
         }
     }
     
-    @Suppress("UNUSED_VARIABLE")
-    private fun doGetConfigType(element: CwtValue, file: PsiFile): CwtConfigType? {
-        val fileKey = file.name.substringBefore('.')
+    private fun doGetConfigType(element: CwtValue): CwtConfigType? {
         val configPath = element.configPath
         if(configPath == null || configPath.isEmpty()) return null
         val path = configPath.path
         return when {
             path.matchesAntPath("enums/enum[*]/*") -> CwtConfigType.EnumValue
-            path.matchesAntPath("values/value[*]/*") -> CwtConfigType.ValueSetValue
+            path.matchesAntPath("values/value[*]/*") -> CwtConfigType.DynamicValue
             else -> null
         }
     }
@@ -924,7 +926,7 @@ object CwtConfigHandler {
                 }
             }
             val element = config?.pointer?.element
-            val icon = if(config != null) PlsIcons.Definition else PlsIcons.Property
+            val icon = if(config != null) PlsIcons.Nodes.Definition(typeToUse) else PlsIcons.Nodes.Property
             val tailText = if(tuples.isEmpty()) null
             else tuples.joinToString(", ", " for ") { (typeConfig, subTypeConfig) ->
                 if(subTypeConfig != null) "${typeConfig.name}.${subTypeConfig.name}" else typeConfig.name
@@ -1012,7 +1014,7 @@ object CwtConfigHandler {
         template.processResolveResult(contextElement, configGroup) { expression ->
             val templateExpressionElement = resolveTemplateExpression(contextElement, expression, configExpression, configGroup)
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(templateExpressionElement, expression)
-                .withIcon(PlsIcons.TemplateExpression)
+                .withIcon(PlsIcons.Nodes.TemplateExpression)
                 .withTailText(tailText)
                 .caseInsensitive()
                 .withScopeMatched(scopeMatched)
@@ -1113,7 +1115,7 @@ object CwtConfigHandler {
             val tailText = " from system scopes"
             val typeFile = systemLinkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.SystemScope)
+                .withIcon(PlsIcons.Nodes.SystemScope)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
@@ -1137,7 +1139,7 @@ object CwtConfigHandler {
             val tailText = " from scopes"
             val typeFile = scope.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Scope)
+                .withIcon(PlsIcons.Nodes.Scope)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
@@ -1162,7 +1164,6 @@ object CwtConfigHandler {
             val tailText = " from scope link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.ScopeLinkPrefix)
                 .withBoldness(true)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
@@ -1220,7 +1221,7 @@ object CwtConfigHandler {
             val tailText = " from values"
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.ValueLinkValue)
+                .withIcon(PlsIcons.Nodes.ValueLinkValue)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
@@ -1244,7 +1245,6 @@ object CwtConfigHandler {
             val tailText = " from value link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.ValueLinkPrefix)
                 .withBoldness(true)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
@@ -1322,7 +1322,7 @@ object CwtConfigHandler {
                 if(info.name == keyword) return@p true //排除和当前输入的同名的
                 val element = ParadoxValueSetValueElement(contextElement, info, project)
                 //去除后面的作用域信息
-                val icon = PlsIcons.ValueSetValue(valueSetName)
+                val icon = PlsIcons.Nodes.ValueSetValue(valueSetName)
                 //不显示typeText
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, info.name)
                     .withIcon(icon)
@@ -1347,7 +1347,7 @@ object CwtConfigHandler {
             val element = valueSetValueConfig.pointer.element ?: continue
             val typeFile = valueConfig.pointer.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.PredefinedValueSetValue)
+                .withIcon(PlsIcons.Nodes.DynamicValue)
                 .withTailText(tailText)
                 .withTypeText(typeFile?.name)
                 .withTypeIcon(typeFile?.icon)
@@ -1370,7 +1370,7 @@ object CwtConfigHandler {
             val tailText = " from localisation scopes"
             val typeFile = localisationScope.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.LocalisationCommandScope)
+                .withIcon(PlsIcons.LocalisationNodes.CommandScope)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
@@ -1395,7 +1395,7 @@ object CwtConfigHandler {
             val tailText = " from localisation commands"
             val typeFile = localisationCommand.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.LocalisationCommandField)
+                .withIcon(PlsIcons.LocalisationNodes.CommandField)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
@@ -1416,7 +1416,7 @@ object CwtConfigHandler {
             ProgressManager.checkCanceled()
             if(info.name == keyword) return@p true //排除和当前输入的同名的
             val element = ParadoxValueSetValueElement(contextElement, info, project)
-            val icon = PlsIcons.ValueSetValue
+            val icon = PlsIcons.Nodes.DynamicValue
             val tailText = " from value[event_target]"
             val lookupElement = LookupElementBuilder.create(element, info.name)
                 .withIcon(icon)
@@ -1436,7 +1436,7 @@ object CwtConfigHandler {
         ParadoxDefinitionSearch.search("scripted_loc", scriptedLocSelector).processQueryAsync p@{ scriptedLoc ->
             ProgressManager.checkCanceled()
             val name = scriptedLoc.definitionInfo?.name ?: return@p true //不应该为空
-            val icon = PlsIcons.Definition
+            val icon = PlsIcons.Nodes.Definition("scripted_loc")
             val tailText = " from <scripted_loc>"
             val typeFile = scriptedLoc.containingFile
             val lookupElement = LookupElementBuilder.create(scriptedLoc, name).withIcon(icon)
@@ -1460,7 +1460,7 @@ object CwtConfigHandler {
             ProgressManager.checkCanceled()
             if(info.name == keyword) return@p true //排除和当前输入的同名的
             val element = ParadoxValueSetValueElement(contextElement, info, project)
-            val icon = PlsIcons.Variable
+            val icon = PlsIcons.Nodes.Variable
             val tailText = " from variables"
             val lookupElement = LookupElementBuilder.create(element, info.name)
                 .withIcon(icon)
@@ -1480,7 +1480,7 @@ object CwtConfigHandler {
         val keysToDistinct = mutableSetOf<String>()
         ParadoxDefinitionSearch.search("game_concept", conceptSelector).processQueryAsync p@{ element ->
             val tailText = " from concepts"
-            val icon = PlsIcons.LocalisationConceptName
+            val icon = PlsIcons.LocalisationNodes.Concept
             run action@{
                 val key = element.name
                 if(!keysToDistinct.add(key)) return@action

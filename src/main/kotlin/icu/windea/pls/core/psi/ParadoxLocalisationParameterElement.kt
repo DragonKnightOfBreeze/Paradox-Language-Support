@@ -27,7 +27,7 @@ class ParadoxLocalisationParameterElement(
     private val project: Project,
 ) : ParadoxFakePsiElement(parent) {
     override fun getIcon(): Icon {
-        return PlsIcons.Parameter
+        return PlsIcons.Nodes.Parameter
     }
     
     override fun getName(): String {

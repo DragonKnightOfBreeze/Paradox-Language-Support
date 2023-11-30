@@ -28,7 +28,7 @@ class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters
 		val name = eventNamespace.value ?: return
 		val typeFile = eventNamespace.containingFile
 		val lookupElement = LookupElementBuilder.create(eventNamespace, name)
-			.withIcon(PlsIcons.EventNamespace)
+			.withIcon(PlsIcons.Nodes.EventNamespace)
 			.withTypeText(typeFile?.name, typeFile?.icon, true)
 		result.addElement(lookupElement)
 	}

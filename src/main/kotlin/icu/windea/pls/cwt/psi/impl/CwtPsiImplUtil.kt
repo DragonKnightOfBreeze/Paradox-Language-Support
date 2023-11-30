@@ -50,7 +50,7 @@ object CwtPsiImplUtil {
 	//region CwtOption
 	@JvmStatic
 	fun getIcon(element: CwtOption, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.CwtOption
+		return PlsIcons.CwtNodes.Option
 	}
 	
 	@JvmStatic
@@ -89,7 +89,7 @@ object CwtPsiImplUtil {
 	//region CwtOptionKey
 	@JvmStatic
 	fun getIcon(element: CwtOptionKey, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.CwtOption
+		return PlsIcons.CwtNodes.Option
 	}
 	
 	@JvmStatic
@@ -106,9 +106,9 @@ object CwtPsiImplUtil {
 	//region CwtProperty
 	@JvmStatic
 	fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
-		val type = element.configType
-		return type?.icon ?: PlsIcons.CwtProperty
-	}
+        val type = element.configType
+        return type?.icon ?: PlsIcons.CwtNodes.Property
+    }
 	
 	@JvmStatic
 	fun getName(element: CwtProperty): String {
@@ -142,12 +142,12 @@ object CwtPsiImplUtil {
 		return CwtSeparatorType.EQUAL
 	}
 	//endregion
-	
-	//region CwtPropertyKey
-	@JvmStatic
-	fun getIcon(element: CwtPropertyKey, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.CwtProperty
-	}
+    
+    //region CwtPropertyKey
+    @JvmStatic
+    fun getIcon(element: CwtPropertyKey, @Iconable.IconFlags flags: Int): Icon {
+        return PlsIcons.CwtNodes.Property
+    }
 	
 	@JvmStatic
 	fun getName(element: CwtPropertyKey): String {
@@ -171,7 +171,7 @@ object CwtPsiImplUtil {
 	@JvmStatic
 	fun getIcon(element: CwtValue, @Iconable.IconFlags flags: Int): Icon {
 		val type = element.configType
-		return type?.icon ?: PlsIcons.CwtValue
+		return type?.icon ?: PlsIcons.CwtNodes.Value
 	}
 	
 	@JvmStatic
@@ -250,7 +250,7 @@ object CwtPsiImplUtil {
 	//region CwtBlock
 	@JvmStatic
 	fun getIcon(element: CwtBlock, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.CwtBlock
+		return PlsIcons.CwtNodes.Block
 	}
 	
 	@JvmStatic

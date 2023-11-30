@@ -8,73 +8,9 @@ object PlsIcons {
     @JvmField val GameDirectory = AllIcons.Modules.SourceRoot
     @JvmField val ModDirectory = AllIcons.Modules.SourceRoot
     @JvmField val Library = AllIcons.Nodes.PpLibFolder
-    @JvmField val Steam = loadIcon("/icons/steam.svg")
-    
-    @JvmField val CwtProperty = loadIcon("/icons/cwtProperty.svg")
-    @JvmField val CwtValue = loadIcon("/icons/cwtValue.svg")
-    @JvmField val CwtBlock = loadIcon("/icons/cwtBlock.svg")
-    @JvmField val CwtOption = loadIcon("/icons/cwtOption.svg")
-    
-    @JvmField val ScriptProperty = loadIcon("/icons/scriptProperty.svg")
-    @JvmField val ScriptValue = loadIcon("/icons/scriptValue.svg")
-    @JvmField val ScriptBlock = loadIcon("/icons/scriptBlock.svg")
-    @JvmField val ScriptParameterCondition = loadIcon("/icons/scriptParameterCondition.svg")
-    
-    @JvmField val LocalisationLocale = loadIcon("/icons/localisationLocale.svg")
-    @JvmField val LocalisationProperty = loadIcon("/icons/localisationProperty.svg")
-    @JvmField val LocalisationIcon = loadIcon("/icons/localisationIcon.svg")
-    @JvmField val LocalisationCommand = loadIcon("/icons/localisationCommand.svg")
-    @JvmField val LocalisationCommandScope = loadIcon("/icons/localisationCommandScope.svg")
-    @JvmField val LocalisationCommandField = loadIcon("/icons/localisationCommandField.svg")
-    @JvmField val LocalisationConceptName = loadIcon("/icons/localisationConceptName.svg")
-    
-    @JvmField val Definition = loadIcon("/icons/definition.svg")
-    @JvmField val Localisation = loadIcon("/icons/localisation.svg")
-    @JvmField val ScriptedVariable = loadIcon("/icons/scriptedVariable.svg")
-    @JvmField val Property = loadIcon("/icons/property.svg")
-    @JvmField val Value = loadIcon("/icons/value.svg")
-    @JvmField val Parameter = loadIcon("/icons/parameter.svg")
-    @JvmField val PredefinedParameter = loadIcon("/icons/predefinedParameter.svg") //localisation_predefined_parameter
-    @JvmField val Variable = loadIcon("/icons/variable.svg") //value[variable]
-    @JvmField val ValueSetValue = loadIcon("/icons/valueSetValue.svg")
-    @JvmField val PredefinedValueSetValue = loadIcon("/icons/hardCodedValueSetValue.svg")
-    @JvmField val EnumValue = loadIcon("/icons/enumValue.svg")
-    @JvmField val ComplexEnumValue = loadIcon("/icons/complexEnumValue.svg")
-    @JvmField val Scope = loadIcon("/icons/scope.svg")
-    @JvmField val ScopeGroup = loadIcon("/icons/scopeGroup.svg")
-    @JvmField val SystemScope = loadIcon("/icons/systemScope.svg")
-    @JvmField val Link = loadIcon("/icons/link.svg")
-    @JvmField val ScopeLinkPrefix = loadIcon("/icons/scopeLinkPrefix.svg")
-    @JvmField val ValueLinkPrefix = loadIcon("/icons/valueLinkPrefix.svg")
-    @JvmField val ValueLinkValue = loadIcon("/icons/valueLinkValue.svg")
-    @JvmField val ModifierCategory = loadIcon("/icons/modifierCategory.svg")
-    @JvmField val Modifier = loadIcon("/icons/modifier.svg")
-    @JvmField val Trigger = loadIcon("/icons/trigger.svg")
-    @JvmField val Effect = loadIcon("/icons/effect.svg")
-    @JvmField val Tag = loadIcon("/icons/tag.svg")
-    @JvmField val TemplateExpression = loadIcon("icons/templateExpression.svg")
-    @JvmField val Alias = loadIcon("/icons/alias.svg")
-    @JvmField val PathReference = AllIcons.FileTypes.Any_type
-    @JvmField val Inline = AllIcons.FileTypes.AddAny
-    @JvmField val InlineScript = AllIcons.FileTypes.AddAny
-    
-    @JvmField val OnAction = loadIcon("/icons/onAction.svg")
-    @JvmField val EventNamespace = loadIcon("/icons/eventNamespace.svg")
-    @JvmField val EventId = loadIcon("/icons/eventId.svg")
-    @JvmField val Type = loadIcon("/icons/type.svg")
     @JvmField val Image = loadIcon("/icons/image.svg")
     @JvmField val Presentation = loadIcon("/icons/presentation.svg")
-    
-    @JvmStatic fun Definition(type: String) = when(type) {
-        "event" -> EventId
-        "event_namespace" -> EventNamespace
-        else -> Definition
-    }
-    
-    @JvmStatic fun ValueSetValue(valueSetName: String) = when(valueSetName) {
-        "variable" -> Variable
-        else -> ValueSetValue
-    }
+    @JvmField val Steam = loadIcon("/icons/steam.svg")
     
     object FileTypes {
         @JvmField val Cwt = loadIcon("/icons/fileTypes/cwt.svg")
@@ -82,7 +18,77 @@ object PlsIcons {
         @JvmField val ParadoxLocalisation = loadIcon("/icons/fileTypes/paradoxLocalisation.svg")
         @JvmField val ModeDescriptor = loadIcon("/icons/fileTypes/modDescriptor.svg")
         @JvmField val CwtConfig = loadIcon("/icons/fileTypes/cwtConfig.svg")
-        @JvmField val Dds = AllIcons.FileTypes.Image
+    }
+    
+    object Nodes{
+        @JvmField val ScriptedVariable = loadIcon("/icons/nodes/scriptedVariable.svg")
+        @JvmField val Definition = loadIcon("/icons/nodes/definition.svg")
+        @JvmField val Localisation = loadIcon("/icons/nodes/localisation.svg")
+        @JvmField val Property = loadIcon("/icons/nodes/property.svg")
+        @JvmField val Value = loadIcon("/icons/nodes/value.svg")
+        @JvmField val Parameter = loadIcon("/icons/nodes/parameter.svg")
+        @JvmField val PredefinedParameter = loadIcon("/icons/nodes/predefinedParameter.svg")
+        @JvmField val Type = loadIcon("/icons/nodes/type.svg")
+        @JvmField val Variable = loadIcon("/icons/nodes/variable.svg")
+        @JvmField val DynamicValueType = loadIcon("/icons/nodes/dynamicValueType.svg")
+        @JvmField val DynamicValue = loadIcon("/icons/nodes/dynamicValue.svg")
+        @JvmField val Enum = loadIcon("/icons/nodes/enum.svg")
+        @JvmField val EnumValue = loadIcon("/icons/nodes/enumValue.svg")
+        @JvmField val ComplexEnum = loadIcon("/icons/nodes/complexEnum.svg")
+        @JvmField val ComplexEnumValue = loadIcon("/icons/nodes/complexEnumValue.svg")
+        @JvmField val Scope = loadIcon("/icons/nodes/scope.svg")
+        @JvmField val ScopeGroup = loadIcon("/icons/nodes/scopeGroup.svg")
+        @JvmField val SystemScope = loadIcon("/icons/nodes/systemScope.svg")
+        @JvmField val Link = loadIcon("/icons/nodes/link.svg")
+        @JvmField val ValueLinkValue = loadIcon("/icons/nodes/valueLinkValue.svg")
+        @JvmField val ModifierCategory = loadIcon("/icons/nodes/modifierCategory.svg")
+        @JvmField val Modifier = loadIcon("/icons/nodes/modifier.svg")
+        @JvmField val Trigger = loadIcon("/icons/nodes/trigger.svg")
+        @JvmField val Effect = loadIcon("/icons/nodes/effect.svg")
+        @JvmField val Tag = loadIcon("/icons/nodes/tag.svg")
+        @JvmField val TemplateExpression = loadIcon("icons/nodes/templateExpression.svg")
+        @JvmField val Alias = loadIcon("/icons/nodes/alias.svg")
+        @JvmField val EventNamespace = loadIcon("/icons/nodes/eventNamespace.svg")
+        @JvmField val EventId = loadIcon("/icons/nodes/eventId.svg")
+        @JvmField val PathReference = AllIcons.FileTypes.Any_type
+        @JvmField val Inline = AllIcons.FileTypes.AddAny
+        @JvmField val InlineScript = AllIcons.FileTypes.AddAny
+        
+        @JvmStatic fun Definition(type: String?) = when(type) {
+            "event" -> EventId
+            "event_namespace" -> EventNamespace
+            else -> Definition
+        }
+        
+        @JvmStatic fun ValueSetValue(valueSetName: String?) = when(valueSetName) {
+            "variable" -> Variable
+            else -> DynamicValue
+        }
+    }
+    
+    object CwtNodes {
+        @JvmField val Property = loadIcon("/icons/nodes/cwt/property.svg")
+        @JvmField val Value = loadIcon("/icons/nodes/cwt/value.svg")
+        @JvmField val Block = loadIcon("/icons/nodes/cwt/block.svg")
+        @JvmField val Option = loadIcon("/icons/nodes/cwt/option.svg")
+    }
+    
+    object ScriptNodes {
+        @JvmField val ScriptedVariable = loadIcon("/icons/nodes/script/scriptedVariable.svg")
+        @JvmField val Property = loadIcon("/icons/nodes/script/property.svg")
+        @JvmField val Value = loadIcon("/icons/nodes/script/value.svg")
+        @JvmField val Block = loadIcon("/icons/nodes/script/block.svg")
+        @JvmField val ParameterCondition = loadIcon("/icons/nodes/script/parameterCondition.svg")
+    }
+    
+    object LocalisationNodes {
+        @JvmField val Locale = loadIcon("/icons/nodes/localisation/locale.svg")
+        @JvmField val Property = loadIcon("/icons/nodes/localisation/property.svg")
+        @JvmField val Icon = loadIcon("/icons/nodes/localisation/icon.svg")
+        @JvmField val Command = loadIcon("/icons/nodes/localisation/command.svg")
+        @JvmField val CommandScope = loadIcon("/icons/nodes/localisation/commandScope.svg")
+        @JvmField val CommandField = loadIcon("/icons/nodes/localisation/commandField.svg")
+        @JvmField val Concept = loadIcon("/icons/nodes/localisation/concept.svg")
     }
     
     object Actions {
@@ -101,9 +107,9 @@ object PlsIcons {
         @JvmField val SwitchToPrevDescriptor = AllIcons.General.ArrowLeft
         @JvmField val SwitchToNextDescriptor = AllIcons.General.ArrowRight
         
-        @JvmField val CreateReference = LocalisationProperty
-        @JvmField val CreateIcon = LocalisationIcon
-        @JvmField val CreateCommand = LocalisationCommand
+        @JvmField val CreateReference = LocalisationNodes.Property
+        @JvmField val CreateIcon = LocalisationNodes.Icon
+        @JvmField val CreateCommand = LocalisationNodes.Command
         
         @JvmField val RefreshConfigGroup = loadIcon("/icons/actions/refreshConfigGroup.svg")
     }

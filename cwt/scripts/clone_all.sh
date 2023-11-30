@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-root_path=$(cd "$(dirname "$0")"; pwd)
+root_path=$(cd "$(dirname "$0")/../"; pwd)
 
 cd $root_path
 

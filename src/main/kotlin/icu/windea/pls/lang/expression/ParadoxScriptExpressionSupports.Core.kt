@@ -70,7 +70,7 @@ class ParadoxLocalisationScriptExpressionSupport : ParadoxScriptExpressionSuppor
             val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = localisation.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)
-                .withIcon(PlsIcons.Localisation)
+                .withIcon(PlsIcons.Nodes.Localisation)
                 .withTailText(tailText)
                 .withTypeText(typeFile.name)
                 .withTypeIcon(typeFile.icon)
@@ -125,7 +125,7 @@ class ParadoxSyncedLocalisationScriptExpressionSupport : ParadoxScriptExpression
             val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = syncedLocalisation.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(syncedLocalisation, name)
-                .withIcon(PlsIcons.Localisation)
+                .withIcon(PlsIcons.Nodes.Localisation)
                 .withTailText(tailText)
                 .withTypeText(typeFile.name)
                 .withTypeIcon(typeFile.icon)
@@ -184,7 +184,7 @@ class ParadoxInlineLocalisationScriptExpressionSupport : ParadoxScriptExpression
             val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = localisation.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)
-                .withIcon(PlsIcons.Localisation)
+                .withIcon(PlsIcons.Nodes.Localisation)
                 .withTailText(tailText)
                 .withTypeText(typeFile.name)
                 .withTypeIcon(typeFile.icon)
@@ -246,7 +246,7 @@ class ParadoxDefinitionScriptExpressionSupport : ParadoxScriptExpressionSupport 
             val name = definitionInfo.name
             val typeFile = definition.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(definition, name)
-                .withIcon(PlsIcons.Definition)
+                .withIcon(PlsIcons.Nodes.Definition(definitionInfo.type))
                 .withTailText(tailText)
                 .withTypeText(typeFile.name)
                 .withTypeIcon(typeFile.icon)
@@ -329,7 +329,7 @@ class ParadoxPathReferenceScriptExpressionSupport : ParadoxScriptExpressionSuppo
                 val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
                 val name = pathReferenceExpressionSupport.extract(configExpression, contextFile, filePath) ?: return@p true
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(file, name)
-                    .withIcon(PlsIcons.PathReference)
+                    .withIcon(PlsIcons.Nodes.PathReference)
                     .withTailText(tailText)
                     .withTypeText(file.name)
                     .withTypeIcon(file.icon)
@@ -403,7 +403,7 @@ class ParadoxEnumValueScriptExpressionSupport : ParadoxScriptExpressionSupport {
                 val name = enumValueConfig.value
                 val element = enumValueConfig.pointer.element ?: continue
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
-                    .withIcon(PlsIcons.EnumValue)
+                    .withIcon(PlsIcons.Nodes.EnumValue)
                     .withTailText(tailText)
                     .withTypeText(typeFile?.name)
                     .withTypeIcon(typeFile?.icon)
@@ -427,7 +427,7 @@ class ParadoxEnumValueScriptExpressionSupport : ParadoxScriptExpressionSupport {
                 val name = info.name
                 val element = ParadoxComplexEnumValueElement(contextElement, info, project)
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
-                    .withIcon(PlsIcons.ComplexEnumValue)
+                    .withIcon(PlsIcons.Nodes.ComplexEnumValue)
                     .withTailText(tailText)
                     .withTypeText(typeFile?.name)
                     .withTypeIcon(typeFile?.icon)
@@ -567,8 +567,8 @@ class ParadoxConstantScriptExpressionSupport : ParadoxScriptConstantLikeExpressi
         val config = context.config ?: return
         val configExpression = config.expression ?: return
         val icon = when(configExpression) {
-            is CwtKeyExpression -> PlsIcons.Property
-            is CwtValueExpression -> PlsIcons.Value
+            is CwtKeyExpression -> PlsIcons.Nodes.Property
+            is CwtValueExpression -> PlsIcons.Nodes.Value
         }
         val name = configExpression.value ?: return
         if(configExpression is CwtValueExpression) {

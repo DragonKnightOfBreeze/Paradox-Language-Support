@@ -33,7 +33,7 @@ class ParadoxValueSetValueElement(
     
     override fun getIcon(): Icon {
         val valueSetName = valueSetNames.first() //first is ok
-        return PlsIcons.ValueSetValue(valueSetName)
+        return PlsIcons.Nodes.ValueSetValue(valueSetName)
     }
     
     override fun getName(): String {

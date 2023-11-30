@@ -1,12 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi;
 
-import com.intellij.lang.*;
-import com.intellij.lang.PsiBuilder.*;
-import com.intellij.psi.tree.*;
-
+import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.PsiBuilder.Marker;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationParserUtil.*;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.TokenSet;
+import com.intellij.lang.PsiParser;
+import com.intellij.lang.LightPsiParser;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
@@ -73,7 +76,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COMMAND_START command_expression? COMMAND_END
+  // COMMAND_START (concept_expression | command_expression)? COMMAND_END
   public static boolean command(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "command")) return false;
     if (!nextTokenIs(b, COMMAND_START)) return false;
@@ -87,20 +90,54 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // command_expression?
+  // (concept_expression | command_expression)?
   private static boolean command_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "command_1")) return false;
-    command_expression(b, l + 1);
+    command_1_0(b, l + 1);
     return true;
   }
 
-  /* ********************************************************** */
-  // concept_expression | command_invocation_expression
-  static boolean command_expression(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "command_expression")) return false;
+  // concept_expression | command_expression
+  private static boolean command_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "command_1_0")) return false;
     boolean r;
     r = concept_expression(b, l + 1);
-    if (!r) r = command_invocation_expression(b, l + 1);
+    if (!r) r = command_expression(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // (command_scope DOT)* command_field
+  static boolean command_expression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "command_expression")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = command_expression_0(b, l + 1);
+    p = r; // pin = 1
+    r = r && command_field(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // (command_scope DOT)*
+  private static boolean command_expression_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "command_expression_0")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!command_expression_0_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "command_expression_0", c)) break;
+    }
+    return true;
+  }
+
+  // command_scope DOT
+  private static boolean command_expression_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "command_expression_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = command_scope(b, l + 1);
+    r = r && consumeToken(b, DOT);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -122,41 +159,6 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     exit_section_(b, m, COMMAND_IDENTIFIER, true);
     return true;
-  }
-
-  /* ********************************************************** */
-  // (command_scope DOT)* command_field
-  static boolean command_invocation_expression(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "command_invocation_expression")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = command_invocation_expression_0(b, l + 1);
-    p = r; // pin = 1
-    r = r && command_field(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // (command_scope DOT)*
-  private static boolean command_invocation_expression_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "command_invocation_expression_0")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!command_invocation_expression_0_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "command_invocation_expression_0", c)) break;
-    }
-    return true;
-  }
-
-  // command_scope DOT
-  private static boolean command_invocation_expression_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "command_invocation_expression_0_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = command_scope(b, l + 1);
-    r = r && consumeToken(b, DOT);
-    exit_section_(b, m, null, r);
-    return r;
   }
 
   /* ********************************************************** */

@@ -1,3 +1,7 @@
+# Repositories
+ 
+* CWT Core Config
+  * Built-in: <https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/cwt/core>
 * CWT CK2 Config
   * Built-in: <https://github.com/DragonKnightOfBreeze/cwtools-ck2-config>
   * Vanilla: <https://github.com/cwtools/cwtools-ck2-config>

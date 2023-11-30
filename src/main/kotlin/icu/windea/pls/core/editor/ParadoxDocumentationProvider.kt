@@ -152,7 +152,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         val gameType = element.gameType
         val configGroup = getConfigGroup(element.project, gameType)
         definition {
-            append(PlsBundle.message("prefix.valueSetValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+            append(PlsBundle.message("prefix.dynamicValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             append(": ")
             var appendSeparator = false
             for(valueSetName in valueSetNames) {

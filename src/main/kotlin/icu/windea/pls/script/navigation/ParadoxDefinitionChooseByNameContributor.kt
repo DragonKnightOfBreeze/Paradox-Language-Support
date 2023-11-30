@@ -5,6 +5,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
@@ -23,8 +24,9 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
         StubIndex.getInstance().processElements(
             ParadoxDefinitionNameIndexKey, name, parameters.project, parameters.searchScope, parameters.idFilter,
             ParadoxScriptDefinitionElement::class.java
-        ) {
-            processor.process(ParadoxDefinitionNavigationElement(it))
+        ) p@{
+            val definitionInfo = it.definitionInfo ?: return@p true
+            processor.process(ParadoxDefinitionNavigationElement(it, definitionInfo))
         }
     }
 }

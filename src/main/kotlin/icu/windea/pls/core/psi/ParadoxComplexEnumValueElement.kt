@@ -5,6 +5,7 @@ import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icons.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -33,7 +34,7 @@ class ParadoxComplexEnumValueElement(
         get() = ParadoxSearchScopeTypes.get(getConfigGroup(project, gameType).complexEnums.get(enumName)?.searchScopeType)
     
     override fun getIcon(): Icon {
-        return PlsIcons.ComplexEnumValue
+        return PlsIcons.Nodes.ComplexEnumValue
     }
     
     override fun getName(): String {

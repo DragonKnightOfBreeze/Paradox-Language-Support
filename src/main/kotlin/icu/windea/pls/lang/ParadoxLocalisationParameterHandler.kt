@@ -122,7 +122,7 @@ object ParadoxLocalisationParameterHandler {
             for(parameterName in parameterNames) {
                 val parameter = ParadoxLocalisationParameterSupport.resolveParameter(localisation, parameterName) ?: continue
                 val lookupElement = LookupElementBuilder.create(parameter, parameterName)
-                    .withIcon(PlsIcons.Parameter)
+                    .withIcon(PlsIcons.Nodes.Parameter)
                     .withTypeText(localisationName, localisationIcon, true)
                 result.addElement(lookupElement)
             }

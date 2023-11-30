@@ -13,6 +13,7 @@ import com.intellij.psi.*
 import com.intellij.ui.*
 import com.intellij.util.*
 import icons.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
@@ -199,7 +200,7 @@ private fun getIconToUse(icon: Icon?, config: CwtConfig<*>?): Icon? {
     if(icon == null) return null
     when(config) {
         is CwtValueConfig -> {
-            if(config.isTagConfig) return PlsIcons.Tag
+            if(config.isTagConfig) return PlsIcons.Nodes.Tag
         }
         is CwtAliasConfig -> {
             val aliasConfig = config
@@ -207,9 +208,9 @@ private fun getIconToUse(icon: Icon?, config: CwtConfig<*>?): Icon? {
             if(!type.isConstantLikeType()) return icon
             val aliasName = aliasConfig.name
             return when {
-                aliasName == "modifier" -> PlsIcons.Modifier
-                aliasName == "trigger" -> PlsIcons.Trigger
-                aliasName == "effect" -> PlsIcons.Effect
+                aliasName == "modifier" -> PlsIcons.Nodes.Modifier
+                aliasName == "trigger" -> PlsIcons.Nodes.Trigger
+                aliasName == "effect" -> PlsIcons.Nodes.Effect
                 else -> icon
             }
         }

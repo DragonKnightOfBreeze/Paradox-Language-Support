@@ -2,9 +2,11 @@ package icu.windea.pls.core.psi
 
 import com.intellij.navigation.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -12,16 +14,15 @@ import javax.swing.*
  * 用于在双击shift进行快速查找时显示正确的图标和名字。
  */
 class ParadoxDefinitionNavigationElement(
-    element: ParadoxScriptDefinitionElement
+    element: ParadoxScriptDefinitionElement,
+    private val definitionInfo: ParadoxDefinitionInfo
 ): ParadoxFakePsiElement(element) {
-    val _name = element.definitionInfo?.name
-    
     override fun getIcon(): Icon {
-        return PlsIcons.Definition
+        return PlsIcons.Nodes.Definition(definitionInfo.type)
     }
     
     override fun getName(): String? {
-        return _name
+        return definitionInfo.name.orNull()
     }
     
     override fun getTypeName(): String {

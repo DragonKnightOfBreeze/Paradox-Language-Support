@@ -6,6 +6,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -83,7 +84,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
             val name = modifierConfig.name
             val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxPredefinedModifierSupport)
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
-                .withIcon(PlsIcons.Modifier)
+                .withIcon(PlsIcons.Nodes.Modifier)
                 .withTailText(tailText)
                 .withTypeText(typeFile?.name)
                 .withTypeIcon(typeFile?.icon)
@@ -160,7 +161,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                 
                 val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
-                    .withIcon(PlsIcons.Modifier)
+                    .withIcon(PlsIcons.Nodes.Modifier)
                     .withTailText(tailText)
                     .withTypeText(typeFile?.name)
                     .withTypeIcon(typeFile?.icon)
@@ -351,7 +352,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
             
             val tailText = " from economic category " + economicCategoryInfo.name
             val typeText = economicCategoryInfo.name
-            val typeIcon = PlsIcons.Definition
+            val typeIcon = PlsIcons.Nodes.Definition("economic_category")
             for(economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
                 val name = economicCategoryModifierInfo.name
                 //排除重复的
@@ -359,7 +360,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
                 
                 val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@StellarisEconomicCategoryModifierSupport)
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
-                    .withIcon(PlsIcons.Modifier)
+                    .withIcon(PlsIcons.Nodes.Modifier)
                     .withTailText(tailText)
                     .withTypeText(typeText)
                     .withTypeIcon(typeIcon)

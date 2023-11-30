@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import icons.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
@@ -34,9 +35,9 @@ import javax.swing.*
  */
 abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) : ParadoxDefinitionDiagramProvider(gameType) {
     companion object {
-        val CAT_TYPE = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.type"), PlsIcons.Type, true, false)
-        val CAT_PROPERTIES = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.properties"), PlsIcons.Property, true, false)
-        val CAT_NAME = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.name"), PlsIcons.Localisation, false, false)
+        val CAT_TYPE = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.type"), PlsIcons.Nodes.Type, true, false)
+        val CAT_PROPERTIES = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.properties"), PlsIcons.Nodes.Property, true, false)
+        val CAT_NAME = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.name"), PlsIcons.Nodes.Localisation, false, false)
         val CAT_ICON = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.icon"), PlsIcons.Image, false, false)
         val CAT_PRESENTATION = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.presentation"), PlsIcons.Presentation, false, false)
         val CATEGORIES = arrayOf(CAT_TYPE, CAT_PROPERTIES, CAT_NAME, CAT_ICON, CAT_PRESENTATION)
@@ -177,13 +178,13 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
             return when(nodeElement) {
                 is ParadoxScriptProperty -> {
                     when {
-                        nodeItem is CwtProperty -> PlsIcons.Type
+                        nodeItem is CwtProperty -> PlsIcons.Nodes.Type
                         nodeItem is ParadoxScriptProperty -> {
                             val definitionInfo = nodeItem.definitionInfo
                             if(definitionInfo != null) {
                                 null
                             } else {
-                                PlsIcons.Property
+                                PlsIcons.Nodes.Property
                             }
                         }
                         else -> null

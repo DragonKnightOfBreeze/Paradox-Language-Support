@@ -5,6 +5,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icons.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -119,7 +120,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val definitionName = context.name
         val definitionTypes = definitionInfo.types
         val contextName = definitionName
-        val contextIcon = PlsIcons.Definition
+        val contextIcon = PlsIcons.Nodes.Definition(definitionInfo.type)
         val contextKey = "definition@$definitionName: ${definitionTypes.joinToString(",")}"
         val rangeInParent = TextRange.create(0, element.textLength)
         val readWriteAccess = ParadoxParameterHandler.getReadWriteAccess(element)
@@ -146,7 +147,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val definitionTypes = contextConfig.expression.value?.split('.') ?: return null
         val name = element.name
         val contextName = definitionName
-        val contextIcon = PlsIcons.Definition
+        val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "definition@$definitionName: ${definitionTypes.joinToString(",")}"
         val rangeInParent = rangeInElement ?: TextRange.create(0, element.textLength)
         val readWriteAccess = ParadoxParameterHandler.getReadWriteAccess(element)
@@ -332,7 +333,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         } as? ParadoxScriptValueArgumentExpressionNode ?: return null
         val name = argumentNode.text
         val contextName = definitionName
-        val contextIcon = PlsIcons.Definition
+        val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "definition@$definitionName: script_value"
         val rangeInParent = rangeInElement
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
@@ -443,7 +444,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val context = findContext(element) as? ParadoxScriptFile ?: return null
         val expression = ParadoxInlineScriptHandler.getInlineScriptExpression(context) ?: return null
         val contextName = expression
-        val contextIcon = PlsIcons.InlineScript
+        val contextIcon = PlsIcons.Nodes.InlineScript
         val contextKey = "inline_script@$expression"
         val rangeInParent = TextRange.create(0, element.textLength)
         val readWriteAccess = ParadoxParameterHandler.getReadWriteAccess(element)
@@ -468,7 +469,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         if(expression.isParameterized()) return null //skip if context name is parameterized
         val name = element.name
         val contextName = expression
-        val contextIcon = PlsIcons.InlineScript
+        val contextIcon = PlsIcons.Nodes.InlineScript
         val contextKey = "inline_script@$expression"
         val rangeInParent = rangeInElement ?: TextRange.create(0, element.textLength)
         val readWriteAccess = ReadWriteAccessDetector.Access.Write

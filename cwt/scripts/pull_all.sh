@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-root_path=$(cd "$(dirname "$0")"; pwd)
+root_path=$(cd "$(dirname "$0")/../"; pwd)
 
 cd $root_path/cwtools-ck2-config
 git pull origin master && git pull https://github.com/cwtools/cwtools-ck2-config master && echo "git pull cwtools-ck2-config: DONE" 2>&1

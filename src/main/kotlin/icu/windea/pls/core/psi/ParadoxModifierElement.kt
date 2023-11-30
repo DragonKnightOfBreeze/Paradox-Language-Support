@@ -28,7 +28,7 @@ class ParadoxModifierElement(
     var canRename = false
     
     override fun getIcon(): Icon {
-        return PlsIcons.Modifier
+        return PlsIcons.Nodes.Modifier
     }
     
     override fun getName(): String {

@@ -93,6 +93,7 @@ val excludesInZip = listOf(
 	"lib/jackson-dataformat-csv-*.jar",
 )
 val cwtConfigDirs = listOf(
+	"core" to "core",
 	"cwtools-ck2-config" to "ck2",
 	"cwtools-ck3-config" to "ck3",
 	"cwtools-eu4-config" to "eu4",
@@ -130,16 +131,20 @@ tasks {
 		from("README.md", "README_en.md", "LICENSE")
 		//添加CWT配置文件
 		cwtConfigDirs.forEach { (cwtConfigDir, toDir) ->
-			from("$rootDir/cwt/$cwtConfigDir") {
-				includeEmptyDirs = false
-				include("**/*.cwt", "**/LICENSE", "**/*.md")
-				//打平config子目录中的文件
-				eachFile {
-					val i = path.indexOf("/config", ignoreCase = true)
-					if(i != -1) path = path.removeRange(i, i + 7)
+			into("config/$toDir") {
+				from("$rootDir/cwt/$cwtConfigDir") {
+					includeEmptyDirs = false
+					include("**/*.cwt", "**/LICENSE", "**/*.md")
+					//打平config子目录中的文件
+					eachFile {
+						val i = path.indexOf("/config", ignoreCase = true)
+						if(i != -1) path = path.removeRange(i, i + 7)
+					}
 				}
-				into("config/$toDir")
 			}
+		}
+		into("config") {
+			from("cwt/README.md", "cwt/LICENSE")
 		}
 	}
 	patchPluginXml {

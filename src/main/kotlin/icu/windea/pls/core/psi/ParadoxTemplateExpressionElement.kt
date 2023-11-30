@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.navigation.*
@@ -24,7 +25,7 @@ class ParadoxTemplateExpressionElement(
     var canRename = false
     
     override fun getIcon(): Icon {
-        return PlsIcons.TemplateExpression
+        return PlsIcons.Nodes.TemplateExpression
     }
     
     override fun getName(): String {

@@ -5,6 +5,7 @@ import com.intellij.icons.*
 import com.intellij.ide.util.*
 import com.intellij.openapi.project.*
 import icons.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.codeInsight.*
@@ -59,7 +60,7 @@ class ParadoxGenerateLocalisationsChooser(
         val name: String,
         val info: ParadoxLocalisationCodeInsightInfo,
         val context: ParadoxLocalisationCodeInsightContext
-    ) : MemberChooserObjectBase(name, PlsIcons.Localisation), ClassMember {
+    ) : MemberChooserObjectBase(name, PlsIcons.Nodes.Localisation), ClassMember {
         override fun getParentNodeDelegate(): MemberChooserObject {
             return when(context.type) {
                 Type.File -> LocalisationReferences(context) //unexpected
@@ -78,7 +79,7 @@ class ParadoxGenerateLocalisationsChooser(
     data class Definition(
         val name: String,
         val context: ParadoxLocalisationCodeInsightContext
-    ) : MemberChooserObjectBase(name, PlsIcons.Definition) {
+    ) : MemberChooserObjectBase(name, PlsIcons.Nodes.Definition) {
         override fun equals(other: Any?) = this === other || (other is Definition && name == other.name)
         
         override fun hashCode() = name.hashCode()
@@ -87,7 +88,7 @@ class ParadoxGenerateLocalisationsChooser(
     data class Modifier(
         val name: String,
         val context: ParadoxLocalisationCodeInsightContext
-    ) : MemberChooserObjectBase(name, PlsIcons.Modifier) {
+    ) : MemberChooserObjectBase(name, PlsIcons.Nodes.Modifier) {
         override fun equals(other: Any?) = this === other || (other is Modifier && name == other.name)
         
         override fun hashCode() = name.hashCode()

@@ -5,6 +5,7 @@ import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icons.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.cwt.*
@@ -24,8 +25,8 @@ class CwtMemberConfigElement(
 ): ParadoxFakePsiElement(parent) {
     override fun getIcon(): Icon {
         return when(config) {
-            is CwtPropertyConfig -> PlsIcons.CwtProperty
-            is CwtValueConfig -> PlsIcons.CwtValue
+            is CwtPropertyConfig -> PlsIcons.CwtNodes.Property
+            is CwtValueConfig -> PlsIcons.CwtNodes.Value
         }
     }
     

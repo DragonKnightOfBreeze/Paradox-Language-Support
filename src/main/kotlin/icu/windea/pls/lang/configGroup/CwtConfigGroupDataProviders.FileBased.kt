@@ -54,8 +54,8 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     
     private fun doProcessBuiltInFile(filePath: String, fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         when(filePath) {
-            "builtin/folding_settings.pls.cwt" -> resolveFoldingSettingsInFile(fileConfig, configGroup)
-            "builtin/postfix_template_settings.pls.cwt" -> resolvePostfixTemplateSettingsInFile(fileConfig, configGroup)
+            "folding_settings.pls.cwt" -> resolveFoldingSettingsInFile(fileConfig, configGroup)
+            "postfix_template_settings.pls.cwt" -> resolvePostfixTemplateSettingsInFile(fileConfig, configGroup)
         }
     }
     

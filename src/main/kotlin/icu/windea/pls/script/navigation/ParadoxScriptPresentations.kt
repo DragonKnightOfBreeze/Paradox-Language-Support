@@ -1,6 +1,7 @@
 package icu.windea.pls.script.navigation
 
 import icons.*
+import icons.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.model.*
@@ -21,7 +22,7 @@ class ParadoxDefinitionPresentation(
     private val definitionInfo: ParadoxDefinitionInfo
 ) : ParadoxItemPresentation<ParadoxScriptProperty>(element) {
     override fun getIcon(unused: Boolean): Icon {
-        return PlsIcons.Definition
+        return PlsIcons.Nodes.Definition(definitionInfo.type)
     }
     
     override fun getPresentableText(): String {
@@ -34,7 +35,7 @@ class ParadoxComplexEnumValuePresentation(
     private val complexEnumValueInfo: ParadoxComplexEnumValueInfo
 ) : ParadoxItemPresentation<ParadoxScriptStringExpressionElement>(element) {
     override fun getIcon(unused: Boolean): Icon {
-        return PlsIcons.ComplexEnumValue
+        return PlsIcons.Nodes.ComplexEnumValue
     }
     
     override fun getPresentableText(): String {

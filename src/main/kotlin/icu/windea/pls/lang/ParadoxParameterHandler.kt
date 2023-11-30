@@ -14,6 +14,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -106,7 +107,7 @@ object ParadoxParameterHandler {
             val parameterElement = ParadoxParameterSupport.resolveParameter(parameter)
                 ?: continue
             val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
-                .withIcon(PlsIcons.Parameter)
+                .withIcon(PlsIcons.Nodes.Parameter)
                 .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
             result.addElement(lookupElement)
         }
@@ -136,7 +137,7 @@ object ParadoxParameterHandler {
                 val parameterElement = ParadoxParameterSupport.resolveParameter(parameter)
                     ?: continue
                 val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
-                    .withIcon(PlsIcons.Parameter)
+                    .withIcon(PlsIcons.Nodes.Parameter)
                     .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
                     .letIf(insertSeparator) {
                         it.withInsertHandler { c, _ ->

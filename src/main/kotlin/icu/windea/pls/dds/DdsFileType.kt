@@ -1,5 +1,6 @@
 package icu.windea.pls.dds
 
+import com.intellij.icons.*
 import com.intellij.openapi.fileTypes.*
 import icons.*
 import icu.windea.pls.*
@@ -13,5 +14,5 @@ object DdsFileType : UserBinaryFileType() {
     
     override fun getDisplayName() = PlsBundle.message("filetype.dds.displayName")
     
-    override fun getIcon() = PlsIcons.FileTypes.Dds
+    override fun getIcon() = AllIcons.FileTypes.Image
 }

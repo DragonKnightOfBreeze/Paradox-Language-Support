@@ -66,7 +66,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
         when(element) {
             //val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
             is ParadoxScriptDefinitionElement -> {
-                val icon = PlsIcons.LocalisationIcon //使用特定图标
+                val icon = PlsIcons.LocalisationNodes.Icon //使用特定图标
                 val definitionInfo = element.definitionInfo //不应该为null
                 val tailText = if(definitionInfo != null) " from ${definitionInfo.type} ${definitionInfo.name}" else ""
                 val typeFile = element.containingFile
@@ -76,7 +76,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
                 result.addElement(lookupElement)
             }
             is PsiFile -> {
-                val icon = PlsIcons.LocalisationIcon //使用特定图标
+                val icon = PlsIcons.LocalisationNodes.Icon //使用特定图标
                 val tailText = " from image file"
                 val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
                     .withTailText(tailText, true)

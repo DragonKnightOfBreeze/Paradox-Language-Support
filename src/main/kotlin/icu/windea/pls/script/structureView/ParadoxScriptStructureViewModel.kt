@@ -73,7 +73,7 @@ object VariablesFilter : Filter {
 	}
 	
 	override fun getPresentation(): ActionPresentation {
-		return ActionPresentationData(PlsBundle.message("script.structureView.showScriptedVariables"), null, PlsIcons.ScriptedVariable)
+		return ActionPresentationData(PlsBundle.message("script.structureView.showScriptedVariables"), null, PlsIcons.Nodes.ScriptedVariable)
 	}
 }
 
@@ -88,7 +88,7 @@ object DefinitionsFilter : Filter {
 	}
 	
 	override fun getPresentation(): ActionPresentation {
-		return ActionPresentationData(PlsBundle.message("script.structureView.showDefinitions"), null, PlsIcons.Definition)
+		return ActionPresentationData(PlsBundle.message("script.structureView.showDefinitions"), null, PlsIcons.Nodes.Definition)
 	}
 }
 
@@ -102,7 +102,7 @@ object PropertiesFilter : Filter {
 	}
 	
 	override fun getPresentation(): ActionPresentation {
-		return ActionPresentationData(PlsBundle.message("script.structureView.showProperties"), null, PlsIcons.Property)
+		return ActionPresentationData(PlsBundle.message("script.structureView.showProperties"), null, PlsIcons.Nodes.Property)
 	}
 }
 
@@ -116,6 +116,6 @@ object ValuesFilter : Filter {
 	}
 	
 	override fun getPresentation(): ActionPresentation {
-		return ActionPresentationData(PlsBundle.message("script.structureView.showValues"), null, PlsIcons.Value)
+		return ActionPresentationData(PlsBundle.message("script.structureView.showValues"), null, PlsIcons.Nodes.Value)
 	}
 }

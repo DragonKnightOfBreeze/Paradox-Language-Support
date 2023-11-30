@@ -12,7 +12,7 @@ class ParadoxLocalisationFilePresentation(
 class ParadoxLocalisationPresentation(
 	element: ParadoxLocalisationProperty
 ): ParadoxItemPresentation<ParadoxLocalisationProperty>(element) {
-	override fun getIcon(unused: Boolean): Icon {
-		return PlsIcons.LocalisationIcon
-	}
+    override fun getIcon(unused: Boolean): Icon {
+        return PlsIcons.LocalisationNodes.Icon
+    }
 }

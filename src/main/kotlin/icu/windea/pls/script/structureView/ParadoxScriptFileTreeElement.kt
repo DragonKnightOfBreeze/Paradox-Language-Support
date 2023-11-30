@@ -3,6 +3,7 @@ package icu.windea.pls.script.structureView
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
 import icons.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
@@ -35,7 +36,7 @@ class ParadoxScriptFileTreeElement(
         if(name.equals(PlsConstants.descriptorFileName, true)) return PlsIcons.FileTypes.ModeDescriptor
 		//如果是定义，则显示定义的图标
 		val definitionInfo = element.definitionInfo
-		if(definitionInfo != null) return PlsIcons.Definition
+		if(definitionInfo != null) return PlsIcons.Nodes.Definition(definitionInfo.type)
 		return element.icon
 	}
 	
