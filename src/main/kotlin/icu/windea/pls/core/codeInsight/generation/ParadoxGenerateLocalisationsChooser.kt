@@ -5,7 +5,6 @@ import com.intellij.icons.*
 import com.intellij.ide.util.*
 import com.intellij.openapi.project.*
 import icons.*
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.codeInsight.*

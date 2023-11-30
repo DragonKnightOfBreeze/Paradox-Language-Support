@@ -33,7 +33,7 @@ class CwtConfigGroupEditorNotificationProvider : EditorNotificationProvider {
                 BrowserUtil.browse(url)
             }
             panel.createActionLabel(PlsBundle.message("configGroup.config.file.repositories")) {
-                val url = "https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/cwt/README.md#Repositories"
+                val url = "https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md#repositories"
                 BrowserUtil.browse(url)
             }
             panel

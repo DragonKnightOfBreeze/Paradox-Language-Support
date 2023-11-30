@@ -3,7 +3,6 @@ package icu.windea.pls.script.inspections.inference
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 

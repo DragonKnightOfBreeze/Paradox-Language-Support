@@ -3,7 +3,6 @@ package icu.windea.pls.script.structureView
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
 import icons.*
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*

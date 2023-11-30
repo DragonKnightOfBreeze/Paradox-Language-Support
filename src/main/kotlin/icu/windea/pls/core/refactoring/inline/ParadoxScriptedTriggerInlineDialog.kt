@@ -4,7 +4,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
-import com.intellij.psi.search.searches.*
 import com.intellij.refactoring.inline.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*

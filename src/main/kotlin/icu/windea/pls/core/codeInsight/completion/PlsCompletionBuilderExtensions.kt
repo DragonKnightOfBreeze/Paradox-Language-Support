@@ -13,7 +13,6 @@ import com.intellij.psi.*
 import com.intellij.ui.*
 import com.intellij.util.*
 import icons.*
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*

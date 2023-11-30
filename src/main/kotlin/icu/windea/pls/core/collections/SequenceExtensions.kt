@@ -1,7 +1,5 @@
 package icu.windea.pls.core.collections
 
-import java.util.function.BiPredicate
-
 inline fun <reified R> Sequence<*>.findIsInstance(): R? {
     return findIsInstance(R::class.java)
 }

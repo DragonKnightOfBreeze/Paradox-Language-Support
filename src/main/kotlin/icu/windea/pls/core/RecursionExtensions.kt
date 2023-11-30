@@ -1,8 +1,6 @@
 package icu.windea.pls.core
 
 import com.intellij.openapi.util.*
-import java.util.*
-import kotlin.collections.ArrayDeque
 
 object SmartRecursionGuardContext {
     val recursionGuardCacheThreadLocal: ThreadLocal<MutableMap<String, SmartRecursionGuard>> by lazy { ThreadLocal.withInitial { mutableMapOf() } }
