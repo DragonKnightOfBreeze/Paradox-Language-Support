@@ -37,8 +37,8 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(COMMAND_FIELD, COMMAND_IDENTIFIER, COMMAND_SCOPE),
-    create_token_set_(COLORFUL_TEXT, COMMAND, ESCAPE, ICON,
-      PROPERTY_REFERENCE, RICH_TEXT, STRING),
+    create_token_set_(COLORFUL_TEXT, COMMAND, ICON, PROPERTY_REFERENCE,
+      RICH_TEXT, STRING),
   };
 
   /* ********************************************************** */
@@ -230,19 +230,6 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     }
     exit_section_(b, l, m, true, false, null);
     return true;
-  }
-
-  /* ********************************************************** */
-  // VALID_ESCAPE_TOKEN | INVALID_ESCAPE_TOKEN | DOUBLE_LEFT_BRACKET
-  public static boolean escape(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "escape")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, ESCAPE, "<escape>");
-    r = consumeToken(b, VALID_ESCAPE_TOKEN);
-    if (!r) r = consumeToken(b, INVALID_ESCAPE_TOKEN);
-    if (!r) r = consumeToken(b, DOUBLE_LEFT_BRACKET);
-    exit_section_(b, l, m, r, false, null);
-    return r;
   }
 
   /* ********************************************************** */
@@ -541,21 +528,15 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // escape
-  //   | property_reference
-  //   | icon
-  //   | colorful_text
-  //   | command
-  //   | string
+  // property_reference | icon | command | colorful_text | string
   public static boolean rich_text(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rich_text")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, RICH_TEXT, "<rich text>");
-    r = escape(b, l + 1);
-    if (!r) r = property_reference(b, l + 1);
+    r = property_reference(b, l + 1);
     if (!r) r = icon(b, l + 1);
-    if (!r) r = colorful_text(b, l + 1);
     if (!r) r = command(b, l + 1);
+    if (!r) r = colorful_text(b, l + 1);
     if (!r) r = string(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;

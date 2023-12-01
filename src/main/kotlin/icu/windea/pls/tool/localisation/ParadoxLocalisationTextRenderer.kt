@@ -1,5 +1,6 @@
 package icu.windea.pls.tool.localisation
 
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
@@ -35,7 +36,6 @@ object ParadoxLocalisationTextRenderer {
     private fun renderTo(element: ParadoxLocalisationRichText, context: Context) {
         when(element) {
             is ParadoxLocalisationString -> renderStringTo(element, context)
-            is ParadoxLocalisationEscape -> renderEscapeTo(element, context)
             is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
             is ParadoxLocalisationIcon -> renderIconTo(element, context)
             is ParadoxLocalisationCommand -> renderCommandTo(element, context)
@@ -44,16 +44,25 @@ object ParadoxLocalisationTextRenderer {
     }
     
     private fun renderStringTo(element: ParadoxLocalisationString, context: Context) {
-        context.builder.append(element.text)
-    }
-    
-    private fun renderEscapeTo(element: ParadoxLocalisationEscape, context: Context) {
-        val elementText = element.text
-        when {
-            elementText == "\\n" -> context.builder.append("\n")
-            elementText == "\\t" -> context.builder.append("\t")
-            elementText.length > 1 -> context.builder.append(elementText[1])
+        val text = buildString {
+            var isEscape = false
+            element.text.forEachFast { c ->
+                when {
+                    isEscape -> {
+                        isEscape = false
+                        when(c) {
+                            'n' -> append('\n')
+                            'r' -> append('\r')
+                            't' -> append('\t')
+                            else -> append(c)
+                        }
+                    }
+                    c == '\\' -> isEscape = true
+                    else -> append(c)
+                }
+            }
         }
+        context.builder.append(text)
     }
     
     private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {

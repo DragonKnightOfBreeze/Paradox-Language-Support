@@ -7,6 +7,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
@@ -45,12 +46,12 @@ object ParadoxLocalisationTextInlayRenderer {
         if(!r) {
             context.builder.add(factory.smallText("...")) //添加省略号
         }
-        return context.builder.mergePresentation()
+        return mergePresentation(context.builder)
     }
     
     private fun renderTo(element: ParadoxLocalisationProperty, context: Context): Boolean {
         val richTextList = element.propertyValue?.richTextList
-        if(richTextList == null || richTextList.isEmpty()) return true
+        if(richTextList.isNullOrEmpty()) return true
         var continueProcess = true
         for(richText in richTextList) {
             ProgressManager.checkCanceled()
@@ -66,7 +67,6 @@ object ParadoxLocalisationTextInlayRenderer {
     private fun renderTo(element: ParadoxLocalisationRichText, context: Context): Boolean {
         return when(element) {
             is ParadoxLocalisationString -> renderStringTo(element, context)
-            is ParadoxLocalisationEscape -> renderEscapeTo(element, context)
             is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
             is ParadoxLocalisationIcon -> renderIconTo(element, context)
             is ParadoxLocalisationCommand -> renderCommandTo(element, context)
@@ -76,19 +76,23 @@ object ParadoxLocalisationTextInlayRenderer {
     }
     
     private fun renderStringTo(element: ParadoxLocalisationString, context: Context): Boolean = with(context.factory) {
-        val elementText = element.text
-        context.builder.add(truncatedSmallText(elementText, context))
-        return continueProcess(context)
-    }
-    
-    private fun renderEscapeTo(element: ParadoxLocalisationEscape, context: Context): Boolean = with(context.factory) {
-        //使用原始文本（内嵌注释不能换行，这时直接截断）
-        val elementText = element.text
-        val text = when {
-            elementText == "\\n" -> return false
-            elementText == "\\r" -> return false
-            elementText == "\\t" -> "\t"
-            else -> elementText
+        val text = buildString {
+            var isEscape = false
+            element.text.forEachFast { c ->
+                when {
+                    isEscape -> {
+                        isEscape = false
+                        when(c) {
+                            'n' -> return@buildString //内嵌注释不能换行，因此这里直接截断
+                            'r' -> return@buildString //内嵌注释不能换行，因此这里直接截断
+                            't' -> append('\t')
+                            else -> append(c)
+                        }
+                    }
+                    c == '\\' -> isEscape = true
+                    else -> append(c)
+                }
+            }
         }
         context.builder.add(truncatedSmallText(text, context))
         return continueProcess(context)
@@ -113,7 +117,7 @@ object ParadoxLocalisationTextInlayRenderer {
                         renderTo(resolved, context)
                         val newBuilder = context.builder
                         context.builder = oldBuilder
-                        newBuilder.mergePresentation()
+                        mergePresentation(newBuilder)
                     } finally {
                         context.guardStack.removeLast()
                     }
@@ -218,7 +222,7 @@ object ParadoxLocalisationTextInlayRenderer {
         return continueProcess(context)
     }
     
-    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context): Boolean = with(context.factory) {
+    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context): Boolean {
         //如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if(richTextList.isEmpty()) return true
@@ -237,17 +241,17 @@ object ParadoxLocalisationTextInlayRenderer {
         }
         val newBuilder = context.builder
         context.builder = oldBuilder
-        val presentation = newBuilder.mergePresentation() ?: return true
+        val presentation = mergePresentation(newBuilder) ?: return true
         val finalPresentation = if(textAttributesKey != null) WithAttributesPresentation(presentation, textAttributesKey, context.editor) else presentation
         context.builder.add(finalPresentation)
         return continueProcess
     }
     
-    private fun MutableList<InlayPresentation>.mergePresentation(): InlayPresentation? {
+    private fun mergePresentation(presentations: MutableList<InlayPresentation>): InlayPresentation? {
         return when {
-            isEmpty() -> null
-            size == 1 -> first()
-            else -> SequencePresentation(this)
+            presentations.isEmpty() -> null
+            presentations.size == 1 -> presentations.first()
+            else -> SequencePresentation(presentations)
         }
     }
     

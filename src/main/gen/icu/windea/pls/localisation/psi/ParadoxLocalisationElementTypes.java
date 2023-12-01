@@ -15,7 +15,6 @@ public interface ParadoxLocalisationElementTypes {
   IElementType COMMAND_SCOPE = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND_SCOPE");
   IElementType CONCEPT_NAME = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_NAME");
   IElementType CONCEPT_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_TEXT");
-  IElementType ESCAPE = ParadoxLocalisationElementTypeFactory.getElementType("ESCAPE");
   IElementType ICON = ParadoxLocalisationElementTypeFactory.getElementType("ICON");
   IElementType LOCALE = ParadoxLocalisationElementTypeFactory.getElementType("LOCALE");
   IElementType PROPERTY = ParadoxLocalisationStubElementTypes.getPropertyType("PROPERTY");
@@ -40,12 +39,10 @@ public interface ParadoxLocalisationElementTypes {
   IElementType COMMENT = ParadoxLocalisationElementTypeFactory.getTokenType("COMMENT");
   IElementType CONCEPT_NAME_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("CONCEPT_NAME_TOKEN");
   IElementType DOT = ParadoxLocalisationElementTypeFactory.getTokenType("DOT");
-  IElementType DOUBLE_LEFT_BRACKET = ParadoxLocalisationElementTypeFactory.getTokenType("DOUBLE_LEFT_BRACKET");
   IElementType ICON_END = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_END");
   IElementType ICON_FRAME = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_FRAME");
   IElementType ICON_START = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_START");
   IElementType ICON_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_TOKEN");
-  IElementType INVALID_ESCAPE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("INVALID_ESCAPE_TOKEN");
   IElementType LEFT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("LEFT_QUOTE");
   IElementType LEFT_SINGLE_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("LEFT_SINGLE_QUOTE");
   IElementType LOCALE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("LOCALE_TOKEN");
@@ -60,7 +57,6 @@ public interface ParadoxLocalisationElementTypes {
   IElementType RIGHT_SINGLE_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_SINGLE_QUOTE");
   IElementType SCRIPTED_VARIABLE_REFERENCE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_TOKEN");
   IElementType STRING_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("STRING_TOKEN");
-  IElementType VALID_ESCAPE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("VALID_ESCAPE_TOKEN");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
@@ -85,9 +81,6 @@ public interface ParadoxLocalisationElementTypes {
       }
       else if (type == CONCEPT_TEXT) {
         return new ParadoxLocalisationConceptTextImpl(node);
-      }
-      else if (type == ESCAPE) {
-        return new ParadoxLocalisationEscapeImpl(node);
       }
       else if (type == ICON) {
         return new ParadoxLocalisationIconImpl(node);

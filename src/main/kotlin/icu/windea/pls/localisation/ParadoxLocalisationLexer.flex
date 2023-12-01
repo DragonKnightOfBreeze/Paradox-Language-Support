@@ -77,11 +77,6 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         if(yylength() <= 1) return false;
         return isExactLetter(yycharat(1));
     }
-    
-    private boolean isRightQuote(){
-        if(yylength() == 1) return true;
-        return yycharat(yylength()-1) != '"';
-    }
 %}
 
 %public
@@ -115,7 +110,6 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %s CHECK_ICON_START
 %s CHECK_COMMAND_START
 %s IN_CHECK_COLORFUL_TEXT_START
-%s IN_CHECK_RIGHT_QUOTE
 
 %unicode
 
@@ -123,19 +117,16 @@ EOL=\s*\R
 BLANK=\s+
 WHITE_SPACE=[\s&&[^\r\n]]+
 COMMENT=#[^\r\n]*
-END_OF_LINE_COMMENT=#[^\"\r\n]* //行尾注释不能包含双引号，否则会有解析冲突
+END_OF_LINE_COMMENT=#[^\r\n]*
 
 CHECK_PROPERTY_REFERENCE_START=\$([a-zA-Z0-9_.\-'@]?|{CHECK_COMMAND_START})
 CHECK_ICON_START=£.?
 CHECK_COLORFUL_TEXT_START=§.?
-CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 
 LOCALE_TOKEN=[a-z_]+
 NUMBER=\d+
 PROPERTY_KEY_CHAR=[a-zA-Z0-9_.\-']
 PROPERTY_KEY_TOKEN={PROPERTY_KEY_CHAR}+
-VALID_ESCAPE_TOKEN=\\[rnt\"$£§]
-INVALID_ESCAPE_TOKEN=\\.
 DOUBLE_LEFT_BRACKET=\[\[
 PROPERTY_REFERENCE_TOKEN={PROPERTY_KEY_CHAR}+
 PROPERTY_REFERENCE_PARAMETER_TOKEN=[^\"$£§\[\r\n\\]+
@@ -143,7 +134,7 @@ SCRIPTED_VARIABLE_ID=[a-zA-Z_][a-zA-Z0-9_]*
 ICON_TOKEN=[a-zA-Z0-9\-_\\/]+
 ICON_FRAME=[1-9][0-9]* // positive integer
 COLOR_TOKEN=[a-zA-Z0-9]
-STRING_TOKEN=[^\"$£§\[\]\r\n\\]+ //双引号实际上不需要转义
+STRING_TOKEN=([^\"$£§\[\]\r\n\\]|\\.)+
 
 CHECK_COMMAND_START=\[[^\r\n\]]*.?
 COMMAND_SCOPE_ID_WITH_SUFFIX=[^\r\n.\[\]]+\.
@@ -198,7 +189,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
     \" {yybegin(IN_RICH_TEXT); return LEFT_QUOTE; }
 }
 <IN_RICH_TEXT>{
-    \" {yypushback(yylength()); yybegin(IN_CHECK_RIGHT_QUOTE);}
+    \" {yybegin(IN_PROPERTY_END); return RIGHT_QUOTE;}
     "$" {referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);}
     "£" {yypushback(yylength()); yybegin(CHECK_ICON_START);}
     "[" { increaseDepth(); commandLocation=CommandLocation.NORMAL; yybegin(IN_COMMAND); return COMMAND_START; }
@@ -225,7 +216,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
 }
 <IN_PROPERTY_REFERENCE>{
     {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE;}
-    \" {yypushback(yylength()); yybegin(IN_CHECK_RIGHT_QUOTE);}
+    \" {yybegin(IN_PROPERTY_END); return RIGHT_QUOTE;}
     "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
     "[" {increaseDepth();commandLocation=CommandLocation.REFERENCE; yybegin(IN_COMMAND); return COMMAND_START; }
     "|" {yybegin(IN_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE;}
@@ -236,7 +227,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
 }
 <IN_PROPERTY_REFERENCE_PARAMETER_TOKEN>{
     {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; } 
-    \" {yypushback(yylength()); yybegin(IN_CHECK_RIGHT_QUOTE);}
+    \" {yybegin(IN_PROPERTY_END); return RIGHT_QUOTE;}
     "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
     "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
     "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
@@ -244,7 +235,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
 }
 <IN_SCRIPTED_VARIABLE_REFERENCE_NAME>{
     {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
-    \" {yypushback(yylength()); yybegin(IN_CHECK_RIGHT_QUOTE);}
+    \" {yybegin(IN_PROPERTY_END); return RIGHT_QUOTE;}
     "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
     "[" {increaseDepth();commandLocation=CommandLocation.REFERENCE; yybegin(IN_COMMAND);return COMMAND_START; }
     "|" {yybegin(IN_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE;}
@@ -273,7 +264,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
 }
 <IN_ICON>{
     {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
-    \" {yypushback(yylength()); yybegin(IN_CHECK_RIGHT_QUOTE);}
+    \" {yybegin(IN_PROPERTY_END); return RIGHT_QUOTE;}
     "£" {yybegin(nextStateForText()); return ICON_END;}
     "$" {referenceLocation=ReferenceLocation.ICON; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);}
     "[" {increaseDepth(); commandLocation=CommandLocation.ICON; yybegin(IN_COMMAND); return COMMAND_START;}
@@ -284,7 +275,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
 }
 <IN_ICON_ID_FINISHED>{
     {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
-    \" {yypushback(yylength()); yybegin(IN_CHECK_RIGHT_QUOTE);}
+    \" {yybegin(IN_PROPERTY_END); return RIGHT_QUOTE;}
     "£" {yybegin(nextStateForText()); return ICON_END;}
     "|" {yybegin(IN_ICON_FRAME); return PIPE;}
     "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
@@ -292,7 +283,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
 }
 <IN_ICON_FRAME>{
     {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
-    \" {yypushback(yylength()); yybegin(IN_CHECK_RIGHT_QUOTE);}
+    \" {yybegin(IN_PROPERTY_END); return RIGHT_QUOTE;}
     "$" {referenceLocation=ReferenceLocation.ICON_FRAME; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);}
     "£" {yybegin(nextStateForText()); return ICON_END;}
     "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
@@ -301,7 +292,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
 }
 <IN_ICON_FRAME_FINISHED>{
     {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
-    \" {yypushback(yylength()); yybegin(IN_CHECK_RIGHT_QUOTE);}
+    \" {yybegin(IN_PROPERTY_END); return RIGHT_QUOTE;}
     "£" {yybegin(nextStateForText()); return ICON_END;}
     "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
     "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
@@ -323,7 +314,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
 }
 <IN_COMMAND_SCOPE_OR_FIELD>{
     {WHITE_SPACE} {return WHITE_SPACE; }
-    \" {yypushback(yylength()); yybegin(IN_CHECK_RIGHT_QUOTE);}
+    \" {yybegin(IN_PROPERTY_END); return RIGHT_QUOTE;}
     "]" {decreaseDepth(); yybegin(nextStateForCommand()); return COMMAND_END;}
     "$" {referenceLocation=ReferenceLocation.COMMAND; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);}
     "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
@@ -334,7 +325,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
 }
 <IN_CONCEPT> {
     {WHITE_SPACE} {return WHITE_SPACE; }
-    \" {yypushback(yylength()); yybegin(IN_CHECK_RIGHT_QUOTE);}
+    \" {yybegin(IN_PROPERTY_END); return RIGHT_QUOTE;}
     "]" {decreaseDepth();yybegin(nextStateForCommand()); return COMMAND_END;}
     "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
     "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
@@ -343,7 +334,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
     "," { inConceptText=true; yybegin(IN_CONCEPT_TEXT); return COMMA; }
 }
 <IN_CONCEPT_TEXT> {
-    \" {yypushback(yylength()); yybegin(IN_CHECK_RIGHT_QUOTE);}
+    \" {yybegin(IN_PROPERTY_END); return RIGHT_QUOTE;}
     "]" {decreaseDepth();yybegin(nextStateForCommand()); return COMMAND_END;}
     "$" {referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);}
     "£" {yypushback(yylength()); yybegin(CHECK_ICON_START);}
@@ -373,14 +364,14 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
 }
 <IN_COLOR_ID>{
     {WHITE_SPACE} {yybegin(IN_COLORFUL_TEXT); return WHITE_SPACE; }
-    \" {yypushback(yylength()); yybegin(IN_CHECK_RIGHT_QUOTE);}
+    \" {yybegin(IN_PROPERTY_END); return RIGHT_QUOTE;}
     "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
     "§!" {decreaseDepth(); decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
     {COLOR_TOKEN} {yybegin(IN_COLORFUL_TEXT); return COLOR_TOKEN;}
     [^] {yypushback(yylength()); yybegin(IN_COLORFUL_TEXT); } //提高兼容性
 }
 <IN_COLORFUL_TEXT>{
-    \" {yypushback(yylength()); yybegin(IN_CHECK_RIGHT_QUOTE);}
+    \" {yybegin(IN_PROPERTY_END); return RIGHT_QUOTE;}
     "$" {referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);}
     "£" {yypushback(yylength()); yybegin(CHECK_ICON_START);}
     "[" {increaseDepth();commandLocation=CommandLocation.NORMAL; yybegin(IN_COMMAND);return COMMAND_START; }
@@ -391,24 +382,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
 <IN_PROPERTY_END>{
     {WHITE_SPACE} {return WHITE_SPACE; }
     {END_OF_LINE_COMMENT} {return COMMENT; }
-    \" {yypushback(yylength()); yybegin(IN_CHECK_RIGHT_QUOTE);}
-}
-
-<IN_CHECK_RIGHT_QUOTE>{
-    {CHECK_RIGHT_QUOTE} {
-        //特殊处理
-        //如果匹配到的字符串长度为1，或者最后一个字符不是双引号，则认为代表本地化富文本的结束
-        //否则认为是常规字符串
-        boolean isRightQuote = isRightQuote();
-        yypushback(yylength()-1);
-        if(isRightQuote) {
-            yybegin(IN_PROPERTY_END);
-            return RIGHT_QUOTE;
-        } else {
-            yybegin(nextStateForText());
-            return STRING_TOKEN;
-        }
-    }
+    \" {yybegin(IN_PROPERTY_END); return RIGHT_QUOTE;}
 }
 
 <IN_RICH_TEXT, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT> {
@@ -421,8 +395,6 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
         }
         return STRING_TOKEN;
     }
-    {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}
-    {INVALID_ESCAPE_TOKEN} {return INVALID_ESCAPE_TOKEN;}
     {DOUBLE_LEFT_BRACKET} {return DOUBLE_LEFT_BRACKET;}
     {STRING_TOKEN} {return STRING_TOKEN;}
 }

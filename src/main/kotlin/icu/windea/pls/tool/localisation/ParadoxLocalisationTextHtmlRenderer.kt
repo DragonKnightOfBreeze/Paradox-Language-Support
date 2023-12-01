@@ -6,6 +6,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
@@ -66,7 +67,6 @@ object ParadoxLocalisationTextHtmlRenderer {
     private fun renderTo(element: ParadoxLocalisationRichText, context: Context) {
         when(element) {
             is ParadoxLocalisationString -> renderStringTo(element, context)
-            is ParadoxLocalisationEscape -> renderEscapeTo(element, context)
             is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
             is ParadoxLocalisationIcon -> renderIconTo(element, context)
             is ParadoxLocalisationCommand -> renderCommandTo(element, context)
@@ -75,17 +75,25 @@ object ParadoxLocalisationTextHtmlRenderer {
     }
     
     private fun renderStringTo(element: ParadoxLocalisationString, context: Context) {
-        context.builder.append(element.text.escapeXml())
-    }
-    
-    private fun renderEscapeTo(element: ParadoxLocalisationEscape, context: Context) {
-        val elementText = element.text
-        when {
-            elementText == "\\n" -> context.builder.append("<br>\n")
-            elementText == "\\r" -> context.builder.append("<br>\r")
-            elementText == "\\t" -> context.builder.append("&emsp;")
-            elementText.length > 1 -> context.builder.append(elementText[1])
+        val text = buildString {
+            var isEscape = false
+            element.text.forEachFast { c ->
+                when {
+                    isEscape -> {
+                        isEscape = false
+                        when(c) {
+                            'n' -> append("<br>\n")
+                            'r' -> append("<br>\n")
+                            't' -> append("&emsp;")
+                            else -> append(c)
+                        }
+                    }
+                    c == '\\' -> isEscape = true
+                    else -> append(c)
+                }
+            }
         }
+        context.builder.append(text.escapeXml())
     }
     
     private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {

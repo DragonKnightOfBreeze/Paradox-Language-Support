@@ -76,20 +76,9 @@ property_value ::= LEFT_QUOTE property_value_item RIGHT_QUOTE{
 
 //允许多余的彩色文本结束标记（"§!"）
 private property_value_item ::= (rich_text | COLORFUL_TEXT_END) *
-rich_text ::= escape
-  | property_reference
-  | icon
-  | colorful_text
-  | command
-  | string
+rich_text ::= property_reference | icon | command | colorful_text | string
 
 string ::= STRING_TOKEN{
-  extends=rich_text
-}
-
-//escape rules
-
-escape ::= VALID_ESCAPE_TOKEN | INVALID_ESCAPE_TOKEN | DOUBLE_LEFT_BRACKET{
   extends=rich_text
 }
 
