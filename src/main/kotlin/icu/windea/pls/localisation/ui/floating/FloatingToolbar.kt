@@ -5,20 +5,15 @@ import com.intellij.ide.ui.customization.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.impl.*
-import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.event.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.*
-import com.intellij.util.ui.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.localisation.ui.actions.styling.*
 import java.awt.*
 import java.awt.event.*
 import javax.swing.*
@@ -30,9 +25,9 @@ import kotlin.properties.*
 /**
  * 当用户鼠标选中本地化文本(的其中一部分)时,将会显示的悬浮工具栏栏。
  * 提供动作：
- * * 快速插入引用（`$FOO$`） - 不会检查插入后语法是否合法
- * * 快速插入图标（`£foo£`） - 不会检查插入后语法是否合法
- * * 快速插入命令（`[Foo]`） - 不会检查插入后语法是否合法
+ * * 快速插入引用 - 不会检查插入后语法是否合法
+ * * 快速插入图标 - 不会检查插入后语法是否合法
+ * * 快速插入命令 - 不会检查插入后语法是否合法
  * * 更改文本颜色（将会列出所有可选的颜色代码）
  * @see icu.windea.pls.localisation.ui.actions.styling.CreateReferenceAction
  * @see icu.windea.pls.localisation.ui.actions.styling.CreateIconAction
@@ -140,7 +135,7 @@ class FloatingToolbar(
         if(editor.document.getLineNumber(selectionStart) != editor.document.getLineNumber(selectionEnd)) return false
         val elementAtStart = file.findElementAt(selectionStart)
         val elementAtEnd = file.findElementAt(selectionEnd - 1)
-        //开始位置和结束位置的左边或右边是STRING_TOKEN，向上能查找到同一个ParadoxLocalisationPropertyValue，且选择文本的范围在引号之间
+        //开始位置和结束位置的左边或右边是PLAIN_TEXT_TOKEN，向上能查找到同一个ParadoxLocalisationPropertyValue，且选择文本的范围在引号之间
         if(elementAtStart == null || elementAtEnd == null) return false
         if(elementAtStart.elementType != PLAIN_TEXT_TOKEN && elementAtStart.prevLeaf(false).elementType != PLAIN_TEXT_TOKEN) return false
         if(elementAtEnd.elementType != PLAIN_TEXT_TOKEN && elementAtEnd.nextLeaf(false).elementType != PLAIN_TEXT_TOKEN) return false
