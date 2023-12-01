@@ -58,7 +58,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxScriptValueExpressionNode.Reference -> true //<script_value>
                 is ParadoxLocalisationIconPsiReference -> true
                 is ParadoxLocalisationCommandFieldPsiReference -> true //<scripted_loc>
-                is ParadoxLocalisationConceptNamePsiReference -> true //<game_concept>
+                is ParadoxLocalisationConceptPsiReference -> true //<game_concept>
                 is ParadoxLocalisationColorPsiReference -> true //<text_color>
                 else -> false
             }

@@ -101,10 +101,10 @@ object ParadoxLocalisationTextRenderer {
     }
     
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
-        val conceptName = element.conceptName
-        if(conceptName != null) {
+        val concept = element.concept
+        if(concept != null) {
             //使用要显示的文本
-            val conceptTextElement = ParadoxGameConceptHandler.getTextElement(conceptName)
+            val conceptTextElement = ParadoxGameConceptHandler.getTextElement(concept)
             val richTextList = when {
                 conceptTextElement is ParadoxLocalisationConceptText -> conceptTextElement.richTextList
                 conceptTextElement is ParadoxLocalisationProperty -> conceptTextElement.propertyValue?.richTextList
@@ -115,7 +115,7 @@ object ParadoxLocalisationTextRenderer {
                     renderTo(v, context)
                 }
             } else {
-                context.builder.append(conceptName.text)
+                context.builder.append(concept.text)
             }
             return
         }

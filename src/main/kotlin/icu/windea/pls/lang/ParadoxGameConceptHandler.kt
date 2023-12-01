@@ -2,8 +2,6 @@ package icu.windea.pls.lang
 
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.data.*
@@ -18,8 +16,8 @@ object ParadoxGameConceptHandler {
         return ParadoxDefinitionSearch.search("game_concept", definitionSelector).findFirst()
     }
     
-    fun getTextElement(element: ParadoxLocalisationConceptName): PsiElement? {
-        val conceptText = element.siblings(true).findIsInstance<ParadoxLocalisationConceptText>()
+    fun getTextElement(element: ParadoxLocalisationConcept): PsiElement? {
+        val conceptText = element.conceptText
         if(conceptText != null) return conceptText
         val resolved = element.reference?.resolve() ?: return null
         return ParadoxDefinitionHandler.getPrimaryLocalisation(resolved)

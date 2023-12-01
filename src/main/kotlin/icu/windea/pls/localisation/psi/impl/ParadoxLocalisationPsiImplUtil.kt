@@ -452,31 +452,31 @@ object ParadoxLocalisationPsiImplUtil {
     }
     //endregion
     
-    //region ParadoxLocalisationConceptName
+    //region ParadoxLocalisationConcept
     @JvmStatic
-    fun getIcon(element: ParadoxLocalisationConceptName, @IconFlags flags: Int): Icon {
+    fun getIcon(element: ParadoxLocalisationConcept, @IconFlags flags: Int): Icon {
         return PlsIcons.LocalisationNodes.Concept
     }
     
     @JvmStatic
-    fun getName(element: ParadoxLocalisationConceptName): String {
-        return element.idElement?.text?.trim().orEmpty()
+    fun getName(element: ParadoxLocalisationConcept): String {
+        return element.conceptName.idElement?.text?.trim().orEmpty()
     }
     
     @JvmStatic
-    fun setName(element: ParadoxLocalisationConceptName, name: String): ParadoxLocalisationConceptName {
-        val nameElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
+    fun setName(element: ParadoxLocalisationConcept, name: String): ParadoxLocalisationConcept {
+        val nameElement = element.conceptName.idElement ?: throw IncorrectOperationException() //不支持重命名
         val newNameElement = ParadoxLocalisationElementFactory.createConceptName(element.project, name).idElement!!
         nameElement.replace(newNameElement)
         return element
     }
     
     @JvmStatic
-    fun getReference(element: ParadoxLocalisationConceptName): ParadoxLocalisationConceptNamePsiReference? {
+    fun getReference(element: ParadoxLocalisationConcept): ParadoxLocalisationConceptPsiReference? {
         return CachedValuesManager.getCachedValue(element) {
             val value = run {
-                val rangeInElement = element.idElement?.textRangeInParent ?: return@run null
-                ParadoxLocalisationConceptNamePsiReference(element, rangeInElement)
+                val rangeInElement = element.conceptName.idElement?.textRangeInParent ?: return@run null
+                ParadoxLocalisationConceptPsiReference(element, rangeInElement)
             }
             CachedValueProvider.Result.create(value, element)
         }

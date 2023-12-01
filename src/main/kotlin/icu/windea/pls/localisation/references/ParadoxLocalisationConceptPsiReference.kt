@@ -9,9 +9,9 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
- * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationConceptNameCompletionProvider
+ * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationConceptCompletionProvider
  */
-class ParadoxLocalisationConceptNamePsiReference(
+class ParadoxLocalisationConceptPsiReference(
     element: ParadoxLocalisationConceptName,
     rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationConceptName>(element, rangeInElement) {
@@ -25,8 +25,8 @@ class ParadoxLocalisationConceptNamePsiReference(
     
     //缓存解析结果以优化性能
     
-    private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationConceptNamePsiReference, ParadoxScriptDefinitionElement> {
-        override fun resolve(ref: ParadoxLocalisationConceptNamePsiReference, incompleteCode: Boolean): ParadoxScriptDefinitionElement? {
+    private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationConceptPsiReference, ParadoxScriptDefinitionElement> {
+        override fun resolve(ref: ParadoxLocalisationConceptPsiReference, incompleteCode: Boolean): ParadoxScriptDefinitionElement? {
             return ref.doResolve()
         }
     }

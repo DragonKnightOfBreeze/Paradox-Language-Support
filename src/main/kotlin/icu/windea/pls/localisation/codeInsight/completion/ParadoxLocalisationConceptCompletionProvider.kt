@@ -9,7 +9,7 @@ import icu.windea.pls.lang.*
 /**
  * 提供概念的名字和别名的代码补全。
  */
-class ParadoxLocalisationConceptNameCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position.parent ?: return
         val offsetInParent = parameters.offset - element.startOffset

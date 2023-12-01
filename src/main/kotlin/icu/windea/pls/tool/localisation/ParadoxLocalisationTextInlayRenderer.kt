@@ -167,10 +167,10 @@ object ParadoxLocalisationTextInlayRenderer {
     }
     
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context): Boolean = with(context.factory) {
-        val conceptName = element.conceptName
-        if(conceptName != null) {
+        val concept = element.concept
+        if(concept != null) {
             //使用要显示的文本
-            val conceptTextElement = ParadoxGameConceptHandler.getTextElement(conceptName)
+            val conceptTextElement = ParadoxGameConceptHandler.getTextElement(concept)
             val richTextList = when {
                 conceptTextElement is ParadoxLocalisationConceptText -> conceptTextElement.richTextList
                 conceptTextElement is ParadoxLocalisationProperty -> conceptTextElement.propertyValue?.richTextList
@@ -195,7 +195,7 @@ object ParadoxLocalisationTextInlayRenderer {
                 
                 val attributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
                 presentation = WithAttributesPresentation(presentation, conceptAttributesKey, context.editor, attributesFlags)
-                presentation = onHover(psiSingleReference(presentation) { conceptName.reference?.resolve() }, object : InlayPresentationFactory.HoverListener {
+                presentation = onHover(psiSingleReference(presentation) { concept.reference?.resolve() }, object : InlayPresentationFactory.HoverListener {
                     override fun onHover(event: MouseEvent, translated: Point) {
                         attributesFlags.isDefault = true //change foreground
                     }
@@ -208,7 +208,7 @@ object ParadoxLocalisationTextInlayRenderer {
                 context.builder.add(presentation)
                 if(!continueProcess) return false
             } else {
-                context.builder.add(smallText(conceptName.name))
+                context.builder.add(smallText(concept.name))
             }
             return continueProcess(context)
         }

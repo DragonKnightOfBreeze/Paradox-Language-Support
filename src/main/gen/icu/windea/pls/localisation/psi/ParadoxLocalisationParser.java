@@ -175,34 +175,40 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // concept_name (COMMA concept_text) ?
-  static boolean concept_expression(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "concept_expression")) return false;
+  public static boolean concept(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "concept")) return false;
     if (!nextTokenIs(b, LEFT_SINGLE_QUOTE)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
+    Marker m = enter_section_(b, l, _NONE_, CONCEPT, null);
     r = concept_name(b, l + 1);
     p = r; // pin = 1
-    r = r && concept_expression_1(b, l + 1);
+    r = r && concept_1(b, l + 1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
   // (COMMA concept_text) ?
-  private static boolean concept_expression_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "concept_expression_1")) return false;
-    concept_expression_1_0(b, l + 1);
+  private static boolean concept_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "concept_1")) return false;
+    concept_1_0(b, l + 1);
     return true;
   }
 
   // COMMA concept_text
-  private static boolean concept_expression_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "concept_expression_1_0")) return false;
+  private static boolean concept_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "concept_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
     r = r && concept_text(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // concept
+  static boolean concept_expression(PsiBuilder b, int l) {
+    return concept(b, l + 1);
   }
 
   /* ********************************************************** */

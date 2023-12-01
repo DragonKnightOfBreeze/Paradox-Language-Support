@@ -13,6 +13,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType COMMAND_FIELD = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND_FIELD");
   IElementType COMMAND_IDENTIFIER = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND_IDENTIFIER");
   IElementType COMMAND_SCOPE = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND_SCOPE");
+  IElementType CONCEPT = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT");
   IElementType CONCEPT_NAME = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_NAME");
   IElementType CONCEPT_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_TEXT");
   IElementType ICON = ParadoxLocalisationElementTypeFactory.getElementType("ICON");
@@ -75,6 +76,9 @@ public interface ParadoxLocalisationElementTypes {
       }
       else if (type == COMMAND_SCOPE) {
         return new ParadoxLocalisationCommandScopeImpl(node);
+      }
+      else if (type == CONCEPT) {
+        return new ParadoxLocalisationConceptImpl(node);
       }
       else if (type == CONCEPT_NAME) {
         return new ParadoxLocalisationConceptNameImpl(node);
