@@ -7,19 +7,19 @@
       <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
     </context>
   </template>
+  <template name="scmd"
+            value="[$SELECTION$]"
+            description="Surround with command markers"
+            toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
+    </context>
+  </template>
   <template name="scolor"
             value="§$CODE$$SELECTION$§!"
             description="Surround with colorful text markers"
             toReformat="false" toShortenFQNames="true">
     <variable name="CODE" expression="complete()" alwaysStopAt="true"/>
-    <context>
-      <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
-    </context>
-  </template>
-  <template name="scmd"
-            value="[$SELECTION$]"
-            description="Surround with command markers"
-            toReformat="false" toShortenFQNames="true">
     <context>
       <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
     </context>
@@ -33,11 +33,10 @@
       <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
     </context>
   </template>
-  <template name="color"
-            value="§$CODE$$TEXT$§!$END$"
-            description="Insert a colorful text fragment"
+  <template name="icon"
+            value="£$TEXT$£$END$"
+            description="Insert an icon fragment"
             toReformat="false" toShortenFQNames="true">
-    <variable name="CODE" expression="complete()" alwaysStopAt="true"/>
     <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
     <context>
       <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
@@ -52,10 +51,11 @@
       <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
     </context>
   </template>
-  <template name="icon"
-            value="£$TEXT$£$END$"
-            description="Insert an icon fragment"
+  <template name="color"
+            value="§$CODE$$TEXT$§!$END$"
+            description="Insert a colorful text fragment"
             toReformat="false" toShortenFQNames="true">
+    <variable name="CODE" expression="complete()" alwaysStopAt="true"/>
     <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
     <context>
       <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>

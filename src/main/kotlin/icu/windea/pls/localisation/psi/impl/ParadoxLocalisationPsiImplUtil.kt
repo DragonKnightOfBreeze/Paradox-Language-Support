@@ -279,32 +279,6 @@ object ParadoxLocalisationPsiImplUtil {
     }
     //endregion
     
-    //region ParadoxLocalisationColorfulText
-    @JvmStatic
-    fun getName(element: ParadoxLocalisationColorfulText): String? {
-        return element.idElement?.text
-    }
-    
-    @JvmStatic
-    fun setName(element: ParadoxLocalisationColorfulText, name: String): ParadoxLocalisationColorfulText {
-        val nameElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
-        val newNameElement = ParadoxLocalisationElementFactory.createColorfulText(element.project, name).idElement!!
-        nameElement.replace(newNameElement)
-        return element
-    }
-    
-    @JvmStatic
-    fun getReference(element: ParadoxLocalisationColorfulText): ParadoxLocalisationColorPsiReference? {
-        return CachedValuesManager.getCachedValue(element) {
-            val value = run {
-                val rangeInElement = element.idElement?.textRangeInParent ?: return@run null
-                ParadoxLocalisationColorPsiReference(element, rangeInElement)
-            }
-            CachedValueProvider.Result.create(value, element)
-        }
-    }
-    //endregion
-    
     //region ParadoxLocalisationCommand
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationCommand, @IconFlags flags: Int): Icon {
@@ -477,6 +451,32 @@ object ParadoxLocalisationPsiImplUtil {
             val value = run {
                 val rangeInElement = element.conceptName.idElement?.textRangeInParent ?: return@run null
                 ParadoxLocalisationConceptPsiReference(element, rangeInElement)
+            }
+            CachedValueProvider.Result.create(value, element)
+        }
+    }
+    //endregion
+    
+    //region ParadoxLocalisationColorfulText
+    @JvmStatic
+    fun getName(element: ParadoxLocalisationColorfulText): String? {
+        return element.idElement?.text
+    }
+    
+    @JvmStatic
+    fun setName(element: ParadoxLocalisationColorfulText, name: String): ParadoxLocalisationColorfulText {
+        val nameElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
+        val newNameElement = ParadoxLocalisationElementFactory.createColorfulText(element.project, name).idElement!!
+        nameElement.replace(newNameElement)
+        return element
+    }
+    
+    @JvmStatic
+    fun getReference(element: ParadoxLocalisationColorfulText): ParadoxLocalisationColorPsiReference? {
+        return CachedValuesManager.getCachedValue(element) {
+            val value = run {
+                val rangeInElement = element.idElement?.textRangeInParent ?: return@run null
+                ParadoxLocalisationColorPsiReference(element, rangeInElement)
             }
             CachedValueProvider.Result.create(value, element)
         }
