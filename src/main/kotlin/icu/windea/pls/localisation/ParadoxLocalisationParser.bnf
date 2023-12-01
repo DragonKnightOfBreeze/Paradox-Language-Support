@@ -70,15 +70,15 @@ private property_number ::= PROPERTY_NUMBER
 property_key ::= PROPERTY_KEY_TOKEN {
   methods=[getIcon]
 }
-property_value ::= LEFT_QUOTE property_value_item RIGHT_QUOTE{
+property_value ::= LEFT_QUOTE property_value_item RIGHT_QUOTE {
   pin=1
 }
 
 //允许多余的彩色文本结束标记（"§!"）
 private property_value_item ::= (rich_text | COLORFUL_TEXT_END) *
-rich_text ::= property_reference | icon | command | colorful_text | string
+rich_text ::= property_reference | icon | command | colorful_text | plain_text
 
-string ::= STRING_TOKEN{
+plain_text ::= PLAIN_TEXT_TOKEN{
   extends=rich_text
 }
 

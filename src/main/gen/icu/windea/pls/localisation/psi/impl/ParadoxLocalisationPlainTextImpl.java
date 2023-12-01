@@ -13,15 +13,15 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public class ParadoxLocalisationStringImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationString {
+public class ParadoxLocalisationPlainTextImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationPlainText {
 
-  public ParadoxLocalisationStringImpl(@NotNull ASTNode node) {
+  public ParadoxLocalisationPlainTextImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
-    visitor.visitString(this);
+    visitor.visitPlainText(this);
   }
 
   @Override

@@ -35,7 +35,7 @@ object ParadoxLocalisationTextRenderer {
     
     private fun renderTo(element: ParadoxLocalisationRichText, context: Context) {
         when(element) {
-            is ParadoxLocalisationString -> renderStringTo(element, context)
+            is ParadoxLocalisationPlainText -> renderStringTo(element, context)
             is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
             is ParadoxLocalisationIcon -> renderIconTo(element, context)
             is ParadoxLocalisationCommand -> renderCommandTo(element, context)
@@ -43,7 +43,7 @@ object ParadoxLocalisationTextRenderer {
         }
     }
     
-    private fun renderStringTo(element: ParadoxLocalisationString, context: Context) {
+    private fun renderStringTo(element: ParadoxLocalisationPlainText, context: Context) {
         val text = buildString {
             var isEscape = false
             element.text.forEachFast { c ->

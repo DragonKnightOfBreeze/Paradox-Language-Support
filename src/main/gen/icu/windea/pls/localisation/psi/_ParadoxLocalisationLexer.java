@@ -4,7 +4,6 @@
 package icu.windea.pls.localisation.psi;
 
 
-import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
@@ -802,7 +801,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 66: break;
           case 12:
-            { return STRING_TOKEN;
+            { return PLAIN_TEXT_TOKEN;
             }
           // fall through
           case 67: break;
@@ -818,12 +817,12 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           case 69: break;
           case 15:
             { if(inConceptText) {
-            inConceptText = false;
-            decreaseDepth();
-            yybegin(nextStateForCommand());
-            return COMMAND_END;
-        }
-        return STRING_TOKEN;
+                inConceptText = false;
+                decreaseDepth();
+                yybegin(nextStateForCommand());
+                return COMMAND_END;
+            }
+            return PLAIN_TEXT_TOKEN;
             }
           // fall through
           case 70: break;
@@ -985,49 +984,49 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           case 100: break;
           case 46:
             { //特殊处理
-        //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_TOKEN或者command，或者是@，则认为代表属性引用的开始
-        boolean isReferenceStart = isReferenceStart();
-        yypushback(yylength()-1);
-        if(isReferenceStart){
-            yybegin(IN_PROPERTY_REFERENCE);
-            return PROPERTY_REFERENCE_START;
-        } else {
-            yybegin(nextStateForText());
-            return STRING_TOKEN;
-        }
+            //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_TOKEN或者command，或者是@，则认为代表属性引用的开始
+            boolean isReferenceStart = isReferenceStart();
+            yypushback(yylength()-1);
+            if(isReferenceStart){
+                yybegin(IN_PROPERTY_REFERENCE);
+                return PROPERTY_REFERENCE_START;
+            } else {
+                yybegin(nextStateForText());
+                return PLAIN_TEXT_TOKEN;
+            }
             }
           // fall through
           case 101: break;
           case 47:
             { //特殊处理
-        //如果匹配到的字符串的第2个字符存在且为字母、数字或下划线或者$，则认为代表图标的开始
-        //否则认为是常规字符串
-        boolean isIconStart = isIconStart();
-        yypushback(yylength()-1);
-        if(isIconStart){
-            yybegin(IN_ICON);
-            return ICON_START;
-        }else{
-            yybegin(nextStateForText());
-            return STRING_TOKEN;
-        }
+            //如果匹配到的字符串的第2个字符存在且为字母、数字或下划线或者$，则认为代表图标的开始
+            //否则认为是常规字符串
+            boolean isIconStart = isIconStart();
+            yypushback(yylength()-1);
+            if(isIconStart){
+                yybegin(IN_ICON);
+                return ICON_START;
+            }else{
+                yybegin(nextStateForText());
+                return PLAIN_TEXT_TOKEN;
+            }
             }
           // fall through
           case 102: break;
           case 48:
             { //特殊处理
-        //如果匹配到的字符串的第2个字符存在且为字母，则认为代表彩色文本的开始
-        //否则认为是常规字符串
-        boolean isColorfulTextStart = isColorfulTextStart();
-        yypushback(yylength()-1);
-        if(isColorfulTextStart) {
-            yybegin(IN_COLOR_ID);
-            increaseDepth();
-            return COLORFUL_TEXT_START;
-        } else {
-            yybegin(nextStateForText());
-            return STRING_TOKEN;
-        }
+            //如果匹配到的字符串的第2个字符存在且为字母，则认为代表彩色文本的开始
+            //否则认为是常规字符串
+            boolean isColorfulTextStart = isColorfulTextStart();
+            yypushback(yylength()-1);
+            if(isColorfulTextStart) {
+                yybegin(IN_COLOR_ID);
+                increaseDepth();
+                return COLORFUL_TEXT_START;
+            } else {
+                yybegin(nextStateForText());
+                return PLAIN_TEXT_TOKEN;
+            }
             }
           // fall through
           case 103: break;

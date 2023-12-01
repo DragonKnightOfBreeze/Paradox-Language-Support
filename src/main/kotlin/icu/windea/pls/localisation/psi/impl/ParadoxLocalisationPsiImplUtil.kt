@@ -481,11 +481,6 @@ object ParadoxLocalisationPsiImplUtil {
             CachedValueProvider.Result.create(value, element)
         }
     }
-    
-    @JvmStatic
-    fun getExpression(element: ParadoxLocalisationConceptName): String {
-        return element.name
-    }
     //endregion
     
     @JvmStatic

@@ -32,8 +32,8 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val DEFINITION_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION", PROPERTY_KEY_KEY) //underscored
 	@JvmField val DEFINITION_NAME_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION_NAME") //background #223C23
 	@JvmField val DEFINITION_REFERENCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION_REFERENCE", DEFINITION_KEY)  //dotted line  #707D95
-	@JvmField val LOCALISATION_REFERENCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.LOCALISATION_REFERENCE", ParadoxLocalisationAttributesKeys.LOCALISATION_KEY)  //dotted line #707D95
-	@JvmField val SYNCED_LOCALISATION_REFERENCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SYNCED_LOCALISATION_REFERENCE", ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY)  //dotted line #707D95
+	@JvmField val LOCALISATION_REFERENCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.LOCALISATION_REFERENCE", ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
+	@JvmField val SYNCED_LOCALISATION_REFERENCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SYNCED_LOCALISATION_REFERENCE", ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
 	@JvmField val PATH_REFERENCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.PATH_REFERENCE", CodeInsightColors.INACTIVE_HYPERLINK_ATTRIBUTES)
 	@JvmField val ENUM_VALUE_KEY = createTextAttributesKey("PARADOX_SCRIPT.ENUM_VALUE", STATIC_FIELD)
 	@JvmField val COMPLEX_ENUM_VALUE_KEY = createTextAttributesKey("PARADOX_SCRIPT.COMPLEX_ENUM_VALUE", INSTANCE_FIELD) //dotted line #707D95, italic

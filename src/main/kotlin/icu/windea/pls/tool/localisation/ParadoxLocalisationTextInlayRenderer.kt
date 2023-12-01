@@ -66,7 +66,7 @@ object ParadoxLocalisationTextInlayRenderer {
     
     private fun renderTo(element: ParadoxLocalisationRichText, context: Context): Boolean {
         return when(element) {
-            is ParadoxLocalisationString -> renderStringTo(element, context)
+            is ParadoxLocalisationPlainText -> renderStringTo(element, context)
             is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
             is ParadoxLocalisationIcon -> renderIconTo(element, context)
             is ParadoxLocalisationCommand -> renderCommandTo(element, context)
@@ -75,7 +75,7 @@ object ParadoxLocalisationTextInlayRenderer {
         }
     }
     
-    private fun renderStringTo(element: ParadoxLocalisationString, context: Context): Boolean = with(context.factory) {
+    private fun renderStringTo(element: ParadoxLocalisationPlainText, context: Context): Boolean = with(context.factory) {
         val text = buildString {
             var isEscape = false
             element.text.forEachFast { c ->

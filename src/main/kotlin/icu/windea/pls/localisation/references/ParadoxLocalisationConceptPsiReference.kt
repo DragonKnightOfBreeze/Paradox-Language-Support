@@ -12,9 +12,9 @@ import icu.windea.pls.script.psi.*
  * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationConceptCompletionProvider
  */
 class ParadoxLocalisationConceptPsiReference(
-    element: ParadoxLocalisationConceptName,
+    element: ParadoxLocalisationConcept,
     rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxLocalisationConceptName>(element, rangeInElement) {
+) : PsiReferenceBase<ParadoxLocalisationConcept>(element, rangeInElement) {
     val project by lazy { element.project }
     
     override fun handleElementRename(newElementName: String): PsiElement {

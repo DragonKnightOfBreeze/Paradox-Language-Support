@@ -1,7 +1,6 @@
 package icu.windea.pls.localisation.psi;
 
 
-import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
@@ -201,18 +200,18 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
 
 <CHECK_PROPERTY_REFERENCE_START>{
     {CHECK_PROPERTY_REFERENCE_START} {
-        //特殊处理
-        //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_TOKEN或者command，或者是@，则认为代表属性引用的开始
-        boolean isReferenceStart = isReferenceStart();
-        yypushback(yylength()-1);
-        if(isReferenceStart){
-            yybegin(IN_PROPERTY_REFERENCE);
-            return PROPERTY_REFERENCE_START;
-        } else {
-            yybegin(nextStateForText());
-            return STRING_TOKEN;
+            //特殊处理
+            //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_TOKEN或者command，或者是@，则认为代表属性引用的开始
+            boolean isReferenceStart = isReferenceStart();
+            yypushback(yylength()-1);
+            if(isReferenceStart){
+                yybegin(IN_PROPERTY_REFERENCE);
+                return PROPERTY_REFERENCE_START;
+            } else {
+                yybegin(nextStateForText());
+                return PLAIN_TEXT_TOKEN;
+            }
         }
-    }
 }
 <IN_PROPERTY_REFERENCE>{
     {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE;}
@@ -248,19 +247,19 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
 
 <CHECK_ICON_START>{
     {CHECK_ICON_START} {
-        //特殊处理
-        //如果匹配到的字符串的第2个字符存在且为字母、数字或下划线或者$，则认为代表图标的开始
-        //否则认为是常规字符串
-        boolean isIconStart = isIconStart();
-        yypushback(yylength()-1);
-        if(isIconStart){
-            yybegin(IN_ICON);
-            return ICON_START;
-        }else{
-            yybegin(nextStateForText());
-            return STRING_TOKEN;
+            //特殊处理
+            //如果匹配到的字符串的第2个字符存在且为字母、数字或下划线或者$，则认为代表图标的开始
+            //否则认为是常规字符串
+            boolean isIconStart = isIconStart();
+            yypushback(yylength()-1);
+            if(isIconStart){
+                yybegin(IN_ICON);
+                return ICON_START;
+            }else{
+                yybegin(nextStateForText());
+                return PLAIN_TEXT_TOKEN;
+            }
         }
-    }
 }
 <IN_ICON>{
     {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
@@ -347,20 +346,20 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
 
 <IN_CHECK_COLORFUL_TEXT_START>{
     {CHECK_COLORFUL_TEXT_START} {
-        //特殊处理
-        //如果匹配到的字符串的第2个字符存在且为字母，则认为代表彩色文本的开始
-        //否则认为是常规字符串
-        boolean isColorfulTextStart = isColorfulTextStart();
-        yypushback(yylength()-1);
-        if(isColorfulTextStart) {
-            yybegin(IN_COLOR_ID);
-            increaseDepth();
-            return COLORFUL_TEXT_START;
-        } else {
-            yybegin(nextStateForText());
-            return STRING_TOKEN;
+            //特殊处理
+            //如果匹配到的字符串的第2个字符存在且为字母，则认为代表彩色文本的开始
+            //否则认为是常规字符串
+            boolean isColorfulTextStart = isColorfulTextStart();
+            yypushback(yylength()-1);
+            if(isColorfulTextStart) {
+                yybegin(IN_COLOR_ID);
+                increaseDepth();
+                return COLORFUL_TEXT_START;
+            } else {
+                yybegin(nextStateForText());
+                return PLAIN_TEXT_TOKEN;
+            }
         }
-    }
 }
 <IN_COLOR_ID>{
     {WHITE_SPACE} {yybegin(IN_COLORFUL_TEXT); return WHITE_SPACE; }
@@ -387,16 +386,16 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
 
 <IN_RICH_TEXT, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT> {
     "]" {
-        if(inConceptText) {
-            inConceptText = false;
-            decreaseDepth();
-            yybegin(nextStateForCommand());
-            return COMMAND_END;
+            if(inConceptText) {
+                inConceptText = false;
+                decreaseDepth();
+                yybegin(nextStateForCommand());
+                return COMMAND_END;
+            }
+            return PLAIN_TEXT_TOKEN;
         }
-        return STRING_TOKEN;
-    }
     {DOUBLE_LEFT_BRACKET} {return DOUBLE_LEFT_BRACKET;}
-    {STRING_TOKEN} {return STRING_TOKEN;}
+    {STRING_TOKEN} {return PLAIN_TEXT_TOKEN;}
 }
 
 {EOL} { depth=0; inConceptText=false; yybegin(YYINITIAL); return WHITE_SPACE; }

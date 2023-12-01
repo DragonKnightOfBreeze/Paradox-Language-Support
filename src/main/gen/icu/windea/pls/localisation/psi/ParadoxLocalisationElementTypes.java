@@ -18,6 +18,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType CONCEPT_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_TEXT");
   IElementType ICON = ParadoxLocalisationElementTypeFactory.getElementType("ICON");
   IElementType LOCALE = ParadoxLocalisationElementTypeFactory.getElementType("LOCALE");
+  IElementType PLAIN_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("PLAIN_TEXT");
   IElementType PROPERTY = ParadoxLocalisationStubElementTypes.getPropertyType("PROPERTY");
   IElementType PROPERTY_KEY = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY_KEY");
   IElementType PROPERTY_LIST = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY_LIST");
@@ -25,7 +26,6 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PROPERTY_VALUE = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY_VALUE");
   IElementType RICH_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("RICH_TEXT");
   IElementType SCRIPTED_VARIABLE_REFERENCE = ParadoxLocalisationElementTypeFactory.getElementType("SCRIPTED_VARIABLE_REFERENCE");
-  IElementType STRING = ParadoxLocalisationElementTypeFactory.getElementType("STRING");
 
   IElementType AT = ParadoxLocalisationElementTypeFactory.getTokenType("@");
   IElementType COLON = ParadoxLocalisationElementTypeFactory.getTokenType(":");
@@ -48,6 +48,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType LEFT_SINGLE_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("LEFT_SINGLE_QUOTE");
   IElementType LOCALE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("LOCALE_TOKEN");
   IElementType PIPE = ParadoxLocalisationElementTypeFactory.getTokenType("|");
+  IElementType PLAIN_TEXT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PLAIN_TEXT_TOKEN");
   IElementType PROPERTY_KEY_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_KEY_TOKEN");
   IElementType PROPERTY_NUMBER = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_NUMBER");
   IElementType PROPERTY_REFERENCE_END = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_END");
@@ -57,7 +58,6 @@ public interface ParadoxLocalisationElementTypes {
   IElementType RIGHT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_QUOTE");
   IElementType RIGHT_SINGLE_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_SINGLE_QUOTE");
   IElementType SCRIPTED_VARIABLE_REFERENCE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_TOKEN");
-  IElementType STRING_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("STRING_TOKEN");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
@@ -92,6 +92,9 @@ public interface ParadoxLocalisationElementTypes {
       else if (type == LOCALE) {
         return new ParadoxLocalisationLocaleImpl(node);
       }
+      else if (type == PLAIN_TEXT) {
+        return new ParadoxLocalisationPlainTextImpl(node);
+      }
       else if (type == PROPERTY) {
         return new ParadoxLocalisationPropertyImpl(node);
       }
@@ -109,9 +112,6 @@ public interface ParadoxLocalisationElementTypes {
       }
       else if (type == SCRIPTED_VARIABLE_REFERENCE) {
         return new ParadoxLocalisationScriptedVariableReferenceImpl(node);
-      }
-      else if (type == STRING) {
-        return new ParadoxLocalisationStringImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

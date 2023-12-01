@@ -142,8 +142,8 @@ class FloatingToolbar(
         val elementAtEnd = file.findElementAt(selectionEnd - 1)
         //开始位置和结束位置的左边或右边是STRING_TOKEN，向上能查找到同一个ParadoxLocalisationPropertyValue，且选择文本的范围在引号之间
         if(elementAtStart == null || elementAtEnd == null) return false
-        if(elementAtStart.elementType != STRING_TOKEN && elementAtStart.prevLeaf(false).elementType != STRING_TOKEN) return false
-        if(elementAtEnd.elementType != STRING_TOKEN && elementAtEnd.nextLeaf(false).elementType != STRING_TOKEN) return false
+        if(elementAtStart.elementType != PLAIN_TEXT_TOKEN && elementAtStart.prevLeaf(false).elementType != PLAIN_TEXT_TOKEN) return false
+        if(elementAtEnd.elementType != PLAIN_TEXT_TOKEN && elementAtEnd.nextLeaf(false).elementType != PLAIN_TEXT_TOKEN) return false
         val propertyValueAtStart = elementAtStart.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
         val propertyValueAtEnd = elementAtEnd.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
         if(propertyValueAtStart !== propertyValueAtEnd) return false

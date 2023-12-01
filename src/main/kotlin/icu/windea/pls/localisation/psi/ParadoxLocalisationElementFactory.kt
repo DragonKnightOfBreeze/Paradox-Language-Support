@@ -36,12 +36,6 @@ object ParadoxLocalisationElementFactory {
     }
     
     @JvmStatic
-    fun createString(project: Project, text: String): ParadoxLocalisationString {
-        return createPropertyValue(project, text)
-            .findChild()!!
-    }
-    
-    @JvmStatic
     fun createPropertyReference(project: Project, name: String): ParadoxLocalisationPropertyReference {
         return createPropertyValue(project, "$$name$")
             .findChild()!!
@@ -50,18 +44,6 @@ object ParadoxLocalisationElementFactory {
     fun createScriptedVariableReference(project: Project, name: String): ParadoxLocalisationScriptedVariableReference {
         return createPropertyValue(project, "$@$name$")
             .findChild<ParadoxLocalisationPropertyReference>()!!
-            .findChild()!!
-    }
-    
-    @JvmStatic
-    fun createIcon(project: Project, name: String): ParadoxLocalisationIcon {
-        return createPropertyValue(project, "£$name£")
-            .findChild()!!
-    }
-    
-    @JvmStatic
-    fun createColorfulText(project: Project, name: String, value: String = ""): ParadoxLocalisationColorfulText {
-        return createPropertyValue(project, "§$name$value§!")
             .findChild()!!
     }
     
@@ -83,6 +65,24 @@ object ParadoxLocalisationElementFactory {
     fun createConceptName(project: Project, name: String): ParadoxLocalisationConceptName {
         return createPropertyValue(project, "['$name']")
             .findChild<ParadoxLocalisationCommand>()!!
+            .findChild()!!
+    }
+    
+    @JvmStatic
+    fun createIcon(project: Project, name: String): ParadoxLocalisationIcon {
+        return createPropertyValue(project, "£$name£")
+            .findChild()!!
+    }
+    
+    @JvmStatic
+    fun createColorfulText(project: Project, name: String, value: String = ""): ParadoxLocalisationColorfulText {
+        return createPropertyValue(project, "§$name$value§!")
+            .findChild()!!
+    }
+    
+    @JvmStatic
+    fun createPlainText(project: Project, text: String): ParadoxLocalisationPlainText {
+        return createPropertyValue(project, text)
             .findChild()!!
     }
 }

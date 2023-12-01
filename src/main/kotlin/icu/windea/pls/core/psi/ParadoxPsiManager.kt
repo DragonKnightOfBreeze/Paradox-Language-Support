@@ -35,7 +35,7 @@ object ParadoxPsiManager {
             language == ParadoxLocalisationLanguage -> {
                 //这里会把newText识别为一个字符串，但是实际上newText可以是任何文本，目前不进行额外的处理
                 newText = newText.unquote() //内联到本地化文本中时，需要先尝试去除周围的双引号
-                val newRef = ParadoxLocalisationElementFactory.createString(project, newText)
+                val newRef = ParadoxLocalisationElementFactory.createPlainText(project, newText)
                 //element.parent should be something like "$@var$"  
                 element.parent.replace(newRef)
             }
