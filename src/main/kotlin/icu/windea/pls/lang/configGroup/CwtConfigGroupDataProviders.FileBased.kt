@@ -56,6 +56,9 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         when(filePath) {
             "folding_settings.pls.cwt" -> resolveFoldingSettingsInFile(fileConfig, configGroup)
             "postfix_template_settings.pls.cwt" -> resolvePostfixTemplateSettingsInFile(fileConfig, configGroup)
+            "system_links.pls.cwt" -> resolveSystemLinks(fileConfig, configGroup)
+            "localisation_locales.pls.cwt" -> resolveLocalisationLocalesInFile(fileConfig, configGroup)
+            "localisation_predefined_parameters.pls.cwt" -> resolveLocalisationPredefinedParametersInFile(fileConfig, configGroup)
         }
     }
     
@@ -117,20 +120,6 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
     }
     
-    private fun doProcessFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
-        when(fileConfig.key) {
-            //解析系统作用域规则
-            "system_links" -> resolveSystemLinks(fileConfig, configGroup)
-            //解析本地化语言区域规则
-            "localisation_locales" -> resolveLocalisationLocalesInFile(fileConfig, configGroup)
-            //解析本地化预定义参数规则
-            "localisation_predefined_parameters" -> resolveLocalisationPredefinedParametersInFile(fileConfig, configGroup)
-            //解析要将其中的文件识别为脚本文件的目录列表 - 仅作记录，插件目前并不基于这个来将文件识别为脚本文件
-            "folders" -> resolveFoldersInFile(fileConfig, configGroup)
-            else -> resolveOthersInFile(fileConfig, configGroup)
-        }
-    }
-    
     private fun resolveSystemLinks(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         val configs = fileConfig.properties.find { it.key == "system_links" }?.properties ?: return
         configs.forEach { property ->
@@ -166,12 +155,20 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
     }
     
+    private fun doProcessFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
+        when(fileConfig.key) {
+            //解析要将其中的文件识别为脚本文件的目录列表 - 仅作记录，插件目前并不这个目录列表来判断是否要将文件识别为脚本文件
+            "folders" -> resolveFoldersInFile(fileConfig, configGroup)
+            //对于其他情况，不限制文件名，统一处理
+            else -> resolveOthersInFile(fileConfig, configGroup)
+        }
+    }
+    
     private fun resolveFoldersInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         fileConfig.values.mapTo(configGroup.folders.asMutable()) { it.value }
     }
     
     private fun resolveOthersInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
-        val fileKey = fileConfig.key
         for(property in fileConfig.properties) {
             val key = property.key
             when {
@@ -215,8 +212,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         }
                     }
                 }
-                //找到配置文件中的顶级的key为"links"的属性，然后解析它的子属性，添加到links中
-                fileKey == "links" && key == "links" -> {
+                key == "links" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
                         val linkName = prop.key
@@ -242,8 +238,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         }
                     }
                 }
-                //找到配置文件中的顶级的key为"localisation_links"的属性，然后解析它的子属性，添加到localisationLinks中
-                fileKey == "localisation" && key == "localisation_links" -> {
+                key == "localisation_links" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
                         val linkName = prop.key
@@ -251,8 +246,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.localisationLinks.asMutable()[linkName] = linkConfig
                     }
                 }
-                //找到配置文件中的顶级的key为"localisation_commands"的属性，然后解析它的子属性，添加到localisationCommands中
-                fileKey == "localisation" && key == "localisation_commands" -> {
+                key == "localisation_commands" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
                         val commandName = prop.key
@@ -260,8 +254,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.localisationCommands.asMutable()[commandName] = commandConfig
                     }
                 }
-                //找到配置文件中的顶级的key为"modifier_categories"的属性，然后解析它的子属性，添加到modifierCategories中
-                fileKey == "modifier_categories" && key == "modifier_categories" -> {
+                key == "modifier_categories" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
                         val modifierCategoryName = prop.key
@@ -269,8 +262,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.modifierCategories.asMutable()[modifierCategoryName] = categoryConfig
                     }
                 }
-                //找到配置文件中的顶级的key为"modifiers"的属性，然后解析它的子属性，添加到modifiers中
-                fileKey == "modifiers" && key == "modifiers" -> {
+                key == "modifiers" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
                         val modifierName = prop.key
@@ -284,8 +276,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         }
                     }
                 }
-                //找到配置文件中的顶级的key为"scopes"的属性，然后解析它的子属性，添加到scopes中
-                fileKey == "scopes" && key == "scopes" -> {
+                key == "scopes" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
                         val scopeName = prop.key
@@ -296,8 +287,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         }
                     }
                 }
-                //找到配置文件中的顶级的key为"scope_groups"的属性，然后解析它的子属性，添加到scopeGroups中
-                fileKey == "scopes" && key == "scope_groups" -> {
+                key == "scope_groups" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
                         val scopeGroupName = prop.key
@@ -305,7 +295,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.scopeGroups.asMutable()[scopeGroupName] = scopeGroupConfig
                     }
                 }
-                fileKey == "game_rules" && key == "game_rules" -> {
+                key == "game_rules" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
                         val onActionName = prop.key
@@ -313,7 +303,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.gameRules.asMutable()[onActionName] = onActionConfig
                     }
                 }
-                fileKey == "on_actions" && key == "on_actions" -> {
+                key == "on_actions" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
                         val onActionName = prop.key
@@ -322,7 +312,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     }
                 }
                 else -> {
-                    //判断配置文件中的顶级的key是否匹配"single_alias[?]"，如果匹配，则解析配置并添加到single_aliases中
+                    //判断配置文件中的顶级的key是否匹配"single_alias[?]"，如果匹配，则解析配置并添加到singleAliases中
                     val singleAliasName = key.removeSurroundingOrNull("single_alias[", "]")
                     if(singleAliasName != null) {
                         val singleAliasConfig = resolveSingleAliasConfig(property, singleAliasName)
@@ -330,7 +320,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         continue
                     }
                     
-                    //判断配置文件中的顶级的key是否匹配"alias[?:?]"，如果匹配，则解析配置并添加到aliases中
+                    //判断配置文件中的顶级的key是否匹配"alias[?:?]"，如果匹配，则解析配置并添加到aliasGroups中
                     val aliasTokens = key.removeSurroundingOrNull("alias[", "]")?.split(':', limit = 2)?.takeIf { it.size == 2 }
                     if(aliasTokens != null) {
                         val (aliasName, aliasSubName) = aliasTokens
@@ -347,6 +337,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         continue
                     }
                     
+                    //判断配置文件中的顶级的key是否匹配"inline[?]"，如果匹配，则解析配置并添加到inlineConfigGroup中
                     val inlineConfigName = key.removeSurroundingOrNull("inline[", "]")
                     if(inlineConfigName != null) {
                         val inlineConfig = resolveInlineConfig(property, inlineConfigName)
@@ -355,7 +346,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         continue
                     }
                     
-                    //其他情况，放到definition中
+                    //其他情况，放到declarations中
                     val declarationConfig = resolveDeclarationConfig(property, key)
                     configGroup.declarations.asMutable()[key] = declarationConfig
                 }
