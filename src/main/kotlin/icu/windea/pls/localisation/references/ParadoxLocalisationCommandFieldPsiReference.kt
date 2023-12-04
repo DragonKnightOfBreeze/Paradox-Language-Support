@@ -66,7 +66,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(scriptedLoc != null) return scriptedLoc
 		
 		//尝试识别为预定义的value[variable] （忽略大小写）
-		val predefinedVariable = configGroup.values.get("variable")?.valueConfigMap?.get(name)
+		val predefinedVariable = configGroup.dynamicValues.get("variable")?.valueConfigMap?.get(name)
 		if(predefinedVariable != null) return predefinedVariable.pointer.element
 		
 		//尝试识别为value[variable]
@@ -89,7 +89,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(scriptedLocs.isNotEmpty()) return scriptedLocs.mapToArray { PsiElementResolveResult(it) }
 		
 		//尝试识别为预定义的value[variable] （忽略大小写）
-		val predefinedVariable = configGroup.values.get("variable")?.valueConfigMap?.get(name)
+		val predefinedVariable = configGroup.dynamicValues.get("variable")?.valueConfigMap?.get(name)
 		if(predefinedVariable != null) return predefinedVariable.pointer.element?.let { arrayOf(PsiElementResolveResult(it)) } ?: ResolveResult.EMPTY_ARRAY
 		
 		//尝试识别为value[variable]
@@ -112,7 +112,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(scriptedLoc != null) return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY //definition reference
 		
 		//尝试识别为预定义的value[variable] （忽略大小写）
-		val predefinedVariable = configGroup.values.get("variable")?.valueConfigMap?.get(name)
+		val predefinedVariable = configGroup.dynamicValues.get("variable")?.valueConfigMap?.get(name)
 		if(predefinedVariable != null) return ParadoxScriptAttributesKeys.VARIABLE_KEY
 		
 		//尝试识别为value[variable]

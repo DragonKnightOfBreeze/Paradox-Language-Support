@@ -184,7 +184,7 @@ object CwtTemplateExpressionHandler {
             CwtDataTypes.Value -> {
                 val valueSetName = snippetExpression.value ?: return
                 ProgressManager.checkCanceled()
-                val valueConfig = configGroup.values[valueSetName] ?: return
+                val valueConfig = configGroup.dynamicValues[valueSetName] ?: return
                 val valueSetValueConfigs = valueConfig.valueConfigMap.values
                 if(valueSetValueConfigs.isEmpty()) return
                 for(valueSetValueConfig in valueSetValueConfigs) {

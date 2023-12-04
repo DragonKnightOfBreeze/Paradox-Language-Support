@@ -252,7 +252,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             val valueSetName = reference.name
                             val valueName = configExpression.value!!
                             append(PlsBundle.message("generatedFromValueSetValue"))
-                            if(configGroup.values.containsKey(valueName)) {
+                            if(configGroup.dynamicValues.containsKey(valueName)) {
                                 appendCwtLink("${gameType.linkToken}values/${valueSetName}/${valueName}", valueName, modifierElement)
                                 append(": ")
                                 appendCwtLink("${gameType.linkToken}values/${valueSetName}", valueName, modifierElement)

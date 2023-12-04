@@ -54,7 +54,7 @@ class ParadoxLocalisationCommandScopePsiReference(
         
         if(prefix == null || prefix == ParadoxValueSetValueHandler.EVENT_TARGET_PREFIX) {
             //尝试识别为预定义的value[event_target] （忽略大小写）
-            val predefinedEventTarget = configGroup.values.get("event_target")?.valueConfigMap?.get(name)
+            val predefinedEventTarget = configGroup.dynamicValues.get("event_target")?.valueConfigMap?.get(name)
             if(predefinedEventTarget != null) return predefinedEventTarget.pointer.element
             
             //尝试识别为value[event_target]或value[global_event_target]
@@ -81,7 +81,7 @@ class ParadoxLocalisationCommandScopePsiReference(
         
         if(prefix == null || prefix == ParadoxValueSetValueHandler.EVENT_TARGET_PREFIX) {
             //尝试识别为预定义的value[event_target] （忽略大小写）
-            val predefinedEventTarget = configGroup.values.get("event_target")?.valueConfigMap?.get(name)
+            val predefinedEventTarget = configGroup.dynamicValues.get("event_target")?.valueConfigMap?.get(name)
             if(predefinedEventTarget != null) return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
             
             //尝试识别为value[event_target]或value[global_event_target]

@@ -31,7 +31,7 @@ class BaseCwtDataExpressionPriorityProvider: CwtDataExpressionPriorityProvider {
             }
             CwtDataTypes.Value, CwtDataTypes.ValueOrValueSet -> {
                 val valueSetName = expression.value ?: return 0.0 //unexpected
-                if(configGroup.values.containsKey(valueSetName)) return 80.0
+                if(configGroup.dynamicValues.containsKey(valueSetName)) return 80.0
                 return 40.0 //unexpected
             }
             CwtDataTypes.ValueSet -> 40.0

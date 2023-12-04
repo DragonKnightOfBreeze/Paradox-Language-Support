@@ -35,9 +35,8 @@ class ParadoxGameRuleScopeContextProvider : ParadoxDefinitionScopeContextProvide
     }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
-        //直接使用来自game_rules.cwt的作用域信息
         val configGroup = definitionInfo.configGroup
-        val config = configGroup.gameRules.get(definitionInfo.name)
+        val config = configGroup.gameRules.getByTemplate(definitionInfo.name, definition, configGroup)
         val result = config?.config?.scopeContext
         return result
     }
@@ -49,7 +48,6 @@ class ParadoxOnActionScopeContextProvider : ParadoxDefinitionScopeContextProvide
     }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
-        //直接使用来自game_rules.cwt的作用域信息
         val configGroup = definitionInfo.configGroup
         val config = configGroup.onActions.getByTemplate(definitionInfo.name, definition, configGroup)
         val result = config?.config?.scopeContext

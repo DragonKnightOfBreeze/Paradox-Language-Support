@@ -157,7 +157,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             var appendSeparator = false
             for(valueSetName in valueSetNames) {
                 if(appendSeparator) append(" | ") else appendSeparator = true
-                val valueConfig = configGroup.values[valueSetName]
+                val valueConfig = configGroup.dynamicValues[valueSetName]
                 if(valueConfig != null) {
                     val typeLink = "${gameType.linkToken}values/${valueSetName}"
                     appendCwtLink(typeLink, valueSetName)

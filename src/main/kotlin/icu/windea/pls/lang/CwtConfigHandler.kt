@@ -1339,7 +1339,7 @@ object CwtConfigHandler {
         val config = context.config
         
         val tailText = getScriptExpressionTailText(config)
-        val valueConfig = configGroup.values[valueSetName] ?: return
+        val valueConfig = configGroup.dynamicValues[valueSetName] ?: return
         val valueSetValueConfigs = valueConfig.valueConfigMap.values
         if(valueSetValueConfigs.isEmpty()) return
         for(valueSetValueConfig in valueSetValueConfigs) {
@@ -1648,7 +1648,7 @@ object CwtConfigHandler {
         
         if(configExpression.type == CwtDataTypes.Constant) return true
         if(configExpression.type == CwtDataTypes.EnumValue && configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.text) } == true) return true
-        if(configExpression.type == CwtDataTypes.Value && configExpression.value?.let { configGroup.values[it]?.values?.contains(expression.text) } == true) return true
+        if(configExpression.type == CwtDataTypes.Value && configExpression.value?.let { configGroup.dynamicValues[it]?.values?.contains(expression.text) } == true) return true
         return false
     }
     

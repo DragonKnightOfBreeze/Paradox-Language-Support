@@ -18,8 +18,8 @@ class ParadoxBaseDefinitionExtendedDocumentationProvider : ParadoxDefinitionExte
 
 class ParadoxGameRuleExtendedDocumentationProvider : ParadoxDefinitionExtendedDocumentationProvider {
     override fun getDocumentation(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String? {
-        //如果是game_rule，尝试从game_rules.cwt中得到对应的文档文本
         if(definitionInfo.type != "game_rule") return null
+        if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
         val config = definitionInfo.configGroup.gameRules.get(definitionInfo.name)
         val documentation = config?.config?.documentation?.orNull()
         return documentation
@@ -28,8 +28,8 @@ class ParadoxGameRuleExtendedDocumentationProvider : ParadoxDefinitionExtendedDo
 
 class ParadoxOnActionExtendedDocumentationProvider : ParadoxDefinitionExtendedDocumentationProvider {
     override fun getDocumentation(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String? {
-        //如果是on_action，尝试从on_actions.cwt中得到对应的文档文本
         if(definitionInfo.type != "on_action") return null
+        if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
         val config = definitionInfo.configGroup.onActions.getByTemplate(definitionInfo.name, definition, definitionInfo.configGroup)
         val documentation = config?.config?.documentation?.orNull()
         return documentation

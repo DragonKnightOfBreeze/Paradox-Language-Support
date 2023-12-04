@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.configGroup
 
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -183,18 +182,6 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         }
                     }
                 }
-                //找到配置文件中的顶级的key为"values"的属性，然后解析它的子属性，添加到values中
-                key == "values" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        //TODO valueName may be a template expression (e.g. xxx_<xxx>)
-                        val valueName = prop.key.removeSurroundingOrNull("value[", "]")
-                        if(!valueName.isNullOrEmpty()) {
-                            val valueConfig = resolveEnumConfig(prop, valueName) ?: continue
-                            configGroup.values.asMutable()[valueName] = valueConfig
-                        }
-                    }
-                }
                 //找到配置文件中的顶级的key为"enums"的属性，然后解析它的子属性，添加到enums和complexEnums中
                 key == "enums" -> {
                     val props = property.properties ?: continue
@@ -295,12 +282,20 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.scopeGroups.asMutable()[scopeGroupName] = scopeGroupConfig
                     }
                 }
+                key == "definitions" -> {
+                    val props = property.properties ?: continue
+                    for(prop in props) {
+                        val definitionName = prop.key
+                        val definitionConfig = resolveDefinitionConfig(prop, definitionName) ?: continue
+                        configGroup.definitions.asMutable()[definitionName] = definitionConfig
+                    }
+                }
                 key == "game_rules" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
-                        val onActionName = prop.key
-                        val onActionConfig = resolveGameRuleConfig(prop, onActionName)
-                        configGroup.gameRules.asMutable()[onActionName] = onActionConfig
+                        val gameRuleName = prop.key
+                        val gameRuleConfig = resolveGameRuleConfig(prop, gameRuleName)
+                        configGroup.gameRules.asMutable()[gameRuleName] = gameRuleConfig
                     }
                 }
                 key == "on_actions" -> {
@@ -309,6 +304,17 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         val onActionName = prop.key
                         val onActionConfig = resolveOnActionConfig(prop, onActionName) ?: continue
                         configGroup.onActions.asMutable()[onActionName] = onActionConfig
+                    }
+                }
+                key == "values" -> {
+                    val props = property.properties ?: continue
+                    for(prop in props) {
+                        //TODO valueName may be a template expression (e.g. xxx_<xxx>)
+                        val dynamicValueName = prop.key.removeSurroundingOrNull("value[", "]")
+                        if(!dynamicValueName.isNullOrEmpty()) {
+                            val valueConfig = resolveDynamicValueConfig(prop, dynamicValueName) ?: continue
+                            configGroup.dynamicValues.asMutable()[dynamicValueName] = valueConfig
+                        }
                     }
                 }
                 else -> {
@@ -713,6 +719,13 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         return CwtScopeGroupConfig(pointer, info, name, values, valueConfigMap)
     }
     
+    private fun resolveDefinitionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDefinitionConfig? {
+        val pointer = propertyConfig.pointer
+        val info = propertyConfig.info
+        val type = propertyConfig.findOption("type")?.stringValue ?: return null
+        return CwtDefinitionConfig(pointer, info, propertyConfig, name, type)
+    }
+    
     private fun resolveGameRuleConfig(propertyConfig: CwtPropertyConfig, name: String): CwtGameRuleConfig {
         val pointer = propertyConfig.pointer
         val info = propertyConfig.info
@@ -724,6 +737,22 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         val info = propertyConfig.info
         val eventType = propertyConfig.findOption("event_type")?.stringValue ?: return null
         return CwtOnActionConfig(pointer, info, propertyConfig, name, eventType)
+    }
+    
+    private fun resolveDynamicValueConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDynamicValueConfig? {
+        val pointer = propertyConfig.pointer
+        val info = propertyConfig.info
+        val propertyConfigValues = propertyConfig.values ?: return null
+        if(propertyConfigValues.isEmpty()) {
+            return CwtDynamicValueConfig(pointer, info, name, emptySet(), emptyMap())
+        }
+        val values = caseInsensitiveStringSet() //忽略大小写
+        val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() //忽略大小写
+        for(propertyConfigValue in propertyConfigValues) {
+            values.add(propertyConfigValue.value)
+            valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)
+        }
+        return CwtDynamicValueConfig(pointer, info, name, values, valueConfigMap)
     }
     
     private fun resolveSingleAliasConfig(propertyConfig: CwtPropertyConfig, name: String): CwtSingleAliasConfig {

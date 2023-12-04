@@ -55,8 +55,6 @@ val CwtConfigGroup.type2ModifiersMap: Map<String, Map<String, CwtModifierConfig>
 val CwtConfigGroup.declarations: Map<String, CwtDeclarationConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
-val CwtConfigGroup.values: Map<String, CwtEnumConfig>
-    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 //enumValue可以是int、float、bool类型，统一用字符串表示
 val CwtConfigGroup.enums: Map<String, CwtEnumConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
@@ -100,18 +98,24 @@ val CwtConfigGroup.aliasGroups: Map<String, Map<String, List<CwtAliasConfig>>>
 val CwtConfigGroup.inlineConfigGroup: Map<String, List<CwtInlineConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
-// key: scalar
+val CwtConfigGroup.modifierCategories: Map<String, CwtModifierCategoryConfig>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
+//key: scalar / template_expression
+val CwtConfigGroup.modifiers: Map<@CaseInsensitive String, CwtModifierConfig>
+    by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
+
+//key: scalar / template_expression
+val CwtConfigGroup.definitions: Map<String, CwtDefinitionConfig>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
+//key: scalar / template_expression
 val CwtConfigGroup.gameRules: Map<String, CwtGameRuleConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-// key: scalar / template_expression
+//key: scalar / template_expression
 val CwtConfigGroup.onActions: Map<String, CwtOnActionConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
-val CwtConfigGroup.modifierCategories: Map<String, CwtModifierCategoryConfig>
+val CwtConfigGroup.dynamicValues: Map<String, CwtDynamicValueConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-// key: scalar / template_expression
-val CwtConfigGroup.modifiers: Map<@CaseInsensitive String, CwtModifierConfig>
-    by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
 @Tags(Tag.Computed)
 val CwtConfigGroup.predefinedModifiers: Map<@CaseInsensitive String, CwtModifierConfig>

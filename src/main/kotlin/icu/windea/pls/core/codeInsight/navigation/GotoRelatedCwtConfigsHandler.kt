@@ -44,7 +44,7 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
                             configGroup.declarations.get(name)?.pointer?.element?.let { add(it) }
                             when {
                                 name == "game_rule" -> {
-                                    configGroup.gameRules.get(name)?.pointer?.element?.let { add(it) }
+                                    configGroup.gameRules.getByTemplate(name, location, configGroup)?.pointer?.element?.let { add(it) }
                                 }
                                 name == "on_action" -> {
                                     configGroup.onActions.getByTemplate(name, location, configGroup)?.pointer?.element?.let { add(it) }
@@ -66,7 +66,7 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
                             configGroup.complexEnums[name]?.pointer?.element?.let { add(it) }
                         }
                         configExpression.type.isValueSetValueType() -> {
-                            configGroup.values[name]?.pointer?.element?.let { add(it) }
+                            configGroup.dynamicValues[name]?.pointer?.element?.let { add(it) }
                         }
                         configExpression.type == CwtDataTypes.Modifier -> {
                             val modifierElement = ParadoxModifierHandler.resolveModifier(name, location, configGroup)
