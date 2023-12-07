@@ -1,5 +1,6 @@
 package icu.windea.pls.script.highlighter
 
+import com.intellij.lexer.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
@@ -35,6 +36,8 @@ class ParadoxScriptSyntaxHighlighter(
         private val INVALID_ESCAPE_KEYS = arrayOf(ParadoxScriptAttributesKeys.INVALID_ESCAPE_KEY)
         private val BAD_CHARACTER_KEYS = arrayOf(ParadoxScriptAttributesKeys.BAD_CHARACTER_KEY)
         private val EMPTY_KEYS = TextAttributesKey.EMPTY_ARRAY
+        
+        private const val addtionalValidEscapes = "$"
     }
     
     override fun getTokenHighlights(tokenType: IElementType?) = when(tokenType) {
@@ -64,5 +67,10 @@ class ParadoxScriptSyntaxHighlighter(
         else -> EMPTY_KEYS
     }
     
-    override fun getHighlightingLexer() = ParadoxScriptLexer()
+    override fun getHighlightingLexer(): Lexer {
+        val lexer = LayeredLexer(ParadoxScriptLexer())
+        lexer.registerSelfStoppingLayer(StringLiteralLexer('"', PROPERTY_KEY_TOKEN, false, addtionalValidEscapes, false, false), arrayOf(PROPERTY_KEY_TOKEN), emptyArray())
+        lexer.registerSelfStoppingLayer(StringLiteralLexer('"', STRING_TOKEN, false, addtionalValidEscapes, false, false), arrayOf(STRING_TOKEN), emptyArray())
+        return lexer
+    }
 }

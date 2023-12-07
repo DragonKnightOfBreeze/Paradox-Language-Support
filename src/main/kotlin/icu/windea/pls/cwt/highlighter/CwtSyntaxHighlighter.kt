@@ -1,5 +1,6 @@
 package icu.windea.pls.cwt.highlighter
 
+import com.intellij.lexer.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.psi.StringEscapesTokenTypes.*
@@ -24,6 +25,8 @@ class CwtSyntaxHighlighter : SyntaxHighlighter {
         private val INVALID_ESCAPE_KEYS = arrayOf(CwtAttributesKeys.INVALID_ESCAPE_KEY)
         private val BAD_CHARACTER_KEYS = arrayOf(CwtAttributesKeys.BAD_CHARACTER_KEY)
         private val EMPTY_KEYS = TextAttributesKey.EMPTY_ARRAY
+        
+        private const val addtionalValidEscapes = "$"
     }
     
     override fun getTokenHighlights(tokenType: IElementType?) = when(tokenType) {
@@ -43,5 +46,10 @@ class CwtSyntaxHighlighter : SyntaxHighlighter {
         else -> EMPTY_KEYS
     }
     
-    override fun getHighlightingLexer() = CwtLexer()
+    override fun getHighlightingLexer(): Lexer {
+        val lexer = LayeredLexer(CwtLexer())
+        lexer.registerSelfStoppingLayer(StringLiteralLexer('"', PROPERTY_KEY_TOKEN, false, addtionalValidEscapes, false, false), arrayOf(PROPERTY_KEY_TOKEN), emptyArray())
+        lexer.registerSelfStoppingLayer(StringLiteralLexer('"', STRING_TOKEN, false, addtionalValidEscapes, false, false), arrayOf(STRING_TOKEN), emptyArray())
+        return lexer
+    }
 }
