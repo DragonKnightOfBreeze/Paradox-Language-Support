@@ -12,9 +12,7 @@ class ParadoxScopeContext private constructor(
     @Volatile var root: ParadoxScopeContext? = null
     @Volatile var prev: ParadoxScopeContext? = null
     @Volatile var from: ParadoxScopeContext? = null
-    
-    //scope context before scope switch
-    @Volatile var parent: ParadoxScopeContext? = null
+    @Volatile var parent: ParadoxScopeContext? = null //scope context before scope switch
     
     val map by lazy {
         buildMap {
@@ -144,21 +142,11 @@ class ParadoxScopeContext private constructor(
             }
             return result
         }
-        
-        fun resolve(scope: ParadoxScope, root: ParadoxScopeContext?, prev: ParadoxScopeContext?, from: ParadoxScopeContext?): ParadoxScopeContext {
-            val result = ParadoxScopeContext(scope)
-            result.root = root
-            result.prev = prev
-            result.from = from
-            return result
-        }
     }
     
-    object Keys: KeyHolder
+    object Keys: KeyRegistry("ParadoxScopeContext")
 }
 
-val ParadoxScopeContext.Keys.overriddenProvider by createKey<ParadoxOverriddenScopeContextProvider>("paradox.scopeContext.overriddenProvider")
-val ParadoxScopeContext.Keys.scopeFieldInfo by createKey<List<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>>("paradox.scopeContext.scopeFieldInfo")
-
-var ParadoxScopeContext.overriddenProvider by ParadoxScopeContext.Keys.overriddenProvider
-var ParadoxScopeContext.scopeFieldInfo by ParadoxScopeContext.Keys.scopeFieldInfo //scope context list of scope field expression nodes
+var ParadoxScopeContext.overriddenProvider: ParadoxOverriddenScopeContextProvider? by createKeyDelegate(ParadoxScopeContext.Keys)
+//scope context list of scope field expression nodes
+var ParadoxScopeContext.scopeFieldInfo: List<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>? by createKeyDelegate(ParadoxScopeContext.Keys) 
