@@ -2,7 +2,7 @@ package icu.windea.pls.lang
 
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
+import icu.windea.pls.util.image.*
 
 object ParadoxSpriteHandler {
     fun getFrameInfo(sprite: ParadoxScriptDefinitionElement): FrameInfo? {

@@ -8,7 +8,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
-import icu.windea.pls.tool.*
+import icu.windea.pls.util.image.*
 
 //org.intellij.images.fileTypes.ImageDocumentationProvider
 

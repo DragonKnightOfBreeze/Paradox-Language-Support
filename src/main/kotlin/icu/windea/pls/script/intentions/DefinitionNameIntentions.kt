@@ -10,11 +10,11 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 abstract class DefinitionNameIntention : IntentionAction, PriorityAction, Iconable {
 	override fun getIcon(flags: Int) = null
@@ -41,7 +41,7 @@ abstract class DefinitionNameIntention : IntentionAction, PriorityAction, Iconab
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptString? {
-		return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
+		return ParadoxPsiManager.findScriptExpression(file, offset).castOrNull()
 	}
 	
 	abstract fun doInvoke(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project)

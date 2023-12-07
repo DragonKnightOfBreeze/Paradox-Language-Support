@@ -9,10 +9,10 @@ import com.intellij.pom.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 import java.util.*
 
 @Suppress("DialogTitleCapitalization")
@@ -42,7 +42,7 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
     }
     
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
-        return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
+        return ParadoxPsiManager.findScriptExpression(file, offset).castOrNull()
     }
     
     override fun shouldSortTargets(): Boolean {

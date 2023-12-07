@@ -57,9 +57,9 @@ class ParadoxLocalisationPropertyCodeInjector : CodeInjectorBase()
 @InjectCachedMethods(methods = ["getText"], cleanupMethod = "subtreeChanged")
 class ParadoxLocalisationPropertyKeyCodeInjector : CodeInjectorBase()
 
-@InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPlainTextImpl", pluginId = "icu.windea.pls")
+@InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStringImpl", pluginId = "icu.windea.pls")
 @InjectCachedMethods(methods = ["getText"], cleanupMethod = "subtreeChanged")
-class ParadoxLocalisationPlainTextCodeInjector : CodeInjectorBase()
+class ParadoxLocalisationStringCodeInjector : CodeInjectorBase()
 
 @InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyReferenceImpl", pluginId = "icu.windea.pls")
 @InjectCachedMethods(methods = ["getText", "getName"], cleanupMethod = "subtreeChanged")

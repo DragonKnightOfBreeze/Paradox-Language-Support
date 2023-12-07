@@ -9,8 +9,8 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 /**
  * 导航到当前定义的包括自身在内的相同名称且相同主要类型的定义。
@@ -52,7 +52,7 @@ class GotoDefinitionsAction : BaseCodeInsightAction() {
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
-		return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
+		return ParadoxPsiManager.findScriptExpression(file, offset).castOrNull()
 	}
 }
 

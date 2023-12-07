@@ -10,7 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationReferenceHintsProvider.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.tool.localisation.*
+import icu.windea.pls.util.localisation.*
 import javax.swing.*
 
 /**

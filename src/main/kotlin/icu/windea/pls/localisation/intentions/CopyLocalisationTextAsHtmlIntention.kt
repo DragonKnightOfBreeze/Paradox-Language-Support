@@ -7,9 +7,9 @@ import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.tool.localisation.*
+import icu.windea.pls.util.*
+import icu.windea.pls.util.localisation.*
 import java.awt.datatransfer.*
 
 /**
@@ -36,9 +36,9 @@ class CopyLocalisationTextAsHtmlIntention : IntentionAction {
     }
     
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        val allOptions = ParadoxPsiFinder.FindLocalisationOptions
+        val allOptions = ParadoxPsiManager.FindLocalisationOptions
         val options = allOptions.DEFAULT or allOptions.BY_REFERENCE
-        return ParadoxPsiFinder.findLocalisation(file, offset, options)
+        return ParadoxPsiManager.findLocalisation(file, offset, options)
     }
     
     override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY

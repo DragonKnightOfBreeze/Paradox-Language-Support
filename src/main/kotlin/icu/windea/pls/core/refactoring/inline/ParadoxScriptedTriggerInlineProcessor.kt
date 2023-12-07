@@ -17,8 +17,8 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 class ParadoxScriptedTriggerInlineProcessor(
     project: Project,

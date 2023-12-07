@@ -10,10 +10,10 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 /**
  * 生成当前定义的所有（缺失的）本地化。
@@ -66,7 +66,7 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
     }
     
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
-        return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
+        return ParadoxPsiManager.findScriptExpression(file, offset).castOrNull()
     }
     
     override fun createEditTemplateAction(dataContext: DataContext?): AnAction? {

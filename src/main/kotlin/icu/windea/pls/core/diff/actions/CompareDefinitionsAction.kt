@@ -23,12 +23,12 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.diff.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 import java.awt.*
 import java.util.*
 import javax.swing.*
@@ -54,7 +54,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     }
     
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptDefinitionElement? {
-        return ParadoxPsiFinder.findDefinition(file, offset)
+        return ParadoxPsiManager.findDefinition(file, offset)
     }
     
     private fun findFastElement(e: AnActionEvent): ParadoxScriptDefinitionElement? {

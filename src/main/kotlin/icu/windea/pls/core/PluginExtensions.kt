@@ -27,6 +27,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 import java.lang.Integer.*
 
 //region Stdlib Extensions

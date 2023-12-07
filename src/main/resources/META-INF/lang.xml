@@ -33,8 +33,8 @@
     <extensionPoint qualifiedName="icu.windea.pls.overriddenScopeContextProvider" interface="icu.windea.pls.lang.scope.ParadoxOverriddenScopeContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionPresentationProvider" interface="icu.windea.pls.lang.presentation.ParadoxDefinitionPresentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.priorityProvider" interface="icu.windea.pls.lang.priority.ParadoxPriorityProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.modImporter" interface="icu.windea.pls.core.tool.importer.ParadoxModImporter" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.core.tool.exporter.ParadoxModExporter" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.modImporter" interface="icu.windea.pls.core.tools.importer.ParadoxModImporter" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.core.tools.exporter.ParadoxModExporter" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
@@ -205,13 +205,13 @@
     <priorityProvider implementation="icu.windea.pls.lang.priority.ParadoxBasePriorityProvider" order="last"/>
     <priorityProvider implementation="icu.windea.pls.lang.priority.StellarisPriorityProvider"/>
     
-    <modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromGameImporter"/>
-    <!--<modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherImporter"/>-->
-    <!--<modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherBetaImporter"/>-->
-    <modImporter implementation="icu.windea.pls.core.tool.importer.ParadoxFromLauncherJsonV3Importer"/>
+    <modImporter implementation="icu.windea.pls.core.tools.importer.ParadoxFromGameImporter"/>
+    <!--<modImporter implementation="icu.windea.pls.core.tools.importer.ParadoxFromLauncherImporter"/>-->
+    <!--<modImporter implementation="icu.windea.pls.core.tools.importer.ParadoxFromLauncherBetaImporter"/>-->
+    <modImporter implementation="icu.windea.pls.core.tools.importer.ParadoxFromLauncherJsonV3Importer"/>
 
-    <modExporter implementation="icu.windea.pls.core.tool.exporter.ParadoxToLauncherJsonV2Exporter"/>
-    <modExporter implementation="icu.windea.pls.core.tool.exporter.ParadoxToLauncherJsonV3Exporter"/>
+    <modExporter implementation="icu.windea.pls.core.tools.exporter.ParadoxToLauncherJsonV2Exporter"/>
+    <modExporter implementation="icu.windea.pls.core.tools.exporter.ParadoxToLauncherJsonV3Exporter"/>
   </extensions>
   
   <extensions defaultExtensionNs="com.intellij">

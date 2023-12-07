@@ -37,7 +37,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(COMMAND_FIELD, COMMAND_IDENTIFIER, COMMAND_SCOPE),
-    create_token_set_(COLORFUL_TEXT, COMMAND, ICON, PLAIN_TEXT,
+    create_token_set_(COLORFUL_TEXT, COMMAND, ICON, STRING,
       PROPERTY_REFERENCE, RICH_TEXT),
   };
 
@@ -307,14 +307,14 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PLAIN_TEXT_TOKEN
-  public static boolean plain_text(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "plain_text")) return false;
-    if (!nextTokenIs(b, PLAIN_TEXT_TOKEN)) return false;
+  // STRING_TOKEN
+  public static boolean string(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "string")) return false;
+    if (!nextTokenIs(b, STRING_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, PLAIN_TEXT_TOKEN);
-    exit_section_(b, m, PLAIN_TEXT, r);
+    r = consumeToken(b, STRING_TOKEN);
+    exit_section_(b, m, STRING, r);
     return r;
   }
 
@@ -546,7 +546,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // property_reference | icon | command | colorful_text | plain_text
+  // property_reference | icon | command | colorful_text | string
   public static boolean rich_text(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rich_text")) return false;
     boolean r;
@@ -555,7 +555,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     if (!r) r = icon(b, l + 1);
     if (!r) r = command(b, l + 1);
     if (!r) r = colorful_text(b, l + 1);
-    if (!r) r = plain_text(b, l + 1);
+    if (!r) r = string(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

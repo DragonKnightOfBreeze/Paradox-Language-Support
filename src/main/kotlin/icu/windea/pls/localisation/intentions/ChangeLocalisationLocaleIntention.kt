@@ -12,8 +12,8 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.util.*
 
 /**
  * 更改语言区域。
@@ -41,7 +41,7 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
     }
     
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationLocale? {
-        return ParadoxPsiFinder.findLocalisationLocale(file, offset, true)
+        return ParadoxPsiManager.findLocalisationLocale(file, offset, true)
     }
     
     override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY

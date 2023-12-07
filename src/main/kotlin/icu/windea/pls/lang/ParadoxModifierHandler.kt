@@ -24,7 +24,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.localisation.*
+import icu.windea.pls.util.localisation.*
 
 object ParadoxModifierHandler {
     //可通过运行游戏后输出的modifiers.log判断到底会生成哪些修正

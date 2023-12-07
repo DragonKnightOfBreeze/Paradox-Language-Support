@@ -5,10 +5,9 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.quickfix.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 /**
  * （对于脚本文件）检查是否存在不支持的递归。
@@ -35,7 +34,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 if(name.isNullOrEmpty()) return
                 
                 val recursions = mutableSetOf<PsiElement>()
-                ParadoxRecursionHandler.isRecursiveScriptedVariable(element, recursions)
+                ParadoxRecursionManager.isRecursiveScriptedVariable(element, recursions)
                 if(recursions.isEmpty()) return
                 val message = PlsBundle.message("inspection.script.bug.unsupportedRecursion.description.1")
                 val location = element.scriptedVariableName
@@ -51,7 +50,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 if(type != "scripted_trigger" && type != "scripted_effect") return
                 
                 val recursions = mutableSetOf<PsiElement>()
-                ParadoxRecursionHandler.isRecursiveDefinition(element, recursions) { _, re -> ParadoxPsiManager.isInvocationReference(element, re) }
+                ParadoxRecursionManager.isRecursiveDefinition(element, recursions) { _, re -> ParadoxPsiManager.isInvocationReference(element, re) }
                 if(recursions.isEmpty()) return
                 val message = when {
                     definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.bug.unsupportedRecursion.description.2.1")

@@ -801,7 +801,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 66: break;
           case 12:
-            { return PLAIN_TEXT_TOKEN;
+            { return STRING_TOKEN;
             }
           // fall through
           case 67: break;
@@ -822,7 +822,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
                 yybegin(nextStateForCommand());
                 return COMMAND_END;
             }
-            return PLAIN_TEXT_TOKEN;
+            return STRING_TOKEN;
             }
           // fall through
           case 70: break;
@@ -992,7 +992,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
                 return PROPERTY_REFERENCE_START;
             } else {
                 yybegin(nextStateForText());
-                return PLAIN_TEXT_TOKEN;
+                return STRING_TOKEN;
             }
             }
           // fall through
@@ -1008,7 +1008,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
                 return ICON_START;
             }else{
                 yybegin(nextStateForText());
-                return PLAIN_TEXT_TOKEN;
+                return STRING_TOKEN;
             }
             }
           // fall through
@@ -1025,7 +1025,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
                 return COLORFUL_TEXT_START;
             } else {
                 yybegin(nextStateForText());
-                return PLAIN_TEXT_TOKEN;
+                return STRING_TOKEN;
             }
             }
           // fall through

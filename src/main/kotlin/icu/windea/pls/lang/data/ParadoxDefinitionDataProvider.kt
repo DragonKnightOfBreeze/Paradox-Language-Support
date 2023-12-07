@@ -8,7 +8,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.script.*
+import icu.windea.pls.util.script.*
 
 /**
  * 用于获取定义数据。

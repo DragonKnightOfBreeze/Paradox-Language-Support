@@ -27,7 +27,8 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.script.*
+import icu.windea.pls.util.*
+import icu.windea.pls.util.script.*
 import java.nio.file.*
 import kotlin.io.path.*
 

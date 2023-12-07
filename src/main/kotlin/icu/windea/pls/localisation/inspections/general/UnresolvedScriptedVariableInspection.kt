@@ -15,6 +15,7 @@ import icu.windea.pls.core.refactoring.actions.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 /**
  * 无法解析的封装变量引用的检查。

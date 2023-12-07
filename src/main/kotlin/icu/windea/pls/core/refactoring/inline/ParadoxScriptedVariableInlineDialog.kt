@@ -7,12 +7,12 @@ import com.intellij.psi.search.*
 import com.intellij.refactoring.inline.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.refactoring.*
 import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 class ParadoxScriptedVariableInlineDialog(
     project: Project,

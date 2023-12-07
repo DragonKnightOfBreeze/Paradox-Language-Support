@@ -8,8 +8,8 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
-import icu.windea.pls.tool.localisation.*
+import icu.windea.pls.util.image.*
+import icu.windea.pls.util.localisation.*
 import java.awt.*
 import javax.swing.*
 

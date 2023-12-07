@@ -9,11 +9,11 @@ import com.intellij.pom.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.util.*
 import java.util.*
 
 @Suppress("DialogTitleCapitalization")
@@ -42,7 +42,7 @@ class GotoLocalisationsHandler: GotoTargetHandler() {
     }
     
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return ParadoxPsiFinder.findLocalisation(file, offset)
+        return ParadoxPsiManager.findLocalisation(file, offset)
     }
     
     override fun shouldSortTargets(): Boolean {

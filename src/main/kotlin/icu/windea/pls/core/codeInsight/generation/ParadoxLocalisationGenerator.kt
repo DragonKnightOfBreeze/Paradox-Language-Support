@@ -17,6 +17,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
+import icu.windea.pls.util.*
 
 object ParadoxLocalisationGenerator {
     val currentContext = ThreadLocal<ParadoxLocalisationCodeInsightContext>()

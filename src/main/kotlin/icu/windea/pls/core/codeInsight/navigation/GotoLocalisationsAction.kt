@@ -9,8 +9,8 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.util.*
 
 /**
  * 导航到当前本地化的包括自身在内的相同名称的本地化。
@@ -43,6 +43,6 @@ class GotoLocalisationsAction : BaseCodeInsightAction() {
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-		return ParadoxPsiFinder.findLocalisation(file, offset)
+		return ParadoxPsiManager.findLocalisation(file, offset)
 	}
 }

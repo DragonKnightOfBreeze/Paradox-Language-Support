@@ -17,6 +17,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.injection.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 //region Extensions
 

@@ -12,7 +12,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.localisation.*
+import icu.windea.pls.util.localisation.*
 import javax.swing.*
 
 /**

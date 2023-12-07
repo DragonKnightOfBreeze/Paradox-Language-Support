@@ -19,7 +19,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
-import icu.windea.pls.tool.localisation.*
+import icu.windea.pls.util.localisation.*
 
 /**
  * 用于处理定义。

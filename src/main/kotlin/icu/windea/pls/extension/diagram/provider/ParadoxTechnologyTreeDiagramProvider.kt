@@ -19,9 +19,9 @@ import icu.windea.pls.lang.presentation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
-import icu.windea.pls.tool.localisation.*
-import icu.windea.pls.tool.script.*
+import icu.windea.pls.util.image.*
+import icu.windea.pls.util.localisation.*
+import icu.windea.pls.util.script.*
 import java.util.concurrent.*
 import javax.swing.*
 

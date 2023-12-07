@@ -8,9 +8,9 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.inherit.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 /**
  * 从光标位置对应的定义跳转到其父定义。
@@ -18,9 +18,9 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptGotoSuperActionHandler: PresentableCodeInsightActionHandler {
     private fun findSuperDefinition(editor: Editor, file: PsiFile): ParadoxScriptDefinitionElement? {
         val offset = editor.caretModel.offset
-        val allOptions = ParadoxPsiFinder.FindDefinitionOptions
+        val allOptions = ParadoxPsiManager.FindDefinitionOptions
         val options = allOptions.BY_ROOT_KEY or allOptions.BY_NAME or allOptions.BY_REFERENCE
-        val definition = ParadoxPsiFinder.findDefinition(file, offset, options) ?: return null
+        val definition = ParadoxPsiManager.findDefinition(file, offset, options) ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val superDefinition = ParadoxDefinitionInheritSupport.getSuperDefinition(definition, definitionInfo) ?: return null
         return superDefinition

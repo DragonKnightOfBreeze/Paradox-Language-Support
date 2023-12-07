@@ -21,8 +21,8 @@ import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
-import icu.windea.pls.tool.localisation.*
+import icu.windea.pls.util.image.*
+import icu.windea.pls.util.localisation.*
 import java.util.*
 
 class CwtDocumentationProvider : AbstractDocumentationProvider() {

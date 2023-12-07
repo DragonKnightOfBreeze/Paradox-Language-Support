@@ -24,12 +24,12 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.diff.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.util.*
 import java.awt.*
 import java.util.*
 import javax.swing.*
@@ -55,7 +55,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
     }
     
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return ParadoxPsiFinder.findLocalisation(file, offset)
+        return ParadoxPsiManager.findLocalisation(file, offset)
     }
     
     private fun findFastElement(e: AnActionEvent): ParadoxLocalisationProperty? {

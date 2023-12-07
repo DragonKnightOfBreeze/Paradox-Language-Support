@@ -209,7 +209,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
                 return PROPERTY_REFERENCE_START;
             } else {
                 yybegin(nextStateForText());
-                return PLAIN_TEXT_TOKEN;
+                return STRING_TOKEN;
             }
         }
 }
@@ -257,7 +257,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
                 return ICON_START;
             }else{
                 yybegin(nextStateForText());
-                return PLAIN_TEXT_TOKEN;
+                return STRING_TOKEN;
             }
         }
 }
@@ -357,7 +357,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
                 return COLORFUL_TEXT_START;
             } else {
                 yybegin(nextStateForText());
-                return PLAIN_TEXT_TOKEN;
+                return STRING_TOKEN;
             }
         }
 }
@@ -392,10 +392,10 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
                 yybegin(nextStateForCommand());
                 return COMMAND_END;
             }
-            return PLAIN_TEXT_TOKEN;
+            return STRING_TOKEN;
         }
     {DOUBLE_LEFT_BRACKET} {return DOUBLE_LEFT_BRACKET;}
-    {STRING_TOKEN} {return PLAIN_TEXT_TOKEN;}
+    {STRING_TOKEN} {return STRING_TOKEN;}
 }
 
 {EOL} { depth=0; inConceptText=false; yybegin(YYINITIAL); return WHITE_SPACE; }

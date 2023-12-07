@@ -24,6 +24,7 @@ import icu.windea.pls.core.actions.*
 import icu.windea.pls.core.diff.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.util.*
 import java.awt.*
 import java.util.*
 import javax.swing.*

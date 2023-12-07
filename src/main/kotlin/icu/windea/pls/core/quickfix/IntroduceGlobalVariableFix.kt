@@ -12,6 +12,7 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.refactoring.actions.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 class IntroduceGlobalVariableFix(
 	private val variableName: String,

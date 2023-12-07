@@ -16,6 +16,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.lang.modifier.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 //com.intellij.testIntegration.GotoTestOrCodeHandler
 
@@ -82,7 +83,7 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
     }
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-		return ParadoxPsiFinder.findScriptExpression(file, offset)
+		return ParadoxPsiManager.findScriptExpression(file, offset)
 	}
 	
 	override fun shouldSortTargets(): Boolean {

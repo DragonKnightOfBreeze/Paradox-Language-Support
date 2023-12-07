@@ -16,6 +16,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 import java.io.*
 
 private val NAME = ID.create<String, List<ParadoxExpressionInfo>>("paradox.expression.index")

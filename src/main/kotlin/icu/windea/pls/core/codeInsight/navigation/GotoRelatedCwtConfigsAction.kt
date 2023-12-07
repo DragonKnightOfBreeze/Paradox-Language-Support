@@ -9,8 +9,8 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 /**
  * 导航到定义成员对应的CWT规则的动作。
@@ -47,6 +47,6 @@ class GotoRelatedCwtConfigsAction : BaseCodeInsightAction() {
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-		return ParadoxPsiFinder.findScriptExpression(file, offset)
+		return ParadoxPsiManager.findScriptExpression(file, offset)
 	}
 }

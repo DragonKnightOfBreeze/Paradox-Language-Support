@@ -12,7 +12,7 @@ import icu.windea.pls.dds.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
+import icu.windea.pls.util.image.*
 
 private val validValueTypes = arrayOf(
     CwtDataTypes.FilePath,

@@ -7,7 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.localisation.*
+import icu.windea.pls.util.localisation.*
 import javax.swing.*
 
 class ParadoxScriptFileTreeElement(

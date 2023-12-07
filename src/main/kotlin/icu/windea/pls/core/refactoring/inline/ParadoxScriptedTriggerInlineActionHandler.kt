@@ -9,10 +9,9 @@ import com.intellij.psi.*
 import com.intellij.refactoring.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 class ParadoxScriptedTriggerInlineActionHandler : InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.scriptedTrigger")
@@ -45,7 +44,7 @@ class ParadoxScriptedTriggerInlineActionHandler : InlineActionHandler() {
             return
         }
         
-        val isRecursive = ParadoxRecursionHandler.isRecursiveDefinition(element) { _, re -> ParadoxPsiManager.isInvocationReference(element, re) }
+        val isRecursive = ParadoxRecursionManager.isRecursiveDefinition(element) { _, re -> ParadoxPsiManager.isInvocationReference(element, re) }
         if(isRecursive) {
             val message = PlsBundle.message("refactoring.scriptedTrigger.recursive", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)

@@ -2,7 +2,7 @@ package co.phoenixlab.dds;
 
 import ar.com.hjg.pngj.*;
 import co.phoenixlab.dds.decoder.*;
-import icu.windea.pls.tool.*;
+import icu.windea.pls.util.image.*;
 
 import java.io.*;
 import java.util.*;

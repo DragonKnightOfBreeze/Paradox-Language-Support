@@ -13,7 +13,7 @@
 * [ ] 导入CWT规则分组后，尝试优化为仅需重新解析和重新索引必要的文件
 * [ ] 完善对脚本文件和本地化文件中的转义字符的支持
 * [X] #55 支持在多行的脚本参数值中使用内联脚本 *
-* [ ] #56 支持生成的概念
+* [ ] #56 支持从数据库对象生成的概念
 * [X] 对于定义（引用）信息的内嵌提示，可以配置是否显示子类型，默认启用 *
 * [ ] BUG修复：对于作用域上下文，`prev.prev`应当等同于`this`，而非`prevprev`
 
@@ -1211,7 +1211,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 * [X] 添加`com.windea.plugin.idea.script.psi.ParadoxDefinitionTypeIndex`
 * [X] 提高脚本文件和本地化文件的语法兼容性
 * [X] 本地化文件渲染`propertyReference`时，如果有颜色参数，即使`propertyReference`未解析或者是变量，仍然正确渲染颜色，保留颜色参数
-* [X] 实现本地化属性的`CopyRawTextIntention`、`CopyPlainTextIntention`、`CopyRichTextIntention`
+* [X] 实现本地化属性的`CopyRawTextIntention`、`CopyStringIntention`、`CopyRichTextIntention`
 * [X] `DefinitionInfo`改为`TypeInfo`
 * [X] `TypeInfo`改为`Definition`，支持解析`alias`，部分提取buildString的扩展
 * [X] 更新项目文档和说明

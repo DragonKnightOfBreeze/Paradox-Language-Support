@@ -4,8 +4,8 @@ import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 /**
  * 提供定义的层级视图。（定义类型/定义子类型 > 定义）
@@ -21,7 +21,7 @@ class ParadoxDefinitionHierarchyProvider : HierarchyProvider {
         val fileInfo = file.fileInfo ?: return null
         if(fileInfo.pathToEntry.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
         val offset = editor.caretModel.offset
-        val definition = ParadoxPsiFinder.findDefinition(file, offset) ?: return null
+        val definition = ParadoxPsiManager.findDefinition(file, offset) ?: return null
         return definition
     }
     

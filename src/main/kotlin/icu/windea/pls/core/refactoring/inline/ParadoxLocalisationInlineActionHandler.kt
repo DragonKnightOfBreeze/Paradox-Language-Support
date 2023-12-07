@@ -9,10 +9,10 @@ import com.intellij.psi.*
 import com.intellij.refactoring.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.references.*
+import icu.windea.pls.util.*
 
 class ParadoxLocalisationInlineActionHandler : InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.localisation")
@@ -43,7 +43,7 @@ class ParadoxLocalisationInlineActionHandler : InlineActionHandler() {
             return
         }
         
-        val isRecursive = ParadoxRecursionHandler.isRecursiveLocalisation(element)
+        val isRecursive = ParadoxRecursionManager.isRecursiveLocalisation(element)
         if(isRecursive) {
             val message = PlsBundle.message("refactoring.localisation.recursive", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)

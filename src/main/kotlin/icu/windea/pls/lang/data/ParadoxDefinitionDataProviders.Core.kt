@@ -2,7 +2,7 @@ package icu.windea.pls.lang.data
 
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.script.*
+import icu.windea.pls.util.script.*
 
 class ParadoxSpriteDataProvider : ParadoxDefinitionDataProvider<ParadoxSpriteDataProvider.Data>() {
     class Data(data: ParadoxScriptData): ParadoxDefinitionData {

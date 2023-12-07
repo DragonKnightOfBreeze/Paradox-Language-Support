@@ -6,9 +6,9 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.quickfix.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.util.*
 
 /**
  * （对于本地化文件）检查是否存在不支持的递归。
@@ -31,7 +31,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 if(name.isEmpty()) return
                 
                 val recursions = mutableSetOf<PsiElement>()
-                ParadoxRecursionHandler.isRecursiveLocalisation(element, recursions)
+                ParadoxRecursionManager.isRecursiveLocalisation(element, recursions)
                 if(recursions.isEmpty()) return
                 val message = PlsBundle.message("inspection.localisation.bug.unsupportedRecursion.description.1")
                 val location = element.propertyKey

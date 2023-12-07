@@ -81,7 +81,7 @@ object ParadoxLocalisationElementFactory {
     }
     
     @JvmStatic
-    fun createPlainText(project: Project, text: String): ParadoxLocalisationPlainText {
+    fun createString(project: Project, text: String): ParadoxLocalisationString {
         return createPropertyValue(project, text)
             .findChild()!!
     }

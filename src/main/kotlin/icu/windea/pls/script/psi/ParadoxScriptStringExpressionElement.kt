@@ -3,6 +3,7 @@ package icu.windea.pls.script.psi
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.util.*
 
 /**
  * @see ParadoxScriptPropertyKey
@@ -26,7 +27,8 @@ interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement,
     override fun createLiteralTextEscaper(): LiteralTextEscaper<ParadoxScriptStringExpressionElement> {
         return object : LiteralTextEscaper<ParadoxScriptStringExpressionElement>(this) {
             override fun decode(rangeInsideHost: TextRange, outChars: StringBuilder): Boolean {
-                outChars.append(rangeInsideHost.substring(myHost.text))
+                val s = rangeInsideHost.substring(myHost.text)
+                ParadoxEscapeManager.escapeScriptExpression(s, outChars)
                 return true
             }
             

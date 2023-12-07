@@ -9,9 +9,9 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.actions.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 /**
  * 导航到当前定义/修正的相关图片的动作。
@@ -52,6 +52,6 @@ class GotoRelatedImagesAction : BaseCodeInsightAction() {
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
-		return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
+		return ParadoxPsiManager.findScriptExpression(file, offset).castOrNull()
 	}
 }

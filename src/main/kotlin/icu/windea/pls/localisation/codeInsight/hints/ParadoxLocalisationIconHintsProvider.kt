@@ -10,7 +10,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationIconHintsProvider.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
+import icu.windea.pls.util.image.*
 import javax.swing.*
 
 private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationIconHintsSettingsKey")
