@@ -6,7 +6,7 @@
 
 ## 1.3.0
 
-* [ ] 支持通过扩展的CWT规则文件为定义提供扩展的快速文档
+* [X] 支持通过扩展的CWT规则文件为定义提供扩展的快速文档 *
 * [ ] 支持通过扩展的CWT规则文件为动态值（如`event_target`）提供扩展的快速文档
 * [ ] 支持通过扩展的CWT规则文件为参数提供扩展的快速文档
 * [ ] 支持通过扩展的CWT规则文件为定义指定作用域上下文（如果定义本身支持）
@@ -73,7 +73,7 @@
 
 ## 1.2.0
 
-* [X] 优化对[CWT规则分组](https://windea.icu/Paradox-Language-Support/#/zh/core-features.md#cwt-config-group)的支持
+* [X] 优化对[CWT规则分组](https://windea.icu/Paradox-Language-Support/#/zh/config.md#cwt-config-group)的支持
 * [X] 其他优化与BUG修复
 
 ## 1.1.13

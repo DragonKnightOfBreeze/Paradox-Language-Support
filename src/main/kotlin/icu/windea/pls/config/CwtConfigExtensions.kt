@@ -80,6 +80,10 @@ fun CwtTemplateExpression.processResolveResult(contextElement: PsiElement, confi
     CwtTemplateExpressionHandler.processResolveResult(contextElement, this, configGroup, processor)
 }
 
+fun <C : CwtConfig<*>> Map<String, List<C>>.getAllByTemplate(text: String, contextElement: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int = CwtConfigMatcher.Options.Default): List<C> {
+    return get(text) ?: entries.find { (k) -> CwtTemplateExpression.resolve(k).matches(text, contextElement, configGroup, matchOptions) }?.value ?: empty
+}
+
 fun <C : CwtConfig<*>> Map<String, C>.getByTemplate(text: String, contextElement: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int = CwtConfigMatcher.Options.Default): C? {
     return get(text) ?: entries.find { (k) -> CwtTemplateExpression.resolve(k).matches(text, contextElement, configGroup, matchOptions) }?.value
 }

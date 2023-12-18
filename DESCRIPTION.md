@@ -8,7 +8,7 @@
 <li>Renders related type information, scope information, localisation text and DDS images through ways such as quick documentation and inlay hints.</li>
 <li>Automatically recognizes the game directory (containing the launcher settings file <code>launcher-settings.json</code>) and mod directory (containing the mod descriptor file <code>descriptor.mod</code>).</li>
 </ul>
-<p>This plugin implements various advanced language features based on <a href="https://windea.icu/Paradox-Language-Support/#/en/core-features.md#cwt-config-group">CWT config groups</a>, which consists of many CWT rule files.
+<p>This plugin implements various advanced language features based on <a href="https://windea.icu/Paradox-Language-Support/#/en/config.md#cwt-config-group">CWT config groups</a>, which consists of many CWT rule files.
 The latest-version config files are already built into this plugin, make it works right out of the box.
 Besides, importing local config files is also supported.</p>
 <p>If <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a> is also installed, this plugin can provide some <a href="https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md">additional features</a>.</p>
@@ -24,7 +24,7 @@ Besides, importing local config files is also supported.</p>
 <li>通过快速文档和内嵌提示等方式，渲染相关的类型信息、作用域信息、本地化文本和DDS图片。</li>
 <li>自动识别游戏目录（包含启动器配置文件<code>launcher-settings.json</code>）和模组目录（包含模组描述符文件<code>descriptor.mod</code>）。</li>
 </ul>
-<p>此插件基于由CWT规则文件组成的<a href="https://windea.icu/Paradox-Language-Support/#/zh/core-features.md#cwt-config-group">CWT规则分组</a>，实现了许多高级语言功能。
+<p>此插件基于由CWT规则文件组成的<a href="https://windea.icu/Paradox-Language-Support/#/zh/config.md#cwt-config-group">CWT规则分组</a>，实现了许多高级语言功能。
 插件已经内置了最新版本的规则文件，以便开箱即用。
 除此之外，插件也支持导入项目本地的规则文件。</p>
 <p>如果同时安装了 <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a> ，此插件可以提供一些<a href="https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md">额外的功能</a>。</p>

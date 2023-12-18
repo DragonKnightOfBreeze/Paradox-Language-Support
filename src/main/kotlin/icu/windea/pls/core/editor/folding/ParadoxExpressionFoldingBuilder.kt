@@ -13,7 +13,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
-@WithCwtSettings("folding_settings.pls.cwt", CwtFoldingSettings::class)
+@WithCwtSettings("settings/folding_settings.pls.cwt", CwtFoldingSettings::class)
 abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
 	abstract fun getGroupName(): String
 	

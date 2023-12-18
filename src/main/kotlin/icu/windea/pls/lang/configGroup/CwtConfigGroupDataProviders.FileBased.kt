@@ -14,7 +14,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.mapNotNullTo
 import kotlin.collections.set
 
 /**
@@ -53,8 +52,8 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     
     private fun doProcessBuiltInFile(filePath: String, fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         when(filePath) {
-            "folding_settings.pls.cwt" -> resolveFoldingSettingsInFile(fileConfig, configGroup)
-            "postfix_template_settings.pls.cwt" -> resolvePostfixTemplateSettingsInFile(fileConfig, configGroup)
+            "settings/folding_settings.pls.cwt" -> resolveFoldingSettingsInFile(fileConfig, configGroup)
+            "settings/postfix_template_settings.pls.cwt" -> resolvePostfixTemplateSettingsInFile(fileConfig, configGroup)
             "system_links.pls.cwt" -> resolveSystemLinks(fileConfig, configGroup)
             "localisation_locales.pls.cwt" -> resolveLocalisationLocalesInFile(fileConfig, configGroup)
             "localisation_predefined_parameters.pls.cwt" -> resolveLocalisationPredefinedParametersInFile(fileConfig, configGroup)
@@ -127,7 +126,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             val description = property.documentation.orEmpty()
             val name = property.stringValue ?: id
             val config = CwtSystemLinkConfig(property.pointer, fileConfig.info, id, baseId, description, name)
-            configGroup.systemLinks.asMutable().put(id, config)
+            configGroup.systemLinks.asMutable()[id] = config
         }
     }
     
@@ -138,7 +137,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             val description = property.documentation.orEmpty()
             val codes = property.properties?.find { p -> p.key == "codes" }?.values?.mapNotNull { v -> v.stringValue }.orEmpty()
             val config = CwtLocalisationLocaleConfig(property.pointer, fileConfig.info, id, description, codes)
-            configGroup.localisationLocalesById.asMutable().put(id, config)
+            configGroup.localisationLocalesById.asMutable()[id] = config
             codes.forEach { code -> configGroup.localisationLocalesByCode.asMutable()[code] = config }
         }
     }
@@ -258,7 +257,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         for(snippetExpression in modifierConfig.template.snippetExpressions) {
                             if(snippetExpression.type == CwtDataTypes.Definition) {
                                 val typeExpression = snippetExpression.value ?: continue
-                                configGroup.type2ModifiersMap.asMutable().getOrPut(typeExpression) { mutableMapOf() }.asMutable().put(modifierName, modifierConfig)
+                                configGroup.type2ModifiersMap.asMutable().getOrPut(typeExpression) { mutableMapOf() }.asMutable()[modifierName] = modifierConfig
                             }
                         }
                     }
@@ -287,7 +286,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     for(prop in props) {
                         val definitionName = prop.key
                         val definitionConfig = resolveDefinitionConfig(prop, definitionName) ?: continue
-                        configGroup.definitions.asMutable()[definitionName] = definitionConfig
+                        configGroup.definitions.asMutable().getOrPut(definitionName) { mutableListOf() }.asMutable() += definitionConfig
                     }
                 }
                 key == "game_rules" -> {
@@ -334,7 +333,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         //目前不这样处理
                         //if(aliasConfig.name == "modifier" && aliasConfig.expression.type.isConstantLikeType()) {
                         //	val modifierConfig = resolveModifierConfigFromAliasConfig(aliasConfig)
-                        //	modifiers.put(modifierConfig.name, modifierConfig)
+                        //	modifiers.asMutable()[modifierConfig.name] = modifierConfig
                         //	continue
                         //} 
                         val map = configGroup.aliasGroups.asMutable().getOrPut(aliasName) { mutableMapOf() }
@@ -455,13 +454,13 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                                     val typeExpression = "$name.$subtypeName"
                                     val modifierConfig = resolveDefinitionModifierConfig(pp, pp.key, typeExpression) ?: continue
                                     configGroup.modifiers.asMutable()[modifierConfig.name] = modifierConfig
-                                    configGroup.type2ModifiersMap.asMutable().getOrPut(typeExpression) { mutableMapOf() }.asMutable().put(pp.key, modifierConfig)
+                                    configGroup.type2ModifiersMap.asMutable().getOrPut(typeExpression) { mutableMapOf() }.asMutable()[pp.key] = modifierConfig
                                 }
                             } else {
                                 val typeExpression = name
                                 val modifierConfig = resolveDefinitionModifierConfig(p, p.key, typeExpression) ?: continue
                                 configGroup.modifiers.asMutable()[modifierConfig.name] = modifierConfig
-                                configGroup.type2ModifiersMap.asMutable().getOrPut(typeExpression) { mutableMapOf() }.asMutable().put(p.key, modifierConfig)
+                                configGroup.type2ModifiersMap.asMutable().getOrPut(typeExpression) { mutableMapOf() }.asMutable()[p.key] = modifierConfig
                             }
                         }
                     }

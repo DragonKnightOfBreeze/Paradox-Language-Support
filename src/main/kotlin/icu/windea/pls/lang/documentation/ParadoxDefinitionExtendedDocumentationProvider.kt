@@ -8,7 +8,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 用于为定义提供扩展的快速文档文本。
+ * 用于为定义提供扩展的快速文档。
  */
 @WithGameTypeEP
 interface ParadoxDefinitionExtendedDocumentationProvider {

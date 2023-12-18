@@ -41,7 +41,7 @@ val CwtConfigGroup.localisationPredefinedParameters: Map<String, CwtLocalisation
 val CwtConfigGroup.folders: Set<String>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableSetOf() }
 
-//type- typeConfig
+//type - typeConfig
 val CwtConfigGroup.types: Map<String, CwtTypeConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 //type - typeConfig
@@ -100,17 +100,17 @@ val CwtConfigGroup.inlineConfigGroup: Map<String, List<CwtInlineConfig>>
 
 val CwtConfigGroup.modifierCategories: Map<String, CwtModifierCategoryConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-//key: scalar / template_expression
+//scalar / template_expression - config
 val CwtConfigGroup.modifiers: Map<@CaseInsensitive String, CwtModifierConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
-//key: scalar / template_expression
-val CwtConfigGroup.definitions: Map<String, CwtDefinitionConfig>
+//scalar / template_expression - configs
+val CwtConfigGroup.definitions: Map<String, List<CwtDefinitionConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-//key: scalar / template_expression
+//scalar / template_expression - config
 val CwtConfigGroup.gameRules: Map<String, CwtGameRuleConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-//key: scalar / template_expression
+//scalar / template_expression - config
 val CwtConfigGroup.onActions: Map<String, CwtOnActionConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
