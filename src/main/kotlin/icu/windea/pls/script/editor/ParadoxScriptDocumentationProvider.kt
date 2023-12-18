@@ -330,7 +330,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
                 append("<code>")
                 append(parameterName)
                 //加上推断得到的规则信息
-                if(parameterContextInfo.isOptional(parameterName)) append("?") //optional marker
+                if(ParadoxParameterHandler.isOptional(parameterContextInfo, parameterName)) append("?") //optional marker
                 val inferredConfig = ParadoxParameterHandler.getInferredConfig(parameterName, parameterContextInfo)
                 if(inferredConfig != null) {
                     append(": ")

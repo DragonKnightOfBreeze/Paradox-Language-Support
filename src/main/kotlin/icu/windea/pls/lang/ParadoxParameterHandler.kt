@@ -48,16 +48,16 @@ object ParadoxParameterHandler {
         val file = element.containingFile
         val gameType = selectGameType(file) ?: return null
         val parameters = sortedMapOf<String, MutableList<ParadoxParameterContextInfo.Parameter>>() //按名字进行排序
-        val fileConditionStack = LinkedList<ReversibleValue<String>>()
+        val fileConditionStack = ArrayDeque<ReversibleValue<String>>()
         element.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if(element is ParadoxParameter) visitParameter(element)
                 if(element is ParadoxScriptParameterConditionExpression) visitParadoxConditionExpression(element)
+                if(element is ParadoxConditionParameter) visitConditionParameter(element)
+                if(element is ParadoxParameter) visitParameter(element)
                 super.visitElement(element)
             }
             
             private fun visitParadoxConditionExpression(element: ParadoxScriptParameterConditionExpression) {
-                ProgressManager.checkCanceled()
                 var operator = true
                 var value = ""
                 element.processChild p@{
@@ -73,11 +73,17 @@ object ParadoxParameterHandler {
                 super.visitElement(element)
             }
             
+            private fun visitConditionParameter(element: ParadoxConditionParameter) {
+                val name = element.name ?: return
+                val info = ParadoxParameterContextInfo.Parameter(element.createPointer(file), name, null, null)
+                parameters.getOrPut(name) { mutableListOf() }.add(info)
+                //不需要继续向下遍历
+            }
+            
             private fun visitParameter(element: ParadoxParameter) {
-                ProgressManager.checkCanceled()
                 val name = element.name ?: return
                 val defaultValue = element.defaultValue
-                val conditionalStack = if(fileConditionStack.isEmpty()) null else LinkedList(fileConditionStack)
+                val conditionalStack = ArrayDeque(fileConditionStack)
                 val info = ParadoxParameterContextInfo.Parameter(element.createPointer(file), name, defaultValue, conditionalStack)
                 parameters.getOrPut(name) { mutableListOf() }.add(info)
                 //不需要继续向下遍历
@@ -92,6 +98,27 @@ object ParadoxParameterHandler {
         return ParadoxParameterContextInfo(parameters, file.project, gameType)
     }
     
+    /**
+     * 基于指定的参数上下文信息以及输入的一组参数，判断指定名字的参数是否是可选的。
+     */
+    fun isOptional(parameterContextInfo: ParadoxParameterContextInfo, parameterName: String, argumentNames: Set<String>? = null): Boolean {
+        val parameterInfos = parameterContextInfo.parameters.get(parameterName)
+        if(parameterInfos.isNullOrEmpty()) return true
+        return parameterInfos.all f@{ parameterInfo ->
+            //如果是条件参数，则为可选
+            if(parameterInfo.conditionStack == null) return@f true
+            //如果带有默认值，则为可选
+            if(parameterInfo.defaultValue != null) return@f true
+            //如果基于条件表达式上下文是可选的，则为可选
+            if(parameterInfo.conditionStack.isNotEmpty()
+                && parameterInfo.conditionStack.all { it.where { n -> parameterName == n || (argumentNames != null && argumentNames.contains(n)) } }) return@f true
+            //如果作为传入参数的值，则认为是可选的
+            if(parameterInfo.expressionConfigs.isNotEmpty()
+                && parameterInfo.expressionConfigs.any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataTypes.Parameter }) return@f true
+            false
+        }
+    }
+    
     fun completeParameters(element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         //向上找到参数上下文
@@ -103,8 +130,11 @@ object ParadoxParameterHandler {
             val parameter = parameterInfos.firstNotNullOfOrNull { it.element } ?: continue
             //排除当前正在输入的那个
             if(parameterInfos.size == 1 && element isSamePosition parameter) continue
-            val parameterElement = ParadoxParameterSupport.resolveParameter(parameter)
-                ?: continue
+            val parameterElement = when {
+                parameter is ParadoxConditionParameter -> ParadoxParameterSupport.resolveConditionParameter(parameter)
+                parameter is ParadoxParameter -> ParadoxParameterSupport.resolveParameter(parameter)
+                else -> null
+            } ?: continue
             val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
                 .withIcon(PlsIcons.Nodes.Parameter)
                 .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
@@ -133,8 +163,11 @@ object ParadoxParameterHandler {
                 if(!namesToDistinct.add(parameterName)) continue
                 
                 val parameter = parameterInfos.firstNotNullOfOrNull { it.element } ?: continue
-                val parameterElement = ParadoxParameterSupport.resolveParameter(parameter)
-                    ?: continue
+                val parameterElement = when {
+                    parameter is ParadoxConditionParameter -> ParadoxParameterSupport.resolveConditionParameter(parameter)
+                    parameter is ParadoxParameter -> ParadoxParameterSupport.resolveParameter(parameter)
+                    else -> null
+                } ?: continue
                 val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
                     .withIcon(PlsIcons.Nodes.Parameter)
                     .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)

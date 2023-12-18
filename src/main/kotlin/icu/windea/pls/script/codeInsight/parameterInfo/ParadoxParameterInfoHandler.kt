@@ -54,7 +54,7 @@ class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, ParadoxPara
                     parameterContextInfo.parameters.keys.forEach { parameterName ->
                         if(isFirst) isFirst = false else append(", ")
                         append(parameterName)
-                        if(parameterContextInfo.isOptional(parameterName)) append("?") //optional marker
+                        if(ParadoxParameterHandler.isOptional(parameterContextInfo, parameterName)) append("?") //optional marker
                         //加上推断得到的规则信息
                         val inferredConfig = ParadoxParameterHandler.getInferredConfig(parameterName, parameterContextInfo)
                         if(inferredConfig != null) {

@@ -4,8 +4,6 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
@@ -18,42 +16,16 @@ class ParadoxParameterContextInfo(
     val project: Project,
     val gameType: ParadoxGameType
 ) {
-    fun isOptional(parameterName: String, argumentNames: Set<String>? = null): Boolean {
-        val parameterInfos = parameters.get(parameterName)
-        if(parameterInfos.isNullOrEmpty()) return true
-        for(parameterInfo in parameterInfos) {
-            //检查参数是否带有默认值
-            if(parameterInfo.defaultValue != null) return true
-            //检查参数的条件表达式上下文，基于参数名以及一组传入参数名，是否被认为是可选的
-            if(parameterInfo.conditionStack.isNotNullOrEmpty()) {
-                val r = parameterInfo.conditionStack.all { rv ->
-                    rv.where { parameterName == it || (argumentNames != null && argumentNames.contains(it)) }
-                }
-                if(r) return true
-            }
-        }
-        //基于参数对应的CWT规则，判断参数是否被认为是可选的
-        for(parameterInfo in parameterInfos) {
-            val configs = parameterInfo.expressionConfigs
-            if(configs.isNotEmpty()) {
-                //如果作为传入参数的值，直接认为是可选的，没有太大必要进一步检查……
-                val r = configs.any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataTypes.Parameter }
-                if(r) return true
-            }
-        }
-        return false
-    }
-    
     /**
-     * @property conditionStack，文件中从上到下，链表中从左到右，记录条件表达式的堆栈。
+     * @property conditionStack 文件中从上到下，链表中从左到右，记录条件表达式的堆栈。仅适用于[ParadoxParameter]。
      */
     class Parameter(
-        private val elementPointer: SmartPsiElementPointer<ParadoxParameter>,
+        private val elementPointer: SmartPsiElementPointer<PsiElement>, //ParadoxConditionParameter | ParadoxParameter
         val name: String,
-        val defaultValue: String?,
-        val conditionStack: LinkedList<ReversibleValue<String>>? = null,
+        val defaultValue: String? = null,
+        val conditionStack: Deque<ReversibleValue<String>>? = null,
     ) {
-        val element: ParadoxParameter? get() = elementPointer.element
+        val element: PsiElement? get() = elementPointer.element
         val expressionElement: ParadoxScriptStringExpressionElement? get() = elementPointer.element?.parent?.castOrNull()
         
         val rangeInExpressionElement: TextRange?
@@ -65,9 +37,8 @@ class ParadoxParameterContextInfo(
         val isEntireExpression: Boolean
             get() {
                 val element = element
-                return element != null
-                    && element.prevSibling.let { it == null || it.text == "\"" }
-                    && element.nextSibling.let { it == null || it.text == "\"" }
+                if(element == null) return false
+                return element.prevSibling.let { it == null || it.text == "\"" } && element.nextSibling.let { it == null || it.text == "\"" }
             }
         
         /**
@@ -75,7 +46,7 @@ class ParadoxParameterContextInfo(
          */
         val expressionConfigs: List<CwtMemberConfig<*>>
             get() {
-                val expressionElement = element?.parent?.castOrNull<ParadoxScriptStringExpressionElement>()
+                val expressionElement = expressionElement
                 if(expressionElement == null) return emptyList()
                 return when {
                     expressionElement is ParadoxScriptPropertyKey -> {

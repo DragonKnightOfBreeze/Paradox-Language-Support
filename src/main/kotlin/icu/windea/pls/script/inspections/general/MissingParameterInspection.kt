@@ -37,7 +37,7 @@ class MissingParameterInspection : LocalInspectionTool() {
                     if(parameterContextInfo.parameters.isEmpty()) return@p true
                     parameterContextInfo.parameters.keys.forEach { parameterName ->
                         if(requiredParameterNames.contains(parameterName)) return@forEach
-                        if(!parameterContextInfo.isOptional(parameterName, argumentNames)) requiredParameterNames.add(parameterName)
+                        if(!ParadoxParameterHandler.isOptional(parameterContextInfo, parameterName, argumentNames)) requiredParameterNames.add(parameterName)
                     }
                     false
                 }
