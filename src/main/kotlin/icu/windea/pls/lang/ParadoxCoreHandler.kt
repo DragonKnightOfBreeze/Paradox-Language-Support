@@ -76,7 +76,7 @@ object ParadoxCoreHandler {
     
     private fun doGetRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         // 尝试从此目录向下查找descriptor.mod
-        val descriptorFile = getDescriptorFile(rootFile)
+        val descriptorFile = disableLogger { getDescriptorFile(rootFile) }
         if(descriptorFile != null) {
             val descriptorInfo = getDescriptorInfo(descriptorFile) ?: return null
             return ParadoxModRootInfo(rootFile, descriptorFile, descriptorInfo)
@@ -84,7 +84,7 @@ object ParadoxCoreHandler {
         
         // 尝试从此目录向下递归查找launcher-settings.json，如果找到，再根据"dlcPath"的值获取游戏文件的根目录
         // 注意游戏文件可能位于此目录的game子目录中，而非直接位于此目录中
-        val launcherSettingsFile = getLauncherSettingsFile(rootFile)
+        val launcherSettingsFile = disableLogger { getLauncherSettingsFile(rootFile) }
         if(launcherSettingsFile != null) {
             val launcherSettingsInfo = getLauncherSettingsInfo(launcherSettingsFile) ?: return null
             return ParadoxGameRootInfo(rootFile, launcherSettingsFile, launcherSettingsInfo)
@@ -184,22 +184,29 @@ object ParadoxCoreHandler {
         val cachedFileInfo = cachedFileInfoOrEmpty.castOrNull<ParadoxFileInfo>()
         if(cachedFileInfoOrEmpty != null) return cachedFileInfo
         
-        val fileName = file.name
-        val filePath = file.path
-        var currentFilePath = filePath.toPathOrNull() ?: return null
-        var currentFile = doGetFile(file, currentFilePath)
-        while(true) {
-            val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
-            if(rootInfo != null) {
-                val fileInfo = doGetFileInfo(file, filePath, fileName, rootInfo)
-                file.tryPutUserData(PlsKeys.fileInfo, fileInfo)
-                return fileInfo
+        try {
+            val fileName = file.name
+            val filePath = file.path
+            var currentFilePath = filePath.toPathOrNull() ?: return null
+            var currentFile = doGetFile(file, currentFilePath)
+            while(true) {
+                val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
+                if(rootInfo != null) {
+                    val fileInfo = doGetFileInfo(file, filePath, fileName, rootInfo)
+                    file.tryPutUserData(PlsKeys.fileInfo, fileInfo)
+                    return fileInfo
+                }
+                currentFilePath = currentFilePath.parent ?: break
+                currentFile = doGetFile(currentFile?.parent, currentFilePath)
             }
-            currentFilePath = currentFilePath.parent ?: break
-            currentFile = doGetFile(currentFile?.parent, currentFilePath)
+            file.tryPutUserData(PlsKeys.fileInfo, EMPTY_OBJECT)
+            return null
+        } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
+            thisLogger().warn(e)
+            file.tryPutUserData(PlsKeys.fileInfo, EMPTY_OBJECT)
+            return null
         }
-        file.tryPutUserData(PlsKeys.fileInfo, EMPTY_OBJECT)
-        return null
     }
     
     private fun doGetFile(file: VirtualFile?, filePath: Path): VirtualFile? {
@@ -208,7 +215,7 @@ object ParadoxCoreHandler {
             file.originalFile?.let { return it }
             //since 223-EAP, call 'VfsUtil.findFile(Path, boolean)' may cause:
             //java.lang.Throwable: Slow operations are prohibited on EDT. See SlowOperations.assertSlowOperationsAreAllowed javadoc.
-            disableLogger { runCatchingCancelable { VfsUtil.findFile(filePath, false) } }.getOrNull()?.let { return it }
+            disableLogger { VfsUtil.findFile(filePath, false) }?.let { return it }
             return null
         }
         return file
@@ -224,20 +231,26 @@ object ParadoxCoreHandler {
     }
     
     fun getFileInfo(filePath: FilePath): ParadoxFileInfo? {
-        //直接尝试通过filePath获取fileInfo
-        val fileName = filePath.name
-        var currentFilePath = filePath.path.toPathOrNull() ?: return null
-        var currentFile = VfsUtil.findFile(currentFilePath, false)
-        while(true) {
-            val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
-            if(rootInfo != null) {
-                val newFileInfo = doGetFileInfo(filePath, fileName, rootInfo)
-                return newFileInfo
+        try {
+            //直接尝试通过filePath获取fileInfo
+            val fileName = filePath.name
+            var currentFilePath = filePath.path.toPathOrNull() ?: return null
+            var currentFile = VfsUtil.findFile(currentFilePath, false)
+            while(true) {
+                val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
+                if(rootInfo != null) {
+                    val newFileInfo = doGetFileInfo(filePath, fileName, rootInfo)
+                    return newFileInfo
+                }
+                currentFilePath = currentFilePath.parent ?: break
+                currentFile = VfsUtil.findFile(currentFilePath, false)
             }
-            currentFilePath = currentFilePath.parent ?: break
-            currentFile = VfsUtil.findFile(currentFilePath, false)
+            return null
+        } catch(e: Exception) {
+            if(e is ProcessCanceledException) throw e
+            thisLogger().warn(e)
+            return null
         }
-        return null
     }
     
     private fun doGetFileInfo(filePath: FilePath, fileName: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo {
@@ -355,7 +368,7 @@ object ParadoxCoreHandler {
     
     fun refreshInlayHints() {
         //刷新脚本文件和本地化文件的内嵌提示
-        ParadoxCoreHandler.refreshInlayHints { file, _ ->
+        refreshInlayHints { file, _ ->
             val fileType = file.fileType
             fileType == ParadoxScriptFileType || fileType == ParadoxLocalisationFileType
         }
@@ -368,7 +381,7 @@ object ParadoxCoreHandler {
             ParadoxModificationTrackerProvider.getInstance(project).InlineScriptsTracker.incModificationCount()
         }
         //刷新内联脚本文件的内嵌提示
-        ParadoxCoreHandler.refreshInlayHints { file, _ ->
+        refreshInlayHints { file, _ ->
             ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null
         }
     }

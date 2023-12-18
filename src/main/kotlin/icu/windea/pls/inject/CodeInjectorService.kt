@@ -55,7 +55,8 @@ class CodeInjectorService : UserDataHolderBase() {
             try {
                 codeInjector.inject()
             } catch(e: Exception) {
-                thisLogger().error(e.message, e)
+                //NOTE IDE更新到新版本后，某些代码注入器可能已不再兼容，因而需要进行必要的验证和代码更改
+                thisLogger().warn(e.message, e)
             }
             codeInjectors.put(codeInjector.id, codeInjector)
         }
