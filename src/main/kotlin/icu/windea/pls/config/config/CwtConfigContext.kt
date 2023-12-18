@@ -43,9 +43,13 @@ class CwtConfigContext(
         val rootFile = selectRootFile(element) ?: return emptyList()
         val cache = configGroup.configsCache.value.get(rootFile)
         val cachedKey = doGetCacheKey(matchOptions) ?: return emptyList()
-        val cached = cache.get(cachedKey) {
-            doGetConfigs(matchOptions)
-        }
+        val cached = withRecursionGuard("icu.windea.pls.config.config.CwtConfigContext.getConfigs") {
+            withCheckRecursion(cachedKey) {
+                cache.get(cachedKey) {
+                    doGetConfigs(matchOptions)
+                }
+            }
+        } ?: emptyList() //unexpected recursion, return empty list
         //some configs cannot be cached (e.g. from overridden configs)
         if(PlsContext.overrideConfigStatus.get() == true) cache.invalidate(cachedKey)
         PlsContext.overrideConfigStatus.remove()
