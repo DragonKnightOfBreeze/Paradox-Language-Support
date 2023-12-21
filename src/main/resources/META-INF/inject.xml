@@ -1,5 +1,16 @@
 <idea-plugin>
   <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.injectx.codeInjector" interface="icu.windea.pls.injectx.CodeInjector" dynamic="true"/>
+  </extensionPoints>
+  
+  <applicationListeners>
+    <listener class="icu.windea.pls.injectx.CodeInjectorService$Listener" topic="com.intellij.ide.AppLifecycleListener"/>
+  </applicationListeners>
+  
+  
+  
+  
+  <extensionPoints>
     <extensionPoint qualifiedName="icu.windea.pls.inject.codeInjectorSupport" interface="icu.windea.pls.inject.CodeInjectorSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inject.codeInjector" interface="icu.windea.pls.inject.CodeInjector" dynamic="true"/>
   </extensionPoints>
