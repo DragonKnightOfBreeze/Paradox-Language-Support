@@ -51,8 +51,8 @@ dependencies {
 	}
 	////Sqlite
 	//implementation("org.xerial:sqlite-jdbc:3.40.1.0")
-	////Byte Buddy
-	//implementation("net.bytebuddy:byte-buddy:1.14.2")
+	//Byte Buddy
+	implementation("net.bytebuddy:byte-buddy:1.14.2")
 	//Javassist
 	implementation("org.javassist:javassist:3.29.2-GA")
 	
