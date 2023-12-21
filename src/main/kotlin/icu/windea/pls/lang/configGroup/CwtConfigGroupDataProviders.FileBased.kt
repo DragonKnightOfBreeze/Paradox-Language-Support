@@ -282,27 +282,24 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     }
                 }
                 key == "definitions" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        val definitionName = prop.key
-                        val definitionConfig = resolveDefinitionConfig(prop, definitionName) ?: continue
-                        configGroup.definitions.asMutable().getOrPut(definitionName) { mutableListOf() }.asMutable() += definitionConfig
+                    val configs = property.configs ?: continue
+                    for(config in configs) {
+                        val definitionConfig = resolveDefinitionConfig(config) ?: continue
+                        configGroup.definitions.asMutable().getOrPut(definitionConfig.name) { mutableListOf() }.asMutable() += definitionConfig
                     }
                 }
                 key == "game_rules" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        val gameRuleName = prop.key
-                        val gameRuleConfig = resolveGameRuleConfig(prop, gameRuleName)
-                        configGroup.gameRules.asMutable()[gameRuleName] = gameRuleConfig
+                    val configs = property.configs ?: continue
+                    for(config in configs) {
+                        val gameRuleConfig = resolveGameRuleConfig(config)
+                        configGroup.gameRules.asMutable()[gameRuleConfig.name] = gameRuleConfig
                     }
                 }
                 key == "on_actions" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        val onActionName = prop.key
-                        val onActionConfig = resolveOnActionConfig(prop, onActionName) ?: continue
-                        configGroup.onActions.asMutable()[onActionName] = onActionConfig
+                    val configs = property.configs ?: continue
+                    for(config in configs) {
+                        val onActionConfig = resolveOnActionConfig(config) ?: continue
+                        configGroup.onActions.asMutable()[onActionConfig.name] = onActionConfig
                     }
                 }
                 key == "values" -> {
@@ -718,24 +715,30 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         return CwtScopeGroupConfig(pointer, info, name, values, valueConfigMap)
     }
     
-    private fun resolveDefinitionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDefinitionConfig? {
-        val pointer = propertyConfig.pointer
-        val info = propertyConfig.info
-        val type = propertyConfig.findOption("type")?.stringValue ?: return null
-        return CwtDefinitionConfig(pointer, info, propertyConfig, name, type)
+    private fun resolveDefinitionConfig(config: CwtMemberConfig<*>): CwtDefinitionConfig? {
+        val name = when(config) {
+            is CwtPropertyConfig -> config.key
+            is CwtValueConfig -> config.value
+        }
+        val type = config.findOption("type")?.stringValue ?: return null
+        return CwtDefinitionConfig(config.pointer, config.info, config, name, type)
     }
     
-    private fun resolveGameRuleConfig(propertyConfig: CwtPropertyConfig, name: String): CwtGameRuleConfig {
-        val pointer = propertyConfig.pointer
-        val info = propertyConfig.info
-        return CwtGameRuleConfig(pointer, info, propertyConfig, name)
+    private fun resolveGameRuleConfig(config: CwtMemberConfig<*>): CwtGameRuleConfig {
+        val name = when(config) {
+            is CwtPropertyConfig -> config.key
+            is CwtValueConfig -> config.value
+        }
+        return CwtGameRuleConfig(config.pointer, config.info, config, name)
     }
     
-    private fun resolveOnActionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtOnActionConfig? {
-        val pointer = propertyConfig.pointer
-        val info = propertyConfig.info
-        val eventType = propertyConfig.findOption("event_type")?.stringValue ?: return null
-        return CwtOnActionConfig(pointer, info, propertyConfig, name, eventType)
+    private fun resolveOnActionConfig(config: CwtMemberConfig<*>): CwtOnActionConfig? {
+        val name = when(config) {
+            is CwtPropertyConfig -> config.key
+            is CwtValueConfig -> config.value
+        }
+        val eventType = config.findOption("event_type")?.stringValue ?: return null
+        return CwtOnActionConfig(config.pointer, config.info, config, name, eventType)
     }
     
     private fun resolveDynamicValueConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDynamicValueConfig? {

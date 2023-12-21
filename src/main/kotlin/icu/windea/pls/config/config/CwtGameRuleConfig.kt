@@ -4,8 +4,8 @@ import com.intellij.psi.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtGameRuleConfig(
-	override val pointer: SmartPsiElementPointer<out CwtProperty>,
+	override val pointer: SmartPsiElementPointer<out PsiElement>,
 	override val info: CwtConfigGroupInfo,
-	val config: CwtPropertyConfig,
+	val config: CwtMemberConfig<*>,
 	val name: String
-): CwtConfig<CwtProperty>
+): CwtConfig<PsiElement> //CwtProperty | CwtValue

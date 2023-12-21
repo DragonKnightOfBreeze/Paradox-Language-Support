@@ -104,6 +104,7 @@ val CwtMemberConfig<*>.scopeContext
 // * a config expression in declaration config (include root expression, e.g. "army = { ... }")
 // * a type config (e.g. "type[xxx] = { ... }")
 // * a subtype config (e.g. "subtype[xxx] = { ... }")
+//* a definition / game type / on action config
 val CwtMemberConfig<*>.replaceScopes
     get() = getOrPutUserData(CwtMemberConfig.Keys.replaceScopes, emptyMap()) action@{
         val option = findOption { it.key == "replace_scope" || it.key == "replace_scopes" }
