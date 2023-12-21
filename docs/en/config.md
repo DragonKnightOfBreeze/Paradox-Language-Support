@@ -6,8 +6,6 @@
 
 PLS implements various advanced language features based on CWT config groups, which consists of many CWT rule files.
 
-Different game types have different CWT config groups, and all game types share the core CWT config group.
-
 The data in these config groups first comes from the CWT rule files in specific directories,
 after merging and computing, it will be used to implement various features of this plugin.
 
