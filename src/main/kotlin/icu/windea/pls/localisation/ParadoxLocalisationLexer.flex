@@ -126,14 +126,13 @@ LOCALE_TOKEN=[a-z_]+
 NUMBER=\d+
 PROPERTY_KEY_CHAR=[a-zA-Z0-9_.\-']
 PROPERTY_KEY_TOKEN={PROPERTY_KEY_CHAR}+
-DOUBLE_LEFT_BRACKET=\[\[
 PROPERTY_REFERENCE_TOKEN={PROPERTY_KEY_CHAR}+
 PROPERTY_REFERENCE_PARAMETER_TOKEN=[^\"$£§\[\r\n\\]+
 SCRIPTED_VARIABLE_ID=[a-zA-Z_][a-zA-Z0-9_]*
 ICON_TOKEN=[a-zA-Z0-9\-_\\/]+
 ICON_FRAME=[1-9][0-9]* // positive integer
 COLOR_TOKEN=[a-zA-Z0-9]
-STRING_TOKEN=([^\"$£§\[\]\r\n\\]|\\.)+
+STRING_TOKEN=([^\"$£§\[\]\r\n\\]|\\.|\[\[)+
 
 CHECK_COMMAND_START=\[[^\r\n\]]*.?
 COMMAND_SCOPE_ID_WITH_SUFFIX=[^\r\n.\[\]]+\.
@@ -394,7 +393,6 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
             }
             return STRING_TOKEN;
         }
-    {DOUBLE_LEFT_BRACKET} {return DOUBLE_LEFT_BRACKET;}
     {STRING_TOKEN} {return STRING_TOKEN;}
 }
 

@@ -17,7 +17,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
                 if(element is ParadoxLocalisationConcept) visitConcept(element)
             }
             
-            private fun visitConceptName(element: ParadoxLocalisationConcept) {
+            private fun visitConcept(element: ParadoxLocalisationConcept) {
                 val location = element.conceptName
                 val reference = element.reference
                 if(reference == null || reference.resolve() != null) return
