@@ -14,6 +14,8 @@
     <extensionPoint qualifiedName="icu.windea.pls.definitionDataProvider" interface="icu.windea.pls.lang.data.ParadoxDefinitionDataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.documentationElementLinkProvider" interface="icu.windea.pls.lang.documentation.DocumentationElementLinkProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionExtendedDocumentationProvider" interface="icu.windea.pls.lang.documentation.ParadoxDefinitionExtendedDocumentationProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.parameterExtendedDocumentationProvider" interface="icu.windea.pls.lang.documentation.ParadoxParameterExtendedDocumentationProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.dynamicValueExtendedDocumentationProvider" interface="icu.windea.pls.lang.documentation.ParadoxDynamicValueExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionSupport" interface="icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.pathReferenceExpressionSupport" interface="icu.windea.pls.lang.expression.ParadoxPathReferenceExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.expressionIndexSupport" interface="icu.windea.pls.lang.index.ParadoxExpressionIndexSupport" dynamic="true"/>
@@ -106,6 +108,10 @@
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.lang.documentation.ParadoxOnActionExtendedDocumentationProvider"/>
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.lang.documentation.ParadoxGameRuleExtendedDocumentationProvider"/>
 
+    <parameterExtendedDocumentationProvider implementation="icu.windea.pls.lang.documentation.ParadoxBaseParameterExtendedDocumentationProvider" order="last"/>
+    
+    <dynamicValueExtendedDocumentationProvider implementation="icu.windea.pls.lang.documentation.ParadoxBaseDynamicValueExtendedDocumentationProvider" order="last"/>
+    
     <dataExpressionResolver implementation="icu.windea.pls.lang.expression.BaseCwtDataExpressionResolver"/>
     <dataExpressionResolver implementation="icu.windea.pls.lang.expression.CoreCwtDataExpressionResolver"/>
     <dataExpressionResolver implementation="icu.windea.pls.lang.expression.ExtendedCwtDataExpressionResolver"/>

@@ -114,6 +114,10 @@ val CwtConfigGroup.gameRules: Map<String, CwtGameRuleConfig>
 val CwtConfigGroup.onActions: Map<String, CwtOnActionConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
+//scalar / template_expression - configs
+val CwtConfigGroup.parameters: Map<String, List<CwtParameterConfig>>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
+
 val CwtConfigGroup.dynamicValues: Map<String, CwtDynamicValueConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 

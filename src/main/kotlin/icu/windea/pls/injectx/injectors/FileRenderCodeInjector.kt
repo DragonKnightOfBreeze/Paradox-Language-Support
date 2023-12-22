@@ -12,14 +12,14 @@ import net.bytebuddy.implementation.bind.annotation.RuntimeType
 import net.bytebuddy.implementation.bind.annotation.SuperCall
 import java.util.concurrent.Callable
 
-//com.intellij.openapi.fileChooser.tree.FileRenderer
-//com.intellij.openapi.fileChooser.tree.FileRenderer.customize
-
 /**
  * 渲染文件节点时，为游戏或模组根目录提供提供额外的信息文本。
+ * 
+ * @see com.intellij.openapi.fileChooser.tree.FileRenderer
+ * @see com.intellij.openapi.fileChooser.tree.FileRenderer.customize
  */
-@Inject(FileRenderer::class)
-class FileRenderCodeInjector: CodeInjector {
+@Inject("com.intellij.openapi.fileChooser.tree.FileRenderer")
+open class FileRenderCodeInjector: CodeInjector {
     @InjectMethod
     @RuntimeType
     fun customize(renderer: SimpleColoredComponent, value: Any, selected: Boolean, focused: Boolean, @SuperCall methodCall: Callable<Unit>) {

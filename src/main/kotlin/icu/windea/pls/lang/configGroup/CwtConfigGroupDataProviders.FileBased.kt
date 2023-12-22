@@ -313,6 +313,13 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         }
                     }
                 }
+                key == "parameters" -> {
+                    val configs = property.configs ?: continue
+                    for(config in configs) {
+                        val parameterConfig = resolveParameterConfig(config) ?: continue
+                        configGroup.parameters.asMutable().getOrPut(parameterConfig.name) { mutableListOf() }.asMutable() += parameterConfig
+                    }
+                }
                 else -> {
                     //判断配置文件中的顶级的key是否匹配"single_alias[?]"，如果匹配，则解析配置并添加到singleAliases中
                     val singleAliasName = key.removeSurroundingOrNull("single_alias[", "]")
@@ -755,6 +762,15 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)
         }
         return CwtDynamicValueConfig(pointer, info, name, values, valueConfigMap)
+    }
+    
+    private fun resolveParameterConfig(config: CwtMemberConfig<*>): CwtParameterConfig? {
+        val name = when(config) {
+            is CwtPropertyConfig -> config.key
+            is CwtValueConfig -> config.value
+        }
+        val contextKey = config.findOption("context_key")?.stringValue ?: return null
+        return CwtParameterConfig(config.pointer, config.info, config, name, contextKey)
     }
     
     private fun resolveSingleAliasConfig(propertyConfig: CwtPropertyConfig, name: String): CwtSingleAliasConfig {

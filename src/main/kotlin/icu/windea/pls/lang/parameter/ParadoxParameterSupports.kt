@@ -120,7 +120,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val definitionTypes = definitionInfo.types
         val contextName = definitionName
         val contextIcon = PlsIcons.Nodes.Definition(definitionInfo.type)
-        val contextKey = "definition@$definitionName: ${definitionTypes.joinToString(",")}"
+        val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
         val rangeInParent = TextRange.create(0, element.textLength)
         val readWriteAccess = ParadoxParameterHandler.getReadWriteAccess(element)
         val gameType = definitionInfo.gameType
@@ -147,7 +147,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val name = element.name
         val contextName = definitionName
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
-        val contextKey = "definition@$definitionName: ${definitionTypes.joinToString(",")}"
+        val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
         val rangeInParent = rangeInElement ?: TextRange.create(0, element.textLength)
         val readWriteAccess = ParadoxParameterHandler.getReadWriteAccess(element)
         val gameType = config.info.configGroup.gameType ?: return null
@@ -333,7 +333,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val name = argumentNode.text
         val contextName = definitionName
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
-        val contextKey = "definition@$definitionName: script_value"
+        val contextKey = "script_value@${definitionName}"
         val rangeInParent = rangeInElement
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
         val gameType = configGroup.gameType ?: return null

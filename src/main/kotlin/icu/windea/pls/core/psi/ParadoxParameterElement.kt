@@ -15,8 +15,10 @@ import javax.swing.*
 
 /**
  * 定义的参数并不存在一个真正意义上的声明处，用这个模拟。
- *
- * @property contextKey 用于判断参数是否拥有相同的上下文。
+ * 
+ * [contextKey] 用于判断参数是否拥有相同的上下文，格式如下：
+ * * 对于定义的参数：`<typeExpression>@<definitionName>`
+ * * 对于内联脚本的参数：`inline_script@<inline_script_expression>`
  * @see ParadoxParameterSupport
  */
 class ParadoxParameterElement(
