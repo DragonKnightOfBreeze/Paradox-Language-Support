@@ -10,6 +10,7 @@ import icu.windea.pls.injectx.*
 import icu.windea.pls.injectx.annotations.*
 import net.bytebuddy.implementation.bind.annotation.RuntimeType
 import net.bytebuddy.implementation.bind.annotation.SuperCall
+import java.util.concurrent.Callable
 
 //com.intellij.openapi.fileChooser.tree.FileRenderer
 //com.intellij.openapi.fileChooser.tree.FileRenderer.customize
@@ -21,15 +22,15 @@ import net.bytebuddy.implementation.bind.annotation.SuperCall
 class FileRenderCodeInjector: CodeInjector {
     @InjectMethod
     @RuntimeType
-    fun customize(renderer: SimpleColoredComponent, value: Any, selected: Boolean, focused: Boolean, @SuperCall methodCall: Runnable) {
-        methodCall.run()
+    fun customize(renderer: SimpleColoredComponent, value: Any, selected: Boolean, focused: Boolean, @SuperCall methodCall: Callable<Unit>) {
+        methodCall.call()
         doCustomizeCatching(value, renderer)
     }
     
     @InjectMethod
     @RuntimeType
-    fun customize(renderer: SimpleColoredComponent, value: Any, @SuperCall methodCall: Runnable) {
-        methodCall.run()
+    fun customize(renderer: SimpleColoredComponent, value: Any, @SuperCall methodCall: Callable<Unit>) {
+        methodCall.call()
         doCustomizeCatching(value, renderer)
     }
     

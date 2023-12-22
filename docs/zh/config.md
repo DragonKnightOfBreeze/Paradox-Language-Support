@@ -67,8 +67,8 @@ prop = {
 ```cwt
 definitions = {
     ### Some documentation
-    ## type = scripted_trigger
-	# 'X' or 'X = {}'
+	## type = civic_or_origin.civic
+	# 'X' or 'X = xxx'
     X
 }
 ```
@@ -79,7 +79,7 @@ definitions = {
 game_rules = {
     ### Some documentation
     ## replace_scopes = { this = country root = country }
-    # 'X' or 'X = {}', use 'X = {...}' to apply config overridden
+	# 'X' or 'X = xxx', use 'X = xxx' to override declaration config 
     X
 }
 ```
@@ -91,7 +91,7 @@ on_actions = {
     ### Some documentation
     ## replace_scopes = { this = country root = country }
 	## event_type = country
-    # 'X' or 'X = {}'
+    # 'X' or 'X = xxx'
     X
 }
 ```

@@ -14,11 +14,11 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if(element is ParadoxLocalisationConceptName) visitConceptName(element)
+                if(element is ParadoxLocalisationConcept) visitConcept(element)
             }
             
-            private fun visitConceptName(element: ParadoxLocalisationConceptName) {
-                val location = element
+            private fun visitConceptName(element: ParadoxLocalisationConcept) {
+                val location = element.conceptName
                 val reference = element.reference
                 if(reference == null || reference.resolve() != null) return
                 val name = element.name

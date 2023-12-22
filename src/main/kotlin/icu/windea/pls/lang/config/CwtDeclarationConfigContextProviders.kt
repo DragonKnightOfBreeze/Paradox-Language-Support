@@ -62,8 +62,9 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     }
     
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        val gameRuleConfig = context.gameRuleConfig!!
-        val rootConfig = gameRuleConfig.config
+        //如果存在，使用重载的声明规则
+        val rootConfig = context.gameRuleConfig!!.config.castOrNull<CwtPropertyConfig>()?.takeIf { it.isBlock }
+            ?: declarationConfig.propertyConfig
         val configs = if(rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
         val finalRootConfig = rootConfig.delegated(configs, null)
         finalRootConfig.declarationConfigContext = context
