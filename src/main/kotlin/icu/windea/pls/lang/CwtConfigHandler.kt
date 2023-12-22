@@ -186,10 +186,10 @@ object CwtConfigHandler {
                 CwtConfigType.LocalisationPredefinedParameter
             }
             path.matchesAntPath("definitions/*") -> {
-                CwtConfigType.OnAction
+                CwtConfigType.Definition
             }
             path.matchesAntPath("game_rules/*") -> {
-                CwtConfigType.OnAction
+                CwtConfigType.GameRule
             }
             path.matchesAntPath("on_actions/*") -> {
                 CwtConfigType.OnAction
@@ -203,8 +203,21 @@ object CwtConfigHandler {
         if(configPath == null || configPath.isEmpty()) return null
         val path = configPath.path
         return when {
-            path.matchesAntPath("enums/enum[*]/*") -> CwtConfigType.EnumValue
-            path.matchesAntPath("values/value[*]/*") -> CwtConfigType.DynamicValue
+            path.matchesAntPath("enums/enum[*]/*") -> {
+                CwtConfigType.EnumValue
+            }
+            path.matchesAntPath("values/value[*]/*") -> {
+                CwtConfigType.DynamicValue
+            }
+            path.matchesAntPath("definitions/*") -> {
+                CwtConfigType.Definition
+            }
+            path.matchesAntPath("game_rules/*") -> {
+                CwtConfigType.GameRule
+            }
+            path.matchesAntPath("on_actions/*") -> {
+                CwtConfigType.OnAction
+            }
             else -> null
         }
     }

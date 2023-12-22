@@ -112,12 +112,15 @@ enum class CwtConfigType(
 	},
 	Definition("definition") {
 		override val prefix get() = PlsBundle.message("prefix.definition")
+		override val icon get() = PlsIcons.Nodes.DefinitionConfig
 	},
 	GameRule("game rule") {
 		override val prefix get() = PlsBundle.message("prefix.gameRule")
+		override val icon get() = PlsIcons.Nodes.DefinitionConfig
 	},
 	OnAction("on action") {
 		override val prefix get() = PlsBundle.message("prefix.onAction")
+		override val icon get() = PlsIcons.Nodes.DefinitionConfig
 	},
 	;
 	

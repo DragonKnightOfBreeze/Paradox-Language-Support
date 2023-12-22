@@ -36,6 +36,7 @@ object PlsIcons {
         @JvmField val EnumValue = loadIcon("/icons/nodes/enumValue.svg")
         @JvmField val ComplexEnum = loadIcon("/icons/nodes/complexEnum.svg")
         @JvmField val ComplexEnumValue = loadIcon("/icons/nodes/complexEnumValue.svg")
+        @JvmField val DefinitionConfig = loadIcon("/icons/nodes/definitionConfig.svg")
         @JvmField val Scope = loadIcon("/icons/nodes/scope.svg")
         @JvmField val ScopeGroup = loadIcon("/icons/nodes/scopeGroup.svg")
         @JvmField val SystemScope = loadIcon("/icons/nodes/systemScope.svg")
