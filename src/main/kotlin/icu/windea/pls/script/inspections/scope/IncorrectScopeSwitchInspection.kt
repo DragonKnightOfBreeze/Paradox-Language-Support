@@ -52,11 +52,11 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                     holder.registerProblem(propertyKey, rangeInExpression, description)
                                 }
                             }
-                            //TODO 'event_target:xxx', not supported yet
+                            //TODO 1.3.0+ dynamic value (expression)
                             is ParadoxScopeLinkFromDataExpressionNode -> {
                                 
                             }
-                            //TODO may depends on usages
+                            //NOTE may depends on usages
                             //check when root parent scope context is not from event, scripted_trigger or scripted_effect
                             is ParadoxSystemLinkExpressionNode -> {
                                 if(!checkForSystemLink) continue

@@ -44,14 +44,4 @@ object ParadoxValueSetValueHandler {
         val valueSetNames = configExpressions.mapNotNullTo(mutableSetOf()) { it.value }
         return ParadoxValueSetValueElement(element, name, valueSetNames, readWriteAccess, gameType, configGroup.project)
     }
-    
-    @Suppress("UNUSED_PARAMETER")
-    fun getInferredScopeContext(element: ParadoxValueSetValueElement): ParadoxScopeContext {
-        return ParadoxScopeHandler.getAnyScopeContext() //TODO 1.1.8+
-    }
-    
-    @Suppress("UNUSED_PARAMETER")
-    fun getInferredScopeContext(element: PsiElement, valueSetValueExpression: ParadoxValueSetValueExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
-        return ParadoxScopeHandler.getAnyScopeContext() //TODO 1.1.8+
-    }
 }

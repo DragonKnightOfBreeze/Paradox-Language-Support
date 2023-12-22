@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
@@ -39,19 +40,25 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                                     holder.registerProblem(location, description)
                                 }
                             }
-                            //predefined event target - no scope info in cwt files yet
-                            is CwtValueConfig -> {
-                                return
-                            }
                         }
                     }
-                    //TODO scripted loc - any scope
+                    //NOTE scripted loc - any scope
                     resolved is ParadoxScriptProperty -> {
                         return
                     }
-                    //TODO variable - not supported yet
+                    //variable
                     resolved is ParadoxValueSetValueElement -> {
-                        return
+                        val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
+                        val supportedScopeContext = ParadoxScopeHandler.getScopeContext(resolved)
+                        val supportedScope = supportedScopeContext.scope.id
+                        val configGroup = getConfigGroup(resolved.project, resolved.gameType)
+                        if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScope, configGroup)) {
+                            val description = PlsBundle.message(
+                                "inspection.localisation.scope.incorrectScope.description.2",
+                                element.name, supportedScope, scopeContext.scope.id
+                            )
+                            holder.registerProblem(element, description)
+                        }
                     }
                 }
             }

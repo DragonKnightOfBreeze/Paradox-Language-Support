@@ -13,9 +13,6 @@ import icu.windea.pls.script.psi.*
 interface ParadoxDefinitionScopeContextProvider {
     fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
     
-    /**
-     * 得到作用域上下文。
-     */
     fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext?
     
     companion object INSTANCE {

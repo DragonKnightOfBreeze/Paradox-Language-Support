@@ -12,16 +12,15 @@ import icu.windea.pls.model.*
  * 用于为动态值提供（基于上下文）推断的作用域上下文。
  */
 @WithGameTypeEP
-interface ParadoxValueSetValueInferredScopeContextProvider{
-    fun supports(valueSetValue: ParadoxValueSetValueElement): Boolean
+interface ParadoxDynamicValueInferredScopeContextProvider {
+    fun supports(element: ParadoxValueSetValueElement): Boolean
     
-    fun getScopeContext(valueSetValue: ParadoxValueSetValueElement): ParadoxScopeContextInferenceInfo?
+    fun getScopeContext(element: ParadoxValueSetValueElement): ParadoxScopeContextInferenceInfo?
     
-    //特定类型的valueSetValue，例如event_target、variable，即使同名，也完全可能拥有不同的作用域上下文
-    //因此插件目前不提供相关的代码检查
+    //注意：同名的动态值在不同的上下文中完全可能拥有不同的作用域上下文
     
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxValueSetValueInferredScopeContextProvider>("icu.windea.pls.valueSetValueInferredScopeContextProvider")
+        val EP_NAME = ExtensionPointName.create<ParadoxDynamicValueInferredScopeContextProvider>("icu.windea.pls.dynamicValueInferredScopeContextProvider")
         
         fun getScopeContext(valueSetValue: ParadoxValueSetValueElement): ParadoxScopeContext? {
             val gameType = valueSetValue.gameType

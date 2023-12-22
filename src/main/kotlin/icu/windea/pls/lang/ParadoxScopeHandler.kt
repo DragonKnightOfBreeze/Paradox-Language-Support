@@ -250,7 +250,6 @@ object ParadoxScopeHandler {
     
     private fun doGetScopeContextFromCache(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContext) {
-            ProgressManager.checkCanceled()
             val file = element.containingFile ?: return@getCachedValue null
             val value = doGetScopeContextOfLocalisationCommandIdentifier(element)
             CachedValueProvider.Result.create(value, file)
@@ -280,7 +279,7 @@ object ParadoxScopeHandler {
             }
             prevResolved is ParadoxValueSetValueElement -> {
                 val prevScopeContext = prevElement.prevIdentifier?.let { getScopeContext(it) } ?: getAnyScopeContext()
-                val scopeContext = ParadoxValueSetValueHandler.getInferredScopeContext(prevResolved)
+                val scopeContext = getScopeContext(prevResolved)
                 return prevScopeContext.resolve(scopeContext)
             }
         }
@@ -325,6 +324,26 @@ object ParadoxScopeHandler {
         return inputScopeContext.resolve(linkConfig.outputScope)
     }
     
+    fun getScopeContext(element: ParadoxValueSetValueElement): ParadoxScopeContext {
+        return doGetScopeContextFromCache(element)
+    }
+    
+    private fun doGetScopeContextFromCache(element: ParadoxValueSetValueElement): ParadoxScopeContext {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContext) {
+            val value = doGetScopeContextOfDynamicValue(element)
+            val tracker = ModificationTracker.NEVER_CHANGED
+            CachedValueProvider.Result.create(value, tracker)
+        }
+    }
+    
+    private fun doGetScopeContextOfDynamicValue(element: ParadoxValueSetValueElement): ParadoxScopeContext {
+        val scopeContext = ParadoxDynamicValueScopeContextProvider.getScopeContext(element)
+        if(scopeContext != null) return scopeContext
+        val inferredScopeContext = ParadoxDynamicValueInferredScopeContextProvider.getScopeContext(element)
+        if(inferredScopeContext != null) return inferredScopeContext
+        return getAnyScopeContext()
+    }
+    
     private fun doGetScopeContextByScopeLinkNode(contextElement: PsiElement, node: ParadoxScopeLinkExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext {
         val outputScope = node.config.outputScope
         return inputScopeContext.resolve(outputScope)
@@ -347,7 +366,13 @@ object ParadoxScopeHandler {
                     dataType.isValueSetValueType() -> {
                         val valueSetValueExpression = node.dataSourceNode.nodes.findIsInstance<ParadoxValueSetValueExpression>()
                         if(valueSetValueExpression == null) return getUnknownScopeContext(inputScopeContext) //unexpected
-                        return ParadoxValueSetValueHandler.getInferredScopeContext(contextElement, valueSetValueExpression, inputScopeContext)
+                        val configGroup = valueSetValueExpression.configGroup
+                        val valueSetValueNode = valueSetValueExpression.valueSetValueNode
+                        val name = valueSetValueNode.text
+                        val configExpressions = valueSetValueNode.configs.mapNotNullTo(mutableSetOf()) { it.expression }
+                        val expressionElement = contextElement.castOrNull<ParadoxScriptStringExpressionElement>() ?: return getAnyScopeContext()
+                        val valueSetValueElement = ParadoxValueSetValueHandler.resolveValueSetValue(expressionElement, name, configExpressions, configGroup) ?: return getAnyScopeContext()
+                        return getScopeContext(valueSetValueElement) 
                     }
                 }
             }

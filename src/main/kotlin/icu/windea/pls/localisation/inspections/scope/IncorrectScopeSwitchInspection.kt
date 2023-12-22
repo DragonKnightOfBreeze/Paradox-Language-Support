@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
@@ -41,8 +42,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                     holder.registerProblem(element, description)
                                 }
                             }
-                            
-                            //TODO depends on usages, cannot check now
+                            //NOTE depends on usages, cannot check now
                             //is CwtSystemLinkConfig -> {
                             // if(!checkForSystemLink) return
                             //	val scopeContext = ParadoxScopeHandler.getScopeContext(element, file) ?: return
@@ -54,15 +54,21 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                             //		holder.registerProblem(location, description)
                             //	}
                             //}
-                            //predefined event target - no scope info in cwt files yet
-                            is CwtValueConfig -> {
-                                return
-                            }
                         }
                     }
-                    //TODO event target or global event target - not supported yet
+                    //event target or global event target
                     resolved is ParadoxValueSetValueElement -> {
-                        return
+                        val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
+                        val supportedScopeContext = ParadoxScopeHandler.getScopeContext(resolved)
+                        val supportedScope = supportedScopeContext.scope.id
+                        val configGroup = getConfigGroup(resolved.project, resolved.gameType)
+                        if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScope, configGroup)) {
+                            val description = PlsBundle.message(
+                                "inspection.localisation.scope.incorrectScopeSwitch.description.2",
+                                element.name, supportedScope, scopeContext.scope.id
+                            )
+                            holder.registerProblem(element, description)
+                        }
                     }
                 }
             }
