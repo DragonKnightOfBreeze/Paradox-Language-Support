@@ -3,10 +3,12 @@ package icu.windea.pls.lang.scope
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxBaseDefinitionScopeContextProvider: ParadoxDefinitionScopeContextProvider {
+class ParadoxDefaultDefinitionScopeContextProvider: ParadoxDefinitionScopeContextProvider {
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
         return true
     }
@@ -25,6 +27,20 @@ class ParadoxBaseDefinitionScopeContextProvider: ParadoxDefinitionScopeContextPr
             ?: declarationConfig.pushScope
         val result = scopeContext?.resolve(pushScope)
             ?: pushScope?.let { ParadoxScopeContext.resolve(it, it) }
+        return result
+    }
+}
+
+class ParadoxBaseDefinitionScopeContextProvider: ParadoxDefinitionScopeContextProvider {
+    override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
+        return true
+    }
+    
+    override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
+        val configGroup = definitionInfo.configGroup
+        val configs = configGroup.definitions.getAllByTemplate(definitionInfo.name, definition, configGroup)
+        val config = configs.findLast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) } ?: return null
+        val result = config?.config?.scopeContext
         return result
     }
 }

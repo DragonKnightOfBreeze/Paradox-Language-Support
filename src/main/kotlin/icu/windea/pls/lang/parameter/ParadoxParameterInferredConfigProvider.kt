@@ -9,7 +9,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 /**
- * 用于为脚本参数提供推断的CWT规则上下文。
+ * 用于为脚本参数提供（基于上下文）推断的CWT规则上下文。
  * 
  * 基于语言注入功能为参数值对应的脚本片段提供高级语言功能。
  *

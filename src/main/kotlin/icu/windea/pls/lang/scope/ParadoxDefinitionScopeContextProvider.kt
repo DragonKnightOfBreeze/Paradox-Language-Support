@@ -6,6 +6,9 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
+/**
+ * 用于为定义提供作用域上下文。
+ */
 @WithGameTypeEP
 interface ParadoxDefinitionScopeContextProvider {
     fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean

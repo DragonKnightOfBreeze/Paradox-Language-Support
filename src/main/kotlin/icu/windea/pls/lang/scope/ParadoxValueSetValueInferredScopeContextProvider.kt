@@ -9,7 +9,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 /**
- * 用于为特定类型的valueSetValue提供推断的作用域上下文。
+ * 用于为动态值提供（基于上下文）推断的作用域上下文。
  */
 @WithGameTypeEP
 interface ParadoxValueSetValueInferredScopeContextProvider{
