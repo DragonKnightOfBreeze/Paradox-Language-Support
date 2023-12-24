@@ -37,7 +37,7 @@ class ParadoxScriptSyntaxHighlighter(
         private val BAD_CHARACTER_KEYS = arrayOf(ParadoxScriptAttributesKeys.BAD_CHARACTER_KEY)
         private val EMPTY_KEYS = TextAttributesKey.EMPTY_ARRAY
         
-        private const val addtionalValidEscapes = "$"
+        private const val additionalValidEscapes = "$"
     }
     
     override fun getTokenHighlights(tokenType: IElementType?) = when(tokenType) {
@@ -69,8 +69,10 @@ class ParadoxScriptSyntaxHighlighter(
     
     override fun getHighlightingLexer(): Lexer {
         val lexer = LayeredLexer(ParadoxScriptLexer())
-        lexer.registerSelfStoppingLayer(StringLiteralLexer('"', PROPERTY_KEY_TOKEN, false, addtionalValidEscapes, false, false), arrayOf(PROPERTY_KEY_TOKEN), emptyArray())
-        lexer.registerSelfStoppingLayer(StringLiteralLexer('"', STRING_TOKEN, false, addtionalValidEscapes, false, false), arrayOf(STRING_TOKEN), emptyArray())
+        val lexer1 = StringLiteralLexer('"', PROPERTY_KEY_TOKEN, false, additionalValidEscapes, false, false)
+        lexer.registerSelfStoppingLayer(lexer1, arrayOf(PROPERTY_KEY_TOKEN), emptyArray())
+        val lexer2 = StringLiteralLexer('"', STRING_TOKEN, false, additionalValidEscapes, false, false)
+        lexer.registerSelfStoppingLayer(lexer2, arrayOf(STRING_TOKEN), emptyArray())
         return lexer
     }
 }

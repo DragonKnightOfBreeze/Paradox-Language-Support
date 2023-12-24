@@ -1,9 +1,11 @@
 package icu.windea.pls.localisation.highlighter
 
+import com.intellij.lexer.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import com.intellij.psi.*
 import com.intellij.psi.StringEscapesTokenTypes.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
@@ -34,6 +36,8 @@ class ParadoxLocalisationSyntaxHighlighter(
         private val INVALID_ESCAPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.INVALID_ESCAPE_KEY)
         private val BAD_CHARACTER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.BAD_CHARACTER_KEY)
         private val EMPTY_KEYS = TextAttributesKey.EMPTY_ARRAY
+        
+        private const val additionalValidEscapes = "\$£§"
     }
     
     override fun getTokenHighlights(tokenType: IElementType?) = when(tokenType) {
@@ -60,6 +64,18 @@ class ParadoxLocalisationSyntaxHighlighter(
         else -> EMPTY_KEYS
     }
     
-    override fun getHighlightingLexer() = ParadoxLocalisationLexer()
+    override fun getHighlightingLexer(): Lexer {
+        val lexer = LayeredLexer(ParadoxLocalisationLexer())
+        val lexer1 = object: StringLiteralLexer(NO_QUOTE_CHAR, STRING_TOKEN, false, additionalValidEscapes, false, false) {
+            override fun getTokenType(): IElementType? {
+                if(myStart >= myEnd) return null
+                //handle double left bracket '[['
+                if(myBuffer[myStart] == '[' && myStart + 1 < myEnd && myBuffer[myStart + 1] == '[') return StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN
+                return super.getTokenType()
+            }
+        }
+        lexer.registerSelfStoppingLayer(lexer1, arrayOf(STRING_TOKEN), emptyArray())
+        return lexer
+    }
 }
 
