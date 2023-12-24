@@ -1,6 +1,7 @@
 package icu.windea.pls.script.highlighter
 
 import com.intellij.lexer.*
+import com.intellij.lexer.StringLiteralLexer.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
@@ -69,9 +70,9 @@ class ParadoxScriptSyntaxHighlighter(
     
     override fun getHighlightingLexer(): Lexer {
         val lexer = LayeredLexer(ParadoxScriptLexer())
-        val lexer1 = StringLiteralLexer('"', PROPERTY_KEY_TOKEN, false, additionalValidEscapes, false, false)
+        val lexer1 = StringLiteralLexer(NO_QUOTE_CHAR, PROPERTY_KEY_TOKEN, false, additionalValidEscapes, false, false)
         lexer.registerSelfStoppingLayer(lexer1, arrayOf(PROPERTY_KEY_TOKEN), emptyArray())
-        val lexer2 = StringLiteralLexer('"', STRING_TOKEN, false, additionalValidEscapes, false, false)
+        val lexer2 = StringLiteralLexer(NO_QUOTE_CHAR, STRING_TOKEN, false, additionalValidEscapes, false, false)
         lexer.registerSelfStoppingLayer(lexer2, arrayOf(STRING_TOKEN), emptyArray())
         return lexer
     }

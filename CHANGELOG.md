@@ -26,7 +26,7 @@
 
 > 检查：
 > * [ ] lexer 代码检查 - 本地化文件的语法
-> * [ ] escape `\\[rnt\"$£§]`
+> * [ ] escape `\\[rnt\"$£§]` cwt/script/loc
 > * [ ] localisationFloatingToolbar
 > * [ ] concept
 > * [ ] 内嵌提示、快速文档中本地化文本的渲染，关于换行和转义字符的处理

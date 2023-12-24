@@ -45,11 +45,11 @@ class CodeInjectorService {
         val targetClassName = injectAnnotation.value
         val pluginId = injectAnnotation.pluginId
         val targetClassLoader = when {
-            pluginId.isEmpty() -> null
+            pluginId.isEmpty() -> Application::class.java.classLoader
             else -> runCatchingCancelable {
                 PluginManager.getInstance().findEnabledPlugin(PluginId.findId(pluginId)!!)!!.pluginClassLoader
             }.getOrElse { PluginDescriptor::class.java.classLoader }
-        } ?: Application::class.java.classLoader
+        }
         
         val methodsWithAnnotations = codeInjector::class.declaredFunctions.mapNotNull f@{ method ->
             val injectMethodAnnotation = method.findAnnotation<InjectMethod>() ?: return@f null
@@ -57,11 +57,9 @@ class CodeInjectorService {
         }
         if(methodsWithAnnotations.isEmpty()) return
         
-        var codeInjectorProxyClass = ByteBuddy().subclass(codeInjector::class.java).make().load(targetClassLoader).loaded
-        
         val typeDescription = TypePool.Default.of(targetClassLoader).describe(targetClassName).resolve()
         val classFileLocator = ClassFileLocator.ForClassLoader.of(targetClassLoader)
-        val methodDelegation = MethodDelegation.to(codeInjectorProxyClass)
+        val methodDelegation = MethodDelegation.to(codeInjector)
         
         var builder = ByteBuddy().rebase<Any>(typeDescription, classFileLocator)
         methodsWithAnnotations.forEach { (method, injectMethodAnnotation) ->
