@@ -8,9 +8,8 @@ import com.intellij.ui.*
 import icu.windea.pls.core.*
 import icu.windea.pls.injectx.*
 import icu.windea.pls.injectx.annotations.*
-import net.bytebuddy.implementation.bind.annotation.RuntimeType
-import net.bytebuddy.implementation.bind.annotation.SuperCall
-import java.util.concurrent.Callable
+import net.bytebuddy.implementation.bind.annotation.*
+import java.util.concurrent.*
 
 /**
  * 渲染文件节点时，为游戏或模组根目录提供提供额外的信息文本。
@@ -20,13 +19,6 @@ import java.util.concurrent.Callable
  */
 @Inject("com.intellij.openapi.fileChooser.tree.FileRenderer")
 open class FileRenderCodeInjector: CodeInjector {
-    @InjectMethod
-    @RuntimeType
-    fun customize(renderer: SimpleColoredComponent, value: Any, selected: Boolean, focused: Boolean, @SuperCall methodCall: Callable<Unit>) {
-        methodCall.call()
-        doCustomizeCatching(value, renderer)
-    }
-    
     @InjectMethod
     @RuntimeType
     fun customize(renderer: SimpleColoredComponent, value: Any, @SuperCall methodCall: Callable<Unit>) {

@@ -16,6 +16,7 @@ import net.bytebuddy.implementation.*
 import net.bytebuddy.matcher.*
 import net.bytebuddy.pool.*
 import kotlin.reflect.full.*
+import kotlin.reflect.jvm.*
 
 @Service
 class CodeInjectorService {
@@ -51,15 +52,19 @@ class CodeInjectorService {
             }.getOrElse { PluginDescriptor::class.java.classLoader }
         }
         
-        val methodsWithAnnotations = codeInjector::class.declaredFunctions.mapNotNull f@{ method ->
-            val injectMethodAnnotation = method.findAnnotation<InjectMethod>() ?: return@f null
+        val methodsWithAnnotations = codeInjector::class.declaredFunctions.mapNotNull f@{ function ->
+            val method = function.javaMethod ?: return@f null
+            val injectMethodAnnotation = function.findAnnotation<InjectMethod>() ?: return@f null
             method to injectMethodAnnotation
         }
         if(methodsWithAnnotations.isEmpty()) return
         
+        val codeInjectorProxyClass = ByteBuddy().subclass(codeInjector::class.java).make()
+            .load(codeInjector::class.java.classLoader, ClassLoadingStrategy.Default.CHILD_FIRST).loaded
+        
         val typeDescription = TypePool.Default.of(targetClassLoader).describe(targetClassName).resolve()
         val classFileLocator = ClassFileLocator.ForClassLoader.of(targetClassLoader)
-        val methodDelegation = MethodDelegation.to(codeInjector)
+        val methodDelegation = MethodDelegation.to(codeInjectorProxyClass)
         
         var builder = ByteBuddy().rebase<Any>(typeDescription, classFileLocator)
         methodsWithAnnotations.forEach { (method, injectMethodAnnotation) ->
@@ -69,7 +74,7 @@ class CodeInjectorService {
         try {
             builder.make().load(targetClassLoader, ClassLoadingStrategy.Default.INJECTION)
         } catch(e: Throwable) {
-            e.printStackTrace()
+                e.printStackTrace()
         }
     }
 }
