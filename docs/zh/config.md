@@ -8,6 +8,10 @@ PLS基于由CWT规则文件组成的CWT规则分组，实现了许多高级语�
 
 规则分组中的数据首先来自特定目录下的CWT规则文件，经过合并与计算后，再用于实现插件的各种功能。
 
+参考链接：
+
+* [仓库一览](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config)
+
 ### 分类
 
 **内置的规则分组**
@@ -30,11 +34,6 @@ CWT规则会按照文件路径和规则ID进行后序覆盖。
 因为插件内置的修正规则位于插件jar包中的规则文件`config/stellaris/modifiers.cwt`中，它们的路径都是`modifiers.cwt`。
 
 如果此自定义的规则文件中没有任何内容，应用后插件将无法解析脚本文件中的任何修正。
-
-### 参考链接
-
-* [指引文档](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
-* [仓库一览](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config)
 
 ## CWT规则文件{#cwt-config-file}
 
@@ -62,6 +61,16 @@ prop = {
 
 ## 编写CWT规则文件{#writing-cwt-config-files}
 
+### 概述
+
+正在更新中。
+以下列出的只是一些用于自定义的规则的编写规范，例如，指定作用域上下文与快速文档。
+关于更详细的规则的编写规范，请参考下方的参考链接以及插件内置的那些规则文件。
+
+参考链接：
+
+* [指引文档](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
+
 ### Definitions
 
 ```cwt
@@ -69,6 +78,7 @@ definitions = {
     ### Some documentation
 	## type = civic_or_origin.civic
 	# 'X' or 'X = xxx'
+    # 'X' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
     X
 }
 ```
@@ -79,7 +89,9 @@ definitions = {
 game_rules = {
     ### Some documentation
     ## replace_scopes = { this = country root = country }
-	# 'X' or 'X = xxx', use 'X = xxx' to override declaration config 
+	# 'X' or 'X = xxx'
+	# 'X' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
+    # use 'X = xxx' to override declaration config
     X
 }
 ```
@@ -92,6 +104,32 @@ on_actions = {
     ## replace_scopes = { this = country root = country }
 	## event_type = country
     # 'X' or 'X = xxx'
+	# 'X' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
     X
+}
+```
+
+### Parameters
+
+```cwt
+parameters = {
+    ### Some documentation
+    ## context_key = scripted_trigger@some_trigger
+	# 'P' or 'P = xxx'
+	# 'X' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
+    P
+}
+```
+
+### Dynamic Values
+
+```cwt
+values = {
+    value[event_target] = {
+        ### Some documentation
+		## replace_scopes = { this = country root = country }
+        # 'v', not 'v = xxx'
+        v
+    }
 }
 ```

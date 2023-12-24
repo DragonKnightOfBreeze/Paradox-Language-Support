@@ -9,6 +9,10 @@ PLS implements various advanced language features based on CWT config groups, wh
 The data in these config groups first comes from the CWT rule files in specific directories,
 after merging and computing, it will be used to implement various features of this plugin.
 
+Reference Links;
+
+* [Repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config)
+
 ### Built-in config groups
 
 Their CWT config files are located in the 'config/${gameType}' directory (which is in the plugin jar), and they will always be enabled.
@@ -29,11 +33,6 @@ For example, if you have written some custom configs in the config file `.config
 Since the built-in modifier configs are located in the config file `config/stellaris/modifiers.cwt` (which is in the plugin jar), and both of their path is `modifiers.cwt`.
 
 If these are no content in the custom config file, after applied, the plugin will be unable to resolve any modifier in script files.
-
-Reference Links:
-
-* [Guidance Documentation](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
-* [Repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config)
 
 ## CWT Config File{#cwt-config-file}
 
@@ -61,25 +60,38 @@ prop = {
 
 ## Writing CWT Config Files{#writing-cwt-config-files}
 
+### Summary
+
+In progress.
+Listed below are just some of the config specifications used for customization, such as, specifying the scope context and the quick documentation.
+For more detailed config specifications, please refer to the reference links below and those config files built into the plugin.
+
+Reference Links:
+
+* [Guidance](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
+
 ### Definitions
 
 ```cwt
 definitions = {
-	### Some documentation
+    ### Some documentation
 	## type = civic_or_origin.civic
 	# 'X' or 'X = xxx'
-	X
+    # 'X' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
+    X
 }
 ```
 
 ### Game Rules
 
 ```cwt
-definitions = {
-	### Some documentation
-	## type = scripted_trigger
+game_rules = {
+    ### Some documentation
+    ## replace_scopes = { this = country root = country }
 	# 'X' or 'X = xxx'
-	X
+	# 'X' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
+    # use 'X = xxx' to override declaration config
+    X
 }
 ```
 
@@ -87,10 +99,36 @@ definitions = {
 
 ```cwt
 on_actions = {
-	### Some documentation
-	## replace_scopes = { this = country root = country }
+    ### Some documentation
+    ## replace_scopes = { this = country root = country }
 	## event_type = country
-	# 'X' or 'X = xxx'
-	X
+    # 'X' or 'X = xxx'
+	# 'X' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
+    X
+}
+```
+
+### Parameters
+
+```cwt
+parameters = {
+    ### Some documentation
+    ## context_key = scripted_trigger@some_trigger
+	# 'P' or 'P = xxx'
+	# 'X' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
+    P
+}
+```
+
+### Dynamic Values
+
+```cwt
+values = {
+    value[event_target] = {
+        ### Some documentation
+		## replace_scopes = { this = country root = country }
+        # 'v', not 'v = xxx'
+        v
+    }
 }
 ```
