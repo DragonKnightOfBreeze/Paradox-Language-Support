@@ -65,8 +65,11 @@ class ExtensionsTest {
 		Assert.assertEquals("\"abc\"", "abc".quote())
 		Assert.assertEquals("\"abc\"", "\"abc\"".quote())
 		
-		Assert.assertEquals("\"abc", "\\\"abc".unquote())
 		Assert.assertEquals("abc", "abc".unquote())
+		Assert.assertEquals("ab\"c", "ab\\\"c".unquote())
+		Assert.assertEquals("abc\"", "abc\\\"".unquote())
+		Assert.assertEquals("\"abc", "\\\"abc".unquote())
+		Assert.assertEquals("\"abc\"", "\\\"abc\\\"".unquote())
 		Assert.assertEquals("abc", "\"abc\"".unquote())
 		Assert.assertEquals("abc", "\"abc".unquote())
 		Assert.assertEquals("abc", "abc\"".unquote())

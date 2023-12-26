@@ -154,8 +154,9 @@ class ParadoxScriptAnnotator : Annotator {
         val text = element.text
         val isLeftQuoted = text.isLeftQuoted()
         val isRightQuoted = text.isRightQuoted()
-        if((isLeftQuoted && !isRightQuoted) || (!isLeftQuoted && isRightQuoted)) {
-            //missing closing quote
+        if(!isLeftQuoted && isRightQuoted) {
+            holder.newAnnotation(ERROR, PlsBundle.message("syntax.error.missing.opening.quote")).range(element).create()
+        } else if(isLeftQuoted && !isRightQuoted) {
             holder.newAnnotation(ERROR, PlsBundle.message("syntax.error.missing.closing.quote")).range(element).create()
         }
     }

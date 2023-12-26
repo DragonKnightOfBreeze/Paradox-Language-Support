@@ -263,8 +263,8 @@ fun String.quoteIfNecessary(): String {
 fun String.quote(): String {
     val s = this
     if(s.isEmpty() || s == "\"") return "\"\""
-    val start = startsWith('"')
-    val end = endsWith('"')
+    val start = isLeftQuoted()
+    val end = isRightQuoted()
     if(start && end) return s
     return buildString {
         if(!start) append("\"")
@@ -278,8 +278,8 @@ fun String.quote(): String {
 fun String.unquote(): String {
     val s = this
     if(s.isEmpty() || s == "\"") return ""
-    val start = startsWith('"')
-    val end = endsWith('"')
+    val start = isLeftQuoted()
+    val end = isRightQuoted()
     return buildString {
         var escape = false
         for((index, c) in s.withIndex()) {

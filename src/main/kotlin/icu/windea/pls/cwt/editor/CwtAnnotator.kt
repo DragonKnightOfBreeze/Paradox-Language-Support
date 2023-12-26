@@ -1,6 +1,7 @@
 package icu.windea.pls.cwt.editor
 
 import com.intellij.lang.annotation.*
+import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -17,9 +18,12 @@ class CwtAnnotator: Annotator {
 	
 	private fun checkLiteralElement(element: PsiElement, holder: AnnotationHolder) {
 		val text = element.text
-		if(text.isLeftQuoted() && !text.isRightQuoted()) {
-			//missing closing quote
-			holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("syntax.error.missing.closing.quote")).range(element).create()
+		val isLeftQuoted = text.isLeftQuoted()
+		val isRightQuoted = text.isRightQuoted()
+		if(!isLeftQuoted && isRightQuoted) {
+			holder.newAnnotation(ERROR, PlsBundle.message("syntax.error.missing.opening.quote")).range(element).create()
+		} else if(isLeftQuoted && !isRightQuoted) {
+			holder.newAnnotation(ERROR, PlsBundle.message("syntax.error.missing.closing.quote")).range(element).create()
 		}
 	}
 }
