@@ -20,7 +20,7 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.SymbolNavigationServiceImplCodeInjector"/>
     
     <!--code injectors to provide additional features-->
-    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>-->
+    <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
     
     <!--code injectors to optimize performance-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptPropertyCodeInjector"/>

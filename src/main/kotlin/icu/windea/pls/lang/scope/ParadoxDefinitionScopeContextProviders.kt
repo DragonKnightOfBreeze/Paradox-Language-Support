@@ -40,7 +40,7 @@ class ParadoxBaseDefinitionScopeContextProvider: ParadoxDefinitionScopeContextPr
         val configGroup = definitionInfo.configGroup
         val configs = configGroup.definitions.getAllByTemplate(definitionInfo.name, definition, configGroup)
         val config = configs.findLast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) } ?: return null
-        val result = config.config?.scopeContext
+        val result = config.config.scopeContext
         return result
     }
 }
