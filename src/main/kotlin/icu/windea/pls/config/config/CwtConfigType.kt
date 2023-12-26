@@ -20,6 +20,7 @@ enum class CwtConfigType(
 	},
 	Enum("enum") {
 		override val prefix get() = PlsBundle.message("prefix.enum")
+		override val icon get() = PlsIcons.Nodes.Enum
 	},
 	EnumValue("enum value", true, "enums") {
 		override val prefix get() = PlsBundle.message("prefix.enumValue")
@@ -32,6 +33,7 @@ enum class CwtConfigType(
 	},
 	DynamicValueType("dynamic value type") {
 		override val prefix get() = PlsBundle.message("prefix.dynamicValueType")
+		override val icon get() = PlsIcons.Nodes.DynamicValueType
 	},
 	DynamicValue("dynamic value", true, "values") {
 		override val prefix get() = PlsBundle.message("prefix.dynamicValue")

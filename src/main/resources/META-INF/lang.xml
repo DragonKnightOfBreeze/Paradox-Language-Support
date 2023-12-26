@@ -192,10 +192,10 @@
     
     <localisationParameterSupport implementation="icu.windea.pls.lang.parameter.ParadoxBaseLocalisationParameterSupport"/>
     
-    <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxDefaultDefinitionScopeContextProvider" order="last"/>
     <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxBaseDefinitionScopeContextProvider" order="last"/>
     <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxGameRuleScopeContextProvider"/>
     <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxOnActionScopeContextProvider"/>
+    <definitionScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxDefaultDefinitionScopeContextProvider" order="last"/>
 
     <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxBaseDefinitionInferredScopeContextProvider"/>
     <definitionInferredScopeContextProvider implementation="icu.windea.pls.lang.scope.ParadoxEventInOnActionInferredScopeContextProvider"/>
