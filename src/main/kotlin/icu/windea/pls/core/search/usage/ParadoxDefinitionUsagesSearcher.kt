@@ -8,6 +8,8 @@ import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.data.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 import kotlin.experimental.*
@@ -26,20 +28,26 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         val definitionInfo = runReadAction { target.definitionInfo }
         if(definitionInfo == null) return
         val definitionName = definitionInfo.name
-        if(definitionName.isEmpty()) return
+        if(definitionName.isEmpty()) return //ignore anonymous definitions
         val type = definitionInfo.type
         val project = queryParameters.project
         val words = mutableSetOf<String>()
         words.add(definitionName)
-        if(type == "sprite" || type == "spriteType") {
-            val gfxTextName = definitionName.removePrefix("GFX_text_")
-            if(gfxTextName.isNotEmpty()) {
-                words.add(gfxTextName)
-            } else {
-                val gfxName = definitionName.removePrefix("GFX_")
+        when {
+            type == "sprite" -> {
+                val gfxTextName = definitionName.removePrefix("GFX_text_")
                 if(gfxTextName.isNotEmpty()) {
-                    words.add(gfxName)
+                    words.add(gfxTextName)
+                } else {
+                    val gfxName = definitionName.removePrefix("GFX_")
+                    if(gfxTextName.isNotEmpty()) {
+                        words.add(gfxName)
+                    }
                 }
+            }
+            type == "concept" -> {
+                var data = target.getData<StellarisGameConceptDataProvider.Data>()
+                data?.alias?.forEach { words.add(it) }
             }
         }
         if(words.isEmpty()) return
