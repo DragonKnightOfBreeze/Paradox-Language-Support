@@ -23,7 +23,7 @@ IDEA插件：Paradox语言支持。
 
 此插件基于由CWT规则文件组成的[CWT规则分组](https://windea.icu/Paradox-Language-Support/#/zh/config.md#cwt-config-group)，实现了许多高级语言功能。
 插件已经内置了最新版本的规则文件，以便开箱即用。
-除此之外，插件也支持导入项目本地的规则文件。
+除此之外，插件也支持[自定义](https://windea.icu/Paradox-Language-Support/#/zh/config.md#writing-cwt-config-files)与导入项目本地的规则文件。
 
 如果同时安装了 [Translation](https://github.com/YiiGuxing/TranslationPlugin) ，此插件可以提供一些[额外的功能](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md)。
 
