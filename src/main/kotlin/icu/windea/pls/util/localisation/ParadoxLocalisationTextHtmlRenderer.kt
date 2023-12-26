@@ -2,13 +2,10 @@ package icu.windea.pls.util.localisation
 
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
@@ -160,12 +157,12 @@ object ParadoxLocalisationTextHtmlRenderer {
                 }
                 context.builder = oldBuilder
                 val conceptText = newBuilder.toString()
-                val conceptElement = conceptElement.reference?.resolve()
-                if(conceptElement == null) {
+                val concept = conceptElement.reference?.resolve()
+                if(concept == null) {
                     context.builder.append(conceptText)
                     return
                 }
-                val conceptName = conceptElement.definitionInfo?.name.orAnonymous()
+                val conceptName = concept.definitionInfo?.name.orAnonymous()
                 val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
                 val conceptColor = EditorColorsManager.getInstance().globalScheme.getAttributes(conceptAttributesKey).foregroundColor
                 if(conceptColor != null) context.builder.append("<span style=\"color: #").append(conceptColor.toHex()).append("\">")

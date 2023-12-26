@@ -5,7 +5,6 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
 import com.intellij.psi.StringEscapesTokenTypes.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
@@ -66,12 +65,43 @@ class ParadoxLocalisationSyntaxHighlighter(
     
     override fun getHighlightingLexer(): Lexer {
         val lexer = LayeredLexer(ParadoxLocalisationLexer())
-        val lexer1 = object: StringLiteralLexer(NO_QUOTE_CHAR, STRING_TOKEN, false, additionalValidEscapes, false, false) {
+        val lexer1 = object : StringLiteralLexer(NO_QUOTE_CHAR, STRING_TOKEN, false, additionalValidEscapes, false, false) {
             override fun getTokenType(): IElementType? {
                 if(myStart >= myEnd) return null
+                
                 //handle double left bracket '[['
-                if(myBuffer[myStart] == '[' && myStart + 1 < myEnd && myBuffer[myStart + 1] == '[') return StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN
+                if(myStart < myBufferEnd - 1 && myBuffer[myStart] == '[' && myBuffer[myStart + 1] == '[') {
+                    return VALID_STRING_ESCAPE_TOKEN
+                }
                 return super.getTokenType()
+            }
+            
+            override fun start(buffer: CharSequence, startOffset: Int, endOffset: Int, initialState: Int) {
+                super.start(buffer, startOffset, endOffset, initialState)
+                locateToken()
+            }
+            
+            override fun advance() {
+                super.advance()
+                locateToken()
+            }
+            
+            private fun locateToken() {
+                if(myEnd != myBufferEnd) return
+                
+                //handle double left bracket '[['
+                var i = myStart
+                if(i < myBufferEnd - 1 && myBuffer[i] == '[' && myBuffer[i + 1] == '[') {
+                    myEnd = i + 2
+                    return
+                }
+                while(i < myBufferEnd) {
+                    if(myBuffer[i] == '[') {
+                        myEnd = i
+                        return
+                    }
+                    i++
+                }
             }
         }
         lexer.registerSelfStoppingLayer(lexer1, arrayOf(STRING_TOKEN), emptyArray())

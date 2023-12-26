@@ -9,7 +9,7 @@ PLS implements various advanced language features based on CWT config groups, wh
 The data in these config groups first comes from the CWT rule files in specific directories,
 after merging and computing, it will be used to implement various features of this plugin.
 
-Reference Links;
+Reference Links:
 
 * [Repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config)
 
