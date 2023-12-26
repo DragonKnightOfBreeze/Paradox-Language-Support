@@ -19,7 +19,7 @@ class CwtAnnotator: Annotator {
 		val text = element.text
 		if(text.isLeftQuoted() && !text.isRightQuoted()) {
 			//missing closing quote
-			holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("syntax.error.missing.closing.quote")).create()
+			holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("syntax.error.missing.closing.quote")).range(element).create()
 		}
 	}
 }

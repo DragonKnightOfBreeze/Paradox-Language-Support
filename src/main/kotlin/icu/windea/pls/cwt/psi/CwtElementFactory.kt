@@ -4,6 +4,8 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
+import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 object CwtElementFactory {
     @JvmStatic
@@ -22,8 +24,9 @@ object CwtElementFactory {
     
     @JvmStatic
     fun createProperty(project: Project, key: String, value: String): CwtProperty {
-        val usedKey = key.quoteIfNecessary()
-        return createRootBlock(project, "$usedKey=$value").findChild()!!
+        val newKey = buildString { ParadoxEscapeManager.escapeCwtExpression(key, this) }.quoteIfNecessary()
+        val newValue = buildString { ParadoxEscapeManager.escapeCwtExpression(value, this) }.quoteIfNecessary()
+        return createRootBlock(project, "$newKey = $newValue").findChild()!!
     }
     
     @JvmStatic
@@ -38,7 +41,6 @@ object CwtElementFactory {
     
     @JvmStatic
     fun createString(project: Project, value: String): CwtString {
-        val usedValue = value.quoteIfNecessary()
-        return createValue(project, usedValue).cast()!!
+        return createValue(project, value).cast()!!
     }
 }

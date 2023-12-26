@@ -4,6 +4,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.*
+import icu.windea.pls.util.*
 
 object ParadoxLocalisationElementFactory {
     @JvmStatic
@@ -82,7 +83,8 @@ object ParadoxLocalisationElementFactory {
     
     @JvmStatic
     fun createString(project: Project, text: String): ParadoxLocalisationString {
-        return createPropertyValue(project, text)
+        val newText = buildString { ParadoxEscapeManager.escapeLocalisationExpression(text, this) }
+        return createPropertyValue(project, newText)
             .findChild()!!
     }
 }

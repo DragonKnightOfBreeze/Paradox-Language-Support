@@ -4,6 +4,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.*
+import icu.windea.pls.util.*
 
 object ParadoxScriptElementFactory {
 	@JvmStatic
@@ -42,8 +43,9 @@ object ParadoxScriptElementFactory {
 	
 	@JvmStatic
 	fun createProperty(project: Project, key: String, value: String): ParadoxScriptProperty {
-		val usedKey = key.quoteIfNecessary()
-		return createRootBlock(project, "$usedKey = $value").findChild()!!
+		val newKey = buildString { ParadoxEscapeManager.escapeScriptExpression(key, this) }.quoteIfNecessary()
+		val newValue = buildString { ParadoxEscapeManager.escapeScriptExpression(value, this) }.quoteIfNecessary()
+		return createRootBlock(project, "$newKey = $newValue").findChild()!!
 	}
 	
 	@JvmStatic
@@ -68,8 +70,7 @@ object ParadoxScriptElementFactory {
 	
 	@JvmStatic
 	fun createString(project: Project, value: String): ParadoxScriptString {
-		val usedValue = value.quoteIfNecessary()
-		return createValue(project, usedValue).cast()!!
+		return createValue(project, value).cast()!!
 	}
 	
 	@JvmStatic

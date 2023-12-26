@@ -280,7 +280,6 @@ fun String.unquote(): String {
     if(s.isEmpty() || s == "\"") return ""
     val start = startsWith('"')
     val end = endsWith('"')
-    if(!start && !end) return s
     return buildString {
         var escape = false
         for((index, c) in s.withIndex()) {

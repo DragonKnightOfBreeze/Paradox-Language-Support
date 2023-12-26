@@ -429,6 +429,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getValue(element: ParadoxScriptString): String {
+        if(element.text.containsLineBreak()) return "..."
         return element.text.unquote()
     }
     

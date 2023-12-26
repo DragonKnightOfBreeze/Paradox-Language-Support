@@ -152,9 +152,11 @@ class ParadoxScriptAnnotator : Annotator {
     
     private fun checkLiteralElement(element: PsiElement, holder: AnnotationHolder) {
         val text = element.text
-        if(text.isLeftQuoted() && !text.isRightQuoted()) {
+        val isLeftQuoted = text.isLeftQuoted()
+        val isRightQuoted = text.isRightQuoted()
+        if((isLeftQuoted && !isRightQuoted) || (!isLeftQuoted && isRightQuoted)) {
             //missing closing quote
-            holder.newAnnotation(ERROR, PlsBundle.message("syntax.error.missing.closing.quote")).create()
+            holder.newAnnotation(ERROR, PlsBundle.message("syntax.error.missing.closing.quote")).range(element).create()
         }
     }
 }

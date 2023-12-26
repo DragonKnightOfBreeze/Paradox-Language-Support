@@ -45,7 +45,7 @@ object ParadoxLocalisationTextRenderer {
     }
     
     private fun renderStringTo(element: ParadoxLocalisationString, context: Context) {
-        ParadoxEscapeManager.escapeLocalisationString(element.text, context.builder, ParadoxEscapeManager.Type.Default)
+        ParadoxEscapeManager.renderLocalisationString(element.text, context.builder, ParadoxEscapeManager.Type.Default)
     }
     
     private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {

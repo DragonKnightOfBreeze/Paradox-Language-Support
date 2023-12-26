@@ -64,6 +64,8 @@ class ExtensionsTest {
 	fun quoteAndUnquoteTest() {
 		Assert.assertEquals("\"abc\"", "abc".quote())
 		Assert.assertEquals("\"abc\"", "\"abc\"".quote())
+		
+		Assert.assertEquals("\"abc", "\\\"abc".unquote())
 		Assert.assertEquals("abc", "abc".unquote())
 		Assert.assertEquals("abc", "\"abc\"".unquote())
 		Assert.assertEquals("abc", "\"abc".unquote())

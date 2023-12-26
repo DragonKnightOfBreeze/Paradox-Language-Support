@@ -2,8 +2,8 @@ package icu.windea.pls.script.psi
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.impl.source.tree.java.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.util.*
 import kotlin.math.*
 
 /**
@@ -32,7 +32,7 @@ interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement,
             override fun decode(rangeInsideHost: TextRange, outChars: StringBuilder): Boolean {
                 val subText = rangeInsideHost.substring(myHost.text)
                 outSourceOffsets = IntArray(subText.length + 1)
-                return PsiLiteralExpressionImpl.parseStringCharacters(subText, outChars, outSourceOffsets)
+                return ParadoxEscapeManager.parseScriptExpressionCharacters(subText, outChars, outSourceOffsets)
             }
             
             override fun getOffsetInHost(offsetInDecoded: Int, rangeInsideHost: TextRange): Int {
