@@ -58,10 +58,8 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun setName(element: ParadoxLocalisationLocale, name: String): ParadoxLocalisationLocale {
-        val nameElement = element.localeId
-        val newNameElement = ParadoxLocalisationElementFactory.createLocale(element.project, name).localeId
-        nameElement.replace(newNameElement)
-        return element
+        val newElement = ParadoxLocalisationElementFactory.createLocale(element.project, name)
+        return element.replace(newElement).cast()
     }
     
     @JvmStatic
@@ -86,7 +84,7 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun setName(element: ParadoxLocalisationProperty, name: String): ParadoxLocalisationProperty {
-        val nameElement = element.propertyKey.propertyKeyId
+        val nameElement = element.propertyKey
         val newNameElement = ParadoxLocalisationElementFactory.createPropertyKey(element.project, name).propertyKeyId
         nameElement.replace(newNameElement)
         return element
@@ -172,10 +170,9 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun setName(element: ParadoxLocalisationPropertyReference, name: String): ParadoxLocalisationPropertyReference {
-        val nameElement = element.propertyReferenceId ?: throw IncorrectOperationException() //不支持重命名
-        val newNameElement = ParadoxLocalisationElementFactory.createPropertyReference(element.project, name).propertyReferenceId!!
-        nameElement.replace(newNameElement)
-        return element
+        if(element.propertyReferenceId == null) throw IncorrectOperationException() //不支持重命名
+        val newElement = ParadoxLocalisationElementFactory.createPropertyReference(element.project, name)
+        return element.replace(newElement).cast()
     }
     
     @JvmStatic
@@ -203,11 +200,9 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun setName(element: ParadoxLocalisationScriptedVariableReference, name: String): ParadoxLocalisationScriptedVariableReference {
-        // 不包含作为前缀的"@"
-        val nameElement = element.idElement ?: throw IncorrectOperationException()
-        val newNameElement = ParadoxLocalisationElementFactory.createScriptedVariableReference(element.project, name).idElement!!
-        nameElement.replace(newNameElement)
-        return element
+        if(element.idElement == null) throw IncorrectOperationException() //不支持重命名
+        val newElement = ParadoxLocalisationElementFactory.createScriptedVariableReference(element.project, name)
+        return element.replace(newElement).cast()
     }
     
     @JvmStatic
@@ -250,10 +245,9 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun setName(element: ParadoxLocalisationIcon, name: String): ParadoxLocalisationIcon {
-        val nameElement = element.iconId ?: throw IncorrectOperationException() //不支持重命名
-        val newNameElement = ParadoxLocalisationElementFactory.createIcon(element.project, name).iconId!!
-        nameElement.replace(newNameElement)
-        return element
+        if(element.iconId == null) throw IncorrectOperationException() //不支持重命名
+        val newElement = ParadoxLocalisationElementFactory.createIcon(element.project, name)
+        return element.replace(newElement).cast()
     }
     
     @JvmStatic
@@ -318,22 +312,21 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getName(element: ParadoxLocalisationCommandScope): String {
-        return element.idElement.text.trim()
+        return element.idElement?.text?.trim().orEmpty()
     }
     
     @JvmStatic
     fun setName(element: ParadoxLocalisationCommandScope, name: String): ParadoxLocalisationCommandScope {
-        val nameElement = element.idElement
-        val newNameElement = ParadoxLocalisationElementFactory.createCommandScope(element.project, name).idElement
-        nameElement.replace(newNameElement)
-        return element
+        if(element.idElement == null) throw IncorrectOperationException() //不支持重命名
+        val newElement = ParadoxLocalisationElementFactory.createCommandScope(element.project, name)
+        return element.replace(newElement).cast()
     }
     
     @JvmStatic
     fun getReference(element: ParadoxLocalisationCommandScope): ParadoxLocalisationCommandScopePsiReference {
         return CachedValuesManager.getCachedValue(element) {
             val value = run {
-                val idElement = element.idElement
+                val idElement = element.idElement ?: return@run null
                 val rangeInElement = idElement.textRangeInParent
                 
                 //兼容"event_target:"前缀（解析引用时，去除前缀后面的空白）
@@ -391,10 +384,9 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun setName(element: ParadoxLocalisationCommandField, name: String): ParadoxLocalisationCommandField {
-        val nameElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
-        val newNameElement = ParadoxLocalisationElementFactory.createCommandField(element.project, name).idElement!!
-        nameElement.replace(newNameElement)
-        return element
+        if(element.idElement == null) throw IncorrectOperationException() //不支持重命名
+        val newElement = ParadoxLocalisationElementFactory.createCommandField(element.project, name)
+        return element.replace(newElement).cast()
     }
     
     @JvmStatic
@@ -439,8 +431,9 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun setName(element: ParadoxLocalisationConcept, name: String): ParadoxLocalisationConcept {
-        val nameElement = element.conceptName.idElement ?: throw IncorrectOperationException() //不支持重命名
-        val newNameElement = ParadoxLocalisationElementFactory.createConceptName(element.project, name).idElement!!
+        val nameElement = element.conceptName
+        if(nameElement.idElement == null) throw IncorrectOperationException() //不支持重命名
+        val newNameElement = ParadoxLocalisationElementFactory.createConceptName(element.project, name)
         nameElement.replace(newNameElement)
         return element
     }
@@ -465,9 +458,9 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun setName(element: ParadoxLocalisationColorfulText, name: String): ParadoxLocalisationColorfulText {
-        val nameElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
-        val newNameElement = ParadoxLocalisationElementFactory.createColorfulText(element.project, name).idElement!!
-        nameElement.replace(newNameElement)
+        val idElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
+        val newIdElement = ParadoxLocalisationElementFactory.createColorfulText(element.project, name).idElement!!
+        idElement.replace(newIdElement)
         return element
     }
     

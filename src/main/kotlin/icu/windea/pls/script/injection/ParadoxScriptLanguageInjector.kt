@@ -40,6 +40,8 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
     
     override fun getLanguagesToInject(registrar: MultiHostRegistrar, host: PsiElement) {
         if(host !is PsiLanguageInjectionHost) return
+        InjectionUtils.enableInjectLanguageAction(host, false) //disable inject language action
+        
         if(host.hasSyntaxError()) return //skip if host has syntax error 
         
         val allInjectionInfos = mutableListOf<ParameterValueInjectionInfo>()
@@ -56,8 +58,6 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
             registrar.addPlace(null, null, host, injectionInfo.rangeInsideHost)
             registrar.doneInjecting()
         }
-        InjectionUtils.enableInjectLanguageAction(host, false)
-        host.containingFile?.let { file -> InjectionUtils.setCollectLineMarkersForInjectedFiles(file, false) }
     }
     
     private fun applyInjectionForArgumentValue(host: PsiElement, allInjectionInfos: MutableList<ParameterValueInjectionInfo>) {

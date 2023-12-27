@@ -15,7 +15,6 @@ object ParadoxEscapeManager {
                 else -> builder.append(c)
             }
         }
-        builder.append(value)
     }
     
     fun escapeScriptExpression(value: String, builder: StringBuilder) {
@@ -26,7 +25,6 @@ object ParadoxEscapeManager {
                 else -> builder.append(c)
             }
         }
-        builder.append(value)
     }
     
     fun escapeLocalisationExpression(value: String, builder: StringBuilder) {
@@ -38,7 +36,6 @@ object ParadoxEscapeManager {
                 else -> builder.append(c)
             }
         }
-        builder.append(value)
     }
     
     fun renderScriptExpression(value: String, builder: StringBuilder, type: Type = Type.Default) {

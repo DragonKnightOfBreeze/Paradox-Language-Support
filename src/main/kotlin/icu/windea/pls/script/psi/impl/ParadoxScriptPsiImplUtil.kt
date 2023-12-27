@@ -79,9 +79,9 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun setName(element: ParadoxScriptScriptedVariable, name: String): ParadoxScriptScriptedVariable {
-        // 不包含作为前缀的"@"
-        val nameElement = element.scriptedVariableName.idElement ?: throw IncorrectOperationException()
-        val newNameElement = ParadoxScriptElementFactory.createScriptedVariableName(element.project, name).idElement!!
+        val nameElement = element.scriptedVariableName
+        if(nameElement.idElement == null) throw IncorrectOperationException() //不支持重命名
+        val newNameElement = ParadoxScriptElementFactory.createScriptedVariableName(element.project, name)
         nameElement.replace(newNameElement)
         return element
     }
@@ -267,8 +267,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setValue(element: ParadoxScriptPropertyKey, value: String): ParadoxScriptPropertyKey {
         val newElement = ParadoxScriptElementFactory.createPropertyKey(element.project, value)
-        element.replace(newElement)
-        return element
+        return element.replace(newElement).cast()
     }
     
     @JvmStatic
@@ -311,11 +310,9 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun setName(element: ParadoxScriptScriptedVariableReference, name: String): ParadoxScriptScriptedVariableReference {
-        // 不包含作为前缀的"@"
-        val nameElement = element.idElement ?: throw IncorrectOperationException()
-        val newNameElement = ParadoxScriptElementFactory.createVariableReference(element.project, name).idElement!!
-        nameElement.replace(newNameElement)
-        return element
+        if(element.idElement == null) throw IncorrectOperationException() //不支持重命名
+        val newElement = ParadoxScriptElementFactory.createVariableReference(element.project, name)
+        return element.replace(newElement).cast()
     }
     
     @JvmStatic
@@ -364,8 +361,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setValue(element: ParadoxScriptValue, name: String): ParadoxScriptValue {
         val newElement = ParadoxScriptElementFactory.createValue(element.project, name)
-        element.replace(newElement)
-        return element
+        return element.replace(newElement).cast()
     }
     
     @JvmStatic
@@ -436,8 +432,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setValue(element: ParadoxScriptString, name: String): ParadoxScriptString {
         val newElement = ParadoxScriptElementFactory.createString(element.project, name)
-        element.replace(newElement)
-        return element
+        return element.replace(newElement).cast()
     }
     
     @JvmStatic
@@ -664,10 +659,8 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun setName(element: ParadoxScriptParameterConditionParameter, name: String): ParadoxScriptParameterConditionParameter {
-        val nameElement = element.idElement
-        val newNameElement = ParadoxScriptElementFactory.createParameterConditionParameter(element.project, name).idElement
-        nameElement.replace(newNameElement)
-        return element
+        val newElement = ParadoxScriptElementFactory.createParameterConditionParameter(element.project, name)
+        return element.replace(newElement).cast()
     }
     
     @JvmStatic
@@ -734,10 +727,9 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun setName(element: ParadoxScriptInlineMathScriptedVariableReference, name: String): ParadoxScriptInlineMathScriptedVariableReference {
-        val nameElement = element.idElement ?: throw IncorrectOperationException()
-        val newNameElement = ParadoxScriptElementFactory.createInlineMathVariableReference(element.project, name).idElement!!
-        nameElement.replace(newNameElement)
-        return element
+        if(element.idElement == null) throw IncorrectOperationException() //不支持重命名
+        val newElement = ParadoxScriptElementFactory.createInlineMathVariableReference(element.project, name)
+        return element.replace(newElement).cast()
     }
     
     @JvmStatic
@@ -780,10 +772,9 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun setName(element: ParadoxScriptParameter, name: String): ParadoxScriptParameter {
-        val nameElement = element.idElement ?: throw IncorrectOperationException()
-        val newNameElement = ParadoxScriptElementFactory.createParameter(element.project, name).idElement!!
-        nameElement.replace(newNameElement)
-        return element
+        if(element.idElement == null) throw IncorrectOperationException() //不支持重命名
+        val newElement = ParadoxScriptElementFactory.createParameter(element.project, name)
+        return element.replace(newElement).cast()
     }
     
     @JvmStatic
@@ -823,10 +814,9 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun setName(element: ParadoxScriptInlineMathParameter, name: String): ParadoxScriptInlineMathParameter {
-        val nameElement = element.idElement ?: throw IncorrectOperationException()
-        val newNameElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name).idElement!!
-        nameElement.replace(newNameElement)
-        return element
+        if(element.idElement == null) throw IncorrectOperationException() //不支持重命名
+        val newElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name)
+        return element.replace(newElement).cast()
     }
     
     @JvmStatic

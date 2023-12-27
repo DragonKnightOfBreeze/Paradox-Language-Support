@@ -76,7 +76,7 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
         val documentManager = PsiDocumentManager.getInstance(project)
         val document = documentManager.getDocument(element.containingFile) ?: return
         CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
-        //documentManager.doPostponedOperationsAndUnblockDocument(document)
+        documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
     
     fun Number.asFloat() = this.format(-4)
@@ -125,7 +125,7 @@ class ParadoxScriptStringColorSupport : ParadoxColorSupport {
         val documentManager = PsiDocumentManager.getInstance(project)
         val document = documentManager.getDocument(element.containingFile) ?: return
         CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
-        //documentManager.doPostponedOperationsAndUnblockDocument(document)
+        documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
 }
 
@@ -215,7 +215,7 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
             (element.node as CompositeElement).replaceAllChildrenToChildrenOf(newBlock.node)
         }
         CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
-        //documentManager.doPostponedOperationsAndUnblockDocument(document)
+        documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
     
     fun Number.asFloat() = this.format(-4)

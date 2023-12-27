@@ -34,7 +34,7 @@ val ParadoxLocalisationIcon.iconFrameReference: ParadoxLocalisationPropertyRefer
 
 val ParadoxLocalisationColorfulText.idElement: PsiElement? get() = findChild(COLOR_TOKEN)
 
-val ParadoxLocalisationCommandScope.idElement: PsiElement get() = findChild(COMMAND_SCOPE_TOKEN)!!
+val ParadoxLocalisationCommandScope.idElement: PsiElement? get() = findChild(COMMAND_SCOPE_TOKEN)
 
 val ParadoxLocalisationCommandField.idElement: PsiElement? get() = findChild(COMMAND_FIELD_TOKEN)
 
