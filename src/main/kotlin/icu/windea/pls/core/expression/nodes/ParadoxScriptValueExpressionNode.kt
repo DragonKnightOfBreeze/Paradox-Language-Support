@@ -56,7 +56,7 @@ class ParadoxScriptValueExpressionNode(
         val project = configGroup.project
         
         override fun handleElementRename(newElementName: String): PsiElement {
-            return element.setValue(rangeInElement.replace(element.text, newElementName))
+            return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
         }
         
         //缓存解析结果以优化性能

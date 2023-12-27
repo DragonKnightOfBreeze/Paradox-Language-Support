@@ -148,8 +148,8 @@ tailrec fun selectFile(from: Any?): VirtualFile? {
         from is VirtualFileWindow -> from.castOrNull() //for injected PSI (and not from.delegate)
         from is LightVirtualFileBase -> selectFile(from.originalFile)
         from is VirtualFile -> from
-        from is PsiDirectory -> from.virtualFile
-        from is PsiFile -> from.originalFile.virtualFile
+        from is PsiDirectory -> selectFile(from.virtualFile)
+        from is PsiFile -> selectFile(from.originalFile.virtualFile)
         from is StubBasedPsiElementBase<*> -> selectFile(from.containingFileStub?.psi ?: from.containingFile)
         from is PsiElement -> selectFile(from.containingFile)
         from is ParadoxExpressionInfo -> selectFile(from.virtualFile)

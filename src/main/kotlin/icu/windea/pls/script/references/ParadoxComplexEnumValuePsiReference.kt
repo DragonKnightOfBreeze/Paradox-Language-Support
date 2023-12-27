@@ -3,6 +3,7 @@ package icu.windea.pls.script.references
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.psi.*
@@ -14,7 +15,7 @@ class ParadoxComplexEnumValuePsiReference(
     val project: Project
 ) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
     override fun handleElementRename(newElementName: String): PsiElement {
-        return element.setValue(rangeInElement.replace(element.text, newElementName))
+        return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
     }
     
     override fun resolve(): PsiElement {

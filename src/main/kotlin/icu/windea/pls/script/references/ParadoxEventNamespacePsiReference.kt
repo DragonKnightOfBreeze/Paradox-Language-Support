@@ -2,6 +2,7 @@ package icu.windea.pls.script.references
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
@@ -19,7 +20,7 @@ class ParadoxEventNamespacePsiReference(
 	val project by lazy { element.project }
 	
 	override fun handleElementRename(newElementName: String): PsiElement {
-		return element.setValue(rangeInElement.replace(element.text, newElementName))
+		return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
 	}
 	
 	override fun resolve(): PsiElement? {

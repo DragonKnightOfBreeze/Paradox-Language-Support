@@ -252,10 +252,6 @@ fun Collection<String>.toCommaDelimitedString(): String {
     return if(input.isEmpty()) "" else input.joinToString(",")
 }
 
-fun String.quoteIf(condition: Boolean): String {
-    return if(condition) quote() else this //不判断之前是否已经用引号括起，依据quoted 
-}
-
 fun String.quoteIfNecessary(): String {
     return if(containsBlank()) quote() else this //如果包含空白的话要使用引号括起
 }

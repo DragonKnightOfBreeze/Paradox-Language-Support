@@ -250,13 +250,13 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         if(!getSettings().inference.parameterConfig) return null
         ProgressManager.checkCanceled()
         
-        //unnecessary check
-        //val vFile = selectFile(file) ?: return null
-        //if(ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
-        
+        val vFile = selectFile(file) ?: return null
+        if(!ParadoxFileManager.isInjectedFile(vFile)) return null
         val host = InjectedLanguageManager.getInstance(file.project).getInjectionHost(file)
         if(host == null) return null
-        val injectionInfo = getInjectionInfo(file, host) 
+        
+        val file0 = vFile.toPsiFile(file.project) ?: file //actual PsiFile of VirtualFileWindow
+        val injectionInfo = getInjectionInfo(file0, host) 
         if(injectionInfo == null) return null
         
         ProgressManager.checkCanceled()
