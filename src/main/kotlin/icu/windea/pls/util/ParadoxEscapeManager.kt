@@ -1,6 +1,8 @@
 package icu.windea.pls.util
 
 import icu.windea.pls.core.collections.*
+import java.util.*
+import java.util.function.*
 
 object ParadoxEscapeManager {
     enum class Type {
@@ -98,6 +100,7 @@ object ParadoxEscapeManager {
     
     fun parseScriptExpressionCharacters(chars: String, out: StringBuilder, sourceOffsets: IntArray?): Boolean {
         if(chars.none { c -> c == '\\' }) {
+            if(sourceOffsets != null) Arrays.setAll(sourceOffsets, IntUnaryOperator.identity())
             out.append(chars)
             return true
         }
