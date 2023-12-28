@@ -29,9 +29,8 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
     //see: org.intellij.plugins.intelliLang.inject.InjectorUtils
     
     private val toInject = listOf(
-        ParadoxScriptString::class.java,
-        ParadoxScriptParameter::class.java,
-        ParadoxScriptInlineMathParameter::class.java
+        ParadoxScriptStringExpressionElement::class.java,
+        ParadoxParameter::class.java
     )
     
     override fun elementsToInjectIn(): List<Class<out PsiElement>> {
@@ -64,7 +63,6 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         if(host !is ParadoxScriptString) return
         val injectionInfos = getInjectionInfosForArgumentValue(host)
         if(injectionInfos.isEmpty()) return
-        
         allInjectionInfos.addAll(injectionInfos)
     }
     
@@ -102,7 +100,6 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         if(host !is ParadoxParameter) return
         val injectionInfo = getInjectionInfoForParameterDefaultValue(host)
         if(injectionInfo == null) return
-        
         allInjectionInfos.add(injectionInfo)
     }
     
