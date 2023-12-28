@@ -5,7 +5,17 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
-class CwtPropertyKeyExpressionManipulator: AbstractElementManipulator<CwtPropertyKey>() {
+class CwtOptionKeyManipulator: AbstractElementManipulator<CwtOptionKey>() {
+    override fun handleContentChange(element: CwtOptionKey, range: TextRange, newContent: String): CwtOptionKey {
+        val text = element.text
+        val newText = range.replace(text, newContent)
+            .let { it.unquote().quoteIfNecessary(or = it.isQuoted()) }
+        val newElement = CwtElementFactory.createOptionKeyFromText(element.project, newText)
+        return element.replace(newElement).cast()
+    }
+}
+
+class CwtPropertyKeyManipulator: AbstractElementManipulator<CwtPropertyKey>() {
     override fun handleContentChange(element: CwtPropertyKey, range: TextRange, newContent: String): CwtPropertyKey {
         val text = element.text
         val newText = range.replace(text, newContent)

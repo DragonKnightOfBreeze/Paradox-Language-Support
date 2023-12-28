@@ -244,7 +244,8 @@ fun String.isQuoted(): Boolean {
 }
 
 fun String.quoteIfNecessary(or: Boolean = false): String {
-    return if(or || containsBlank()) quote() else this //如果包含空白的话要使用引号括起
+    //如果包含空白或者转义字符的话要使用引号括起
+    return if(or || any { it.isWhitespace() || it == 'c' }) quote() else this
 }
 
 fun String.quote(): String {

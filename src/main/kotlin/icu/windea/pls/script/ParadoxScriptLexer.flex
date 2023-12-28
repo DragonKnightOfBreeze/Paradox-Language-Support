@@ -103,11 +103,11 @@ SCRIPTED_VARIABLE_NAME_TOKEN=[a-zA-Z0-9_]+
 CHECK_SCRIPTED_VARIABLE_NAME={WILDCARD_SCRIPTED_VARIABLE_NAME_TOKEN}(\s*=)?
 CHECK_SCRIPTED_VARIABLE_REFERENCE={WILDCARD_SCRIPTED_VARIABLE_NAME_TOKEN}
 
-CHECK_PROPERTY_KEY=({WILDCARD_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_TOKEN})\s*[!=<>]
-WILDCARD_KEY_TOKEN=[^#@={}\s\"][^#={}\s]*
-WILDCARD_QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\r\n\\]|\\.)*?\"?
-PROPERTY_KEY_TOKEN=[^#@$={}\[\]\s\"][^#$={}\[\]\s]*
-QUOTED_PROPERTY_KEY_TOKEN=([^\"$\r\n\\]|\\.)+
+CHECK_PROPERTY_KEY=({WILDCARD_PROPERTY_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_TOKEN})\s*[!=<>]
+WILDCARD_PROPERTY_KEY_TOKEN=[^#@={}\s\"]+\"?
+WILDCARD_QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\r\n\\]|\\.)*\"?
+PROPERTY_KEY_TOKEN=[^#@$={}\[\]\s\"]+\"?
+QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\r\n\\]|\\.)*\"?
 
 BOOLEAN_TOKEN=(yes)|(no)
 INT_NUMBER_TOKEN=[0-9]+ //leading zero is permitted
@@ -117,10 +117,10 @@ FLOAT_TOKEN=[+-]?{FLOAT_NUMBER_TOKEN}
 COLOR_TOKEN=(rgb|hsv)[ \t]*\{[\d.\s&&[^\r\n]]*}
 
 CHECK_STRING={WILDCARD_STRING_TOKEN}|{WILDCARD_QUOTED_STRING_TOKEN}
-WILDCARD_STRING_TOKEN=[^#@={}\s\"][^#={}\s]*
-WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\.)*?\"?
-STRING_TOKEN=[^#@$={}\[\]\s\"][^#$={}\[\]\s]*
-QUOTED_STRING_TOKEN=([^\"$\\]|\\.)+
+WILDCARD_STRING_TOKEN=[^#@={}\s\"]+\"?
+WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\.)*\"?
+STRING_TOKEN=[^#@$={}\[\]\s\"]+\"?
+QUOTED_STRING_TOKEN=\"([^\"\\]|\\.)*\"?
 
 SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 
@@ -345,7 +345,7 @@ SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
     {CHECK_PROPERTY_KEY} {
         boolean leftQuoted = yycharat(0) == '"';
         if(leftQuoted) {
-            yypushback(yylength() - 1);
+            yypushback(yylength());
             enterState(templateStateRef, yystate());
             yybegin(IN_QUOTED_KEY);
         } else {
@@ -361,7 +361,7 @@ SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
     {CHECK_STRING} {
         boolean leftQuoted = yycharat(0) == '"';
         if(leftQuoted) {
-            yypushback(yylength() - 1);
+            yypushback(yylength());
             enterState(templateStateRef, yystate());
             yybegin(IN_QUOTED_STRING);
         } else {
@@ -393,7 +393,7 @@ SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 <IN_QUOTED_KEY> {
     {EOL} { exitState(templateStateRef); return WHITE_SPACE; }
     "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
-    \"|{QUOTED_PROPERTY_KEY_TOKEN}\"? {
+    {QUOTED_PROPERTY_KEY_TOKEN} {
         boolean rightQuoted = yycharat(yylength() -1) == '"';
         if(rightQuoted) {
             exitState(templateStateRef);
@@ -417,7 +417,7 @@ SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
     //quoted multiline string is allowed
     //{EOL} { exitState(templateStateRef); return WHITE_SPACE; }
     "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
-    \"|{QUOTED_STRING_TOKEN}\"? {
+    {QUOTED_STRING_TOKEN} {
         boolean rightQuoted = yycharat(yylength() -1) == '"';
         if(rightQuoted) {
             exitState(templateStateRef);

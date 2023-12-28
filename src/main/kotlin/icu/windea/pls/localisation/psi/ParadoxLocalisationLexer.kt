@@ -5,6 +5,8 @@ import com.intellij.psi.tree.*
 
 class ParadoxLocalisationLexer : MergingLexerAdapter(FlexAdapter(_ParadoxLocalisationLexer()), TOKENS_TO_MERGE) {
     companion object {
-        private val TOKENS_TO_MERGE = TokenSet.EMPTY
+        private val TOKENS_TO_MERGE = TokenSet.create(
+            ParadoxLocalisationElementTypes.STRING_TOKEN
+        )
     }
 }

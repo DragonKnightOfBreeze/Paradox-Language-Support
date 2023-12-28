@@ -8,6 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.CwtConfigHandler.getParameterRanges
 import icu.windea.pls.lang.config.*
@@ -25,6 +26,8 @@ import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
  */
 class ParadoxScriptAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
+        checkSyntax(element, holder)
+        
         val elementType = element.elementType
         if(elementType == ParadoxScriptElementTypes.SNIPPET_TOKEN) return annotateSnippetToken(element, holder)
         
@@ -35,6 +38,30 @@ class ParadoxScriptAnnotator : Annotator {
             is ParadoxScriptInt -> annotateExpressionElement(element, holder)
         }
     }
+    
+    private fun checkSyntax(element: PsiElement, holder: AnnotationHolder) {
+        //不允许紧邻的字面量
+        if(element.isLiteral() && element.prevSibling.isLiteral()) {
+            holder.newAnnotation(ERROR, PlsBundle.message("neighboring.literal.not.supported"))
+                .withFix(InsertStringFix(PlsBundle.message("neighboring.literal.not.supported.fix"), " ", element.startOffset))
+                .create()
+        }
+        //检测是否缺失一侧的双引号
+        if(element.isQuoteAware()) {
+            val text = element.text
+            val isLeftQuoted = text.isLeftQuoted()
+            val isRightQuoted = text.isRightQuoted()
+            if(!isLeftQuoted && isRightQuoted) {
+                holder.newAnnotation(ERROR, PlsBundle.message("missing.opening.quote")).create()
+            } else if(isLeftQuoted && !isRightQuoted) {
+                holder.newAnnotation(ERROR, PlsBundle.message("missing.closing.quote")).create()
+            }
+        }
+    }
+    
+    private fun PsiElement?.isLiteral() = this is ParadoxScriptExpressionElement
+    
+    private fun PsiElement?.isQuoteAware() = this is ParadoxScriptStringExpressionElement
     
     private fun annotateSnippetToken(element: PsiElement, holder: AnnotationHolder) {
         val templateElement = element.parent?.parent ?: return
@@ -95,11 +122,6 @@ class ParadoxScriptAnnotator : Annotator {
     }
     
     private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
-        //检查是否缺失引号
-        if(element is ParadoxScriptStringExpressionElement) {
-            checkLiteralElement(element, holder)
-        }
-        
         //高亮复杂枚举值声明
         if(element is ParadoxScriptStringExpressionElement) {
             val complexEnumValueInfo = element.complexEnumValueInfo
@@ -148,16 +170,5 @@ class ParadoxScriptAnnotator : Annotator {
     
     private fun annotateScriptExpression(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: AnnotationHolder) {
         CwtConfigHandler.annotateScriptExpression(element, null, config, holder)
-    }
-    
-    private fun checkLiteralElement(element: PsiElement, holder: AnnotationHolder) {
-        val text = element.text
-        val isLeftQuoted = text.isLeftQuoted()
-        val isRightQuoted = text.isRightQuoted()
-        if(!isLeftQuoted && isRightQuoted) {
-            holder.newAnnotation(ERROR, PlsBundle.message("syntax.error.missing.opening.quote")).range(element).create()
-        } else if(isLeftQuoted && !isRightQuoted) {
-            holder.newAnnotation(ERROR, PlsBundle.message("syntax.error.missing.closing.quote")).range(element).create()
-        }
     }
 }

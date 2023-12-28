@@ -83,16 +83,16 @@ DOCUMENTATION_TOKEN=[^\s][^\r\n]*
 COMMENT=(#)|(#[^#\r\n][^\r\n]*)
 RELAX_COMMENT=#[^\r\n]*
 
-CHECK_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?({BLANK})?((=)|(\!=)|(<>))
-CHECK_OPTION_KEY=({OPTION_KEY_TOKEN})?({BLANK})?((=)|(\!=)|(<>))
+CHECK_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?\s*((=)|(\!=)|(<>))
+CHECK_OPTION_KEY=({OPTION_KEY_TOKEN})?\s*((=)|(\!=)|(<>))
 
-PROPERTY_KEY_TOKEN=([^#={}\s\"][^#={}\s]*)|(\"([^\"\\\r\n]|\\.)*\"?)
-OPTION_KEY_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\"?)
+PROPERTY_KEY_TOKEN=([^#={}\s\"]+\"?)|(\"([^\"\\\r\n]|\\.)*\"?)
+OPTION_KEY_TOKEN=([^#={}\s\"]+\"?)|(\"([^\"\\\r\n]|\\.)*\"?)
 BOOLEAN_TOKEN=(yes)|(no)
 INT_TOKEN=[+-]?[0-9]+ //leading zero is permitted
 FLOAT_TOKEN=[+-]?[0-9]*(\.[0-9]+) //leading zero is permitted
-STRING_TOKEN=([^#={}\s\"][^#={}\s]*)|(\"([^\"\\\r\n]|\\.)*\"?)
-TOP_STRING_TOKEN=([^#={}\s\"]([^#={}\r\n]*[^#={}\s])?)|(\"([^\"\\\r\n]|\\.)*\"?) //top option value can contain whitespaces
+STRING_TOKEN=([^#={}\s\"]+\"?)|(\"([^\"\\\r\n]|\\.)*\"?)
+TOP_STRING_TOKEN=([^#={}\s\"]([^#={}\r\n\"]*[^#={}\s\"])?\"?)|(\"([^\"\\\r\n]|\\.)*\"?) //top option value can contain whitespaces
 
 %%
 

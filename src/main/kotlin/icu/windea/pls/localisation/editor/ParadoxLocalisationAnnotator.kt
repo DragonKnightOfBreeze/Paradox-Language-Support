@@ -15,7 +15,8 @@ import icu.windea.pls.localisation.highlighter.ParadoxLocalisationAttributesKeys
 @Suppress("UNUSED_PARAMETER")
 class ParadoxLocalisationAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        check(element, holder)
+        checkSyntax(element, holder)
+        
         when(element) {
             is ParadoxLocalisationProperty -> annotateProperty(element, holder)
             is ParadoxLocalisationPropertyReference -> annotatePropertyReference(element, holder)
@@ -25,14 +26,12 @@ class ParadoxLocalisationAnnotator : Annotator {
         }
     }
     
-    private fun check(element: PsiElement, holder: AnnotationHolder) {
+    private fun checkSyntax(element: PsiElement, holder: AnnotationHolder) {
         //by @雪丶我
-        //不允许紧接的图标
+        //不允许紧邻的图标
         if(element is ParadoxLocalisationIcon && element.prevSibling is ParadoxLocalisationIcon) {
-            val startOffset = element.startOffset
-            holder.newAnnotation(ERROR, PlsBundle.message("localisation.annotator.adjacentIcon"))
-                .range(TextRange.create(startOffset, startOffset + 1)) //icon prefix
-                .withFix(InsertStringFix(PlsBundle.message("localisation.annotator.adjacentIcon.fix"), " ", startOffset))
+            holder.newAnnotation(ERROR, PlsBundle.message("localisation.annotator.neighboringIcon"))
+                .withFix(InsertStringFix(PlsBundle.message("localisation.annotator.neighboringIcon.fix"), " ", element.startOffset))
                 .create()
         }
     }

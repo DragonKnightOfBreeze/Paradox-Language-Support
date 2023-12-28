@@ -34,6 +34,7 @@ class QuoteIdentifierIntention : IntentionAction, PriorityAction {
 		return file.findElementAt(offset) {
 			val identifier = it.parent
 			val result = when(identifier) {
+				is CwtOptionKey -> canQuote(identifier)
 				is CwtPropertyKey -> canQuote(identifier)
 				is CwtString -> canQuote(identifier)
 				is CwtInt -> true
@@ -77,6 +78,7 @@ class UnquoteIdentifierIntention : IntentionAction, PriorityAction {
 		return file.findElementAt(offset) {
 			val identifier = it.parent
 			val result = when(identifier) {
+				is CwtOptionKey -> canUnquote(identifier)
 				is CwtPropertyKey -> canUnquote(identifier)
 				is CwtString -> canUnquote(identifier)
 				else -> false

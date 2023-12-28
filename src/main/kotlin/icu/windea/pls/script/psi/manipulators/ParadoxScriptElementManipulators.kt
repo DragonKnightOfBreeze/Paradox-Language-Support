@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptPropertyKeyExpressionManipulator: AbstractElementManipulator<ParadoxScriptPropertyKey>() {
+class ParadoxScriptPropertyKeyManipulator: AbstractElementManipulator<ParadoxScriptPropertyKey>() {
     override fun handleContentChange(element: ParadoxScriptPropertyKey, range: TextRange, newContent: String): ParadoxScriptPropertyKey {
         val text = element.text
         val newText = range.replace(text, newContent)

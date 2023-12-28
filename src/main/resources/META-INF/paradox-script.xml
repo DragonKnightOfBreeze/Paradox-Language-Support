@@ -67,7 +67,7 @@
     <codeInsight.gotoSuper language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptGotoSuperActionHandler"/>
     
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKey"
-                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptPropertyKeyExpressionManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptPropertyKeyManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptValue"
                              implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptValueManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptString"

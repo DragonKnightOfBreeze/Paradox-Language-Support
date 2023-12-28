@@ -4,7 +4,6 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
-import icu.windea.pls.util.*
 
 object CwtElementFactory {
     @JvmStatic
@@ -12,8 +11,19 @@ object CwtElementFactory {
         return PsiFileFactory.getInstance(project).createFileFromText(CwtLanguage, text).cast()
     }
     
+    @JvmStatic
     fun createRootBlock(project: Project, text: String): CwtRootBlock {
         return createDummyFile(project, text).findChild()!!
+    }
+    
+    @JvmStatic
+    fun createOptionFromText(project: Project, text: String): CwtOption {
+        return createRootBlock(project, "## $text").findChild<CwtOptionComment>()!!.findChild()!!
+    }
+    
+    @JvmStatic
+    fun createOptionKeyFromText(project: Project, text: String): CwtOptionKey {
+        return createOptionFromText(project, "$text = v").findChild()!!
     }
     
     @JvmStatic
