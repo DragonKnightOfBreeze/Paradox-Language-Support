@@ -239,17 +239,8 @@ fun String.isRightQuoted(): Boolean {
     return length > 1 && endsWith('"') && get(length - 2) != '\\'
 }
 
-fun String.toCommaDelimitedStringList(destination: MutableList<String> = mutableListOf()): MutableList<String> {
-    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().orNull() }
-}
-
-fun String.toCommaDelimitedStringSet(destination: MutableSet<String> = mutableSetOf()): MutableSet<String> {
-    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().orNull() }
-}
-
-fun Collection<String>.toCommaDelimitedString(): String {
-    val input = this
-    return if(input.isEmpty()) "" else input.joinToString(",")
+fun String.isQuoted(): Boolean {
+    return isLeftQuoted() || isRightQuoted()
 }
 
 fun String.quoteIfNecessary(or: Boolean = false): String {
@@ -295,6 +286,19 @@ fun String.unquote(): String {
             }
         }
     }
+}
+
+fun Collection<String>.toCommaDelimitedString(): String {
+    val input = this
+    return if(input.isEmpty()) "" else input.joinToString(",")
+}
+
+fun String.toCommaDelimitedStringList(destination: MutableList<String> = mutableListOf()): MutableList<String> {
+    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().orNull() }
+}
+
+fun String.toCommaDelimitedStringSet(destination: MutableSet<String> = mutableSetOf()): MutableSet<String> {
+    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().orNull() }
 }
 
 fun String.truncate(limit: Int, ellipsis: String = "..."): String {

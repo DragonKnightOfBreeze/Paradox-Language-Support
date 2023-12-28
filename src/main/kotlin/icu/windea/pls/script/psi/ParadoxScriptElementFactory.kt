@@ -43,8 +43,8 @@ object ParadoxScriptElementFactory {
 	
 	@JvmStatic
 	fun createProperty(project: Project, key: String, value: String): ParadoxScriptProperty {
-		val newKey = buildString { ParadoxEscapeManager.escapeScriptExpression(key, this) }.quoteIfNecessary()
-		val newValue = buildString { ParadoxEscapeManager.escapeScriptExpression(value, this) }.quoteIfNecessary()
+		val newKey = key.quoteIfNecessary(or = key.isQuoted())
+		val newValue = value.quoteIfNecessary(or = value.isQuoted())
 		return createRootBlock(project, "$newKey = $newValue").findChild()!!
 	}
 	
@@ -59,23 +59,13 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
-	fun createValueFromText(project: Project, text: String): ParadoxScriptPropertyKey {
+	fun createValueFromText(project: Project, text: String): ParadoxScriptValue {
 		return createPropertyFromText(project, "k = $text").findChild()!!
 	}
 	
 	@JvmStatic
 	fun createValue(project: Project, value: String): ParadoxScriptValue {
 		return createProperty(project, "a", value).findChild()!!
-	}
-	
-	@JvmStatic
-	fun createBlock(project: Project, value: String): ParadoxScriptBlock {
-		return createValue(project, value).cast()!!
-	}
-	
-	@JvmStatic
-	fun createVariableReference(project: Project, name: String): ParadoxScriptScriptedVariableReference {
-		return createValue(project, "@$name").cast()
 	}
 	
 	@JvmStatic
@@ -88,6 +78,16 @@ object ParadoxScriptElementFactory {
 	fun createString(project: Project, value: String): ParadoxScriptString {
 		return createValue(project, value).castOrNull<ParadoxScriptString>()
 			?: createValue(project, value.quote()).cast()
+	}
+	
+	@JvmStatic
+	fun createVariableReference(project: Project, name: String): ParadoxScriptScriptedVariableReference {
+		return createValue(project, "@$name").cast()
+	}
+	
+	@JvmStatic
+	fun createBlock(project: Project, value: String): ParadoxScriptBlock {
+		return createValue(project, value).cast()!!
 	}
 	
 	@JvmStatic

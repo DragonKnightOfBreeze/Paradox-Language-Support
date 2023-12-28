@@ -7,38 +7,7 @@ object ParadoxEscapeManager {
         Default, Html, Inlay
     }
     
-    fun escapeCwtExpression(value: String, builder: StringBuilder) {
-        value.forEachFast f@{ c ->
-            when(c) {
-                '"' -> builder.append("\\\"")
-                '\\' -> builder.append("\\\\")
-                else -> builder.append(c)
-            }
-        }
-    }
-    
-    fun escapeScriptExpression(value: String, builder: StringBuilder) {
-        value.forEachFast f@{ c ->
-            when(c) {
-                '"' -> builder.append("\\\"")
-                '\\' -> builder.append("\\\\")
-                else -> builder.append(c)
-            }
-        }
-    }
-    
-    fun escapeLocalisationExpression(value: String, builder: StringBuilder) {
-        value.forEachFast f@{ c ->
-            when(c) {
-                '"' -> builder.append("\\\"")
-                '\\' -> builder.append("\\\\")
-                '[' -> builder.append("[[")
-                else -> builder.append(c)
-            }
-        }
-    }
-    
-    fun renderScriptExpression(value: String, builder: StringBuilder, type: Type = Type.Default) {
+    fun unescapeScriptExpression(value: String, builder: StringBuilder, type: Type = Type.Default) {
         var isEscape = false
         value.forEachFast f@{ c ->
             if(isEscape) {
@@ -77,7 +46,7 @@ object ParadoxEscapeManager {
         }
     }
     
-    fun renderLocalisationString(value: String, builder: StringBuilder, type: Type = Type.Default) {
+    fun unescapeLocalisationString(value: String, builder: StringBuilder, type: Type = Type.Default) {
         var isEscape = false
         var isLeftBracket = false
         value.forEachFast f@{ c ->

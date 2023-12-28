@@ -83,8 +83,7 @@ object ParadoxLocalisationElementFactory {
     
     @JvmStatic
     fun createString(project: Project, text: String): ParadoxLocalisationString {
-        val newText = buildString { ParadoxEscapeManager.escapeLocalisationExpression(text, this) }
-        return createPropertyValue(project, newText)
+        return createPropertyValue(project, text)
             .findChild()!!
     }
 }
