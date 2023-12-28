@@ -191,7 +191,7 @@ object ParadoxPsiManager {
             else -> return
         }
         if(reverse) {
-            val newRef = ParadoxScriptElementFactory.createProperty(project, newText)
+            val newRef = ParadoxScriptElementFactory.createPropertyFromText(project, newText)
             newRef.block?.let { handleBlockToInline(it, "scripted_trigger") }
             property.parent.addAfter(newRef, property)
         } else {

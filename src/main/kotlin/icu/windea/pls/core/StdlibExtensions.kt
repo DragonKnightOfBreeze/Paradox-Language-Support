@@ -252,8 +252,8 @@ fun Collection<String>.toCommaDelimitedString(): String {
     return if(input.isEmpty()) "" else input.joinToString(",")
 }
 
-fun String.quoteIfNecessary(): String {
-    return if(containsBlank()) quote() else this //如果包含空白的话要使用引号括起
+fun String.quoteIfNecessary(or: Boolean = false): String {
+    return if(or || containsBlank()) quote() else this //如果包含空白的话要使用引号括起
 }
 
 fun String.quote(): String {

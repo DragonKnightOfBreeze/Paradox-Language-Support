@@ -244,11 +244,15 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
  * * 不会将参数值内容内联到对应的调用处，然后检查语法是否合法。
  *
  * @see ParadoxScriptLanguageInjector
+ * @see icu.windea.pls.script.psi.ParadoxScriptStringExpressionManipulator
  */
 class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
         if(!getSettings().inference.parameterConfig) return null
         ProgressManager.checkCanceled()
+        
+        //兼容适用语言注入功能的 VirtualFileWindow
+        //兼容通过编辑代码碎片的意向操作打开的 LightVirtualFile
         
         val vFile = selectFile(file) ?: return null
         if(!ParadoxFileManager.isInjectedFile(vFile)) return null

@@ -4,18 +4,12 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
-import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
 
 object CwtElementFactory {
     @JvmStatic
     fun createDummyFile(project: Project, text: String): CwtFile {
         return PsiFileFactory.getInstance(project).createFileFromText(CwtLanguage, text).cast()
-    }
-    
-    @JvmStatic
-    fun createLine(project: Project): PsiElement {
-        return createDummyFile(project, "\n").firstChild
     }
     
     fun createRootBlock(project: Project, text: String): CwtRootBlock {
@@ -41,6 +35,7 @@ object CwtElementFactory {
     
     @JvmStatic
     fun createString(project: Project, value: String): CwtString {
-        return createValue(project, value).cast()!!
+        return createValue(project, value).castOrNull<CwtString>()
+            ?: createValue(project, value.quote()).cast()
     }
 }
