@@ -9,7 +9,7 @@ class CwtPropertyKeyExpressionManipulator: AbstractElementManipulator<CwtPropert
     override fun handleContentChange(element: CwtPropertyKey, range: TextRange, newContent: String): CwtPropertyKey {
         val text = element.text
         val newText = range.replace(text, newContent)
-            .let { it.quoteIfNecessary(or = it.isQuoted()) }
+            .let { it.unquote().quoteIfNecessary(or = it.isQuoted()) }
         val newElement = CwtElementFactory.createPropertyKeyFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
@@ -28,7 +28,7 @@ class CwtStringManipulator: AbstractElementManipulator<CwtString>() {
     override fun handleContentChange(element: CwtString, range: TextRange, newContent: String): CwtString {
         val text = element.text
         val newText = range.replace(text, newContent)
-            .let { it.quoteIfNecessary(or = it.isQuoted()) }
+            .let { it.unquote().quoteIfNecessary(or = it.isQuoted()) }
         val newElement = CwtElementFactory.createStringFromText(element.project, newText)
         return element.replace(newElement).cast()
     }

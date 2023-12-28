@@ -97,6 +97,14 @@ object ParadoxEscapeManager {
     }
     
     fun parseScriptExpressionCharacters(chars: String, out: StringBuilder, sourceOffsets: IntArray?): Boolean {
+        if(chars.none { c -> c == '\\' }) {
+            out.append(chars)
+            return true
+        }
+        return parseScriptExpressionCharactersWithEscape(out, chars, sourceOffsets)
+    }
+    
+    private fun parseScriptExpressionCharactersWithEscape(out: StringBuilder, chars: String, sourceOffsets: IntArray?): Boolean {
         var index = 0
         val outOffset = out.length
         while(index < chars.length) {
@@ -135,7 +143,6 @@ object ParadoxEscapeManager {
                 out.append('\\')
             }
             else -> {
-                //no escape
                 out.append('\\').append(c)
                 return index - 1
             }

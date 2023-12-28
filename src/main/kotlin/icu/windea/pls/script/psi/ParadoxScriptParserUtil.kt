@@ -11,7 +11,6 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun checkRightTemplate(b: PsiBuilder, l: Int): Boolean {
         //cannot be parsed to a string or scripted variable reference when with a trailing separator
-        if(b !is Builder) return true
         var s = -1
         var end = false
         while(true) {

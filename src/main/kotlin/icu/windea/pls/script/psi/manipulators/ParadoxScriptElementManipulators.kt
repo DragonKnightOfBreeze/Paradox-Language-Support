@@ -4,13 +4,12 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.*
 
 class ParadoxScriptPropertyKeyExpressionManipulator: AbstractElementManipulator<ParadoxScriptPropertyKey>() {
     override fun handleContentChange(element: ParadoxScriptPropertyKey, range: TextRange, newContent: String): ParadoxScriptPropertyKey {
         val text = element.text
         val newText = range.replace(text, newContent)
-            .let { it.quoteIfNecessary(or = it.isQuoted()) }
+            .let { it.unquote().quoteIfNecessary(or = it.isQuoted()) }
         val newElement = ParadoxScriptElementFactory.createPropertyKeyFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
@@ -29,7 +28,7 @@ class ParadoxScriptStringManipulator: AbstractElementManipulator<ParadoxScriptSt
     override fun handleContentChange(element: ParadoxScriptString, range: TextRange, newContent: String): ParadoxScriptString {
         val text = element.text
         val newText = range.replace(text, newContent)
-            .let { it.quoteIfNecessary(or = it.isQuoted()) }
+            .let { it.unquote().quoteIfNecessary(or = it.isQuoted()) }
         val newElement = ParadoxScriptElementFactory.createStringFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
