@@ -209,8 +209,11 @@ object ParadoxParameterHandler {
      * 尝试推断得到参数对应的CWT规则。
      */
     fun getInferredConfig(parameterElement: ParadoxParameterElement): CwtValueConfig? {
+        if(!getSettings().inference.parameterConfig) return null
+        
         val parameterInfo = getParameterInfo(parameterElement) ?: return null
         return parameterInfo.getOrPutUserData(PlsKeys.parameterInferredConfig, CwtValueConfig.EmptyConfig) {
+            ProgressManager.checkCanceled()
             val result = Ref.create<CwtValueConfig>()
             ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
                 ProgressManager.checkCanceled()
@@ -223,6 +226,8 @@ object ParadoxParameterHandler {
     }
     
     fun getInferredConfig(parameterName: String, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig? {
+        if(!getSettings().inference.parameterConfig) return null
+        
         //如果推断得到的规则不唯一，则返回null
         val parameterInfos = parameterContextInfo.parameters.get(parameterName)
         if(parameterInfos.isNullOrEmpty()) return null
@@ -239,8 +244,11 @@ object ParadoxParameterHandler {
      * 尝试推断得到参数对应的上下文CWT规则。
      */
     fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
+        if(!getSettings().inference.parameterConfig) return emptyList()
+        
         val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
         return parameterInfo.getOrPutUserData(PlsKeys.parameterInferredContextConfigs) {
+            ProgressManager.checkCanceled()
             val result = Ref.create<List<CwtMemberConfig<*>>>()
             ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
                 ProgressManager.checkCanceled()
@@ -253,6 +261,8 @@ object ParadoxParameterHandler {
     }
     
     fun getInferredContextConfigs(parameterName: String, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>> {
+        if(!getSettings().inference.parameterConfig) return emptyList()
+        
         val parameterInfos = parameterContextInfo.parameters.get(parameterName)
         if(parameterInfos.isNullOrEmpty()) return emptyList()
         val result = Ref.create<List<CwtMemberConfig<*>>>()

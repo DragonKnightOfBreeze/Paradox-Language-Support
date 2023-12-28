@@ -244,7 +244,6 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
  * * 不会将参数值内容内联到对应的调用处，然后检查语法是否合法。
  *
  * @see ParadoxScriptLanguageInjector
- * @see icu.windea.pls.script.psi.ParadoxScriptStringExpressionManipulator
  */
 class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
