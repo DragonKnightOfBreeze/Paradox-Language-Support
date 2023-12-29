@@ -24,6 +24,20 @@ inline fun <T> List<T>.forEachFast(action: (T) -> Unit) {
     }
 }
 
+inline fun String.forEachIndexedFast(action: (Int, Char) -> Unit) {
+    val size = this.length
+    for(i in 0 until size) {
+        action(i, this[i])
+    }
+}
+
+inline fun <T> Array<T>.forEachIndexedFast(action: (Int, T) -> Unit) {
+    val size = this.size
+    for(i in 0 until size) {
+        action(i, this[i])
+    }
+}
+
 inline fun <T> List<T>.forEachIndexedFast(action: (Int, T) -> Unit) {
     val size = this.size
     for(i in 0 until size) {

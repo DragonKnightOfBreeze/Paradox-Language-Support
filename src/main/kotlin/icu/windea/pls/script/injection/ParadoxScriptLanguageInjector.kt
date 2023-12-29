@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.*
  *
  * * 对脚本参数的传入值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
  * * 对脚本参数的默认值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
- * 
+ *
  * @see icu.windea.pls.lang.config.CwtParameterValueConfigContextProvider
  */
 class ParadoxScriptLanguageInjector : MultiHostInjector {
@@ -48,12 +48,13 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         applyInjectionForArgumentValue(host, allInjectionInfos)
         ProgressManager.checkCanceled()
         applyInjectionForParameterDefaultValue(host, allInjectionInfos)
-        
         host.putUserData(Keys.parameterValueInjectionInfos, allInjectionInfos.orNull())
         if(allInjectionInfos.isEmpty()) return
         allInjectionInfos.forEach { injectionInfo ->
             registrar.startInjecting(ParadoxScriptLanguage)
-            registrar.addPlace(null, null, host, injectionInfo.rangeInsideHost)
+            injectionInfo.textFragments.forEachFast { (textRange, _) ->
+                registrar.addPlace(null, null, host, textRange)
+            }
             registrar.doneInjecting()
         }
         InjectionUtils.enableInjectLanguageAction(host, false)
@@ -80,21 +81,24 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
                 ?.takeIf { it.startOffset >= hostRange.startOffset && it.endOffset <= hostRange.endOffset }
                 ?.shiftLeft(hostRange.startOffset)
                 ?: return@t1 null
-            val rangeInsideHost = rawRangeInsideHost.unquote(rawRangeInsideHost.substring(host.text))
+            val text = host.text
+            val rangeInsideHost = rawRangeInsideHost.unquote(rawRangeInsideHost.substring(text))
             //这里要求参数值两边都有双引号
             val parameterValueQuoted = rawRangeInsideHost.startOffset != rangeInsideHost.startOffset && rawRangeInsideHost.endOffset != rangeInsideHost.endOffset
-            ParameterValueInjectionInfo(rangeInsideHost, parameterValueQuoted) p@{
-                val argumentNameElement = referenceInfo.argumentNameElement ?: return@p null
+            val parameterElementProvider = lazy {
+                val argumentNameElement = referenceInfo.argumentNameElement ?: return@lazy null
                 val argumentNameElementRange = argumentNameElement.textRange
                 val argumentNameRange = referenceInfo.argumentNameRange
                     .takeIf { it.startOffset >= argumentNameElementRange.startOffset && it.endOffset <= argumentNameElementRange.endOffset }
                     ?.shiftLeft(argumentNameElementRange.startOffset)
-                    ?: return@p null
+                    ?: return@lazy null
                 argumentNameElement.references.firstNotNullOfOrNull t2@{ reference ->
                     if(reference.rangeInElement != argumentNameRange) return@t2 null
                     reference.resolve()?.castOrNull<ParadoxParameterElement>()
                 }
             }
+            val textToInject = rangeInsideHost.substring(text)
+            ParameterValueInjectionInfo(textToInject, rangeInsideHost, parameterValueQuoted, parameterElementProvider)
         }
     }
     
@@ -123,9 +127,11 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         if(start == -1 || end == -1) return null
         val rangeInsideHost = TextRange.create(start, end)
         val parameterValueQuoted = false
-        return ParameterValueInjectionInfo(rangeInsideHost, parameterValueQuoted) {
+        val parameterElementProvider = lazy {
             ParadoxParameterSupport.resolveParameter(host)
         }
+        val textToInject = rangeInsideHost.substring(host.text)
+        return ParameterValueInjectionInfo(textToInject, rangeInsideHost, parameterValueQuoted, parameterElementProvider) 
     }
     
     object Keys {

@@ -282,7 +282,8 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
                 val shreds = file.getShreds()
                 val shred = shreds?.singleOrNull()
                 val rangeInsideHost = shred?.rangeInsideHost ?: return null
-                 injectionInfos.find { it.rangeInsideHost == rangeInsideHost }
+                //it.rangeInsideHost may not equal to rangeInsideHost, but inside (e.g., there are escaped double quotes)
+                 injectionInfos.find { it.rangeInsideHost.startOffset in rangeInsideHost }
             }
             host is ParadoxParameter -> {
                 //just use the only one

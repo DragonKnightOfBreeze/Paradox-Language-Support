@@ -58,6 +58,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.util.*
 import it.unimi.dsi.fastutil.*
 import it.unimi.dsi.fastutil.objects.*
 import java.io.*
@@ -156,6 +157,23 @@ fun TextRange.unquote(text: String): TextRange {
     val startOffset = if(leftQuoted) this.startOffset + 1 else this.startOffset
     val endOffset = if(rightQuoted) this.endOffset - 1 else this.endOffset
     return TextRange.create(startOffset, endOffset)
+}
+
+fun String.getTextFragments(offset: Int = 0): List<Tuple2<TextRange, String>> {
+    this.quote()
+    val result = mutableListOf<Tuple2<TextRange, String>>()
+    var startIndex = 0
+    var lastIndex = 0
+    var isEscape = false
+    this.forEachFast f@{ c ->
+        if(isEscape) {
+            isEscape = false
+            if(c == '\\' || c == '"')
+        }
+        if(c == '\\') isEscape =true
+    }
+    result += TextRange.create(offset + startIndex, offset + length) to this.substring(startIndex, length)
+    return result
 }
 
 //com.intellij.refactoring.actions.BaseRefactoringAction.findRefactoringTargetInEditor

@@ -268,7 +268,7 @@ fun String.quote(): String {
     if(start && end) return s
     return buildString {
         if(!start) append("\"")
-        for(c in s) {
+        s.forEachFast { c ->
             if(c == '"') append("\\\"") else append(c)
         }
         if(!end) append("\"")
@@ -283,9 +283,9 @@ fun String.unquote(): String {
     if(!start && !end) return s
     return buildString {
         var escape = false
-        for((index, c) in s.withIndex()) {
-            if(start && index == 0) continue
-            if(end && index == s.lastIndex) continue
+        s.forEachIndexedFast f@{ i, c ->
+            if(start && i == 0) return@f
+            if(end && i == s.lastIndex) return@f
             if(escape) {
                 escape = false
                 when(c) {

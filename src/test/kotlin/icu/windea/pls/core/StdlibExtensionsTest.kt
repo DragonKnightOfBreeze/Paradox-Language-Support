@@ -1,9 +1,8 @@
-package icu.windea.pls
+package icu.windea.pls.core
 
-import icu.windea.pls.core.*
 import org.junit.*
 
-class ExtensionsTest {
+class StdlibExtensionsTest {
 	@Test
 	fun matchesGlobFileNameTest(){
 		Assert.assertTrue("abc".matchesGlobFileName("abc"))
@@ -62,6 +61,8 @@ class ExtensionsTest {
 	
 	@Test
 	fun quoteAndUnquoteTest() {
+		Assert.assertEquals("")
+		
 		Assert.assertEquals("\"abc\"", "abc".quote())
 		Assert.assertEquals("\"abc\"", "\"abc\"".quote())
 		Assert.assertEquals("abc", "abc".unquote())
