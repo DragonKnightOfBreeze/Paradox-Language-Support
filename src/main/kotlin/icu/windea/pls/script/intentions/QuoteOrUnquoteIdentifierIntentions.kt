@@ -8,9 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
-class QuoteIdentifierIntention : IntentionAction, PriorityAction {
-	override fun getPriority() = PriorityAction.Priority.NORMAL
-	
+class QuoteIdentifierIntention : IntentionAction, DumbAware {
 	override fun getFamilyName() = text
 	
 	override fun getText() = PlsBundle.message("script.intention.quoteIdentifier")
@@ -52,12 +50,7 @@ class QuoteIdentifierIntention : IntentionAction, PriorityAction {
 	override fun startInWriteAction() = true
 }
 
-//TODO 1.3.0+ 如果在用引号括起的参数值中处理已被转义一次的引号，处理完成后字面量开头会多处两个反斜线
-// " \"var\" " -> " \\\\var "
-
-class UnquoteIdentifierIntention : IntentionAction, PriorityAction {
-	override fun getPriority() = PriorityAction.Priority.NORMAL
-	
+class UnquoteIdentifierIntention : IntentionAction, DumbAware {
 	override fun getFamilyName() = text
 	
 	override fun getText() = PlsBundle.message("script.intention.unquoteIdentifier")

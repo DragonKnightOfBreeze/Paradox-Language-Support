@@ -258,7 +258,7 @@ fun String.quote(): String {
     val end = isRightQuoted()
     if(start && end) return s
     return buildString {
-        if(!start) append("\"")
+        append("\"")
         s.forEachFast { c ->
             when(c) {
                 '"' -> append("\\\"")
@@ -266,7 +266,7 @@ fun String.quote(): String {
                 else -> append(c)
             }
         }
-        if(!end) append("\"")
+        append("\"")
     }
 }
 

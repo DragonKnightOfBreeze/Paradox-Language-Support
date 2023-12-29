@@ -160,13 +160,17 @@ fun TextRange.unquote(text: String): TextRange {
 }
 
 fun TextRange.replaceAndQuoteIfNecessary(original: String, replacement: String): String {
-    val isQuoted = original.isQuoted()
-    val prefix = original.substring(0, startOffset)
-    val suffix = original.substring(endOffset)
-    var replacement0 = replacement.quoteIfNecessary(or = isQuoted)
-    if(replacement0.isRightQuoted() && suffix.isNotEmpty()) replacement0 = replacement0.dropLast(1)
-    if(replacement0.isLeftQuoted() && prefix.isNotEmpty()) replacement0 = replacement0.drop(1)
-    return replacement0
+    if(this.length >= original.length - 1) {
+        return replacement.quoteIfNecessary()
+    } else {
+        var replacement0 = replacement.quoteIfNecessary()
+        if(replacement0.isLeftQuoted() && replacement0.isRightQuoted()) {
+            replacement0 = replacement0.substring(1, replacement0.length - 1)
+        }
+        val prefix = original.substring(0, startOffset)
+        val suffix = original.substring(endOffset)
+        return prefix + replacement0 + suffix
+    }
 }
 
 fun String.getTextFragments(offset: Int = 0): List<Tuple2<TextRange, String>> {
