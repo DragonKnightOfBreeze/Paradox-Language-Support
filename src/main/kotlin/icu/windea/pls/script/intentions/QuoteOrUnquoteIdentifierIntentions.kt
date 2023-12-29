@@ -8,6 +8,8 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
+//TODO 1.3.0+ 直接对用引号括起的参数值中的字面量使用这些意象操作时，
+
 class QuoteIdentifierIntention : IntentionAction, DumbAware {
 	override fun getFamilyName() = text
 	

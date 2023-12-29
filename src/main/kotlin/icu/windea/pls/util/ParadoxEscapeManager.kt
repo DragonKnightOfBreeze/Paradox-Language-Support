@@ -108,8 +108,8 @@ object ParadoxEscapeManager {
     }
     
     private fun parseScriptExpressionCharactersWithEscape(out: StringBuilder, chars: String, sourceOffsets: IntArray?): Boolean {
-        var index = 0
         val outOffset = out.length
+        var index = 0
         while(index < chars.length) {
             val c = chars[index++]
             if(sourceOffsets != null) {

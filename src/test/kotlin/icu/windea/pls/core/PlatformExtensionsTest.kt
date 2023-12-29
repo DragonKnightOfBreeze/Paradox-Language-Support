@@ -17,6 +17,13 @@ class PlatformExtensionsTest {
     }
     
     @Test
+    fun getTextFragmentsTest1() {
+        val s = """###\\\\\\\\
+custom_tooltip = {}"""
+        println(s.getTextFragments(0))
+    }
+    
+    @Test
     fun replaceAndQuoteIfNecessaryTest() {
         Assert.assertEquals("def", TextRange.create(0, 3).replaceAndQuoteIfNecessary("abc", "def"))
         Assert.assertEquals("\"e\"", TextRange.create(0, 3).replaceAndQuoteIfNecessary("\"b\"", "\"e\""))

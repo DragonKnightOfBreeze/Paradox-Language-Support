@@ -176,19 +176,16 @@ fun TextRange.replaceAndQuoteIfNecessary(original: String, replacement: String):
 fun String.getTextFragments(offset: Int = 0): List<Tuple2<TextRange, String>> {
     val result = mutableListOf<Tuple2<TextRange, String>>()
     var startIndex = 0
-    var lastIndex = 0
-    var isEscape = false
-    this.forEachIndexedFast f@{ i, c ->
-        if(isEscape) {
-            isEscape = false
-            if(c == '\\' || c == '"') {
-                lastIndex = i -1
-                result += TextRange.create(offset + startIndex, offset + lastIndex) to this.substring(startIndex, lastIndex)
-                startIndex = i
-            }
-            return@f
-        }
-        if(c == '\\') isEscape = true
+    var index = 0
+    while(index < this.length) {
+        val c = this[index++]
+        if(c != '\\') continue
+        if(index == this.length) break
+        val c1 = this[index++]
+        //if(c1 != '\\' && c1 != '"') continue
+        if(c1 != '"') continue
+        result += TextRange.create(offset + startIndex, offset + index - 2) to this.substring(startIndex, index - 2)
+        startIndex = index - 1
     }
     result += TextRange.create(offset + startIndex, offset + length) to this.substring(startIndex, length)
     return result

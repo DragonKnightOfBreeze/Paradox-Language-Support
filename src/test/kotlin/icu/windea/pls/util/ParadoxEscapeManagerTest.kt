@@ -6,7 +6,8 @@ import org.junit.*
 class ParadoxEscapeManagerTest {
     @Test
     fun parseScriptExpressionCharacters() {
-        val s = """   \"ai_cha\\n\\\\c\\\"e\" = {}   """
+        val s = """###\"\\\\\"
+\"custom_tooltip\" = {}"""
         val out = StringBuilder()
         val sourceOffsets = IntArray(s.length + 1)
         ParadoxEscapeManager.parseScriptExpressionCharacters(s, out, sourceOffsets)

@@ -11,11 +11,11 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.lang.config.*
 
 /**
  * 脚本语言的语言注入器，用于提供以下功能：
@@ -61,11 +61,8 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         host.putUserData(Keys.parameterValueInjectionInfos, allInjectionInfos.orNull())
         if(allInjectionInfos.isEmpty()) return true
         allInjectionInfos.forEach f@{ injectionInfo ->
-            if(injectionInfo.textFragments.isEmpty()) return@f
             registrar.startInjecting(ParadoxScriptLanguage)
-            injectionInfo.textFragments.forEachFast { (textRange, _) ->
-                registrar.addPlace(null, null, host, textRange)
-            }
+            registrar.addPlace(null, null, host, injectionInfo.rangeInsideHost)
             registrar.doneInjecting()
         }
         return false

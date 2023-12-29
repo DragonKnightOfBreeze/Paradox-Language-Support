@@ -118,9 +118,9 @@ COLOR_TOKEN=(rgb|hsv)[ \t]*\{[\d.\s&&[^\r\n]]*}
 
 CHECK_STRING={WILDCARD_STRING_TOKEN}|{WILDCARD_QUOTED_STRING_TOKEN}
 WILDCARD_STRING_TOKEN=[^@#={}\s\"][^#={}\s\"]*\"?
-WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\.)*\"?
+WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\[\s\S])*\"?
 STRING_TOKEN=[^@#$={}\[\]\s\"][^#$={}\[\]\s\"]*\"?
-QUOTED_STRING_TOKEN=\"([^\"\\]|\\.)*\"?
+QUOTED_STRING_TOKEN=\"([^\"\\]|\\[\s\S])*\"?
 
 SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
 
