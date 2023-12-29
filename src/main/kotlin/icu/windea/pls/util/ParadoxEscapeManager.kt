@@ -120,36 +120,26 @@ object ParadoxEscapeManager {
                 out.append(c)
                 continue
             }
-            val newIndex = parseEscapedSymbolInScriptExpression(chars, index, out)
-            if(index == newIndex) {
-                continue
-            }
-            index = newIndex
-            if(index == -1) return false
-            if(sourceOffsets != null) {
-                sourceOffsets[out.length - outOffset] = index
+            if(index == chars.length) return false
+            val c1 = chars[index++]
+            when(c1) {
+                '"' -> {
+                    out.append('"')
+                    if(sourceOffsets != null) {
+                        sourceOffsets[out.length - outOffset] = index
+                    }
+                }
+                '\\' -> {
+                    out.append('\\')
+                    if(sourceOffsets != null) {
+                        sourceOffsets[out.length - outOffset] = index
+                    }
+                }
+                else -> {
+                    out.append('\\').append(c1)
+                }
             }
         }
         return true
-    }
-    
-    @Suppress("NAME_SHADOWING")
-    private fun parseEscapedSymbolInScriptExpression(chars: String, index: Int, out: StringBuilder): Int {
-        var index = index
-        if(index == chars.length) return -1
-        val c = chars[index++]
-        when(c) {
-            '"' -> {
-                out.append('"')
-            }
-            '\\' -> {
-                out.append('\\')
-            }
-            else -> {
-                out.append('\\').append(c)
-                return index - 1
-            }
-        }
-        return index
     }
 }

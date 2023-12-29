@@ -237,7 +237,13 @@ fun String.isLeftQuoted(): Boolean {
 }
 
 fun String.isRightQuoted(): Boolean {
-    return length > 1 && endsWith('"') && get(length - 2) != '\\'
+    return length > 1 && endsWith('"') && run {
+        var n = 0
+        for(i in (lastIndex - 1) downTo  0) {
+            if(this[i] == '\\') n++ else break
+        }
+        n % 2 == 0
+    }
 }
 
 fun String.isQuoted(): Boolean {
@@ -246,7 +252,7 @@ fun String.isQuoted(): Boolean {
 
 fun String.quoteIfNecessary(or: Boolean = false): String {
     //如果包含空白或者转义字符的话要使用引号括起
-    return if(or || any { it.isWhitespace() || it == 'c' }) quote() else this
+    return if(or || any { it.isWhitespace() || it == '"' }) quote() else this
 }
 
 fun String.quote(): String {

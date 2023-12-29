@@ -1,6 +1,7 @@
 package icu.windea.pls.script.injection
 
 import com.intellij.lang.injection.*
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -43,7 +44,13 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         if(host !is PsiLanguageInjectionHost) return
         InjectionUtils.enableInjectLanguageAction(host, false) //disable inject language action
         
-        if(host.hasSyntaxError()) return //skip if host has syntax error 
+        runCatchingCancelable {
+            doGetLanguageToInject(host, registrar)
+        }.onFailure { e -> thisLogger<ParadoxScriptLanguageInjector>().error(e.message, e) }
+    }
+    
+    private fun doGetLanguageToInject(host: PsiLanguageInjectionHost, registrar: MultiHostRegistrar): Boolean {
+        if(host.hasSyntaxError()) return true //skip if host has syntax error 
         
         val allInjectionInfos = mutableListOf<ParameterValueInjectionInfo>()
         
@@ -52,14 +59,16 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         ProgressManager.checkCanceled()
         applyInjectionForParameterDefaultValue(host, allInjectionInfos)
         host.putUserData(Keys.parameterValueInjectionInfos, allInjectionInfos.orNull())
-        if(allInjectionInfos.isEmpty()) return
-        allInjectionInfos.forEach { injectionInfo ->
+        if(allInjectionInfos.isEmpty()) return true
+        allInjectionInfos.forEach f@{ injectionInfo ->
+            if(injectionInfo.textFragments.isEmpty()) return@f
             registrar.startInjecting(ParadoxScriptLanguage)
             injectionInfo.textFragments.forEachFast { (textRange, _) ->
                 registrar.addPlace(null, null, host, textRange)
             }
             registrar.doneInjecting()
         }
+        return false
     }
     
     private fun applyInjectionForArgumentValue(host: PsiElement, allInjectionInfos: MutableList<ParameterValueInjectionInfo>) {

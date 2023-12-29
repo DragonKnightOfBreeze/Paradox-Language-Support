@@ -61,6 +61,8 @@ class StdlibExtensionsTest {
 	
 	@Test
 	fun quoteAndUnquoteTest() {
+		Assert.assertEquals(""""#####\\\" \" \\\\ ai_chance = {}"""", """#####\" " \\ ai_chance = {}""".quote())
+		
 		Assert.assertEquals("\"abc\"", "abc".quote())
 		Assert.assertEquals("\"abc\"", "\"abc\"".quote())
 		
@@ -81,5 +83,14 @@ class StdlibExtensionsTest {
 		Assert.assertEquals("abc abc", "\"abc abc\"".unquote())
 		Assert.assertEquals("abc abc", "\"abc abc".unquote())
 		Assert.assertEquals("abc abc", "abc abc\"".unquote())
+	}
+	
+	@Test
+	fun isQuotedTest() {
+		Assert.assertFalse("123".isRightQuoted())
+		Assert.assertTrue("123\"".isRightQuoted())
+		Assert.assertFalse("123\\\"".isRightQuoted())
+		Assert.assertTrue("123\\\\\"".isRightQuoted())
+		Assert.assertTrue("\\\\\"".isRightQuoted())
 	}
 }
