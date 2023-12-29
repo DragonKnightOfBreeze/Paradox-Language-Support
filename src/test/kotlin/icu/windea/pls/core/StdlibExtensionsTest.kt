@@ -61,10 +61,13 @@ class StdlibExtensionsTest {
 	
 	@Test
 	fun quoteAndUnquoteTest() {
-		Assert.assertEquals("")
-		
 		Assert.assertEquals("\"abc\"", "abc".quote())
 		Assert.assertEquals("\"abc\"", "\"abc\"".quote())
+		
+		Assert.assertEquals("""" abc\"abc """", """ abc"abc """.quote())
+		Assert.assertEquals("""" abc\\\"abc """", """ abc\"abc """.quote())
+		Assert.assertEquals(""" abc"abc """, """" abc\"abc """".unquote())
+		Assert.assertEquals(""" abc\"abc """, """" abc\\\"abc """".unquote())
 		
 		Assert.assertEquals("abc", "abc".unquote())
 		Assert.assertEquals("ab\"c", "ab\\\"c".unquote())

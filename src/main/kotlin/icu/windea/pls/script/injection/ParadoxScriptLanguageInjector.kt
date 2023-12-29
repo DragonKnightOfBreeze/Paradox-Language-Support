@@ -14,6 +14,7 @@ import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.lang.config.*
 
 /**
  * 脚本语言的语言注入器，用于提供以下功能：
@@ -21,7 +22,8 @@ import icu.windea.pls.script.psi.*
  * * 对脚本参数的传入值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
  * * 对脚本参数的默认值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
  *
- * @see icu.windea.pls.lang.config.CwtParameterValueConfigContextProvider
+ * @see ParameterValueInjectionInfo
+ * @see CwtParameterValueConfigContextProvider
  */
 class ParadoxScriptLanguageInjector : MultiHostInjector {
     //see: com.intellij.util.InjectionUtils

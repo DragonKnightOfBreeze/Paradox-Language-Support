@@ -4,6 +4,7 @@ package icu.windea.pls.core
 
 import com.google.common.cache.*
 import icu.windea.pls.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import java.io.*
 import java.net.*
@@ -257,7 +258,11 @@ fun String.quote(): String {
     return buildString {
         if(!start) append("\"")
         s.forEachFast { c ->
-            if(c == '"') append("\\\"") else append(c)
+            when(c) {
+                '"' -> append("\\\"")
+                '\\' -> append("\\\\")
+                else -> append(c)
+            }
         }
         if(!end) append("\"")
     }
@@ -276,8 +281,8 @@ fun String.unquote(): String {
             if(escape) {
                 escape = false
                 when(c) {
-                    '\'' -> append(c)
                     '\"' -> append(c)
+                    '\\' -> append(c)
                     else -> append('\\').append(c)
                 }
             } else if(c == '\\') {
