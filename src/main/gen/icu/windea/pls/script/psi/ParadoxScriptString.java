@@ -32,7 +32,7 @@ public interface ParadoxScriptString extends ParadoxScriptValue, PsiLiteralValue
   String getValue();
 
   @NotNull
-  ParadoxScriptString setValue(@NotNull String name);
+  ParadoxScriptString setValue(@NotNull String value);
 
   @NotNull
   String getStringValue();

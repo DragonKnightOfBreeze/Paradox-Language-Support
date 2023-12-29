@@ -239,32 +239,20 @@ fun String.isRightQuoted(): Boolean {
     return length > 1 && endsWith('"') && get(length - 2) != '\\'
 }
 
-fun String.toCommaDelimitedStringList(destination: MutableList<String> = mutableListOf()): MutableList<String> {
-    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().orNull() }
+fun String.isQuoted(): Boolean {
+    return isLeftQuoted() || isRightQuoted()
 }
 
-fun String.toCommaDelimitedStringSet(destination: MutableSet<String> = mutableSetOf()): MutableSet<String> {
-    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().orNull() }
-}
-
-fun Collection<String>.toCommaDelimitedString(): String {
-    val input = this
-    return if(input.isEmpty()) "" else input.joinToString(",")
-}
-
-fun String.quoteIf(condition: Boolean): String {
-    return if(condition) quote() else this //不判断之前是否已经用引号括起，依据quoted 
-}
-
-fun String.quoteIfNecessary(): String {
-    return if(containsBlank()) quote() else this //如果包含空白的话要使用引号括起
+fun String.quoteIfNecessary(or: Boolean = false): String {
+    //如果包含空白或者转义字符的话要使用引号括起
+    return if(or || any { it.isWhitespace() || it == 'c' }) quote() else this
 }
 
 fun String.quote(): String {
     val s = this
     if(s.isEmpty() || s == "\"") return "\"\""
-    val start = startsWith('"')
-    val end = endsWith('"')
+    val start = isLeftQuoted()
+    val end = isRightQuoted()
     if(start && end) return s
     return buildString {
         if(!start) append("\"")
@@ -278,9 +266,8 @@ fun String.quote(): String {
 fun String.unquote(): String {
     val s = this
     if(s.isEmpty() || s == "\"") return ""
-    val start = startsWith('"')
-    val end = endsWith('"')
-    if(!start && !end) return s
+    val start = isLeftQuoted()
+    val end = isRightQuoted()
     return buildString {
         var escape = false
         s.forEachIndexedFast f@{ i, c ->
@@ -300,6 +287,19 @@ fun String.unquote(): String {
             }
         }
     }
+}
+
+fun Collection<String>.toCommaDelimitedString(): String {
+    val input = this
+    return if(input.isEmpty()) "" else input.joinToString(",")
+}
+
+fun String.toCommaDelimitedStringList(destination: MutableList<String> = mutableListOf()): MutableList<String> {
+    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().orNull() }
+}
+
+fun String.toCommaDelimitedStringSet(destination: MutableSet<String> = mutableSetOf()): MutableSet<String> {
+    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().orNull() }
 }
 
 fun String.truncate(limit: Int, ellipsis: String = "..."): String {

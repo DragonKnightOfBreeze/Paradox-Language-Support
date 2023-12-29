@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.parameter.*
@@ -44,7 +45,7 @@ class ParadoxScriptValueArgumentExpressionNode(
         val node: ParadoxScriptValueArgumentExpressionNode
     ) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
         override fun handleElementRename(newElementName: String): PsiElement {
-            return element.setValue(rangeInElement.replace(element.text, newElementName))
+            return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
         }
         
         override fun resolve(): ParadoxParameterElement? {

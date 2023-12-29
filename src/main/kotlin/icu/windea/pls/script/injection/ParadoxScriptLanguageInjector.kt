@@ -29,9 +29,8 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
     //see: org.intellij.plugins.intelliLang.inject.InjectorUtils
     
     private val toInject = listOf(
-        ParadoxScriptString::class.java,
-        ParadoxScriptParameter::class.java,
-        ParadoxScriptInlineMathParameter::class.java
+        ParadoxScriptStringExpressionElement::class.java,
+        ParadoxParameter::class.java
     )
     
     override fun elementsToInjectIn(): List<Class<out PsiElement>> {
@@ -40,6 +39,8 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
     
     override fun getLanguagesToInject(registrar: MultiHostRegistrar, host: PsiElement) {
         if(host !is PsiLanguageInjectionHost) return
+        InjectionUtils.enableInjectLanguageAction(host, false) //disable inject language action
+        
         if(host.hasSyntaxError()) return //skip if host has syntax error 
         
         val allInjectionInfos = mutableListOf<ParameterValueInjectionInfo>()
@@ -57,15 +58,12 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
             }
             registrar.doneInjecting()
         }
-        InjectionUtils.enableInjectLanguageAction(host, false)
-        host.containingFile?.let { file -> InjectionUtils.setCollectLineMarkersForInjectedFiles(file, false) }
     }
     
     private fun applyInjectionForArgumentValue(host: PsiElement, allInjectionInfos: MutableList<ParameterValueInjectionInfo>) {
         if(host !is ParadoxScriptString) return
         val injectionInfos = getInjectionInfosForArgumentValue(host)
         if(injectionInfos.isEmpty()) return
-        
         allInjectionInfos.addAll(injectionInfos)
     }
     
@@ -106,7 +104,6 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         if(host !is ParadoxParameter) return
         val injectionInfo = getInjectionInfoForParameterDefaultValue(host)
         if(injectionInfo == null) return
-        
         allInjectionInfos.add(injectionInfo)
     }
     

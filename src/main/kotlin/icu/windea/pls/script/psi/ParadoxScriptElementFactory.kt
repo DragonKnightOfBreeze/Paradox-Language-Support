@@ -4,6 +4,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.*
+import icu.windea.pls.util.*
 
 object ParadoxScriptElementFactory {
 	@JvmStatic
@@ -21,7 +22,7 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
-	fun createScriptedVariable(project: Project, text: String): ParadoxScriptScriptedVariable {
+	fun createScriptedVariableFromText(project: Project, text: String): ParadoxScriptScriptedVariable {
 		return createRootBlock(project, text).findChild()!!
 	}
 	
@@ -36,14 +37,20 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
-	fun createProperty(project: Project, text: String): ParadoxScriptProperty {
+	fun createPropertyFromText(project: Project, text: String): ParadoxScriptProperty {
 		return createRootBlock(project, text).findChild()!!
 	}
 	
 	@JvmStatic
 	fun createProperty(project: Project, key: String, value: String): ParadoxScriptProperty {
-		val usedKey = key.quoteIfNecessary()
-		return createRootBlock(project, "$usedKey = $value").findChild()!!
+		val newKey = key.quoteIfNecessary(or = key.isQuoted())
+		val newValue = value.quoteIfNecessary(or = value.isQuoted())
+		return createRootBlock(project, "$newKey = $newValue").findChild()!!
+	}
+	
+	@JvmStatic
+	fun createPropertyKeyFromText(project: Project, text: String): ParadoxScriptPropertyKey {
+		return createPropertyFromText(project, "$text = v").findChild()!!
 	}
 	
 	@JvmStatic
@@ -52,13 +59,25 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
+	fun createValueFromText(project: Project, text: String): ParadoxScriptValue {
+		return createPropertyFromText(project, "k = $text").findChild()!!
+	}
+	
+	@JvmStatic
 	fun createValue(project: Project, value: String): ParadoxScriptValue {
 		return createProperty(project, "a", value).findChild()!!
 	}
 	
 	@JvmStatic
-	fun createBlock(project: Project, value: String): ParadoxScriptBlock {
-		return createValue(project, value).cast()!!
+	fun createStringFromText(project: Project, text: String): ParadoxScriptString {
+		return createValueFromText(project, text).castOrNull<ParadoxScriptString>()
+			?: createValueFromText(project, text.quote()).cast()
+	}
+	
+	@JvmStatic
+	fun createString(project: Project, value: String): ParadoxScriptString {
+		return createValue(project, value).castOrNull<ParadoxScriptString>()
+			?: createValue(project, value.quote()).cast()
 	}
 	
 	@JvmStatic
@@ -67,9 +86,8 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
-	fun createString(project: Project, value: String): ParadoxScriptString {
-		val usedValue = value.quoteIfNecessary()
-		return createValue(project, usedValue).cast()!!
+	fun createBlock(project: Project, value: String): ParadoxScriptBlock {
+		return createValue(project, value).cast()!!
 	}
 	
 	@JvmStatic
@@ -99,13 +117,24 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
-	fun createParameter(project: Project, name: String): ParadoxScriptParameter {
-		return createValue(project, "\$$name\$").findChild()!!
+	fun createParameterFromText(project: Project, text: String): ParadoxScriptParameter {
+		return createValueFromText(project, text).findChild()!!
 	}
 	
 	@JvmStatic
-	fun createInlineMathParameter(project: Project, name: String): ParadoxScriptInlineMathParameter {
-		val text = "$$name$"
+	fun createParameter(project: Project, name: String, defaultValue: String? = null): ParadoxScriptParameter {
+		val text = if(defaultValue == null) "$$name$" else "$$name|$defaultValue$"
+		return createValue(project, text).findChild()!!
+	}
+	
+	@JvmStatic
+	fun createInlineMathParameterFromText(project: Project, text: String): ParadoxScriptParameter {
+		return createInlineMath(project, text).findChild()!!
+	}
+	
+	@JvmStatic
+	fun createInlineMathParameter(project: Project, name: String, defaultValue: String? = null): ParadoxScriptInlineMathParameter {
+		val text = if(defaultValue == null) "$$name$" else "$$name|$defaultValue$"
 		return createInlineMath(project, text).findChild()!!
 	}
 }

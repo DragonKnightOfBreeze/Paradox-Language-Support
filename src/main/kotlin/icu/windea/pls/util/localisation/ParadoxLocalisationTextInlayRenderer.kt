@@ -77,7 +77,7 @@ object ParadoxLocalisationTextInlayRenderer {
     
     private fun renderStringTo(element: ParadoxLocalisationString, context: Context): Boolean = with(context.factory) {
         val text = buildString {
-            ParadoxEscapeManager.escapeLocalisationString(element.text, this, ParadoxEscapeManager.Type.Inlay)
+            ParadoxEscapeManager.unescapeLocalisationString(element.text, this, ParadoxEscapeManager.Type.Inlay)
         }
         context.builder.add(truncatedSmallText(text, context))
         return continueProcess(context)

@@ -53,10 +53,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     visitNavigatablePsiElement(o);
   }
 
-  public void visitString(@NotNull ParadoxLocalisationString o) {
-    visitRichText(o);
-  }
-
   public void visitProperty(@NotNull ParadoxLocalisationProperty o) {
     visitNamedElement(o);
   }
@@ -84,6 +80,10 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitScriptedVariableReference(@NotNull ParadoxLocalisationScriptedVariableReference o) {
     visitParadoxScriptedVariableReference(o);
+  }
+
+  public void visitString(@NotNull ParadoxLocalisationString o) {
+    visitRichText(o);
   }
 
   public void visitNavigatablePsiElement(@NotNull NavigatablePsiElement o) {

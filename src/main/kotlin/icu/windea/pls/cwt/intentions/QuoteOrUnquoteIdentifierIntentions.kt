@@ -26,10 +26,7 @@ class QuoteIdentifierIntention : IntentionAction, PriorityAction {
 		if(editor == null || file == null) return
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return
-		when(element) {
-			is CwtPropertyKey -> element.value = element.text.quote()
-			is CwtValue -> element.value = element.text.quote()
-		}
+		ElementManipulators.handleContentChange(element, element.text.quote())
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
@@ -37,6 +34,7 @@ class QuoteIdentifierIntention : IntentionAction, PriorityAction {
 		return file.findElementAt(offset) {
 			val identifier = it.parent
 			val result = when(identifier) {
+				is CwtOptionKey -> canQuote(identifier)
 				is CwtPropertyKey -> canQuote(identifier)
 				is CwtString -> canQuote(identifier)
 				is CwtInt -> true
@@ -49,7 +47,7 @@ class QuoteIdentifierIntention : IntentionAction, PriorityAction {
 	
 	fun canQuote(element: PsiElement) : Boolean{
 		val text = element.text
-		return !text.isLeftQuoted() && !text.isRightQuoted()
+		return !text.isQuoted()
 	}
 	
 	override fun startInWriteAction() = true
@@ -73,16 +71,14 @@ class UnquoteIdentifierIntention : IntentionAction, PriorityAction {
 		if(editor == null || file == null) return
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return
-		when(element) {
-			is CwtPropertyKey -> element.value = element.text.unquote()
-			is CwtValue -> element.value = element.text.unquote()
-		}
+		ElementManipulators.handleContentChange(element, element.text.unquote())
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
 		return file.findElementAt(offset) {
 			val identifier = it.parent
 			val result = when(identifier) {
+				is CwtOptionKey -> canUnquote(identifier)
 				is CwtPropertyKey -> canUnquote(identifier)
 				is CwtString -> canUnquote(identifier)
 				else -> false
@@ -93,8 +89,7 @@ class UnquoteIdentifierIntention : IntentionAction, PriorityAction {
 	
 	fun canUnquote(element: PsiElement) : Boolean{
 		val text = element.text
-		return (text.isLeftQuoted() || text.isRightQuoted()) && text.unquote()
-			.let { t -> !t.containsBlank() }
+		return text.isQuoted() && !text.containsBlank()
 	}
 	
 	override fun startInWriteAction() = true

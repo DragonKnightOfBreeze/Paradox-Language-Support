@@ -1,6 +1,5 @@
 package icu.windea.pls.core.psi
 
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.model.*
 
@@ -18,24 +17,11 @@ interface ParadoxParameter : ParadoxTypedElement, NavigatablePsiElement, Paradox
     }
     
     override fun updateText(text: String): ParadoxParameter {
-        return this.setName(text)
+        return ElementManipulators.handleContentChange(this, text)
     }
     
     override fun createLiteralTextEscaper(): LiteralTextEscaper<ParadoxParameter> {
-        return object : LiteralTextEscaper<ParadoxParameter>(this) {
-            override fun decode(rangeInsideHost: TextRange, outChars: StringBuilder): Boolean {
-                outChars.append(rangeInsideHost.substring(myHost.text))
-                return true
-            }
-            
-            override fun getOffsetInHost(offsetInDecoded: Int, rangeInsideHost: TextRange): Int {
-                return rangeInsideHost.startOffset + offsetInDecoded
-            }
-            
-            override fun isOneLine(): Boolean {
-                return true
-            }
-        }
+        return ParadoxScriptExpressionLiteralTextEscaper(this)
     }
 }
 

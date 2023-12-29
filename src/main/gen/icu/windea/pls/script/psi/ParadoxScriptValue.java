@@ -24,7 +24,7 @@ public interface ParadoxScriptValue extends NavigatablePsiElement, ParadoxScript
   String getValue();
 
   @NotNull
-  ParadoxScriptValue setValue(@NotNull String name);
+  ParadoxScriptValue setValue(@NotNull String value);
 
   @NotNull
   ParadoxType getType();

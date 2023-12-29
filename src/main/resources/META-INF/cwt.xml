@@ -24,6 +24,15 @@
     <lang.psiStructureViewFactory language="CWT" implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>
     <lang.surroundDescriptor language="CWT" implementationClass="icu.windea.pls.cwt.surroundWith.CwtSurroundDescriptor"/>
     <lang.unwrapDescriptor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.unwrap.CwtUnwrapDescriptor"/>
+
+    <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtOptionKey"
+                             implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtOptionKeyManipulator"/>
+    <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtPropertyKey"
+                             implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtPropertyKeyManipulator"/>
+    <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtValue"
+                             implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtValueManipulator"/>
+    <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtString"
+                             implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtStringManipulator"/>
     
     <intentionAction>
       <language>CWT</language>

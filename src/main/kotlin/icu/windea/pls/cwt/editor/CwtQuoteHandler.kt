@@ -4,4 +4,4 @@ import com.intellij.codeInsight.editorActions.*
 import com.intellij.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
-class CwtQuoteHandler:SimpleTokenSetQuoteHandler(PROPERTY_KEY_TOKEN, OPTION_KEY_TOKEN, STRING_TOKEN, TokenType.BAD_CHARACTER)
+class CwtQuoteHandler : SimpleTokenSetQuoteHandler(PROPERTY_KEY_TOKEN, OPTION_KEY_TOKEN, STRING_TOKEN, TokenType.BAD_CHARACTER)

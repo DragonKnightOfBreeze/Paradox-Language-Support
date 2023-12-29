@@ -62,9 +62,9 @@ class ParadoxDataExpressionNode(
         override fun handleElementRename(newElementName: String): PsiElement {
             val resolved = element.resolved()
             return when {
-                resolved == null -> element.setValue(rangeInElement.replace(element.text, newElementName))
+                resolved == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
                 resolved.language == CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
-                resolved.language.isParadoxLanguage() -> element.setValue(rangeInElement.replace(element.text, newElementName))
+                resolved.language.isParadoxLanguage() -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
                 else -> throw IncorrectOperationException()
             }
         }

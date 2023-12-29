@@ -26,10 +26,7 @@ class QuoteIdentifierIntention : IntentionAction, PriorityAction {
 		if(editor == null || file == null) return
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return
-		when(element) {
-			is ParadoxScriptPropertyKey -> element.setValue(element.text.quote())
-			is ParadoxScriptValue -> element.setValue(element.text.quote())
-		}
+		ElementManipulators.handleContentChange(element, element.text.quote())
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
@@ -49,7 +46,7 @@ class QuoteIdentifierIntention : IntentionAction, PriorityAction {
 	
 	fun canQuote(element: PsiElement) : Boolean{
 		val text = element.text
-		return !text.isLeftQuoted() && !text.isRightQuoted() && !text.isParameterized()
+		return !text.isQuoted()
 	}
 	
 	override fun startInWriteAction() = true
@@ -73,10 +70,7 @@ class UnquoteIdentifierIntention : IntentionAction, PriorityAction {
 		if(editor == null || file == null) return
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return
-		when(element) {
-			is ParadoxScriptPropertyKey -> element.setValue(element.text.unquote())
-			is ParadoxScriptValue -> element.setValue(element.text.unquote())
-		}
+		ElementManipulators.handleContentChange(element, element.text.unquote())
 	}
 	
 	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
@@ -93,8 +87,7 @@ class UnquoteIdentifierIntention : IntentionAction, PriorityAction {
 	
 	fun canUnquote(element: PsiElement) : Boolean{
 		val text = element.text
-		return (text.isLeftQuoted() || text.isRightQuoted()) && text.unquote()
-			.let { t -> !t.containsBlank() && !t.isParameterized() }
+		return text.isQuoted() && !text.containsBlank()
 	}
 	
 	override fun startInWriteAction() = true

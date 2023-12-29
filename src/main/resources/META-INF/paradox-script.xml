@@ -66,6 +66,17 @@
     <lang.unwrapDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.unwrap.ParadoxScriptUnwrapDescriptor"/>
     <codeInsight.gotoSuper language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptGotoSuperActionHandler"/>
     
+    <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKey"
+                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptPropertyKeyManipulator"/>
+    <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptValue"
+                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptValueManipulator"/>
+    <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptString"
+                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptStringManipulator"/>
+    <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptParameter"
+                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptParameterManipulator"/>
+    <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter"
+                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptInlineMathParameterManipulator"/>
+    
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <bundleName>messages.PlsBundle</bundleName>

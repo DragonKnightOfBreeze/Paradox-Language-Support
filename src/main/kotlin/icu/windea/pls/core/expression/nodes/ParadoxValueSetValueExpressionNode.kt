@@ -49,7 +49,7 @@ class ParadoxValueSetValueExpressionNode(
         val configExpressions = configs.mapNotNull { it.expression }
         
         override fun handleElementRename(newElementName: String): PsiElement {
-            return element.setValue(rangeInElement.replace(element.text, newElementName))
+            return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
         }
         
         override fun resolve(): PsiElement? {

@@ -11,7 +11,6 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun checkRightTemplate(b: PsiBuilder, l: Int): Boolean {
         //cannot be parsed to a string or scripted variable reference when with a trailing separator
-        if(b !is Builder) return true
         var s = -1
         var end = false
         while(true) {
@@ -33,6 +32,11 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
         val tokenType = b.rawLookup(-1)
         if(tokenType == TokenType.WHITE_SPACE) return false
         if(tokenType == COMMENT) return false
+        //also for continuous literals
+        if(tokenType in ParadoxScriptTokenSets.SNIPPET_TYPES) {
+            val nextTokenType = b.rawLookup(0)
+            if(nextTokenType != null && nextTokenType in ParadoxScriptTokenSets.SNIPPET_TYPES) return false
+        }
         return true
     }
     

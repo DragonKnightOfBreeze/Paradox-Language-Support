@@ -4,4 +4,4 @@ import com.intellij.codeInsight.editorActions.*
 import com.intellij.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
-class ParadoxLocalisationQuoteHandler : SimpleTokenSetQuoteHandler(PROPERTY_VALUE, TokenType.BAD_CHARACTER)
+class ParadoxLocalisationQuoteHandler : SimpleTokenSetQuoteHandler(LEFT_QUOTE, RIGHT_QUOTE, LEFT_SINGLE_QUOTE, RIGHT_SINGLE_QUOTE, TokenType.BAD_CHARACTER)

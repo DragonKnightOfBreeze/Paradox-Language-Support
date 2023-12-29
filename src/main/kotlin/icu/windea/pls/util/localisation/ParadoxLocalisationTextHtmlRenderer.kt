@@ -73,7 +73,7 @@ object ParadoxLocalisationTextHtmlRenderer {
     }
     
     private fun renderStringTo(element: ParadoxLocalisationString, context: Context) {
-        ParadoxEscapeManager.escapeLocalisationString(element.text.escapeXml(), context.builder, ParadoxEscapeManager.Type.Html)
+        ParadoxEscapeManager.unescapeLocalisationString(element.text.escapeXml(), context.builder, ParadoxEscapeManager.Type.Html)
     }
     
     private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {
