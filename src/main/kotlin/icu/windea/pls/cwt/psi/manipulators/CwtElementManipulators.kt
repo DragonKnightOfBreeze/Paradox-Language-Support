@@ -8,7 +8,7 @@ import icu.windea.pls.cwt.psi.*
 class CwtOptionKeyManipulator: AbstractElementManipulator<CwtOptionKey>() {
     override fun handleContentChange(element: CwtOptionKey, range: TextRange, newContent: String): CwtOptionKey {
         val text = element.text
-        val newText = range.replace(text, newContent.quoteIfNecessary(or = text.isQuoted()).removeSurrounding("\""))
+        val newText = range.replaceAndQuoteIfNecessary(text, newContent)
         val newElement = CwtElementFactory.createOptionKeyFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
@@ -17,7 +17,7 @@ class CwtOptionKeyManipulator: AbstractElementManipulator<CwtOptionKey>() {
 class CwtPropertyKeyManipulator: AbstractElementManipulator<CwtPropertyKey>() {
     override fun handleContentChange(element: CwtPropertyKey, range: TextRange, newContent: String): CwtPropertyKey {
         val text = element.text
-        val newText = range.replace(text, newContent.quoteIfNecessary(or = text.isQuoted()).removeSurrounding("\""))
+        val newText = range.replaceAndQuoteIfNecessary(text, newContent)
         val newElement = CwtElementFactory.createPropertyKeyFromText(element.project, newText)
         return element.replace(newElement).cast()
     }
@@ -35,7 +35,7 @@ class CwtValueManipulator: AbstractElementManipulator<CwtValue>() {
 class CwtStringManipulator: AbstractElementManipulator<CwtString>() {
     override fun handleContentChange(element: CwtString, range: TextRange, newContent: String): CwtString {
         val text = element.text
-        val newText = range.replace(text, newContent.quoteIfNecessary(or = text.isQuoted()).removeSurrounding("\""))
+        val newText = range.replaceAndQuoteIfNecessary(text, newContent)
         val newElement = CwtElementFactory.createStringFromText(element.project, newText)
         return element.replace(newElement).cast()
     }

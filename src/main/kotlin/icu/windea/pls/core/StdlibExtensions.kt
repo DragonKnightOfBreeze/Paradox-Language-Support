@@ -3,6 +3,7 @@
 package icu.windea.pls.core
 
 import com.google.common.cache.*
+import com.intellij.openapi.util.TextRange
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
@@ -250,11 +251,6 @@ fun String.isQuoted(): Boolean {
     return isLeftQuoted() || isRightQuoted()
 }
 
-fun String.quoteIfNecessary(or: Boolean = false): String {
-    //如果包含空白或者转义字符的话要使用引号括起
-    return if(or || any { it.isWhitespace() || it == '"' }) quote() else this
-}
-
 fun String.quote(): String {
     val s = this
     if(s.isEmpty() || s == "\"") return "\"\""
@@ -298,6 +294,11 @@ fun String.unquote(): String {
             }
         }
     }
+}
+
+fun String.quoteIfNecessary(or: Boolean = false): String {
+    //如果包含空白或者转义字符的话要使用引号括起
+    return if(or || any { it.isWhitespace() || it == '"' }) quote() else this
 }
 
 fun Collection<String>.toCommaDelimitedString(): String {
