@@ -27,6 +27,9 @@ public interface ParadoxScriptInlineParameterCondition extends PsiElement {
   @Nullable
   String getConditionExpression();
 
+  @Nullable
+  String getPresentationText();
+
   @NotNull
   ItemPresentation getPresentation();
 

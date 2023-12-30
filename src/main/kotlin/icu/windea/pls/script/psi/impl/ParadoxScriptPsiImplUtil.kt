@@ -615,6 +615,11 @@ object ParadoxScriptPsiImplUtil {
             || element is ParadoxScriptValue
             || element is ParadoxScriptParameterCondition
     }
+    
+    @JvmStatic
+    fun getPresentationText(element: ParadoxScriptParameterCondition): String? {
+        return element.conditionExpression?.let { PlsConstants.parameterConditionFolder(it) }
+    }
     //endregion
     
     //region ParadoxScriptInlineParameterCondition
@@ -643,6 +648,11 @@ object ParadoxScriptPsiImplUtil {
             }
         }
         return builder?.toString()
+    }
+    
+    @JvmStatic
+    fun getPresentationText(element: ParadoxScriptInlineParameterCondition): String? {
+        return element.conditionExpression?.let { PlsConstants.parameterConditionFolder(it) }
     }
     //endregion
     

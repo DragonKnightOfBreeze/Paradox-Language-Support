@@ -7,8 +7,12 @@ class ParadoxScriptUnwrapDescriptor : UnwrapDescriptorBase() {
         ParadoxScriptUnwrappers.ParadoxScriptScriptedVariableRemover("script.remove.scriptedVariable"),
         ParadoxScriptUnwrappers.ParadoxScriptPropertyRemover("script.remove.property"),
         ParadoxScriptUnwrappers.ParadoxScriptValueRemover("script.remove.value"),
+        ParadoxScriptUnwrappers.ParadoxScriptBlockRemover("script.remove.block"),
         ParadoxScriptUnwrappers.ParadoxScriptParameterConditionRemover("script.remove.parameterCondition"),
-        ParadoxScriptUnwrappers.ParadoxScriptInlineParameterConditionRemover("script.remove.inlineParameterCondition"),
+        ParadoxScriptUnwrappers.ParadoxScriptPropertyUnwrapper("script.unwrap.property"),
+        ParadoxScriptUnwrappers.ParadoxScriptBlockUnwrapper("script.unwrap.block"),
+        ParadoxScriptUnwrappers.ParadoxScriptParameterConditionUnwrapper("script.unwrap.parameterCondition"),
+        ParadoxScriptUnwrappers.ParadoxScriptInlineParameterConditionUnwrapper("script.unwrap.inlineParameterCondition"),
     )
     
     override fun createUnwrappers(): Array<out Unwrapper> {

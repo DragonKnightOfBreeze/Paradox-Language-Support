@@ -38,6 +38,9 @@ public interface ParadoxScriptParameterCondition extends PsiListLikeElement {
   @NotNull
   List<PsiElement> getComponents();
 
+  @Nullable
+  String getPresentationText();
+
   @NotNull
   ItemPresentation getPresentation();
 

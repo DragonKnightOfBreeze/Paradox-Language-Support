@@ -230,7 +230,7 @@ parameter_condition ::= LEFT_BRACKET parameter_condition_expr parameter_conditio
   implements=[
     "com.intellij.psi.PsiListLikeElement"
   ]
-  methods=[getIcon getConditionExpression isEmpty isNotEmpty getComponents]
+  methods=[getIcon getConditionExpression isEmpty isNotEmpty getComponents getPresentationText]
 }
 private parameter_condition_expr ::= NESTED_LEFT_BRACKET parameter_condition_expression NESTED_RIGHT_BRACKET{
   pin=1
@@ -249,7 +249,7 @@ private parameter_condition_value ::= scripted_variable_reference | boolean | in
 //used in, such as, dynamic strings (e.g. "a[[b]c]d")
 inline_parameter_condition ::= LEFT_BRACKET <<processInlineParameterCondition>> parameter_condition_expr inline_parameter_condition_item RIGHT_BRACKET {
   pin=2
-  methods=[getIcon getConditionExpression]
+  methods=[getIcon getConditionExpression getPresentationText]
 }
 private inline_parameter_condition_item ::= <<processSnippet>> inline_parameter_condition_snippet <<postProcessSnippet>>
 private inline_parameter_condition_snippet ::= inline_parameter_condition_item_part (<<processTemplate>> inline_parameter_condition_item_part) *

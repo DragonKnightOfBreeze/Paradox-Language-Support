@@ -1,14 +1,14 @@
-package icu.windea.pls.localisation.codeInsight.unwrap
+package icu.windea.pls.cwt.codeInsight.unwrap
 
 import com.intellij.codeInsight.unwrap.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.cwt.psi.*
 
-abstract class ParadoxLocalisationUnwrapRemoveBase(
+abstract class CwtUnwrapper(
     private val key: String
-): AbstractUnwrapper<ParadoxLocalisationUnwrapRemoveBase.Context>("") {
+) : AbstractUnwrapper<CwtUnwrapper.Context>("") {
     abstract fun getName(e: PsiElement): String
     
     override fun getDescription(e: PsiElement): String {
@@ -24,9 +24,9 @@ abstract class ParadoxLocalisationUnwrapRemoveBase(
             return element is PsiWhiteSpace
         }
         
-        fun extract(element: PsiElement) {
-            var first = element.firstChild.siblings(forward = true).find { it is ParadoxLocalisationRichText }
-            val last = element.lastChild.siblings(forward = false).find { it is ParadoxLocalisationRichText }
+        fun extract(element: PsiElement, containerElement: PsiElement) {
+            var first = containerElement.firstChild.siblings(forward = true).find { isElementToExtract(it) }
+            val last = containerElement.lastChild.siblings(forward = false).find { isElementToExtract(it) }
             if(first == null || last == null) return
             var toExtract = first
             if(isEffective) {
@@ -40,6 +40,10 @@ abstract class ParadoxLocalisationUnwrapRemoveBase(
                 }
                 first = first?.nextSibling
             } while(first != null && first.prevSibling !== last)
+        }
+        
+        private fun isElementToExtract(element: PsiElement): Boolean {
+            return element is PsiComment || element is CwtProperty || element is CwtValue
         }
     }
 }

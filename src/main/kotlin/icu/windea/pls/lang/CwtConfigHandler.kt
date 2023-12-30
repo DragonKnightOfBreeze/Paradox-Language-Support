@@ -229,7 +229,9 @@ object CwtConfigHandler {
     
     private fun doGetConfigContextFromCache(element: ParadoxScriptMemberElement): CwtConfigContext? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigContext) {
-            ProgressManager.checkCanceled()
+            run {
+                ProgressManager.checkCanceled()
+            }
             //invalidated on ScriptFileTracker
             val tracker = ParadoxModificationTrackerProvider.getInstance(element.project).ScriptFileTracker
             val value = doGetConfigContext(element)

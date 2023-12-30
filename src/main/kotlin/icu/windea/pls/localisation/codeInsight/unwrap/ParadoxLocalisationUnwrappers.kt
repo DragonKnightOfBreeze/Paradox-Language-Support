@@ -4,7 +4,7 @@ import com.intellij.psi.*
 import icu.windea.pls.localisation.psi.*
 
 object ParadoxLocalisationUnwrappers {
-    class ParadoxLocalisationPropertyRemover(key: String) : ParadoxLocalisationRemover(key) {
+    class ParadoxLocalisationPropertyRemover(key: String) : ParadoxLocalisationUnwraper(key) {
         override fun getName(e: PsiElement): String {
             return if(e is ParadoxLocalisationProperty) e.name else ""
         }
@@ -12,9 +12,13 @@ object ParadoxLocalisationUnwrappers {
         override fun isApplicableTo(e: PsiElement): Boolean {
             return e is ParadoxLocalisationProperty
         }
+        
+        override fun doUnwrap(element: PsiElement, context: Context) {
+            context.delete(element)
+        }
     }
     
-    class ParadoxLocalisationIconRemover(key: String) : ParadoxLocalisationRemover(key) {
+    class ParadoxLocalisationIconRemover(key: String) : ParadoxLocalisationUnwraper(key) {
         override fun getName(e: PsiElement): String {
             return if(e is ParadoxLocalisationIcon) e.name.orEmpty() else ""
         }
@@ -22,9 +26,13 @@ object ParadoxLocalisationUnwrappers {
         override fun isApplicableTo(e: PsiElement): Boolean {
             return e is ParadoxLocalisationIcon
         }
+        
+        override fun doUnwrap(element: PsiElement, context: Context) {
+            context.delete(element)
+        }
     }
     
-    class ParadoxLocalisationCommandRemover(key: String) : ParadoxLocalisationRemover(key) {
+    class ParadoxLocalisationCommandRemover(key: String) : ParadoxLocalisationUnwraper(key) {
         override fun getName(e: PsiElement): String {
             return if(e is ParadoxLocalisationCommand) e.text.removePrefix("[").removeSuffix("]") else ""
         }
@@ -32,9 +40,13 @@ object ParadoxLocalisationUnwrappers {
         override fun isApplicableTo(e: PsiElement): Boolean {
             return e is ParadoxLocalisationCommand
         }
+        
+        override fun doUnwrap(element: PsiElement, context: Context) {
+            context.delete(element)
+        }
     }
     
-    class ParadoxLocalisationReferenceRemover(key: String) : ParadoxLocalisationRemover(key) {
+    class ParadoxLocalisationReferenceRemover(key: String) : ParadoxLocalisationUnwraper(key) {
         override fun getName(e: PsiElement): String {
             return if(e is ParadoxLocalisationPropertyReference) e.name else ""
         }
@@ -42,19 +54,13 @@ object ParadoxLocalisationUnwrappers {
         override fun isApplicableTo(e: PsiElement): Boolean {
             return e is ParadoxLocalisationPropertyReference
         }
-    }
-    
-    class ParadoxLocalisationColorfulTextRemover(key: String) : ParadoxLocalisationRemover(key) {
-        override fun getName(e: PsiElement): String {
-            return if(e is ParadoxLocalisationColorfulText) e.name.orEmpty() else ""
-        }
         
-        override fun isApplicableTo(e: PsiElement): Boolean {
-            return e is ParadoxLocalisationColorfulText
+        override fun doUnwrap(element: PsiElement, context: Context) {
+            context.delete(element)
         }
     }
     
-    class ParadoxLocalisationColorfulTextUnwrapper(key: String) : ParadoxLocalisationUnwrapRemoveBase(key) {
+    class ParadoxLocalisationColorfulTextRemover(key: String) : ParadoxLocalisationUnwraper(key) {
         override fun getName(e: PsiElement): String {
             return if(e is ParadoxLocalisationColorfulText) e.name.orEmpty() else ""
         }
@@ -64,10 +70,22 @@ object ParadoxLocalisationUnwrappers {
         }
         
         override fun doUnwrap(element: PsiElement, context: Context) {
-            if(element is ParadoxLocalisationColorfulText) {
-                context.extract(element)
-                context.delete(element)
-            }
+            context.delete(element)
+        }
+    }
+    
+    class ParadoxLocalisationColorfulTextUnwrapper(key: String) : ParadoxLocalisationUnwraper(key) {
+        override fun getName(e: PsiElement): String {
+            return if(e is ParadoxLocalisationColorfulText) e.name.orEmpty() else ""
+        }
+        
+        override fun isApplicableTo(e: PsiElement): Boolean {
+            return e is ParadoxLocalisationColorfulText
+        }
+        
+        override fun doUnwrap(element: PsiElement, context: Context) {
+            context.extract(element, element)
+            context.delete(element)
         }
     }
 }

@@ -63,6 +63,12 @@ public class ParadoxScriptInlineParameterConditionImpl extends ASTWrapperPsiElem
   }
 
   @Override
+  @Nullable
+  public String getPresentationText() {
+    return ParadoxScriptPsiImplUtil.getPresentationText(this);
+  }
+
+  @Override
   @NotNull
   public ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
