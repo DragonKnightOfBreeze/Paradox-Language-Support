@@ -182,8 +182,7 @@ fun String.getTextFragments(offset: Int = 0): List<Tuple2<TextRange, String>> {
         if(c != '\\') continue
         if(index == this.length) break
         val c1 = this[index++]
-        //if(c1 != '\\' && c1 != '"') continue
-        if(c1 != '"') continue
+        if(c1 != '\\' && c1 != '"') continue
         result += TextRange.create(offset + startIndex, offset + index - 2) to this.substring(startIndex, index - 2)
         startIndex = index - 1
     }
