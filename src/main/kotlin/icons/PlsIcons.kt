@@ -61,7 +61,7 @@ object PlsIcons {
             else -> Definition
         }
         
-        @JvmStatic fun ValueSetValue(valueSetName: String?) = when(valueSetName) {
+        @JvmStatic fun DynamicValue(dynamicValueType: String?) = when(dynamicValueType) {
             "variable" -> Variable
             else -> DynamicValue
         }

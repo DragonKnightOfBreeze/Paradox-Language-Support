@@ -15,33 +15,33 @@ import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
 
-class ParadoxValueValueSetExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxDynamicValueExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type?.isValueSetValueType() == true
+        return config.expression?.type?.isDynamicValueType() == true
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        //not key/value or quoted -> only value set value name, no scope info
+        //not key/value or quoted -> only dynamic value name, no scope info
         if(config !is CwtMemberConfig<*> || expression.isLeftQuoted()) {
-            val valueSetName = config.expression?.value ?: return
-            val attributesKey = when(valueSetName) {
+            val dynamicValueType = config.expression?.value ?: return
+            val attributesKey = when(dynamicValueType) {
                 "variable" -> ParadoxScriptAttributesKeys.VARIABLE_KEY
-                else -> ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
+                else -> ParadoxScriptAttributesKeys.DYNAMIC_VALUE_KEY
             }
             CwtConfigHandler.annotateScriptExpression(element, element.textRange.unquote(expression), attributesKey, holder)
             return
         }
         val configGroup = config.info.configGroup
         val range = rangeInElement ?: TextRange.create(0, expression.length)
-        val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(expression, range, configGroup, config) ?: return
-        CwtConfigHandler.annotateComplexExpression(element, valueSetValueExpression, holder, config)
+        val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(expression, range, configGroup, config) ?: return
+        CwtConfigHandler.annotateComplexExpression(element, dynamicValueExpression, holder, config)
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         val configExpression = config.expression ?: return null
         val configGroup = config.info.configGroup
         val name = expression
-        return ParadoxValueSetValueHandler.resolveValueSetValue(element, name, configExpression, configGroup)
+        return ParadoxDynamicValueHandler.resolveDynamicValue(element, name, configExpression, configGroup)
     }
     
     override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
@@ -49,22 +49,22 @@ class ParadoxValueValueSetExpressionSupport : ParadoxScriptExpressionSupport {
         val configGroup = config.info.configGroup
         val range = TextRange.create(0, expression.length).unquote(expression)
         if(expression.isLeftQuoted()) {
-            //quoted -> only value set value name, no scope info
+            //quoted -> only dynamic value name, no scope info
             val reference = ParadoxScriptExpressionPsiReference(element, range, config, isKey)
             return arrayOf(reference)
         }
-        val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(expression, range, configGroup, config)
-        if(valueSetValueExpression == null) return PsiReference.EMPTY_ARRAY
-        return valueSetValueExpression.getReferences(element)
+        val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(expression, range, configGroup, config)
+        if(dynamicValueExpression == null) return PsiReference.EMPTY_ARRAY
+        return dynamicValueExpression.getReferences(element)
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        //not key/value or quoted -> only value set value name, no scope info
+        //not key/value or quoted -> only dynamic value name, no scope info
         if(context.config !is CwtMemberConfig<*> || context.quoted) {
-            CwtConfigHandler.completeValueSetValue(context, result)
+            CwtConfigHandler.completeDynamicValue(context, result)
             return
         }
-        CwtConfigHandler.completeValueSetValueExpression(context, result)
+        CwtConfigHandler.completeDynamicValueExpression(context, result)
     }
 }
 

@@ -200,9 +200,9 @@ object CwtConfigManipulator {
                 CwtDataTypes.Scope -> if(e2.value == "any") e1.expressionString else null
                 else -> null
             }
-            CwtDataTypes.Value, CwtDataTypes.ValueSet, CwtDataTypes.ValueOrValueSet -> when(t2) {
-                CwtDataTypes.Value, CwtDataTypes.ValueSet, CwtDataTypes.ValueOrValueSet -> if(e1.value == e2.value) "value_or_value_set[${e1.value}]" else null
-                CwtDataTypes.ValueField, CwtDataTypes.IntValueField, CwtDataTypes.VariableField, CwtDataTypes.IntVariableField -> "value_or_value_set[${e1.value}]"
+            CwtDataTypes.Value, CwtDataTypes.ValueSet, CwtDataTypes.DynamicValue -> when(t2) {
+                CwtDataTypes.Value, CwtDataTypes.ValueSet, CwtDataTypes.DynamicValue -> if(e1.value == e2.value) "dynamic_value[${e1.value}]" else null
+                CwtDataTypes.ValueField, CwtDataTypes.IntValueField, CwtDataTypes.VariableField, CwtDataTypes.IntVariableField -> "dynamic_value[${e1.value}]"
                 else -> null
             }
             CwtDataTypes.VariableField -> when(t2) {

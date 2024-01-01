@@ -15,25 +15,25 @@ import javax.swing.*
 /**
  * 值集值值并不存在一个真正意义上的声明处，用这个模拟。
  */
-class ParadoxValueSetValueElement(
+class ParadoxDynamicValueElement(
     parent: PsiElement,
     private val name: String,
-    val valueSetNames: Set<String>,
+    val dynamicValueTypes: Set<String>,
     val readWriteAccess: ReadWriteAccessDetector.Access,
     val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxFakePsiElement(parent) {
-    constructor(parent: PsiElement, name: String, valueSetName: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)
-        : this(parent, name, setOf(valueSetName), readWriteAccess, gameType, project)
+    constructor(parent: PsiElement, name: String, dynamicValueType: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)
+        : this(parent, name, setOf(dynamicValueType), readWriteAccess, gameType, project)
     
-    constructor(parent: PsiElement, info: ParadoxValueSetValueInfo, project: Project)
-        : this(parent, info.name, info.valueSetName, info.readWriteAccess, info.gameType, project)
+    constructor(parent: PsiElement, info: ParadoxDynamicValueInfo, project: Project)
+        : this(parent, info.name, info.dynamicValueType, info.readWriteAccess, info.gameType, project)
     
-    val valueSetName = valueSetNames.first()
+    val dynamicValueType = dynamicValueTypes.first()
     
     override fun getIcon(): Icon {
-        val valueSetName = valueSetNames.first() //first is ok
-        return PlsIcons.Nodes.ValueSetValue(valueSetName)
+        val dynamicValueType = dynamicValueTypes.first() //first is ok
+        return PlsIcons.Nodes.DynamicValue(dynamicValueType)
     }
     
     override fun getName(): String {
@@ -41,10 +41,10 @@ class ParadoxValueSetValueElement(
     }
     
     override fun getTypeName(): String {
-        val valueSetName = valueSetNames.first() //first is ok
-        return when(valueSetName) {
+        val dynamicValueType = dynamicValueTypes.first() //first is ok
+        return when(dynamicValueType) {
             "variable" -> PlsBundle.message("script.description.variable")
-            else -> PlsBundle.message("script.description.valueSetValue")
+            else -> PlsBundle.message("script.description.dynamicValue")
         }
     }
     
@@ -53,7 +53,7 @@ class ParadoxValueSetValueElement(
     }
     
     override fun getPresentation(): ItemPresentation {
-        return ParadoxValueSetValueElementPresentation(this)
+        return ParadoxDynamicValueElementPresentation(this)
     }
     
     override fun getProject(): Project {
@@ -61,9 +61,9 @@ class ParadoxValueSetValueElement(
     }
     
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxValueSetValueElement &&
+        return other is ParadoxDynamicValueElement &&
             name == other.name &&
-            valueSetNames.any { it in other.valueSetNames } &&
+            dynamicValueTypes.any { it in other.dynamicValueTypes } &&
             project == other.project &&
             gameType == other.gameType
     }

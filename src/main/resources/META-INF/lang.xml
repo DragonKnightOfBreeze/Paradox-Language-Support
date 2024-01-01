@@ -146,7 +146,7 @@
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxLocalisationParameterScriptExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.StellarisTechnologyWithLevelScriptExpressionSupport"/>
     
-    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxValueValueSetExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxDynamicValueExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxScopeFieldExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxValueFieldExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxVariableFieldExpressionSupport"/>
@@ -156,7 +156,7 @@
     <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxFileNameReferenceExpressionSupport"/>
     
     <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxComplexEnumValueIndexSupport"/>
-    <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxValueSetValueIndexSupport"/>
+    <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxDynamicValueIndexSupport"/>
     <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxInlineScriptUsageIndexSupport"/>
     <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxParameterIndexSupport"/>
     <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxLocalisationParameterIndexSupport"/>

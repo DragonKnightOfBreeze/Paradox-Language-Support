@@ -94,18 +94,18 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
                      implementationClass="icu.windea.pls.script.inspections.general.MissingParameterInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedValueSetValue"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedDynamicValue"
                      enabledByDefault="false" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.general.unusedValueSetValue"
+                     bundle="messages.PlsBundle" key="inspection.script.general.unusedDynamicValue"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
-                     implementationClass="icu.windea.pls.script.inspections.general.UnusedValueSetValueInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsetValueSetValue"
+                     implementationClass="icu.windea.pls.script.inspections.general.UnusedDynamicValueInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsetDynamicValue"
                      enabledByDefault="false" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.general.unsetValueSetValue"
+                     bundle="messages.PlsBundle" key="inspection.script.general.unsetDynamicValue"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
-                     implementationClass="icu.windea.pls.script.inspections.general.UnsetValueSetValueInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.general.UnsetDynamicValueInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectPathReference"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.general.incorrectPathReference"
@@ -196,12 +196,12 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.expression"
                      groupPathKey="inspection.script.expression.path"
                      implementationClass="icu.windea.pls.script.inspections.expression.IncorrectVariableFieldExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectValueSetValueExpression"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectDynamicValueExpression"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.script.expression.incorrectValueSetValueExpression"
+                     bundle="messages.PlsBundle" key="inspection.script.expression.incorrectDynamicValueExpression"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.expression"
                      groupPathKey="inspection.script.expression.path"
-                     implementationClass="icu.windea.pls.script.inspections.expression.IncorrectValueSetValueExpressionInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.expression.IncorrectDynamicValueExpressionInspection"/>
     <!--endregion-->
     <!--region Paradox script/Events-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectEventId"

@@ -1097,7 +1097,7 @@ object CwtConfigHandler {
         }
     }
     
-    fun completeValueSetValueExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeDynamicValueExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val quoted = context.quoted
         val keyword = context.keyword
@@ -1111,8 +1111,8 @@ object CwtConfigHandler {
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         try {
             PlsContext.incompleteComplexExpression.set(true)
-            val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(keyword, textRange, configGroup, config) ?: return
-            return valueSetValueExpression.complete(context, result)
+            val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(keyword, textRange, configGroup, config) ?: return
+            return dynamicValueExpression.complete(context, result)
         } finally {
             PlsContext.incompleteComplexExpression.remove()
         }
@@ -1205,7 +1205,7 @@ object CwtConfigHandler {
             context.scopeContext = scopeContext
             return
         }
-        if(dataSourceNodeToCheck is ParadoxValueSetValueExpression) {
+        if(dataSourceNodeToCheck is ParadoxDynamicValueExpression) {
             dataSourceNodeToCheck.complete(context, result)
             return
         }
@@ -1279,7 +1279,7 @@ object CwtConfigHandler {
             else -> configGroup.linksAsValueWithPrefix.values.filter { prefix == it.prefix }
         }
         
-        if(dataSourceNodeToCheck is ParadoxValueSetValueExpression) {
+        if(dataSourceNodeToCheck is ParadoxDynamicValueExpression) {
             dataSourceNodeToCheck.complete(context, result)
             return
         }
@@ -1298,46 +1298,46 @@ object CwtConfigHandler {
         context.scopeMatched = true
     }
     
-    fun completeValueSetValue(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val config = context.config
         val configs = context.configs
         
         if(configs.isNotNullOrEmpty()) {
             for(c in configs) {
-                doCompleteValueSetValue(context, result, c)
+                doCompleteDynamicValue(context, result, c)
             }
         } else if(config != null) {
-            doCompleteValueSetValue(context, result, config)
+            doCompleteDynamicValue(context, result, config)
         }
     }
     
-    private fun doCompleteValueSetValue(context: ProcessingContext, result: CompletionResultSet, config: CwtConfig<*>) {
+    private fun doCompleteDynamicValue(context: ProcessingContext, result: CompletionResultSet, config: CwtConfig<*>) {
         val keyword = context.keyword
         val contextElement = context.contextElement!!
         val configGroup = context.configGroup!!
         val project = configGroup.project
         
         val configExpression = config.expression ?: return
-        val valueSetName = configExpression.value ?: return
+        val dynamicValueType = configExpression.value ?: return
         //提示预定义的value
         run {
             ProgressManager.checkCanceled()
-            if(configExpression.type == CwtDataTypes.Value || configExpression.type == CwtDataTypes.ValueOrValueSet) {
-                completePredefinedValueSetValue(valueSetName, result, context)
+            if(configExpression.type == CwtDataTypes.Value || configExpression.type == CwtDataTypes.DynamicValue) {
+                completePredefinedDynamicValue(dynamicValueType, result, context)
             }
         }
         //提示来自脚本文件的value
         run {
             ProgressManager.checkCanceled()
             val tailText = " by $configExpression"
-            val selector = valueSetValueSelector(project, contextElement).distinctByName()
-            ParadoxValueSetValueSearch.search(valueSetName, selector).processQueryAsync p@{ info ->
+            val selector = dynamicValueSelector(project, contextElement).distinctByName()
+            ParadoxDynamicValueSearch.search(dynamicValueType, selector).processQueryAsync p@{ info ->
                 ProgressManager.checkCanceled()
                 if(info.name == keyword) return@p true //排除和当前输入的同名的
-                val element = ParadoxValueSetValueElement(contextElement, info, project)
+                val element = ParadoxDynamicValueElement(contextElement, info, project)
                 //去除后面的作用域信息
-                val icon = PlsIcons.Nodes.ValueSetValue(valueSetName)
+                val icon = PlsIcons.Nodes.DynamicValue(dynamicValueType)
                 //不显示typeText
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, info.name)
                     .withIcon(icon)
@@ -1348,18 +1348,18 @@ object CwtConfigHandler {
         }
     }
     
-    fun completePredefinedValueSetValue(valueSetName: String, result: CompletionResultSet, context: ProcessingContext) {
+    fun completePredefinedDynamicValue(dynamicValueType: String, result: CompletionResultSet, context: ProcessingContext) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val config = context.config
         
         val tailText = getScriptExpressionTailText(config)
-        val valueConfig = configGroup.dynamicValues[valueSetName] ?: return
-        val valueSetValueConfigs = valueConfig.valueConfigMap.values
-        if(valueSetValueConfigs.isEmpty()) return
-        for(valueSetValueConfig in valueSetValueConfigs) {
-            val name = valueSetValueConfig.value
-            val element = valueSetValueConfig.pointer.element ?: continue
+        val valueConfig = configGroup.dynamicValues[dynamicValueType] ?: return
+        val dynamicValueConfigs = valueConfig.valueConfigMap.values
+        if(dynamicValueConfigs.isEmpty()) return
+        for(dynamicValueConfig in dynamicValueConfigs) {
+            val name = dynamicValueConfig.value
+            val element = dynamicValueConfig.pointer.element ?: continue
             val typeFile = valueConfig.pointer.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
                 .withIcon(PlsIcons.Nodes.DynamicValue)
@@ -1426,11 +1426,11 @@ object CwtConfigHandler {
         val file = context.originalFile!!
         val project = file.project
         
-        val eventTargetSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
-        ParadoxValueSetValueSearch.search(ParadoxValueSetValueHandler.EVENT_TARGETS, eventTargetSelector).processQueryAsync p@{ info ->
+        val eventTargetSelector = dynamicValueSelector(project, file).contextSensitive().distinctByName()
+        ParadoxDynamicValueSearch.search(ParadoxDynamicValueHandler.EVENT_TARGETS, eventTargetSelector).processQueryAsync p@{ info ->
             ProgressManager.checkCanceled()
             if(info.name == keyword) return@p true //排除和当前输入的同名的
-            val element = ParadoxValueSetValueElement(contextElement, info, project)
+            val element = ParadoxDynamicValueElement(contextElement, info, project)
             val icon = PlsIcons.Nodes.DynamicValue
             val tailText = " from value[event_target]"
             val lookupElement = LookupElementBuilder.create(element, info.name)
@@ -1470,11 +1470,11 @@ object CwtConfigHandler {
         val file = context.originalFile!!
         val project = file.project
         
-        val variableSelector = valueSetValueSelector(project, file).contextSensitive().distinctByName()
-        ParadoxValueSetValueSearch.search("variable", variableSelector).processQueryAsync p@{ info ->
+        val variableSelector = dynamicValueSelector(project, file).contextSensitive().distinctByName()
+        ParadoxDynamicValueSearch.search("variable", variableSelector).processQueryAsync p@{ info ->
             ProgressManager.checkCanceled()
             if(info.name == keyword) return@p true //排除和当前输入的同名的
-            val element = ParadoxValueSetValueElement(contextElement, info, project)
+            val element = ParadoxDynamicValueElement(contextElement, info, project)
             val icon = PlsIcons.Nodes.Variable
             val tailText = " from variables"
             val lookupElement = LookupElementBuilder.create(element, info.name)

@@ -14,11 +14,11 @@ import icu.windea.pls.script.psi.*
  * 值集值的内嵌提示（值的类型即值集的名字）。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
-	private val settingsKey = SettingsKey<NoSettings>("ParadoxValueSetValueInfoHintsSettingsKey")
+class ParadoxDynamicValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
+	private val settingsKey = SettingsKey<NoSettings>("ParadoxDynamicValueInfoHintsSettingsKey")
 	
-	override val name: String get() = PlsBundle.message("script.hints.valueSetValueInfo")
-	override val description: String get() = PlsBundle.message("script.hints.valueSetValueInfo.description")
+	override val name: String get() = PlsBundle.message("script.hints.dynamicValueInfo")
+	override val description: String get() = PlsBundle.message("script.hints.dynamicValueInfo.description")
 	override val key: SettingsKey<NoSettings> get() = settingsKey
 	
 	override fun createSettings() = NoSettings()
@@ -28,9 +28,9 @@ class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSetti
 		if(!element.isExpression()) return true
         val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return true
 		val type = config.expression.type
-		if(type.isValueSetValueType()) {
-			val valueSetName = config.expression.value ?: return true
-			val presentation = doCollect(valueSetName)
+		if(type.isDynamicValueType()) {
+			val dynamicValueType = config.expression.value ?: return true
+			val presentation = doCollect(dynamicValueType)
 			val finalPresentation = presentation.toFinalPresentation(this, file.project)
 			val endOffset = element.endOffset
 			sink.addInlineElement(endOffset, true, finalPresentation, false)
@@ -38,8 +38,8 @@ class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSetti
 		return true
 	}
 	
-	private fun PresentationFactory.doCollect(valueSetName: String): InlayPresentation {
-		return smallText(": $valueSetName")
+	private fun PresentationFactory.doCollect(dynamicValueType: String): InlayPresentation {
+		return smallText(": $dynamicValueType")
 	}
 }
 

@@ -9,7 +9,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.expression.ParadoxValueSetValueExpression.*
+import icu.windea.pls.core.expression.ParadoxDynamicValueExpression.*
 import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.core.expression.nodes.*
 import icu.windea.pls.core.util.*
@@ -21,8 +21,8 @@ import icu.windea.pls.lang.*
  * 语法：
  *
  * ```bnf
- * value_set_value_expression ::= value_set_value ("@" scope_field_expression)?
- * value_set_value ::= TOKEN //matching config expression "value[xxx]" or "value_set[xxx]"
+ * dynamic_value_expression ::= dynamic_value ("@" scope_field_expression)?
+ * dynamic_value ::= TOKEN //matching config expression "value[xxx]" or "value_set[xxx]"
  * //"event_target:t1.v1@event_target:t2.v2@..." is not used in vanilla files but allowed here
  * ```
  *
@@ -33,30 +33,30 @@ import icu.windea.pls.lang.*
  * some_variable@root
  * ```
  */
-interface ParadoxValueSetValueExpression : ParadoxComplexExpression {
+interface ParadoxDynamicValueExpression : ParadoxComplexExpression {
     val configs: List<CwtConfig<*>>
     
     companion object Resolver
 }
 
-val ParadoxValueSetValueExpression.scopeFieldExpression: ParadoxScopeFieldExpression?
+val ParadoxDynamicValueExpression.scopeFieldExpression: ParadoxScopeFieldExpression?
     get() = nodes.getOrNull(2)?.cast()
-val ParadoxValueSetValueExpression.valueSetValueNode: ParadoxValueSetValueExpressionNode
+val ParadoxDynamicValueExpression.dynamicValueNode: ParadoxDynamicValueExpressionNode
     get() = nodes.get(0).cast()
 
-class ParadoxValueSetValueExpressionImpl(
+class ParadoxDynamicValueExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val nodes: List<ParadoxExpressionNode>,
     override val configGroup: CwtConfigGroup,
     override val configs: List<CwtConfig<*>>
-) : AbstractExpression(text), ParadoxValueSetValueExpression {
+) : AbstractExpression(text), ParadoxDynamicValueExpression {
     override fun validate(): List<ParadoxExpressionError> {
         val errors = mutableListOf<ParadoxExpressionError>()
         var malformed = false
         for(node in nodes) {
             when(node) {
-                is ParadoxValueSetValueExpressionNode -> {
+                is ParadoxDynamicValueExpressionNode -> {
                     if(!malformed && !isValid(node)) {
                         malformed = true
                     }
@@ -71,7 +71,7 @@ class ParadoxValueSetValueExpressionImpl(
             }
         }
         if(malformed) {
-            val error = ParadoxMalformedValueSetValueExpressionExpressionError(rangeInExpression, PlsBundle.message("script.expression.malformedValueSetValueExpression", text))
+            val error = ParadoxMalformedDynamicValueExpressionExpressionError(rangeInExpression, PlsBundle.message("script.expression.malformedDynamicValueExpression", text))
             errors.add(0, error)
         }
         return errors
@@ -79,7 +79,7 @@ class ParadoxValueSetValueExpressionImpl(
     
     private fun isValid(node: ParadoxExpressionNode): Boolean {
         return when(node) {
-            is ParadoxValueSetValueExpressionNode -> node.text.isExactParameterAwareIdentifier('.') //兼容点号
+            is ParadoxDynamicValueExpressionNode -> node.text.isExactParameterAwareIdentifier('.') //兼容点号
             else -> node.text.isExactParameterAwareIdentifier()
         }
     }
@@ -101,13 +101,13 @@ class ParadoxValueSetValueExpressionImpl(
         for(node in nodes) {
             val nodeRange = node.rangeInExpression
             val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset
-            if(node is ParadoxValueSetValueExpressionNode) {
+            if(node is ParadoxDynamicValueExpressionNode) {
                 if(inRange) {
                     val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
                     context.keywordOffset = node.rangeInExpression.startOffset
-                    CwtConfigHandler.completeValueSetValue(context, resultToUse)
+                    CwtConfigHandler.completeDynamicValue(context, resultToUse)
                     break
                 }
             } else if(node is ParadoxScopeFieldExpression) {
@@ -131,11 +131,11 @@ class ParadoxValueSetValueExpressionImpl(
     }
 }
 
-fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxValueSetValueExpression? {
+fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
     return resolve(expression, range, configGroup, config.toSingletonList())
 }
 
-fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxValueSetValueExpression? {
+fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
     val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expression)
     //skip if text is a parameter with unary operator prefix
     if(CwtConfigHandler.isUnaryOperatorAwareParameter(expression, parameterRanges)) return null
@@ -154,10 +154,10 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
         if(tokenIndex == -1) {
             tokenIndex = textLength
         }
-        //resolve valueSetValueNode
+        //resolve dynamicValueNode
         val nodeText = expression.substring(0, tokenIndex)
         val nodeTextRange = TextRange.create(offset, tokenIndex + offset)
-        val node = ParadoxValueSetValueExpressionNode.resolve(nodeText, nodeTextRange, configs, configGroup)
+        val node = ParadoxDynamicValueExpressionNode.resolve(nodeText, nodeTextRange, configs, configGroup)
         if(node == null) return null //unexpected
         nodes.add(node)
         if(tokenIndex != textLength) {
@@ -174,6 +174,6 @@ fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfi
     }
     //handle mismatch situation
     if(!incomplete && nodes.isEmpty()) return null
-    return ParadoxValueSetValueExpressionImpl(expression, range, nodes, configGroup, configs)
+    return ParadoxDynamicValueExpressionImpl(expression, range, nodes, configGroup, configs)
 }
 

@@ -229,7 +229,7 @@ object ParadoxLocalisationTextHtmlRenderer {
             }
             i = reference.rangeInElement.endOffset
             val resolved = reference.resolve()
-            //不要尝试跳转到valueSetValue的声明处
+            //不要尝试跳转到dynamicValue的声明处
             if(resolved == null || resolved is ParadoxFakePsiElement) {
                 val s = reference.rangeInElement.substring(text)
                 context.builder.append(s.escapeXml())

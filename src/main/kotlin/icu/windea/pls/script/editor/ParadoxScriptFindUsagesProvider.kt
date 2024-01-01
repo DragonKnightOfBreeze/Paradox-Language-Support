@@ -74,9 +74,9 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 					else -> element.name
 				}
 			}
-			is ParadoxValueSetValueElement -> {
+			is ParadoxDynamicValueElement -> {
 				when(location) {
-					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.valueSetValue")
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.dynamicValue")
 					else -> element.name
 				}
 			}
@@ -101,7 +101,7 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 			is ParadoxScriptStringExpressionElement -> element.complexEnumValueInfo != null
 			is ParadoxTemplateExpressionElement -> true
 			is ParadoxParameterElement -> true
-			is ParadoxValueSetValueElement -> true
+			is ParadoxDynamicValueElement -> true
 			is ParadoxModifierElement -> true
 			else -> false
 		}

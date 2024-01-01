@@ -332,7 +332,7 @@ object ParadoxLocalisationPsiImplUtil {
                 //兼容"event_target:"前缀（解析引用时，去除前缀后面的空白）
                 run r@{
                     val text = idElement.text
-                    val prefix = ParadoxValueSetValueHandler.EVENT_TARGET_PREFIX
+                    val prefix = ParadoxDynamicValueHandler.EVENT_TARGET_PREFIX
                     val expression = text.removePrefixOrNull(prefix)?.trimStart()
                     if(expression.isNotNullOrEmpty()) {
                         val finalRangeInElement = TextRange.create(rangeInElement.endOffset - expression.length, rangeInElement.endOffset)
@@ -358,11 +358,11 @@ object ParadoxLocalisationPsiImplUtil {
         return when {
             config is CwtLocalisationLinkConfig -> "localisation scope"
             config is CwtSystemLinkConfig -> "system link"
-            resolved is ParadoxValueSetValueElement -> {
-                val valueSetName = resolved.valueSetName
+            resolved is ParadoxDynamicValueElement -> {
+                val dynamicValueType = resolved.dynamicValueType
                 when {
-                    valueSetName == "event_target" -> "value[event_target]"
-                    valueSetName == "global_event_target" -> "value[global_event_target]"
+                    dynamicValueType == "event_target" -> "value[event_target]"
+                    dynamicValueType == "global_event_target" -> "value[global_event_target]"
                     else -> null
                 }
             }
@@ -412,7 +412,7 @@ object ParadoxLocalisationPsiImplUtil {
         return when {
             config is CwtLocalisationCommandConfig -> "localisation command"
             resolved is ParadoxScriptProperty -> "<scripted_loc>"
-            resolved is ParadoxValueSetValueElement -> "value[variable]"
+            resolved is ParadoxDynamicValueElement -> "value[variable]"
             else -> null
         }
     }

@@ -52,13 +52,13 @@ class ParadoxLocalisationCommandScopePsiReference(
             if(localisationScope != null) return localisationScope
         }
         
-        if(prefix == null || prefix == ParadoxValueSetValueHandler.EVENT_TARGET_PREFIX) {
+        if(prefix == null || prefix == ParadoxDynamicValueHandler.EVENT_TARGET_PREFIX) {
             //尝试识别为预定义的value[event_target] （忽略大小写）
             val predefinedEventTarget = configGroup.dynamicValues.get("event_target")?.valueConfigMap?.get(name)
             if(predefinedEventTarget != null) return predefinedEventTarget.pointer.element
             
             //尝试识别为value[event_target]或value[global_event_target]
-            return ParadoxValueSetValueElement(element, name, ParadoxValueSetValueHandler.EVENT_TARGETS, Access.Read, gameType, project)
+            return ParadoxDynamicValueElement(element, name, ParadoxDynamicValueHandler.EVENT_TARGETS, Access.Read, gameType, project)
         }
         
         return null
@@ -79,13 +79,13 @@ class ParadoxLocalisationCommandScopePsiReference(
         }
         
         
-        if(prefix == null || prefix == ParadoxValueSetValueHandler.EVENT_TARGET_PREFIX) {
+        if(prefix == null || prefix == ParadoxDynamicValueHandler.EVENT_TARGET_PREFIX) {
             //尝试识别为预定义的value[event_target] （忽略大小写）
             val predefinedEventTarget = configGroup.dynamicValues.get("event_target")?.valueConfigMap?.get(name)
-            if(predefinedEventTarget != null) return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
+            if(predefinedEventTarget != null) return ParadoxScriptAttributesKeys.DYNAMIC_VALUE_KEY
             
             //尝试识别为value[event_target]或value[global_event_target]
-            return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
+            return ParadoxScriptAttributesKeys.DYNAMIC_VALUE_KEY
         }
         
         return null

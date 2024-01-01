@@ -43,11 +43,11 @@ class TooLongScopeLinkInspection : LocalInspectionTool() {
                         val valueFieldExpression = ParadoxVariableFieldExpression.resolve(value, textRange, configGroup) ?: return
                         checkExpression(element, valueFieldExpression)
                     }
-                    dataType.isValueSetValueType() -> {
+                    dataType.isDynamicValueType() -> {
                         val value = element.value
                         val textRange = TextRange.create(0, value.length)
-                        val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(value, textRange, configGroup, config) ?: return
-                        checkExpression(element, valueSetValueExpression)
+                        val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(value, textRange, configGroup, config) ?: return
+                        checkExpression(element, dynamicValueExpression)
                     }
                 }
             }

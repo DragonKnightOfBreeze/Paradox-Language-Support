@@ -39,7 +39,7 @@ val PlsKeys.cachedDefinitionLocalizedNames by createKey<CachedValue<Set<String>>
 val PlsKeys.cachedDefinitionPrimaryImage by createKey<CachedValue<PsiFile>>("paradox.cached.definition.primaryImage")
 val PlsKeys.cachedLocalisationInfo by createKey<CachedValue<ParadoxLocalisationInfo>>("paradox.cached.localisationInfo")
 val PlsKeys.cachedComplexEnumValueInfo by createKey<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cached.complexEnumValueInfo")
-val PlsKeys.cachedValueSetValueInfos by createKey<CachedValue<List<ParadoxValueSetValueInfo>>>("paradox.cached.valueSetValueInfos")
+val PlsKeys.cachedDynamicValueInfos by createKey<CachedValue<List<ParadoxDynamicValueInfo>>>("paradox.cached.dynamicValueInfos")
 val PlsKeys.cachedElementPath by createKey<CachedValue<ParadoxElementPath>>("paradox.cached.elementPath")
 val PlsKeys.cachedScopeContext by createKey<CachedValue<ParadoxScopeContext>>("paradox.cached.scopeContext")
 val PlsKeys.cachedTextColorInfo by createKey<CachedValue<ParadoxTextColorInfo>>("paradox.cached.textColorInfo")

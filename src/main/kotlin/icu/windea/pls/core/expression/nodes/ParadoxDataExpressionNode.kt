@@ -36,8 +36,8 @@ class ParadoxDataExpressionNode(
         if(nodes.isNotEmpty()) return null
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
-        //忽略是valueSetValue的情况
-        if(linkConfigs.any { it.dataSource?.type?.isValueSetValueType() == true }) return null
+        //忽略是dynamicValue的情况
+        if(linkConfigs.any { it.dataSource?.type?.isDynamicValueType() == true }) return null
         val expect = linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
         //排除可解析的情况
         val reference = getReference(element)

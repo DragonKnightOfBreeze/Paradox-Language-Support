@@ -53,10 +53,10 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
 					else -> element.name
 				}
 			}
-			is ParadoxValueSetValueElement -> {
+			is ParadoxDynamicValueElement -> {
 				when(location) {
-					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.valueSetValue")
-					UsageViewNodeTextLocation.INSTANCE -> element.name + ": " + element.valueSetNames.joinToString(" | ")
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.dynamicValue")
+					UsageViewNodeTextLocation.INSTANCE -> element.name + ": " + element.dynamicValueTypes.joinToString(" | ")
 					else -> element.name
 				}
 			}
@@ -72,7 +72,7 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
 		return when(element){
 			is ParadoxLocalisationProperty -> element.localisationInfo != null
 			is ParadoxParameterElement -> true
-			is ParadoxValueSetValueElement -> true
+			is ParadoxDynamicValueElement -> true
 			else -> false
 		} 
 	}

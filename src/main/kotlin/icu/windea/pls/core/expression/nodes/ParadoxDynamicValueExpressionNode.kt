@@ -11,7 +11,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxValueSetValueExpressionNode(
+class ParadoxDynamicValueExpressionNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     val configs: List<CwtConfig<*>>,
@@ -19,10 +19,10 @@ class ParadoxValueSetValueExpressionNode(
 ) : ParadoxExpressionNode {
     override fun getAttributesKey(): TextAttributesKey? {
         val expression = configs.first().expression!! //first is ok
-        val valueSetName = expression.value ?: return null
-        return when(valueSetName) {
+        val dynamicValueType = expression.value ?: return null
+        return when(dynamicValueType) {
             "variable" -> ParadoxScriptAttributesKeys.VARIABLE_KEY
-            else -> ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
+            else -> ParadoxScriptAttributesKeys.DYNAMIC_VALUE_KEY
         }
     }
     
@@ -32,10 +32,10 @@ class ParadoxValueSetValueExpressionNode(
     }
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup): ParadoxValueSetValueExpressionNode? {
+        fun resolve(text: String, textRange: TextRange, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup): ParadoxDynamicValueExpressionNode? {
             //text may contain parameters
-            if(configs.any { c -> c.expression?.type?.isValueSetValueType() == false }) return null
-            return ParadoxValueSetValueExpressionNode(text, textRange, configs, configGroup)
+            if(configs.any { c -> c.expression?.type?.isDynamicValueType() == false }) return null
+            return ParadoxDynamicValueExpressionNode(text, textRange, configs, configGroup)
         }
     }
     
@@ -54,7 +54,7 @@ class ParadoxValueSetValueExpressionNode(
         
         override fun resolve(): PsiElement? {
             val configExpressions = configs.mapNotNullTo(mutableSetOf()) { it.expression }
-            return ParadoxValueSetValueHandler.resolveValueSetValue(element, name, configExpressions, configGroup)
+            return ParadoxDynamicValueHandler.resolveDynamicValue(element, name, configExpressions, configGroup)
         }
     }
 }

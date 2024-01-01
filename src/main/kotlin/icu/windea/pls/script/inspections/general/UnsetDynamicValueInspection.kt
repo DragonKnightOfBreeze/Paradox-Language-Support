@@ -17,13 +17,13 @@ import icu.windea.pls.script.psi.*
 import kotlin.collections.set
 
 /**
- * 值集值被设置但未被使用的检查。
+ * 值集值值被使用但未被设置的检查。
  *
- * 例如，有`set_flag = xxx`但没有`has_flag = xxx`。
- * 
+ * 例如，有`has_flag = xxx`但没有`set_flag = xxx`。
+ *
  * 默认不启用。
  */
-class UnusedValueSetValueInspection : LocalInspectionTool() {
+class UnsetDynamicValueInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
         val project = holder.project
         val file = holder.file
@@ -47,17 +47,17 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
                 val references = element.references
                 for(reference in references) {
                     ProgressManager.checkCanceled()
-                    if(!reference.canResolve(ParadoxResolveConstraint.ValueSetValue)) continue
+                    if(!reference.canResolve(ParadoxResolveConstraint.DynamicValue)) continue
                     val resolved = reference.resolveFirst()
-                    if(resolved !is ParadoxValueSetValueElement) continue
-                    if(resolved.readWriteAccess != Access.Write) continue
+                    if(resolved !is ParadoxDynamicValueElement) continue
+                    if(resolved.readWriteAccess != Access.Read) continue
                     val cachedStatus = statusMap[resolved]
                     val status = if(cachedStatus == null) {
                         ProgressManager.checkCanceled()
-                        val selector = valueSetValueSelector(project, file).withSearchScope(searchScope) //use file as context
-                        val r = ParadoxValueSetValueSearch.search(resolved.name, resolved.valueSetNames, selector).processQueryAsync p@{
+                        val selector = dynamicValueSelector(project, file).withSearchScope(searchScope) //use file as context
+                        val r = ParadoxDynamicValueSearch.search(resolved.name, resolved.dynamicValueTypes, selector).processQueryAsync p@{
                             ProgressManager.checkCanceled()
-                            if(it.readWriteAccess == Access.Read) {
+                            if(it.readWriteAccess == Access.Write) {
                                 statusMap[resolved] = true
                                 false
                             } else {
@@ -75,16 +75,15 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
                         cachedStatus
                     }
                     if(!status) {
-                        registerProblem(element, resolved.name, resolved.valueSetNames.joinToString(), reference.rangeInElement)
+                        registerProblem(element, resolved.name, resolved.dynamicValueTypes.joinToString(), reference.rangeInElement)
                     }
                 }
             }
             
-            private fun registerProblem(element: PsiElement, name: String, valueSetName: String, range: TextRange) {
-                val message = PlsBundle.message("inspection.script.general.unusedValueSetValue.description", name, valueSetName)
-                holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range)
+            private fun registerProblem(element: PsiElement, name: String, dynamicValueType: String, range: TextRange) {
+                val message = PlsBundle.message("inspection.script.general.unsetDynamicValue.description", name, dynamicValueType)
+                holder.registerProblem(element, message, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, range)
             }
         }
     }
 }
-

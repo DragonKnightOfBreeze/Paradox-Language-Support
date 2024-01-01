@@ -127,7 +127,7 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
-    ValueSetValue {
+    DynamicValue {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when(element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
@@ -141,19 +141,19 @@ enum class ParadoxResolveConstraint {
             return when(reference) {
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.expression ?: return false
-                    configExpression.type.isValueSetValueType()
+                    configExpression.type.isDynamicValueType()
                 }
                 is ParadoxTemplateSnippetExpressionReference -> {
                     val configExpression = reference.configExpression
-                    configExpression.type.isValueSetValueType()
+                    configExpression.type.isDynamicValueType()
                 }
                 is ParadoxDataExpressionNode.Reference -> {
                     reference.linkConfigs.any { linkConfig ->
                         val configExpression = linkConfig.expression ?: return@any false
-                        configExpression.type.isValueSetValueType()
+                        configExpression.type.isDynamicValueType()
                     }
                 }
-                is ParadoxValueSetValueExpressionNode.Reference -> true
+                is ParadoxDynamicValueExpressionNode.Reference -> true
                 is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
                 is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
                 else -> false

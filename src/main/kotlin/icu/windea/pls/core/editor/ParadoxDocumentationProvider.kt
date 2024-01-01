@@ -40,7 +40,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         return when(element) {
             is ParadoxParameterElement -> getParameterInfo(element, originalElement)
             is ParadoxLocalisationParameterElement -> getLocalisationParameterInfo(element, originalElement)
-            is ParadoxValueSetValueElement -> getValueSetValueInfo(element, originalElement)
+            is ParadoxDynamicValueElement -> getDynamicValueInfo(element, originalElement)
             is ParadoxComplexEnumValueElement -> getComplexEnumValueInfo(element, originalElement)
             is ParadoxModifierElement -> getModifierInfo(element, originalElement)
             else -> null
@@ -59,9 +59,9 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun getValueSetValueInfo(element: ParadoxValueSetValueElement, originalElement: PsiElement?): String {
+    private fun getDynamicValueInfo(element: ParadoxDynamicValueElement, originalElement: PsiElement?): String {
         return buildString {
-            buildValueSetValueDefinition(element, null)
+            buildDynamicValueDefinition(element, null)
         }
     }
     
@@ -81,7 +81,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         return when(element) {
             is ParadoxParameterElement -> getParameterDoc(element, originalElement)
             is ParadoxLocalisationParameterElement -> getLocalisationParameterDoc(element, originalElement)
-            is ParadoxValueSetValueElement -> getValueSetValueDoc(element, originalElement)
+            is ParadoxDynamicValueElement -> getDynamicValueDoc(element, originalElement)
             is ParadoxComplexEnumValueElement -> getComplexEnumValueDoc(element, originalElement)
             is ParadoxModifierElement -> getModifierDoc(element, originalElement)
             else -> null
@@ -101,10 +101,10 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun getValueSetValueDoc(element: ParadoxValueSetValueElement, originalElement: PsiElement?): String {
+    private fun getDynamicValueDoc(element: ParadoxDynamicValueElement, originalElement: PsiElement?): String {
         return buildString {
             val sectionsList = List(1) { mutableMapOf<String, String>() }
-            buildValueSetValueDefinition(element, sectionsList)
+            buildDynamicValueDefinition(element, sectionsList)
             buildDocumentationContent(element)
             buildSections(sectionsList)
         }
@@ -148,23 +148,23 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun StringBuilder.buildValueSetValueDefinition(element: ParadoxValueSetValueElement, sectionsList: List<MutableMap<String, String>>?) {
+    private fun StringBuilder.buildDynamicValueDefinition(element: ParadoxDynamicValueElement, sectionsList: List<MutableMap<String, String>>?) {
         val name = element.name
-        val valueSetNames = element.valueSetNames
+        val dynamicValueTypes = element.dynamicValueTypes
         val gameType = element.gameType
         val configGroup = getConfigGroup(element.project, gameType)
         definition {
             append(PlsBundle.message("prefix.dynamicValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             append(": ")
             var appendSeparator = false
-            for(valueSetName in valueSetNames) {
+            for(dynamicValueType in dynamicValueTypes) {
                 if(appendSeparator) append(" | ") else appendSeparator = true
-                val valueConfig = configGroup.dynamicValues[valueSetName]
+                val valueConfig = configGroup.dynamicValues[dynamicValueType]
                 if(valueConfig != null) {
-                    val typeLink = "${gameType.linkToken}values/${valueSetName}"
-                    appendCwtLink(typeLink, valueSetName)
+                    val typeLink = "${gameType.linkToken}values/${dynamicValueType}"
+                    appendCwtLink(typeLink, dynamicValueType)
                 } else {
-                    append(valueSetName)
+                    append(dynamicValueType)
                 }
             }
             
@@ -341,7 +341,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun StringBuilder.buildDocumentationContent(element: ParadoxValueSetValueElement) {
+    private fun StringBuilder.buildDocumentationContent(element: ParadoxDynamicValueElement) {
         ParadoxDynamicValueExtendedDocumentationProvider.buildDocumentation(element) { documentation ->
             content { append(documentation) }
         }

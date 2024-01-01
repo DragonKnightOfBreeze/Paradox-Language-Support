@@ -13,7 +13,7 @@ class ParadoxRefactoringSupportProvider : RefactoringSupportProvider() {
 			element is ParadoxScriptStringExpressionElement -> true
 			element is ParadoxLocalisationProperty -> true
 			//element is ParadoxParameterElement -> true //should be available, but cannot be
-			//element is ParadoxValueSetValueElement -> true //should be available, but cannot be
+			//element is ParadoxDynamicValueElement -> true //should be available, but cannot be
 			//element is ParadoxComplexEnumValueElement -> true //should be available, but cannot be
 			else -> false
 		}

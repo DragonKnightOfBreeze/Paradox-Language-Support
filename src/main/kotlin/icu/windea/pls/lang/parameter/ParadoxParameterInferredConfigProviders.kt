@@ -138,7 +138,7 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
             node is ParadoxDataExpressionNode -> {
                 node.linkConfigs.firstNotNullOfOrNull { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), it.info, e.expressionString) } }
             }
-            node is ParadoxValueSetValueExpressionNode -> {
+            node is ParadoxDynamicValueExpressionNode -> {
                 node.configs.firstOrNull()?.let { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), it.info, e.expressionString) } }
             }
             node is ParadoxScriptValueExpressionNode -> {

@@ -20,13 +20,13 @@ class ParadoxValueLinkDataSourceExpressionNode(
             val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(text)
             
             //text may contain parameters
-            //child node can be valueSetValueExpression / scriptValueExpression
+            //child node can be dynamicValueExpression / scriptValueExpression
             val nodes = mutableListOf<ParadoxExpressionNode>()
             run {
-                val configs = linkConfigs.filter { it.dataSource?.type?.isValueSetValueType() == true }
+                val configs = linkConfigs.filter { it.dataSource?.type?.isDynamicValueType() == true }
                 if(configs.isNotEmpty()) {
                     val configGroup = linkConfigs.first().info.configGroup
-                    val node = ParadoxValueSetValueExpression.resolve(text, textRange, configGroup, configs)!!
+                    val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
                     nodes.add(node)
                 }
             }

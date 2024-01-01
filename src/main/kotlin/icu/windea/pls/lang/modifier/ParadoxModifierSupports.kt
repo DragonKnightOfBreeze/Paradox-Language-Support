@@ -249,17 +249,17 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             }
                         }
                         CwtDataTypes.Value -> {
-                            val valueSetName = reference.name
+                            val dynamicValueType = reference.name
                             val valueName = configExpression.value!!
-                            append(PlsBundle.message("generatedFromValueSetValue"))
+                            append(PlsBundle.message("generatedFromDynamicValue"))
                             if(configGroup.dynamicValues.containsKey(valueName)) {
-                                appendCwtLink("${gameType.linkToken}values/${valueSetName}/${valueName}", valueName, modifierElement)
+                                appendCwtLink("${gameType.linkToken}values/${dynamicValueType}/${valueName}", valueName, modifierElement)
                                 append(": ")
-                                appendCwtLink("${gameType.linkToken}values/${valueSetName}", valueName, modifierElement)
+                                appendCwtLink("${gameType.linkToken}values/${dynamicValueType}", valueName, modifierElement)
                             } else {
                                 append(valueName.escapeXml())
                                 append(": ")
-                                append(valueSetName.escapeXml())
+                                append(dynamicValueType.escapeXml())
                             }
                         }
                         else -> pass()

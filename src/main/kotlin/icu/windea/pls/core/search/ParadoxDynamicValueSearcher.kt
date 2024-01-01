@@ -17,14 +17,14 @@ import icu.windea.pls.script.*
 /**
  * 值集值的查询器。
  */
-class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo, ParadoxValueSetValueSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxValueSetValueSearch.SearchParameters, consumer: Processor<in ParadoxValueSetValueInfo>) {
+class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueInfo, ParadoxDynamicValueSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxDynamicValueSearch.SearchParameters, consumer: Processor<in ParadoxDynamicValueInfo>) {
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
         if(SearchScope.isEmptyScope(scope)) return
         
         val name = queryParameters.name
-        val valueSetNames = queryParameters.valueSetNames
+        val dynamicValueTypes = queryParameters.dynamicValueTypes
         val project = queryParameters.project
         val selector = queryParameters.selector
         val gameType = selector.gameType ?: return
@@ -34,10 +34,10 @@ class ParadoxValueSetValueSearcher : QueryExecutorBase<ParadoxValueSetValueInfo,
             ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
-            val fileData = ParadoxExpressionIndexInstance.getFileData(file, project, ParadoxExpressionIndexId.ValueSetValue)
+            val fileData = ParadoxExpressionIndexInstance.getFileData(file, project, ParadoxExpressionIndexId.DynamicValue)
             if(fileData.isEmpty()) return@p true
             fileData.forEachFast f@{ info ->
-                if(info.valueSetName !in valueSetNames) return@f
+                if(info.dynamicValueType !in dynamicValueTypes) return@f
                 if(name != null && name != info.name) return@f
                 info.virtualFile = file
                 val r = consumer.process(info)

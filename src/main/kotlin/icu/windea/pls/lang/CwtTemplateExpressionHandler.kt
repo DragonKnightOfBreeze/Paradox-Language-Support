@@ -182,18 +182,18 @@ object CwtTemplateExpressionHandler {
                 }
             }
             CwtDataTypes.Value -> {
-                val valueSetName = snippetExpression.value ?: return
+                val dynamicValueType = snippetExpression.value ?: return
                 ProgressManager.checkCanceled()
-                val valueConfig = configGroup.dynamicValues[valueSetName] ?: return
-                val valueSetValueConfigs = valueConfig.valueConfigMap.values
-                if(valueSetValueConfigs.isEmpty()) return
-                for(valueSetValueConfig in valueSetValueConfigs) {
-                    val name = valueSetValueConfig.value
+                val valueConfig = configGroup.dynamicValues[dynamicValueType] ?: return
+                val dynamicValueConfigs = valueConfig.valueConfigMap.values
+                if(dynamicValueConfigs.isEmpty()) return
+                for(dynamicValueConfig in dynamicValueConfigs) {
+                    val name = dynamicValueConfig.value
                     doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                 }
                 ProgressManager.checkCanceled()
-                val selector = valueSetValueSelector(project, contextElement).distinctByName()
-                ParadoxValueSetValueSearch.search(valueSetName, selector).processQueryAsync p@{ info ->
+                val selector = dynamicValueSelector(project, contextElement).distinctByName()
+                ParadoxDynamicValueSearch.search(dynamicValueType, selector).processQueryAsync p@{ info ->
                     ProgressManager.checkCanceled()
                     //去除后面的作用域信息
                     doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + info.name)

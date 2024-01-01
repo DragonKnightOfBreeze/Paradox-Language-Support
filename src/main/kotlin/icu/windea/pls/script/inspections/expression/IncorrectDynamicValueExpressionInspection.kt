@@ -10,7 +10,7 @@ import icu.windea.pls.core.expression.errors.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
-class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
+class IncorrectDynamicValueExpressionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -23,19 +23,19 @@ class IncorrectValueSetValueExpressionInspection : LocalInspectionTool() {
                 val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val configGroup = config.info.configGroup
                 val dataType = config.expression.type
-                if(dataType.isValueSetValueType()) {
+                if(dataType.isDynamicValueType()) {
                     val value = element.value
                     val textRange = TextRange.create(0, value.length)
-                    val valueSetValueExpression = ParadoxValueSetValueExpression.resolve(value, textRange, configGroup, config) ?: return
-                    handleErrors(element, valueSetValueExpression)
+                    val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(value, textRange, configGroup, config) ?: return
+                    handleErrors(element, dynamicValueExpression)
                 }
             }
             
-            private fun handleErrors(element: ParadoxScriptStringExpressionElement, valueSetValueExpression: ParadoxValueSetValueExpression) {
-                valueSetValueExpression.validate().forEach { error ->
+            private fun handleErrors(element: ParadoxScriptStringExpressionElement, dynamicValueExpression: ParadoxDynamicValueExpression) {
+                dynamicValueExpression.validate().forEach { error ->
                     handleError(element, error)
                 }
-                valueSetValueExpression.processAllNodes { node ->
+                dynamicValueExpression.processAllNodes { node ->
                     val unresolvedError = node.getUnresolvedError(element)
                     if(unresolvedError != null) {
                         handleError(element, unresolvedError)

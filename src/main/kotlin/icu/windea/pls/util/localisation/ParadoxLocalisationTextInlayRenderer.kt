@@ -275,7 +275,7 @@ object ParadoxLocalisationTextInlayRenderer {
             i = reference.rangeInElement.endOffset
             val s = reference.rangeInElement.substring(text)
             val resolved = reference.resolve()
-            //不要尝试跳转到valueSetValue的声明处
+            //不要尝试跳转到dynamicValue的声明处
             if(resolved == null || resolved is ParadoxFakePsiElement) {
                 context.builder.add(smallText(s))
             } else {

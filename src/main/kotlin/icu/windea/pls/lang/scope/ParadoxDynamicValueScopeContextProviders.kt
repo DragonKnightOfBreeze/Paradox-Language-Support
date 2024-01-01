@@ -7,13 +7,13 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.model.*
 
 class ParadoxBaseDynamicValueScopeContextProvider: ParadoxDynamicValueScopeContextProvider {
-    override fun supports(element: ParadoxValueSetValueElement): Boolean {
+    override fun supports(element: ParadoxDynamicValueElement): Boolean {
         return true
     }
     
-    override fun getScopeContext(element: ParadoxValueSetValueElement): ParadoxScopeContext? {
+    override fun getScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContext? {
         val configGroup = getConfigGroup(element.project, element.gameType)
-        val dynamicValueConfig = configGroup.dynamicValues[element.valueSetName] ?:return null
+        val dynamicValueConfig = configGroup.dynamicValues[element.dynamicValueType] ?:return null
         val config = dynamicValueConfig.valueConfigMap[element.name] ?: return null
         val result = config.scopeContext
         return result

@@ -97,9 +97,9 @@ class CoreCwtDataExpressionResolver : CwtDataExpressionResolver {
                 val value = expressionString.substring(10, expressionString.length - 1).orNull()
                 Result(expressionString, CwtDataTypes.ValueSet, value)
             }
-            expressionString.surroundsWith("value_or_value_set[", "]") -> {
+            expressionString.surroundsWith("dynamic_value[", "]") -> {
                 val value = expressionString.substring(19, expressionString.length - 1).orNull()
-                Result(expressionString, CwtDataTypes.ValueOrValueSet, value)
+                Result(expressionString, CwtDataTypes.DynamicValue, value)
             }
             expressionString.surroundsWith("enum[", "]") -> {
                 val value = expressionString.substring(5, expressionString.length - 1).orNull()

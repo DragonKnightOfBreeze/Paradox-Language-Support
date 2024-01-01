@@ -29,9 +29,9 @@ class BaseCwtDataExpressionPriorityProvider: CwtDataExpressionPriorityProvider {
                 if(configGroup.complexEnums.containsKey(enumName)) return 45.0
                 return 0.0 //unexpected
             }
-            CwtDataTypes.Value, CwtDataTypes.ValueOrValueSet -> {
-                val valueSetName = expression.value ?: return 0.0 //unexpected
-                if(configGroup.dynamicValues.containsKey(valueSetName)) return 80.0
+            CwtDataTypes.Value, CwtDataTypes.DynamicValue -> {
+                val dynamicValueType = expression.value ?: return 0.0 //unexpected
+                if(configGroup.dynamicValues.containsKey(dynamicValueType)) return 80.0
                 return 40.0 //unexpected
             }
             CwtDataTypes.ValueSet -> 40.0

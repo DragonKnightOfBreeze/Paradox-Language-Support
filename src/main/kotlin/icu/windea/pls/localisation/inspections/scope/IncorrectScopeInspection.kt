@@ -47,7 +47,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                         return
                     }
                     //variable
-                    resolved is ParadoxValueSetValueElement -> {
+                    resolved is ParadoxDynamicValueElement -> {
                         val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
                         val supportedScopeContext = ParadoxScopeHandler.getScopeContext(resolved)
                         val supportedScope = supportedScopeContext.scope.id

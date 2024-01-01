@@ -26,7 +26,7 @@ import icu.windea.pls.lang.*
  * scope_link_from_data ::= scope_link_prefix scope_link_data_source //predefined by CWT Config (in links.cwt, from_data = true, type = both | scope)
  * scope_link_prefix ::= TOKEN //e.g. "event_target:" while the link's prefix is "event_target:"
  * scope_link_data_source ::= EXPRESSION //e.g. "some_variable" while the link's data source is "value[variable]"
- * expression ::= data_expression | value_set_value_expression //see: ParadoxDataExpression, ParadoxValueSetValueExpression
+ * expression ::= data_expression | dynamic_value_expression //see: ParadoxDataExpression, ParadoxDynamicValueExpression
  * ```
  *
  * 示例：

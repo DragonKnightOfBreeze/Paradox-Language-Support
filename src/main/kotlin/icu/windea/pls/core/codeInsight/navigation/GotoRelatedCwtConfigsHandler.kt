@@ -66,7 +66,7 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
                             configGroup.enums[name]?.pointer?.element?.let { add(it) }
                             configGroup.complexEnums[name]?.pointer?.element?.let { add(it) }
                         }
-                        configExpression.type.isValueSetValueType() -> {
+                        configExpression.type.isDynamicValueType() -> {
                             configGroup.dynamicValues[name]?.pointer?.element?.let { add(it) }
                         }
                         configExpression.type == CwtDataTypes.Modifier -> {

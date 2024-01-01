@@ -54,6 +54,6 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         if(!matched) return
         val mockConfig = CwtValueConfig.resolve(emptyPointer(), configGroup.info, "value[variable]")
         context.config = mockConfig
-        CwtConfigHandler.completeValueSetValueExpression(context, result)
+        CwtConfigHandler.completeDynamicValueExpression(context, result)
     }
 }

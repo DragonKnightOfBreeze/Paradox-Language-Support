@@ -28,7 +28,7 @@ val CwtDataTypes.FileName by lazy { CwtDataType("FileName") }
 val CwtDataTypes.EnumValue by lazy { CwtDataType("EnumValue") }
 val CwtDataTypes.Value by lazy { CwtDataType("Value") }
 val CwtDataTypes.ValueSet by lazy { CwtDataType("ValueSet") }
-val CwtDataTypes.ValueOrValueSet by lazy { CwtDataType("ValueOrValueSet") }
+val CwtDataTypes.DynamicValue by lazy { CwtDataType("DynamicValue") }
 val CwtDataTypes.ScopeField by lazy { CwtDataType("ScopeField") }
 val CwtDataTypes.Scope by lazy { CwtDataType("Scope") }
 val CwtDataTypes.ScopeGroup by lazy { CwtDataType("ScopeGroup") }
@@ -75,8 +75,8 @@ fun CwtDataType.isValueFieldType() =
 fun CwtDataType.isVariableFieldType() =
     this == CwtDataTypes.VariableField || this == CwtDataTypes.IntVariableField
 
-fun CwtDataType.isValueSetValueType() =
-    this == CwtDataTypes.Value || this == CwtDataTypes.ValueSet || this == CwtDataTypes.ValueOrValueSet
+fun CwtDataType.isDynamicValueType() =
+    this == CwtDataTypes.Value || this == CwtDataTypes.ValueSet || this == CwtDataTypes.DynamicValue
 
 fun CwtDataType.isConstantLikeType() =
     this == CwtDataTypes.Constant || this == CwtDataTypes.Template

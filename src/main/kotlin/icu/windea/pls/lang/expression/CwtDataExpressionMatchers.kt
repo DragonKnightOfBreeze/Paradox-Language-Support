@@ -158,15 +158,15 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 }
                 Result.NotMatch
             }
-            configExpression.type.isValueSetValueType() -> {
+            configExpression.type.isDynamicValueType() -> {
                 if(expression.type.isBlockLikeType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                //valueSetValue的值必须合法
-                val name = ParadoxValueSetValueHandler.getName(expression.text)
+                //dynamicValue的值必须合法
+                val name = ParadoxDynamicValueHandler.getName(expression.text)
                 if(name == null) return Result.NotMatch
-                val valueSetName = configExpression.value
-                if(valueSetName == null) return Result.NotMatch
-                CwtConfigMatcher.Impls.getValueSetValueMatchResult(element, name, valueSetName, project)
+                val dynamicValueType = configExpression.value
+                if(dynamicValueType == null) return Result.NotMatch
+                CwtConfigMatcher.Impls.getDynamicValueMatchResult(element, name, dynamicValueType, project)
             }
             configExpression.type.isScopeFieldType() -> {
                 if(expression.quoted) return Result.NotMatch //不允许用引号括起

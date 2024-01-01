@@ -70,7 +70,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(predefinedVariable != null) return predefinedVariable.pointer.element
 		
 		//尝试识别为value[variable]
-		return ParadoxValueSetValueElement(element, name, "variable", Access.Read, gameType, project)
+		return ParadoxDynamicValueElement(element, name, "variable", Access.Read, gameType, project)
 	}
 	
 	private fun doMultiResolve(): Array<out ResolveResult> {
@@ -93,7 +93,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		if(predefinedVariable != null) return predefinedVariable.pointer.element?.let { arrayOf(PsiElementResolveResult(it)) } ?: ResolveResult.EMPTY_ARRAY
 		
 		//尝试识别为value[variable]
-		return arrayOf(PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", Access.Read, gameType, project)))
+		return arrayOf(PsiElementResolveResult(ParadoxDynamicValueElement(element, name, "variable", Access.Read, gameType, project)))
 	}
 	
 	override fun getAttributesKey(): TextAttributesKey? {

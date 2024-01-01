@@ -70,11 +70,11 @@ fun ChainedParadoxSelector<ParadoxComplexEnumValueInfo>.distinctByName() =
     distinctBy { it.name }
 //endregion
 
-//region valueSetValueSelector
-fun valueSetValueSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxValueSetValueInfo>(project, context)
+//region dynamicValueSelector
+fun dynamicValueSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxDynamicValueInfo>(project, context)
 
-@JvmName("distinctByName_valueSetValueSelector")
-fun ChainedParadoxSelector<ParadoxValueSetValueInfo>.distinctByName() =
+@JvmName("distinctByName_dynamicValueSelector")
+fun ChainedParadoxSelector<ParadoxDynamicValueInfo>.distinctByName() =
     distinctBy { it.name }
 //endregion
 
@@ -82,7 +82,7 @@ fun ChainedParadoxSelector<ParadoxValueSetValueInfo>.distinctByName() =
 fun inlineScriptSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxInlineScriptUsageInfo>(project, context)
 //endregion
 
-//region valueSetValueSelector
+//region dynamicValueSelector
 fun parameterSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxParameterInfo>(project, context)
 
 @JvmName("distinctByName_parameterSelector")

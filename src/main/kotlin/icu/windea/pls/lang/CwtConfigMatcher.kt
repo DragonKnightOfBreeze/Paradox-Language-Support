@@ -215,7 +215,7 @@ object CwtConfigMatcher {
         }
         
         @Suppress("UNUSED_PARAMETER")
-        fun getValueSetValueMatchResult(element: PsiElement, name: String, valueSetName: String, project: Project): Result {
+        fun getDynamicValueMatchResult(element: PsiElement, name: String, dynamicValueType: String, project: Project): Result {
             //总是认为匹配
             return Result.ExactMatch
         }

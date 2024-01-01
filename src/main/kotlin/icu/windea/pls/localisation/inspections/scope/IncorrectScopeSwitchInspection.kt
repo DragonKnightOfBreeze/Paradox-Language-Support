@@ -57,7 +57,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                         }
                     }
                     //event target or global event target
-                    resolved is ParadoxValueSetValueElement -> {
+                    resolved is ParadoxDynamicValueElement -> {
                         val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
                         val supportedScopeContext = ParadoxScopeHandler.getScopeContext(resolved)
                         val supportedScope = supportedScopeContext.scope.id

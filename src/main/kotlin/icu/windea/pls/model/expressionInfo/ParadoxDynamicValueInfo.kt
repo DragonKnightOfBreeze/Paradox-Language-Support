@@ -8,9 +8,9 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 
-data class ParadoxValueSetValueInfo(
+data class ParadoxDynamicValueInfo(
     val name: String,
-    val valueSetName: String,
+    val dynamicValueType: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
     override val elementOffset: Int,
     override val gameType: ParadoxGameType
@@ -18,6 +18,6 @@ data class ParadoxValueSetValueInfo(
     @Volatile override var virtualFile: VirtualFile? = null
     
     fun getConfig(project: Project): CwtDynamicValueConfig? {
-        return getConfigGroup(project, gameType).dynamicValues[valueSetName]
+        return getConfigGroup(project, gameType).dynamicValues[dynamicValueType]
     }
 }

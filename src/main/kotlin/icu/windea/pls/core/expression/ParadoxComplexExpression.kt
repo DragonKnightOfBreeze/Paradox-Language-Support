@@ -28,7 +28,7 @@ interface ParadoxComplexExpression : ParadoxExpressionNode {
 fun Resolver.resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
     val dataType = config.expression?.type ?: return null
     return when {
-        dataType.isValueSetValueType() -> ParadoxValueSetValueExpression.resolve(expression, range, configGroup, config)
+        dataType.isDynamicValueType() -> ParadoxDynamicValueExpression.resolve(expression, range, configGroup, config)
         dataType.isScopeFieldType() -> ParadoxScopeFieldExpression.resolve(expression, range, configGroup)
         dataType.isValueFieldType() -> ParadoxValueFieldExpression.resolve(expression, range, configGroup)
         dataType.isVariableFieldType() -> ParadoxVariableFieldExpression.resolve(expression, range, configGroup)
