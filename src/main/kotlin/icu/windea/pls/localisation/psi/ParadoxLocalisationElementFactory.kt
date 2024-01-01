@@ -4,7 +4,6 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.*
-import icu.windea.pls.util.*
 
 object ParadoxLocalisationElementFactory {
     @JvmStatic

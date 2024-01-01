@@ -3,7 +3,6 @@
 package icu.windea.pls.core
 
 import com.google.common.cache.*
-import com.intellij.openapi.util.TextRange
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
