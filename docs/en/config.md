@@ -63,8 +63,9 @@ prop = {
 ### Summary
 
 In progress.
-Listed below are just some of the config specifications used for customization, such as, specifying the scope context and the quick documentation.
-For more detailed config specifications, please refer to the reference links below and those config files built into the plugin.
+
+Listed below are just some of the writing specifications used for config customization,
+For more detailed writing specifications, please refer to the reference links below and the built-in config files.
 
 Reference Links:
 
