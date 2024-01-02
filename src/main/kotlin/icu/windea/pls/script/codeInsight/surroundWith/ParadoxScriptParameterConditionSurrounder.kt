@@ -1,6 +1,5 @@
-package icu.windea.pls.script.surroundWith
+package icu.windea.pls.script.codeInsight.surroundWith
 
-import com.intellij.lang.surroundWith.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -10,22 +9,11 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
-/**
- * 从句的包围器，将选中的表达式（一个或多个属性或者单独的值）用花括号包围并在前面加上属性的键。
- *
- * ```
- * # 应用前：
- * k = v
- *
- * # 应用后：
- * key = {
- *     k = v
- * }
- * ```
- */
-class ParadoxScriptClausePropertySurrounder : Surrounder {
+class ParadoxScriptParameterConditionSurrounder : ParadoxScriptSurrounder() {
     @Suppress("DialogTitleCapitalization")
-    override fun getTemplateDescription() = PlsBundle.message("script.surroundWith.clauseProperty.description")
+    override fun getTemplateDescription(): String {
+        return PlsBundle.message("script.surroundWith.parameterCondition.description")
+    }
     
     override fun isApplicable(elements: Array<out PsiElement>): Boolean {
         return true
@@ -40,9 +28,9 @@ class ParadoxScriptClausePropertySurrounder : Surrounder {
         if(firstElement != lastElement) {
             firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
         }
-        var newElement = ParadoxScriptElementFactory.createProperty(project, "key", "{\n${replacedText}\n}")
-        newElement = firstElement.replace(newElement) as ParadoxScriptProperty
-        newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as ParadoxScriptProperty
-        return newElement.propertyKey.textRange
+        var newElement = ParadoxScriptElementFactory.createParameterCondition(project, "PARAM", "\n${replacedText}\n")
+        newElement = firstElement.replace(newElement) as ParadoxScriptParameterCondition
+        newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as ParadoxScriptParameterCondition
+        return newElement.parameterConditionExpression!!.textRange
     }
 }

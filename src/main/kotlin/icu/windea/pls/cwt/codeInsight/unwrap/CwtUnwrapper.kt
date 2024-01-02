@@ -3,23 +3,14 @@ package icu.windea.pls.cwt.codeInsight.unwrap
 import com.intellij.codeInsight.unwrap.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 
-abstract class CwtUnwrapper(
-    private val key: String
-) : AbstractUnwrapper<CwtUnwrapper.Context>("") {
-    abstract fun getName(e: PsiElement): String
-    
-    override fun getDescription(e: PsiElement): String {
-        return PlsBundle.message(key ,getName(e))
-    }
-    
+abstract class CwtUnwrapper : AbstractUnwrapper<CwtUnwrapper.Context>("") {
     override fun createContext(): Context {
         return Context()
     }
     
-    class Context: AbstractContext() {
+    class Context : AbstractContext() {
         override fun isWhiteSpace(element: PsiElement?): Boolean {
             return element is PsiWhiteSpace
         }

@@ -1,4 +1,4 @@
-package icu.windea.pls.cwt.surroundWith
+package icu.windea.pls.script.codeInsight.surroundWith
 
 import com.intellij.lang.surroundWith.*
 import com.intellij.openapi.editor.*
@@ -8,23 +8,13 @@ import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.script.psi.*
 
-/**
- * 从句的包围器，将选中的表达式（一个或多个属性或者单独的值）用花括号包围。
- *
- * ```
- * # 应用前：
- * k = v
- *
- * # 应用后：
- * {
- *     k = v
- * }
- * ```
- */
-class CwtClauseSurrounder : Surrounder {
-    override fun getTemplateDescription() = PlsBundle.message("cwt.surroundWith.clause.description")
+class ParadoxScriptPropertySurrounder : Surrounder {
+    @Suppress("DialogTitleCapitalization")
+    override fun getTemplateDescription(): String {
+        return PlsBundle.message("script.surroundWith.property.description")
+    }
     
     override fun isApplicable(elements: Array<out PsiElement>): Boolean {
         return true
@@ -39,11 +29,9 @@ class CwtClauseSurrounder : Surrounder {
         if(firstElement != lastElement) {
             firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
         }
-        var newElement = CwtElementFactory.createValue(project, "{\n${replacedText}\n}")
-        newElement = firstElement.replace(newElement) as CwtBlock
-        newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as CwtBlock
-        val endOffset = newElement.endOffset
-        return TextRange.create(endOffset, endOffset)
+        var newElement = ParadoxScriptElementFactory.createProperty(project, "key", "{\n${replacedText}\n}")
+        newElement = firstElement.replace(newElement) as ParadoxScriptProperty
+        newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as ParadoxScriptProperty
+        return newElement.propertyKey.textRange
     }
 }
-

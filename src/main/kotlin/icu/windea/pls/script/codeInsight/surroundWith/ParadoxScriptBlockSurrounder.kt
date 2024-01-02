@@ -1,4 +1,4 @@
-package icu.windea.pls.script.surroundWith
+package icu.windea.pls.script.codeInsight.surroundWith
 
 import com.intellij.lang.surroundWith.*
 import com.intellij.openapi.editor.*
@@ -10,21 +10,11 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
-/**
- * 从句的包围器，将选中的表达式（一个或多个属性或者单独的值）用花括号包围。
- * 
- * ```
- * # 应用前：
- * k = v
- * 
- * # 应用后：
- * {
- *     k = v
- * }
- * ```
- */
-class ParadoxScriptClauseSurrounder: Surrounder {
-	override fun getTemplateDescription() = PlsBundle.message("script.surroundWith.clause.description")
+class ParadoxScriptBlockSurrounder: Surrounder {
+	@Suppress("DialogTitleCapitalization")
+	override fun getTemplateDescription(): String {
+		return PlsBundle.message("script.surroundWith.block.description")
+	}
 	
 	override fun isApplicable(elements: Array<out PsiElement>): Boolean {
 		return true

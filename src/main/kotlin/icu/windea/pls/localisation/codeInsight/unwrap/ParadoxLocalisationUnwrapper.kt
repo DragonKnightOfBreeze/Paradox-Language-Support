@@ -3,18 +3,9 @@ package icu.windea.pls.localisation.codeInsight.unwrap
 import com.intellij.codeInsight.unwrap.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
-abstract class ParadoxLocalisationUnwraper(
-    private val key: String
-): AbstractUnwrapper<ParadoxLocalisationUnwraper.Context>("") {
-    abstract fun getName(e: PsiElement): String
-    
-    override fun getDescription(e: PsiElement): String {
-        return PlsBundle.message(key ,getName(e))
-    }
-    
+abstract class ParadoxLocalisationUnwrapper: AbstractUnwrapper<ParadoxLocalisationUnwrapper.Context>("") {
     override fun createContext(): Context {
         return Context()
     }

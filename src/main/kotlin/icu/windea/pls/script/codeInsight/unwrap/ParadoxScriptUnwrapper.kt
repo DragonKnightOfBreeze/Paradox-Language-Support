@@ -6,20 +6,12 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
-abstract class ParadoxScriptUnwrapper (
-    private val key: String
-): AbstractUnwrapper<ParadoxScriptUnwrapper.Context>("") {
-    abstract fun getName(e: PsiElement): String
-    
-    override fun getDescription(e: PsiElement): String {
-        return PlsBundle.message(key ,getName(e))
-    }
-    
+abstract class ParadoxScriptUnwrapper : AbstractUnwrapper<ParadoxScriptUnwrapper.Context>("") {
     override fun createContext(): Context {
         return Context()
     }
     
-    class Context: AbstractContext() {
+    class Context : AbstractContext() {
         override fun isWhiteSpace(element: PsiElement?): Boolean {
             return element is PsiWhiteSpace
         }
@@ -44,7 +36,7 @@ abstract class ParadoxScriptUnwrapper (
         
         private fun isElementToExtract(element: PsiElement): Boolean {
             return element is PsiComment || element is ParadoxScriptProperty || element is ParadoxScriptValue
-                || element is ParadoxScriptScriptedVariable 
+                || element is ParadoxScriptScriptedVariable
                 || element is ParadoxScriptParameterCondition
                 || element is ParadoxScriptInlineParameterCondition
         }

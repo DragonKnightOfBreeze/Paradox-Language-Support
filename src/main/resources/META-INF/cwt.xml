@@ -22,7 +22,7 @@
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.cwt.codeStyle.CwtLanguageCodeStyleSettingsProvider"/>
     <navbar implementation="icu.windea.pls.cwt.navigation.CwtNavBar"/>
     <lang.psiStructureViewFactory language="CWT" implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>
-    <lang.surroundDescriptor language="CWT" implementationClass="icu.windea.pls.cwt.surroundWith.CwtSurroundDescriptor"/>
+    <lang.surroundDescriptor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.surroundWith.CwtSurroundDescriptor"/>
     <lang.unwrapDescriptor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.unwrap.CwtUnwrapDescriptor"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtOptionKey"
