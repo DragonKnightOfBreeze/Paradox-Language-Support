@@ -77,9 +77,9 @@ Reference Links:
 definitions = {
     ### Some documentation
 	## type = civic_or_origin.civic
-	# 'X' or 'X = xxx'
-    # 'X' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
-    X
+	# 'x' or 'x = xxx'
+    # 'x' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
+    x
 }
 ```
 
@@ -89,10 +89,10 @@ definitions = {
 game_rules = {
     ### Some documentation
     ## replace_scopes = { this = country root = country }
-	# 'X' or 'X = xxx'
-	# 'X' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
-    # use 'X = xxx' to override declaration config
-    X
+	# 'x' or 'x = xxx'
+	# 'x' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
+    # use 'x = xxx' to override declaration config
+    x
 }
 ```
 
@@ -103,9 +103,9 @@ on_actions = {
     ### Some documentation
     ## replace_scopes = { this = country root = country }
 	## event_type = country
-    # 'X' or 'X = xxx'
-	# 'X' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
-    X
+    # 'x' or 'x = xxx'
+	# 'x' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
+    x
 }
 ```
 
@@ -113,11 +113,11 @@ on_actions = {
 
 ```cwt
 parameters = {
-    ### Some documentation
-    ## context_key = scripted_trigger@some_trigger
-	# 'P' or 'P = xxx'
-	# 'X' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
-    P
+	### Some documentation
+	## context_key = scripted_trigger@some_trigger
+	# 'p' or 'p = xxx'
+	# 'p' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
+	p
 }
 ```
 
@@ -125,11 +125,11 @@ parameters = {
 
 ```cwt
 values = {
-    value[event_target] = {
-        ### Some documentation
+	value[event_target] = {
+		### Some documentation
 		## replace_scopes = { this = country root = country }
-        # 'v', not 'v = xxx'
-        v
-    }
+		# 'v', not 'v = xxx'
+		v
+	}
 }
 ```
