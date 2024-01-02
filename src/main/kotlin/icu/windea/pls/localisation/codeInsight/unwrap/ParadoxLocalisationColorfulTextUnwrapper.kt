@@ -4,7 +4,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
-class ParadoxLocalisationColorfulTextUnwrapper : ParadoxLocalisationUnwrapper(key) {
+class ParadoxLocalisationColorfulTextUnwrapper : ParadoxLocalisationUnwrapper() {
     override fun getDescription(e: PsiElement): String {
         val name = if(e is ParadoxLocalisationColorfulText) e.name.orEmpty() else ""
         return PlsBundle.message("localisation.unwrap.color", name)
