@@ -405,9 +405,9 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         return CachedValuesManager.getCachedValue(definition, Data.cachedScopeContextInferenceInfoKey) {
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
-            val tracker0 = ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker
-            val tracker = ParadoxModificationTrackerProvider.getInstance(definition.project).ScriptFileTracker
-            CachedValueProvider.Result.create(value, tracker0, tracker)
+            val tracker1 = ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker
+            val tracker2 = ParadoxModificationTrackerProvider.getInstance(definition.project).ScriptFileTracker
+            CachedValueProvider.Result.create(value, tracker1, tracker2)
         }
     }
     
