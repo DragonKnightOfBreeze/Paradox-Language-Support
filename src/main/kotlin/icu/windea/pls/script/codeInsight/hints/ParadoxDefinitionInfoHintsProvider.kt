@@ -28,7 +28,7 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings
 			val definitionInfo = element.definitionInfo
 			if(definitionInfo != null) {
 				//忽略类似event_namespace这样定义的值不是子句的定义
-				if(definitionInfo.declarationConfig?.propertyConfig?.isBlock == false) return true
+				if(definitionInfo.declarationConfig?.config?.isBlock == false) return true
 				
 				val presentation = doCollect(definitionInfo)
 				val finalPresentation = presentation.toFinalPresentation(this, file.project)

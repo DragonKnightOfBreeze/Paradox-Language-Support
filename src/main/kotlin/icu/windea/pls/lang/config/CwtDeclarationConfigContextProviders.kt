@@ -32,7 +32,7 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
     }
     
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        val rootConfig = declarationConfig.propertyConfig
+        val rootConfig = declarationConfig.config
         val configs = if(rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
         val finalRootConfig = rootConfig.delegated(configs, null)
         finalRootConfig.declarationConfigContext = context
@@ -64,7 +64,7 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         //如果存在，使用重载的声明规则
         val rootConfig = context.gameRuleConfig!!.config.castOrNull<CwtPropertyConfig>()?.takeIf { it.isBlock }
-            ?: declarationConfig.propertyConfig
+            ?: declarationConfig.config
         val configs = if(rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
         val finalRootConfig = rootConfig.delegated(configs, null)
         finalRootConfig.declarationConfigContext = context
@@ -94,7 +94,7 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     }
     
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        val rootConfig = declarationConfig.propertyConfig
+        val rootConfig = declarationConfig.config
         val configs = if(rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
         val finalRootConfig = rootConfig.delegated(configs, null)
         finalRootConfig.declarationConfigContext = context

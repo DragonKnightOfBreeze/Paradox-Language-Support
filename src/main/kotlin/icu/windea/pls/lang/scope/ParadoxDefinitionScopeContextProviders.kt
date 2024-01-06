@@ -13,7 +13,7 @@ class ParadoxDefaultDefinitionScopeContextProvider: ParadoxDefinitionScopeContex
     }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
-        val declarationConfig = definitionInfo.declarationConfig?.propertyConfig ?: return null
+        val declarationConfig = definitionInfo.declarationConfig?.config ?: return null
         val subtypeConfigs = definitionInfo.subtypeConfigs
         val typeConfig = definitionInfo.typeConfig
         val scopeContextOnType = subtypeConfigs.firstNotNullOfOrNull { it.config.scopeContext }

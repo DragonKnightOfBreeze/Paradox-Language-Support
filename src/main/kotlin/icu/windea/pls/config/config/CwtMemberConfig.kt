@@ -6,11 +6,12 @@ import com.intellij.psi.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.model.*
 
-sealed interface CwtMemberConfig<out T : PsiElement> : UserDataHolder, CwtConfig<T>, CwtValueAware, CwtConfigsAware, CwtDocumentationAware, CwtOptionsAware {
+sealed interface CwtMemberConfig<out T : CwtMemberElement> : UserDataHolder, CwtConfig<T>, CwtValueAware, CwtConfigsAware, CwtDocumentationAware, CwtOptionsAware {
     override val configs: List<CwtMemberConfig<*>>?
     var parentConfig: CwtMemberConfig<*>?
     var inlineableConfig: CwtInlineableConfig<@UnsafeVariance T>?
@@ -37,7 +38,7 @@ fun CwtMemberConfig<*>.delegated(
     }
 }
 
-val <T : PsiElement> CwtMemberConfig<T>.isBlock: Boolean
+val <T : CwtMemberElement> CwtMemberConfig<T>.isBlock: Boolean
     get() = configs != null
 
 val CwtMemberConfig<*>.isRoot: Boolean
@@ -46,7 +47,7 @@ val CwtMemberConfig<*>.isRoot: Boolean
         is CwtValueConfig -> this.parentConfig == null && this.propertyConfig == null
     }
 
-val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<PsiElement>
+val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<*>
     get() = when(this) {
         is CwtPropertyConfig -> this
         is CwtValueConfig -> propertyConfig ?: this
@@ -130,7 +131,7 @@ val CwtMemberConfig<*>.supportedScopes
         if(r.isNullOrEmpty()) ParadoxScopeHandler.anyScopeIdSet else r
     }
 
-fun <T : PsiElement> CwtMemberConfig<T>.toOccurrence(contextElement: PsiElement, project: Project): Occurrence {
+fun <T : CwtMemberElement> CwtMemberConfig<T>.toOccurrence(contextElement: PsiElement, project: Project): Occurrence {
     val cardinality = this.cardinality ?: return Occurrence(0, null, null, false)
     val cardinalityMinDefine = this.cardinalityMinDefine
     val cardinalityMaxDefine = this.cardinalityMaxDefine

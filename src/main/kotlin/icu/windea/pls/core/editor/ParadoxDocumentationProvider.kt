@@ -6,7 +6,6 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
@@ -308,7 +307,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             sections.put(PlsBundle.message("sectionTitle.categories"), ParadoxDocumentationBuilder.getModifierCategoriesText(categoryNames, gameType, contextElement))
         }
         
-        val supportedScopes = modifierCategories.getSupportedScopes()
+        val supportedScopes = ParadoxScopeHandler.getSupportedScopes(modifierCategories)
         sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxDocumentationBuilder.getScopesText(supportedScopes, gameType, contextElement))
     }
     

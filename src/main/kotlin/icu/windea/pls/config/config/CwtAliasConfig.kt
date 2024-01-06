@@ -9,7 +9,7 @@ import icu.windea.pls.lang.*
 /**
  * @property supportedScopes (option) scope/scopes: string | string[]
  */
-class CwtAliasConfig(
+class CwtAliasConfig private constructor(
     override val pointer: SmartPsiElementPointer<out CwtProperty>,
     override val info: CwtConfigGroupInfo,
     override val config: CwtPropertyConfig,
@@ -37,5 +37,11 @@ class CwtAliasConfig(
         return inlined
     }
     
+    companion object Resolver {
+        fun resolve(config: CwtPropertyConfig, name: String, subName: String): CwtAliasConfig {
+            return CwtAliasConfig(config.pointer, config.info, config, name, subName)
+                .apply { info.acceptConfigExpression(subNameExpression, null) }
+        }
+    }
 }
 

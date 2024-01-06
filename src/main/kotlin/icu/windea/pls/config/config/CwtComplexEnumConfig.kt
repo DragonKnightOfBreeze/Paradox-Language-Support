@@ -12,7 +12,7 @@ import icu.windea.pls.cwt.psi.*
  * @property searchScopeType (property) search_scope_type: string 查询作用域，认为仅该作用域下的复杂枚举值是等同的。（目前支持：definition）
  * @property nameConfig (property) name: block 描述如何获取枚举名。将`enum_name`对应的key/value作为枚举名。
  */
-class CwtComplexEnumConfig(
+class CwtComplexEnumConfig private constructor(
     override val pointer: SmartPsiElementPointer<out CwtProperty>,
     override val info: CwtConfigGroupInfo,
     val name: String,
@@ -31,18 +31,41 @@ class CwtComplexEnumConfig(
             nameConfig.processDescendants {
                 when {
                     it is CwtPropertyConfig -> {
-                        if(it.key == "enum_name" || it.stringValue == "enum_name") {
-                            add(it)
-                        }
+                        if(it.key == "enum_name" || it.stringValue == "enum_name") add(it)
                     }
                     it is CwtValueConfig -> {
-                        if(it.stringValue == "enum_name") {
-                            add(it)
-                        }
+                        if(it.stringValue == "enum_name") add(it)
                     }
                 }
                 true
             }
+        }
+    }
+    
+    companion object Resolver {
+        fun resolve(config: CwtPropertyConfig, name: String): CwtComplexEnumConfig? {
+            val pointer = config.pointer
+            val info = config.info
+            val props = config.properties ?: return null
+            if(props.isEmpty()) return null //invalid
+            val path: MutableSet<String> = mutableSetOf()
+            var pathFile: String? = null
+            var pathStrict = false
+            var startFromRoot = false
+            var nameConfig: CwtPropertyConfig? = null
+            for(prop in props) {
+                when(prop.key) {
+                    //这里的path一般"game/"开始，这里需要忽略
+                    "path" -> prop.stringValue?.removePrefix("game")?.trim('/')?.let { path.add(it) }
+                    "path_file" -> pathFile = prop.stringValue
+                    "path_strict" -> pathStrict = prop.booleanValue ?: false
+                    "start_from_root" -> startFromRoot = prop.booleanValue ?: false
+                    "name" -> nameConfig = prop
+                }
+            }
+            val searchScopeType = config.findOption("search_scope_type")?.stringValue
+            if(path.isEmpty() || nameConfig == null) return null //invalid
+            return CwtComplexEnumConfig(pointer, info, name, path, pathFile, pathStrict, startFromRoot, searchScopeType, nameConfig)
         }
     }
 }
