@@ -33,16 +33,11 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     private fun doGetConfigFromExpressionConfig(expressionConfig: CwtMemberConfig<*>, parameterInfo: ParadoxParameterContextInfo.Parameter): CwtValueConfig? {
         if(expressionConfig.expression.type == CwtDataTypes.ParameterValue) {
             //处理参数传递的情况
-            //这里需要尝试避免SOE
             if(expressionConfig !is CwtValueConfig) return null
             val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return null
             val argumentNameConfig = expressionConfig.propertyConfig ?: return null
             val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return null
-            val passingConfig = withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxBaseParameterInferredConfigProvider.doGetConfigFromExpressionConfig") {
-                withCheckRecursion(passingParameterElement.contextKey) {
-                    ParadoxParameterHandler.getInferredConfig(passingParameterElement)
-                }
-            }
+            val passingConfig = ParadoxParameterHandler.getInferredConfig(passingParameterElement)
             return passingConfig
         }
         return CwtValueConfig.resolve(emptyPointer(), expressionConfig.info, expressionConfig.expression.expressionString)
@@ -53,17 +48,12 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
         val expressionContextConfig = expressionContextConfigs.find { it.expression.type == CwtDataTypes.ParameterValue }
         if(expressionContextConfig != null) {
             //处理参数传递的情况
-            //这里需要尝试避免SOE
             if(expressionContextConfig !is CwtValueConfig) return emptyList()
             val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return emptyList()
             val argumentNameConfig = expressionContextConfig.propertyConfig ?: return emptyList()
             val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return emptyList()
-            val passingContextConfigs = withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxBaseParameterInferredConfigProvider.doGetContextConfigsFromExpressionContextConfigs") {
-                withCheckRecursion(passingParameterElement.contextKey) {
-                    ParadoxParameterHandler.getInferredContextConfigs(passingParameterElement)
-                }
-            }
-            return passingContextConfigs.orEmpty()
+            val passingContextConfigs = ParadoxParameterHandler.getInferredContextConfigs(passingParameterElement)
+            return passingContextConfigs
         }
         if(expressionContextConfigs.isEmpty()) return emptyList()
         val containerConfig = CwtValueConfig.resolve(
@@ -152,12 +142,8 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
             }
             node is ParadoxScriptValueArgumentValueExpressionNode -> {
                 val argumentNode = node.argumentNode ?: return null
-                val passingConfig = withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider.getConfigFromNode") a1@{
-                    val passingParameterElement = ParadoxParameterSupport.resolveArgument(expressionElement, argumentNode.rangeInExpression, expressionConfig) ?: return null
-                    withCheckRecursion(passingParameterElement.contextKey) a2@{
-                        ParadoxParameterHandler.getInferredConfig(passingParameterElement)
-                    }
-                }
+                val passingParameterElement = ParadoxParameterSupport.resolveArgument(expressionElement, argumentNode.rangeInExpression, expressionConfig) ?: return null
+                val passingConfig = ParadoxParameterHandler.getInferredConfig(passingParameterElement)
                 passingConfig
             }
             else -> null
