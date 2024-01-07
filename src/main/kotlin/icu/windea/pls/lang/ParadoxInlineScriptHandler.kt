@@ -141,35 +141,43 @@ object ParadoxInlineScriptHandler {
     fun getInferredContextConfigs(contextElement: ParadoxScriptMemberElement, inlineScriptExpression: String, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
         if(!getSettings().inference.inlineScriptConfig) return emptyList()
         
+        return withRecursionGuard("icu.windea.pls.lang.ParadoxInlineScriptHandler.getInferredContextConfigs") {
+            withCheckRecursion(inlineScriptExpression) {
+                context.inlineScriptHasConflict = false
+                context.inlineScriptHasRecursion = false
+                doGetInferredContextConfigs(contextElement, context, inlineScriptExpression, matchOptions)
+            }
+        } ?: run {
+            context.inlineScriptHasRecursion = true
+            emptyList()
+        }
+    }
+    
+    private fun doGetInferredContextConfigs(contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, inlineScriptExpression: String, matchOptions: Int): List<CwtMemberConfig<*>> {
+        return doGetInferredContextConfigsFromUsages(contextElement, context, inlineScriptExpression, matchOptions)
+    }
+    
+    private fun doGetInferredContextConfigsFromUsages(contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, inlineScriptExpression: String, matchOptions: Int): List<CwtMemberConfig<*>> {
         // infer & merge
         val result = Ref.create<List<CwtMemberConfig<*>>>()
-        context.inlineScriptHasConflict = false
-        context.inlineScriptHasRecursion = false
-        withRecursionGuard("icu.windea.pls.lang.config.CwtInlineScriptConfigContextProvider.getConfigsForConfigContext") {
-            withCheckRecursion(inlineScriptExpression) {
-                val project = context.configGroup.project
-                val selector = inlineScriptSelector(project, contextElement)
-                ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQueryAsync p@{ info ->
-                    ProgressManager.checkCanceled()
-                    val file = info.virtualFile?.toPsiFile(project) ?: return@p true
-                    val e = file.findElementAt(info.elementOffset) ?: return@p true
-                    val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true
-                    if(!p.name.equals(inlineScriptKey, true)) return@p true
-                    val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p true
-                    val usageConfigContext = CwtConfigHandler.getConfigContext(memberElement) ?: return@p true
-                    val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
-                    // merge
-                    result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
-                        if(it) return@also
-                        context.inlineScriptHasConflict = true
-                        result.set(null)
-                    }
-                }
-            } ?: run {
-                context.inlineScriptHasRecursion = true
+        val project = context.configGroup.project
+        val selector = inlineScriptSelector(project, contextElement)
+        ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQueryAsync p@{ info ->
+            ProgressManager.checkCanceled()
+            val file = info.virtualFile?.toPsiFile(project) ?: return@p true
+            val e = file.findElementAt(info.elementOffset) ?: return@p true
+            val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true
+            if(!p.name.equals(inlineScriptKey, true)) return@p true
+            val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p true
+            val usageConfigContext = CwtConfigHandler.getConfigContext(memberElement) ?: return@p true
+            val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
+            // merge
+            result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
+                if(it) return@also
+                context.inlineScriptHasConflict = true
                 result.set(null)
             }
         }
-        return result.get()
+        return result.get().orEmpty()
     }
 }

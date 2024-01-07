@@ -2,16 +2,12 @@ package icu.windea.pls.lang.config
 
 import com.intellij.lang.injection.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
@@ -186,40 +182,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         }
         
         val inlineScriptExpression = context.inlineScriptExpression ?: return null
-        return getInferredContextConfigs(contextElement, inlineScriptExpression, context, matchOptions)
-    }
-    
-    private fun getInferredContextConfigs(contextElement: ParadoxScriptMemberElement, inlineScriptExpression: String, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
-        // infer & merge
-        val result = Ref.create<List<CwtMemberConfig<*>>>()
-        context.inlineScriptHasConflict = false
-        context.inlineScriptHasRecursion = false
-        withRecursionGuard("icu.windea.pls.lang.config.CwtInlineScriptConfigContextProvider.getConfigsForConfigContext") {
-            withCheckRecursion(inlineScriptExpression) {
-                val project = context.configGroup.project
-                val selector = inlineScriptSelector(project, contextElement)
-                ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQueryAsync p@{ info ->
-                    ProgressManager.checkCanceled()
-                    val file = info.virtualFile?.toPsiFile(project) ?: return@p true
-                    val e = file.findElementAt(info.elementOffset) ?: return@p true
-                    val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true
-                    if(!p.name.equals(ParadoxInlineScriptHandler.inlineScriptKey, true)) return@p true
-                    val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p true
-                    val usageConfigContext = CwtConfigHandler.getConfigContext(memberElement) ?: return@p true
-                    val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
-                    // merge
-                    result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
-                        if(it) return@also
-                        context.inlineScriptHasConflict = true
-                        result.set(null)
-                    }
-                }
-            } ?: run {
-                context.inlineScriptHasRecursion = true
-                result.set(null)
-            }
-        }
-        return result.get()
+        return ParadoxInlineScriptHandler.getInferredContextConfigs(contextElement, inlineScriptExpression, context, matchOptions)
     }
     
     //skip MissingExpressionInspection and TooManyExpressionInspection at root level
