@@ -89,6 +89,21 @@ a_enum[weight_or_base]_b
 a_value[anything]_b
 ```
 
+关于作用域上下文的指定方式：
+
+```cwt
+# push 'country' scope to scope stack
+# for this example, the next this scope will be 'country'
+## push_scope = country
+some_config
+
+# replace scopes of specific system scopes into scope context
+# not supported for 'prev' system scope (and 'prevprev', etc.)
+# for this example, the next this scope will be 'country', so do the next root scope and the next from scope
+## replace_scopes = { this = country root = country from = country }
+some_config
+```
+
 ### Definitions
 
 ```cwt
