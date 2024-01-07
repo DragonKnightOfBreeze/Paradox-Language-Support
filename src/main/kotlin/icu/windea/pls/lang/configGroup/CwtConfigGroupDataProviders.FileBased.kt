@@ -291,6 +291,20 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.onActions.asMutable()[onActionConfig.name] = onActionConfig
                     }
                 }
+                key == "inline_scripts" -> {
+                    val configs = property.configs ?: continue
+                    for(config in configs) {
+                        val inlineScriptConfig = CwtInlineScriptConfig.resolve(config) ?: continue
+                        configGroup.inlineScripts.asMutable()[inlineScriptConfig.name] = inlineScriptConfig
+                    }
+                }
+                key == "parameters" -> {
+                    val configs = property.configs ?: continue
+                    for(config in configs) {
+                        val parameterConfig = CwtParameterConfig.resolve(config) ?: continue
+                        configGroup.parameters.asMutable().getOrPut(parameterConfig.name) { mutableListOf() }.asMutable() += parameterConfig
+                    }
+                }
                 key == "values" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
@@ -300,13 +314,6 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                             val valueConfig = CwtDynamicValueConfig.resolve(prop, dynamicValueName) ?: continue
                             configGroup.dynamicValues.asMutable()[dynamicValueName] = valueConfig
                         }
-                    }
-                }
-                key == "parameters" -> {
-                    val configs = property.configs ?: continue
-                    for(config in configs) {
-                        val parameterConfig = CwtParameterConfig.resolve(config) ?: continue
-                        configGroup.parameters.asMutable().getOrPut(parameterConfig.name) { mutableListOf() }.asMutable() += parameterConfig
                     }
                 }
                 else -> {

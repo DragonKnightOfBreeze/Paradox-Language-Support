@@ -4,12 +4,11 @@ import com.intellij.psi.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 
-class CwtParameterConfig private constructor(
+class CwtInlineScriptConfig private constructor(
     override val pointer: SmartPsiElementPointer<out CwtMemberElement>,
     override val info: CwtConfigGroupInfo,
     val config: CwtMemberConfig<*>,
     val name: String,
-    val contextKey: String,
     val contextConfigsType: String,
 ) : CwtConfig<CwtMemberElement> {
     /**
@@ -24,14 +23,13 @@ class CwtParameterConfig private constructor(
     }
     
     companion object Resolver {
-        fun resolve(config: CwtMemberConfig<*>): CwtParameterConfig? {
+        fun resolve(config: CwtMemberConfig<*>): CwtInlineScriptConfig? {
             val name = when(config) {
                 is CwtPropertyConfig -> config.key
                 is CwtValueConfig -> config.value
             }
-            val contextKey = config.findOption("context_key")?.stringValue ?: return null
             val contextConfigsType = config.findOption("context_configs_type")?.stringValue ?: "single"
-            return CwtParameterConfig(config.pointer, config.info, config, name, contextKey, contextConfigsType)
+            return CwtInlineScriptConfig(config.pointer, config.info, config, name, contextConfigsType)
         }
     }
 }

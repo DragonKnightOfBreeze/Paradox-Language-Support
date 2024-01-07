@@ -15,6 +15,7 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
@@ -271,7 +272,17 @@ object ParadoxParameterHandler {
     }
     
     private fun doGetInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
+        val fromConfig = doGetInferredContextConfigsFromConfig(parameterElement)
+        if(fromConfig.isNotEmpty()) return fromConfig
+        
         return doGetInferredContextConfigsFromUsages(parameterElement)
+    }
+    
+    private fun doGetInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
+        val configGroup = getConfigGroup(parameterElement.project, parameterElement.gameType)
+        val configs = configGroup.parameters.getAllByTemplate(parameterElement.name, parameterElement, configGroup)
+        val config = configs.findLast { it.contextKey == parameterElement.contextKey } ?: return emptyList()
+        return config.getContextConfigs()
     }
     
     private fun doGetInferredContextConfigsFromUsages(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {

@@ -7,6 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
@@ -154,7 +155,16 @@ object ParadoxInlineScriptHandler {
     }
     
     private fun doGetInferredContextConfigs(contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, inlineScriptExpression: String, matchOptions: Int): List<CwtMemberConfig<*>> {
+        val fromConfig = doGetInferredContextConfigsFromConfig(contextElement, context, inlineScriptExpression, matchOptions)
+        if(fromConfig.isNotEmpty()) return fromConfig
+        
         return doGetInferredContextConfigsFromUsages(contextElement, context, inlineScriptExpression, matchOptions)
+    }
+    
+    private fun doGetInferredContextConfigsFromConfig(contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, inlineScriptExpression: String, matchOptions: Int): List<CwtMemberConfig<*>> {
+        val configGroup = context.configGroup
+        val config = configGroup.inlineScripts.getByTemplate(inlineScriptExpression, contextElement, configGroup, matchOptions) ?: return emptyList()
+        return config.getContextConfigs()
     }
     
     private fun doGetInferredContextConfigsFromUsages(contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, inlineScriptExpression: String, matchOptions: Int): List<CwtMemberConfig<*>> {

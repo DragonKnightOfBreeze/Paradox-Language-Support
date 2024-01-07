@@ -71,14 +71,33 @@ prop = {
 
 * [指引文档](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
 
+### 备注
+
+关于模版表达式：
+
+```cwt
+# belows are all valid template expressions
+
+# a string literal, exactly matches 'x'
+x
+# a template expression which contains a reference to jobs, matches 'a_researcher_b', 'a_farmer_b', etc.
+a_<job>_b
+# a template expression which contains a references to enum of weight_or_base, matches 'a_weight_b' and 'a_base_b'
+a_enum[weight_or_base]_b
+# a template expression which contains a references to dynamic value type of anything
+# there is no limit for 'value[anything]', so it's equivalent to regex 'a_.*_b'
+a_value[anything]_b
+```
+
 ### Definitions
 
 ```cwt
 definitions = {
+	# 'x' or 'x = xxx'
+	# 'x' can also be a template expression
+    
     ### Some documentation
 	## type = civic_or_origin.civic
-	# 'x' or 'x = xxx'
-    # 'x' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
     x
 }
 ```
@@ -87,11 +106,12 @@ definitions = {
 
 ```cwt
 game_rules = {
+	# 'x' or 'x = xxx'
+	# 'x' can also be a template expression
+	# use 'x = xxx' to override declaration config
+    
     ### Some documentation
     ## replace_scopes = { this = country root = country }
-	# 'x' or 'x = xxx'
-	# 'x' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
-    # use 'x = xxx' to override declaration config
     x
 }
 ```
@@ -100,12 +120,38 @@ game_rules = {
 
 ```cwt
 on_actions = {
+	# 'x' or 'x = xxx'
+	# 'x' can also be a template expression
+    
     ### Some documentation
     ## replace_scopes = { this = country root = country }
 	## event_type = country
-    # 'x' or 'x = xxx'
-	# 'x' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
     x
+}
+```
+
+### Inline Scripts
+
+```cwt
+inline_scripts = {
+	# 'x' or 'x = xxx'
+	# 'x' is a inline script expression, e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
+	# 'x' can also be a template expression
+	# use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there is various context configs)
+    
+    # note extended documentation is unavailable for inline scripts
+    
+    x
+
+	# more detailed examples for declaring context config(s)
+
+	## context_configs_type = multiple
+	x = {
+		## cardinality = 0..1
+		potential = single_alias_right[trigger_clause]
+		## cardinality = 0..1
+		possible = single_alias_right[trigger_clause]
+	}
 }
 ```
 
@@ -113,11 +159,23 @@ on_actions = {
 
 ```cwt
 parameters = {
+	# 'x' or 'x = xxx'
+	# 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
+	# 'x' can also be a template expression
+	# use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there is various context configs)
+    
     ### Some documentation
     ## context_key = scripted_trigger@some_trigger
-	# 'p' or 'p = xxx'
-	# 'p' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
-    p
+    x
+    
+    # more detailed examples for declaring context config(s)
+    
+    x = localistion
+	## context_configs_type = multiple
+    x = {
+        localisation
+        scalar
+    }
 }
 ```
 
@@ -126,10 +184,11 @@ parameters = {
 ```cwt
 values = {
     value[event_target] = {
+		# 'x', not 'x = xxx'
+        
         ### Some documentation
 		## replace_scopes = { this = country root = country }
-        # 'v', not 'v = xxx'
-        v
+        x
     }
 }
 ```

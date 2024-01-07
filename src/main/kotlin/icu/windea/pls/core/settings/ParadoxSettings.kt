@@ -99,10 +99,12 @@ class ParadoxSettingsState : BaseState() {
     }
     
     /**
-     * @property parameterConfig 是否推断参数对应的脚本表达式，以便为其传入值和默认值提供高级语言功能支持。
-     * @property inlineScriptConfig 是否推断内联脚本的使用位置，以便为其内容提供高级语言功能支持。
+     * 注意：仅可配置是否启用基于使用的推断，基于自定义CWT规则的推断是始终启用的。
+     * 
+     * @property parameterConfig 是否推断参数对应的脚本表达式。
+     * @property inlineScriptConfig 是否推断内联脚本的使用位置。
      * @property scopeContext 是否推断scripted_trigger、scripted_effect等的作用域上下文。
-     * @property eventScopeContext 是否推断事件的作用域上下文。
+     * @property eventScopeContext 是否推断event的作用域上下文。
      * @property onActionScopeContext 是否推断on_action的作用域上下文。
      */
     @Tag("inference")
