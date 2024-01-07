@@ -30,6 +30,8 @@ class ParadoxModificationTrackerProvider(project: Project) {
     val InlineScriptsTracker = ScriptFileTracker("common/inline_scripts:txt")
     
     companion object {
+        @JvmField val ParameterConfigInferenceTracker = SimpleModificationTracker()
+        @JvmField val InlineScriptConfigInferenceTracker = SimpleModificationTracker()
         @JvmField val DefinitionScopeContextInferenceTracker = SimpleModificationTracker()
         
         @JvmStatic

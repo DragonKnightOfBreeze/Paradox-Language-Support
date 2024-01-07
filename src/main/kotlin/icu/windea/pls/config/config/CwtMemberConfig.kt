@@ -25,7 +25,7 @@ sealed interface CwtMemberConfig<out T : CwtMemberElement> : UserDataHolder, Cwt
     
     override fun toString(): String
     
-    object Keys : KeyRegistry("CwtMemberConfig"), KeyHolder
+    object Keys : KeyRegistry("CwtMemberConfig")
 }
 
 fun CwtMemberConfig<*>.delegated(

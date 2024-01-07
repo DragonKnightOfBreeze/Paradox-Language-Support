@@ -228,35 +228,46 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.inference.argumentValueConfig"))
                         .bindSelected(settings.inference::parameterConfig)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.argumentValueConfig.tooltip") }
-                        .onApply { ParadoxCoreHandler.reparseOpenedFiles() }
+                        .onApply {
+                            ParadoxModificationTrackerProvider.ParameterConfigInferenceTracker.incModificationCount()
+                        }
                 }
                 //inlineScriptConfig
                 row {
                     checkBox(PlsBundle.message("settings.inference.inlineScriptConfig"))
                         .bindSelected(settings.inference::inlineScriptConfig)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.inlineScriptConfig.tooltip") }
-                        .onApply { ParadoxCoreHandler.refreshInlineScriptInlayHints() }
+                        .onApply {
+                            ParadoxModificationTrackerProvider.InlineScriptConfigInferenceTracker.incModificationCount()
+                            ParadoxCoreHandler.refreshInlineScriptInlayHints()
+                        }
                 }
                 //scopeContext
                 row {
                     checkBox(PlsBundle.message("settings.inference.scopeContext"))
                         .bindSelected(settings.inference::scopeContext)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContext.tooltip") }
-                        .onApply { ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount() }
+                        .onApply { 
+                            ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount()
+                        }
                 }
                 //eventScopeContext
                 row {
                     checkBox(PlsBundle.message("settings.inference.eventScopeContext"))
                         .bindSelected(settings.inference::eventScopeContext)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContext.tooltip") }
-                        .onApply { ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount() }
+                        .onApply {
+                            ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount()
+                        }
                 }
                 //onActionScopeContext
                 row {
                     checkBox(PlsBundle.message("settings.inference.onActionScopeContext"))
                         .bindSelected(settings.inference::onActionScopeContext)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.onActionScopeContext.tooltip") }
-                        .onApply { ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount() }
+                        .onApply {
+                            ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount()
+                        }
                 }
             }
             //hierarchy

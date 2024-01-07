@@ -123,7 +123,7 @@ interface ParadoxParameterSupport {
         }
     }
     
-    object Keys : KeyHolder
+    object Keys : KeyRegistry()
 }
 
 val ParadoxParameterSupport.Keys.support by createKey<ParadoxParameterSupport>("paradox.parameter.support.support")
