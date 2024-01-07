@@ -149,7 +149,8 @@ class ParadoxScriptValueExpressionImpl(
                         val resultToUse = result.withPrefixMatcher(keywordToUse)
                         val element = context.contextElement as? ParadoxScriptStringExpressionElement ?: return@run
                         val parameterElement = node.argumentNode?.getReference(element)?.resolve() ?: return@run
-                        val inferredConfig = ParadoxParameterHandler.getInferredConfig(parameterElement) ?: return@run
+                        val inferredContextConfigs = ParadoxParameterHandler.getInferredContextConfigs(parameterElement)
+                        val inferredConfig = inferredContextConfigs.singleOrNull()?.castOrNull<CwtValueConfig>() ?: return@run
                         val config = context.config
                         val configs = context.configs
                         context.keyword = keywordToUse
