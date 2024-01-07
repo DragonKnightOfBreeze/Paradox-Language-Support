@@ -41,7 +41,10 @@ class ParadoxLocalisationBlock(
     //收集所有节点
     override fun buildChildren(): List<Block> {
         val children = mutableListOf<Block>()
-        myNode.processChild { node -> node.takeUnless(TokenType.WHITE_SPACE)?.let { ParadoxLocalisationBlock(it, settings) }?.addTo(children).let { true } }
+        myNode.processChild { node ->
+            node.takeUnless(TokenType.WHITE_SPACE)?.let { ParadoxLocalisationBlock(it, settings) }?.also { children.add(it) }
+            true
+        }
         return children
     }
     

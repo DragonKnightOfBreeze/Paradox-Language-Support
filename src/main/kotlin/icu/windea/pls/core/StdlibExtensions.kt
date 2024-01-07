@@ -87,10 +87,6 @@ inline fun Collection<*>?.isNotNullOrEmpty(): Boolean {
     return this != null && this.size != 0
 }
 
-fun <T> T.addTo(destination: MutableCollection<T>) = destination.add(this)
-
-fun <T : Collection<T>> T.addAllTo(destination: MutableCollection<T>) = destination.addAll(this)
-
 fun Number.format(digits: Int): String {
     val power = 10.0.pow(abs(digits))
     return when {
