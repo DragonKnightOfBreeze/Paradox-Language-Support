@@ -170,6 +170,10 @@ inline_scripts = {
 }
 ```
 
+Example:
+
+![](../assets/images/config/inline_scripts_1.png)
+
 ### Parameters
 
 ```cwt
@@ -196,7 +200,7 @@ parameters = {
 
 Example:
 
-![](../assets/images/config/screenshot_parameters_1.png)
+![](../assets/images/config/parameters_1.png)
 
 ### Dynamic Values
 

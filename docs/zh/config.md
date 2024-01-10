@@ -172,7 +172,7 @@ inline_scripts = {
 
 示例：
 
-
+![](../assets/images/config/inline_scripts_1.png)
 
 ### Parameters
 
@@ -200,7 +200,7 @@ parameters = {
 
 示例：
 
-![](../assets/images/config/screenshot_parameters_1.png)
+![](../assets/images/config/parameters_1.png)
 
 ### Dynamic Values
 
