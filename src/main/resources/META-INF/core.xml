@@ -131,6 +131,8 @@
   <applicationListeners>
     <listener class="icu.windea.pls.core.listeners.ParadoxRefreshOnDefaultGameTypeChangedListener"
               topic="icu.windea.pls.core.listeners.ParadoxDefaultGameTypeListener"/>
+    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener"
+              topic="icu.windea.pls.core.listeners.ParadoxDefaultGameDirectoriesListener"/>
     <listener class="icu.windea.pls.core.listeners.ParadoxRefreshOnModGameTypeChangedListener"
               topic="icu.windea.pls.core.listeners.ParadoxModGameTypeListener"/>
     <listener class="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnGameSettingsChangedListener"

@@ -8,12 +8,10 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.listeners.*
-import icu.windea.pls.core.ui.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import java.awt.event.*
-import javax.swing.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
     override fun getId() = "pls"
@@ -36,7 +34,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .onApply {
                             if(oldDefaultGameType != settings.defaultGameType) {
                                 val messageBus = ApplicationManager.getApplication().messageBus
-                                messageBus.syncPublisher(ParadoxDefaultGameTypeListener.TOPIC).onChange(settings.defaultGameType)
+                                messageBus.syncPublisher(ParadoxDefaultGameTypeListener.TOPIC)
+                                    .onChange(oldDefaultGameType, settings.defaultGameType)
                             }
                         }
                 }
@@ -49,7 +48,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     val oldDefaultGameDirectories = settings.defaultGameDirectories
                     ParadoxGameType.values.forEach { oldDefaultGameDirectories.putIfAbsent(it.id, "") }
                     val defaultList = oldDefaultGameDirectories.toMutableEntryList()
-                    var list = defaultList.toMutableList()
+                    var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                     val action = { _: ActionEvent ->
                         val dialog = ParadoxGameDirectoriesDialog(list)
                         if(dialog.showAndGet()) list = dialog.resultList
@@ -58,6 +57,13 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .onApply { settings.defaultGameDirectories = list.toMutableMap() }
                         .onReset { list = defaultList }
                         .onIsModified { list != defaultList }
+                        .onApply {
+                            if(oldDefaultGameDirectories != settings.defaultGameDirectories) {
+                                val messageBus = ApplicationManager.getApplication().messageBus
+                                messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC)
+                                    .onChange(oldDefaultGameDirectories, settings.defaultGameDirectories)
+                            }
+                        }
                 }
                 //preferredLocale
                 row {
@@ -267,7 +273,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.inference.scopeContext"))
                         .bindSelected(settings.inference::scopeContext)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContext.tooltip") }
-                        .onApply { 
+                        .onApply {
                             ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount()
                         }
                 }
@@ -305,7 +311,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .apply { cbCell = this }
                     
                     val defaultList = settings.hierarchy.definitionTypeBindingsInCallHierarchy.toMutableEntryList()
-                    var list = defaultList.toMutableList()
+                    var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                     val action = { _: ActionEvent ->
                         val dialog = ParadoxDefinitionTypeBindingsInCallHierarchyDialog(list)
                         if(dialog.showAndGet()) list = dialog.resultList
@@ -354,52 +360,3 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
     }
 }
 
-class ParadoxGameDirectoriesDialog(
-    val list: MutableList<Entry<String, String>>
-): DialogWrapper(null, null, false, IdeModalityType.IDE) {
-    val resultList = list.toMutableList()
-    
-    init {
-        title = PlsBundle.message("settings.general.configureDefaultGameDirectories.title")
-        init()
-    }
-    
-    override fun createCenterPanel(): JComponent {
-        return panel {
-            row {
-                val keyName = PlsBundle.message("settings.general.configureDefaultGameDirectories.key")
-                val valueName = PlsBundle.message("settings.general.configureDefaultGameDirectories.value")
-                cell(EntryListTableModel.createStringMapPanel(resultList, keyName, valueName) {
-                    it.disableAddAction().disableRemoveAction().disableUpDownActions()
-                }).align(Align.FILL)
-            }.resizableRow()
-        }
-    }
-}
-
-class ParadoxDefinitionTypeBindingsInCallHierarchyDialog(
-    val list: MutableList<Entry<String, String>>
-): DialogWrapper(null, null, false , IdeModalityType.IDE) {
-    val resultList = list.toMutableList()
-    
-    init {
-        title = PlsBundle.message("settings.hierarchy.definitionTypeBindings.title")
-        init()
-    }
-    
-    override fun createCenterPanel(): JComponent {
-        return panel {
-            row {
-                val keyName = PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings.key")
-                val valueName = PlsBundle.message("settings.hierarchy.definitionTypeBindings.value")
-                cell(EntryListTableModel.createStringMapPanel(resultList, keyName, valueName)).align(Align.FILL)
-            }.resizableRow()
-            row {
-                comment(PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings.comment.1"))
-            }
-            row {
-                comment(PlsBundle.message("ui.comment.definitionTypeExpression"))
-            }
-        }
-    }
-}

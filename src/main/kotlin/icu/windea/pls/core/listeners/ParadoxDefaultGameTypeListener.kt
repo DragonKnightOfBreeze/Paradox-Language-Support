@@ -7,7 +7,7 @@ import icu.windea.pls.model.*
  * 监听默认游戏类型的更改。
  */
 interface ParadoxDefaultGameTypeListener {
-    fun onChange(gameType: ParadoxGameType)
+    fun onChange(oldGameType: ParadoxGameType, gameType: ParadoxGameType)
     
     companion object {
         @Topic.AppLevel
