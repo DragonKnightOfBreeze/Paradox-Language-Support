@@ -16,12 +16,14 @@ import icu.windea.pls.model.*
 class ParadoxSettings : SimplePersistentStateComponent<ParadoxSettingsState>(ParadoxSettingsState())
 
 /**
- * @property defaultGameType 默认游戏类型。
+ * @property defaultGameType 默认的游戏类型。
+ * @property defaultGameDirectories 默认的游戏目录映射。
  * @property preferredLocale 偏好的语言区域。
  * @property ignoredFileNames 需要忽略的文件名（不识别为脚本和本地化文件，逗号分隔，不区分大小写）
  */
 class ParadoxSettingsState : BaseState() {
-    var defaultGameType: ParadoxGameType by enum(ParadoxGameType.Stellaris)
+    var defaultGameType by enum(ParadoxGameType.Stellaris)
+    var defaultGameDirectories by map<String, String>()
     var preferredLocale by string("auto")
     var ignoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
     

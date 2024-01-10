@@ -12,6 +12,7 @@ import icu.windea.pls.core.ui.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
+import java.awt.event.*
 import javax.swing.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
@@ -38,6 +39,23 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                                 messageBus.syncPublisher(ParadoxDefaultGameTypeListener.TOPIC).onChange(settings.defaultGameType)
                             }
                         }
+                }
+                //defaultGameDirectories
+                row {
+                    label(PlsBundle.message("settings.general.defaultGameDirectories")).widthGroup("general")
+                        .applyToComponent {
+                            toolTipText = PlsBundle.message("settings.general.defaultGameDirectories.tooltip")
+                        }
+                    val defaultList = settings.defaultGameDirectories.toMutableEntryList()
+                    var list = defaultList.toMutableList()
+                    val action = { _: ActionEvent ->
+                        val dialog = ParadoxGameDirectoriesDialog(list)
+                        if(dialog.showAndGet()) list = dialog.resultList
+                    }
+                    link(PlsBundle.message("settings.general.configureDefaultGameDirectories"), action)
+                        .onApply { settings.defaultGameDirectories = list.toMutableMap() }
+                        .onReset { list = defaultList }
+                        .onIsModified { list != defaultList }
                 }
                 //preferredLocale
                 row {
@@ -286,13 +304,13 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     
                     val defaultList = settings.hierarchy.definitionTypeBindingsInCallHierarchy.toMutableEntryList()
                     var list = defaultList.toMutableList()
-                    link(PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings")) {
+                    val action = { _: ActionEvent ->
                         val dialog = ParadoxDefinitionTypeBindingsInCallHierarchyDialog(list)
-                        if(dialog.showAndGet()) {
-                            list = dialog.resultList
-                        }
-                    }.enabledIf(cbCell.selected)
-                        .onApply { list.let { settings.hierarchy.definitionTypeBindingsInCallHierarchy = it.toMutableMap() } }
+                        if(dialog.showAndGet()) list = dialog.resultList
+                    }
+                    link(PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings"), action)
+                        .enabledIf(cbCell.selected)
+                        .onApply { settings.hierarchy.definitionTypeBindingsInCallHierarchy = list.toMutableMap() }
                         .onReset { list = defaultList }
                         .onIsModified { list != defaultList }
                 }
@@ -330,6 +348,29 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.others::showLocalisationFloatingToolbar)
                 }
             }
+        }
+    }
+}
+
+class ParadoxGameDirectoriesDialog(
+    val list: MutableList<Entry<String, String>>
+): DialogWrapper(null, null, false, IdeModalityType.IDE) {
+    val resultList = list.toMutableList()
+    
+    init {
+        title = PlsBundle.message("settings.general.configureDefaultGameDirectories.title")
+        init()
+    }
+    
+    override fun createCenterPanel(): JComponent {
+        return panel {
+            row {
+                val keyName = PlsBundle.message("settings.general.configureDefaultGameDirectories.key")
+                val valueName = PlsBundle.message("settings.general.configureDefaultGameDirectories.value")
+                cell(EntryListTableModel.createStringMapPanel(resultList, keyName, valueName) {
+                    it.disableAddAction().disableRemoveAction().disableUpDownActions()
+                }).align(Align.FILL)
+            }.resizableRow()
         }
     }
 }

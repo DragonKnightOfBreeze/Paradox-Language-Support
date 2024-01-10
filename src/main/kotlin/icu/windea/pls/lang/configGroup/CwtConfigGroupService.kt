@@ -120,7 +120,7 @@ class CwtConfigGroupService(
             settings.gameDirectory?.let { rootFilePaths.add(it) }
         }
         getProfilesSettings().modDescriptorSettings.values.forEach f@{ settings ->
-            val gameType = settings.inferredGameType ?: settings.finalGameType
+            val gameType = settings.finalGameType
             if(gameType !in gameTypes) return@f
             settings.modDirectory?.let { rootFilePaths.add(it) }
         }
