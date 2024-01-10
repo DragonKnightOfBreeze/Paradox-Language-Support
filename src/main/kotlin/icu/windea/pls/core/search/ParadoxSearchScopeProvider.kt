@@ -7,6 +7,7 @@ import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.scope.*
+import icu.windea.pls.core.settings.*
 import icu.windea.pls.model.*
 
 /**
@@ -40,7 +41,7 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
                 val settings = getProfilesSettings().modSettings.get(rootFile.path)
                 if(settings == null) return emptyList()
                 val modDirectory = rootFile
-                val gameDirectory = settings.gameDirectory?.toVirtualFile(false)
+                val gameDirectory = settings.finalGameDirectory?.toVirtualFile(false)
                 val modDependencyDirectories = ParadoxSearchScope.getDependencyDirectories(settings, modDirectory)
                 val result = mutableListOf<SearchScope>()
                 result.add(ParadoxModSearchScope(project, contextFile, modDirectory))

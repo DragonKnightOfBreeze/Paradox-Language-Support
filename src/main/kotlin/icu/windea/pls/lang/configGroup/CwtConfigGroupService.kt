@@ -11,6 +11,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import java.util.concurrent.*

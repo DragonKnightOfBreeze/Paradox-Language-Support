@@ -47,7 +47,7 @@ sealed class ParadoxSearchScope(
                 is ParadoxModRootInfo -> {
                     val modDirectory = rootInfo.rootFile
                     val settings = getProfilesSettings().modSettings.get(modDirectory.path)
-                    val gameDirectory = settings?.gameDirectory?.toVirtualFile(false)
+                    val gameDirectory = settings?.finalGameDirectory?.toVirtualFile(false)
                     val dependencyDirectories = getDependencyDirectories(settings, modDirectory)
                     return ParadoxModWithDependenciesSearchScope(project, contextFile, modDirectory, gameDirectory, dependencyDirectories)
                 }

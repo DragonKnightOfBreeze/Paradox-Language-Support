@@ -19,12 +19,13 @@ class ParadoxModSettingsDialog(
     val project: Project,
     val settings: ParadoxModSettingsState
 ) : DialogWrapper(project, true) {
-    val oldGameType = settings.gameType ?: getSettings().defaultGameType
+    val oldGameType = settings.finalGameType
+    val oldGameDirectory = settings.finalGameDirectory
     
     val graph = PropertyGraph()
-    val gameTypeProperty = graph.property(settings.gameType ?: getSettings().defaultGameType)
+    val gameTypeProperty = graph.property(oldGameType)
     val gameVersionProperty = graph.property(settings.gameVersion.orEmpty())
-    val gameDirectoryProperty = graph.property(settings.gameDirectory.orEmpty())
+    val gameDirectoryProperty = graph.property(oldGameDirectory.orEmpty())
     
     init {
         gameVersionProperty.dependsOn(gameDirectoryProperty) { doGetGameVersionFromGameDirectory().orEmpty() }

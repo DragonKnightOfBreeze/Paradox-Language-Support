@@ -46,7 +46,9 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent {
                             toolTipText = PlsBundle.message("settings.general.defaultGameDirectories.tooltip")
                         }
-                    val defaultList = settings.defaultGameDirectories.toMutableEntryList()
+                    val oldDefaultGameDirectories = settings.defaultGameDirectories
+                    ParadoxGameType.values.forEach { oldDefaultGameDirectories.putIfAbsent(it.id, "") }
+                    val defaultList = oldDefaultGameDirectories.toMutableEntryList()
                     var list = defaultList.toMutableList()
                     val action = { _: ActionEvent ->
                         val dialog = ParadoxGameDirectoriesDialog(list)
