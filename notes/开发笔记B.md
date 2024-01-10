@@ -81,8 +81,8 @@ alias[trigger:exists] = scope[any]
 
 ```
 # scopes.cwt
-"Landed title" = {		
-    aliases = { landed_title "landed title" }		
+"Landed title" = {        
+    aliases = { landed_title "landed title" }        
     data_type_name = "Title"
 }
 ```
@@ -172,18 +172,18 @@ faith = {
 
 ```
 alias[effect:<scripted_effect>] = {
-	## cardinality = 1..inf
-	$parameter = scalar
-	## cardinality = 1..inf
-	$parameter = scope_field
+    ## cardinality = 1..inf
+    $parameter = scalar
+    ## cardinality = 1..inf
+    $parameter = scope_field
 }
 
 ## scope = any
 alias[trigger:<scripted_trigger>] = {
-	## cardinality = 1..inf
-	$parameter = scalar
-	## cardinality = 1..inf
-	$parameter = scope_field
+    ## cardinality = 1..inf
+    $parameter = scalar
+    ## cardinality = 1..inf
+    $parameter = scope_field
 }
 ```
 
@@ -227,10 +227,10 @@ types = {
 
 ```cwt
 enums = {
-	complex_enum[pop_faction_parameters] = {
-		# ...
-		search_scope_type = definition # 查询作用域，例如，这里要求只能引用同一定义声明下的复杂枚举值，目前支持：definition
-	}
+    complex_enum[pop_faction_parameters] = {
+        # ...
+        search_scope_type = definition # 查询作用域，例如，这里要求只能引用同一定义声明下的复杂枚举值，目前支持：definition
+    }
 }
 ```
 

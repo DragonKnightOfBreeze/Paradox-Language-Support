@@ -109,19 +109,19 @@ Given this enum and the rule `class = enum[shipsize_class]`, any of the followin
 If you need to generate an enum dynamically from mod files, you can use a `complex_enum`.
 
 ```
-	complex_enum[event_chain_counter] = {
-		path = "game/common/event_chains"
-		name = {
-			counter = {
-				enum_name = {
+    complex_enum[event_chain_counter] = {
+        path = "game/common/event_chains"
+        name = {
+            counter = {
+                enum_name = {
 
-				}
-			}
+                }
+            }
                         scalar = {
                                 scalar = enum_name
                         }
-		}
-	}
+        }
+    }
 ```
 
 `path` is the folder in which files are processed for this enum. `name` contains a structure that will be mapped onto each top level entity in the files given. The structure will be followed until a key is found in the place of `enum_name`. This key will then be added to the enum. `scalar` will match anything, otherwise the key needs to match. `start_from_root` makes the complex enum start from the top of the file instead of from the first level.
@@ -385,8 +385,8 @@ In CK3, Imperator and Stellaris the game generated "script docs" are used where 
 This file contains a block called `scopes` which contains entries such as:
 
 ```
-"Landed title" = {		
-    aliases = { landed_title "landed title" }		
+"Landed title" = {        
+    aliases = { landed_title "landed title" }        
     data_type_name = "Title"
 }
 ```
