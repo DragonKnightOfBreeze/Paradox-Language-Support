@@ -72,9 +72,9 @@ inline operator fun <T, THIS> KeyDelegates.WithFactory<T, THIS>.provideDelegate(
 inline operator fun <T, THIS> KeyDelegates.NamedWithFactory<T, THIS>.provideDelegate(thisRef: Any?, property: KProperty<*>) = getKey()
 
 inline operator fun <T, THIS: UserDataHolder> KeyWithFactory<T, THIS>.getValue(thisRef: THIS, property: KProperty<*>): T {
-    return thisRef.getUserData(this) ?: factory(thisRef)
+    return thisRef.getUserData(this) ?: factory(thisRef).also { thisRef.putUserData(this, it) }
 }
 
 inline operator fun <T> KeyWithFactory<T, ProcessingContext>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T {
-    return thisRef.get(this) ?: factory(thisRef)
+    return thisRef.get(this) ?: factory(thisRef).also { thisRef.put(this, it) }
 }

@@ -217,16 +217,15 @@ object ParadoxParameterHandler {
     }
     
     /**
-     * 尝试推断得到参数的类型（基于唯一确定的对应键或值的CWT规则，或者其他更复杂的情况）。
+     * 尝试推断得到参数的类型（仅用于显示）。
      */
     fun getInferredType(parameterElement: ParadoxParameterElement): String? {
         val contextConfigs = getInferredContextConfigs(parameterElement)
         if(contextConfigs.isEmpty()) return null
-        if(contextConfigs.size > 1) return PlsBundle.message("complex") //multiple configs
-        val config = contextConfigs.single()
-        if(config !is CwtValueConfig) return PlsBundle.message("complex") //property config
-        if(config == CwtValueConfig.EmptyConfig) return null
-        return config.expression.expressionString
+        val configs = contextConfigs.singleOrNull()?.configs
+        if(configs.isNullOrEmpty()) return null
+        if(configs.any { it !is CwtValueConfig || it.isBlock }) return PlsBundle.message("complex")
+        return configs.mapTo(mutableSetOf()) { it.expression.expressionString }.joinToString(" | ")
     }
     
     /**

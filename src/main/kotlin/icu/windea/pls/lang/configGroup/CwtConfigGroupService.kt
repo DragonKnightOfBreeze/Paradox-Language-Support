@@ -66,12 +66,12 @@ class CwtConfigGroupService(
                     val end = System.currentTimeMillis()
                     logger.info("Refresh CWT config group '$gameTypeId' finished in ${end - start} ms.")
                 }
+                
+                //重新解析已打开的文件
+                ParadoxCoreHandler.reparseOpenedFiles()
             }
             
             override fun onSuccess() {
-                //重新解析已打开的文件
-                ParadoxCoreHandler.reparseOpenedFiles()
-                
                 val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
                     //重新解析文件（IDE之后会自动请求重新索引）
                     //TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件

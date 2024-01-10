@@ -1,8 +1,11 @@
 package icu.windea.pls.config.config
 
 import com.intellij.psi.*
+import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.model.*
 
 class CwtParameterConfig private constructor(
     override val pointer: SmartPsiElementPointer<out CwtMemberElement>,
@@ -17,10 +20,19 @@ class CwtParameterConfig private constructor(
      */
     fun getContextConfigs(): List<CwtMemberConfig<*>> {
         if(config !is CwtPropertyConfig) return emptyList()
-        return when(contextConfigsType) {
+        val r = when(contextConfigsType) {
             "multiple" -> config.configs.orEmpty()
             else -> config.valueConfig.toSingletonListOrEmpty()
         }
+        if(r.isEmpty()) return emptyList()
+        val containerConfig = CwtValueConfig.resolve(
+            pointer = emptyPointer(),
+            info = r.first().info,
+            value = PlsConstants.blockFolder,
+            valueTypeId = CwtType.Block.id,
+            configs = r
+        )
+        return listOf(containerConfig)
     }
     
     companion object Resolver {
