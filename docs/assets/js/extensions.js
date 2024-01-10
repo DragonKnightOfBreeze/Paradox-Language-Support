@@ -128,10 +128,10 @@ function resolveAnchor(html) {
 //解析markdown尾注，生成bootstrap4的tooltip
 function resolveFootNote(html) {
   const footNotes = {}
-  return html.replace(/^\[\^(\d+)]:\s*(.*)$/gm, (s, id, text) => {
+  return html.replace(/^\[\^([\w_]+)]:\s*(.*)$/gm, (s, id, text) => {
     footNotes[id] = text
     return ""
-  }).replace(/\[\^(\d+)](?!: )/g, (s, id) => {
+  }).replace(/\[\^([\w_]+)](?!: )/g, (s, id) => {
     return `<a href="javascript:void(0);" data-toggle="tooltip" title="${footNotes[id]}">[${id}]</a>`
   })
 }
