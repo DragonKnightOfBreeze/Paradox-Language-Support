@@ -15,13 +15,13 @@ Reference Links:
 
 ### Built-in config groups
 
-Their CWT config files are located in the `config/${gameType}`[^gameType] directory (which is in the plugin jar), and they will always be enabled.
+Their CWT config files are located in the `config/${gameType}`[^1] directory (which is in the plugin jar), and they will always be enabled.
 
 These config files are from plugin repository and config repositories of each game. Compare to the config files used by CWTools, there are several modifications and extensions. 
 
 ### Project local config groups
 
-Their CWT config files should be placed in the `.config/${gameType}`[^gameType] directory (which is in the project root directory), and they will be enabled after manually confirming to import.
+Their CWT config files should be placed in the `.config/${gameType}`[^1] directory (which is in the project root directory), and they will be enabled after manually confirming to import.
 
 If some changes are happened, the refresh button will be appeared in the context float toolbar in the upper right corner of the editor. Click it to confirm to import, so these custom config files will be enabled.
 
@@ -216,7 +216,7 @@ values = {
 
 ### Summary
 
-You can write your own customized config files in the `.config/${gameType}`[^gameType] directory (which is in the project root directory), and they will be enabled after manually confirming to import.
+You can write your own customized config files in the `.config/${gameType}`[^1] directory (which is in the project root directory), and they will be enabled after manually confirming to import.
 
 If some changes are happened, the refresh button will be appeared in the context float toolbar in the upper right corner of the editor. Click it to confirm to import, so these custom config files will be enabled.
 
@@ -226,4 +226,4 @@ And please note that if the changes in the rule files will result in the change 
 you may need to reindex the whole project (this may take several minutes), to make sure the plugin works properly,
 if in the situation that involves these changes.
 
-[^gameType]: Allowed values for `gameType`: `stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`
+[^1]: Allowed values for `gameType`: `stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`
