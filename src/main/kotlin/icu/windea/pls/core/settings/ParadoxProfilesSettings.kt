@@ -69,9 +69,6 @@ class ParadoxModDescriptorSettingsState : BaseState() {
     var source: ParadoxModSource by enum(ParadoxModSource.Local)
     var modDirectory: String? by string()
     
-    val finalGameType: ParadoxGameType
-        get() =  inferredGameType ?: gameType ?: getSettings().defaultGameType
-    
     val qualifiedName: String
         get() = buildString {
             append(gameType.orDefault().title).append(" Mod: ")
@@ -170,3 +167,12 @@ class ParadoxModDependencySettingsState : BaseState(), ParadoxModDescriptorAware
     
     var enabled: Boolean by property(true)
 }
+
+val ParadoxModDescriptorSettingsState.finalGameType: ParadoxGameType
+    get() =  inferredGameType ?: gameType ?: getSettings().defaultGameType
+
+val ParadoxModDescriptorAwareSettingsState.finalGameType: ParadoxGameType
+    get() =  inferredGameType ?: gameType ?: getSettings().defaultGameType
+
+val ParadoxModSettingsState.finalGameDirectory: String?
+    get() = gameDirectory ?: getSettings().defaultGameDirectories[finalGameType.id]

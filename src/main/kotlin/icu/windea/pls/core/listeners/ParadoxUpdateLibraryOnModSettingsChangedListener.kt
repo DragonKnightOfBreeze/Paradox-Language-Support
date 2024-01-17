@@ -3,7 +3,6 @@ package icu.windea.pls.core.listeners
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
-import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
 
@@ -14,21 +13,20 @@ import icu.windea.pls.core.settings.*
  * @see ParadoxLibraryProvider
  */
 class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListener {
-    override fun onAdd(modSettings: ParadoxModSettingsState) {
-        val modDirectory = modSettings.modDirectory ?: return
-        val modFile = modDirectory.toVirtualFile(false) ?: return
-        doUpdateLibrary(modFile)
-    }
-    
     //目前不考虑onRemove的情况
     
-    override fun onChange(modSettings: ParadoxModSettingsState) {
-        val modDirectory = modSettings.modDirectory ?: return
-        val modFile = modDirectory.toVirtualFile(false) ?: return
-        doUpdateLibrary(modFile)
+    override fun onAdd(modSettings: ParadoxModSettingsState) {
+        doUpdateLibrary(modSettings.modDirectory)
     }
     
-    private fun doUpdateLibrary(root: VirtualFile) {
+    override fun onChange(modSettings: ParadoxModSettingsState) {
+        doUpdateLibrary(modSettings.modDirectory)
+    }
+    
+    //org.jetbrains.kotlin.idea.core.script.ucache.ScriptClassRootsUpdater.doUpdate
+    
+    private fun doUpdateLibrary(directory: String?) {
+        val root = directory?.orNull()?.toVirtualFile(false) ?: return
         for(project in ProjectManager.getInstance().openProjects) {
             if(project.isDisposed) continue
             val isInProject = runReadAction { ProjectFileIndex.getInstance(project).isInContent(root) }
@@ -38,4 +36,3 @@ class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListe
         }
     }
 }
-

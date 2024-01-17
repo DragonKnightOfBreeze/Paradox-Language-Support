@@ -21,12 +21,12 @@ object CwtConfigResolver {
         val properties = mutableListOf<CwtPropertyConfig>()
         val values = mutableListOf<CwtValueConfig>()
         val fileConfig = CwtFileConfig(file.createPointer(), info, properties, values, file.name)
-        rootBlock?.processChild {
+        rootBlock?.processChild { e ->
             when {
-                it is CwtProperty -> resolveProperty(it, file, fileConfig)?.addTo(properties).let { true }
-                it is CwtValue -> resolveValue(it, file, fileConfig).addTo(values).let { true }
-                else -> true
+                e is CwtProperty -> resolveProperty(e, file, fileConfig)?.also { properties.add(it) }
+                e is CwtValue -> resolveValue(e, file, fileConfig).also { values.add(it) }
             }
+            true
         }
         return fileConfig
     }

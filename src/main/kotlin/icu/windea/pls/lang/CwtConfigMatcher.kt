@@ -92,7 +92,7 @@ object CwtConfigMatcher {
                 //java.lang.AssertionError: Reentrant indexing
                 //com.intellij.openapi.project.IndexNotReadyException
                 
-                return disableLogger { 
+                return disableLogger {
                     runCatchingCancelable {
                         @Suppress("UNCHECKED_CAST")
                         (value as () -> Boolean)()
@@ -270,10 +270,13 @@ object CwtConfigMatcher {
 }
 
 //rootFile -> cacheKey -> configMatchResult
-//depends on config group and (definition, localisation, etc.) indices
+//depends on config group and indices
 private val CwtConfigGroup.configMatchResultCache by createKeyDelegate(CwtConfigContext.Keys) {
-    createCachedValue {
+    createCachedValue(project) {
+        val trackerProvider = ParadoxModificationTrackerProvider.getInstance(project)
+        val tracker1 = trackerProvider.ScriptFileTracker
+        val tracker2 = trackerProvider.LocalisationFileTracker
         NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, Result>() }
-            .withDependencyItems(PsiModificationTracker.MODIFICATION_COUNT)
+            .withDependencyItems(tracker1, tracker2)
     }
 }

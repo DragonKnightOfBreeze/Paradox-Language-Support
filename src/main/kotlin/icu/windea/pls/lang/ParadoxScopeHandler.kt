@@ -419,6 +419,15 @@ object ParadoxScopeHandler {
         return resolved
     }
     
+    fun getSupportedScopes(categoryConfigMap: Map<String, CwtModifierCategoryConfig>): Set<String> {
+        val categoryConfigs = categoryConfigMap.values
+        if(categoryConfigs.any { it.supportedScopes == anyScopeIdSet }) {
+            return anyScopeIdSet
+        } else {
+            return categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
+        }
+    }
+    
     fun buildScopeDoc(scopeId: String, gameType: ParadoxGameType?, contextElement: PsiElement, builder: StringBuilder) {
         with(builder) {
             when {
@@ -442,6 +451,24 @@ object ParadoxScopeHandler {
                 }
             }
         }
+    }
+    
+    fun mergeScopeId(scopeId: String?, otherScopeId: String?): String? {
+        if(scopeId == otherScopeId) return scopeId ?: unknownScopeId
+        if(scopeId == anyScopeId || otherScopeId == anyScopeId) return anyScopeId
+        if(scopeId == unknownScopeId || otherScopeId == unknownScopeId) return unknownScopeId
+        if(scopeId == null) return otherScopeId
+        if(otherScopeId == null) return scopeId
+        return null
+    }
+    
+    fun mergeScope(scope: ParadoxScope?, otherScope: ParadoxScope?): ParadoxScope? {
+        if(scope == otherScope) return scope ?: ParadoxScope.UnknownScope
+        if(scope == ParadoxScope.AnyScope || otherScope == ParadoxScope.AnyScope) return ParadoxScope.AnyScope
+        if(scope == ParadoxScope.UnknownScope || otherScope == ParadoxScope.UnknownScope) return ParadoxScope.UnknownScope
+        if(scope == null) return otherScope
+        if(otherScope == null) return scope
+        return null
     }
     
     fun mergeScopeContext(scopeContext: ParadoxScopeContext?, otherScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
@@ -494,23 +521,5 @@ object ParadoxScopeHandler {
         if(rootScope == null || rootScope == unknownScopeId) {
             scopeMap["root"] = anyScopeId
         }
-    }
-    
-    fun mergeScopeId(scopeId: String?, otherScopeId: String?): String? {
-        if(scopeId == otherScopeId) return scopeId ?: unknownScopeId
-        if(scopeId == anyScopeId || otherScopeId == anyScopeId) return anyScopeId
-        if(scopeId == unknownScopeId || otherScopeId == unknownScopeId) return unknownScopeId
-        if(scopeId == null) return otherScopeId
-        if(otherScopeId == null) return scopeId
-        return null
-    }
-    
-    fun mergeScope(scope: ParadoxScope?, otherScope: ParadoxScope?): ParadoxScope? {
-        if(scope == otherScope) return scope ?: ParadoxScope.UnknownScope
-        if(scope == ParadoxScope.AnyScope || otherScope == ParadoxScope.AnyScope) return ParadoxScope.AnyScope
-        if(scope == ParadoxScope.UnknownScope || otherScope == ParadoxScope.UnknownScope) return ParadoxScope.UnknownScope
-        if(scope == null) return otherScope
-        if(otherScope == null) return scope
-        return null
     }
 }

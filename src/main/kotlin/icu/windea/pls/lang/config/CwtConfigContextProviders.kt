@@ -2,16 +2,12 @@ package icu.windea.pls.lang.config
 
 import com.intellij.lang.injection.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
@@ -36,10 +32,10 @@ var CwtConfigContext.parameterValueQuoted: Boolean? by createKeyDelegate(CwtConf
  */
 class CwtBaseConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
+        ProgressManager.checkCanceled()
         val vFile = selectFile(file) ?: return null
         if(ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
         
-        ProgressManager.checkCanceled()
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         val definition = element.findParentDefinition()
@@ -91,13 +87,13 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
     //注意：内联脚本调用可以在定义声明之外
     
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
+        ProgressManager.checkCanceled()
         val vFile = selectFile(file) ?: return null
         
         //要求当前位置相对于文件的元素路径中包含子路径"inline_script"
         val rootIndex = elementPath.indexOfFirst { it.subPath.equals(ParadoxInlineScriptHandler.inlineScriptKey, true) }
         if(rootIndex == -1) return null
         
-        ProgressManager.checkCanceled()
         val gameType = selectGameType(file) ?: return null
         val fileInfo = vFile.fileInfo //注意这里的fileInfo可能为null，例如，在内联脚本参数的多行参数值中
         val elementPathFromRoot = ParadoxElementPath.resolve(elementPath.rawSubPaths.let { it.subList(rootIndex + 1, it.size) })
@@ -141,7 +137,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
     //然后再得到当前位置的CWT规则上下文
     
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
-        if(!getSettings().inference.inlineScriptConfig) return null
+        ProgressManager.checkCanceled()
         
         val vFile = selectFile(file) ?: return null
         if(ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
@@ -149,7 +145,6 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         val inlineScriptExpression = ParadoxInlineScriptHandler.getInlineScriptExpression(vFile)
         if(inlineScriptExpression == null) return null
         
-        ProgressManager.checkCanceled()
         val gameType = selectGameType(file) ?: return null
         val fileInfo = vFile.fileInfo ?: return null
         val elementPathFromRoot = elementPath
@@ -175,10 +170,10 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
     //获取CWT规则后才能确定是否存在冲突以及是否存在递归
     
     override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+        ProgressManager.checkCanceled()
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
         val contextElement = context.element ?: return null
         
-        ProgressManager.checkCanceled()
         if(elementPathFromRoot.isNotEmpty()) {
             val rootConfigContext = context.inlineScriptRootConfigContext ?: return null
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
@@ -187,37 +182,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         }
         
         val inlineScriptExpression = context.inlineScriptExpression ?: return null
-        
-        // infer & merge
-        val result = Ref.create<List<CwtMemberConfig<*>>>()
-        context.inlineScriptHasConflict = false
-        context.inlineScriptHasRecursion = false
-        withRecursionGuard("icu.windea.pls.lang.config.CwtInlineScriptConfigContextProvider.getConfigsForConfigContext") {
-            withCheckRecursion(inlineScriptExpression) {
-                val project = context.configGroup.project
-                val selector = inlineScriptSelector(project, contextElement)
-                ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQueryAsync p@{ info ->
-                    ProgressManager.checkCanceled()
-                    val file = info.virtualFile?.toPsiFile(project) ?: return@p true
-                    val e = file.findElementAt(info.elementOffset) ?: return@p true
-                    val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true
-                    if(!p.name.equals(ParadoxInlineScriptHandler.inlineScriptKey, true)) return@p true
-                    val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p true
-                    val usageConfigContext = CwtConfigHandler.getConfigContext(memberElement) ?: return@p true
-                    val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
-                    // merge
-                    result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
-                        if(it) return@also
-                        context.inlineScriptHasConflict = true
-                        result.set(null)
-                    }
-                }
-            } ?: run {
-                context.inlineScriptHasRecursion = true
-                result.set(null)
-            }
-        }
-        return result.get()
+        return ParadoxInlineScriptHandler.getInferredContextConfigs(contextElement, inlineScriptExpression, context, matchOptions)
     }
     
     //skip MissingExpressionInspection and TooManyExpressionInspection at root level
@@ -247,7 +212,6 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
  */
 class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
-        if(!getSettings().inference.parameterConfig) return null
         ProgressManager.checkCanceled()
         
         //兼容适用语言注入功能的 VirtualFileWindow
@@ -262,7 +226,6 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         val injectionInfo = getInjectionInfo(file0, host) 
         if(injectionInfo == null) return null
         
-        ProgressManager.checkCanceled()
         val gameType = selectGameType(file) ?: return null
         val parameterElement = injectionInfo.parameterElement ?: return null
         val elementPathFromRoot = elementPath
@@ -308,8 +271,8 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
     override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
-        
         val contextElement = context.element ?: return null
+        
         if(elementPathFromRoot.isNotEmpty()) {
             val rootConfigContext = context.parameterValueRootConfigContext ?: return null
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
@@ -318,7 +281,6 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         }
         
         val parameterElement = context.parameterElement ?: return null
-        
         return ParadoxParameterHandler.getInferredContextConfigs(parameterElement)
     }
     

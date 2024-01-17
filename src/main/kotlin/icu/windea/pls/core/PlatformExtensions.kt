@@ -266,30 +266,32 @@ inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, nullValue: T, action
     return newValue
 }
 
-inline fun <T> UserDataHolder.putUserDataIfAbsent(key: Key<T>, value: T) {
-    if(getUserData(key) == null) putUserData(key, value)
+fun <T, THIS: UserDataHolder> THIS.getUserDataOrDefault(key: Key<T>): T? {
+    val value = this.getUserData(key)
+    return when {
+        value != null -> value
+        key is KeyWithDefaultValue -> key.defaultValue.also { putUserData(key, it) }
+        key is KeyWithFactory<*, *> -> {
+            val key0 = key.cast<KeyWithFactory<T, THIS>>()
+            key0.factory(this).also { putUserData(key0, it) }
+        }
+        else -> null
+    }
 }
 
 fun <T> ProcessingContext.getOrDefault(key: Key<T>): T? {
     val value = this.get(key)
-    if(value == null && key is KeyWithDefaultValue) {
-        val defaultValue = key.defaultValue
-        this.put(key, defaultValue)
-        return defaultValue
+    return when {
+        value != null -> value
+        key is KeyWithDefaultValue -> key.defaultValue.also { put(key, it) }
+        else -> null
     }
-    return value
 }
 
-inline operator fun <T> UserDataHolder.get(key: Key<T>) = this.getUserData(key)
-inline operator fun <T> UserDataHolder.get(key: KeyWithDefaultValue<T>) = this.getUserData(key)!!
-inline operator fun <T> UserDataHolder.set(key: KeyWithDefaultValue<T>, value: T?) = this.putUserData(key, value)
-
-inline operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getUserData(this)
-inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T = thisRef.getUserData(this)!!
+inline operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getUserDataOrDefault(this)
 inline operator fun <T> Key<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T?) = thisRef.putUserData(this, value)
 
 inline operator fun <T> Key<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T? = thisRef.getOrDefault(this)
-inline operator fun <T> KeyWithDefaultValue<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T = thisRef.getOrDefault(this)!!
 inline operator fun <T> Key<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T?) = thisRef.put(this, value)
 
 inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)

@@ -4,12 +4,12 @@ import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.cwt.psi.*
 
-class CwtLocalisationLocaleConfig(
-	override val pointer: SmartPsiElementPointer<out CwtProperty>,
-	override val info: CwtConfigGroupInfo,
-	val id: String,
-	val description: String,
-	val codes: List<String>
+class CwtLocalisationLocaleConfig private constructor(
+    override val pointer: SmartPsiElementPointer<out CwtProperty>,
+    override val info: CwtConfigGroupInfo,
+    val id: String,
+    val description: String,
+    val codes: List<String>
 ) : CwtConfig<CwtProperty> {
     val icon get() = PlsIcons.LocalisationNodes.Locale
     
@@ -28,5 +28,14 @@ class CwtLocalisationLocaleConfig(
     
     override fun toString(): String {
         return description.ifEmpty { id }
+    }
+    
+    companion object {
+        fun resolve(config: CwtPropertyConfig): CwtLocalisationLocaleConfig {
+            val id = config.key
+            val description = config.documentation.orEmpty()
+            val codes = config.properties?.find { p -> p.key == "codes" }?.values?.mapNotNull { v -> v.stringValue }.orEmpty()
+            return CwtLocalisationLocaleConfig(config.pointer, config.info, id, description, codes)
+        }
     }
 }

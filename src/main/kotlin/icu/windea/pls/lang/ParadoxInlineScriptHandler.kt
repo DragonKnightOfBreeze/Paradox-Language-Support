@@ -3,18 +3,22 @@ package icu.windea.pls.lang
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.CwtConfigMatcher.Options
+import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.psi.*
@@ -133,5 +137,57 @@ object ParadoxInlineScriptHandler {
         val expressionElement0 = contextReferenceElement.findByPath(expressionLocation, ParadoxScriptValue::class.java) ?: return null
         if(expressionElement0 != expressionElement) return null
         return contextReferenceElement
+    }
+    
+    fun getInferredContextConfigs(contextElement: ParadoxScriptMemberElement, inlineScriptExpression: String, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
+        if(!getSettings().inference.inlineScriptConfig) return emptyList()
+        
+        return withRecursionGuard("icu.windea.pls.lang.ParadoxInlineScriptHandler.getInferredContextConfigs") {
+            withCheckRecursion(inlineScriptExpression) {
+                context.inlineScriptHasConflict = false
+                context.inlineScriptHasRecursion = false
+                doGetInferredContextConfigs(contextElement, context, inlineScriptExpression, matchOptions)
+            }
+        } ?: run {
+            context.inlineScriptHasRecursion = true
+            emptyList()
+        }
+    }
+    
+    private fun doGetInferredContextConfigs(contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, inlineScriptExpression: String, matchOptions: Int): List<CwtMemberConfig<*>> {
+        val fromConfig = doGetInferredContextConfigsFromConfig(contextElement, context, inlineScriptExpression, matchOptions)
+        if(fromConfig.isNotEmpty()) return fromConfig
+        
+        return doGetInferredContextConfigsFromUsages(contextElement, context, inlineScriptExpression, matchOptions)
+    }
+    
+    private fun doGetInferredContextConfigsFromConfig(contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, inlineScriptExpression: String, matchOptions: Int): List<CwtMemberConfig<*>> {
+        val configGroup = context.configGroup
+        val config = configGroup.inlineScripts.getByTemplate(inlineScriptExpression, contextElement, configGroup, matchOptions) ?: return emptyList()
+        return config.getContextConfigs()
+    }
+    
+    private fun doGetInferredContextConfigsFromUsages(contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, inlineScriptExpression: String, matchOptions: Int): List<CwtMemberConfig<*>> {
+        // infer & merge
+        val result = Ref.create<List<CwtMemberConfig<*>>>()
+        val project = context.configGroup.project
+        val selector = inlineScriptSelector(project, contextElement)
+        ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQueryAsync p@{ info ->
+            ProgressManager.checkCanceled()
+            val file = info.virtualFile?.toPsiFile(project) ?: return@p true
+            val e = file.findElementAt(info.elementOffset) ?: return@p true
+            val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true
+            if(!p.name.equals(inlineScriptKey, true)) return@p true
+            val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p true
+            val usageConfigContext = CwtConfigHandler.getConfigContext(memberElement) ?: return@p true
+            val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
+            // merge
+            result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
+                if(it) return@also
+                context.inlineScriptHasConflict = true
+                result.set(null)
+            }
+        }
+        return result.get().orEmpty()
     }
 }

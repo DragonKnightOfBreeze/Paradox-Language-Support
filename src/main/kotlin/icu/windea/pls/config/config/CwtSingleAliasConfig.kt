@@ -5,7 +5,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 
-class CwtSingleAliasConfig(
+class CwtSingleAliasConfig private constructor(
     override val pointer: SmartPsiElementPointer<out CwtProperty>,
     override val info: CwtConfigGroupInfo,
     override val config: CwtPropertyConfig,
@@ -26,4 +26,9 @@ class CwtSingleAliasConfig(
         return inlined
     }
     
+    companion object Resolver {
+        fun resolve(config: CwtPropertyConfig, name: String): CwtSingleAliasConfig {
+            return CwtSingleAliasConfig(config.pointer, config.info, config, name)
+        }
+    }
 }

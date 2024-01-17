@@ -152,6 +152,6 @@ class ParadoxDefinitionInfo(
         return Objects.hash(name, typesText, gameType)
     }
     
-    object Keys: KeyHolder
+    object Keys: KeyRegistry()
 }
 

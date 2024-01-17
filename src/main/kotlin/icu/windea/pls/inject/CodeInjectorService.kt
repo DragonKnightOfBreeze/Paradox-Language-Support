@@ -5,7 +5,6 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.util.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import javassist.*
 import java.lang.reflect.*
@@ -15,7 +14,7 @@ class CodeInjectorService : UserDataHolderBase() {
     /**
      * 用于在IDE启动时应用代码注入器。
      */
-    class Listener: AppLifecycleListener {
+    class Listener : AppLifecycleListener {
         override fun appFrameCreated(commandLineArgs: MutableList<String>) {
             service<CodeInjectorService>().init()
         }
@@ -39,7 +38,9 @@ class CodeInjectorService : UserDataHolderBase() {
     
     fun init() {
         val application = ApplicationManager.getApplication()
-        application.putUserDataIfAbsent(codeInjectorServiceKey, this)
+        if(application.getUserData(codeInjectorServiceKey) == null) {
+            application.putUserData(codeInjectorServiceKey, this)
+        }
         
         val classPool = getClassPool()
         putUserData(classPoolKey, classPool)

@@ -1,13 +1,11 @@
 package icu.windea.pls.core.listeners.vfs
 
 import com.intellij.openapi.application.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
 
@@ -156,14 +154,6 @@ class ParadoxCoreFileListener : AsyncFileListener {
     }
     
     private fun refreshInlineScripts() {
-        //要求重新解析内联脚本文件
-        ProjectManager.getInstance().openProjects.forEach { project ->
-            ParadoxModificationTrackerProvider.getInstance(project).ScriptFileTracker.incModificationCount()
-            ParadoxModificationTrackerProvider.getInstance(project).InlineScriptsTracker.incModificationCount()
-        }
-        //刷新内联脚本文件的内嵌提示
-        ParadoxCoreHandler.refreshInlayHints { file, _ ->
-            ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null
-        }
+        ParadoxCoreHandler.refreshInlineScriptInlayHints()
     }
 }

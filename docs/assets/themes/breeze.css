@@ -3,7 +3,7 @@
   --navbar-height: 60px;
   --github-corner-size: var(--navbar-height);
   --sidebar-width: 320px;
-  --tooltip-width: 40em;
+  --tooltip-width: 80em;
 }
 * {
   -webkit-font-smoothing: antialiased;
@@ -316,7 +316,7 @@ body.sticky .sidebar, body.sticky .sidebar-toggle {
 }
 .markdown-section {
   margin: 0 auto;
-  max-width: 80%;
+  max-width: 75%;
   padding: 30px 15px 40px 15px;
   position: relative;
 }
@@ -717,6 +717,7 @@ section.cover blockquote > p > a:hover {
   color: #7f8c8d;
 }
 .markdown-section code {
+  color: #3eaf7c;
   background-color: #f9f9f9;
   border-radius: 3px;
   font-family: Consolas monospace;
@@ -798,6 +799,14 @@ code .token {
   left: auto;
 }
 
+.markdown-section .foot-note {
+  vertical-align: super;
+  font-size: smaller;
+}
+.markdown-section .foot-note-content {
+  display: none;
+}
+
 /*表格标题居中显示且强制不换行*/
 thead tr td {
   text-align: center;
@@ -872,6 +881,10 @@ thead tr td {
 }
 
 /*增大tooltip的宽度*/
-.tooltip {
-  width: var(--tooltip-width);
+.tooltip-inner {
+  max-width: var(--tooltip-width) !important;
+}
+
+.tooltip-inner code {
+  color: #3eaf7c !important;
 }

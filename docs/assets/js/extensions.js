@@ -127,16 +127,21 @@ function resolveAnchor(html) {
 
 //解析markdown尾注，生成bootstrap4的tooltip
 function resolveFootNote(html) {
-  const footNotes = {}
-  return html.replace(/^\[\^(\d+)]:\s*(.*)$/gm, (s, id, text) => {
-    footNotes[id] = text
-    return ""
-  }).replace(/\[\^(\d+)](?!: )/g, (s, id) => {
-    return `<a href="javascript:void(0);" data-toggle="tooltip" title="${footNotes[id]}">[${id}]</a>`
+  return html.replace(/^\[\^([\w_]+)]:\s*(.*)$/gm, (s, id, text) => {
+    return `<span class="foot-note-content" data-foot-note-id="${id}">${text}</span>`
+  }).replace(/\[\^([\w_]+)](?!: )/g, (s, id) => {
+    return `<a href="javascript:void(0);" class="foot-note" data-foot-note-id="${id}" data-toggle="tooltip">${id}</a>`
   })
 }
 
 //绑定footNote对应的tooltip
 function bindFootNote() {
-  $('[data-toggle="tooltip"]').tooltip()
+  $('.foot-note[data-toggle="tooltip"]').each(function() {
+    const _this = $(this)
+    const id = _this.attr("data-foot-note-id")
+    _this.attr("title", $(`.foot-note-content[data-foot-note-id="${id}"]`).html());
+    _this.attr("data-toggle", "tooltip");
+    _this.attr("data-placement", "top");
+    _this.attr("data-html", "true");
+  }).tooltip()
 }

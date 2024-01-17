@@ -19,15 +19,18 @@ class ParadoxModSettingsDialog(
     val project: Project,
     val settings: ParadoxModSettingsState
 ) : DialogWrapper(project, true) {
-    val oldGameType = settings.gameType ?: getSettings().defaultGameType
+    val oldGameType = settings.finalGameType
+    
+    val defaultGameVersion get() = getGameVersionFromGameDirectory(defaultGameDirectory)
+    val defaultGameDirectory get() = getSettings().defaultGameDirectories[oldGameType.id]
     
     val graph = PropertyGraph()
-    val gameTypeProperty = graph.property(settings.gameType ?: getSettings().defaultGameType)
+    val gameTypeProperty = graph.property(oldGameType)
     val gameVersionProperty = graph.property(settings.gameVersion.orEmpty())
     val gameDirectoryProperty = graph.property(settings.gameDirectory.orEmpty())
     
     init {
-        gameVersionProperty.dependsOn(gameDirectoryProperty) { doGetGameVersionFromGameDirectory().orEmpty() }
+        gameVersionProperty.dependsOn(gameDirectoryProperty) { getGameVersionFromGameDirectory(gameDirectory).orEmpty() }
     }
     
     var gameType by gameTypeProperty
@@ -78,6 +81,7 @@ class ParadoxModSettingsDialog(
                 //gameVersion
                 label(PlsBundle.message("mod.settings.gameVersion")).widthGroup("right")
                 textField()
+                    .applyToComponent { defaultGameVersion?.orNull()?.let { emptyText.setText(it) } }
                     .bindText(gameVersionProperty)
                     .columns(18)
                     .enabled(false)
@@ -90,6 +94,7 @@ class ParadoxModSettingsDialog(
                     .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
+                    .applyToComponent { defaultGameDirectory?.orNull()?.let { jbTextField.emptyText.setText(it) } }
                     .bindText(gameDirectoryProperty)
                     .columns(36)
                     .align(Align.FILL)
@@ -97,7 +102,7 @@ class ParadoxModSettingsDialog(
             }
             row {
                 //quickSelectGameDirectory
-                link(PlsBundle.message("mod.settings.quickSelectGameDirectory")) { quickSelectGameDirectory() }
+                link(PlsBundle.message("mod.settings.quickSelectGameDirectory")) { gameDirectory = quickSelectGameDirectory().orEmpty() }
                     visible(getSteamGamePath(gameType.steamId, gameType.title) != null)
             }
             row {
@@ -135,24 +140,21 @@ class ParadoxModSettingsDialog(
         val gameDirectory = gameDirectory.normalizeAbsolutePath()
         if(gameDirectory.isEmpty()) return null //为空时跳过检查
         val path = gameDirectory.toPathOrNull()
-            ?: return error(PlsBundle.message("mod.settings.gameDirectory.error.1"))
+        if(path == null) return error(PlsBundle.message("mod.settings.gameDirectory.error.1"))
         val rootFile = VfsUtil.findFile(path, false)?.takeIf { it.exists() }
-            ?: return error(PlsBundle.message("mod.settings.gameDirectory.error.2"))
+        if(rootFile == null) return error(PlsBundle.message("mod.settings.gameDirectory.error.2"))
         val rootInfo = rootFile.rootInfo
-        if(rootInfo !is ParadoxGameRootInfo) {
-            return error(PlsBundle.message("mod.settings.gameDirectory.error.3", gameType.title))
-        }
+        if(rootInfo !is ParadoxGameRootInfo) return error(PlsBundle.message("mod.settings.gameDirectory.error.3", gameType.title))
         return null
     }
     
-    private fun quickSelectGameDirectory() {
-        val targetPath = getSteamGamePath(gameType.steamId, gameType.title) ?: return
-        gameDirectory = targetPath
+    private fun quickSelectGameDirectory(): String? {
+        return getSteamGamePath(gameType.steamId, gameType.title)
     }
     
-    private fun doGetGameVersionFromGameDirectory(): String? {
-        val gameDirectory = gameDirectory.orNull() ?: return null
-        val rootFile = gameDirectory.toVirtualFile(false)?.takeIf { it.exists() } ?: return null
+    private fun getGameVersionFromGameDirectory(gameDirectory: String?): String? {
+        val gameDirectory0 = gameDirectory?.orNull() ?: return null
+        val rootFile = gameDirectory0.toVirtualFile(false)?.takeIf { it.exists() } ?: return null
         val rootInfo = rootFile.rootInfo
         if(rootInfo !is ParadoxGameRootInfo) return null
         return rootInfo.launcherSettingsInfo.rawVersion

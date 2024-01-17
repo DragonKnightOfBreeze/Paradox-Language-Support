@@ -345,7 +345,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
             val economicCategoryInfo = StellarisEconomicCategoryHandler.getInfo(economicCategory) ?: return@p true
             //排除不匹配modifier的supported_scopes的情况
             val modifierCategories = StellarisEconomicCategoryHandler.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
-            val supportedScopes = modifierCategories.getSupportedScopes()
+            val supportedScopes = ParadoxScopeHandler.getSupportedScopes(modifierCategories)
             val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
             

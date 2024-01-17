@@ -12,10 +12,10 @@ class EntryListTableModel<K, V>(
     val keyName: String,
     val valueName: String,
     val keyGetter: (K) -> String,
-    val keySetter: (String) -> K,
+    val keySetter: ((String) -> K)?,
     val valueGetter: (V) -> String,
-    val valueSetter: (String) -> V,
-    val valueAdder: () -> Entry<K, V>,
+    val valueSetter: ((String) -> V)?,
+    val valueAdder: (() -> Entry<K, V>)?,
 ) : ListTableModel<Entry<K, V>>(
     arrayOf(
         object : ColumnInfo<Entry<K, V>, String>("") {
@@ -28,11 +28,12 @@ class EntryListTableModel<K, V>(
             }
             
             override fun setValue(item: Entry<K, V>, value: String) {
+                if(keySetter == null) return
                 item.key = keySetter(value)
             }
             
             override fun isCellEditable(item: Entry<K, V>?): Boolean {
-                return true
+                return keySetter != null
             }
         },
         object : ColumnInfo<Entry<K, V>, String>("") {
@@ -45,18 +46,20 @@ class EntryListTableModel<K, V>(
             }
             
             override fun setValue(item: Entry<K, V>, value: String) {
+                if(valueSetter == null) return
                 item.value = valueSetter(value)
             }
             
             override fun isCellEditable(item: Entry<K, V>?): Boolean {
-                return true
+                return valueSetter != null
             }
         }
     ),
     list
 ) {
     override fun addRow() {
-        addRow(valueAdder())
+        if(valueAdder == null) return
+        addRow(valueAdder.invoke())
     }
     
     companion object {
@@ -65,9 +68,14 @@ class EntryListTableModel<K, V>(
             list: MutableList<Entry<String, String>>,
             keyName: String,
             valueName: String,
+            keyGetter: (String) -> String = { it },
+            keySetter: ((String) -> String)? = { it },
+            valueGetter: (String) -> String = { it },
+            valueSetter: ((String) -> String)? = { it },
+            valueAdder: (() -> Entry<String, String>)? = { Entry("", "") },
             customizer: (ToolbarDecorator) -> Unit = {}
         ): JPanel {
-            return createMapPanel(list, keyName, valueName, { it }, { it }, { it }, { it }, { Entry("", "") }, customizer)
+            return createMapPanel(list, keyName, valueName, keyGetter, keySetter, valueGetter, valueSetter, valueAdder, customizer)
         }
         
         @JvmStatic
@@ -76,10 +84,10 @@ class EntryListTableModel<K, V>(
             keyName: String,
             valueName: String,
             keyGetter: (K) -> String,
-            keySetter: (String) -> K,
+            keySetter: ((String) -> K)?,
             valueGetter: (V) -> String,
-            valueSetter: (String) -> V,
-            valueAdder: () -> Entry<K, V>,
+            valueSetter: ((String) -> V)?,
+            valueAdder: (() -> Entry<K, V>)?,
             customizer: (ToolbarDecorator) -> Unit = {}
         ): JPanel {
             val tableModel = EntryListTableModel(list, keyName, valueName, keyGetter, keySetter, valueGetter, valueSetter, valueAdder)
@@ -89,6 +97,7 @@ class EntryListTableModel<K, V>(
             tableView.columnSelectionAllowed = false
             tableView.intercellSpacing = Dimension(0, 0)
             tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
+            tableView.updateColumnSizes()
             //快速搜索
             val speedSearch = object : TableViewSpeedSearch<Entry<K, V>>(tableView, null) {
                 override fun getItemText(element: Entry<K, V>): String {
@@ -97,6 +106,7 @@ class EntryListTableModel<K, V>(
             }
             speedSearch.setupListeners()
             val decorator = ToolbarDecorator.createDecorator(tableView)
+            if(valueAdder == null) decorator.disableAddAction()
             customizer(decorator)
             val panel = decorator.createPanel()
             return panel

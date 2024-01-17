@@ -8,11 +8,10 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.listeners.*
-import icu.windea.pls.core.ui.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
-import javax.swing.*
+import java.awt.event.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
     override fun getId() = "pls"
@@ -35,7 +34,34 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .onApply {
                             if(oldDefaultGameType != settings.defaultGameType) {
                                 val messageBus = ApplicationManager.getApplication().messageBus
-                                messageBus.syncPublisher(ParadoxDefaultGameTypeListener.TOPIC).onChange(settings.defaultGameType)
+                                messageBus.syncPublisher(ParadoxDefaultGameTypeListener.TOPIC)
+                                    .onChange(oldDefaultGameType, settings.defaultGameType)
+                            }
+                        }
+                }
+                //defaultGameDirectories
+                row {
+                    label(PlsBundle.message("settings.general.defaultGameDirectories")).widthGroup("general")
+                        .applyToComponent {
+                            toolTipText = PlsBundle.message("settings.general.defaultGameDirectories.tooltip")
+                        }
+                    val oldDefaultGameDirectories = settings.defaultGameDirectories
+                    ParadoxGameType.values.forEach { oldDefaultGameDirectories.putIfAbsent(it.id, "") }
+                    val defaultList = oldDefaultGameDirectories.toMutableEntryList()
+                    var list = defaultList.mapTo(mutableListOf()) { it.copy() }
+                    val action = { _: ActionEvent ->
+                        val dialog = ParadoxGameDirectoriesDialog(list)
+                        if(dialog.showAndGet()) list = dialog.resultList
+                    }
+                    link(PlsBundle.message("settings.general.configureDefaultGameDirectories"), action)
+                        .onApply { settings.defaultGameDirectories = list.toMutableMap() }
+                        .onReset { list = defaultList }
+                        .onIsModified { list != defaultList }
+                        .onApply {
+                            if(oldDefaultGameDirectories != settings.defaultGameDirectories) {
+                                val messageBus = ApplicationManager.getApplication().messageBus
+                                messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC)
+                                    .onChange(oldDefaultGameDirectories, settings.defaultGameDirectories)
                             }
                         }
                 }
@@ -228,35 +254,46 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.inference.argumentValueConfig"))
                         .bindSelected(settings.inference::parameterConfig)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.argumentValueConfig.tooltip") }
-                        .onApply { ParadoxCoreHandler.reparseOpenedFiles() }
+                        .onApply {
+                            ParadoxModificationTrackerProvider.ParameterConfigInferenceTracker.incModificationCount()
+                        }
                 }
                 //inlineScriptConfig
                 row {
                     checkBox(PlsBundle.message("settings.inference.inlineScriptConfig"))
                         .bindSelected(settings.inference::inlineScriptConfig)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.inlineScriptConfig.tooltip") }
-                        .onApply { ParadoxCoreHandler.refreshInlineScriptInlayHints() }
+                        .onApply {
+                            ParadoxModificationTrackerProvider.InlineScriptConfigInferenceTracker.incModificationCount()
+                            ParadoxCoreHandler.refreshInlineScriptInlayHints()
+                        }
                 }
                 //scopeContext
                 row {
                     checkBox(PlsBundle.message("settings.inference.scopeContext"))
                         .bindSelected(settings.inference::scopeContext)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContext.tooltip") }
-                        .onApply { ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount() }
+                        .onApply {
+                            ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount()
+                        }
                 }
                 //eventScopeContext
                 row {
                     checkBox(PlsBundle.message("settings.inference.eventScopeContext"))
                         .bindSelected(settings.inference::eventScopeContext)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContext.tooltip") }
-                        .onApply { ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount() }
+                        .onApply {
+                            ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount()
+                        }
                 }
                 //onActionScopeContext
                 row {
                     checkBox(PlsBundle.message("settings.inference.onActionScopeContext"))
                         .bindSelected(settings.inference::onActionScopeContext)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.onActionScopeContext.tooltip") }
-                        .onApply { ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount() }
+                        .onApply {
+                            ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount()
+                        }
                 }
             }
             //hierarchy
@@ -274,14 +311,14 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .apply { cbCell = this }
                     
                     val defaultList = settings.hierarchy.definitionTypeBindingsInCallHierarchy.toMutableEntryList()
-                    var list = defaultList.toMutableList()
-                    link(PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings")) {
+                    var list = defaultList.mapTo(mutableListOf()) { it.copy() }
+                    val action = { _: ActionEvent ->
                         val dialog = ParadoxDefinitionTypeBindingsInCallHierarchyDialog(list)
-                        if(dialog.showAndGet()) {
-                            list = dialog.resultList
-                        }
-                    }.enabledIf(cbCell.selected)
-                        .onApply { list.let { settings.hierarchy.definitionTypeBindingsInCallHierarchy = it.toMutableMap() } }
+                        if(dialog.showAndGet()) list = dialog.resultList
+                    }
+                    link(PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings"), action)
+                        .enabledIf(cbCell.selected)
+                        .onApply { settings.hierarchy.definitionTypeBindingsInCallHierarchy = list.toMutableMap() }
                         .onReset { list = defaultList }
                         .onIsModified { list != defaultList }
                 }
@@ -323,29 +360,3 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
     }
 }
 
-class ParadoxDefinitionTypeBindingsInCallHierarchyDialog(
-    val list: MutableList<Entry<String, String>>
-): DialogWrapper(null, null, false , IdeModalityType.IDE) {
-    val resultList = list.toMutableList()
-    
-    init {
-        title = PlsBundle.message("settings.hierarchy.definitionTypeBindings.title")
-        init()
-    }
-    
-    override fun createCenterPanel(): JComponent {
-        return panel {
-            row {
-                val keyName = PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings.key")
-                val valueName = PlsBundle.message("settings.hierarchy.definitionTypeBindings.value")
-                cell(EntryListTableModel.createStringMapPanel(resultList, keyName, valueName)).align(Align.FILL)
-            }.resizableRow()
-            row {
-                comment(PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings.comment.1"))
-            }
-            row {
-                comment(PlsBundle.message("ui.comment.definitionTypeExpression"))
-            }
-        }
-    }
-}

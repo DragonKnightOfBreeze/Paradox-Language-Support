@@ -27,6 +27,7 @@ class ParadoxParameterContextInfo(
     ) {
         val element: PsiElement? get() = elementPointer.element
         val expressionElement: ParadoxScriptStringExpressionElement? get() = elementPointer.element?.parent?.castOrNull()
+        val parameterElement: ParadoxParameterElement? get() = elementPointer.element?.let { ParadoxParameterHandler.getParameterElement(it) }
         
         val rangeInExpressionElement: TextRange?
             get() {

@@ -196,11 +196,10 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         //加上名字
         val name = parameterElement.name
         append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-        //加上推断得到的规则信息
-        val inferredConfig = ParadoxParameterHandler.getInferredConfig(parameterElement)
-        if(inferredConfig != null) {
-            append(": ")
-            append(inferredConfig.expression.expressionString.escapeXml())
+        //加上推断得到的类型信息
+        val inferredType = ParadoxParameterHandler.getInferredType(parameterElement)
+        if(inferredType != null) {
+            append(": ").append(inferredType.escapeXml())
         }
         //加上所属定义信息
         val gameType = parameterElement.gameType
@@ -509,11 +508,10 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         //加上名字
         val name = parameterElement.name
         append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-        //加上推断得到的规则信息
-        val inferredConfig = ParadoxParameterHandler.getInferredConfig(parameterElement)
-        if(inferredConfig != null) {
-            append(": ")
-            append(inferredConfig.expression.expressionString.escapeXml())
+        //加上推断得到的类型信息
+        val inferredType = ParadoxParameterHandler.getInferredType(parameterElement)
+        if(inferredType != null) {
+            append(": ").append(inferredType.escapeXml())
         }
         //加上所属内联脚本信息
         val gameType = parameterElement.gameType

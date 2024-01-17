@@ -34,9 +34,9 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 val baseTypeName = typeConfig.baseType.substringBefore('.')
                 val baseDeclarationConfig = configGroup.declarations[baseTypeName] ?: continue
                 val typeKey = typeConfig.typeKeyFilter?.takeIfTrue()?.singleOrNull() ?: continue
-                val declarationConfig = baseDeclarationConfig.propertyConfig.configs
+                val declarationConfig = baseDeclarationConfig.config.configs
                     ?.find { it is CwtPropertyConfig && it.key.equals(typeKey, true) }?.castOrNull<CwtPropertyConfig>()
-                    ?.let { resolveDeclarationConfig(it, typeName) }
+                    ?.let { CwtDeclarationConfig.resolve(it, typeName) }
                     ?: continue
                 configGroup.declarations.asMutable()[typeName] = declarationConfig
             }
@@ -44,11 +44,8 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         run {
             for((key, linkConfig) in configGroup.linksAsScopeNotData) {
-                val localisationLinkConfig = CwtLocalisationLinkConfig(
-                    linkConfig.pointer, linkConfig.info, linkConfig.config,
-                    linkConfig.name, linkConfig.desc, linkConfig.inputScopes, linkConfig.outputScope
-                )
-                configGroup.localisationLinks.asMutable()[key] = localisationLinkConfig
+                val localisationLinkConfig = CwtLocalisationLinkConfig.resolveFromLink(linkConfig)
+                configGroup.localisationLinks.asMutable()[key] = localisationLinkConfig ?: continue
             }
         }
 
@@ -146,9 +143,5 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
 
         return true
-    }
-
-    private fun resolveDeclarationConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDeclarationConfig {
-        return CwtDeclarationConfig(propertyConfig.pointer, propertyConfig.info, name, propertyConfig)
     }
 }

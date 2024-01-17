@@ -17,12 +17,6 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
         return parameterInfo.isEntireExpression
     }
     
-    override fun getConfig(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig? {
-        val expressionConfigs = parameterInfo.expressionConfigs
-        val config = expressionConfigs.firstNotNullOfOrNull { doGetConfigFromExpressionConfig(it, parameterInfo) }
-        return config
-    }
-    
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val expressionElement = parameterInfo.expressionElement ?: return null
         val expressionContextConfigs = CwtConfigHandler.getConfigContext(expressionElement)?.getConfigs().orEmpty()
@@ -30,40 +24,17 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
         return contextConfigs
     }
     
-    private fun doGetConfigFromExpressionConfig(expressionConfig: CwtMemberConfig<*>, parameterInfo: ParadoxParameterContextInfo.Parameter): CwtValueConfig? {
-        if(expressionConfig.expression.type == CwtDataTypes.ParameterValue) {
-            //处理参数传递的情况
-            //这里需要尝试避免SOE
-            if(expressionConfig !is CwtValueConfig) return null
-            val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return null
-            val argumentNameConfig = expressionConfig.propertyConfig ?: return null
-            val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return null
-            val passingConfig = withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxBaseParameterInferredConfigProvider.doGetConfigFromExpressionConfig") {
-                withCheckRecursion(passingParameterElement.contextKey) {
-                    ParadoxParameterHandler.getInferredConfig(passingParameterElement)
-                }
-            }
-            return passingConfig
-        }
-        return CwtValueConfig.resolve(emptyPointer(), expressionConfig.info, expressionConfig.expression.expressionString)
-    }
-    
     private fun doGetContextConfigsFromExpressionContextConfigs(expressionContextConfigs: List<CwtMemberConfig<*>>, parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>>{
         if(expressionContextConfigs.isEmpty()) return emptyList()
         val expressionContextConfig = expressionContextConfigs.find { it.expression.type == CwtDataTypes.ParameterValue }
         if(expressionContextConfig != null) {
             //处理参数传递的情况
-            //这里需要尝试避免SOE
             if(expressionContextConfig !is CwtValueConfig) return emptyList()
             val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return emptyList()
             val argumentNameConfig = expressionContextConfig.propertyConfig ?: return emptyList()
             val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return emptyList()
-            val passingContextConfigs = withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxBaseParameterInferredConfigProvider.doGetContextConfigsFromExpressionContextConfigs") {
-                withCheckRecursion(passingParameterElement.contextKey) {
-                    ParadoxParameterHandler.getInferredContextConfigs(passingParameterElement)
-                }
-            }
-            return passingContextConfigs.orEmpty()
+            val passingContextConfigs = ParadoxParameterHandler.getInferredContextConfigs(passingParameterElement)
+            return passingContextConfigs
         }
         if(expressionContextConfigs.isEmpty()) return emptyList()
         val containerConfig = CwtValueConfig.resolve(
@@ -91,14 +62,6 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
         //要求不整个作为脚本表达式
         return !parameterInfo.isEntireExpression
-    }
-    
-    override fun getConfig(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): CwtValueConfig? {
-        val expressionElement = parameterInfo.expressionElement ?: return null
-        if(expressionElement.text.isLeftQuoted()) return null
-        val expressionConfigs = parameterInfo.expressionConfigs
-        val config = expressionConfigs.firstNotNullOfOrNull { getConfigFromExpressionConfig(expressionElement, it, parameterInfo) }
-        return config
     }
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
@@ -152,12 +115,9 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
             }
             node is ParadoxScriptValueArgumentValueExpressionNode -> {
                 val argumentNode = node.argumentNode ?: return null
-                val passingConfig = withRecursionGuard("icu.windea.pls.lang.parameter.ParadoxParameterInferredConfigProvider.getConfigFromNode") a1@{
-                    val passingParameterElement = ParadoxParameterSupport.resolveArgument(expressionElement, argumentNode.rangeInExpression, expressionConfig) ?: return null
-                    withCheckRecursion(passingParameterElement.contextKey) a2@{
-                        ParadoxParameterHandler.getInferredConfig(passingParameterElement)
-                    }
-                }
+                val passingParameterElement = ParadoxParameterSupport.resolveArgument(expressionElement, argumentNode.rangeInExpression, expressionConfig) ?: return null
+                val passingContextConfigs = ParadoxParameterHandler.getInferredContextConfigs(passingParameterElement)
+                val passingConfig = passingContextConfigs.singleOrNull()?.castOrNull<CwtValueConfig>()
                 passingConfig
             }
             else -> null

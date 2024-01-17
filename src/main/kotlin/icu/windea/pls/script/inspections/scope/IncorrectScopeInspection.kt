@@ -64,7 +64,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                     val resolved = expressionElement.reference?.resolve() ?: return null
                     if(resolved !is ParadoxModifierElement) return null
                     val modifierCategories = ParadoxModifierSupport.getModifierCategories(resolved)
-                    return modifierCategories?.getSupportedScopes()
+                    return modifierCategories?.let { ParadoxScopeHandler.getSupportedScopes(it) }
                 }
                 if(config.expression.type == CwtDataTypes.Definition) {
                     val expressionElement = getExpressionElement(element) ?: return null

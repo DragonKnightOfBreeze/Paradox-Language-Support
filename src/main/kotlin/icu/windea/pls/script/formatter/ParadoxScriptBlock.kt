@@ -59,7 +59,10 @@ class ParadoxScriptBlock(
     
     override fun buildChildren(): List<Block> {
         val children = mutableListOf<Block>()
-        myNode.processChild { node -> node.takeUnless(TokenType.WHITE_SPACE)?.let { ParadoxScriptBlock(it, settings) }?.addTo(children).let { true } }
+        myNode.processChild { node ->
+            node.takeUnless(TokenType.WHITE_SPACE)?.let { ParadoxScriptBlock(it, settings) }?.also { children.add(it) }
+            true
+        }
         return children
     }
     

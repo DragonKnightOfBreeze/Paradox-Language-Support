@@ -77,11 +77,16 @@ class CwtConfigContext(
 
 //rootFile -> cacheKey -> configs
 //use soft values to optimize memory
-//depends on config group and (definition, localisation, etc.) indices
+//depends on config group, indices and inference statuses
 private val CwtConfigGroup.configsCache by createKeyDelegate(CwtConfigContext.Keys) {
-    createCachedValue {
+    createCachedValue(project) {
+        val trackerProvider = ParadoxModificationTrackerProvider.getInstance(project)
+        val tracker1 = trackerProvider.ScriptFileTracker
+        val tracker2 = trackerProvider.LocalisationFileTracker
+        val tracker3 = ParadoxModificationTrackerProvider.ParameterConfigInferenceTracker
+        val tracker4 = ParadoxModificationTrackerProvider.InlineScriptConfigInferenceTracker
         NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, List<CwtMemberConfig<*>>>() }
-            .withDependencyItems(PsiModificationTracker.MODIFICATION_COUNT)
+            .withDependencyItems(tracker1, tracker2, tracker3, tracker4)
     }
 }
 

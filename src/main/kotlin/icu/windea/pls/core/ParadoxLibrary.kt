@@ -7,6 +7,7 @@ import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.core.settings.*
 import javax.swing.*
 
 class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
@@ -48,7 +49,7 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
             if(!modFile.isValid) continue
             if(!projectFileIndex.isInContent(modFile)) continue
             run {
-                val gameDirectory = modSettings.gameDirectory ?: return@run
+                val gameDirectory = modSettings.finalGameDirectory ?: return@run
                 if(newPaths.contains(gameDirectory)) return@run
                 val gameFile = gameDirectory.toVirtualFile(false) ?: return@run
                 if(!gameFile.isValid) return@run

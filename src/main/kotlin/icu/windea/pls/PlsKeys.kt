@@ -14,7 +14,7 @@ import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.util.image.*
 import java.awt.*
 
-object PlsKeys : KeyHolder
+object PlsKeys : KeyRegistry()
 
 val PlsKeys.library by createKey<ParadoxLibrary>("paradox.library")
 

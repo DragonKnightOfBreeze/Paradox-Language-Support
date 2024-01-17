@@ -49,7 +49,10 @@ class CwtBlock(
     
     override fun buildChildren(): List<Block> {
         val children = mutableListOf<Block>()
-        myNode.processChild { node -> node.takeUnless(TokenType.WHITE_SPACE)?.let { CwtBlock(it, settings) }?.addTo(children).let { true } }
+        myNode.processChild { node ->
+            node.takeUnless(TokenType.WHITE_SPACE)?.let { CwtBlock(it, settings) }?.also { children.add(it) }
+            true
+        }
         return children
     }
     

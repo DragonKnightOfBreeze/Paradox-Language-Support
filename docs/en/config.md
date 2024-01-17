@@ -15,15 +15,15 @@ Reference Links:
 
 ### Built-in config groups
 
-Their CWT config files are located in the 'config/${gameType}' directory (which is in the plugin jar), and they will always be enabled.
+Their CWT config files are located in the `config/${gameType}`[^1] directory (which is in the plugin jar), and they will always be enabled.
 
 These config files are from plugin repository and config repositories of each game. Compare to the config files used by CWTools, there are several modifications and extensions. 
 
 ### Project local config groups
 
-Their CWT config files should be placed in the '.config/${gameType}' directory (which is in the project root directory), and they will be enabled after manually confirmation and importation.
+Their CWT config files should be placed in the `.config/${gameType}`[^1] directory (which is in the project root directory), and they will be enabled after manually confirming to import.
 
-If some changes are happened, the refresh button will be appeared in the context float toolbar in the upper right corner of the editor. Click it to confirm and import, so these custom config files will be enabled.
+If some changes are happened, the refresh button will be appeared in the context float toolbar in the upper right corner of the editor. Click it to confirm to import, so these custom config files will be enabled.
 
 ### Overridden strategy
 
@@ -49,7 +49,7 @@ The basic syntax of a CWT rules file is as follows:
 ## option = option_value
 ## option_value
 prop = {
-	# line comment
+    # line comment
     # properties and values can be mixed in clauses
     # both equal sign ('=', '=='), not equal sign ('<>', '!=')can be used for the property separator
     
@@ -71,14 +71,48 @@ Reference Links:
 
 * [Guidance](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
 
+### Note
+
+About the template expression:
+
+```cwt
+# belows are all valid template expressions
+
+# a string literal, exactly matches 'x'
+x
+# a template expression which contains a reference to jobs, matches 'a_researcher_b', 'a_farmer_b', etc.
+a_<job>_b
+# a template expression which contains a references to enum of weight_or_base, matches 'a_weight_b' and 'a_base_b'
+a_enum[weight_or_base]_b
+# a template expression which contains a references to dynamic value type of anything
+# there is no limit for 'value[anything]', so it's equivalent to regex 'a_.*_b'
+a_value[anything]_b
+```
+
+About how to specify the scope context:
+
+```cwt
+# push 'country' scope to scope stack
+# for this example, the next this scope will be 'country'
+## push_scope = country
+some_config
+
+# replace scopes of specific system scopes into scope context
+# not supported for 'prev' system scope (and 'prevprev', etc.)
+# for this example, the next this scope will be 'country', so do the next root scope and the next from scope
+## replace_scopes = { this = country root = country from = country }
+some_config
+```
+
 ### Definitions
 
 ```cwt
 definitions = {
+    # 'x' or 'x = xxx'
+    # 'x' can also be a template expression
+    
     ### Some documentation
-	## type = civic_or_origin.civic
-	# 'x' or 'x = xxx'
-    # 'x' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
+    ## type = civic_or_origin.civic
     x
 }
 ```
@@ -87,11 +121,12 @@ definitions = {
 
 ```cwt
 game_rules = {
+    # 'x' or 'x = xxx'
+    # 'x' can also be a template expression
+    # use 'x = xxx' to override declaration config
+    
     ### Some documentation
     ## replace_scopes = { this = country root = country }
-	# 'x' or 'x = xxx'
-	# 'x' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
-    # use 'x = xxx' to override declaration config
     x
 }
 ```
@@ -100,36 +135,99 @@ game_rules = {
 
 ```cwt
 on_actions = {
+    # 'x' or 'x = xxx'
+    # 'x' can also be a template expression
+    
     ### Some documentation
     ## replace_scopes = { this = country root = country }
-	## event_type = country
-    # 'x' or 'x = xxx'
-	# 'x' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
+    ## event_type = country
     x
 }
 ```
+
+### Inline Scripts
+
+```cwt
+inline_scripts = {
+    # 'x' or 'x = xxx'
+    # 'x' is a inline script expression, e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
+    # 'x' can also be a template expression
+    # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there is various context configs)
+    
+    # note extended documentation is unavailable for inline scripts
+    
+    x
+
+    # more detailed examples for declaring context config(s)
+
+    ## context_configs_type = multiple
+    x = {
+        ## cardinality = 0..1
+        potential = single_alias_right[trigger_clause]
+        ## cardinality = 0..1
+        possible = single_alias_right[trigger_clause]
+    }
+}
+```
+
+Example:
+
+![](../assets/images/config/inline_scripts_1.png)
 
 ### Parameters
 
 ```cwt
 parameters = {
-	### Some documentation
-	## context_key = scripted_trigger@some_trigger
-	# 'p' or 'p = xxx'
-	# 'p' can also be a template expression (e.g. for 'job_<job>_add', '<job>' matches any job name)
-	p
+    # 'x' or 'x = xxx'
+    # 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
+    # 'x' can also be a template expression
+    # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there is various context configs)
+    
+    ### Some documentation
+    ## context_key = scripted_trigger@some_trigger
+    x
+    
+    # more detailed examples for declaring context config(s)
+    
+    x = localistion
+    ## context_configs_type = multiple
+    x = {
+        localisation
+        scalar
+    }
 }
 ```
+
+Example:
+
+![](../assets/images/config/parameters_1.png)
 
 ### Dynamic Values
 
 ```cwt
 values = {
-	value[event_target] = {
-		### Some documentation
-		## replace_scopes = { this = country root = country }
-		# 'v', not 'v = xxx'
-		v
-	}
+    value[event_target] = {
+        # 'x', not 'x = xxx'
+        
+        ### Some documentation
+        ## replace_scopes = { this = country root = country }
+        x
+    }
 }
 ```
+
+## Importing CWT Config Files{#importing-cwt-config-files}
+
+### Summary
+
+You can write your own customized config files in the `.config/${gameType}`[^1] directory (which is in the project root directory), and they will be enabled after manually confirming to import.
+
+If some changes are happened, the refresh button will be appeared in the context float toolbar in the upper right corner of the editor. Click it to confirm to import, so these custom config files will be enabled.
+
+IDE will take some time to reparse the open files,
+And please note that if the changes in the rule files will result in the change of the indexing logic
+(for example, a new definition type is added, or a match condition for some definition type is changed),
+you may need to reindex the whole project (this may take several minutes), to make sure the plugin works properly,
+if in the situation that involves these changes.
+
+[^1]: Allowed values for `gameType`: `stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`

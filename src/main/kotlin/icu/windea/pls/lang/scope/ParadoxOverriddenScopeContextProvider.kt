@@ -15,7 +15,7 @@ import icu.windea.pls.model.*
 @WithGameTypeEP
 interface ParadoxOverriddenScopeContextProvider {
     /**
-     * 从指定的上下文元素[contextElement]和对应的CWT规则[config]获取重载后的作用域上下文。
+     * 基于指定的上下文PSI元素[contextElement]和对应的CWT规则[config]获取重载后的作用域上下文。
      */
     fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>,parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext?
     

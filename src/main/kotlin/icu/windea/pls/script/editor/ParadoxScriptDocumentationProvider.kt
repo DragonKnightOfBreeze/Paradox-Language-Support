@@ -6,7 +6,6 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
@@ -298,7 +297,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
             sections.put(PlsBundle.message("sectionTitle.categories"), ParadoxDocumentationBuilder.getModifierCategoriesText(categoryNames, gameType, element))
         }
         
-        val supportedScopes = modifierCategories.getSupportedScopes()
+        val supportedScopes = ParadoxScopeHandler.getSupportedScopes(modifierCategories)
         sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxDocumentationBuilder.getScopesText(supportedScopes, gameType, element))
     }
     
@@ -325,16 +324,19 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         if(parameterContextInfo.parameters.isEmpty()) return //ignore
         val parametersText = buildString {
             var isFirst = true
-            parameterContextInfo.parameters.keys.forEach { parameterName ->
+            parameterContextInfo.parameters.forEach { (parameterName, elements) ->
                 if(isFirst) isFirst = false else append("<br>")
                 append("<code>")
                 append(parameterName)
                 //加上推断得到的规则信息
                 if(ParadoxParameterHandler.isOptional(parameterContextInfo, parameterName)) append("?") //optional marker
-                val inferredConfig = ParadoxParameterHandler.getInferredConfig(parameterName, parameterContextInfo)
-                if(inferredConfig != null) {
-                    append(": ")
-                    append(inferredConfig.expression.expressionString.escapeXml())
+                //加上推断得到的类型信息
+                val parameterElement = elements.firstOrNull()?.parameterElement
+                if(parameterElement != null) {
+                    val inferredType = ParadoxParameterHandler.getInferredType(parameterElement)
+                    if(inferredType != null) {
+                        append(": ").append(inferredType.escapeXml())
+                    }
                 }
                 append("</code>")
             }

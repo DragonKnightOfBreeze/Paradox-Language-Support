@@ -5,12 +5,12 @@ import icons.*
 import icu.windea.pls.cwt.psi.*
 import javax.swing.*
 
-class CwtLocalisationPredefinedParameterConfig(
-	override val pointer: SmartPsiElementPointer<out CwtProperty>,
-	override val info: CwtConfigGroupInfo,
-	val id: String,
-	val mockValue: String,
-	val description: String
+class CwtLocalisationPredefinedParameterConfig private constructor(
+    override val pointer: SmartPsiElementPointer<out CwtProperty>,
+    override val info: CwtConfigGroupInfo,
+    val id: String,
+    val mockValue: String,
+    val description: String
 ) : CwtConfig<CwtProperty> {
     val icon: Icon get() = PlsIcons.Nodes.PredefinedParameter
     
@@ -24,5 +24,14 @@ class CwtLocalisationPredefinedParameterConfig(
     
     override fun toString(): String {
         return description.ifEmpty { id }
+    }
+    
+    companion object {
+        fun resolve(config: CwtPropertyConfig): CwtLocalisationPredefinedParameterConfig {
+            val id = config.key
+            val mockValue = config.value
+            val description = config.documentation.orEmpty()
+            return CwtLocalisationPredefinedParameterConfig(config.pointer, config.info, id, mockValue, description)
+        }
     }
 }

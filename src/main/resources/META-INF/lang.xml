@@ -9,6 +9,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.declarationConfigContextProvider" interface="icu.windea.pls.lang.config.CwtDeclarationConfigContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.injectedConfigProvider" interface="icu.windea.pls.lang.config.CwtInjectedConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.overriddenConfigProvider" interface="icu.windea.pls.lang.config.CwtOverriddenConfigProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.relatedConfigProvider" interface="icu.windea.pls.lang.config.CwtRelatedConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupDataProvider" interface="icu.windea.pls.lang.configGroup.CwtConfigGroupDataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupFileProvider" interface="icu.windea.pls.lang.configGroup.CwtConfigGroupFileProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionDataProvider" interface="icu.windea.pls.lang.data.ParadoxDefinitionDataProvider" dynamic="true"/>
@@ -85,6 +86,9 @@
     
     <overriddenConfigProvider implementation="icu.windea.pls.lang.config.CwtSwitchOverriddenConfigProvider"/>
     <overriddenConfigProvider implementation="icu.windea.pls.lang.config.CwtTriggerWithParametersAwareOverriddenConfigProvider"/>
+    
+    <relatedConfigProvider implementation="icu.windea.pls.lang.config.CwtBaseRelatedConfigProvider"/>
+    <relatedConfigProvider implementation="icu.windea.pls.lang.config.CwtExtendedRelatedConfigProvider"/>
     
     <configGroupDataProvider implementation="icu.windea.pls.lang.configGroup.FileBasedCwtConfigGroupDataProvider"/>
     <configGroupDataProvider implementation="icu.windea.pls.lang.configGroup.ComputedCwtConfigGroupDataProvider" order="last"/>
