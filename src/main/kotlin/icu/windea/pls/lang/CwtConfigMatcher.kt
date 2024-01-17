@@ -217,7 +217,7 @@ object CwtConfigMatcher {
         @Suppress("UNUSED_PARAMETER")
         fun getDynamicValueMatchResult(element: PsiElement, name: String, dynamicValueType: String, project: Project): Result {
             //总是认为匹配
-            return Result.ExactMatch
+            return Result.FallbackMatch
         }
         
         fun getScopeFieldMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {

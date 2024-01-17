@@ -391,9 +391,11 @@ object CwtConfigHandler {
         //如果无结果，则返回空列表
         if(contextConfigsToMatch.isEmpty()) return emptyList()
         
+        //如果无法获取valueExpression，则返回所有可能匹配的规则
+        if(valueExpression == null) return contextConfigsToMatch
+        
         //得到所有可能匹配的结果
         ProgressManager.checkCanceled()
-        if(valueExpression == null) return contextConfigsToMatch
         val matchResultValues = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
         contextConfigsToMatch.forEachFast f@{ config ->
             val matchResult = CwtConfigMatcher.matches(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
@@ -403,72 +405,56 @@ object CwtConfigHandler {
         //如果无结果且需要使用默认值，则返回所有可能匹配的规则
         if(matchResultValues.isEmpty() && orDefault) return contextConfigsToMatch
         
+        //进行进一步的匹配
         ProgressManager.checkCanceled()
-        val finalMatchResultValues = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
-        doGetFinalResultValues(finalMatchResultValues, matchResultValues, matchOptions)
-        if(finalMatchResultValues.isNotEmpty()) return finalMatchResultValues.mapFast { it.value }
+        val finalMatchedConfigs = doGetFinalMatchedConfigs(matchResultValues, matchOptions)
+        if(finalMatchedConfigs.isNotEmpty()) return finalMatchedConfigs
         
-        //如果仍然无结果且需要使用默认值，则返回所有待匹配的规则，否则返回空列表
+        //如果仍然无结果且需要使用默认值，则返回所有可能匹配的规则，否则返回空列表
         if(orDefault) return contextConfigsToMatch
         return emptyList()
     }
     
-    private fun doGetFinalResultValues(result: MutableList<ResultValue<CwtMemberConfig<*>>>, matchResultValues: MutableList<ResultValue<CwtMemberConfig<*>>>, matchOptions: Int) {
+    private fun doGetFinalMatchedConfigs(matchResultValues: MutableList<ResultValue<CwtMemberConfig<*>>>, matchOptions: Int): List<CwtMemberConfig<*>> {
         //* 首先尝试直接的精确匹配，如果有结果，则直接返回
-        //* 然后，如果有多个需要检查子句/作用域上下文的匹配，则分别对它们进行进一步匹配，保留匹配的所有结果或者第一个结果（如果没有多个，直接认为是匹配的）
-        //* 然后，进行进一步的匹配 （如果没有匹配结果，将不需要访问索引的匹配认为是匹配的）
+        //* 然后，尝试需要检测子句的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
+        //* 然后，尝试需要检测作用域上下文的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
+        //* 然后，尝试非回退的匹配，如果有结果，则直接返回
+        //* 最后加入回退的匹配
         
-        matchResultValues.filterToFast(result) { v -> v.result == CwtConfigMatcher.Result.ExactMatch }
-        if(result.isNotEmpty()) return
+        val exactMatched = matchResultValues.filterFast { it.result is CwtConfigMatcher.Result.ExactMatch }
+        if(exactMatched.isNotEmpty()) return exactMatched.mapFast { it.value }
         
-        var firstBlockAwareResult: ResultValue<CwtMemberConfig<*>>? = null
-        var firstBlockAwareResultIndex = -1
-        var firstScopeAwareResult: ResultValue<CwtMemberConfig<*>>? = null
-        var firstScopeAwareResultIndex = -1
-        for(i in matchResultValues.lastIndex downTo 0) {
-            val v = matchResultValues[i]
-            if(v.result is CwtConfigMatcher.Result.LazyBlockAwareMatch) {
-                if(firstBlockAwareResult == null) {
-                    firstBlockAwareResult = v
-                    firstBlockAwareResultIndex = i
-                } else {
-                    if(firstBlockAwareResultIndex != -1) {
-                        val r = firstBlockAwareResult.result.get(matchOptions)
-                        if(!r) matchResultValues.removeAt(firstBlockAwareResultIndex)
-                        firstBlockAwareResultIndex = -1
-                    }
-                    val r = v.result.get(matchOptions)
-                    if(!r) matchResultValues.removeAt(i)
-                }
-            } else if(v.result is CwtConfigMatcher.Result.LazyScopeAwareMatch) {
-                if(firstScopeAwareResult == null) {
-                    firstScopeAwareResult = v
-                    firstScopeAwareResultIndex = i
-                } else {
-                    if(firstScopeAwareResultIndex != -1) {
-                        val r = firstScopeAwareResult.result.get(matchOptions)
-                        if(!r) matchResultValues.removeAt(firstScopeAwareResultIndex)
-                        firstScopeAwareResultIndex = -1
-                    }
-                    val r = v.result.get(matchOptions)
-                    if(!r) matchResultValues.removeAt(i)
-                }
+        val matched = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
+        
+        fun addLazyMatchedConfigs(predicate: (ResultValue<CwtMemberConfig<*>>) -> Boolean) {
+            val lazyMatched = matchResultValues.filterFast(predicate)
+            val lazyMatchedSize = lazyMatched.size
+            if(lazyMatchedSize == 1) {
+                matched += lazyMatched.first()
+            } else if(lazyMatchedSize > 1){
+                val oldMatchedSize = matched.size
+                lazyMatched.filterToFast(matched) { it.result.get(matchOptions) }
+                if(oldMatchedSize == matched.size) matched += lazyMatched.first()
             }
         }
         
-        matchResultValues.filterToFast(result) p@{ v ->
-            if(v.result is CwtConfigMatcher.Result.LazyBlockAwareMatch) return@p true
-            if(v.result is CwtConfigMatcher.Result.LazyScopeAwareMatch) return@p true
-            v.result.get(matchOptions)
-        }
-        if(result.isNotEmpty()) return
+        addLazyMatchedConfigs { it.result is CwtConfigMatcher.Result.LazyBlockAwareMatch }
+        addLazyMatchedConfigs { it.result is CwtConfigMatcher.Result.LazyScopeAwareMatch }
         
-        matchResultValues.filterToFast(result) p@{ v ->
-            if(v.result is CwtConfigMatcher.Result.LazyBlockAwareMatch) return@p true
-            if(v.result is CwtConfigMatcher.Result.LazyScopeAwareMatch) return@p true
-            if(v.result is CwtConfigMatcher.Result.LazySimpleMatch) return@p true
-            v.result.get(matchOptions)
+        matchResultValues.filterToFast(matched) p@{
+            if(it.result is CwtConfigMatcher.Result.LazyBlockAwareMatch) return@p false //已经匹配过
+            if(it.result is CwtConfigMatcher.Result.LazyScopeAwareMatch) return@p false //已经匹配过
+            if(it.result is CwtConfigMatcher.Result.LazySimpleMatch) return@p true //直接认为是匹配的
+            if(it.result is CwtConfigMatcher.Result.FallbackMatch) return@p false //之后再匹配
+            it.result.get(matchOptions)
         }
+        if(matched.isNotEmpty()) return matched.mapFast { it.value }
+        
+        val fallbackMatched = matchResultValues.filterFast { it.result is CwtConfigMatcher.Result.FallbackMatch }
+        if(fallbackMatched.isNotEmpty()) return fallbackMatched.mapFast { it.value }
+        
+        return emptyList()
     }
     
     private fun doOptimizeContextConfigs(element: PsiElement, configs: List<CwtMemberConfig<*>>, expression: ParadoxDataExpression?, matchOptions: Int): List<CwtMemberConfig<*>> {
