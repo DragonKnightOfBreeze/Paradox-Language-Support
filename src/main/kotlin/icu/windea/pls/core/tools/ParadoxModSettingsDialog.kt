@@ -5,14 +5,13 @@ import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDescriptor
-import com.intellij.openapi.vfs.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.listeners.*
 import icu.windea.pls.core.settings.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 class ParadoxModSettingsDialog(
@@ -21,7 +20,7 @@ class ParadoxModSettingsDialog(
 ) : DialogWrapper(project, true) {
     val oldGameType = settings.finalGameType
     
-    val defaultGameVersion get() = getGameVersionFromGameDirectory(defaultGameDirectory)
+    val defaultGameVersion get() = ParadoxGameHandler.getGameVersionFromGameDirectory(defaultGameDirectory)
     val defaultGameDirectory get() = getSettings().defaultGameDirectories[oldGameType.id]
     
     val graph = PropertyGraph()
@@ -30,7 +29,7 @@ class ParadoxModSettingsDialog(
     val gameDirectoryProperty = graph.property(settings.gameDirectory.orEmpty())
     
     init {
-        gameVersionProperty.dependsOn(gameDirectoryProperty) { getGameVersionFromGameDirectory(gameDirectory).orEmpty() }
+        gameVersionProperty.dependsOn(gameDirectoryProperty) { ParadoxGameHandler.getGameVersionFromGameDirectory(gameDirectory).orEmpty() }
     }
     
     var gameType by gameTypeProperty
@@ -90,7 +89,7 @@ class ParadoxModSettingsDialog(
                 //gameDirectory
                 label(PlsBundle.message("mod.settings.gameDirectory")).widthGroup("left")
                 val descriptor = ParadoxDirectoryDescriptor()
-                    .withTitle(PlsBundle.message("mod.settings.gameDirectory.title"))
+                    .withTitle(PlsBundle.message("gameDirectory.title"))
                     .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(null, project, descriptor) { it.path }
@@ -98,12 +97,14 @@ class ParadoxModSettingsDialog(
                     .bindText(gameDirectoryProperty)
                     .columns(36)
                     .align(Align.FILL)
-                    .validationOnApply { validateGameDirectory() }
+                    .validationOnApply { ParadoxGameHandler.validateGameDirectory(this, gameType, gameDirectory) }
             }
+            val quickGameDirectory = ParadoxGameHandler.getQuickGameDirectory(gameType)
             row {
-                //quickSelectGameDirectory
-                link(PlsBundle.message("mod.settings.quickSelectGameDirectory")) { gameDirectory = quickSelectGameDirectory().orEmpty() }
-                    visible(getSteamGamePath(gameType.steamId, gameType.title) != null)
+                link(PlsBundle.message("gameDirectory.quickSelect")) f@{
+                    if(gameDirectory.isNotNullOrEmpty()) return@f
+                    gameDirectory = quickGameDirectory ?: return@f
+                }.enabled(quickGameDirectory != null)
             }
             row {
                 //modDirectory
@@ -132,34 +133,6 @@ class ParadoxModSettingsDialog(
         }
     }
     
-    private fun ValidationInfoBuilder.validateGameDirectory(): ValidationInfo? {
-        //验证游戏目录是否合法
-        //* 路径合法
-        //* 路径对应的目录存在
-        //* 路径是游戏目录（可以查找到对应的launcher-settings.json）
-        val gameDirectory = gameDirectory.normalizeAbsolutePath()
-        if(gameDirectory.isEmpty()) return null //为空时跳过检查
-        val path = gameDirectory.toPathOrNull()
-        if(path == null) return error(PlsBundle.message("mod.settings.gameDirectory.error.1"))
-        val rootFile = VfsUtil.findFile(path, false)?.takeIf { it.exists() }
-        if(rootFile == null) return error(PlsBundle.message("mod.settings.gameDirectory.error.2"))
-        val rootInfo = rootFile.rootInfo
-        if(rootInfo !is ParadoxGameRootInfo) return error(PlsBundle.message("mod.settings.gameDirectory.error.3", gameType.title))
-        return null
-    }
-    
-    private fun quickSelectGameDirectory(): String? {
-        return getSteamGamePath(gameType.steamId, gameType.title)
-    }
-    
-    private fun getGameVersionFromGameDirectory(gameDirectory: String?): String? {
-        val gameDirectory0 = gameDirectory?.orNull() ?: return null
-        val rootFile = gameDirectory0.toVirtualFile(false)?.takeIf { it.exists() } ?: return null
-        val rootInfo = rootFile.rootInfo
-        if(rootInfo !is ParadoxGameRootInfo) return null
-        return rootInfo.launcherSettingsInfo.rawVersion
-    }
-    
     private fun handleModSettings() {
         //如果需要，加上缺失的模组自身的模组依赖配置
         if(modDependencies.find { it.modDirectory == settings.modDirectory } == null) {
@@ -170,19 +143,15 @@ class ParadoxModSettingsDialog(
     }
     
     override fun doOKAction() {
-        doOk()
         super.doOKAction()
+        doOk()
     }
     
-    private fun doApply() {
+    private fun doOk() {
         settings.gameType = gameType
         settings.gameDirectory = gameDirectory
         settings.modDependencies = modDependencies
         getProfilesSettings().updateSettings()
-    }
-    
-    private fun doOk() {
-        doApply()
         
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(settings)

@@ -64,7 +64,7 @@ class ParadoxGameSettingsDialog(
                     cell(ParadoxModDependenciesTableModel.createPanel(project, settings, modDependencies))
                         .align(Align.FILL)
                 }.resizableRow()
-                row { 
+                row {
                     comment(PlsBundle.message("mod.dependencies.comment.1"))
                 }
             }.resizableRow()
@@ -72,19 +72,16 @@ class ParadoxGameSettingsDialog(
     }
     
     override fun doOKAction() {
-        doOk()
         super.doOKAction()
-    }
-    
-    private fun doApply() {
-        settings.modDependencies = modDependencies
-        getProfilesSettings().updateSettings()
+        doOk()
     }
     
     private fun doOk() {
-        doApply()
+        settings.modDependencies = modDependencies
+        getProfilesSettings().updateSettings()
         
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onChange(settings)
     }
+    
 }

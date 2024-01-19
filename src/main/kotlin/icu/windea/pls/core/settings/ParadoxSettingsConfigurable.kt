@@ -51,19 +51,21 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                     val action = { _: ActionEvent ->
                         val dialog = ParadoxGameDirectoriesDialog(list)
-                        if(dialog.showAndGet()) list = dialog.resultList
+                        if(dialog.showAndGet()) {
+                            list = dialog.resultList
+                        }
                     }
                     link(PlsBundle.message("settings.general.configureDefaultGameDirectories"), action)
-                        .onApply { settings.defaultGameDirectories = list.toMutableMap() }
-                        .onReset { list = defaultList }
-                        .onIsModified { list != defaultList }
                         .onApply {
+                            settings.defaultGameDirectories = list.toMutableMap()
                             if(oldDefaultGameDirectories != settings.defaultGameDirectories) {
                                 val messageBus = ApplicationManager.getApplication().messageBus
                                 messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC)
                                     .onChange(oldDefaultGameDirectories, settings.defaultGameDirectories)
                             }
                         }
+                        .onReset { list = defaultList }
+                        .onIsModified { list != defaultList }
                 }
                 //preferredLocale
                 row {
@@ -314,7 +316,9 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                     val action = { _: ActionEvent ->
                         val dialog = ParadoxDefinitionTypeBindingsInCallHierarchyDialog(list)
-                        if(dialog.showAndGet()) list = dialog.resultList
+                        if(dialog.showAndGet()) {
+                            list = dialog.resultList
+                        }
                     }
                     link(PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings"), action)
                         .enabledIf(cbCell.selected)
