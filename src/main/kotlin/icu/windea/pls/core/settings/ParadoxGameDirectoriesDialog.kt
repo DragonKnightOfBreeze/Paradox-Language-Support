@@ -31,7 +31,7 @@ class ParadoxGameDirectoriesDialog(
                 val gameDirectory by gameDirectoryProperty
                 row {
                     //gameDirectory
-                    label(gameType.title).widthGroup("left")
+                    label(gameType.title + ":").widthGroup("left")
                     val descriptor = ParadoxDirectoryDescriptor()
                         .withTitle(PlsBundle.message("gameDirectory.title"))
                         .asBrowseFolderDescriptor()
