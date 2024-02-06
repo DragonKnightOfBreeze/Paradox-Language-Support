@@ -60,6 +60,7 @@ Tips:
 * To change the global configuration of the plugin, refer to the following method:
   * Click `Settings > Languages & Frameworks > Paradox Language Support` to open the settings page for the plugin.
 * To change the configuration of mod types, game directories, mod dependencies, etc., open the Mod Configuration dialog using one of the following methods:
+  * Click `Settings > Languages & Frameworks > Paradox Language Support` to configure default game directories.
   * Click the blue gear icon in the editor floating toolbar located in the upper right corner of the page.
   * In the editor, open the context menu and click `Paradox Language Support > Open Mod Settings...`.
   * Click `Tools > Paradox Language Support > Open Mod Settings...`.

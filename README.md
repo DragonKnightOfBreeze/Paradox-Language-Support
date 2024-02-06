@@ -61,6 +61,7 @@ IDEA插件：Paradox语言支持。
 * 如果需要更改插件的全局配置，请参考以下方式：
   * 点击`Settings > Languages & Frameworks > Paradox Language Support`，打开插件的配置页面。
 * 如果需要更改模组类型、游戏目录、模组依赖等配置，请通过以下方式之一打开模组配置对话框：
+  * 点击`Settings > Languages & Frameworks > Paradox Language Support`，可配置默认的游戏目录。
   * 点击位于页面右上方的编辑器悬浮工具栏中的蓝色齿轮图标。
   * 在编辑器中打开右键菜单，点击`Paradox Language Support > Open Mod Settings...`。
   * 点击`Tools > Paradox Language Support > Open Mod Settings...`。
