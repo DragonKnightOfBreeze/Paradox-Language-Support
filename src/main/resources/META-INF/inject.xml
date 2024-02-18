@@ -11,6 +11,7 @@
   <extensions defaultExtensionNs="icu.windea.pls.inject">
     <codeInjectorSupport implementation="icu.windea.pls.inject.support.BaseCodeInjectorSupport"/>
     <codeInjectorSupport implementation="icu.windea.pls.inject.support.FieldBasedCacheCodeInjectorSupport"/>
+    <codeInjectorSupport implementation="icu.windea.pls.inject.support.LocalCacheCodeInjectorSupport"/>
   </extensions>
   
   <extensions defaultExtensionNs="icu.windea.pls.inject">
@@ -43,5 +44,8 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationCommandScopeCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationCommandFieldCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationConceptCodeInjector"/>
+    
+    <!--code injectors to apply local caches-->
+    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.CwtCardinalityExpressionResolverCodeInjector"/>-->
   </extensions>
 </idea-plugin>

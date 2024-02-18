@@ -1,8 +1,6 @@
 package icu.windea.pls.config
 
-import com.google.common.cache.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
 
 /**
  * CWT规则的领。保留大小写。忽略括起的双引号。
@@ -27,20 +25,11 @@ interface CwtConfigPath : Iterable<String> {
     override fun toString(): String
     
     companion object Resolver {
-        private val cache: LoadingCache<String, CwtConfigPath> = CacheBuilder.newBuilder().buildCache {
-            if(it.isEmpty()) EmptyCwtConfigPath else CwtConfigPathImpl(it)
-        }
+        val EMPTY: CwtConfigPath = EmptyCwtConfigPath
         
         fun resolve(path: String): CwtConfigPath {
-            return cache.get(path)
-        }
-        
-        fun resolve(subPaths: List<String>): CwtConfigPath {
-            return cache.get(subPaths.joinToString("/"))
-        }
-        
-        fun empty(): CwtConfigPath {
-            return EmptyCwtConfigPath
+            if(path.isEmpty()) return EmptyCwtConfigPath
+            return CwtConfigPathImpl(path)
         }
     }
 }

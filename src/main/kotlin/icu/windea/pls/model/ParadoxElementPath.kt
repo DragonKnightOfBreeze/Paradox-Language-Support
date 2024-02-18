@@ -36,6 +36,8 @@ interface ParadoxElementPath : Iterable<Info> {
     override fun toString(): String
     
     companion object Resolver {
+        val EMPTY: ParadoxElementPath = EmptyParadoxElementPath
+        
         fun resolve(path: String): ParadoxElementPath {
             if(path.isEmpty()) return EmptyParadoxElementPath
             return ParadoxElementPathImplA(path)
@@ -44,10 +46,6 @@ interface ParadoxElementPath : Iterable<Info> {
         fun resolve(rawSubPaths: List<String>): ParadoxElementPath {
             if(rawSubPaths.isEmpty()) return EmptyParadoxElementPath
             return ParadoxElementPathImplB(rawSubPaths)
-        }
-        
-        fun empty(): ParadoxElementPath {
-            return EmptyParadoxElementPath
         }
     }
     

@@ -13,13 +13,14 @@ import java.io.*
 import java.lang.ref.*
 import javax.imageio.*
 
+/**
+ * @see org.intellij.images.vfs.IfsUtil
+ * @see org.intellij.images.vfs.IfsUtil.refresh
+ */
 @InjectTarget("org.intellij.images.vfs.IfsUtil", pluginId = "com.intellij.platform.images")
 class IfsUtilCodeInjector : CodeInjectorBase() {
     //用于支持直接在IDE的编辑器中渲染DDS图片
     //即使目标DDS文件不存在于本地（例如来自Git提交记录），也可以正常渲染
-    
-    //org.intellij.images.vfs.IfsUtil
-    //org.intellij.images.vfs.IfsUtil.refresh
     
     //这里必须懒加载，不能在初始化代码注入器时就加载IfsUtil
     private val TIME_MODIFICATION_STAMP_KEY by lazy { staticProperty<IfsUtil, Key<Pair<Long?, Long?>>>("TIME_MODIFICATION_STAMP_KEY").get() }

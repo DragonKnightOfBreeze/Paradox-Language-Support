@@ -5,12 +5,13 @@ import com.intellij.util.text.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*
 
+/**
+ * @see com.intellij.psi.impl.search.LowLevelSearchUtil
+ * @see com.intellij.psi.impl.search.LowLevelSearchUtil.checkJavaIdentifier
+ */
 @InjectTarget("com.intellij.psi.impl.search.LowLevelSearchUtil")
 class LowLevelSearchUtilCodeInjector : CodeInjectorBase() {
     //重写IDE底层的检测字符串是否是标识符的代码逻辑，从而可以正确地查找特定类型的引用
-    
-    //com.intellij.psi.impl.search.LowLevelSearchUtil
-    //com.intellij.psi.impl.search.LowLevelSearchUtil.checkJavaIdentifier
     
     //rewrite this method to compatible with:
     //localisation icon references (e.g. "£unity£")

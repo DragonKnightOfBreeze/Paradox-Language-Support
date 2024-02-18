@@ -23,7 +23,6 @@ class FieldBasedCacheCodeInjectorSupport : CodeInjectorSupport {
         }
         if(methodNamesGroup.isEmpty()) return
         
-        val finalMethodNames = mutableSetOf<String>()
         for((cleanupMethodName, methodNames) in methodNamesGroup) {
             for(methodName in methodNames) {
                 var method = targetClass.declaredMethods.find { it.name == methodName && it.parameterTypes.isEmpty() }
@@ -34,10 +33,11 @@ class FieldBasedCacheCodeInjectorSupport : CodeInjectorSupport {
                         m.setBody("{ return super.${superMethod.name}(\$\$); }")
                         targetClass.addMethod(m)
                         method = m
-                    } else {
-                        thisLogger().warn("Method ${methodName}() is not found in ${targetClass.name}")
-                        continue
-                    }
+                    } 
+                }
+                if(method == null) {
+                    thisLogger().warn("Method ${methodName}() is not found in ${targetClass.name}")
+                    continue
                 }
                 
                 val returnType = method.returnType
@@ -46,7 +46,6 @@ class FieldBasedCacheCodeInjectorSupport : CodeInjectorSupport {
                     continue
                 }
                 
-                finalMethodNames.add(methodName)
                 val fieldName = "__${methodName}__"
                 val returnTypeName = if(returnType is CtPrimitiveType) returnType.wrapperName else returnType.name
                 if(targetClass.declaredFields.find { it.name == "__EMPTY_OBJECT__" } == null) {
@@ -75,7 +74,7 @@ class FieldBasedCacheCodeInjectorSupport : CodeInjectorSupport {
                         return
                     }
                 }
-                val s = finalMethodNames.joinToString("\n") { methodName -> "__${methodName}__ = __EMPTY_OBJECT__;" }
+                val s = methodNames.joinToString("\n") { methodName -> "__${methodName}__ = __EMPTY_OBJECT__;" }
                 val code = "{\n$s\n}"
                 cleanupMethod.insertBefore(code)
                 continue

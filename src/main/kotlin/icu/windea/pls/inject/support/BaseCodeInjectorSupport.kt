@@ -58,9 +58,8 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             application.putUserData(CodeInjectorService.invokeInjectMethodKey, method)
         }
         
-        val f = "private static volatile Method __invokeInjectMethod__ = " +
-            "(Method) ApplicationManager.getApplication().getUserData(Key.findKeyByName(\"INVOKE_INJECT_METHOD_BY_WINDEA\"));"
-        targetClass.addField(CtField.make(f, targetClass))
+        val fieldCode = """private static volatile Method __invokeInjectMethod__ = (Method) ApplicationManager.getApplication().getUserData(Key.findKeyByName("INVOKE_INJECT_METHOD_BY_WINDEA"));"""
+        targetClass.addField(CtField.make(fieldCode, targetClass))
         
         injectMethodInfos.forEach f@{ methodId, injectMethodInfo ->
             val injectMethod = injectMethodInfo.method

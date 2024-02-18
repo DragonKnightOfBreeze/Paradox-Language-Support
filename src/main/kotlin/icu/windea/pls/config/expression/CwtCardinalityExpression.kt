@@ -1,6 +1,5 @@
 package icu.windea.pls.config.expression
 
-import com.google.common.cache.*
 import icu.windea.pls.core.util.*
 
 /**
@@ -37,13 +36,7 @@ class CwtCardinalityExpression private constructor(
     companion object Resolver {
         val EmptyExpression = CwtCardinalityExpression("", 0, null, true)
         
-        private val cache = CacheBuilder.newBuilder().buildCache<String, CwtCardinalityExpression> { doResolve(it) }
-        
         fun resolve(expressionString: String): CwtCardinalityExpression {
-            return cache.get(expressionString)
-        }
-        
-        private fun doResolve(expressionString: String): CwtCardinalityExpression {
             return when {
                 expressionString.isEmpty() -> EmptyExpression
                 expressionString.first() == '~' -> {
