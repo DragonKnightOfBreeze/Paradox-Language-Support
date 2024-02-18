@@ -44,8 +44,5 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationCommandScopeCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationCommandFieldCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationConceptCodeInjector"/>
-    
-    <!--code injectors to apply local caches-->
-    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.CwtCardinalityExpressionResolverCodeInjector"/>-->
   </extensions>
 </idea-plugin>
