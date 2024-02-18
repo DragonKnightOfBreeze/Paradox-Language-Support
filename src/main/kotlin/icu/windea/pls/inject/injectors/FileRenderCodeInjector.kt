@@ -7,7 +7,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.ui.*
 import icu.windea.pls.core.*
 import icu.windea.pls.inject.*
-import icu.windea.pls.inject.annotations.*
 
 /**
  * 渲染文件节点时，为游戏或模组根目录提供提供额外的信息文本。

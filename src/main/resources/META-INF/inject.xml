@@ -9,7 +9,7 @@
   </applicationListeners>
   
   <extensions defaultExtensionNs="icu.windea.pls.inject">
-    <codeInjectorSupport implementation="icu.windea.pls.inject.support.CachedMethodsInjectorSupport"/>
+    <codeInjectorSupport implementation="icu.windea.pls.inject.support.FieldBasedCacheInjectorSupport"/>
   </extensions>
   
   <extensions defaultExtensionNs="icu.windea.pls.inject">

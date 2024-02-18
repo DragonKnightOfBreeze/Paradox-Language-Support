@@ -2,20 +2,20 @@ package icu.windea.pls.inject.support
 
 import com.intellij.openapi.diagnostic.*
 import icu.windea.pls.inject.*
-import icu.windea.pls.inject.annotations.*
 import javassist.*
 import kotlin.reflect.full.*
 
 /**
- * 用于支持基于字段缓存的方法。
- * @see InjectCachedMethods
+ * 提供对基于字段的缓存的代码注入器的支持。
+ * 
+ * @see InjectFieldBasedCache
  */
-class CachedMethodsInjectorSupport : CodeInjectorSupport {
+class FieldBasedCacheInjectorSupport : CodeInjectorSupport {
     override fun apply(codeInjector: CodeInjector) {
         val targetClass = codeInjector.getUserData(CodeInjectorService.targetClassKey) ?: return
-        val injectCachedMethods = codeInjector::class.findAnnotation<InjectCachedMethods>() ?: return
+        val injectFieldBasedCache = codeInjector::class.findAnnotation<InjectFieldBasedCache>() ?: return
         
-        val methodNames = injectCachedMethods.methods
+        val methodNames = injectFieldBasedCache.methods
         if(methodNames.isEmpty()) return
         val finalMethodNames = mutableSetOf<String>()
         for(methodName in methodNames) {
@@ -54,7 +54,7 @@ class CachedMethodsInjectorSupport : CodeInjectorSupport {
             method.insertAfter(code2)
         }
         
-        val cleanupMethodName = injectCachedMethods.cleanupMethod
+        val cleanupMethodName = injectFieldBasedCache.cleanupMethod
         if(cleanupMethodName.isEmpty()) return //cleanup method is optional
         var cleanupMethod = targetClass.declaredMethods.find { it.name == cleanupMethodName }
         if(cleanupMethod == null) {

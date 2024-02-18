@@ -1,6 +1,4 @@
-package icu.windea.pls.inject.annotations
-
-import icu.windea.pls.inject.*
+package icu.windea.pls.inject
 
 /**
  * 注明此方法用于进行代码注入。

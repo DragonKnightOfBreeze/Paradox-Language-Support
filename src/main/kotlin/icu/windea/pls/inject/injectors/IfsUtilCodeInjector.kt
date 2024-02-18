@@ -5,7 +5,6 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.inject.*
-import icu.windea.pls.inject.annotations.*
 import icu.windea.pls.util.image.*
 import org.intellij.images.editor.*
 import org.intellij.images.vfs.*
