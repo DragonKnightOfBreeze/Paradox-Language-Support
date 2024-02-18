@@ -3,6 +3,7 @@ package icu.windea.pls.lang.config
 import com.intellij.lang.injection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -241,7 +242,7 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
     }
     
     private fun getInjectionInfo(file: PsiFile, host: PsiElement) : ParameterValueInjectionInfo? {
-        val injectionInfos = host.getUserData(ParadoxScriptLanguageInjector.Keys.parameterValueInjectionInfos)
+        val injectionInfos = host.getUserData(PlsKeys.parameterValueInjectionInfos)
         if(injectionInfos.isNullOrEmpty()) return null
         return when {
             host is ParadoxScriptStringExpressionElement -> {

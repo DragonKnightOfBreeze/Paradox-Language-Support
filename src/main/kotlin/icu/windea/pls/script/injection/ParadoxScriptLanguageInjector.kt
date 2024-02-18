@@ -7,10 +7,10 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.config.*
 import icu.windea.pls.lang.parameter.*
 import icu.windea.pls.model.*
@@ -58,7 +58,7 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         applyInjectionForArgumentValue(host, allInjectionInfos)
         ProgressManager.checkCanceled()
         applyInjectionForParameterDefaultValue(host, allInjectionInfos)
-        host.putUserData(Keys.parameterValueInjectionInfos, allInjectionInfos.orNull())
+        host.putUserData(PlsKeys.parameterValueInjectionInfos, allInjectionInfos.orNull())
         if(allInjectionInfos.isEmpty()) return true
         allInjectionInfos.forEach f@{ injectionInfo ->
             registrar.startInjecting(ParadoxScriptLanguage)
@@ -137,9 +137,5 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         }
         val textToInject = rangeInsideHost.substring(host.text)
         return ParameterValueInjectionInfo(textToInject, rangeInsideHost, parameterValueQuoted, parameterElementProvider) 
-    }
-    
-    object Keys {
-        val parameterValueInjectionInfos = createKey<List<ParameterValueInjectionInfo>>("paradox.script.injection.parameterValueInjectionInfo")
     }
 }

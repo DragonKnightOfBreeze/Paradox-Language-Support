@@ -11,6 +11,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.script.injection.*
 import icu.windea.pls.util.image.*
 import java.awt.*
 
@@ -53,6 +54,8 @@ val PlsKeys.cachedConfigType by createKey<CachedValue<CwtConfigType>>("cwt.cache
 val PlsKeys.cachedConfigContext by createKey<CachedValue<CwtConfigContext>>("cwt.cached.configContext")
 val PlsKeys.cachedConfigsCache by createKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>("cwt.cached.configs.cache")
 val PlsKeys.cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>("cwt.cached.childOccurrenceMap.cache")
+
+val PlsKeys.parameterValueInjectionInfos by createKey<List<ParameterValueInjectionInfo>>("paradox.injection.parameterValueInjectionInfos")
 
 //用于将CWT规则临时写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
 val PlsKeys.cwtConfig by createKey<CwtConfig<*>>("paradox.cwtConfig")
