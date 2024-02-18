@@ -45,6 +45,10 @@ interface ParadoxElementPath : Iterable<Info> {
             if(rawSubPaths.isEmpty()) return EmptyParadoxElementPath
             return ParadoxElementPathImplB(rawSubPaths)
         }
+        
+        fun empty(): ParadoxElementPath {
+            return EmptyParadoxElementPath
+        }
     }
     
     data class Info(
@@ -55,7 +59,7 @@ interface ParadoxElementPath : Iterable<Info> {
     ) {
         companion object Resolver {
             fun resolve(path: String): Info {
-                return Info(path, path.unquote(), path.isLeftQuoted(), path != "-")
+                return Info(path.intern(), path.unquote().intern(), path.isLeftQuoted(), path != "-")
             }
         }
     }
@@ -104,29 +108,22 @@ fun ParadoxElementPath.matchEntire(other: List<String>, ignoreCase: Boolean = tr
     return true
 }
 
-class ParadoxElementPathImplA(
-    override val path: String
+//Implementations
+
+private class ParadoxElementPathImplA(
+    path: String
 ) : ParadoxElementPath {
-    override val rawSubPaths: List<String> = doGetRawSubPaths()
-    override val subPaths: List<Info> = rawSubPaths.map { Info.resolve(it) }
-    override val length: Int = subPaths.size
-    
-    override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
-    override fun hashCode() = path.hashCode()
-    override fun toString() = path
-    
-    private fun doGetRawSubPaths(): List<String> {
-        //optimized
-        val result = mutableListOf<String>()
+    override val path = path.intern()
+    override val rawSubPaths: List<String> = buildList {
         val builder = StringBuilder()
         var escape = false
-        path.forEach { c ->
+        path.forEachFast { c ->
             when {
                 c == '\\' -> {
                     escape = true
                 }
                 c == '/' && !escape -> {
-                    result.add(builder.toString())
+                    add(builder.toString().intern())
                     builder.clear()
                 }
                 else -> {
@@ -136,39 +133,40 @@ class ParadoxElementPathImplA(
             }
         }
         if(builder.isNotEmpty()) {
-            result.add(builder.toString())
+            add(builder.toString().intern())
         }
-        return result
     }
-}
-
-class ParadoxElementPathImplB(
-    rawSubPaths: List<String>
-) : ParadoxElementPath {
-    override val rawSubPaths = rawSubPaths
-    override val path: String = doGetPath()
-    override val subPaths: List<Info> = rawSubPaths.map { Info.resolve(it) }
+    override val subPaths: List<Info> = rawSubPaths.mapFast { Info.resolve(it) }
     override val length: Int = subPaths.size
     
     override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
     override fun hashCode() = path.hashCode()
     override fun toString() = path
-    
-    private fun doGetPath(): String {
-        return buildString {
-            var isFirst = true
-            rawSubPaths.forEachFast { p ->
-                if(isFirst) isFirst = false else append('/')
-                p.forEachFast { c ->
-                    if(c == '/') append('\\')
-                    append(c)
-                }
-            }
-        }
-    }
 }
 
-object EmptyParadoxElementPath : ParadoxElementPath {
+private class ParadoxElementPathImplB(
+    rawSubPaths: List<String>
+) : ParadoxElementPath {
+    override val path: String = buildString {
+        var isFirst = true
+        rawSubPaths.forEachFast { p ->
+            if(isFirst) isFirst = false else append('/')
+            p.forEachFast { c ->
+                if(c == '/') append('\\')
+                append(c)
+            }
+        }
+    }.intern()
+    override val rawSubPaths = rawSubPaths.mapFast { it.intern() }
+    override val subPaths: List<Info> = rawSubPaths.mapFast { Info.resolve(it) }
+    override val length: Int = subPaths.size
+    
+    override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
+    override fun hashCode() = path.hashCode()
+    override fun toString() = path
+}
+
+private object EmptyParadoxElementPath : ParadoxElementPath {
     override val path: String = ""
     override val rawSubPaths: List<String> = emptyList()
     override val subPaths: List<Info> = emptyList()
