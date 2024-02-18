@@ -73,6 +73,8 @@ fun CwtPropertyConfig.copy(
     return CwtPropertyConfig.resolve(pointer, info, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
 }
 
+//Implementations
+
 private object CwtPropertyConfigImpls {
     abstract class Impl(
         override val pointer: SmartPsiElementPointer<out CwtProperty>,

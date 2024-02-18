@@ -86,6 +86,8 @@ class CwtPropertyPointer(
     val valuePointer: SmartPsiElementPointer<CwtValue>? = delegate.element?.propertyValue?.createPointer()
 }
 
+//Implementations
+
 private object CwtValueConfigImpls {
     abstract class Impl(
         override val pointer: SmartPsiElementPointer<out CwtValue>,
