@@ -11,10 +11,6 @@ abstract class CodeInjector: UserDataHolderBase() {
     
     abstract fun inject()
     
-    override fun <T : Any?> getUserData(key: Key<T>): T? {
-        return super.getUserData(key) ?: getUserData(CodeInjectorService.codeInjectorServiceKey)?.getUserData(key)
-    }
-    
     companion object {
         val EP_NAME = ExtensionPointName.create<CodeInjector>("icu.windea.pls.inject.codeInjector")
     }

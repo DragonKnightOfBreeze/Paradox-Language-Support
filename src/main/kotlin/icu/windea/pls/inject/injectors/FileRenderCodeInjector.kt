@@ -7,21 +7,21 @@ import com.intellij.openapi.vfs.*
 import com.intellij.ui.*
 import icu.windea.pls.core.*
 import icu.windea.pls.inject.*
+import icu.windea.pls.inject.annotations.*
 
-/**
- * 渲染文件节点时，为游戏或模组根目录提供提供额外的信息文本。
- */
 @InjectTarget("com.intellij.openapi.fileChooser.tree.FileRenderer")
 class FileRenderCodeInjector : CodeInjectorBase() {
+    //渲染文件节点时，为游戏或模组根目录提供提供额外的信息文本
+    
     //com.intellij.openapi.fileChooser.tree.FileRenderer
     //com.intellij.openapi.fileChooser.tree.FileRenderer.customize
     
-    @InjectMethod(InjectMethod.Pointer.AFTER, static = true)
+    @InjectMethod(pointer = InjectMethod.Pointer.AFTER, static = true)
     fun customize(renderer: SimpleColoredComponent, value: Any, selected: Boolean, focused: Boolean) {
         doCustomizeCatching(value, renderer)
     }
     
-    @InjectMethod(InjectMethod.Pointer.AFTER, static = true)
+    @InjectMethod(pointer = InjectMethod.Pointer.AFTER, static = true)
     fun customize(renderer: SimpleColoredComponent, value: Any) {
         doCustomizeCatching(value, renderer)
     }

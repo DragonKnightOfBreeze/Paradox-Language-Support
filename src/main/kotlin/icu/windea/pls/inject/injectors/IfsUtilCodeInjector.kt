@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.inject.*
+import icu.windea.pls.inject.annotations.*
 import icu.windea.pls.util.image.*
 import org.intellij.images.editor.*
 import org.intellij.images.vfs.*
@@ -12,22 +13,20 @@ import java.io.*
 import java.lang.ref.*
 import javax.imageio.*
 
-/**
- * 用于支持直接在IDE的编辑器中渲染DDS图片。
- */
 @InjectTarget("org.intellij.images.vfs.IfsUtil", pluginId = "com.intellij.platform.images")
 class IfsUtilCodeInjector : CodeInjectorBase() {
+    //用于支持直接在IDE的编辑器中渲染DDS图片
+    //即使目标DDS文件不存在于本地（例如来自Git提交记录），也可以正常渲染
+    
     //org.intellij.images.vfs.IfsUtil
     //org.intellij.images.vfs.IfsUtil.refresh
-    
-    //即使目标DDS文件不存在于本地（例如来自Git提交记录），也可以正常渲染
     
     //这里必须懒加载，不能在初始化代码注入器时就加载IfsUtil
     private val TIME_MODIFICATION_STAMP_KEY by lazy { staticProperty<IfsUtil, Key<Pair<Long?, Long?>>>("TIME_MODIFICATION_STAMP_KEY").get() }
     private val FORMAT_KEY by lazy { staticProperty<IfsUtil, Key<String>>("FORMAT_KEY").get() }
     private val IMAGE_PROVIDER_REF_KEY by lazy { staticProperty<IfsUtil, Key<SoftReference<ImageDocument.ScaledImageProvider>>>("IMAGE_PROVIDER_REF_KEY").get() }
     
-    @InjectMethod(InjectMethod.Pointer.AFTER, static = true)
+    @InjectMethod(pointer = InjectMethod.Pointer.AFTER, static = true)
     fun refresh(file: VirtualFile, returnValue: Boolean): Boolean {
         if(returnValue) return true
         if(file.fileType != DdsFileType) return false

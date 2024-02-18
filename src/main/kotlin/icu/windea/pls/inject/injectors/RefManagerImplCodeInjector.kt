@@ -3,16 +3,16 @@ package icu.windea.pls.inject.injectors
 import com.intellij.codeInspection.reference.*
 import icu.windea.pls.core.*
 import icu.windea.pls.inject.*
+import icu.windea.pls.inject.annotations.*
 
-/**
- * 如果可行，让代码检查页面中的按目录分组选项按照相对于游戏或模组根目录的路径分组，而非简单地按照目录名分组。
- */
 @InjectTarget("com.intellij.codeInspection.reference.RefManagerImpl")
 class RefManagerImplCodeInjector : CodeInjectorBase() {
+    //如果可行，让代码检查页面中的按目录分组选项按照相对于游戏或模组根目录的路径分组，而非简单地按照目录名分组
+    
     //com.intellij.codeInspection.reference.RefManagerImpl
     //com.intellij.codeInspection.reference.RefManagerImpl.getGroupName
     
-    @InjectMethod(InjectMethod.Pointer.BEFORE)
+    @InjectMethod(pointer = InjectMethod.Pointer.BEFORE)
     fun getGroupName(entity: RefElement): String? {
         if(entity is RefFile) {
             //按目录分组时显示相对于游戏或模组根目录的路径

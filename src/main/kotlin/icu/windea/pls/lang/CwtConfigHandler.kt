@@ -58,7 +58,7 @@ object CwtConfigHandler {
     }
     
     fun getConfigPath(element: PsiElement): CwtConfigPath? {
-        if(element is CwtFile) return EmptyCwtConfigPath
+        if(element is CwtFile) return CwtConfigPath.empty()
         if(element !is CwtProperty && element !is CwtValue) return null
         return doGetConfigPathFromCache(element)
     }

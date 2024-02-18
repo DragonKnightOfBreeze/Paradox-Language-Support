@@ -3,12 +3,12 @@ package icu.windea.pls.inject.injectors
 import com.intellij.openapi.util.text.*
 import com.intellij.util.text.*
 import icu.windea.pls.inject.*
+import icu.windea.pls.inject.annotations.*
 
-/**
- * 重写IDE底层的检测字符串是否是标识符的代码逻辑，从而可以正确地查找特定类型的引用。
- */
 @InjectTarget("com.intellij.psi.impl.search.LowLevelSearchUtil")
 class LowLevelSearchUtilCodeInjector : CodeInjectorBase() {
+    //重写IDE底层的检测字符串是否是标识符的代码逻辑，从而可以正确地查找特定类型的引用
+    
     //com.intellij.psi.impl.search.LowLevelSearchUtil
     //com.intellij.psi.impl.search.LowLevelSearchUtil.checkJavaIdentifier
     
