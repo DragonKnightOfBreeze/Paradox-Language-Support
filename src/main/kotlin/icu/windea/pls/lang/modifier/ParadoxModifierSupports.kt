@@ -77,7 +77,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
             
             val tailText = CwtConfigHandler.getScriptExpressionTailText(modifierConfig.config, withExpression = false)
             val template = modifierConfig.template
-            if(template.isNotEmpty()) continue
+            if(template.expressionString.isNotEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
             val name = modifierConfig.name
             val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxPredefinedModifierSupport)
@@ -150,7 +150,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             
             val tailText = CwtConfigHandler.getScriptExpressionTailText(modifierConfig.config, withExpression = true)
             val template = modifierConfig.template
-            if(template.isEmpty()) continue
+            if(template.expressionString.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
             //生成的modifier
             template.processResolveResult(element, configGroup) p@{ name ->
@@ -194,7 +194,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         append(PlsBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上模版信息
         val templateConfigExpression = modifierConfig.template
-        if(templateConfigExpression.isNotEmpty()) {
+        if(templateConfigExpression.expressionString.isNotEmpty()) {
             val gameType = modifierElement.gameType
             val templateString = templateConfigExpression.expressionString
             

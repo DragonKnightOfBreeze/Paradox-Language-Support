@@ -2,6 +2,7 @@ package icu.windea.pls.config.expression
 
 import com.google.common.cache.*
 import icu.windea.pls.core.util.*
+import org.mozilla.javascript.ast.EmptyExpression
 
 /**
  * CWT基数表达式。
@@ -31,6 +32,8 @@ interface CwtCardinalityExpression : CwtExpression {
     fun isRequired() = min > 0
     
     companion object {
+        val EmptyExpression: CwtCardinalityExpression = doResolveEmpty()
+        
         fun resolve(expressionString: String): CwtCardinalityExpression = cache.get(expressionString)
     }
 }

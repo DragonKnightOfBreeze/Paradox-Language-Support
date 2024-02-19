@@ -961,7 +961,7 @@ object CwtConfigHandler {
         val scopeMatched = context.scopeMatched
         val scopeContext = context.scopeContext
         
-        if(configExpression.isEmpty()) return
+        if(configExpression.expressionString.isEmpty()) return
         
         //匹配作用域
         if(scopeMatched) {

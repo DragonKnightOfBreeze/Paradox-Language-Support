@@ -18,11 +18,11 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {
         run {
             configGroup.modifiers.values
-                .filter { it.template.isNotEmpty() }
+                .filter { it.template.expressionString.isNotEmpty() }
                 .sortedByDescending { it.template.snippetExpressions.size } //put xxx_<xxx>_xxx before xxx_<xxx>
                 .associateByTo(configGroup.generatedModifiers.asMutable()) { it.name }
             configGroup.modifiers.values
-                .filter { it.template.isEmpty() }
+                .filter { it.template.expressionString.isEmpty() }
                 .associateByTo(configGroup.predefinedModifiers.asMutable()) { it.name }
         }
 
@@ -119,8 +119,8 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     val propertyConfig = parameterConfig.parentConfig as? CwtPropertyConfig ?: continue
                     val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
                     val contextExpression = if(aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression else CwtKeyExpression.resolve(aliasSubName)
-                    if(contextExpression.type == CwtDataTypes.Definition && contextExpression.value != null) {
-                        this += contextExpression.value
+                    if(contextExpression.type == CwtDataTypes.Definition) {
+                        contextExpression.value?.let { this += it }
                     }
                 }
             }

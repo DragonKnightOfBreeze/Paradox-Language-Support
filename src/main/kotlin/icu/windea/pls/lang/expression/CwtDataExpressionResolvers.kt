@@ -214,7 +214,7 @@ class ConstantCwtDataExpressionResolver : CwtDataExpressionResolver {
 
 class TemplateCwtDataExpressionResolver : CwtDataExpressionResolver {
     override fun resolve(expressionString: String): Result? {
-        if(CwtTemplateExpression.resolve(expressionString).isNotEmpty()) return Result(expressionString, CwtDataTypes.Template)
+        if(CwtTemplateExpression.resolve(expressionString).expressionString.isNotEmpty()) return Result(expressionString, CwtDataTypes.Template)
         return null
     }
 }

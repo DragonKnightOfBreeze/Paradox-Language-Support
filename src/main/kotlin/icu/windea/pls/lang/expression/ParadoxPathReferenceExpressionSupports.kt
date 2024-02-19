@@ -111,7 +111,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         if(expressionRel != null) {
             return null //信息不足
         }
-        val index = configExpression.lastIndexOf(',') //","应当最多出现一次
+        val index = configExpression.expressionString.lastIndexOf(',') //","应当最多出现一次
         if(index == -1) {
             if(expression.endsWith('/')) {
                 return "$expression$pathReference".toSingletonSet()
