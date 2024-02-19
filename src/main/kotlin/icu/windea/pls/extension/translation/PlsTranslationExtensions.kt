@@ -4,6 +4,7 @@ package icu.windea.pls.extension.translation
 
 import cn.yiiguxing.plugin.translate.trans.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 

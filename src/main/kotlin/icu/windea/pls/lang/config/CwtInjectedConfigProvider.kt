@@ -2,6 +2,7 @@ package icu.windea.pls.lang.config
 
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
