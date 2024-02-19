@@ -3,7 +3,6 @@ package icu.windea.pls.script.codeInsight.unwrap
 import com.intellij.codeInsight.unwrap.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
 abstract class ParadoxScriptUnwrapper : AbstractUnwrapper<ParadoxScriptUnwrapper.Context>("") {

@@ -3,7 +3,6 @@ package icu.windea.pls.lang.inherit
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.expression.complex.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.lang.*

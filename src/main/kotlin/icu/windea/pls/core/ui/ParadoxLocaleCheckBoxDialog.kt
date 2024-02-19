@@ -6,7 +6,6 @@ import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.*
 
 class ParadoxLocaleCheckBoxDialog(
     val selectedLocales: Collection<CwtLocalisationLocaleConfig>,

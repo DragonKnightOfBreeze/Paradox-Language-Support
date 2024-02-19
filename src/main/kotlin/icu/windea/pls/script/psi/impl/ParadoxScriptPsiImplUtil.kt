@@ -10,7 +10,6 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.references.*

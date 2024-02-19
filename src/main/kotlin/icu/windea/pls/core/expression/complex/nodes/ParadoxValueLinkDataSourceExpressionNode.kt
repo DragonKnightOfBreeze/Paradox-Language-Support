@@ -3,7 +3,6 @@ package icu.windea.pls.core.expression.complex.nodes
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.*
 import icu.windea.pls.core.expression.complex.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.highlighter.*

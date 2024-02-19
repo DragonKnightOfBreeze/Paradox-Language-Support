@@ -1,7 +1,6 @@
 package icu.windea.pls.core.expression
 
 import icu.windea.pls.model.*
-import java.util.*
 
 /**
  * 定义类型表达式。

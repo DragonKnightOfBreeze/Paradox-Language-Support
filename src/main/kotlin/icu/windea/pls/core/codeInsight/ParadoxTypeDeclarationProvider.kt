@@ -4,7 +4,6 @@ import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
