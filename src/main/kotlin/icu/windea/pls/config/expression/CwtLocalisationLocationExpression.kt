@@ -4,6 +4,7 @@ import com.google.common.cache.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.CwtLocalisationLocationExpression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
@@ -12,12 +13,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-
-private val validValueTypes = arrayOf(
-    CwtDataTypes.Localisation,
-    CwtDataTypes.SyncedLocalisation,
-    CwtDataTypes.InlineLocalisation
-)
 
 /**
  * CWT本地化位置表达式。
@@ -32,17 +27,24 @@ private val validValueTypes = arrayOf(
  * @property propertyName 属性名，用于获取本地化的名字。
  * @property upperCase 本地化的名字是否强制大写。
  */
-class CwtLocalisationLocationExpression private constructor(
-    expressionString: String,
-    val placeholder: String? = null,
-    val propertyName: String? = null,
-    val upperCase: Boolean = false
-) : AbstractExpression(expressionString), CwtExpression {
-    fun resolvePlaceholder(name: String): String? {
-        if(placeholder == null) return null
-        return buildString { for(c in placeholder) if(c == '$') append(name) else append(c) }
-            .letIf(upperCase) { it.uppercase() }
-    }
+interface CwtLocalisationLocationExpression : CwtExpression {
+    val placeholder: String?
+    val propertyName: String?
+    val upperCase: Boolean
+    
+    fun resolvePlaceholder(name: String): String?
+    
+    fun resolve(
+        definition: ParadoxScriptDefinitionElement,
+        definitionInfo: ParadoxDefinitionInfo,
+        selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
+    ): ResolveResult?
+    
+    fun resolveAll(
+        definition: ParadoxScriptDefinitionElement,
+        definitionInfo: ParadoxDefinitionInfo,
+        selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
+    ): ResolveAllResult?
     
     data class ResolveResult(
         val name: String,
@@ -50,10 +52,55 @@ class CwtLocalisationLocationExpression private constructor(
         val message: String? = null
     )
     
-    /**
-     * @return (localisationKey, localisation, message)
-     */
-    fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveResult? {
+    data class ResolveAllResult(
+        val name: String,
+        val elements: Set<ParadoxLocalisationProperty>,
+        val message: String? = null
+    )
+    
+    companion object Resolver {
+        val EmptyExpression: CwtLocalisationLocationExpression = doResolveEmpty()
+        
+        fun resolve(expressionString: String): CwtLocalisationLocationExpression = cache.get(expressionString)
+    }
+}
+
+//Resolve Methods
+
+private val cache = CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) }
+
+private fun doResolveEmpty() = CwtLocalisationLocationExpressionImpl("", propertyName = "")
+
+private fun doResolve(expressionString: String): CwtLocalisationLocationExpression {
+    return when {
+        expressionString.isEmpty() -> Resolver.EmptyExpression
+        expressionString.contains('$') -> {
+            val placeholder = expressionString.substringBefore('|').intern()
+            val upperCase = expressionString.substringAfter('|', "") == "u"
+            CwtLocalisationLocationExpressionImpl(expressionString, placeholder = placeholder, upperCase = upperCase)
+        }
+        else -> {
+            val propertyName = expressionString
+            CwtLocalisationLocationExpressionImpl(expressionString, propertyName = propertyName)
+        }
+    }
+}
+
+//Implementations
+
+private class CwtLocalisationLocationExpressionImpl(
+    override val expressionString: String,
+    override val placeholder: String? = null,
+    override val propertyName: String? = null,
+    override val upperCase: Boolean = false
+) : CwtLocalisationLocationExpression {
+    override fun resolvePlaceholder(name: String): String? {
+        if(placeholder == null) return null
+        return buildString { for(c in placeholder) if(c == '$') append(name) else append(c) }
+            .letIf(upperCase) { it.uppercase() }
+    }
+    
+    override fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveResult? {
         if(placeholder != null) {
             if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             val name = resolvePlaceholder(definitionInfo.name)!!
@@ -63,7 +110,7 @@ class CwtLocalisationLocationExpression private constructor(
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
             val config = CwtConfigHandler.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-            if(config.expression.type !in validValueTypes) {
+            if(config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
                 return ResolveResult("", null, PlsBundle.message("dynamic"))
             }
             if(propertyValue !is ParadoxScriptString) {
@@ -83,13 +130,7 @@ class CwtLocalisationLocationExpression private constructor(
         }
     }
     
-    data class ResolveAllResult(
-        val name: String,
-        val elements: Set<ParadoxLocalisationProperty>,
-        val message: String? = null
-    )
-    
-    fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveAllResult? {
+    override fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveAllResult? {
         if(placeholder != null) {
             if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             
@@ -100,7 +141,7 @@ class CwtLocalisationLocationExpression private constructor(
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
             val config = CwtConfigHandler.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-            if(config.expression.type !in validValueTypes) {
+            if(config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
                 return ResolveAllResult("", emptySet(), PlsBundle.message("dynamic"))
             }
             if(propertyValue !is ParadoxScriptString) {
@@ -117,31 +158,6 @@ class CwtLocalisationLocationExpression private constructor(
             return ResolveAllResult(name, resolved)
         } else {
             throw IllegalStateException() //不期望的结果
-        }
-    }
-    
-    companion object Resolver {
-        val EmptyExpression = CwtLocalisationLocationExpression("", propertyName = "")
-        
-        private val cache = CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) }
-        
-        fun resolve(expressionString: String): CwtLocalisationLocationExpression {
-            return cache.get(expressionString)
-        }
-        
-        private fun doResolve(expressionString: String): CwtLocalisationLocationExpression {
-            return when {
-                expressionString.isEmpty() -> EmptyExpression
-                expressionString.contains('$') -> {
-                    val placeholder = expressionString.substringBefore('|').intern()
-                    val upperCase = expressionString.substringAfter('|', "") == "u"
-                    CwtLocalisationLocationExpression(expressionString, placeholder = placeholder, upperCase = upperCase)
-                }
-                else -> {
-                    val propertyName = expressionString
-                    CwtLocalisationLocationExpression(expressionString, propertyName = propertyName)
-                }
-            }
         }
     }
 }

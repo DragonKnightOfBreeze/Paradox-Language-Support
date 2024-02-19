@@ -107,4 +107,15 @@ object CwtDataTypeGroups {
         CwtDataTypes.Constant,
         CwtDataTypes.Any,
     )
+    
+    val ImageLocationResolved = arrayOf(
+        CwtDataTypes.FilePath,
+        CwtDataTypes.Icon,
+        CwtDataTypes.Definition
+    )
+    val LocalisationLocationResolved = arrayOf(
+        CwtDataTypes.Localisation,
+        CwtDataTypes.SyncedLocalisation,
+        CwtDataTypes.InlineLocalisation
+    )
 }

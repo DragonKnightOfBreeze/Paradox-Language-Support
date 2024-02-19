@@ -18,52 +18,60 @@ import icu.windea.pls.core.util.*
  * @property max 最大值，null表示无限。
  * @property relaxMin 如果值为`false`，则当实际数量小于最小值时仅会作出（弱）警告。
  */
-class CwtCardinalityExpression private constructor(
-    expressionString: String,
-    val min: Int,
-    val max: Int?,
+interface CwtCardinalityExpression : CwtExpression {
+    val min: Int
+    val max: Int?
     val relaxMin: Boolean
-) : AbstractExpression(expressionString), CwtExpression {
+    
     operator fun component1() = min
-    
     operator fun component2() = max
-    
     operator fun component3() = relaxMin
     
     fun isOptional() = min == 0
-    
     fun isRequired() = min > 0
     
-    companion object Resolver {
-        val EmptyExpression = CwtCardinalityExpression("", 0, null, true)
-        
-        private val cache = CacheBuilder.newBuilder().buildCache<String, CwtCardinalityExpression> { doResolve(it) }
-        
-        fun resolve(expressionString: String): CwtCardinalityExpression {
-            return cache.get(expressionString)
+    companion object {
+        fun resolve(expressionString: String): CwtCardinalityExpression = cache.get(expressionString)
+    }
+}
+
+//Resolve Methods
+
+private val cache = CacheBuilder.newBuilder().buildCache<String, CwtCardinalityExpression> { doResolve(it) }
+
+private fun doResolveEmpty() = CwtCardinalityExpressionImpl("", 0, null, true)
+
+private fun doResolve(expressionString: String): CwtCardinalityExpression {
+    if(expressionString.isEmpty()) return doResolveEmpty()
+    return when {
+        expressionString.first() == '~' -> {
+            val firstDotIndex = expressionString.indexOf('.')
+            val min = expressionString.substring(1, firstDotIndex).toIntOrNull() ?: 0
+            val max = expressionString.substring(firstDotIndex + 2)
+                .let { if(it.equals("inf", true)) null else it.toIntOrNull() ?: 0 }
+            val relaxMin = true
+            CwtCardinalityExpressionImpl(expressionString, min, max, relaxMin)
         }
-        
-        private fun doResolve(expressionString: String): CwtCardinalityExpression {
-            return when {
-                expressionString.isEmpty() -> EmptyExpression
-                expressionString.first() == '~' -> {
-                    val firstDotIndex = expressionString.indexOf('.')
-                    val min = expressionString.substring(1, firstDotIndex).toIntOrNull() ?: 0
-                    val max = expressionString.substring(firstDotIndex + 2)
-                        .let { if(it.equals("inf", true)) null else it.toIntOrNull() ?: 0 }
-                    val relaxMin = true
-                    CwtCardinalityExpression(expressionString, min, max, relaxMin)
-                }
-                else -> {
-                    val firstDotIndex = expressionString.indexOf('.')
-                    val min = expressionString.substring(0, firstDotIndex).toIntOrNull() ?: 0
-                    val max = expressionString.substring(firstDotIndex + 2)
-                        .let { if(it.equals("inf", true)) null else it.toIntOrNull() ?: 0 }
-                    val relaxMin = false
-                    CwtCardinalityExpression(expressionString, min, max, relaxMin)
-                }
-            }
+        else -> {
+            val firstDotIndex = expressionString.indexOf('.')
+            val min = expressionString.substring(0, firstDotIndex).toIntOrNull() ?: 0
+            val max = expressionString.substring(firstDotIndex + 2)
+                .let { if(it.equals("inf", true)) null else it.toIntOrNull() ?: 0 }
+            val relaxMin = false
+            CwtCardinalityExpressionImpl(expressionString, min, max, relaxMin)
         }
     }
-    
+}
+
+//Implementations
+
+private class CwtCardinalityExpressionImpl(
+    override val expressionString: String,
+    override val min: Int,
+    override val max: Int?,
+    override val relaxMin: Boolean
+) : CwtCardinalityExpression {
+    override fun equals(other: Any?) = this === other || other is CwtCardinalityExpression && expressionString == other.expressionString
+    override fun hashCode() = expressionString.hashCode()
+    override fun toString() = expressionString
 }

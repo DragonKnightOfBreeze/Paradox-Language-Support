@@ -5,6 +5,8 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.expression.CwtImageLocationExpression.ResolveResult
+import icu.windea.pls.config.expression.CwtImageLocationExpression.ResolveAllResult
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
@@ -14,12 +16,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.image.*
-
-private val validValueTypes = arrayOf(
-    CwtDataTypes.FilePath,
-    CwtDataTypes.Icon,
-    CwtDataTypes.Definition
-)
 
 /**
  * CWT图片位置表达式。
@@ -34,16 +30,26 @@ private val validValueTypes = arrayOf(
  * @property propertyName 属性名，用于获取图片的引用文本。
  * @property framePropertyNames 属性名，用于获取帧数。帧数用于后续切分图片。
  */
-class CwtImageLocationExpression private constructor(
-    expressionString: String,
-    val placeholder: String? = null,
-    val propertyName: String? = null,
-    val framePropertyNames: List<String>? = null,
-) : AbstractExpression(expressionString), CwtExpression {
-    fun resolvePlaceholder(name: String): String? {
-        if(placeholder == null) return null
-        return buildString { for(c in placeholder) if(c == '$') append(name) else append(c) }
-    }
+interface CwtImageLocationExpression : CwtExpression {
+    val placeholder: String?
+    val propertyName: String?
+    val framePropertyNames: List<String>?
+    
+    fun resolvePlaceholder(name: String): String?
+    
+    fun resolve(
+        definition: ParadoxScriptDefinitionElement,
+        definitionInfo: ParadoxDefinitionInfo,
+        frameInfo: FrameInfo? = null,
+        toFile: Boolean = false
+    ): ResolveResult?
+    
+    fun resolveAll(
+        definition: ParadoxScriptDefinitionElement,
+        definitionInfo: ParadoxDefinitionInfo,
+        frameInfo: FrameInfo? = null,
+        toFile: Boolean = false
+    ): ResolveAllResult?
     
     data class ResolveResult(
         val nameOrFilePath: String,
@@ -52,7 +58,56 @@ class CwtImageLocationExpression private constructor(
         val message: String? = null
     )
     
-    fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: FrameInfo? = null, toFile: Boolean = false): ResolveResult? {
+    data class ResolveAllResult(
+        val nameOrFilePath: String,
+        val elements: Set<PsiElement>,
+        val frameInfo: FrameInfo? = null,
+        val message: String? = null
+    )
+    
+    companion object Resolver {
+        val EmptyExpression: CwtImageLocationExpression = doResolveEmpty()
+        
+        fun resolve(expressionString: String): CwtImageLocationExpression = cache.get(expressionString)
+    }
+}
+
+//Resolve Methods
+
+private val cache = CacheBuilder.newBuilder().buildCache<String, CwtImageLocationExpression> { doResolve(it) }
+
+private fun doResolveEmpty() = CwtImageLocationExpressionImpl("", propertyName = "")
+
+private fun doResolve(expressionString: String): CwtImageLocationExpression {
+    return when {
+        expressionString.isEmpty() -> CwtImageLocationExpression.EmptyExpression
+        expressionString.contains('$') -> {
+            val placeholder = expressionString
+            CwtImageLocationExpressionImpl(expressionString, placeholder = placeholder)
+        }
+        else -> {
+            val propertyName = expressionString.substringBefore('|').intern()
+            val framePropertyNames = expressionString.substringAfter('|', "").orNull()
+                ?.toCommaDelimitedStringList()
+            CwtImageLocationExpressionImpl(expressionString, propertyName = propertyName, framePropertyNames = framePropertyNames)
+        }
+    }
+}
+
+//Implementations
+
+private class CwtImageLocationExpressionImpl(
+    override val expressionString: String,
+    override val placeholder: String? = null,
+    override val propertyName: String? = null,
+    override val framePropertyNames: List<String>? = null,
+) : CwtImageLocationExpression {
+    override fun resolvePlaceholder(name: String): String? {
+        if(placeholder == null) return null
+        return buildString { for(c in placeholder) if(c == '$') append(name) else append(c) }
+    }
+    
+    override fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: FrameInfo?, toFile: Boolean): ResolveResult? {
         val project = definitionInfo.project
         var newFrameInfo = frameInfo
         if(definitionInfo.type == "sprite") {
@@ -93,7 +148,7 @@ class CwtImageLocationExpression private constructor(
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
             val config = CwtConfigHandler.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-            if(config.expression.type !in validValueTypes) {
+            if(config.expression.type !in CwtDataTypeGroups.ImageLocationResolved) {
                 return ResolveResult("", null, null, PlsBundle.message("dynamic"))
             }
             if(propertyValue !is ParadoxScriptString) {
@@ -141,14 +196,7 @@ class CwtImageLocationExpression private constructor(
         }
     }
     
-    data class ResolveAllResult(
-        val nameOrFilePath: String,
-        val elements: Set<PsiElement>,
-        val frameInfo: FrameInfo? = null,
-        val message: String? = null
-    )
-    
-    fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: FrameInfo? = null, toFile: Boolean = false): ResolveAllResult? {
+    override fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: FrameInfo?, toFile: Boolean): ResolveAllResult? {
         val project = definitionInfo.project
         var newFrameInfo = frameInfo
         if(definitionInfo.type == "sprite") {
@@ -198,7 +246,7 @@ class CwtImageLocationExpression private constructor(
             val property = definition.findProperty(propertyName, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
             val config = CwtConfigHandler.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-            if(config.expression.type !in validValueTypes) {
+            if(config.expression.type !in CwtDataTypeGroups.ImageLocationResolved) {
                 return ResolveAllResult("", emptySet(), null, PlsBundle.message("dynamic"))
             }
             if(propertyValue !is ParadoxScriptString) {
@@ -251,32 +299,6 @@ class CwtImageLocationExpression private constructor(
             }
         } else {
             throw IllegalStateException() //不期望的结果
-        }
-    }
-    
-    companion object Resolver {
-        val EmptyExpression = CwtImageLocationExpression("", propertyName = "")
-        
-        private val cache = CacheBuilder.newBuilder().buildCache<String, CwtImageLocationExpression> { doResolve(it) }
-        
-        fun resolve(expressionString: String): CwtImageLocationExpression {
-            return cache.get(expressionString)
-        }
-        
-        private fun doResolve(expressionString: String): CwtImageLocationExpression {
-            return when {
-                expressionString.isEmpty() -> EmptyExpression
-                expressionString.contains('$') -> {
-                    val placeholder = expressionString
-                    CwtImageLocationExpression(expressionString, placeholder = placeholder)
-                }
-                else -> {
-                    val propertyName = expressionString.substringBefore('|').intern()
-                    val framePropertyNames = expressionString.substringAfter('|', "").orNull()
-                        ?.toCommaDelimitedStringList()
-                    CwtImageLocationExpression(expressionString, propertyName = propertyName, framePropertyNames = framePropertyNames)
-                }
-            }
         }
     }
 }

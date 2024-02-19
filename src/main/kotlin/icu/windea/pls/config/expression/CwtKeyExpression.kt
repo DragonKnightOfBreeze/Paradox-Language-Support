@@ -8,30 +8,39 @@ import icu.windea.pls.lang.expression.*
 /**
  * CWT键表达式。
  */
-class CwtKeyExpression private constructor(
-    expressionString: String,
-    override val type: CwtDataType,
-    override val value: String? = null,
-    override val extraValue: Any? = null
-) : AbstractExpression(expressionString), CwtDataExpression {
+interface CwtKeyExpression : CwtDataExpression {
     operator fun component1() = type
-    
     operator fun component2() = value
     
     companion object Resolver {
-        val EmptyExpression = CwtKeyExpression("", CwtDataTypes.Constant, "")
+        val EmptyExpression: CwtKeyExpression = doResolveEmpty()
         
-        private val cache = CacheBuilder.newBuilder().buildCache<String, CwtKeyExpression> { doResolve(it) }
-        
-        fun resolve(expressionString: String): CwtKeyExpression {
-            return cache.get(expressionString)
-        }
-        
-        private fun doResolve(expressionString: String): CwtKeyExpression {
-            if(expressionString.isEmpty()) return EmptyExpression
-            return CwtDataExpressionResolver.resolve(expressionString)
-                ?.let { CwtKeyExpression(it.expressionString, it.type, it.value, it.extraValue) }
-                ?: CwtKeyExpression(expressionString, CwtDataTypes.Other)
-        }
+        fun resolve(expressionString: String): CwtKeyExpression = cache.get(expressionString)
     }
+}
+
+//region Resolve Methods
+
+private val cache = CacheBuilder.newBuilder().buildCache<String, CwtKeyExpression> { doResolve(it) }
+
+private fun doResolveEmpty() = CwtKeyExpressionImpl("", CwtDataTypes.Constant, "")
+
+private fun doResolve(expressionString: String): CwtKeyExpression {
+    if(expressionString.isEmpty()) return doResolveEmpty()
+    return CwtDataExpressionResolver.resolve(expressionString)
+        ?.let { CwtKeyExpressionImpl(it.expressionString, it.type, it.value, it.extraValue) }
+        ?: CwtKeyExpressionImpl(expressionString, CwtDataTypes.Other)
+}
+
+//region Implementations
+
+private class CwtKeyExpressionImpl(
+    override val expressionString: String,
+    override val type: CwtDataType,
+    override val value: String? = null,
+    override val extraValue: Any? = null
+) : CwtKeyExpression {
+    override fun equals(other: Any?) = this === other || other is CwtKeyExpression && expressionString == other.expressionString
+    override fun hashCode() = expressionString.hashCode()
+    override fun toString() = expressionString
 }
