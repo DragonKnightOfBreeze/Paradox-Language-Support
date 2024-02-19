@@ -21,6 +21,9 @@ interface ParadoxDataExpression {
     val isKey: Boolean?
     
     companion object Resolver {
+        val BlockExpression: ParadoxDataExpression = BlockParadoxDataExpression
+        val UnknownExpression: ParadoxDataExpression = UnknownParadoxDataExpression
+        
         fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = CwtConfigMatcher.Options.Default): ParadoxDataExpression =
             doResolve(element, matchOptions)
         

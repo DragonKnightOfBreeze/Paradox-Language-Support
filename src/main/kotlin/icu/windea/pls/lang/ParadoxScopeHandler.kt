@@ -363,7 +363,7 @@ object ParadoxScopeHandler {
                     }
                     //event_target:xxx = {...}
                     dataType.isDynamicValueType() -> {
-                        val dynamicValueExpression = node.dataSourceNode.nodes.findIsInstance<icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression>()
+                        val dynamicValueExpression = node.dataSourceNode.nodes.findIsInstance<ParadoxDynamicValueExpression>()
                         if(dynamicValueExpression == null) return getUnknownScopeContext(inputScopeContext) //unexpected
                         val configGroup = dynamicValueExpression.configGroup
                         val dynamicValueNode = dynamicValueExpression.dynamicValueNode

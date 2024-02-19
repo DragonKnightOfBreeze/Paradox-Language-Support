@@ -269,7 +269,7 @@ class ExtendedCwtDataExpressionMatcher : CwtDataExpressionMatcher {
             configExpression.type == CwtDataTypes.TechnologyWithLevel -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                val r = expression.length > 1 && expression.indexOf('@') >= 1
+                val r = expression.text.length > 1 && expression.text.indexOf('@') >= 1
                 return Result.of(r)
             }
             else -> null

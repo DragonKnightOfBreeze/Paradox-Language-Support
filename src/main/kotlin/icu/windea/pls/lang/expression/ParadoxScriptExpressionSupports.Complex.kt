@@ -34,7 +34,7 @@ class ParadoxDynamicValueExpressionSupport : ParadoxScriptExpressionSupport {
         }
         val configGroup = config.info.configGroup
         val range = rangeInElement ?: TextRange.create(0, expression.length)
-        val dynamicValueExpression = icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression.resolve(expression, range, configGroup, config) ?: return
+        val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(expression, range, configGroup, config) ?: return
         CwtConfigHandler.annotateComplexExpression(element, dynamicValueExpression, holder, config)
     }
     
@@ -54,7 +54,7 @@ class ParadoxDynamicValueExpressionSupport : ParadoxScriptExpressionSupport {
             val reference = ParadoxScriptExpressionPsiReference(element, range, config, isKey)
             return arrayOf(reference)
         }
-        val dynamicValueExpression = icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression.resolve(expression, range, configGroup, config)
+        val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(expression, range, configGroup, config)
         if(dynamicValueExpression == null) return PsiReference.EMPTY_ARRAY
         return dynamicValueExpression.getReferences(element)
     }

@@ -27,12 +27,12 @@ class IncorrectDynamicValueExpressionInspection : LocalInspectionTool() {
                 if(dataType.isDynamicValueType()) {
                     val value = element.value
                     val textRange = TextRange.create(0, value.length)
-                    val dynamicValueExpression = icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression.resolve(value, textRange, configGroup, config) ?: return
+                    val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(value, textRange, configGroup, config) ?: return
                     handleErrors(element, dynamicValueExpression)
                 }
             }
             
-            private fun handleErrors(element: ParadoxScriptStringExpressionElement, dynamicValueExpression: icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression) {
+            private fun handleErrors(element: ParadoxScriptStringExpressionElement, dynamicValueExpression: ParadoxDynamicValueExpression) {
                 dynamicValueExpression.validate().forEach { error ->
                     handleError(element, error)
                 }

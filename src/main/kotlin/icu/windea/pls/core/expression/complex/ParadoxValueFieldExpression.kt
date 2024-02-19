@@ -45,7 +45,10 @@ import icu.windea.pls.model.*
  * ```
  */
 interface ParadoxValueFieldExpression : ParadoxComplexExpression {
-    companion object Resolver
+    companion object Resolver {
+        fun resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? =
+            doResolve(expression, range, configGroup)
+    }
 }
 
 val ParadoxValueFieldExpression.scopeNodes: List<ParadoxScopeFieldExpressionNode>

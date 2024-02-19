@@ -40,7 +40,6 @@ import icu.windea.pls.lang.configGroup.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.path.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 import java.util.*
@@ -362,7 +361,7 @@ object CwtConfigHandler {
             else -> return emptyList()
         }
         val valueExpression = when {
-            element is ParadoxScriptFile -> BlockParadoxDataExpression
+            element is ParadoxScriptFile -> ParadoxDataExpression.BlockExpression
             element is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxDataExpression.resolve(it, matchOptions) }
             element is ParadoxScriptValue -> ParadoxDataExpression.resolve(element, matchOptions)
             else -> return emptyList()
@@ -1103,7 +1102,7 @@ object CwtConfigHandler {
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         try {
             PlsContext.incompleteComplexExpression.set(true)
-            val dynamicValueExpression = icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression.resolve(keyword, textRange, configGroup, config) ?: return
+            val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(keyword, textRange, configGroup, config) ?: return
             return dynamicValueExpression.complete(context, result)
         } finally {
             PlsContext.incompleteComplexExpression.remove()
@@ -1197,7 +1196,7 @@ object CwtConfigHandler {
             context.scopeContext = scopeContext
             return
         }
-        if(dataSourceNodeToCheck is icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression) {
+        if(dataSourceNodeToCheck is ParadoxDynamicValueExpression) {
             dataSourceNodeToCheck.complete(context, result)
             return
         }
@@ -1271,7 +1270,7 @@ object CwtConfigHandler {
             else -> configGroup.linksAsValueWithPrefix.values.filter { prefix == it.prefix }
         }
         
-        if(dataSourceNodeToCheck is icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression) {
+        if(dataSourceNodeToCheck is ParadoxDynamicValueExpression) {
             dataSourceNodeToCheck.complete(context, result)
             return
         }

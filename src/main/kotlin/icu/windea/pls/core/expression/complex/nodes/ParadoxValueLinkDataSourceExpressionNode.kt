@@ -27,7 +27,7 @@ class ParadoxValueLinkDataSourceExpressionNode(
                 val configs = linkConfigs.filter { it.dataSource?.type?.isDynamicValueType() == true }
                 if(configs.isNotEmpty()) {
                     val configGroup = linkConfigs.first().info.configGroup
-                    val node = icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
+                    val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
                     nodes.add(node)
                 }
             }
