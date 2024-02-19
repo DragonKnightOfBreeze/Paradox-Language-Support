@@ -8,6 +8,7 @@ import com.intellij.util.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.expression.complex.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.*

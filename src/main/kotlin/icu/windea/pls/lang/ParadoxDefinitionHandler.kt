@@ -12,6 +12,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.expression.complex.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.psi.*

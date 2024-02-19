@@ -8,6 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.expression.complex.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
@@ -46,7 +47,7 @@ class TooLongScopeLinkInspection : LocalInspectionTool() {
                     dataType.isDynamicValueType() -> {
                         val value = element.value
                         val textRange = TextRange.create(0, value.length)
-                        val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(value, textRange, configGroup, config) ?: return
+                        val dynamicValueExpression = icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression.resolve(value, textRange, configGroup, config) ?: return
                         checkExpression(element, dynamicValueExpression)
                     }
                 }

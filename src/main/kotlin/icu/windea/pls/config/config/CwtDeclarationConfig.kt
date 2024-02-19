@@ -4,6 +4,7 @@ import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.expression.complex.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtDeclarationConfig private constructor(

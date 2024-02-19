@@ -10,6 +10,7 @@ import icu.windea.pls.config.settings.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.expression.complex.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.CwtConfigMatcher.Options
 import icu.windea.pls.script.psi.*

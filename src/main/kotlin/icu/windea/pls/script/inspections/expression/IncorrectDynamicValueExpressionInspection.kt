@@ -6,7 +6,8 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.expression.errors.*
+import icu.windea.pls.core.expression.complex.*
+import icu.windea.pls.core.expression.complex.errors.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
@@ -26,12 +27,12 @@ class IncorrectDynamicValueExpressionInspection : LocalInspectionTool() {
                 if(dataType.isDynamicValueType()) {
                     val value = element.value
                     val textRange = TextRange.create(0, value.length)
-                    val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(value, textRange, configGroup, config) ?: return
+                    val dynamicValueExpression = icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression.resolve(value, textRange, configGroup, config) ?: return
                     handleErrors(element, dynamicValueExpression)
                 }
             }
             
-            private fun handleErrors(element: ParadoxScriptStringExpressionElement, dynamicValueExpression: ParadoxDynamicValueExpression) {
+            private fun handleErrors(element: ParadoxScriptStringExpressionElement, dynamicValueExpression: icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression) {
                 dynamicValueExpression.validate().forEach { error ->
                     handleError(element, error)
                 }

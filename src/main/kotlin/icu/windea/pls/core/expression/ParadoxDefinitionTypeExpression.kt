@@ -1,8 +1,7 @@
 package icu.windea.pls.core.expression
 
-import icu.windea.pls.core.expression.ParadoxDefinitionTypeExpression.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
+import java.util.*
 
 /**
  * 定义类型表达式。
@@ -20,11 +19,36 @@ import icu.windea.pls.model.*
  * * 查询定义时指定定义类型表达式，以进行过滤。
  * * 在CWT文件中，`<X>`表示一个定义引用，其中`X`即是一个定义类型表达式。
  */
-class ParadoxDefinitionTypeExpression(
-    expressionString: String
-) : AbstractExpression(expressionString) {
+interface ParadoxDefinitionTypeExpression {
+    val expressionString: String
     val type: String
     val subtypes: List<String>
+    
+    operator fun component1() = type
+    operator fun component2() = subtypes
+    
+    fun matches(type: String, subtypes: Collection<String>): Boolean
+    fun matches(typeExpression: ParadoxDefinitionTypeExpression): Boolean
+    fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean
+    
+    companion object Resolver {
+        fun resolve(expressionString: String): ParadoxDefinitionTypeExpression = doResolve(expressionString)
+    }
+}
+
+//Resolve Methods
+
+private fun doResolve(expressionString: String): ParadoxDefinitionTypeExpression {
+    return ParadoxDefinitionTypeExpressionImpl(expressionString)
+}
+
+//Implementations
+
+private class ParadoxDefinitionTypeExpressionImpl(
+    override val expressionString: String
+) : ParadoxDefinitionTypeExpression {
+    override val type: String
+    override val subtypes: List<String>
     
     init {
         val dotIndex = expressionString.indexOf('.')
@@ -32,25 +56,27 @@ class ParadoxDefinitionTypeExpression(
         subtypes = if(dotIndex == -1) emptyList() else expressionString.substring(dotIndex + 1).split('.')
     }
     
-    operator fun component1() = type
-    operator fun component2() = subtypes
-    
-    fun matches(type: String, subtypes: Collection<String>): Boolean {
+    override fun matches(type: String, subtypes: Collection<String>): Boolean {
         return type == this.type && subtypes.containsAll(this.subtypes)
     }
     
-    fun matches(typeExpression: ParadoxDefinitionTypeExpression): Boolean {
+    override fun matches(typeExpression: ParadoxDefinitionTypeExpression): Boolean {
         return matches(typeExpression.type, typeExpression.subtypes)
     }
     
-    fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean {
+    override fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean {
         return matches(definitionInfo.type, definitionInfo.subtypes)
     }
     
-    companion object Resolver
+    override fun equals(other: Any?): Boolean {
+        return other is ParadoxDefinitionTypeExpression && expressionString == other.expressionString
+    }
+    
+    override fun hashCode(): Int {
+        return Objects.hash(expressionString)
+    }
+    
+    override fun toString(): String {
+        return expressionString
+    }
 }
-
-fun Resolver.resolve(expression: String): ParadoxDefinitionTypeExpression {
-    return ParadoxDefinitionTypeExpression(expression)
-}
-

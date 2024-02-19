@@ -11,7 +11,8 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.expression.nodes.*
+import icu.windea.pls.core.expression.complex.*
+import icu.windea.pls.core.expression.complex.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
@@ -222,8 +223,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
 
 /**
  * @see icu.windea.pls.core.expression.ParadoxScriptValueExpression
- * @see icu.windea.pls.core.expression.nodes.ParadoxScriptValueArgumentExpressionNode
- * @see icu.windea.pls.core.expression.nodes.ParadoxScriptValueArgumentValueExpressionNode
+ * @see icu.windea.pls.core.expression.complex.nodes.ParadoxScriptValueArgumentExpressionNode
+ * @see icu.windea.pls.core.expression.complex.nodes.ParadoxScriptValueArgumentValueExpressionNode
  */
 class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
     override fun isContext(element: ParadoxScriptDefinitionElement) = false

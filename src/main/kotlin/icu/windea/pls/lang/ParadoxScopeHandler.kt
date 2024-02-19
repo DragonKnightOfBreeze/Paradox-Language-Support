@@ -9,8 +9,8 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.expression.nodes.*
+import icu.windea.pls.core.expression.complex.*
+import icu.windea.pls.core.expression.complex.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
@@ -363,7 +363,7 @@ object ParadoxScopeHandler {
                     }
                     //event_target:xxx = {...}
                     dataType.isDynamicValueType() -> {
-                        val dynamicValueExpression = node.dataSourceNode.nodes.findIsInstance<ParadoxDynamicValueExpression>()
+                        val dynamicValueExpression = node.dataSourceNode.nodes.findIsInstance<icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression>()
                         if(dynamicValueExpression == null) return getUnknownScopeContext(inputScopeContext) //unexpected
                         val configGroup = dynamicValueExpression.configGroup
                         val dynamicValueNode = dynamicValueExpression.dynamicValueNode

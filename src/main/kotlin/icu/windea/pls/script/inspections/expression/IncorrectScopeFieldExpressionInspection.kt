@@ -9,7 +9,8 @@ import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.expression.errors.*
+import icu.windea.pls.core.expression.complex.*
+import icu.windea.pls.core.expression.complex.errors.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*

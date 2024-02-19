@@ -24,7 +24,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.expression.nodes.*
+import icu.windea.pls.core.expression.complex.*
+import icu.windea.pls.core.expression.complex.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
@@ -1100,7 +1101,7 @@ object CwtConfigHandler {
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         try {
             PlsContext.incompleteComplexExpression.set(true)
-            val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(keyword, textRange, configGroup, config) ?: return
+            val dynamicValueExpression = icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression.resolve(keyword, textRange, configGroup, config) ?: return
             return dynamicValueExpression.complete(context, result)
         } finally {
             PlsContext.incompleteComplexExpression.remove()
@@ -1194,7 +1195,7 @@ object CwtConfigHandler {
             context.scopeContext = scopeContext
             return
         }
-        if(dataSourceNodeToCheck is ParadoxDynamicValueExpression) {
+        if(dataSourceNodeToCheck is icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression) {
             dataSourceNodeToCheck.complete(context, result)
             return
         }
@@ -1268,7 +1269,7 @@ object CwtConfigHandler {
             else -> configGroup.linksAsValueWithPrefix.values.filter { prefix == it.prefix }
         }
         
-        if(dataSourceNodeToCheck is ParadoxDynamicValueExpression) {
+        if(dataSourceNodeToCheck is icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression) {
             dataSourceNodeToCheck.complete(context, result)
             return
         }
