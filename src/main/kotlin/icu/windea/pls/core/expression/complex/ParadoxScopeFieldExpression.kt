@@ -10,7 +10,6 @@ import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.complex.errors.*
 import icu.windea.pls.core.expression.complex.nodes.*
 import icu.windea.pls.lang.*
-import java.util.*
 
 /**
  * 作用域字段表达式。
@@ -227,11 +226,11 @@ private class ParadoxScopeFieldExpressionImpl(
     }
     
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxScopeFieldExpression && text == other.text
+        return this === other || other is ParadoxScopeFieldExpression && text == other.text
     }
     
     override fun hashCode(): Int {
-        return Objects.hash(text)
+        return text.hashCode()
     }
     
     override fun toString(): String {

@@ -4,6 +4,7 @@ import com.intellij.lang.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.index.*
+import icu.windea.pls.core.path.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
@@ -30,7 +31,7 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     }
     
     private fun createDefaultStub(parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-        return ParadoxScriptPropertyStubImpl(parentStub, "", "", null, "", ParadoxElementPath.EMPTY, ParadoxGameType.placeholder())
+        return ParadoxScriptPropertyStubImpl(parentStub, "", "", null, "", ParadoxElementPath.Empty, ParadoxGameType.placeholder())
     }
     
     override fun shouldCreateStub(node: ASTNode): Boolean {

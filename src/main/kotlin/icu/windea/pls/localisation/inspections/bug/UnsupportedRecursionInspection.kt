@@ -5,9 +5,9 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.path.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 import icu.windea.pls.util.*
 
 /**

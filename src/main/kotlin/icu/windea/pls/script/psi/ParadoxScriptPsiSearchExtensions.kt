@@ -7,9 +7,8 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.expression.complex.*
+import icu.windea.pls.core.path.*
 import icu.windea.pls.lang.inline.*
-import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 
 /**

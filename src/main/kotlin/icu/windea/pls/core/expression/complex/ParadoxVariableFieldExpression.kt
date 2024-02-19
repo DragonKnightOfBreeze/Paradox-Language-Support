@@ -8,12 +8,10 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.expression.complex.*
 import icu.windea.pls.core.expression.complex.errors.*
 import icu.windea.pls.core.expression.complex.nodes.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
-import java.util.*
 
 /**
  * 变量字段表达式。
@@ -245,11 +243,11 @@ private class ParadoxVariableFieldExpressionImpl(
     }
     
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxVariableFieldExpression && text == other.text
+        return this === other || other is ParadoxVariableFieldExpression && text == other.text
     }
     
     override fun hashCode(): Int {
-        return Objects.hash(text)
+        return text.hashCode()
     }
     
     override fun toString(): String {

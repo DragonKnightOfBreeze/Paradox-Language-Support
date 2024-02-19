@@ -12,7 +12,6 @@ import icu.windea.pls.core.expression.complex.errors.*
 import icu.windea.pls.core.expression.complex.nodes.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
-import java.util.*
 
 /**
  * 封装值表达式。
@@ -233,11 +232,11 @@ private class ParadoxScriptValueExpressionImpl(
     }
     
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxScriptValueExpression && text == other.text
+        return this === other || other is ParadoxScriptValueExpression && text == other.text
     }
     
     override fun hashCode(): Int {
-        return Objects.hash(text)
+        return text.hashCode()
     }
     
     override fun toString(): String {

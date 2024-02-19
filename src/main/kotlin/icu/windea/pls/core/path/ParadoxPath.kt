@@ -1,4 +1,4 @@
-package icu.windea.pls.model
+package icu.windea.pls.core.path
 
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -22,29 +22,16 @@ interface ParadoxPath : Iterable<String> {
     val length: Int
     
     fun isEmpty(): Boolean = length == 0
-    
     fun isNotEmpty(): Boolean = length != 0
     
     override fun iterator(): Iterator<String> = subPaths.iterator()
     
-    override fun equals(other: Any?): Boolean
-    
-    override fun hashCode(): Int
-    
-    override fun toString(): String
-    
     companion object Resolver {
-        val EMPTY: ParadoxPath = EmptyParadoxPath
+        val Empty: ParadoxPath = EmptyParadoxPath
         
-        fun resolve(path: String): ParadoxPath {
-            if(path.isEmpty()) return EmptyParadoxPath
-            return ParadoxPathImplA(path)
-        }
+        fun resolve(path: String): ParadoxPath = doResolve(path)
         
-        fun resolve(subPaths: List<String>): ParadoxPath {
-            if(subPaths.isEmpty()) return EmptyParadoxPath
-            return ParadoxPathImplB(subPaths)
-        }
+        fun resolve(subPaths: List<String>): ParadoxPath = doResolve(subPaths)
     }
 }
 
@@ -62,6 +49,18 @@ fun ParadoxPath.canBeLocalisationPath(): Boolean {
 
 fun ParadoxPath.canBeSyncedLocalisationPath(): Boolean {
     return root == "localisation_synced" || root == "localization_synced"
+}
+
+//Resolve Methods
+
+private fun doResolve(path: String): ParadoxPath {
+    if(path.isEmpty()) return EmptyParadoxPath
+    return ParadoxPathImplA(path)
+}
+
+private fun doResolve(subPaths: List<String>): ParadoxPath {
+    if(subPaths.isEmpty()) return EmptyParadoxPath
+    return ParadoxPathImplB(subPaths)
 }
 
 //Implementations
@@ -98,16 +97,4 @@ private class ParadoxPathImplB(
     override fun toString() = path
 }
 
-private object EmptyParadoxPath : ParadoxPath {
-    override val path: String = ""
-    override val subPaths: List<String> = emptyList()
-    override val parent: String = ""
-    override val root: String = ""
-    override val fileName: String = ""
-    override val fileExtension: String? = null
-    override val length: Int = 0
-    
-    override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path
-    override fun hashCode() = path.hashCode()
-    override fun toString() = path
-}
+private val EmptyParadoxPath = ParadoxPathImplA("")

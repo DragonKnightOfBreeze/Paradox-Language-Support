@@ -56,11 +56,11 @@ private class ParadoxDefinitionSubtypeExpressionImpl(
     }
     
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxDefinitionSubtypeExpression && expressionString == other.expressionString
+        return this === other || other is ParadoxDefinitionSubtypeExpression && expressionString == other.expressionString
     }
     
     override fun hashCode(): Int {
-        return Objects.hash(expressionString)
+        return expressionString.hashCode()
     }
     
     override fun toString(): String {

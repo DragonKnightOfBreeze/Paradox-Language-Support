@@ -26,6 +26,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.complex.*
 import icu.windea.pls.core.expression.complex.nodes.*
+import icu.windea.pls.core.path.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
@@ -39,6 +40,7 @@ import icu.windea.pls.lang.configGroup.*
 import icu.windea.pls.lang.data.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.path.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 import java.util.*
@@ -59,7 +61,7 @@ object CwtConfigHandler {
     }
     
     fun getConfigPath(element: PsiElement): CwtConfigPath? {
-        if(element is CwtFile) return CwtConfigPath.EMPTY
+        if(element is CwtFile) return CwtConfigPath.Empty
         if(element !is CwtProperty && element !is CwtValue) return null
         return doGetConfigPathFromCache(element)
     }

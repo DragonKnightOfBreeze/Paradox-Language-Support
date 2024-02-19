@@ -12,7 +12,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.complex.errors.*
 import icu.windea.pls.core.expression.complex.nodes.*
 import icu.windea.pls.lang.*
-import java.util.*
 
 /**
  * 值集值表达式。
@@ -182,11 +181,11 @@ private class ParadoxDynamicValueExpressionImpl(
     }
     
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxDynamicValueExpression && text == other.text
+        return this === other || other is ParadoxDynamicValueExpression && text == other.text
     }
     
     override fun hashCode(): Int {
-        return Objects.hash(text)
+        return text.hashCode()
     }
     
     override fun toString(): String {

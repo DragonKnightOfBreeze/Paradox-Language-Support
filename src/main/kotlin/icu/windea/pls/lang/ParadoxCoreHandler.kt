@@ -22,6 +22,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.data.*
 import icu.windea.pls.core.index.*
 import icu.windea.pls.core.listeners.*
+import icu.windea.pls.core.path.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.model.*
