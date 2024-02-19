@@ -4,8 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.config.expression.*
-import icu.windea.pls.core.expression.*
+import icu.windea.pls.config.*
 import icu.windea.pls.core.expression.complex.*
 import icu.windea.pls.core.expression.complex.errors.*
 import icu.windea.pls.lang.*
@@ -24,7 +23,7 @@ class IncorrectDynamicValueExpressionInspection : LocalInspectionTool() {
                 val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val configGroup = config.info.configGroup
                 val dataType = config.expression.type
-                if(dataType.isDynamicValueType()) {
+                if(dataType in CwtDataTypeGroups.DynamicValue) {
                     val value = element.value
                     val textRange = TextRange.create(0, value.length)
                     val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(value, textRange, configGroup, config) ?: return

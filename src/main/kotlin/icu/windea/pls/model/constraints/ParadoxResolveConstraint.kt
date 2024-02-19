@@ -1,7 +1,7 @@
 package icu.windea.pls.model.constraints
 
 import com.intellij.psi.*
-import icu.windea.pls.config.expression.*
+import icu.windea.pls.config.*
 import icu.windea.pls.core.expression.complex.nodes.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
@@ -141,16 +141,16 @@ enum class ParadoxResolveConstraint {
             return when(reference) {
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.expression ?: return false
-                    configExpression.type.isDynamicValueType()
+                    configExpression.type in CwtDataTypeGroups.DynamicValue
                 }
                 is ParadoxTemplateSnippetExpressionReference -> {
                     val configExpression = reference.configExpression
-                    configExpression.type.isDynamicValueType()
+                    configExpression.type in CwtDataTypeGroups.DynamicValue
                 }
                 is ParadoxDataExpressionNode.Reference -> {
                     reference.linkConfigs.any { linkConfig ->
                         val configExpression = linkConfig.expression ?: return@any false
-                        configExpression.type.isDynamicValueType()
+                        configExpression.type in CwtDataTypeGroups.DynamicValue
                     }
                 }
                 is ParadoxDynamicValueExpressionNode.Reference -> true

@@ -6,8 +6,8 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.quickfix.*
@@ -143,7 +143,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             }
             
             private fun isIgnored(config: CwtMemberConfig<*>): Boolean {
-                return config.expression.type.isPathReferenceType()
+                return config.expression.type in CwtDataTypeGroups.PathReference
             }
             
             private fun getFixes(element: PsiElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {

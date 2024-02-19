@@ -5,9 +5,8 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.expression.*
+import icu.windea.pls.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.complex.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
@@ -26,25 +25,25 @@ class TooLongScopeLinkInspection : LocalInspectionTool() {
                 val configGroup = config.info.configGroup
                 val dataType = config.expression.type
                 when {
-                    dataType.isScopeFieldType() -> {
+                    dataType in CwtDataTypeGroups.ScopeField -> {
                         val value = element.value
                         val textRange = TextRange.create(0, value.length)
                         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup) ?: return
                         checkExpression(element, scopeFieldExpression)
                     }
-                    dataType.isValueFieldType() -> {
+                    dataType in CwtDataTypeGroups.ValueField -> {
                         val value = element.value
                         val textRange = TextRange.create(0, value.length)
                         val valueFieldExpression = ParadoxValueFieldExpression.resolve(value, textRange, configGroup) ?: return
                         checkExpression(element, valueFieldExpression)
                     }
-                    dataType.isVariableFieldType() -> {
+                    dataType in CwtDataTypeGroups.VariableField -> {
                         val value = element.value
                         val textRange = TextRange.create(0, value.length)
                         val valueFieldExpression = ParadoxVariableFieldExpression.resolve(value, textRange, configGroup) ?: return
                         checkExpression(element, valueFieldExpression)
                     }
-                    dataType.isDynamicValueType() -> {
+                    dataType in CwtDataTypeGroups.DynamicValue -> {
                         val value = element.value
                         val textRange = TextRange.create(0, value.length)
                         val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(value, textRange, configGroup, config) ?: return

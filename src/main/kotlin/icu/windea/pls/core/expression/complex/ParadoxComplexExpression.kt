@@ -3,9 +3,9 @@ package icu.windea.pls.core.expression.complex
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.complex.errors.*
 import icu.windea.pls.core.expression.complex.nodes.*
@@ -32,10 +32,10 @@ interface ParadoxComplexExpression : ParadoxExpressionNode {
 private fun doResolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
     val dataType = config.expression?.type ?: return null
     return when {
-        dataType.isDynamicValueType() -> ParadoxDynamicValueExpression.resolve(expression, range, configGroup, config)
-        dataType.isScopeFieldType() -> ParadoxScopeFieldExpression.resolve(expression, range, configGroup)
-        dataType.isValueFieldType() -> ParadoxValueFieldExpression.resolve(expression, range, configGroup)
-        dataType.isVariableFieldType() -> ParadoxVariableFieldExpression.resolve(expression, range, configGroup)
+        dataType in CwtDataTypeGroups.DynamicValue -> ParadoxDynamicValueExpression.resolve(expression, range, configGroup, config)
+        dataType in CwtDataTypeGroups.ScopeField -> ParadoxScopeFieldExpression.resolve(expression, range, configGroup)
+        dataType in CwtDataTypeGroups.ValueField -> ParadoxValueFieldExpression.resolve(expression, range, configGroup)
+        dataType in CwtDataTypeGroups.VariableField -> ParadoxVariableFieldExpression.resolve(expression, range, configGroup)
         else -> null
     }
 }

@@ -2,6 +2,7 @@ package icu.windea.pls.lang.expression
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
@@ -134,7 +135,7 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 Result.ExactMatch //总是认为匹配
             }
-            configExpression.type.isPathReferenceType() -> {
+            configExpression.type in CwtDataTypeGroups.PathReference -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 CwtConfigMatcher.Impls.getPathReferenceMatchResult(element, expression, configExpression, project)
@@ -159,7 +160,7 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 }
                 Result.NotMatch
             }
-            configExpression.type.isDynamicValueType() -> {
+            configExpression.type in CwtDataTypeGroups.DynamicValue -> {
                 if(expression.type.isBlockLikeType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 //dynamicValue的值必须合法
@@ -169,13 +170,13 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 if(dynamicValueType == null) return Result.NotMatch
                 CwtConfigMatcher.Impls.getDynamicValueMatchResult(element, name, dynamicValueType, project)
             }
-            configExpression.type.isScopeFieldType() -> {
+            configExpression.type in CwtDataTypeGroups.ScopeField -> {
                 if(expression.quoted) return Result.NotMatch //不允许用引号括起
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 CwtConfigMatcher.Impls.getScopeFieldMatchResult(element, expression, configExpression, configGroup)
             }
-            configExpression.type.isValueFieldType() -> {
+            configExpression.type in CwtDataTypeGroups.ValueField -> {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
                 if(configExpression.type == CwtDataTypes.ValueField) {
                     if(expression.type.isFloatType() || ParadoxType.resolve(expression.text).isFloatType()) return Result.ExactMatch
@@ -190,7 +191,7 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 val r = valueFieldExpression != null
                 Result.of(r)
             }
-            configExpression.type.isVariableFieldType() -> {
+            configExpression.type in CwtDataTypeGroups.VariableField -> {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
                 if(configExpression.type == CwtDataTypes.VariableField) {
                     if(expression.type.isFloatType() || ParadoxType.resolve(expression.text).isFloatType()) return Result.ExactMatch

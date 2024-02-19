@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
@@ -283,7 +284,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
                 expressionElementConfig = CwtConfigHandler.getConfigs(expressionElement).firstOrNull() ?: return null
             }
         }
-        if(!expressionElementConfig.expression.type.isValueFieldType()) return null
+        if(!(expressionElementConfig.expression.type in CwtDataTypeGroups.ValueField)) return null
         val configGroup = expressionElementConfig.info.configGroup
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
@@ -313,7 +314,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
         if(rangeInElement == null) return null
         if(config !is CwtMemberConfig<*>) return null
-        if(!config.expression.type.isValueFieldType()) return null
+        if(!(config.expression.type in CwtDataTypeGroups.ValueField)) return null
         val text = element.text
         if(text.isLeftQuoted()) return null
         if(!text.contains("value:")) return null //快速判断

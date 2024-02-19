@@ -3,9 +3,9 @@ package icu.windea.pls.core.expression.complex.nodes
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.highlighter.*
@@ -34,7 +34,7 @@ class ParadoxDynamicValueExpressionNode(
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup): ParadoxDynamicValueExpressionNode? {
             //text may contain parameters
-            if(configs.any { c -> c.expression?.type?.isDynamicValueType() == false }) return null
+            if(configs.any { c -> c.expression?.type !in CwtDataTypeGroups.DynamicValue }) return null
             return ParadoxDynamicValueExpressionNode(text, textRange, configs, configGroup)
         }
     }

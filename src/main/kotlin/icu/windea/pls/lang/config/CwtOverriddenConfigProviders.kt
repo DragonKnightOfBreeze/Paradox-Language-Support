@@ -3,6 +3,7 @@ package icu.windea.pls.lang.config
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
@@ -97,8 +98,8 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
                     when {
                         valueExpression.type == CwtDataTypes.Int -> return true
                         valueExpression.type == CwtDataTypes.Float -> return true
-                        valueExpression.type.isValueFieldType() -> return true
-                        valueExpression.type.isVariableFieldType() -> return true
+                        valueExpression.type in CwtDataTypeGroups.ValueField -> return true
+                        valueExpression.type in CwtDataTypeGroups.VariableField -> return true
                     }
                 }
             }

@@ -3,7 +3,6 @@ package icu.windea.pls.lang.modifier
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.search.*

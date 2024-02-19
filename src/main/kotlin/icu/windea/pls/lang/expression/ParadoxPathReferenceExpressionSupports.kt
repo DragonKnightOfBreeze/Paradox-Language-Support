@@ -2,6 +2,7 @@ package icu.windea.pls.lang.expression
 
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*

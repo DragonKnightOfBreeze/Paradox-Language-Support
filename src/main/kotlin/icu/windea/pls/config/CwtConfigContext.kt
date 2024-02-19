@@ -1,4 +1,4 @@
-package icu.windea.pls.config.config
+package icu.windea.pls.config
 
 import com.google.common.cache.*
 import com.intellij.openapi.project.*

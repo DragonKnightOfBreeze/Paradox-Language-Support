@@ -1553,7 +1553,7 @@ object CwtConfigHandler {
         val result = ParadoxScriptExpressionSupport.resolve(element, rangeInElement, expression, config, isKey, exact)
         if(result != null) return result
         
-        if(configExpression is CwtKeyExpression && configExpression.type.isKeyReferenceType()) {
+        if(configExpression is CwtKeyExpression && configExpression.type in CwtDataTypeGroups.KeyReference) {
             val resolvedConfig = config.resolved()
             if(resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
                 //特殊处理合成的CWT规则
@@ -1576,7 +1576,7 @@ object CwtConfigHandler {
         val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expression, config, isKey)
         if(result.isNotEmpty()) return result
         
-        if(configExpression is CwtKeyExpression && configExpression.type.isKeyReferenceType()) {
+        if(configExpression is CwtKeyExpression && configExpression.type in CwtDataTypeGroups.KeyReference) {
             val resolvedConfig = config.resolved()
             if(resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
                 //特殊处理合成的CWT规则

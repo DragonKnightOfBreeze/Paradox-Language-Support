@@ -6,9 +6,8 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.expression.*
+import icu.windea.pls.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.complex.*
 import icu.windea.pls.core.expression.complex.errors.*
 import icu.windea.pls.lang.*
@@ -34,7 +33,7 @@ class IncorrectVariableFieldExpressionInspection : LocalInspectionTool() {
                 val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val configGroup = config.info.configGroup
                 val dataType = config.expression.type
-                if(dataType.isVariableFieldType()) {
+                if(dataType in CwtDataTypeGroups.VariableField) {
                     val value = element.value
                     val textRange = TextRange.create(0, value.length)
                     val variableFieldExpression = ParadoxVariableFieldExpression.resolve(value, textRange, configGroup) ?: return

@@ -3,7 +3,7 @@ package icu.windea.pls.core.codeInsight.highlight
 import com.intellij.psi.*
 import com.intellij.usages.*
 import com.intellij.usages.impl.rules.*
-import icu.windea.pls.config.expression.*
+import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
@@ -38,7 +38,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
                     return ParadoxUsageType.PARAMETER_REFERENCE_4
                 }
                 //in script value expression
-                if(type.isValueFieldType()) {
+                if(type in CwtDataTypeGroups.ValueField) {
                     val targetElement = getTargetElement(targets)
                     if(targetElement is ParadoxParameterElement) {
                         return ParadoxUsageType.PARAMETER_REFERENCE_5

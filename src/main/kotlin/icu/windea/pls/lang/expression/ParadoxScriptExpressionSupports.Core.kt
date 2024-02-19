@@ -9,6 +9,7 @@ import com.intellij.patterns.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
@@ -265,7 +266,7 @@ class ParadoxDefinitionScriptExpressionSupport : ParadoxScriptExpressionSupport 
 
 class ParadoxPathReferenceScriptExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type?.isPathReferenceType() == true
+        return config.expression?.type in CwtDataTypeGroups.PathReference
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -533,7 +534,7 @@ abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpress
             else -> null
         } ?: return false
         val type = aliasConfig.expression.type
-        if(!type.isConstantLikeType()) return false
+        if(!(type in CwtDataTypeGroups.ConstantLike)) return false
         val aliasName = aliasConfig.name
         val attributesKey = when {
             aliasName == "modifier" -> ParadoxScriptAttributesKeys.MODIFIER_KEY

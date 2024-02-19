@@ -4,9 +4,9 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.complex.*
@@ -356,13 +356,13 @@ object ParadoxScopeHandler {
             if(dataType != null) {
                 when {
                     //hidden:event_target:xxx = {...}
-                    dataType.isScopeFieldType() -> {
+                    dataType in CwtDataTypeGroups.ScopeField -> {
                         val nestedNode = node.dataSourceNode.nodes.findIsInstance<ParadoxScopeFieldExpressionNode>()
                         if(nestedNode == null) return getUnknownScopeContext(inputScopeContext) //unexpected
                         return getScopeContext(contextElement, nestedNode, inputScopeContext, inExpression)
                     }
                     //event_target:xxx = {...}
-                    dataType.isDynamicValueType() -> {
+                    dataType in CwtDataTypeGroups.DynamicValue -> {
                         val dynamicValueExpression = node.dataSourceNode.nodes.findIsInstance<ParadoxDynamicValueExpression>()
                         if(dynamicValueExpression == null) return getUnknownScopeContext(inputScopeContext) //unexpected
                         val configGroup = dynamicValueExpression.configGroup
@@ -371,7 +371,7 @@ object ParadoxScopeHandler {
                         val configExpressions = dynamicValueNode.configs.mapNotNullTo(mutableSetOf()) { it.expression }
                         val expressionElement = contextElement.castOrNull<ParadoxScriptStringExpressionElement>() ?: return getAnyScopeContext()
                         val dynamicValueElement = ParadoxDynamicValueHandler.resolveDynamicValue(expressionElement, name, configExpressions, configGroup) ?: return getAnyScopeContext()
-                        return getScopeContext(dynamicValueElement) 
+                        return getScopeContext(dynamicValueElement)
                     }
                 }
             }

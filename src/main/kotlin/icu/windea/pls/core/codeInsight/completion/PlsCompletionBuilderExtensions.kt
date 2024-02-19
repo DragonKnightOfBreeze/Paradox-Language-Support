@@ -14,6 +14,7 @@ import com.intellij.ui.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
@@ -204,7 +205,7 @@ private fun getIconToUse(icon: Icon?, config: CwtConfig<*>?): Icon? {
         is CwtAliasConfig -> {
             val aliasConfig = config
             val type = aliasConfig.expression.type
-            if(!type.isConstantLikeType()) return icon
+            if(type !in CwtDataTypeGroups.ConstantLike) return icon
             val aliasName = aliasConfig.name
             return when {
                 aliasName == "modifier" -> PlsIcons.Nodes.Modifier

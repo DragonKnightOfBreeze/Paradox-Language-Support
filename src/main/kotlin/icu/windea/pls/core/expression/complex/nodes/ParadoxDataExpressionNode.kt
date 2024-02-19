@@ -5,8 +5,8 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.complex.errors.*
@@ -37,7 +37,7 @@ class ParadoxDataExpressionNode(
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
         //忽略是dynamicValue的情况
-        if(linkConfigs.any { it.dataSource?.type?.isDynamicValueType() == true }) return null
+        if(linkConfigs.any { it.dataSource?.type in CwtDataTypeGroups.DynamicValue }) return null
         val expect = linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
         //排除可解析的情况
         val reference = getReference(element)

@@ -5,11 +5,10 @@ import com.intellij.lang.annotation.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.expression.complex.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.highlighter.*
@@ -18,7 +17,7 @@ import icu.windea.pls.script.references.*
 
 class ParadoxDynamicValueExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type?.isDynamicValueType() == true
+        return config.expression?.type in CwtDataTypeGroups.DynamicValue
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -71,7 +70,7 @@ class ParadoxDynamicValueExpressionSupport : ParadoxScriptExpressionSupport {
 
 class ParadoxScopeFieldExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type?.isScopeFieldType() == true
+        return config.expression?.type in CwtDataTypeGroups.ScopeField
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -119,7 +118,7 @@ class ParadoxScopeFieldExpressionSupport : ParadoxScriptExpressionSupport {
 
 class ParadoxValueFieldExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type?.isValueFieldType() == true
+        return config.expression?.type in CwtDataTypeGroups.ValueField
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -160,7 +159,7 @@ class ParadoxValueFieldExpressionSupport : ParadoxScriptExpressionSupport {
 
 class ParadoxVariableFieldExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type?.isVariableFieldType() == true
+        return config.expression?.type in CwtDataTypeGroups.VariableField
     }
     
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {

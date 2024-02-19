@@ -1,8 +1,8 @@
 package icu.windea.pls.core.expression.complex.nodes
 
 import com.intellij.openapi.util.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.script.highlighter.*
 
 class ParadoxScopeLinkDataSourceExpressionNode(
@@ -21,7 +21,7 @@ class ParadoxScopeLinkDataSourceExpressionNode(
             //child node can be dynamicValueExpression
             val nodes = mutableListOf<ParadoxExpressionNode>()
             run {
-                val scopeFieldConfig = linkConfigs.find { it.expression?.type?.isScopeFieldType() == true }
+                val scopeFieldConfig = linkConfigs.find { it.expression?.type in CwtDataTypeGroups.ScopeField }
                 if(scopeFieldConfig != null) {
                     val configGroup = linkConfigs.first().info.configGroup
                     val node = ParadoxScopeFieldExpressionNode.resolve(text, textRange, configGroup)
@@ -30,7 +30,7 @@ class ParadoxScopeLinkDataSourceExpressionNode(
             }
             run {
                 if(nodes.isNotEmpty()) return@run
-                val configs = linkConfigs.filter { it.dataSource?.type?.isDynamicValueType() == true }
+                val configs = linkConfigs.filter { it.dataSource?.type in CwtDataTypeGroups.DynamicValue }
                 if(configs.isNotEmpty()) {
                     val configGroup = linkConfigs.first().info.configGroup
                     val node = icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
