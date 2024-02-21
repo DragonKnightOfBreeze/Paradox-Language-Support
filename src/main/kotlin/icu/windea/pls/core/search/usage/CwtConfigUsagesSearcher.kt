@@ -7,7 +7,6 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
