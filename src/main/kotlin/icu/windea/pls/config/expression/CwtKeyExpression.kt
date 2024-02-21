@@ -19,7 +19,9 @@ interface CwtKeyExpression : CwtDataExpression {
     }
 }
 
-//region Resolve Methods
+//region Implementations
+
+//cached & interned
 
 private val cache = CacheBuilder.newBuilder().buildCache<String, CwtKeyExpression> { doResolve(it) }
 
@@ -32,14 +34,19 @@ private fun doResolve(expressionString: String): CwtKeyExpression {
         ?: CwtKeyExpressionImpl(expressionString, CwtDataTypes.Other)
 }
 
-//region Implementations
-
-private class CwtKeyExpressionImpl(
-    override val expressionString: String,
-    override val type: CwtDataType,
-    override val value: String? = null,
-    override val extraValue: Any? = null
-) : CwtKeyExpression {
+private class CwtKeyExpressionImpl : CwtKeyExpression {
+    override val expressionString: String
+    override val type: CwtDataType
+    override val value: String?
+    override val extraValue: Any?
+    
+    constructor(expressionString: String, type: CwtDataType, value: String? = null, extraValue: Any? = null) {
+        this.expressionString = expressionString.intern()
+        this.type = type
+        this.value = value
+        this.extraValue = extraValue
+    }
+    
     override fun equals(other: Any?) = this === other || other is CwtKeyExpression && expressionString == other.expressionString
     override fun hashCode() = expressionString.hashCode()
     override fun toString() = expressionString

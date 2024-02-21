@@ -65,7 +65,9 @@ interface CwtLocalisationLocationExpression : CwtExpression {
     }
 }
 
-//Resolve Methods
+//Implementations
+
+//cached & interned
 
 private val cache = CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) }
 
@@ -86,14 +88,19 @@ private fun doResolve(expressionString: String): CwtLocalisationLocationExpressi
     }
 }
 
-//Implementations
-
-private class CwtLocalisationLocationExpressionImpl(
-    override val expressionString: String,
-    override val placeholder: String? = null,
-    override val propertyName: String? = null,
-    override val upperCase: Boolean = false
-) : CwtLocalisationLocationExpression {
+private class CwtLocalisationLocationExpressionImpl : CwtLocalisationLocationExpression {
+    override val expressionString: String
+    override val placeholder: String?
+    override val propertyName: String?
+    override val upperCase: Boolean
+    
+    constructor(expressionString: String, placeholder: String? = null, propertyName: String? = null, upperCase: Boolean = false) {
+        this.expressionString = expressionString.intern()
+        this.placeholder = placeholder?.intern()
+        this.propertyName = propertyName?.intern()
+        this.upperCase = upperCase
+    }
+    
     override fun resolvePlaceholder(name: String): String? {
         if(placeholder == null) return null
         return buildString { for(c in placeholder) if(c == '$') append(name) else append(c) }

@@ -48,7 +48,7 @@ val ParadoxDynamicValueExpression.scopeFieldExpression: ParadoxScopeFieldExpress
 val ParadoxDynamicValueExpression.dynamicValueNode: ParadoxDynamicValueExpressionNode
     get() = nodes.get(0).cast()
 
-//Resolve Methods
+//Implementations
 
 private fun doResolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
     val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expression)
@@ -91,8 +91,6 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
     if(!incomplete && nodes.isEmpty()) return null
     return ParadoxDynamicValueExpressionImpl(expression, range, nodes, configGroup, configs)
 }
-
-//Implementations
 
 private class ParadoxDynamicValueExpressionImpl(
     override val text: String,

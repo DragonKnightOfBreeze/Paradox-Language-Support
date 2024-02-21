@@ -37,7 +37,7 @@ interface ParadoxDataExpression {
 
 fun ParadoxDataExpression.isParameterized() = type == ParadoxType.String && text.isParameterized()
 
-//Resolve Methods
+//Implementations
 
 private fun doResolve(element: ParadoxScriptExpressionElement, matchOptions: Int): ParadoxDataExpression {
     return when {
@@ -70,8 +70,6 @@ private fun doResolve(text: String, isKey: Boolean?): ParadoxDataExpression {
     val quoted = text.isLeftQuoted()
     return ParadoxDataExpressionImpl(value, expressionType, quoted, isKey)
 }
-
-//Implementations
 
 private class ParadoxDataExpressionImpl(
     override val text: String,

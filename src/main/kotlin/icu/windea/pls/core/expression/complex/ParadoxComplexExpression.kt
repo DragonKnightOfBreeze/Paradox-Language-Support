@@ -27,7 +27,7 @@ interface ParadoxComplexExpression : ParadoxExpressionNode {
     }
 }
 
-//Resolve Methods
+//Implementations
 
 private fun doResolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
     val dataType = config.expression?.type ?: return null

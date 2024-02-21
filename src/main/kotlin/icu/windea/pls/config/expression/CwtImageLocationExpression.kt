@@ -72,7 +72,9 @@ interface CwtImageLocationExpression : CwtExpression {
     }
 }
 
-//Resolve Methods
+//Implementations
+
+//cached & interned
 
 private val cache = CacheBuilder.newBuilder().buildCache<String, CwtImageLocationExpression> { doResolve(it) }
 
@@ -94,14 +96,19 @@ private fun doResolve(expressionString: String): CwtImageLocationExpression {
     }
 }
 
-//Implementations
-
-private class CwtImageLocationExpressionImpl(
-    override val expressionString: String,
-    override val placeholder: String? = null,
-    override val propertyName: String? = null,
-    override val framePropertyNames: List<String>? = null,
-) : CwtImageLocationExpression {
+private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
+    override val expressionString: String
+    override val placeholder: String?
+    override val propertyName: String?
+    override val framePropertyNames: List<String>?
+    
+    constructor(expressionString: String, placeholder: String? = null, propertyName: String? = null, framePropertyNames: List<String>? = null) {
+        this.expressionString = expressionString.intern()
+        this.placeholder = placeholder?.intern()
+        this.propertyName = propertyName?.intern()
+        this.framePropertyNames = framePropertyNames
+    }
+    
     override fun resolvePlaceholder(name: String): String? {
         if(placeholder == null) return null
         return buildString { for(c in placeholder) if(c == '$') append(name) else append(c) }

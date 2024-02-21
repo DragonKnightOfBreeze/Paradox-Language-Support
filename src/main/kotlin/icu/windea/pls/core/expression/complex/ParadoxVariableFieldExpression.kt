@@ -36,7 +36,7 @@ val ParadoxVariableFieldExpression.scopeNodes: List<ParadoxScopeFieldExpressionN
 val ParadoxVariableFieldExpression.variableNode: ParadoxDataExpressionNode
     get() = nodes.last().cast()
 
-//Resolve Methods
+//Implementations
 
 private fun doResolve(expression: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {
     //skip if text represents an int or float
@@ -90,8 +90,6 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
 private fun isNumber(text: String): Boolean {
     return ParadoxDataExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
 }
-
-//Implementations
 
 private class ParadoxVariableFieldExpressionImpl(
     override val text: String,

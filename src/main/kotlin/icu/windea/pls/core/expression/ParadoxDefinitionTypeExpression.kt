@@ -35,13 +35,11 @@ interface ParadoxDefinitionTypeExpression {
     }
 }
 
-//Resolve Methods
+//Implementations
 
 private fun doResolve(expressionString: String): ParadoxDefinitionTypeExpression {
     return ParadoxDefinitionTypeExpressionImpl(expressionString)
 }
-
-//Implementations
 
 private class ParadoxDefinitionTypeExpressionImpl(
     override val expressionString: String

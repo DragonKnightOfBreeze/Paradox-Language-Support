@@ -59,7 +59,7 @@ val ParadoxValueFieldExpression.scriptValueExpression: ParadoxScriptValueExpress
     get() = this.valueFieldNode.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
         ?.dataSourceNode?.nodes?.findIsInstance<ParadoxScriptValueExpression>()
 
-//Resolve Methods
+//Implementations
 
 private fun doResolve(expression: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? {
     //skip if text represents an int or float
@@ -113,8 +113,6 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
 private fun isNumber(text: String): Boolean {
     return ParadoxDataExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
 }
-
-//Implementations
 
 private class ParadoxValueFieldExpressionImpl(
     override val text: String,

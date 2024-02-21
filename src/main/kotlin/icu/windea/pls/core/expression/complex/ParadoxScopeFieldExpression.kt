@@ -45,7 +45,7 @@ interface ParadoxScopeFieldExpression : ParadoxComplexExpression {
 val ParadoxScopeFieldExpression.scopeNodes: List<ParadoxScopeFieldExpressionNode>
     get() = nodes.filterIsInstance<ParadoxScopeFieldExpressionNode>()
 
-//Resolve Methods
+//Implementations
 
 private fun doResolve(expression: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
     val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expression)
@@ -87,8 +87,6 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
     }
     return ParadoxScopeFieldExpressionImpl(expression, range, nodes, configGroup)
 }
-
-//Implementations
 
 private class ParadoxScopeFieldExpressionImpl(
     override val text: String,

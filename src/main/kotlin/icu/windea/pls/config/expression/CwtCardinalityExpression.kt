@@ -38,7 +38,9 @@ interface CwtCardinalityExpression : CwtExpression {
     }
 }
 
-//Resolve Methods
+//Implementations
+
+//cached & interned
 
 private val cache = CacheBuilder.newBuilder().buildCache<String, CwtCardinalityExpression> { doResolve(it) }
 
@@ -66,14 +68,19 @@ private fun doResolve(expressionString: String): CwtCardinalityExpression {
     }
 }
 
-//Implementations
-
-private class CwtCardinalityExpressionImpl(
-    override val expressionString: String,
-    override val min: Int,
-    override val max: Int?,
+private class CwtCardinalityExpressionImpl : CwtCardinalityExpression {
+    override val expressionString: String
+    override val min: Int
+    override val max: Int?
     override val relaxMin: Boolean
-) : CwtCardinalityExpression {
+    
+    constructor(expressionString: String, min: Int, max: Int?, relaxMin: Boolean) {
+        this.expressionString = expressionString.intern()
+        this.min = min
+        this.max = max
+        this.relaxMin = relaxMin
+    }
+    
     override fun equals(other: Any?) = this === other || other is CwtCardinalityExpression && expressionString == other.expressionString
     override fun hashCode() = expressionString.hashCode()
     override fun toString() = expressionString

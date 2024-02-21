@@ -59,7 +59,7 @@ val ParadoxScriptValueExpression.argumentNodes: List<Tuple2<ParadoxScriptValueAr
         }
     }
 
-//Resolve Methods
+//Implementations
 
 private fun doResolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
     val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expression)
@@ -115,8 +115,6 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
     }
     return ParadoxScriptValueExpressionImpl(expression, range, nodes, configGroup, config)
 }
-
-//Implementations
 
 private class ParadoxScriptValueExpressionImpl(
     override val text: String,
