@@ -1,22 +1,32 @@
 package icu.windea.pls.config.config
 
-import com.intellij.psi.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.cwt.psi.*
 
-class CwtGameRuleConfig private constructor(
-    override val pointer: SmartPsiElementPointer<out CwtMemberElement>,
-    override val info: CwtConfigGroupInfo,
-    val config: CwtMemberConfig<*>,
+//path: *.cwt#game_rules/*
+
+/**
+ * @property name template_expression
+ */
+interface CwtGameRuleConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
-) : CwtConfig<CwtMemberElement> {
+    
     companion object Resolver {
-        fun resolve(config: CwtMemberConfig<*>): CwtGameRuleConfig {
-            val name = when(config) {
-                is CwtPropertyConfig -> config.key
-                is CwtValueConfig -> config.value
-            }
-            return CwtGameRuleConfig(config.pointer, config.info, config, name)
-        }
+        fun resolve(config: CwtMemberConfig<*>): CwtGameRuleConfig = doResolve(config)
     }
 }
+
+//Implementations
+
+private fun doResolve(config: CwtMemberConfig<*>): CwtGameRuleConfig {
+    val name = when(config) {
+        is CwtPropertyConfig -> config.key
+        is CwtValueConfig -> config.value
+    }
+    return CwtGameRuleConfigImpl(config, name)
+}
+
+private class CwtGameRuleConfigImpl(
+    override val config: CwtMemberConfig<*>,
+    override val name: String
+) : CwtGameRuleConfig
+
