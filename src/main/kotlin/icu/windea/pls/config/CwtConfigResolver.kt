@@ -69,12 +69,12 @@ object CwtConfigResolver {
                         it is CwtProperty -> {
                             val resolved = resolveProperty(it, file, fileConfig) ?: return@f
                             if(configs == null) configs = mutableListOf()
-                            configs!!.asMutable().add(resolved)
+                            configs!!.add(resolved)
                         }
                         it is CwtValue -> {
                             val resolved = resolveValue(it, file, fileConfig)
                             if(configs == null) configs = mutableListOf()
-                            configs!!.asMutable().add(resolved)
+                            configs!!.add(resolved)
                         }
                     }
                 }
@@ -153,12 +153,12 @@ object CwtConfigResolver {
                         it is CwtProperty -> {
                             val resolved = resolveProperty(it, file, fileConfig) ?: return@f
                             if(configs == null) configs = mutableListOf()
-                            configs!!.asMutable().add(resolved)
+                            configs!!.add(resolved)
                         }
                         it is CwtValue -> {
                             val resolved = resolveValue(it, file, fileConfig)
                             if(configs == null) configs = mutableListOf()
-                            configs!!.asMutable().add(resolved)
+                            configs!!.add(resolved)
                         }
                     }
                 }
@@ -239,12 +239,12 @@ object CwtConfigResolver {
                         it is CwtOption -> {
                             val resolved = resolveOption(it, file, fileConfig) ?: return@f
                             if(options == null) options = mutableListOf()
-                            options!!.asMutable().add(resolved)
+                            options!!.add(resolved)
                         }
                         it is CwtValue -> {
                             val resolved = resolveOptionValue(it, file, fileConfig)
                             if(options == null) options = mutableListOf()
-                            options!!.asMutable().add(resolved)
+                            options!!.add(resolved)
                         }
                     }
                 }
@@ -283,12 +283,12 @@ object CwtConfigResolver {
                         it is CwtOption -> {
                             val resolved = resolveOption(it, file, fileConfig) ?: return@f
                             if(options == null) options = mutableListOf()
-                            options!!.asMutable().add(resolved)
+                            options!!.add(resolved)
                         }
                         it is CwtValue -> {
                             val resolved = resolveOptionValue(it, file, fileConfig)
                             if(options == null) options = mutableListOf()
-                            options!!.asMutable().add(resolved)
+                            options!!.add(resolved)
                         }
                     }
                 }

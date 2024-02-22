@@ -27,6 +27,10 @@ inline fun <T> MutableSet<T>.synced(): MutableSet<T> = Collections.synchronizedS
 
 inline fun <K,V> MutableMap<K,V>.synced(): MutableMap<K,V> = Collections.synchronizedMap(this)
 
+inline fun <K, E, M : MutableMap<K, MutableList<E>>> M.getOrInit(key: K): MutableList<E> = getOrPut(key) { mutableListOf() }
+
+inline fun <K, K1, V1, M : MutableMap<K, MutableMap<K1, V1>>> M.getOrInit(key: K): MutableMap<K1, V1> = getOrPut(key) { mutableMapOf() }
+
 inline fun <reified R> Iterable<*>.findIsInstance(): R? {
 	return findIsInstance(R::class.java)
 }

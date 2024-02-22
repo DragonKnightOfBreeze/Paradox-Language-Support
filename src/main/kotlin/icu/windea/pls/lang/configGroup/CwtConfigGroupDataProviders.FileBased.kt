@@ -78,7 +78,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     map.put(id, foldingSetting)
                 }
             }
-            configGroup.foldingSettings.asMutable()[groupName] = map
+            configGroup.foldingSettings[groupName] = map
         }
     }
     
@@ -110,7 +110,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     map.put(id, foldingSetting)
                 }
             }
-            configGroup.postfixTemplateSettings.asMutable()[groupName] = map
+            configGroup.postfixTemplateSettings[groupName] = map
         }
     }
     
@@ -118,7 +118,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         val configs = fileConfig.properties.find { it.key == "system_links" }?.properties ?: return
         configs.forEach { property ->
             val systemLinkConfig = CwtSystemLinkConfig.resolve(property)
-            configGroup.systemLinks.asMutable()[systemLinkConfig.id] = systemLinkConfig
+            configGroup.systemLinks[systemLinkConfig.id] = systemLinkConfig
         }
     }
     
@@ -126,9 +126,9 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         val configs = fileConfig.properties.find { it.key == "localisation_locales" }?.properties ?: return
         configs.forEach { property ->
             val localisationLocaleConfig = CwtLocalisationLocaleConfig.resolve(property)
-            configGroup.localisationLocalesById.asMutable()[localisationLocaleConfig.id] = localisationLocaleConfig
+            configGroup.localisationLocalesById[localisationLocaleConfig.id] = localisationLocaleConfig
             localisationLocaleConfig.codes.forEach { code ->
-                configGroup.localisationLocalesByCode.asMutable()[code] = localisationLocaleConfig
+                configGroup.localisationLocalesByCode[code] = localisationLocaleConfig
             }
         }
     }
@@ -137,7 +137,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         val configs = fileConfig.properties.find { it.key == "localisation_predefined_parameters" }?.properties ?: return
         configs.forEach { property ->
             val localisationPredefinedParameterConfig = CwtLocalisationPredefinedParameterConfig.resolve(property)
-            configGroup.localisationPredefinedParameters.asMutable()[localisationPredefinedParameterConfig.id] = localisationPredefinedParameterConfig
+            configGroup.localisationPredefinedParameters[localisationPredefinedParameterConfig.id] = localisationPredefinedParameterConfig
         }
     }
     
@@ -151,7 +151,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     }
     
     private fun resolveFoldersInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
-        fileConfig.values.mapTo(configGroup.folders.asMutable()) { it.value }
+        fileConfig.values.mapTo(configGroup.folders) { it.value }
     }
     
     private fun resolveOthersInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
@@ -165,7 +165,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         val typeName = prop.key.removeSurroundingOrNull("type[", "]")
                         if(!typeName.isNullOrEmpty()) {
                             val typeConfig = CwtTypeConfig.resolve(prop, typeName)
-                            configGroup.types.asMutable()[typeName] = typeConfig
+                            configGroup.types[typeName] = typeConfig
                         }
                     }
                 }
@@ -177,12 +177,12 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         val enumName = prop.key.removeSurroundingOrNull("enum[", "]")
                         if(!enumName.isNullOrEmpty()) {
                             val enumConfig = CwtEnumConfig.resolve(prop, enumName) ?: continue
-                            configGroup.enums.asMutable()[enumName] = enumConfig
+                            configGroup.enums[enumName] = enumConfig
                         }
                         val complexEnumName = prop.key.removeSurroundingOrNull("complex_enum[", "]")
                         if(!complexEnumName.isNullOrEmpty()) {
                             val complexEnumConfig = CwtComplexEnumConfig.resolve(prop, complexEnumName) ?: continue
-                            configGroup.complexEnums.asMutable()[complexEnumName] = complexEnumConfig
+                            configGroup.complexEnums[complexEnumName] = complexEnumConfig
                         }
                     }
                 }
@@ -191,23 +191,23 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     for(prop in props) {
                         val linkName = prop.key
                         val linkConfig = CwtLinkConfig.resolve(prop, linkName) ?: continue
-                        configGroup.links.asMutable()[linkName] = linkConfig
+                        configGroup.links[linkName] = linkConfig
                         //要求data_source存在
                         val fromData = linkConfig.fromData && linkConfig.dataSource != null
                         val withPrefix = linkConfig.prefix != null
                         val type = linkConfig.type
                         if(type == null || type == "scope" || type == "both") {
                             when {
-                                !fromData -> configGroup.linksAsScopeNotData.asMutable()[linkName] = linkConfig
-                                withPrefix -> configGroup.linksAsScopeWithPrefix.asMutable()[linkName] = linkConfig
-                                else -> configGroup.linksAsScopeWithoutPrefix.asMutable()[linkName] = linkConfig
+                                !fromData -> configGroup.linksAsScopeNotData[linkName] = linkConfig
+                                withPrefix -> configGroup.linksAsScopeWithPrefix[linkName] = linkConfig
+                                else -> configGroup.linksAsScopeWithoutPrefix[linkName] = linkConfig
                             }
                         }
                         if(type == "value" || type == "both") {
                             when {
-                                !fromData -> configGroup.linksAsValueNotData.asMutable()[linkName] = linkConfig
-                                withPrefix -> configGroup.linksAsValueWithPrefix.asMutable()[linkName] = linkConfig
-                                else -> configGroup.linksAsValueWithoutPrefix.asMutable()[linkName] = linkConfig
+                                !fromData -> configGroup.linksAsValueNotData[linkName] = linkConfig
+                                withPrefix -> configGroup.linksAsValueWithPrefix[linkName] = linkConfig
+                                else -> configGroup.linksAsValueWithoutPrefix[linkName] = linkConfig
                             }
                         }
                     }
@@ -217,7 +217,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     for(prop in props) {
                         val linkName = prop.key
                         val localisationLinkConfig = CwtLocalisationLinkConfig.resolve(prop, linkName) ?: continue
-                        configGroup.localisationLinks.asMutable()[linkName] = localisationLinkConfig
+                        configGroup.localisationLinks[linkName] = localisationLinkConfig
                     }
                 }
                 key == "localisation_commands" -> {
@@ -225,7 +225,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     for(prop in props) {
                         val commandName = prop.key
                         val localisationCommandConfig = CwtLocalisationCommandConfig.resolve(prop, commandName)
-                        configGroup.localisationCommands.asMutable()[commandName] = localisationCommandConfig
+                        configGroup.localisationCommands[commandName] = localisationCommandConfig
                     }
                 }
                 key == "modifier_categories" -> {
@@ -233,7 +233,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     for(prop in props) {
                         val modifierCategoryName = prop.key
                         val modifierCategoryConfig = CwtModifierCategoryConfig.resolve(prop, modifierCategoryName) ?: continue
-                        configGroup.modifierCategories.asMutable()[modifierCategoryName] = modifierCategoryConfig
+                        configGroup.modifierCategories[modifierCategoryName] = modifierCategoryConfig
                     }
                 }
                 key == "modifiers" -> {
@@ -241,11 +241,11 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     for(prop in props) {
                         val modifierName = prop.key
                         val modifierConfig = CwtModifierConfig.resolve(prop, modifierName) ?: continue
-                        configGroup.modifiers.asMutable()[modifierName] = modifierConfig
+                        configGroup.modifiers[modifierName] = modifierConfig
                         for(snippetExpression in modifierConfig.template.snippetExpressions) {
                             if(snippetExpression.type == CwtDataTypes.Definition) {
                                 val typeExpression = snippetExpression.value ?: continue
-                                configGroup.type2ModifiersMap.asMutable().getOrPut(typeExpression) { mutableMapOf() }.asMutable()[modifierName] = modifierConfig
+                                configGroup.type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }[modifierName] = modifierConfig
                             }
                         }
                     }
@@ -255,9 +255,9 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     for(prop in props) {
                         val scopeName = prop.key
                         val scopeConfig = CwtScopeConfig.resolve(prop, scopeName) ?: continue
-                        configGroup.scopes.asMutable()[scopeName] = scopeConfig
+                        configGroup.scopes[scopeName] = scopeConfig
                         for(alias in scopeConfig.aliases) {
-                            configGroup.scopeAliasMap.asMutable()[alias] = scopeConfig
+                            configGroup.scopeAliasMap[alias] = scopeConfig
                         }
                     }
                 }
@@ -266,93 +266,78 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     for(prop in props) {
                         val scopeGroupName = prop.key
                         val scopeGroupConfig = CwtScopeGroupConfig.resolve(prop, scopeGroupName) ?: continue
-                        configGroup.scopeGroups.asMutable()[scopeGroupName] = scopeGroupConfig
+                        configGroup.scopeGroups[scopeGroupName] = scopeGroupConfig
                     }
                 }
                 key == "definitions" -> {
                     val configs = property.configs ?: continue
                     for(config in configs) {
                         val definitionConfig = CwtDefinitionConfig.resolve(config) ?: continue
-                        configGroup.definitions.asMutable().getOrPut(definitionConfig.name) { mutableListOf() }.asMutable() += definitionConfig
+                        configGroup.definitions.getOrPut(definitionConfig.name) { mutableListOf() } += definitionConfig
                     }
                 }
                 key == "game_rules" -> {
                     val configs = property.configs ?: continue
                     for(config in configs) {
                         val gameRuleConfig = CwtGameRuleConfig.resolve(config)
-                        configGroup.gameRules.asMutable()[gameRuleConfig.name] = gameRuleConfig
+                        configGroup.gameRules[gameRuleConfig.name] = gameRuleConfig
                     }
                 }
                 key == "on_actions" -> {
                     val configs = property.configs ?: continue
                     for(config in configs) {
                         val onActionConfig = CwtOnActionConfig.resolve(config) ?: continue
-                        configGroup.onActions.asMutable()[onActionConfig.name] = onActionConfig
+                        configGroup.onActions[onActionConfig.name] = onActionConfig
                     }
                 }
                 key == "inline_scripts" -> {
                     val configs = property.configs ?: continue
                     for(config in configs) {
-                        val inlineScriptConfig = CwtInlineScriptConfig.resolve(config) ?: continue
-                        configGroup.inlineScripts.asMutable()[inlineScriptConfig.name] = inlineScriptConfig
+                        val inlineScriptConfig = CwtInlineScriptConfig.resolve(config)
+                        configGroup.inlineScripts[inlineScriptConfig.name] = inlineScriptConfig
                     }
                 }
                 key == "parameters" -> {
                     val configs = property.configs ?: continue
                     for(config in configs) {
                         val parameterConfig = CwtParameterConfig.resolve(config) ?: continue
-                        configGroup.parameters.asMutable().getOrPut(parameterConfig.name) { mutableListOf() }.asMutable() += parameterConfig
+                        configGroup.parameters.getOrInit(parameterConfig.name) += parameterConfig
                     }
                 }
                 key == "values" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
-                        //TODO valueName may be a template expression (e.g. xxx_<xxx>)
+                        //TODO valueName may be a template expression
                         val dynamicValueName = prop.key.removeSurroundingOrNull("value[", "]")
                         if(!dynamicValueName.isNullOrEmpty()) {
                             val valueConfig = CwtDynamicValueConfig.resolve(prop, dynamicValueName) ?: continue
-                            configGroup.dynamicValues.asMutable()[dynamicValueName] = valueConfig
+                            configGroup.dynamicValues[dynamicValueName] = valueConfig
                         }
                     }
                 }
                 else -> {
-                    //判断配置文件中的顶级的key是否匹配"single_alias[?]"，如果匹配，则解析配置并添加到singleAliases中
                     val singleAliasName = key.removeSurroundingOrNull("single_alias[", "]")
                     if(singleAliasName != null) {
                         val singleAliasConfig = CwtSingleAliasConfig.resolve(property, singleAliasName)
-                        configGroup.singleAliases.asMutable()[singleAliasName] = singleAliasConfig
+                        configGroup.singleAliases[singleAliasName] = singleAliasConfig
                         continue
                     }
                     
-                    //判断配置文件中的顶级的key是否匹配"alias[?:?]"，如果匹配，则解析配置并添加到aliasGroups中
-                    val aliasTokens = key.removeSurroundingOrNull("alias[", "]")?.split(':', limit = 2)?.takeIf { it.size == 2 }
-                    if(aliasTokens != null) {
-                        val (aliasName, aliasSubName) = aliasTokens
-                        val aliasConfig = CwtAliasConfig.resolve(property, aliasName, aliasSubName)
-                        //目前不这样处理
-                        //if(aliasConfig.name == "modifier" && aliasConfig.expression.type.isConstantLikeType()) {
-                        //	val modifierConfig = resolveModifierConfigFromAliasConfig(aliasConfig)
-                        //	modifiers.asMutable()[modifierConfig.name] = modifierConfig
-                        //	continue
-                        //} 
-                        val map = configGroup.aliasGroups.asMutable().getOrPut(aliasName) { mutableMapOf() }
-                        val list = map.asMutable().getOrPut(aliasSubName) { mutableListOf() }.asMutable()
-                        list.add(aliasConfig)
-                        continue
+                    run {
+                        val aliasConfig = CwtAliasConfig.resolve(property) ?: return@run
+                        configGroup.aliasGroups.getOrInit(aliasConfig.name).getOrInit(aliasConfig.subName) += aliasConfig
                     }
                     
-                    //判断配置文件中的顶级的key是否匹配"inline[?]"，如果匹配，则解析配置并添加到inlineConfigGroup中
                     val inlineConfigName = key.removeSurroundingOrNull("inline[", "]")
                     if(inlineConfigName != null) {
                         val inlineConfig = CwtInlineConfig.resolve(property, inlineConfigName)
-                        val list = configGroup.inlineConfigGroup.asMutable().getOrPut(inlineConfigName) { mutableListOf() }.asMutable()
-                        list.add(inlineConfig)
+                        configGroup.inlineConfigGroup
+                            .getOrPut(inlineConfigName) { mutableListOf() } += inlineConfig
                         continue
                     }
                     
-                    //其他情况，放到declarations中
                     val declarationConfig = CwtDeclarationConfig.resolve(property, key)
-                    configGroup.declarations.asMutable()[key] = declarationConfig
+                    configGroup.declarations[key] = declarationConfig
                 }
             }
         }

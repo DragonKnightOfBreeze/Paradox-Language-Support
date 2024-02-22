@@ -2,8 +2,6 @@ package icu.windea.pls.config.config
 
 import icu.windea.pls.cwt.psi.*
 
-//path: *.cwt#game_rules/*
-
 /**
  * @property name template_expression
  */

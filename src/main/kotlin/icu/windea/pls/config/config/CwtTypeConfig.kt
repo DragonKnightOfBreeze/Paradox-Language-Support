@@ -141,14 +141,14 @@ class CwtTypeConfig private constructor(
                                     for(pp in pps) {
                                         val typeExpression = "$name.$subtypeName"
                                         val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(pp, pp.key, typeExpression) ?: continue
-                                        configGroup.modifiers.asMutable()[modifierConfig.name] = modifierConfig
-                                        configGroup.type2ModifiersMap.asMutable().getOrPut(typeExpression) { mutableMapOf() }.asMutable()[pp.key] = modifierConfig
+                                        configGroup.modifiers[modifierConfig.name] = modifierConfig
+                                        configGroup.type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }[pp.key] = modifierConfig
                                     }
                                 } else {
                                     val typeExpression = name
                                     val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(p, p.key, typeExpression) ?: continue
-                                    configGroup.modifiers.asMutable()[modifierConfig.name] = modifierConfig
-                                    configGroup.type2ModifiersMap.asMutable().getOrPut(typeExpression) { mutableMapOf() }.asMutable()[p.key] = modifierConfig
+                                    configGroup.modifiers[modifierConfig.name] = modifierConfig
+                                    configGroup.type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }[p.key] = modifierConfig
                                 }
                             }
                         }

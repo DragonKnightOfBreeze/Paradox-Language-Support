@@ -20,17 +20,17 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             configGroup.modifiers.values
                 .filter { it.template.expressionString.isNotEmpty() }
                 .sortedByDescending { it.template.snippetExpressions.size } //put xxx_<xxx>_xxx before xxx_<xxx>
-                .associateByTo(configGroup.generatedModifiers.asMutable()) { it.name }
+                .associateByTo(configGroup.generatedModifiers) { it.name }
             configGroup.modifiers.values
                 .filter { it.template.expressionString.isEmpty() }
-                .associateByTo(configGroup.predefinedModifiers.asMutable()) { it.name }
+                .associateByTo(configGroup.predefinedModifiers) { it.name }
         }
 
         run {
             for(typeConfig in configGroup.types.values) {
                 if(typeConfig.baseType == null) continue
                 val typeName = typeConfig.name
-                configGroup.swappedTypes.asMutable()[typeName] = typeConfig
+                configGroup.swappedTypes[typeName] = typeConfig
                 val baseTypeName = typeConfig.baseType.substringBefore('.')
                 val baseDeclarationConfig = configGroup.declarations[baseTypeName] ?: continue
                 val typeKey = typeConfig.typeKeyFilter?.takeIfTrue()?.singleOrNull() ?: continue
@@ -38,14 +38,14 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     ?.find { it is CwtPropertyConfig && it.key.equals(typeKey, true) }?.castOrNull<CwtPropertyConfig>()
                     ?.let { CwtDeclarationConfig.resolve(it, typeName) }
                     ?: continue
-                configGroup.declarations.asMutable()[typeName] = declarationConfig
+                configGroup.declarations[typeName] = declarationConfig
             }
         }
 
         run {
             for((key, linkConfig) in configGroup.linksAsScopeNotData) {
                 val localisationLinkConfig = CwtLocalisationLinkConfig.resolveFromLink(linkConfig)
-                configGroup.localisationLinks.asMutable()[key] = localisationLinkConfig ?: continue
+                configGroup.localisationLinks[key] = localisationLinkConfig ?: continue
             }
         }
 
@@ -73,46 +73,46 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     }
                 }
                 if(!keysConst.isNullOrEmpty()) {
-                    configGroup.aliasKeysGroupConst.asMutable()[k] = keysConst
+                    configGroup.aliasKeysGroupConst[k] = keysConst
                 }
                 if(!keysNoConst.isNullOrEmpty()) {
-                    configGroup.aliasKeysGroupNoConst.asMutable()[k] = keysNoConst.sortedByPriority({ CwtKeyExpression.resolve(it) }, { configGroup }).toSet()
+                    configGroup.aliasKeysGroupNoConst[k] = keysNoConst.sortedByPriority({ CwtKeyExpression.resolve(it) }, { configGroup }).toSet()
                 }
             }
         }
 
         run {
-          configGroup.linksAsScopeWithPrefixSorted.asMutable() += configGroup.linksAsScopeWithPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
-          configGroup.linksAsValueWithPrefixSorted.asMutable() += configGroup.linksAsValueWithPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
-          configGroup.linksAsScopeWithoutPrefixSorted.asMutable() += configGroup.linksAsScopeWithoutPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
-          configGroup.linksAsValueWithoutPrefixSorted.asMutable() += configGroup.linksAsValueWithoutPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
-          configGroup.linksAsVariable.asMutable() += configGroup. linksAsValueWithoutPrefix["variable"].toSingletonListOrEmpty()
+          configGroup.linksAsScopeWithPrefixSorted += configGroup.linksAsScopeWithPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
+          configGroup.linksAsValueWithPrefixSorted += configGroup.linksAsValueWithPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
+          configGroup.linksAsScopeWithoutPrefixSorted += configGroup.linksAsScopeWithoutPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
+          configGroup.linksAsValueWithoutPrefixSorted += configGroup.linksAsValueWithoutPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
+          configGroup.linksAsVariable += configGroup. linksAsValueWithoutPrefix["variable"].toSingletonListOrEmpty()
         }
 
         run {
-            with(configGroup.aliasNamesSupportScope.asMutable()) {
+            with(configGroup.aliasNamesSupportScope) {
                 this += "modifier" //也支持，但不能切换作用域
                 this += "trigger"
                 this += "effect"
-                configGroup.info.aliasNamesSupportScope.asMutable().forEach { this += it }
+                configGroup.info.aliasNamesSupportScope.forEach { this += it }
             }
-            with(configGroup.definitionTypesSupportScope.asMutable()) {
+            with(configGroup.definitionTypesSupportScope) {
                 this += "scripted_effect"
                 this += "scripted_trigger"
                 this += "game_rule"
             }
-            with(configGroup.definitionTypesIndirectSupportScope.asMutable()) {
+            with(configGroup.definitionTypesIndirectSupportScope) {
                 this += "on_action" //也支持，其中调用的事件的类型要匹配
                 this += "event" //事件
             }
-            with(configGroup.definitionTypesSkipCheckSystemLink.asMutable()) {
+            with(configGroup.definitionTypesSkipCheckSystemLink) {
                 this += "event"
                 this += "scripted_trigger"
                 this += "scripted_effect"
                 this += "script_value"
                 this += "game_rule"
             }
-            with(configGroup.definitionTypesSupportParameters.asMutable()) {
+            with(configGroup.definitionTypesSupportParameters) {
                 this += "script_value" //SV也支持参数
                 //this += "inline_script" //内联脚本也支持参数（并且可以表示多条语句）（但不是定义）
                 for(parameterConfig in configGroup.info.parameterConfigs) {

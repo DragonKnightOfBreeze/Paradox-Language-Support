@@ -1,29 +1,60 @@
 package icu.windea.pls.config.config
 
-import com.intellij.psi.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 
 /**
+ * @property name scalar
+ * @property subName expression
  * @property supportedScopes (option) scope/scopes: string | string[]
+ * @property outputScope (option) push_scope: string?
  */
-class CwtAliasConfig private constructor(
-    override val pointer: SmartPsiElementPointer<out CwtProperty>,
-    override val info: CwtConfigGroupInfo,
+interface CwtAliasConfig : CwtInlineableConfig<CwtProperty>, CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+    val name: String
+    val subName: String
+    val supportedScopes: Set<String>
+    val outputScope: String?
+    
+    val subNameExpression: CwtKeyExpression
+    override val expression: CwtKeyExpression
+    
+    fun inline(config: CwtPropertyConfig): CwtPropertyConfig
+    
+    companion object {
+        fun resolve(config: CwtPropertyConfig): CwtAliasConfig? = doResolve(config)
+    }
+}
+
+//Implementations
+
+//interned
+
+private fun doResolve(config: CwtPropertyConfig): CwtAliasConfig? {
+    val key = config.key
+    val aliasTokens = key.removeSurroundingOrNull("alias[", "]")
+        ?.split(':', limit = 2)
+        ?.takeIf { it.size == 2 }
+        ?: return null
+    val (name, subName) = aliasTokens
+    return CwtAliasConfigImpl(config, name.intern(), subName.intern())
+        .apply { info.acceptConfigExpression(subNameExpression, null) }
+}
+
+private class CwtAliasConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
-    val subName: String
-) : CwtInlineableConfig<CwtProperty> {
-    val subNameExpression = CwtKeyExpression.resolve(subName)
+    override val subName: String
+) : CwtAliasConfig {
+    override val supportedScopes get() = config.supportedScopes
+    override val outputScope get() = config.pushScope
+    
+    override val subNameExpression = CwtKeyExpression.resolve(subName)
     override val expression get() = subNameExpression
     
-    val supportedScopes get() = config.supportedScopes
-    val outputScope get() = config.pushScope
-    
-    fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
+    override fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
         val other = this.config
         val inlined = config.copy(
             key = subName,
@@ -36,13 +67,6 @@ class CwtAliasConfig private constructor(
         inlined.configs?.forEachFast { it.parentConfig = inlined }
         inlined.inlineableConfig = config.inlineableConfig ?: this
         return inlined
-    }
-    
-    companion object Resolver {
-        fun resolve(config: CwtPropertyConfig, name: String, subName: String): CwtAliasConfig {
-            return CwtAliasConfig(config.pointer, config.info, config, name, subName)
-                .apply { info.acceptConfigExpression(subNameExpression, null) }
-        }
     }
 }
 

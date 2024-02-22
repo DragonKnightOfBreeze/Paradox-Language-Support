@@ -2,8 +2,6 @@ package icu.windea.pls.config.config
 
 import icu.windea.pls.cwt.psi.*
 
-//path: *.cwt#on_actions/*
-
 /**
  * @property name template_expression
  * @property eventType (option) event_type: string
