@@ -71,7 +71,7 @@ class CwtExtendedRelatedConfigProvider: CwtRelatedConfigProvider {
                         }
                     }
                     configExpression.type in CwtDataTypeGroups.DynamicValue -> {
-                        configGroup.dynamicValues[name]?.also { result.add(it) }
+                        configGroup.dynamicValueTypes[name]?.also { result.add(it) }
                     }
                     configExpression.type == CwtDataTypes.Parameter -> {
                         val parameterElement = element.reference?.resolve()?.castOrNull<ParadoxParameterElement>() ?: continue

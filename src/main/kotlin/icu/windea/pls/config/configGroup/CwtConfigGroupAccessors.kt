@@ -100,28 +100,28 @@ val CwtConfigGroup.inlineConfigGroup: MutableMap<String, MutableList<CwtInlineCo
 
 val CwtConfigGroup.modifierCategories: MutableMap<String, CwtModifierCategoryConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-//scalar / template_expression - config
+//template_expression - config
 val CwtConfigGroup.modifiers: MutableMap<@CaseInsensitive String, CwtModifierConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
-//scalar / template_expression - configs
+//template_expression - configs
 val CwtConfigGroup.definitions: MutableMap<String, MutableList<CwtDefinitionConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-//scalar / template_expression - config
+//template_expression - config
 val CwtConfigGroup.gameRules: MutableMap<String, CwtGameRuleConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-//scalar / template_expression - config
+//template_expression - config
 val CwtConfigGroup.onActions: MutableMap<String, CwtOnActionConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
-//scalar / template_expression - config
+//template_expression - config
 val CwtConfigGroup.inlineScripts: MutableMap<String, CwtInlineScriptConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-//scalar / template_expression - configs
+//template_expression - configs
 val CwtConfigGroup.parameters: MutableMap<String, MutableList<CwtParameterConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
-val CwtConfigGroup.dynamicValues: MutableMap<String, CwtDynamicValueConfig>
+val CwtConfigGroup.dynamicValueTypes: MutableMap<String, CwtDynamicValueTypeConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
 @Tags(Tag.Computed)

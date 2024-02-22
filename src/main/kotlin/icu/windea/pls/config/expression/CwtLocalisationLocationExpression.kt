@@ -65,9 +65,7 @@ interface CwtLocalisationLocationExpression : CwtExpression {
     }
 }
 
-//Implementations
-
-//cached & interned
+//Implementations (cached & interned)
 
 private val cache = CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) }
 

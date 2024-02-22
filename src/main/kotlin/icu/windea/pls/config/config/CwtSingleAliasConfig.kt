@@ -2,17 +2,34 @@ package icu.windea.pls.config.config
 
 import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 
-class CwtSingleAliasConfig private constructor(
-    override val pointer: SmartPsiElementPointer<out CwtProperty>,
-    override val info: CwtConfigGroupInfo,
+interface CwtSingleAliasConfig: CwtInlineableConfig<CwtProperty, CwtPropertyConfig> {
+    val name: String
+    
+    fun inline(config: CwtPropertyConfig): CwtPropertyConfig
+    
+    companion object Resolver {
+        fun resolve(config: CwtPropertyConfig): CwtSingleAliasConfig? = doResolve(config)
+    }
+}
+
+//Implementations (interned)
+
+private fun doResolve(config: CwtPropertyConfig): CwtSingleAliasConfig? {
+    val key = config.key
+    val name = key.removeSurroundingOrNull("single_alias[", "]")?.orNull()?.intern() ?: return null
+    return CwtSingleAliasConfigImpl(config, name)
+}
+
+private class CwtSingleAliasConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String
-) : CwtInlineableConfig<CwtProperty> {
-    fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
+) : CwtSingleAliasConfig {
+    override fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
         //inline all value and configs
         val other = this.config
         val inlined = config.copy(
@@ -25,11 +42,5 @@ class CwtSingleAliasConfig private constructor(
         inlined.configs?.forEachFast { it.parentConfig = inlined }
         inlined.inlineableConfig = config.inlineableConfig //should not set to this - a single alias config do not inline property key  
         return inlined
-    }
-    
-    companion object Resolver {
-        fun resolve(config: CwtPropertyConfig, name: String): CwtSingleAliasConfig {
-            return CwtSingleAliasConfig(config.pointer, config.info, config, name)
-        }
     }
 }

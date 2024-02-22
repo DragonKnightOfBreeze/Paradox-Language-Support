@@ -19,9 +19,7 @@ interface CwtKeyExpression : CwtDataExpression {
     }
 }
 
-//region Implementations
-
-//cached & interned
+//Implementations (cached & interned)
 
 private val cache = CacheBuilder.newBuilder().buildCache<String, CwtKeyExpression> { doResolve(it) }
 

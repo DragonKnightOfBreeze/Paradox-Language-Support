@@ -100,7 +100,7 @@ private object CwtValueConfigImpls {
         override val propertyConfig = propertyConfig
         
         override var parentConfig: CwtMemberConfig<*>? = null
-        override var inlineableConfig: CwtInlineableConfig<CwtValue>? = null
+        override var inlineableConfig: CwtInlineableConfig<CwtValue, CwtMemberConfig<CwtValue>>? = null
         
         override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
         override val expression: CwtValueExpression get() = valueExpression
@@ -173,7 +173,7 @@ private object CwtValueConfigImpls {
         private val delegate: CwtValueConfig,
     ) : UserDataHolderBase(), CwtValueConfig by delegate {
         override var parentConfig: CwtMemberConfig<*>? = null
-        override var inlineableConfig: CwtInlineableConfig<CwtValue>? = null
+        override var inlineableConfig: CwtInlineableConfig<CwtValue, CwtMemberConfig<CwtValue>>? = null
         
         override fun resolved(): CwtValueConfig = inlineableConfig?.config?.castOrNull<CwtValueConfig>() ?: this
         override fun resolvedOrNull(): CwtValueConfig? = inlineableConfig?.config?.castOrNull<CwtValueConfig>()
@@ -224,7 +224,7 @@ private object CwtValueConfigImpls {
         override val configs: List<CwtMemberConfig<*>>? get() = propertyConfig.configs
         
         override var parentConfig: CwtMemberConfig<*>? = null
-        override var inlineableConfig: CwtInlineableConfig<CwtValue>? = null
+        override var inlineableConfig: CwtInlineableConfig<CwtValue, CwtMemberConfig<CwtValue>>? = null
         
         override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
         override val expression: CwtValueExpression get() = valueExpression

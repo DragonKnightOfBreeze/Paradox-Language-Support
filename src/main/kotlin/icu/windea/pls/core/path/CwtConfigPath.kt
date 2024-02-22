@@ -25,9 +25,7 @@ interface CwtConfigPath : Iterable<String> {
     }
 }
 
-//Implementations
-
-//cached & interned
+//Implementations (cached & interned)
 
 private val cache = CacheBuilder.newBuilder().buildCache<String, _> { doResolve(it) }
 

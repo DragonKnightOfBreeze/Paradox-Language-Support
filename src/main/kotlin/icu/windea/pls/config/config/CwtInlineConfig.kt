@@ -1,18 +1,35 @@
 package icu.windea.pls.config.config
 
-import com.intellij.psi.*
-import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 
-class CwtInlineConfig private constructor(
-    override val pointer: SmartPsiElementPointer<out CwtProperty>,
-    override val info: CwtConfigGroupInfo,
+interface CwtInlineConfig : CwtInlineableConfig<CwtProperty, CwtPropertyConfig> {
+    override val config: CwtPropertyConfig
+    
+    val name: String
+    
+    fun inline(): CwtPropertyConfig
+    
+    companion object {
+        fun resolve(config: CwtPropertyConfig): CwtInlineConfig? = doResolve(config)
+    }
+}
+
+//Implementations (interned)
+
+private fun doResolve(config: CwtPropertyConfig): CwtInlineConfig? {
+    val key = config.key
+    val name = key.removeSurroundingOrNull("inline[", "]")?.orNull()?.intern() ?: return null
+    return CwtInlineConfigImpl(config, name)
+}
+
+private class CwtInlineConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String
-) : CwtInlineableConfig<CwtProperty> {
-    fun inline(): CwtPropertyConfig {
+) : CwtInlineConfig {
+    override fun inline(): CwtPropertyConfig {
         val other = config
         val inlined = other.copy(
             key = name,
@@ -21,11 +38,5 @@ class CwtInlineConfig private constructor(
         inlined.configs?.forEachFast { it.parentConfig = inlined }
         inlined.inlineableConfig = this
         return inlined
-    }
-    
-    companion object Resolver {
-        fun resolve(config: CwtPropertyConfig, name: String): CwtInlineConfig {
-            return CwtInlineConfig(config.pointer, config.info, config, name)
-        }
     }
 }

@@ -90,7 +90,7 @@ private object CwtPropertyConfigImpls {
         override val valueConfig @Synchronized get() = if(_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else getValueConfig().also { _valueConfig = it }
         
         override var parentConfig: CwtMemberConfig<*>? = null
-        override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
+        override var inlineableConfig: CwtInlineableConfig<CwtProperty, CwtMemberConfig<CwtProperty>>? = null
         
         override val keyExpression: CwtKeyExpression get() = CwtKeyExpression.resolve(key)
         override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
@@ -172,7 +172,7 @@ private object CwtPropertyConfigImpls {
         override val valueConfig @Synchronized get() = if(_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else getValueConfig().also { _valueConfig = it }
         
         override var parentConfig: CwtMemberConfig<*>? = null
-        override var inlineableConfig: CwtInlineableConfig<CwtProperty>? = null
+        override var inlineableConfig: CwtInlineableConfig<CwtProperty, CwtMemberConfig<CwtProperty>>? = null
         
         override fun resolved(): CwtPropertyConfig = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>() ?: this
         override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>()

@@ -251,7 +251,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             val dynamicValueType = reference.name
                             val valueName = configExpression.value!!
                             append(PlsBundle.message("generatedFromDynamicValue"))
-                            if(configGroup.dynamicValues.containsKey(valueName)) {
+                            if(configGroup.dynamicValueTypes.containsKey(valueName)) {
                                 appendCwtLink("${gameType.linkToken}values/${dynamicValueType}/${valueName}", valueName, modifierElement)
                                 append(": ")
                                 appendCwtLink("${gameType.linkToken}values/${dynamicValueType}", valueName, modifierElement)

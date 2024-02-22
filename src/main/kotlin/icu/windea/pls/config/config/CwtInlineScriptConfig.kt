@@ -1,24 +1,46 @@
 package icu.windea.pls.config.config
 
-import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
-class CwtInlineScriptConfig private constructor(
-    override val pointer: SmartPsiElementPointer<out CwtMemberElement>,
-    override val info: CwtConfigGroupInfo,
-    val config: CwtMemberConfig<*>,
-    val name: String,
-    val contextConfigsType: String,
-) : CwtConfig<CwtMemberElement> {
+/**
+ * @property name template_expression
+ * @property contextConfigsType (option) context_configs_type: string? = "single"
+ */
+interface CwtInlineScriptConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
+    val name: String
+    val contextConfigsType: String
+    
     /**
      * 得到由其声明的上下文CWT规则列表。
      */
-    fun getContextConfigs(): List<CwtMemberConfig<*>> {
+    fun getContextConfigs(): List<CwtMemberConfig<*>>
+    
+    companion object Resolver {
+        fun resolve(config: CwtMemberConfig<*>): CwtInlineScriptConfig = doResolve(config)
+    }
+}
+
+//Implementations (interned)
+
+private fun doResolve(config: CwtMemberConfig<*>): CwtInlineScriptConfig {
+    val name = when(config) {
+        is CwtPropertyConfig -> config.key
+        is CwtValueConfig -> config.value
+    }
+    val contextConfigsType = config.findOption("context_configs_type")?.stringValue ?: "single"
+    return CwtInlineScriptConfigImpl(config, name, contextConfigsType)
+}
+
+private class CwtInlineScriptConfigImpl(
+    override val config: CwtMemberConfig<*>,
+    override val name: String,
+    override val contextConfigsType: String,
+) : CwtInlineScriptConfig {
+    override fun getContextConfigs(): List<CwtMemberConfig<*>> {
         if(config !is CwtPropertyConfig) return emptyList()
         val r = when(contextConfigsType) {
             "multiple" -> config.configs.orEmpty()
@@ -33,16 +55,5 @@ class CwtInlineScriptConfig private constructor(
             configs = r
         )
         return listOf(containerConfig)
-    }
-    
-    companion object Resolver {
-        fun resolve(config: CwtMemberConfig<*>): CwtInlineScriptConfig {
-            val name = when(config) {
-                is CwtPropertyConfig -> config.key
-                is CwtValueConfig -> config.value
-            }
-            val contextConfigsType = config.findOption("context_configs_type")?.stringValue ?: "single"
-            return CwtInlineScriptConfig(config.pointer, config.info, config, name, contextConfigsType)
-        }
     }
 }

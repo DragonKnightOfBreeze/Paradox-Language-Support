@@ -82,7 +82,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
     }
     
-    private fun resolvePostfixTemplateSettingsInFile(fileConfig: CwtFileConfig,configGroup: CwtConfigGroup ) {
+    private fun resolvePostfixTemplateSettingsInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         val configs = fileConfig.properties
         configs.forEach { groupProperty ->
             val groupName = groupProperty.key
@@ -173,41 +173,39 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 key == "enums" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
-                        //TODO enumName may be a template expression (e.g. xxx_<xxx>)
-                        val enumName = prop.key.removeSurroundingOrNull("enum[", "]")
-                        if(!enumName.isNullOrEmpty()) {
-                            val enumConfig = CwtEnumConfig.resolve(prop, enumName) ?: continue
-                            configGroup.enums[enumName] = enumConfig
+                        run {
+                            val enumConfig = CwtEnumConfig.resolve(prop) ?: return@run
+                            configGroup.enums[enumConfig.name] = enumConfig
                         }
-                        val complexEnumName = prop.key.removeSurroundingOrNull("complex_enum[", "]")
-                        if(!complexEnumName.isNullOrEmpty()) {
-                            val complexEnumConfig = CwtComplexEnumConfig.resolve(prop, complexEnumName) ?: continue
-                            configGroup.complexEnums[complexEnumName] = complexEnumConfig
+                        
+                        run {
+                            val complexEnumConfig = CwtComplexEnumConfig.resolve(prop) ?: return@run
+                            configGroup.complexEnums[complexEnumConfig.name] = complexEnumConfig
                         }
                     }
                 }
                 key == "links" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
-                        val linkName = prop.key
-                        val linkConfig = CwtLinkConfig.resolve(prop, linkName) ?: continue
-                        configGroup.links[linkName] = linkConfig
+                        val linkConfig = CwtLinkConfig.resolve(prop) ?: continue
+                        configGroup.links[linkConfig.name] = linkConfig
+                        
                         //要求data_source存在
                         val fromData = linkConfig.fromData && linkConfig.dataSource != null
                         val withPrefix = linkConfig.prefix != null
                         val type = linkConfig.type
                         if(type == null || type == "scope" || type == "both") {
                             when {
-                                !fromData -> configGroup.linksAsScopeNotData[linkName] = linkConfig
-                                withPrefix -> configGroup.linksAsScopeWithPrefix[linkName] = linkConfig
-                                else -> configGroup.linksAsScopeWithoutPrefix[linkName] = linkConfig
+                                !fromData -> configGroup.linksAsScopeNotData[linkConfig.name] = linkConfig
+                                withPrefix -> configGroup.linksAsScopeWithPrefix[linkConfig.name] = linkConfig
+                                else -> configGroup.linksAsScopeWithoutPrefix[linkConfig.name] = linkConfig
                             }
                         }
                         if(type == "value" || type == "both") {
                             when {
-                                !fromData -> configGroup.linksAsValueNotData[linkName] = linkConfig
-                                withPrefix -> configGroup.linksAsValueWithPrefix[linkName] = linkConfig
-                                else -> configGroup.linksAsValueWithoutPrefix[linkName] = linkConfig
+                                !fromData -> configGroup.linksAsValueNotData[linkConfig.name] = linkConfig
+                                withPrefix -> configGroup.linksAsValueWithPrefix[linkConfig.name] = linkConfig
+                                else -> configGroup.linksAsValueWithoutPrefix[linkConfig.name] = linkConfig
                             }
                         }
                     }
@@ -215,25 +213,22 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 key == "localisation_links" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
-                        val linkName = prop.key
-                        val localisationLinkConfig = CwtLocalisationLinkConfig.resolve(prop, linkName) ?: continue
-                        configGroup.localisationLinks[linkName] = localisationLinkConfig
+                        val localisationLinkConfig = CwtLocalisationLinkConfig.resolve(prop) ?: continue
+                        configGroup.localisationLinks[localisationLinkConfig.name] = localisationLinkConfig
                     }
                 }
                 key == "localisation_commands" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
-                        val commandName = prop.key
-                        val localisationCommandConfig = CwtLocalisationCommandConfig.resolve(prop, commandName)
-                        configGroup.localisationCommands[commandName] = localisationCommandConfig
+                        val localisationCommandConfig = CwtLocalisationCommandConfig.resolve(prop)
+                        configGroup.localisationCommands[localisationCommandConfig.name] = localisationCommandConfig
                     }
                 }
                 key == "modifier_categories" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
-                        val modifierCategoryName = prop.key
-                        val modifierCategoryConfig = CwtModifierCategoryConfig.resolve(prop, modifierCategoryName) ?: continue
-                        configGroup.modifierCategories[modifierCategoryName] = modifierCategoryConfig
+                        val modifierCategoryConfig = CwtModifierCategoryConfig.resolve(prop) ?: continue
+                        configGroup.modifierCategories[modifierCategoryConfig.name] = modifierCategoryConfig
                     }
                 }
                 key == "modifiers" -> {
@@ -253,9 +248,8 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 key == "scopes" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
-                        val scopeName = prop.key
-                        val scopeConfig = CwtScopeConfig.resolve(prop, scopeName) ?: continue
-                        configGroup.scopes[scopeName] = scopeConfig
+                        val scopeConfig = CwtScopeConfig.resolve(prop) ?: continue
+                        configGroup.scopes[scopeConfig.name] = scopeConfig
                         for(alias in scopeConfig.aliases) {
                             configGroup.scopeAliasMap[alias] = scopeConfig
                         }
@@ -307,20 +301,14 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 key == "values" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
-                        //TODO valueName may be a template expression
-                        val dynamicValueName = prop.key.removeSurroundingOrNull("value[", "]")
-                        if(!dynamicValueName.isNullOrEmpty()) {
-                            val valueConfig = CwtDynamicValueConfig.resolve(prop, dynamicValueName) ?: continue
-                            configGroup.dynamicValues[dynamicValueName] = valueConfig
-                        }
+                        val dynamicValueTypeConfig = CwtDynamicValueTypeConfig.resolve(prop) ?: continue
+                        configGroup.dynamicValueTypes[dynamicValueTypeConfig.name] = dynamicValueTypeConfig
                     }
                 }
                 else -> {
-                    val singleAliasName = key.removeSurroundingOrNull("single_alias[", "]")
-                    if(singleAliasName != null) {
-                        val singleAliasConfig = CwtSingleAliasConfig.resolve(property, singleAliasName)
-                        configGroup.singleAliases[singleAliasName] = singleAliasConfig
-                        continue
+                    run {
+                        val singleAliasConfig = CwtSingleAliasConfig.resolve(property) ?: return@run
+                        configGroup.singleAliases[singleAliasConfig.name] = singleAliasConfig
                     }
                     
                     run {
@@ -328,16 +316,15 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.aliasGroups.getOrInit(aliasConfig.name).getOrInit(aliasConfig.subName) += aliasConfig
                     }
                     
-                    val inlineConfigName = key.removeSurroundingOrNull("inline[", "]")
-                    if(inlineConfigName != null) {
-                        val inlineConfig = CwtInlineConfig.resolve(property, inlineConfigName)
-                        configGroup.inlineConfigGroup
-                            .getOrPut(inlineConfigName) { mutableListOf() } += inlineConfig
-                        continue
+                    run {
+                        val inlineConfig = CwtInlineConfig.resolve(property) ?: return@run
+                        configGroup.inlineConfigGroup.getOrInit(inlineConfig.name) += inlineConfig
                     }
                     
-                    val declarationConfig = CwtDeclarationConfig.resolve(property, key)
-                    configGroup.declarations[key] = declarationConfig
+                    run {
+                        val declarationConfig = CwtDeclarationConfig.resolve(property) ?: return@run
+                        configGroup.declarations[key] = declarationConfig
+                    }
                 }
             }
         }

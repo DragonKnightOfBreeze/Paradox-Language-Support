@@ -48,7 +48,7 @@ class CwtConfigLinkProvider : DocumentationElementLinkProvider {
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
                 val valueName = tokens.getOrNull(2)
-                val config = getConfigGroup(project, gameType).dynamicValues[name] ?: return null
+                val config = getConfigGroup(project, gameType).dynamicValueTypes[name] ?: return null
                 if(valueName == null) return config.pointer.element
                 return config.valueConfigMap.get(valueName)?.pointer?.element
             }

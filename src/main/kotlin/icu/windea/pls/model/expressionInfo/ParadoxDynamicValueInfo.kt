@@ -17,7 +17,7 @@ data class ParadoxDynamicValueInfo(
 ) : ParadoxExpressionInfo {
     @Volatile override var virtualFile: VirtualFile? = null
     
-    fun getConfig(project: Project): CwtDynamicValueConfig? {
-        return getConfigGroup(project, gameType).dynamicValues[dynamicValueType]
+    fun getConfig(project: Project): CwtDynamicValueTypeConfig? {
+        return getConfigGroup(project, gameType).dynamicValueTypes[dynamicValueType]
     }
 }

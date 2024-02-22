@@ -25,7 +25,7 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
     override fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String {
         val gameTypeId = context.gameType.id
         val definitionSubtypes = context.definitionSubtypes
-        val subtypesToDistinct = declarationConfig.subtypesToDistinct
+        val subtypesToDistinct = declarationConfig.subtypesUsedInDeclaration
         val subtypes = definitionSubtypes?.filterFast { it in subtypesToDistinct }.orEmpty()
         val typeString = subtypes.joinToString(".", context.definitionType + ".")
         return "b@$gameTypeId#$typeString"

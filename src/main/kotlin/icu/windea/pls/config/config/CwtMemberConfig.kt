@@ -15,7 +15,7 @@ import icu.windea.pls.model.*
 sealed interface CwtMemberConfig<out T : CwtMemberElement> : UserDataHolder, CwtConfig<T>, CwtValueAware, CwtConfigsAware, CwtDocumentationAware, CwtOptionsAware {
     override val configs: List<CwtMemberConfig<*>>?
     var parentConfig: CwtMemberConfig<*>?
-    var inlineableConfig: CwtInlineableConfig<@UnsafeVariance T>?
+    var inlineableConfig: CwtInlineableConfig<@UnsafeVariance T, CwtMemberConfig<@UnsafeVariance T>>?
     
     val valueExpression: CwtValueExpression
     override val expression: CwtDataExpression

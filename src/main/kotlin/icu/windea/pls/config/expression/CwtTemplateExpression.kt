@@ -20,9 +20,7 @@ interface CwtTemplateExpression : CwtExpression {
     }
 }
 
-//Implementations
-
-//cached
+//Implementations (cached)
 
 private val cache = CacheBuilder.newBuilder().buildCache<String, CwtTemplateExpression> { doResolve(it) }
 

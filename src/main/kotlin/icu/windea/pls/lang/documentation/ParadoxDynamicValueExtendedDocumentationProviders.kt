@@ -8,8 +8,8 @@ class ParadoxBaseDynamicValueExtendedDocumentationProvider : ParadoxDynamicValue
     override fun getDocumentation(element: ParadoxDynamicValueElement): String? {
         if(element.name.isEmpty()) return null //ignore
         val configGroup = getConfigGroup(element.project, element.gameType)
-        val dynamicValueConfig = configGroup.dynamicValues[element.dynamicValueType] ?:return null
-        val config = dynamicValueConfig.valueConfigMap[element.name] ?: return null
+        val dynamicValueTypeConfig = configGroup.dynamicValueTypes[element.dynamicValueType] ?:return null
+        val config = dynamicValueTypeConfig.valueConfigMap[element.name] ?: return null
         val documentation = config.documentation?.orNull()
         return documentation
     }

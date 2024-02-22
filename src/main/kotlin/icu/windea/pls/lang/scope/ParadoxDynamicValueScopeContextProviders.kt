@@ -13,8 +13,8 @@ class ParadoxBaseDynamicValueScopeContextProvider: ParadoxDynamicValueScopeConte
     
     override fun getScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContext? {
         val configGroup = getConfigGroup(element.project, element.gameType)
-        val dynamicValueConfig = configGroup.dynamicValues[element.dynamicValueType] ?:return null
-        val config = dynamicValueConfig.valueConfigMap[element.name] ?: return null
+        val dynamicValueTypeConfig = configGroup.dynamicValueTypes[element.dynamicValueType] ?:return null
+        val config = dynamicValueTypeConfig.valueConfigMap[element.name] ?: return null
         val result = config.scopeContext
         return result
     }

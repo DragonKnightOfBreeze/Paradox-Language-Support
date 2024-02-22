@@ -40,11 +40,11 @@ class CwtTypeLocalisationConfig(
                 if(subtypeName != null) {
                     val props2 = prop1.properties ?: continue
                     for(prop2 in props2) {
-                        val locationConfig = CwtLocationConfig.resolve(prop2, prop2.key) ?: continue
+                        val locationConfig = CwtLocationConfig.resolve(prop2) ?: continue
                         locationConfigs.add(subtypeName to locationConfig)
                     }
                 } else {
-                    val locationConfig = CwtLocationConfig.resolve(prop1, prop1.key) ?: continue
+                    val locationConfig = CwtLocationConfig.resolve(prop1) ?: continue
                     locationConfigs.add(null to locationConfig)
                 }
             }

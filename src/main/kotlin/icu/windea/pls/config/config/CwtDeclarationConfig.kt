@@ -1,19 +1,34 @@
 package icu.windea.pls.config.config
 
-import com.intellij.psi.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.cwt.psi.*
 
-class CwtDeclarationConfig private constructor(
-    override val pointer: SmartPsiElementPointer<out CwtProperty>,
-    override val info: CwtConfigGroupInfo,
-    val config: CwtPropertyConfig,
-    val name: String,
-) : CwtConfig<CwtProperty> {
-    val subtypesToDistinct by lazy {
+/**
+ * @property name string
+ */
+interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+    val name: String
+    val subtypesUsedInDeclaration: Set<String>
+    
+    companion object Resolver {
+        fun resolve(config: CwtPropertyConfig, name: String? = null): CwtDeclarationConfig? = doResolve(config, name)
+    }
+}
+
+//Implementations (interned)
+
+private fun doResolve(config: CwtPropertyConfig, name: String?): CwtDeclarationConfig? {
+    val name0 = name ?: config.key.takeIf { it.isExactIdentifier() } ?: return null
+    return CwtDeclarationConfigImpl(config, name0)
+}
+
+private class CwtDeclarationConfigImpl(
+    override val config: CwtPropertyConfig,
+    override val name: String,
+) : CwtDeclarationConfig {
+    override val subtypesUsedInDeclaration by lazy {
         val result = sortedSetOf<String>()
         config.processDescendants {
             if(it is CwtPropertyConfig) {
@@ -26,11 +41,5 @@ class CwtDeclarationConfig private constructor(
             true
         }
         result
-    }
-    
-    companion object Resolver {
-        fun resolve(config: CwtPropertyConfig, name: String): CwtDeclarationConfig {
-            return CwtDeclarationConfig(config.pointer, config.info, config, name)
-        }
     }
 }

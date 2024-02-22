@@ -36,16 +36,16 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 val typeKey = typeConfig.typeKeyFilter?.takeIfTrue()?.singleOrNull() ?: continue
                 val declarationConfig = baseDeclarationConfig.config.configs
                     ?.find { it is CwtPropertyConfig && it.key.equals(typeKey, true) }?.castOrNull<CwtPropertyConfig>()
-                    ?.let { CwtDeclarationConfig.resolve(it, typeName) }
+                    ?.let { CwtDeclarationConfig.resolve(it, name = typeName) }
                     ?: continue
                 configGroup.declarations[typeName] = declarationConfig
             }
         }
 
         run {
-            for((key, linkConfig) in configGroup.linksAsScopeNotData) {
+            for(linkConfig in configGroup.linksAsScopeNotData.values) {
                 val localisationLinkConfig = CwtLocalisationLinkConfig.resolveFromLink(linkConfig)
-                configGroup.localisationLinks[key] = localisationLinkConfig ?: continue
+                configGroup.localisationLinks[localisationLinkConfig.name] = localisationLinkConfig
             }
         }
 
@@ -76,7 +76,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     configGroup.aliasKeysGroupConst[k] = keysConst
                 }
                 if(!keysNoConst.isNullOrEmpty()) {
-                    configGroup.aliasKeysGroupNoConst[k] = keysNoConst.sortedByPriority({ CwtKeyExpression.resolve(it) }, { configGroup }).toSet()
+                    configGroup.aliasKeysGroupNoConst[k] = keysNoConst.sortedByPriority({ CwtKeyExpression.resolve(it) }, { configGroup }).toMutableSet()
                 }
             }
         }

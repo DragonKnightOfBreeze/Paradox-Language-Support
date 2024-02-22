@@ -51,9 +51,7 @@ fun ParadoxPath.canBeSyncedLocalisationPath(): Boolean {
     return root == "localisation_synced" || root == "localization_synced"
 }
 
-//Implementations
-
-//interned
+//Implementations (interned)
 
 private fun doResolve(path: String): ParadoxPath {
     if(path.isEmpty()) return EmptyParadoxPath

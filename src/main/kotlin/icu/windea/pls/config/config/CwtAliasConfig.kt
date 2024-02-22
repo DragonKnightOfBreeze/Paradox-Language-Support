@@ -7,12 +7,12 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 
 /**
- * @property name scalar
+ * @property name string
  * @property subName expression
  * @property supportedScopes (option) scope/scopes: string | string[]
  * @property outputScope (option) push_scope: string?
  */
-interface CwtAliasConfig : CwtInlineableConfig<CwtProperty>, CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtAliasConfig : CwtInlineableConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val subName: String
     val supportedScopes: Set<String>
@@ -28,17 +28,14 @@ interface CwtAliasConfig : CwtInlineableConfig<CwtProperty>, CwtDelegatedConfig<
     }
 }
 
-//Implementations
-
-//interned
+//Implementations (interned)
 
 private fun doResolve(config: CwtPropertyConfig): CwtAliasConfig? {
     val key = config.key
-    val aliasTokens = key.removeSurroundingOrNull("alias[", "]")
-        ?.split(':', limit = 2)
-        ?.takeIf { it.size == 2 }
+    val tokens = key.removeSurroundingOrNull("alias[", "]")?.orNull()
+        ?.split(':', limit = 2)?.takeIf { it.size == 2 }
         ?: return null
-    val (name, subName) = aliasTokens
+    val (name, subName) = tokens
     return CwtAliasConfigImpl(config, name.intern(), subName.intern())
         .apply { info.acceptConfigExpression(subNameExpression, null) }
 }

@@ -7,24 +7,34 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.cwt.psi.*
 
 /**
- * @property aliases aliases: string[]
+ * @property name (key) string
+ * @property aliases (property) aliases: string[]
  */
-class CwtScopeConfig private constructor(
-    override val pointer: SmartPsiElementPointer<out CwtProperty>,
-    override val info: CwtConfigGroupInfo,
-    val name: String,
+interface CwtScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+    val name: String
     val aliases: Set<@CaseInsensitive String>
-) : CwtConfig<CwtProperty> {
+    
     companion object Resolver {
-        fun resolve(config: CwtPropertyConfig, name: String): CwtScopeConfig? {
-            var aliases: Set<String>? = null
-            val props = config.properties
-            if(props.isNullOrEmpty()) return null
-            for(prop in props) {
-                if(prop.key == "aliases") aliases = prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
-            }
-            if(aliases == null) aliases = emptySet()
-            return CwtScopeConfig(config.pointer, config.info, name, aliases)
-        }
+        fun resolve(config: CwtPropertyConfig): CwtScopeConfig? = doResolve(config)
     }
 }
+
+//Implementations (interned)
+
+private fun doResolve(config: CwtPropertyConfig): CwtScopeConfig? {
+    val name = config.key
+    var aliases: Set<String>? = null
+    val props = config.properties
+    if(props.isNullOrEmpty()) return null
+    for(prop in props) {
+        if(prop.key == "aliases") aliases = prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
+    }
+    if(aliases == null) aliases = emptySet()
+    return CwtScopeConfigImpl(config, name, aliases)
+}
+
+private class CwtScopeConfigImpl(
+    override val config: CwtPropertyConfig,
+    override val name: String,
+    override val aliases: Set<String>
+) : CwtScopeConfig

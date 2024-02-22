@@ -90,9 +90,7 @@ fun ParadoxElementPath.matchEntire(other: List<String>, ignoreCase: Boolean = tr
     return true
 }
 
-//Implementations
-
-//interned
+//Implementations (interned)
 
 private fun doResolve(path: String): ParadoxElementPathImplA {
     if(path.isEmpty()) return EmptyParadoxElementPath

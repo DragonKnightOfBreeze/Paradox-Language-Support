@@ -1345,12 +1345,12 @@ object CwtConfigHandler {
         val config = context.config
         
         val tailText = getScriptExpressionTailText(config)
-        val valueConfig = configGroup.dynamicValues[dynamicValueType] ?: return
-        val dynamicValueConfigs = valueConfig.valueConfigMap.values
-        if(dynamicValueConfigs.isEmpty()) return
-        for(dynamicValueConfig in dynamicValueConfigs) {
-            val name = dynamicValueConfig.value
-            val element = dynamicValueConfig.pointer.element ?: continue
+        val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
+        val dynamicValueTypeConfigs = valueConfig.valueConfigMap.values
+        if(dynamicValueTypeConfigs.isEmpty()) return
+        for(dynamicValueTypeConfig in dynamicValueTypeConfigs) {
+            val name = dynamicValueTypeConfig.value
+            val element = dynamicValueTypeConfig.pointer.element ?: continue
             val typeFile = valueConfig.pointer.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
                 .withIcon(PlsIcons.Nodes.DynamicValue)
@@ -1654,7 +1654,7 @@ object CwtConfigHandler {
         
         if(configExpression.type == CwtDataTypes.Constant) return true
         if(configExpression.type == CwtDataTypes.EnumValue && configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.text) } == true) return true
-        if(configExpression.type == CwtDataTypes.Value && configExpression.value?.let { configGroup.dynamicValues[it]?.values?.contains(expression.text) } == true) return true
+        if(configExpression.type == CwtDataTypes.Value && configExpression.value?.let { configGroup.dynamicValueTypes[it]?.values?.contains(expression.text) } == true) return true
         return false
     }
     

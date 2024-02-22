@@ -1,10 +1,11 @@
+@file:Suppress("PackageDirectoryMismatch")
+
 package icu.windea.pls.config.config
 
 import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.cwt.psi.*
-import javax.swing.*
 
 class CwtLocalisationPredefinedParameterConfig private constructor(
     override val pointer: SmartPsiElementPointer<out CwtProperty>,
