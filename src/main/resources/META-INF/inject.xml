@@ -11,7 +11,6 @@
   <extensions defaultExtensionNs="icu.windea.pls.inject">
     <codeInjectorSupport implementation="icu.windea.pls.inject.support.BaseCodeInjectorSupport"/>
     <codeInjectorSupport implementation="icu.windea.pls.inject.support.FieldBasedCacheCodeInjectorSupport"/>
-    <codeInjectorSupport implementation="icu.windea.pls.inject.support.LocalCacheCodeInjectorSupport"/>
   </extensions>
   
   <extensions defaultExtensionNs="icu.windea.pls.inject">
