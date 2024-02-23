@@ -8,7 +8,7 @@ import icu.windea.pls.cwt.psi.*
  * @property name string
  * @property values string[]
  */
-interface CwtEnumConfig: CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val values: Set<@CaseInsensitive String>
     val valueConfigMap: Map<@CaseInsensitive String, CwtValueConfig>

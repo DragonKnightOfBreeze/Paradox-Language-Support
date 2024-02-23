@@ -19,7 +19,7 @@ class ParadoxScopeLinkFromDataExpressionNode(
             val nodes = mutableListOf<ParadoxExpressionNode>()
             val offset = textRange.startOffset
             val linkConfigs = configGroup.linksAsScopeWithPrefixSorted
-                .filter { it.prefix != null && text.startsWith(it.prefix) }
+                .filter { it.prefix != null && text.startsWith(it.prefix!!) }
             if(linkConfigs.isNotEmpty()) {
                 //匹配某一前缀
                 //prefix node

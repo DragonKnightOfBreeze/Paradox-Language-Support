@@ -45,7 +45,7 @@ class ParadoxDefinitionInfo(
             name0 != null -> name0
             typeConfig0.nameFromFile -> rootKey
             typeConfig0.nameField == null -> rootKey
-            typeConfig0.nameField.isEmpty() -> ""
+            typeConfig0.nameField == "" -> ""
             typeConfig0.nameField == "-" -> element.castOrNull<ParadoxScriptProperty>()?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
             else -> element.findProperty(typeConfig0.nameField)?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
         }

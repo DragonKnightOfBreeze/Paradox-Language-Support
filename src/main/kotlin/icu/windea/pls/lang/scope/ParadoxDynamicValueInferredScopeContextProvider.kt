@@ -24,7 +24,7 @@ interface ParadoxDynamicValueInferredScopeContextProvider {
         
         fun getScopeContext(dynamicValue: ParadoxDynamicValueElement): ParadoxScopeContext? {
             val gameType = dynamicValue.gameType
-            var map: Map<String, String?>? = null
+            var map: Map<String, String>? = null
             EP_NAME.extensionList.forEachFast f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 if(!ep.supports(dynamicValue)) return@f
@@ -37,7 +37,7 @@ interface ParadoxDynamicValueInferredScopeContextProvider {
                 }
             }
             val resultMap = map ?: return null
-            val result = ParadoxScopeContext.resolve(resultMap)?.copyAsInferred()
+            val result = ParadoxScopeContext.resolve(resultMap)
             return result
         }
     }

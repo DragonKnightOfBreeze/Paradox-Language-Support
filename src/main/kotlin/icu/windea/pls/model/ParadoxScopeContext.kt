@@ -6,147 +6,138 @@ import icu.windea.pls.core.expression.complex.nodes.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.scope.*
 
-class ParadoxScopeContext private constructor(
-    @Volatile var scope: ParadoxScope
-) : UserDataHolderBase() {
-    @Volatile var root: ParadoxScopeContext? = null
-    @Volatile var prev: ParadoxScopeContext? = null
-    @Volatile var from: ParadoxScopeContext? = null
-    @Volatile var parent: ParadoxScopeContext? = null //scope context before scope switch
+interface ParadoxScopeContext : UserDataHolder {
+    val scope: ParadoxScope
+    val root: ParadoxScopeContext?
+    val from: ParadoxScopeContext?
+    val fromFrom: ParadoxScopeContext?
+    val fromFromFrom: ParadoxScopeContext?
+    val fromFromFromFrom: ParadoxScopeContext?
     
-    val map by lazy {
-        buildMap {
-            put("this", scope)
-            root?.let { put("root", it.scope) }
-            from?.let { put("from", it.scope) }
-            from?.from?.let { put("fromfrom", it.scope) }
-            from?.from?.from?.let { put("fromfromfrom", it.scope) }
-            from?.from?.from?.from?.let { put("fromfromfromfrom", it.scope) }
-        }
-    }
+    val prevStack: List<ParadoxScopeContext>
+    val prev: ParadoxScopeContext? get() = prevStack.getOrNull(0)
+    val prevPrev: ParadoxScopeContext? get() = prevStack.getOrNull(1)
+    val prevPrevPrev: ParadoxScopeContext? get() = prevStack.getOrNull(2)
+    val prevPrevPrevPrev: ParadoxScopeContext? get() = prevStack.getOrNull(3)
     
-    val detailMap by lazy {
-        buildMap {
-            put("this", scope)
-            root?.let { put("root", it.scope) }
-            prev?.let { put("prev", it.scope) }
-            prev?.prev?.let { put("prevprev", it.scope) }
-            prev?.prev?.prev?.let { put("prevprevprev", it.scope) }
-            prev?.prev?.prev?.prev?.let { put("prevprevprevprev", it.scope) }
-            from?.let { put("from", it.scope) }
-            from?.from?.let { put("fromfrom", it.scope) }
-            from?.from?.from?.let { put("fromfromfrom", it.scope) }
-            from?.from?.from?.from?.let { put("fromfromfromfrom", it.scope) }
-        }
-    }
+    companion object Resolver
     
-    fun isEquivalentTo(other: ParadoxScopeContext?): Boolean {
-        //note that root === this is possible
-        if(this === other) return true
-        if(other !is ParadoxScopeContext) return false
-        if(scope != other.scope) return false
-        if((root === this) xor (other.root === other)) return false
-        if(root !== this && root != other.root) return false
-        if((prev === this) xor (other.prev === other)) return false
-        if(prev !== this && prev != other.prev) return false
-        if((from === this) xor (other.from === other)) return false
-        if(from !== this && from != other.from) return false
-        return true
-    }
-    
-    fun copy(): ParadoxScopeContext {
-        val result = ParadoxScopeContext(scope)
-        result.root = root
-        result.prev = prev
-        result.from = from
-        result.parent = parent
-        return result
-    }
-    
-    fun copyAsInferred(): ParadoxScopeContext {
-        val result = ParadoxScopeContext(ParadoxScope.inferred(scope.id))
-        result.root = if(root === this) result else root?.copyAsInferred()
-        result.prev = if(prev === this) result else prev?.copyAsInferred()
-        result.from = if(from === this) result else from?.copyAsInferred()
-        result.parent = parent
-        return result
-    }
-    
-    fun resolve(pushScope: String?): ParadoxScopeContext {
-        //push_scope = null -> transfer scope
-        if(pushScope == null) return this
-        val result = ParadoxScopeContext(ParadoxScope.of(pushScope))
-        result.root = this.root
-        result.prev = this
-        result.from = this.from
-        result.parent = this
-        return result
-    }
-    
-    fun resolve(scopeContext: ParadoxScopeContext, isFrom: Boolean = false): ParadoxScopeContext {
-        val result = scopeContext.copy()
-        result.root = this.root
-        result.prev = this
-        if(!isFrom) {
-            result.from = this.from
-        }
-        result.parent = this
-        return result
-    }
-    
-    companion object {
-        val EMPTY = ParadoxScopeContext(ParadoxScope.AnyScope)
-        
-        fun resolve(thisScope: String): ParadoxScopeContext {
-            return ParadoxScopeContext(ParadoxScope.of(thisScope))
-        }
-        
-        fun resolve(thisScope: String, rootScope: String? = null): ParadoxScopeContext {
-            val result = ParadoxScopeContext(ParadoxScope.of(thisScope))
-            rootScope?.let {
-                val root = resolve(it)
-                root.root = root
-                result.root = root
-            }
-            return result
-        }
-        
-        fun resolve(map: Map<String, String?>): ParadoxScopeContext? {
-            val thisScope = map.get("this") ?: return null
-            val rootScope = map.get("root")
-            val fromScope = map.get("from")
-            val fromFromScope = map.get("fromfrom")
-            val fromFromFromScope = map.get("fromfromfrom")
-            val fromFromFromFromScope = map.get("fromfromfromfrom")
-            val result = ParadoxScopeContext(ParadoxScope.of(thisScope))
-            rootScope?.let {
-                val root = resolve(it)
-                root.root = root
-                result.root = root
-            }
-            fromScope?.let {
-                val from = resolve(it)
-                result.from = from
-            }
-            fromFromScope?.let {
-                val fromFrom = resolve(it)
-                result.from?.from = fromFrom
-            }
-            fromFromFromScope?.let {
-                val fromFromFrom = resolve(it)
-                result.from?.from?.from = fromFromFrom
-            }
-            fromFromFromFromScope?.let {
-                val fromFromFromFrom = resolve(it)
-                result.from?.from?.from?.from = fromFromFromFrom
-            }
-            return result
-        }
-    }
-    
-    object Keys: KeyRegistry("ParadoxScopeContext")
+    object Keys : KeyRegistry("ParadoxScopeContext")
 }
 
-var ParadoxScopeContext.overriddenProvider: ParadoxOverriddenScopeContextProvider? by createKeyDelegate(ParadoxScopeContext.Keys)
+
 //scope context list of scope field expression nodes
-var ParadoxScopeContext.scopeFieldInfo: List<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>? by createKeyDelegate(ParadoxScopeContext.Keys) 
+var ParadoxScopeContext.scopeFieldInfo: List<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>? by createKeyDelegate(ParadoxScopeContext.Keys)
+
+var ParadoxScopeContext.overriddenProvider: ParadoxOverriddenScopeContextProvider? by createKeyDelegate(ParadoxScopeContext.Keys)
+
+fun ParadoxScopeContext.toScopeMap(showFrom: Boolean = true, showPrev: Boolean = true): Map<String, ParadoxScope> {
+    return buildMap {
+        put("this", scope)
+        root?.let { put("root", it.scope) }
+        if(showFrom) {
+            from?.let { put("from", it.scope) }
+            fromFrom?.let { put("fromfrom", it.scope) }
+            fromFromFrom?.let { put("fromfromfrom", it.scope) }
+            fromFromFromFrom?.let { put("fromfromfromfrom", it.scope) }
+        }
+        if(showPrev) {
+            prev?.let { put("prev", it.scope) }
+            prevPrev?.let { put("prevprev", it.scope) }
+            prevPrevPrev?.let { put("prevprevprev", it.scope) }
+            prevPrevPrevPrev?.let { put("prevprevprevprev", it.scope) }
+        }
+    }
+}
+
+fun ParadoxScopeContext.toScopeIdMap(showFrom: Boolean = true, showPrev: Boolean = true): Map<String, String> {
+    return buildMap {
+        put("this", scope.id)
+        root?.let { put("root", it.scope.id) }
+        if(showFrom) {
+            from?.let { put("from", it.scope.id) }
+            fromFrom?.let { put("fromfrom", it.scope.id) }
+            fromFromFrom?.let { put("fromfromfrom", it.scope.id) }
+            fromFromFromFrom?.let { put("fromfromfromfrom", it.scope.id) }
+        }
+        if(showPrev) {
+            prev?.let { put("prev", it.scope.id) }
+            prevPrev?.let { put("prevprev", it.scope.id) }
+            prevPrevPrev?.let { put("prevprevprev", it.scope.id) }
+            prevPrevPrevPrev?.let { put("prevprevprevprev", it.scope.id) }
+        }
+    }
+}
+
+val ParadoxScopeContext.Resolver.Empty: ParadoxScopeContext get() = EmptyParadoxScopeContext
+
+fun ParadoxScopeContext.Resolver.resolve(thisScope: String): ParadoxScopeContext {
+    return SimpleParadoxScopeContext(ParadoxScope.of(thisScope))
+}
+
+fun ParadoxScopeContext.Resolver.resolve(thisScope: String, rootScope: String? = null): ParadoxScopeContext {
+    val scope = ParadoxScope.of(thisScope)
+    val root = rootScope?.let { ParadoxScopeContext.resolve(it) }
+    return DefaultParadoxScopeContext(scope, root)
+}
+
+fun ParadoxScopeContext.Resolver.resolve(map: Map<String, String>): ParadoxScopeContext? {
+    val scope = map.get("this")?.let { ParadoxScope.of(it) } ?: return null
+    val root = map.get("root")?.let { ParadoxScopeContext.resolve(it) }
+    val from = map.get("from")?.let { ParadoxScopeContext.resolve(it) }
+    val fromFrom = map.get("from")?.let { ParadoxScopeContext.resolve(it) }
+    val fromFromFrom = map.get("fromfrom")?.let { ParadoxScopeContext.resolve(it) }
+    val fromFromFromFrom = map.get("fromfromfrom")?.let { ParadoxScopeContext.resolve(it) }
+    val prev = map.get("prev")?.let { ParadoxScopeContext.resolve(it) }
+    val prevPrev = map.get("prev")?.let { ParadoxScopeContext.resolve(it) }
+    val prevPrevPrev = map.get("prevprev")?.let { ParadoxScopeContext.resolve(it) }
+    val prevPrevPrevPrev = map.get("prevprevprev")?.let { ParadoxScopeContext.resolve(it) }
+    val prevStack = listOfNotNull(prev, prevPrev, prevPrevPrev, prevPrevPrevPrev)
+    return DefaultParadoxScopeContext(scope, root, from, fromFrom, fromFromFrom, fromFromFromFrom, prevStack)
+}
+
+fun ParadoxScopeContext.resolveNext(pushScope: String?, isFrom: Boolean = false): ParadoxScopeContext {
+    if(pushScope == null) return this //transfer original scope context
+    val scope = ParadoxScope.of(pushScope)
+    val root = this.root
+    val from = if(isFrom) null else this.from
+    val fromFrom = if(isFrom) null else this.fromFrom
+    val fromFromFrom = if(isFrom) null else this.fromFromFrom
+    val fromFromFromFrom = if(isFrom) null else this.fromFromFromFrom
+    val prevStack = this.prevStack.toMutableList().also { it.add(0, this) }
+    return DefaultParadoxScopeContext(scope, root, from, fromFrom, fromFromFrom, fromFromFromFrom, prevStack)
+}
+
+fun ParadoxScopeContext.resolveNext(scopeContext: ParadoxScopeContext, isFrom: Boolean = false): ParadoxScopeContext {
+    val scope = scopeContext.scope
+    val root = this.root
+    val from = if(isFrom) scopeContext.from else scopeContext.from ?: this.from
+    val fromFrom = if(isFrom) scopeContext.fromFrom else scopeContext.from ?: this.fromFrom
+    val fromFromFrom = if(isFrom) scopeContext.fromFromFrom else scopeContext.from ?: this.fromFromFrom
+    val fromFromFromFrom = if(isFrom) scopeContext.fromFromFromFrom else scopeContext.from ?: this.fromFromFromFrom
+    val prevStack = this.prevStack.toMutableList().also { it.add(0, this) }
+    return DefaultParadoxScopeContext(scope, root, from, fromFrom, fromFromFrom, fromFromFromFrom, prevStack)
+}
+
+private class SimpleParadoxScopeContext(
+    override val scope: ParadoxScope
+) : UserDataHolderBase(), ParadoxScopeContext {
+    override val root: ParadoxScopeContext? get() = null
+    override val from: ParadoxScopeContext? get() = null
+    override val fromFrom: ParadoxScopeContext? get() = null
+    override val fromFromFrom: ParadoxScopeContext? get() = null
+    override val fromFromFromFrom: ParadoxScopeContext? get() = null
+    override val prevStack: List<ParadoxScopeContext> get() = emptyList()
+}
+
+private class DefaultParadoxScopeContext(
+    override val scope: ParadoxScope,
+    override val root: ParadoxScopeContext? = null,
+    override val from: ParadoxScopeContext? = null,
+    override val fromFrom: ParadoxScopeContext? = null,
+    override val fromFromFrom: ParadoxScopeContext? = null,
+    override val fromFromFromFrom: ParadoxScopeContext? = null,
+    override val prevStack: List<ParadoxScopeContext> = emptyList()
+) : UserDataHolderBase(), ParadoxScopeContext
+
+private val EmptyParadoxScopeContext = SimpleParadoxScopeContext(ParadoxScope.Any)

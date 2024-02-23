@@ -31,7 +31,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 if(typeConfig.baseType == null) continue
                 val typeName = typeConfig.name
                 configGroup.swappedTypes[typeName] = typeConfig
-                val baseTypeName = typeConfig.baseType.substringBefore('.')
+                val baseTypeName = typeConfig.baseType!!.substringBefore('.')
                 val baseDeclarationConfig = configGroup.declarations[baseTypeName] ?: continue
                 val typeKey = typeConfig.typeKeyFilter?.takeIfTrue()?.singleOrNull() ?: continue
                 val declarationConfig = baseDeclarationConfig.config.configs

@@ -1,46 +1,32 @@
 package icu.windea.pls.model
 
-import icu.windea.pls.lang.*
-
-sealed class ParadoxScope private constructor(val id: String) {
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is ParadoxScope && id == other.id
+sealed interface ParadoxScope {
+    val id: String
+    
+    object Any : ParadoxScope {
+        override val id: String = "any"
+        
+        override fun toString() = id
     }
     
-    override fun hashCode(): Int {
-        return id.hashCode()
+    object Unknown : ParadoxScope {
+        override val id: String = "?"
+        
+        override fun toString() = id
     }
     
-    override fun toString(): String {
-        return id
-    }
-    
-    object AnyScope : ParadoxScope(ParadoxScopeHandler.anyScopeId)
-    object UnknownScope : ParadoxScope(ParadoxScopeHandler.unknownScopeId)
-    class Scope(id: String) : ParadoxScope(id)
-    class InferredScope(id: String) : ParadoxScope(id) {
-        override fun toString(): String {
-            return "$id!"
-        }
+    class Default(override val id: String) : ParadoxScope {
+        override fun toString() = id
     }
     
     companion object {
-        @JvmStatic fun of(id: String): ParadoxScope {
+        @JvmStatic
+        fun of(id: String): ParadoxScope {
             return when {
-                id == ParadoxScopeHandler.anyScopeId -> AnyScope
-                id == ParadoxScopeHandler.unknownScopeId -> UnknownScope
-                else -> Scope(id)
-            }
-        }
-        
-        @JvmStatic fun inferred(id: String): ParadoxScope {
-            return when {
-                id == ParadoxScopeHandler.anyScopeId -> AnyScope
-                id == ParadoxScopeHandler.unknownScopeId -> UnknownScope
-                else -> InferredScope(id)
+                id == Any.id -> Any
+                id == Unknown.id -> Unknown
+                else -> Default(id)
             }
         }
     }
 }
-
-fun ParadoxScope?.isUnsure() = this == null || this == ParadoxScope.AnyScope || this == ParadoxScope.UnknownScope

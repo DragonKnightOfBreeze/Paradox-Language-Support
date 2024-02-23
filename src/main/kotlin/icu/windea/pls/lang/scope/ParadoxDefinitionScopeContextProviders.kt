@@ -24,7 +24,7 @@ class ParadoxDefaultDefinitionScopeContextProvider: ParadoxDefinitionScopeContex
             ?: typeConfig.config.pushScope)
         val pushScope = pushScopeOnType
             ?: declarationConfig.pushScope
-        val result = scopeContext?.resolve(pushScope)
+        val result = scopeContext?.resolveNext(pushScope)
             ?: pushScope?.let { ParadoxScopeContext.resolve(it, it) }
         return result
     }

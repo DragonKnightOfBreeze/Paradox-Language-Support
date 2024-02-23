@@ -62,7 +62,7 @@ class CwtOnActionConfigFromCsvGenerator(
                 }
                 comment?.split("\\n")?.forEach { append("\t### ").append(it).append("\n") }
                 append("\t## replace_scopes = { ")
-                scopeContext.map.forEach { (k, v) ->
+                scopeContext.toScopeMap().forEach { (k, v) ->
                     append(k).append(" = ").append(v).append(" ")
                 }
                 append("}\n")

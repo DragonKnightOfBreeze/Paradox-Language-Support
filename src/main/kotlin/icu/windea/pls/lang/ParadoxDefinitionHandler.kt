@@ -629,7 +629,7 @@ object ParadoxDefinitionHandler {
         return when {
             typeConfig.nameFromFile -> rootKey
             typeConfig.nameField == null -> rootKey
-            typeConfig.nameField.isEmpty() -> ""
+            typeConfig.nameField == "" -> ""
             typeConfig.nameField == "-" -> getValueFromNode(node, tree).orEmpty()
             else -> node.firstChild(tree, ParadoxScriptTokenSets.BLOCK_OR_ROOT_BLOCK)
                 ?.firstChild(tree) { it.tokenType == PROPERTY && getNameFromNode(it, tree)?.equals(typeConfig.nameField, true) == true }

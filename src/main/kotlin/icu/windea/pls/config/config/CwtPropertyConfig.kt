@@ -204,7 +204,7 @@ private object CwtPropertyConfigImpls {
         override val key: String,
         override val value: String,
         //configs should be always null here
-    ): Delegate(delegate) {
+    ) : Delegate(delegate) {
         override val keyExpression: CwtKeyExpression get() = CwtKeyExpression.resolve(key)
         override val valueExpression: CwtValueExpression get() = CwtValueExpression.resolve(value)
         override val expression: CwtDataExpression get() = keyExpression

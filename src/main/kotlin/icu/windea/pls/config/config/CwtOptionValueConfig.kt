@@ -1,7 +1,5 @@
 package icu.windea.pls.config.config
 
-import com.intellij.psi.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 import java.util.concurrent.*
@@ -15,8 +13,6 @@ class CwtOptionValueConfig private constructor(
         private val cache = ConcurrentHashMap<String, CwtOptionValueConfig>()
         
         fun resolve(
-            pointer: SmartPsiElementPointer<out CwtValue>,
-            info: CwtConfigGroupInfo,
             value: String,
             valueTypeId: Byte = CwtType.String.id,
             options: List<CwtOptionMemberConfig<*>>? = null,

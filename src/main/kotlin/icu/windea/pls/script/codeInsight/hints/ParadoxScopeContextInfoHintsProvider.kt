@@ -70,7 +70,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 	private fun PresentationFactory.doCollect(scopeInfo: ParadoxScopeContext, configGroup: CwtConfigGroup): InlayPresentation {
 		val presentations = mutableListOf<InlayPresentation>()
 		var appendSeparator = false
-		scopeInfo.map.forEach { (key, value) ->
+		scopeInfo.toScopeMap(showPrev = false).forEach { (key, value) ->
 			if(appendSeparator) {
 				presentations.add(smallText(" "))
 			} else {
@@ -89,8 +89,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 	
 	private fun PresentationFactory.scopeLinkPresentation(scope: ParadoxScope, configGroup: CwtConfigGroup): InlayPresentation {
 		return when {
-			ParadoxScopeHandler.isFakeScopeId(scope.id) -> smallText(scope.id)
-			scope is ParadoxScope.InferredScope -> seq(psiSingleReference(smallText(scope.id)) { getScopeElement(configGroup, scope) }, smallText("!"))
+			ParadoxScopeHandler.isUnsureScopeId(scope.id) -> smallText(scope.id)
 			else -> psiSingleReference(smallText(scope.id)) { getScopeElement(configGroup, scope) }
 		}
 	}

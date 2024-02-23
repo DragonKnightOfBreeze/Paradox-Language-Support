@@ -24,7 +24,7 @@ object ParadoxLocaleHandler {
     }
     
     fun getLocaleConfigs(pingPreferred: Boolean = true, noDefault: Boolean = true): List<CwtLocalisationLocaleConfig> {
-        var locales = getConfigGroup(null).localisationLocalesById.values
+        var locales: Collection<CwtLocalisationLocaleConfig> = getConfigGroup(null).localisationLocalesById.values
         if(pingPreferred) {
             val preferredLocale = getPreferredLocale()
             locales = locales.pinned { it == preferredLocale }

@@ -12,5 +12,5 @@ import kotlin.reflect.*
 @Target(AnnotationTarget.CLASS)
 annotation class WithCwtSettings(
 	val filePath: String,
-	val configClass: KClass<out CwtConfig<*>>
+	val configClass: KClass<out CwtDetachedConfig>
 )

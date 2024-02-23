@@ -64,7 +64,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?: return null
         val configGroup = definitionInfo.configGroup
-        val scopeContextMap = mutableMapOf<String, String?>()
+        val scopeContextMap = mutableMapOf<String, String>()
         var hasConflict = false
         val r = doProcessQuery(definitionInfo, searchScope, scopeContextMap, configGroup)
         if(!r) hasConflict = true
@@ -75,7 +75,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     private fun doProcessQuery(
         definitionInfo: ParadoxDefinitionInfo,
         searchScope: GlobalSearchScope,
-        scopeContextMap: MutableMap<String, String?>,
+        scopeContextMap: MutableMap<String, String>,
         configGroup: CwtConfigGroup
     ): Boolean {
         ProgressManager.checkCanceled()
@@ -101,7 +101,6 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
                                 root?.let { put("root", it.scope.id) }
                             }
                         }
-                        //val map = scopeContext.detailMap.mapValues { (_, v) -> v.id }
                         if(scopeContextMap.isNotEmpty()) {
                             val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map, true)
                             if(mergedMap != null) {
@@ -167,7 +166,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?.withFilePath("common/on_actions", "txt")
             ?: return null
-        val scopeContextMap = mutableMapOf<String, String?>()
+        val scopeContextMap = mutableMapOf<String, String>()
         var hasConflict = false
         val r = doProcessQuery(thisEventName, thisEventType, searchScope, scopeContextMap, configGroup)
         if(!r) hasConflict = true
@@ -179,7 +178,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         thisEventName: String,
         thisEventType: String?,
         searchScope: GlobalSearchScope,
-        scopeContextMap: MutableMap<String, String?>,
+        scopeContextMap: MutableMap<String, String>,
         configGroup: CwtConfigGroup,
         depth: Int = 1
     ): Boolean {
@@ -267,11 +266,11 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
         val thisEventName = definitionInfo.name
-        val thisEventScope = ParadoxEventHandler.getScope(definitionInfo)
+        val thisEventScope = ParadoxEventHandler.getScope(definitionInfo) ?: return null
         //optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?: return null
-        val scopeContextMap = mutableMapOf<String, String?>()
+        val scopeContextMap = mutableMapOf<String, String>()
         scopeContextMap.put("this", thisEventScope)
         scopeContextMap.put("root", thisEventScope)
         var hasConflict = false
@@ -284,7 +283,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
     private fun doProcessQuery(
         thisEventName: String,
         searchScope: GlobalSearchScope,
-        scopeContextMap: MutableMap<String, String?>,
+        scopeContextMap: MutableMap<String, String>,
         configGroup: CwtConfigGroup,
         depth: Int = 1
     ): Boolean {
@@ -310,7 +309,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             val scopesElement = psiFile.findElementAt(scopesElementOffset)?.parentOfType<ParadoxScriptProperty>() ?: return@p false
                             val scopesBlockElement = scopesElement.block ?: return@p false
                             val scopeContextOfScopesElement = ParadoxScopeHandler.getScopeContext(scopesElement)
-                            val map = mutableMapOf<String, String?>()
+                            val map = mutableMapOf<String, String>()
                             scopesBlockElement.processProperty(inline = true) pp@{
                                 ProgressManager.checkCanceled()
                                 val n = it.name.lowercase()
@@ -422,7 +421,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         //optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?: return null
-        val scopeContextMap = mutableMapOf<String, String?>()
+        val scopeContextMap = mutableMapOf<String, String>()
         scopeContextMap.put("this", ParadoxScopeHandler.anyScopeId)
         scopeContextMap.put("root", ParadoxScopeHandler.anyScopeId)
         var hasConflict = false
@@ -435,7 +434,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
     private fun doProcessQuery(
         thisOnActionName: String,
         searchScope: GlobalSearchScope,
-        scopeContextMap: MutableMap<String, String?>,
+        scopeContextMap: MutableMap<String, String>,
         configGroup: CwtConfigGroup,
         depth: Int = 1
     ): Boolean {
@@ -461,7 +460,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             val scopesElement = psiFile.findElementAt(scopesElementOffset)?.parentOfType<ParadoxScriptProperty>() ?: return@p false
                             val scopesBlockElement = scopesElement.block ?: return@p false
                             val scopeContextOfScopesElement = ParadoxScopeHandler.getScopeContext(scopesElement)
-                            val map = mutableMapOf<String, String?>()
+                            val map = mutableMapOf<String, String>()
                             scopesBlockElement.processProperty(inline = true) pp@{
                                 ProgressManager.checkCanceled()
                                 val n = it.name.lowercase()

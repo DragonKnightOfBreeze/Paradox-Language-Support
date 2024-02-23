@@ -42,7 +42,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                         val rangeInExpression = scopeNode.rangeInExpression
                         when(scopeNode) {
                             is ParadoxScopeLinkExpressionNode -> {
-                                val parentScopeContext = scopeContext.parent ?: continue
+                                val parentScopeContext = scopeContext.prev ?: continue
                                 val inputScopes = scopeNode.config.inputScopes
                                 val configGroup = config.info.configGroup
                                 if(!ParadoxScopeHandler.matchesScope(parentScopeContext, inputScopes, configGroup)) {

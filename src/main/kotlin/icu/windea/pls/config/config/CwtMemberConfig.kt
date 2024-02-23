@@ -62,7 +62,7 @@ val CwtMemberConfig.Keys.cardinalityMinDefine by createKey<String>("cwt.memberCo
 val CwtMemberConfig.Keys.cardinalityMaxDefine by createKey<String>("cwt.memberConfig.cardinalityMaxDefine")
 val CwtMemberConfig.Keys.hasScopeOption by createKey<Boolean>("cwt.memberConfig.hasScopeOption")
 val CwtMemberConfig.Keys.scopeContext by createKey<ParadoxScopeContext>("cwt.memberConfig.scopeContext")
-val CwtMemberConfig.Keys.replaceScopes by createKey<Map<String, String?>>("cwt.memberConfig.replaceScopes")
+val CwtMemberConfig.Keys.replaceScopes by createKey<Map<String, String>>("cwt.memberConfig.replaceScopes")
 val CwtMemberConfig.Keys.pushScope by createKey<String>("cwt.memberConfig.pushScope")
 val CwtMemberConfig.Keys.supportedScopes by createKey<Set<String>>("cwt.memberConfig.supportedScopes")
 val CwtMemberConfig.Keys.overriddenProvider by createKey<CwtOverriddenConfigProvider>("cwt.memberConfig.overriddenProvider")
@@ -98,7 +98,7 @@ val CwtMemberConfig<*>.hasScopeOption
         option != null
     }
 val CwtMemberConfig<*>.scopeContext
-    get() = getOrPutUserData(CwtMemberConfig.Keys.scopeContext, ParadoxScopeContext.EMPTY) action@{
+    get() = getOrPutUserData(CwtMemberConfig.Keys.scopeContext, ParadoxScopeContext.Empty) action@{
         val map = replaceScopes ?: return@action null
         ParadoxScopeContext.resolve(map)
     }
@@ -111,8 +111,13 @@ val CwtMemberConfig<*>.replaceScopes
     get() = getOrPutUserData(CwtMemberConfig.Keys.replaceScopes, emptyMap()) action@{
         val option = findOption { it.key == "replace_scope" || it.key == "replace_scopes" }
         if(option == null) return@action null
-        val options = option.findOptions() ?: return@action null
-        options.associateBy({ it.key.lowercase() }, { it.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) } })
+        val options1 = option.findOptions() ?: return@action null
+        buildMap {
+            for(option1 in options1) {
+                val k = option1.key.lowercase()
+                val v = option1.stringValue?.let { ParadoxScopeHandler.getScopeId(it) } ?: continue
+            }
+        }
     }
 //may on:
 // * a config expression in declaration config (include root expression, e.g. "army = { ... }")

@@ -56,7 +56,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
                 val configGroup = config.info.configGroup
                 val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
                 val pushScope = resultTriggerConfigs.firstOrNull()?.config?.pushScope
-                return parentScopeContext?.resolve(pushScope) ?: ParadoxScopeHandler.getAnyScopeContext().resolve(pushScope)
+                return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeHandler.getAnyScopeContext().resolveNext(pushScope)
             }
             else -> return null
         }

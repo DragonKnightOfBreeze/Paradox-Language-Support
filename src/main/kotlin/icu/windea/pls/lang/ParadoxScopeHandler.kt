@@ -59,7 +59,7 @@ object ParadoxScopeHandler {
             ?: scope.toCapitalizedWords()
     }
     
-    fun isFakeScopeId(scopeId: String): Boolean {
+    fun isUnsureScopeId(scopeId: String): Boolean {
         return scopeId == unknownScopeId || scopeId == anyScopeId || scopeId == allScopeId
     }
     
@@ -168,12 +168,12 @@ object ParadoxScopeHandler {
     }
     
     fun isScopeContextChanged(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeContext): Boolean {
-        //does not have scope context > changed always
+        //does not have scope context -> changed always
         val parentMember = findParentMember(element)
         if(parentMember == null) return true
         val parentScopeContext = getScopeContext(parentMember)
         if(parentScopeContext == null) return true
-        if(!parentScopeContext.isEquivalentTo(scopeContext)) return true
+        if(parentScopeContext != scopeContext) return true
         if(!isScopeContextSupported(parentMember)) return true
         return false
     }
@@ -238,7 +238,7 @@ object ParadoxScopeHandler {
             //优先基于内联前的规则，如果没有，再基于内联后的规则
             val scopeContext = config.scopeContext ?: config.resolved().scopeContext ?: parentScopeContext ?: return null
             val pushScope = config.pushScope ?: config.resolved().pushScope
-            val result = scopeContext.resolve(pushScope)
+            val result = scopeContext.resolveNext(pushScope)
             return result
         }
     }
@@ -265,7 +265,7 @@ object ParadoxScopeHandler {
                 when(config) {
                     is CwtLocalisationLinkConfig -> {
                         val prevScopeContext = prevElement.prevIdentifier?.let { getScopeContext(it) } ?: getAnyScopeContext()
-                        return prevScopeContext.resolve(config.outputScope)
+                        return prevScopeContext.resolveNext(config.outputScope)
                     }
                     is CwtSystemLinkConfig -> {
                         return getAnyScopeContext()
@@ -279,7 +279,7 @@ object ParadoxScopeHandler {
             prevResolved is ParadoxDynamicValueElement -> {
                 val prevScopeContext = prevElement.prevIdentifier?.let { getScopeContext(it) } ?: getAnyScopeContext()
                 val scopeContext = getScopeContext(prevResolved)
-                return prevScopeContext.resolve(scopeContext)
+                return prevScopeContext.resolveNext(scopeContext)
             }
         }
         return getUnknownScopeContext()
@@ -308,8 +308,9 @@ object ParadoxScopeHandler {
                 doGetScopeContextByScopeLinkFromDataNode(contextElement, node, inputScopeContext, inExpression)
             }
             is ParadoxSystemLinkExpressionNode -> {
+                val isFrom = node.config.baseId.lowercase() == "from"
                 doGetScopeContextBySystemLinkNode(contextElement, node, inputScopeContext, inExpression)
-                    ?: getUnknownScopeContext(inputScopeContext, node.config.baseId.lowercase() == "from")
+                    ?: getUnknownScopeContext(inputScopeContext, isFrom)
             }
             is ParadoxParameterizedScopeFieldExpressionNode -> getAnyScopeContext()
             //error
@@ -320,7 +321,7 @@ object ParadoxScopeHandler {
     fun getScopeContext(contextElement: PsiElement, node: ParadoxLinkPrefixExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val linkConfig = node.linkConfigs.firstOrNull() // first is ok
         if(linkConfig == null) return getUnknownScopeContext(inputScopeContext) //unexpected
-        return inputScopeContext.resolve(linkConfig.outputScope)
+        return inputScopeContext.resolveNext(linkConfig.outputScope)
     }
     
     fun getScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContext {
@@ -345,7 +346,7 @@ object ParadoxScopeHandler {
     
     private fun doGetScopeContextByScopeLinkNode(contextElement: PsiElement, node: ParadoxScopeLinkExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext {
         val outputScope = node.config.outputScope
-        return inputScopeContext.resolve(outputScope)
+        return inputScopeContext.resolveNext(outputScope)
     }
     
     private fun doGetScopeContextByScopeLinkFromDataNode(contextElement: PsiElement, node: ParadoxScopeLinkFromDataExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext {
@@ -376,46 +377,37 @@ object ParadoxScopeHandler {
                 }
             }
         }
-        return inputScopeContext.resolve(linkConfig.outputScope)
+        return inputScopeContext.resolveNext(linkConfig.outputScope)
     }
     
     private fun doGetScopeContextBySystemLinkNode(contextElement: PsiElement, node: ParadoxSystemLinkExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext? {
-        fun ParadoxScopeContext.prev(): ParadoxScopeContext? {
-            if(inExpression) return parent
-            return scopeFieldInfo?.first()?.second?.parent ?: parent
-        }
-        
         val systemLinkConfig = node.config
         val id = systemLinkConfig.id
         val baseId = systemLinkConfig.baseId
         val systemLinkContext = when {
             id == "This" -> inputScopeContext
             id == "Root" -> inputScopeContext.root
-            id == "Prev" -> inputScopeContext.prev()
-            id == "PrevPrev" -> inputScopeContext.prev()?.prev()
-            id == "PrevPrevPrev" -> inputScopeContext.prev()?.prev()?.prev()
-            id == "PrevPrevPrevPrev" -> inputScopeContext.prev()?.prev()?.prev()?.prev()
+            id == "Prev" -> inputScopeContext.prev
+            id == "PrevPrev" -> inputScopeContext.prevPrev
+            id == "PrevPrevPrev" -> inputScopeContext.prevPrevPrev
+            id == "PrevPrevPrevPrev" -> inputScopeContext.prevPrevPrevPrev
             id == "From" -> inputScopeContext.from
-            id == "FromFrom" -> inputScopeContext.from?.from
-            id == "FromFromFrom" -> inputScopeContext.from?.from?.from
-            id == "FromFromFromFrom" -> inputScopeContext.from?.from?.from?.from
+            id == "FromFrom" -> inputScopeContext.fromFrom
+            id == "FromFromFrom" -> inputScopeContext.fromFromFrom
+            id == "FromFromFromFrom" -> inputScopeContext.fromFromFromFrom
             else -> null
         } ?: return null
         val isFrom = baseId == "From"
-        return inputScopeContext.resolve(systemLinkContext, isFrom)
+        return inputScopeContext.resolveNext(systemLinkContext, isFrom)
     }
     
     fun getAnyScopeContext(): ParadoxScopeContext {
         return ParadoxScopeContext.resolve(anyScopeId, anyScopeId)
     }
     
-    fun getUnknownScopeContext(inputScopeContext: ParadoxScopeContext? = null, from: Boolean = false): ParadoxScopeContext {
+    fun getUnknownScopeContext(inputScopeContext: ParadoxScopeContext? = null, isFrom: Boolean = false): ParadoxScopeContext {
         if(inputScopeContext == null) return ParadoxScopeContext.resolve(unknownScopeId)
-        val resolved = inputScopeContext.resolve(unknownScopeId)
-        if(from) {
-            resolved.root = null
-            resolved.prev = null
-        }
+        val resolved = inputScopeContext.resolveNext(unknownScopeId, isFrom)
         return resolved
     }
     
@@ -431,7 +423,7 @@ object ParadoxScopeHandler {
     fun buildScopeDoc(scopeId: String, gameType: ParadoxGameType?, contextElement: PsiElement, builder: StringBuilder) {
         with(builder) {
             when {
-                isFakeScopeId(scopeId) -> append(scopeId)
+                isUnsureScopeId(scopeId) -> append(scopeId)
                 else -> appendCwtLink("${gameType.linkToken}scopes/$scopeId", scopeId, contextElement)
             }
         }
@@ -440,13 +432,12 @@ object ParadoxScopeHandler {
     fun buildScopeContextDoc(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement, builder: StringBuilder) {
         with(builder) {
             var appendSeparator = false
-            scopeContext.detailMap.forEach { (systemLink, scope) ->
+            scopeContext.toScopeMap().forEach { (systemLink, scope) ->
                 if(appendSeparator) appendBr() else appendSeparator = true
                 appendCwtLink("${gameType.linkToken}system_links/$systemLink", systemLink, contextElement)
                 append(" = ")
                 when {
-                    isFakeScopeId(scope.id) -> append(scope)
-                    scope is ParadoxScope.InferredScope -> appendCwtLink("${gameType.linkToken}scopes/${scope.id}", scope.id, contextElement).append("!")
+                    isUnsureScopeId(scope.id) -> append(scope)
                     else -> appendCwtLink("${gameType.linkToken}scopes/${scope.id}", scope.id, contextElement)
                 }
             }
@@ -463,34 +454,23 @@ object ParadoxScopeHandler {
     }
     
     fun mergeScope(scope: ParadoxScope?, otherScope: ParadoxScope?): ParadoxScope? {
-        if(scope == otherScope) return scope ?: ParadoxScope.UnknownScope
-        if(scope == ParadoxScope.AnyScope || otherScope == ParadoxScope.AnyScope) return ParadoxScope.AnyScope
-        if(scope == ParadoxScope.UnknownScope || otherScope == ParadoxScope.UnknownScope) return ParadoxScope.UnknownScope
+        if(scope == otherScope) return scope ?: ParadoxScope.Unknown
+        if(scope == ParadoxScope.Any || otherScope == ParadoxScope.Any) return ParadoxScope.Any
+        if(scope == ParadoxScope.Unknown || otherScope == ParadoxScope.Unknown) return ParadoxScope.Unknown
         if(scope == null) return otherScope
         if(otherScope == null) return scope
         return null
     }
     
-    fun mergeScopeContext(scopeContext: ParadoxScopeContext?, otherScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
-        if(scopeContext != null && otherScopeContext != null) {
-            if(scopeContext.scope.let { it == ParadoxScope.AnyScope || it == ParadoxScope.UnknownScope }) {
-                scopeContext.scope = otherScopeContext.scope
-            }
-            if(scopeContext.root == null) {
-                scopeContext.root = otherScopeContext.root
-            }
-            if(scopeContext.prev == null) {
-                scopeContext.prev = otherScopeContext.prev
-            }
-            if(scopeContext.from == null) {
-                scopeContext.from = otherScopeContext.from
-            }
-        }
-        return scopeContext ?: otherScopeContext
+    fun mergeScopeContext(scopeContext: ParadoxScopeContext?, otherScopeContext: ParadoxScopeContext?, optimized: Boolean = false): ParadoxScopeContext? {
+        val m1 = scopeContext?.toScopeIdMap(showPrev = false).orEmpty()
+        val m2 = otherScopeContext?.toScopeIdMap(showFrom = false).orEmpty()
+        val merged = mergeScopeContextMap(m1, m2, optimized) ?: return null
+        return ParadoxScopeContext.resolve(merged)
     }
     
-    fun mergeScopeContextMap(map: Map<String, String?>, otherMap: Map<String, String?>, optimized: Boolean = false): Map<String, String?>? {
-        val result = mutableMapOf<String, String?>()
+    fun mergeScopeContextMap(map: Map<String, String>, otherMap: Map<String, String>, optimized: Boolean = false): Map<String, String>? {
+        val result = mutableMapOf<String, String>()
         doMergeScopeContextMap(result, map, otherMap, "this", true).let { if(!it) return null }
         doMergeScopeContextMap(result, map, otherMap, "root", true).let { if(!it) return null }
         doMergeScopeContextMap(result, map, otherMap, "prev", false)
@@ -505,14 +485,14 @@ object ParadoxScopeHandler {
         return result.orNull()
     }
     
-    private fun doMergeScopeContextMap(result: MutableMap<String, String?>, m1: Map<String, String?>, m2: Map<String, String?>, key: String, orUnknown: Boolean): Boolean {
+    private fun doMergeScopeContextMap(result: MutableMap<String, String>, m1: Map<String, String>, m2: Map<String, String>, key: String, orUnknown: Boolean): Boolean {
         val s = mergeScopeId(m1[key], m2[key])
         val r = if(orUnknown) s ?: unknownScopeId else s.takeUnless { it == unknownScopeId }
         if(r != null) result[key] = r
         return r != null
     }
     
-    private fun doOptimizeScopeMap(scopeMap: MutableMap<String, String?>) {
+    private fun doOptimizeScopeMap(scopeMap: MutableMap<String, String>) {
         val thisScope = scopeMap["this"]
         if(thisScope == null || thisScope == unknownScopeId) {
             scopeMap["this"] = anyScopeId
