@@ -3,8 +3,8 @@ package icu.windea.pls.lang.configGroup
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.config.settings.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.settings.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
@@ -60,7 +60,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         val configs = fileConfig.properties
         configs.forEach { groupProperty ->
             val groupName = groupProperty.key
-            val map = caseInsensitiveStringKeyMap<CwtFoldingSettings>()
+            val map = caseInsensitiveStringKeyMap<CwtFoldingSettingsConfig>()
             groupProperty.properties?.forEach { property ->
                 val id = property.key
                 var key: String? = null
@@ -74,7 +74,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     }
                 }
                 if(placeholder != null) {
-                    val foldingSetting = CwtFoldingSettings(id, key, keys, placeholder!!)
+                    val foldingSetting = CwtFoldingSettingsConfig(id, key, keys, placeholder!!)
                     map.put(id, foldingSetting)
                 }
             }
@@ -86,7 +86,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         val configs = fileConfig.properties
         configs.forEach { groupProperty ->
             val groupName = groupProperty.key
-            val map = caseInsensitiveStringKeyMap<CwtPostfixTemplateSettings>()
+            val map = caseInsensitiveStringKeyMap<CwtPostfixTemplateSettingsConfig>()
             groupProperty.properties?.forEach { property ->
                 val id = property.key
                 var key: String? = null
@@ -106,7 +106,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     }
                 }
                 if(key != null && expression != null) {
-                    val foldingSetting = CwtPostfixTemplateSettings(id, key!!, example, variables.orEmpty(), expression!!)
+                    val foldingSetting = CwtPostfixTemplateSettingsConfig(id, key!!, example, variables.orEmpty(), expression!!)
                     map.put(id, foldingSetting)
                 }
             }
@@ -162,11 +162,8 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 key == "types" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
-                        val typeName = prop.key.removeSurroundingOrNull("type[", "]")
-                        if(!typeName.isNullOrEmpty()) {
-                            val typeConfig = CwtTypeConfig.resolve(prop, typeName)
-                            configGroup.types[typeName] = typeConfig
-                        }
+                        val typeConfig = CwtTypeConfig.resolve(prop) ?: continue
+                        configGroup.types[typeConfig.name] = typeConfig
                     }
                 }
                 //找到配置文件中的顶级的key为"enums"的属性，然后解析它的子属性，添加到enums和complexEnums中
@@ -259,7 +256,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     val props = property.properties ?: continue
                     for(prop in props) {
                         val scopeGroupName = prop.key
-                        val scopeGroupConfig = CwtScopeGroupConfig.resolve(prop, scopeGroupName) ?: continue
+                        val scopeGroupConfig = CwtScopeGroupConfig.resolve(prop) ?: continue
                         configGroup.scopeGroups[scopeGroupName] = scopeGroupConfig
                     }
                 }

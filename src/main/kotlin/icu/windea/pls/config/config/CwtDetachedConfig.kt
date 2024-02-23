@@ -4,7 +4,7 @@ import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 
-sealed interface CwtDetachedConfig<out T: PsiElement> : CwtConfig<T> {
-    override val pointer: SmartPsiElementPointer<out T> get() = emptyPointer()
+interface CwtDetachedConfig : CwtConfig<PsiElement> {
+    override val pointer: SmartPsiElementPointer<PsiElement> get() = emptyPointer()
     override val info: CwtConfigGroupInfo get() = throw UnsupportedOperationException()
 }

@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.settings.*
+import icu.windea.pls.config.config.settings.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.expression.*
@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.*
  * @see icu.windea.pls.script.codeInsight.completion.ParadoxVariableNameCompletionProvider
  */
 class ParadoxVariableOperationExpressionPostfixTemplate(
-    setting: CwtPostfixTemplateSettings,
+    setting: CwtPostfixTemplateSettingsConfig,
     provider: PostfixTemplateProvider
 ) : ParadoxExpressionEditablePostfixTemplate(setting, provider) {
     object Data {

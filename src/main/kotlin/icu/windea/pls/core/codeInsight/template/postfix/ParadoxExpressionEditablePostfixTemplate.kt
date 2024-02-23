@@ -5,13 +5,13 @@ import com.intellij.codeInsight.template.impl.*
 import com.intellij.codeInsight.template.postfix.templates.*
 import com.intellij.codeInsight.template.postfix.templates.editable.*
 import com.intellij.psi.*
-import icu.windea.pls.config.settings.*
+import icu.windea.pls.config.config.settings.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 
-@WithCwtSettings("settings/postfix_template_settings.pls.cwt", CwtPostfixTemplateSettings::class)
+@WithCwtSettings("settings/postfix_template_settings.pls.cwt", CwtPostfixTemplateSettingsConfig::class)
 abstract class ParadoxExpressionEditablePostfixTemplate(
-	val setting: CwtPostfixTemplateSettings,
+	val setting: CwtPostfixTemplateSettingsConfig,
 	provider: PostfixTemplateProvider
 ): EditablePostfixTemplate(setting.id, setting.key, createTemplate(setting), setting.example.orEmpty(), provider) {
 	abstract val groupName: String
@@ -37,7 +37,7 @@ abstract class ParadoxExpressionEditablePostfixTemplate(
 	}
 }
 
-private fun createTemplate(setting: CwtPostfixTemplateSettings): TemplateImpl {
+private fun createTemplate(setting: CwtPostfixTemplateSettingsConfig): TemplateImpl {
 	val template = TemplateImpl("fakeKey", setting.expression, "")
 	template.isToReformat = true
 	template.parseSegments()

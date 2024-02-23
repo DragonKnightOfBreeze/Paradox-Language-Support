@@ -7,8 +7,6 @@ import icu.windea.pls.model.*
 import java.util.concurrent.*
 
 class CwtOptionValueConfig private constructor(
-    override val pointer: SmartPsiElementPointer<out CwtValue>, //NOTE 目前并未使用，因此直接传入emptyPointer()即可
-    override val info: CwtConfigGroupInfo,
     override val value: String,
     override val valueTypeId: Byte = CwtType.String.id,
     override val options: List<CwtOptionMemberConfig<*>>? = null,
@@ -27,10 +25,10 @@ class CwtOptionValueConfig private constructor(
             if(options.isNullOrEmpty()) {
                 val cacheKey = "${valueTypeId}#${value}"
                 return cache.getOrPut(cacheKey) {
-                    CwtOptionValueConfig(pointer, info, value, valueTypeId, options)
+                    CwtOptionValueConfig(value, valueTypeId, options)
                 }
             }
-            return CwtOptionValueConfig(pointer, info, value, valueTypeId, options)
+            return CwtOptionValueConfig(value, valueTypeId, options)
         }
     }
 }

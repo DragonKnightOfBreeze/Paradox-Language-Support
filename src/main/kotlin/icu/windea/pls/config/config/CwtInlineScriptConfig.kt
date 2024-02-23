@@ -8,7 +8,7 @@ import icu.windea.pls.model.*
 
 /**
  * @property name template_expression
- * @property contextConfigsType (option) context_configs_type: string? = "single"
+ * @property contextConfigsType (option) context_configs_type: string = "single"
  */
 interface CwtInlineScriptConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
