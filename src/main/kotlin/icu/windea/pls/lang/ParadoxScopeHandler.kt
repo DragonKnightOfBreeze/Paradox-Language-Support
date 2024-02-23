@@ -381,8 +381,8 @@ object ParadoxScopeHandler {
     
     private fun doGetScopeContextBySystemLinkNode(contextElement: PsiElement, node: ParadoxSystemLinkExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext? {
         fun ParadoxScopeContext.prev(): ParadoxScopeContext? {
-            if(inExpression) return prev
-            return scopeFieldInfo?.first()?.second?.prev ?: prev
+            if(inExpression) return parent
+            return scopeFieldInfo?.first()?.second?.parent ?: parent
         }
         
         val systemLinkConfig = node.config
