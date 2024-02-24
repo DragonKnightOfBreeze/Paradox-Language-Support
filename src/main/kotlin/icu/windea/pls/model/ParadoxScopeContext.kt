@@ -85,13 +85,13 @@ fun ParadoxScopeContext.Resolver.resolve(map: Map<String, String>): ParadoxScope
     val scope = map.get("this")?.let { ParadoxScope.of(it) } ?: return null
     val root = map.get("root")?.let { ParadoxScopeContext.resolve(it) }
     val from = map.get("from")?.let { ParadoxScopeContext.resolve(it) }
-    val fromFrom = map.get("from")?.let { ParadoxScopeContext.resolve(it) }
-    val fromFromFrom = map.get("fromfrom")?.let { ParadoxScopeContext.resolve(it) }
-    val fromFromFromFrom = map.get("fromfromfrom")?.let { ParadoxScopeContext.resolve(it) }
+    val fromFrom = map.get("fromfrom")?.let { ParadoxScopeContext.resolve(it) }
+    val fromFromFrom = map.get("fromfromfrom")?.let { ParadoxScopeContext.resolve(it) }
+    val fromFromFromFrom = map.get("fromfromfromfrom")?.let { ParadoxScopeContext.resolve(it) }
     val prev = map.get("prev")?.let { ParadoxScopeContext.resolve(it) }
-    val prevPrev = map.get("prev")?.let { ParadoxScopeContext.resolve(it) }
-    val prevPrevPrev = map.get("prevprev")?.let { ParadoxScopeContext.resolve(it) }
-    val prevPrevPrevPrev = map.get("prevprevprev")?.let { ParadoxScopeContext.resolve(it) }
+    val prevPrev = map.get("prevprev")?.let { ParadoxScopeContext.resolve(it) }
+    val prevPrevPrev = map.get("prevprevprev")?.let { ParadoxScopeContext.resolve(it) }
+    val prevPrevPrevPrev = map.get("prevprevprevprev")?.let { ParadoxScopeContext.resolve(it) }
     val prevStack = listOfNotNull(prev, prevPrev, prevPrevPrev, prevPrevPrevPrev)
     return DefaultParadoxScopeContext(scope, root, from, fromFrom, fromFromFrom, fromFromFromFrom, prevStack)
 }
@@ -112,9 +112,9 @@ fun ParadoxScopeContext.resolveNext(scopeContext: ParadoxScopeContext, isFrom: B
     val scope = scopeContext.scope
     val root = this.root
     val from = if(isFrom) scopeContext.from else scopeContext.from ?: this.from
-    val fromFrom = if(isFrom) scopeContext.fromFrom else scopeContext.from ?: this.fromFrom
-    val fromFromFrom = if(isFrom) scopeContext.fromFromFrom else scopeContext.from ?: this.fromFromFrom
-    val fromFromFromFrom = if(isFrom) scopeContext.fromFromFromFrom else scopeContext.from ?: this.fromFromFromFrom
+    val fromFrom = if(isFrom) scopeContext.fromFrom else scopeContext.fromFrom ?: this.fromFrom
+    val fromFromFrom = if(isFrom) scopeContext.fromFromFrom else scopeContext.fromFromFrom ?: this.fromFromFrom
+    val fromFromFromFrom = if(isFrom) scopeContext.fromFromFromFrom else scopeContext.fromFromFromFrom ?: this.fromFromFromFrom
     val prevStack = this.prevStack.toMutableList().also { it.add(0, this) }
     return DefaultParadoxScopeContext(scope, root, from, fromFrom, fromFromFrom, fromFromFromFrom, prevStack)
 }

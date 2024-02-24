@@ -445,7 +445,7 @@ object ParadoxScopeHandler {
     }
     
     fun mergeScopeId(scopeId: String?, otherScopeId: String?): String? {
-        if(scopeId == otherScopeId) return scopeId ?: unknownScopeId
+        if(scopeId == otherScopeId) return scopeId
         if(scopeId == anyScopeId || otherScopeId == anyScopeId) return anyScopeId
         if(scopeId == unknownScopeId || otherScopeId == unknownScopeId) return unknownScopeId
         if(scopeId == null) return otherScopeId
@@ -462,44 +462,35 @@ object ParadoxScopeHandler {
         return null
     }
     
-    fun mergeScopeContext(scopeContext: ParadoxScopeContext?, otherScopeContext: ParadoxScopeContext?, optimized: Boolean = false): ParadoxScopeContext? {
+    fun mergeScopeContext(scopeContext: ParadoxScopeContext?, otherScopeContext: ParadoxScopeContext?, orUnknown: Boolean = false): ParadoxScopeContext? {
         val m1 = scopeContext?.toScopeIdMap(showPrev = false).orEmpty()
-        val m2 = otherScopeContext?.toScopeIdMap(showFrom = false).orEmpty()
-        val merged = mergeScopeContextMap(m1, m2, optimized) ?: return null
+        val m2 = otherScopeContext?.toScopeIdMap(showPrev = false).orEmpty()
+        val merged = mergeScopeContextMap(m1, m2, orUnknown) ?: return null
         return ParadoxScopeContext.resolve(merged)
     }
     
-    fun mergeScopeContextMap(map: Map<String, String>, otherMap: Map<String, String>, optimized: Boolean = false): Map<String, String>? {
+    fun mergeScopeContextMap(map: Map<String, String>, otherMap: Map<String, String>, orUnknown: Boolean = false): Map<String, String>? {
         val result = mutableMapOf<String, String>()
-        doMergeScopeContextMap(result, map, otherMap, "this", true).let { if(!it) return null }
-        doMergeScopeContextMap(result, map, otherMap, "root", true).let { if(!it) return null }
-        doMergeScopeContextMap(result, map, otherMap, "prev", false)
-        doMergeScopeContextMap(result, map, otherMap, "prevprev", false)
-        doMergeScopeContextMap(result, map, otherMap, "prevprevprev", false)
-        doMergeScopeContextMap(result, map, otherMap, "prevprevprevprev", false)
-        doMergeScopeContextMap(result, map, otherMap, "from", false)
-        doMergeScopeContextMap(result, map, otherMap, "fromfrom", false)
-        doMergeScopeContextMap(result, map, otherMap, "fromfromfrom", false)
-        doMergeScopeContextMap(result, map, otherMap, "fromfromfromfrom", false)
-        if(optimized) doOptimizeScopeMap(result)
+        mergeScopeId(map["this"], otherMap["this"])?.let { result["this"] = it }
+        mergeScopeId(map["root"], otherMap["root"])?.let { result["root"] = it }
+        mergeScopeId(map["prev"], otherMap["prev"])?.let { result["prev"] = it }
+        mergeScopeId(map["prevprev"], otherMap["prevprev"])?.let { result["prevprev"] = it }
+        mergeScopeId(map["prevprevprev"], otherMap["prevprevprev"])?.let { result["prevprevprev"] = it }
+        mergeScopeId(map["prevprevprevprev"], otherMap["prevprevprevprev"])?.let { result["prevprevprevprev"] = it }
+        mergeScopeId(map["from"], otherMap["from"])?.let { result["from"] = it }
+        mergeScopeId(map["fromfrom"], otherMap["fromfrom"])?.let { result["fromfrom"] = it }
+        mergeScopeId(map["fromfromfrom"], otherMap["fromfromfrom"])?.let { result["fromfromfrom"] = it }
+        mergeScopeId(map["fromfromfromfrom"], otherMap["fromfromfromfrom"])?.let { result["fromfromfromfrom"] = it }
+        if(orUnknown) {
+            val thisScope = result["this"]
+            if(thisScope == null || thisScope == unknownScopeId) {
+                result["this"] = unknownScopeId
+            }
+            val rootScope = result["root"]
+            if(rootScope == null || rootScope == unknownScopeId) {
+                result["root"] = unknownScopeId
+            }
+        }
         return result.orNull()
-    }
-    
-    private fun doMergeScopeContextMap(result: MutableMap<String, String>, m1: Map<String, String>, m2: Map<String, String>, key: String, orUnknown: Boolean): Boolean {
-        val s = mergeScopeId(m1[key], m2[key])
-        val r = if(orUnknown) s ?: unknownScopeId else s.takeUnless { it == unknownScopeId }
-        if(r != null) result[key] = r
-        return r != null
-    }
-    
-    private fun doOptimizeScopeMap(scopeMap: MutableMap<String, String>) {
-        val thisScope = scopeMap["this"]
-        if(thisScope == null || thisScope == unknownScopeId) {
-            scopeMap["this"] = anyScopeId
-        }
-        val rootScope = scopeMap["root"]
-        if(rootScope == null || rootScope == unknownScopeId) {
-            scopeMap["root"] = anyScopeId
-        }
     }
 }

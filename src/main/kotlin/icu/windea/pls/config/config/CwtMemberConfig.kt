@@ -116,6 +116,7 @@ val CwtMemberConfig<*>.replaceScopes
             for(option1 in options1) {
                 val k = option1.key.lowercase()
                 val v = option1.stringValue?.let { ParadoxScopeHandler.getScopeId(it) } ?: continue
+                put(k, v)
             }
         }
     }
