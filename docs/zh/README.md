@@ -48,7 +48,9 @@ IDEA插件：Paradox语言支持。
   * 按住`Ctrl Shift Alt`并点击目标位置，从而导航到目标定义的相关图片的声明处。
   * 点击`Navigate`或者编辑器右键菜单中的`Go To`，选择要导航到的目标。
   * 点击`Navigate > Definition Hierarchy`，打开定义层级窗口，从而查看某一类型的定义的实现关系。
-  * 点击`Navigate > Call Heirarchy`，打开调用层级窗口，从而查看定义、本地化、封装变量（scripted_variable）等的调用关系。
+  * 点击`Navigate > Call Hierarchy`，打开调用层级窗口，从而查看定义、本地化、封装变量（scripted_variable）等的调用关系。
+  * 点击`Alt 1`或者侧边栏中的`Project`图标，打开项目视图面板，然后点击左上角的`Project > Paradox Files`，从而查看汇总后的游戏与模组文件。
+  * 点击`Alt 1`或者侧边栏中的`Project`图标，打开项目视图面板，然后点击左上角的`Project > CWT Config Files`，从而查看汇总后的CWT规则文件。
 * 如果需要进行全局代码检查，请参考以下方式：
   * 点击`Alt 6`或者侧边栏中的`Problems`图标，打开问题面板，然后查看当前文件存在的问题，或者进行整个项目的全局代码检查。
   * 点击`Code > Inspect Code...`，进行整个项目的全局代码检查。
