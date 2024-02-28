@@ -45,6 +45,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   public static final int CHECK_ICON_START = 44;
   public static final int CHECK_COMMAND_START = 46;
   public static final int IN_CHECK_COLORFUL_TEXT_START = 48;
+  public static final int CHECK_RIGHT_QUOTE = 50;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -56,7 +57,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
      0,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7,  8,  8, 
      9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16, 
     17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 23, 24, 24, 
-    25, 25
+    25, 25, 24, 24
   };
 
   /**
@@ -468,6 +469,25 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
         if(yylength() <= 1) return false;
         return isExactLetter(yycharat(1));
     }
+    
+    private IElementType checkRightQuote() {
+        //NOE double quote should be threat as a string if it's not the last one of current line
+        try {
+            int i = zzCurrentPos + 1;
+            int length = zzBuffer.length();
+            while(i < length) {
+                char c = zzBuffer.charAt(i);
+                if(Character.isWhitespace(c)) break;
+                if(c == '"') return STRING_TOKEN;
+                i++;
+            }
+        } catch(Exception e) {
+            //ignored
+        }
+        
+        yybegin(IN_PROPERTY_END);
+	    return RIGHT_QUOTE;
+    }
 
 
   /**
@@ -796,7 +816,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 64: break;
           case 11:
-            { yybegin(IN_PROPERTY_END); return RIGHT_QUOTE;
+            { return checkRightQuote();
             }
           // fall through
           case 65: break;
@@ -817,12 +837,12 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           case 68: break;
           case 15:
             { if(inConceptText) {
-                inConceptText = false;
-                decreaseDepth();
-                yybegin(nextStateForCommand());
-                return COMMAND_END;
-            }
-            return STRING_TOKEN;
+            inConceptText = false;
+            decreaseDepth();
+            yybegin(nextStateForCommand());
+            return COMMAND_END;
+        }
+        return STRING_TOKEN;
             }
           // fall through
           case 69: break;
