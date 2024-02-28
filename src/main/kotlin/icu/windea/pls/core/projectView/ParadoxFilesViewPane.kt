@@ -96,7 +96,5 @@ class ParadoxFilesViewPane(project: Project) : AbstractProjectViewPaneWithAsyncS
     //  icu.windea.pls.core.projectView.ParadoxGameElementNode
     //    icu.windea.pls.core.projectView.ParadoxDirectoryElementNode / PsiFiles
     
-    override fun getWeight(): Int {
-        return 100 //very low
-    }
+    override fun getWeight() = 100 //very low
 }

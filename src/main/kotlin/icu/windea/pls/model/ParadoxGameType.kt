@@ -44,6 +44,8 @@ enum class ParadoxGameType(
 
 val ParadoxGameType?.id get() = this?.id ?: "core"
 
+val ParadoxGameType?.title get() = this?.title ?: "Core"
+
 val ParadoxGameType?.linkToken get() = if(this == null) "" else "${id}:"
 
 fun ParadoxGameType?.orDefault() = this ?: getSettings().defaultGameType

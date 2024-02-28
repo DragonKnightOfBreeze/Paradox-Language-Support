@@ -19,10 +19,18 @@ class ParadoxGameElementNode(
 ) : ProjectViewNode<ParadoxGameElement>(project, value, viewSettings) {
     override fun canRepresent(element: Any?): Boolean {
         return when {
-            element is PsiDirectory -> element.fileInfo?.pathToEntry?.length == 0
-            element is VirtualFile -> element.isDirectory && element.fileInfo?.pathToEntry?.length == 0
+            element is PsiDirectory -> canRepresent(element.virtualFile)
+            element is VirtualFile -> canRepresent(element)
             else -> false
         }
+    }
+    
+    private fun canRepresent(file: VirtualFile): Boolean {
+        if(!file.isDirectory) return false
+        val fileInfo = file.fileInfo ?: return false
+        if(fileInfo.rootInfo.gameType != value.gameType) return false
+        if(fileInfo.pathToEntry.length != 0) return false
+        return true
     }
     
     override fun contains(file: VirtualFile): Boolean {
@@ -34,9 +42,9 @@ class ParadoxGameElementNode(
     }
     
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
-        if(value == null) return emptyList()
+        if(value == null) return emptySet()
         val selector = fileSelector(project, value.preferredRootFile).withGameType(value.gameType)
-        val children = mutableListOf<AbstractTreeNode<*>>()
+        val children = mutableSetOf<AbstractTreeNode<*>>()
         val directoryNames = mutableSetOf<String>()
         ParadoxFilePathSearch.search(null, selector).processQuery p@{ file ->
             val fileInfo = file.fileInfo ?: return@p true
@@ -48,7 +56,12 @@ class ParadoxGameElementNode(
                 if(!fileData.values.single().included) return@p true
                 val element = ParadoxDirectoryElement(project, fileInfo.pathToEntry, fileInfo.rootInfo.gameType, value.preferredRootFile)
                 val elementNode = ParadoxDirectoryElementNode(project, element, settings)
-                children.add(elementNode)
+                children += elementNode
+            } else {
+                ////排除直接位于根目录下的文件
+                //val psiFile = file.toPsiFile(project) ?: return@p true
+                //val elementNode = PsiFileNode(project, psiFile, settings)
+                //children += elementNode
             }
             true
         }

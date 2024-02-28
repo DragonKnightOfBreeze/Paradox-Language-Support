@@ -31,6 +31,7 @@
     
     <vfs.asyncListener implementation="icu.windea.pls.core.listeners.vfs.ParadoxCoreFileListener"/>
 
+    <projectViewPane implementation="icu.windea.pls.core.projectView.CwtConfigFilesViewPane"/>
     <projectViewPane implementation="icu.windea.pls.core.projectView.ParadoxFilesViewPane"/>
     <projectViewNodeDecorator implementation="icu.windea.pls.core.projectView.ParadoxProjectViewDecorator"/>
     
