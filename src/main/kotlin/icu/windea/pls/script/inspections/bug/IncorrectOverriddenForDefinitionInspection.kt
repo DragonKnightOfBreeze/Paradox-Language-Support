@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 检查（全局）封装变量的重载是否不正确。（覆盖规则为FIOS）
  */
-class IncorrectDefinitionOverrideInspection : LocalInspectionTool() {
+class IncorrectOverriddenForDefinitionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         val project = holder.project
@@ -48,7 +48,7 @@ class IncorrectDefinitionOverrideInspection : LocalInspectionTool() {
                 if(firstRootInfo.rootFile != rootInfo.rootFile) {
                     //different root file -> incorrect override
                     val locationElement = element.propertyKey
-                    val message = PlsBundle.message("inspection.script.bug.incorrectDefinitionOverride.description", name, priority)
+                    val message = PlsBundle.message("inspection.script.bug.incorrectOverriddenForDefinition.description", name, priority)
                     val fix = NavigateToOverriddenDefinitionsFix(name, element, results)
                     holder.registerProblem(locationElement, message, fix)
                 }
@@ -57,12 +57,12 @@ class IncorrectDefinitionOverrideInspection : LocalInspectionTool() {
     }
     
     private class NavigateToOverriddenDefinitionsFix(key: String, element: PsiElement, definitions: Collection<PsiElement>) : NavigateToFix(key, element, definitions, true) {
-        override fun getText() = PlsBundle.message("inspection.script.bug.incorrectDefinitionOverride.quickfix.1")
+        override fun getText() = PlsBundle.message("inspection.script.bug.incorrectOverriddenForDefinition.quickfix.1")
         
         override fun getPopupTitle(editor: Editor) =
-            PlsBundle.message("inspection.script.bug.incorrectDefinitionOverride.quickFix.1.popup.title", key)
+            PlsBundle.message("inspection.script.bug.incorrectOverriddenForDefinition.quickFix.1.popup.title", key)
         
         override fun getPopupText(editor: Editor, value: PsiElement) =
-            PlsBundle.message("inspection.script.bug.incorrectDefinitionOverride.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+            PlsBundle.message("inspection.script.bug.incorrectOverriddenForDefinition.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
     }
 }

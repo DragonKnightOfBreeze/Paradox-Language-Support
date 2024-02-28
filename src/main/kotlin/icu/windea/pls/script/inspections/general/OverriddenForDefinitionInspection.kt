@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 检查（全局）封装变量的重载是否不正确。（覆盖规则为FIOS）
  */
-class DefinitionOverrideInspection : LocalInspectionTool() {
+class OverriddenForDefinitionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         val project = holder.project
@@ -38,25 +38,22 @@ class DefinitionOverrideInspection : LocalInspectionTool() {
                 if(name.isParameterized()) return //parameterized -> ignored
                 val results = ParadoxDefinitionSearch.search(name, type, selector).findAll()
                 if(results.size < 2) return //no override -> skip
-                val firstResult = results.first()
-                if(firstResult isSamePosition element) return //element is first -> to be used in final, skip
                     
                 val locationElement = element.propertyKey
-                val location = firstResult.fileInfo?.rootInfo?.qualifiedName ?: return
-                val message = PlsBundle.message("inspection.script.general.definitionOverride.description", name, location)
+                val message = PlsBundle.message("inspection.script.general.overriddenForDefinition.description", name)
                 val fix = NavigateToOverriddenDefinitionsFix(name, element, results)
                 holder.registerProblem(locationElement, message, fix)
             }
         }
     }
     
-    private class NavigateToOverriddenDefinitionsFix(key: String, element: PsiElement, definitions: Collection<PsiElement>) : NavigateToFix(key, element, definitions, true) {
-        override fun getText() = PlsBundle.message("inspection.script.general.definitionOverride.quickfix.1")
+    private class NavigateToOverriddenDefinitionsFix(key: String, element: PsiElement, elements: Collection<PsiElement>) : NavigateToFix(key, element, elements, true) {
+        override fun getText() = PlsBundle.message("inspection.script.general.overriddenForDefinition.quickfix.1")
         
         override fun getPopupTitle(editor: Editor) =
-            PlsBundle.message("inspection.script.general.definitionOverride.quickFix.1.popup.title", key)
+            PlsBundle.message("inspection.script.general.overriddenForDefinition.quickFix.1.popup.title", key)
         
         override fun getPopupText(editor: Editor, value: PsiElement) =
-            PlsBundle.message("inspection.script.general.definitionOverride.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+            PlsBundle.message("inspection.script.general.overriddenForDefinition.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
     }
 }

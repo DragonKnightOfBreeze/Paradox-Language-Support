@@ -112,18 +112,18 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
                      implementationClass="icu.windea.pls.script.inspections.general.IncorrectPathReferenceInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptScriptedVariableOverride"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptOverriddenForScriptedVariable"
                      enabledByDefault="false" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.general.scriptedVariableOverride"
+                     bundle="messages.PlsBundle" key="inspection.script.general.overriddenForScriptedVariable"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
-                     implementationClass="icu.windea.pls.script.inspections.general.ScriptedVariableOverrideInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDefinitionOverride"
+                     implementationClass="icu.windea.pls.script.inspections.general.OverriddenForScriptedVariableInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptOverriddenForDefinition"
                      enabledByDefault="false" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.general.definitionOverride"
+                     bundle="messages.PlsBundle" key="inspection.script.general.overriddenForDefinition"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
-                     implementationClass="icu.windea.pls.script.inspections.general.DefinitionOverrideInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.general.OverriddenForDefinitionInspection"/>
     <!--endregion-->
     <!--region Paradox script/Possible Bugs-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedParameterUsage"
@@ -156,18 +156,18 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
                      groupPathKey="inspection.script.bug.path"
                      implementationClass="icu.windea.pls.script.inspections.bug.UnsupportedRecursionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScriptedVariableOverride"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectOverriddenForScriptedVariable"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.bug.incorrectScriptedVariableOverride"
+                     bundle="messages.PlsBundle" key="inspection.script.bug.incorrectOverriddenForScriptedVariable"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
                      groupPathKey="inspection.script.bug.path"
-                     implementationClass="icu.windea.pls.script.inspections.bug.IncorrectScriptedVariableOverrideInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectDefinitionOverride"
+                     implementationClass="icu.windea.pls.script.inspections.bug.IncorrectOverriddenForScriptedVariableInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectOverriddenForDefinition"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.bug.incorrectDefinitionOverride"
+                     bundle="messages.PlsBundle" key="inspection.script.bug.incorrectOverriddenForDefinition"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.bug"
                      groupPathKey="inspection.script.bug.path"
-                     implementationClass="icu.windea.pls.script.inspections.bug.IncorrectDefinitionOverrideInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.bug.IncorrectOverriddenForDefinitionInspection"/>
     <!--endregion-->
     <!--region Paradox script/Scope issues-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScope"
