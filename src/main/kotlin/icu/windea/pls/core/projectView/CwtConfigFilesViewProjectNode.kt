@@ -14,7 +14,7 @@ class CwtConfigFilesViewProjectNode(
     viewSettings: ViewSettings
 ) : AbstractProjectNode(project, project, viewSettings) {
     override fun canRepresent(element: Any?): Boolean {
-        return true
+        return false
     }
     
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
