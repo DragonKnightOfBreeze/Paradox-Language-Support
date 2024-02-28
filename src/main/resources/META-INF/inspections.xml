@@ -112,6 +112,18 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
                      groupPathKey="inspection.script.general.path"
                      implementationClass="icu.windea.pls.script.inspections.general.IncorrectPathReferenceInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptScriptedVariableOverride"
+                     enabledByDefault="false" level="WEAK WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.general.scriptedVariableOverride"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
+                     groupPathKey="inspection.script.general.path"
+                     implementationClass="icu.windea.pls.script.inspections.general.ScriptedVariableOverrideInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDefinitionOverride"
+                     enabledByDefault="false" level="WEAK WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.general.definitionOverride"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.general"
+                     groupPathKey="inspection.script.general.path"
+                     implementationClass="icu.windea.pls.script.inspections.general.DefinitionOverrideInspection"/>
     <!--endregion-->
     <!--region Paradox script/Possible Bugs-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedParameterUsage"

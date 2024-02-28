@@ -33,17 +33,16 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
                     for(value in values) {
                         //第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
                         val location = value.propertyKey
-                        holder.registerProblem(
-                            location, PlsBundle.message("inspection.localisation.duplicateProperties.description", key),
-                            NavigateToDuplicatesFix(key, value, values)
-                        )
+                        val fix = NavigateToDuplicatesFix(key, value, values)
+                        val message = PlsBundle.message("inspection.localisation.duplicateProperties.description", key)
+                        holder.registerProblem(location, message, fix)
                     }
                 }
             }
         }
     }
     
-    private class NavigateToDuplicatesFix(key: String, element: PsiElement, duplicates: Collection<PsiElement>): NavigateToFix(key, element, duplicates, true) {
+    private class NavigateToDuplicatesFix(key: String, element: PsiElement, duplicates: Collection<PsiElement>) : NavigateToFix(key, element, duplicates, true) {
         override fun getText() = PlsBundle.message("inspection.localisation.duplicateProperties.quickfix.1")
         
         override fun getPopupTitle(editor: Editor) =

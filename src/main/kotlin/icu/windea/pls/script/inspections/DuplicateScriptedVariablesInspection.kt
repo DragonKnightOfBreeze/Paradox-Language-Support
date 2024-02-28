@@ -52,15 +52,15 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 			for(value in values) {
 				//第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
 				val location = value.scriptedVariableName
-				holder.registerProblem(location, PlsBundle.message("inspection.script.duplicateScriptedVariables.description", name),
-					NavigateToDuplicatesFix(name, value, values)
-				)
+				val message = PlsBundle.message("inspection.script.duplicateScriptedVariables.description", name)
+				val fix = NavigateToDuplicatesFix(name, value, values)
+				holder.registerProblem(location, message, fix)
 			}
 		}
 		return holder.resultsArray
 	}
 	
-	private class NavigateToDuplicatesFix(key: String, element: PsiElement, duplicates: Collection<PsiElement>): NavigateToFix(key, element, duplicates, true) {
+	private class NavigateToDuplicatesFix(key: String, element: PsiElement, duplicates: Collection<PsiElement>) : NavigateToFix(key, element, duplicates, true) {
 		override fun getText() = PlsBundle.message("inspection.script.duplicateScriptedVariables.quickfix.1")
 		
 		override fun getPopupTitle(editor: Editor) =
@@ -68,5 +68,5 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 		
 		override fun getPopupText(editor: Editor, value: PsiElement) =
 			PlsBundle.message("inspection.script.duplicateScriptedVariables.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
-	} 
+	}
 }
