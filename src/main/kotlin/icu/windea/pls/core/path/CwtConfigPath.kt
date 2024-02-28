@@ -37,13 +37,21 @@ private fun doResolve(path: String): CwtConfigPath {
 private class CwtConfigPathImpl(
     path: String
 ) : CwtConfigPath {
-    override val path = path.intern()
+    override val path: String = path.intern()
     override val subPaths: List<String> = path.split('/').mapFast { it.intern() }
-    override val length = subPaths.size
+    override val length: Int = subPaths.size
     
     override fun equals(other: Any?) = this === other || other is CwtConfigPath && path == other.path
     override fun hashCode() = path.hashCode()
     override fun toString() = path
 }
 
-private val EmptyCwtConfigPath = CwtConfigPathImpl("")
+private object EmptyCwtConfigPath: CwtConfigPath {
+    override val path: String = ""
+    override val subPaths: List<String> = emptyList()
+    override val length: Int = 0
+    
+    override fun equals(other: Any?) = this === other || other is CwtConfigPath && path == other.path
+    override fun hashCode() = path.hashCode()
+    override fun toString() = path
+}
