@@ -56,7 +56,7 @@ class IncorrectOverriddenForDefinitionInspection : LocalInspectionTool() {
         }
     }
     
-    private class NavigateToOverriddenDefinitionsFix(key: String, element: PsiElement, definitions: Collection<PsiElement>) : NavigateToFix(key, element, definitions, true) {
+    private class NavigateToOverriddenDefinitionsFix(key: String, element: PsiElement, definitions: Collection<PsiElement>) : NavigateToFix(key, element, definitions) {
         override fun getText() = PlsBundle.message("inspection.script.bug.incorrectOverriddenForDefinition.quickfix.1")
         
         override fun getPopupTitle(editor: Editor) =

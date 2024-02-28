@@ -84,7 +84,9 @@ interface ParadoxPriorityProvider {
             val rootPath = fileInfo.rootInfo.rootFile.path
             if(rootPath == settings.gameDirectory) return 0
             val i = settings.modDependencies.indexOfFirst { it.modDirectory == rootPath }
-            return if(i != -1) i + 1 else -1
+            if(i != -1) return i + 1
+            if(settings is ParadoxModSettingsState && rootPath == settings.modDirectory) return Int.MAX_VALUE
+            return -1
         }
     }
 }
