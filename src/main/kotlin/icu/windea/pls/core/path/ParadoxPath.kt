@@ -66,7 +66,7 @@ private fun doResolve(subPaths: List<String>): ParadoxPath {
 private class ParadoxPathImplA(
     path: String
 ) : ParadoxPath {
-    override val path = path.intern()
+    override val path: String = path.intern()
     override val subPaths: List<String> = path.split('/').mapFast { it.intern() }
     override val parent: String = path.substringBeforeLast('/', "").intern()
     override val root: String = path.substringBefore('/', "").intern()
@@ -95,4 +95,16 @@ private class ParadoxPathImplB(
     override fun toString() = path
 }
 
-private val EmptyParadoxPath = ParadoxPathImplA("")
+private object EmptyParadoxPath: ParadoxPath {
+    override val subPaths: List<String> = emptyList()
+    override val path: String = ""
+    override val parent: String = ""
+    override val root: String = ""
+    override val fileName: String = ""
+    override val fileExtension: String? = null
+    override val length: Int = 0
+    
+    override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path
+    override fun hashCode() = path.hashCode()
+    override fun toString() = path
+}
