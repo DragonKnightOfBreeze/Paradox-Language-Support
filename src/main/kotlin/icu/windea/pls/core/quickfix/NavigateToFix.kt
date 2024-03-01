@@ -13,7 +13,7 @@ abstract class NavigateToFix(
     val key: String,
     target: PsiElement,
     elements: Collection<PsiElement>,
-    val targetInElements: Boolean = false,
+    val excludeTargetInElements: Boolean = false,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(target) {
     private val pointers = elements.map { it.createPointer() }
     
@@ -26,7 +26,7 @@ abstract class NavigateToFix(
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if(editor == null) return
         val elements = pointers.mapNotNullTo(mutableListOf()) { it.element }
-        if(targetInElements) elements.removeIf { it == startElement }
+        if(excludeTargetInElements) elements.removeIf { it == startElement }
         if(elements.size == 1) {
             val element = elements.single()
             navigateTo(editor, element)
