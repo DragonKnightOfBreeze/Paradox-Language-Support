@@ -18,6 +18,13 @@ class ParadoxFilesViewProjectNode(
         return false   
     }
     
+    override fun contains(file: VirtualFile): Boolean {
+        if(!file.isDirectory) return false
+        val fileInfo = file.fileInfo ?: return false
+        if(fileInfo.pathToEntry.length != 0) return false
+        return true
+    }
+    
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
         //如果项目中存在游戏或模组目录，则仅使用这个游戏或模组目录对应的游戏类型作为子节点
         val rootPaths = mutableSetOf<String>()

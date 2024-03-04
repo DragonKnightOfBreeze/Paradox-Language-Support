@@ -7,6 +7,7 @@ import com.intellij.ide.util.treeView.*
 import com.intellij.openapi.module.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.lang.configGroup.*
 import icu.windea.pls.model.*
 
 class CwtConfigFilesViewProjectNode(
@@ -14,6 +15,16 @@ class CwtConfigFilesViewProjectNode(
     viewSettings: ViewSettings
 ) : AbstractProjectNode(project, project, viewSettings) {
     override fun canRepresent(element: Any?): Boolean {
+        return false
+    }
+    
+    override fun contains(file: VirtualFile): Boolean {
+        if(!file.isDirectory) return false
+        val rootDir = file.parent ?: return false
+        CwtConfigGroupFileProvider.EP_NAME.extensionList.forEach f@{ fileProvider ->
+            val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
+            if(rootDir == rootDirectory) return true
+        }
         return false
     }
     
