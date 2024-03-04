@@ -38,7 +38,7 @@ enum class ParadoxGameType(
         
         fun resolveBySteamId(steamId: String) = valueMapBySteamId[steamId]
         
-        fun placeholder() = Stellaris
+        fun canResolve(id: String) = id == "core" || valueMap.containsKey(id)
     }
 }
 
@@ -49,3 +49,5 @@ val ParadoxGameType?.title get() = this?.title ?: "Core"
 val ParadoxGameType?.linkToken get() = if(this == null) "" else "${id}:"
 
 fun ParadoxGameType?.orDefault() = this ?: getSettings().defaultGameType
+
+fun ParadoxGameType.Companion.placeholder() = ParadoxGameType.Stellaris

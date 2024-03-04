@@ -21,17 +21,25 @@ class ParadoxDirectoryElementNode(
 ) : ProjectViewNode<ParadoxDirectoryElement>(project, value, viewSettings), ValidateableNode {
     override fun canRepresent(element: Any?): Boolean {
         return when {
-            element is PsiDirectory -> element.fileInfo != null
-            element is VirtualFile -> element.isDirectory && element.fileInfo != null
+            element is PsiDirectory -> canRepresent(element.virtualFile)
+            element is VirtualFile -> canRepresent(element)
             else -> false
         }
+    }
+    
+    private fun canRepresent(file: VirtualFile): Boolean {
+        if(!file.isDirectory) return false
+        val fileInfo = file.fileInfo ?: return false
+        if(value.gameType != fileInfo.rootInfo.gameType) return false
+        if(value.path != fileInfo.pathToEntry) return false
+        return true
     }
     
     override fun contains(file: VirtualFile): Boolean {
         if(value == null) return false
         val fileInfo = file.fileInfo ?: return false
-        if(fileInfo.rootInfo.gameType != value.gameType) return false
-        if(fileInfo.pathToEntry.parent != value.path.path) return false
+        if(value.gameType != fileInfo.rootInfo.gameType) return false
+        if(!value.path.path.matchesPath(fileInfo.pathToEntry.parent)) return false
         return true
     }
     

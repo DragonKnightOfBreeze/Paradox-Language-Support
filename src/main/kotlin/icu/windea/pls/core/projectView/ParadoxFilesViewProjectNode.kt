@@ -19,10 +19,7 @@ class ParadoxFilesViewProjectNode(
     }
     
     override fun contains(file: VirtualFile): Boolean {
-        if(!file.isDirectory) return false
-        val fileInfo = file.fileInfo ?: return false
-        if(fileInfo.pathToEntry.length != 0) return false
-        return true
+        return file.fileInfo != null
     }
     
     override fun getChildren(): Collection<AbstractTreeNode<*>> {

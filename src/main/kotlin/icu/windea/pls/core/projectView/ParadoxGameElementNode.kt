@@ -28,16 +28,16 @@ class ParadoxGameElementNode(
     private fun canRepresent(file: VirtualFile): Boolean {
         if(!file.isDirectory) return false
         val fileInfo = file.fileInfo ?: return false
-        if(fileInfo.rootInfo.gameType != value.gameType) return false
-        if(fileInfo.pathToEntry.length != 0) return false
+        if(value.gameType != fileInfo.rootInfo.gameType) return false
+        if(fileInfo.pathToEntry.isNotEmpty()) return false
         return true
     }
     
     override fun contains(file: VirtualFile): Boolean {
         if(value == null) return false
         val fileInfo = file.fileInfo ?: return false
-        if(fileInfo.rootInfo.gameType != value.gameType) return false
-        if(fileInfo.pathToEntry.length != 1) return false
+        if(value.gameType != fileInfo.rootInfo.gameType) return false
+        if(fileInfo.pathToEntry.isEmpty()) return false
         return true
     }
     

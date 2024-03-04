@@ -7,6 +7,7 @@ import com.intellij.ide.util.treeView.*
 import com.intellij.openapi.module.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import com.intellij.psi.*
 import icu.windea.pls.lang.configGroup.*
 import icu.windea.pls.model.*
 
@@ -15,15 +16,28 @@ class CwtConfigFilesViewProjectNode(
     viewSettings: ViewSettings
 ) : AbstractProjectNode(project, project, viewSettings) {
     override fun canRepresent(element: Any?): Boolean {
+        return when {
+            element is PsiDirectory -> canRepresent(element.virtualFile)
+            element is VirtualFile -> canRepresent(element)
+            else -> false
+        }
+    }
+    
+    private fun canRepresent(file: VirtualFile): Boolean {
+        if(!file.isDirectory) return false
+        CwtConfigGroupFileProvider.EP_NAME.extensionList.forEach f@{ fileProvider ->
+            val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
+            if(file == rootDirectory) return true
+        }
         return false
     }
     
     override fun contains(file: VirtualFile): Boolean {
-        if(!file.isDirectory) return false
-        val rootDir = file.parent ?: return false
         CwtConfigGroupFileProvider.EP_NAME.extensionList.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            if(rootDir == rootDirectory) return true
+            val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return@f
+            val gameId = relativePath.substringBefore('/')
+            return ParadoxGameType.canResolve(gameId)
         }
         return false
     }

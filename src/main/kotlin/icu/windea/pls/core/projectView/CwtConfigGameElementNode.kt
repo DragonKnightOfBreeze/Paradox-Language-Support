@@ -36,13 +36,11 @@ class CwtConfigGameElementNode(
     }
     
     override fun contains(file: VirtualFile): Boolean {
-        if(value == null) return false
-        val dir = file.parent ?: return false
-        if(dir.name != value.gameType.id) return false
-        val rootDir = dir.parent ?: return false
         CwtConfigGroupFileProvider.EP_NAME.extensionList.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            if(rootDir == rootDirectory) return true
+            val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return@f
+            val gameId = relativePath.substringBefore('/')
+            return ParadoxGameType.canResolve(gameId)
         }
         return false
     }
