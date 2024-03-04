@@ -15,7 +15,7 @@ class CwtGameRuleConfigGenerator(
     fun generate() {
         val cwtFile = File(cwtPath)
         val oldItems = mutableSetOf<String>()
-        val oldItemRegex = """\s+([\w<>]+)\s*=\s*\{.*""".toRegex()
+        val oldItemRegex = """\s+([\w<>]+)(?:\s*=\s*\{.*)?""".toRegex()
         cwtFile.forEachLine {
             val oldName = oldItemRegex.matchEntire(it)?.groupValues?.getOrNull(1)
             if(oldName != null) oldItems.add(oldName)
