@@ -69,15 +69,7 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
         if(expressionElement.text.isLeftQuoted()) return null
         val expressionConfigs = parameterInfo.expressionConfigs
         val configs = expressionConfigs.mapNotNull { getConfigFromExpressionConfig(expressionElement, it, parameterInfo) }
-        if(configs.isEmpty()) return null
-        val containerConfig = CwtValueConfig.resolve(
-            pointer = emptyPointer(),
-            info = configs.first().info,
-            value = PlsConstants.blockFolder,
-            valueTypeId = CwtType.Block.id,
-            configs = configs
-        )
-        return listOf(containerConfig)
+        return configs
     }
     
     private fun getConfigFromExpressionConfig(expressionElement: ParadoxScriptStringExpressionElement, expressionConfig: CwtMemberConfig<*>, parameterInfo: ParadoxParameterContextInfo.Parameter): CwtValueConfig? {
