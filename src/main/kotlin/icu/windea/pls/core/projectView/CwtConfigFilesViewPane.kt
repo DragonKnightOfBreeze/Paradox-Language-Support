@@ -32,7 +32,7 @@ class CwtConfigFilesViewPane(project: Project): AbstractProjectViewPaneWithAsync
         return CwtConfigFilesPaneSelectInTarget(myProject)
     }
     
-    override fun createStructure(): AbstractTreeStructureBase {
+    override fun createStructure(): ProjectAbstractTreeStructureBase {
         return object : ProjectTreeStructure(myProject, ID) {
             override fun createRoot(project: Project, settings: ViewSettings): AbstractTreeNode<*> {
                 return CwtConfigFilesViewProjectNode(project, settings)
