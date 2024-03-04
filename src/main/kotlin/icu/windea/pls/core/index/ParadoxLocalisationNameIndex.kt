@@ -5,7 +5,7 @@ import icu.windea.pls.localisation.psi.*
 
 private val KEY = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
 private val MODIFIER_KEY = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.modifier")
-private const val VERSION = 48 //1.3.1
+private const val VERSION = 49 //1.3.3
 private const val CACHE_SIZE = 100 * 1024 //98000+ in stellaris@3.6
 
 /**
