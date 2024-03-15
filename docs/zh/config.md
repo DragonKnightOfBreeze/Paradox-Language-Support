@@ -10,7 +10,7 @@ PLS基于由CWT规则文件组成的CWT规则分组，实现了诸多语言功�
 
 参考链接：
 
-* [仓库一览](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config)
+* [仓库一览](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/cwt)
 
 ### 分类
 

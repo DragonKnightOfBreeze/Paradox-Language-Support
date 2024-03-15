@@ -11,7 +11,7 @@ after merging and computing, it will be used to implement various features of th
 
 Reference Links:
 
-* [Repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config)
+* [Repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/cwt)
 
 ### Built-in config groups
 
