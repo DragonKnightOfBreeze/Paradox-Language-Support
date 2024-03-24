@@ -7,24 +7,11 @@ import com.intellij.openapi.project.*
 import com.intellij.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.core.data.*
 import icu.windea.pls.core.settings.*
-import icu.windea.pls.core.tools.*
-import icu.windea.pls.core.tools.model.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.ep.data.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.tools.*
 import icu.windea.pls.lang.tools.model.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 private const val dlcLoadJsonPath = "dlc_load.json"

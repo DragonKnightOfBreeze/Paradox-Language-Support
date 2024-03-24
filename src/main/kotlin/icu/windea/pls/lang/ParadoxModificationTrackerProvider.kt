@@ -1,16 +1,10 @@
 package icu.windea.pls.lang
 
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
-
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 import java.util.concurrent.*

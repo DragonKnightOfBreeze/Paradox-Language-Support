@@ -3,9 +3,6 @@
 package icu.windea.pls.core.collections
 
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
 import java.util.*
 
 inline fun <T> Array<T>?.orNull() = this?.takeIf { it.isNotEmpty() }

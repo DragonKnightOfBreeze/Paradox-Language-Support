@@ -1,9 +1,8 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.stubs.*
-import icu.windea.pls.model.path.*
-import icu.windea.pls.model.path.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.path.*
 
 interface ParadoxScriptDefinitionElementStub<T : ParadoxScriptDefinitionElement> : StubElement<T> {
 	val name: String

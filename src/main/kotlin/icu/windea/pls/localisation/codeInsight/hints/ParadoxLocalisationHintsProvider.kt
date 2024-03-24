@@ -9,9 +9,6 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 
 @Suppress("UnstableApiUsage")

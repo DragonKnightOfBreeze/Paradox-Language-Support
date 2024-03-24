@@ -22,7 +22,6 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.data.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
@@ -35,7 +34,6 @@ import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.CwtConfigMatcher.Options
 import icu.windea.pls.lang.util.CwtConfigMatcher.ResultValue
 import icu.windea.pls.model.*

@@ -5,18 +5,14 @@ import com.intellij.openapi.extensions.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.index.*
 import icu.windea.pls.ep.index.*
-import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.index.*
-import icu.windea.pls.ep.index.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
 
 /**
  * 同步本地化的查询。

@@ -4,7 +4,6 @@ import com.intellij.openapi.extensions.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.script.psi.*
 
 /**

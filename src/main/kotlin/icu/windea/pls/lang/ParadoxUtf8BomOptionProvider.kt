@@ -1,12 +1,8 @@
 package icu.windea.pls.lang
 
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
-
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.encoding.*
+import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 
 /**

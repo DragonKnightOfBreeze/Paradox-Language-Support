@@ -3,18 +3,10 @@ package icu.windea.pls.core.settings
 import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.expression.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.expression.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.expression.*
 
 /**
  * PLS设置。可以在设置页面`Settings > Languages & Frameworks > Paradox Language Support`中进行配置。

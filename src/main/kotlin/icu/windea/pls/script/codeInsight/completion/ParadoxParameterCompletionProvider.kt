@@ -3,16 +3,9 @@ package icu.windea.pls.script.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.util.*
 
 /**
  * 提供定义参数的代码补全。

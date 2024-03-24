@@ -4,8 +4,6 @@ import com.google.common.cache.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.util.*
 
 /**
  * CWT规则的领。保留大小写。忽略括起的双引号。

@@ -4,16 +4,6 @@ import com.intellij.openapi.vcs.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.path.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.path.*
 
 enum class ParadoxFileType(

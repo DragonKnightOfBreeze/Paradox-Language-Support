@@ -3,10 +3,6 @@ package icu.windea.pls.script.codeStyle
 import com.intellij.application.options.*
 import com.intellij.psi.codeStyle.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.*
 
 class ParadoxScriptCodeStyleSettingsProvider : CodeStyleSettingsProvider() {

@@ -6,7 +6,6 @@ import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.search.selector.*
 
 /**
  * 文件路径的查询。

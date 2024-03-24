@@ -9,15 +9,13 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.core.listeners.*
 import icu.windea.pls.core.tools.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.tools.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 /**

@@ -2,7 +2,6 @@ package icu.windea.pls.model.constraints
 
 import com.intellij.psi.stubs.*
 import icu.windea.pls.lang.index.*
-import icu.windea.pls.ep.index.*
 import icu.windea.pls.localisation.psi.*
 
 /**

@@ -3,13 +3,10 @@ package icu.windea.pls.lang.projectView
 import com.intellij.ide.projectView.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.model.path.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.model.path.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.path.*
 import java.util.*
 
 class ParadoxDirectoryElement(

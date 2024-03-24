@@ -8,10 +8,6 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyBrowserSettings.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*

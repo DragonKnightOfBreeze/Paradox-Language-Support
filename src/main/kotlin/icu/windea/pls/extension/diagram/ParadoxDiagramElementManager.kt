@@ -3,9 +3,6 @@ package icu.windea.pls.extension.diagram
 import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.extension.diagram.provider.*
 
 abstract class ParadoxDiagramElementManager(

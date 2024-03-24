@@ -4,11 +4,7 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 
 /**
  * 当更改默认游戏目录映射后，刷新库信息。

@@ -2,7 +2,6 @@ package icu.windea.pls.lang.util.script
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 /**

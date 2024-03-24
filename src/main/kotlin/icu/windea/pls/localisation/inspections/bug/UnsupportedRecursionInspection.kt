@@ -5,21 +5,10 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.path.*
-import icu.windea.pls.core.quickfix.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.path.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.path.*
 
 /**
  * （对于本地化文件）检查是否存在不支持的递归。

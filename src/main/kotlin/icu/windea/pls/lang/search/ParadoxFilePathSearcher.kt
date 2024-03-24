@@ -7,17 +7,9 @@ import com.intellij.psi.search.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.index.*
-import icu.windea.pls.ep.index.*
-import icu.windea.pls.ep.*
 import icu.windea.pls.ep.expression.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.index.*
-import icu.windea.pls.ep.index.*
+import icu.windea.pls.lang.util.*
 
 /**
  * 文件路径的查询器。

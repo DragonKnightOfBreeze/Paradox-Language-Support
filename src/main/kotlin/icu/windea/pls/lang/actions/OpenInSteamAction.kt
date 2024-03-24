@@ -7,9 +7,6 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
 
 //com.intellij.ide.actions.RevealFileAction
 //com.intellij.ide.actions.ShowFilePathAction

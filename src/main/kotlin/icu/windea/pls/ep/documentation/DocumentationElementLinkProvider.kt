@@ -3,10 +3,6 @@ package icu.windea.pls.ep.documentation
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
 
 /**
  * 提供对快速文档链接的支持，用于点击跳转到对应的定义/本地化等。

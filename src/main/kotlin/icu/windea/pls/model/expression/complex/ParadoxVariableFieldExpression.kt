@@ -4,28 +4,14 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.codeInsight.completion.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.model.expression.complex.errors.*
 import icu.windea.pls.model.expression.complex.nodes.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.model.expression.*
-import icu.windea.pls.model.expression.complex.errors.*
-import icu.windea.pls.model.expression.complex.nodes.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.expression.ParadoxDataExpression.*
 
 /**
  * 变量字段表达式。

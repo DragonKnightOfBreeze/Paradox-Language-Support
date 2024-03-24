@@ -5,10 +5,6 @@ import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.ui.table.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.lang.tools.exporter.*
 import javax.swing.*
