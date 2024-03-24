@@ -12,7 +12,7 @@ import icu.windea.pls.util.*
 
 object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage) {
     private const val ID = "paradoxLocalisation.file"
-    private const val VERSION = 49 //1.3.3
+    private const val VERSION = 50 //1.3.4
     
     override fun getExternalId() = ID
     
