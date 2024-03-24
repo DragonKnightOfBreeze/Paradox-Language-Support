@@ -16,7 +16,7 @@ import java.awt.datatransfer.*
  * 复制本地化文本到剪贴板。（复制的是HTML文本）
  */
 class CopyLocalisationTextAsHtmlIntention : IntentionAction {
-    override fun getText() = PlsBundle.message("core.intention.copyLocalisationTextAsHtml")
+    override fun getText() = PlsBundle.message("intention.core.copyLocalisationTextAsHtml")
     
     override fun getFamilyName() = text
     

@@ -58,7 +58,7 @@ abstract class DefinitionNameIntention : IntentionAction, PriorityAction, Iconab
  * @see icu.windea.pls.core.search.usage.ParadoxDefinitionUsagesSearcher
  */
 class DefinitionNameFindUsagesIntention : DefinitionNameIntention() {
-	override fun getText() = PlsBundle.message("script.intention.definitionName.findUsages")
+	override fun getText() = PlsBundle.message("intention.script.definitionName.findUsages")
 	
 	override fun doInvoke(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
 		GotoDeclarationAction.startFindUsages(editor, project, definition)
@@ -70,13 +70,13 @@ class DefinitionNameFindUsagesIntention : DefinitionNameIntention() {
  * @see icu.windea.pls.core.search.implementation.ParadoxDefinitionImplementationsSearch
  */
 class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
-	override fun getText() = PlsBundle.message("script.intention.definitionName.gotoImplementations")
+	override fun getText() = PlsBundle.message("intention.script.definitionName.gotoImplementations")
 	
 	override fun doInvoke(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
 		val selector = definitionSelector(project, definition).contextSensitive()
 		val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
 		if(result.isEmpty()) return
-		getPsiElementPopup(result.toTypedArray(), PlsBundle.message("script.intention.definitionName.gotoImplementations.title", definitionInfo.name))
+		getPsiElementPopup(result.toTypedArray(), PlsBundle.message("intention.script.definitionName.gotoImplementations.title", definitionInfo.name))
 			.showInBestPositionFor(editor)
 	}
 }
@@ -86,14 +86,14 @@ class DefinitionNameGotoImplementationsIntention: DefinitionNameIntention() {
  * @see icu.windea.pls.core.codeInsight.ParadoxTypeDeclarationProvider
  */
 class DefinitionNameGotoTypeDeclarationIntention : DefinitionNameIntention() {
-	override fun getText() = PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration")
+	override fun getText() = PlsBundle.message("intention.script.definitionName.gotoTypeDeclaration")
 	
 	override fun doInvoke(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
 		val result = mutableListOf<PsiElement>()
 		definitionInfo.typeConfig.pointer.element?.let { result.add(it) }
 		if(result.isEmpty()) return
 		definitionInfo.subtypeConfigs.forEach { config -> config.pointer.element?.let { result.add(it) } }
-		getPsiElementPopup(result.toTypedArray(),  PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration.title", definitionInfo.name))
+		getPsiElementPopup(result.toTypedArray(),  PlsBundle.message("intention.script.definitionName.gotoTypeDeclaration.title", definitionInfo.name))
 			.showInBestPositionFor(editor)
 	}
 }

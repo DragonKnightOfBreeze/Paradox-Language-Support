@@ -21,7 +21,7 @@ import icu.windea.pls.localisation.psi.*
 class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH
     
-    override fun getText() = PlsBundle.message("localisation.intention.changeLocalisationLocale")
+    override fun getText() = PlsBundle.message("intention.localisation.changeLocalisationLocale")
     
     override fun getFamilyName() = text
     
@@ -51,7 +51,7 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
     private class Popup(
         private val value: ParadoxLocalisationLocale,
         values: Array<CwtLocalisationLocaleConfig>
-    ) : BaseListPopupStep<CwtLocalisationLocaleConfig>(PlsBundle.message("localisation.intention.changeLocalisationLocale.title"), *values) {
+    ) : BaseListPopupStep<CwtLocalisationLocaleConfig>(PlsBundle.message("intention.localisation.changeLocalisationLocale.title"), *values) {
         override fun getIconFor(value: CwtLocalisationLocaleConfig) = value.icon
         
         override fun getTextFor(value: CwtLocalisationLocaleConfig) = value.text

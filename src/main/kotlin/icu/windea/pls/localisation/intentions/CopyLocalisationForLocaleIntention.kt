@@ -36,7 +36,7 @@ import java.awt.datatransfer.*
 class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH
     
-    override fun getText() = PlsBundle.message("localisation.intention.copyLocalisationForLocale")
+    override fun getText() = PlsBundle.message("intention.localisation.copyLocalisationForLocale")
     
     override fun getFamilyName() = text
     

@@ -19,7 +19,7 @@ import icu.windea.pls.model.*
 class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH
     
-    override fun getText() = PlsBundle.message("localisation.intention.changeLocalisationColor")
+    override fun getText() = PlsBundle.message("intention.localisation.changeLocalisationColor")
     
     override fun getFamilyName() = text
     
@@ -49,7 +49,7 @@ class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
     private class Popup(
         private val value: ParadoxLocalisationColorfulText,
         values: Array<ParadoxTextColorInfo>
-    ) : BaseListPopupStep<ParadoxTextColorInfo>(PlsBundle.message("localisation.intention.changeLocalisationColor.title"), *values) {
+    ) : BaseListPopupStep<ParadoxTextColorInfo>(PlsBundle.message("intention.localisation.changeLocalisationColor.title"), *values) {
         override fun getIconFor(value: ParadoxTextColorInfo) = value.icon
         
         override fun getTextFor(value: ParadoxTextColorInfo) = value.text
