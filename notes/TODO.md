@@ -1,30 +1,5 @@
 # TODO
 
-## BUG记录
-
-来自调试：
-
-* [X] 需要兼容整行或多行参数值中对双引号的特别转义
-* [X] 需要兼容本地化文本中对左方括号的转义（`[[`）
-* [ ] 在`PARAM = xxx`后面输入回车会产生不正确的自动缩进（应当与语言注入有关）
-* [ ] `QuoteIdentifierIntention`和`UnquoteIdentifierIntention`不直接适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""`中的的`\"v\"`）
-* [ ] 对于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""`中的的`\"v\"`），如果用引号括起，由于已被转义一次，会导致中断规则匹配 - IDEA自身BUG？
-
-来自Github仓库：
-
-* [X] 无法及时检测项目本地的规则文件的更改？ - 基本修复？
-* [ ] 无法正确注入`on_action`中事件引用的事件类型？ - 未复现，很神奇
-* [ ] 重新打开项目后，IDE无法完成对脚本文件的解析？ - 可能是内存不足导致
-* [ ] `scope[species]`应当始终可以匹配`this` - 如果无法准确匹配，需要直接匹配同类型的第一个规则 - 待验证
-* [X] 作用域上下文的内嵌提示显示有问题 - 应当显示在`possible = {`后面，且要求`{`之后不存在空白以外的字符
-* [X] `some_trigger = value`中的`value`不应当被特别高亮
-
-来自CWTools的Github仓库：
-
-* [X] [The tool cannot recognize in-script flag variables (Vic3) · Issue #76 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/76)
-* [X] [[Stellaris\] Could support tech@level grammar? · Issue #58 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/58)
-* [X] [Parsing issues in Vic3 · Issue #53 · cwtools/cwtools (github.com)](https://github.com/cwtools/cwtools/issues/53)
-
 ## 更新计划
 
 * 完善在线参考文档

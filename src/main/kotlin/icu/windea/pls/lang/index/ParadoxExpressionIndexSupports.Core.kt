@@ -13,6 +13,35 @@ import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
+class ParadoxInlineScriptUsageIndexSupport : ParadoxExpressionIndexSupport<ParadoxInlineScriptUsageInfo> {
+    private val compressComparator = compareBy<ParadoxInlineScriptUsageInfo> { it.expression }
+    
+    override fun id() = ParadoxExpressionIndexId.InlineScriptUsage.id
+    
+    override fun type() = ParadoxInlineScriptUsageInfo::class.java
+    
+    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+        if(element !is ParadoxScriptProperty) return
+        val info = ParadoxInlineScriptHandler.getUsageInfo(element) ?: return
+        addToFileData(info, fileData)
+    }
+    
+    override fun compressData(value: List<ParadoxInlineScriptUsageInfo>): List<ParadoxInlineScriptUsageInfo> {
+        return value.sortedWith(compressComparator)
+    }
+    
+    override fun writeData(storage: DataOutput, info: ParadoxInlineScriptUsageInfo, previousInfo: ParadoxInlineScriptUsageInfo?, gameType: ParadoxGameType) {
+        storage.writeUTFFast(info.expression)
+        storage.writeInt(info.elementOffset)
+    }
+    
+    override fun readData(storage: DataInput, previousInfo: ParadoxInlineScriptUsageInfo?, gameType: ParadoxGameType): ParadoxInlineScriptUsageInfo {
+        val expression = storage.readUTFFast()
+        val elementOffset = storage.readInt()
+        return ParadoxInlineScriptUsageInfo(expression, elementOffset, gameType)
+    }
+}
+
 class ParadoxComplexEnumValueIndexSupport : ParadoxExpressionIndexSupport<ParadoxComplexEnumValueInfo> {
     private val compressComparator = compareBy<ParadoxComplexEnumValueInfo>({ it.enumName }, { it.name })
     
@@ -99,35 +128,6 @@ class ParadoxDynamicValueIndexSupport : ParadoxExpressionIndexSupport<ParadoxDyn
         val readWriteAccess = storage.readByte().toReadWriteAccess()
         val elementOffset = storage.readIntFast()
         return ParadoxDynamicValueInfo(name, dynamicValueType, readWriteAccess, elementOffset, gameType)
-    }
-}
-
-class ParadoxInlineScriptUsageIndexSupport : ParadoxExpressionIndexSupport<ParadoxInlineScriptUsageInfo> {
-    private val compressComparator = compareBy<ParadoxInlineScriptUsageInfo> { it.expression }
-    
-    override fun id() = ParadoxExpressionIndexId.InlineScriptUsage.id
-    
-    override fun type() = ParadoxInlineScriptUsageInfo::class.java
-    
-    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
-        if(element !is ParadoxScriptProperty) return
-        val info = ParadoxInlineScriptHandler.getUsageInfo(element) ?: return
-        addToFileData(info, fileData)
-    }
-    
-    override fun compressData(value: List<ParadoxInlineScriptUsageInfo>): List<ParadoxInlineScriptUsageInfo> {
-        return value.sortedWith(compressComparator)
-    }
-    
-    override fun writeData(storage: DataOutput, info: ParadoxInlineScriptUsageInfo, previousInfo: ParadoxInlineScriptUsageInfo?, gameType: ParadoxGameType) {
-        storage.writeUTFFast(info.expression)
-        storage.writeInt(info.elementOffset)
-    }
-    
-    override fun readData(storage: DataInput, previousInfo: ParadoxInlineScriptUsageInfo?, gameType: ParadoxGameType): ParadoxInlineScriptUsageInfo {
-        val expression = storage.readUTFFast()
-        val elementOffset = storage.readInt()
-        return ParadoxInlineScriptUsageInfo(expression, elementOffset, gameType)
     }
 }
 
