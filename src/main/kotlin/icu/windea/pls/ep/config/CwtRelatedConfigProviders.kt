@@ -58,6 +58,8 @@ class CwtExtendedRelatedConfigProvider: CwtRelatedConfigProvider {
     override fun getRelatedConfigs(element: ParadoxScriptExpressionElement): List<CwtConfig<*>> {
         //包括其他一些相关的规则（扩展的规则）
         
+        //TODO 1.3.4 definitions gameRules onActions inlineScripts parameters complexEnumValues dynamicValues
+        
         val orDefault = element is ParadoxScriptPropertyKey
         val matchOptions = Options.Default or Options.AcceptDefinition
         val configs = CwtConfigHandler.getConfigs(element, orDefault, matchOptions)

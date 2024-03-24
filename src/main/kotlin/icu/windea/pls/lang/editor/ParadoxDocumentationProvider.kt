@@ -39,8 +39,8 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         return when(element) {
             is ParadoxParameterElement -> getParameterInfo(element, originalElement)
             is ParadoxLocalisationParameterElement -> getLocalisationParameterInfo(element, originalElement)
-            is ParadoxDynamicValueElement -> getDynamicValueInfo(element, originalElement)
             is ParadoxComplexEnumValueElement -> getComplexEnumValueInfo(element, originalElement)
+            is ParadoxDynamicValueElement -> getDynamicValueInfo(element, originalElement)
             is ParadoxModifierElement -> getModifierInfo(element, originalElement)
             else -> null
         }
@@ -58,15 +58,15 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun getDynamicValueInfo(element: ParadoxDynamicValueElement, originalElement: PsiElement?): String {
-        return buildString {
-            buildDynamicValueDefinition(element, null)
-        }
-    }
-    
     private fun getComplexEnumValueInfo(element: ParadoxComplexEnumValueElement, originalElement: PsiElement?): String {
         return buildString {
             buildComplexEnumValueDefinition(element, null)
+        }
+    }
+    
+    private fun getDynamicValueInfo(element: ParadoxDynamicValueElement, originalElement: PsiElement?): String {
+        return buildString {
+            buildDynamicValueDefinition(element, null)
         }
     }
     
@@ -80,8 +80,8 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         return when(element) {
             is ParadoxParameterElement -> getParameterDoc(element, originalElement)
             is ParadoxLocalisationParameterElement -> getLocalisationParameterDoc(element, originalElement)
-            is ParadoxDynamicValueElement -> getDynamicValueDoc(element, originalElement)
             is ParadoxComplexEnumValueElement -> getComplexEnumValueDoc(element, originalElement)
+            is ParadoxDynamicValueElement -> getDynamicValueDoc(element, originalElement)
             is ParadoxModifierElement -> getModifierDoc(element, originalElement)
             else -> null
         }
@@ -100,19 +100,20 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         }
     }
     
-    private fun getDynamicValueDoc(element: ParadoxDynamicValueElement, originalElement: PsiElement?): String {
+    private fun getComplexEnumValueDoc(element: ParadoxComplexEnumValueElement, originalElement: PsiElement?): String {
         return buildString {
             val sectionsList = List(1) { mutableMapOf<String, String>() }
-            buildDynamicValueDefinition(element, sectionsList)
+            buildComplexEnumValueDefinition(element, sectionsList)
             buildDocumentationContent(element)
             buildSections(sectionsList)
         }
     }
     
-    private fun getComplexEnumValueDoc(element: ParadoxComplexEnumValueElement, originalElement: PsiElement?): String {
+    private fun getDynamicValueDoc(element: ParadoxDynamicValueElement, originalElement: PsiElement?): String {
         return buildString {
             val sectionsList = List(1) { mutableMapOf<String, String>() }
-            buildComplexEnumValueDefinition(element, sectionsList)
+            buildDynamicValueDefinition(element, sectionsList)
+            buildDocumentationContent(element)
             buildSections(sectionsList)
         }
     }
@@ -336,6 +337,12 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
     
     private fun StringBuilder.buildDocumentationContent(element: ParadoxParameterElement) {
         ParadoxParameterExtendedDocumentationProvider.buildDocumentation(element) { documentation ->
+            content { append(documentation) }
+        }
+    }
+    
+    private fun StringBuilder.buildDocumentationContent(element: ParadoxComplexEnumValueElement) {
+        ParadoxComplexEnumValueExtendedDocumentationProvider.buildDocumentation(element) { documentation ->
             content { append(documentation) }
         }
     }
