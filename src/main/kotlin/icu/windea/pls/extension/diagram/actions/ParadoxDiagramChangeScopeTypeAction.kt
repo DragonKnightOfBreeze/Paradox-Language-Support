@@ -4,9 +4,9 @@ import com.intellij.diagram.*
 import com.intellij.diagram.util.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.uml.core.actions.visibility.*
-import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
+import icu.windea.pls.lang.search.scope.type.*
 import javax.swing.*
 
 //com.intellij.uml.core.actions.scopes.UmlChangeScopeAction

@@ -9,6 +9,7 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import com.intellij.openapi.editor.markup.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import java.awt.*
 
 object ParadoxLocalisationAttributesKeys {

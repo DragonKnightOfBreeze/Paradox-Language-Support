@@ -4,6 +4,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import java.util.concurrent.atomic.*
 

@@ -3,6 +3,7 @@ package icu.windea.pls.config.expression
 import com.google.common.cache.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.ep.expression.*
 
 /**

@@ -3,7 +3,10 @@ package icu.windea.pls.ep.documentation
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.psi.*
 
 class ParadoxBaseParameterExtendedDocumentationProvider : ParadoxParameterExtendedDocumentationProvider {
     override fun getDocumentation(element: ParadoxParameterElement): String? {

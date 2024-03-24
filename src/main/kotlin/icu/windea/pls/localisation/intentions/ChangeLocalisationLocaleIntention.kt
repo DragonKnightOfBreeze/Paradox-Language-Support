@@ -9,13 +9,18 @@ import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.lang.util.*
 
 /**
  * 更改语言区域。

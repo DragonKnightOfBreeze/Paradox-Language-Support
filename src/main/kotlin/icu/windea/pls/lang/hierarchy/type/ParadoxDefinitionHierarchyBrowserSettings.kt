@@ -3,7 +3,6 @@ package icu.windea.pls.lang.hierarchy.type
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.util.xmlb.*
-import icu.windea.pls.core.hierarchy.*
 
 @Service(Service.Level.PROJECT)
 @State(name = "ParadoxDefinitionHierarchyBrowserSettings", storages = [Storage(StoragePathMacros.WORKSPACE_FILE)])

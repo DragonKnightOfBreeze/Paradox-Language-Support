@@ -7,6 +7,9 @@ import com.intellij.codeInsight.template.postfix.templates.editable.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.settings.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.core.annotations.*
 
 @WithCwtSettings("settings/postfix_template_settings.pls.cwt", CwtPostfixTemplateSettingsConfig::class)

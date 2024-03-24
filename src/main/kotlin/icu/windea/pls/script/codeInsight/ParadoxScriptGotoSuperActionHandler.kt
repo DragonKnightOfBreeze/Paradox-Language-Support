@@ -8,10 +8,16 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.ep.inherit.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.lang.util.*
 
 /**
  * 从光标位置对应的定义跳转到其父定义。

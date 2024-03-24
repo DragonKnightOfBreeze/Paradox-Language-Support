@@ -5,7 +5,7 @@ import com.intellij.platform.backend.navigation.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.*
 import com.intellij.psi.search.*
-import icu.windea.pls.core.search.scope.*
+import icu.windea.pls.lang.search.scope.*
 
 @Suppress("UnstableApiUsage")
 abstract class ParadoxFakePsiElement(parent: PsiElement): RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {

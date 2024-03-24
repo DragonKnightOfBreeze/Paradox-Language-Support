@@ -11,14 +11,11 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.navigation.*
-import icu.windea.pls.core.references.*
-import icu.windea.pls.core.search.scope.*
-import icu.windea.pls.ep.*
 import icu.windea.pls.ep.color.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.core.*
+import icu.windea.pls.lang.navigation.*
+import icu.windea.pls.lang.references.*
+import icu.windea.pls.lang.search.scope.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
@@ -234,7 +231,7 @@ object ParadoxScriptPsiImplUtil {
     fun getPresentation(element: ParadoxScriptProperty): ItemPresentation {
         val definitionInfo = element.definitionInfo
         if(definitionInfo != null) return ParadoxDefinitionPresentation(element, definitionInfo)
-        return icu.windea.pls.lang.navigation.BaseParadoxItemPresentation(element)
+        return BaseParadoxItemPresentation(element)
     }
     
     @JvmStatic
@@ -869,7 +866,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
-        return icu.windea.pls.lang.navigation.BaseParadoxItemPresentation(element)
+        return BaseParadoxItemPresentation(element)
     }
     
     @JvmStatic

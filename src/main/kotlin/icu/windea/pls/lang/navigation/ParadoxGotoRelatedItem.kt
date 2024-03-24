@@ -5,6 +5,15 @@ import com.intellij.openapi.util.NlsContexts.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxGotoRelatedItem(element: PsiElement, @Separator group: String) : GotoRelatedItem(element, group) {
@@ -29,8 +38,8 @@ class ParadoxGotoRelatedItem(element: PsiElement, @Separator group: String) : Go
     }
     
     companion object {
-        fun createItems(elements: Collection<PsiElement>, @Separator group: String): List<icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem> {
-            return elements.mapTo(mutableListOf()) { icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem(it, group) }
+        fun createItems(elements: Collection<PsiElement>, @Separator group: String): List<ParadoxGotoRelatedItem> {
+            return elements.mapTo(mutableListOf()) { ParadoxGotoRelatedItem(it, group) }
         }
     }
 }

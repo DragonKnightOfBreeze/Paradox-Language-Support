@@ -5,9 +5,13 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.search.scope.type.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.ep.inline.*
+import icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyBrowserSettings.*
+import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
@@ -19,11 +23,11 @@ class ParadoxCalleeHierarchyTreeStructure(
     project: Project,
     element: PsiElement,
     val rootDefinitionInfo: ParadoxDefinitionInfo?
-) : HierarchyTreeStructure(project, icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor(project, null, element, true, false)) {
+) : HierarchyTreeStructure(project, ParadoxCallHierarchyNodeDescriptor(project, null, element, true, false)) {
     override fun buildChildren(descriptor: HierarchyNodeDescriptor): Array<out HierarchyNodeDescriptor> {
-        descriptor as icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor
+        descriptor as ParadoxCallHierarchyNodeDescriptor
         val element = descriptor.psiElement ?: return HierarchyNodeDescriptor.EMPTY_ARRAY
-        val descriptors = mutableMapOf<String, icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor>()
+        val descriptors = mutableMapOf<String, ParadoxCallHierarchyNodeDescriptor>()
         when {
             element is ParadoxScriptDefinitionElement -> {
                 processElement(element, descriptor, descriptors)
@@ -35,7 +39,7 @@ class ParadoxCalleeHierarchyTreeStructure(
         return descriptors.values.toTypedArray()
     }
     
-    private fun processElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor>) {
+    private fun processElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
         val settings = getSettings()
         val scopeType = getHierarchySettings().scopeType
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
@@ -98,7 +102,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                             if(descriptors.containsKey(key)) continue //去重
                             val resolvedFile = selectFile(resolved)
                             if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) continue
-                            descriptors.put(key, icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
+                            descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
                         }
                         is ParadoxScriptDefinitionElement -> {
                             if(!settings.hierarchy.showDefinitionsInCallHierarchy) continue //不显示
@@ -108,7 +112,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                             if(descriptors.containsKey(key)) continue //去重
                             val resolvedFile = selectFile(resolved)
                             if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) continue
-                            descriptors.put(key, icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
+                            descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
                         }
                         is ParadoxLocalisationProperty -> {
                             if(!settings.hierarchy.showLocalisationsInCallHierarchy) continue //不显示
@@ -117,7 +121,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                             if(descriptors.containsKey(key)) continue //去重
                             val resolvedFile = selectFile(resolved)
                             if(resolvedFile != null && scope != null && !scope.contains(resolvedFile)) continue
-                            descriptors.put(key, icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
+                            descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
                         }
                     }
                 }
@@ -125,5 +129,5 @@ class ParadoxCalleeHierarchyTreeStructure(
         })
     }
     
-    private fun getHierarchySettings() = icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyBrowserSettings.getInstance(myProject)
+    private fun getHierarchySettings() = ParadoxCallHierarchyBrowserSettings.getInstance(myProject)
 }

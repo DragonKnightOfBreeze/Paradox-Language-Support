@@ -8,15 +8,19 @@ import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.navigation.*
-import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.ep.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.search.*
+import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.ParadoxLocalisationCategory.*
+import icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem.Companion as ParadoxGotoRelatedItem1
 
 /**
  * 本地化（localisation/localisation_synced）的装订线图标提供器。
@@ -60,6 +64,6 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
     }
     
     private fun createGotoRelatedItem(targets: Collection<ParadoxLocalisationProperty>): Collection<GotoRelatedItem> {
-        return icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem.createItems(targets, PlsBundle.message("localisation.gutterIcon.localisation.group"))
+        return ParadoxGotoRelatedItem1.createItems(targets, PlsBundle.message("localisation.gutterIcon.localisation.group"))
     }
 }

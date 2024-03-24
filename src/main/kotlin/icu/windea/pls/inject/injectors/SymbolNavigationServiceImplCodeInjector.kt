@@ -6,9 +6,10 @@ import com.intellij.model.*
 import com.intellij.openapi.project.*
 import com.intellij.platform.backend.navigation.*
 import com.intellij.psi.*
-import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.psi.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*
+import icu.windea.pls.lang.psi.*
 import kotlin.reflect.*
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.*

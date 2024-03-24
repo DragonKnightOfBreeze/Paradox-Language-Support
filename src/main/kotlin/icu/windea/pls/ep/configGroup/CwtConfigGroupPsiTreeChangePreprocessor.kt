@@ -4,6 +4,9 @@ import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.psi.impl.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 

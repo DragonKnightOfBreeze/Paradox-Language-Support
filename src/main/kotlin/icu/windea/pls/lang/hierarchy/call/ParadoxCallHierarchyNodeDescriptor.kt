@@ -15,6 +15,15 @@ import com.intellij.psi.util.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
@@ -58,7 +67,7 @@ class ParadoxCallHierarchyNodeDescriptor(
                 val path = fileInfo.path.path
                 val qualifiedName = fileInfo.rootInfo.qualifiedName
                 val location = " " + PlsBundle.message("hierarchy.call.descriptor.scriptedVariable.location", path, qualifiedName)
-                myHighlightedText.ending.addText(location, icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor.Companion.getLocationAttributes())
+                myHighlightedText.ending.addText(location, ParadoxCallHierarchyNodeDescriptor.Companion.getLocationAttributes())
             }
             is ParadoxScriptDefinitionElement -> {
                 val definitionInfo = element.definitionInfo ?: return invalidElement()
@@ -69,7 +78,7 @@ class ParadoxCallHierarchyNodeDescriptor(
                 val path = fileInfo.path.path
                 val qualifiedName = fileInfo.rootInfo.qualifiedName
                 val location = " " + PlsBundle.message("hierarchy.call.descriptor.definition.location", type, path, qualifiedName)
-                myHighlightedText.ending.addText(location, icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor.Companion.getLocationAttributes())
+                myHighlightedText.ending.addText(location, ParadoxCallHierarchyNodeDescriptor.Companion.getLocationAttributes())
             }
             is ParadoxLocalisationProperty -> {
                 val fileInfo = element.fileInfo ?: return invalidElement()
@@ -78,7 +87,7 @@ class ParadoxCallHierarchyNodeDescriptor(
                 val path = fileInfo.path.path
                 val qualifiedName = fileInfo.rootInfo.qualifiedName
                 val location = " " + PlsBundle.message("hierarchy.call.descriptor.localisation.location", path, qualifiedName)
-                myHighlightedText.ending.addText(location, icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor.Companion.getLocationAttributes())
+                myHighlightedText.ending.addText(location, ParadoxCallHierarchyNodeDescriptor.Companion.getLocationAttributes())
             }
         }
         if(usageCount > 1) {

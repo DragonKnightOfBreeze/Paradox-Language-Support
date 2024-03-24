@@ -3,6 +3,9 @@ package icu.windea.pls.cwt.psi.manipulators
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtOptionKeyManipulator: AbstractElementManipulator<CwtOptionKey>() {

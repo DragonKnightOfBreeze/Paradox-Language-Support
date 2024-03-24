@@ -8,7 +8,13 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.core.actions.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.actions.*
 
 /**
  * 导航到当前文件的包括自身在内的相同路径的文件。如果是本地化文件的话也忽略路径中的语言区域。

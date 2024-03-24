@@ -3,7 +3,8 @@ package icu.windea.pls.ep.scope
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.expression.*
+import icu.windea.pls.model.expression.*
+import icu.windea.pls.model.expression.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 

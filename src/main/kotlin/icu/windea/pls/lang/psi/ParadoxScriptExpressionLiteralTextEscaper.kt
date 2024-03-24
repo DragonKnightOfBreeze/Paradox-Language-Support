@@ -4,7 +4,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.lang.util.*
 import kotlin.math.*
 
 class ParadoxScriptExpressionLiteralTextEscaper<T : PsiLanguageInjectionHost>(

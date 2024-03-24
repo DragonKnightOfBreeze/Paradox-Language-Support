@@ -8,9 +8,17 @@ import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.navigation.*
-import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.navigation.*
+import icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.search.*
+import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -56,6 +64,6 @@ class ParadoxScriptedVariableLineMarkerProvider : RelatedItemLineMarkerProvider(
 	}
 	
 	private fun createGotoRelatedItem(targets: Collection<ParadoxScriptScriptedVariable>): Collection<GotoRelatedItem> {
-		return icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.scriptedVariable.group"))
+		return ParadoxGotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.scriptedVariable.group"))
 	}
 }

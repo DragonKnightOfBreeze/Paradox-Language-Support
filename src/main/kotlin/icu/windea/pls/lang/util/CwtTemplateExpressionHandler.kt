@@ -9,12 +9,24 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.references.*
-import icu.windea.pls.core.search.*
-import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.model.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.expression.*
+import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.references.*
+import icu.windea.pls.lang.search.*
+import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.expression.*
+import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.references.*
+import icu.windea.pls.lang.search.*
+import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 object CwtTemplateExpressionHandler {

@@ -8,13 +8,18 @@ import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.config.settings.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.expression.*
+import icu.windea.pls.model.expression.*
 import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.CwtConfigMatcher.Options
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.CwtConfigMatcher.Options
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.model.expression.*
+import icu.windea.pls.model.expression.ParadoxDataExpression.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -39,7 +44,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         val configs = CwtConfigHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
         if(configs.isEmpty()) return emptyList()
         val configGroup = configs.first().info.configGroup
-        val expression = icu.windea.pls.model.expression.ParadoxDataExpression.resolve(setting.id, isQuoted = false, isKey = true)
+        val expression = ParadoxDataExpression.resolve(setting.id, isQuoted = false, isKey = true)
         val configsToMatch = configs.flatMapTo(mutableListOf()) { it.configs.orEmpty() }
         val matched = configsToMatch.find p@{ config ->
             if(config !is CwtPropertyConfig) return@p false

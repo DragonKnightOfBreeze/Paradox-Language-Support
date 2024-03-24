@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.search.selector
 
-import icu.windea.pls.core.search.*
+import icu.windea.pls.lang.search.*
 
 /**
  * 用于指定如何选择需要查找的定义、本地化、文件等。

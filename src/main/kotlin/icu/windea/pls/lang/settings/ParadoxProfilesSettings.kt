@@ -5,6 +5,13 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.*
 
 @Service(Service.Level.APP)
 @State(name = "ParadoxProfilesSettings", storages = [Storage("paradox-language-support.xml")])

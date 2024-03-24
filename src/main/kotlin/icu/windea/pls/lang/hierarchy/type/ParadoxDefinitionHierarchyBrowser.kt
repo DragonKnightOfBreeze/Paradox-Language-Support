@@ -8,9 +8,16 @@ import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.actions.*
-import icu.windea.pls.core.hierarchy.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.actions.*
+import icu.windea.pls.lang.hierarchy.*
 import icu.windea.pls.script.psi.*
 import java.text.*
 import java.util.function.*
@@ -68,7 +75,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     }
     
     override fun getComparator(): Comparator<NodeDescriptor<*>>? {
-        return icu.windea.pls.lang.hierarchy.ParadoxHierarchyHandler.getComparator(myProject)
+        return ParadoxHierarchyHandler.getComparator(myProject)
     }
     
     override fun getPresentableNameMap(): MutableMap<String, Supplier<String>> {
@@ -94,7 +101,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         actionGroup.add(ViewDefinitionHierarchyAction())
         actionGroup.add(ViewDefinitionHierarchyWithSubtypesAction())
         actionGroup.add(AlphaSortAction())
-        actionGroup.add(icu.windea.pls.lang.hierarchy.ChangeScopeTypeAction(this, getHierarchySettings()))
+        actionGroup.add(ChangeScopeTypeAction(this, getHierarchySettings()))
     }
     
     override fun getPreviousOccurenceActionName(): String {

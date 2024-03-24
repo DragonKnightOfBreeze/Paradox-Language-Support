@@ -2,8 +2,8 @@ package icu.windea.pls.lang.references
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.ep.parameter.*
+import icu.windea.pls.lang.psi.*
 
 class ParadoxParameterPsiReference(
 	element: ParadoxParameter,

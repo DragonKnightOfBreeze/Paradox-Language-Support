@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.scope
 
-import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.psi.*
 import icu.windea.pls.model.*
 
 class ParadoxBaseDynamicValueInferredScopeContextProvider: ParadoxDynamicValueInferredScopeContextProvider {

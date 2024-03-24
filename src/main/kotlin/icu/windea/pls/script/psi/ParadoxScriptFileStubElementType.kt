@@ -8,17 +8,26 @@ import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.*
+import icu.windea.pls.lang.index.*
+import icu.windea.pls.ep.index.*
 import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.index.*
+import icu.windea.pls.ep.index.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
-import icu.windea.pls.lang.util.*
 
 object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
     private const val ID = "paradoxScript.file"

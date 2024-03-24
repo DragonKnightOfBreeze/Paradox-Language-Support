@@ -4,10 +4,16 @@ import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.util.*
@@ -24,25 +30,25 @@ interface ParadoxDataExpression {
     val isKey: Boolean?
     
     companion object Resolver {
-        val BlockExpression: icu.windea.pls.model.expression.ParadoxDataExpression = icu.windea.pls.model.expression.BlockParadoxDataExpression
-        val UnknownExpression: icu.windea.pls.model.expression.ParadoxDataExpression = icu.windea.pls.model.expression.UnknownParadoxDataExpression
+        val BlockExpression: ParadoxDataExpression = icu.windea.pls.model.expression.BlockParadoxDataExpression
+        val UnknownExpression: ParadoxDataExpression = icu.windea.pls.model.expression.UnknownParadoxDataExpression
         
-        fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = CwtConfigMatcher.Options.Default): icu.windea.pls.model.expression.ParadoxDataExpression =
-            icu.windea.pls.model.expression.doResolve(element, matchOptions)
+        fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = CwtConfigMatcher.Options.Default): ParadoxDataExpression =
+            doResolve(element, matchOptions)
         
-        fun resolve(value: String, isQuoted: Boolean, isKey: Boolean? = null): icu.windea.pls.model.expression.ParadoxDataExpression =
-            icu.windea.pls.model.expression.doResolve(value, isQuoted, isKey)
+        fun resolve(value: String, isQuoted: Boolean, isKey: Boolean? = null): ParadoxDataExpression =
+            doResolve(value, isQuoted, isKey)
         
-        fun resolve(text: String, isKey: Boolean? = null): icu.windea.pls.model.expression.ParadoxDataExpression =
-            icu.windea.pls.model.expression.doResolve(text, isKey)
+        fun resolve(text: String, isKey: Boolean? = null): ParadoxDataExpression =
+            doResolve(text, isKey)
     }
 }
 
-fun icu.windea.pls.model.expression.ParadoxDataExpression.isParameterized() = type == ParadoxType.String && text.isParameterized()
+fun ParadoxDataExpression.isParameterized() = type == ParadoxType.String && text.isParameterized()
 
 //Implementations
 
-private fun doResolve(element: ParadoxScriptExpressionElement, matchOptions: Int): icu.windea.pls.model.expression.ParadoxDataExpression {
+private fun doResolve(element: ParadoxScriptExpressionElement, matchOptions: Int): ParadoxDataExpression {
     return when {
         element is ParadoxScriptBlock -> {
             icu.windea.pls.model.expression.BlockParadoxDataExpression
@@ -53,25 +59,25 @@ private fun doResolve(element: ParadoxScriptExpressionElement, matchOptions: Int
                 BitUtil.isSet(matchOptions, CwtConfigMatcher.Options.SkipIndex) -> return icu.windea.pls.model.expression.UnknownParadoxDataExpression
                 else -> element.referenceValue ?: return icu.windea.pls.model.expression.UnknownParadoxDataExpression
             }
-            icu.windea.pls.model.expression.ParadoxDataExpressionImpl(valueElement.value, valueElement.type, valueElement.text.isLeftQuoted(), false)
+            ParadoxDataExpressionImpl(valueElement.value, valueElement.type, valueElement.text.isLeftQuoted(), false)
         }
         else -> {
             val isKey = element is ParadoxScriptPropertyKey
-            icu.windea.pls.model.expression.ParadoxDataExpressionImpl(element.value, element.type, element.text.isLeftQuoted(), isKey)
+            ParadoxDataExpressionImpl(element.value, element.type, element.text.isLeftQuoted(), isKey)
         }
     }
 }
 
-private fun doResolve(value: String, isQuoted: Boolean, isKey: Boolean?): icu.windea.pls.model.expression.ParadoxDataExpression {
+private fun doResolve(value: String, isQuoted: Boolean, isKey: Boolean?): ParadoxDataExpression {
     val expressionType = ParadoxType.resolve(value)
-    return icu.windea.pls.model.expression.ParadoxDataExpressionImpl(value, expressionType, isQuoted, isKey)
+    return ParadoxDataExpressionImpl(value, expressionType, isQuoted, isKey)
 }
 
-private fun doResolve(text: String, isKey: Boolean?): icu.windea.pls.model.expression.ParadoxDataExpression {
+private fun doResolve(text: String, isKey: Boolean?): ParadoxDataExpression {
     val value = text.unquote()
     val expressionType = ParadoxType.resolve(text)
     val quoted = text.isLeftQuoted()
-    return icu.windea.pls.model.expression.ParadoxDataExpressionImpl(value, expressionType, quoted, isKey)
+    return ParadoxDataExpressionImpl(value, expressionType, quoted, isKey)
 }
 
 private class ParadoxDataExpressionImpl(
@@ -79,9 +85,9 @@ private class ParadoxDataExpressionImpl(
     override val type: ParadoxType,
     override val quoted: Boolean,
     override val isKey: Boolean?
-) : icu.windea.pls.model.expression.ParadoxDataExpression {
+) : ParadoxDataExpression {
     override fun equals(other: Any?): Boolean {
-        return other is icu.windea.pls.model.expression.ParadoxDataExpression && (text == other.text && quoted == other.quoted)
+        return other is ParadoxDataExpression && (text == other.text && quoted == other.quoted)
     }
     
     override fun hashCode(): Int {
@@ -93,7 +99,7 @@ private class ParadoxDataExpressionImpl(
     }
 }
 
-private val BlockParadoxDataExpression = icu.windea.pls.model.expression.ParadoxDataExpressionImpl(PlsConstants.blockFolder, ParadoxType.Block, false, false)
+private val BlockParadoxDataExpression = ParadoxDataExpressionImpl(PlsConstants.blockFolder, ParadoxType.Block, false, false)
 
-private val UnknownParadoxDataExpression = icu.windea.pls.model.expression.ParadoxDataExpressionImpl(PlsConstants.unknownString, ParadoxType.Unknown, false, false)
+private val UnknownParadoxDataExpression = ParadoxDataExpressionImpl(PlsConstants.unknownString, ParadoxType.Unknown, false, false)
 

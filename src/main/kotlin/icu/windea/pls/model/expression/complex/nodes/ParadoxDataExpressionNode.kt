@@ -5,16 +5,24 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.expression.complex.errors.*
+import icu.windea.pls.model.expression.complex.errors.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.model.expression.complex.errors.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxDataExpressionNode(

@@ -4,11 +4,18 @@ import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.ep.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.quickfix.*
 
 /**
  * 检查内联脚本的使用位置是否存在冲突。
@@ -22,7 +29,7 @@ class ConflictingInlineScriptUsageInspection : LocalInspectionTool(){
         
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val description = PlsBundle.message("script.annotator.inlineScript.conflict", inlineScriptExpression)
-        holder.registerProblem(file, description, GotoInlineScriptUsagesIntention())
+        holder.registerProblem(file, description, GotoInlineScriptUsagesFix())
         return holder.resultsArray
     }
 }

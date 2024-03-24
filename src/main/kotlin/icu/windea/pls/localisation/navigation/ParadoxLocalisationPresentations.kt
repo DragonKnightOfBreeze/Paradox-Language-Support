@@ -1,7 +1,7 @@
 package icu.windea.pls.localisation.navigation
 
 import icons.*
-import icu.windea.pls.core.navigation.*
+import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 

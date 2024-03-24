@@ -3,6 +3,9 @@ package icu.windea.pls.ep.config
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 

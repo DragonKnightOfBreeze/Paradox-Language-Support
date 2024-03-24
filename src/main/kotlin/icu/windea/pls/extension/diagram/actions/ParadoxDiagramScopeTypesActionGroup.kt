@@ -5,9 +5,9 @@ import com.intellij.icons.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
+import icu.windea.pls.lang.search.scope.type.*
 
 //com.intellij.uml.core.actions.scopes.UmlScopesActionGroup
 

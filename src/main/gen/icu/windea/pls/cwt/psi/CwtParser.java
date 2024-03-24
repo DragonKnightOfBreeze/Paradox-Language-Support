@@ -1,15 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilder.Marker;
-import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
+import com.intellij.lang.*;
+import com.intellij.lang.PsiBuilder.*;
+import com.intellij.psi.tree.*;
+
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
+import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class CwtParser implements PsiParser, LightPsiParser {

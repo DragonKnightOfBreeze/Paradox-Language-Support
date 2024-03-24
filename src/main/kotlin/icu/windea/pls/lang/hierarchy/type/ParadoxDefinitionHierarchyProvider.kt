@@ -4,9 +4,13 @@ import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.lang.util.*
 
 /**
  * 提供定义的层级视图。（定义类型/定义子类型 > 定义）

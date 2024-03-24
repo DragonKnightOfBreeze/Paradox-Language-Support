@@ -1,16 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilder.Marker;
+import com.intellij.lang.*;
+import com.intellij.lang.PsiBuilder.*;
+import com.intellij.psi.tree.*;
+
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import static icu.windea.pls.script.psi.ParadoxScriptParserUtil.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
-import static com.intellij.lang.WhitespacesBinders.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class ParadoxScriptParser implements PsiParser, LightPsiParser {

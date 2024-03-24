@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.psi
 
 import com.intellij.psi.*
-import icu.windea.pls.core.references.*
+import icu.windea.pls.lang.references.*
 import icu.windea.pls.script.psi.*
 
 interface ParadoxScriptedVariableReference : PsiElement,  NavigatablePsiElement{

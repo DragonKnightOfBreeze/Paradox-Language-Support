@@ -4,15 +4,17 @@ import com.intellij.openapi.extensions.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.script.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.lang.util.script.*
 
 /**
  * 用于获取定义数据。

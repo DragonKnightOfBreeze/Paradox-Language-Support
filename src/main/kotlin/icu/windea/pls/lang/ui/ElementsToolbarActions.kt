@@ -3,6 +3,10 @@ package icu.windea.pls.lang.ui
 import com.intellij.openapi.actionSystem.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 
 interface ElementsToolbarActions {
     /**

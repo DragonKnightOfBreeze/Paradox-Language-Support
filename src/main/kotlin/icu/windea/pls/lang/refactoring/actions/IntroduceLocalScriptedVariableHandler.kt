@@ -11,15 +11,21 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.refactoring.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.refactoring.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.lang.util.*
 
 /**
  * 声明本地封装变量的重构。
  */
-class IntroduceLocalScriptedVariableHandler : icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler() {
+class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandler() {
 	override fun isAvailable(editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return false

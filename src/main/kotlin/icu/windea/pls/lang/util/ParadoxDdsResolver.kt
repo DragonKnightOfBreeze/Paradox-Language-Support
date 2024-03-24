@@ -4,8 +4,15 @@ import com.google.common.cache.*
 import com.intellij.openapi.diagnostic.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.image.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.image.*
 import java.lang.invoke.*
 import java.nio.file.*

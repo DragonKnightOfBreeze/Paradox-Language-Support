@@ -6,6 +6,9 @@ import com.google.common.cache.*
 import com.google.common.collect.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import java.util.concurrent.*
 
 //region Extensions

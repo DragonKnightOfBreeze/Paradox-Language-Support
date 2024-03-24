@@ -5,8 +5,15 @@ import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.quickfix.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.quickfix.*
 
 class CwtAnnotator: Annotator {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {

@@ -47,43 +47,6 @@
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>
     <additionalTextAttributes scheme="High contrast" file="colorSchemes/ParadoxLocalisationHighContrast.xml"/>
     <additionalTextAttributes scheme="IntelliJ Light" file="colorSchemes/ParadoxLocalisationIntellijLight.xml"/>
-
-    <intentionAction>
-      <language>PARADOX_LOCALISATION</language>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>localisation.intention.category</categoryKey>
-      <className>icu.windea.pls.localisation.intentions.ChangeLocalisationLocaleIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_LOCALISATION</language>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>localisation.intention.category</categoryKey>
-      <className>icu.windea.pls.localisation.intentions.ChangeLocalisationColorIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_LOCALISATION</language>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>localisation.intention.category</categoryKey>
-      <className>icu.windea.pls.localisation.intentions.CopyLocalisationIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_LOCALISATION</language>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>localisation.intention.category</categoryKey>
-      <className>icu.windea.pls.localisation.intentions.CopyLocalisationTextIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_LOCALISATION</language>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>localisation.intention.category</categoryKey>
-      <className>icu.windea.pls.localisation.intentions.CopyLocalisationTextAsPlainIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_LOCALISATION</language>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>localisation.intention.category</categoryKey>
-      <className>icu.windea.pls.localisation.intentions.CopyLocalisationTextAsHtmlIntention</className>
-    </intentionAction>
   </extensions>
 
   <actions>

@@ -5,16 +5,22 @@ import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.ep.*
-import icu.windea.pls.lang.CwtConfigHandler.getParameterRanges
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.inspections.inference.*
 import icu.windea.pls.script.psi.*
@@ -94,7 +100,7 @@ class ParadoxScriptAnnotator : Annotator {
         if(configContext.inlineScriptHasConflict == true) return
         if(configContext.inlineScriptHasRecursion == true) return
         val message = PlsBundle.message("script.annotator.inlineScript", inlineScriptExpression)
-        holder.newAnnotation(INFORMATION, message).fileLevel().withFix(GotoInlineScriptUsagesIntention()).create()
+        holder.newAnnotation(INFORMATION, message).fileLevel().withFix(GotoInlineScriptUsagesFix()).create()
     }
     
     private fun annotateProperty(element: ParadoxScriptProperty, holder: AnnotationHolder) {
@@ -150,7 +156,7 @@ class ParadoxScriptAnnotator : Annotator {
             if(element is ParadoxScriptStringExpressionElement) {
                 val elementText = element.text
                 if(elementText.contains('$')) {
-                    val parameterRanges = getParameterRanges(element)
+                    val parameterRanges = CwtConfigHandler.getParameterRanges(element)
                     //缓存参数文本范围
                     element.putUserData(PlsKeys.parameterRanges, parameterRanges)
                     //如果参数直接作为整个脚本表达式，不需要进行额外的高亮

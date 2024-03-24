@@ -5,10 +5,10 @@ import com.intellij.diagram.extras.*
 import com.intellij.diagram.settings.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import icu.windea.pls.core.search.scope.type.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.extras.*
 import icu.windea.pls.extension.diagram.settings.*
+import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.model.*
 
 abstract class ParadoxDiagramProvider(

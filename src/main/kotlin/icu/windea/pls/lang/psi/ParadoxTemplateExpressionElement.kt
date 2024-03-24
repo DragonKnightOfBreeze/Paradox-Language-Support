@@ -6,9 +6,13 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.config.expression.*
-import icu.windea.pls.core.navigation.*
-import icu.windea.pls.core.references.*
+import icu.windea.pls.lang.navigation.*
+import icu.windea.pls.lang.references.*
 import icu.windea.pls.model.*
 import java.util.*
 import javax.swing.*

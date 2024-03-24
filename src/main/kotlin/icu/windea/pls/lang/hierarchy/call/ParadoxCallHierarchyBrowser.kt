@@ -7,8 +7,11 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.actions.*
-import icu.windea.pls.core.hierarchy.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.actions.*
+import icu.windea.pls.lang.hierarchy.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.text.*
@@ -16,16 +19,16 @@ import javax.swing.*
 
 class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHierarchyBrowserBase(project, target) {
     override fun prependActions(actionGroup: DefaultActionGroup) {
-        actionGroup.add(icu.windea.pls.lang.hierarchy.call.ViewCallerHierarchyAction())
-        actionGroup.add(icu.windea.pls.lang.hierarchy.call.ViewCalleeHierarchyAction())
+        actionGroup.add(ViewCallerHierarchyAction())
+        actionGroup.add(ViewCalleeHierarchyAction())
         actionGroup.add(AlphaSortAction())
-        actionGroup.add(icu.windea.pls.lang.hierarchy.ChangeScopeTypeAction(this, getHierarchySettings()))
+        actionGroup.add(ChangeScopeTypeAction(this, getHierarchySettings()))
     }
     
     override fun createTrees(trees: MutableMap<in String, in JTree>) {
         val tree1 = createTree(false)
         PopupHandler.installPopupMenu(tree1, PlsActions.CallHierarchyPopupMenu, ActionPlaces.CALL_HIERARCHY_VIEW_POPUP)
-        val baseOnThisMethodAction = icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyBrowser.BaseOnThisMethodAction()
+        val baseOnThisMethodAction = ParadoxCallHierarchyBrowser.BaseOnThisMethodAction()
         baseOnThisMethodAction.registerCustomShortcutSet(ActionManager.getInstance().getAction(IdeActions.ACTION_CALL_HIERARCHY).shortcutSet, tree1)
         trees.put(getCalleeType(), tree1)
         
@@ -57,21 +60,21 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
         return when(type) {
             getCallerType() -> {
                 val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
-                icu.windea.pls.lang.hierarchy.call.ParadoxCallerHierarchyTreeStructure(myProject, psiElement, definitionInfo)
+                ParadoxCallerHierarchyTreeStructure(myProject, psiElement, definitionInfo)
             }
             getCalleeType() -> {
                 val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
-                icu.windea.pls.lang.hierarchy.call.ParadoxCalleeHierarchyTreeStructure(myProject, psiElement, definitionInfo)
+                ParadoxCalleeHierarchyTreeStructure(myProject, psiElement, definitionInfo)
             }
             else -> null
         }
     }
     
     override fun getComparator(): Comparator<NodeDescriptor<*>>? {
-        return icu.windea.pls.lang.hierarchy.ParadoxHierarchyHandler.getComparator(myProject)
+        return ParadoxHierarchyHandler.getComparator(myProject)
     }
     
-    private fun getHierarchySettings() = icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyBrowserSettings.Companion.getInstance(myProject)
+    private fun getHierarchySettings() = ParadoxCallHierarchyBrowserSettings.Companion.getInstance(myProject)
     
     private class BaseOnThisMethodAction : CallHierarchyBrowserBase.BaseOnThisMethodAction()
 }

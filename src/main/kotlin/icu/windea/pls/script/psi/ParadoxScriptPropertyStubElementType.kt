@@ -2,13 +2,21 @@ package icu.windea.pls.script.psi
 
 import com.intellij.lang.*
 import com.intellij.psi.stubs.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.index.*
-import icu.windea.pls.core.path.*
+import icu.windea.pls.lang.index.*
+import icu.windea.pls.ep.index.*
+import icu.windea.pls.model.path.*
 import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.index.*
+import icu.windea.pls.ep.index.*
+import icu.windea.pls.model.path.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*

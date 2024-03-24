@@ -1,6 +1,9 @@
 package icu.windea.pls.model
 
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
 
 /**
  * @param entries 对于此游戏类型，匹配CWT规则时，也需要基于哪些子目录。

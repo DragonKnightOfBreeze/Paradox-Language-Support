@@ -3,6 +3,7 @@ package icu.windea.pls.model.expression.complex.nodes
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.highlighter.*
 
 class ParadoxScopeLinkDataSourceExpressionNode(
@@ -33,7 +34,7 @@ class ParadoxScopeLinkDataSourceExpressionNode(
                 val configs = linkConfigs.filter { it.dataSource?.type in CwtDataTypeGroups.DynamicValue }
                 if(configs.isNotEmpty()) {
                     val configGroup = linkConfigs.first().info.configGroup
-                    val node = icu.windea.pls.core.expression.complex.ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
+                    val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
                     nodes.add(node)
                 }
             }

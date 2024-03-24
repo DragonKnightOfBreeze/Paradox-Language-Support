@@ -4,17 +4,28 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.codeInsight.completion.*
-import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.expression.complex.errors.*
-import icu.windea.pls.core.expression.complex.nodes.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.ep.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.codeInsight.completion.*
+import icu.windea.pls.model.expression.*
+import icu.windea.pls.model.expression.complex.errors.*
+import icu.windea.pls.model.expression.complex.nodes.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.codeInsight.completion.*
+import icu.windea.pls.model.expression.*
+import icu.windea.pls.model.expression.complex.errors.*
+import icu.windea.pls.model.expression.complex.nodes.*
+import icu.windea.pls.model.*
+import icu.windea.pls.model.expression.ParadoxDataExpression.*
 
 /**
  * 变量字段表达式。
@@ -91,7 +102,7 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
 }
 
 private fun isNumber(text: String): Boolean {
-    return icu.windea.pls.model.expression.ParadoxDataExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
+    return ParadoxDataExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
 }
 
 private class ParadoxVariableFieldExpressionImpl(

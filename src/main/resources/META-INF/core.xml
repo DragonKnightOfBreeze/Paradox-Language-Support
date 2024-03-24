@@ -1,6 +1,9 @@
 <idea-plugin>
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.paradoxLanguage" beanClass="icu.windea.pls.core.ParadoxMetaLanguage$ParadoxLanguageEP" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.paradoxLanguage" beanClass="icu.windea.pls.lang.ParadoxMetaLanguage$ParadoxLanguageEP" dynamic="true"/>
+    
+    <extensionPoint qualifiedName="icu.windea.pls.tools.modImporter" interface="icu.windea.pls.lang.tools.importer.ParadoxModImporter" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.tools.modExporter" interface="icu.windea.pls.lang.tools.exporter.ParadoxModExporter" dynamic="true"/>
     
     <extensionPoint qualifiedName="icu.windea.pls.search.localScriptedVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.globalScriptedVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
@@ -16,98 +19,98 @@
   </extensionPoints>
   
   <extensions defaultExtensionNs="com.intellij">
-    <metaLanguage implementation="icu.windea.pls.core.ParadoxMetaLanguage"/>
+    <metaLanguage implementation="icu.windea.pls.lang.ParadoxMetaLanguage"/>
     
     <applicationConfigurable id="pls" groupId="language" bundle="messages.PlsBundle" key="settings"
-                             instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
+                             instance="icu.windea.pls.lang.settings.ParadoxSettingsConfigurable"/>
     
-    <additionalLibraryRootsProvider implementation="icu.windea.pls.core.ParadoxLibraryProvider"/>
-    <moduleRendererFactory implementation="icu.windea.pls.core.ParadoxModuleRenderFactory"/>
+    <additionalLibraryRootsProvider implementation="icu.windea.pls.lang.ParadoxLibraryProvider"/>
+    <moduleRendererFactory implementation="icu.windea.pls.lang.ParadoxModuleRenderFactory"/>
     
     <!--suppress PluginXmlValidity -->
     <!--make first to optimize performance (before JSLibraryOverrider)-->
-    <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider" order="first"/>
-    <utf8BomOptionProvider implementation="icu.windea.pls.core.ParadoxUtf8BomOptionProvider"/>
+    <fileTypeOverrider implementation="icu.windea.pls.lang.ParadoxFileTypeOverrider" order="first"/>
+    <utf8BomOptionProvider implementation="icu.windea.pls.lang.ParadoxUtf8BomOptionProvider"/>
     
-    <vfs.asyncListener implementation="icu.windea.pls.core.listeners.vfs.ParadoxCoreFileListener"/>
+    <vfs.asyncListener implementation="icu.windea.pls.lang.listeners.vfs.ParadoxCoreFileListener"/>
 
-    <projectViewPane implementation="icu.windea.pls.core.projectView.CwtConfigFilesViewPane"/>
-    <projectViewPane implementation="icu.windea.pls.core.projectView.ParadoxFilesViewPane"/>
-    <projectViewNodeDecorator implementation="icu.windea.pls.core.projectView.ParadoxProjectViewDecorator"/>
+    <projectViewPane implementation="icu.windea.pls.lang.projectView.CwtConfigFilesViewPane"/>
+    <projectViewPane implementation="icu.windea.pls.lang.projectView.ParadoxFilesViewPane"/>
+    <projectViewNodeDecorator implementation="icu.windea.pls.lang.projectView.ParadoxProjectViewDecorator"/>
     
-    <qualifiedNameProvider implementation="icu.windea.pls.core.ParadoxQualifiedNameProvider"/>
-    <readWriteAccessDetector implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
-    <usageTypeProvider implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxUsageTypeProvider"/>
-    <codeInsight.typeInfo language="PARADOX" implementationClass="icu.windea.pls.core.codeInsight.ParadoxTypeProvider"/>
-    <codeInsight.containerProvider implementation="icu.windea.pls.core.codeInsight.ParadoxContainerProvider"/>
-    <typeDeclarationProvider implementation="icu.windea.pls.core.codeInsight.ParadoxTypeDeclarationProvider"/>
-    <codeInsight.template.postfixTemplateProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.codeInsight.template.postfix.ParadoxPostfixTemplateProvider"/>
+    <qualifiedNameProvider implementation="icu.windea.pls.lang.ParadoxQualifiedNameProvider"/>
+    <readWriteAccessDetector implementation="icu.windea.pls.lang.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
+    <usageTypeProvider implementation="icu.windea.pls.lang.codeInsight.highlight.ParadoxUsageTypeProvider"/>
+    <codeInsight.typeInfo language="PARADOX" implementationClass="icu.windea.pls.lang.codeInsight.ParadoxTypeProvider"/>
+    <codeInsight.containerProvider implementation="icu.windea.pls.lang.codeInsight.ParadoxContainerProvider"/>
+    <typeDeclarationProvider implementation="icu.windea.pls.lang.codeInsight.ParadoxTypeDeclarationProvider"/>
+    <codeInsight.template.postfixTemplateProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.template.postfix.ParadoxPostfixTemplateProvider"/>
     
-    <createDirectoryCompletionContributor implementation="icu.windea.pls.core.actions.ParadoxCreateDirectoryCompletionContributor"/>
+    <createDirectoryCompletionContributor implementation="icu.windea.pls.lang.actions.ParadoxCreateDirectoryCompletionContributor"/>
     
-    <findUsagesHandlerFactory implementation="icu.windea.pls.core.findUsages.ParadoxFindUsagesHandlerFactory"/>
+    <findUsagesHandlerFactory implementation="icu.windea.pls.lang.findUsages.ParadoxFindUsagesHandlerFactory"/>
     
-    <lang.documentationProvider language="PARADOX" implementationClass="icu.windea.pls.core.editor.ParadoxDocumentationProvider"/>
+    <lang.documentationProvider language="PARADOX" implementationClass="icu.windea.pls.lang.editor.ParadoxDocumentationProvider"/>
     
-    <applicationService serviceImplementation="icu.windea.pls.core.editor.folding.ParadoxFoldingSettings"/>
-    <codeFoldingOptionsProvider instance="icu.windea.pls.core.editor.folding.ParadoxFoldingOptionsProvider"/>
-    <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.editor.folding.ParadoxVariableOperationExpressionFoldingBuilder"/>
-    <lang.foldingBuilder language="PARADOX" implementationClass="icu.windea.pls.core.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
+    <applicationService serviceImplementation="icu.windea.pls.lang.editor.folding.ParadoxFoldingSettings"/>
+    <codeFoldingOptionsProvider instance="icu.windea.pls.lang.editor.folding.ParadoxFoldingOptionsProvider"/>
+    <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.editor.folding.ParadoxVariableOperationExpressionFoldingBuilder"/>
+    <lang.foldingBuilder language="PARADOX" implementationClass="icu.windea.pls.lang.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
     
-    <lang.refactoringSupport language="PARADOX" implementationClass="icu.windea.pls.core.refactoring.ParadoxRefactoringSupportProvider"/>
-    <applicationService serviceImplementation="icu.windea.pls.core.refactoring.ParadoxRefactoringSettings"/>
-    <elementDescriptionProvider implementation="icu.windea.pls.core.refactoring.ParadoxRefactoringElementDescriptorProvider"/>
-    <renameInputValidator implementation="icu.windea.pls.core.refactoring.rename.ParadoxScriptedVariableRenameInputValidator"/>
-    <renameInputValidator implementation="icu.windea.pls.core.refactoring.rename.ParadoxParameterRenameInputValidator"/>
-    <renameInputValidator implementation="icu.windea.pls.core.refactoring.rename.ParadoxLocalisationPropertyRenameInputValidator"/>
-    <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticRelatedLocalisationsRenamerFactory"/>
-    <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticRelatedImagesRenamerFactory"/>
-    <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticGeneratedModifiersRenamerFactory"/>
-    <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticGeneratedModifiersNameDescRenamerFactory"/>
-    <automaticRenamerFactory implementation="icu.windea.pls.core.refactoring.rename.naming.AutomaticGeneratedModifiersIconRenamerFactory"/>
-    <inlineActionHandler implementation="icu.windea.pls.core.refactoring.inline.ParadoxScriptedVariableInlineActionHandler"/>
-    <inlineActionHandler implementation="icu.windea.pls.core.refactoring.inline.ParadoxScriptedTriggerInlineActionHandler"/>
-    <inlineActionHandler implementation="icu.windea.pls.core.refactoring.inline.ParadoxScriptedEffectInlineActionHandler"/>
-    <inlineActionHandler implementation="icu.windea.pls.core.refactoring.inline.ParadoxInlineScriptInlineActionHandler" order="first"/>  <!-- order="first" is necessary -->
-    <inlineActionHandler implementation="icu.windea.pls.core.refactoring.inline.ParadoxLocalisationInlineActionHandler"/>
-    <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.refactoring.actions.IntroduceLocalScriptedVariableHandler"/>
-    <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.refactoring.actions.IntroduceGlobalScriptedVariableHandler"/>
+    <lang.refactoringSupport language="PARADOX" implementationClass="icu.windea.pls.lang.refactoring.ParadoxRefactoringSupportProvider"/>
+    <applicationService serviceImplementation="icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings"/>
+    <elementDescriptionProvider implementation="icu.windea.pls.lang.refactoring.ParadoxRefactoringElementDescriptorProvider"/>
+    <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxScriptedVariableRenameInputValidator"/>
+    <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxParameterRenameInputValidator"/>
+    <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxLocalisationPropertyRenameInputValidator"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticRelatedLocalisationsRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticRelatedImagesRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticGeneratedModifiersRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticGeneratedModifiersNameDescRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticGeneratedModifiersIconRenamerFactory"/>
+    <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedVariableInlineActionHandler"/>
+    <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedTriggerInlineActionHandler"/>
+    <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedEffectInlineActionHandler"/>
+    <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxInlineScriptInlineActionHandler" order="first"/>  <!-- order="first" is necessary -->
+    <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxLocalisationInlineActionHandler"/>
+    <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.refactoring.actions.IntroduceLocalScriptedVariableHandler"/>
+    <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.refactoring.actions.IntroduceGlobalScriptedVariableHandler"/>
     
-    <typeHierarchyProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.core.hierarchy.type.ParadoxDefinitionHierarchyProvider"/>
-    <callHierarchyProvider language="PARADOX" implementationClass="icu.windea.pls.core.hierarchy.call.ParadoxCallHierarchyProvider"/>
+    <typeHierarchyProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyProvider"/>
+    <callHierarchyProvider language="PARADOX" implementationClass="icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyProvider"/>
 
-    <stubIndex implementation="icu.windea.pls.core.index.ParadoxScriptedVariableNameIndex"/>
-    <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionNameIndex"/>
-    <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionTypeIndex"/>
-    <stubIndex implementation="icu.windea.pls.core.index.ParadoxLocalisationNameIndex"/>
-    <stubIndex implementation="icu.windea.pls.core.index.ParadoxLocalisationNameIndex$ModifierIndex"/>
-    <stubIndex implementation="icu.windea.pls.core.index.ParadoxSyncedLocalisationNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxScriptedVariableNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionTypeIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$ModifierIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxSyncedLocalisationNameIndex"/>
     
-    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFilePathIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFileLocaleIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxExpressionIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFilePathIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFileLocaleIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxExpressionIndex"/>
     
-    <searchScopesProvider implementation="icu.windea.pls.core.search.ParadoxSearchScopeProvider"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxScriptedVariableImplementationsSearch"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxDefinitionImplementationsSearch"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxLocalisationImplementationsSearch"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementation.ParadoxFileImplementationsSearch"/>
+    <searchScopesProvider implementation="icu.windea.pls.lang.search.ParadoxSearchScopeProvider"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxScriptedVariableImplementationsSearch"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxDefinitionImplementationsSearch"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxLocalisationImplementationsSearch"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxFileImplementationsSearch"/>
 
-    <referencesSearch implementation="icu.windea.pls.core.search.usage.CwtConfigUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxDefinitionUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxLocalisationUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxFileUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxParameterUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.core.search.usage.ParadoxLocalisationParameterUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.lang.search.usage.CwtConfigUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxDefinitionUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxLocalisationUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxFileUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxParameterUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxLocalisationParameterUsagesSearcher"/>
     
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
     
-    <postStartupActivity implementation="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnProjectOpenedListener"/>
+    <postStartupActivity implementation="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnProjectOpenedListener"/>
     
-    <psi.treeChangePreprocessor implementation="icu.windea.pls.core.psi.ParadoxPsiTreeChangePreprocessor"/>
+    <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.psi.ParadoxPsiTreeChangePreprocessor"/>
     
     <!--@HiddenApi-->
-    <pathReferenceProvider implementation="icu.windea.pls.core.references.paths.ParadoxPathReferenceProvider" order="first"/>
+    <pathReferenceProvider implementation="icu.windea.pls.lang.references.paths.ParadoxPathReferenceProvider" order="first"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls">
@@ -115,42 +118,52 @@
     <paradoxLanguage language="PARADOX_LOCALISATION"/>
   </extensions>
   
+  <extensions defaultExtensionNs="icu.windea.pls.tools">
+    <modImporter implementation="icu.windea.pls.lang.tools.importer.ParadoxFromGameImporter"/>
+    <!--<modImporter implementation="icu.windea.pls.lang.tools.importer.ParadoxFromLauncherImporter"/>-->
+    <!--<modImporter implementation="icu.windea.pls.lang.tools.importer.ParadoxFromLauncherBetaImporter"/>-->
+    <modImporter implementation="icu.windea.pls.lang.tools.importer.ParadoxFromLauncherJsonV3Importer"/>
+
+    <modExporter implementation="icu.windea.pls.lang.tools.exporter.ParadoxToLauncherJsonV2Exporter"/>
+    <modExporter implementation="icu.windea.pls.lang.tools.exporter.ParadoxToLauncherJsonV3Exporter"/>
+  </extensions>
+  
   <extensions defaultExtensionNs="icu.windea.pls.search">
-    <localScriptedVariableSearch implementation="icu.windea.pls.core.search.ParadoxLocalScriptedVariableSearcher"/>
-    <globalScriptedVariableSearch implementation="icu.windea.pls.core.search.ParadoxGlobalScriptedVariableSearcher"/>
-    <definitionSearch implementation="icu.windea.pls.core.search.ParadoxDefinitionSearcher"/>
-    <localisationSearch implementation="icu.windea.pls.core.search.ParadoxLocalisationSearcher"/>
-    <syncedLocalisationSearch implementation="icu.windea.pls.core.search.ParadoxSyncedLocalisationSearcher"/>
-    <filePathSearch implementation="icu.windea.pls.core.search.ParadoxFilePathSearcher"/>
-    <complexEnumValueSearch implementation="icu.windea.pls.core.search.ParadoxComplexEnumValueSearcher"/>
-    <dynamicValueSearch implementation="icu.windea.pls.core.search.ParadoxDynamicValueSearcher"/>
-    <inlineScriptUsageSearch implementation="icu.windea.pls.core.search.ParadoxInlineScriptUsageSearcher"/>
-    <parameterSearch implementation="icu.windea.pls.core.search.ParadoxParameterSearcher"/>
-    <localisationParameterSearch implementation="icu.windea.pls.core.search.ParadoxLocalisationParameterSearcher"/>
+    <localScriptedVariableSearch implementation="icu.windea.pls.lang.search.ParadoxLocalScriptedVariableSearcher"/>
+    <globalScriptedVariableSearch implementation="icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearcher"/>
+    <definitionSearch implementation="icu.windea.pls.lang.search.ParadoxDefinitionSearcher"/>
+    <localisationSearch implementation="icu.windea.pls.lang.search.ParadoxLocalisationSearcher"/>
+    <syncedLocalisationSearch implementation="icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearcher"/>
+    <filePathSearch implementation="icu.windea.pls.lang.search.ParadoxFilePathSearcher"/>
+    <complexEnumValueSearch implementation="icu.windea.pls.lang.search.ParadoxComplexEnumValueSearcher"/>
+    <dynamicValueSearch implementation="icu.windea.pls.lang.search.ParadoxDynamicValueSearcher"/>
+    <inlineScriptUsageSearch implementation="icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearcher"/>
+    <parameterSearch implementation="icu.windea.pls.lang.search.ParadoxParameterSearcher"/>
+    <localisationParameterSearch implementation="icu.windea.pls.lang.search.ParadoxLocalisationParameterSearcher"/>
   </extensions>
   
   <applicationListeners>
-    <listener class="icu.windea.pls.core.listeners.ParadoxRefreshOnDefaultGameTypeChangedListener"
-              topic="icu.windea.pls.core.listeners.ParadoxDefaultGameTypeListener"/>
-    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener"
-              topic="icu.windea.pls.core.listeners.ParadoxDefaultGameDirectoriesListener"/>
-    <listener class="icu.windea.pls.core.listeners.ParadoxRefreshOnModGameTypeChangedListener"
-              topic="icu.windea.pls.core.listeners.ParadoxModGameTypeListener"/>
-    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnGameSettingsChangedListener"
-              topic="icu.windea.pls.core.listeners.ParadoxGameSettingsListener"/>
-    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateLibraryOnModSettingsChangedListener"
-              topic="icu.windea.pls.core.listeners.ParadoxModSettingsListener"/>
-    <listener class="icu.windea.pls.core.listeners.ParadoxUpdateSettingsOnRootInfoChangedListener"
-              topic="icu.windea.pls.core.listeners.ParadoxRootInfoListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxRefreshOnDefaultGameTypeChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxRefreshOnModGameTypeChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxModGameTypeListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnGameSettingsChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxGameSettingsListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnModSettingsChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxModSettingsListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateSettingsOnRootInfoChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxRootInfoListener"/>
   </applicationListeners>
   
   <projectListeners>
-    <listener class="icu.windea.pls.core.listeners.ParadoxCheckModSettingsFileEditorManagerListener"
+    <listener class="icu.windea.pls.lang.listeners.ParadoxCheckModSettingsFileEditorManagerListener"
               topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
   </projectListeners>
   
   <actions>
-    <action id="Pls.OpenInSteam" class="icu.windea.pls.core.actions.OpenInSteamAction" icon="PlsIcons.Steam">
+    <action id="Pls.OpenInSteam" class="icu.windea.pls.lang.actions.OpenInSteamAction" icon="PlsIcons.Steam">
       <add-to-group group-id="RevealGroup" anchor="last"/>
       <override-text place="EditorTabPopup"/>
       <override-text place="ProjectViewPopup" use-text-of-place="EditorTabPopup"/>
@@ -158,7 +171,7 @@
       <override-text place="FavoritesPopup" use-text-of-place="EditorTabPopup"/>
       <add-to-group group-id="TouchBarDefault_alt" anchor="last"/>
     </action>
-    <action id="Pls.OpenInSteamWebsite" class="icu.windea.pls.core.actions.OpenInSteamWebsiteAction" icon="PlsIcons.Steam">
+    <action id="Pls.OpenInSteamWebsite" class="icu.windea.pls.lang.actions.OpenInSteamWebsiteAction" icon="PlsIcons.Steam">
       <add-to-group group-id="RevealGroup" anchor="last"/>
       <override-text place="EditorTabPopup"/>
       <override-text place="ProjectViewPopup" use-text-of-place="EditorTabPopup"/>
@@ -166,23 +179,23 @@
       <override-text place="FavoritesPopup" use-text-of-place="EditorTabPopup"/>
       <add-to-group group-id="TouchBarDefault_alt" anchor="last"/>
     </action>
-    <action id="Pls.CopySteamPageUrl" class="icu.windea.pls.core.actions.CopySteamPageProvider" icon="PlsIcons.Steam">
+    <action id="Pls.CopySteamPageUrl" class="icu.windea.pls.lang.actions.CopySteamPageProvider" icon="PlsIcons.Steam">
       <add-to-group group-id="CopyFileReference"/>
     </action>
     
-    <group id="Pls.Tools" popup="true" class="icu.windea.pls.core.tools.actions.PlsToolsActionGroup">
+    <group id="Pls.Tools" popup="true" class="icu.windea.pls.lang.tools.actions.PlsToolsActionGroup">
       <add-to-group group-id="ToolsMenu"/>
       <add-to-group group-id="EditorPopupMenu"/>
       <add-to-group group-id="ProjectViewPopupMenu"/>
     </group>
     
-    <action id="Pls.OpenGameSettings" class="icu.windea.pls.core.tools.actions.OpenGameSettingsAction"
+    <action id="Pls.OpenGameSettings" class="icu.windea.pls.lang.tools.actions.OpenGameSettingsAction"
             icon="PlsIcons.Actions.GameSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="Pls.Tools" anchor="first"/>
       <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
     </action>
-    <action id="Pls.OpenModSettings" class="icu.windea.pls.core.tools.actions.OpenModSettingsAction"
+    <action id="Pls.OpenModSettings" class="icu.windea.pls.lang.tools.actions.OpenModSettingsAction"
             icon="PlsIcons.Actions.ModSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="Pls.Tools" anchor="first"/>
@@ -190,47 +203,47 @@
     </action>
     
     <group id="Pls.OpenPath" popup="true">
-      <action id="Pls.OpenPath.OpenSteamPath" class="icu.windea.pls.core.tools.actions.OpenSteamPathAction"/>
-      <action id="Pls.OpenPath.OpenSteamGamePath" class="icu.windea.pls.core.tools.actions.OpenSteamGamePathAction"/>
-      <action id="Pls.OpenPath.OpenSteamWorkshopPath" class="icu.windea.pls.core.tools.actions.OpenSteamWorkshopPathAction"/>
-      <action id="Pls.OpenPath.OpenGameDataPath" class="icu.windea.pls.core.tools.actions.OpenGameDataPathAction"/>
-      <action id="Pls.OpenPath.OpenGamePath" class="icu.windea.pls.core.tools.actions.OpenGamePathAction"/>
-      <action id="Pls.OpenPath.OpenModPath" class="icu.windea.pls.core.tools.actions.OpenModPathAction"/>
+      <action id="Pls.OpenPath.OpenSteamPath" class="icu.windea.pls.lang.tools.actions.OpenSteamPathAction"/>
+      <action id="Pls.OpenPath.OpenSteamGamePath" class="icu.windea.pls.lang.tools.actions.OpenSteamGamePathAction"/>
+      <action id="Pls.OpenPath.OpenSteamWorkshopPath" class="icu.windea.pls.lang.tools.actions.OpenSteamWorkshopPathAction"/>
+      <action id="Pls.OpenPath.OpenGameDataPath" class="icu.windea.pls.lang.tools.actions.OpenGameDataPathAction"/>
+      <action id="Pls.OpenPath.OpenGamePath" class="icu.windea.pls.lang.tools.actions.OpenGamePathAction"/>
+      <action id="Pls.OpenPath.OpenModPath" class="icu.windea.pls.lang.tools.actions.OpenModPathAction"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.OpenUrl" popup="true">
-      <action id="Pls.OpenUrl.OpenGameStorePageInSteam" class="icu.windea.pls.core.tools.actions.OpenGameStorePageInSteamAction" icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenGameStorePageInSteamWebsite" class="icu.windea.pls.core.tools.actions.OpenGameStorePageInSteamWebsiteAction" icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenGameWorkshopPageInSteam" class="icu.windea.pls.core.tools.actions.OpenGameWorkshopPageInSteamAction" icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenGameWorkshopPageInSteamWebsite" class="icu.windea.pls.core.tools.actions.OpenGameWorkshopPageInSteamWebsiteAction" icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenModPageInSteam" class="icu.windea.pls.core.tools.actions.OpenModPageInSteamAction" icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenModPageInSteamWebsite" class="icu.windea.pls.core.tools.actions.OpenModPageInSteamWebsiteAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameStorePageInSteam" class="icu.windea.pls.lang.tools.actions.OpenGameStorePageInSteamAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameStorePageInSteamWebsite" class="icu.windea.pls.lang.tools.actions.OpenGameStorePageInSteamWebsiteAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameWorkshopPageInSteam" class="icu.windea.pls.lang.tools.actions.OpenGameWorkshopPageInSteamAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameWorkshopPageInSteamWebsite" class="icu.windea.pls.lang.tools.actions.OpenGameWorkshopPageInSteamWebsiteAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenModPageInSteam" class="icu.windea.pls.lang.tools.actions.OpenModPageInSteamAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenModPageInSteamWebsite" class="icu.windea.pls.lang.tools.actions.OpenModPageInSteamWebsiteAction" icon="PlsIcons.Steam"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.CopyPath" popup="true">
-      <action id="Pls.CopyPath.CopySteamPath" class="icu.windea.pls.core.tools.actions.CopySteamPathAction"/>
-      <action id="Pls.CopyPath.CopySteamGamePath" class="icu.windea.pls.core.tools.actions.CopySteamGamePathAction"/>
-      <action id="Pls.CopyPath.CopySteamWorkshopPath" class="icu.windea.pls.core.tools.actions.CopySteamWorkshopPathAction"/>
-      <action id="Pls.CopyPath.CopyGameDataPath" class="icu.windea.pls.core.tools.actions.CopyGameDataPathAction"/>
-      <action id="Pls.CopyPath.CopyGamePath" class="icu.windea.pls.core.tools.actions.CopyGamePathAction"/>
-      <action id="Pls.CopyPath.CopyModPath" class="icu.windea.pls.core.tools.actions.CopyModPathAction"/>
+      <action id="Pls.CopyPath.CopySteamPath" class="icu.windea.pls.lang.tools.actions.CopySteamPathAction"/>
+      <action id="Pls.CopyPath.CopySteamGamePath" class="icu.windea.pls.lang.tools.actions.CopySteamGamePathAction"/>
+      <action id="Pls.CopyPath.CopySteamWorkshopPath" class="icu.windea.pls.lang.tools.actions.CopySteamWorkshopPathAction"/>
+      <action id="Pls.CopyPath.CopyGameDataPath" class="icu.windea.pls.lang.tools.actions.CopyGameDataPathAction"/>
+      <action id="Pls.CopyPath.CopyGamePath" class="icu.windea.pls.lang.tools.actions.CopyGamePathAction"/>
+      <action id="Pls.CopyPath.CopyModPath" class="icu.windea.pls.lang.tools.actions.CopyModPathAction"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.CopyUrl" popup="true">
-      <action id="Pls.CopyUrl.CopyGameStorePageUrl" class="icu.windea.pls.core.tools.actions.CopyGameStorePageUrlAction" icon="PlsIcons.Steam"/>
-      <action id="Pls.CopyUrl.CopyGameWorkshopPageUrl" class="icu.windea.pls.core.tools.actions.CopyGameWorkshopPageUrlAction" icon="PlsIcons.Steam"/>
-      <action id="Pls.CopyUrl.CopyModPageUrl" class="icu.windea.pls.core.tools.actions.CopyModPageUrlAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.CopyUrl.CopyGameStorePageUrl" class="icu.windea.pls.lang.tools.actions.CopyGameStorePageUrlAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.CopyUrl.CopyGameWorkshopPageUrl" class="icu.windea.pls.lang.tools.actions.CopyGameWorkshopPageUrlAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.CopyUrl.CopyModPageUrl" class="icu.windea.pls.lang.tools.actions.CopyModPageUrlAction" icon="PlsIcons.Steam"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     
     <group id="Pls.GotoPath">
-      <action id="Pls.FileChooser.GoToSteamPath" class="icu.windea.pls.core.tools.actions.GoToSteamPathAction"
+      <action id="Pls.FileChooser.GoToSteamPath" class="icu.windea.pls.lang.tools.actions.GoToSteamPathAction"
               icon="PlsIcons.Actions.SteamDirectory"/>
-      <action id="Pls.FileChooser.GoToSteamGamePath" class="icu.windea.pls.core.tools.actions.GoToSteamGamePathAction"
+      <action id="Pls.FileChooser.GoToSteamGamePath" class="icu.windea.pls.lang.tools.actions.GoToSteamGamePathAction"
               icon="PlsIcons.Actions.SteamGameDirectory"/>
-      <action id="Pls.FileChooser.GoToSteamWorkshopPath" class="icu.windea.pls.core.tools.actions.GoToSteamWorkshopPathAction"
+      <action id="Pls.FileChooser.GoToSteamWorkshopPath" class="icu.windea.pls.lang.tools.actions.GoToSteamWorkshopPathAction"
               icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
-      <action id="Pls.FileChooser.GoToGameDataPath" class="icu.windea.pls.core.tools.actions.GoToGameDataPathAction"
+      <action id="Pls.FileChooser.GoToGameDataPath" class="icu.windea.pls.lang.tools.actions.GoToGameDataPathAction"
               icon="PlsIcons.Actions.GameDataDirectory"/>
     </group>
     <group id="Pls.GotoPath.WithSeparator">
@@ -240,45 +253,45 @@
     </group>
     
     <group id="Pls.Generate" popup="true">
-      <action id="Pls.Generate.GenerateLocalisationFile" class="icu.windea.pls.core.tools.actions.GenerateLocalisationFileAction"/>
+      <action id="Pls.Generate.GenerateLocalisationFile" class="icu.windea.pls.lang.tools.actions.GenerateLocalisationFileAction"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
 
     <group id="Pls.GenerateGroup">
-      <action id="Pls.GenerateLocalisations" class="icu.windea.pls.core.codeInsight.generation.GenerateLocalisationsAction"/>
-      <action id="Pls.GenerateLocalisationsInFile" class="icu.windea.pls.core.codeInsight.generation.GenerateLocalisationsInFileAction"/>
+      <action id="Pls.GenerateLocalisations" class="icu.windea.pls.lang.codeInsight.generation.GenerateLocalisationsAction"/>
+      <action id="Pls.GenerateLocalisationsInFile" class="icu.windea.pls.lang.codeInsight.generation.GenerateLocalisationsInFileAction"/>
       <add-to-group group-id="GenerateGroup" anchor="last"/>
     </group>
     
     <group id="Pls.GotoGroup">
-      <action id="Pls.GoToFiles" class="icu.windea.pls.core.codeInsight.navigation.GotoFilesAction">
+      <action id="Pls.GoToFiles" class="icu.windea.pls.lang.codeInsight.navigation.GotoFilesAction">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt f"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
-      <action id="Pls.GoToDefinitions" class="icu.windea.pls.core.codeInsight.navigation.GotoDefinitionsAction">
+      <action id="Pls.GoToDefinitions" class="icu.windea.pls.lang.codeInsight.navigation.GotoDefinitionsAction">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt o"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
-      <action id="Pls.GoToLocalisations" class="icu.windea.pls.core.codeInsight.navigation.GotoLocalisationsAction">
+      <action id="Pls.GoToLocalisations" class="icu.windea.pls.lang.codeInsight.navigation.GotoLocalisationsAction">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt o"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
-      <action id="Pls.GoToRelatedLocalisations" class="icu.windea.pls.core.codeInsight.navigation.GotoRelatedLocalisationsAction">
+      <action id="Pls.GoToRelatedLocalisations" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedLocalisationsAction">
         <keyboard-shortcut first-keystroke="alt shift p" keymap="$default"/>
         <mouse-shortcut keymap="$default" keystroke="alt shift button1"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
-      <action id="Pls.GoToRelatedImages" class="icu.windea.pls.core.codeInsight.navigation.GotoRelatedImagesAction">
+      <action id="Pls.GoToRelatedImages" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedImagesAction">
         <keyboard-shortcut first-keystroke="control alt shift p" keymap="$default"/>
         <mouse-shortcut keymap="$default" keystroke="control alt shift button1"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
-      <action id="Pls.GoToRelatedCwtConfigs" class="icu.windea.pls.core.codeInsight.navigation.GotoRelatedCwtConfigsAction">
+      <action id="Pls.GoToRelatedCwtConfigs" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedCwtConfigsAction">
         <keyboard-shortcut first-keystroke="alt p" keymap="$default"/>
         <mouse-shortcut keymap="$default" keystroke="alt button1"/>
         <override-text place="MainMenu"/>
@@ -289,26 +302,26 @@
     </group>
 
     <group id="Pls.RefactoringGroup" popup="false">
-      <action id="Pls.IntroduceLocalScriptedVariable" class="icu.windea.pls.core.refactoring.actions.IntroduceLocalScriptedVariableAction">
+      <action id="Pls.IntroduceLocalScriptedVariable" class="icu.windea.pls.lang.refactoring.actions.IntroduceLocalScriptedVariableAction">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt v"/>
         <add-to-group group-id="IntroduceActionsGroup" anchor="first"/>
       </action>
-      <action id="Pls.IntroduceGlobalScriptedVariable" class="icu.windea.pls.core.refactoring.actions.IntroduceGlobalScriptedVariableAction">
+      <action id="Pls.IntroduceGlobalScriptedVariable" class="icu.windea.pls.lang.refactoring.actions.IntroduceGlobalScriptedVariableAction">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt g"/>
         <add-to-group group-id="IntroduceActionsGroup" anchor="after" relative-to-action="Pls.IntroduceLocalScriptedVariable"/>
       </action>
     </group>
 
     <group id="Pls.Diff">
-      <action id="Pls.Diff.CompareFiles" class="icu.windea.pls.core.diff.actions.CompareFilesAction"
+      <action id="Pls.Diff.CompareFiles" class="icu.windea.pls.lang.diff.actions.CompareFilesAction"
               icon="AllIcons.Actions.Diff">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift alt f"/>
       </action>
-      <action id="Pls.Diff.CompareDefinitions" class="icu.windea.pls.core.diff.actions.CompareDefinitionsAction"
+      <action id="Pls.Diff.CompareDefinitions" class="icu.windea.pls.lang.diff.actions.CompareDefinitionsAction"
               icon="AllIcons.Actions.Diff">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift alt d"/>
       </action>
-      <action id="Pls.Diff.CompareLocalisations" class="icu.windea.pls.core.diff.actions.CompareLocalisationsAction"
+      <action id="Pls.Diff.CompareLocalisations" class="icu.windea.pls.lang.diff.actions.CompareLocalisationsAction"
               icon="AllIcons.Actions.Diff">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift alt l"/>
       </action>
@@ -322,8 +335,8 @@
       <add-to-group group-id="HierarchyPopupMenu.Common" relative-to-action="CompareFileWithEditor" anchor="after"/>
     </group>
     
-    <action id="Pls.TypeHierarchy.Definition1" class="icu.windea.pls.core.hierarchy.type.ViewDefinitionHierarchyAction"/>
-    <action id="Pls.TypeHierarchy.Definition2" class="icu.windea.pls.core.hierarchy.type.ViewDefinitionHierarchyWithSubtypesAction"/>
+    <action id="Pls.TypeHierarchy.Definition1" class="icu.windea.pls.lang.hierarchy.type.ViewDefinitionHierarchyAction"/>
+    <action id="Pls.TypeHierarchy.Definition2" class="icu.windea.pls.lang.hierarchy.type.ViewDefinitionHierarchyWithSubtypesAction"/>
     
     <group id="Pls.DefinitionHierarchyPopupMenu">
       <reference ref="Pls.TypeHierarchy.Definition1"/>

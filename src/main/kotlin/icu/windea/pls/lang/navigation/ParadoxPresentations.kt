@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.navigation
 
 import com.intellij.navigation.*
-import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.psi.*
 import javax.swing.*
 
 class ParadoxParameterElementPresentation(

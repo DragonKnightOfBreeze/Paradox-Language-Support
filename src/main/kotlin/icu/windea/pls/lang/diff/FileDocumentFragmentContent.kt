@@ -15,7 +15,6 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.pom.*
 import com.intellij.util.*
-import icu.windea.pls.core.diff.actions.*
 import icu.windea.pls.lang.diff.actions.*
 import java.nio.charset.*
 import java.util.function.*

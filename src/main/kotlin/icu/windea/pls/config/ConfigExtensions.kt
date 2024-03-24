@@ -8,15 +8,19 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.path.*
-import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.references.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.ep.*
 import icu.windea.pls.ep.expression.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.core.*
+import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.references.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.path.*
+import kotlin.collections.Collection
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.component1
+import kotlin.collections.emptyList
+import kotlin.collections.find
+import kotlin.collections.sortedByDescending
 
 inline fun CwtMemberConfig<*>.processParent(inline: Boolean = false, processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
     var parent = this.parentConfig

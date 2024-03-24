@@ -11,17 +11,13 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.navigation.*
-import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.references.*
-import icu.windea.pls.core.search.scope.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.core.*
+import icu.windea.pls.lang.navigation.*
+import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.references.*
+import icu.windea.pls.lang.search.scope.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
@@ -132,7 +128,7 @@ object ParadoxLocalisationPsiImplUtil {
     fun getPresentation(element: ParadoxLocalisationProperty): ItemPresentation {
         val localisationInfo = element.localisationInfo
         if(localisationInfo != null) return ParadoxLocalisationPresentation(element)
-        return icu.windea.pls.lang.navigation.BaseParadoxItemPresentation(element)
+        return BaseParadoxItemPresentation(element)
     }
     
     @JvmStatic
@@ -482,7 +478,7 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
-        return icu.windea.pls.lang.navigation.BaseParadoxItemPresentation(element)
+        return BaseParadoxItemPresentation(element)
     }
     
     @JvmStatic

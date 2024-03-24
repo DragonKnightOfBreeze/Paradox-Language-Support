@@ -9,17 +9,12 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
-import icu.windea.pls.core.quickfix.*
-import icu.windea.pls.core.refactoring.actions.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.core.*
+import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.quickfix.*
+import icu.windea.pls.lang.refactoring.actions.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.lang.util.*
 
 /**
  * 无法解析的封装变量引用的检查。
@@ -43,7 +38,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
                 if(reference.resolve() != null) return
                 val quickFixes = listOf(
                     IntroduceLocalVariableFix(name, element),
-                    icu.windea.pls.core.quickfix.IntroduceGlobalVariableFix(name, element)
+                    IntroduceGlobalVariableFix(name, element)
                 )
                 val message = PlsBundle.message("inspection.localisation.general.unresolvedScriptedVariable.description", name)
                 holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *quickFixes.toTypedArray())

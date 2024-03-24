@@ -33,20 +33,5 @@
                              implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtValueManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtString"
                              implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtStringManipulator"/>
-    
-    <intentionAction>
-      <language>CWT</language>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>cwt.intention.category</categoryKey>
-      <className>icu.windea.pls.cwt.intentions.QuoteIdentifierIntention</className>
-      <descriptionDirectoryName>CwtQuoteIdentifierIntention</descriptionDirectoryName>
-    </intentionAction>
-    <intentionAction>
-      <language>CWT</language>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>cwt.intention.category</categoryKey>
-      <className>icu.windea.pls.cwt.intentions.UnquoteIdentifierIntention</className>
-      <descriptionDirectoryName>CwtUnquoteIdentifierIntention</descriptionDirectoryName>
-    </intentionAction>
   </extensions>
 </idea-plugin>

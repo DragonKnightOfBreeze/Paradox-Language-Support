@@ -7,8 +7,15 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.expression.complex.errors.*
-import icu.windea.pls.core.expression.complex.nodes.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.expression.complex.errors.*
+import icu.windea.pls.model.expression.complex.nodes.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.expression.complex.errors.*
+import icu.windea.pls.model.expression.complex.nodes.*
 
 /**
  * 用于表达式脚本语言中的复杂表达式，对应匹配特定CWT规则类型的key或value（或者它们的特定部分）。

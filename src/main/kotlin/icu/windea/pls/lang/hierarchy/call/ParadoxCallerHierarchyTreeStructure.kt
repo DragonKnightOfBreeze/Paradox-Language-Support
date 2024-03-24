@@ -8,7 +8,11 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.search.scope.type.*
+import icu.windea.pls.model.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyBrowserSettings.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
@@ -21,11 +25,11 @@ class ParadoxCallerHierarchyTreeStructure(
     project: Project,
     element: PsiElement,
     val rootDefinitionInfo: ParadoxDefinitionInfo?
-) : HierarchyTreeStructure(project, icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor(project, null, element, true, false)) {
+) : HierarchyTreeStructure(project, ParadoxCallHierarchyNodeDescriptor(project, null, element, true, false)) {
     override fun buildChildren(descriptor: HierarchyNodeDescriptor): Array<out HierarchyNodeDescriptor> {
-        descriptor as icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor
+        descriptor as ParadoxCallHierarchyNodeDescriptor
         val element = descriptor.psiElement ?: return HierarchyNodeDescriptor.EMPTY_ARRAY
-        val descriptors = mutableMapOf<String, icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor>()
+        val descriptors = mutableMapOf<String, ParadoxCallHierarchyNodeDescriptor>()
         when {
             element is ParadoxScriptScriptedVariable -> {
                 searchElement(element, descriptor, descriptors)
@@ -40,7 +44,7 @@ class ParadoxCallerHierarchyTreeStructure(
         return descriptors.values.toTypedArray()
     }
     
-    private fun searchElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor>) {
+    private fun searchElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
         val scopeType = getHierarchySettings().scopeType
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
             ?: GlobalSearchScope.allScope(myProject)
@@ -56,7 +60,7 @@ class ParadoxCallerHierarchyTreeStructure(
         }
     }
     
-    private fun processScriptReferenceElement(reference: PsiReference, referenceElement: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor>) {
+    private fun processScriptReferenceElement(reference: PsiReference, referenceElement: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
         if(!getSettings().hierarchy.showDefinitionsInCallHierarchy) return //不显示
         val definition = referenceElement.findParentDefinition()
         val definitionInfo = definition?.definitionInfo
@@ -65,7 +69,7 @@ class ParadoxCallerHierarchyTreeStructure(
             if(!getSettings().hierarchy.showDefinitionsInCallHierarchy(rootDefinitionInfo, definitionInfo)) return //不显示
             val key = "d:${definitionInfo.name}: ${definitionInfo.type}"
             synchronized(descriptors) {
-                val d = descriptors.getOrPut(key) { icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, definition, false, true) }
+                val d = descriptors.getOrPut(key) { ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, definition, false, true) }
                 if(d.references.isNotEmpty() && !d.references.contains(reference)) {
                     d.usageCount++
                 }
@@ -74,7 +78,7 @@ class ParadoxCallerHierarchyTreeStructure(
         }
     }
     
-    private fun processLocalisationReferenceElement(reference: PsiReference, referenceElement: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor>) {
+    private fun processLocalisationReferenceElement(reference: PsiReference, referenceElement: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
         if(!getSettings().hierarchy.showLocalisationsInCallHierarchy) return //不显示
         //兼容向上内联的情况
         val localisation = referenceElement.parentOfType<ParadoxLocalisationProperty>()
@@ -83,7 +87,7 @@ class ParadoxCallerHierarchyTreeStructure(
             ProgressManager.checkCanceled()
             val key = "l:${localisationInfo.name}"
             synchronized(descriptors) {
-                val d = descriptors.getOrPut(key) { icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, localisation, false, true) }
+                val d = descriptors.getOrPut(key) { ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, localisation, false, true) }
                 if(d.references.isNotEmpty() && !d.references.contains(reference)) {
                     d.usageCount++
                 }
@@ -92,5 +96,5 @@ class ParadoxCallerHierarchyTreeStructure(
         }
     }
     
-    private fun getHierarchySettings() = icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyBrowserSettings.getInstance(myProject)
+    private fun getHierarchySettings() = ParadoxCallHierarchyBrowserSettings.getInstance(myProject)
 }

@@ -4,7 +4,6 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.util.script.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.lang.util.script.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisEconomicCategoryDataProvider: ParadoxDefinitionDataProvider<StellarisEconomicCategoryDataProvider.Data>() {
