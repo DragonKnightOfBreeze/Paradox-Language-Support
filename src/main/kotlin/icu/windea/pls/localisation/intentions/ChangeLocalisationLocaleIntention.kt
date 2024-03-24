@@ -13,8 +13,9 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.util.*
+import icu.windea.pls.lang.util.*
 
 /**
  * 更改语言区域。

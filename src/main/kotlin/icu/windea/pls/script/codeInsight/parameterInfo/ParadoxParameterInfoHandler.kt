@@ -5,8 +5,11 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.parameter.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 
 //com.intellij.codeInsight.hint.api.impls.XmlParameterInfoHandler

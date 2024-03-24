@@ -11,7 +11,10 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.ParadoxLocalisationCategory.*
 
@@ -57,6 +60,6 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
     }
     
     private fun createGotoRelatedItem(targets: Collection<ParadoxLocalisationProperty>): Collection<GotoRelatedItem> {
-        return ParadoxGotoRelatedItem.createItems(targets, PlsBundle.message("localisation.gutterIcon.localisation.group"))
+        return icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem.createItems(targets, PlsBundle.message("localisation.gutterIcon.localisation.group"))
     }
 }

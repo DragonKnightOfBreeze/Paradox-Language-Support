@@ -2,7 +2,10 @@ package icu.windea.pls.localisation.ui.actions.styling
 
 import com.google.common.cache.*
 import com.intellij.openapi.actionSystem.*
+import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 

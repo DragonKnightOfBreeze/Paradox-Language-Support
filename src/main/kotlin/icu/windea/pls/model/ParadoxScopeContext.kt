@@ -4,7 +4,7 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.complex.nodes.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.scope.*
+import icu.windea.pls.ep.scope.*
 
 interface ParadoxScopeContext : UserDataHolder {
     val scope: ParadoxScope

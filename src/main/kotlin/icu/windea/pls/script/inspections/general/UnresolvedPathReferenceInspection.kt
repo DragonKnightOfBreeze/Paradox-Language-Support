@@ -9,8 +9,11 @@ import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 

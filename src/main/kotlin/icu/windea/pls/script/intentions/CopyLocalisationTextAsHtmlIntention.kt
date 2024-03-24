@@ -7,9 +7,11 @@ import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.localisation.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.util.*
-import icu.windea.pls.util.localisation.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.localisation.*
 import java.awt.datatransfer.*
 
 /**

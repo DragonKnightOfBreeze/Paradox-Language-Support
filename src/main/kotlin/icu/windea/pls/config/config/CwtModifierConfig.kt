@@ -2,7 +2,10 @@ package icu.windea.pls.config.config
 
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
 
 //CWT规则文件中关于（生成的）修正的规则有多种写法
 //* 写在 type[xxx] = {...} 子句中的 modifiers = { ... } 子句中，允许按子类型进行匹配，格式为 <template_string> = <categories>

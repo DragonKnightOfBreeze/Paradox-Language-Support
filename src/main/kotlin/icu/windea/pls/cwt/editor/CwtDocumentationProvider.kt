@@ -16,13 +16,18 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.ep.documentation.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.documentation.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.image.*
+import icu.windea.pls.lang.util.localisation.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.image.*
-import icu.windea.pls.util.localisation.*
+import icu.windea.pls.lang.util.image.*
+import icu.windea.pls.lang.util.localisation.*
 import java.util.*
 
 class CwtDocumentationProvider : AbstractDocumentationProvider() {

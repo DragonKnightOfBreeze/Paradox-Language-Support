@@ -21,7 +21,10 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.extension.translation.*
+import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*

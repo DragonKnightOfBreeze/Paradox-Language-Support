@@ -18,7 +18,8 @@ import com.intellij.util.containers.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
-import icu.windea.pls.util.image.*
+import icu.windea.pls.lang.util.image.*
+import icu.windea.pls.lang.util.image.*
 import java.io.*
 import java.util.concurrent.atomic.*
 import java.util.function.Consumer

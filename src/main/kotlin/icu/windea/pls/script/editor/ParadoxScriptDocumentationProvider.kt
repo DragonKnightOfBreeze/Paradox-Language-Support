@@ -10,15 +10,20 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.ep.documentation.*
+import icu.windea.pls.ep.inherit.*
+import icu.windea.pls.ep.modifier.*
+import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.documentation.*
-import icu.windea.pls.lang.inherit.*
-import icu.windea.pls.lang.modifier.*
-import icu.windea.pls.lang.parameter.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.image.*
+import icu.windea.pls.lang.util.localisation.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.image.*
-import icu.windea.pls.util.localisation.*
+import icu.windea.pls.lang.util.image.*
+import icu.windea.pls.lang.util.localisation.*
 
 @Suppress("UnusedReceiverParameter")
 class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {

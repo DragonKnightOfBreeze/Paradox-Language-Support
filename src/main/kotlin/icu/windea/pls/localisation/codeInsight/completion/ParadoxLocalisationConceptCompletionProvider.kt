@@ -4,7 +4,10 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
 
 /**
  * 提供概念的名字和别名的代码补全。

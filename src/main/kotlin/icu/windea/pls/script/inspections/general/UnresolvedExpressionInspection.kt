@@ -11,8 +11,11 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.quickfix.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.config.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*

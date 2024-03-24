@@ -56,9 +56,9 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.ep.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.util.*
+import icu.windea.pls.lang.util.*
 import it.unimi.dsi.fastutil.*
 import it.unimi.dsi.fastutil.objects.*
 import java.io.*

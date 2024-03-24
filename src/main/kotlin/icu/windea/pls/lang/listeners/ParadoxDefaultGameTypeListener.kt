@@ -1,0 +1,16 @@
+package icu.windea.pls.lang.listeners
+
+import com.intellij.util.messages.*
+import icu.windea.pls.model.*
+
+/**
+ * 监听默认游戏类型的更改。
+ */
+interface ParadoxDefaultGameTypeListener {
+    fun onChange(oldGameType: ParadoxGameType, gameType: ParadoxGameType)
+    
+    companion object {
+        @Topic.AppLevel
+        val TOPIC = Topic(ParadoxDefaultGameTypeListener::class.java, Topic.BroadcastDirection.NONE)
+    }
+}

@@ -8,8 +8,11 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.config.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 
 sealed interface CwtMemberConfig<out T : CwtMemberElement> : UserDataHolder, CwtConfig<T>, CwtValueAware, CwtConfigsAware, CwtDocumentationAware, CwtOptionsAware {

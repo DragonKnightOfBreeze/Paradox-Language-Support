@@ -8,10 +8,14 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.util.*
+import icu.windea.pls.lang.util.*
 
 /**
  * 提供本地化名字的代码补全。

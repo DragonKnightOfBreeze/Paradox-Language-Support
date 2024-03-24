@@ -3,7 +3,10 @@ package icu.windea.pls.config.config
 import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
 
 /**
  * @property name string

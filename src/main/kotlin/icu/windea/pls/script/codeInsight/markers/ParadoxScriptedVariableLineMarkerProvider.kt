@@ -56,6 +56,6 @@ class ParadoxScriptedVariableLineMarkerProvider : RelatedItemLineMarkerProvider(
 	}
 	
 	private fun createGotoRelatedItem(targets: Collection<ParadoxScriptScriptedVariable>): Collection<GotoRelatedItem> {
-		return ParadoxGotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.scriptedVariable.group"))
+		return icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.scriptedVariable.group"))
 	}
 }

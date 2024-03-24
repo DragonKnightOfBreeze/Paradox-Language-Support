@@ -8,8 +8,11 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.path.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.config.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 import java.util.concurrent.*

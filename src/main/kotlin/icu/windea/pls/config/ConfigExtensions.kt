@@ -12,8 +12,11 @@ import icu.windea.pls.core.path.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
 
 inline fun CwtMemberConfig<*>.processParent(inline: Boolean = false, processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
     var parent = this.parentConfig

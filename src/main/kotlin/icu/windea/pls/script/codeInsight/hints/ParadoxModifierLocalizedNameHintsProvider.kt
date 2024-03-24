@@ -10,12 +10,16 @@ import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.search.selector.*
+import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxModifierLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.localisation.*
+import icu.windea.pls.lang.util.localisation.*
 import javax.swing.*
 
 /**

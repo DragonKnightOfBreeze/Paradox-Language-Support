@@ -1,0 +1,74 @@
+package icu.windea.pls.lang.psi
+
+import com.intellij.codeInsight.highlighting.*
+import com.intellij.navigation.*
+import com.intellij.openapi.project.*
+import com.intellij.psi.*
+import icons.*
+import icu.windea.pls.*
+import icu.windea.pls.core.navigation.*
+import icu.windea.pls.model.*
+import icu.windea.pls.model.expressionInfo.*
+import java.util.*
+import javax.swing.*
+
+/**
+ * 值集值值并不存在一个真正意义上的声明处，用这个模拟。
+ */
+class ParadoxDynamicValueElement(
+    parent: PsiElement,
+    private val name: String,
+    val dynamicValueTypes: Set<String>,
+    val readWriteAccess: ReadWriteAccessDetector.Access,
+    val gameType: ParadoxGameType,
+    private val project: Project,
+) : ParadoxFakePsiElement(parent) {
+    constructor(parent: PsiElement, name: String, dynamicValueType: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)
+        : this(parent, name, setOf(dynamicValueType), readWriteAccess, gameType, project)
+    
+    constructor(parent: PsiElement, info: ParadoxDynamicValueInfo, project: Project)
+        : this(parent, info.name, info.dynamicValueType, info.readWriteAccess, info.gameType, project)
+    
+    val dynamicValueType = dynamicValueTypes.first()
+    
+    override fun getIcon(): Icon {
+        val dynamicValueType = dynamicValueTypes.first() //first is ok
+        return PlsIcons.Nodes.DynamicValue(dynamicValueType)
+    }
+    
+    override fun getName(): String {
+        return name
+    }
+    
+    override fun getTypeName(): String {
+        val dynamicValueType = dynamicValueTypes.first() //first is ok
+        return when(dynamicValueType) {
+            "variable" -> PlsBundle.message("script.description.variable")
+            else -> PlsBundle.message("script.description.dynamicValue")
+        }
+    }
+    
+    override fun getText(): String {
+        return name
+    }
+    
+    override fun getPresentation(): ItemPresentation {
+        return ParadoxDynamicValueElementPresentation(this)
+    }
+    
+    override fun getProject(): Project {
+        return project
+    }
+    
+    override fun equals(other: Any?): Boolean {
+        return other is ParadoxDynamicValueElement &&
+            name == other.name &&
+            dynamicValueTypes.any { it in other.dynamicValueTypes } &&
+            project == other.project &&
+            gameType == other.gameType
+    }
+    
+    override fun hashCode(): Int {
+        return Objects.hash(name, project, gameType)
+    }
+}

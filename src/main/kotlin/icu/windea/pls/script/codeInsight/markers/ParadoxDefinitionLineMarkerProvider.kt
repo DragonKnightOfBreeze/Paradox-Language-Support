@@ -53,6 +53,6 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	}
 	
 	private fun createGotoRelatedItem(targets: Collection<ParadoxScriptDefinitionElement>): Collection<GotoRelatedItem> {
-		return ParadoxGotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.definition.group"))
+		return icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.definition.group"))
 	}
 }

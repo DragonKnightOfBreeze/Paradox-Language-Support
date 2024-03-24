@@ -4,8 +4,11 @@ import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.config.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
 
 /**
  * 检查内联脚本的使用位置是否存在冲突。

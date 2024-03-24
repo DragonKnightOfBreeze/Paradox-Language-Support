@@ -65,6 +65,6 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : RelatedItemLineMarkerPr
 	}
 	
 	private fun createGotoRelatedItem(targets: Set<PsiElement>): Collection<GotoRelatedItem> {
-		return ParadoxGotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.relatedImages.group"))
+		return icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.relatedImages.group"))
 	}
 }

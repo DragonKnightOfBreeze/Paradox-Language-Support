@@ -8,7 +8,10 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.complex.*
+import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.ep.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
 class TooLongScopeLinkInspection : LocalInspectionTool() {

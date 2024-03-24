@@ -4,9 +4,10 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.util.localisation.*
+import icu.windea.pls.lang.util.localisation.*
 
 class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
