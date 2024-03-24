@@ -2,6 +2,7 @@ package icu.windea.pls.lang.inspections.localisation.bug
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -21,6 +22,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
         if(!isFileToInspect(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
                 when(element) {
                     is ParadoxLocalisationProperty -> visitLocalisationProperty(element)
                 }

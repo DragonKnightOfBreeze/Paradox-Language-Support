@@ -2,6 +2,7 @@ package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.roots.*
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -27,6 +28,7 @@ class OverriddenForScriptedVariableInspection : LocalInspectionTool() {
         
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
                 if(element is ParadoxScriptScriptedVariable) {
                     if(element.parent !is ParadoxScriptRootBlock) return
                     visitScriptedVariable(element)

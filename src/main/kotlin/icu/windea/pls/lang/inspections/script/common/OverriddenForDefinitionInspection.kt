@@ -2,6 +2,7 @@ package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.roots.*
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -26,6 +27,7 @@ class OverriddenForDefinitionInspection : LocalInspectionTool() {
         
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
                 if(element is ParadoxScriptProperty) {
                     val definitionInfo = element.definitionInfo
                     if(definitionInfo != null) visitDefinition(element, definitionInfo)

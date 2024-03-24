@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.inspections.script.inference
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.scope.*
@@ -14,11 +15,10 @@ class ConflictingScopeContextInferenceInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                when {
-                    element is ParadoxScriptDefinitionElement -> {
-                        val definitionInfo = element.definitionInfo
-                        if(definitionInfo != null) visitDefinition(element, definitionInfo)
-                    }
+                ProgressManager.checkCanceled()
+                if(element is ParadoxScriptDefinitionElement) {
+                    val definitionInfo = element.definitionInfo
+                    if(definitionInfo != null) visitDefinition(element, definitionInfo)
                 }
             }
             

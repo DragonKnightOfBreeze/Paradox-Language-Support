@@ -18,7 +18,7 @@
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateScriptedVariables"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.duplicateScriptedVariables"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.groupPath"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
                      groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.DuplicateScriptedVariablesInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectFileEncoding"

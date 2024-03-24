@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.inspections.script.event
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -17,6 +18,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
         
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
                 if(element is ParadoxScriptProperty) visitDefinition(element)
                 if(element.isExpressionOrMemberContext()) super.visitElement(element)
             }
