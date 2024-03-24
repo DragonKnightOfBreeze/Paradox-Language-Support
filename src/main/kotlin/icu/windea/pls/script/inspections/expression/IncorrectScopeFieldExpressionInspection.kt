@@ -65,7 +65,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                checkBox(PlsBundle.message("inspection.script.expression.incorrectScopeFieldExpression.option.reportsUnresolvedDs"))
+                checkBox(PlsBundle.message("inspection.script.incorrectScopeFieldExpression.option.reportsUnresolvedDs"))
                     .bindSelected(::reportsUnresolvedDs)
                     .actionListener { _, component -> reportsUnresolvedDs = component.isSelected }
             }

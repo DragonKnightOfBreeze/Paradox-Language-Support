@@ -17,7 +17,7 @@ class UnsupportedInlineMathUsageInspection: LocalInspectionTool() {
                 override fun visitElement(element: PsiElement) {
                     ProgressManager.checkCanceled()
                     if(element is ParadoxScriptInlineMath) {
-                        holder.registerProblem(element, PlsBundle.message("inspection.script.bug.unsupportedInlineMathUsage.description.1"))
+                        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedInlineMathUsage.description.1"))
                     }
                 }
             }
@@ -69,9 +69,9 @@ class UnsupportedInlineMathUsageInspection: LocalInspectionTool() {
     //            }
     //        }
     //        
-    //        doBuildVisitor("scripted_trigger", PlsBundle.message("inspection.script.bug.unsupportedInlineMathUsage.description.2"))
+    //        doBuildVisitor("scripted_trigger", PlsBundle.message("inspection.script.unsupportedInlineMathUsage.description.2"))
     //            ?.let { return it }
-    //        doBuildVisitor("scripted_effect", PlsBundle.message("inspection.script.bug.unsupportedInlineMathUsage.description.3"))
+    //        doBuildVisitor("scripted_effect", PlsBundle.message("inspection.script.unsupportedInlineMathUsage.description.3"))
     //            ?.let { return it }
     //    }
     //}

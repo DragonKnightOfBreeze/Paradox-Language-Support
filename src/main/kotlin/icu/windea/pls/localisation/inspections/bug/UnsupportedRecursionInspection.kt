@@ -33,7 +33,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 val recursions = mutableSetOf<PsiElement>()
                 ParadoxRecursionManager.isRecursiveLocalisation(element, recursions)
                 if(recursions.isEmpty()) return
-                val message = PlsBundle.message("inspection.localisation.bug.unsupportedRecursion.description.1")
+                val message = PlsBundle.message("inspection.localisation.unsupportedRecursion.description.1")
                 val location = element.propertyKey
                 holder.registerProblem(location, message, NavigateToRecursionFix(name, element, recursions))
             }
@@ -47,12 +47,12 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     }
     
     private class NavigateToRecursionFix(key: String, target: PsiElement, recursions: Collection<PsiElement>) : NavigateToFix(key, target, recursions) {
-        override fun getText() = PlsBundle.message("inspection.localisation.bug.unsupportedRecursion.quickFix.1")
+        override fun getText() = PlsBundle.message("inspection.localisation.unsupportedRecursion.quickFix.1")
         
         override fun getPopupTitle(editor: Editor) =
-            PlsBundle.message("inspection.localisation.bug.unsupportedRecursion.quickFix.1.popup.title", key)
+            PlsBundle.message("inspection.localisation.unsupportedRecursion.quickFix.1.popup.title", key)
         
         override fun getPopupText(editor: Editor, value: PsiElement) =
-            PlsBundle.message("inspection.localisation.bug.unsupportedRecursion.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+            PlsBundle.message("inspection.localisation.unsupportedRecursion.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
     }
 }

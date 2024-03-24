@@ -36,7 +36,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 val recursions = mutableSetOf<PsiElement>()
                 ParadoxRecursionManager.isRecursiveScriptedVariable(element, recursions)
                 if(recursions.isEmpty()) return
-                val message = PlsBundle.message("inspection.script.bug.unsupportedRecursion.description.1")
+                val message = PlsBundle.message("inspection.script.unsupportedRecursion.description.1")
                 val location = element.scriptedVariableName
                 holder.registerProblem(location, message, NavigateToRecursionFix(name, element, recursions))
             }
@@ -53,8 +53,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 ParadoxRecursionManager.isRecursiveDefinition(element, recursions) { _, re -> ParadoxPsiManager.isInvocationReference(element, re) }
                 if(recursions.isEmpty()) return
                 val message = when {
-                    definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.bug.unsupportedRecursion.description.2.1")
-                    definitionInfo.type == "scripted_effect" -> PlsBundle.message("inspection.script.bug.unsupportedRecursion.description.2.2")
+                    definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.unsupportedRecursion.description.2.1")
+                    definitionInfo.type == "scripted_effect" -> PlsBundle.message("inspection.script.unsupportedRecursion.description.2.2")
                     else -> return
                 }
                 val location = element.propertyKey
@@ -70,12 +70,12 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     }
     
     private class NavigateToRecursionFix(key: String, target: PsiElement, recursions: Collection<PsiElement>) : NavigateToFix(key, target, recursions) {
-        override fun getText() = PlsBundle.message("inspection.script.bug.unsupportedRecursion.quickFix.1")
+        override fun getText() = PlsBundle.message("inspection.script.unsupportedRecursion.quickFix.1")
         
         override fun getPopupTitle(editor: Editor) =
-            PlsBundle.message("inspection.script.bug.unsupportedRecursion.quickFix.1.popup.title", key)
+            PlsBundle.message("inspection.script.unsupportedRecursion.quickFix.1.popup.title", key)
         
         override fun getPopupText(editor: Editor, value: PsiElement) =
-            PlsBundle.message("inspection.script.bug.unsupportedRecursion.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+            PlsBundle.message("inspection.script.unsupportedRecursion.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
     }
 }

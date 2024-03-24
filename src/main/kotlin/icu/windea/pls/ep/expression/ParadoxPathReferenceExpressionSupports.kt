@@ -48,7 +48,7 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
     }
     
     override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {
-        return PlsBundle.message("inspection.script.general.unresolvedPathReference.description.icon", pathReference, configExpression)
+        return PlsBundle.message("inspection.script.unresolvedPathReference.description.icon", pathReference, configExpression)
     }
 }
 
@@ -134,7 +134,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
     }
     
     override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {
-        return PlsBundle.message("inspection.script.general.unresolvedPathReference.description.filePath", pathReference, configExpression)
+        return PlsBundle.message("inspection.script.unresolvedPathReference.description.filePath", pathReference, configExpression)
     }
 }
 
@@ -167,6 +167,6 @@ class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpression
     }
     
     override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {
-        return PlsBundle.message("inspection.script.general.unresolvedPathReference.description.fileName", pathReference, configExpression)
+        return PlsBundle.message("inspection.script.unresolvedPathReference.description.fileName", pathReference, configExpression)
     }
 }

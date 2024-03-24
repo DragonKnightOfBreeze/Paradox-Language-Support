@@ -22,7 +22,7 @@ class UnresolvedCommandScopeInspection : LocalInspectionTool() {
                 val reference = element.reference
                 if(reference.resolve() != null) return
                 val name = element.name
-                holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedCommandScope.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+                holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedCommandScope.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
     }

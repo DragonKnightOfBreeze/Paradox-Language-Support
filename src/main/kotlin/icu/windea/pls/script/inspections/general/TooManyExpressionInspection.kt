@@ -98,19 +98,19 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                     val isConst = configExpression.type == CwtDataTypes.Constant
                     val description = if(isKey) {
                         when {
-                            isConst -> PlsBundle.message("inspection.script.general.tooManyExpression.description.1.1", configExpression)
-                            else -> PlsBundle.message("inspection.script.general.tooManyExpression.description.1.2", configExpression)
+                            isConst -> PlsBundle.message("inspection.script.tooManyExpression.description.1.1", configExpression)
+                            else -> PlsBundle.message("inspection.script.tooManyExpression.description.1.2", configExpression)
                         }
                     } else {
                         when {
-                            isConst -> PlsBundle.message("inspection.script.general.tooManyExpression.description.2.1", configExpression)
-                            else -> PlsBundle.message("inspection.script.general.tooManyExpression.description.2.2", configExpression)
+                            isConst -> PlsBundle.message("inspection.script.tooManyExpression.description.2.1", configExpression)
+                            else -> PlsBundle.message("inspection.script.tooManyExpression.description.2.2", configExpression)
                         }
                     }
                     val maxDefine = occurrence.maxDefine
                     val detail = when {
-                        maxDefine == null -> PlsBundle.message("inspection.script.general.tooManyExpression.description.detail.1", max, actual)
-                        else -> PlsBundle.message("inspection.script.general.tooManyExpression.description.detail.2", max, actual, maxDefine)
+                        maxDefine == null -> PlsBundle.message("inspection.script.tooManyExpression.description.detail.1", max, actual)
+                        else -> PlsBundle.message("inspection.script.tooManyExpression.description.detail.2", max, actual, maxDefine)
                     }
                     val highlightType = ProblemHighlightType.GENERIC_ERROR_OR_WARNING
                     val fileLevel = element is PsiFile
@@ -127,13 +127,13 @@ class TooManyExpressionInspection : LocalInspectionTool() {
         return panel {
             //firstOnly
             row {
-                checkBox(PlsBundle.message("inspection.script.general.tooManyExpression.option.firstOnly"))
+                checkBox(PlsBundle.message("inspection.script.tooManyExpression.option.firstOnly"))
                     .bindSelected(::firstOnly)
                     .actionListener { _, component -> firstOnly = component.isSelected }
             }
             //firstOnlyOnFile
             row {
-                checkBox(PlsBundle.message("inspection.script.general.tooManyExpression.option.firstOnlyOnFile"))
+                checkBox(PlsBundle.message("inspection.script.tooManyExpression.option.firstOnlyOnFile"))
                     .bindSelected(::firstOnlyOnFile)
                     .actionListener { _, component -> firstOnlyOnFile = component.isSelected }
             }

@@ -51,8 +51,8 @@ class MissingParameterInspection : LocalInspectionTool() {
             private fun registerProblem(element: PsiElement, names: Set<String>, rangeInElement: TextRange? = null) {
                 val message = when {
                     names.isEmpty() -> return
-                    names.size == 1 -> PlsBundle.message("inspection.script.general.missingParameter.description.1", names.single().let { "'$it'" })
-                    else -> PlsBundle.message("inspection.script.general.missingParameter.description.2", names.joinToString(", ") { "'$it'" })
+                    names.size == 1 -> PlsBundle.message("inspection.script.missingParameter.description.1", names.single().let { "'$it'" })
+                    else -> PlsBundle.message("inspection.script.missingParameter.description.2", names.joinToString(", ") { "'$it'" })
                 }
                 holder.registerProblem(element, rangeInElement, message)
             }

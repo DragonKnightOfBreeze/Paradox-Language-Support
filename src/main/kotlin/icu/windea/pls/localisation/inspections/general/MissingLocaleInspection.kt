@@ -23,21 +23,21 @@ class MissingLocaleInspection : LocalInspectionTool() {
         if(file.name.matchesGlobFileName(ignoredFileNames, true)) return null //忽略
         if(file.propertyLists.all { it.locale != null }) return null //没有问题，跳过
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        holder.registerProblem(file, PlsBundle.message("inspection.localisation.general.missingLocale.description"))
+        holder.registerProblem(file, PlsBundle.message("inspection.localisation.missingLocale.description"))
         return holder.resultsArray
     }
     
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                label(PlsBundle.message("inspection.localisation.general.missingLocale.option.ignoredFileNames"))
-                    .applyToComponent { toolTipText = PlsBundle.message("inspection.localisation.general.missingLocale.option.ignoredFileNames.tooltip") }
+                label(PlsBundle.message("inspection.localisation.missingLocale.option.ignoredFileNames"))
+                    .applyToComponent { toolTipText = PlsBundle.message("inspection.localisation.missingLocale.option.ignoredFileNames.tooltip") }
             }
             row {
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFileNames)
                     .bindWhenTextChanged(::ignoredFileNames)
-                    .comment(PlsBundle.message("inspection.localisation.general.missingLocale.option.ignoredFileNames.comment"))
+                    .comment(PlsBundle.message("inspection.localisation.missingLocale.option.ignoredFileNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

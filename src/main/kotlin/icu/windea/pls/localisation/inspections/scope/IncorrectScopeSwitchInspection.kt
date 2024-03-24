@@ -36,7 +36,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                 val configGroup = config.info.configGroup
                                 if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)) {
                                     val description = PlsBundle.message(
-                                        "inspection.localisation.scope.incorrectScopeSwitch.description.1",
+                                        "inspection.localisation.incorrectScopeSwitch.description.1",
                                         element.name, supportedScopes.joinToString(), scopeContext.scope.id
                                     )
                                     holder.registerProblem(element, description)
@@ -49,7 +49,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                             //	val resolvedScope = ParadoxScopeHandler.resolveScopeBySystemLink(config, scopeContext)
                             //	if(resolvedScope == null) {
                             //		val location = element
-                            //		val description = PlsBundle.message("inspection.localisation.scope.incorrectScopeSwitch.description.3",
+                            //		val description = PlsBundle.message("inspection.localisation.incorrectScopeSwitch.description.3",
                             //			element.name)
                             //		holder.registerProblem(location, description)
                             //	}
@@ -64,7 +64,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                         val configGroup = getConfigGroup(resolved.project, resolved.gameType)
                         if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScope, configGroup)) {
                             val description = PlsBundle.message(
-                                "inspection.localisation.scope.incorrectScopeSwitch.description.2",
+                                "inspection.localisation.incorrectScopeSwitch.description.2",
                                 element.name, supportedScope, scopeContext.scope.id
                             )
                             holder.registerProblem(element, description)
@@ -78,7 +78,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                checkBox(PlsBundle.message("inspection.localisation.scope.incorrectScopeSwitch.option.checkForSystemLink"))
+                checkBox(PlsBundle.message("inspection.localisation.incorrectScopeSwitch.option.checkForSystemLink"))
                     .bindSelected(::checkForSystemLink)
                     .actionListener { _, component -> checkForSystemLink = component.isSelected }
             }

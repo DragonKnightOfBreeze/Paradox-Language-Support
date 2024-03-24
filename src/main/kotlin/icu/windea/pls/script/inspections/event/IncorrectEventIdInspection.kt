@@ -29,7 +29,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
                 if(ParadoxEventHandler.isValidEventId(eventId)) return
                 val nameElement = if(nameField == null) element.propertyKey else element.findProperty(nameField)?.propertyValue
                 if(nameElement == null) return //忽略
-                holder.registerProblem(nameElement, PlsBundle.message("inspection.script.event.incorrectEventId.description", eventId))
+                holder.registerProblem(nameElement, PlsBundle.message("inspection.script.incorrectEventId.description", eventId))
             }
         }
     }

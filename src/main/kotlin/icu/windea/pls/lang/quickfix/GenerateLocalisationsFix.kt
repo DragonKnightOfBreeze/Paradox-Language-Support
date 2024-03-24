@@ -21,10 +21,10 @@ class GenerateLocalisationsFix(
     
     override fun getText(): String {
         return when(context.type) {
-            Type.Definition -> PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.1", contextName)
-            Type.Modifier -> PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.2", contextName)
-            Type.LocalisationReference -> PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.3", contextName)
-            Type.SyncedLocalisationReference -> PlsBundle.message("inspection.script.general.missingLocalisation.quickfix.4", contextName)
+            Type.Definition -> PlsBundle.message("inspection.script.missingLocalisation.quickfix.1", contextName)
+            Type.Modifier -> PlsBundle.message("inspection.script.missingLocalisation.quickfix.2", contextName)
+            Type.LocalisationReference -> PlsBundle.message("inspection.script.missingLocalisation.quickfix.3", contextName)
+            Type.SyncedLocalisationReference -> PlsBundle.message("inspection.script.missingLocalisation.quickfix.4", contextName)
             else -> throw IllegalStateException()
         }
     }

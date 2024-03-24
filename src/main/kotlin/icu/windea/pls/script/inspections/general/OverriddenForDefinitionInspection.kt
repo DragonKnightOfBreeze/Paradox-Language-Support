@@ -40,7 +40,7 @@ class OverriddenForDefinitionInspection : LocalInspectionTool() {
                 if(results.size < 2) return //no override -> skip
                     
                 val locationElement = element.propertyKey
-                val message = PlsBundle.message("inspection.script.general.overriddenForDefinition.description", name)
+                val message = PlsBundle.message("inspection.script.overriddenForDefinition.description", name)
                 val fix = NavigateToOverriddenDefinitionsFix(name, element, results)
                 holder.registerProblem(locationElement, message, fix)
             }
@@ -48,12 +48,12 @@ class OverriddenForDefinitionInspection : LocalInspectionTool() {
     }
     
     private class NavigateToOverriddenDefinitionsFix(key: String, element: PsiElement, elements: Collection<PsiElement>) : NavigateToFix(key, element, elements) {
-        override fun getText() = PlsBundle.message("inspection.script.general.overriddenForDefinition.quickfix.1")
+        override fun getText() = PlsBundle.message("inspection.script.overriddenForDefinition.quickfix.1")
         
         override fun getPopupTitle(editor: Editor) =
-            PlsBundle.message("inspection.script.general.overriddenForDefinition.quickFix.1.popup.title", key)
+            PlsBundle.message("inspection.script.overriddenForDefinition.quickFix.1.popup.title", key)
         
         override fun getPopupText(editor: Editor, value: PsiElement) =
-            PlsBundle.message("inspection.script.general.overriddenForDefinition.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+            PlsBundle.message("inspection.script.overriddenForDefinition.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
     }
 }

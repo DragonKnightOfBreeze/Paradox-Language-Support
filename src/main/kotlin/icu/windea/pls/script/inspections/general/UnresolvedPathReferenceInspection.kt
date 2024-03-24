@@ -43,7 +43,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     val filePath = element.value
                     val virtualFile = filePath.toVirtualFile(false)
                     if(virtualFile != null) return
-                    val message = PlsBundle.message("inspection.script.general.unresolvedPathReference.description.abs", filePath)
+                    val message = PlsBundle.message("inspection.script.unresolvedPathReference.description.abs", filePath)
                     holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
                     return
                 }
@@ -66,14 +66,14 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                label(PlsBundle.message("inspection.script.general.unresolvedPathReference.option.ignoredFileNames"))
-                    .applyToComponent { toolTipText = PlsBundle.message("inspection.script.general.unresolvedPathReference.option.ignoredFileNames.tooltip") }
+                label(PlsBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames"))
+                    .applyToComponent { toolTipText = PlsBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames.tooltip") }
             }
             row {
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFileNames)
                     .bindWhenTextChanged(::ignoredFileNames)
-                    .comment(PlsBundle.message("inspection.script.general.unresolvedPathReference.option.ignoredFileNames.comment"))
+                    .comment(PlsBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

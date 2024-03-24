@@ -95,11 +95,11 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             
             private fun getMessage(codeInsightInfo: ParadoxLocalisationCodeInsightInfo): String? {
                 val locationExpression = codeInsightInfo.relatedLocalisationInfo?.locationExpression
-                val from = locationExpression?.propertyName?.let { PlsBundle.message("inspection.script.general.missingLocalisation.from.2", it) }
-                    ?: codeInsightInfo.name?.let { PlsBundle.message("inspection.script.general.missingLocalisation.from.1", it) }
+                val from = locationExpression?.propertyName?.let { PlsBundle.message("inspection.script.missingLocalisation.from.2", it) }
+                    ?: codeInsightInfo.name?.let { PlsBundle.message("inspection.script.missingLocalisation.from.1", it) }
                     ?: return null
                 val localeId = codeInsightInfo.locale.id
-                return PlsBundle.message("inspection.script.general.missingLocalisation.description", from, localeId)
+                return PlsBundle.message("inspection.script.missingLocalisation.description", from, localeId)
             }
             
             private fun getFixes(element: PsiElement, context: ParadoxLocalisationCodeInsightContext): List<LocalQuickFix> {
@@ -117,10 +117,10 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         return panel {
             //checkForPreferredLocale
             row {
-                checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForPreferredLocale"))
+                checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkForPreferredLocale"))
                     .bindSelected(::checkForPreferredLocale)
                     .actionListener { _, component -> checkForPreferredLocale = component.isSelected }
-                cell(ActionLink(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForPreferredLocale.configure")) {
+                cell(ActionLink(PlsBundle.message("inspection.script.missingLocalisation.option.checkForPreferredLocale.configure")) {
                     //ShowSettingsUtil.getInstance().showSettingsDialog(null, ParadoxSettingsConfigurable::class.java)
                     val dialog = ParadoxPreferredLocaleDialog()
                     dialog.showAndGet()
@@ -128,10 +128,10 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             //checkForSpecificLocales
             row {
-                checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForSpecificLocales"))
+                checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkForSpecificLocales"))
                     .bindSelected(::checkForSpecificLocales)
                     .actionListener { _, component -> checkForSpecificLocales = component.isSelected }
-                cell(ActionLink(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForSpecificLocales.configure")) {
+                cell(ActionLink(PlsBundle.message("inspection.script.missingLocalisation.option.checkForSpecificLocales.configure")) {
                     val allLocaleMap = ParadoxLocaleHandler.getLocaleConfigMapById()
                     val selectedLocales = locales.mapNotNull { allLocaleMap.get(it) }
                     val dialog = ParadoxLocaleCheckBoxDialog(selectedLocales, allLocaleMap.values)
@@ -143,7 +143,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             //checkForDefinitions
             row {
-                checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForDefinitions"))
+                checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkForDefinitions"))
                     .bindSelected(::checkForDefinitions)
                     .actionListener { _, component -> checkForDefinitions = component.isSelected }
                     .also { checkForDefinitionsCb = it }
@@ -151,20 +151,20 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             indent {
                 //checkRequiredForDefinitions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkRequiredForDefinitions"))
+                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkRequiredForDefinitions"))
                         .selected(true)
                         .enabled(false)
                 }
                 //checkPrimaryForDefinitions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkPrimaryForDefinitions"))
+                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkPrimaryForDefinitions"))
                         .bindSelected(::checkPrimaryForDefinitions)
                         .actionListener { _, component -> checkPrimaryForDefinitions = component.isSelected }
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
                 //checkOptionalForDefinitions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkOptionalForDefinitions")).apply {
+                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkOptionalForDefinitions")).apply {
                         bindSelected(::checkOptionalForDefinitions)
                             .actionListener { _, component -> checkOptionalForDefinitions = component.isSelected }
                             .enabledIf(checkForDefinitionsCb.selected)
@@ -172,7 +172,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 }
                 //checkGeneratedModifierNamesForDefinitions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkGeneratedModifierNamesForDefinitions")).apply {
+                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifierNamesForDefinitions")).apply {
                         bindSelected(::checkGeneratedModifierNamesForDefinitions)
                             .actionListener { _, component -> checkGeneratedModifierNamesForDefinitions = component.isSelected }
                             .enabledIf(checkForDefinitionsCb.selected)
@@ -180,7 +180,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 }
                 //checkGeneratedModifierDescriptionsForDefinitions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkGeneratedModifierDescriptionsForDefinitions")).apply {
+                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifierDescriptionsForDefinitions")).apply {
                         bindSelected(::checkGeneratedModifierDescriptionsForDefinitions)
                             .actionListener { _, component -> checkGeneratedModifierDescriptionsForDefinitions = component.isSelected }
                             .enabledIf(checkForDefinitionsCb.selected)
@@ -189,7 +189,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
             //checkForModifiers
             row {
-                checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkForModifiers"))
+                checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkForModifiers"))
                     .bindSelected(::checkForModifiers)
                     .actionListener { _, component -> checkForModifiers = component.isSelected }
                     .also { checkForModifiersCb = it }
@@ -197,14 +197,14 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             indent {
                 //checkModifierNames
                 row {
-                    checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkModifierNames"))
+                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkModifierNames"))
                         .bindSelected(::checkModifierNames)
                         .actionListener { _, component -> checkModifierNames = component.isSelected }
                         .enabledIf(checkForModifiersCb.selected)
                 }
                 //checkModifierDescriptions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.general.missingLocalisation.option.checkModifierDescriptions"))
+                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkModifierDescriptions"))
                         .bindSelected(::checkModifierDescriptions)
                         .actionListener { _, component -> checkModifierDescriptions = component.isSelected }
                         .enabledIf(checkForModifiersCb.selected)

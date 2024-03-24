@@ -28,7 +28,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
             if(canResolveToNumber(propertyKey)) return
             val propertyValue = element.propertyValue ?: return
             if(canResolveToNumber(propertyValue)) return
-            val message = PlsBundle.message("inspection.script.general.incorrectScriptSyntax.description.1")
+            val message = PlsBundle.message("inspection.script.incorrectScriptSyntax.description.1")
             holder.registerProblem(token, message, ProblemHighlightType.GENERIC_ERROR)
         }
         
@@ -59,7 +59,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
             if(element.elementType != ParadoxScriptElementTypes.QUESTION_EQUAL_SIGN) return
             val gameType = selectGameType(element) ?: return
             if(gameType == ParadoxGameType.Vic3) return
-            val message = PlsBundle.message("inspection.script.general.incorrectScriptSyntax.description.2")
+            val message = PlsBundle.message("inspection.script.incorrectScriptSyntax.description.2")
             holder.registerProblem(element, message, ProblemHighlightType.GENERIC_ERROR)
         }
     }

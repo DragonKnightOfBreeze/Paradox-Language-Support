@@ -42,8 +42,8 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                 if(skipCheck(element, configs)) return
                 val isKey = position is ParadoxScriptPropertyKey
                 val description = when {
-                    isKey -> PlsBundle.message("inspection.script.general.conflictingResolvedExpression.description.1", expression)
-                    else -> PlsBundle.message("inspection.script.general.conflictingResolvedExpression.description.2", expression)
+                    isKey -> PlsBundle.message("inspection.script.conflictingResolvedExpression.description.1", expression)
+                    else -> PlsBundle.message("inspection.script.conflictingResolvedExpression.description.2", expression)
                 }
                 holder.registerProblem(position, description)
             }

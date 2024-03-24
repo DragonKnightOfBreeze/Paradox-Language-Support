@@ -31,7 +31,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
                 val value = element.value
                 if(fileExtensions.any { value.endsWith(it, true) }) return
                 val extensionsString = fileExtensions.joinToString()
-                val message = PlsBundle.message("inspection.script.general.incorrectPathReference.description.1", value, extensionsString)
+                val message = PlsBundle.message("inspection.script.incorrectPathReference.description.1", value, extensionsString)
                 holder.registerProblem(element, message)
             }
         }

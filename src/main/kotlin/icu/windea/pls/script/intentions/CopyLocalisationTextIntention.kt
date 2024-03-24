@@ -15,7 +15,7 @@ import java.awt.datatransfer.*
  * 复制本地化文本到剪贴板。（复制的是原始文本）
  */
 class CopyLocalisationTextIntention : IntentionAction {
-    override fun getText() = PlsBundle.message("intention.core.copyLocalisationText")
+    override fun getText() = PlsBundle.message("intention.copyLocalisationText")
     
     override fun getFamilyName() = text
     

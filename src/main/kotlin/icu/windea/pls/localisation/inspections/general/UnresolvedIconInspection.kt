@@ -30,7 +30,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
                 val reference = element.reference
                 if(reference == null || reference.resolve() != null) return
                 val location = element.iconId ?: return
-                holder.registerProblem(location, PlsBundle.message("inspection.localisation.general.unresolvedIcon.description", iconName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+                holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedIcon.description", iconName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
     }
@@ -38,13 +38,13 @@ class UnresolvedIconInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                label(PlsBundle.message("inspection.localisation.general.unresolvedIcon.option.ignoredIconNames"))
+                label(PlsBundle.message("inspection.localisation.unresolvedIcon.option.ignoredIconNames"))
             }
             row {
                 textField()
                     .bindText(::ignoredIconNames)
                     .bindWhenTextChanged(::ignoredIconNames)
-                    .comment(PlsBundle.message("inspection.localisation.general.unresolvedIcon.option.ignoredIconNames.comment"))
+                    .comment(PlsBundle.message("inspection.localisation.unresolvedIcon.option.ignoredIconNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

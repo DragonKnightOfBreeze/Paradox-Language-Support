@@ -4,14 +4,14 @@
     <intentionAction>
       <language>CWT</language>
       <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>cwt.intention.category</categoryKey>
+      <categoryKey>intention.cwt.category</categoryKey>
       <className>icu.windea.pls.cwt.intentions.QuoteIdentifierIntention</className>
       <descriptionDirectoryName>CwtQuoteIdentifierIntention</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
       <language>CWT</language>
       <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>cwt.intention.category</categoryKey>
+      <categoryKey>intention.cwt.category</categoryKey>
       <className>icu.windea.pls.cwt.intentions.UnquoteIdentifierIntention</className>
       <descriptionDirectoryName>CwtUnquoteIdentifierIntention</descriptionDirectoryName>
     </intentionAction>

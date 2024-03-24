@@ -19,7 +19,7 @@ class MissingEventNamespaceInspection : LocalInspectionTool() {
         val eventNamespace = rootBlock.findChildOfType<ParadoxScriptProperty> { it.name.equals("namespace", true) }
         if(eventNamespace == null) {
             val holder = ProblemsHolder(manager, file, isOnTheFly)
-            holder.registerProblem(file, PlsBundle.message("inspection.script.event.missingEventNamespace.description"))
+            holder.registerProblem(file, PlsBundle.message("inspection.script.missingEventNamespace.description"))
             return holder.resultsArray
         }
         return null

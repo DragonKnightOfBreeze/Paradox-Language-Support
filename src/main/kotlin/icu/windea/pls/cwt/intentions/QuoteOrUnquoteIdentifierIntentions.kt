@@ -11,7 +11,7 @@ import icu.windea.pls.cwt.psi.*
 class QuoteIdentifierIntention : IntentionAction, DumbAware {
     override fun getFamilyName() = text
     
-    override fun getText() = PlsBundle.message("cwt.intention.quoteIdentifier")
+    override fun getText() = PlsBundle.message("intention.cwt.quoteIdentifier")
     
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
         if(editor == null || file == null) return false
@@ -54,7 +54,7 @@ class QuoteIdentifierIntention : IntentionAction, DumbAware {
 class UnquoteIdentifierIntention : IntentionAction, DumbAware {
     override fun getFamilyName() = text
     
-    override fun getText() = PlsBundle.message("cwt.intention.unquoteIdentifier")
+    override fun getText() = PlsBundle.message("intention.cwt.unquoteIdentifier")
     
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
         if(editor == null || file == null) return false

@@ -38,7 +38,7 @@ class TooLongScopeLinkInspection : LocalInspectionTool() {
                     val startOffset = firstScope?.textRangeInParent?.startOffset ?: return
                     val endOffset = lastScope?.textRangeInParent?.endOffset ?: return
                     val range = TextRange.create(startOffset, endOffset)
-                    val description = PlsBundle.message("inspection.localisation.scope.tooLongScopeLink.description")
+                    val description = PlsBundle.message("inspection.localisation.tooLongScopeLink.description")
                     holder.registerProblem(element, range, description)
                 }
             }

@@ -34,7 +34,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                                 if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)) {
                                     val location = element
                                     val description = PlsBundle.message(
-                                        "inspection.localisation.scope.incorrectScope.description.1",
+                                        "inspection.localisation.incorrectScope.description.1",
                                         element.name, supportedScopes.joinToString(), scopeContext.scope.id
                                     )
                                     holder.registerProblem(location, description)
@@ -54,7 +54,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                         val configGroup = getConfigGroup(resolved.project, resolved.gameType)
                         if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScope, configGroup)) {
                             val description = PlsBundle.message(
-                                "inspection.localisation.scope.incorrectScope.description.2",
+                                "inspection.localisation.incorrectScope.description.2",
                                 element.name, supportedScope, scopeContext.scope.id
                             )
                             holder.registerProblem(element, description)

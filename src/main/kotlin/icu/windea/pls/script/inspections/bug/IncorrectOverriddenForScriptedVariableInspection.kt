@@ -48,7 +48,7 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
                 if(firstRootInfo.rootFile != rootInfo.rootFile) {
                     //different root file -> incorrect override
                     val locationElement = element.scriptedVariableName
-                    val message = PlsBundle.message("inspection.script.bug.incorrectOverriddenForScriptedVariable.description", name, priority)
+                    val message = PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.description", name, priority)
                     val fix = NavigateToOverriddenScriptedVariablesFix(name, element, results)
                     holder.registerProblem(locationElement, message, fix)
                 }
@@ -57,13 +57,13 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
     }
     
     private class NavigateToOverriddenScriptedVariablesFix(key: String, element: PsiElement, scriptedVariables: Collection<PsiElement>) : NavigateToFix(key, element, scriptedVariables) {
-        override fun getText() = PlsBundle.message("inspection.script.bug.incorrectOverriddenForScriptedVariable.quickfix.1")
+        override fun getText() = PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.quickfix.1")
         
         override fun getPopupTitle(editor: Editor) =
-            PlsBundle.message("inspection.script.bug.incorrectOverriddenForScriptedVariable.quickFix.1.popup.title", key)
+            PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.quickFix.1.popup.title", key)
         
         override fun getPopupText(editor: Editor, value: PsiElement) =
-            PlsBundle.message("inspection.script.bug.incorrectOverriddenForScriptedVariable.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+            PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
     }
 }
 
