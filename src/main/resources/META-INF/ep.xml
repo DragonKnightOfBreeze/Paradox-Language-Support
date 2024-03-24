@@ -16,6 +16,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.documentationElementLinkProvider" interface="icu.windea.pls.ep.documentation.DocumentationElementLinkProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxDefinitionExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.parameterExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxParameterExtendedDocumentationProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.complexEnumValueExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxComplexEnumValueExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dynamicValueExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxDynamicValueExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.pathReferenceExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport" dynamic="true"/>
@@ -112,6 +113,8 @@
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxGameRuleExtendedDocumentationProvider"/>
 
     <parameterExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxBaseParameterExtendedDocumentationProvider" order="last"/>
+    
+    <complexEnumValueExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxBaseComplexEnumValueExtendedDocumentationProvider" order="last"/>
     
     <dynamicValueExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxBaseDynamicValueExtendedDocumentationProvider" order="last"/>
     

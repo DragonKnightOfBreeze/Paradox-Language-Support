@@ -178,23 +178,26 @@ Example:
 
 ```cwt
 parameters = {
-    # 'x' or 'x = xxx'
-    # 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
-    # 'x' can also be a template expression
-    # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there is various context configs)
-    
-    ### Some documentation
-    ## context_key = scripted_trigger@some_trigger
-    x
-    
-    # more detailed examples for declaring context config(s)
-    
-    x = localistion
-    ## context_configs_type = multiple
-    x = {
-        localisation
-        scalar
-    }
+	# 'x' or 'x = xxx'
+	# 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
+	# 'x' can also be a template expression
+	# use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there is various context configs)
+
+	### Some documentation
+	## context_key = scripted_trigger@some_trigger
+	x
+
+	# more detailed examples for declaring context config(s)
+
+	## context_key = scripted_trigger@some_trigger
+	x = localistion
+
+	## context_key = scripted_trigger@some_trigger
+	## context_configs_type = multiple
+	x = {
+		localisation
+		scalar
+	}
 }
 ```
 

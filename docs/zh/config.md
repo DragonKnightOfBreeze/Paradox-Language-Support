@@ -188,8 +188,11 @@ parameters = {
     x
     
     # more detailed examples for declaring context config(s)
-    
+
+	## context_key = scripted_trigger@some_trigger
     x = localistion
+
+	## context_key = scripted_trigger@some_trigger
     ## context_configs_type = multiple
     x = {
         localisation
@@ -215,7 +218,6 @@ values = {
     }
 }
 ```
-
 
 ## 导入CWT规则文件{#importing-cwt-config-files}
 

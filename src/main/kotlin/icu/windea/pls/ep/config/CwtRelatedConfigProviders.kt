@@ -30,9 +30,18 @@ class CwtBaseRelatedConfigProvider: CwtRelatedConfigProvider {
                 val name = element.value
                 val configExpression = config.expression
                 when {
+                    configExpression.type in CwtDataTypeGroups.DynamicValue -> {
+                        val type = configExpression.value
+                        if(type != null) {
+                            configGroup.dynamicValueTypes[type]?.valueConfigMap?.get(name)?.also { result.add(it) }
+                        }
+                    }
                     configExpression.type == CwtDataTypes.EnumValue -> {
-                        configGroup.enums[name]?.also { result.add(it) }
-                        configGroup.complexEnums[name]?.also { result.add(it) }
+                        val enumName = configExpression.value
+                        if(enumName != null) {
+                            configGroup.enums[enumName]?.valueConfigMap?.get(name)?.also { result.add(it) }
+                            configGroup.complexEnums[enumName]?.also { result.add(it) }
+                        }
                     }
                     configExpression.type == CwtDataTypes.Modifier -> {
                         val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup)
@@ -69,9 +78,6 @@ class CwtExtendedRelatedConfigProvider: CwtRelatedConfigProvider {
                                 configGroup.onActions.getByTemplate(name, element, configGroup)?.also { result.add(it) }
                             }
                         }
-                    }
-                    configExpression.type in CwtDataTypeGroups.DynamicValue -> {
-                        configGroup.dynamicValueTypes[name]?.also { result.add(it) }
                     }
                     configExpression.type == CwtDataTypes.Parameter -> {
                         val parameterElement = element.reference?.resolve()?.castOrNull<ParadoxParameterElement>() ?: continue

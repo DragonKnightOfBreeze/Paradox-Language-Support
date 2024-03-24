@@ -62,6 +62,9 @@ val CwtConfigGroup.enums: MutableMap<String, CwtEnumConfig>
 val CwtConfigGroup.complexEnums: MutableMap<String, CwtComplexEnumConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
+val CwtConfigGroup.dynamicValueTypes: MutableMap<String, CwtDynamicValueTypeConfig>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
+
 val CwtConfigGroup.links: MutableMap<@CaseInsensitive String, CwtLinkConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 val CwtConfigGroup.linksAsScopeNotData: MutableMap<@CaseInsensitive String, CwtLinkConfig>
@@ -119,9 +122,6 @@ val CwtConfigGroup.inlineScripts: MutableMap<String, CwtInlineScriptConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 //template_expression - configs
 val CwtConfigGroup.parameters: MutableMap<String, MutableList<CwtParameterConfig>>
-    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-
-val CwtConfigGroup.dynamicValueTypes: MutableMap<String, CwtDynamicValueTypeConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
 @Tags(Tag.Computed)
