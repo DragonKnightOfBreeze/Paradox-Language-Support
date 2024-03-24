@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.*
 class CwtBaseRelatedConfigProvider: CwtRelatedConfigProvider {
     override fun getRelatedConfigs(element: ParadoxScriptExpressionElement): List<CwtConfig<*>> {
         //获取所有匹配的CWT规则，不存在匹配的CWT规则时，选用所有默认的CWT规则（对于propertyConfig来说是匹配key的，对于valueConfig来说是所有）
-        //包括内联规则（例如alias，显示时使用特殊的别名图标）
+        //包括内联规则（例如alias与single_alias，显示时使用特殊的别名图标）
         //包括其他一些相关的规则
         
         val orDefault = element is ParadoxScriptPropertyKey
