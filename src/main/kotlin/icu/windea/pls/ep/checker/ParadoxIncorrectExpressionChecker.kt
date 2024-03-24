@@ -9,7 +9,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.script.psi.*
 
 /**
- * @see icu.windea.pls.lang.inspections.script.general.IncorrectExpressionInspection
+ * @see icu.windea.pls.lang.inspections.script.common.IncorrectExpressionInspection
  */
 @WithGameTypeEP
 interface ParadoxIncorrectExpressionChecker {
