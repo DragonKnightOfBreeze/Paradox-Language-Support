@@ -13,7 +13,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 检查（全局）封装变量的重载是否不正确。（覆盖规则为FIOS）
+ * （对于脚本文件）检查是否存在不正确的对（全局）封装的重载。
  */
 class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -57,13 +57,13 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
     }
     
     private class NavigateToOverriddenScriptedVariablesFix(key: String, element: PsiElement, scriptedVariables: Collection<PsiElement>) : NavigateToFix(key, element, scriptedVariables) {
-        override fun getText() = PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.quickfix.1")
+        override fun getText() = PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.fix.1")
         
         override fun getPopupTitle(editor: Editor) =
-            PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.quickFix.1.popup.title", key)
+            PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.fix.1.popup.title", key)
         
         override fun getPopupText(editor: Editor, value: PsiElement) =
-            PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+            PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.fix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
     }
 }
 

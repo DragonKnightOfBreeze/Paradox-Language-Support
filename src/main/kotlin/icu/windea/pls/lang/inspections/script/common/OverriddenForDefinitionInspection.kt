@@ -2,6 +2,7 @@ package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.roots.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -12,16 +13,16 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 检查（全局）封装变量的重载是否不正确。（覆盖规则为FIOS）
+ * （对于脚本文件）检查是否存在对定义的重载。
  */
 class OverriddenForDefinitionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         val project = holder.project
-        val fileInfo = file.fileInfo ?: return PsiElementVisitor.EMPTY_VISITOR
-        //val virtualFile = file.virtualFile
-        //val inProject = virtualFile != null && ProjectFileIndex.getInstance(project).isInContent(virtualFile)
-        //if(!inProject) return PsiElementVisitor.EMPTY_VISITOR //only for project files
+        file.fileInfo ?: return PsiElementVisitor.EMPTY_VISITOR
+        val virtualFile = file.virtualFile
+        val inProject = virtualFile != null && ProjectFileIndex.getInstance(project).isInContent(virtualFile)
+        if(!inProject) return PsiElementVisitor.EMPTY_VISITOR //only for project files
         
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -38,7 +39,7 @@ class OverriddenForDefinitionInspection : LocalInspectionTool() {
                 if(name.isParameterized()) return //parameterized -> ignored
                 val results = ParadoxDefinitionSearch.search(name, type, selector).findAll()
                 if(results.size < 2) return //no override -> skip
-                    
+                
                 val locationElement = element.propertyKey
                 val message = PlsBundle.message("inspection.script.overriddenForDefinition.description", name)
                 val fix = NavigateToOverriddenDefinitionsFix(name, element, results)
@@ -48,12 +49,12 @@ class OverriddenForDefinitionInspection : LocalInspectionTool() {
     }
     
     private class NavigateToOverriddenDefinitionsFix(key: String, element: PsiElement, elements: Collection<PsiElement>) : NavigateToFix(key, element, elements) {
-        override fun getText() = PlsBundle.message("inspection.script.overriddenForDefinition.quickfix.1")
+        override fun getText() = PlsBundle.message("inspection.script.overriddenForDefinition.fix.1")
         
         override fun getPopupTitle(editor: Editor) =
-            PlsBundle.message("inspection.script.overriddenForDefinition.quickFix.1.popup.title", key)
+            PlsBundle.message("inspection.script.overriddenForDefinition.fix.1.popup.title", key)
         
         override fun getPopupText(editor: Editor, value: PsiElement) =
-            PlsBundle.message("inspection.script.overriddenForDefinition.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+            PlsBundle.message("inspection.script.overriddenForDefinition.fix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
     }
 }

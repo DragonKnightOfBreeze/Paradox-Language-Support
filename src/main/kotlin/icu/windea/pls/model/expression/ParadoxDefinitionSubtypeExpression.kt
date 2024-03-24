@@ -21,7 +21,7 @@ import java.util.*
  *
  * 用途：
  *
- * * 在CWT文件中，`subtype[X]`表示作为其值的子句中的规则仅限匹配此定义子类型表达式的定义。其中`X`即是一个定义类型表达式。
+ * * 在CWT规则文件中，`subtype[X]`表示作为其值的子句中的规则仅限匹配此定义子类型表达式的定义。其中`X`即是一个定义子类型表达式。
  */
 interface ParadoxDefinitionSubtypeExpression {
     val expressionString: String

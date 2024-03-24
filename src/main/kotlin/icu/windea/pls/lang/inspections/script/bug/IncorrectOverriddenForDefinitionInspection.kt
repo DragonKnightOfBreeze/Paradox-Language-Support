@@ -14,7 +14,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 检查（全局）封装变量的重载是否不正确。（覆盖规则为FIOS）
+ * （对于脚本文件）检查是否存在不正确的对定义的重载。
  */
 class IncorrectOverriddenForDefinitionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -57,12 +57,12 @@ class IncorrectOverriddenForDefinitionInspection : LocalInspectionTool() {
     }
     
     private class NavigateToOverriddenDefinitionsFix(key: String, element: PsiElement, definitions: Collection<PsiElement>) : NavigateToFix(key, element, definitions) {
-        override fun getText() = PlsBundle.message("inspection.script.incorrectOverriddenForDefinition.quickfix.1")
+        override fun getText() = PlsBundle.message("inspection.script.incorrectOverriddenForDefinition.fix.1")
         
         override fun getPopupTitle(editor: Editor) =
-            PlsBundle.message("inspection.script.incorrectOverriddenForDefinition.quickFix.1.popup.title", key)
+            PlsBundle.message("inspection.script.incorrectOverriddenForDefinition.fix.1.popup.title", key)
         
         override fun getPopupText(editor: Editor, value: PsiElement) =
-            PlsBundle.message("inspection.script.incorrectOverriddenForDefinition.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+            PlsBundle.message("inspection.script.incorrectOverriddenForDefinition.fix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
     }
 }

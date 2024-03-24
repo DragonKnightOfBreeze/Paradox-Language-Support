@@ -5,8 +5,12 @@
     <!--<lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.inspections.ParadoxScriptConfigAwareInspectionSuppressor"/>-->
     
     <!--region Common-->
-    <!--region General-->
-    <!--endregion-->
+    <localInspection language="" shortName="ParadoxOverriddenForFile"
+                     enabledByDefault="false" level="WEAK WARNING"
+                     bundle="messages.PlsBundle" key="inspection.overriddenForFile"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.common.group"
+                     groupPathKey="inspection.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.common.OverriddenForFileInspection"/>
     <!--endregion-->
     
     <!--region Paradox script-->
@@ -14,7 +18,7 @@
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateScriptedVariables"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.duplicateScriptedVariables"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.groupPath"
                      groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.DuplicateScriptedVariablesInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectFileEncoding"

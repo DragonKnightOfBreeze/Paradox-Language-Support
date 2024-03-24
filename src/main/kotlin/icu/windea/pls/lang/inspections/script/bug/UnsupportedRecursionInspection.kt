@@ -70,12 +70,12 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     }
     
     private class NavigateToRecursionFix(key: String, target: PsiElement, recursions: Collection<PsiElement>) : NavigateToFix(key, target, recursions) {
-        override fun getText() = PlsBundle.message("inspection.script.unsupportedRecursion.quickFix.1")
+        override fun getText() = PlsBundle.message("inspection.script.unsupportedRecursion.fix.1")
         
         override fun getPopupTitle(editor: Editor) =
-            PlsBundle.message("inspection.script.unsupportedRecursion.quickFix.1.popup.title", key)
+            PlsBundle.message("inspection.script.unsupportedRecursion.fix.1.popup.title", key)
         
         override fun getPopupText(editor: Editor, value: PsiElement) =
-            PlsBundle.message("inspection.script.unsupportedRecursion.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+            PlsBundle.message("inspection.script.unsupportedRecursion.fix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
     }
 }
