@@ -290,14 +290,13 @@ object CwtConfigHandler {
                             if(subPathIsParameterized || !matchKey || CwtConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) {
                                 matchCount++
                                 if(subPathIsParameterized && matchCount > 1) return emptyList()
-                                val inlinedConfigs = CwtConfigManipulator.inlineByConfig(element, subPath, isQuoted, config, matchOptions)
+                                val inlinedConfigs = CwtConfigManipulator.inlineSingleAliasOrAlias(element, subPath, isQuoted, config, matchOptions)
                                 if(inlinedConfigs.isEmpty()) {
                                     nextResult.add(config)
                                 } else {
-                                    if(inlinedConfigs is MutableList) {
-                                        CwtInjectedConfigProvider.injectConfigs(parentConfig, inlinedConfigs)
-                                    }
-                                    nextResult.addAll(inlinedConfigs)
+                                    val inlinedConfigs0 = inlinedConfigs.toMutableList<CwtMemberConfig<*>>()
+                                    CwtInjectedConfigProvider.injectConfigs(parentConfig, inlinedConfigs0)
+                                    nextResult.addAll(inlinedConfigs0)
                                 }
                             }
                         } else if(config is CwtValueConfig) {
@@ -743,7 +742,9 @@ object CwtConfigHandler {
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
                 if(c2 is CwtPropertyConfig) {
-                    configs.add(c2)
+                    //这里需要进行必要的内联
+                    val c3 = CwtConfigManipulator.inlineSingleAlias(c2) ?: c2
+                    configs.add(c3)
                 }
             }
         }

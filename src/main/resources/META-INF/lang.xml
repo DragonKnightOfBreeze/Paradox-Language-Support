@@ -158,12 +158,12 @@
     <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxIconReferenceExpressionSupport"/>
     <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxFilePathReferenceExpressionSupport"/>
     <pathReferenceExpressionSupport implementation="icu.windea.pls.lang.expression.ParadoxFileNameReferenceExpressionSupport"/>
-    
-    <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxComplexEnumValueIndexSupport"/>
-    <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxDynamicValueIndexSupport"/>
+
     <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxInlineScriptUsageIndexSupport"/>
-    <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxParameterIndexSupport"/>
-    <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxLocalisationParameterIndexSupport"/>
+    <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxComplexEnumValueIndexSupport"/>
+    <!--<expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxDynamicValueIndexSupport"/>-->
+    <!--<expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxParameterIndexSupport"/>-->
+    <!--<expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxLocalisationParameterIndexSupport"/>-->
     
     <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxInferredScopeContextAwareDefinitionIndexSupport"/>
     <expressionIndexSupport implementation="icu.windea.pls.lang.index.ParadoxEventInOnActionIndexSupport"/>

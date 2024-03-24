@@ -77,7 +77,7 @@ object CwtConfigManipulator {
         return inlined
     }
     
-    fun inlineByConfig(element: PsiElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, matchOptions: Int = CwtConfigMatcher.Options.Default): List<CwtMemberConfig<*>> {
+    fun inlineSingleAliasOrAlias(element: PsiElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, matchOptions: Int = CwtConfigMatcher.Options.Default): List<CwtPropertyConfig> {
         //内联类型为single_alias_right或alias_match_left的规则
         val configGroup = config.info.configGroup
         val valueExpression = config.valueExpression
@@ -85,14 +85,14 @@ object CwtConfigManipulator {
             CwtDataTypes.SingleAliasRight -> {
                 val singleAliasName = valueExpression.value ?: return emptyList()
                 val singleAlias = configGroup.singleAliases[singleAliasName] ?: return emptyList()
-                val result = mutableListOf<CwtMemberConfig<*>>()
+                val result = mutableListOf<CwtPropertyConfig>()
                 result.add(singleAlias.inline(config))
                 return result
             }
             CwtDataTypes.AliasMatchLeft -> {
                 val aliasName = valueExpression.value ?: return emptyList()
                 val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptyList()
-                val result = mutableListOf<CwtMemberConfig<*>>()
+                val result = mutableListOf<CwtPropertyConfig>()
                 val aliasSubNames = CwtConfigHandler.getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchOptions)
                 aliasSubNames.forEachFast f1@{ aliasSubName ->
                     val aliases = aliasGroup[aliasSubName] ?: return@f1
@@ -109,6 +109,21 @@ object CwtConfigManipulator {
                 return result
             }
             else -> return emptyList()
+        }
+    }
+    
+    fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
+        //内联类型为single_alias_right的规则
+        val configGroup = config.info.configGroup
+        val valueExpression = config.valueExpression
+        when(valueExpression.type) {
+            CwtDataTypes.SingleAliasRight -> {
+                val singleAliasName = valueExpression.value ?: return null
+                val singleAlias = configGroup.singleAliases[singleAliasName] ?: return null
+                val result = singleAlias.inline(config)
+                return result
+            }
+            else -> return null
         }
     }
     //endregion
