@@ -16,7 +16,7 @@ import kotlin.reflect.jvm.*
 /**
  * @see com.intellij.codeInsight.navigation.impl.SymbolNavigationServiceImpl
  * @see com.intellij.codeInsight.navigation.impl.SymbolNavigationServiceImpl.getNavigationTargets
- * @see icu.windea.pls.core.psi.ParadoxFakePsiElement
+ * @see icu.windea.pls.lang.psi.ParadoxFakePsiElement
  */
 @InjectTarget("com.intellij.codeInsight.navigation.impl.SymbolNavigationServiceImpl")
 class SymbolNavigationServiceImplCodeInjector : CodeInjectorBase() {

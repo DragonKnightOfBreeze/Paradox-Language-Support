@@ -9,7 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.inspections.general.*
+import icu.windea.pls.lang.inspections.script.general.*
 import icu.windea.pls.script.psi.*
 
 data class ParadoxLocalisationCodeInsightContext(

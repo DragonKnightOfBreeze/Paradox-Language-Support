@@ -10,7 +10,7 @@ import com.intellij.ui.table.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.settings.*
+import icu.windea.pls.lang.settings.*
 import java.awt.datatransfer.*
 import java.nio.file.*
 

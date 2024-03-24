@@ -25,7 +25,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInfo
         @JvmField val INSTANCE = ParadoxDynamicValueSearch()
         
         /**
-         * @see icu.windea.pls.core.search.ParadoxDynamicValueSearch.SearchParameters
+         * @see icu.windea.pls.lang.search.ParadoxDynamicValueSearch.SearchParameters
          */
         @JvmStatic
         fun search(
@@ -37,7 +37,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInfo
         }
         
         /**
-         * @see icu.windea.pls.core.search.ParadoxDynamicValueSearch.SearchParameters
+         * @see icu.windea.pls.lang.search.ParadoxDynamicValueSearch.SearchParameters
          */
         @JvmStatic
         fun search(
@@ -49,7 +49,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInfo
         }
         
         /**
-         * @see icu.windea.pls.core.search.ParadoxDynamicValueSearch.SearchParameters
+         * @see icu.windea.pls.lang.search.ParadoxDynamicValueSearch.SearchParameters
          */
         @JvmStatic
         fun search(
@@ -60,7 +60,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInfo
         }
         
         /**
-         * @see icu.windea.pls.core.search.ParadoxDynamicValueSearch.SearchParameters
+         * @see icu.windea.pls.lang.search.ParadoxDynamicValueSearch.SearchParameters
          */
         @JvmStatic
         fun search(

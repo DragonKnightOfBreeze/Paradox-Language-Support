@@ -1,4 +1,4 @@
-package icu.windea.pls.core.settings
+package icu.windea.pls.lang.settings
 
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.ui.*

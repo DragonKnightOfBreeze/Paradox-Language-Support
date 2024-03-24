@@ -18,7 +18,7 @@ class ParadoxParameterSearch: ExtensibleQueryFactory<ParadoxParameterInfo, Parad
 		@JvmField val INSTANCE = ParadoxParameterSearch()
 		
 		/**
-		 * @see icu.windea.pls.core.search.ParadoxParameterSearch.SearchParameters
+		 * @see icu.windea.pls.lang.search.ParadoxParameterSearch.SearchParameters
 		 */
 		@JvmStatic
 		fun search(
@@ -30,7 +30,7 @@ class ParadoxParameterSearch: ExtensibleQueryFactory<ParadoxParameterInfo, Parad
 		}
 		
 		/**
-		 * @see icu.windea.pls.core.search.ParadoxParameterSearch.SearchParameters
+		 * @see icu.windea.pls.lang.search.ParadoxParameterSearch.SearchParameters
 		 */
 		@JvmStatic
 		fun search(

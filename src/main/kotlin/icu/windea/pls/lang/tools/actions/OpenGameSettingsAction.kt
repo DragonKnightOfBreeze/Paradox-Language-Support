@@ -9,13 +9,8 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.listeners.*
-import icu.windea.pls.core.tools.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.tools.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 /**
@@ -23,8 +18,8 @@ import icu.windea.pls.model.*
  *
  * * 当前文件是项目中的游戏文件或目录时启用。
  *
- * @see icu.windea.pls.core.settings.ParadoxGameSettingsState
- * @see icu.windea.pls.core.tools.ParadoxGameSettingsDialog
+ * @see icu.windea.pls.lang.settings.ParadoxGameSettingsState
+ * @see icu.windea.pls.lang.tools.ParadoxGameSettingsDialog
  */
 class OpenGameSettingsAction : DumbAwareAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {

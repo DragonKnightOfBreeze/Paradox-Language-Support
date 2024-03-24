@@ -6,7 +6,7 @@ import com.intellij.psi.search.*
 import com.intellij.util.*
 
 private val ourReferenceService = PsiReferenceService.getService()
-// icu.windea.pls.core.search.FilteredRequestResultProcessor
+// icu.windea.pls.lang.search.FilteredRequestResultProcessor
 abstract class FilteredRequestResultProcessor(private val target: PsiElement) : RequestResultProcessor(target) {
     override fun processTextOccurrence(element: PsiElement, offsetInElement: Int, consumer: Processor<in PsiReference>): Boolean {
         val apply = applyFor(element)

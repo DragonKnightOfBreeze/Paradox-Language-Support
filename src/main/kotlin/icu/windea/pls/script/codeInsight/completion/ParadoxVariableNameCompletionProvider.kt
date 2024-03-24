@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.*
 
 /**
  * 提供变量名的代码补全。（在`alias_name[effect]`匹配的子句中）
- * @see icu.windea.pls.core.codeInsight.template.postfix.ParadoxVariableOperationExpressionPostfixTemplate
+ * @see icu.windea.pls.lang.codeInsight.template.postfix.ParadoxVariableOperationExpressionPostfixTemplate
  */
 class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

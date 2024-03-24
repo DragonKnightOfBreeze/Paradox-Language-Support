@@ -12,7 +12,7 @@
     
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
-      <className>icu.windea.pls.localisation.intentions.CopyLocalisationForLocaleIntention</className>
+      <className>icu.windea.pls.lang.intentions.localisation.CopyLocalisationForLocaleIntention</className>
       <category>Paradox localisation</category>
     </intentionAction>
   </extensions>

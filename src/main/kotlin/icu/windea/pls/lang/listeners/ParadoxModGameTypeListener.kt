@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.listeners
 
 import com.intellij.util.messages.*
-import icu.windea.pls.core.settings.*
+import icu.windea.pls.lang.settings.*
 
 /**
  * 监听模组配置的游戏类型的更改。

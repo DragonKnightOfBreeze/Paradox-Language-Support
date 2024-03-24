@@ -18,7 +18,7 @@ import kotlin.experimental.*
  *
  * * 定义对应的PsiElement的名字（rootKey）不一定是定义的名字（definitionName），需要特殊处理。
  *
- * @see icu.windea.pls.script.intentions.DefinitionNameFindUsagesIntention
+ * @see icu.windea.pls.lang.intentions.script.DefinitionNameFindUsagesIntention
  */
 class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {

@@ -18,7 +18,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.settings.*
+import icu.windea.pls.lang.settings.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.ep.*

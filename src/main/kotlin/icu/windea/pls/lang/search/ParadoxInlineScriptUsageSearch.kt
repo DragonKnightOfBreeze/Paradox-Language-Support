@@ -23,7 +23,7 @@ class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxInlineScrip
         @JvmField val INSTANCE = ParadoxInlineScriptUsageSearch()
         
         /**
-         * @see icu.windea.pls.core.search.ParadoxInlineScriptUsageSearch.SearchParameters
+         * @see icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch.SearchParameters
          */
         @JvmStatic
         fun search(

@@ -31,7 +31,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         @JvmField val INSTANCE = ParadoxLocalisationSearch()
         
         /**
-         *  @see icu.windea.pls.core.search.ParadoxLocalisationSearch.SearchParameters
+         *  @see icu.windea.pls.lang.search.ParadoxLocalisationSearch.SearchParameters
          */
         @JvmStatic
         fun search(
@@ -42,7 +42,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         }
         
         /**
-         *  @see icu.windea.pls.core.search.ParadoxLocalisationSearch.SearchParameters
+         *  @see icu.windea.pls.lang.search.ParadoxLocalisationSearch.SearchParameters
          */
         @JvmStatic
         fun search(

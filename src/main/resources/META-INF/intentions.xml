@@ -5,14 +5,14 @@
       <language>CWT</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.cwt.category</categoryKey>
-      <className>icu.windea.pls.cwt.intentions.QuoteIdentifierIntention</className>
+      <className>icu.windea.pls.lang.intentions.cwt.QuoteIdentifierIntention</className>
       <descriptionDirectoryName>CwtQuoteIdentifierIntention</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
       <language>CWT</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.cwt.category</categoryKey>
-      <className>icu.windea.pls.cwt.intentions.UnquoteIdentifierIntention</className>
+      <className>icu.windea.pls.lang.intentions.cwt.UnquoteIdentifierIntention</className>
       <descriptionDirectoryName>CwtUnquoteIdentifierIntention</descriptionDirectoryName>
     </intentionAction>
     <!--endregion-->
@@ -22,49 +22,49 @@
       <language>PARADOX_SCRIPT</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.script.intentions.DefinitionNameFindUsagesIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.DefinitionNameFindUsagesIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.script.intentions.DefinitionNameGotoImplementationsIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.DefinitionNameGotoImplementationsIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.script.intentions.DefinitionNameGotoTypeDeclarationIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.DefinitionNameGotoTypeDeclarationIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.script.intentions.QuoteIdentifierIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.QuoteIdentifierIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.script.intentions.UnquoteIdentifierIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.UnquoteIdentifierIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.script.intentions.CopyLocalisationTextIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.CopyLocalisationTextIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.script.intentions.CopyLocalisationTextAsPlainIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.CopyLocalisationTextAsPlainIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.script.intentions.CopyLocalisationTextAsHtmlIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.CopyLocalisationTextAsHtmlIntention</className>
     </intentionAction>
     <!--endregion-->
 
@@ -73,37 +73,37 @@
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.localisation.category</categoryKey>
-      <className>icu.windea.pls.localisation.intentions.ChangeLocalisationLocaleIntention</className>
+      <className>icu.windea.pls.lang.intentions.localisation.ChangeLocalisationLocaleIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.localisation.category</categoryKey>
-      <className>icu.windea.pls.localisation.intentions.ChangeLocalisationColorIntention</className>
+      <className>icu.windea.pls.lang.intentions.localisation.ChangeLocalisationColorIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.localisation.category</categoryKey>
-      <className>icu.windea.pls.localisation.intentions.CopyLocalisationIntention</className>
+      <className>icu.windea.pls.lang.intentions.localisation.CopyLocalisationIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.localisation.category</categoryKey>
-      <className>icu.windea.pls.localisation.intentions.CopyLocalisationTextIntention</className>
+      <className>icu.windea.pls.lang.intentions.localisation.CopyLocalisationTextIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.localisation.category</categoryKey>
-      <className>icu.windea.pls.localisation.intentions.CopyLocalisationTextAsPlainIntention</className>
+      <className>icu.windea.pls.lang.intentions.localisation.CopyLocalisationTextAsPlainIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.localisation.category</categoryKey>
-      <className>icu.windea.pls.localisation.intentions.CopyLocalisationTextAsHtmlIntention</className>
+      <className>icu.windea.pls.lang.intentions.localisation.CopyLocalisationTextAsHtmlIntention</className>
     </intentionAction>
     <!--endregion-->
   </extensions>

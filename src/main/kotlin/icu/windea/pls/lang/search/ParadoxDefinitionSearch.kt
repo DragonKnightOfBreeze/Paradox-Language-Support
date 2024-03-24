@@ -25,7 +25,7 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxScriptDefinitionEl
         @JvmField val INSTANCE = ParadoxDefinitionSearch()
         
         /**
-         *  @see icu.windea.pls.core.search.ParadoxDefinitionSearch.SearchParameters
+         *  @see icu.windea.pls.lang.search.ParadoxDefinitionSearch.SearchParameters
          */
         @JvmStatic
         fun search(
@@ -37,7 +37,7 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxScriptDefinitionEl
         }
         
         /**
-         *  @see icu.windea.pls.core.search.ParadoxDefinitionSearch.SearchParameters
+         *  @see icu.windea.pls.lang.search.ParadoxDefinitionSearch.SearchParameters
          */
         @JvmStatic
         fun search(

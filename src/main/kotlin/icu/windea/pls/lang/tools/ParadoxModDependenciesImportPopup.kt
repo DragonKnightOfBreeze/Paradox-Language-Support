@@ -5,7 +5,7 @@ import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.ui.table.*
 import icu.windea.pls.*
-import icu.windea.pls.core.settings.*
+import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.tools.importer.*
 import javax.swing.*
 
