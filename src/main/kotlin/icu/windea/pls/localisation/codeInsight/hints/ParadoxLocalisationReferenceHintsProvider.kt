@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package icu.windea.pls.localisation.codeInsight.hints
 
 import com.intellij.codeInsight.hints.*
@@ -16,7 +18,6 @@ import javax.swing.*
 /**
  * 本地化引用的内嵌提示（对应的本地化的渲染后文本，如果过长则会截断）。
  */
-@Suppress("UnstableApiUsage")
 class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = 30,
@@ -34,22 +35,8 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvid
     override fun createConfigurable(settings: Settings): ImmediateConfigurable {
         return object : ImmediateConfigurable {
             override fun createComponent(listener: ChangeListener): JComponent = panel {
-                row {
-                    label(PlsBundle.message("localisation.hints.settings.textLengthLimit")).widthGroup("left")
-                        .applyToComponent { toolTipText = PlsBundle.message("localisation.hints.settings.textLengthLimit.tooltip") }
-                    textField()
-                        .bindIntText(settings::textLengthLimit)
-                        .bindIntWhenTextChanged(settings::textLengthLimit)
-                        .errorOnApply(PlsBundle.message("error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
-                }
-                row {
-                    label(PlsBundle.message("localisation.hints.settings.iconHeightLimit")).widthGroup("left")
-                        .applyToComponent { toolTipText = PlsBundle.message("localisation.hints.settings.iconHeightLimit.tooltip") }
-                    textField()
-                        .bindIntText(settings::iconHeightLimit)
-                        .bindIntWhenTextChanged(settings::iconHeightLimit)
-                        .errorOnApply(PlsBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
-                }
+                createTextLengthLimitRow(settings::textLengthLimit)
+                createIconHeightLimitRow(settings::iconHeightLimit)
             }
         }
     }

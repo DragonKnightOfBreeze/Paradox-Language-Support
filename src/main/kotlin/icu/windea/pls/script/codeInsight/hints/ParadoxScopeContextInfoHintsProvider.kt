@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package icu.windea.pls.script.codeInsight.hints
 
 import com.intellij.codeInsight.hints.*
@@ -18,7 +20,6 @@ import javax.swing.*
 /**
  * 定义或定义成员的作用域上下文信息的内嵌提示（`this = ? root = ? from = ?`）。
  */
-@Suppress("UnstableApiUsage")
 class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
 	data class Settings(
 		var showOnlyIfScopeIsChanged: Boolean = true

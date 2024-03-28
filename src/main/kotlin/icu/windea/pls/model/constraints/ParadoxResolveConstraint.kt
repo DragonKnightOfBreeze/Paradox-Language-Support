@@ -127,6 +127,35 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
+    ComplexEnumValue {
+        override fun canResolveReference(element: PsiElement): Boolean {
+            return when(element) {
+                is ParadoxScriptStringExpressionElement -> element.isExpression()
+                else -> false
+            }
+        }
+        
+        override fun canResolve(reference: PsiReference): Boolean {
+            return when(reference) {
+                is ParadoxScriptExpressionPsiReference -> {
+                    val configExpression = reference.config.expression ?: return false
+                    configExpression.type == CwtDataTypes.EnumValue
+                }
+                is ParadoxTemplateSnippetExpressionReference -> {
+                    val configExpression = reference.configExpression
+                    configExpression.type == CwtDataTypes.EnumValue
+                }
+                is ParadoxDataExpressionNode.Reference -> {
+                    reference.linkConfigs.any { linkConfig ->
+                        val configExpression = linkConfig.expression ?: return@any false
+                        configExpression.type == CwtDataTypes.EnumValue
+                    }
+                }
+                is ParadoxComplexEnumValuePsiReference -> true
+                else -> false
+            }
+        }
+    },
     DynamicValue {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when(element) {
@@ -160,10 +189,12 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
-    ComplexEnumValue {
+    DynamicValueStrictly {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when(element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
+                is ParadoxLocalisationCommandScope -> true
+                is ParadoxLocalisationCommandField -> true
                 else -> false
             }
         }
@@ -172,19 +203,11 @@ enum class ParadoxResolveConstraint {
             return when(reference) {
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.expression ?: return false
-                    configExpression.type == CwtDataTypes.EnumValue
+                    configExpression.type in CwtDataTypeGroups.DynamicValue
                 }
-                is ParadoxTemplateSnippetExpressionReference -> {
-                    val configExpression = reference.configExpression
-                    configExpression.type == CwtDataTypes.EnumValue
-                }
-                is ParadoxDataExpressionNode.Reference -> {
-                    reference.linkConfigs.any { linkConfig ->
-                        val configExpression = linkConfig.expression ?: return@any false
-                        configExpression.type == CwtDataTypes.EnumValue
-                    }
-                }
-                is ParadoxComplexEnumValuePsiReference -> true
+                is ParadoxDynamicValueExpressionNode.Reference -> true
+                is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
+                is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
                 else -> false
             }
         }

@@ -181,6 +181,13 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         }
                     }
                 }
+                key == "values" -> {
+                    val props = property.properties ?: continue
+                    for(prop in props) {
+                        val dynamicValueTypeConfig = CwtDynamicValueTypeConfig.resolve(prop) ?: continue
+                        configGroup.dynamicValueTypes[dynamicValueTypeConfig.name] = dynamicValueTypeConfig
+                    }
+                }
                 key == "links" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
@@ -295,13 +302,30 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.parameters.getOrInit(parameterConfig.name) += parameterConfig
                     }
                 }
-                key == "values" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        val dynamicValueTypeConfig = CwtDynamicValueTypeConfig.resolve(prop) ?: continue
-                        configGroup.dynamicValueTypes[dynamicValueTypeConfig.name] = dynamicValueTypeConfig
+                key == "complex_enum_values" -> {
+                    val configs = property.configs ?: continue
+                    for(config in configs) {
+                        if(config !is CwtPropertyConfig) continue
+                        val type = config.key
+                        val configs1 = config.configs ?: continue
+                        for(config1 in configs1) {
+                            val complexEnumValueConfig = CwtComplexEnumValueConfig.resolve(config1, type)
+                            configGroup.complexEnumValues.getOrInit(type)[complexEnumValueConfig.name] = complexEnumValueConfig
+                        }
                     }
                 }
+                key == "dynamic_values" -> {
+                    val configs = property.configs ?: continue
+                    for(config in configs) {
+                        if(config !is CwtPropertyConfig) continue
+                        val type = config.key
+                        val configs1 = config.configs ?: continue
+                        for(config1 in configs1) {
+                            val dynamicValueConfig = CwtDynamicValueConfig.resolve(config1, type)
+                            configGroup.dynamicValues.getOrInit(type)[dynamicValueConfig.name] = dynamicValueConfig
+                        }
+                    }
+                } 
                 else -> {
                     run {
                         val singleAliasConfig = CwtSingleAliasConfig.resolve(property) ?: return@run

@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package icu.windea.pls.script.codeInsight.hints
 
 import com.intellij.codeInsight.hints.*
@@ -13,7 +15,6 @@ import icu.windea.pls.script.psi.*
 /**
  * 定义信息的内嵌提示（定义的名字和类型）。
  */
-@Suppress("UnstableApiUsage")
 class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
 	private val settingsKey = SettingsKey<NoSettings>("ParadoxDefinitionInfoHintsSettingsKey")
 	

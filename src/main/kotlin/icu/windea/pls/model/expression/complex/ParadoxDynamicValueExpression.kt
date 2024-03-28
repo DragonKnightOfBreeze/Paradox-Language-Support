@@ -14,7 +14,7 @@ import icu.windea.pls.model.expression.complex.errors.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 /**
- * 值集值表达式。
+ * 动态值表达式。
  *
  * 语法：
  *

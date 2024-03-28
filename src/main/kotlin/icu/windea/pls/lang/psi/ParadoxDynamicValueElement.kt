@@ -13,7 +13,7 @@ import java.util.*
 import javax.swing.*
 
 /**
- * 值集值值并不存在一个真正意义上的声明处，用这个模拟。
+ * 动态值值并不存在一个真正意义上的声明处，用这个模拟。
  */
 class ParadoxDynamicValueElement(
     parent: PsiElement,

@@ -205,17 +205,33 @@ parameters = {
 
 ![](../assets/images/config/parameters_1.png)
 
+### Complex Enum Values
+
+```cwt
+complex_enum_values = {
+    component_tag = {
+        # 'x' or 'x = xxx'
+        # 'x' can also be a template expression
+        
+        ### Some documentation
+		## hint = §RSome inlay hint text$!
+        x
+    }
+}
+```
+
 ### Dynamic Values
 
 ```cwt
-values = {
-    value[event_target] = {
-        # 'x', not 'x = xxx'
-        
-        ### Some documentation
-        ## replace_scopes = { this = country root = country }
-        x
-    }
+dynamic_values = {
+	event_target = {
+		# 'x' or 'x = xxx'
+		# 'x' can also be a template expression
+
+		### Some documentation
+		## hint = §RSome inlay hint text$!
+		x
+	}
 }
 ```
 

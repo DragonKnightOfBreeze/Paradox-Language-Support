@@ -16,8 +16,4 @@ data class ParadoxComplexEnumValueInfo(
     override val gameType: ParadoxGameType
 ) : ParadoxExpressionInfo {
     @Volatile override var virtualFile: VirtualFile? = null
-    
-    fun getConfig(project: Project): CwtComplexEnumConfig? {
-        return getConfigGroup(project, gameType).complexEnums[enumName]
-    }
 }

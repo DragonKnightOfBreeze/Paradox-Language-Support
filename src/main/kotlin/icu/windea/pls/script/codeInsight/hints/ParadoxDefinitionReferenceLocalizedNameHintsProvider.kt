@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package icu.windea.pls.script.codeInsight.hints
 
 import com.intellij.codeInsight.hints.*
@@ -18,7 +20,6 @@ import javax.swing.*
 /**
  * 定义引用信息的内嵌提示（对应定义的名字和类型、本地化名字）。
  */
-@Suppress("UnstableApiUsage")
 class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = 30,
@@ -43,22 +44,8 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
     override fun createConfigurable(settings: Settings): ImmediateConfigurable {
         return object : ImmediateConfigurable {
             override fun createComponent(listener: ChangeListener): JComponent = panel {
-                row {
-                    label(PlsBundle.message("script.hints.settings.textLengthLimit")).widthGroup("left")
-                        .applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.textLengthLimit.tooltip") }
-                    textField()
-                        .bindIntText(settings::textLengthLimit)
-                        .bindIntWhenTextChanged(settings::textLengthLimit)
-                        .errorOnApply(PlsBundle.message("error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
-                }
-                row {
-                    label(PlsBundle.message("script.hints.settings.iconHeightLimit")).widthGroup("left")
-                        .applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.iconHeightLimit.tooltip") }
-                    textField()
-                        .bindIntText(settings::iconHeightLimit)
-                        .bindIntWhenTextChanged(settings::iconHeightLimit)
-                        .errorOnApply(PlsBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
-                }
+                createTextLengthLimitRow(settings::textLengthLimit)
+                createIconHeightLimitRow(settings::iconHeightLimit)
             }
         }
     }

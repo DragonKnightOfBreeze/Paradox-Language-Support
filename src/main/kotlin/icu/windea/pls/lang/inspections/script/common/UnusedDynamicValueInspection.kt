@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.*
 import kotlin.collections.set
 
 /**
- * 值集值被设置但未被使用的检查。
+ * 动态值被设置但未被使用的检查。
  *
  * 例如，有`set_flag = xxx`但没有`has_flag = xxx`。
  * 

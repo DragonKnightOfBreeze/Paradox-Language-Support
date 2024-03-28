@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package icu.windea.pls.script.codeInsight.hints
 
 import com.intellij.codeInsight.hints.*
@@ -14,9 +16,8 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 定义的本地化名字的内嵌提示（最相关的本地化文本）。
+ * 定义的本地化名字的内嵌提示（来自相关的本地化文本）。
  */
-@Suppress("UnstableApiUsage")
 class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
 	data class Settings(
 		var textLengthLimit: Int = 30,
@@ -34,22 +35,8 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<S
 	override fun createConfigurable(settings: Settings): ImmediateConfigurable {
 		return object : ImmediateConfigurable {
 			override fun createComponent(listener: ChangeListener): JComponent = panel {
-				row {
-					label(PlsBundle.message("script.hints.settings.textLengthLimit")).widthGroup("left")
-						.applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.textLengthLimit.tooltip") }
-					textField()
-						.bindIntText(settings::textLengthLimit)
-						.bindIntWhenTextChanged(settings::textLengthLimit)
-						.errorOnApply(PlsBundle.message("error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
-				}
-				row {
-					label(PlsBundle.message("script.hints.settings.iconHeightLimit")).widthGroup("left")
-						.applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.iconHeightLimit.tooltip") }
-					textField()
-						.bindIntText(settings::iconHeightLimit)
-						.bindIntWhenTextChanged(settings::iconHeightLimit)
-						.errorOnApply(PlsBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
-				}
+				createTextLengthLimitRow(settings::textLengthLimit)
+				createIconHeightLimitRow(settings::iconHeightLimit)
 			}
 		}
 	}

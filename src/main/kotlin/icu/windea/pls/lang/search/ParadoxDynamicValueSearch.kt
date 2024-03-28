@@ -7,7 +7,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.expressionInfo.*
 
 /**
- * 值集值的查询。（不涉及CWT规则文件中预定义的值）
+ * 动态值的查询。（不涉及CWT规则文件中预定义的值）
  */
 class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInfo, ParadoxDynamicValueSearch.SearchParameters>(EP_NAME) {
     /**

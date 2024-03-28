@@ -124,6 +124,13 @@ val CwtConfigGroup.inlineScripts: MutableMap<String, CwtInlineScriptConfig>
 val CwtConfigGroup.parameters: MutableMap<String, MutableList<CwtParameterConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
+//complex_enum_name - template_expression - config
+val CwtConfigGroup.complexEnumValues: MutableMap<String, MutableMap<String, CwtComplexEnumValueConfig>>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
+//dynamic_value_type - template_expression - config
+val CwtConfigGroup.dynamicValues: MutableMap<String, MutableMap<String, CwtDynamicValueConfig>>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
+
 @Tags(Tag.Computed)
 val CwtConfigGroup.predefinedModifiers: MutableMap<@CaseInsensitive String, CwtModifierConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }

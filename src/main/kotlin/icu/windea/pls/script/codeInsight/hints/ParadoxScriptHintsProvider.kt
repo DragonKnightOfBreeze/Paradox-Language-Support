@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package icu.windea.pls.script.codeInsight.hints
 
 import com.intellij.codeInsight.hints.*
@@ -8,10 +10,11 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.*
+import kotlin.reflect.*
 
-@Suppress("UnstableApiUsage")
 abstract class ParadoxScriptHintsProvider<T : Any> : InlayHintsProvider<T> {
 	override val previewText: String? get() = null
 	
@@ -40,6 +43,7 @@ abstract class ParadoxScriptHintsProvider<T : Any> : InlayHintsProvider<T> {
 	
 	protected abstract fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: T, sink: InlayHintsSink): Boolean
 	
+	
 	/**
 	 * 将内嵌提示处理为最终要显示的内嵌注释（加上背景、左偏移等）
 	 */
@@ -55,5 +59,27 @@ abstract class ParadoxScriptHintsProvider<T : Any> : InlayHintsProvider<T> {
 			}
 		}
 		return presentation
+	}
+	
+	protected fun Panel.createTextLengthLimitRow(property: KMutableProperty0<Int>) {
+		row {
+			label(PlsBundle.message("script.hints.settings.textLengthLimit")).widthGroup("left")
+				.applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.textLengthLimit.tooltip") }
+			textField()
+				.bindIntText(property)
+				.bindIntWhenTextChanged(property)
+				.errorOnApply(PlsBundle.message("error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
+		}
+	}
+	
+	protected fun Panel.createIconHeightLimitRow(property: KMutableProperty0<Int>) {
+		row {
+			label(PlsBundle.message("script.hints.settings.iconHeightLimit")).widthGroup("left")
+				.applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.iconHeightLimit.tooltip") }
+			textField()
+				.bindIntText(property)
+				.bindIntWhenTextChanged(property)
+				.errorOnApply(PlsBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
+		}
 	}
 }
