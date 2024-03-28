@@ -8,6 +8,8 @@ import icu.windea.pls.ep.modifier.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.CwtConfigMatcher.Options
+import icu.windea.pls.model.constraints.*
+import icu.windea.pls.model.expression.*
 import icu.windea.pls.script.psi.*
 
 class CwtBaseRelatedConfigProvider: CwtRelatedConfigProvider {
@@ -16,13 +18,13 @@ class CwtBaseRelatedConfigProvider: CwtRelatedConfigProvider {
         //包括内联规则（例如alias与single_alias，显示时使用特殊的别名图标）
         //包括其他一些相关的规则
         
+        val result = mutableListOf<CwtConfig<*>>()
+        val configGroup = getConfigGroup(element.project, selectGameType(element))
+        
         val orDefault = element is ParadoxScriptPropertyKey
         val matchOptions = Options.Default or Options.AcceptDefinition
         val configs = CwtConfigHandler.getConfigs(element, orDefault, matchOptions)
-        val result = mutableListOf<CwtConfig<*>>()
         for(config in configs) {
-            val configGroup = config.info.configGroup
-            
             result.add(config)
             config.resolvedOrNull()?.also { result.add(it) }
             
@@ -50,6 +52,7 @@ class CwtBaseRelatedConfigProvider: CwtRelatedConfigProvider {
                 }
             }
         }
+        
         return result
     }
 }
@@ -57,39 +60,56 @@ class CwtBaseRelatedConfigProvider: CwtRelatedConfigProvider {
 class CwtExtendedRelatedConfigProvider: CwtRelatedConfigProvider {
     override fun getRelatedConfigs(element: ParadoxScriptExpressionElement): List<CwtConfig<*>> {
         //包括其他一些相关的规则（扩展的规则）
+        //definitions gameRules onActions parameters complexEnumValues dynamicValues
         
-        //TODO 1.3.4 definitions gameRules onActions inlineScripts parameters complexEnumValues dynamicValues
-        
-        val orDefault = element is ParadoxScriptPropertyKey
-        val matchOptions = Options.Default or Options.AcceptDefinition
-        val configs = CwtConfigHandler.getConfigs(element, orDefault, matchOptions)
         val result = mutableListOf<CwtConfig<*>>()
-        for(config in configs) {
-            val configGroup = config.info.configGroup
-            
-            if(element is ParadoxScriptStringExpressionElement) {
-                val name = element.value
-                val configExpression = config.expression
+        val configGroup = getConfigGroup(element.project, selectGameType(element))
+        
+        run r0@{
+            if(element !is ParadoxScriptPropertyKey) return@r0
+            val definition = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return@r0
+            val definitionInfo = definition.definitionInfo ?: return@r0
+            run r1@{
+                val configs = configGroup.definitions.getAllByTemplate(definitionInfo.name, definition, configGroup)
+                val matchedConfigs = configs.filter { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) }
+                result.addAll(matchedConfigs)
+            }
+            run r1@{
+                if(definitionInfo.type != "game_rule") return@r1
+                val config = configGroup.gameRules.getByTemplate(definitionInfo.name, element, configGroup)
+                if(config != null) result.add(config)
+            }
+            run r1@{
+                if(definitionInfo.type != "on_action") return@r1
+                val config = configGroup.onActions.getByTemplate(definitionInfo.name, element, configGroup)
+                if(config != null) result.add(config)
+            }
+        }
+        
+        run {
+            for(reference in element.references) {
                 when {
-                    config.isRoot -> {
-                        when {
-                            name == "game_rule" -> {
-                                configGroup.gameRules.getByTemplate(name, element, configGroup)?.also { result.add(it) }
-                            }
-                            name == "on_action" -> {
-                                configGroup.onActions.getByTemplate(name, element, configGroup)?.also { result.add(it) }
-                            }
-                        }
-                    }
-                    configExpression.type == CwtDataTypes.Parameter -> {
-                        val parameterElement = element.reference?.resolve()?.castOrNull<ParadoxParameterElement>() ?: continue
-                        val contextKey = parameterElement.contextKey
+                    ParadoxResolveConstraint.Parameter.canResolve(reference) -> {
+                        val resolved = reference.resolve()?.castOrNull<ParadoxParameterElement>() ?: continue
                         configGroup.parameters.getAllByTemplate(element.name, element, configGroup)
-                            .filterTo(result) { it.contextKey == contextKey }
+                            .filterTo(result) { it.contextKey == resolved.contextKey }
+                    }
+                    ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference) -> {
+                        val resolved = reference.resolve()?.castOrNull<ParadoxComplexEnumValueElement>() ?: continue
+                        val configs = configGroup.complexEnumValues[resolved.enumName] ?: continue
+                        val config = configs[resolved.name] ?: continue
+                        result.add(config)
+                    }
+                    ParadoxResolveConstraint.DynamicValueStrictly.canResolve(reference) -> {
+                        val resolved = reference.resolve()?.castOrNull<ParadoxDynamicValueElement>() ?: continue
+                        val configs = configGroup.dynamicValues[resolved.dynamicValueType] ?: continue
+                        val config = configs[resolved.name] ?: continue
+                        result.add(config)
                     }
                 }
             }
         }
+        
         return result
     }
 }
