@@ -30,7 +30,7 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
     private val settingsKey = SettingsKey<Settings>("ParadoxComplexEnumValueLocalizedNameHintsSettingsKey")
     
     override val name: String get() = PlsBundle.message("script.hints.complexEnumValueLocalizedName")
-    override val description: String get() = PlsBundle.message("script.hints.complexEnumValueLocalizedName")
+    override val description: String get() = PlsBundle.message("script.hints.complexEnumValueLocalizedName.description")
     override val key: SettingsKey<Settings> get() = settingsKey
     
     override fun createSettings() = Settings()
@@ -53,7 +53,7 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
         val info = ParadoxComplexEnumValueHandler.getInfo(element)
         if(info != null) {
             val configGroup = getConfigGroup(file.project, info.gameType)
-            val presentation = doCollect(info.name, info.enumName, configGroup, editor, settings) ?: return true
+            val presentation = doCollect(info.name, info.enumName, configGroup, file, editor, settings) ?: return true
             val finalPresentation = presentation.toFinalPresentation(this, file.project)
             val endOffset = element.endOffset
             sink.addInlineElement(endOffset, true, finalPresentation, false)
@@ -65,7 +65,7 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
         val type = config.expression.type
         if(type != CwtDataTypes.EnumValue) return true
         val enumName = config.expression.value ?: return true
-        val presentation = doCollect(name, enumName, configGroup, editor, settings) ?: return true
+        val presentation = doCollect(name, enumName, configGroup, file, editor, settings) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
@@ -73,11 +73,13 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
         return true
     }
     
-    private fun PresentationFactory.doCollect(name: String, enumName: String, configGroup: CwtConfigGroup, editor: Editor, settings: Settings): InlayPresentation? {
+    private fun PresentationFactory.doCollect(name: String, enumName: String, configGroup: CwtConfigGroup, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
         val configs = configGroup.complexEnumValues[enumName] ?: return null
         val config = configs[name] ?: return null
         val hint = config.hint ?: return null
         val hintElement = ParadoxLocalisationElementFactory.createProperty(configGroup.project, "hint", hint)
+        //it's necessary to inject fileInfo (so that gameType can be get later)
+        hintElement.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
         return ParadoxLocalisationTextInlayRenderer.render(hintElement, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
     }
 }

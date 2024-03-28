@@ -12,16 +12,11 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.testFramework.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*
-import icu.windea.pls.ep.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.ep.documentation.*
 import icu.windea.pls.lang.*
@@ -141,7 +136,7 @@ tailrec fun selectRootFile(from: Any?): VirtualFile? {
     return when {
         from == null -> null
         from is VirtualFileWindow -> selectRootFile(from.delegate) //for injected PSI
-        from is LightVirtualFileBase -> selectRootFile(from.originalFile)
+        from is LightVirtualFileBase && from.originalFile != null -> selectRootFile(from.originalFile)
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameRootFile
         else -> selectRootFile(selectFile(from))
     }
@@ -151,7 +146,7 @@ tailrec fun selectFile(from: Any?): VirtualFile? {
     return when {
         from == null -> null
         from is VirtualFileWindow -> from.castOrNull() //for injected PSI (and not from.delegate)
-        from is LightVirtualFileBase -> selectFile(from.originalFile)
+        from is LightVirtualFileBase && from.originalFile != null -> selectFile(from.originalFile)
         from is VirtualFile -> from
         from is PsiDirectory -> selectFile(from.virtualFile)
         from is PsiFile -> selectFile(from.originalFile.virtualFile)
@@ -167,7 +162,7 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
         from == null -> null
         from is ParadoxGameType -> from
         from is VirtualFileWindow -> selectGameType(from.delegate) //for injected PSI
-        from is LightVirtualFileBase -> selectGameType(from.originalFile)
+        from is LightVirtualFileBase && from.originalFile != null  -> selectGameType(from.originalFile)
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
         from is PsiDirectory -> selectGameType(selectFile(from))
         from is PsiFile -> selectGameType(selectFile(from))
@@ -305,7 +300,7 @@ fun StringBuilder.appendFilePathLink(gameType: ParadoxGameType, filePath: String
     return appendPsiLink(finalLink, finalLinkText)
 }
 
-fun StringBuilder.appendModifierLink(name: String, label: String = name.escapeXml()) : StringBuilder {
+fun StringBuilder.appendModifierLink(name: String, label: String = name.escapeXml()): StringBuilder {
     val linkPrefix = ParadoxModifierLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix$name".escapeXml()
     val finalLinkText = label

@@ -8,7 +8,7 @@ class ParadoxBaseComplexEnumValueExtendedDocumentationProvider : ParadoxComplexE
     override fun getDocumentation(element: ParadoxComplexEnumValueElement): String? {
         if(element.name.isEmpty()) return null //ignore
         val configGroup = getConfigGroup(element.project, element.gameType)
-        val configs = configGroup.dynamicValues[element.enumName] ?: return null
+        val configs = configGroup.complexEnumValues[element.enumName] ?: return null
         val config = configs[element.name] ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation

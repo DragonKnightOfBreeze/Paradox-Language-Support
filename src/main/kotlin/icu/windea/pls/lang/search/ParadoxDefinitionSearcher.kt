@@ -24,7 +24,8 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         val name = queryParameters.name
         val typeExpression = queryParameters.typeExpression?.let { ParadoxDefinitionTypeExpression.resolve(it) }
         val project = queryParameters.project
-        val configGroup = getConfigGroup(project, queryParameters.selector.gameType ?: return)
+        val gameType = queryParameters.selector.gameType ?: return
+        val configGroup = getConfigGroup(project, gameType)
         
         processQueryForFileDefinitions(name, typeExpression, project, scope, configGroup) { consumer.process(it) }
         processQueryForStubDefinitions(name, typeExpression, project, scope) { consumer.process(it) }

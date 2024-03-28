@@ -4,8 +4,8 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.search.scope.*
+import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.*
 
 class ChainedParadoxSelector<T>(
@@ -17,14 +17,12 @@ class ChainedParadoxSelector<T>(
     
     val gameType by lazy {
         val selectorGameType = selectors.filterIsInstance<ParadoxWithGameTypeSelector<*>>().lastOrNull()?.gameType
-        when {
-            selectorGameType == null -> selectGameType(rootFile)
-            else -> selectorGameType
-        }
+        if(selectorGameType != null) return@lazy selectorGameType
+        selectGameType(context)
     }
     
     val settings: ParadoxGameOrModSettingsState? by lazy {
-        val rootInfo = rootFile?.fileInfo?.rootInfo
+        val rootInfo = file?.fileInfo?.rootInfo
         when {
             rootInfo is ParadoxGameRootInfo -> getProfilesSettings().gameSettings.get(rootInfo.rootFile.path)
             rootInfo is ParadoxModRootInfo -> getProfilesSettings().modSettings.get(rootInfo.rootFile.path)

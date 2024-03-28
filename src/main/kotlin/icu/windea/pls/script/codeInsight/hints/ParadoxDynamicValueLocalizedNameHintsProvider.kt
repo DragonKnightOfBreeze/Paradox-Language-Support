@@ -30,7 +30,7 @@ class ParadoxDynamicValueLocalizedNameHintsProvider : ParadoxScriptHintsProvider
     private val settingsKey = SettingsKey<Settings>("ParadoxDynamicValueLocalizedNameHintsSettingsKey")
     
     override val name: String get() = PlsBundle.message("script.hints.dynamicValueLocalizedName")
-    override val description: String get() = PlsBundle.message("script.hints.dynamicValueLocalizedName")
+    override val description: String get() = PlsBundle.message("script.hints.dynamicValueLocalizedName.description")
     override val key: SettingsKey<Settings> get() = settingsKey
     
     override fun createSettings() = Settings()
@@ -53,14 +53,14 @@ class ParadoxDynamicValueLocalizedNameHintsProvider : ParadoxScriptHintsProvider
         val resolved = element.references.filter { resolveConstraint.canResolve(it) }.mapNotNull { it.resolve() }.lastOrNull()
             ?.castOrNull<ParadoxDynamicValueElement>()
             ?: return true
-        val presentation = doCollect(resolved, editor, settings) ?: return true
+        val presentation = doCollect(resolved, file, editor, settings) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
         return true
     }
     
-    private fun PresentationFactory.doCollect(element: ParadoxDynamicValueElement, editor: Editor, settings: Settings): InlayPresentation? {
+    private fun PresentationFactory.doCollect(element: ParadoxDynamicValueElement, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
         val name = element.name
         val type = element.dynamicValueType
         val configGroup = getConfigGroup(element.project, element.gameType)
@@ -68,6 +68,8 @@ class ParadoxDynamicValueLocalizedNameHintsProvider : ParadoxScriptHintsProvider
         val config = configs[name] ?: return null
         val hint = config.hint ?: return null
         val hintElement = ParadoxLocalisationElementFactory.createProperty(configGroup.project, "hint", hint)
+        //it's necessary to inject fileInfo (so that gameType can be get later)
+        hintElement.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
         return ParadoxLocalisationTextInlayRenderer.render(hintElement, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
     }
 }
