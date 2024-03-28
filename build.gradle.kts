@@ -169,8 +169,6 @@ tasks {
 	buildPlugin {
 		//排除特定文件
 		excludesInZip.forEach { exclude(it) }
-		//重命名插件tar
-		rename("instrumented\\-(.*\\.jar)", "$1")
 		//重命名插件包
 		archiveBaseName.set(providers.gradleProperty("pluginPackageName"))
 	}
