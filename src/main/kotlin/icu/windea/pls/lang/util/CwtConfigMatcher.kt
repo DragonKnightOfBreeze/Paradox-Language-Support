@@ -275,6 +275,8 @@ private val CwtConfigGroup.configMatchResultCache by createKeyDelegate(CwtConfig
             add(trackerProvider.ScriptFileTracker)
             add(trackerProvider.LocalisationFileTracker)
         }
-        NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, Result>() }.withDependencyItems(dependencyItems)
+        createNestedCache<VirtualFile, _, _, _> {
+            CacheBuilder.newBuilder().buildCache<String, Result>()
+        }.withDependencyItems(dependencyItems)
     }
 }

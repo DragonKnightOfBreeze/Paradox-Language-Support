@@ -8,7 +8,15 @@
 * [ ] 导入CWT规则分组后，尝试优化为仅需重新解析和重新索引必要的文件
 * [ ] BUG修复：兼容用引号括起的参数值中的那些用转义后的引号括起的字面量，正常进行规则匹配（例如，`p = "\"v\""`中的的`\"v\"`）
 * [ ] BUG修复：基于覆盖顺序对本地化进行排序时，位于`replace`及其子目录下的同名本地化应当拥有更高的优先级（尽管目前没有相关代码检查）
+* [ ] 为Stellaris提供用于`define`的CWT规则文件
+
+***
+
 * [ ] #56 支持从数据库对象生成的概念
+* [ ] #66 也为一些目标提供基于扩展的CWT规则的代码补全（包括：定义、内联脚本、参数、复杂枚举值与动态值等，可配置，默认不启用）
+* [ ] #67 对于条件参数，布尔值应当是合法的默认值（且`PARAM = $PARAM|no$`等同于`[[PARAM] PARAM = $PARAM$ ]`）
+* [ ] #68 允许通过扩展的CWT规则指定规则的继承关系（尽可能全局适用的`## inherit_configs` `## inherits_options` `## inherits_doc`）
+* [ ] #69 允许通过扩展的CWT规则为定义、参数以及内联脚本指定作用域上下文（如果支持且合法）
 
 ## 1.3.4
 
@@ -20,7 +28,17 @@
 * [X] 添加代码检查：重载的文件（弱警告级别，默认不开启）
 * [X] 修复当CWT规则涉及`single_alias`时，应用代码补全后，不会正确地自动插入` = {}`的问题
 * [X] 尝试修复涉及内联脚本与适用语言注入的参数时，IDE可能卡死的问题
-* [ ] 尝试优化对于动态值、脚本参数与本地化参数的索引
+
+***
+
+* [X] Improved support for the action "Goto to related CWT configs"
+* [X] Support for providing extended quick documentation for complex enum values (e.g. 'component_tag') via extended CWT configs (see reference documentation for details)
+* [X] Support for providing extended quick documentation for dynamic values (e.g. 'variable') via extended CWT configs (format of relevant CWT rules is changed, see reference document for details)
+* [X] Support for providing extended inlay hints for complex enum values (e.g. 'component_tag') via extended CWT configs (see reference documentation for details)
+* [X] Support for providing extended inlay hints for dynamic values (e.g. 'variable') via extended CWT configs (see reference documentation for details)
+* [X] New code inspection: Overridden for files (level: weak warning, enabled by default: no)
+* [X] Fixed an issue that '= {}' would not be inserted correctly when applying code completion for script snippets matching CWT config of `single_alias`
+* [X] Try to fix an issue that when inline scripts and parameters (with language injection) are involved, IDE may be freezing.
 
 ## 1.3.3
 

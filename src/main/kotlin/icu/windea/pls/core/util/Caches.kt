@@ -140,8 +140,12 @@ class NestedCache<RK, K: Any, V: Any, C: Cache<K,V>>(
     private val cacheMap = ConcurrentHashMap<RK, C>()
     
     fun get(key: RK): C {
-        return cacheMap.getOrPut(key) { cacheProvider() }
+        return cacheMap.computeIfAbsent(key) { cacheProvider() }
     }
+}
+
+inline fun <RK, K: Any, V: Any, C: Cache<K,V>> createNestedCache(noinline cacheProvider: () -> C): NestedCache<RK, K, V, C> {
+    return NestedCache(cacheProvider)
 }
 
 //endregion

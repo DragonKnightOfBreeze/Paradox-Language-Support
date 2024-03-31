@@ -1,5 +1,6 @@
 package icu.windea.pls.config
 
+import com.google.common.cache.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.jetbrains.rd.util.*
@@ -15,7 +16,6 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.path.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * CWT规则上下文。
@@ -41,18 +41,18 @@ class CwtConfigContext(
     
     fun getConfigs(matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
         val rootFile = selectRootFile(element) ?: return emptyList()
-        val cache = configGroup.configsCache.value.getOrPut(rootFile) { ConcurrentHashMap() }
+        val cache = configGroup.configsCache.value.get(rootFile)
         val cachedKey = doGetCacheKey(matchOptions) ?: return emptyList()
         val cached = withRecursionGuard("icu.windea.pls.config.config.CwtConfigContext.getConfigs") {
             withCheckRecursion(cachedKey) action@{ 
                 try {
-                    //use lock-freeze ConcurrentMap.getOrPut to prevent IDE freezing problem
-                    cache.getOrPut(cachedKey) {
+                    //use lock-freeze ConcurrentMap.getOrPut to prevent IDE freezing problems
+                    cache.asMap().getOrPut(cachedKey) {
                         doGetConfigs(matchOptions)
                     }
                 } finally {
                     //use uncached result if there are overridden configs (cannot be cached)
-                    if(PlsStatus.overrideConfig.get() == true) cache.remove(cachedKey)
+                    if(PlsStatus.overrideConfig.get() == true) cache.invalidate(cachedKey)
                     PlsStatus.overrideConfig.remove()
                 }
             }
@@ -91,7 +91,9 @@ private val CwtConfigGroup.configsCache by createKeyDelegate(CwtConfigContext.Ke
             add(ParadoxModificationTrackerProvider.ParameterConfigInferenceTracker)
             add(ParadoxModificationTrackerProvider.InlineScriptConfigInferenceTracker)
         }
-        ConcurrentHashMap<VirtualFile, ConcurrentMap<String, List<CwtMemberConfig<*>>>>().withDependencyItems(dependencyItems)
+        createNestedCache<VirtualFile, _, _, _> {
+            CacheBuilder.newBuilder().buildCache<String, List<CwtMemberConfig<*>>>()
+        }.withDependencyItems(dependencyItems)
     }
 }
 

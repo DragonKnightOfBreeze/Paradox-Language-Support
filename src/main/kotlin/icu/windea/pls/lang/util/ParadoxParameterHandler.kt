@@ -295,7 +295,9 @@ object ParadoxParameterHandler {
 //rootFile -> cacheKey -> parameterInfo
 //depends on config group
 private val CwtConfigGroup.parameterInfoCache by createKeyDelegate(CwtConfigContext.Keys) {
-    NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, ParadoxParameterInfo>().trackedBy { it.modificationTracker } }
+    createNestedCache<VirtualFile, _, _, _> {
+        CacheBuilder.newBuilder().buildCache<String, ParadoxParameterInfo>().trackedBy { it.modificationTracker }
+    }
 }
 
 private val PlsKeys.parameterInferredConfig by createKey<CwtValueConfig>("paradox.parameterInferredConfig")

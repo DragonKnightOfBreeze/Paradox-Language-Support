@@ -40,16 +40,3 @@ fun <T : ParadoxExpressionInfo> ParadoxExpressionIndexSupport<T>.addToFileData(i
     val list = fileData.getOrPut(id().toString()) { mutableListOf() } as MutableList
     list.add(info)
 }
-
-private val HINTS_FOR_INDEXING = PsiReferenceService.Hints()
-private val CACHE_KEY_FOR_INDEXING = createKey<CachedValue<Array<out PsiReference>>>("ParadoxExpressionIndexSupport.CACHE_KEY_FOR_INDEXING")
-
-//use another field to prevent IDE freezing problems
-val PsiElement.referencesForIndexing: Array<out PsiReference> get() = doGetReferencesForIndexing()
-
-private fun PsiElement.doGetReferencesForIndexing(): Array<out PsiReference> {
-    return CachedValuesManager.getCachedValue(this, CACHE_KEY_FOR_INDEXING) {
-        val value = PsiReferenceService.getService().getReferences(this, HINTS_FOR_INDEXING).toTypedArray()
-        CachedValueProvider.Result.create(value, PsiModificationTracker.MODIFICATION_COUNT)
-    }
-}
