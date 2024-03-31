@@ -1,24 +1,21 @@
 package icu.windea.pls.config
 
-import com.google.common.cache.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
-import com.intellij.psi.util.*
+import com.jetbrains.rd.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.CwtConfigMatcher.Options
 import icu.windea.pls.model.*
 import icu.windea.pls.model.path.*
 import icu.windea.pls.script.psi.*
+import java.util.concurrent.*
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * CWT规则上下文。
@@ -44,18 +41,22 @@ class CwtConfigContext(
     
     fun getConfigs(matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
         val rootFile = selectRootFile(element) ?: return emptyList()
-        val cache = configGroup.configsCache.value.get(rootFile)
+        val cache = configGroup.configsCache.value.getOrPut(rootFile) { ConcurrentHashMap() }
         val cachedKey = doGetCacheKey(matchOptions) ?: return emptyList()
         val cached = withRecursionGuard("icu.windea.pls.config.config.CwtConfigContext.getConfigs") {
-            withCheckRecursion(cachedKey) {
-                cache.get(cachedKey) {
-                    doGetConfigs(matchOptions)
+            withCheckRecursion(cachedKey) action@{ 
+                try {
+                    //use lock-freeze ConcurrentMap.getOrPut to prevent IDE freezing problem
+                    cache.getOrPut(cachedKey) {
+                        doGetConfigs(matchOptions)
+                    }
+                } finally {
+                    //use uncached result if there are overridden configs (cannot be cached)
+                    if(PlsStatus.overrideConfig.get() == true) cache.remove(cachedKey)
+                    PlsStatus.overrideConfig.remove()
                 }
             }
         } ?: emptyList() //unexpected recursion, return empty list
-        //some configs cannot be cached (e.g. from overridden configs)
-        if(PlsContext.overrideConfigStatus.get() == true) cache.invalidate(cachedKey)
-        PlsContext.overrideConfigStatus.remove()
         return cached
     }
     
@@ -84,12 +85,13 @@ class CwtConfigContext(
 private val CwtConfigGroup.configsCache by createKeyDelegate(CwtConfigContext.Keys) {
     createCachedValue(project) {
         val trackerProvider = ParadoxModificationTrackerProvider.getInstance(project)
-        val tracker1 = trackerProvider.ScriptFileTracker
-        val tracker2 = trackerProvider.LocalisationFileTracker
-        val tracker3 = ParadoxModificationTrackerProvider.ParameterConfigInferenceTracker
-        val tracker4 = ParadoxModificationTrackerProvider.InlineScriptConfigInferenceTracker
-        NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, List<CwtMemberConfig<*>>>() }
-            .withDependencyItems(tracker1, tracker2, tracker3, tracker4)
+        val dependencyItems = buildList {
+            add(trackerProvider.ScriptFileTracker)
+            add(trackerProvider.LocalisationFileTracker)
+            add(ParadoxModificationTrackerProvider.ParameterConfigInferenceTracker)
+            add(ParadoxModificationTrackerProvider.InlineScriptConfigInferenceTracker)
+        }
+        ConcurrentHashMap<VirtualFile, ConcurrentMap<String, List<CwtMemberConfig<*>>>>().withDependencyItems(dependencyItems)
     }
 }
 

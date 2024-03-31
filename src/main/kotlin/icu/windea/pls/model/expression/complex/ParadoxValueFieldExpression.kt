@@ -69,7 +69,7 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
     //skip if text is a parameter with unary operator prefix
     if(CwtConfigHandler.isUnaryOperatorAwareParameter(expression, parameterRanges)) return null
     
-    val incomplete = PlsContext.incompleteComplexExpression.get() ?: false
+    val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
     
     val nodes = mutableListOf<ParadoxExpressionNode>()
     val offset = range.startOffset

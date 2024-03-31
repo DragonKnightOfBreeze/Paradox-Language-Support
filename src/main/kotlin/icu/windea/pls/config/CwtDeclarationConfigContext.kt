@@ -2,6 +2,7 @@ package icu.windea.pls.config
 
 import com.google.common.cache.*
 import com.intellij.openapi.util.*
+import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -45,11 +46,10 @@ class CwtDeclarationConfigContext(
 
 //cacheKey -> declarationConfig
 //use soft values to optimize memory
-//depends on config group,
+//depends on config group
 val CwtConfigGroup.declarationConfigCache by createKeyDelegate(CwtConfigContext.Keys) {
     createCachedValue(project) {
-        CacheBuilder.newBuilder().softValues().buildCache<String, CwtPropertyConfig>()
-            .withDependencyItems()
+        CacheBuilder.newBuilder().softValues().buildCache<String, CwtPropertyConfig>().withDependencyItems()
     }
 }
 

@@ -1042,11 +1042,11 @@ object CwtConfigHandler {
         val keywordOffset = context.keywordOffset
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         try {
-            PlsContext.incompleteComplexExpression.set(true)
+            PlsStatus.incompleteComplexExpression.set(true)
             val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup) ?: return
             return scopeFieldExpression.complete(context, result)
         } finally {
-            PlsContext.incompleteComplexExpression.remove()
+            PlsStatus.incompleteComplexExpression.remove()
         }
     }
     
@@ -1062,11 +1062,11 @@ object CwtConfigHandler {
         val keywordOffset = context.keywordOffset
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         try {
-            PlsContext.incompleteComplexExpression.set(true)
+            PlsStatus.incompleteComplexExpression.set(true)
             val valueFieldExpression = ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup) ?: return
             return valueFieldExpression.complete(context, result)
         } finally {
-            PlsContext.incompleteComplexExpression.remove()
+            PlsStatus.incompleteComplexExpression.remove()
         }
     }
     
@@ -1082,11 +1082,11 @@ object CwtConfigHandler {
         val keywordOffset = context.keywordOffset
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         try {
-            PlsContext.incompleteComplexExpression.set(true)
+            PlsStatus.incompleteComplexExpression.set(true)
             val variableFieldExpression = ParadoxVariableFieldExpression.resolve(keyword, textRange, configGroup) ?: return
             return variableFieldExpression.complete(context, result)
         } finally {
-            PlsContext.incompleteComplexExpression.remove()
+            PlsStatus.incompleteComplexExpression.remove()
         }
     }
     
@@ -1103,11 +1103,11 @@ object CwtConfigHandler {
         val keywordOffset = context.keywordOffset
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         try {
-            PlsContext.incompleteComplexExpression.set(true)
+            PlsStatus.incompleteComplexExpression.set(true)
             val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(keyword, textRange, configGroup, config) ?: return
             return dynamicValueExpression.complete(context, result)
         } finally {
-            PlsContext.incompleteComplexExpression.remove()
+            PlsStatus.incompleteComplexExpression.remove()
         }
     }
     

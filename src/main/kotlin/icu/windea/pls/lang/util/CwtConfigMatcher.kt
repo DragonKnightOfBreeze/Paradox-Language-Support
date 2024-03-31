@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.util
 
 import com.google.common.cache.*
-import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -10,25 +9,20 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.PlsContext.indexStatus
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.CwtConfigMatcher.Result
-import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.psi.*
-import java.util.logging.*
 
 object CwtConfigMatcher {
     object Options {
@@ -82,8 +76,8 @@ object CwtConfigMatcher {
                 return when {
                     this is LazySimpleMatch -> BitUtil.isSet(options, Options.Relax)
                     this is LazyBlockAwareMatch -> BitUtil.isSet(options, Options.Relax)
-                    this is LazyIndexAwareMatch -> BitUtil.isSet(options, Options.SkipIndex) || indexStatus.get() == true
-                    this is LazyScopeAwareMatch -> BitUtil.isSet(options, Options.SkipScope) || indexStatus.get() == true
+                    this is LazyIndexAwareMatch -> BitUtil.isSet(options, Options.SkipIndex) || PlsStatus.indexing.get() == true
+                    this is LazyScopeAwareMatch -> BitUtil.isSet(options, Options.SkipScope) || PlsStatus.indexing.get() == true
                     else -> false
                 }
             }
@@ -156,7 +150,7 @@ object CwtConfigMatcher {
     object Impls {
         fun getCachedMatchResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
             ProgressManager.checkCanceled()
-            if(indexStatus.get() == true) return Result.ExactMatch // indexing -> should not visit indices -> treat as exact match
+            if(PlsStatus.indexing.get() == true) return Result.ExactMatch // indexing -> should not visit indices -> treat as exact match
             val psiFile = element.containingFile ?: return Result.NotMatch
             val project = psiFile.project
             val rootFile = selectRootFile(psiFile) ?: return Result.NotMatch
@@ -277,9 +271,10 @@ object CwtConfigMatcher {
 private val CwtConfigGroup.configMatchResultCache by createKeyDelegate(CwtConfigContext.Keys) {
     createCachedValue(project) {
         val trackerProvider = ParadoxModificationTrackerProvider.getInstance(project)
-        val tracker1 = trackerProvider.ScriptFileTracker
-        val tracker2 = trackerProvider.LocalisationFileTracker
-        NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, Result>() }
-            .withDependencyItems(tracker1, tracker2)
+        val dependencyItems = buildList {
+            add(trackerProvider.ScriptFileTracker)
+            add(trackerProvider.LocalisationFileTracker)
+        }
+        NestedCache<VirtualFile, _, _, _> { CacheBuilder.newBuilder().buildCache<String, Result>() }.withDependencyItems(dependencyItems)
     }
 }

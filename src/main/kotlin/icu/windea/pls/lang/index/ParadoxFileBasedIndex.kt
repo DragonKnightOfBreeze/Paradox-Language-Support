@@ -82,10 +82,10 @@ abstract class ParadoxFileBasedIndex<T>: FileBasedIndexExtension<String, T>() {
     private fun buildFileData(file: PsiFile): Map<String, T> {
         return buildMap { 
             try {
-                PlsContext.indexStatus.set(true)
+                PlsStatus.indexing.set(true)
                 indexData(file, this)
             } finally {
-                PlsContext.indexStatus.remove()
+                PlsStatus.indexing.remove()
             }
         }
     }

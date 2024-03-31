@@ -214,7 +214,7 @@ complex_enum_values = {
         # 'x' can also be a template expression
         
         ### Some documentation
-        ## hint = §RSome inlay hint text$!
+        ## hint = §RSome inlay hint text§!
         x
     }
 }
@@ -229,7 +229,7 @@ dynamic_values = {
         # 'x' can also be a template expression
         
         ### Some documentation
-		## hint = §RSome inlay hint text$!
+		## hint = §RSome inlay hint text§!
         x
     }
 }

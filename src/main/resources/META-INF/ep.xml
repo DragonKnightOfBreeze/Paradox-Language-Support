@@ -162,9 +162,9 @@
 
     <expressionIndexSupport implementation="icu.windea.pls.ep.index.ParadoxInlineScriptUsageIndexSupport"/>
     <expressionIndexSupport implementation="icu.windea.pls.ep.index.ParadoxComplexEnumValueIndexSupport"/>
-    <!--<expressionIndexSupport implementation="icu.windea.pls.ep.index.ParadoxDynamicValueIndexSupport"/>-->
-    <!--<expressionIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterIndexSupport"/>-->
-    <!--<expressionIndexSupport implementation="icu.windea.pls.ep.index.ParadoxLocalisationParameterIndexSupport"/>-->
+    <expressionIndexSupport implementation="icu.windea.pls.ep.index.ParadoxDynamicValueIndexSupport"/>
+    <expressionIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterIndexSupport"/>
+    <expressionIndexSupport implementation="icu.windea.pls.ep.index.ParadoxLocalisationParameterIndexSupport"/>
     
     <expressionIndexSupport implementation="icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionIndexSupport"/>
     <expressionIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInOnActionIndexSupport"/>
