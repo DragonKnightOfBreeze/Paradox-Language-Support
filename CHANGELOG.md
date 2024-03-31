@@ -37,7 +37,7 @@
 * [X] Support for providing extended inlay hints for complex enum values (e.g. 'component_tag') via extended CWT configs (see reference documentation for details)
 * [X] Support for providing extended inlay hints for dynamic values (e.g. 'variable') via extended CWT configs (see reference documentation for details)
 * [X] New code inspection: Overridden for files (level: weak warning, enabled by default: no)
-* [X] Fixed an issue that '= {}' would not be inserted correctly when applying code completion for script snippets matching CWT config of `single_alias`
+* [X] Fixed an issue that `= {}` would not be inserted correctly when applying code completion for script snippets matching CWT config of `single_alias`
 * [X] Try to fix an issue that when inline scripts and parameters (with language injection) are involved, IDE may be freezing.
 
 ## 1.3.3
