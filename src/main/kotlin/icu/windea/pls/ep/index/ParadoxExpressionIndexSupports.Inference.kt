@@ -12,7 +12,7 @@ import java.io.*
 class ParadoxInferredScopeContextAwareDefinitionIndexSupport : ParadoxExpressionIndexSupport<ParadoxInferredScopeContextAwareDefinitionInfo> {
     private val compressComparator = compareBy<ParadoxInferredScopeContextAwareDefinitionInfo> { it.typeExpression }
     
-    override fun id() = ParadoxExpressionIndexId.InferredScopeContextAwareDefinition.id
+    override fun id() = ParadoxExpressionIndexId.InferredScopeContextAwareDefinition.code
     
     override fun type() = ParadoxInferredScopeContextAwareDefinitionInfo::class.java
     
@@ -53,7 +53,7 @@ class ParadoxInferredScopeContextAwareDefinitionIndexSupport : ParadoxExpression
 class ParadoxEventInOnActionIndexSupport : ParadoxExpressionIndexSupport<ParadoxEventInOnActionInfo> {
     private val compressComparator = compareBy<ParadoxEventInOnActionInfo> { it.containingOnActionName }
     
-    override fun id() = ParadoxExpressionIndexId.EventInOnAction.id
+    override fun id() = ParadoxExpressionIndexId.EventInOnAction.code
     
     override fun type() = ParadoxEventInOnActionInfo::class.java
     
@@ -98,7 +98,7 @@ class ParadoxEventInOnActionIndexSupport : ParadoxExpressionIndexSupport<Paradox
 class ParadoxEventInEventIndexSupport : ParadoxExpressionIndexSupport<ParadoxEventInEventInfo> {
     private val compressComparator = compareBy<ParadoxEventInEventInfo> { it.containingEventName }
     
-    override fun id() = ParadoxExpressionIndexId.EventInEvent.id
+    override fun id() = ParadoxExpressionIndexId.EventInEvent.code
     
     override fun type() = ParadoxEventInEventInfo::class.java
     
@@ -164,7 +164,7 @@ class ParadoxEventInEventIndexSupport : ParadoxExpressionIndexSupport<ParadoxEve
 class ParadoxOnActionInEventIndexSupport : ParadoxExpressionIndexSupport<ParadoxOnActionInEventInfo> {
     private val compressComparator = compareBy<ParadoxOnActionInEventInfo> { it.containingEventName }
     
-    override fun id() = ParadoxExpressionIndexId.OnActionInEvent.id
+    override fun id() = ParadoxExpressionIndexId.OnActionInEvent.code
     
     override fun type() = ParadoxOnActionInEventInfo::class.java
     

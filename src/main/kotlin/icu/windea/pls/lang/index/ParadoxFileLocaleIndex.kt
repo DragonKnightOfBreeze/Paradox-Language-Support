@@ -16,6 +16,14 @@ private const val VERSION = 51 //1.3.4
  * 当需要从PsiFile获取语言区域时，改为使用此索引以优化性能。
  */
 class ParadoxFileLocaleIndex : ScalarIndexExtension<String>() {
+    @Suppress("CompanionObjectInExtension")
+    companion object {
+        val INSTANCE by lazy { findIndex<ParadoxFileLocaleIndex>() }
+        val NAME = ID.create<String, Void>("paradox.file.locale.index")
+        
+        private const val VERSION = 51 //1.3.4
+    }
+    
     override fun getName() = NAME
     
     override fun getVersion() = VERSION

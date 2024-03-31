@@ -12,8 +12,8 @@ enum class ParadoxLocalisationConstraint(
     val predicate: (String) -> Boolean,
     val ignoreCase: Boolean = false,
 ) {
-    Default(ParadoxLocalisationNameIndexKey, { true }),
-    Modifier(ParadoxLocalisationNameIndexModifierKey, { it.startsWith("mod_", true) }, ignoreCase = true);
+    Default(ParadoxLocalisationNameIndex.KEY, { true }),
+    Modifier(ParadoxLocalisationNameIndex.ModifierIndex.KEY, { it.startsWith("mod_", true) }, ignoreCase = true);
     
     companion object {
         val values = values()

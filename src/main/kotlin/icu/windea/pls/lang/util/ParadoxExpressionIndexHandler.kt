@@ -30,7 +30,7 @@ object ParadoxExpressionIndexHandler {
             ProgressManager.checkCanceled()
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
-            val fileData = ParadoxExpressionIndexInstance.getFileData(file, project, id)
+            val fileData = ParadoxExpressionIndex.INSTANCE.getFileData(file, project, id)
             if(fileData.isEmpty()) return@p true
             processor(file, fileData)
         }

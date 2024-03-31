@@ -31,7 +31,7 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
             ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
-            val fileData = ParadoxExpressionIndexInstance.getFileData(file, project, ParadoxExpressionIndexId.InlineScriptUsage)
+            val fileData = ParadoxExpressionIndex.INSTANCE.getFileData(file, project, ParadoxExpressionIndexId.InlineScriptUsage)
             if(fileData.isEmpty()) return@p true
             fileData.forEachFast f@{ info ->
                 if(expression != info.expression) return@f

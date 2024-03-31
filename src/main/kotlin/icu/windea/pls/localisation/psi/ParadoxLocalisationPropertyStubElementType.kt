@@ -54,7 +54,7 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
                 }
             }
             ParadoxLocalisationCategory.SyncedLocalisation -> {
-                sink.occurrence(ParadoxSyncedLocalisationNameIndexKey, stub.name)
+                sink.occurrence(ParadoxSyncedLocalisationNameIndex.KEY, stub.name)
             }
         }
     }

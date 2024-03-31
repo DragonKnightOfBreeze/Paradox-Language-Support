@@ -29,14 +29,3 @@ inline fun <reified T: StubIndexExtension<*,*>> findStubIndex(): T{
 inline fun <reified T : FileBasedIndexExtension<*, *>> findIndex(): T {
     return FileBasedIndexExtension.EXTENSION_POINT_NAME.findExtensionOrFail(T::class.java)
 }
-
-val ParadoxScriptedVariableNameIndexKey by lazy { findStubIndex<ParadoxScriptedVariableNameIndex>().getKey() }
-val ParadoxDefinitionNameIndexKey by lazy { findStubIndex<ParadoxDefinitionNameIndex>().getKey() }
-val ParadoxDefinitionTypeIndexKey by lazy { findStubIndex<ParadoxDefinitionTypeIndex>().getKey() }
-val ParadoxLocalisationNameIndexKey by lazy { findStubIndex<ParadoxLocalisationNameIndex>().getKey() }
-val ParadoxLocalisationNameIndexModifierKey by lazy { findStubIndex<ParadoxLocalisationNameIndex.ModifierIndex>().getKey() }
-val ParadoxSyncedLocalisationNameIndexKey by lazy { findStubIndex<ParadoxSyncedLocalisationNameIndex>().getKey() }
-
-val ParadoxFilePathIndexInstance by lazy { findIndex<ParadoxFilePathIndex>() }
-val ParadoxFileLocaleIndexInstance by lazy { findIndex<ParadoxFileLocaleIndex>() }
-val ParadoxExpressionIndexInstance by lazy { findIndex<ParadoxExpressionIndex>() }

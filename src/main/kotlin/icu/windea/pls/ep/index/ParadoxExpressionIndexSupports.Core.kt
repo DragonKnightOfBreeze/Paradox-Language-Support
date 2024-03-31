@@ -16,7 +16,7 @@ import java.io.*
 class ParadoxInlineScriptUsageIndexSupport : ParadoxExpressionIndexSupport<ParadoxInlineScriptUsageInfo> {
     private val compressComparator = compareBy<ParadoxInlineScriptUsageInfo> { it.expression }
     
-    override fun id() = ParadoxExpressionIndexId.InlineScriptUsage.id
+    override fun id() = ParadoxExpressionIndexId.InlineScriptUsage.code
     
     override fun type() = ParadoxInlineScriptUsageInfo::class.java
     
@@ -45,7 +45,7 @@ class ParadoxInlineScriptUsageIndexSupport : ParadoxExpressionIndexSupport<Parad
 class ParadoxComplexEnumValueIndexSupport : ParadoxExpressionIndexSupport<ParadoxComplexEnumValueInfo> {
     private val compressComparator = compareBy<ParadoxComplexEnumValueInfo>({ it.enumName }, { it.name })
     
-    override fun id() = ParadoxExpressionIndexId.ComplexEnumValue.id
+    override fun id() = ParadoxExpressionIndexId.ComplexEnumValue.code
     
     override fun type() = ParadoxComplexEnumValueInfo::class.java
     
@@ -79,7 +79,7 @@ class ParadoxComplexEnumValueIndexSupport : ParadoxExpressionIndexSupport<Parado
 class ParadoxDynamicValueIndexSupport : ParadoxExpressionIndexSupport<ParadoxDynamicValueInfo> {
     private val compressComparator = compareBy<ParadoxDynamicValueInfo>({ it.dynamicValueType }, { it.name })
     
-    override fun id() = ParadoxExpressionIndexId.DynamicValue.id
+    override fun id() = ParadoxExpressionIndexId.DynamicValue.code
     
     override fun type() = ParadoxDynamicValueInfo::class.java
     
@@ -134,7 +134,7 @@ class ParadoxDynamicValueIndexSupport : ParadoxExpressionIndexSupport<ParadoxDyn
 class ParadoxParameterIndexSupport : ParadoxExpressionIndexSupport<ParadoxParameterInfo> {
     private val compressComparator = compareBy<ParadoxParameterInfo>({ it.contextKey }, { it.name })
     
-    override fun id() = ParadoxExpressionIndexId.Parameter.id
+    override fun id() = ParadoxExpressionIndexId.Parameter.code
     
     override fun type() = ParadoxParameterInfo::class.java
     
@@ -174,7 +174,7 @@ class ParadoxParameterIndexSupport : ParadoxExpressionIndexSupport<ParadoxParame
 class ParadoxLocalisationParameterIndexSupport : ParadoxExpressionIndexSupport<ParadoxLocalisationParameterInfo> {
     private val compressComparator = compareBy<ParadoxLocalisationParameterInfo>({ it.localisationName }, { it.name })
     
-    override fun id() = ParadoxExpressionIndexId.LocalisationParameter.id
+    override fun id() = ParadoxExpressionIndexId.LocalisationParameter.code
     
     override fun type() = ParadoxLocalisationParameterInfo::class.java
     

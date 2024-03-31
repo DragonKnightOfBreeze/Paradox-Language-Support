@@ -55,7 +55,7 @@ class ParadoxDirectoryElementNode(
             if(file.isDirectory) {
                 //位于游戏或模组目录中，且未被排除
                 if(!directoryNames.add(file.name)) return@p true
-                val fileData = FileBasedIndex.getInstance().getFileData(ParadoxFilePathIndexInstance.name, file, project)
+                val fileData = FileBasedIndex.getInstance().getFileData(ParadoxFilePathIndex.INSTANCE.name, file, project)
                 if(!fileData.values.single().included) return@p true
                 files.add(file)
             } else {

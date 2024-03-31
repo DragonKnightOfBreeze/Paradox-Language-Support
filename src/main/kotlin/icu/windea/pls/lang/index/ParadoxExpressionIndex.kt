@@ -18,11 +18,6 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-private val NAME = ID.create<String, List<ParadoxExpressionInfo>>("paradox.expression.index")
-private const val VERSION = 51 //1.3.4
-
-private val markerKey = createKey<Boolean>("paradox.expression.index.marker")
-
 /**
  * 用于基于文件层级索引各种表达式信息。
  *
@@ -32,6 +27,15 @@ private val markerKey = createKey<Boolean>("paradox.expression.index.marker")
  * @see ParadoxExpressionIndexSupport
  */
 class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>>() {
+    @Suppress("CompanionObjectInExtension")
+    companion object {
+        val INSTANCE by lazy { findIndex<ParadoxExpressionIndex>() }
+        val NAME = ID.create<String, List<ParadoxExpressionInfo>>("paradox.expression.index")
+        
+        private const val VERSION = 51 //1.3.4
+        private val markerKey = createKey<Boolean>("paradox.expression.index.marker")
+    }
+    
     override fun getName() = NAME
     
     override fun getVersion() = VERSION
@@ -170,6 +174,6 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
     
     fun <T: ParadoxExpressionInfo> getFileData(file: VirtualFile, project: Project, id: ParadoxExpressionIndexId<T>): List<T> {
         val allFileData = getFileData(file, project)
-        return allFileData.get(id.id.toString())?.castOrNull<List<T>>().orEmpty()
+        return allFileData.get(id.code.toString())?.castOrNull<List<T>>().orEmpty()
     }
 }

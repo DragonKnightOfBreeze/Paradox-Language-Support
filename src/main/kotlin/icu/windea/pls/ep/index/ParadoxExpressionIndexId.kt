@@ -2,7 +2,7 @@ package icu.windea.pls.ep.index
 
 import icu.windea.pls.model.expressionInfo.*
 
-sealed class ParadoxExpressionIndexId<T: ParadoxExpressionInfo>(val id: Byte) {
+sealed class ParadoxExpressionIndexId<T: ParadoxExpressionInfo>(val code: Byte) {
     object ComplexEnumValue: ParadoxExpressionIndexId<ParadoxComplexEnumValueInfo>(1)
     object DynamicValue: ParadoxExpressionIndexId<ParadoxDynamicValueInfo>(2)
     object InlineScriptUsage: ParadoxExpressionIndexId<ParadoxInlineScriptUsageInfo>(3)

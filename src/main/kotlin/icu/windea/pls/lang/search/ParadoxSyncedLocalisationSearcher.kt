@@ -19,11 +19,11 @@ class ParadoxSyncedLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationP
         val project = queryParameters.project
         
         if(queryParameters.name == null) {
-            ParadoxSyncedLocalisationNameIndexKey.processAllElementsByKeys(project, scope) p@{ _, it ->
+            ParadoxSyncedLocalisationNameIndex.KEY.processAllElementsByKeys(project, scope) p@{ _, it ->
                 consumer.process(it)
             }
         } else {
-            ParadoxSyncedLocalisationNameIndexKey.processAllElements(queryParameters.name, project, scope) p@{
+            ParadoxSyncedLocalisationNameIndex.KEY.processAllElements(queryParameters.name, project, scope) p@{
                 consumer.process(it)
             }
         }

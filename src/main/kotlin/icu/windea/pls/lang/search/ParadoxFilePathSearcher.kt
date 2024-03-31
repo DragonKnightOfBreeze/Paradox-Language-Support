@@ -27,8 +27,8 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         
         if(configExpression == null) {
             if(filePath == null) {
-                val keys = FileBasedIndex.getInstance().getAllKeys(ParadoxFilePathIndexInstance.name, project)
-                FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndexInstance.name, keys, scope, null, null) p@{ file ->
+                val keys = FileBasedIndex.getInstance().getAllKeys(ParadoxFilePathIndex.INSTANCE.name, project)
+                FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.INSTANCE.name, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
                     ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
                     if(gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level
@@ -36,7 +36,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 }
             } else {
                 val keys = getFilePaths(filePath, queryParameters)
-                FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndexInstance.name, keys, scope, null, null) p@{ file ->
+                FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.INSTANCE.name, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
                     ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
                     if(gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level
@@ -47,11 +47,11 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
             val support = ParadoxPathReferenceExpressionSupport.get(configExpression) ?: return
             if(filePath == null) {
                 val keys = mutableSetOf<String>()
-                FileBasedIndex.getInstance().processAllKeys(ParadoxFilePathIndexInstance.name, p@{ p ->
+                FileBasedIndex.getInstance().processAllKeys(ParadoxFilePathIndex.INSTANCE.name, p@{ p ->
                     if(!support.matches(configExpression, contextElement, p)) return@p true
                     keys.add(p)
                 }, scope, null)
-                FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndexInstance.name, keys, scope, null, null) p@{ file ->
+                FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.INSTANCE.name, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
                     ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
                     if(gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level
@@ -61,7 +61,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 val resolvedPaths = support.resolvePath(configExpression, filePath)
                 if(resolvedPaths.isNotNullOrEmpty()) {
                     val keys = resolvedPaths
-                    FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndexInstance.name, keys, scope, null, null) p@{ file ->
+                    FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.INSTANCE.name, keys, scope, null, null) p@{ file ->
                         ProgressManager.checkCanceled()
                         ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
                         if(gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level

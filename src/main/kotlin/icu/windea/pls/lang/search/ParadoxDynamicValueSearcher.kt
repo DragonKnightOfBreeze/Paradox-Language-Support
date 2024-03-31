@@ -34,7 +34,7 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueInfo, P
             ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
-            val fileData = ParadoxExpressionIndexInstance.getFileData(file, project, ParadoxExpressionIndexId.DynamicValue)
+            val fileData = ParadoxExpressionIndex.INSTANCE.getFileData(file, project, ParadoxExpressionIndexId.DynamicValue)
             if(fileData.isEmpty()) return@p true
             fileData.forEachFast f@{ info ->
                 if(info.dynamicValueType !in dynamicValueTypes) return@f

@@ -5,14 +5,9 @@ import com.intellij.openapi.extensions.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.index.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 
 /**
  * 本地化的查询。
@@ -63,7 +58,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
             //保证返回结果的名字的唯一性
             val project = selector.project
             val scope = selector.scope
-            return ParadoxLocalisationNameIndexKey.processFirstElementByKeys(
+            return ParadoxLocalisationNameIndex.KEY.processFirstElementByKeys(
                 project, scope,
                 keyPredicate = { key -> prefixMatcher.prefixMatches(key) },
                 predicate = { element -> selector.select(element) },

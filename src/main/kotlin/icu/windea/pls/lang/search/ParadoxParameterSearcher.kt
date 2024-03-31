@@ -29,9 +29,9 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterInfo, Paradox
             ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
-            val fileData = ParadoxExpressionIndexInstance.getFileData(file, project, ParadoxExpressionIndexId.Parameter)
+            val fileData = ParadoxExpressionIndex.INSTANCE.getFileData(file, project, ParadoxExpressionIndexId.Parameter)
             if(fileData.isEmpty()) return@p true
-            fileData.forEachFast f@{ info -> 
+            fileData.forEachFast f@{ info ->
                 if(contextKey != info.contextKey) return@f
                 if(name != null && name != info.name) return@f
                 info.virtualFile = file
