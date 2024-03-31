@@ -89,5 +89,5 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
     
     override fun getDisplayName() = PlsBundle.message("options.script.displayName")
     
-    override fun getDemoText() = PlsConstants.paradoxScriptColorSettingsDemoText
+    override fun getDemoText() = PlsConstants.paradoxScriptColorSettingsSample
 }

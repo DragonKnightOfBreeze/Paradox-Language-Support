@@ -11,7 +11,7 @@ class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
 	
 	override fun getConfigurableDisplayName() = PlsBundle.message("options.cwt.displayName")
 	
-	override fun getCodeSample(settingsType: SettingsType) = PlsConstants.cwtCodeStyleSettingsDemoText
+	override fun getCodeSample(settingsType: SettingsType) = PlsConstants.cwtCodeStyleSettingsSample
 	
 	override fun createCustomSettings(settings: CodeStyleSettings) = CwtCodeStyleSettings(settings)
 	

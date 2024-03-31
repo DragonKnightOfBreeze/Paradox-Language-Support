@@ -13,7 +13,7 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
 	
 	override fun getConfigurableDisplayName() = PlsBundle.message("options.script.displayName")
 	
-	override fun getCodeSample(settingsType: SettingsType) = PlsConstants.paradoxScriptCodeStyleSettingsDemoText
+	override fun getCodeSample(settingsType: SettingsType) = PlsConstants.paradoxScriptCodeStyleSettingsSample
 	
 	override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxScriptCodeStyleSettings(settings)
 	

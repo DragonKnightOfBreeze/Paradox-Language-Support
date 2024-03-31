@@ -36,5 +36,5 @@ class CwtColorSettingsPage : ColorSettingsPage {
     
     override fun getDisplayName() = PlsBundle.message("options.cwt.displayName")
     
-    override fun getDemoText() = PlsConstants.cwtColorSettingsDemoText
+    override fun getDemoText() = PlsConstants.cwtColorSettingsSample
 }

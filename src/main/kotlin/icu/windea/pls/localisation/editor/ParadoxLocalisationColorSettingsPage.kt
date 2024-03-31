@@ -45,5 +45,5 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
     
     override fun getDisplayName() = PlsBundle.message("options.localisation.displayName")
     
-    override fun getDemoText() = PlsConstants.paradoxLocalisationColorSettingsDemoText
+    override fun getDemoText() = PlsConstants.paradoxLocalisationColorSettingsSample
 }

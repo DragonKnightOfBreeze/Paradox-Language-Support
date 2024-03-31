@@ -6,14 +6,14 @@ import icu.windea.pls.core.*
 object PlsConstants {
     val locationClass = PlsIcons::class.java
     
-    val cwtColorSettingsDemoText = "/demoText/Cwt.colorSettings.txt".toClasspathUrl().readText()
-    val cwtCodeStyleSettingsDemoText = "/demoText/Cwt.codeStyleSettings.txt".toClasspathUrl().readText()
+    val cwtColorSettingsSample = "/samples/Cwt.colorSettings.txt".toClasspathUrl().readText()
+    val cwtCodeStyleSettingsSample = "/samples/Cwt.codeStyleSettings.txt".toClasspathUrl().readText()
     
-    val paradoxLocalisationColorSettingsDemoText = "/demoText/ParadoxLocalisation.colorSettings.txt".toClasspathUrl().readText()
-    val paradoxLocalisationCodeStyleSettingsDemoText = "/demoText/ParadoxLocalisation.codeStyleSettings.txt".toClasspathUrl().readText()
+    val paradoxLocalisationColorSettingsSample = "/samples/ParadoxLocalisation.colorSettings.txt".toClasspathUrl().readText()
+    val paradoxLocalisationCodeStyleSettingsDemoText = "/samples/ParadoxLocalisation.codeStyleSettings.txt".toClasspathUrl().readText()
     
-    val paradoxScriptColorSettingsDemoText = "/demoText/ParadoxScript.colorSettings.txt".toClasspathUrl().readText()
-    val paradoxScriptCodeStyleSettingsDemoText = "/demoText/ParadoxScript.codeStyleSettings.txt".toClasspathUrl().readText()
+    val paradoxScriptColorSettingsSample = "/samples/ParadoxScript.colorSettings.txt".toClasspathUrl().readText()
+    val paradoxScriptCodeStyleSettingsSample = "/samples/ParadoxScript.codeStyleSettings.txt".toClasspathUrl().readText()
     
     const val dummyIdentifier = "windea"
     
