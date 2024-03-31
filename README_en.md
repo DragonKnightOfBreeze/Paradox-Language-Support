@@ -20,7 +20,7 @@ Features:
 * Renders related type information, scope information, localisation text and DDS images through ways such as quick documentation and inlay hints.
 * Automatically recognizes the game directory (containing the launcher settings file `launcher-settings.json`) and mod directory (containing the mod descriptor file `descriptor.mod`).
 
-This plugin has implemented various advanced language features based on [CWT config groups](https://windea.icu/Paradox-Language-Support/#/en/config.md#cwt-config-group), which consists of CWT rule files.
+This plugin has implemented various advanced language features based on [CWT config groups](https://windea.icu/Paradox-Language-Support/#/en/config.md#cwt-config-group), which consists of CWT config files.
 The latest-version config files are already built into this plugin, make it works right out of the box.
 Besides, [customizing](https://windea.icu/Paradox-Language-Support/#/en/config.md#writing-cwt-config-files) and [importing](https://windea.icu/Paradox-Language-Support/#/en/config.md#importing-cwt-config-files) local config files is also supported.
 

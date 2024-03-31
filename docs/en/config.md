@@ -4,9 +4,9 @@
 
 ### Summary
 
-PLS implements various advanced language features based on CWT config groups, which consists of many CWT rule files.
+PLS implements various advanced language features based on CWT config groups, which consists of many CWT config files.
 
-The data in these config groups first comes from the CWT rule files in specific directories,
+The data in these config groups first comes from the CWT config files in specific directories,
 after merging and computing, it will be used to implement various features of this plugin.
 
 Reference Links:
@@ -42,7 +42,7 @@ CWT config file use its own file format, which can be considered as a variant of
 
 ### Syntax
 
-The basic syntax of a CWT rules file is as follows:
+The basic syntax of a CWT config files is as follows:
 
 ```cwt
 ### documentation comment
