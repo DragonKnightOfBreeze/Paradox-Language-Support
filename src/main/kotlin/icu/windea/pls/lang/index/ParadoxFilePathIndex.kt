@@ -10,7 +10,7 @@ import java.io.*
 import java.util.*
 
 private val NAME = ID.create<String, ParadoxFilePathInfo>("paradox.file.path.index")
-private const val VERSION = 50 //1.3.4
+private const val VERSION = 51 //1.3.4
 
 private val EXCLUDED_DIRECTORIES = listOf(
     "_CommonRedist", "crash_reporter", "curated_save_games",
