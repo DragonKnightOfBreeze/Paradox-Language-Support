@@ -534,7 +534,7 @@ abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpress
             else -> null
         } ?: return false
         val type = aliasConfig.expression.type
-        if(!(type in CwtDataTypeGroups.ConstantLike)) return false
+        if(type !in CwtDataTypeGroups.ConstantLike) return false
         val aliasName = aliasConfig.name
         val attributesKey = when {
             aliasName == "modifier" -> ParadoxScriptAttributesKeys.MODIFIER_KEY
