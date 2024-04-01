@@ -41,7 +41,7 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         val project = directory.project
         val scope = GlobalSearchScope.allScope(project)
         ProgressManager.checkCanceled()
-        val name = ParadoxFilePathIndex.INSTANCE.name
+        val name = ParadoxFilePathIndex.NAME
         FileBasedIndex.getInstance().processAllKeys(name, p@{ key ->
             FileBasedIndex.getInstance().processValues(name, key, null, pp@{ _, info ->
                 if(info.gameType != gameType) return@pp true
