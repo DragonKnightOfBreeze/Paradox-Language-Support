@@ -11,8 +11,6 @@ import icu.windea.pls.core.*
 import java.io.*
 
 abstract class ParadoxFileBasedIndex<T>: FileBasedIndexExtension<String, T>() {
-    abstract override fun getName(): ID<String, T>
-    
     abstract override fun getVersion(): Int
     
     override fun getIndexer(): DataIndexer<String, T, FileContent> {
@@ -46,6 +44,10 @@ abstract class ParadoxFileBasedIndex<T>: FileBasedIndexExtension<String, T>() {
         return true
     }
     
+    private val indexName by lazy {
+        property<ParadoxFileBasedIndex<T>, ID<String, T>>("name").get()
+    } 
+    
     private val gistValueExternalizer by lazy { 
         object : DataExternalizer<Map<String, T>> {
             override fun save(storage: DataOutput, value: Map<String, T>) {
@@ -69,7 +71,7 @@ abstract class ParadoxFileBasedIndex<T>: FileBasedIndexExtension<String, T>() {
     }
     
     private val gist by lazy { 
-        val gistName = name.name + ".lazy"
+        val gistName = indexName.name + ".lazy"
         val gistVersion = version
         GistManager.getInstance().newVirtualFileGist(gistName, gistVersion, gistValueExternalizer) builder@{ project, file ->
             if(!filterFile(file)) return@builder emptyMap()
@@ -103,6 +105,6 @@ abstract class ParadoxFileBasedIndex<T>: FileBasedIndexExtension<String, T>() {
     fun getFileData(file: VirtualFile, project: Project): Map<String, T> {
         val useLazyIndex = useLazyIndex(file)
         if(useLazyIndex) return gist.getFileData(project, file)
-        return FileBasedIndex.getInstance().getFileData(name, file, project)
+        return FileBasedIndex.getInstance().getFileData(indexName, file, project)
     }
 }
