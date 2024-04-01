@@ -16,8 +16,7 @@ import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.image.*
-import icu.windea.pls.lang.util.localisation.*
-import icu.windea.pls.lang.util.script.*
+import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -189,7 +188,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                             if(definitionInfo != null) {
                                 null
                             } else {
-                                val rendered = ParadoxScriptTextRender.render(nodeItem, renderInBlock = true)
+                                val rendered = ParadoxScriptTextRenderer.render(nodeItem, renderInBlock = true)
                                 val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
                                 val propertyValue = nodeItem.propertyValue
                                 if(propertyValue is ParadoxScriptScriptedVariableReference) {

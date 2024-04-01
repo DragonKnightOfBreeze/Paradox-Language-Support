@@ -10,7 +10,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.script.*
+import icu.windea.pls.lang.util.data.*
 import icu.windea.pls.script.psi.*
 import java.lang.invoke.*
 

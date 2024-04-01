@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.localisation
+package icu.windea.pls.lang.util.data
 
 import com.intellij.psi.*
 import icu.windea.pls.core.*

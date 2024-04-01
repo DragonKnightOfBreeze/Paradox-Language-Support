@@ -12,7 +12,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.localisation.*
+import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxComplexEnumValueLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*

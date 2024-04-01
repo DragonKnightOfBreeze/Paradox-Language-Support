@@ -8,7 +8,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.localisation.*
+import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
 

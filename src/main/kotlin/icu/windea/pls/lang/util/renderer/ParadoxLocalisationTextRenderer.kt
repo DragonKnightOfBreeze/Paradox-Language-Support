@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.localisation
+package icu.windea.pls.lang.util.renderer
 
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*

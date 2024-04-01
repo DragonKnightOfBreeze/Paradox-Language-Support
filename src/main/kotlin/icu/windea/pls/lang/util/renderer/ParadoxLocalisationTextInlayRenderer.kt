@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.localisation
+package icu.windea.pls.lang.util.renderer
 
 import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*

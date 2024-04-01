@@ -23,7 +23,7 @@ import icu.windea.pls.core.data.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.listeners.*
-import icu.windea.pls.lang.util.script.*
+import icu.windea.pls.lang.util.data.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.path.*

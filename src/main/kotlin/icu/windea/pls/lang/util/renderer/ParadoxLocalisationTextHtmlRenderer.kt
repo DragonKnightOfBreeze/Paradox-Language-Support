@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.localisation
+package icu.windea.pls.lang.util.renderer
 
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.progress.*
