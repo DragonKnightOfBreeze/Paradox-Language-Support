@@ -41,7 +41,7 @@ class ParadoxParameterScriptExpressionSupport : ParadoxScriptExpressionSupport {
         val contextElement = context.contextElement!!
         val isKey = context.isKey
         if(isKey != true || config !is CwtPropertyConfig) return
-        return ParadoxParameterHandler.completeArguments(contextElement, context, result)
+        ParadoxParameterHandler.completeArguments(contextElement, context, result)
     }
 }
 

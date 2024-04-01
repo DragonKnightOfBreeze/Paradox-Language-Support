@@ -3,7 +3,6 @@ package icu.windea.pls.ep.expression
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.lang.annotation.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.patterns.*
 import com.intellij.psi.*
@@ -16,7 +15,6 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport.*
-import icu.windea.pls.ep.scope.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
@@ -54,30 +52,7 @@ class ParadoxLocalisationScriptExpressionSupport : ParadoxScriptExpressionSuppor
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
-        val config = context.config ?: return
-        val keyword = context.keyword
-        
-        //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
-        result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
-        
-        val configGroup = config.info.configGroup
-        val project = configGroup.project
-        val contextElement = context.contextElement
-        val tailText = CwtConfigHandler.getScriptExpressionTailText(config)
-        val selector = localisationSelector(project, contextElement).contextSensitive()
-            .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
-            //.distinctByName() //这里selector不需要指定去重
-        ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, LimitedCompletionProcessor { localisation ->
-            val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
-            val typeFile = localisation.containingFile
-            val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)
-                .withIcon(PlsIcons.Nodes.Localisation)
-                .withTailText(tailText)
-                .withTypeText(typeFile.name)
-                .withTypeIcon(typeFile.icon)
-            result.addScriptExpressionElement(context, builder)
-            true
-        })
+        CwtConfigHandler.completeLocalisation(context, result)
     }
 }
 
@@ -110,29 +85,7 @@ class ParadoxSyncedLocalisationScriptExpressionSupport : ParadoxScriptExpression
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
-        val config = context.config ?: return
-        val keyword = context.keyword
-        
-        //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
-        result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
-        
-        val configGroup = config.info.configGroup
-        val project = configGroup.project
-        val contextElement = context.contextElement
-        val tailText = CwtConfigHandler.getScriptExpressionTailText(config)
-        //这里selector不需要指定去重
-        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
-        ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector) { syncedLocalisation ->
-            val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
-            val typeFile = syncedLocalisation.containingFile
-            val builder = ParadoxScriptExpressionLookupElementBuilder.create(syncedLocalisation, name)
-                .withIcon(PlsIcons.Nodes.Localisation)
-                .withTailText(tailText)
-                .withTypeText(typeFile.name)
-                .withTypeIcon(typeFile.icon)
-            result.addScriptExpressionElement(context, builder)
-            true
-        }
+        CwtConfigHandler.completeSyncedLocalisation(context, result)
     }
 }
 
@@ -166,32 +119,9 @@ class ParadoxInlineLocalisationScriptExpressionSupport : ParadoxScriptExpression
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
-        
-        val config = context.config ?: return
         if(context.quoted) return
-        val keyword = context.keyword
         
-        //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
-        result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
-        
-        val configGroup = config.info.configGroup
-        val project = configGroup.project
-        val contextElement = context.contextElement
-        val tailText = CwtConfigHandler.getScriptExpressionTailText(config)
-        val selector = localisationSelector(project, contextElement).contextSensitive()
-            .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
-            //.distinctByName() //这里selector不需要指定去重
-        ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, LimitedCompletionProcessor { localisation ->
-            val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
-            val typeFile = localisation.containingFile
-            val builder = ParadoxScriptExpressionLookupElementBuilder.create(localisation, name)
-                .withIcon(PlsIcons.Nodes.Localisation)
-                .withTailText(tailText)
-                .withTypeText(typeFile.name)
-                .withTypeIcon(typeFile.icon)
-            result.addScriptExpressionElement(context, builder)
-            true
-        })
+        CwtConfigHandler.completeLocalisation(context, result)
     }
 }
 
@@ -226,41 +156,7 @@ class ParadoxDefinitionScriptExpressionSupport : ParadoxScriptExpressionSupport 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
-        val config = context.config ?: return
-        val scopeContext = context.scopeContext
-        val typeExpression = config.expression?.value ?: return
-        val configGroup = config.info.configGroup
-        val project = configGroup.project
-        val contextElement = context.contextElement
-        val tailText = CwtConfigHandler.getScriptExpressionTailText(config)
-        val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search(typeExpression, selector).processQueryAsync p@{ definition ->
-            ProgressManager.checkCanceled()
-            val definitionInfo = definition.definitionInfo ?: return@p true
-            if(definitionInfo.name.isEmpty()) return@p true //ignore anonymous definitions
-            
-            //排除不匹配可能存在的supported_scopes的情况
-            val supportedScopes = ParadoxDefinitionSupportedScopesProvider.getSupportedScopes(definition, definitionInfo)
-            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
-            if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
-            
-            val name = definitionInfo.name
-            val typeFile = definition.containingFile
-            val builder = ParadoxScriptExpressionLookupElementBuilder.create(definition, name)
-                .withIcon(PlsIcons.Nodes.Definition(definitionInfo.type))
-                .withTailText(tailText)
-                .withTypeText(typeFile.name)
-                .withTypeIcon(typeFile.icon)
-                .withScopeMatched(scopeMatched)
-                .letIf(getSettings().completion.completeByLocalizedName) {
-                    //如果启用，也基于定义的本地化名字进行代码补全
-                    ProgressManager.checkCanceled()
-                    val localizedNames = ParadoxDefinitionHandler.getLocalizedNames(definition)
-                    it.withLocalizedNames(localizedNames)
-                }
-            result.addScriptExpressionElement(context, builder)
-            true
-        }
+        CwtConfigHandler.completeDefinition(context, result)
     }
 }
 
@@ -307,37 +203,7 @@ class ParadoxPathReferenceScriptExpressionSupport : ParadoxScriptExpressionSuppo
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
-        val config = context.config ?: return
-        val configExpression = config.expression ?: return
-        val configGroup = config.info.configGroup
-        val project = configGroup.project
-        val contextElement = context.contextElement
-        val contextFile = context.originalFile
-        val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
-        if(pathReferenceExpressionSupport != null) {
-            val tailText = CwtConfigHandler.getScriptExpressionTailText(config)
-            val fileExtensions = when(config) {
-                is CwtMemberConfig<*> -> ParadoxFilePathHandler.getFileExtensionOptionValues(config)
-                else -> emptySet()
-            }
-            //仅提示匹配file_extensions选项指定的扩展名的，如果存在
-            val selector = fileSelector(project, contextElement).contextSensitive()
-                .withFileExtensions(fileExtensions)
-                .distinctByFilePath()
-            ParadoxFilePathSearch.search(configExpression, selector).processQueryAsync p@{ virtualFile ->
-                ProgressManager.checkCanceled()
-                val file = virtualFile.toPsiFile(project) ?: return@p true
-                val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
-                val name = pathReferenceExpressionSupport.extract(configExpression, contextFile, filePath) ?: return@p true
-                val builder = ParadoxScriptExpressionLookupElementBuilder.create(file, name)
-                    .withIcon(PlsIcons.Nodes.PathReference)
-                    .withTailText(tailText)
-                    .withTypeText(file.name)
-                    .withTypeIcon(file.icon)
-                result.addScriptExpressionElement(context, builder)
-                true
-            }
-        }
+        CwtConfigHandler.completePathReference(context, result)
     }
 }
 
@@ -387,56 +253,7 @@ class ParadoxEnumValueScriptExpressionSupport : ParadoxScriptExpressionSupport {
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
-        val config = context.config ?: return
-        val enumName = config.expression?.value ?: return
-        val configGroup = config.info.configGroup
-        val project = configGroup.project
-        val contextElement = context.contextElement!!
-        val tailText = CwtConfigHandler.getScriptExpressionTailText(config)
-        //提示简单枚举
-        val enumConfig = configGroup.enums[enumName]
-        if(enumConfig != null) {
-            ProgressManager.checkCanceled()
-            val enumValueConfigs = enumConfig.valueConfigMap.values
-            if(enumValueConfigs.isEmpty()) return
-            val typeFile = enumConfig.pointer.containingFile
-            for(enumValueConfig in enumValueConfigs) {
-                val name = enumValueConfig.value
-                val element = enumValueConfig.pointer.element ?: continue
-                val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
-                    .withIcon(PlsIcons.Nodes.EnumValue)
-                    .withTailText(tailText)
-                    .withTypeText(typeFile?.name)
-                    .withTypeIcon(typeFile?.icon)
-                    .caseInsensitive()
-                    .withPriority(PlsCompletionPriorities.enumPriority)
-                result.addScriptExpressionElement(context, builder)
-            }
-        }
-        //提示复杂枚举
-        val complexEnumConfig = configGroup.complexEnums[enumName]
-        if(complexEnumConfig != null) {
-            ProgressManager.checkCanceled()
-            val typeFile = complexEnumConfig.pointer.containingFile
-            val searchScope = complexEnumConfig.searchScopeType
-            val selector = complexEnumValueSelector(project, contextElement)
-                .withSearchScopeType(searchScope)
-                .contextSensitive()
-                .distinctByName()
-            ParadoxComplexEnumValueSearch.search(enumName, selector).processQueryAsync { info ->
-                ProgressManager.checkCanceled()
-                val name = info.name
-                val element = ParadoxComplexEnumValueElement(contextElement, info, project)
-                val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
-                    .withIcon(PlsIcons.Nodes.ComplexEnumValue)
-                    .withTailText(tailText)
-                    .withTypeText(typeFile?.name)
-                    .withTypeIcon(typeFile?.icon)
-                    .withPriority(PlsCompletionPriorities.complexEnumPriority)
-                result.addScriptExpressionElement(context, builder)
-                true
-            }
-        }
+        CwtConfigHandler.completeEnumValue(context, result)
     }
 }
 
@@ -460,7 +277,6 @@ class ParadoxModifierScriptExpressionSupport : ParadoxScriptExpressionSupport {
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
-        //提示预定义的modifier
         ParadoxModifierHandler.completeModifier(context, result)
     }
 }
@@ -565,36 +381,7 @@ class ParadoxConstantScriptExpressionSupport : ParadoxScriptConstantLikeExpressi
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
-        val config = context.config ?: return
-        val configExpression = config.expression ?: return
-        val icon = when(configExpression) {
-            is CwtKeyExpression -> PlsIcons.Nodes.Property
-            is CwtValueExpression -> PlsIcons.Nodes.Value
-        }
-        val name = configExpression.value ?: return
-        if(configExpression is CwtValueExpression) {
-            //常量的值也可能是yes/no
-            if(name == "yes") {
-                if(context.quoted) return
-                result.addExpressionElement(context, PlsLookupElements.yesLookupElement)
-                return
-            }
-            if(name == "no") {
-                if(context.quoted) return
-                result.addExpressionElement(context, PlsLookupElements.noLookupElement)
-                return
-            }
-        }
-        val element = config.resolved().pointer.element ?: return
-        val typeFile = config.resolved().pointer.containingFile
-        val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
-            .withIcon(icon)
-            .withTypeText(typeFile?.name)
-            .withTypeIcon(typeFile?.icon)
-            .caseInsensitive()
-            .withScopeMatched(context.scopeMatched)
-            .withPriority(PlsCompletionPriorities.constantPriority)
-        result.addScriptExpressionElement(context, builder)
+        CwtConfigHandler.completeConstant(context, result)
     }
 }
 
