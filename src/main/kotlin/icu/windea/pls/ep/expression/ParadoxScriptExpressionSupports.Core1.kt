@@ -61,10 +61,10 @@ class ParadoxDynamicValueExpressionSupport : ParadoxScriptExpressionSupport {
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         //not key/value or quoted -> only dynamic value name, no scope info
         if(context.config !is CwtMemberConfig<*> || context.quoted) {
-            CwtConfigHandler.completeDynamicValue(context, result)
+            ParadoxCompletionManager.completeDynamicValue(context, result)
             return
         }
-        CwtConfigHandler.completeDynamicValueExpression(context, result)
+        ParadoxCompletionManager.completeDynamicValueExpression(context, result)
     }
 }
 
@@ -103,7 +103,7 @@ class ParadoxScopeFieldExpressionSupport : ParadoxScriptExpressionSupport {
             }
             else -> {}
         }
-        CwtConfigHandler.completeScopeFieldExpression(context, result)
+        ParadoxCompletionManager.completeScopeFieldExpression(context, result)
         when(configExpression.type) {
             CwtDataTypes.Scope -> {
                 context.scopeName = null
@@ -147,7 +147,7 @@ class ParadoxValueFieldExpressionSupport : ParadoxScriptExpressionSupport {
             }
             else -> {}
         }
-        CwtConfigHandler.completeValueFieldExpression(context, result)
+        ParadoxCompletionManager.completeValueFieldExpression(context, result)
         when(configExpression.type) {
             CwtDataTypes.IntValueField -> {
                 context.isInt = null
@@ -189,7 +189,7 @@ class ParadoxVariableFieldExpressionSupport : ParadoxScriptExpressionSupport {
             }
             else -> {}
         }
-        CwtConfigHandler.completeVariableFieldExpression(context, result)
+        ParadoxCompletionManager.completeVariableFieldExpression(context, result)
         when(configExpression.type) {
             CwtDataTypes.IntVariableField -> {
                 context.isInt = null

@@ -48,7 +48,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
             val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
             if(memberElement != null) {
-                CwtConfigHandler.addKeyCompletions(memberElement, context, resultToUse)
+                ParadoxCompletionManager.addKeyCompletions(memberElement, context, resultToUse)
             }
         }
         if(mayBeValue) {
@@ -56,7 +56,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
             val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
             if(memberElement != null) {
-                CwtConfigHandler.addValueCompletions(memberElement, context, resultToUse)
+                ParadoxCompletionManager.addValueCompletions(memberElement, context, resultToUse)
             }
         }
         if(mayBePropertyValue) {
@@ -67,7 +67,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
                 val incomplete = !quoted && keyword.isEmpty()
                 try {
                     propertyElement.putUserData(PlsKeys.isIncomplete, incomplete)
-                    CwtConfigHandler.addPropertyValueCompletions(element, propertyElement, context, resultToUse)
+                    ParadoxCompletionManager.addPropertyValueCompletions(element, propertyElement, context, resultToUse)
                 } finally {
                     propertyElement.putUserData(PlsKeys.isIncomplete, null)
                 }

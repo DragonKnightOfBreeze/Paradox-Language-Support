@@ -23,6 +23,6 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
         context.keyword = keyword
         
         //提示concept的name或alias
-        CwtConfigHandler.completeConcept(context, result)
+        ParadoxCompletionManager.completeConcept(context, result)
     }
 }

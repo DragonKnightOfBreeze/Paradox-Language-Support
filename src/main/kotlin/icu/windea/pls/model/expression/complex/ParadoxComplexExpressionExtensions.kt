@@ -84,7 +84,7 @@ fun completeForScopeExpressionNode(node: ParadoxScopeFieldExpressionNode, contex
         context.keyword = keywordToUse
         context.keywordOffset = dataSourceNode.rangeInExpression.startOffset
         val prefix = prefixNode.text
-        CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
+        ParadoxCompletionManager.completeScopeLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
         context.keyword = keyword
         context.keywordOffset = keywordOffset
         return true
@@ -98,11 +98,11 @@ fun completeForScopeExpressionNode(node: ParadoxScopeFieldExpressionNode, contex
         context.keyword = keywordToUse
         context.keywordOffset = node.rangeInExpression.startOffset
         if(inFirstNode) {
-            CwtConfigHandler.completeSystemScope(context, resultToUse)
-            CwtConfigHandler.completeScope(context, resultToUse)
-            CwtConfigHandler.completeScopeLinkPrefix(context, resultToUse)
+            ParadoxCompletionManager.completeSystemScope(context, resultToUse)
+            ParadoxCompletionManager.completeScope(context, resultToUse)
+            ParadoxCompletionManager.completeScopeLinkPrefix(context, resultToUse)
         }
-        CwtConfigHandler.completeScopeLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
+        ParadoxCompletionManager.completeScopeLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
         context.keyword = keyword
         context.keywordOffset = keywordOffset
         return false
@@ -133,7 +133,7 @@ fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, contex
         context.keyword = keywordToUse
         context.keywordOffset = dataSourceNode.rangeInExpression.startOffset
         val prefix = prefixNode.text
-        CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
+        ParadoxCompletionManager.completeValueLinkDataSource(context, resultToUse, prefix, dataSourceNodeToCheck)
         context.keyword = keyword
         context.keywordOffset = keywordOffset
         return true
@@ -145,10 +145,10 @@ fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, contex
         context.keyword = keywordToUse
         context.keywordOffset = node.rangeInExpression.startOffset
         if(inFirstNode) {
-            CwtConfigHandler.completeValueLinkValue(context, resultToUse)
-            CwtConfigHandler.completeValueLinkPrefix(context, resultToUse)
+            ParadoxCompletionManager.completeValueLinkValue(context, resultToUse)
+            ParadoxCompletionManager.completeValueLinkPrefix(context, resultToUse)
         }
-        CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
+        ParadoxCompletionManager.completeValueLinkDataSource(context, resultToUse, null, dataSourceNodeToCheck)
         context.keyword = keyword
         context.keywordOffset = keywordOffset
         return false
@@ -161,5 +161,5 @@ fun completeForVariableDataExpressionNode(node: ParadoxDataExpressionNode, conte
     val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
     val resultToUse = result.withPrefixMatcher(keywordToUse)
     context.keyword = keywordToUse
-    CwtConfigHandler.completeValueLinkDataSource(context, resultToUse, null, node, variableOnly = true)
+    ParadoxCompletionManager.completeValueLinkDataSource(context, resultToUse, null, node, variableOnly = true)
 }

@@ -155,7 +155,7 @@ private class ParadoxDynamicValueExpressionImpl(
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
                     context.keywordOffset = node.rangeInExpression.startOffset
-                    CwtConfigHandler.completeDynamicValue(context, resultToUse)
+                    ParadoxCompletionManager.completeDynamicValue(context, resultToUse)
                     break
                 }
             } else if(node is ParadoxScopeFieldExpression) {

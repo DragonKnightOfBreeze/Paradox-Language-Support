@@ -52,7 +52,7 @@ class ParadoxLocalisationScriptExpressionSupport : ParadoxScriptExpressionSuppor
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
-        CwtConfigHandler.completeLocalisation(context, result)
+        ParadoxCompletionManager.completeLocalisation(context, result)
     }
 }
 
@@ -85,7 +85,7 @@ class ParadoxSyncedLocalisationScriptExpressionSupport : ParadoxScriptExpression
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
-        CwtConfigHandler.completeSyncedLocalisation(context, result)
+        ParadoxCompletionManager.completeSyncedLocalisation(context, result)
     }
 }
 
@@ -121,7 +121,7 @@ class ParadoxInlineLocalisationScriptExpressionSupport : ParadoxScriptExpression
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         if(context.quoted) return
         
-        CwtConfigHandler.completeLocalisation(context, result)
+        ParadoxCompletionManager.completeLocalisation(context, result)
     }
 }
 
@@ -156,7 +156,7 @@ class ParadoxDefinitionScriptExpressionSupport : ParadoxScriptExpressionSupport 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
-        CwtConfigHandler.completeDefinition(context, result)
+        ParadoxCompletionManager.completeDefinition(context, result)
     }
 }
 
@@ -203,7 +203,7 @@ class ParadoxPathReferenceScriptExpressionSupport : ParadoxScriptExpressionSuppo
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
-        CwtConfigHandler.completePathReference(context, result)
+        ParadoxCompletionManager.completePathReference(context, result)
     }
 }
 
@@ -253,7 +253,7 @@ class ParadoxEnumValueScriptExpressionSupport : ParadoxScriptExpressionSupport {
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
-        CwtConfigHandler.completeEnumValue(context, result)
+        ParadoxCompletionManager.completeEnumValue(context, result)
     }
 }
 
@@ -320,7 +320,7 @@ class ParadoxAliasNameScriptExpressionSupport : ParadoxScriptExpressionSupport {
         
         val config = context.config ?: return
         val aliasName = config.expression?.value ?: return
-        CwtConfigHandler.completeAliasName(aliasName, context, result)
+        ParadoxCompletionManager.completeAliasName(aliasName, context, result)
     }
 }
 
@@ -381,7 +381,7 @@ class ParadoxConstantScriptExpressionSupport : ParadoxScriptConstantLikeExpressi
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
-        CwtConfigHandler.completeConstant(context, result)
+        ParadoxCompletionManager.completeConstant(context, result)
     }
 }
 
@@ -399,6 +399,6 @@ class ParadoxTemplateScriptExpressionSupport : ParadoxScriptConstantLikeExpressi
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
-        CwtConfigHandler.completeTemplateExpression(context, result)
+        ParadoxCompletionManager.completeTemplateExpression(context, result)
     }
 }

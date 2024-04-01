@@ -187,7 +187,7 @@ private class ParadoxScriptValueExpressionImpl(
                     val configs = context.configs
                     context.config = this.config
                     context.configs = emptyList()
-                    CwtConfigHandler.completeScriptExpression(context, resultToUse)
+                    ParadoxCompletionManager.completeScriptExpression(context, resultToUse)
                     context.config = config
                     context.configs = configs
                 }
@@ -215,7 +215,7 @@ private class ParadoxScriptValueExpressionImpl(
                         context.keywordOffset = node.rangeInExpression.startOffset
                         context.config = inferredConfig
                         context.configs = emptyList()
-                        CwtConfigHandler.completeScriptExpression(context, resultToUse)
+                        ParadoxCompletionManager.completeScriptExpression(context, resultToUse)
                         context.config = config
                         context.configs = configs
                     }
