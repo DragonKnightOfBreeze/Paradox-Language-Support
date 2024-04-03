@@ -14,6 +14,9 @@ class ParadoxScriptExpressionLookupElementBuilder(
     var typeIcon: Icon? = null
     var priority: Double? = null
     var bold: Boolean = false
+    var italic: Boolean = false
+    var underlined: Boolean = false
+    var strikeout: Boolean = false
     var caseSensitive: Boolean = true
     
     var scopeMatched: Boolean = true
@@ -27,6 +30,9 @@ class ParadoxScriptExpressionLookupElementBuilder(
     fun withTypeIcon(typeIcon: Icon?) = apply { this.typeIcon = typeIcon }
     fun withPriority(priority: Double?) = apply { this.priority = priority }
     fun bold() = apply { this.bold = true }
+    fun italic() = apply { this.italic = true }
+    fun underlined() = apply { this.underlined = true }
+    fun strikeout() = apply { this.strikeout = true }
     fun caseInsensitive() = apply { this.caseSensitive = false }
     
     fun withScopeMatched(scopeMatched: Boolean) = apply { this.scopeMatched = scopeMatched }

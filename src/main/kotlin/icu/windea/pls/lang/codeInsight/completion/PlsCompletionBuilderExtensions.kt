@@ -42,31 +42,23 @@ fun LookupElement.withExplicitProximity(explicitProximity: Int): LookupElement {
     return PrioritizedLookupElement.withExplicitProximity(this, explicitProximity)
 }
 
-fun CompletionResultSet.addExpressionElement(
-    context: ProcessingContext,
-    lookupElement: LookupElement
-) {
+fun CompletionResultSet.addSimpleScriptExpressionElement(context: ProcessingContext, lookupElement: LookupElement?) {
+    if(lookupElement == null) return
     val id = lookupElement.lookupString
     if(context.completionIds?.add(id) == false) return
-    ProgressManager.checkCanceled()
     addElement(lookupElement)
 }
 
-fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
+fun CompletionResultSet.addBlockScriptExpressionElement(context: ProcessingContext) {
     val id = "{...}"
-    //排除重复项
     if(context.completionIds?.add(id) == false) return
-    
-    val config = context.config!!
-    
-    run {
-        val lookupElement = PlsLookupElements.blockLookupElement
-        addExpressionElement(context, lookupElement)
-    }
+    val lookupElement = PlsLookupElements.blockLookupElement
+    addElement(lookupElement)
     
     //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
     val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
     if(completeWithClauseTemplate) {
+        val config = context.config!!
         val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
         if(entryConfigs.isNotEmpty()) {
             val tailText1 = "{ <generate via template> }"
@@ -79,10 +71,7 @@ fun CompletionResultSet.addBlockElement(context: ProcessingContext) {
     }
 }
 
-fun CompletionResultSet.addScriptExpressionElement(
-    context: ProcessingContext,
-    builder: ParadoxScriptExpressionLookupElementBuilder
-) = with(builder) {
+fun CompletionResultSet.addScriptExpressionElement(context: ProcessingContext, builder: ParadoxScriptExpressionLookupElementBuilder) = with(builder) {
     //should be filtered out before, check again here
     if((!builder.scopeMatched || !context.scopeMatched) && getSettings().completion.completeOnlyScopeIsMatched) return
     
@@ -132,6 +121,15 @@ fun CompletionResultSet.addScriptExpressionElement(
     }
     if(bold) {
         lookupElement = lookupElement.bold()
+    }
+    if(italic) {
+        lookupElement = lookupElement.withItemTextItalic(true)
+    }
+    if(underlined) {
+        lookupElement = lookupElement.withItemTextUnderlined(true)
+    }
+    if(strikeout) {
+        lookupElement = lookupElement.strikeout()
     }
     if(!caseSensitive) {
         lookupElement = lookupElement.withCaseSensitivity(false)

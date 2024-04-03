@@ -27,6 +27,7 @@ interface ParadoxDefinitionTypeExpression {
     operator fun component2() = subtypes
     
     fun matches(type: String, subtypes: Collection<String>): Boolean
+    fun matches(typeExpression: String): Boolean
     fun matches(typeExpression: ParadoxDefinitionTypeExpression): Boolean
     fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean
     
@@ -59,6 +60,10 @@ private class ParadoxDefinitionTypeExpressionImpl(
     
     override fun matches(typeExpression: ParadoxDefinitionTypeExpression): Boolean {
         return matches(typeExpression.type, typeExpression.subtypes)
+    }
+    
+    override fun matches(typeExpression: String): Boolean {
+        return matches(ParadoxDefinitionTypeExpression.resolve(typeExpression))
     }
     
     override fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean {

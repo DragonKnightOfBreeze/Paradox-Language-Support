@@ -24,6 +24,7 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.CwtConfigMatcher.Options
 import icu.windea.pls.model.*
+import icu.windea.pls.model.expression.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.model.expression.complex.nodes.*
 import icu.windea.pls.model.path.*
@@ -287,7 +288,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile?.name)
                 .withTypeIcon(typeFile?.icon)
                 .withForceInsertCurlyBraces(tuples.isEmpty())
-                .bold()
+                .italic()
                 .caseInsensitive()
                 .withPriority(PlsCompletionPriorities.rootKeyPriority)
             result.addScriptExpressionElement(context, builder)
@@ -550,12 +551,12 @@ object ParadoxCompletionManager {
             //常量的值也可能是yes/no
             if(name == "yes") {
                 if(context.quoted) return
-                result.addExpressionElement(context, PlsLookupElements.yesLookupElement)
+                result.addSimpleScriptExpressionElement(context, PlsLookupElements.yesLookupElement)
                 return
             }
             if(name == "no") {
                 if(context.quoted) return
-                result.addExpressionElement(context, PlsLookupElements.noLookupElement)
+                result.addSimpleScriptExpressionElement(context, PlsLookupElements.noLookupElement)
                 return
             }
         }
@@ -1091,7 +1092,64 @@ object ParadoxCompletionManager {
         if(!getSettings().completion.completeByExtendedCwtConfig) return
         ProgressManager.checkCanceled()
         
-        //TODO 1.3.5
+        val config = context.config ?: return
+        val typeExpression = config.expression?.value ?: return
+        val configGroup = config.info.configGroup
+        
+        run r1@{
+            configGroup.definitions.values.forEach { configs0 ->
+                configs0.forEach f@{ config0 ->
+                    ProgressManager.checkCanceled()
+                    val name = config0.name
+                    val type = config0.type
+                    if(name.isEmpty()) return@f
+                    if(!ParadoxDefinitionTypeExpression.resolve(type).matches(typeExpression)) return@f
+                    val element = config0.pointer.element
+                    val tailText = " from definitions"
+                    val typeFile = config0.pointer.containingFile
+                    val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
+                        .withIcon(PlsIcons.Nodes.Definition(type))
+                        .withTailText(tailText)
+                        .withTypeText(typeFile?.name)
+                        .withTypeIcon(typeFile?.icon)
+                    result.addScriptExpressionElement(context, builder)
+                }
+            }
+        }
+        run r1@{
+            if(typeExpression != "game_rule") return@r1
+            configGroup.gameRules.values.forEach f@{ config0 ->
+                ProgressManager.checkCanceled()
+                val name = config0.name
+                if(name.isEmpty()) return@f
+                val element = config0.pointer.element
+                val tailText = " from game rules"
+                val typeFile = config0.pointer.containingFile
+                val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
+                    .withIcon(PlsIcons.Nodes.Definition("game_rule"))
+                    .withTailText(tailText)
+                    .withTypeText(typeFile?.name)
+                    .withTypeIcon(typeFile?.icon)
+                result.addScriptExpressionElement(context, builder)
+            }
+        }
+        run r1@{
+            if(typeExpression != "on_action") return@r1
+            configGroup.onActions.values.forEach f@{ config0 ->
+                ProgressManager.checkCanceled()
+                val name = config0.name
+                if(name.isEmpty()) return@f
+                val element = config0.pointer.element
+                val tailText = " from on actions"
+                val typeFile = config0.pointer.containingFile
+                val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
+                    .withIcon(PlsIcons.Nodes.Definition("on_action"))
+                    .withTailText(tailText)
+                    .withTypeText(typeFile?.name)
+                    .withTypeIcon(typeFile?.icon)
+                result.addScriptExpressionElement(context, builder)
+            }
+        }
     }
     
     fun completeExtendedInlineScript(context: ProcessingContext, result: CompletionResultSet) {

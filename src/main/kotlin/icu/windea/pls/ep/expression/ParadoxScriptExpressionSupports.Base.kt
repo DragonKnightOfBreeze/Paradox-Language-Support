@@ -19,7 +19,7 @@ class ParadoxBlockScriptExpressionSupport : ParadoxScriptExpressionSupport {
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        result.addBlockElement(context)
+        result.addBlockScriptExpressionElement(context)
     }
 }
 
@@ -29,7 +29,7 @@ class ParadoxBoolScriptExpressionSupport: ParadoxScriptExpressionSupport {
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        result.addExpressionElement(context, PlsLookupElements.yesLookupElement)
-        result.addExpressionElement(context, PlsLookupElements.noLookupElement)
+        result.addSimpleScriptExpressionElement(context, PlsLookupElements.yesLookupElement)
+        result.addSimpleScriptExpressionElement(context, PlsLookupElements.noLookupElement)
     }
 }
