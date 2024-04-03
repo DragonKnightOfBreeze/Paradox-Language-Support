@@ -1107,8 +1107,9 @@ object ParadoxCompletionManager {
                 configs0.forEach f@{ config0 ->
                     ProgressManager.checkCanceled()
                     val name = config0.name
-                    val type = config0.type
                     if(name.isEmpty()) return@f
+                    if(checkExtendedConfigName(name)) return@f
+                    val type = config0.type
                     if(!ParadoxDefinitionTypeExpression.resolve(type).matches(typeExpression)) return@f
                     val element = config0.pointer.element
                     val typeFile = config0.pointer.containingFile
@@ -1127,7 +1128,7 @@ object ParadoxCompletionManager {
             configGroup.extendedGameRules.values.forEach f@{ config0 ->
                 ProgressManager.checkCanceled()
                 val name = config0.name
-                if(name.isEmpty()) return@f
+                if(checkExtendedConfigName(name)) return@f
                 val element = config0.pointer.element
                 val typeFile = config0.pointer.containingFile
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
@@ -1144,7 +1145,7 @@ object ParadoxCompletionManager {
             configGroup.extendedOnActions.values.forEach f@{ config0 ->
                 ProgressManager.checkCanceled()
                 val name = config0.name
-                if(name.isEmpty()) return@f
+                if(checkExtendedConfigName(name)) return@f
                 val element = config0.pointer.element
                 val typeFile = config0.pointer.containingFile
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
@@ -1169,7 +1170,7 @@ object ParadoxCompletionManager {
         configGroup.extendedInlineScripts.values.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
             val name = config0.name
-            if(name.isEmpty()) return@f
+            if(checkExtendedConfigName(name)) return@f
             val element = config0.pointer.element
             val typeFile = config0.pointer.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
@@ -1201,7 +1202,7 @@ object ParadoxCompletionManager {
         configGroup.extendedComplexEnumValues[enumName]?.values?.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
             val name = config0.name
-            if(name.isEmpty()) return@f
+            if(checkExtendedConfigName(name)) return@f
             val element = config0.pointer.element
             val typeFile = config0.pointer.containingFile
             val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
@@ -1226,7 +1227,7 @@ object ParadoxCompletionManager {
         configGroup.extendedDynamicValues[dynamicValueType]?.values?.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
             val name = config0.name
-            if(name.isEmpty()) return@f
+            if(checkExtendedConfigName(name)) return@f
             val type = config0.type
             val element = config0.pointer.element
             val typeFile = config0.pointer.containingFile
@@ -1238,6 +1239,15 @@ object ParadoxCompletionManager {
                 .underlined() //used for completions from extended configs
             result.addScriptExpressionElement(context, builder)
         }
+    }
+    
+    private fun checkExtendedConfigName(text: String) : Boolean {
+        //ignored if config name is empty
+        if(text.isEmpty()) return true
+        //ignored if config name is a template expression
+        //although we can use CwtTemplateExpression.processResolveResult to list matched literals (not yet)
+        if(CwtTemplateExpression.resolve(text).expressionString.isNotEmpty()) return true
+        return false
     }
     //endregion
 }
