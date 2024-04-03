@@ -1093,6 +1093,26 @@ object ParadoxCompletionManager {
     //endregion
     
     //region Extended Completion Methods
+    fun completeExtendedScriptedVariables(context: ProcessingContext, result: CompletionResultSet) {
+        if(!getSettings().completion.completeByExtendedCwtConfig) return
+        ProgressManager.checkCanceled()
+        
+        val configGroup = context.configGroup ?: return
+        configGroup.extendedScriptedVariables.values.forEach f@{ config0 ->
+            ProgressManager.checkCanceled()
+            val name = config0.name
+            if(checkExtendedConfigName(name)) return@f
+            if(context.completionIds?.add(name) == false) return@f //排除重复项
+            val element = config0.pointer.element ?: return@f
+            val typeFile = config0.pointer.containingFile
+            val lookupElement = LookupElementBuilder.create(element, name)
+                .withIcon(PlsIcons.Nodes.ScriptedVariable)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withItemTextUnderlined(true) //used for completions from extended configs
+            result.addElement(lookupElement)
+        }
+    }
+    
     fun completeExtendedDefinition(context: ProcessingContext, result: CompletionResultSet) {
         if(!getSettings().completion.completeByExtendedCwtConfig) return
         ProgressManager.checkCanceled()
@@ -1244,8 +1264,8 @@ object ParadoxCompletionManager {
     private fun checkExtendedConfigName(text: String) : Boolean {
         //ignored if config name is empty
         if(text.isEmpty()) return true
-        //ignored if config name is a template expression
-        //although we can use CwtTemplateExpression.processResolveResult to list matched literals (not yet)
+        //ignored if config name is a template expression,
+        //although we can use CwtTemplateExpression.processResolveResult to list matched literals
         if(CwtTemplateExpression.resolve(text).expressionString.isNotEmpty()) return true
         return false
     }

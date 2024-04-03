@@ -4,10 +4,14 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
 import com.intellij.util.*
+import icons.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -21,20 +25,28 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
         val file = parameters.originalFile
         val project = file.project
         
+        val gameType = selectGameType(file)
+        val configGroup = if(gameType != null) getConfigGroup(project, gameType) else null
+        context.configGroup = configGroup
+        context.completionIds = mutableSetOf<String>().synced()
+        
         //同时需要同时查找当前文件中的和全局的
         val selector = scriptedVariableSelector(project, element).contextSensitive().distinctByName()
-        ParadoxLocalScriptedVariableSearch.search(selector).processQuery { processScriptedVariable(it, result) }
-        ParadoxGlobalScriptedVariableSearch.search(selector).processQuery { processScriptedVariable(it, result) }
+        ParadoxLocalScriptedVariableSearch.search(selector).processQuery { processScriptedVariable(context, result, it) }
+        ParadoxGlobalScriptedVariableSearch.search(selector).processQuery { processScriptedVariable(context, result, it) }
+        
+        ParadoxCompletionManager.completeExtendedScriptedVariables(context, result)
     }
     
     @Suppress("SameReturnValue")
-    private fun processScriptedVariable(scriptedVariable: ParadoxScriptScriptedVariable, result: CompletionResultSet): Boolean {
+    private fun processScriptedVariable(context: ProcessingContext, result: CompletionResultSet, element: ParadoxScriptScriptedVariable): Boolean {
         ProgressManager.checkCanceled()
-        val name = scriptedVariable.name ?: return true
-        val icon = scriptedVariable.icon
-        val tailText = scriptedVariable.value?.let { " = $it" }
-        val typeFile = scriptedVariable.containingFile
-        val lookupElement = LookupElementBuilder.create(scriptedVariable, name).withIcon(icon)
+        val name = element.name ?: return true
+        if(context.completionIds?.add(name) == false) return true //排除重复项
+        val tailText = element.value?.let { " = $it" }
+        val typeFile = element.containingFile
+        val lookupElement = LookupElementBuilder.create(element, name)
+            .withIcon(PlsIcons.Nodes.ScriptedVariable)
             .withTailText(tailText)
             .withTypeText(typeFile.name, typeFile.icon, true)
         result.addElement(lookupElement)
