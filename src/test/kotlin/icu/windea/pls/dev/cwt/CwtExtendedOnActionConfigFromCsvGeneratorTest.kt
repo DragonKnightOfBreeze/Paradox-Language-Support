@@ -3,7 +3,7 @@ package icu.windea.pls.dev.cwt
 import icu.windea.pls.model.*
 import org.junit.*
 
-class CwtOnActionConfigFromCsvGeneratorTest {
+class CwtExtendedOnActionConfigFromCsvGeneratorTest {
     @Test
     fun testForCk2() {
         CwtOnActionConfigFromCsvGenerator(

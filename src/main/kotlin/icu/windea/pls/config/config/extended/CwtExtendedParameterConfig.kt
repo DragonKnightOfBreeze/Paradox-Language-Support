@@ -1,17 +1,19 @@
-package icu.windea.pls.config.config
+package icu.windea.pls.config.config.extended
 
 import icu.windea.pls.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
 /**
- * @property name template_expression
+ * @property name (key) template_expression
+ * @property contextKey (option) context_key: string
  * @property contextConfigsType (option) context_configs_type: string = "single"
  */
-interface CwtInlineScriptConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
+interface CwtExtendedParameterConfig : CwtExtendedConfig {
     val name: String
+    val contextKey: String
     val contextConfigsType: String
     
     /**
@@ -20,26 +22,30 @@ interface CwtInlineScriptConfig : CwtDelegatedConfig<CwtMemberElement, CwtMember
     fun getContextConfigs(): List<CwtMemberConfig<*>>
     
     companion object Resolver {
-        fun resolve(config: CwtMemberConfig<*>): CwtInlineScriptConfig = doResolve(config)
+        fun resolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? {
+            return doResolve(config)
+        }
     }
 }
 
 //Implementations (interned)
 
-private fun doResolve(config: CwtMemberConfig<*>): CwtInlineScriptConfig {
+private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? {
     val name = when(config) {
         is CwtPropertyConfig -> config.key
         is CwtValueConfig -> config.value
     }
+    val contextKey = config.findOption("context_key")?.stringValue ?: return null
     val contextConfigsType = config.findOption("context_configs_type")?.stringValue ?: "single"
-    return CwtInlineScriptConfigImpl(config, name, contextConfigsType)
+    return CwtExtendedParameterConfigImpl(config, name, contextKey, contextConfigsType)
 }
 
-private class CwtInlineScriptConfigImpl(
+private class CwtExtendedParameterConfigImpl(
     override val config: CwtMemberConfig<*>,
     override val name: String,
+    override val contextKey: String,
     override val contextConfigsType: String,
-) : CwtInlineScriptConfig {
+) : CwtExtendedParameterConfig {
     override fun getContextConfigs(): List<CwtMemberConfig<*>> {
         if(config !is CwtPropertyConfig) return emptyList()
         val r = when(contextConfigsType) {

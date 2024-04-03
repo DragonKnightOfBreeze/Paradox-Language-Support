@@ -1,33 +1,33 @@
-package icu.windea.pls.config.config
+package icu.windea.pls.config.config.extended
 
-import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.config.config.*
 
 /**
  * @property name template_expression
  * @property eventType (option) event_type: string
  */
-interface CwtOnActionConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
+interface CwtExtendedOnActionConfig : CwtExtendedConfig {
     val name: String
     val eventType: String
     
     companion object Resolver {
-        fun resolve(config: CwtMemberConfig<*>): CwtOnActionConfig? = doResolve(config)
+        fun resolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig? = doResolve(config)
     }
 }
 
 //Implementations
 
-private fun doResolve(config: CwtMemberConfig<*>): CwtOnActionConfig? {
+private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig? {
     val name = when(config) {
         is CwtPropertyConfig -> config.key
         is CwtValueConfig -> config.value
     }
     val eventType = config.findOption("event_type")?.stringValue ?: return null
-    return CwtOnActionConfigImpl(config, name, eventType)
+    return CwtExtendedOnActionConfigImpl(config, name, eventType)
 }
 
-private class CwtOnActionConfigImpl(
+private class CwtExtendedOnActionConfigImpl(
     override val config: CwtMemberConfig<*>,
     override val name: String,
     override val eventType: String
-) : CwtOnActionConfig
+) : CwtExtendedOnActionConfig

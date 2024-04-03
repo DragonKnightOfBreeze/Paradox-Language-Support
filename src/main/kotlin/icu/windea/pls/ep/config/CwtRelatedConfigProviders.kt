@@ -70,18 +70,18 @@ class CwtExtendedRelatedConfigProvider: CwtRelatedConfigProvider {
             val definition = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return@r0
             val definitionInfo = definition.definitionInfo ?: return@r0
             run r1@{
-                val configs = configGroup.definitions.getAllByTemplate(definitionInfo.name, definition, configGroup)
+                val configs = configGroup.extendedDefinitions.getAllByTemplate(definitionInfo.name, definition, configGroup)
                 val matchedConfigs = configs.filter { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) }
                 result.addAll(matchedConfigs)
             }
             run r1@{
                 if(definitionInfo.type != "game_rule") return@r1
-                val config = configGroup.gameRules.getByTemplate(definitionInfo.name, element, configGroup)
+                val config = configGroup.extendedGameRules.getByTemplate(definitionInfo.name, element, configGroup)
                 if(config != null) result.add(config)
             }
             run r1@{
                 if(definitionInfo.type != "on_action") return@r1
-                val config = configGroup.onActions.getByTemplate(definitionInfo.name, element, configGroup)
+                val config = configGroup.extendedOnActions.getByTemplate(definitionInfo.name, element, configGroup)
                 if(config != null) result.add(config)
             }
         }
@@ -91,7 +91,7 @@ class CwtExtendedRelatedConfigProvider: CwtRelatedConfigProvider {
                 when {
                     ParadoxResolveConstraint.Parameter.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxParameterElement>() ?: continue
-                        configGroup.parameters.getAllByTemplate(element.name, element, configGroup)
+                        configGroup.extendedParameters.getAllByTemplate(element.name, element, configGroup)
                             .filterTo(result) { it.contextKey == resolved.contextKey }
                     }
                     ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference) -> {

@@ -51,18 +51,18 @@ object CwtConfigHandler {
     
     fun getConfigPath(element: PsiElement): CwtConfigPath? {
         if(element is CwtFile) return CwtConfigPath.Empty
-        if(element !is CwtProperty && element !is CwtValue) return null
+        if(element !is CwtMemberElement) return null
         return doGetConfigPathFromCache(element)
     }
     
-    private fun doGetConfigPathFromCache(element: PsiElement): CwtConfigPath? {
+    private fun doGetConfigPathFromCache(element: CwtMemberElement): CwtConfigPath? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigPath) {
             val value = doGetConfigPath(element)
             CachedValueProvider.Result.create(value, element)
         }
     }
     
-    private fun doGetConfigPath(element: PsiElement): CwtConfigPath? {
+    private fun doGetConfigPath(element: CwtMemberElement): CwtConfigPath? {
         var current: PsiElement = element
         var depth = 0
         val subPaths = LinkedList<String>()
@@ -84,11 +84,11 @@ object CwtConfigHandler {
     }
     
     fun getConfigType(element: PsiElement): CwtConfigType? {
-        if(element !is CwtProperty && element !is CwtValue) return null
+        if(element !is CwtMemberElement) return null
         return doGetConfigTypeFromCache(element)
     }
     
-    private fun doGetConfigTypeFromCache(element: PsiElement): CwtConfigType? {
+    private fun doGetConfigTypeFromCache(element: CwtMemberElement): CwtConfigType? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigType) {
             val file = element.containingFile ?: return@getCachedValue null
             val value = when(element) {
@@ -101,18 +101,18 @@ object CwtConfigHandler {
         }
     }
     
-    private fun doGetConfigType(element: CwtProperty): CwtConfigType? {
+    private fun doGetConfigType(element: CwtMemberElement): CwtConfigType? {
         val configPath = element.configPath
         if(configPath == null || configPath.isEmpty()) return null
         val path = configPath.path
         return when {
-            path.matchesAntPath("types/type[*]") -> {
+            element is CwtProperty && path.matchesAntPath("types/type[*]") -> {
                 CwtConfigType.Type
             }
-            path.matchesAntPath("types/type[*]/subtype[*]") -> {
+            element is CwtProperty && path.matchesAntPath("types/type[*]/subtype[*]") -> {
                 CwtConfigType.Subtype
             }
-            path.matchesAntPath("types/type[*]/modifiers/**") -> {
+            element is CwtProperty && path.matchesAntPath("types/type[*]/modifiers/**") -> {
                 when {
                     configPath.get(3).surroundsWith("subtype[", "]") -> {
                         if(configPath.length == 5) return CwtConfigType.Modifier
@@ -123,22 +123,28 @@ object CwtConfigHandler {
                 }
                 null
             }
-            path.matchesAntPath("enums/enum[*]") -> {
+            element is CwtProperty && path.matchesAntPath("enums/enum[*]") -> {
                 CwtConfigType.Enum
             }
-            path.matchesAntPath("enums/complex_enum[*]") -> {
+            element is CwtValue && path.matchesAntPath("enums/enum[*]/*") -> {
+                CwtConfigType.EnumValue
+            }
+            element is CwtProperty && path.matchesAntPath("enums/complex_enum[*]") -> {
                 CwtConfigType.ComplexEnum
             }
-            path.matchesAntPath("values/value[*]") -> {
+            element is CwtProperty && path.matchesAntPath("values/value[*]") -> {
                 CwtConfigType.DynamicValueType
             }
-            path.matchesAntPath("inline[*]") -> {
+            element is CwtValue && path.matchesAntPath("values/value[*]/*") -> {
+                CwtConfigType.DynamicValue
+            }
+            element is CwtProperty && path.matchesAntPath("inline[*]") -> {
                 CwtConfigType.Inline
             }
-            path.matchesAntPath("single_alias[*]") -> {
+            element is CwtProperty && path.matchesAntPath("single_alias[*]") -> {
                 CwtConfigType.SingleAlias
             }
-            path.matchesAntPath("alias[*]") -> {
+            element is CwtProperty && path.matchesAntPath("alias[*]") -> {
                 val aliasName = configPath.get(0).substringIn('[', ']', "").substringBefore(':', "")
                 when {
                     aliasName == "modifier" -> return CwtConfigType.Modifier
@@ -147,68 +153,56 @@ object CwtConfigHandler {
                 }
                 CwtConfigType.Alias
             }
-            path.matchesAntPath("links/*") -> {
+            element is CwtProperty && path.matchesAntPath("links/*") -> {
                 CwtConfigType.Link
             }
-            path.matchesAntPath("localisation_links/*") -> {
+            element is CwtProperty && path.matchesAntPath("localisation_links/*") -> {
                 CwtConfigType.LocalisationLink
             }
-            path.matchesAntPath("localisation_commands/*") -> {
+            element is CwtProperty && path.matchesAntPath("localisation_commands/*") -> {
                 CwtConfigType.LocalisationCommand
             }
-            path.matchesAntPath("modifier_categories/*") -> {
+            element is CwtProperty && path.matchesAntPath("modifier_categories/*") -> {
                 CwtConfigType.ModifierCategory
             }
-            path.matchesAntPath("modifiers/*") -> {
+            element is CwtProperty && path.matchesAntPath("modifiers/*") -> {
                 CwtConfigType.Modifier
             }
-            path.matchesAntPath("scopes/*") -> {
+            element is CwtProperty && path.matchesAntPath("scopes/*") -> {
                 CwtConfigType.Scope
             }
-            path.matchesAntPath("scope_groups/*") -> {
+            element is CwtProperty && path.matchesAntPath("scope_groups/*") -> {
                 CwtConfigType.ScopeGroup
             }
-            path.matchesAntPath("system_links/*") -> {
+            element is CwtProperty && path.matchesAntPath("system_links/*") -> {
                 CwtConfigType.SystemLink
             }
-            path.matchesAntPath("localisation_locales/*") -> {
+            element is CwtProperty && path.matchesAntPath("localisation_locales/*") -> {
                 CwtConfigType.LocalisationLocale
             }
-            path.matchesAntPath("localisation_predefined_parameters/*") -> {
+            element is CwtProperty && path.matchesAntPath("localisation_predefined_parameters/*") -> {
                 CwtConfigType.LocalisationPredefinedParameter
             }
             path.matchesAntPath("definitions/*") -> {
-                CwtConfigType.Definition
+                CwtConfigType.ExtendedDefinition
             }
             path.matchesAntPath("game_rules/*") -> {
-                CwtConfigType.GameRule
+                CwtConfigType.ExtendedGameRule
             }
             path.matchesAntPath("on_actions/*") -> {
-                CwtConfigType.OnAction
+                CwtConfigType.ExtendedOnAction
             }
-            else -> null
-        }
-    }
-    
-    private fun doGetConfigType(element: CwtValue): CwtConfigType? {
-        val configPath = element.configPath
-        if(configPath == null || configPath.isEmpty()) return null
-        val path = configPath.path
-        return when {
-            path.matchesAntPath("enums/enum[*]/*") -> {
-                CwtConfigType.EnumValue
+            path.matchesAntPath("inline_scripts/*") -> {
+                CwtConfigType.ExtendedInlineScript
             }
-            path.matchesAntPath("values/value[*]/*") -> {
-                CwtConfigType.DynamicValue
+            path.matchesAntPath("parameters/*") -> {
+                CwtConfigType.ExtendedParameter
             }
-            path.matchesAntPath("definitions/*") -> {
-                CwtConfigType.Definition
+            path.matchesAntPath("complex_enum_values/*/*") -> {
+                CwtConfigType.ExtendedComplexEnumValue
             }
-            path.matchesAntPath("game_rules/*") -> {
-                CwtConfigType.GameRule
-            }
-            path.matchesAntPath("on_actions/*") -> {
-                CwtConfigType.OnAction
+            path.matchesAntPath("dynamic_values/*/*") -> {
+                CwtConfigType.ExtendedDynamicValue
             }
             else -> null
         }
@@ -702,7 +696,7 @@ object CwtConfigHandler {
     //endregion
     
     //region Resolve Methods
-    fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, isKey: Boolean? = null): Array<out PsiReference>? {
+    fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): Array<out PsiReference>? {
         ProgressManager.checkCanceled()
         if(configExpression == null) return null
         
@@ -798,7 +792,7 @@ object CwtConfigHandler {
         return resolved
     }
     
-    fun resolvePredefinedEnumValue(element: ParadoxScriptExpressionElement, name: String, enumName: String, configGroup: CwtConfigGroup): PsiElement? {
+    fun resolvePredefinedEnumValue(name: String, enumName: String, configGroup: CwtConfigGroup): PsiElement? {
         val enumConfig = configGroup.enums[enumName] ?: return null
         val enumValueConfig = enumConfig.valueConfigMap.get(name) ?: return null
         val resolved = enumValueConfig.pointer.element ?: return null

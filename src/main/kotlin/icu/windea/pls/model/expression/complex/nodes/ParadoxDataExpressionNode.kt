@@ -72,7 +72,7 @@ class ParadoxDataExpressionNode(
         
         override fun getReferences(): Array<out PsiReference>? {
             return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-                CwtConfigHandler.getReferences(element, rangeInElement, linkConfig, linkConfig.expression, linkConfig.info.configGroup).orNull()
+                CwtConfigHandler.getReferences(element, rangeInElement, linkConfig, linkConfig.expression).orNull()
             }
         }
         

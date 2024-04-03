@@ -444,8 +444,12 @@ object ParadoxCompletionManager {
                 val file = virtualFile.toPsiFile(project) ?: return@p true
                 val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
                 val name = pathReferenceExpressionSupport.extract(configExpression, contextFile, filePath) ?: return@p true
+                val icon = when {
+                    ParadoxInlineScriptHandler.isInlineScriptExpressionConfig(config) -> PlsIcons.Nodes.InlineScript
+                    else -> PlsIcons.Nodes.PathReference
+                } 
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(file, name)
-                    .withIcon(PlsIcons.Nodes.PathReference)
+                    .withIcon(icon)
                     .withTailText(tailText)
                     .withTypeText(file.name)
                     .withTypeIcon(file.icon)
@@ -832,6 +836,7 @@ object ParadoxCompletionManager {
         val configs = context.configs
         
         val linkConfigs = when {
+            variableOnly -> configGroup.linksAsVariable
             prefix == null -> configGroup.linksAsValueWithoutPrefix.values
             else -> configGroup.linksAsValueWithPrefix.values.filter { prefix == it.prefix }
         }
@@ -1095,9 +1100,10 @@ object ParadoxCompletionManager {
         val config = context.config ?: return
         val typeExpression = config.expression?.value ?: return
         val configGroup = config.info.configGroup
+        val tailText = getScriptExpressionTailText(config)
         
         run r1@{
-            configGroup.definitions.values.forEach { configs0 ->
+            configGroup.extendedDefinitions.values.forEach { configs0 ->
                 configs0.forEach f@{ config0 ->
                     ProgressManager.checkCanceled()
                     val name = config0.name
@@ -1105,48 +1111,48 @@ object ParadoxCompletionManager {
                     if(name.isEmpty()) return@f
                     if(!ParadoxDefinitionTypeExpression.resolve(type).matches(typeExpression)) return@f
                     val element = config0.pointer.element
-                    val tailText = " from definitions"
                     val typeFile = config0.pointer.containingFile
                     val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
                         .withIcon(PlsIcons.Nodes.Definition(type))
                         .withTailText(tailText)
                         .withTypeText(typeFile?.name)
                         .withTypeIcon(typeFile?.icon)
+                        .underlined() //used for completions from extended configs
                     result.addScriptExpressionElement(context, builder)
                 }
             }
         }
         run r1@{
             if(typeExpression != "game_rule") return@r1
-            configGroup.gameRules.values.forEach f@{ config0 ->
+            configGroup.extendedGameRules.values.forEach f@{ config0 ->
                 ProgressManager.checkCanceled()
                 val name = config0.name
                 if(name.isEmpty()) return@f
                 val element = config0.pointer.element
-                val tailText = " from game rules"
                 val typeFile = config0.pointer.containingFile
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
                     .withIcon(PlsIcons.Nodes.Definition("game_rule"))
                     .withTailText(tailText)
                     .withTypeText(typeFile?.name)
                     .withTypeIcon(typeFile?.icon)
+                    .underlined() //used for completions from extended configs
                 result.addScriptExpressionElement(context, builder)
             }
         }
         run r1@{
             if(typeExpression != "on_action") return@r1
-            configGroup.onActions.values.forEach f@{ config0 ->
+            configGroup.extendedOnActions.values.forEach f@{ config0 ->
                 ProgressManager.checkCanceled()
                 val name = config0.name
                 if(name.isEmpty()) return@f
                 val element = config0.pointer.element
-                val tailText = " from on actions"
                 val typeFile = config0.pointer.containingFile
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
                     .withIcon(PlsIcons.Nodes.Definition("on_action"))
                     .withTailText(tailText)
                     .withTypeText(typeFile?.name)
                     .withTypeIcon(typeFile?.icon)
+                    .underlined() //used for completions from extended configs
                 result.addScriptExpressionElement(context, builder)
             }
         }
@@ -1156,7 +1162,24 @@ object ParadoxCompletionManager {
         if(!getSettings().completion.completeByExtendedCwtConfig) return
         ProgressManager.checkCanceled()
         
-        //TODO 1.3.5
+        val config = context.config ?: return
+        val configGroup = config.info.configGroup
+        val tailText = getScriptExpressionTailText(config)
+        
+        configGroup.extendedInlineScripts.values.forEach f@{ config0 ->
+            ProgressManager.checkCanceled()
+            val name = config0.name
+            if(name.isEmpty()) return@f
+            val element = config0.pointer.element
+            val typeFile = config0.pointer.containingFile
+            val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
+                .withIcon(PlsIcons.Nodes.InlineScript)
+                .withTailText(tailText)
+                .withTypeText(typeFile?.name)
+                .withTypeIcon(typeFile?.icon)
+                .underlined() //used for completions from extended configs
+            result.addScriptExpressionElement(context, builder)
+        }
     }
     
     fun completeExtendedParameter(context: ProcessingContext, result: CompletionResultSet) {
@@ -1170,14 +1193,51 @@ object ParadoxCompletionManager {
         if(!getSettings().completion.completeByExtendedCwtConfig) return
         ProgressManager.checkCanceled()
         
-        //TODO 1.3.5
+        val config = context.config ?: return
+        val enumName = config.expression?.value ?: return
+        val configGroup = config.info.configGroup
+        val tailText = getScriptExpressionTailText(config)
+        
+        configGroup.complexEnumValues[enumName]?.values?.forEach f@{ config0 ->
+            ProgressManager.checkCanceled()
+            val name = config0.name
+            if(name.isEmpty()) return@f
+            val element = config0.pointer.element
+            val typeFile = config0.pointer.containingFile
+            val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
+                .withIcon(PlsIcons.Nodes.ComplexEnumValue)
+                .withTailText(tailText)
+                .withTypeText(typeFile?.name)
+                .withTypeIcon(typeFile?.icon)
+                .underlined() //used for completions from extended configs
+            result.addScriptExpressionElement(context, builder)
+        }
     }
     
     fun completeExtendedDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
         if(!getSettings().completion.completeByExtendedCwtConfig) return
         ProgressManager.checkCanceled()
         
-        //TODO 1.3.5
+        val config = context.config ?: return
+        val dynamicValueType = config.expression?.value ?: return
+        val configGroup = config.info.configGroup
+        val tailText = getScriptExpressionTailText(config)
+        
+        configGroup.dynamicValues[dynamicValueType]?.values?.forEach f@{ config0 ->
+            ProgressManager.checkCanceled()
+            val name = config0.name
+            if(name.isEmpty()) return@f
+            val type = config0.type
+            val element = config0.pointer.element
+            val typeFile = config0.pointer.containingFile
+            val builder = ParadoxScriptExpressionLookupElementBuilder.create(element, name)
+                .withIcon(PlsIcons.Nodes.DynamicValue(type))
+                .withTailText(tailText)
+                .withTypeText(typeFile?.name)
+                .withTypeIcon(typeFile?.icon)
+                .underlined() //used for completions from extended configs
+            result.addScriptExpressionElement(context, builder)
+        }
     }
     //endregion
 }

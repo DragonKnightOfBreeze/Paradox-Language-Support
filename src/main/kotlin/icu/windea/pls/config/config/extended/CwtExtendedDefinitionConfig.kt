@@ -1,33 +1,33 @@
-package icu.windea.pls.config.config
+package icu.windea.pls.config.config.extended
 
-import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.config.config.*
 
 /**
  * @property name template_expression
  * @property type (option) type: string
  */
-interface CwtDefinitionConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
+interface CwtExtendedDefinitionConfig : CwtExtendedConfig {
     val name: String
     val type: String
     
     companion object Resolver {
-        fun resolve(config: CwtMemberConfig<*>): CwtDefinitionConfig? = doResolve(config)
+        fun resolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfig? = doResolve(config)
     }
 }
 
 //Implementations (interned)
 
-private fun doResolve(config: CwtMemberConfig<*>): CwtDefinitionConfig? {
+private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfig? {
     val name = when(config) {
         is CwtPropertyConfig -> config.key
         is CwtValueConfig -> config.value
     }
     val type = config.findOption("type")?.stringValue ?: return null
-    return CwtDefinitionConfigImpl(config, name, type)
+    return CwtExtendedDefinitionConfigImpl(config, name, type)
 }
 
-private class CwtDefinitionConfigImpl(
+private class CwtExtendedDefinitionConfigImpl(
     override val config: CwtMemberConfig<*>,
     override val name: String,
     override val type: String
-) : CwtDefinitionConfig 
+) : CwtExtendedDefinitionConfig 

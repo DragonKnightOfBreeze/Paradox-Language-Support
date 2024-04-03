@@ -3,6 +3,7 @@ package icu.windea.pls.ep.config
 import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.config.extended.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -13,7 +14,7 @@ import icu.windea.pls.model.*
 //region Extensions
 
 var CwtDeclarationConfigContext.gameRuleConfig: CwtGameRuleConfig? by createKeyDelegate(CwtDeclarationConfigContext.Keys)
-var CwtDeclarationConfigContext.onActionConfig: CwtOnActionConfig? by createKeyDelegate(CwtDeclarationConfigContext.Keys)
+var CwtDeclarationConfigContext.onActionConfig: CwtExtendedOnActionConfig? by createKeyDelegate(CwtDeclarationConfigContext.Keys)
 
 //endregion
 
@@ -49,7 +50,7 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
         if(definitionType != "game_rule") return null
         if(definitionName.isNullOrEmpty()) return null
-        val gameRuleConfig = configGroup.gameRules.getByTemplate(definitionName, element, configGroup) ?: return null
+        val gameRuleConfig = configGroup.extendedGameRules.getByTemplate(definitionName, element, configGroup) ?: return null
         if(gameRuleConfig.config.configs.isNullOrEmpty()) return null
         return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, gameType, configGroup)
             .apply { this.gameRuleConfig = gameRuleConfig }
@@ -82,7 +83,7 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
         if(definitionType != "on_action") return null
         if(definitionName.isNullOrEmpty()) return null
-        val onActionConfig = configGroup.onActions.getByTemplate(definitionName, element, configGroup) ?: return null
+        val onActionConfig = configGroup.extendedOnActions.getByTemplate(definitionName, element, configGroup) ?: return null
         return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, gameType, configGroup)
             .apply { this.onActionConfig = onActionConfig }
     }

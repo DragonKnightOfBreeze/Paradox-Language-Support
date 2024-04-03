@@ -53,7 +53,7 @@ class ParadoxScriptExpressionPsiReference(
     }
     
     override fun getReferences(): Array<out PsiReference>? {
-        return CwtConfigHandler.getReferences(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
+        return CwtConfigHandler.getReferences(element, rangeInElement, config, config.expression, isKey)
     }
     
     //缓存解析结果以优化性能

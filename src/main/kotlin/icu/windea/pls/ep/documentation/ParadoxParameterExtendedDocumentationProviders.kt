@@ -9,7 +9,7 @@ class ParadoxBaseParameterExtendedDocumentationProvider : ParadoxParameterExtend
     override fun getDocumentation(element: ParadoxParameterElement): String? {
         if(element.name.isEmpty()) return null //ignore
         val configGroup = getConfigGroup(element.project, element.gameType)
-        val configs = configGroup.parameters.getAllByTemplate(element.name, element, configGroup)
+        val configs = configGroup.extendedParameters.getAllByTemplate(element.name, element, configGroup)
         val config = configs.findLast { it.contextKey == element.contextKey } ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation

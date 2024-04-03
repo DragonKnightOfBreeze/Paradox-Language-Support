@@ -3,6 +3,7 @@ package icu.windea.pls.ep.configGroup
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.config.extended.*
 import icu.windea.pls.config.config.settings.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -270,36 +271,36 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 key == "definitions" -> {
                     val configs = property.configs ?: continue
                     for(config in configs) {
-                        val definitionConfig = CwtDefinitionConfig.resolve(config) ?: continue
-                        configGroup.definitions.getOrPut(definitionConfig.name) { mutableListOf() } += definitionConfig
+                        val definitionConfig = CwtExtendedDefinitionConfig.resolve(config) ?: continue
+                        configGroup.extendedDefinitions.getOrPut(definitionConfig.name) { mutableListOf() } += definitionConfig
                     }
                 }
                 key == "game_rules" -> {
                     val configs = property.configs ?: continue
                     for(config in configs) {
                         val gameRuleConfig = CwtGameRuleConfig.resolve(config)
-                        configGroup.gameRules[gameRuleConfig.name] = gameRuleConfig
+                        configGroup.extendedGameRules[gameRuleConfig.name] = gameRuleConfig
                     }
                 }
                 key == "on_actions" -> {
                     val configs = property.configs ?: continue
                     for(config in configs) {
-                        val onActionConfig = CwtOnActionConfig.resolve(config) ?: continue
-                        configGroup.onActions[onActionConfig.name] = onActionConfig
+                        val onActionConfig = CwtExtendedOnActionConfig.resolve(config) ?: continue
+                        configGroup.extendedOnActions[onActionConfig.name] = onActionConfig
                     }
                 }
                 key == "inline_scripts" -> {
                     val configs = property.configs ?: continue
                     for(config in configs) {
-                        val inlineScriptConfig = CwtInlineScriptConfig.resolve(config)
-                        configGroup.inlineScripts[inlineScriptConfig.name] = inlineScriptConfig
+                        val inlineScriptConfig = CwtExtendedInlineScriptConfig.resolve(config)
+                        configGroup.extendedInlineScripts[inlineScriptConfig.name] = inlineScriptConfig
                     }
                 }
                 key == "parameters" -> {
                     val configs = property.configs ?: continue
                     for(config in configs) {
-                        val parameterConfig = CwtParameterConfig.resolve(config) ?: continue
-                        configGroup.parameters.getOrInit(parameterConfig.name) += parameterConfig
+                        val parameterConfig = CwtExtendedParameterConfig.resolve(config) ?: continue
+                        configGroup.extendedParameters.getOrInit(parameterConfig.name) += parameterConfig
                     }
                 }
                 key == "complex_enum_values" -> {
@@ -309,7 +310,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         val type = config.key
                         val configs1 = config.configs ?: continue
                         for(config1 in configs1) {
-                            val complexEnumValueConfig = CwtComplexEnumValueConfig.resolve(config1, type)
+                            val complexEnumValueConfig = CwtExtendedComplexEnumValueConfig.resolve(config1, type)
                             configGroup.complexEnumValues.getOrInit(type)[complexEnumValueConfig.name] = complexEnumValueConfig
                         }
                     }
@@ -321,7 +322,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         val type = config.key
                         val configs1 = config.configs ?: continue
                         for(config1 in configs1) {
-                            val dynamicValueConfig = CwtDynamicValueConfig.resolve(config1, type)
+                            val dynamicValueConfig = CwtExtendedDynamicValueConfig.resolve(config1, type)
                             configGroup.dynamicValues.getOrInit(type)[dynamicValueConfig.name] = dynamicValueConfig
                         }
                     }

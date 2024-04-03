@@ -230,7 +230,7 @@ class ParadoxEnumValueScriptExpressionSupport : ParadoxScriptExpressionSupport {
         //尝试解析为简单枚举
         val enumConfig = configGroup.enums[enumName]
         if(enumConfig != null) {
-            return CwtConfigHandler.resolvePredefinedEnumValue(element, expression, enumName, configGroup)
+            return CwtConfigHandler.resolvePredefinedEnumValue(expression, enumName, configGroup)
         }
         //尝试解析为复杂枚举
         val complexEnumConfig = configGroup.complexEnums[enumName]

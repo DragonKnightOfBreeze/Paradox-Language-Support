@@ -11,7 +11,7 @@ class ParadoxBaseDefinitionExtendedDocumentationProvider : ParadoxDefinitionExte
     override fun getDocumentation(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String? {
         if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
         val configGroup = definitionInfo.configGroup
-        val configs = configGroup.definitions.getAllByTemplate(definitionInfo.name, definition, configGroup)
+        val configs = configGroup.extendedDefinitions.getAllByTemplate(definitionInfo.name, definition, configGroup)
         val config = configs.findLast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) } ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation
@@ -23,7 +23,7 @@ class ParadoxGameRuleExtendedDocumentationProvider : ParadoxDefinitionExtendedDo
         if(definitionInfo.type != "game_rule") return null
         if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
         val configGroup = definitionInfo.configGroup
-        val config = configGroup.gameRules.getByTemplate(definitionInfo.name, definition, configGroup) ?: return null
+        val config = configGroup.extendedGameRules.getByTemplate(definitionInfo.name, definition, configGroup) ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation
     }
@@ -34,7 +34,7 @@ class ParadoxOnActionExtendedDocumentationProvider : ParadoxDefinitionExtendedDo
         if(definitionInfo.type != "on_action") return null
         if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
         val configGroup = definitionInfo.configGroup
-        val config = configGroup.onActions.getByTemplate(definitionInfo.name, definition, configGroup) ?: return null
+        val config = configGroup.extendedOnActions.getByTemplate(definitionInfo.name, definition, configGroup) ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation
     }

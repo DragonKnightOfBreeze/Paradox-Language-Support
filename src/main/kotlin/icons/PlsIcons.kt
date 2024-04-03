@@ -20,7 +20,7 @@ object PlsIcons {
         @JvmField val CwtConfig = loadIcon("/icons/fileTypes/cwtConfig.svg")
     }
     
-    object Nodes{
+    object Nodes {
         @JvmField val ScriptedVariable = loadIcon("/icons/nodes/scriptedVariable.svg")
         @JvmField val Definition = loadIcon("/icons/nodes/definition.svg")
         @JvmField val Localisation = loadIcon("/icons/nodes/localisation.svg")
@@ -36,7 +36,6 @@ object PlsIcons {
         @JvmField val EnumValue = loadIcon("/icons/nodes/enumValue.svg")
         @JvmField val ComplexEnum = loadIcon("/icons/nodes/complexEnum.svg")
         @JvmField val ComplexEnumValue = loadIcon("/icons/nodes/complexEnumValue.svg")
-        @JvmField val DefinitionConfig = loadIcon("/icons/nodes/definitionConfig.svg")
         @JvmField val Scope = loadIcon("/icons/nodes/scope.svg")
         @JvmField val ScopeGroup = loadIcon("/icons/nodes/scopeGroup.svg")
         @JvmField val SystemScope = loadIcon("/icons/nodes/systemScope.svg")
@@ -53,7 +52,10 @@ object PlsIcons {
         @JvmField val EventId = loadIcon("/icons/nodes/eventId.svg")
         @JvmField val PathReference = AllIcons.FileTypes.Any_type
         @JvmField val Inline = AllIcons.FileTypes.AddAny
-        @JvmField val InlineScript = AllIcons.FileTypes.AddAny
+        @JvmField val InlineScript = loadIcon("/icons/nodes/inlineScript.svg")
+        @JvmField val DefinitionConfig = loadIcon("/icons/nodes/definitionConfig.svg")
+        @JvmField val ParameterConfig = loadIcon("/icons/nodes/parameterConfig.svg")
+        @JvmField val InlineScriptConfig = loadIcon("/icons/nodes/inlineScriptConfig.svg")
         
         @JvmStatic fun Definition(type: String?) = when(type) {
             "event" -> EventId

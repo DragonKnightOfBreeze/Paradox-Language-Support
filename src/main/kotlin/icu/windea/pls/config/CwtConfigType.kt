@@ -112,17 +112,34 @@ enum class CwtConfigType(
 		override val descriptionText get() = PlsBundle.message("cwt.description.localisationPredefinedParameter")
 		override val icon get() = PlsIcons.Nodes.PredefinedParameter
 	},
-	Definition("definition") {
+	
+	ExtendedDefinition("extended definition") {
 		override val prefix get() = PlsBundle.message("prefix.definition")
 		override val icon get() = PlsIcons.Nodes.DefinitionConfig
 	},
-	GameRule("game rule") {
+	ExtendedGameRule("extended game rule") {
 		override val prefix get() = PlsBundle.message("prefix.gameRule")
 		override val icon get() = PlsIcons.Nodes.DefinitionConfig
 	},
-	OnAction("on action") {
+	ExtendedOnAction("extended on action") {
 		override val prefix get() = PlsBundle.message("prefix.onAction")
 		override val icon get() = PlsIcons.Nodes.DefinitionConfig
+	},
+	ExtendedInlineScript("extended inline script") {
+		override val prefix get() = PlsBundle.message("prefix.inlineScript")
+		override val icon get() = PlsIcons.Nodes.InlineScriptConfig
+	},
+	ExtendedParameter("extended parameter") {
+		override val prefix get() = PlsBundle.message("prefix.parameter")
+		override val icon get() = PlsIcons.Nodes.ParameterConfig
+	},
+	ExtendedDynamicValue("extended dynamic value") {
+		override val prefix get() = PlsBundle.message("prefix.dynamicValue")
+		override val icon get() = PlsIcons.Nodes.DynamicValue
+	},
+	ExtendedComplexEnumValue("extended complex enum value") {
+		override val prefix get() = PlsBundle.message("prefix.complexEnumValue")
+		override val icon get() = PlsIcons.Nodes.ComplexEnumValue
 	},
 	;
 	

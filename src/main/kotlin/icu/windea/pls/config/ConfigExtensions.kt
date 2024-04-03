@@ -45,16 +45,10 @@ inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T
     return sortedByDescending { CwtDataExpressionPriorityProvider.getPriority(expressionProvider(it), configGroupProvider(it)) }
 }
 
-val CwtProperty.configPath: CwtConfigPath?
+val CwtMemberElement.configPath: CwtConfigPath?
     get() = CwtConfigHandler.getConfigPath(this)
 
-val CwtValue.configPath: CwtConfigPath?
-    get() = CwtConfigHandler.getConfigPath(this)
-
-val CwtProperty.configType: CwtConfigType?
-    get() = CwtConfigHandler.getConfigType(this)
-
-val CwtValue.configType: CwtConfigType?
+val CwtMemberElement.configType: CwtConfigType?
     get() = CwtConfigHandler.getConfigType(this)
 
 

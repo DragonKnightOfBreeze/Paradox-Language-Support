@@ -3,6 +3,7 @@ package icu.windea.pls.config.configGroup
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.config.extended.*
 import icu.windea.pls.config.config.settings.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
@@ -14,26 +15,22 @@ import icu.windea.pls.core.util.*
 annotation class Tags(vararg val value: Tag)
 
 enum class Tag {
-    Computed, Builtin, Extended
+    Settings, Extended, Computed
 }
 
-@Tags(Tag.Builtin, Tag.Extended)
+@Tags(Tag.Settings)
 val CwtConfigGroup.foldingSettings: MutableMap<@CaseInsensitive String, MutableMap<String, CwtFoldingSettingsConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-@Tags(Tag.Builtin, Tag.Extended)
+@Tags(Tag.Settings)
 val CwtConfigGroup.postfixTemplateSettings: MutableMap<String, MutableMap<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
-@Tags(Tag.Extended)
 val CwtConfigGroup.systemLinks: MutableMap<@CaseInsensitive String, CwtSystemLinkConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-@Tags(Tag.Extended)
 val CwtConfigGroup.localisationLocalesById: MutableMap<String, CwtLocalisationLocaleConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-@Tags(Tag.Extended)
 val CwtConfigGroup.localisationLocalesByCode: MutableMap<String, CwtLocalisationLocaleConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-@Tags(Tag.Extended)
 val CwtConfigGroup.localisationPredefinedParameters: MutableMap<String, CwtLocalisationPredefinedParameterConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
@@ -108,27 +105,34 @@ val CwtConfigGroup.modifiers: MutableMap<@CaseInsensitive String, CwtModifierCon
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
 //template_expression - configs
-val CwtConfigGroup.definitions: MutableMap<String, MutableList<CwtDefinitionConfig>>
+@Tags(Tag.Extended)
+val CwtConfigGroup.extendedDefinitions: MutableMap<String, MutableList<CwtExtendedDefinitionConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 //template_expression - config
-val CwtConfigGroup.gameRules: MutableMap<String, CwtGameRuleConfig>
+@Tags(Tag.Extended)
+val CwtConfigGroup.extendedGameRules: MutableMap<String, CwtGameRuleConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 //template_expression - config
-val CwtConfigGroup.onActions: MutableMap<String, CwtOnActionConfig>
+@Tags(Tag.Extended)
+val CwtConfigGroup.extendedOnActions: MutableMap<String, CwtExtendedOnActionConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
 //template_expression - config
-val CwtConfigGroup.inlineScripts: MutableMap<String, CwtInlineScriptConfig>
+@Tags(Tag.Extended)
+val CwtConfigGroup.extendedInlineScripts: MutableMap<String, CwtExtendedInlineScriptConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 //template_expression - configs
-val CwtConfigGroup.parameters: MutableMap<String, MutableList<CwtParameterConfig>>
+@Tags(Tag.Extended)
+val CwtConfigGroup.extendedParameters: MutableMap<String, MutableList<CwtExtendedParameterConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
 //complex_enum_name - template_expression - config
-val CwtConfigGroup.complexEnumValues: MutableMap<String, MutableMap<String, CwtComplexEnumValueConfig>>
+@Tags(Tag.Extended)
+val CwtConfigGroup.complexEnumValues: MutableMap<String, MutableMap<String, CwtExtendedComplexEnumValueConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 //dynamic_value_type - template_expression - config
-val CwtConfigGroup.dynamicValues: MutableMap<String, MutableMap<String, CwtDynamicValueConfig>>
+@Tags(Tag.Extended)
+val CwtConfigGroup.dynamicValues: MutableMap<String, MutableMap<String, CwtExtendedDynamicValueConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
 @Tags(Tag.Computed)
