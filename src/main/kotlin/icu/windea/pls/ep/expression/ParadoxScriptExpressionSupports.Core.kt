@@ -4,10 +4,8 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.lang.annotation.*
 import com.intellij.openapi.util.*
-import com.intellij.patterns.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icons.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -320,7 +318,7 @@ class ParadoxAliasNameScriptExpressionSupport : ParadoxScriptExpressionSupport {
         
         val config = context.config ?: return
         val aliasName = config.expression?.value ?: return
-        ParadoxCompletionManager.completeAliasName(aliasName, context, result)
+        ParadoxCompletionManager.completeAliasName(context, result, aliasName)
     }
 }
 

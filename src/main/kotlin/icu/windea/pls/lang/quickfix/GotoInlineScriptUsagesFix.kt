@@ -11,7 +11,6 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-@WithGameType(ParadoxGameType.Stellaris)
 class GotoInlineScriptUsagesFix: IntentionAndQuickFixAction() {
     override fun getName(): String {
         return PlsBundle.message("fix.gotoInlineScriptUsages")

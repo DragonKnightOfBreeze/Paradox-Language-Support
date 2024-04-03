@@ -3,11 +3,13 @@ package icu.windea.pls.lang.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.psi.*
 import com.intellij.util.*
+import icons.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.expression.complex.nodes.*
 
 object PlsCompletionKeys : KeyRegistry("PlsCompletion")
 
@@ -29,3 +31,5 @@ var ProcessingContext.scopeMatched: Boolean by createKeyDelegate(PlsCompletionKe
 var ProcessingContext.scopeName: String? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.scopeGroupName: String? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.isInt: Boolean? by createKeyDelegate(PlsCompletionKeys)
+var ProcessingContext.prefix: String? by createKeyDelegate(PlsCompletionKeys)
+var ProcessingContext.dataSourceNodeToCheck: ParadoxExpressionNode? by createKeyDelegate(PlsCompletionKeys)

@@ -86,6 +86,10 @@ object ParadoxInlineScriptHandler {
         }
     }
     
+    fun isInlineScriptExpressionConfig(config: CwtConfig<*>): Boolean {
+        return config.expression == inlineScriptPathExpression
+    }
+    
     fun getInlineScriptFilePath(pathReference: String): String? {
         val configExpression = inlineScriptPathExpression
         return ParadoxPathReferenceExpressionSupport.get(configExpression)?.resolvePath(configExpression, pathReference.normalizePath())?.firstOrNull()

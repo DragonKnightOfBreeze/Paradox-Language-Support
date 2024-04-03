@@ -36,12 +36,7 @@ class ParadoxParameterScriptExpressionSupport : ParadoxScriptExpressionSupport {
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if(context.keyword.isParameterized()) return //排除可能带参数的情况
         
-        val config = context.config ?: return
-        //提示参数名（仅限key）
-        val contextElement = context.contextElement!!
-        val isKey = context.isKey
-        if(isKey != true || config !is CwtPropertyConfig) return
-        ParadoxParameterHandler.completeArguments(contextElement, context, result)
+        ParadoxCompletionManager.completeParameter(context, result)
     }
 }
 

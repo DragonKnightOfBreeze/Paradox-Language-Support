@@ -416,6 +416,8 @@ object ParadoxCompletionManager {
             result.addScriptExpressionElement(context, builder)
             true
         }
+        
+        completeExtendedDefinition(context, result)
     }
     
     fun completePathReference(context: ProcessingContext, result: CompletionResultSet) {
@@ -448,6 +450,10 @@ object ParadoxCompletionManager {
                     .withTypeIcon(file.icon)
                 result.addScriptExpressionElement(context, builder)
                 true
+            }
+            
+            if(ParadoxInlineScriptHandler.isInlineScriptExpressionConfig(config)) {
+                completeExtendedInlineScript(context, result)
             }
         }
     }
@@ -502,6 +508,8 @@ object ParadoxCompletionManager {
                 result.addScriptExpressionElement(context, builder)
                 true
             }
+            
+            completeExtendedComplexEnumValue(context, result)
         }
     }
     
@@ -509,7 +517,7 @@ object ParadoxCompletionManager {
         ParadoxModifierHandler.completeModifier(context, result)
     }
     
-    fun completeAliasName(aliasName: String, context: ProcessingContext, result: CompletionResultSet) {
+    fun completeAliasName(context: ProcessingContext, result: CompletionResultSet, aliasName: String) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val config = context.config!!
@@ -863,7 +871,7 @@ object ParadoxCompletionManager {
             run {
                 ProgressManager.checkCanceled()
                 if(configExpression.type == CwtDataTypes.Value || configExpression.type == CwtDataTypes.DynamicValue) {
-                    completePredefinedDynamicValue(dynamicValueType, result, context)
+                    completePredefinedDynamicValue(context, result, dynamicValueType)
                 }
             }
             //提示来自脚本文件的value
@@ -885,6 +893,8 @@ object ParadoxCompletionManager {
                     true
                 }
             }
+            
+            completeExtendedDynamicValue(context, result)
         }
         
         if(configs.isNotNullOrEmpty()) {
@@ -896,7 +906,7 @@ object ParadoxCompletionManager {
         }
     }
     
-    fun completePredefinedDynamicValue(dynamicValueType: String, result: CompletionResultSet, context: ProcessingContext) {
+    fun completePredefinedDynamicValue(context: ProcessingContext, result: CompletionResultSet, dynamicValueType: String) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val config = context.config
@@ -916,6 +926,17 @@ object ParadoxCompletionManager {
                 .withTypeIcon(typeFile?.icon)
             result.addScriptExpressionElement(context, builder)
         }
+    }
+    
+    fun completeParameter(context: ProcessingContext, result: CompletionResultSet) {
+        val config = context.config ?: return
+        //提示参数名（仅限key）
+        val contextElement = context.contextElement!!
+        val isKey = context.isKey
+        if(isKey != true || config !is CwtPropertyConfig) return
+        ParadoxParameterHandler.completeArguments(contextElement, context, result)
+        
+        completeExtendedParameter(context, result)
     }
     
     fun completePredefinedLocalisationScope(context: ProcessingContext, result: CompletionResultSet) {
@@ -1066,6 +1087,39 @@ object ParadoxCompletionManager {
     //endregion
     
     //region Extended Completion Methods
+    fun completeExtendedDefinition(context: ProcessingContext, result: CompletionResultSet) {
+        if(!getSettings().completion.completeByExtendedCwtConfig) return
+        ProgressManager.checkCanceled()
+        
+        //TODO 1.3.5
+    }
     
+    fun completeExtendedInlineScript(context: ProcessingContext, result: CompletionResultSet) {
+        if(!getSettings().completion.completeByExtendedCwtConfig) return
+        ProgressManager.checkCanceled()
+        
+        //TODO 1.3.5
+    }
+    
+    fun completeExtendedParameter(context: ProcessingContext, result: CompletionResultSet) {
+        if(!getSettings().completion.completeByExtendedCwtConfig) return
+        ProgressManager.checkCanceled()
+        
+        //TODO 1.3.5
+    }
+    
+    fun completeExtendedComplexEnumValue(context: ProcessingContext, result: CompletionResultSet) {
+        if(!getSettings().completion.completeByExtendedCwtConfig) return
+        ProgressManager.checkCanceled()
+        
+        //TODO 1.3.5
+    }
+    
+    fun completeExtendedDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
+        if(!getSettings().completion.completeByExtendedCwtConfig) return
+        ProgressManager.checkCanceled()
+        
+        //TODO 1.3.5
+    }
     //endregion
 }

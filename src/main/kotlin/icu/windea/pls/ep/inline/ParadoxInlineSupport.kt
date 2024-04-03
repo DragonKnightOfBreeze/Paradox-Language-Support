@@ -1,6 +1,8 @@
 package icu.windea.pls.ep.inline
 
 import com.intellij.openapi.extensions.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -10,6 +12,7 @@ import icu.windea.pls.script.psi.*
  * 
  * 目前仅限内联脚本。
  */
+@WithGameTypeEP
 interface ParadoxInlineSupport {
     fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
     
@@ -17,7 +20,9 @@ interface ParadoxInlineSupport {
         val EP_NAME = ExtensionPointName.create<ParadoxInlineSupport>("icu.windea.pls.inlineSupport")
         
         fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
+            val gameType = selectGameType(element)
+            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+                if(!gameType.supportsByAnnotation(ep)) return@f null
                 ep.inlineElement(element) 
             }
         }

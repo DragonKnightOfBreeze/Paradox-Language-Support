@@ -221,6 +221,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.completion::completeByLocalizedName)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeByLocalizedName.tooltip") }
                 }
+                //completeByExtendedCwtConfig
+                row {
+                    checkBox(PlsBundle.message("settings.completion.completeByExtendedCwtConfig"))
+                        .bindSelected(settings.completion::completeByExtendedCwtConfig)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeByExtendedCwtConfig.tooltip") }
+                }
             }
             //generation
             collapsibleGroup(PlsBundle.message("settings.generation")) {
