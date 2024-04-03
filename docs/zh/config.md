@@ -104,6 +104,19 @@ some_config
 some_config
 ```
 
+### Scripted Variables
+
+```cwt
+scripted_variables = {
+    # 'x' or 'x = xxx'
+    # 'x' can also be a template expression
+    
+    ### Some documentation
+	## hint = §RSome inlay hint text§!
+    x
+}
+```
+
 ### Definitions
 
 ```cwt

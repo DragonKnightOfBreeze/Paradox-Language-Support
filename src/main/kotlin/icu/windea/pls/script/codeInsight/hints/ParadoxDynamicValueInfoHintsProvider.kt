@@ -34,14 +34,17 @@ class ParadoxDynamicValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettin
         val resolved = element.references.filter { resolveConstraint.canResolve(it) }.mapNotNull { it.resolve() }.lastOrNull()
             ?.castOrNull<ParadoxDynamicValueElement>()
             ?: return true
-        val presentation = doCollect(resolved)
+        val presentation = doCollect(resolved) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
         return true
     }
     
-    private fun PresentationFactory.doCollect(element: ParadoxDynamicValueElement): InlayPresentation {
+    private fun PresentationFactory.doCollect(element: ParadoxDynamicValueElement): InlayPresentation? {
+        val name = element.name
+        if(name.isEmpty()) return null
+        if(name.isParameterized()) return null
         val type = element.dynamicValueType
         return smallText(": $type")
     }

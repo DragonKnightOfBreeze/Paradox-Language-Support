@@ -14,6 +14,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.configGroupFileProvider" interface="icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionDataProvider" interface="icu.windea.pls.ep.data.ParadoxDefinitionDataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.documentationElementLinkProvider" interface="icu.windea.pls.ep.documentation.DocumentationElementLinkProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.scriptedVariableExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxScriptedVariableExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxDefinitionExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.parameterExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxParameterExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.complexEnumValueExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxComplexEnumValueExtendedDocumentationProvider" dynamic="true"/>
@@ -107,6 +108,8 @@
     <documentationElementLinkProvider implementation="icu.windea.pls.ep.documentation.ParadoxLocalisationLinkProvider"/>
     <documentationElementLinkProvider implementation="icu.windea.pls.ep.documentation.ParadoxFilePathLinkProvider"/>
     <documentationElementLinkProvider implementation="icu.windea.pls.ep.documentation.ParadoxModifierLinkProvider"/>
+    
+    <scriptedVariableExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxBaseScriptedVariableExtendedDocumentationProvider" order="last"/>
     
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxBaseDefinitionExtendedDocumentationProvider" order="last"/>
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxOnActionExtendedDocumentationProvider"/>

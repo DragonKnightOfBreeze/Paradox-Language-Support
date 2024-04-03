@@ -268,6 +268,13 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.scopeGroups[scopeGroupName] = scopeGroupConfig
                     }
                 }
+                key == "scripted_variables" -> {
+                    val configs = property.configs ?: continue
+                    for(config in configs) {
+                        val scriptedVariableConfig = CwtExtendedScriptedVariableConfig.resolve(config) ?: continue
+                        configGroup.extendedScriptedVariables[scriptedVariableConfig.name] = scriptedVariableConfig
+                    }
+                }
                 key == "definitions" -> {
                     val configs = property.configs ?: continue
                     for(config in configs) {
@@ -311,7 +318,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         val configs1 = config.configs ?: continue
                         for(config1 in configs1) {
                             val complexEnumValueConfig = CwtExtendedComplexEnumValueConfig.resolve(config1, type)
-                            configGroup.complexEnumValues.getOrInit(type)[complexEnumValueConfig.name] = complexEnumValueConfig
+                            configGroup.extendedComplexEnumValues.getOrInit(type)[complexEnumValueConfig.name] = complexEnumValueConfig
                         }
                     }
                 }
@@ -323,7 +330,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         val configs1 = config.configs ?: continue
                         for(config1 in configs1) {
                             val dynamicValueConfig = CwtExtendedDynamicValueConfig.resolve(config1, type)
-                            configGroup.dynamicValues.getOrInit(type)[dynamicValueConfig.name] = dynamicValueConfig
+                            configGroup.extendedDynamicValues.getOrInit(type)[dynamicValueConfig.name] = dynamicValueConfig
                         }
                     }
                 } 

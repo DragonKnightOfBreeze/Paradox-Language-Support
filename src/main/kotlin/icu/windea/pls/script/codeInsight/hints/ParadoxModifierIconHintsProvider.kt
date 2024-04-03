@@ -51,6 +51,8 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
         val type = config.expression.type
         if(type == CwtDataTypes.Modifier) {
             val name = element.value
+            if(name.isEmpty()) return true
+            if(name.isParameterized()) return true
             val configGroup = config.info.configGroup
             val project = configGroup.project
             val paths = ParadoxModifierHandler.getModifierIconPaths(name, element)

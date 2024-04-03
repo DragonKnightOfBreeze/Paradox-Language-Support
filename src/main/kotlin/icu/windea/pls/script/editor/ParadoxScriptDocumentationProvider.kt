@@ -68,6 +68,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         val name = element.name ?: return null
         return buildString {
             buildScriptedVariableDefinition(element, name)
+            buildDocumentationContent(element)
             buildLineCommentContent(element)
         }
     }
@@ -355,6 +356,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         appendBr()
         val typeLink = "${gameType.linkToken}types/event/$eventType"
         append(PlsBundle.message("prefix.eventType")).append(" ").appendCwtLink(typeLink, eventType)
+    }
+    
+    private fun StringBuilder.buildDocumentationContent(element: ParadoxScriptScriptedVariable) {
+        ParadoxScriptedVariableExtendedDocumentationProvider.buildDocumentation(element) { documentation ->
+            content { append(documentation) }
+        }
     }
     
     private fun StringBuilder.buildDocumentationContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {

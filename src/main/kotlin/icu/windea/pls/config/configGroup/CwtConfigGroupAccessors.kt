@@ -106,6 +106,10 @@ val CwtConfigGroup.modifiers: MutableMap<@CaseInsensitive String, CwtModifierCon
 
 //template_expression - configs
 @Tags(Tag.Extended)
+val CwtConfigGroup.extendedScriptedVariables: MutableMap<String, CwtExtendedScriptedVariableConfig>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
+//template_expression - configs
+@Tags(Tag.Extended)
 val CwtConfigGroup.extendedDefinitions: MutableMap<String, MutableList<CwtExtendedDefinitionConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 //template_expression - config
@@ -128,11 +132,11 @@ val CwtConfigGroup.extendedParameters: MutableMap<String, MutableList<CwtExtende
 
 //complex_enum_name - template_expression - config
 @Tags(Tag.Extended)
-val CwtConfigGroup.complexEnumValues: MutableMap<String, MutableMap<String, CwtExtendedComplexEnumValueConfig>>
+val CwtConfigGroup.extendedComplexEnumValues: MutableMap<String, MutableMap<String, CwtExtendedComplexEnumValueConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 //dynamic_value_type - template_expression - config
 @Tags(Tag.Extended)
-val CwtConfigGroup.dynamicValues: MutableMap<String, MutableMap<String, CwtExtendedDynamicValueConfig>>
+val CwtConfigGroup.extendedDynamicValues: MutableMap<String, MutableMap<String, CwtExtendedDynamicValueConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
 @Tags(Tag.Computed)

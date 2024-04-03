@@ -7,9 +7,11 @@ import icu.windea.pls.lang.psi.*
 
 class ParadoxBaseParameterExtendedDocumentationProvider : ParadoxParameterExtendedDocumentationProvider {
     override fun getDocumentation(element: ParadoxParameterElement): String? {
-        if(element.name.isEmpty()) return null //ignore
+        val name = element.name
+        if(name.isEmpty()) return null
+        if(name.isParameterized()) return null
         val configGroup = getConfigGroup(element.project, element.gameType)
-        val configs = configGroup.extendedParameters.getAllByTemplate(element.name, element, configGroup)
+        val configs = configGroup.extendedParameters.getAllByTemplate(name, element, configGroup)
         val config = configs.findLast { it.contextKey == element.contextKey } ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation

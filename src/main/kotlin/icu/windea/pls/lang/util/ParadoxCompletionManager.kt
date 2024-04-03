@@ -1198,7 +1198,7 @@ object ParadoxCompletionManager {
         val configGroup = config.info.configGroup
         val tailText = getScriptExpressionTailText(config)
         
-        configGroup.complexEnumValues[enumName]?.values?.forEach f@{ config0 ->
+        configGroup.extendedComplexEnumValues[enumName]?.values?.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
             val name = config0.name
             if(name.isEmpty()) return@f
@@ -1223,7 +1223,7 @@ object ParadoxCompletionManager {
         val configGroup = config.info.configGroup
         val tailText = getScriptExpressionTailText(config)
         
-        configGroup.dynamicValues[dynamicValueType]?.values?.forEach f@{ config0 ->
+        configGroup.extendedDynamicValues[dynamicValueType]?.values?.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
             val name = config0.name
             if(name.isEmpty()) return@f

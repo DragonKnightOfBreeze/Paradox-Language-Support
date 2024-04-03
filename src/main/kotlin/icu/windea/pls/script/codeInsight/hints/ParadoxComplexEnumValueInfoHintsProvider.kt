@@ -31,6 +31,7 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSe
         if(element !is ParadoxScriptStringExpressionElement) return true
         if(!element.isExpression()) return true
         val name = element.name
+        if(name.isEmpty()) return true
         if(name.isParameterized()) return true
         
         val info = ParadoxComplexEnumValueHandler.getInfo(element)

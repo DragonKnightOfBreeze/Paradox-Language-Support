@@ -96,14 +96,14 @@ class CwtExtendedRelatedConfigProvider: CwtRelatedConfigProvider {
                     }
                     ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxComplexEnumValueElement>() ?: continue
-                        val configs = configGroup.complexEnumValues[resolved.enumName] ?: continue
-                        val config = configs[resolved.name] ?: continue
+                        val configs = configGroup.extendedComplexEnumValues[resolved.enumName] ?: continue
+                        val config = configs.getByTemplate(resolved.name, element, configGroup) ?: continue
                         result.add(config)
                     }
                     ParadoxResolveConstraint.DynamicValueStrictly.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxDynamicValueElement>() ?: continue
-                        val configs = configGroup.dynamicValues[resolved.dynamicValueType] ?: continue
-                        val config = configs[resolved.name] ?: continue
+                        val configs = configGroup.extendedDynamicValues[resolved.dynamicValueType] ?: continue
+                        val config = configs.getByTemplate(resolved.name, element, configGroup) ?: continue
                         result.add(config)
                     }
                 }

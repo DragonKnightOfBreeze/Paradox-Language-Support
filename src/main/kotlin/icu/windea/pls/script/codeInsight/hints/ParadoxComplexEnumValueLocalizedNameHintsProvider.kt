@@ -48,6 +48,7 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
         if(element !is ParadoxScriptStringExpressionElement) return true
         if(!element.isExpression()) return true
         val name = element.name
+        if(name.isEmpty()) return true
         if(name.isParameterized()) return true
         
         val info = ParadoxComplexEnumValueHandler.getInfo(element)
@@ -74,11 +75,11 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
     }
     
     private fun PresentationFactory.doCollect(name: String, enumName: String, configGroup: CwtConfigGroup, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
-        val configs = configGroup.complexEnumValues[enumName] ?: return null
-        val config = configs[name] ?: return null
+        val configs = configGroup.extendedComplexEnumValues[enumName] ?: return null
+        val config = configs.getByTemplate(name, file, configGroup) ?: return null //just use file as contextElement here
         val hint = config.hint ?: return null
         val hintElement = ParadoxLocalisationElementFactory.createProperty(configGroup.project, "hint", hint)
-        //it's necessary to inject fileInfo (so that gameType can be get later)
+        //it's necessary to inject fileInfo (so that gameType can be got later)
         hintElement.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
         return ParadoxLocalisationTextInlayRenderer.render(hintElement, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
     }
