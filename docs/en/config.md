@@ -116,7 +116,7 @@ TODO
 
 ### Specifications (Builtin CWT Configs)
 
-> !NOTE
+> [!NOTE]
 >
 > These configs are currently read only, DO NOT try to modify or extend them.
 
@@ -134,7 +134,7 @@ TODO
 
 ### Specifications (Extended CWT Configs)
 
-> !NOTE
+> [!NOTE]
 > 
 > These configs are basically provided by the users themselves, to enhance plugins' various features,
 > such as providing extended quick documentations & inlay hints, and providing additional code completion.
