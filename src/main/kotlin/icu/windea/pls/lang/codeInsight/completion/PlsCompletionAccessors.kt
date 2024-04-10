@@ -33,3 +33,4 @@ var ProcessingContext.scopeGroupName: String? by createKeyDelegate(PlsCompletion
 var ProcessingContext.isInt: Boolean? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.prefix: String? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.dataSourceNodeToCheck: ParadoxExpressionNode? by createKeyDelegate(PlsCompletionKeys)
+var ProcessingContext.showScriptExpressionTailText: Boolean by createKeyDelegate(PlsCompletionKeys) { true }

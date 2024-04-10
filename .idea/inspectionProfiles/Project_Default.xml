@@ -26,6 +26,7 @@
     <inspection_tool class="DuplicateAnchorId" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="DuplicateHeadingId" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="DuplicateReferences" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="DuplicatedCode" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="EnumerationCanBeIteration" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="FoldInitializerAndIfToElvis" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="INFORMATION_ATTRIBUTES" />
     <inspection_tool class="FromClosedRangeMigration" enabled="true" level="WEAK WARNING" enabled_by_default="true" />

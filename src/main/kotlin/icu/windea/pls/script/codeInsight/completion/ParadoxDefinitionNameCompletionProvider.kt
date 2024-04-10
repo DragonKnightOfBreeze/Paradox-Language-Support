@@ -2,11 +2,9 @@ package icu.windea.pls.script.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.progress.*
-import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -43,17 +41,9 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		context.quoted = quoted
 		context.rightQuoted = rightQuoted
 		
-		fun doAddCompletions(type: String, config: CwtPropertyConfig, isKey: Boolean?, currentElement: PsiElement, rootKey: String?) {
-			ProgressManager.checkCanceled()
-			context.config = config
-			context.isKey = isKey
-			//排除正在输入的那一个
-			val selector = definitionSelector(project, file).contextSensitive()
-				.filterBy { rootKey == null || (it is ParadoxScriptProperty && it.name.equals(rootKey, true)) }
-				.notSamePosition(currentElement)
-				.distinctByName()
-			ParadoxDefinitionSearch.search(type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
-		}
+		val gameType = selectGameType(file) ?: return
+		val configGroup = getConfigGroup(project, gameType)
+		context.configGroup = configGroup
 		
 		when {
 			//key_
@@ -61,8 +51,6 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 			//key_ = { ... }
 			element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockValue()) -> {
 				val fileInfo = file.fileInfo ?: return
-				val gameType = fileInfo.rootInfo.gameType
-				val configGroup = getConfigGroup(project, gameType)
 				val path = fileInfo.pathToEntry //这里使用pathToEntry
 				val elementPath = ParadoxElementPathHandler.get(element, PlsConstants.maxDefinitionDepth) ?: return
 				for(typeConfig in configGroup.types.values) {
@@ -73,7 +61,18 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 						//需要考虑不指定子类型的情况
 						val configContext = CwtDeclarationConfigContextProvider.getContext(element, null, type, null, gameType, configGroup)
 						val config = configContext?.getConfig(declarationConfig) ?: continue
-						doAddCompletions(type, config, true, element, null)
+						
+						context.config = config
+						context.isKey = true
+						context.showScriptExpressionTailText = false
+						
+						//排除正在输入的那一个
+						val selector = definitionSelector(project, file).contextSensitive()
+							.notSamePosition(element)
+							.distinctByName()
+						ParadoxDefinitionSearch.search(type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
+						
+						ParadoxCompletionManager.completeExtendedDefinition(context, result)
 					}
 				}
 			}
@@ -84,8 +83,20 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				if(definitionInfo != null) {
 					val type = definitionInfo.type
 					val config = definitionInfo.declaration ?: return
+					
+					context.config = config
+					context.isKey = false
+					context.showScriptExpressionTailText = false
+					
 					//这里需要基于rootKey过滤结果
-					doAddCompletions(type, config, false, element, definitionInfo.rootKey)
+					//排除正在输入的那一个
+					val selector = definitionSelector(project, file).contextSensitive()
+						.filterBy { it is ParadoxScriptProperty && it.name.equals(definitionInfo.rootKey, true) }
+						.notSamePosition(element)
+						.distinctByName()
+					ParadoxDefinitionSearch.search(type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
+					
+					ParadoxCompletionManager.completeExtendedDefinition(context, result)
 				}
 			}
 		}

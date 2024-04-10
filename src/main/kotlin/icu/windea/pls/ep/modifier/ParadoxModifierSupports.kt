@@ -75,8 +75,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
             //排除不匹配modifier的supported_scopes的情况
             val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
-            
-            val tailText = ParadoxCompletionManager.getScriptExpressionTailText(modifierConfig.config, withExpression = false)
+            val tailText = ParadoxCompletionManager.getScriptExpressionTailText(context, modifierConfig.config, withConfigExpression = false)
             val template = modifierConfig.template
             if(template.expressionString.isNotEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
@@ -149,7 +148,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
             
-            val tailText = ParadoxCompletionManager.getScriptExpressionTailText(modifierConfig.config, withExpression = true)
+            val tailText = ParadoxCompletionManager.getScriptExpressionTailText(context, modifierConfig.config, withConfigExpression = true)
             val template = modifierConfig.template
             if(template.expressionString.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
