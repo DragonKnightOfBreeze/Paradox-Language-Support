@@ -46,16 +46,17 @@ CWT规则文件使用一种特别的文件格式，可以视为Paradox脚本语�
 CWT规则文件的基本语法如下所示：
 
 ```cwt
+# both equal sign ('=', '==') and not equal sign ('<>', '!=') can be used as the k-v separator (also available in options)
+# properties (options) and values can be mixed in clauses (also available in options)
+
 ### documentation comment
 ## option = option_value
+## option_0 = { k = v }
 ## option_value
 prop = {
-    # line comment
-    # properties and values can be mixed in clauses
-    # both equal sign ('=', '=='), not equal sign ('<>', '!=')can be used for the property separator
-    
-    k = v
-    v
+	# line comment
+	k = v
+	v
 }
 ```
 
@@ -71,40 +72,73 @@ prop = {
 
 * [指引文档](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
 
-### 备注
+### 编写规范
 
-关于模版表达式：
+#### Types and Subtypes
 
-```cwt
-# belows are all valid template expressions
+TODO
 
-# a string literal, exactly matches 'x'
-x
-# a template expression which contains a reference to jobs, matches 'a_researcher_b', 'a_farmer_b', etc.
-a_<job>_b
-# a template expression which contains a references to enum of weight_or_base, matches 'a_weight_b' and 'a_base_b'
-a_enum[weight_or_base]_b
-# a template expression which contains a references to dynamic value type of anything
-# there is no limit for 'value[anything]', so it's equivalent to regex 'a_.*_b'
-a_value[anything]_b
-```
+#### Declarations
 
-关于作用域上下文的指定方式：
+TODO
 
-```cwt
-# push 'country' scope to scope stack
-# for this example, the next this scope will be 'country'
-## push_scope = country
-some_config
+#### Enums and Complex Enums
 
-# replace scopes of specific system scopes into scope context
-# not supported for 'prev' system scope (and 'prevprev', etc.)
-# for this example, the next this scope will be 'country', so do the next root scope and the next from scope
-## replace_scopes = { this = country root = country from = country }
-some_config
-```
+TODO
 
-### Scripted Variables
+#### Dynamic Values
+
+TODO
+
+#### Aliases and Single Aliases
+
+TODO
+
+#### Inlines
+
+TODO
+
+#### Modifiers and Modifier Groups
+
+TODO
+
+#### Links
+
+TODO
+
+#### Scopes and Scope Groups
+
+TODO
+
+#### Localisation Links and Localisation Commands
+
+TODO
+
+### 编写规范（内置的CWT规则）
+
+> !NOTE
+> 
+> 这些规则目前是只读的，不要试图修改或扩展它们。
+
+#### System Links
+
+TODO
+
+#### Localisation Locales
+
+TODO
+
+#### Localisation Predefined Parameters
+
+TODO
+
+### 编写规范（扩展的CWT规则）
+
+> !NOTE
+>
+> 这些规则基本上由用户自行编写，用于强化插件的功能，例如提供扩展的快速文档、内嵌提示，以及提供额外的代码补全。
+
+#### Scripted Variables (New in 1.3.5)
 
 ```cwt
 scripted_variables = {
@@ -117,7 +151,7 @@ scripted_variables = {
 }
 ```
 
-### Definitions
+#### Definitions
 
 ```cwt
 definitions = {
@@ -130,7 +164,7 @@ definitions = {
 }
 ```
 
-### Game Rules
+#### Game Rules
 
 ```cwt
 game_rules = {
@@ -144,7 +178,7 @@ game_rules = {
 }
 ```
 
-### On Actions
+#### On Actions
 
 ```cwt
 on_actions = {
@@ -158,7 +192,7 @@ on_actions = {
 }
 ```
 
-### Inline Scripts
+#### Inline Scripts
 
 ```cwt
 inline_scripts = {
@@ -187,7 +221,7 @@ inline_scripts = {
 
 ![](../assets/images/config/inline_scripts_1.png)
 
-### Parameters
+#### Parameters
 
 ```cwt
 parameters = {
@@ -218,7 +252,7 @@ parameters = {
 
 ![](../assets/images/config/parameters_1.png)
 
-### Complex Enum Values
+#### Complex Enum Values
 
 ```cwt
 complex_enum_values = {
@@ -233,7 +267,7 @@ complex_enum_values = {
 }
 ```
 
-### Dynamic Values
+#### Dynamic Values
 
 ```cwt
 dynamic_values = {
@@ -246,6 +280,39 @@ dynamic_values = {
 		x
 	}
 }
+```
+
+### FAQ
+
+#### 关于模版表达式
+
+```cwt
+# belows are all valid template expressions
+
+# a string literal, exactly matches 'x'
+x
+# a template expression which contains a reference to jobs, matches 'a_researcher_b', 'a_farmer_b', etc.
+a_<job>_b
+# a template expression which contains a references to enum of weight_or_base, matches 'a_weight_b' and 'a_base_b'
+a_enum[weight_or_base]_b
+# a template expression which contains a references to dynamic value type of anything
+# there is no limit for 'value[anything]', so it's equivalent to regex 'a_.*_b'
+a_value[anything]_b
+```
+
+#### 如何指定作用域上下文
+
+```cwt
+# push 'country' scope to scope stack
+# for this example, the next this scope will be 'country'
+## push_scope = country
+some_config
+
+# replace scopes of specific system scopes into scope context
+# not supported for 'prev' system scope (and 'prevprev', etc.)
+# for this example, the next this scope will be 'country', so do the next root scope and the next from scope
+## replace_scopes = { this = country root = country from = country }
+some_config
 ```
 
 ## 导入CWT规则文件{#importing-cwt-config-files}

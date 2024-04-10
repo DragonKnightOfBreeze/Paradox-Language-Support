@@ -42,19 +42,20 @@ CWT config file use its own file format, which can be considered as a variant of
 
 ### Syntax
 
-The basic syntax of a CWT config files is as follows:
+The basic syntax of a CWT config file is as follows:
 
 ```cwt
+# both equal sign ('=', '==') and not equal sign ('<>', '!=') can be used as the k-v separator (also available in options)
+# properties (options) and values can be mixed in clauses (also available in options)
+
 ### documentation comment
 ## option = option_value
+## option_0 = { k = v }
 ## option_value
 prop = {
-    # line comment
-    # properties and values can be mixed in clauses
-    # both equal sign ('=', '=='), not equal sign ('<>', '!=')can be used for the property separator
-    
-    k = v
-    v
+	# line comment
+	k = v
+	v
 }
 ```
 
@@ -71,40 +72,74 @@ Reference Links:
 
 * [Guidance](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
 
-### Note
+### Specifications
 
-About the template expression:
+#### Types and Subtypes
 
-```cwt
-# belows are all valid template expressions
+TODO
 
-# a string literal, exactly matches 'x'
-x
-# a template expression which contains a reference to jobs, matches 'a_researcher_b', 'a_farmer_b', etc.
-a_<job>_b
-# a template expression which contains a references to enum of weight_or_base, matches 'a_weight_b' and 'a_base_b'
-a_enum[weight_or_base]_b
-# a template expression which contains a references to dynamic value type of anything
-# there is no limit for 'value[anything]', so it's equivalent to regex 'a_.*_b'
-a_value[anything]_b
-```
+#### Declarations
 
-About how to specify the scope context:
+TODO
 
-```cwt
-# push 'country' scope to scope stack
-# for this example, the next this scope will be 'country'
-## push_scope = country
-some_config
+#### Enums and Complex Enums
 
-# replace scopes of specific system scopes into scope context
-# not supported for 'prev' system scope (and 'prevprev', etc.)
-# for this example, the next this scope will be 'country', so do the next root scope and the next from scope
-## replace_scopes = { this = country root = country from = country }
-some_config
-```
+TODO
 
-### Scripted Variables
+#### Dynamic Values
+
+TODO
+
+#### Aliases and Single Aliases
+
+TODO
+
+#### Inlines
+
+TODO
+
+#### Modifiers and Modifier Groups
+
+TODO
+
+#### Links
+
+TODO
+
+#### Scopes and Scope Groups
+
+TODO
+
+#### Localisation Links and Localisation Commands
+
+TODO
+
+### Specifications (Builtin CWT Configs)
+
+> !NOTE
+>
+> These configs are currently read only, DO NOT try to modify or extend them.
+
+#### System Links
+
+TODO
+
+#### Localisation Locales
+
+TODO
+
+#### Localisation Predefined Parameters
+
+TODO
+
+### Specifications (Extended CWT Configs)
+
+> !NOTE
+> 
+> These configs are basically provided by the users themselves, to enhance plugins' various features,
+> such as providing extended quick documentations & inlay hints, and providing additional code completion.
+
+#### Scripted Variables (New in 1.3.5)
 
 ```cwt
 scripted_variables = {
@@ -117,7 +152,7 @@ scripted_variables = {
 }
 ```
 
-### Definitions
+#### Definitions
 
 ```cwt
 definitions = {
@@ -130,7 +165,7 @@ definitions = {
 }
 ```
 
-### Game Rules
+#### Game Rules
 
 ```cwt
 game_rules = {
@@ -144,7 +179,7 @@ game_rules = {
 }
 ```
 
-### On Actions
+#### On Actions
 
 ```cwt
 on_actions = {
@@ -158,7 +193,7 @@ on_actions = {
 }
 ```
 
-### Inline Scripts
+#### Inline Scripts
 
 ```cwt
 inline_scripts = {
@@ -187,7 +222,7 @@ Example:
 
 ![](../assets/images/config/inline_scripts_1.png)
 
-### Parameters
+#### Parameters
 
 ```cwt
 parameters = {
@@ -218,7 +253,7 @@ Example:
 
 ![](../assets/images/config/parameters_1.png)
 
-### Complex Enum Values
+#### Complex Enum Values
 
 ```cwt
 complex_enum_values = {
@@ -233,7 +268,7 @@ complex_enum_values = {
 }
 ```
 
-### Dynamic Values
+#### Dynamic Values
 
 ```cwt
 dynamic_values = {
@@ -246,6 +281,39 @@ dynamic_values = {
         x
     }
 }
+```
+
+### FAQ
+
+#### About Template Expression
+
+```cwt
+# belows are all valid template expressions
+
+# a string literal, exactly matches 'x'
+x
+# a template expression which contains a reference to jobs, matches 'a_researcher_b', 'a_farmer_b', etc.
+a_<job>_b
+# a template expression which contains a references to enum of weight_or_base, matches 'a_weight_b' and 'a_base_b'
+a_enum[weight_or_base]_b
+# a template expression which contains a references to dynamic value type of anything
+# there is no limit for 'value[anything]', so it's equivalent to regex 'a_.*_b'
+a_value[anything]_b
+```
+
+#### How to Specify the Scope Context
+
+```cwt
+# push 'country' scope to scope stack
+# for this example, the next this scope will be 'country'
+## push_scope = country
+some_config
+
+# replace scopes of specific system scopes into scope context
+# not supported for 'prev' system scope (and 'prevprev', etc.)
+# for this example, the next this scope will be 'country', so do the next root scope and the next from scope
+## replace_scopes = { this = country root = country from = country }
+some_config
 ```
 
 ## Importing CWT Config Files{#importing-cwt-config-files}

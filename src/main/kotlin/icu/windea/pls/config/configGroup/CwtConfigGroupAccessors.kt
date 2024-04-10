@@ -15,22 +15,26 @@ import icu.windea.pls.core.util.*
 annotation class Tags(vararg val value: Tag)
 
 enum class Tag {
-    Settings, Extended, Computed
+    Settings, Extended, Computed, BuiltIn
 }
 
-@Tags(Tag.Settings)
+@Tags(Tag.Settings, Tag.BuiltIn)
 val CwtConfigGroup.foldingSettings: MutableMap<@CaseInsensitive String, MutableMap<String, CwtFoldingSettingsConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-@Tags(Tag.Settings)
+@Tags(Tag.Settings, Tag.BuiltIn)
 val CwtConfigGroup.postfixTemplateSettings: MutableMap<String, MutableMap<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
+@Tags(Tag.BuiltIn)
 val CwtConfigGroup.systemLinks: MutableMap<@CaseInsensitive String, CwtSystemLinkConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
+@Tags(Tag.BuiltIn)
 val CwtConfigGroup.localisationLocalesById: MutableMap<String, CwtLocalisationLocaleConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
+@Tags(Tag.BuiltIn)
 val CwtConfigGroup.localisationLocalesByCode: MutableMap<String, CwtLocalisationLocaleConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
+@Tags(Tag.BuiltIn)
 val CwtConfigGroup.localisationPredefinedParameters: MutableMap<String, CwtLocalisationPredefinedParameterConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
