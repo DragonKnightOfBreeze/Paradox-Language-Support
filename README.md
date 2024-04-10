@@ -7,6 +7,7 @@
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
 [Reference Documentation](https://windea.icu/Paradox-Language-Support) |
 [Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
+[Discord](https://discord.gg/pbPYSK4n) |
 QQ群：653824651
 
 IDEA插件：Paradox语言支持。
@@ -27,7 +28,7 @@ IDEA插件：Paradox语言支持。
 
 如果同时安装了 [Translation](https://github.com/YiiGuxing/TranslationPlugin) ，此插件可以提供一些[额外的功能](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md)。
 
-如果在使用过程中遇到任何问题，欢迎通过GitHub或者QQ群进行反馈。
+如果在使用过程中遇到任何问题，欢迎通过GitHub、Discord或者QQ群进行反馈。
 
 ![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_zh.png)
 
@@ -78,7 +79,7 @@ IDEA插件：Paradox语言支持。
 
 ## FAQ
 
-**为什么推荐使用Intellij IDEA + PLS，而不是VSCode + CWTools？**
+**为什么推荐使用Intellij IDEA + 此插件，而不是传统的VSCode + CWTools？**
 
 向你介绍Idea，一名可爱而充满活力的少女。
 她以银白长发和琥珀色瞳孔为外貌特征，时常穿着深蓝色的风衣。

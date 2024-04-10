@@ -6,7 +6,8 @@
 
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
 [Reference Documentation](https://windea.icu/Paradox-Language-Support) |
-[Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)
+[Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
+[Discord](https://discord.gg/pbPYSK4n)
 
 IDEA plugin: Support for Paradox language.
 
@@ -26,7 +27,7 @@ Besides, [customizing](https://windea.icu/Paradox-Language-Support/#/en/config.m
 
 If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md).
 
-If you encounter any problems during use, feel free to provide feedback via GitHub.
+If you encounter any problems during use, feel free to provide feedback via GitHub or Discord.
 
 ![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_en.png)
 
@@ -38,8 +39,6 @@ Usage:
 * Open the mod descriptor file, click the mod settings button in the floating toolbar (or editor right-click menu) at the top right of the editor, and configure the game type, game directory, and additional mod dependencies of the mod.
 * Click the OK button to complete the configuration, and then wait for the IDE to complete indexing.
 * Start your mod programming journey!
-
-Tips:
 
 * To perform a global search, please refer to the following methods:
   * Click `Ctrl Shift R` or `Ctrl Shift F` to search within the current project, directory, or specified scope.
@@ -53,8 +52,8 @@ Tips:
   * Click `Navigate` or `Go To` in the editor's right-click menu, and choose the target to navigate to.
   * Click `Navigate > Definition Hierarchy` to open the definition hierarchy window, to view the definition implementation relationship of a specific definition type.
   * Click `Navigate > Call Hierarchy` to open the call hierarchy window, to view the call relationship of definitions, localizations, scripted variables, etc.
-  * Click `Alt 1` or `Project` Tool window, open the Project View panel, then click `Project > Paradox Files` in the upper left corner, to view the summarized game and mod files. 
-  * Click `Alt 1` or `Project` Tool window, open the Project View panel, then click `Project > CWT Config Files` in the upper left corner, to view the summarized CWT config files. 
+  * Click `Alt 1` or `Project` Tool window, open the Project View panel, then click `Project > Paradox Files` in the upper left corner, to view the summarized game and mod files.
+  * Click `Alt 1` or `Project` Tool window, open the Project View panel, then click `Project > CWT Config Files` in the upper left corner, to view the summarized CWT config files.
 * To run a global code inspection, refer to the following method:
   * Click `Alt 6` or `Problems` Tool window, open the Problems panel ,then view problems of current file, or run a global code inspection for whole project.
   * Click `Code > Inspect Code...`, run a global code inspection for whole project.

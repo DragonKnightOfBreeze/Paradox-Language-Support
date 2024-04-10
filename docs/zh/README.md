@@ -4,13 +4,14 @@
 
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
 [Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
+[Discord](https://discord.gg/pbPYSK4n) |
 QQ群：653824651
 
 IDEA插件：Paradox语言支持。
 
 特性：
 
-* 支持脚本语言（主要是`*.txt`文件）和本地化语言（`*.yml`文件），  
+* 支持脚本语言（主要是`*.txt`文件）和本地化语言（`*.yml`文件），
   提供代码高亮、代码导航、代码补全、代码检查、代码重构、快速文档、内嵌提示、动态模版、代码层级、图表、差异比较等诸多语言功能。
 * 支持CWT语言（`*.cwt`文件），提供基础的语言功能。
 * 支持直接在IDE中查看DDS图片，提供包括转为PNG图片在内的一些有用的编辑器功能。
@@ -24,7 +25,7 @@ IDEA插件：Paradox语言支持。
 
 如果同时安装了 [Translation](https://github.com/YiiGuxing/TranslationPlugin) ，此插件可以提供一些[额外的功能](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md)。
 
-如果在使用过程中遇到任何问题，欢迎通过GitHub或者QQ群进行反馈。
+如果在使用过程中遇到任何问题，欢迎通过GitHub、Discord或者QQ群进行反馈。
 
 ![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_zh.png)
 
@@ -36,6 +37,8 @@ IDEA插件：Paradox语言支持。
 * 打开模组描述符文件，点击位于编辑器右上角的悬浮工具栏（或者编辑器右键菜单）中的模组配置按钮，配置模组的游戏类型、游戏目录和额外的模组依赖。
 * 点击确定按钮完成配置，然后等待IDE索引完成。
 * 开始你的模组编程之旅吧！
+
+提示：
 
 * 如果需要进行全局搜索，请参考以下方式：
   * 点击`Ctrl Shift R`或者`Ctrl Shift F`在当前项目、目录或者指定作用域中搜索。
@@ -49,10 +52,10 @@ IDEA插件：Paradox语言支持。
   * 点击`Navigate`或者编辑器右键菜单中的`Go To`，选择要导航到的目标。
   * 点击`Navigate > Definition Hierarchy`，打开定义层级窗口，从而查看某一类型的定义的实现关系。
   * 点击`Navigate > Call Hierarchy`，打开调用层级窗口，从而查看定义、本地化、封装变量（scripted_variable）等的调用关系。
-  * 点击`Alt 1`或者侧边栏中的`Project`图标，打开项目视图面板，然后点击左上角的`Project > Paradox Files`，从而查看汇总后的游戏与模组文件。
-  * 点击`Alt 1`或者侧边栏中的`Project`图标，打开项目视图面板，然后点击左上角的`Project > CWT Config Files`，从而查看汇总后的CWT规则文件。
+  * 点击`Alt 1`或者`Project`工具窗口，打开项目视图面板，然后点击左上角的`Project > Paradox Files`，从而查看汇总后的游戏与模组文件。
+  * 点击`Alt 1`或者`Project`工具窗口，打开项目视图面板，然后点击左上角的`Project > CWT Config Files`，从而查看汇总后的CWT规则文件。
 * 如果需要进行全局代码检查，请参考以下方式：
-  * 点击`Alt 6`或者侧边栏中的`Problems`图标，打开问题面板，然后查看当前文件存在的问题，或者进行整个项目的全局代码检查。
+  * 点击`Alt 6`或者`Problems`工具窗口，打开问题面板，然后查看当前文件存在的问题，或者进行整个项目的全局代码检查。
   * 点击`Code > Inspect Code...`，进行整个项目的全局代码检查。
   * 完成代码检查后，IDE将会在问题面板中显示详细的检查结果。
 * 如果需要更改插件的全局配置，请参考以下方式：

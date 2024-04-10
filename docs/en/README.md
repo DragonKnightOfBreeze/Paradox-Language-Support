@@ -1,15 +1,16 @@
-# Paradox Language Support
+# Introduce
 
 ## Summary
 
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
-[Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)
+[Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
+[Discord](https://discord.gg/pbPYSK4n)
 
 IDEA plugin: Support for Paradox language.
 
 Features:
 
-* Supports script language (mainly `*.txt` files) and localization language (`*.yml` files),  
+* Supports script language (mainly `*.txt` files) and localization language (`*.yml` files),
   providing many language features such as code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff, etc.
 * Supports CWT language (`*.cwt` files), providing basic language features.
 * Supports viewing DDS images directly in the IDE, providing some useful editor features including converting to PNG images.
@@ -23,7 +24,7 @@ Besides, [customizing](https://windea.icu/Paradox-Language-Support/#/en/config.m
 
 If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md).
 
-If you encounter any problems during use, feel free to provide feedback via GitHub.
+If you encounter any problems during use, feel free to provide feedback via GitHub or Discord.
 
 ![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_en.png)
 

@@ -12,7 +12,7 @@
 The latest-version config files are already built into this plugin, make it works right out of the box.
 Besides, <a href="https://windea.icu/Paradox-Language-Support/#/en/config.md#writing-cwt-config-files">customizing</a> and <a href="https://windea.icu/Paradox-Language-Support/#/en/config.md#importing-cwt-config-files">importing</a> local config files is also supported.</p>
 <p>If <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a> is also installed, this plugin can provide some <a href="https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md">additional features</a>.</p>
-<p>If you encounter any problems during use, feel free to provide feedback via GitHub.</p>
+<p>If you encounter any problems during use, feel free to provide feedback via GitHub or Discord.</p>
 
 <p>Paradox语言支持。</p>
 <p>特性：</p>
@@ -28,11 +28,12 @@ Besides, <a href="https://windea.icu/Paradox-Language-Support/#/en/config.md#wri
 插件已经内置了最新版本的规则文件，以便开箱即用。
 除此之外，插件也支持<a href="https://windea.icu/Paradox-Language-Support/#/zh/config.md#writing-cwt-config-files">自定义</a>与<a href="https://windea.icu/Paradox-Language-Support/#/zh/config.md#importing-cwt-config-files">导入</a>本地的规则文件。
 <p>如果同时安装了 <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a> ，此插件可以提供一些<a href="https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md">额外的功能</a>。</p>
-<p>如果在使用过程中遇到任何问题，欢迎通过GitHub或者QQ群进行反馈。</p>
+<p>如果在使用过程中遇到任何问题，欢迎通过GitHub、Discord或者QQ群进行反馈。</p>
 
 <p>
   <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">GitHub</a> |
   <a href="https://windea.icu/Paradox-Language-Support">Reference Documentation</a> |
   <a href="https://plugins.jetbrains.com/plugin/16825-paradox-language-support">Plugin Marketplace Page</a> |
+  <a href="https://discord.gg/pbPYSK4n">Discord</a>
   QQ群：653824651
 </p>
