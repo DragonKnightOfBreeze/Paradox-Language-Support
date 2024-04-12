@@ -10,7 +10,7 @@
     <CssCodeStyleSettings>
       <option name="BLANK_LINES_BETWEEN_BLOCKS" value="0" />
     </CssCodeStyleSettings>
-    <DB2CodeStyleSettings version="6">
+    <DB2CodeStyleSettings version="7">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -54,7 +54,7 @@
         <option name="ITERATION_ELEMENTS_WRAPPING" value="chop_down_if_not_single" />
       </formatting-settings>
     </DBN-SQL>
-    <DerbyCodeStyleSettings version="6">
+    <DerbyCodeStyleSettings version="7">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -74,7 +74,7 @@
       <option name="IMP_DECLARE_EL_WRAP" value="3" />
       <option name="IMP_DECLARE_ALIGN_DEFAULT" value="true" />
     </DerbyCodeStyleSettings>
-    <H2CodeStyleSettings version="6">
+    <H2CodeStyleSettings version="7">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -92,7 +92,7 @@
       <option name="FROM_EL_WRAP" value="0" />
       <option name="FROM_EL_COMMA" value="0" />
     </H2CodeStyleSettings>
-    <HSQLCodeStyleSettings version="6">
+    <HSQLCodeStyleSettings version="7">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -168,7 +168,7 @@
       <option name="BLANK_LINES_BEFORE_DECLARATION_WITH_COMMENT_OR_ANNOTATION_ON_SEPARATE_LINE" value="0" />
       <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
     </JetCodeStyleSettings>
-    <MSSQLCodeStyleSettings version="6">
+    <MSSQLCodeStyleSettings version="7">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -212,7 +212,7 @@
       <option name="TOC_TITLE_LEVEL" value="2" />
       <option name="RIGHT_MARGIN" value="120" />
     </MarkdownNavigatorCodeStyleSettings>
-    <MySQLCodeStyleSettings version="6">
+    <MySQLCodeStyleSettings version="7">
       <option name="KEYWORD_CASE" value="1" />
       <option name="IDENTIFIER_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -233,7 +233,7 @@
       <option name="FROM_EL_COMMA" value="0" />
       <option name="USE_GENERIC_STYLE" value="true" />
     </MySQLCodeStyleSettings>
-    <OracleCodeStyleSettings version="6">
+    <OracleCodeStyleSettings version="7">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -253,7 +253,7 @@
       <option name="IMP_DECLARE_EL_WRAP" value="3" />
       <option name="IMP_DECLARE_ALIGN_DEFAULT" value="true" />
     </OracleCodeStyleSettings>
-    <PostgresCodeStyleSettings version="6">
+    <PostgresCodeStyleSettings version="7">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -276,7 +276,7 @@
     <Properties>
       <option name="KEEP_BLANK_LINES" value="true" />
     </Properties>
-    <SQLiteCodeStyleSettings version="6">
+    <SQLiteCodeStyleSettings version="7">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -297,7 +297,7 @@
     <ScalaCodeStyleSettings>
       <option name="MULTILINE_STRING_CLOSING_QUOTES_ON_NEW_LINE" value="true" />
     </ScalaCodeStyleSettings>
-    <SqlCodeStyleSettings version="6">
+    <SqlCodeStyleSettings version="7">
       <option name="KEYWORD_CASE" value="1" />
       <option name="IDENTIFIER_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -332,7 +332,7 @@
       <option name="IMP_DECLARE_EL_WRAP" value="3" />
       <option name="IMP_DECLARE_ALIGN_DEFAULT" value="true" />
     </SqlCodeStyleSettings>
-    <SybaseCodeStyleSettings version="6">
+    <SybaseCodeStyleSettings version="7">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />

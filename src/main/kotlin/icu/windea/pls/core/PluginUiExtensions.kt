@@ -9,8 +9,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.settings.*
 
 fun Row.localeComboBox(settings: ParadoxSettingsState): Cell<ComboBox<String>> {
-    return comboBox(settings.localeList, SimpleListCellRenderer.create { label, value, index ->
-        if(value == null || index == -1) return@create
+    return comboBox(settings.localeList, SimpleListCellRenderer.create { label, value: String, _ ->
         if(value == "auto") {
             label.text = PlsBundle.message("locale.auto")
         } else {
