@@ -58,7 +58,9 @@ private class CwtExtendedParameterConfigImpl(
             info = r.first().info,
             value = PlsConstants.blockFolder,
             valueTypeId = CwtType.Block.id,
-            configs = r
+            configs = r,
+            options = config.options,
+            documentation = config.documentation
         )
         return listOf(containerConfig)
     }
