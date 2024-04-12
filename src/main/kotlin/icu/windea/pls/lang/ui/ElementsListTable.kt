@@ -86,8 +86,9 @@ class ElementsListTable(
                         is ElementsTableModel.ValueColumn -> {
                             if(item is PropertyDescriptor) {
                                 val constantValues = context.descriptorsInfo.allKeyValuesMap[item.name].orEmpty()
-                                val items = constantValues.ifEmpty { arrayOf("") }
+                                val items = constantValues
                                 val valueComboBox = ComboBox(items)
+                                if(constantValues.isEmpty()) valueComboBox.isEnabled = false
                                 valueComboBox.selectedItem = item.value
                                 configureValueComboBox(valueComboBox)
                                 this.valueComboBox = valueComboBox
