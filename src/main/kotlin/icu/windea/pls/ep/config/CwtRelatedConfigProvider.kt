@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.config
 
 import com.intellij.openapi.extensions.*
+import com.intellij.psi.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
@@ -19,12 +20,12 @@ interface CwtRelatedConfigProvider {
     /**
      * 基于指定的脚本表达式[element]获取相关的CWT规则。
      */
-    fun getRelatedConfigs(element: ParadoxScriptExpressionElement): List<CwtConfig<*>>
+    fun getRelatedConfigs(element: PsiElement): List<CwtConfig<*>>
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtRelatedConfigProvider>("icu.windea.pls.relatedConfigProvider")
         
-        fun getRelatedConfigs(element: ParadoxScriptExpressionElement): List<CwtConfig<*>> {
+        fun getRelatedConfigs(element: PsiElement): List<CwtConfig<*>> {
             val gameType = selectGameType(element) ?: return emptyList()
             val result = mutableListOf<CwtConfig<*>>()
             EP_NAME.extensionList.forEachFast f@{ ep ->

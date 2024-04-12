@@ -19,6 +19,37 @@ import kotlin.Pair
 object ParadoxPsiManager {
     //region Find Methods
     
+    object FindScriptedVariableOptions {
+        const val DEFAULT = 0x01
+        const val BY_NAME = 0x02
+        const val BY_REFERENCE = 0x04
+    }
+    
+    fun findScriptVariable(file: PsiFile, offset: Int, options: Int = 1): ParadoxScriptScriptedVariable? {
+        if(BitUtil.isSet(options, FindScriptedVariableOptions.DEFAULT)) {
+            val result = file.findElementAt(offset) t@{
+                it.parents(false).find p@{ p -> p is ParadoxScriptScriptedVariable }
+            }?.castOrNull<ParadoxScriptScriptedVariable>()
+            if(result != null) return result
+        } else {
+            if(BitUtil.isSet(options, FindScriptedVariableOptions.BY_NAME)) {
+                val result = file.findElementAt(offset) p@{
+                    if(it.elementType != ParadoxScriptElementTypes.SCRIPTED_VARIABLE_NAME_TOKEN) return@p null
+                    it.parents(false).find p@{ p -> p is ParadoxScriptScriptedVariable }
+                }?.castOrNull<ParadoxScriptScriptedVariable>()
+                if(result != null) return result
+            }
+        }
+        if(BitUtil.isSet(options, FindScriptedVariableOptions.BY_REFERENCE)) {
+            val reference = file.findReferenceAt(offset) {
+                it.canResolve(ParadoxResolveConstraint.ScriptedVariable)
+            }
+            val resolved = reference?.resolve()?.castOrNull<ParadoxScriptScriptedVariable>()
+            if(resolved != null) return resolved
+        }
+        return null
+    }
+    
     object FindDefinitionOptions {
         const val DEFAULT = 0x01
         const val BY_ROOT_KEY = 0x02
@@ -44,7 +75,7 @@ object ParadoxPsiManager {
         if(BitUtil.isSet(options, FindDefinitionOptions.DEFAULT)) {
             val result = file.findElementAt(offset) t@{
                 it.parents(false).find p@{ p -> p is ParadoxScriptDefinitionElement && p.definitionInfo != null }
-            }?.castOrNull<ParadoxScriptDefinitionElement?>()
+            }?.castOrNull<ParadoxScriptDefinitionElement>()
             if(result != null) return result
         } else {
             if(BitUtil.isSet(options, FindDefinitionOptions.BY_ROOT_KEY)) {
@@ -81,14 +112,14 @@ object ParadoxPsiManager {
         if(BitUtil.isSet(options, FindLocalisationOptions.DEFAULT)) {
             val result = file.findElementAt(offset) t@{
                 it.parents(false).find p@{ p -> p is ParadoxLocalisationProperty && p.localisationInfo != null }
-            }?.castOrNull<ParadoxLocalisationProperty?>()
+            }?.castOrNull<ParadoxLocalisationProperty>()
             if(result != null) return result
         } else {
             if(BitUtil.isSet(options, FindLocalisationOptions.BY_NAME)) {
                 val result = file.findElementAt(offset) p@{
                     if(it.elementType != ParadoxLocalisationElementTypes.PROPERTY_KEY_TOKEN) return@p null
                     it.parents(false).find p@{ p -> p is ParadoxLocalisationProperty && p.localisationInfo != null }
-                }?.castOrNull<ParadoxLocalisationProperty?>()
+                }?.castOrNull<ParadoxLocalisationProperty>()
                 if(result != null) return result
             }
         }
@@ -100,7 +131,7 @@ object ParadoxPsiManager {
                 reference == null -> null
                 reference is ParadoxLocalisationPropertyPsiReference -> reference.resolveLocalisation()
                 else -> reference.resolve()
-            }?.castOrNull<ParadoxLocalisationProperty?>()
+            }?.castOrNull<ParadoxLocalisationProperty>()
             if(resolved != null) return resolved
         }
         return null

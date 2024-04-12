@@ -46,7 +46,8 @@ class GotoRelatedCwtConfigsAction : BaseCodeInsightAction() {
 		presentation.isEnabled = true
 	}
 	
-	private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-		return ParadoxPsiManager.findScriptExpression(file, offset)
+	private fun findElement(file: PsiFile, offset: Int): PsiElement? {
+		return ParadoxPsiManager.findScriptVariable(file, offset, ParadoxPsiManager.FindScriptedVariableOptions.BY_NAME)
+			?: ParadoxPsiManager.findScriptExpression(file, offset)
 	}
 }

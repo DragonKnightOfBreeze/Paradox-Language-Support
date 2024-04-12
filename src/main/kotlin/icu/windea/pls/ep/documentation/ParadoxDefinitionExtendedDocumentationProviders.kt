@@ -9,11 +9,11 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxBaseDefinitionExtendedDocumentationProvider : ParadoxDefinitionExtendedDocumentationProvider {
     override fun getDocumentation(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String? {
-        val name = definitionInfo.name
-        if(name.isEmpty()) return null
-        if(name.isParameterized()) return null
+        val definitionName = definitionInfo.name
+        if(definitionName.isEmpty()) return null
+        if(definitionName.isParameterized()) return null
         val configGroup = definitionInfo.configGroup
-        val configs = configGroup.extendedDefinitions.getAllByTemplate(name, definition, configGroup)
+        val configs = configGroup.extendedDefinitions.getAllByTemplate(definitionName, definition, configGroup)
         val config = configs.findLast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) } ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation
@@ -22,12 +22,12 @@ class ParadoxBaseDefinitionExtendedDocumentationProvider : ParadoxDefinitionExte
 
 class ParadoxGameRuleExtendedDocumentationProvider : ParadoxDefinitionExtendedDocumentationProvider {
     override fun getDocumentation(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String? {
-        val name = definitionInfo.name
-        if(name.isEmpty()) return null
-        if(name.isParameterized()) return null
+        val definitionName = definitionInfo.name
+        if(definitionName.isEmpty()) return null
+        if(definitionName.isParameterized()) return null
         if(definitionInfo.type != "game_rule") return null
         val configGroup = definitionInfo.configGroup
-        val config = configGroup.extendedGameRules.getByTemplate(name, definition, configGroup) ?: return null
+        val config = configGroup.extendedGameRules.getByTemplate(definitionName, definition, configGroup) ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation
     }
@@ -35,9 +35,9 @@ class ParadoxGameRuleExtendedDocumentationProvider : ParadoxDefinitionExtendedDo
 
 class ParadoxOnActionExtendedDocumentationProvider : ParadoxDefinitionExtendedDocumentationProvider {
     override fun getDocumentation(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String? {
-        val name = definitionInfo.name
-        if(name.isEmpty()) return null
-        if(name.isParameterized()) return null
+        val definitionName = definitionInfo.name
+        if(definitionName.isEmpty()) return null
+        if(definitionName.isParameterized()) return null
         if(definitionInfo.type != "on_action") return null
         val configGroup = definitionInfo.configGroup
         val config = configGroup.extendedOnActions.getByTemplate(definitionInfo.name, definition, configGroup) ?: return null
