@@ -29,7 +29,7 @@ class CwtBlockSurrounder : Surrounder {
         if(firstElement != lastElement) {
             firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
         }
-        var newElement = CwtElementFactory.createValue(project, "{\n${replacedText}\n}")
+        var newElement = CwtElementFactory.createBlock(project, "{\n${replacedText}\n}")
         newElement = firstElement.replace(newElement) as CwtBlock
         newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as CwtBlock
         val endOffset = newElement.endOffset

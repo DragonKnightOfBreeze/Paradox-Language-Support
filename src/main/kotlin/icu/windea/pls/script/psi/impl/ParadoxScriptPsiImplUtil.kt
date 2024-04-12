@@ -431,7 +431,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun setValue(element: ParadoxScriptString, value: String): ParadoxScriptString {
-        val newElement = ParadoxScriptElementFactory.createString(element.project, value)
+        val newElement = ParadoxScriptElementFactory.createString(element.project, value.quoteIfNecessary())
         return element.replace(newElement).cast()
     }
     
@@ -783,7 +783,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxScriptParameter, name: String): ParadoxScriptParameter {
         if(element.idElement == null) throw IncorrectOperationException() //不支持重命名
-        val newElement = ParadoxScriptElementFactory.createParameter(element.project, name)
+        val newElement = ParadoxScriptElementFactory.createParameterSmartly(element.project, name)
         return element.replace(newElement).cast()
     }
     
@@ -825,7 +825,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxScriptInlineMathParameter, name: String): ParadoxScriptInlineMathParameter {
         if(element.idElement == null) throw IncorrectOperationException() //不支持重命名
-        val newElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name)
+        val newElement = ParadoxScriptElementFactory.createInlineMathParameterSmartly(element.project, name)
         return element.replace(newElement).cast()
     }
     

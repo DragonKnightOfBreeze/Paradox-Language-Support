@@ -161,7 +161,7 @@ object CwtPsiImplUtil {
     
     @JvmStatic
     fun setValue(element: CwtPropertyKey, value: String): CwtPropertyKey {
-        val newElement = CwtElementFactory.createPropertyKey(element.project, value)
+        val newElement = CwtElementFactory.createPropertyKey(element.project, value.quoteIfNecessary())
         return element.replace(newElement).cast()
     }
     //endregion
@@ -234,7 +234,7 @@ object CwtPsiImplUtil {
     
     @JvmStatic
     fun setValue(element: CwtString, value: String): CwtString {
-        val newElement = CwtElementFactory.createString(element.project, value)
+        val newElement = CwtElementFactory.createString(element.project, value.quoteIfNecessary())
         return element.replace(newElement).cast()
     }
     

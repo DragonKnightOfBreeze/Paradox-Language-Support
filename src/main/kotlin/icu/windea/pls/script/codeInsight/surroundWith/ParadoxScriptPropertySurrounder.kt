@@ -29,7 +29,7 @@ class ParadoxScriptPropertySurrounder : Surrounder {
         if(firstElement != lastElement) {
             firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
         }
-        var newElement = ParadoxScriptElementFactory.createProperty(project, "key", "{\n${replacedText}\n}")
+        var newElement = ParadoxScriptElementFactory.createPropertyFromText(project, "key = {\n$replacedText\n}")
         newElement = firstElement.replace(newElement) as ParadoxScriptProperty
         newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as ParadoxScriptProperty
         return newElement.propertyKey.textRange

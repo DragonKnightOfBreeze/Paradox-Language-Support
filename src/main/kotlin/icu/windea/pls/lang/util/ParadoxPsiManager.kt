@@ -383,7 +383,7 @@ object ParadoxPsiManager {
      */
     fun introduceLocalScriptedVariable(name: String, value: String, parentDefinitionOrFile: ParadoxScriptDefinitionElement, project: Project): ParadoxScriptScriptedVariable {
         val (parent, anchor) = parentDefinitionOrFile.findParentAndAnchorToIntroduceLocalScriptedVariable()
-        var newVariable = ParadoxScriptElementFactory.createScriptedVariable(project, name, value)
+        var newVariable = ParadoxScriptElementFactory.createScriptedVariable(project, name, value.quoteIfNecessary())
         val newLine = ParadoxScriptElementFactory.createLine(project)
         newVariable = parent.addAfter(newVariable, anchor).cast()
         if(anchor != null) parent.addBefore(newLine, newVariable) else parent.addAfter(newLine, newVariable)
@@ -412,7 +412,7 @@ object ParadoxPsiManager {
      */
     fun introduceGlobalScriptedVariable(name: String, value: String, targetFile: ParadoxScriptFile, project: Project): ParadoxScriptScriptedVariable {
         val (parent, anchor) = targetFile.findParentAndAnchorToIntroduceGlobalScriptedVariable()
-        var newVariable = ParadoxScriptElementFactory.createScriptedVariable(project, name, value)
+        var newVariable = ParadoxScriptElementFactory.createScriptedVariable(project, name, value.quoteIfNecessary())
         val newLine = ParadoxScriptElementFactory.createLine(project)
         newVariable = parent.addAfter(newVariable, anchor).cast()
         parent.addBefore(newLine, newVariable)

@@ -291,9 +291,10 @@ fun String.unquote(): String {
     }
 }
 
-fun String.quoteIfNecessary(or: Boolean = false): String {
-    //如果包含空白或者转义字符的话要使用引号括起
-    return if(or || any { it.isWhitespace() || it == '"' }) quote() else this
+fun String.quoteIfNecessary(): String {
+    //如果包含空白或者双引号的话要使用双引号括起
+    if(any { it.isWhitespace() || it == '"' }) return this.quote()
+    return this
 }
 
 fun Collection<String>.toCommaDelimitedString(): String {

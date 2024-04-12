@@ -28,7 +28,7 @@ class CwtPropertySurrounder : CwtSurrounder() {
         if(firstElement != lastElement) {
             firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
         }
-        var newElement = CwtElementFactory.createProperty(project, "key", "{\n${replacedText}\n}")
+        var newElement = CwtElementFactory.createProperty(project, "key = {\n${replacedText}\n}")
         newElement = firstElement.replace(newElement) as CwtProperty
         newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as CwtProperty
         return newElement.propertyKey.textRange
