@@ -215,6 +215,11 @@ inline_scripts = {
         ## cardinality = 0..1
         possible = single_alias_right[trigger_clause]
     }
+
+	# since 1.3.5, scope context related options are also available here
+
+	## push_scope = country
+	x
 }
 ```
 
@@ -246,6 +251,12 @@ parameters = {
 		localisation
 		scalar
 	}
+
+	# since 1.3.5, scope context related options are also available here
+
+	## context_key = scripted_trigger@some_trigger
+	## push_scope = country
+	x
 }
 ```
 
