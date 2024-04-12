@@ -87,7 +87,7 @@ class ElementsTableModel(
     
     class ValueColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("ui.table.element.column.name.value")) {
         override fun isCellEditable(item: ElementDescriptor): Boolean {
-            return item is PropertyDescriptor
+            return item is PropertyDescriptor && item.constantValues.isNotEmpty()
         }
         
         override fun valueOf(item: ElementDescriptor): String? {
