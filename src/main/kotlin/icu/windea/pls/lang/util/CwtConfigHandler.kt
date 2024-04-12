@@ -183,6 +183,9 @@ object CwtConfigHandler {
             element is CwtProperty && path.matchesAntPath("localisation_predefined_parameters/*") -> {
                 CwtConfigType.LocalisationPredefinedParameter
             }
+            path.matchesAntPath("scripted_variables/*") -> {
+                CwtConfigType.ExtendedScriptedVariable
+            }
             path.matchesAntPath("definitions/*") -> {
                 CwtConfigType.ExtendedDefinition
             }

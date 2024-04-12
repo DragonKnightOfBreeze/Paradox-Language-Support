@@ -92,7 +92,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 					//排除正在输入的那一个
 					val selector = definitionSelector(project, file).contextSensitive()
 						.filterBy { it is ParadoxScriptProperty && it.name.equals(definitionInfo.rootKey, true) }
-						.notSamePosition(element)
+						.notSamePosition(definition)
 						.distinctByName()
 					ParadoxDefinitionSearch.search(type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
 					

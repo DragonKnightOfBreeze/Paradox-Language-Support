@@ -53,6 +53,8 @@ object PlsIcons {
         @JvmField val PathReference = AllIcons.FileTypes.Any_type
         @JvmField val Inline = AllIcons.FileTypes.AddAny
         @JvmField val InlineScript = loadIcon("/icons/nodes/inlineScript.svg")
+        
+        @JvmField val ScriptedVariableConfig = loadIcon("/icons/nodes/scriptedVariableConfig.svg")
         @JvmField val DefinitionConfig = loadIcon("/icons/nodes/definitionConfig.svg")
         @JvmField val ParameterConfig = loadIcon("/icons/nodes/parameterConfig.svg")
         @JvmField val InlineScriptConfig = loadIcon("/icons/nodes/inlineScriptConfig.svg")

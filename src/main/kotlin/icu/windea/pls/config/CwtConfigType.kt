@@ -113,6 +113,10 @@ enum class CwtConfigType(
 		override val icon get() = PlsIcons.Nodes.PredefinedParameter
 	},
 	
+	ExtendedScriptedVariable("extended scripted variable") {
+		override val prefix get() = PlsBundle.message("prefix.scriptedVariable")
+		override val icon get() = PlsIcons.Nodes.ScriptedVariableConfig
+	},
 	ExtendedDefinition("extended definition") {
 		override val prefix get() = PlsBundle.message("prefix.definition")
 		override val icon get() = PlsIcons.Nodes.DefinitionConfig
