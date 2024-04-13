@@ -34,14 +34,14 @@ object ParadoxDefinitionHandler {
     //get info & match methods
     
     fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
-        //快速判断
-        if(runCatchingCancelable { element.greenStub }.getOrNull()?.isValidDefinition == false) return null
         //如果不能使用缓存，需要重新获取
         val notUseCache = element.getUserData(PlsKeys.isIncomplete) == true
         if(notUseCache) {
             val file = element.containingFile
             return doGetInfo(element, file)
         }
+        //快速判断
+        if(runCatchingCancelable { element.greenStub }.getOrNull()?.isValidDefinition == false) return null
         //从缓存中获取
         return doGetInfoFromCache(element)
     }
