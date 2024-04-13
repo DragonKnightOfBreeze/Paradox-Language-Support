@@ -60,7 +60,7 @@ val PlsKeys.parameterValueInjectionInfos by createKey<List<ParameterValueInjecti
 
 //用于将CWT规则临时写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
 val PlsKeys.cwtConfig by createKey<CwtConfig<*>>("paradox.cwtConfig")
-//用于在进行代码补全时标记一个property的propertyValue未填写
+//用于在进行代码补全时标记用户输入未完成
 val PlsKeys.isIncomplete by createKey<Boolean>("paradox.isIncomplete")
 //用于在进行代码补全时标记作用域不匹配
 val PlsKeys.scopeMismatched by createKey<Boolean>("paradox.scopeMismatched")

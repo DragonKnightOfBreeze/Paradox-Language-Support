@@ -8,14 +8,11 @@ import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.references.*
 
 class ParadoxParameterScriptExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {

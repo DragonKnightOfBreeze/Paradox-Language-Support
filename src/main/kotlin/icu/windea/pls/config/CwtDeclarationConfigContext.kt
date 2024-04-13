@@ -2,7 +2,6 @@ package icu.windea.pls.config
 
 import com.google.common.cache.*
 import com.intellij.openapi.util.*
-import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*

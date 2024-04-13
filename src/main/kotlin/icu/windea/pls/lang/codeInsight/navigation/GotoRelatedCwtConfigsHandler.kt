@@ -10,7 +10,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
 
 //com.intellij.testIntegration.GotoTestOrCodeHandler
 

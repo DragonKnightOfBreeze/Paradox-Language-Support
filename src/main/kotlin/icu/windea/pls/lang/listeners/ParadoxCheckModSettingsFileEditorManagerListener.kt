@@ -7,8 +7,8 @@ import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.tools.*
 import icu.windea.pls.model.*
 

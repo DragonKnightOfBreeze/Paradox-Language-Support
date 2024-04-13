@@ -63,7 +63,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
             //向上得到property
             val propertyElement = element.findParentProperty() as? ParadoxScriptProperty
             if(propertyElement != null) {
-                //这里需要特殊处理一下，标记属性的值是否未填写
+                //这里可能需要标记用户输入未完成
                 val incomplete = !quoted && keyword.isEmpty()
                 try {
                     propertyElement.putUserData(PlsKeys.isIncomplete, incomplete)
