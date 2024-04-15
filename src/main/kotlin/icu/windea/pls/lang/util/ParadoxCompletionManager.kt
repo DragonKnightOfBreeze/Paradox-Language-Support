@@ -2,10 +2,13 @@ package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.lang.documentation.ide.impl.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.patterns.*
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*

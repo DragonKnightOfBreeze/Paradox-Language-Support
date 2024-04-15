@@ -5,6 +5,7 @@ package icu.windea.pls.lang.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.patterns.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -16,6 +17,19 @@ fun PsiElement.getKeyword(offsetInParent: Int): String {
 
 fun PsiElement.getFullKeyword(offsetInParent: Int): String {
     return (text.substring(0, offsetInParent) + text.substring(offsetInParent + PlsConstants.dummyIdentifier.length)).unquote()
+}
+
+fun PsiElement.isIncomplete(): Boolean {
+    val file = containingFile
+    val originalFile = file.originalFile
+    if(originalFile === file) return false
+    val startOffset = startOffset
+    file.findElementAt(startOffset)
+    val e1 = file.findElementAt(startOffset) ?: return false
+    val e2 = originalFile.findElementAt(startOffset) ?: return true
+    if(e1.elementType != e2.elementType) return true
+    if(e1.textLength != e2.textLength) return true
+    return false
 }
 
 /**
@@ -38,8 +52,6 @@ fun ProcessingContext.initialize(parameters: CompletionParameters) {
         val configGroup = getConfigGroup(project, gameType)
         this.configGroup = configGroup
     }
-    
-    parameters.originalFile.putUserData(PlsKeys.completionOffset, parameters.offset)
 }
 
 //TODO 这个方法存在问题，不要使用

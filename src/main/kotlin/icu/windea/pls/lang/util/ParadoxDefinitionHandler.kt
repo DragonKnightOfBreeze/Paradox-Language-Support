@@ -13,6 +13,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.localisation.psi.*
@@ -129,7 +130,7 @@ object ParadoxDefinitionHandler {
             //兼容进行代码补全时用户输入未完成的情况
             val isIncomplete = propertyValue is ParadoxScriptString
                 && propertyValue.text == PlsConstants.dummyIdentifier
-                && propertyValue.containingFile?.getUserData(PlsKeys.completionOffset) == propertyValue.startOffset
+                && propertyValue.isIncomplete()
             if(isIncomplete) return@run
             val isBlock = propertyValue is ParadoxScriptBlock
             val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
