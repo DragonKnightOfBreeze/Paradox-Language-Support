@@ -5,6 +5,7 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.patterns.*
+import com.intellij.psi.PsiElement
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
@@ -35,14 +36,9 @@ import kotlin.collections.component2
 object ParadoxCompletionManager {
     //region Core Methods
     fun addRootKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
-        val originalFile = context.originalFile!!
-        val project = originalFile.project
-        val gameType = selectGameType(originalFile) ?: return
-        val configGroup = getConfigGroup(project, gameType)
         val elementPath = ParadoxElementPathHandler.get(memberElement, PlsConstants.maxDefinitionDepth) ?: return
         
         context.isKey = true
-        context.configGroup = configGroup
         
         completeRootKey(context, result, elementPath)
     }
@@ -225,9 +221,10 @@ object ParadoxCompletionManager {
     
     //region Base Completion Methods
     fun completeRootKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxElementPath) {
-        val fileInfo = context.originalFile!!.fileInfo ?: return
-        val gameType = fileInfo.rootInfo.gameType
-        val configGroup = context.configGroup!!
+        val originalFile = context.parameters?.originalFile ?: return
+        val fileInfo = originalFile.fileInfo ?: return
+        val gameType = context.gameType ?: return
+        val configGroup = context.configGroup ?: return
         val path = fileInfo.pathToEntry //这里使用pathToEntry
         val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
         for(typeConfig in configGroup.types.values) {
@@ -294,7 +291,6 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile?.name)
                 .withTypeIcon(typeFile?.icon)
                 .withForceInsertCurlyBraces(tuples.isEmpty())
-                .italic()
                 .caseInsensitive()
                 .withPriority(PlsCompletionPriorities.rootKeyPriority)
             result.addScriptExpressionElement(context, builder)
@@ -428,12 +424,11 @@ object ParadoxCompletionManager {
     }
     
     fun completePathReference(context: ProcessingContext, result: CompletionResultSet) {
+        val contextFile = context.parameters?.originalFile ?: return
+        val project = contextFile.project
         val config = context.config ?: return
         val configExpression = config.expression ?: return
-        val configGroup = config.info.configGroup
-        val project = configGroup.project
         val contextElement = context.contextElement
-        val contextFile = context.originalFile
         val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
         if(pathReferenceExpressionSupport != null) {
             val tailText = getScriptExpressionTailText(context, config)
@@ -453,7 +448,7 @@ object ParadoxCompletionManager {
                 val icon = when {
                     ParadoxInlineScriptHandler.isInlineScriptExpressionConfig(config) -> PlsIcons.Nodes.InlineScript
                     else -> PlsIcons.Nodes.PathReference
-                } 
+                }
                 val builder = ParadoxScriptExpressionLookupElementBuilder.create(file, name)
                     .withIcon(icon)
                     .withTailText(tailText)
@@ -1002,10 +997,10 @@ object ParadoxCompletionManager {
     
     fun completeEventTarget(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
+        val file = context.parameters?.originalFile ?: return
+        val project = file.project
         val contextElement = context.contextElement!!
         val keyword = context.keyword
-        val file = context.originalFile!!
-        val project = file.project
         
         val eventTargetSelector = dynamicValueSelector(project, file).contextSensitive().distinctByName()
         ParadoxDynamicValueSearch.search(ParadoxDynamicValueHandler.EVENT_TARGETS, eventTargetSelector).processQueryAsync p@{ info ->
@@ -1025,7 +1020,7 @@ object ParadoxCompletionManager {
     
     fun completeScriptedLoc(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val file = context.originalFile!!
+        val file = context.parameters?.originalFile ?: return
         val project = file.project
         
         val scriptedLocSelector = definitionSelector(project, file).contextSensitive().distinctByName()
@@ -1046,10 +1041,10 @@ object ParadoxCompletionManager {
     
     fun completeVariable(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
+        val file = context.parameters?.originalFile ?: return
+        val project = file.project
         val contextElement = context.contextElement!!
         val keyword = context.keyword
-        val file = context.originalFile!!
-        val project = file.project
         
         val variableSelector = dynamicValueSelector(project, file).contextSensitive().distinctByName()
         ParadoxDynamicValueSearch.search("variable", variableSelector).processQueryAsync p@{ info ->
@@ -1069,7 +1064,7 @@ object ParadoxCompletionManager {
     
     fun completeConcept(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val file = context.originalFile!!
+        val file = context.parameters?.originalFile ?: return
         val project = file.project
         
         val conceptSelector = definitionSelector(project, file).contextSensitive().distinctByName()

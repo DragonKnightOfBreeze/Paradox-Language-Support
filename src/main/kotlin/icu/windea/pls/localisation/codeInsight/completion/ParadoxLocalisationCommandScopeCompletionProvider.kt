@@ -15,17 +15,11 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
         val element = parameters.position.parent.castOrNull<ParadoxLocalisationCommandIdentifier>() ?: return
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
-        val file = parameters.originalFile
-        val project = file.project
-        val gameType = file.fileInfo?.rootInfo?.gameType ?: return
-        val configGroup = getConfigGroup(project, gameType)
         
-        context.parameters = parameters
+        context.initialize(parameters)
         context.contextElement = element
-        context.originalFile = file
         context.offsetInParent = offsetInParent
         context.keyword = keyword
-        context.configGroup = configGroup
         context.scopeContext = ParadoxScopeHandler.getScopeContext(element)
         
         //提示scope

@@ -32,10 +32,8 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		val offsetInParent = parameters.offset - element.startOffset
 		val keyword = element.getKeyword(offsetInParent)
 		
-		context.completionIds = mutableSetOf<String>().synced()
-		context.parameters = parameters
+		context.initialize(parameters)
 		context.contextElement = element
-		context.originalFile = file
 		context.offsetInParent = offsetInParent
 		context.keyword = keyword
 		context.quoted = quoted

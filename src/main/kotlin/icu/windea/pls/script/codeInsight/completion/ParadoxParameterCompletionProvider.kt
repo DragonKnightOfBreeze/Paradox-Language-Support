@@ -16,13 +16,10 @@ class ParadoxParameterCompletionProvider : CompletionProvider<CompletionParamete
 		val tokenElement = parameters.position
 		val element = tokenElement.parent
 		val offsetInParent = parameters.offset - tokenElement.startOffset
-		val file = parameters.originalFile
 		val keyword = tokenElement.getKeyword(offsetInParent)
 		
-		context.completionIds = mutableSetOf<String>().synced()
-		context.parameters = parameters
+		context.initialize(parameters)
 		context.contextElement = element
-		context.originalFile = file
 		context.offsetInParent = offsetInParent
 		context.keyword = keyword
 		

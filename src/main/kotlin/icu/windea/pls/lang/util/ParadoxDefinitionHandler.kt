@@ -36,12 +36,6 @@ object ParadoxDefinitionHandler {
     fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
         //快速判断
         if(runCatchingCancelable { element.greenStub }.getOrNull()?.isValidDefinition == false) return null
-        //如果不能使用缓存，需要重新获取
-        val notUseCache = element.getUserData(PlsKeys.isIncomplete) == true
-        if(notUseCache) {
-            val file = element.containingFile
-            return doGetInfo(element, file)
-        }
         //从缓存中获取
         return doGetInfoFromCache(element)
     }
@@ -129,11 +123,15 @@ object ParadoxDefinitionHandler {
         if(fastResult != null) return fastResult
         
         //判断definition的propertyValue是否需要是block
-        val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config
-        //当进行代码补全时需要特殊处理
-        val propertyValue = element.castOrNull<ParadoxScriptProperty>()?.propertyValue
-        val isBlock = propertyValue?.let { it is ParadoxScriptBlock }
-        if(declarationConfig != null && isBlock != null) {
+        run {
+            val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config ?: return@run
+            val propertyValue = element.castOrNull<ParadoxScriptProperty>()?.propertyValue ?: return@run
+            //兼容进行代码补全时用户输入未完成的情况
+            val isIncomplete = propertyValue is ParadoxScriptString
+                && propertyValue.text == PlsConstants.dummyIdentifier
+                && propertyValue.containingFile?.getUserData(PlsKeys.completionOffset) == propertyValue.startOffset
+            if(isIncomplete) return@run
+            val isBlock = propertyValue is ParadoxScriptBlock
             val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
             if(isBlockConfig != isBlock) return false
         }
@@ -163,11 +161,20 @@ object ParadoxDefinitionHandler {
         if(fastResult != null) return fastResult
         
         //判断definition的propertyValue是否需要是block
-        val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config
-        //当进行代码补全时需要特殊处理
-        val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES)
-        val isBlock = propertyValue?.tokenType?.let { it == BLOCK }
-        if(declarationConfig != null && isBlock != null) {
+        //val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config
+        ////当进行代码补全时需要特殊处理
+        //val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES)
+        //val isBlock = propertyValue?.tokenType?.let { it == BLOCK }
+        //if(declarationConfig != null && isBlock != null) {
+        //    val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
+        //    if(isBlockConfig != isBlock) return false
+        //}
+        
+        //判断definition的propertyValue是否需要是block
+        run {
+            val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config ?: return@run
+            val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES) ?: return@run
+            val isBlock = propertyValue is ParadoxScriptBlock
             val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
             if(isBlockConfig != isBlock) return false
         }

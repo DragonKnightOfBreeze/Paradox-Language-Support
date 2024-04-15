@@ -23,6 +23,8 @@ class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters
 		val event = element.findParentByPath("id", definitionType = "event") //不处理内联的情况
 		if(event !is ParadoxScriptProperty) return
 		
+		context.initialize(parameters)
+		
 		//仅提示脚本文件中向上查找到的那个合法的事件命名空间
 		val eventNamespace = ParadoxEventHandler.getMatchedNamespace(event) ?: return //skip
 		val name = eventNamespace.value ?: return

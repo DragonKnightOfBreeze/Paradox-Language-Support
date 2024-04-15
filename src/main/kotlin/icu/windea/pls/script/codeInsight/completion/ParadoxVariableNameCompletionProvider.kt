@@ -2,19 +2,11 @@ package icu.windea.pls.script.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.CwtConfigMatcher.Options
-import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -28,16 +20,13 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptString>() ?: return
         if(element.text.isParameterized()) return
-        val file = parameters.originalFile
         val quoted = element.text.isLeftQuoted()
         val rightQuoted = element.text.isRightQuoted()
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
         
-        context.completionIds = mutableSetOf<String>().synced()
-        context.parameters = parameters
+        context.initialize(parameters)
         context.contextElement = element
-        context.originalFile = file
         context.offsetInParent = offsetInParent
         context.keyword = keyword
         context.quoted = quoted

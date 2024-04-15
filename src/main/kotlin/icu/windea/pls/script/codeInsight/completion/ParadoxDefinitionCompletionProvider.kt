@@ -4,9 +4,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
@@ -27,10 +25,8 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
         
-        context.completionIds = mutableSetOf<String>().synced()
-        context.parameters = parameters
+        context.initialize(parameters)
         context.contextElement = element
-        context.originalFile = file
         context.offsetInParent = offsetInParent
         context.keyword = keyword
         context.quoted = quoted
@@ -63,14 +59,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
             //向上得到property
             val propertyElement = element.findParentProperty() as? ParadoxScriptProperty
             if(propertyElement != null) {
-                //这里需要特殊处理一下，标记属性的值是否未填写
-                val incomplete = !quoted && keyword.isEmpty()
-                try {
-                    propertyElement.putUserData(PlsKeys.isIncomplete, incomplete)
-                    ParadoxCompletionManager.addPropertyValueCompletions(element, propertyElement, context, resultToUse)
-                } finally {
-                    propertyElement.putUserData(PlsKeys.isIncomplete, null)
-                }
+                ParadoxCompletionManager.addPropertyValueCompletions(element, propertyElement, context, resultToUse)
             }
         }
     }
