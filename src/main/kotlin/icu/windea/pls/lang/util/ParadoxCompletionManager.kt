@@ -2,13 +2,9 @@ package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
-import com.intellij.lang.documentation.ide.impl.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.patterns.*
-import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiElement
-import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
@@ -231,7 +227,7 @@ object ParadoxCompletionManager {
         val path = fileInfo.pathToEntry //这里使用pathToEntry
         val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
         for(typeConfig in configGroup.types.values) {
-            if(ParadoxDefinitionHandler.matchesTypeWithUnknownDeclaration(path, null, null, typeConfig)) {
+            if(ParadoxDefinitionHandler.matchesTypeByUnknownDeclaration(path, null, null, typeConfig)) {
                 val skipRootKeyConfig = typeConfig.skipRootKey
                 if(skipRootKeyConfig.isNullOrEmpty()) {
                     if(elementPath.isEmpty()) {

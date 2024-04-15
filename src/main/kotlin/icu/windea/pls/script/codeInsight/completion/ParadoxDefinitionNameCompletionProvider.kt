@@ -7,7 +7,6 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.search.*
@@ -53,7 +52,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				val elementPath = ParadoxElementPathHandler.get(element, PlsConstants.maxDefinitionDepth) ?: return
 				for(typeConfig in configGroup.types.values) {
 					if(typeConfig.nameField != null) continue
-					if(ParadoxDefinitionHandler.matchesTypeWithUnknownDeclaration(path, elementPath, null, typeConfig)) {
+					if(ParadoxDefinitionHandler.matchesTypeByUnknownDeclaration(path, elementPath, null, typeConfig)) {
 						val type = typeConfig.name
 						val declarationConfig = configGroup.declarations.get(type) ?: continue
 						//需要考虑不指定子类型的情况

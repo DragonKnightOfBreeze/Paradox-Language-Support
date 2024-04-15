@@ -246,7 +246,7 @@ object ParadoxDefinitionHandler {
         return null //需要进一步匹配
     }
     
-    fun matchesTypeWithUnknownDeclaration(
+    fun matchesTypeByUnknownDeclaration(
         path: ParadoxPath,
         elementPath: ParadoxElementPath?,
         rootKey: String?,

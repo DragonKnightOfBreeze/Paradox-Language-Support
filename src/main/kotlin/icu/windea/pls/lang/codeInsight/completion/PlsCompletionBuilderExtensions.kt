@@ -75,7 +75,7 @@ fun CompletionResultSet.addScriptExpressionElement(context: ProcessingContext, b
     //should be filtered out before, check again here
     if((!builder.scopeMatched || !context.scopeMatched) && getSettings().completion.completeOnlyScopeIsMatched) return
     
-    val config = context.config!!
+    val config = context.config
     val completeWithValue = getSettings().completion.completeWithValue
     val targetConfig = when {
         config is CwtPropertyConfig -> config
@@ -83,7 +83,6 @@ fun CompletionResultSet.addScriptExpressionElement(context: ProcessingContext, b
         config is CwtSingleAliasConfig -> config.config
         else -> null
     }
-    val isBlock = targetConfig?.isBlock ?: false
     val constantValue = when {
         completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value
         else -> null
@@ -108,6 +107,8 @@ fun CompletionResultSet.addScriptExpressionElement(context: ProcessingContext, b
     
     val isKeyOrValueOnly = context.contextElement is ParadoxScriptPropertyKey || context.isKey != true
     val isKey = context.isKey == true
+    val isBlock = targetConfig?.isBlock ?: false
+    
     var lookupElement = when {
         element != null -> LookupElementBuilder.create(element, finalLookupString) //quote if necessary
         else -> LookupElementBuilder.create(finalLookupString) //quote if necessary
@@ -179,7 +180,7 @@ fun CompletionResultSet.addScriptExpressionElement(context: ProcessingContext, b
     
     //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
     val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
-    if(isKey && isBlock && completeWithClauseTemplate) {
+    if(isKey && isBlock && config != null && completeWithClauseTemplate) {
         val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
         if(entryConfigs.isNotEmpty()) {
             val tailText1 = buildString {
