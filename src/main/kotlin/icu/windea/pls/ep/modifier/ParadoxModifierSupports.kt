@@ -93,7 +93,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
                     it.withLocalizedNames(localizedNames)
                 }
                 .build(context)
-            result.addElement(lookupElement)
+            result.addPlsElement(lookupElement)
         }
     }
     
@@ -171,7 +171,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                         it.withLocalizedNames(localizedNames)
                     }
                     .build(context)
-                result.addElement(lookupElement)
+                result.addPlsElement(lookupElement)
                 true
             }
         }
@@ -371,7 +371,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
                         it.withLocalizedNames(localizedNames)
                     }
                     .build(context)
-                result.addElement(lookupElement)
+                result.addPlsElement(lookupElement)
             }
             true
         }

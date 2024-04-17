@@ -17,6 +17,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.codeStyle.*
@@ -164,7 +165,7 @@ fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(
     }
 }
 
-fun PlsLookupElementBuilder.build(context: ProcessingContext): LookupElement? {
+fun PlsLookupElementBuilder.build(context: ProcessingContext): PlsLookupElement? {
     if((!scopeMatched || !context.scopeMatched) && getSettings().completion.completeOnlyScopeIsMatched) return null
     
     val config = context.config
@@ -261,22 +262,27 @@ fun PlsLookupElementBuilder.build(context: ProcessingContext): LookupElement? {
         lookupElement = lookupElement.withInsertHandler { c, _ ->
             applyKeyAndValueInsertHandler(c, context, constantValue, insertCurlyBraces)
         }
-        
-        //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
-        if(isBlock && config != null && getSettings().completion.completeWithClauseTemplate) {
-            val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
-            if(entryConfigs.isNotEmpty()) {
-                val tailText1 = buildString {
-                    append(" = { <generate via template> }")
-                    if(tailText != null) append(tailText)
-                }
-                lookupElement = lookupElement.withTailText(tailText1)
-                lookupElement = lookupElement.withExpandClauseTemplateInsertHandler(context, entryConfigs)
+    }
+    
+    val result = lookupElement.withPriority(priority)
+    val extraElements = mutableListOf<LookupElement>()
+    
+    //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
+    if(isKey && isBlock && config != null && getSettings().completion.completeWithClauseTemplate) {
+        val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
+        if(entryConfigs.isNotEmpty()) {
+            val tailText1 = buildString {
+                append(" = { <generate via template> }")
+                if(tailText != null) append(tailText)
             }
+            val lookupElement1 = lookupElement
+                .withTailText(tailText1)
+                .withExpandClauseTemplateInsertHandler(context, entryConfigs)
+            extraElements.add(lookupElement1)
         }
     }
     
-    return lookupElement.withPriority(priority)
+    return PlsLookupElement(result, extraElements)
 }
 
 private fun getIconToUse(icon: Icon?, config: CwtConfig<*>?): Icon? {
@@ -370,9 +376,10 @@ private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtM
     return descriptors
 }
 
-fun CompletionResultSet.addElement(lookupElement: LookupElement?) {
+fun CompletionResultSet.addPlsElement(lookupElement: PlsLookupElement?) {
     if(lookupElement == null) return
     addElement(lookupElement)
+    lookupElement.extraElements.forEachFast { addElement(it) }
 }
 
 fun CompletionResultSet.addSimpleScriptExpressionElement(lookupElement: LookupElement?, context: ProcessingContext) {
@@ -389,8 +396,7 @@ fun CompletionResultSet.addBlockScriptExpressionElement(context: ProcessingConte
     addElement(lookupElement)
     
     //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
-    val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
-    if(completeWithClauseTemplate) {
+    if(getSettings().completion.completeWithClauseTemplate) {
         val config = context.config!!
         val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
         if(entryConfigs.isNotEmpty()) {

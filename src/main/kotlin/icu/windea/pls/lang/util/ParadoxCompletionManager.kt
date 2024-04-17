@@ -293,7 +293,7 @@ object ParadoxCompletionManager {
                 .caseInsensitive()
                 .withPriority(PlsCompletionPriorities.rootKeyPriority)
                 .build(context)
-            result.addElement(lookupElement)
+            result.addPlsElement(lookupElement)
             context.config = null
         }
     }
@@ -353,7 +353,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile.name)
                 .withTypeIcon(typeFile.icon)
                 .build(context)
-            result.addElement(lookupElement)
+            result.addPlsElement(lookupElement)
             true
         })
     }
@@ -380,7 +380,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile.name)
                 .withTypeIcon(typeFile.icon)
                 .build(context)
-            result.addElement(lookupElement)
+            result.addPlsElement(lookupElement)
             true
         }
     }
@@ -419,7 +419,7 @@ object ParadoxCompletionManager {
                     it.withLocalizedNames(localizedNames)
                 }
                 .build(context)
-            result.addElement(lookupElement)
+            result.addPlsElement(lookupElement)
             true
         }
         
@@ -458,7 +458,7 @@ object ParadoxCompletionManager {
                     .withTypeText(file.name)
                     .withTypeIcon(file.icon)
                     .build(context)
-                result.addElement(lookupElement)
+                result.addPlsElement(lookupElement)
                 true
             }
             
@@ -493,7 +493,7 @@ object ParadoxCompletionManager {
                     .caseInsensitive()
                     .withPriority(PlsCompletionPriorities.enumPriority)
                     .build(context)
-                result.addElement(lookupElement)
+                result.addPlsElement(lookupElement)
             }
         }
         //提示复杂枚举
@@ -517,7 +517,7 @@ object ParadoxCompletionManager {
                     .withTypeIcon(typeFile?.icon)
                     .withPriority(PlsCompletionPriorities.complexEnumPriority)
                     .build(context)
-                result.addElement(lookupElement)
+                result.addPlsElement(lookupElement)
                 true
             }
             
@@ -581,7 +581,7 @@ object ParadoxCompletionManager {
             .withScopeMatched(context.scopeMatched)
             .withPriority(PlsCompletionPriorities.constantPriority)
             .build(context)
-        result.addElement(lookupElement)
+        result.addPlsElement(lookupElement)
     }
     
     fun completeTemplateExpression(context: ProcessingContext, result: CompletionResultSet) {
@@ -603,7 +603,7 @@ object ParadoxCompletionManager {
                 .caseInsensitive()
                 .withScopeMatched(scopeMatched)
                 .build(context)
-            result.addElement(lookupElement)
+            result.addPlsElement(lookupElement)
             true
         }
     }
@@ -905,7 +905,7 @@ object ParadoxCompletionManager {
                         .withIcon(icon)
                         .withTailText(tailText)
                         .build(context)
-                    result.addElement(lookupElement)
+                    result.addPlsElement(lookupElement)
                     true
                 }
             }
@@ -941,7 +941,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile?.name)
                 .withTypeIcon(typeFile?.icon)
                 .build(context)
-            result.addElement(lookupElement)
+            result.addPlsElement(lookupElement)
         }
     }
     
@@ -1151,7 +1151,7 @@ object ParadoxCompletionManager {
                         .withTypeIcon(typeFile?.icon)
                         .underlined() //used for completions from extended configs
                         .build(context)
-                    result.addElement(lookupElement)
+                    result.addPlsElement(lookupElement)
                 }
             }
         }
@@ -1170,7 +1170,7 @@ object ParadoxCompletionManager {
                     .withTypeIcon(typeFile?.icon)
                     .underlined() //used for completions from extended configs
                     .build(context)
-                result.addElement(lookupElement)
+                result.addPlsElement(lookupElement)
             }
         }
         run r1@{
@@ -1188,7 +1188,7 @@ object ParadoxCompletionManager {
                     .withTypeIcon(typeFile?.icon)
                     .underlined() //used for completions from extended configs
                     .build(context)
-                result.addElement(lookupElement)
+                result.addPlsElement(lookupElement)
             }
         }
     }
@@ -1214,7 +1214,7 @@ object ParadoxCompletionManager {
                 .withTypeIcon(typeFile?.icon)
                 .underlined() //used for completions from extended configs
                 .build(context)
-            result.addElement(lookupElement)
+            result.addPlsElement(lookupElement)
         }
     }
     
@@ -1247,7 +1247,7 @@ object ParadoxCompletionManager {
                 .withTypeIcon(typeFile?.icon)
                 .underlined() //used for completions from extended configs
                 .build(context)
-            result.addElement(lookupElement)
+            result.addPlsElement(lookupElement)
         }
     }
     
@@ -1274,7 +1274,7 @@ object ParadoxCompletionManager {
                 .withTypeIcon(typeFile?.icon)
                 .underlined() //used for completions from extended configs
                 .build(context)
-            result.addElement(lookupElement)
+            result.addPlsElement(lookupElement)
         }
     }
     

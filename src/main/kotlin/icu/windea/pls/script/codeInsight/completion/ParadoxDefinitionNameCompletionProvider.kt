@@ -116,7 +116,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				it.withLocalizedNames(localizedNames)
 			}
 			.build(context)
-		result.addElement(lookupElement)
+		result.addPlsElement(lookupElement)
 		return true
 	}
 }
