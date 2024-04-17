@@ -105,7 +105,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		if(definitionInfo.name.isEmpty()) return true //ignore anonymous definitions
 		val icon = PlsIcons.Nodes.Definition(definitionInfo.type)
 		val typeFile = definition.containingFile
-		val builder = ParadoxScriptExpressionLookupElementBuilder.create(definition, definitionInfo.name)
+		val lookupElement = PlsLookupElementBuilder.create(definition, definitionInfo.name)
 			.withIcon(icon)
 			.withTypeText(typeFile?.name)
 			.withTypeIcon(typeFile?.icon)
@@ -115,7 +115,8 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				val localizedNames = ParadoxDefinitionHandler.getLocalizedNames(definition)
 				it.withLocalizedNames(localizedNames)
 			}
-		result.addScriptExpressionElement(context, builder)
+			.build(context)
+		result.addElement(lookupElement)
 		return true
 	}
 }

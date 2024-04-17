@@ -8,7 +8,6 @@ import com.intellij.codeInsight.template.impl.*
 import com.intellij.openapi.command.*
 import com.intellij.openapi.command.impl.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import com.intellij.util.*
@@ -24,13 +23,6 @@ import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
-
-fun LookupElementBuilder.withScopeMatched(scopeMatched: Boolean): LookupElementBuilder {
-    if(scopeMatched) return this
-    putUserData(PlsKeys.scopeMismatched, true)
-    return withItemTextForeground(JBColor.GRAY)
-}
-
 fun LookupElement.withPriority(priority: Double?, offset: Double = 0.0): LookupElement {
     val scopeMatched = getUserData(PlsKeys.scopeMismatched) != true
     if(priority == null && scopeMatched) return this
@@ -42,235 +34,21 @@ fun LookupElement.withExplicitProximity(explicitProximity: Int): LookupElement {
     return PrioritizedLookupElement.withExplicitProximity(this, explicitProximity)
 }
 
-fun CompletionResultSet.addSimpleScriptExpressionElement(context: ProcessingContext, lookupElement: LookupElement?) {
-    if(lookupElement == null) return
-    val id = lookupElement.lookupString
-    if(context.completionIds?.add(id) == false) return
-    addElement(lookupElement)
-}
-
-fun CompletionResultSet.addBlockScriptExpressionElement(context: ProcessingContext) {
-    val id = "{...}"
-    if(context.completionIds?.add(id) == false) return
-    val lookupElement = PlsLookupElements.blockLookupElement
-    addElement(lookupElement)
-    
-    //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
-    val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
-    if(completeWithClauseTemplate) {
-        val config = context.config!!
-        val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
-        if(entryConfigs.isNotEmpty()) {
-            val tailText1 = "{ <generate via template> }"
-            val lookupElement1 = LookupElementBuilder.create("")
-                .withPresentableText(tailText1)
-            addScriptExpressionElementWithClauseTemplate(context, lookupElement1, entryConfigs) {
-                withPriority(PlsCompletionPriorities.keywordPriority) //under "{...}"
-            }
-        }
-    }
-}
-
-fun CompletionResultSet.addScriptExpressionElement(context: ProcessingContext, builder: ParadoxScriptExpressionLookupElementBuilder) = with(builder) {
-    //should be filtered out before, check again here
-    if((!builder.scopeMatched || !context.scopeMatched) && getSettings().completion.completeOnlyScopeIsMatched) return
-    
-    val config = context.config
-    val completeWithValue = getSettings().completion.completeWithValue
-    val targetConfig = when {
-        config is CwtPropertyConfig -> config
-        config is CwtAliasConfig -> config.config
-        config is CwtSingleAliasConfig -> config.config
-        else -> null
-    }
-    val constantValue = when {
-        completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value
-        else -> null
-    }
-    val insertCurlyBraces = when {
-        forceInsertCurlyBraces -> true
-        completeWithValue -> targetConfig?.isBlock ?: false
-        else -> false
-    }
-    val finalLookupString = when {
-        context.keywordOffset == 0 -> lookupString.quoteIfNecessary()
-        else -> lookupString
-    }
-    //这里ID不一定等同于lookupString
-    val id = when {
-        constantValue != null -> "$finalLookupString = $constantValue"
-        insertCurlyBraces -> "$finalLookupString = {...}"
-        else -> finalLookupString
-    }
-    //排除重复项
-    if(context.completionIds?.add(id) == false) return
-    
-    val isKeyOrValueOnly = context.contextElement is ParadoxScriptPropertyKey || context.isKey != true
-    val isKey = context.isKey == true
-    val isBlock = targetConfig?.isBlock ?: false
-    
-    var lookupElement = when {
-        element != null -> LookupElementBuilder.create(element, finalLookupString) //quote if necessary
-        else -> LookupElementBuilder.create(finalLookupString) //quote if necessary
-    }
-    if(localizedNames.isNotEmpty()) {
-        //这样就可以了
-        lookupElement = lookupElement.withLookupStrings(localizedNames)
-    }
-    if(!scopeMatched) {
-        lookupElement.putUserData(PlsKeys.scopeMismatched, true)
-    }
-    if(bold) {
-        lookupElement = lookupElement.bold()
-    }
-    if(italic) {
-        lookupElement = lookupElement.withItemTextItalic(true)
-    }
-    if(underlined) {
-        lookupElement = lookupElement.withItemTextUnderlined(true)
-    }
-    if(strikeout) {
-        lookupElement = lookupElement.strikeout()
-    }
-    if(!caseSensitive) {
-        lookupElement = lookupElement.withCaseSensitivity(false)
-    }
-    if(icon != null) {
-        lookupElement = lookupElement.withIcon(getIconToUse(icon, config))
-    }
-    if(presentableText == null && lookupString != finalLookupString) {
-        presentableText = lookupString //always show unquoted lookup string
-    }
-    if(presentableText != null) {
-        lookupElement = lookupElement.withPresentableText(presentableText!!)
-    }
-    val finalTailText = buildString {
-        if(!isKeyOrValueOnly) {
-            if(constantValue != null) append(" = ").append(constantValue)
-            if(insertCurlyBraces) append(" = {...}")
-        }
-        if(tailText != null) append(tailText)
-    }
-    if(finalTailText.isNotEmpty()) {
-        lookupElement = lookupElement.withTailText(finalTailText, true)
-    }
-    if(typeText != null) {
-        lookupElement = lookupElement.withTypeText(typeText, typeIcon, true)
-    }
-    if(!scopeMatched) {
-        lookupElement = lookupElement.withItemTextForeground(JBColor.GRAY)
-    }
-    
-    if(isKeyOrValueOnly) {
-        val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
-            applyKeyOrValueInsertHandler(context, c)
-        }.withPriority(priority)
-        ProgressManager.checkCanceled()
-        addElement(resultLookupElement)
-        return
-    }
-    
-    if(isKey) {
-        val resultLookupElement = lookupElement.withInsertHandler { c, _ ->
-            applyKeyAndValueInsertHandler(c, context, constantValue, insertCurlyBraces)
-        }.withPriority(priority)
-        ProgressManager.checkCanceled()
-        addElement(resultLookupElement)
-    }
-    
-    //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
-    val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
-    if(isKey && isBlock && config != null && completeWithClauseTemplate) {
-        val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
-        if(entryConfigs.isNotEmpty()) {
-            val tailText1 = buildString {
-                append(" = { <generate via template> }")
-                if(tailText != null) append(tailText)
-            }
-            val lookupElement1 = lookupElement.withTailText(tailText1)
-            addScriptExpressionElementWithClauseTemplate(context, lookupElement1, entryConfigs) {
-                withPriority(priority)
-            }
-        }
-    }
-}
-
-private fun getIconToUse(icon: Icon?, config: CwtConfig<*>?): Icon? {
-    if(icon == null) return null
-    when(config) {
-        is CwtValueConfig -> {
-            if(config.isTagConfig) return PlsIcons.Nodes.Tag
-        }
-        is CwtAliasConfig -> {
-            val aliasConfig = config
-            val type = aliasConfig.expression.type
-            if(type !in CwtDataTypeGroups.ConstantLike) return icon
-            val aliasName = aliasConfig.name
-            return when {
-                aliasName == "modifier" -> PlsIcons.Nodes.Modifier
-                aliasName == "trigger" -> PlsIcons.Nodes.Trigger
-                aliasName == "effect" -> PlsIcons.Nodes.Effect
-                else -> icon
-            }
-        }
-    }
-    return icon
-}
-
-private fun skipOrInsertRightQuote(context: ProcessingContext, editor: Editor) {
-    if(context.quoted) {
-        val offset = editor.caretModel.offset
-        val charsSequence = editor.document.charsSequence
-        if(charsSequence.get(offset) == '"' && charsSequence.get(offset - 1) != '\\') {
-            //移到右边的双引号之后
-            editor.caretModel.moveToOffset(offset + 1)
-        } else {
-            //插入缺失的右边的双引号
-            EditorModificationUtil.insertStringAtCaret(editor, "\"")
-        }
-    }
-}
-
-private fun applyKeyOrValueInsertHandler(context: ProcessingContext, c: InsertionContext) {
-    skipOrInsertRightQuote(context, c.editor)
-}
-
-@Suppress("UNUSED_PARAMETER", "SameParameterValue")
-private fun applyValueInsertHandler(c: InsertionContext, context: ProcessingContext, insertCurlyBraces: Boolean) {
-    if(!insertCurlyBraces) return
-    val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
-    val text = if(customSettings.SPACE_WITHIN_BRACES) "{  }" else "{}"
-    val length = if(customSettings.SPACE_WITHIN_BRACES) text.length - 2 else text.length - 1
-    EditorModificationUtil.insertStringAtCaret(c.editor, text, false, true, length)
-}
-
-private fun applyKeyAndValueInsertHandler(c: InsertionContext, context: ProcessingContext, constantValue: String?, insertCurlyBraces: Boolean) {
-    val editor = c.editor
-    skipOrInsertRightQuote(context, c.editor)
-    val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
-    val text = buildString {
-        append(if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "=")
-        if(constantValue != null) append(constantValue)
-        if(insertCurlyBraces) append(if(customSettings.SPACE_WITHIN_BRACES) "{  }" else "{}")
-    }
-    val length = when {
-        insertCurlyBraces -> if(customSettings.SPACE_WITHIN_BRACES) text.length - 2 else text.length - 1
-        else -> text.length
-    }
-    EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
+fun LookupElementBuilder.withScopeMatched(scopeMatched: Boolean): LookupElementBuilder {
+    if(scopeMatched) return this
+    putUserData(PlsKeys.scopeMismatched, true)
+    return withItemTextForeground(JBColor.GRAY)
 }
 
 @Suppress("UnstableApiUsage", "DialogTitleCapitalization")
-private fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
+fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(
     context: ProcessingContext,
-    builder: LookupElementBuilder,
-    entryConfigs: List<CwtMemberConfig<*>>,
-    callback: LookupElementBuilder.() -> LookupElement = { this }
-) {
+    entryConfigs: List<CwtMemberConfig<*>>
+): LookupElementBuilder {
     //如果补全位置所在的子句为空或者都不精确匹配，显示对话框时默认列出的属性/值应该有数种情况，因此这里需要传入entryConfigs
     
     //目前默认列出并且仅允许选择直接的作为常量字符串的key（不包括通过alias内联的常量字符串）
-    val file = context.parameters?.originalFile ?: return
+    val file = context.parameters?.originalFile ?: return this
     val constantConfigGroupList = mutableListOf<Map<CwtDataExpression, List<CwtMemberConfig<*>>>>()
     val hasRemainList = mutableListOf<Boolean>()
     for(entry in entryConfigs) {
@@ -286,11 +64,11 @@ private fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
         constantConfigGroupList.add(constantConfigGroup)
         hasRemainList.add(hasRemain)
     }
-    if(constantConfigGroupList.isEmpty()) return
+    if(constantConfigGroupList.isEmpty()) return this
     val config = context.config!!
     val propertyName = CwtConfigHandler.getEntryName(config)
     
-    val resultLookupElement = builder.withInsertHandler { c, _ ->
+    return this.withInsertHandler { c, _ ->
         if(context.isKey == true) {
             applyKeyAndValueInsertHandler(c, context, null, true)
         } else {
@@ -384,8 +162,186 @@ private fun CompletionResultSet.addScriptExpressionElementWithClauseTemplate(
             WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.expandClauseTemplate.name"), null, command, file)
         }
     }
-    ProgressManager.checkCanceled()
-    addElement(resultLookupElement.callback())
+}
+
+fun PlsLookupElementBuilder.build(context: ProcessingContext): LookupElement? {
+    if((!scopeMatched || !context.scopeMatched) && getSettings().completion.completeOnlyScopeIsMatched) return null
+    
+    val config = context.config
+    val completeWithValue = getSettings().completion.completeWithValue
+    val targetConfig = when {
+        config is CwtPropertyConfig -> config
+        config is CwtAliasConfig -> config.config
+        config is CwtSingleAliasConfig -> config.config
+        else -> null
+    }
+    val constantValue = when {
+        completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value
+        else -> null
+    }
+    val insertCurlyBraces = when {
+        forceInsertCurlyBraces -> true
+        completeWithValue -> targetConfig?.isBlock ?: false
+        else -> false
+    }
+    val finalLookupString = when {
+        context.keywordOffset == 0 -> lookupString.quoteIfNecessary()
+        else -> lookupString
+    }
+    //这里ID不一定等同于lookupString
+    val id = when {
+        constantValue != null -> "$finalLookupString = $constantValue"
+        insertCurlyBraces -> "$finalLookupString = {...}"
+        else -> finalLookupString
+    }
+    //排除重复项
+    if(context.completionIds?.add(id) == false) return null
+    
+    val isKeyOrValueOnly = context.contextElement is ParadoxScriptPropertyKey || context.isKey != true
+    val isKey = context.isKey == true
+    val isBlock = targetConfig?.isBlock ?: false
+    
+    var lookupElement = when {
+        element != null -> LookupElementBuilder.create(element, finalLookupString) //quote if necessary
+        else -> LookupElementBuilder.create(finalLookupString) //quote if necessary
+    }
+    if(localizedNames.isNotEmpty()) {
+        //这样就可以了
+        lookupElement = lookupElement.withLookupStrings(localizedNames)
+    }
+    if(!scopeMatched) {
+        lookupElement.putUserData(PlsKeys.scopeMismatched, true)
+    }
+    if(bold) {
+        lookupElement = lookupElement.bold()
+    }
+    if(italic) {
+        lookupElement = lookupElement.withItemTextItalic(true)
+    }
+    if(underlined) {
+        lookupElement = lookupElement.withItemTextUnderlined(true)
+    }
+    if(strikeout) {
+        lookupElement = lookupElement.strikeout()
+    }
+    if(!caseSensitive) {
+        lookupElement = lookupElement.withCaseSensitivity(false)
+    }
+    if(icon != null) {
+        lookupElement = lookupElement.withIcon(getIconToUse(icon, config))
+    }
+    if(presentableText == null && lookupString != finalLookupString) {
+        presentableText = lookupString //always show unquoted lookup string
+    }
+    if(presentableText != null) {
+        lookupElement = lookupElement.withPresentableText(presentableText!!)
+    }
+    val finalTailText = buildString {
+        if(!isKeyOrValueOnly) {
+            if(constantValue != null) append(" = ").append(constantValue)
+            if(insertCurlyBraces) append(" = {...}")
+        }
+        if(tailText != null) append(tailText)
+    }
+    if(finalTailText.isNotEmpty()) {
+        lookupElement = lookupElement.withTailText(finalTailText, true)
+    }
+    if(typeText != null) {
+        lookupElement = lookupElement.withTypeText(typeText, typeIcon, true)
+    }
+    if(!scopeMatched) {
+        lookupElement = lookupElement.withItemTextForeground(JBColor.GRAY)
+    }
+    
+    if(isKeyOrValueOnly) {
+        lookupElement = lookupElement.withInsertHandler { c, _ ->
+            applyKeyOrValueInsertHandler(context, c)
+        }
+    } else if(isKey) {
+        lookupElement = lookupElement.withInsertHandler { c, _ ->
+            applyKeyAndValueInsertHandler(c, context, constantValue, insertCurlyBraces)
+        }
+        
+        //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
+        if(isBlock && config != null && getSettings().completion.completeWithClauseTemplate) {
+            val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
+            if(entryConfigs.isNotEmpty()) {
+                val tailText1 = buildString {
+                    append(" = { <generate via template> }")
+                    if(tailText != null) append(tailText)
+                }
+                lookupElement = lookupElement.withTailText(tailText1)
+                lookupElement = lookupElement.withExpandClauseTemplateInsertHandler(context, entryConfigs)
+            }
+        }
+    }
+    
+    return lookupElement.withPriority(priority)
+}
+
+private fun getIconToUse(icon: Icon?, config: CwtConfig<*>?): Icon? {
+    if(icon == null) return null
+    when(config) {
+        is CwtValueConfig -> {
+            if(config.isTagConfig) return PlsIcons.Nodes.Tag
+        }
+        is CwtAliasConfig -> {
+            val aliasConfig = config
+            val type = aliasConfig.expression.type
+            if(type !in CwtDataTypeGroups.ConstantLike) return icon
+            val aliasName = aliasConfig.name
+            return when {
+                aliasName == "modifier" -> PlsIcons.Nodes.Modifier
+                aliasName == "trigger" -> PlsIcons.Nodes.Trigger
+                aliasName == "effect" -> PlsIcons.Nodes.Effect
+                else -> icon
+            }
+        }
+    }
+    return icon
+}
+
+private fun skipOrInsertRightQuote(context: ProcessingContext, editor: Editor) {
+    if(context.quoted) {
+        val offset = editor.caretModel.offset
+        val charsSequence = editor.document.charsSequence
+        if(charsSequence.get(offset) == '"' && charsSequence.get(offset - 1) != '\\') {
+            //移到右边的双引号之后
+            editor.caretModel.moveToOffset(offset + 1)
+        } else {
+            //插入缺失的右边的双引号
+            EditorModificationUtil.insertStringAtCaret(editor, "\"")
+        }
+    }
+}
+
+private fun applyKeyOrValueInsertHandler(context: ProcessingContext, c: InsertionContext) {
+    skipOrInsertRightQuote(context, c.editor)
+}
+
+@Suppress("UNUSED_PARAMETER", "SameParameterValue")
+private fun applyValueInsertHandler(c: InsertionContext, context: ProcessingContext, insertCurlyBraces: Boolean) {
+    if(!insertCurlyBraces) return
+    val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
+    val text = if(customSettings.SPACE_WITHIN_BRACES) "{  }" else "{}"
+    val length = if(customSettings.SPACE_WITHIN_BRACES) text.length - 2 else text.length - 1
+    EditorModificationUtil.insertStringAtCaret(c.editor, text, false, true, length)
+}
+
+private fun applyKeyAndValueInsertHandler(c: InsertionContext, context: ProcessingContext, constantValue: String?, insertCurlyBraces: Boolean) {
+    val editor = c.editor
+    skipOrInsertRightQuote(context, c.editor)
+    val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
+    val text = buildString {
+        append(if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "=")
+        if(constantValue != null) append(constantValue)
+        if(insertCurlyBraces) append(if(customSettings.SPACE_WITHIN_BRACES) "{  }" else "{}")
+    }
+    val length = when {
+        insertCurlyBraces -> if(customSettings.SPACE_WITHIN_BRACES) text.length - 2 else text.length - 1
+        else -> text.length
+    }
+    EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
 }
 
 private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtMemberConfig<*>>>): List<ElementDescriptor> {
@@ -413,3 +369,37 @@ private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtM
     }
     return descriptors
 }
+
+fun CompletionResultSet.addElement(lookupElement: LookupElement?) {
+    if(lookupElement == null) return
+    addElement(lookupElement)
+}
+
+fun CompletionResultSet.addSimpleScriptExpressionElement(lookupElement: LookupElement?, context: ProcessingContext) {
+    if(lookupElement == null) return
+    val id = lookupElement.lookupString
+    if(context.completionIds?.add(id) == false) return
+    addElement(lookupElement)
+}
+
+fun CompletionResultSet.addBlockScriptExpressionElement(context: ProcessingContext) {
+    val id = "{...}"
+    if(context.completionIds?.add(id) == false) return
+    val lookupElement = PlsLookupElements.blockLookupElement
+    addElement(lookupElement)
+    
+    //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
+    val completeWithClauseTemplate = getSettings().completion.completeWithClauseTemplate
+    if(completeWithClauseTemplate) {
+        val config = context.config!!
+        val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
+        if(entryConfigs.isNotEmpty()) {
+            val tailText1 = "{ <generate via template> }"
+            val lookupElement1 = LookupElementBuilder.create("")
+                .withPresentableText(tailText1)
+                .withExpandClauseTemplateInsertHandler(context, entryConfigs)
+            addElement(lookupElement1.withPriority(PlsCompletionPriorities.keywordPriority))
+        }
+    }
+}
+

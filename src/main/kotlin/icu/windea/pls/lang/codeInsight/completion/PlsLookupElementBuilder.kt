@@ -1,11 +1,25 @@
 package icu.windea.pls.lang.codeInsight.completion
 
+import com.intellij.application.options.*
+import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.lookup.*
+import com.intellij.openapi.editor.*
 import com.intellij.psi.*
+import com.intellij.ui.*
+import com.intellij.util.*
+import icons.*
+import icu.windea.pls.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.script.codeStyle.*
+import icu.windea.pls.script.psi.*
 import javax.swing.*
 
-class ParadoxScriptExpressionLookupElementBuilder(
+class PlsLookupElementBuilder(
     val element: PsiElement?,
-    val lookupString: String,
+    val lookupString: String
 ) {
     var icon: Icon? = null
     var presentableText: String? = null
@@ -13,6 +27,7 @@ class ParadoxScriptExpressionLookupElementBuilder(
     var typeText: String? = null
     var typeIcon: Icon? = null
     var priority: Double? = null
+    
     var bold: Boolean = false
     var italic: Boolean = false
     var underlined: Boolean = false
@@ -29,6 +44,7 @@ class ParadoxScriptExpressionLookupElementBuilder(
     fun withTypeText(typeText: String?) = apply { this.typeText = typeText }
     fun withTypeIcon(typeIcon: Icon?) = apply { this.typeIcon = typeIcon }
     fun withPriority(priority: Double?) = apply { this.priority = priority }
+    
     fun bold() = apply { this.bold = true }
     fun italic() = apply { this.italic = true }
     fun underlined() = apply { this.underlined = true }
@@ -41,13 +57,13 @@ class ParadoxScriptExpressionLookupElementBuilder(
     
     companion object {
         @JvmStatic
-        fun create(lookupString: String): ParadoxScriptExpressionLookupElementBuilder {
-            return ParadoxScriptExpressionLookupElementBuilder(null, lookupString)
+        fun create(lookupString: String): PlsLookupElementBuilder {
+            return PlsLookupElementBuilder(null, lookupString)
         }
         
         @JvmStatic
-        fun create(element: PsiElement?, lookupString: String): ParadoxScriptExpressionLookupElementBuilder {
-            return ParadoxScriptExpressionLookupElementBuilder(element, lookupString)
+        fun create(element: PsiElement?, lookupString: String): PlsLookupElementBuilder {
+            return PlsLookupElementBuilder(element, lookupString)
         }
     }
 }

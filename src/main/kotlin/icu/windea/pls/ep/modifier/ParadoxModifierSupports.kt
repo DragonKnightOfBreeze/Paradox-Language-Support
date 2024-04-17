@@ -81,7 +81,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
             val typeFile = modifierConfig.pointer.containingFile
             val name = modifierConfig.name
             val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxPredefinedModifierSupport)
-            val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
+            val lookupElement = PlsLookupElementBuilder.create(modifierElement, name)
                 .withIcon(PlsIcons.Nodes.Modifier)
                 .withTailText(tailText)
                 .withTypeText(typeFile?.name)
@@ -92,7 +92,8 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
                     val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, element, configGroup.project)
                     it.withLocalizedNames(localizedNames)
                 }
-            result.addScriptExpressionElement(context, builder)
+                .build(context)
+            result.addElement(lookupElement)
         }
     }
     
@@ -158,7 +159,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                 if(!modifierNames.add(name)) return@p true
                 
                 val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
-                val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
+                val lookupElement = PlsLookupElementBuilder.create(modifierElement, name)
                     .withIcon(PlsIcons.Nodes.Modifier)
                     .withTailText(tailText)
                     .withTypeText(typeFile?.name)
@@ -169,7 +170,8 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                         val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, element, configGroup.project)
                         it.withLocalizedNames(localizedNames)
                     }
-                result.addScriptExpressionElement(context, builder)
+                    .build(context)
+                result.addElement(lookupElement)
                 true
             }
         }
@@ -357,7 +359,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
                 if(!modifierNames.add(name)) continue
                 
                 val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@StellarisEconomicCategoryModifierSupport)
-                val builder = ParadoxScriptExpressionLookupElementBuilder.create(modifierElement, name)
+                val lookupElement = PlsLookupElementBuilder.create(modifierElement, name)
                     .withIcon(PlsIcons.Nodes.Modifier)
                     .withTailText(tailText)
                     .withTypeText(typeText)
@@ -368,7 +370,8 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
                         val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, element, configGroup.project)
                         it.withLocalizedNames(localizedNames)
                     }
-                result.addScriptExpressionElement(context, builder)
+                    .build(context)
+                result.addElement(lookupElement)
             }
             true
         }

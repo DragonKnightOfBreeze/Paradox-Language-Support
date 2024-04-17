@@ -3,9 +3,11 @@
 package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.lookup.*
 import com.intellij.patterns.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import com.intellij.ui.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -53,15 +55,4 @@ fun ProcessingContext.initialize(parameters: CompletionParameters) {
         this.configGroup = configGroup
     }
 }
-
-//TODO 这个方法存在问题，不要使用
-//inline fun completeAsync(parameters: CompletionParameters, crossinline action: () -> Unit) {
-//    ProgressManager.checkCanceled()
-//    val indicator = parameters.process as? Disposable
-//    if(indicator == null) {
-//        return action()
-//    }
-//    val promise = ReadAction.nonBlocking(Callable { action() }).submit(AppExecutorUtil.getAppExecutorService())
-//    promise.cancelWhenDisposed(indicator)
-//}
 
