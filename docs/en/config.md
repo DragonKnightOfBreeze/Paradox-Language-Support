@@ -162,6 +162,11 @@ definitions = {
     ### Some documentation
     ## type = civic_or_origin.civic
     x
+    
+	# since 1.3.5, scope context related options are also available here
+	## type = scripted_trigger
+	## replace_scopes = { this = country root = country }
+	x
 }
 ```
 
@@ -218,7 +223,7 @@ inline_scripts = {
 
 	# since 1.3.5, scope context related options are also available here
 
-	## push_scope = country
+	## replace_scopes = { this = country root = country }
 	x
 }
 ```
@@ -255,7 +260,7 @@ parameters = {
 	# since 1.3.5, scope context related options are also available here
 
 	## context_key = scripted_trigger@some_trigger
-	## push_scope = country
+	## replace_scopes = { this = country root = country }
 	x
 }
 ```
