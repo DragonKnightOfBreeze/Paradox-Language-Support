@@ -301,7 +301,7 @@ dynamic_values = {
 
 ### FAQ
 
-#### About Template Expression
+#### About the Template Expression
 
 ```cwt
 # belows are all valid template expressions

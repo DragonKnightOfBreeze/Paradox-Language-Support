@@ -216,9 +216,10 @@ object ParadoxScopeHandler {
     }
     
     private fun doGetScopeContextOfDefinitionMember(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
-        //should be a definition member
-        val parentMember = findParentMember(element) ?: return null
-        val parentScopeContext = getScopeContext(parentMember)
+        //element could be a definition member only if after inlined
+        
+        val parentMember = findParentMember(element)
+        val parentScopeContext = if(parentMember != null) getScopeContext(parentMember) else null
         val configs = CwtConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
         val config = configs.firstOrNull() ?: return null
         
