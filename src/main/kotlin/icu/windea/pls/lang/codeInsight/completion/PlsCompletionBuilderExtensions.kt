@@ -174,6 +174,7 @@ fun PlsLookupElementBuilder.build(context: ProcessingContext): PlsLookupElement?
         config is CwtPropertyConfig -> config
         config is CwtAliasConfig -> config.config
         config is CwtSingleAliasConfig -> config.config
+        config is CwtInlineConfig -> config.config
         else -> null
     }
     val constantValue = when {
@@ -185,22 +186,24 @@ fun PlsLookupElementBuilder.build(context: ProcessingContext): PlsLookupElement?
         completeWithValue -> targetConfig?.isBlock ?: false
         else -> false
     }
+    
+    val isKeyOrValueOnly = context.contextElement is ParadoxScriptPropertyKey || context.isKey != true
+    val isKey = context.isKey == true
+    val isBlock = targetConfig?.isBlock ?: false
+    
     val finalLookupString = when {
         context.keywordOffset == 0 -> lookupString.quoteIfNecessary()
         else -> lookupString
     }
     //这里ID不一定等同于lookupString
     val id = when {
+        isKeyOrValueOnly -> finalLookupString
         constantValue != null -> "$finalLookupString = $constantValue"
         insertCurlyBraces -> "$finalLookupString = {...}"
         else -> finalLookupString
     }
     //排除重复项
     if(context.completionIds?.add(id) == false) return null
-    
-    val isKeyOrValueOnly = context.contextElement is ParadoxScriptPropertyKey || context.isKey != true
-    val isKey = context.isKey == true
-    val isBlock = targetConfig?.isBlock ?: false
     
     var lookupElement = when {
         element != null -> LookupElementBuilder.create(element, finalLookupString) //quote if necessary
@@ -268,7 +271,7 @@ fun PlsLookupElementBuilder.build(context: ProcessingContext): PlsLookupElement?
     val extraElements = mutableListOf<LookupElement>()
     
     //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
-    if(isKey && isBlock && config != null && getSettings().completion.completeWithClauseTemplate) {
+    if(isKey && !isKeyOrValueOnly && isBlock && config != null && getSettings().completion.completeWithClauseTemplate) {
         val entryConfigs = CwtConfigHandler.getEntryConfigs(config)
         if(entryConfigs.isNotEmpty()) {
             val tailText1 = buildString {
@@ -278,6 +281,7 @@ fun PlsLookupElementBuilder.build(context: ProcessingContext): PlsLookupElement?
             val lookupElement1 = lookupElement
                 .withTailText(tailText1)
                 .withExpandClauseTemplateInsertHandler(context, entryConfigs)
+                .withPriority(priority)
             extraElements.add(lookupElement1)
         }
     }

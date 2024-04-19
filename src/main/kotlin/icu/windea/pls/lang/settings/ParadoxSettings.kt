@@ -67,6 +67,7 @@ class ParadoxSettingsState : BaseState() {
     }
     
     /**
+     * @property completeInlineScriptInvocations 进行代码补全时，是否需要提供对内联脚本调用的代码补全。
      * @property completeVariableNames 进行代码补全时，是否需要在效果的子句中提示变量名。
      * @property completeWithValue 进行代码补全时，如果可能，将会另外提供提示项，自动插入常量字符串或者花括号。
      * @property completeWithClauseTemplate 进行代码补全时，如果可能，将会另外提供提示项，自动插入从句内联模版。
@@ -80,6 +81,7 @@ class ParadoxSettingsState : BaseState() {
         var completeScriptedVariableNames by property(true)
         var completeDefinitionNames by property(true)
         var completeLocalisationNames by property(true)
+        var completeInlineScriptInvocations by property(false)
         var completeVariableNames by property(true)
         var completeWithValue by property(true)
         var completeWithClauseTemplate by property(true)

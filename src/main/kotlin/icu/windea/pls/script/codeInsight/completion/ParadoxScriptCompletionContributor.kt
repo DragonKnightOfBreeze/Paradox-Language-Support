@@ -21,9 +21,9 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		extend(scriptedVariableReferencePattern, ParadoxScriptedVariableCompletionProvider())
 		
 		//当用户可能正在输入一个propertyKey或string时提示
-		val definitionPattern = psiElement()
+		val inDefinitionPattern = psiElement()
 			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
-		extend(definitionPattern, ParadoxDefinitionCompletionProvider())
+		extend(inDefinitionPattern, ParadoxInDefinitionCompletionProvider())
 		
 		//当用户可能正在输入一个eventId时提示
 		val eventIdPattern = psiElement()
@@ -53,6 +53,11 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		val variableNamePattern = psiElement()
 			.withElementType(ParadoxScriptTokenSets.STRING_TOKENS)
 		extend(CompletionType.BASIC, variableNamePattern, ParadoxVariableNameCompletionProvider())
+		
+		//当用户可能正在输入内联脚本调用的key（即"inline_script"）使提示
+		val inlineScriptInvocationPattern = psiElement()
+			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
+		extend(inlineScriptInvocationPattern, ParadoxInlineScriptInvocationCompletionProvider())
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {

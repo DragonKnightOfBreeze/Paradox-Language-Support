@@ -20,6 +20,19 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptString>() ?: return
         if(element.text.isParameterized()) return
+        if(!element.isBlockValue()) return
+        val parentProperty = element.findParentProperty() ?: return
+        val configs = CwtConfigHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
+        if(configs.isEmpty()) return
+        val configGroup = configs.first().info.configGroup
+        context.configGroup = configGroup
+        val matched = configs.any { config ->
+            config.configs?.any { childConfig ->
+                childConfig is CwtPropertyConfig && childConfig.key == "alias_name[effect]"
+            } ?: false
+        }
+        if(!matched) return
+        
         val quoted = element.text.isLeftQuoted()
         val rightQuoted = element.text.isRightQuoted()
         val offsetInParent = parameters.offset - element.startOffset
@@ -32,21 +45,9 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         context.quoted = quoted
         context.rightQuoted = rightQuoted
         
-        val stringElement = element
-        if(!stringElement.isBlockValue()) return
-        val parentProperty = stringElement.findParentProperty() ?: return
-        val configs = CwtConfigHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
-        if(configs.isEmpty()) return
-        val configGroup = configs.first().info.configGroup
-        context.configGroup = configGroup
-        val matched = configs.any { config ->
-            config.configs?.any { childConfig ->
-                childConfig is CwtPropertyConfig && childConfig.key == "alias_name[effect]"
-            } ?: false
-        }
-        if(!matched) return
         val mockConfig = CwtValueConfig.resolve(emptyPointer(), configGroup.info, "value[variable]")
         context.config = mockConfig
+        
         ParadoxCompletionManager.completeDynamicValueExpression(context, result)
     }
 }

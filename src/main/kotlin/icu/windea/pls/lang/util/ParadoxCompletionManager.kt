@@ -1101,6 +1101,28 @@ object ParadoxCompletionManager {
             true
         }
     }
+    
+    fun completeInlineScriptInvocation(context: ProcessingContext, result: CompletionResultSet) {
+        val configGroup = context.configGroup ?: return
+        val tailText = " from inline script invocations"
+        configGroup.inlineConfigGroup["inline_script"]?.forEach f@{ config0 ->
+            ProgressManager.checkCanceled()
+            context.config = config0
+            context.isKey = true
+            val name = config0.name
+            val element = config0.pointer.element ?: return@f
+            val typeFile = config0.pointer.containingFile
+            val lookupElement = PlsLookupElementBuilder.create(element, name)
+                .withIcon(PlsIcons.Nodes.Property)
+                .withTailText(tailText)
+                .withTypeText(typeFile?.name)
+                .withTypeIcon(typeFile?.icon)
+                .caseInsensitive()
+                .withPriority(PlsCompletionPriorities.constantPriority)
+                .build(context)
+            result.addPlsElement(lookupElement)
+        }
+    }
     //endregion
     
     //region Extended Completion Methods

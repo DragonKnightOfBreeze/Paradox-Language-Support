@@ -181,6 +181,11 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.completion.completeLocalisationNames"))
                         .bindSelected(settings.completion::completeLocalisationNames)
                 }
+                //completeInlineScriptInvocations
+                row {
+                    checkBox(PlsBundle.message("settings.completion.completeInlineScriptInvocations"))
+                        .bindSelected(settings.completion::completeInlineScriptInvocations)
+                }
                 //completeVariableNames
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeVariableNames"))

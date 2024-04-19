@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 提供定义的相关代码补全。基于CWT规则文件。
  */
-class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxInDefinitionCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position.parentOfType<ParadoxScriptStringExpressionElement>() ?: return
         

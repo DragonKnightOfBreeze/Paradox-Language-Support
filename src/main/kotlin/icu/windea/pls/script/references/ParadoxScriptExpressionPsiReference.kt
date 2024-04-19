@@ -14,7 +14,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 /**
- * @see icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider
+ * @see icu.windea.pls.script.codeInsight.completion.ParadoxInDefinitionCompletionProvider
  */
 class ParadoxScriptExpressionPsiReference(
     element: ParadoxScriptExpressionElement,
