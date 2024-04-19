@@ -18,15 +18,10 @@ class ParadoxDefaultDefinitionScopeContextProvider: ParadoxDefinitionScopeContex
         val typeConfig = definitionInfo.typeConfig
         val scopeContextOnType = subtypeConfigs.firstNotNullOfOrNull { it.config.scopeContext }
             ?: typeConfig.config.scopeContext
-        val scopeContext = scopeContextOnType
-            ?: declarationConfig.scopeContext
-        val pushScopeOnType = (subtypeConfigs.firstNotNullOfOrNull { it.config.pushScope }
-            ?: typeConfig.config.pushScope)
-        val pushScope = pushScopeOnType
-            ?: declarationConfig.pushScope
-        val result = scopeContext?.resolveNext(pushScope)
-            ?: pushScope?.let { ParadoxScopeContext.resolve(it, it) }
-        return result
+        val scopeContextOnDeclaration = declarationConfig.scopeContext
+        if(scopeContextOnType == null) return scopeContextOnDeclaration
+        if(scopeContextOnDeclaration == null) return scopeContextOnType
+        return scopeContextOnType.resolveNext(scopeContextOnDeclaration)
     }
 }
 
