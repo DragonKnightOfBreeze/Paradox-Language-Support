@@ -10,6 +10,8 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.quickfix.*
+import icu.windea.pls.lang.search.*
+import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -88,6 +90,9 @@ class ParadoxScriptAnnotator : Annotator {
         val configContext = CwtConfigHandler.getConfigContext(file) ?: return
         if(configContext.inlineScriptHasConflict == true) return
         if(configContext.inlineScriptHasRecursion == true) return
+        val selector = inlineScriptSelector(file.project, file)
+        val hasUsages = ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).find() != null
+        if(!hasUsages) return //don't show if there are no usages
         val message = PlsBundle.message("script.annotator.inlineScript", inlineScriptExpression)
         holder.newAnnotation(INFORMATION, message).fileLevel().withFix(GotoInlineScriptUsagesFix()).create()
     }
