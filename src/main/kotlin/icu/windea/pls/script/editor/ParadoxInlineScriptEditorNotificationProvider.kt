@@ -7,8 +7,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.*
 import java.util.function.Function
@@ -22,12 +20,6 @@ class ParadoxInlineScriptEditorNotificationProvider : EditorNotificationProvider
         if(file.fileType != ParadoxScriptFileType) return null
         
         val inlineScriptExpression = ParadoxInlineScriptHandler.getInlineScriptExpression(file) ?: return null
-        
-        //don't show if there are no usages
-        //also see: icu.windea.pls.lang.inspections.script.common.UnusedInlineScriptInspection
-        val selector = inlineScriptSelector(project, file)
-        val hasUsages = ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).find() != null
-        if(!hasUsages) return null
         
         return Function f@{ fileEditor ->
             if(fileEditor !is TextEditor) return@f null
