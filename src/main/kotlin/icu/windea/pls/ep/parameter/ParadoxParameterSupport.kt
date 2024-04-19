@@ -21,6 +21,8 @@ interface ParadoxParameterSupport {
     
     fun findContext(element: PsiElement): ParadoxScriptDefinitionElement?
     
+    fun getContextKeyFromContext(context: ParadoxScriptDefinitionElement): String?
+    
     fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo?
     
     /**
@@ -38,7 +40,7 @@ interface ParadoxParameterSupport {
     fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement?
     
     fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement?
-
+    
     /**
      * @param onlyMostRelevant 只获取最相关的上下文。
      * @return 此扩展点是否适用。
@@ -68,6 +70,10 @@ interface ParadoxParameterSupport {
         
         fun findContext(element: PsiElement): ParadoxScriptDefinitionElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { it.findContext(element) }
+        }
+        
+        fun getContextKeyFromContext(element: ParadoxScriptDefinitionElement): String? {
+            return EP_NAME.extensionList.firstNotNullOfOrNull { it.getContextKeyFromContext(element) }
         }
         
         fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {

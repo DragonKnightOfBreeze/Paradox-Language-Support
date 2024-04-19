@@ -952,8 +952,6 @@ object ParadoxCompletionManager {
         val isKey = context.isKey
         if(isKey != true || config !is CwtPropertyConfig) return
         ParadoxParameterHandler.completeArguments(contextElement, context, result)
-        
-        completeExtendedParameter(context, result)
     }
     
     fun completePredefinedLocalisationScope(context: ProcessingContext, result: CompletionResultSet) {
@@ -1126,8 +1124,8 @@ object ParadoxCompletionManager {
     //endregion
     
     //region Extended Completion Methods
-    fun completeExtendedScriptedVariables(context: ProcessingContext, result: CompletionResultSet) {
-        if(!getSettings().completion.completeByExtendedCwtConfig) return
+    fun completeExtendedScriptedVariable(context: ProcessingContext, result: CompletionResultSet) {
+        if(!getSettings().completion.completeByExtendedCwtConfigs) return
         ProgressManager.checkCanceled()
         
         val configGroup = context.configGroup ?: return
@@ -1147,7 +1145,7 @@ object ParadoxCompletionManager {
     }
     
     fun completeExtendedDefinition(context: ProcessingContext, result: CompletionResultSet) {
-        if(!getSettings().completion.completeByExtendedCwtConfig) return
+        if(!getSettings().completion.completeByExtendedCwtConfigs) return
         ProgressManager.checkCanceled()
         
         val config = context.config ?: return
@@ -1216,7 +1214,7 @@ object ParadoxCompletionManager {
     }
     
     fun completeExtendedInlineScript(context: ProcessingContext, result: CompletionResultSet) {
-        if(!getSettings().completion.completeByExtendedCwtConfig) return
+        if(!getSettings().completion.completeByExtendedCwtConfigs) return
         ProgressManager.checkCanceled()
         
         val config = context.config ?: return
@@ -1241,14 +1239,34 @@ object ParadoxCompletionManager {
     }
     
     fun completeExtendedParameter(context: ProcessingContext, result: CompletionResultSet) {
-        if(!getSettings().completion.completeByExtendedCwtConfig) return
+        if(!getSettings().completion.completeByExtendedCwtConfigs) return
         ProgressManager.checkCanceled()
         
-        //TODO 1.3.5
+        val configGroup = context.configGroup ?: return
+        val contextKey = context.contextKey ?: return
+        val argumentNames = context.argumentNames
+        
+        configGroup.extendedParameters.values.forEach { configs0 ->
+            configs0.forEach f@{ config0 ->
+                if(config0.contextKey != contextKey) return@f
+                val name = config0.name
+                if(checkExtendedConfigName(name)) return@f
+                if(argumentNames != null && !argumentNames.add(name)) return@f  //排除已输入的
+                val element = config0.pointer.element
+                val typeFile = config0.pointer.containingFile
+                val lookupElement = PlsLookupElementBuilder.create(element, name)
+                    .withIcon(PlsIcons.Nodes.Parameter)
+                    .withTypeText(typeFile?.name)
+                    .withTypeIcon(typeFile?.icon)
+                    .underlined() //used for completions from extended configs
+                    .build(context)
+                result.addPlsElement(lookupElement)
+            }
+        }
     }
     
     fun completeExtendedComplexEnumValue(context: ProcessingContext, result: CompletionResultSet) {
-        if(!getSettings().completion.completeByExtendedCwtConfig) return
+        if(!getSettings().completion.completeByExtendedCwtConfigs) return
         ProgressManager.checkCanceled()
         
         val config = context.config ?: return
@@ -1274,7 +1292,7 @@ object ParadoxCompletionManager {
     }
     
     fun completeExtendedDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
-        if(!getSettings().completion.completeByExtendedCwtConfig) return
+        if(!getSettings().completion.completeByExtendedCwtConfigs) return
         ProgressManager.checkCanceled()
         
         val config = context.config ?: return

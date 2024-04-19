@@ -7,7 +7,6 @@ import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
@@ -226,11 +225,11 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.completion::completeByLocalizedName)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeByLocalizedName.tooltip") }
                 }
-                //completeByExtendedCwtConfig
+                //completeByExtendedCwtConfigs
                 row {
-                    checkBox(PlsBundle.message("settings.completion.completeByExtendedCwtConfig"))
-                        .bindSelected(settings.completion::completeByExtendedCwtConfig)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeByExtendedCwtConfig.tooltip") }
+                    checkBox(PlsBundle.message("settings.completion.completeByExtendedCwtConfigs"))
+                        .bindSelected(settings.completion::completeByExtendedCwtConfigs)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeByExtendedCwtConfigs.tooltip") }
                 }
             }
             //generation

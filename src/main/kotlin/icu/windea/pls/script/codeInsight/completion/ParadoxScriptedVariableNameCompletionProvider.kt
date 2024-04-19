@@ -31,7 +31,7 @@ class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<Complet
         val selector = scriptedVariableSelector(project, element).contextSensitive().notSamePosition(element).distinctByName()
         ParadoxGlobalScriptedVariableSearch.search(selector).processQuery { processScriptedVariable(context, result, it) }
         
-        ParadoxCompletionManager.completeExtendedScriptedVariables(context, result)
+        ParadoxCompletionManager.completeExtendedScriptedVariable(context, result)
     }
     
     @Suppress("SameReturnValue")

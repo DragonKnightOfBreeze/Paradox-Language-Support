@@ -9,10 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
@@ -20,7 +17,6 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
-import icu.windea.pls.model.expression.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.model.expression.complex.nodes.*
 import icu.windea.pls.script.psi.*
@@ -38,6 +34,11 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val finalElement = element.findTopHostElementOrThis(element.project)
         val context = finalElement.findParentDefinition()
         return context?.takeIf { isContext(it) }
+    }
+    
+    override fun getContextKeyFromContext(context: ParadoxScriptDefinitionElement): String? {
+        val definitionInfo = context.definitionInfo ?: return null
+        return "${definitionInfo.types.joinToString(".")}@${definitionInfo.name}"
     }
     
     override fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
@@ -91,6 +92,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         if(definitionName.isParameterized()) return null //skip if context name is parameterized
         val definitionTypes = contextConfig.expression.value?.split('.') ?: return null
         val contextName = definitionName
+        val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
+        val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
         val contextNameElement = contextReferenceElement.propertyKey
         val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
         contextReferenceElement.block?.processProperty p@{
@@ -101,7 +104,11 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
             arguments += ParadoxParameterContextReferenceInfo.Argument(argumentName, k.createPointer(project), k.textRange, v?.createPointer(project), v?.textRange)
             true
         }
-        val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(project), contextName, contextNameElement.createPointer(project), contextNameElement.textRange, arguments, gameType, project)
+        val info = ParadoxParameterContextReferenceInfo(
+            contextReferenceElement.createPointer(project),
+            contextName, contextIcon, contextKey,
+            contextNameElement.createPointer(project), contextNameElement.textRange, arguments, gameType, project
+        )
         info.definitionName = definitionName
         info.definitionTypes = definitionTypes
         return info
@@ -234,6 +241,8 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
     
     override fun findContext(element: PsiElement) = null
     
+    override fun getContextKeyFromContext(context: ParadoxScriptDefinitionElement) = null
+    
     override fun resolveParameter(element: ParadoxParameter) = null
     
     override fun resolveConditionParameter(element: ParadoxConditionParameter) = null
@@ -297,6 +306,8 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         if(definitionName.isParameterized()) return null //skip if context name is parameterized
         val definitionTypes = listOf("script_value")
         val contextName = definitionName
+        val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
+        val contextKey = "script_value@${definitionName}"
         val startOffset = element.startOffset
         val contextNameRange = scriptValueExpression.scriptValueNode.rangeInExpression.shiftRight(startOffset) //text range of script value name
         val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
@@ -307,7 +318,11 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
             val argumentName = nameNode.text
             arguments += ParadoxParameterContextReferenceInfo.Argument(argumentName, pointer, nameNode.rangeInExpression.shiftRight(startOffset), pointer, valueNode?.rangeInExpression?.shiftRight(startOffset))
         }
-        val info = ParadoxParameterContextReferenceInfo(pointer, contextName, pointer, contextNameRange, arguments, gameType, project)
+        val info = ParadoxParameterContextReferenceInfo(
+            pointer,
+            contextName, contextIcon, contextKey,
+            pointer, contextNameRange, arguments, gameType, project
+        )
         info.definitionName = definitionName
         info.definitionTypes = definitionTypes
         return info
@@ -316,7 +331,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
         if(rangeInElement == null) return null
         if(config !is CwtMemberConfig<*>) return null
-        if(!(config.expression.type in CwtDataTypeGroups.ValueField)) return null
+        if(config.expression.type !in CwtDataTypeGroups.ValueField) return null
         val text = element.text
         if(text.isLeftQuoted()) return null
         if(!text.contains("value:")) return null //快速判断
@@ -363,6 +378,12 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val finalElement = element.findTopHostElementOrThis(element.project)
         val context = finalElement.containingFile?.castOrNull<ParadoxScriptFile>()
         return context?.takeIf { isContext(it) }
+    }
+    
+    override fun getContextKeyFromContext(context: ParadoxScriptDefinitionElement): String? {
+        if(context !is ParadoxScriptFile) return null
+        val expression = ParadoxInlineScriptHandler.getInlineScriptExpression(context) ?: return null
+        return "inline_script@$expression"
     }
     
     override fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
@@ -416,6 +437,8 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val expression = ParadoxInlineScriptHandler.getInlineScriptExpressionFromInlineConfig(contextReferenceElement, inlineConfig) ?: return null
         if(expression.isParameterized()) return null //skip if context name is parameterized
         val contextName = expression
+        val contextIcon = PlsIcons.Nodes.InlineScript
+        val contextKey = "inline_script@$expression"
         val contextNameElement = contextReferenceElement.propertyKey
         val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
         contextReferenceElement.block?.processProperty p@{
@@ -427,7 +450,11 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
             arguments += ParadoxParameterContextReferenceInfo.Argument(argumentName, k.createPointer(project), k.textRange, v?.createPointer(project), v?.textRange)
             true
         }
-        val info = ParadoxParameterContextReferenceInfo(contextReferenceElement.createPointer(project), contextName, contextNameElement.createPointer(project), contextNameElement.textRange, arguments, gameType, project)
+        val info = ParadoxParameterContextReferenceInfo(
+            contextReferenceElement.createPointer(project),
+            contextName, contextIcon, contextKey,
+            contextNameElement.createPointer(project), contextNameElement.textRange, arguments, gameType, project
+        )
         info.inlineScriptExpression = expression
         return info
     }

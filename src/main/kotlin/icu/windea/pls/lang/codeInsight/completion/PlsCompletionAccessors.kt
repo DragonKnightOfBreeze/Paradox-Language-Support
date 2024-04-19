@@ -34,3 +34,5 @@ var ProcessingContext.isInt: Boolean? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.prefix: String? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.dataSourceNodeToCheck: ParadoxExpressionNode? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.showScriptExpressionTailText: Boolean by createKeyDelegate(PlsCompletionKeys) { true }
+var ProcessingContext.contextKey: String? by createKeyDelegate(PlsCompletionKeys)
+var ProcessingContext.argumentNames: MutableSet<String>? by createKeyDelegate(PlsCompletionKeys)

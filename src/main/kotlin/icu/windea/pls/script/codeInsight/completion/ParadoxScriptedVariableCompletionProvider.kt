@@ -31,7 +31,7 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
         ParadoxLocalScriptedVariableSearch.search(selector).processQuery { processScriptedVariable(context, result, it) }
         ParadoxGlobalScriptedVariableSearch.search(selector).processQuery { processScriptedVariable(context, result, it) }
         
-        ParadoxCompletionManager.completeExtendedScriptedVariables(context, result)
+        ParadoxCompletionManager.completeExtendedScriptedVariable(context, result)
     }
     
     @Suppress("SameReturnValue")

@@ -74,7 +74,7 @@ class ParadoxSettingsState : BaseState() {
      * @property maxMemberCountInOneLine 当插入从句内联模版时，当要插入的从句中的属性的个数不超过时，会把所有属性放到同一行。
      * @property completeOnlyScopeIsMatched 如果存在，是否仅提供匹配当前作用域的提示项。
      * @property completeByLocalizedName 是否也根据定义和修正的本地化名字来进行代码补全。
-     * @property completeByExtendedCwtConfig 是否也根据扩展的CWT规则来进行代码补全。
+     * @property completeByExtendedCwtConfigs 是否也根据扩展的CWT规则来进行代码补全。
      */
     @Tag("completion")
     class CompletionState : BaseState() {
@@ -88,7 +88,7 @@ class ParadoxSettingsState : BaseState() {
         var maxMemberCountInOneLine by property(2)
         var completeOnlyScopeIsMatched by property(true)
         var completeByLocalizedName by property(false)
-        var completeByExtendedCwtConfig by property(false)
+        var completeByExtendedCwtConfigs by property(false)
     }
     
     /**
