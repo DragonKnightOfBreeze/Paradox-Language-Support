@@ -90,9 +90,13 @@ class ParadoxScriptAnnotator : Annotator {
         val configContext = CwtConfigHandler.getConfigContext(file) ?: return
         if(configContext.inlineScriptHasConflict == true) return
         if(configContext.inlineScriptHasRecursion == true) return
+        
+        //don't show if there are no usages
+        //also see: icu.windea.pls.lang.inspections.script.common.UnusedInlineScriptInspection
         val selector = inlineScriptSelector(file.project, file)
         val hasUsages = ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).find() != null
-        if(!hasUsages) return //don't show if there are no usages
+        if(!hasUsages) return
+        
         val message = PlsBundle.message("script.annotator.inlineScript", inlineScriptExpression)
         holder.newAnnotation(INFORMATION, message).fileLevel().withFix(GotoInlineScriptUsagesFix()).create()
     }
