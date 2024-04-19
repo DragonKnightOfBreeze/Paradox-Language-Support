@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.config
 
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -13,13 +14,14 @@ import icu.windea.pls.model.constraints.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.script.psi.*
 
-class CwtBaseRelatedConfigProvider: CwtRelatedConfigProvider {
-    override fun getRelatedConfigs(element: PsiElement): List<CwtConfig<*>> {
+class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
+    override fun getRelatedConfigs(file: PsiFile, offset: Int): List<CwtConfig<*>> {
         //获取所有匹配的CWT规则，不存在匹配的CWT规则时，选用所有默认的CWT规则（对于propertyConfig来说是匹配key的，对于valueConfig来说是所有）
-        //包括内联规则（例如alias与single_alias，显示时使用特殊的别名图标）
+        //包括内联规则以及内联后的规则
         //包括其他一些相关的规则
+        //目前基本上仅适用于脚本文件中的目标
         
-        if(element !is ParadoxScriptExpressionElement) return emptyList()
+        val element = ParadoxPsiManager.findScriptExpression(file, offset) ?: return emptyList()
         
         val orDefault = element is ParadoxScriptPropertyKey
         val matchOptions = Options.Default or Options.AcceptDefinition
@@ -61,31 +63,24 @@ class CwtBaseRelatedConfigProvider: CwtRelatedConfigProvider {
     }
 }
 
-class CwtExtendedRelatedConfigProvider: CwtRelatedConfigProvider {
-    override fun getRelatedConfigs(element: PsiElement): List<CwtConfig<*>> {
-        //包括其他一些相关的规则（扩展的规则）
-        //definitions gameRules onActions parameters complexEnumValues dynamicValues
+class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
+    override fun getRelatedConfigs(file: PsiFile, offset: Int): List<CwtConfig<*>> {
+        //包括其他一些相关的规则（扩展的规则 - definitions gameRules onActions parameters complexEnumValues dynamicValues）
+        //目前基本上仅适用于脚本文件中的目标
         
-        val result = mutableListOf<CwtConfig<*>>()
-        val configGroup = getConfigGroup(element.project, selectGameType(element))
+        val element = ParadoxPsiManager.findScriptExpression(file, offset)
+        
+        val result = mutableSetOf<CwtConfig<*>>()
+        val configGroup = getConfigGroup(file.project, selectGameType(file))
         
         run r0@{
-            run r1@ {
-                if(element !is ParadoxScriptScriptedVariable) return@r1
-                val name = element.name
-                if(name.isNullOrEmpty()) return@r1
-                if(name.isParameterized()) return@r1
-                val config = configGroup.extendedScriptedVariables.getByTemplate(name, element, configGroup)
-                if(config != null) result.add(config)
-            }
-            run r1@{
-                if(element !is ParadoxScriptedVariableReference) return@r1
-                val name = element.name
-                if(name.isNullOrEmpty()) return@r1
-                if(name.isParameterized()) return@r1
-                val config = configGroup.extendedScriptedVariables.getByTemplate(name, element, configGroup)
-                if(config != null) result.add(config)
-            }
+            val findOptions = ParadoxPsiManager.FindScriptedVariableOptions.run { BY_NAME or BY_REFERENCE }
+            val element1 = ParadoxPsiManager.findScriptVariable(file, offset, findOptions) ?: return@r0
+            val name = element1.name
+            if(name.isNullOrEmpty()) return@r0
+            if(name.isParameterized()) return@r0
+            val config = configGroup.extendedScriptedVariables.getByTemplate(name, element1, configGroup)
+            if(config != null) result.add(config)
         }
         
         run r0@{
@@ -118,8 +113,9 @@ class CwtExtendedRelatedConfigProvider: CwtRelatedConfigProvider {
                 when {
                     ParadoxResolveConstraint.Parameter.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxParameterElement>() ?: continue
-                        configGroup.extendedParameters.getAllByTemplate(element.name, element, configGroup)
+                        val configs = configGroup.extendedParameters.getAllByTemplate(element.name, element, configGroup)
                             .filterTo(result) { it.contextKey == resolved.contextKey }
+                        result.addAll(configs)
                     }
                     ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxComplexEnumValueElement>() ?: continue
@@ -137,6 +133,15 @@ class CwtExtendedRelatedConfigProvider: CwtRelatedConfigProvider {
             }
         }
         
-        return result
+        run r0@{
+            val resolved = file.findElementAt(offset) {
+                it.parents(false).firstNotNullOfOrNull { p -> ParadoxParameterHandler.getParameterElement(p) }
+            } ?: return@r0
+            val configs = configGroup.extendedParameters.getAllByTemplate(resolved.name, resolved, configGroup)
+                .filterTo(result) { it.contextKey == resolved.contextKey }
+            result.addAll(configs)
+        }
+        
+        return result.toList()
     }
 }
