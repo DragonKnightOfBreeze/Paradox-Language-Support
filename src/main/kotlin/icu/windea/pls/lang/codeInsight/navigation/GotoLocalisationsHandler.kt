@@ -37,6 +37,7 @@ class GotoLocalisationsHandler: GotoTargetHandler() {
             }
         }, PlsBundle.message("script.goto.localisations.search", localisationInfo.name), true, project)
         if(!runResult) return null
+        if(targets.isNotEmpty()) targets.removeIf { it == localisation }
         return GotoData(localisation, targets.toTypedArray(), emptyList())
     }
     
