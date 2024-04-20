@@ -47,14 +47,14 @@ fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(
     entryConfigs: List<CwtMemberConfig<*>>
 ): LookupElementBuilder {
     //如果补全位置所在的子句为空或者都不精确匹配，显示对话框时默认列出的属性/值应该有数种情况，因此这里需要传入entryConfigs
+    //默认列出且仅允许选择直接的key为常量字符串的属性（忽略需要内联的情况）
     
-    //目前默认列出并且仅允许选择直接的作为常量字符串的key（不包括通过alias内联的常量字符串）
     val file = context.parameters?.originalFile ?: return this
     val constantConfigGroupList = mutableListOf<Map<CwtDataExpression, List<CwtMemberConfig<*>>>>()
     val hasRemainList = mutableListOf<Boolean>()
     for(entry in entryConfigs) {
         val constantConfigGroup = entry.configs
-            ?.filter { it.expression.type == CwtDataTypes.Constant }
+            ?.filter { it is CwtPropertyConfig && it.expression.type == CwtDataTypes.Constant }
             ?.groupBy { it.expression }
             .orEmpty()
         if(constantConfigGroup.isEmpty()) continue //skip
