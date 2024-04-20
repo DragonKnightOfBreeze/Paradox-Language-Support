@@ -23,6 +23,8 @@ class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters
 			if(configContext != null && configContext.isRootOrMember()) return
 		}
 		
+		context.initialize(parameters)
+		
 		result.addElement(PlsLookupElements.yesLookupElement)
 		result.addElement(PlsLookupElements.noLookupElement)
 		result.addElement(PlsLookupElements.blockLookupElement)

@@ -1,5 +1,6 @@
 package icu.windea.pls.ep.scope
 
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -12,10 +13,12 @@ class ParadoxBaseDynamicValueScopeContextProvider: ParadoxDynamicValueScopeConte
     }
     
     override fun getScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContext? {
+        val name = element.name
+        val type = element.dynamicValueType
         val configGroup = getConfigGroup(element.project, element.gameType)
-        val dynamicValueTypeConfig = configGroup.dynamicValueTypes[element.dynamicValueType] ?:return null
-        val config = dynamicValueTypeConfig.valueConfigMap[element.name] ?: return null
-        val result = config.scopeContext
+        val configs = configGroup.extendedDynamicValues[type] ?: return null
+        val config = configs.getByTemplate(name, element, configGroup) ?: return null
+        val result = config.config.scopeContext
         return result
     }
 }

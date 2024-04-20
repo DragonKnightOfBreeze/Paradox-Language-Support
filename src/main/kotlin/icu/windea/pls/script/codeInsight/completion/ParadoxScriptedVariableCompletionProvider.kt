@@ -6,7 +6,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
@@ -25,17 +24,14 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
         val file = parameters.originalFile
         val project = file.project
         
-        val gameType = selectGameType(file)
-        val configGroup = if(gameType != null) getConfigGroup(project, gameType) else null
-        context.configGroup = configGroup
-        context.completionIds = mutableSetOf<String>().synced()
+        context.initialize(parameters)
         
         //同时需要同时查找当前文件中的和全局的
         val selector = scriptedVariableSelector(project, element).contextSensitive().distinctByName()
         ParadoxLocalScriptedVariableSearch.search(selector).processQuery { processScriptedVariable(context, result, it) }
         ParadoxGlobalScriptedVariableSearch.search(selector).processQuery { processScriptedVariable(context, result, it) }
         
-        ParadoxCompletionManager.completeExtendedScriptedVariables(context, result)
+        ParadoxCompletionManager.completeExtendedScriptedVariable(context, result)
     }
     
     @Suppress("SameReturnValue")

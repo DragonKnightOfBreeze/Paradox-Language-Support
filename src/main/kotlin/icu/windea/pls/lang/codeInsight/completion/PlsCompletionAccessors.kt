@@ -12,10 +12,12 @@ import icu.windea.pls.model.expression.complex.nodes.*
 
 object PlsCompletionKeys : KeyRegistry("PlsCompletion")
 
-var ProcessingContext.completionIds: MutableSet<String>? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.parameters: CompletionParameters? by createKeyDelegate(PlsCompletionKeys)
+var ProcessingContext.completionIds: MutableSet<String>? by createKeyDelegate(PlsCompletionKeys)
+var ProcessingContext.gameType: ParadoxGameType? by createKeyDelegate(PlsCompletionKeys)
+var ProcessingContext.configGroup: CwtConfigGroup? by createKeyDelegate(PlsCompletionKeys)
+
 var ProcessingContext.contextElement: PsiElement? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.originalFile: PsiFile? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.quoted: Boolean by createKeyDelegate(PlsCompletionKeys) { false }
 var ProcessingContext.rightQuoted: Boolean? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.offsetInParent: Int? by createKeyDelegate(PlsCompletionKeys)
@@ -24,7 +26,6 @@ var ProcessingContext.keywordOffset: Int by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.isKey: Boolean? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.config: CwtConfig<*>? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.configs: Collection<CwtConfig<*>> by createKeyDelegate(PlsCompletionKeys) { emptyList() }
-var ProcessingContext.configGroup: CwtConfigGroup? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.scopeContext: ParadoxScopeContext? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.scopeMatched: Boolean by createKeyDelegate(PlsCompletionKeys) { true }
 var ProcessingContext.scopeName: String? by createKeyDelegate(PlsCompletionKeys)
@@ -33,3 +34,5 @@ var ProcessingContext.isInt: Boolean? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.prefix: String? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.dataSourceNodeToCheck: ParadoxExpressionNode? by createKeyDelegate(PlsCompletionKeys)
 var ProcessingContext.showScriptExpressionTailText: Boolean by createKeyDelegate(PlsCompletionKeys) { true }
+var ProcessingContext.contextKey: String? by createKeyDelegate(PlsCompletionKeys)
+var ProcessingContext.argumentNames: MutableSet<String>? by createKeyDelegate(PlsCompletionKeys)

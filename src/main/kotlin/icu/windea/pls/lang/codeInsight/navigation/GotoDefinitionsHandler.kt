@@ -38,6 +38,7 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
             }
         }, PlsBundle.message("script.goto.definitions.search", definitionInfo.name), true, project)
         if(!runResult) return null
+        if(targets.isNotEmpty()) targets.removeIf { it == definition } //remove current definition from targets
         return GotoData(definition, targets.toTypedArray(), emptyList())
     }
     

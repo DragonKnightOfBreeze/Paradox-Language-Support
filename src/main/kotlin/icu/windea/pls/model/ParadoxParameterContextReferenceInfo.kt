@@ -3,6 +3,7 @@ package icu.windea.pls.model
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import javax.swing.Icon
 
 /**
  * @param contextNameRange 表示作用域名字的那段文本在整个文件中的文本范围。
@@ -10,6 +11,8 @@ import com.intellij.psi.*
 class ParadoxParameterContextReferenceInfo(
     private val elementPointer: SmartPsiElementPointer<out PsiElement>,
     val contextName: String,
+    val contextIcon: Icon?,
+    val contextKey: String,
     private val contextNameElementPointer: SmartPsiElementPointer<out PsiElement>,
     val contextNameRange: TextRange,
     val arguments: List<Argument>,

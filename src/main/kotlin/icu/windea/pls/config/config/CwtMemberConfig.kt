@@ -92,21 +92,19 @@ val CwtMemberConfig<*>.cardinalityMaxDefine
         option?.stringValue
     }
 
-val CwtMemberConfig<*>.hasScopeOption
-    get() = getOrPutUserData(CwtMemberConfig.Keys.hasScopeOption) action@{
-        val option = findOption { it.key == "replace_scope" || it.key == "replace_scopes" || it.key == "push_scope" || it.key == "scope" || it.key == "scopes" }
-        option != null
-    }
 val CwtMemberConfig<*>.scopeContext
     get() = getOrPutUserData(CwtMemberConfig.Keys.scopeContext, ParadoxScopeContext.Empty) action@{
-        val map = replaceScopes ?: return@action null
-        ParadoxScopeContext.resolve(map)
+        val replaceScopes = replaceScopes
+        val pushScope = pushScope
+        val scopeContext = replaceScopes?.let { ParadoxScopeContext.resolve(it) }
+        scopeContext?.resolveNext(pushScope) ?: pushScope?.let { ParadoxScopeContext.resolve(it, it) }
     }
+
 //may on:
 // * a config expression in declaration config (include root expression, e.g. "army = { ... }")
 // * a type config (e.g. "type[xxx] = { ... }")
 // * a subtype config (e.g. "subtype[xxx] = { ... }")
-//* a definition / game type / on action config
+// * an extended (definition/ game type / on action/ inline_script / parameter) config
 val CwtMemberConfig<*>.replaceScopes
     get() = getOrPutUserData(CwtMemberConfig.Keys.replaceScopes, emptyMap()) action@{
         val option = findOption { it.key == "replace_scope" || it.key == "replace_scopes" }
@@ -124,6 +122,8 @@ val CwtMemberConfig<*>.replaceScopes
 // * a config expression in declaration config (include root expression, e.g. "army = { ... }")
 // * a type config (e.g. "type[xxx] = { ... }")
 // * a subtype config (e.g. "subtype[xxx] = { ... }")
+//* a definition / game type / on action config
+// * an extended (definition/ game type / on action/ inline_script / parameter) config
 val CwtMemberConfig<*>.pushScope
     get() = getOrPutUserData(CwtMemberConfig.Keys.pushScope, "") action@{
         val option = findOption { it.key == "push_scope" }

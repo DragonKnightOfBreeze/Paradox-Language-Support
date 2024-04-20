@@ -14,11 +14,9 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
         val element = parameters.position.parent ?: return
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
-        val file = parameters.originalFile
         
-        context.parameters = parameters
+        context.initialize(parameters)
         context.contextElement = element
-        context.originalFile = file
         context.offsetInParent = offsetInParent
         context.keyword = keyword
         

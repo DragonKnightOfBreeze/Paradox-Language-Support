@@ -7,7 +7,6 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.search.*
@@ -32,10 +31,8 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		val offsetInParent = parameters.offset - element.startOffset
 		val keyword = element.getKeyword(offsetInParent)
 		
-		context.completionIds = mutableSetOf<String>().synced()
-		context.parameters = parameters
+		context.initialize(parameters)
 		context.contextElement = element
-		context.originalFile = file
 		context.offsetInParent = offsetInParent
 		context.keyword = keyword
 		context.quoted = quoted
@@ -55,7 +52,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				val elementPath = ParadoxElementPathHandler.get(element, PlsConstants.maxDefinitionDepth) ?: return
 				for(typeConfig in configGroup.types.values) {
 					if(typeConfig.nameField != null) continue
-					if(ParadoxDefinitionHandler.matchesTypeWithUnknownDeclaration(path, elementPath, null, typeConfig)) {
+					if(ParadoxDefinitionHandler.matchesTypeByUnknownDeclaration(path, elementPath, null, typeConfig)) {
 						val type = typeConfig.name
 						val declarationConfig = configGroup.declarations.get(type) ?: continue
 						//需要考虑不指定子类型的情况
@@ -108,7 +105,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		if(definitionInfo.name.isEmpty()) return true //ignore anonymous definitions
 		val icon = PlsIcons.Nodes.Definition(definitionInfo.type)
 		val typeFile = definition.containingFile
-		val builder = ParadoxScriptExpressionLookupElementBuilder.create(definition, definitionInfo.name)
+		val lookupElement = PlsLookupElementBuilder.create(definition, definitionInfo.name)
 			.withIcon(icon)
 			.withTypeText(typeFile?.name)
 			.withTypeIcon(typeFile?.icon)
@@ -118,7 +115,8 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				val localizedNames = ParadoxDefinitionHandler.getLocalizedNames(definition)
 				it.withLocalizedNames(localizedNames)
 			}
-		result.addScriptExpressionElement(context, builder)
+			.build(context)
+		result.addPlsElement(lookupElement)
 		return true
 	}
 }

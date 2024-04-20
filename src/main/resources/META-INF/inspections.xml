@@ -89,6 +89,12 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
                      groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.UnresolvedPathReferenceInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedInlineScript"
+                     enabledByDefault="true" level="WEAK WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.unusedInlineScript"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
+                     groupPathKey="inspection.script.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.script.common.UnusedInlineScriptInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedParameter"
                      enabledByDefault="true" level="WEAK WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.unusedParameter"

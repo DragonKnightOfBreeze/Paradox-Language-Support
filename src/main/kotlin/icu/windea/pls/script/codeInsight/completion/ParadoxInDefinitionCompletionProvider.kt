@@ -4,9 +4,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
@@ -15,7 +13,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 提供定义的相关代码补全。基于CWT规则文件。
  */
-class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxInDefinitionCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position.parentOfType<ParadoxScriptStringExpressionElement>() ?: return
         
@@ -27,10 +25,8 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
         
-        context.completionIds = mutableSetOf<String>().synced()
-        context.parameters = parameters
+        context.initialize(parameters)
         context.contextElement = element
-        context.originalFile = file
         context.offsetInParent = offsetInParent
         context.keyword = keyword
         context.quoted = quoted
@@ -63,14 +59,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
             //向上得到property
             val propertyElement = element.findParentProperty() as? ParadoxScriptProperty
             if(propertyElement != null) {
-                //这里可能需要标记用户输入未完成
-                val incomplete = !quoted && keyword.isEmpty()
-                try {
-                    propertyElement.putUserData(PlsKeys.isIncomplete, incomplete)
-                    ParadoxCompletionManager.addPropertyValueCompletions(element, propertyElement, context, resultToUse)
-                } finally {
-                    propertyElement.putUserData(PlsKeys.isIncomplete, null)
-                }
+                ParadoxCompletionManager.addPropertyValueCompletions(element, propertyElement, context, resultToUse)
             }
         }
     }

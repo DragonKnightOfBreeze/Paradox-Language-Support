@@ -180,6 +180,11 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.completion.completeLocalisationNames"))
                         .bindSelected(settings.completion::completeLocalisationNames)
                 }
+                //completeInlineScriptInvocations
+                row {
+                    checkBox(PlsBundle.message("settings.completion.completeInlineScriptInvocations"))
+                        .bindSelected(settings.completion::completeInlineScriptInvocations)
+                }
                 //completeVariableNames
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeVariableNames"))
@@ -220,11 +225,11 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.completion::completeByLocalizedName)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeByLocalizedName.tooltip") }
                 }
-                //completeByExtendedCwtConfig
+                //completeByExtendedCwtConfigs
                 row {
-                    checkBox(PlsBundle.message("settings.completion.completeByExtendedCwtConfig"))
-                        .bindSelected(settings.completion::completeByExtendedCwtConfig)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeByExtendedCwtConfig.tooltip") }
+                    checkBox(PlsBundle.message("settings.completion.completeByExtendedCwtConfigs"))
+                        .bindSelected(settings.completion::completeByExtendedCwtConfigs)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeByExtendedCwtConfigs.tooltip") }
                 }
             }
             //generation

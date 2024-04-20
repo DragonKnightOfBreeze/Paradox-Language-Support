@@ -885,6 +885,9 @@ object CwtConfigHandler {
             config is CwtAliasConfig -> {
                 configGroup.aliasGroups.get(config.name)?.get(config.subName)?.map { it.config }.orEmpty()
             }
+            config is CwtInlineConfig -> {
+                config.config.toSingletonListOrEmpty()
+            }
             else -> {
                 emptyList()
             }

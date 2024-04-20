@@ -16,20 +16,17 @@ import icu.windea.pls.lang.codeInsight.navigation.*
  */
 @WithGameTypeEP
 interface CwtRelatedConfigProvider {
-    /**
-     * 基于指定的脚本表达式[element]获取相关的CWT规则。
-     */
-    fun getRelatedConfigs(element: PsiElement): List<CwtConfig<*>>
+    fun getRelatedConfigs(file: PsiFile, offset: Int): List<CwtConfig<*>>
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtRelatedConfigProvider>("icu.windea.pls.relatedConfigProvider")
         
-        fun getRelatedConfigs(element: PsiElement): List<CwtConfig<*>> {
-            val gameType = selectGameType(element) ?: return emptyList()
+        fun getRelatedConfigs(file: PsiFile, offset: Int): List<CwtConfig<*>> {
+            val gameType = selectGameType(file) ?: return emptyList()
             val result = mutableListOf<CwtConfig<*>>()
             EP_NAME.extensionList.forEachFast f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
-                val r = ep.getRelatedConfigs(element)
+                val r = ep.getRelatedConfigs(file, offset)
                 result += r
             }
             return result

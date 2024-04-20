@@ -13,6 +13,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.localisation.psi.*
@@ -34,12 +35,6 @@ object ParadoxDefinitionHandler {
     //get info & match methods
     
     fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
-        //如果不能使用缓存，需要重新获取
-        val notUseCache = element.getUserData(PlsKeys.isIncomplete) == true
-        if(notUseCache) {
-            val file = element.containingFile
-            return doGetInfo(element, file)
-        }
         //快速判断
         if(runCatchingCancelable { element.greenStub }.getOrNull()?.isValidDefinition == false) return null
         //从缓存中获取
@@ -129,11 +124,15 @@ object ParadoxDefinitionHandler {
         if(fastResult != null) return fastResult
         
         //判断definition的propertyValue是否需要是block
-        val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config
-        //当进行代码补全时需要特殊处理
-        val propertyValue = element.castOrNull<ParadoxScriptProperty>()?.propertyValue
-        val isBlock = propertyValue?.let { it is ParadoxScriptBlock }
-        if(declarationConfig != null && isBlock != null) {
+        run {
+            val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config ?: return@run
+            val propertyValue = element.castOrNull<ParadoxScriptProperty>()?.propertyValue ?: return@run
+            //兼容进行代码补全时用户输入未完成的情况
+            val isIncomplete = propertyValue is ParadoxScriptString
+                && propertyValue.text == PlsConstants.dummyIdentifier
+                && propertyValue.isIncomplete()
+            if(isIncomplete) return@run
+            val isBlock = propertyValue is ParadoxScriptBlock
             val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
             if(isBlockConfig != isBlock) return false
         }
@@ -163,11 +162,20 @@ object ParadoxDefinitionHandler {
         if(fastResult != null) return fastResult
         
         //判断definition的propertyValue是否需要是block
-        val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config
-        //当进行代码补全时需要特殊处理
-        val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES)
-        val isBlock = propertyValue?.tokenType?.let { it == BLOCK }
-        if(declarationConfig != null && isBlock != null) {
+        //val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config
+        ////当进行代码补全时需要特殊处理
+        //val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES)
+        //val isBlock = propertyValue?.tokenType?.let { it == BLOCK }
+        //if(declarationConfig != null && isBlock != null) {
+        //    val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
+        //    if(isBlockConfig != isBlock) return false
+        //}
+        
+        //判断definition的propertyValue是否需要是block
+        run {
+            val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config ?: return@run
+            val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES) ?: return@run
+            val isBlock = propertyValue is ParadoxScriptBlock
             val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
             if(isBlockConfig != isBlock) return false
         }
@@ -238,7 +246,7 @@ object ParadoxDefinitionHandler {
         return null //需要进一步匹配
     }
     
-    fun matchesTypeWithUnknownDeclaration(
+    fun matchesTypeByUnknownDeclaration(
         path: ParadoxPath,
         elementPath: ParadoxElementPath?,
         rootKey: String?,

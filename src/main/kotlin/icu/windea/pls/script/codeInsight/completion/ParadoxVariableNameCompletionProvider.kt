@@ -21,24 +21,8 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptString>() ?: return
         if(element.text.isParameterized()) return
-        val file = parameters.originalFile
-        val quoted = element.text.isLeftQuoted()
-        val rightQuoted = element.text.isRightQuoted()
-        val offsetInParent = parameters.offset - element.startOffset
-        val keyword = element.getKeyword(offsetInParent)
-        
-        context.completionIds = mutableSetOf<String>().synced()
-        context.parameters = parameters
-        context.contextElement = element
-        context.originalFile = file
-        context.offsetInParent = offsetInParent
-        context.keyword = keyword
-        context.quoted = quoted
-        context.rightQuoted = rightQuoted
-        
-        val stringElement = element
-        if(!stringElement.isBlockValue()) return
-        val parentProperty = stringElement.findParentProperty() ?: return
+        if(!element.isBlockValue()) return
+        val parentProperty = element.findParentProperty() ?: return
         val configs = CwtConfigHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
         if(configs.isEmpty()) return
         val configGroup = configs.first().info.configGroup
@@ -49,8 +33,22 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
             } ?: false
         }
         if(!matched) return
+        
+        val quoted = element.text.isLeftQuoted()
+        val rightQuoted = element.text.isRightQuoted()
+        val offsetInParent = parameters.offset - element.startOffset
+        val keyword = element.getKeyword(offsetInParent)
+        
+        context.initialize(parameters)
+        context.contextElement = element
+        context.offsetInParent = offsetInParent
+        context.keyword = keyword
+        context.quoted = quoted
+        context.rightQuoted = rightQuoted
+        
         val mockConfig = CwtValueConfig.resolve(emptyPointer(), configGroup.info, "value[variable]")
         context.config = mockConfig
+        
         ParadoxCompletionManager.completeDynamicValueExpression(context, result)
     }
 }

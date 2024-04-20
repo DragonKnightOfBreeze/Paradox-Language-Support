@@ -70,7 +70,7 @@ interface ParadoxModifierSupport {
         }
         
         fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
-            val gameType = selectGameType(context.originalFile)
+            val gameType = context.gameType ?: return
             EP_NAME.extensionList.forEachFast f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 ep.completeModifier(context, result, modifierNames)

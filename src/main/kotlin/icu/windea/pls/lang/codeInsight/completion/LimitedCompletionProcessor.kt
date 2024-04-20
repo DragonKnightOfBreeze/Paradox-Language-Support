@@ -4,9 +4,9 @@ import com.intellij.openapi.util.registry.*
 import com.intellij.util.*
 
 /**
- * 进行代码提示时，确保加入的提示项不超过`ide.completion.variant.limit`指定的上限。
+ * 进行代码补全时，确保加入的提示项不超过`ide.completion.variant.limit`指定的上限。
  * 
- * 用于优化代码提示的性能。
+ * 用于优化代码补全的性能。目前仅适用于对本地化的代码补全。
  */
 class LimitedCompletionProcessor<T>(
     private val processor: Processor<T>

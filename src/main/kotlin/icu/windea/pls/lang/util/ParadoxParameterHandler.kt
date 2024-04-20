@@ -139,11 +139,17 @@ object ParadoxParameterHandler {
                 parameter is ParadoxParameter -> ParadoxParameterSupport.resolveParameter(parameter)
                 else -> null
             } ?: continue
-            val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
+            val lookupElement = PlsLookupElementBuilder.create(parameterElement, parameterName)
                 .withIcon(PlsIcons.Nodes.Parameter)
-                .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
-            result.addElement(lookupElement)
+                .withTypeText(parameterElement.contextName)
+                .withTypeIcon(parameterElement.contextIcon)
+                .build(context)
+            result.addPlsElement(lookupElement)
         }
+        
+        val contextKey = ParadoxParameterSupport.getContextKeyFromContext(parameterContext) ?: return
+        context.contextKey = contextKey
+        ParadoxCompletionManager.completeExtendedParameter(context, result)
     }
     
     fun completeArguments(element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {
@@ -154,17 +160,14 @@ object ParadoxParameterHandler {
         val completionOffset = context.parameters?.offset ?: return
         val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, config, completionOffset) ?: return
         val argumentNames = contextReferenceInfo.arguments.mapTo(mutableSetOf()) { it.argumentName }
-        val namesToDistinct = mutableSetOf<String>().synced()
         //整合查找到的所有参数上下文
-        val insertSeparator = context.isKey == true && context.contextElement !is ParadoxScriptPropertyKey
         ParadoxParameterSupport.processContext(element, contextReferenceInfo, true) p@{ parameterContext ->
             ProgressManager.checkCanceled()
             val parameterContextInfo = ParadoxParameterSupport.getContextInfo(parameterContext) ?: return@p true
             if(parameterContextInfo.parameters.isEmpty()) return@p true
             for((parameterName, parameterInfos) in parameterContextInfo.parameters) {
                 //排除已输入的
-                if(parameterName in argumentNames) continue
-                if(!namesToDistinct.add(parameterName)) continue
+                if(!argumentNames.add(parameterName)) continue
                 
                 val parameter = parameterInfos.firstNotNullOfOrNull { it.element } ?: continue
                 val parameterElement = when {
@@ -172,21 +175,19 @@ object ParadoxParameterHandler {
                     parameter is ParadoxParameter -> ParadoxParameterSupport.resolveParameter(parameter)
                     else -> null
                 } ?: continue
-                val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
+                val lookupElement = PlsLookupElementBuilder.create(parameterElement, parameterName)
                     .withIcon(PlsIcons.Nodes.Parameter)
-                    .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
-                    .letIf(insertSeparator) {
-                        it.withInsertHandler { c, _ ->
-                            val editor = c.editor
-                            val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
-                            val text = if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "="
-                            EditorModificationUtil.insertStringAtCaret(editor, text, false, true)
-                        }
-                    }
-                result.addElement(lookupElement)
+                    .withTypeText(parameterElement.contextName)
+                    .withTypeIcon(parameterElement.contextIcon)
+                    .build(context)
+                result.addPlsElement(lookupElement)
             }
             true
         }
+        
+        context.contextKey = contextReferenceInfo.contextKey
+        context.argumentNames = argumentNames
+        ParadoxCompletionManager.completeExtendedParameter(context, result)
     }
     
     fun getReadWriteAccess(element: PsiElement): ReadWriteAccessDetector.Access {

@@ -6,7 +6,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -26,16 +25,13 @@ class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<Complet
         val file = parameters.originalFile
         val project = file.project
         
-        val gameType = selectGameType(file)
-        val configGroup = if(gameType != null) getConfigGroup(project, gameType) else null
-        context.configGroup = configGroup
-        context.completionIds = mutableSetOf<String>().synced()
+        context.initialize(parameters)
         
         //这里不需要查找本地的封装变量（即当前文件中声明的封装变量）
         val selector = scriptedVariableSelector(project, element).contextSensitive().notSamePosition(element).distinctByName()
         ParadoxGlobalScriptedVariableSearch.search(selector).processQuery { processScriptedVariable(context, result, it) }
         
-        ParadoxCompletionManager.completeExtendedScriptedVariables(context, result)
+        ParadoxCompletionManager.completeExtendedScriptedVariable(context, result)
     }
     
     @Suppress("SameReturnValue")
