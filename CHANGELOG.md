@@ -29,6 +29,17 @@
 * [X] 添加代码检查：未使用的内联脚本（弱警告级别）
 * [X] 其他优化与BUG修复
 
+***
+
+* [X] Improved support for the action "Goto to related CWT configs" (For scripted variables, parameters, etc.)
+* [X] Support for providing extended quick documentation for scripted variables via extended CWT configs (see reference documentation for details)
+* [X] Support for providing extended inlay hints for scripted variables via extended CWT configs (see reference documentation for details)
+* [X] #66 Support for providing additional code completion for various targets via extended CWT configs (For scripted variables, definitions, inline scripts, parameters, complex enum values and dynamic values; Configurable; Disabled by default)
+* [X] #69 Support for specifying the scope context for various targets via extended CWT configs (For definitions, parameters and inline scripts; Via `## replace_scopes` and `## push_scope`; Ignore invalid situations)
+* [X] #70 Provide code completion for inline script invocations (`inline_script = ...`; Configurable; Disabled by default; Currently for all game types)
+* [X] New code inspection: Unused inline scripts (level: weak warning)
+* [X] Other optimizations and bug fixes
+
 ## 1.3.4
 
 * [X] 为操作“导航到相关的CWT规则”提供更加完善的支持
