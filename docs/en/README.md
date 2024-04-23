@@ -30,12 +30,14 @@ If you encounter any problems during use, feel free to provide feedback via GitH
 
 ## Quick Start
 
-Usage:
+Usages:
 
 * Open your mod root directory through the IDE. (It needs to directly contain the mod descriptor file `descriptor.mod`)
 * Open the mod descriptor file, click the mod settings button in the floating toolbar (or editor right-click menu) at the top right of the editor, and configure the game type, game directory, and additional mod dependencies of the mod.
 * Click the OK button to complete the configuration, and then wait for the IDE to complete indexing.
 * Start your mod programming journey!
+
+Tips:
 
 * To perform a global search, please refer to the following methods:
   * Click `Ctrl Shift R` or `Ctrl Shift F` to search within the current project, directory, or specified scope.
@@ -70,15 +72,6 @@ Usage:
 Known issues:
 
 * Support for games exclude Stellaris is not yet perfect.
-
-## FAQ
-
-**Why it is suggested to use Intellij IDEA + this plugin, instead of VSCode + CWTools?**
-
-Introducing Idea, a lovely and vibrant girl.
-She is characterized by her long silver-white hair and amber-colored eyes, and often wears a dark blue wind coat.
-Meanwhile, she is also a powerful and intelligent mage, skilled in elemental magic, rune magic and modern programming magic.
-And even more than that, she does have another identity... a dragon knight from distant galaxy!
 
 ## Reference
 

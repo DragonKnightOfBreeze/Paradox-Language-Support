@@ -14,6 +14,8 @@ Besides, <a href="https://windea.icu/Paradox-Language-Support/#/en/config.md#wri
 <p>If <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a> is also installed, this plugin can provide some <a href="https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md">additional features</a>.</p>
 <p>If you encounter any problems during use, feel free to provide feedback via GitHub or Discord.</p>
 
+<br/>
+
 <p>Paradox语言支持。</p>
 <p>特性：</p>
 <ul>
@@ -30,10 +32,12 @@ Besides, <a href="https://windea.icu/Paradox-Language-Support/#/en/config.md#wri
 <p>如果同时安装了 <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a> ，此插件可以提供一些<a href="https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md">额外的功能</a>。</p>
 <p>如果在使用过程中遇到任何问题，欢迎通过GitHub、Discord或者QQ群进行反馈。</p>
 
+<br/>
+
 <p>
   <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">GitHub</a> |
   <a href="https://windea.icu/Paradox-Language-Support">Reference Documentation</a> |
   <a href="https://plugins.jetbrains.com/plugin/16825-paradox-language-support">Plugin Marketplace Page</a> |
-  <a href="https://discord.gg/pbPYSK4n">Discord</a>
+  <a href="https://discord.gg/pbPYSK4n">Discord</a> |
   QQ群：653824651
 </p>
