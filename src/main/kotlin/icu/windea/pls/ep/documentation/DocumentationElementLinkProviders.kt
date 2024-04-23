@@ -132,25 +132,25 @@ class CwtConfigLinkProvider : DocumentationElementLinkProvider {
         val builder = StringBuilder()
         when {
             config is CwtSystemLinkConfig -> {
-                val gameType = config.info.configGroup.gameType
+                val gameType = config.configGroup.gameType
                 val name = config.name
                 val link = "${linkPrefix}${gameType.linkToken}system_links/${name}"
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
             config is CwtLinkConfig -> {
-                val gameType = config.info.configGroup.gameType
+                val gameType = config.configGroup.gameType
                 val name = config.name
                 val link = "${linkPrefix}${gameType.linkToken}links/${name}"
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
             config is CwtLocalisationLinkConfig -> {
-                val gameType = config.info.configGroup.gameType
+                val gameType = config.configGroup.gameType
                 val name = config.name
                 val link = "${linkPrefix}${gameType.linkToken}localisation_links/${name}"
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
             config is CwtLocalisationCommandConfig -> {
-                val gameType = config.info.configGroup.gameType
+                val gameType = config.configGroup.gameType
                 val name = config.name
                 val link = "${linkPrefix}${gameType.linkToken}localisation_commands/${name}"
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)

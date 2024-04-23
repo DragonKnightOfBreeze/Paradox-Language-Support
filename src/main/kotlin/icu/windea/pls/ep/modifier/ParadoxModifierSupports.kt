@@ -191,7 +191,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val templateReferences = modifierElement.templateReferences ?: return false
         
         //加上名字
-        val configGroup = modifierConfig.info.configGroup
+        val configGroup = modifierConfig.configGroup
         val name = modifierElement.name
         append(PlsBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上模版信息

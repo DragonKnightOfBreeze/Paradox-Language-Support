@@ -35,7 +35,7 @@ object ParadoxLocalisationGenerator {
         val chooser = ParadoxGenerateLocalisationsChooser(memberArray, project)
         chooser.title = getChooserName(context)
         //by default, select all checked missing localisations
-        val missingMemberArray = memberArray.filter { it.info.check && it.info.missing }.toTypedArray()
+        val missingMemberArray = memberArray.filter { it.check && it.missing }.toTypedArray()
         chooser.selectElements(missingMemberArray)
         chooser.show()
         if(chooser.exitCode != DialogWrapper.OK_EXIT_CODE) return null

@@ -79,7 +79,7 @@ object CwtConfigManipulator {
     
     fun inlineSingleAliasOrAlias(element: PsiElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, matchOptions: Int = CwtConfigMatcher.Options.Default): List<CwtPropertyConfig> {
         //内联类型为single_alias_right或alias_match_left的规则
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val valueExpression = config.valueExpression
         when(valueExpression.type) {
             CwtDataTypes.SingleAliasRight -> {
@@ -114,7 +114,7 @@ object CwtConfigManipulator {
     
     fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
         //内联类型为single_alias_right的规则
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val valueExpression = config.valueExpression
         when(valueExpression.type) {
             CwtDataTypes.SingleAliasRight -> {
@@ -185,7 +185,7 @@ object CwtConfigManipulator {
         if(expressionString == null) return null
         return CwtValueConfig.resolve(
             pointer = emptyPointer(),
-            info = c1.info,
+            configGroup = c1.configGroup,
             value = c1.value,
             options = mergeOptions(c1, c2),
             documentation = mergeDocumentations(c1, c2)

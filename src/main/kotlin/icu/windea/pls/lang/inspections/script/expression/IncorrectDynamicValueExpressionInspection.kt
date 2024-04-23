@@ -21,7 +21,7 @@ class IncorrectDynamicValueExpressionInspection : LocalInspectionTool() {
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
                 val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return
-                val configGroup = config.info.configGroup
+                val configGroup = config.configGroup
                 val dataType = config.expression.type
                 if(dataType in CwtDataTypeGroups.DynamicValue) {
                     val value = element.value

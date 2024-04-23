@@ -19,7 +19,7 @@ interface ParadoxIncorrectExpressionChecker {
         val EP_NAME = ExtensionPointName.create<ParadoxIncorrectExpressionChecker>("icu.windea.pls.incorrectExpressionChecker")
         
         fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
-            val gameType = config.info.configGroup.gameType ?: return
+            val gameType = config.configGroup.gameType ?: return
             EP_NAME.extensionList.forEachFast f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 ep.check(element, config, holder)

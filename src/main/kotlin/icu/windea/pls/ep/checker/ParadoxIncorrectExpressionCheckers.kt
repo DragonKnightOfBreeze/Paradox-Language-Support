@@ -73,7 +73,7 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
         val expectedScope = configExpression.value ?: return
         val text = element.text
         val textRange = TextRange.create(0, text.length)
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup) ?: return
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
         val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return
@@ -93,7 +93,7 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
         val expectedScopeGroup = configExpression.value ?: return
         val text = element.text
         val textRange = TextRange.create(0, text.length)
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup) ?: return
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
         val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return
@@ -112,7 +112,7 @@ class StellarisTechnologyWithLevelChecker : ParadoxIncorrectExpressionChecker {
         if(configExpression.type != CwtDataTypes.TechnologyWithLevel) return
         if(element !is ParadoxScriptStringExpressionElement) return
         val (technologyName, technologyLevel) = element.value.split('@', limit = 2).takeIf { it.size == 2 } ?: return
-        val project = config.info.configGroup.project
+        val project = config.configGroup.project
         val text = element.text
         val separatorIndex = text.indexOf('@')
         if(technologyName.isEmpty() || ParadoxDefinitionSearch.search(technologyName, "technology.repeatable", definitionSelector(project, element)).findFirst() == null) {
@@ -145,7 +145,7 @@ class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
         if(aliasConfig.subName !in Data.CONTEXT_NAMES) return
         
         val triggerName = element.stringValue() ?: return
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
         if(resultTriggerConfigs.none { !it.config.isBlock }) {
             holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.simpleTrigger", element.expression.orEmpty()))
@@ -170,7 +170,7 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
         if(aliasConfig.subName !in Data.CONTEXT_NAMES) return
         
         val triggerName = element.stringValue() ?: return
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
         if(hasParameters(element)) {
             if(resultTriggerConfigs.none { it.config.isBlock }) {

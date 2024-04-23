@@ -37,7 +37,6 @@ private fun doResolve(config: CwtPropertyConfig): CwtAliasConfig? {
         ?: return null
     val (name, subName) = tokens
     return CwtAliasConfigImpl(config, name.intern(), subName.intern())
-        .apply { info.acceptConfigExpression(subNameExpression, null) }
 }
 
 private class CwtAliasConfigImpl(

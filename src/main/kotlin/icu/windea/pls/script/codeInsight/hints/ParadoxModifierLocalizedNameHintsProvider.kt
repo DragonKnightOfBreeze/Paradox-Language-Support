@@ -55,7 +55,7 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Set
             val name = element.value
             if(name.isEmpty()) return true
             if(name.isParameterized()) return true
-            val configGroup = config.info.configGroup
+            val configGroup = config.configGroup
             val project = configGroup.project
             val keys = ParadoxModifierHandler.getModifierNameKeys(name, element)
             val localisation = keys.firstNotNullOfOrNull { key ->

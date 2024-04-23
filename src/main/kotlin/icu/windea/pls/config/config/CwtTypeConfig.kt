@@ -61,7 +61,7 @@ interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
 //Implementations (interned)
 
 private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
-    val configGroup = config.info.configGroup
+    val configGroup = config.configGroup
     val name = config.key.removeSurroundingOrNull("type[", "]")?.orNull()?.intern() ?: return null
     var baseType: String? = null
     var path: String? = null

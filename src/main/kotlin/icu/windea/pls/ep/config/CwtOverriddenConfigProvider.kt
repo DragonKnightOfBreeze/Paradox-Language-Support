@@ -29,7 +29,7 @@ interface CwtOverriddenConfigProvider {
         val EP_NAME = ExtensionPointName.create<CwtOverriddenConfigProvider>("icu.windea.pls.overriddenConfigProvider")
         
         fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
-            val gameType = config.info.configGroup.gameType ?: return null
+            val gameType = config.configGroup.gameType ?: return null
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
                 ep.getOverriddenConfigs(contextElement, config).orNull()

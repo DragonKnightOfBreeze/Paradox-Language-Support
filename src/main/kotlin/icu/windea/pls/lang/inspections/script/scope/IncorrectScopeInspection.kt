@@ -29,7 +29,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                 val parentMember = ParadoxScopeHandler.findParentMember(element) ?: return
                 val parentScopeContext = ParadoxScopeHandler.getScopeContext(parentMember) ?: return
                 val supportedScopes = getSupportedScopes(element, config) ?: return
-                val configGroup = config.info.configGroup
+                val configGroup = config.configGroup
                 if(!ParadoxScopeHandler.matchesScope(parentScopeContext, supportedScopes, configGroup)) {
                     if(element is ParadoxScriptProperty) {
                         val propertyKey = element.propertyKey
@@ -50,7 +50,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
             
             private fun getSupportedScopes(element: ParadoxScriptMemberElement, config: CwtMemberConfig<*>): Set<String>? {
                 if(config.expression.type == CwtDataTypes.AliasKeysField) {
-                    val configGroup = config.info.configGroup
+                    val configGroup = config.configGroup
                     val aliasName = config.expression.value ?: return null
                     val aliasSubName = element.name ?: return null
                     val aliasConfig = configGroup.aliasGroups.get(aliasName)?.get(aliasSubName)?.singleOrNull() ?: return null

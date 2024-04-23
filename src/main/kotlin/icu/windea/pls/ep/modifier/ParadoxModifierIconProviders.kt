@@ -29,7 +29,7 @@ class StellarisJobBasedModifierIconProvider: ParadoxModifierIconProvider {
         val definitionName = templateReference.name
         val definitionType = templateReference.configExpression.value ?: return
         if(definitionType.substringBefore('.') != "job") return
-        val configGroup = modifierConfig.config.info.configGroup
+        val configGroup = modifierConfig.config.configGroup
         val selector = definitionSelector(configGroup.project, element).contextSensitive()
         ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync p@{ definition ->
             ProgressManager.checkCanceled()

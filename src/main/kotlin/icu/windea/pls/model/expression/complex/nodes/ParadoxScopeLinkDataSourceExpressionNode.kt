@@ -24,7 +24,7 @@ class ParadoxScopeLinkDataSourceExpressionNode(
             run {
                 val scopeFieldConfig = linkConfigs.find { it.expression?.type in CwtDataTypeGroups.ScopeField }
                 if(scopeFieldConfig != null) {
-                    val configGroup = linkConfigs.first().info.configGroup
+                    val configGroup = linkConfigs.first().configGroup
                     val node = ParadoxScopeFieldExpressionNode.resolve(text, textRange, configGroup)
                     nodes.add(node)
                 }
@@ -33,7 +33,7 @@ class ParadoxScopeLinkDataSourceExpressionNode(
                 if(nodes.isNotEmpty()) return@run
                 val configs = linkConfigs.filter { it.dataSource?.type in CwtDataTypeGroups.DynamicValue }
                 if(configs.isNotEmpty()) {
-                    val configGroup = linkConfigs.first().info.configGroup
+                    val configGroup = linkConfigs.first().configGroup
                     val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
                     nodes.add(node)
                 }

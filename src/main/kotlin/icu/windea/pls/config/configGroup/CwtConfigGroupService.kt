@@ -99,15 +99,11 @@ class CwtConfigGroupService(
     }
     
     private fun createConfigGroupInProgress(gameType: ParadoxGameType?): CwtConfigGroup {
-        val info = CwtConfigGroupInfo(gameType.id)
-        val configGroup = CwtConfigGroup(info, gameType, project)
-        info.configGroup = configGroup
-        
+        val configGroup = CwtConfigGroup(gameType, project)
         val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
         dataProviders.all f@{ dataProvider ->
             dataProvider.process(configGroup)
         }
-        
         return configGroup
     }
     

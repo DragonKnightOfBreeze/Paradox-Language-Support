@@ -25,7 +25,7 @@ interface CwtInjectedConfigProvider {
         val EP_NAME = ExtensionPointName.create<CwtInjectedConfigProvider>("icu.windea.pls.injectedConfigProvider")
         
         fun injectConfigs(parentConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>) : Boolean {
-            val gameType = parentConfig.info.configGroup.gameType
+            val gameType = parentConfig.configGroup.gameType
             var r = false
             EP_NAME.extensionList.forEachFast f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f

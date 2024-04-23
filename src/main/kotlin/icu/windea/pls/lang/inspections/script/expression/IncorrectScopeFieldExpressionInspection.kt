@@ -32,7 +32,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 if(element.text.isLeftQuoted()) return //忽略
                 val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return
-                val configGroup = config.info.configGroup
+                val configGroup = config.configGroup
                 val dataType = config.expression.type
                 if(dataType in CwtDataTypeGroups.ScopeField) {
                     val value = element.value

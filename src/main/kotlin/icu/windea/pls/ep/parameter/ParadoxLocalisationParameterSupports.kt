@@ -45,7 +45,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val localisationName = localisationReferenceElement.name
         val rangeInParent = rangeInElement ?: TextRange.create(0, element.textLength)
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
         val resolved = ParadoxLocalisationParameterElement(element, name, localisationName, rangeInParent, readWriteAccess, gameType, project)

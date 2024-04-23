@@ -58,7 +58,7 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
         val config = CwtConfigHandler.getConfigs(element).firstOrNull()
             ?.takeIf { it.expression.type in expressionTypes }
             ?: return true
-        val resolved = CwtConfigHandler.resolveScriptExpression(element, null, config, config.expression, config.info.configGroup, true)
+        val resolved = CwtConfigHandler.resolveScriptExpression(element, null, config, config.expression, true)
         if(resolved is ParadoxLocalisationProperty) {
             val localisationInfo = resolved.localisationInfo
             if(localisationInfo != null) {

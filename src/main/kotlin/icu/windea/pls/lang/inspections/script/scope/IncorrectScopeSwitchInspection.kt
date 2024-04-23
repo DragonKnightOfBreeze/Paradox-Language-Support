@@ -47,7 +47,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                             is ParadoxScopeLinkExpressionNode -> {
                                 val parentScopeContext = scopeContext.prev ?: continue
                                 val inputScopes = scopeNode.config.inputScopes
-                                val configGroup = config.info.configGroup
+                                val configGroup = config.configGroup
                                 if(!ParadoxScopeHandler.matchesScope(parentScopeContext, inputScopes, configGroup)) {
                                     val description = PlsBundle.message(
                                         "inspection.script.incorrectScopeSwitch.description.1",
@@ -66,7 +66,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                 if(!checkForSystemLink) continue
                                 if(scopeContext.scope.id == ParadoxScopeHandler.unknownScopeId) {
                                     val definitionType = definitionInfo?.type ?: continue
-                                    if(config.info.configGroup.definitionTypesSkipCheckSystemLink.contains(definitionType)) continue
+                                    if(config.configGroup.definitionTypesSkipCheckSystemLink.contains(definitionType)) continue
                                     val description = PlsBundle.message(
                                         "inspection.script.incorrectScopeSwitch.description.3",
                                         scopeNode.text

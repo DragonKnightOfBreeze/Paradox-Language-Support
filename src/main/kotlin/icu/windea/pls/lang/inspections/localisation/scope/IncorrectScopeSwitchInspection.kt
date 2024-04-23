@@ -34,7 +34,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                             is CwtLocalisationLinkConfig -> {
                                 val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
                                 val supportedScopes = config.inputScopes
-                                val configGroup = config.info.configGroup
+                                val configGroup = config.configGroup
                                 if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)) {
                                     val description = PlsBundle.message(
                                         "inspection.localisation.incorrectScopeSwitch.description.1",

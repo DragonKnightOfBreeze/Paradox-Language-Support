@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.expression.*
 import kotlin.experimental.*
@@ -25,7 +26,7 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
         val project = queryParameters.project
         val configGroup = getConfigGroup(project, gameType)
         val extraWords = mutableSetOf<String>()
-        configGroup.info.filePathExpressions.forEach { configExpression ->
+        configGroup.filePathExpressions.forEach { configExpression ->
             ParadoxPathReferenceExpressionSupport.get(configExpression)
                 ?.extract(configExpression, target, filePath)
                 ?.let { extraWords.add(it) }

@@ -23,7 +23,7 @@ interface ParadoxOverriddenScopeContextProvider {
         val EP_NAME = ExtensionPointName.create<ParadoxOverriddenScopeContextProvider>("icu.windea.pls.overriddenScopeContextProvider")
         
         fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
-            val gameType = config.info.configGroup.gameType ?: return null
+            val gameType = config.configGroup.gameType ?: return null
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
                 ep.getOverriddenScopeContext(contextElement, config, parentScopeContext)

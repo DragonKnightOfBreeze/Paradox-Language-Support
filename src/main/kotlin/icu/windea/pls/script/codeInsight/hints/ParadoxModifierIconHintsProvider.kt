@@ -53,7 +53,7 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
             val name = element.value
             if(name.isEmpty()) return true
             if(name.isParameterized()) return true
-            val configGroup = config.info.configGroup
+            val configGroup = config.configGroup
             val project = configGroup.project
             val paths = ParadoxModifierHandler.getModifierIconPaths(name, element)
             val iconFile = paths.firstNotNullOfOrNull { path ->

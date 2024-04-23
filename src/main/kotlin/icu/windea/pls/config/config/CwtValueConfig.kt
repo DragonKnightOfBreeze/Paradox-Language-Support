@@ -12,14 +12,12 @@ import icu.windea.pls.model.*
 interface CwtValueConfig : CwtMemberConfig<CwtValue>, CwtValueAware {
     val propertyConfig: CwtPropertyConfig?
     
-    companion object {
-        val EmptyConfig: CwtValueConfig by lazy { resolve(emptyPointer(), CwtConfigGroupInfo(""), "") }
-    }
+    companion object
 }
 
 fun CwtValueConfig.Companion.resolve(
     pointer: SmartPsiElementPointer<out CwtValue>,
-    info: CwtConfigGroupInfo,
+    configGroup: CwtConfigGroup,
     value: String,
     valueTypeId: @EnumId(CwtType::class) Byte = CwtType.String.id,
     configs: List<CwtMemberConfig<*>>? = null,
@@ -29,15 +27,15 @@ fun CwtValueConfig.Companion.resolve(
 ): CwtValueConfig {
     return if(configs != null) {
         if(options != null || documentation != null) {
-            CwtValueConfigImpls.Impl1(pointer, info, value, valueTypeId, configs, options, documentation, propertyConfig)
+            CwtValueConfigImpls.Impl1(pointer, configGroup, value, valueTypeId, configs, options, documentation, propertyConfig)
         } else {
-            CwtValueConfigImpls.Impl2(pointer, info, value, valueTypeId, configs, propertyConfig)
+            CwtValueConfigImpls.Impl2(pointer, configGroup, value, valueTypeId, configs, propertyConfig)
         }
     } else {
         if(options != null || documentation != null) {
-            CwtValueConfigImpls.Impl3(pointer, info, value, valueTypeId, options, documentation, propertyConfig)
+            CwtValueConfigImpls.Impl3(pointer, configGroup, value, valueTypeId, options, documentation, propertyConfig)
         } else {
-            CwtValueConfigImpls.Impl4(pointer, info, value, valueTypeId, propertyConfig)
+            CwtValueConfigImpls.Impl4(pointer, configGroup, value, valueTypeId, propertyConfig)
         }
     }
     
@@ -60,7 +58,6 @@ fun CwtValueConfig.delegatedWith(value: String): CwtValueConfig {
 
 fun CwtValueConfig.copy(
     pointer: SmartPsiElementPointer<out CwtValue> = this.pointer,
-    info: CwtConfigGroupInfo = this.info,
     value: String = this.value,
     valueTypeId: @EnumId(CwtType::class) Byte = this.valueTypeId,
     configs: List<CwtMemberConfig<*>>? = this.configs,
@@ -68,7 +65,7 @@ fun CwtValueConfig.copy(
     documentation: String? = this.documentation,
     propertyConfig: CwtPropertyConfig? = this.propertyConfig,
 ): CwtValueConfig {
-    return CwtValueConfig.resolve(pointer, info, value, valueTypeId, configs, options, documentation, propertyConfig)
+    return CwtValueConfig.resolve(pointer, this.configGroup, value, valueTypeId, configs, options, documentation, propertyConfig)
 }
 
 fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
@@ -92,7 +89,7 @@ class CwtPropertyPointer(
 private object CwtValueConfigImpls {
     abstract class Impl(
         override val pointer: SmartPsiElementPointer<out CwtValue>,
-        override val info: CwtConfigGroupInfo,
+        override val configGroup: CwtConfigGroup,
         override val value: String,
         override val valueTypeId: Byte = CwtType.String.id,
         propertyConfig: CwtPropertyConfig? = null,
@@ -114,14 +111,14 @@ private object CwtValueConfigImpls {
     //12 + 10 * 4 + 2 * 1 = 54 => 56
     class Impl1(
         pointer: SmartPsiElementPointer<out CwtValue>,
-        info: CwtConfigGroupInfo,
+        configGroup: CwtConfigGroup,
         value: String,
         valueTypeId: Byte = CwtType.String.id,
         configs: List<CwtMemberConfig<*>>? = null,
         options: List<CwtOptionMemberConfig<*>>? = null,
         documentation: String? = null,
         propertyConfig: CwtPropertyConfig? = null,
-    ) : Impl(pointer, info, value, valueTypeId, propertyConfig) {
+    ) : Impl(pointer, configGroup, value, valueTypeId, propertyConfig) {
         override val configs = configs
         override val options = options
         override val documentation = documentation
@@ -130,12 +127,12 @@ private object CwtValueConfigImpls {
     //12 + 8 * 4 + 2 * 1 = 46 => 48
     class Impl2(
         pointer: SmartPsiElementPointer<out CwtValue>,
-        info: CwtConfigGroupInfo,
+        configGroup: CwtConfigGroup,
         value: String,
         valueTypeId: Byte = CwtType.String.id,
         configs: List<CwtMemberConfig<*>>? = null,
         propertyConfig: CwtPropertyConfig? = null,
-    ) : Impl(pointer, info, value, valueTypeId, propertyConfig) {
+    ) : Impl(pointer, configGroup, value, valueTypeId, propertyConfig) {
         override val configs = configs
         override val options get() = null
         override val documentation get() = null
@@ -144,13 +141,13 @@ private object CwtValueConfigImpls {
     //12 + 9 * 4 + 2 * 1 = 50 => 56
     class Impl3(
         pointer: SmartPsiElementPointer<out CwtValue>,
-        info: CwtConfigGroupInfo,
+        configGroup: CwtConfigGroup,
         value: String,
         valueTypeId: Byte = CwtType.String.id,
         options: List<CwtOptionMemberConfig<*>>? = null,
         documentation: String? = null,
         propertyConfig: CwtPropertyConfig? = null,
-    ) : Impl(pointer, info, value, valueTypeId, propertyConfig) {
+    ) : Impl(pointer, configGroup, value, valueTypeId, propertyConfig) {
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val options = options
         override val documentation = documentation
@@ -159,11 +156,11 @@ private object CwtValueConfigImpls {
     //12 + 7 * 4 + 2 * 1 = 42 => 48
     class Impl4(
         pointer: SmartPsiElementPointer<out CwtValue>,
-        info: CwtConfigGroupInfo,
+        configGroup: CwtConfigGroup,
         value: String,
         valueTypeId: Byte = CwtType.String.id,
         propertyConfig: CwtPropertyConfig? = null,
-    ) : Impl(pointer, info, value, valueTypeId, propertyConfig) {
+    ) : Impl(pointer, configGroup, value, valueTypeId, propertyConfig) {
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
         override val options get() = null
         override val documentation get() = null
@@ -216,7 +213,7 @@ private object CwtValueConfigImpls {
         override val pointer: SmartPsiElementPointer<out CwtValue>,
         override val propertyConfig: CwtPropertyConfig,
     ) : UserDataHolderBase(), CwtValueConfig {
-        override val info: CwtConfigGroupInfo get() = propertyConfig.info
+        override val configGroup: CwtConfigGroup get() = propertyConfig.configGroup
         override val value: String get() = propertyConfig.value
         override val valueTypeId: Byte get() = propertyConfig.valueTypeId
         override val documentation: String? get() = propertyConfig.documentation

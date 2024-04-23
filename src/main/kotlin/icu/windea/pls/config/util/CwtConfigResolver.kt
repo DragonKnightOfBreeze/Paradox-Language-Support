@@ -1,9 +1,11 @@
-package icu.windea.pls.config
+package icu.windea.pls.config.util
 
 import com.intellij.openapi.diagnostic.*
 import com.intellij.psi.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
@@ -17,7 +19,7 @@ import java.util.*
 object CwtConfigResolver {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
-    fun resolve(file: CwtFile, info: CwtConfigGroupInfo): CwtFileConfig {
+    fun resolve(file: CwtFile, configGroup: CwtConfigGroup): CwtFileConfig {
         val rootBlock = file.block
         val properties = mutableListOf<CwtPropertyConfig>()
         val values = mutableListOf<CwtValueConfig>()
@@ -118,8 +120,8 @@ object CwtConfigResolver {
         val documentation = getDocumentation(documentationLines, html)
         
         val config = CwtPropertyConfig.resolve(pointer, fileConfig.info, key, value, valueType.id, separatorType.id, configs, options, documentation)
-        fileConfig.info.acceptConfigExpression(config.keyExpression, config)
-        fileConfig.info.acceptConfigExpression(config.valueExpression, config)
+        fileConfig.acceptConfigExpression(config.keyExpression, config)
+        fileConfig.acceptConfigExpression(config.valueExpression, config)
         configs?.forEach { it.parentConfig = config }
         return config
     }
@@ -202,7 +204,7 @@ object CwtConfigResolver {
         val documentation = getDocumentation(documentationLines, html)
         
         val config = CwtValueConfig.resolve(pointer, fileConfig.info, value, valueType.id, configs, options, documentation)
-        fileConfig.info.acceptConfigExpression(config.valueExpression, config)
+        fileConfig.acceptConfigExpression(config.valueExpression, config)
         configs?.forEach { it.parentConfig = config }
         return config
     }

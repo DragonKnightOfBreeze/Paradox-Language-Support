@@ -6,6 +6,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.config.extended.*
 import icu.windea.pls.config.config.settings.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
@@ -41,7 +42,8 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     
     private fun processFile(filePath: String, file: VirtualFile, fileProcessor: CwtConfigGroupFileProvider, configGroup: CwtConfigGroup): Boolean {
         val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return true
-        val fileConfig = CwtConfigResolver.resolve(psiFile, configGroup.info)
+        val fileConfig = CwtConfigResolver.resolve(psiFile, configGroup)
+        configGroup.files[filePath] = fileConfig
         if(fileProcessor.isBuiltIn()) doProcessBuiltInFile(filePath, fileConfig, configGroup)
         doProcessFile(fileConfig, configGroup)
         return true
@@ -143,9 +145,9 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     }
     
     private fun doProcessFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
-        when(fileConfig.key) {
+        when(fileConfig.name) {
             //解析要将其中的文件识别为脚本文件的目录列表 - 仅作记录，插件目前并不这个目录列表来判断是否要将文件识别为脚本文件
-            "folders" -> resolveFoldersInFile(fileConfig, configGroup)
+            "folders.cwt" -> resolveFoldersInFile(fileConfig, configGroup)
             //对于其他情况，不限制文件名，统一处理
             else -> resolveOthersInFile(fileConfig, configGroup)
         }
@@ -342,6 +344,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     
                     run {
                         val aliasConfig = CwtAliasConfig.resolve(property) ?: return@run
+                        CwtConfigCollector.processConfigWithConfigExpression(aliasConfig, aliasConfig.expression)
                         configGroup.aliasGroups.getOrInit(aliasConfig.name).getOrInit(aliasConfig.subName) += aliasConfig
                     }
                     

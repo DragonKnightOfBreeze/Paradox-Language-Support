@@ -25,7 +25,7 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         val parentProperty = element.findParentProperty() ?: return
         val configs = CwtConfigHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
         if(configs.isEmpty()) return
-        val configGroup = configs.first().info.configGroup
+        val configGroup = configs.first().configGroup
         context.configGroup = configGroup
         val matched = configs.any { config ->
             config.configs?.any { childConfig ->

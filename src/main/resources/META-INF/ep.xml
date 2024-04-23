@@ -73,6 +73,7 @@
     <relatedConfigProvider implementation="icu.windea.pls.ep.config.CwtBaseRelatedConfigProvider"/>
     <relatedConfigProvider implementation="icu.windea.pls.ep.config.CwtExtendedRelatedConfigProvider"/>
     
+    <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.PredefinedCwtConfigGroupDataProvider" order="first"/>
     <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.FileBasedCwtConfigGroupDataProvider"/>
     <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.ComputedCwtConfigGroupDataProvider" order="last"/>
     

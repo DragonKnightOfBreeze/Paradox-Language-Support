@@ -85,7 +85,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
             }
         }
         if(contextConfig == null || contextReferenceElement == null) return null
-        val configGroup = contextConfig.info.configGroup
+        val configGroup = contextConfig.configGroup
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
         val definitionName = contextReferenceElement.name.orNull() ?: return null
@@ -161,8 +161,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
         val rangeInParent = rangeInElement ?: TextRange.create(0, element.textLength)
         val readWriteAccess = ParadoxParameterHandler.getReadWriteAccess(element)
-        val gameType = config.info.configGroup.gameType ?: return null
-        val project = config.info.configGroup.project
+        val gameType = config.configGroup.gameType ?: return null
+        val project = config.configGroup.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
         result.definitionName = definitionName
         result.definitionTypes = definitionTypes
@@ -296,7 +296,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
             }
         }
         if(!(expressionElementConfig.expression.type in CwtDataTypeGroups.ValueField)) return null
-        val configGroup = expressionElementConfig.info.configGroup
+        val configGroup = expressionElementConfig.configGroup
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
         val range = TextRange.create(0, text.length)
@@ -336,7 +336,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         if(text.isLeftQuoted()) return null
         if(!text.contains("value:")) return null //快速判断
         val range = TextRange.create(0, text.length)
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, range, configGroup) ?: return null
         val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
         val scriptValueNode = scriptValueExpression.scriptValueNode
@@ -431,7 +431,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
             }
         }
         if(inlineConfig == null || contextReferenceElement == null) return null
-        val configGroup = inlineConfig.info.configGroup
+        val configGroup = inlineConfig.configGroup
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
         val expression = ParadoxInlineScriptHandler.getInlineScriptExpressionFromInlineConfig(contextReferenceElement, inlineConfig) ?: return null
@@ -502,8 +502,8 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val contextKey = "inline_script@$expression"
         val rangeInParent = rangeInElement ?: TextRange.create(0, element.textLength)
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
-        val gameType = config.info.configGroup.gameType ?: return null
-        val project = config.info.configGroup.project
+        val gameType = config.configGroup.gameType ?: return null
+        val project = config.configGroup.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
         result.inlineScriptExpression = expression
         return result

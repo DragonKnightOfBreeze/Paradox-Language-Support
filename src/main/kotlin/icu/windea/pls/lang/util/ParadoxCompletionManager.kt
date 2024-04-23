@@ -337,7 +337,7 @@ object ParadoxCompletionManager {
         //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
         
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = getScriptExpressionTailText(context, config)
@@ -365,7 +365,7 @@ object ParadoxCompletionManager {
         //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
         
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = getScriptExpressionTailText(context, config)
@@ -389,7 +389,7 @@ object ParadoxCompletionManager {
         val config = context.config ?: return
         val scopeContext = context.scopeContext
         val typeExpression = config.expression?.value ?: return
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = getScriptExpressionTailText(context, config)
@@ -471,7 +471,7 @@ object ParadoxCompletionManager {
     fun completeEnumValue(context: ProcessingContext, result: CompletionResultSet) {
         val config = context.config ?: return
         val enumName = config.expression?.value ?: return
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val project = configGroup.project
         val contextElement = context.contextElement!!
         val tailText = getScriptExpressionTailText(context, config)
@@ -1150,7 +1150,7 @@ object ParadoxCompletionManager {
         
         val config = context.config ?: return
         val typeExpression = config.expression?.value ?: return
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val tailText = getScriptExpressionTailText(context, config)
         
         run r1@{
@@ -1218,7 +1218,7 @@ object ParadoxCompletionManager {
         ProgressManager.checkCanceled()
         
         val config = context.config ?: return
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val tailText = getScriptExpressionTailText(context, config)
         
         configGroup.extendedInlineScripts.values.forEach f@{ config0 ->
@@ -1271,7 +1271,7 @@ object ParadoxCompletionManager {
         
         val config = context.config ?: return
         val enumName = config.expression?.value ?: return
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val tailText = getScriptExpressionTailText(context, config)
         
         configGroup.extendedComplexEnumValues[enumName]?.values?.forEach f@{ config0 ->
@@ -1297,7 +1297,7 @@ object ParadoxCompletionManager {
         
         val config = context.config ?: return
         val dynamicValueType = config.expression?.value ?: return
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val tailText = getScriptExpressionTailText(context, config)
         
         configGroup.extendedDynamicValues[dynamicValueType]?.values?.forEach f@{ config0 ->

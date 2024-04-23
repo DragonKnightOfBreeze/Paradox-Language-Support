@@ -239,7 +239,7 @@ object CwtConfigHandler {
         matchOptions: Int = Options.Default
     ): List<CwtMemberConfig<*>> {
         val result = doGetConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
-        return result.sortedByPriority({ it.expression }, { it.info.configGroup })
+        return result.sortedByPriority({ it.expression }, { it.configGroup })
     }
     
     private fun doGetConfigsForConfigContext(
@@ -318,7 +318,7 @@ object CwtConfigHandler {
         }
         return configsMap.getOrPut(cacheKey) {
             val result = doGetConfigs(memberElement, orDefault, matchOptions)
-            result.sortedByPriority({ it.expression }, { it.info.configGroup })
+            result.sortedByPriority({ it.expression }, { it.configGroup })
         }
     }
     
@@ -449,7 +449,7 @@ object CwtConfigHandler {
         if(configs.isEmpty()) return emptyList()
         if(expression == null) return configs
         
-        val configGroup = configs.first().info.configGroup
+        val configGroup = configs.first().configGroup
         var result = configs
         
         //如果结果不为空且结果中存在需要重载的规则，则全部替换成重载后的规则
@@ -521,7 +521,7 @@ object CwtConfigHandler {
     
     private fun doGetChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
         if(configs.isEmpty()) return emptyMap()
-        val configGroup = configs.first().info.configGroup
+        val configGroup = configs.first().configGroup
         //这里需要先按优先级排序
         val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority({ it.expression }, { configGroup })
         if(childConfigs.isEmpty()) return emptyMap()
@@ -715,7 +715,7 @@ object CwtConfigHandler {
      * @param element 需要解析的PSI元素。
      * @param rangeInElement 需要解析的文本在需要解析的PSI元素对应的整个文本中的位置。
      */
-    fun resolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+    fun resolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
         ProgressManager.checkCanceled()
         if(configExpression == null) return null
         
@@ -725,6 +725,7 @@ object CwtConfigHandler {
         val result = ParadoxScriptExpressionSupport.resolve(element, rangeInElement, expression, config, isKey, exact)
         if(result != null) return result
         
+        val configGroup = config.configGroup
         if(configExpression is CwtKeyExpression && configExpression.type in CwtDataTypeGroups.KeyReference) {
             val resolvedConfig = config.resolved()
             if(resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
@@ -738,7 +739,7 @@ object CwtConfigHandler {
         return null
     }
     
-    fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, isKey: Boolean? = null): Collection<PsiElement> {
+    fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): Collection<PsiElement> {
         ProgressManager.checkCanceled()
         if(configExpression == null) return emptySet()
         
@@ -748,6 +749,7 @@ object CwtConfigHandler {
         val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expression, config, isKey)
         if(result.isNotEmpty()) return result
         
+        val configGroup = config.configGroup
         if(configExpression is CwtKeyExpression && configExpression.type in CwtDataTypeGroups.KeyReference) {
             val resolvedConfig = config.resolved()
             if(resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
@@ -865,7 +867,7 @@ object CwtConfigHandler {
     }
     
     fun getEntryConfigs(config: CwtConfig<*>): List<CwtMemberConfig<*>> {
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         return when {
             config is CwtPropertyConfig -> {
                 config.inlineableConfig?.let { getEntryConfigs(it) }

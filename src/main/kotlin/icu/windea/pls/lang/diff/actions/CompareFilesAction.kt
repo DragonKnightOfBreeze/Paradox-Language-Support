@@ -77,7 +77,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         }, PlsBundle.message("diff.compare.files.collect.title"), true, project)
         if(virtualFiles.size <= 1) {
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
-                PlsBundle.message("diff.compare.files.content.title.info.1"),
+                PlsBundle.message("diff.compare.files.content.title.1"),
                 NotificationType.INFORMATION
             ).notify(project)
             return null

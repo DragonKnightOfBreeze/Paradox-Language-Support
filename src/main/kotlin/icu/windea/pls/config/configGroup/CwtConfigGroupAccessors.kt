@@ -5,6 +5,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.config.extended.*
 import icu.windea.pls.config.config.settings.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
@@ -15,7 +16,7 @@ import icu.windea.pls.core.util.*
 annotation class Tags(vararg val value: Tag)
 
 enum class Tag {
-    Settings, Extended, Computed, BuiltIn
+    BuiltIn, Settings, Extended, Computed, Collected
 }
 
 @Tags(Tag.Settings, Tag.BuiltIn)
@@ -95,13 +96,14 @@ val CwtConfigGroup.scopeGroups: MutableMap<@CaseInsensitive String, CwtScopeGrou
 
 val CwtConfigGroup.singleAliases: MutableMap<String, CwtSingleAliasConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-//同名的alias可以有多个
+
 val CwtConfigGroup.aliasGroups: MutableMap<String, MutableMap<String, MutableList<CwtAliasConfig>>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-//inline_script
+
 val CwtConfigGroup.inlineConfigGroup: MutableMap<String, MutableList<CwtInlineConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
+//name - config
 val CwtConfigGroup.modifierCategories: MutableMap<String, CwtModifierCategoryConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 //template_expression - config
@@ -204,3 +206,10 @@ val CwtConfigGroup.definitionTypesSupportParameters: MutableSet<String>
 @Tags(Tag.Computed)
 var CwtConfigGroup.parameterModificationTracker: ModificationTracker
     by createKeyDelegate(CwtConfigGroup.Keys) { PsiModificationTracker.NEVER_CHANGED }
+
+@Tags(Tag.Collected)
+val CwtConfigGroup.filePathExpressions: MutableSet<CwtDataExpression>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableSetOf() }
+@Tags(Tag.Collected)
+val CwtConfigGroup.parameterConfigs: MutableSet<CwtMemberConfig<*>>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableSetOf() }

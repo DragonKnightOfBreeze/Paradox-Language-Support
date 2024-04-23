@@ -45,7 +45,7 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSe
         }
         
         val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return true
-        val configGroup = config.info.configGroup
+        val configGroup = config.configGroup
         val type = config.expression.type
         if(type != CwtDataTypes.EnumValue) return true
         val enumName = config.expression.value ?: return true

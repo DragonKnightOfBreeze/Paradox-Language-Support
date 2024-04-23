@@ -25,7 +25,7 @@ class ParadoxValueLinkDataSourceExpressionNode(
             run {
                 val configs = linkConfigs.filter { it.dataSource?.type in CwtDataTypeGroups.DynamicValue }
                 if(configs.isNotEmpty()) {
-                    val configGroup = linkConfigs.first().info.configGroup
+                    val configGroup = linkConfigs.first().configGroup
                     val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
                     nodes.add(node)
                 }
@@ -52,7 +52,7 @@ class ParadoxValueLinkDataSourceExpressionNode(
                         val errorNode = ParadoxErrorTokenExpressionNode(errorText, errorRange)
                         nodes.add(errorNode)
                     } else {
-                        val configGroup = linkConfigs.first().info.configGroup
+                        val configGroup = linkConfigs.first().configGroup
                         val node = ParadoxScriptValueExpression.resolve(text, textRange, configGroup, scriptValueConfig)
                         if(node != null) nodes.add(node)
                     }

@@ -126,7 +126,7 @@ object ParadoxScopeHandler {
         //or root config in config tree is "alias[X:xxx] = ..." and "alias[X:scope_field]" is valid
         val configs = CwtConfigHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
         configs.forEach { config ->
-            val configGroup = config.info.configGroup
+            val configGroup = config.configGroup
             if(config.expression.type == CwtDataTypes.AliasKeysField) return true
             if(isScopeContextSupportedAsRoot(config, configGroup)) return true
             if(isScopeContextSupportedAsChild(config, configGroup)) return true
@@ -231,7 +231,7 @@ object ParadoxScopeHandler {
             val scopeField = element.castOrNull<ParadoxScriptProperty>()?.propertyKey?.text ?: return null
             if(scopeField.isLeftQuoted()) return null
             val textRange = TextRange.create(0, scopeField.length)
-            val configGroup = config.info.configGroup
+            val configGroup = config.configGroup
             val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup) ?: return null
             val result = getScopeContext(element, scopeFieldExpression, parentScopeContext)
             return result

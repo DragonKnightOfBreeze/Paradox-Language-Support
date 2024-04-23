@@ -44,7 +44,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
                 val scopeField = triggerScopeProperty.propertyValue?.stringText() ?: return null
                 if(scopeField.isLeftQuoted()) return null
                 val textRange = TextRange.create(0, scopeField.length)
-                val configGroup = config.info.configGroup
+                val configGroup = config.configGroup
                 val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup) ?: return null
                 return ParadoxScopeHandler.getScopeContext(contextElement, scopeFieldExpression, scopeContext)
             }
@@ -53,7 +53,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
                 val triggerProperty = complexTriggerModifierProperty.findProperty(Data.TRIGGER_KEY, inline = true) ?: return null
                 val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
                 if(CwtValueExpression.resolve(triggerName).type != CwtDataTypes.Constant) return null //must be predefined trigger
-                val configGroup = config.info.configGroup
+                val configGroup = config.configGroup
                 val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
                 val pushScope = resultTriggerConfigs.firstOrNull()?.config?.pushScope
                 return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeHandler.getAnyScopeContext().resolveNext(pushScope)

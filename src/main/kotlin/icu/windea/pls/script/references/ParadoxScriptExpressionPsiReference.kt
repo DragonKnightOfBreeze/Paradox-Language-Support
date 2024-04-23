@@ -22,7 +22,7 @@ class ParadoxScriptExpressionPsiReference(
     val config: CwtConfig<*>,
     val isKey: Boolean?
 ) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiReferencesAware {
-    val project by lazy { config.info.configGroup.project }
+    val project by lazy { config.configGroup.project }
     //val project by lazy { element.project }
     
     override fun handleElementRename(newElementName: String): PsiElement {
@@ -80,12 +80,12 @@ class ParadoxScriptExpressionPsiReference(
     
     private fun doResolve(): PsiElement? {
         //根据对应的expression进行解析
-        return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
+        return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, isKey)
     }
     
     private fun doMultiResolve(): Array<out ResolveResult> {
         //根据对应的expression进行解析
-        return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, config.info.configGroup, isKey)
+        return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, isKey)
             .mapToArray { PsiElementResolveResult(it) }
     }
 }
