@@ -7,6 +7,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.configGroup.*
@@ -186,7 +187,46 @@ object CwtConfigManager {
         }
     }
     
-    fun getConfigByPathExpression(configGroup: CwtConfigGroup, pathExpression: String): CwtMemberConfig<*>? {
-        TODO()
+    fun getConfigByPathExpression(configGroup: CwtConfigGroup, pathExpression: String): List<CwtMemberConfig<*>> {
+        //pathExpression vs keys - ignore case
+        
+        val separatorIndex = pathExpression.indexOf('#')
+        if(separatorIndex == -1) return emptyList()
+        val filePath = pathExpression.substring(0, separatorIndex)
+        if(filePath.isEmpty()) return emptyList()
+        val fileConfig = configGroup.files[filePath] ?: return emptyList()
+        val configPath = pathExpression.substring(separatorIndex + 1)
+        if(configPath.isEmpty()) return emptyList()
+        val pathList = configPath.split('/')
+        var r: List<CwtMemberConfig<*>> = emptyList()
+        pathList.forEachFast { p ->
+            if(p == "-") {
+                if(r.isEmpty()) {
+                    r = fileConfig.values
+                } else {
+                    r = buildList {
+                        r.forEachFast { c1 ->
+                            c1.configs?.forEachFast { c2 ->
+                                if(c2 is CwtValueConfig) this += c2
+                            }
+                        }
+                    }
+                }
+            } else {
+                if(r.isEmpty()) {
+                    r = fileConfig.properties.filterFast { c -> c.key.equals(p, true) }
+                } else {
+                    r = buildList {
+                        r.forEachFast { c1 ->
+                            c1.configs?.forEachFast { c2 ->
+                                if(c2 is CwtPropertyConfig && c2.key.equals(p, true)) this += c2
+                            }
+                        }
+                    }
+                }
+            }
+            if(r.isEmpty()) return emptyList()
+        }
+        return r
     }
 }
