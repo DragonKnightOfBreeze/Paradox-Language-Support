@@ -11,11 +11,6 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.tools.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.listeners.*
-import icu.windea.pls.lang.tools.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 /**

@@ -14,6 +14,9 @@
 * [ ] BUG修复：基于覆盖顺序对本地化进行排序时，位于`replace`及其子目录下的同名本地化应当拥有更高的优先级（尽管目前没有相关代码检查）
 * [ ] #56 支持从数据库对象生成的概念（同时提供相应的代码补全、代码导航与代码检查）
 * [ ] #67 对于条件参数，布尔值应当是合法的默认值，且`PARAM = $PARAM|no$`应当等同于`[[PARAM] PARAM = $PARAM$ ]`（同时提供相应的代码补全、意向操作等）
+* [ ] #68 支持通过扩展的选项指定规则的继承关系（基于`## inherit_configs`，初步支持，忽略选项不合法的情况）
+* [ ] #68 支持通过扩展的选项指定规则的选项的继承关系（基于`## inherit_options`，初步支持，忽略选项不合法的情况）
+* [ ] #68 支持通过扩展的选项指定规则的文档注释的继承关系（基于`## inherit_doc`，初步支持，忽略选项不合法的情况）
 
 ## 1.3.5
 
@@ -21,13 +24,21 @@
 * [X] 支持通过扩展的CWT规则为封装变量（`scripted_variable`）提供扩展的快速文档（详见参考文档）
 * [X] 支持通过扩展的CWT规则为封装变量（`scripted_variable`）提供扩展的内嵌提示（详见参考文档）
 * [X] #66 支持为一些目标额外提供基于扩展的CWT规则的代码补全（包括封装变量、定义、内联脚本、参数、复杂枚举值与动态值，可配置，默认不启用）
-* [ ] #68 支持通过扩展的选项指定规则的继承关系（基于`## inherit_configs`，初步支持，忽略选项不合法的情况）
-* [ ] #68 支持通过扩展的选项指定规则的选项的继承关系（基于`## inherit_options`，初步支持，忽略选项不合法的情况）
-* [ ] #68 支持通过扩展的选项指定规则的文档注释的继承关系（基于`## inherit_doc`，初步支持，忽略选项不合法的情况）
 * [X] #69 支持通过扩展的CWT规则为一些目标指定作用域上下文（包括定义、参数与内联脚本，基于`## replace_scopes`和`## push_scope`，忽略选项不合法的情况）
 * [X] #70 提供内联脚本调用的代码补全（`inline_script = ...`，可配置，默认不启用，目前适用于所有游戏类型）
 * [X] 添加代码检查：未使用的内联脚本（弱警告级别）
 * [X] 其他优化与BUG修复
+
+***
+
+* [X] Improved support for the action "Goto to related CWT configs" (For scripted variables, parameters, etc.)
+* [X] Support for providing extended quick documentation for scripted variables via extended CWT configs (see reference documentation for details)
+* [X] Support for providing extended inlay hints for scripted variables via extended CWT configs (see reference documentation for details)
+* [X] #66 Support for providing additional code completion for various targets via extended CWT configs (For scripted variables, definitions, inline scripts, parameters, complex enum values and dynamic values; Configurable; Disabled by default)
+* [X] #69 Support for specifying the scope context for various targets via extended CWT configs (For definitions, parameters and inline scripts; Via `## replace_scopes` and `## push_scope`; Ignore invalid situations)
+* [X] #70 Provide code completion for inline script invocations (`inline_script = ...`; Configurable; Disabled by default; Currently for all game types)
+* [X] New code inspection: Unused inline scripts (level: weak warning)
+* [X] Other optimizations and bug fixes
 
 ## 1.3.4
 

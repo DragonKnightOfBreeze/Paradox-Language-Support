@@ -4,8 +4,8 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.settings.*
 
 /**
  * 当更改模组配置后，刷新库信息。

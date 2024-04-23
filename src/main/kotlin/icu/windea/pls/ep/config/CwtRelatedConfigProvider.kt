@@ -7,7 +7,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.codeInsight.navigation.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 用于基于上下文提供相关的CWT规则。
