@@ -10,6 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
@@ -426,7 +427,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             if(gameType != null) return getConfigGroup(project, gameType)
         }
         if(element.language == CwtLanguage) {
-            return CwtConfigHandler.getContainingConfigGroup(element)
+            return CwtConfigManager.getContainingConfigGroup(element)
         }
         return null
     }

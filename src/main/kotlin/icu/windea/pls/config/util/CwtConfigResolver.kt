@@ -2,10 +2,8 @@ package icu.windea.pls.config.util
 
 import com.intellij.openapi.diagnostic.*
 import com.intellij.psi.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
@@ -13,9 +11,6 @@ import icu.windea.pls.model.*
 import java.lang.invoke.*
 import java.util.*
 
-/**
- * Cwt规则的解析器。
- */
 object CwtConfigResolver {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
@@ -23,7 +18,7 @@ object CwtConfigResolver {
         val rootBlock = file.block
         val properties = mutableListOf<CwtPropertyConfig>()
         val values = mutableListOf<CwtValueConfig>()
-        val fileConfig = CwtFileConfig(file.createPointer(), info, properties, values, file.name)
+        val fileConfig = CwtFileConfig(file.createPointer(), configGroup, properties, values, file.name)
         rootBlock?.processChild { e ->
             when {
                 e is CwtProperty -> resolveProperty(e, file, fileConfig)?.also { properties.add(it) }
@@ -119,9 +114,9 @@ object CwtConfigResolver {
         }
         val documentation = getDocumentation(documentationLines, html)
         
-        val config = CwtPropertyConfig.resolve(pointer, fileConfig.info, key, value, valueType.id, separatorType.id, configs, options, documentation)
-        fileConfig.acceptConfigExpression(config.keyExpression, config)
-        fileConfig.acceptConfigExpression(config.valueExpression, config)
+        val config = CwtPropertyConfig.resolve(pointer, fileConfig.configGroup, key, value, valueType.id, separatorType.id, configs, options, documentation)
+        CwtConfigCollector.processConfigWithConfigExpression(config, config.keyExpression)
+        CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
         configs?.forEach { it.parentConfig = config }
         return config
     }
@@ -203,8 +198,8 @@ object CwtConfigResolver {
         }
         val documentation = getDocumentation(documentationLines, html)
         
-        val config = CwtValueConfig.resolve(pointer, fileConfig.info, value, valueType.id, configs, options, documentation)
-        fileConfig.acceptConfigExpression(config.valueExpression, config)
+        val config = CwtValueConfig.resolve(pointer, fileConfig.configGroup, value, valueType.id, configs, options, documentation)
+        CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
         configs?.forEach { it.parentConfig = config }
         return config
     }

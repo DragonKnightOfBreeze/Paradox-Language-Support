@@ -205,7 +205,7 @@ private class CwtTypeConfigImpl(
     
     override val possibleSwappedTypeRootKeys by lazy {
         caseInsensitiveStringSet().apply {
-            info.configGroup.swappedTypes.values.forEach f@{ swappedTypeConfig ->
+            configGroup.swappedTypes.values.forEach f@{ swappedTypeConfig ->
                 val baseType = swappedTypeConfig.baseType ?: return@f
                 val baseTypeName = baseType.substringBefore('.')
                 if(baseTypeName != name) return@f

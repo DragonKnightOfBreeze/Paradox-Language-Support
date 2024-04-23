@@ -55,7 +55,7 @@ private class CwtExtendedParameterConfigImpl(
         if(r.isEmpty()) return emptyList()
         val containerConfig = CwtValueConfig.resolve(
             pointer = emptyPointer(),
-            info = r.first().info,
+            configGroup = r.first().configGroup,
             value = PlsConstants.blockFolder,
             valueTypeId = CwtType.Block.id,
             configs = r,

@@ -41,8 +41,8 @@ class ParadoxGenerateLocalisationsChooser(
     override fun createLeftSideActions(): Array<Action> {
         return buildList<Action> {
             this += SelectAction(PlsBundle.message("generation.localisation.select.all")) { selectElements(myElements) }
-            this += SelectAction(PlsBundle.message("generation.localisation.select.missing")) { selectElements(myElements.filter { it.missing }.toTypedArray()) }
-            if(context.fromInspection) this += SelectAction(PlsBundle.message("generation.localisation.select.missingAndChecked")) { selectElements(myElements.filter { it.missing && it.check }.toTypedArray()) }
+            this += SelectAction(PlsBundle.message("generation.localisation.select.missing")) { selectElements(myElements.filter { it.info.missing }.toTypedArray()) }
+            if(context.fromInspection) this += SelectAction(PlsBundle.message("generation.localisation.select.missingAndChecked")) { selectElements(myElements.filter { it.info.missing && it.info.check }.toTypedArray()) }
         }.toTypedArray()
     }
     
