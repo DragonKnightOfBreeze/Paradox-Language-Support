@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.*
 
 class GotoInlineScriptUsagesFix: IntentionAndQuickFixAction() {
     override fun getName(): String {
-        return PlsBundle.message("fix.gotoInlineScriptUsages")
+        return PlsBundle.message("goto.usages")
     }
     
     override fun getFamilyName(): String {
