@@ -348,4 +348,21 @@
       <reference ref="HierarchyPopupMenu.Common"/>
     </group>
   </actions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <fileIconProvider implementation="icu.windea.pls.config.configGroup.CwtConfigFileIconProvider"/>
+    <editorNotificationProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupEditorNotificationProvider"/>
+    <editorFloatingToolbarProvider implementation="icu.windea.pls.config.configGroup.ConfigGroupRefreshFloatingProvider"/>
+    <psi.treeChangePreprocessor implementation="icu.windea.pls.config.configGroup.CwtConfigGroupPsiTreeChangePreprocessor"/>
+  </extensions>
+
+  <!--ExternalSystem.ProjectRefreshActionGroup-->
+  <actions>
+    <group id="Pls.ConfigGroupRefreshActionGroup">
+      <action id="Pls.ConfigGroupRefreshAction" class="icu.windea.pls.config.configGroup.ConfigGroupRefreshAction">
+        <keyboard-shortcut first-keystroke="control shift G" keymap="$default"/>
+      </action>
+      <action id="Pls.HideConfigGroupRefreshAction" class="icu.windea.pls.config.configGroup.HideConfigGroupRefreshAction"/>
+    </group>
+  </actions>
 </idea-plugin>

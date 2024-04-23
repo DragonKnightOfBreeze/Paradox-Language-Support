@@ -1,10 +1,10 @@
-package icu.windea.pls.ep.configGroup
+package icu.windea.pls.config.configGroup
 
 import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.psi.impl.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.model.*
 
 class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {

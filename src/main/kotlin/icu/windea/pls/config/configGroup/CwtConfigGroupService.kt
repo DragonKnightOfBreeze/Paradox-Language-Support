@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.configGroup
+package icu.windea.pls.config.configGroup
 
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
@@ -8,8 +8,8 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.progress.impl.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*

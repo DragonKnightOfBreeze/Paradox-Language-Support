@@ -1,21 +1,20 @@
-package icu.windea.pls.ep.configGroup
+package icu.windea.pls.config.configGroup
 
+import com.intellij.icons.*
 import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.actionSystem.ex.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.openapi.project.*
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 
-//com.intellij.openapi.externalSystem.autoimport.ProjectRefreshAction
+//com.intellij.openapi.externalSystem.autoimport.HideProjectRefreshActions
 
-class ConfigGroupRefreshAction : DumbAwareAction(), TooltipDescriptionProvider {
+class HideConfigGroupRefreshAction: DumbAwareAction() {
     init {
-        templatePresentation.icon = PlsIcons.Actions.RefreshConfigGroup
-        templatePresentation.text = PlsBundle.message("configGroup.refresh.action.text")
-        templatePresentation.description = PlsBundle.message("configGroup.refresh.action.desc")
+        templatePresentation.icon = AllIcons.Actions.Close
+        templatePresentation.hoveredIcon = AllIcons.Actions.CloseHovered
+        templatePresentation.text = PlsBundle.message("configGroup.refresh.action.hide.text")
     }
     
     override fun update(e: AnActionEvent) {
@@ -35,7 +34,6 @@ class ConfigGroupRefreshAction : DumbAwareAction(), TooltipDescriptionProvider {
         val configGroupService = project.service<CwtConfigGroupService>()
         val configGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
         configGroups.forEach { configGroup -> configGroup.changed.set(false) }
-        configGroupService.refreshConfigGroups(configGroups)
         FloatingToolbarProvider.getProvider<ConfigGroupRefreshFloatingProvider>()
             .updateToolbarComponents(project)
     }

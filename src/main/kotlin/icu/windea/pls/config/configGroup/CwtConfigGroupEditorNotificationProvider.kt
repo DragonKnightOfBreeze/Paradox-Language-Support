@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.configGroup
+package icu.windea.pls.config.configGroup
 
 import com.intellij.ide.*
 import com.intellij.openapi.fileEditor.*
@@ -7,6 +7,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.*
+import icu.windea.pls.ep.configGroup.*
 import java.util.function.Function
 import javax.swing.*
 

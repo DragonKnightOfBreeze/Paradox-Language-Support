@@ -18,8 +18,6 @@ data class CwtConfigGroupInfo(
      */
     val templateExpressions = mutableMapOf<CwtDataExpression, MutableList<CwtTemplateExpression>>()
     
-    val aliasNamesSupportScope = mutableSetOf<String>()
-    
     //$parameter = xxx
     val parameterConfigs = mutableListOf<CwtMemberConfig<*>>()
     
@@ -44,13 +42,6 @@ data class CwtConfigGroupInfo(
                 }
             }
             else -> pass()
-        }
-    }
-    
-    fun acceptAliasSubNameConfigExpression(name: String, configExpression: CwtDataExpression) {
-        //加上可以切换作用域的alias
-        if(configExpression.type == CwtDataTypes.ScopeField) {
-            aliasNamesSupportScope.add(name)
         }
     }
 }

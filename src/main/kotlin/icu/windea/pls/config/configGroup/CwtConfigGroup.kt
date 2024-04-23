@@ -1,6 +1,5 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.util.*
@@ -17,7 +16,6 @@ class CwtConfigGroup(
     val gameType: ParadoxGameType?,
     val project: Project,
 ) : UserDataHolderBase() {
-    var progressIndicator: ProgressIndicator? = null
     val changed = AtomicBoolean()
     val modificationTracker = SimpleModificationTracker()
     

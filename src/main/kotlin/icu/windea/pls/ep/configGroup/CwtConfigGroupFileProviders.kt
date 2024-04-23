@@ -47,6 +47,10 @@ abstract class CwtConfigGroupFileProviderBase: CwtConfigGroupFileProvider {
  * 对应的规则文件位于插件jar包中的`config/${gameType}`目录下。
  */
 class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
+    override fun isBuiltIn(): Boolean {
+        return true
+    }
+    
     override fun getRootDirectory(project: Project): VirtualFile? {
         val rootPath = "/config"
         val rootUrl = rootPath.toClasspathUrl()

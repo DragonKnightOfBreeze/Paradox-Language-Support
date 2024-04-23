@@ -95,7 +95,6 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 this += "modifier" //也支持，但不能切换作用域
                 this += "trigger"
                 this += "effect"
-                configGroup.info.aliasNamesSupportScope.forEach { this += it }
             }
             with(configGroup.definitionTypesSupportScope) {
                 this += "scripted_effect"
@@ -114,8 +113,8 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 this += "game_rule"
             }
             with(configGroup.definitionTypesSupportParameters) {
-                this += "script_value" //SV也支持参数
-                //this += "inline_script" //内联脚本也支持参数（并且可以表示多条语句）（但不是定义）
+                this += "script_value"
+                //this += "inline_script" //内联脚本也支持参数（但它不是定义）
                 for(parameterConfig in configGroup.info.parameterConfigs) {
                     val propertyConfig = parameterConfig.parentConfig as? CwtPropertyConfig ?: continue
                     val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
