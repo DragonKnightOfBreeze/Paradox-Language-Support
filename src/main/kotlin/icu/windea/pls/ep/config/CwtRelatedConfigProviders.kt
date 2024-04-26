@@ -79,7 +79,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             val name = element1.name
             if(name.isNullOrEmpty()) return@r0
             if(name.isParameterized()) return@r0
-            val config = configGroup.extendedScriptedVariables.getByTemplate(name, element1, configGroup)
+            val config = configGroup.extendedScriptedVariables.findByPattern(name, element1, configGroup)
             if(config != null) result.add(config)
         }
         
@@ -91,18 +91,18 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             if(definitionName.isEmpty()) return@r0
             if(definitionName.isParameterized()) return@r0
             run r1@{
-                val configs = configGroup.extendedDefinitions.getAllByTemplate(definitionName, definition, configGroup)
+                val configs = configGroup.extendedDefinitions.findByPattern(definitionName, definition, configGroup).orEmpty()
                 val matchedConfigs = configs.filter { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) }
                 result.addAll(matchedConfigs)
             }
             run r1@{
                 if(definitionInfo.type != "game_rule") return@r1
-                val config = configGroup.extendedGameRules.getByTemplate(definitionName, element, configGroup)
+                val config = configGroup.extendedGameRules.findByPattern(definitionName, element, configGroup)
                 if(config != null) result.add(config)
             }
             run r1@{
                 if(definitionInfo.type != "on_action") return@r1
-                val config = configGroup.extendedOnActions.getByTemplate(definitionName, element, configGroup)
+                val config = configGroup.extendedOnActions.findByPattern(definitionName, element, configGroup)
                 if(config != null) result.add(config)
             }
         }
@@ -113,20 +113,20 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
                 when {
                     ParadoxResolveConstraint.Parameter.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxParameterElement>() ?: continue
-                        val configs = configGroup.extendedParameters.getAllByTemplate(element.name, element, configGroup)
+                        val configs = configGroup.extendedParameters.findByPattern(element.name, element, configGroup).orEmpty()
                             .filterTo(result) { it.contextKey == resolved.contextKey }
                         result.addAll(configs)
                     }
                     ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxComplexEnumValueElement>() ?: continue
                         val configs = configGroup.extendedComplexEnumValues[resolved.enumName] ?: continue
-                        val config = configs.getByTemplate(resolved.name, element, configGroup) ?: continue
+                        val config = configs.findByPattern(resolved.name, element, configGroup) ?: continue
                         result.add(config)
                     }
                     ParadoxResolveConstraint.DynamicValueStrictly.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxDynamicValueElement>() ?: continue
                         val configs = configGroup.extendedDynamicValues[resolved.dynamicValueType] ?: continue
-                        val config = configs.getByTemplate(resolved.name, element, configGroup) ?: continue
+                        val config = configs.findByPattern(resolved.name, element, configGroup) ?: continue
                         result.add(config)
                     }
                 }
@@ -137,7 +137,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             val resolved = file.findElementAt(offset) {
                 it.parents(false).firstNotNullOfOrNull { p -> ParadoxParameterHandler.getParameterElement(p) }
             } ?: return@r0
-            val configs = configGroup.extendedParameters.getAllByTemplate(resolved.name, resolved, configGroup)
+            val configs = configGroup.extendedParameters.findByPattern(resolved.name, resolved, configGroup).orEmpty()
                 .filterTo(result) { it.contextKey == resolved.contextKey }
             result.addAll(configs)
         }

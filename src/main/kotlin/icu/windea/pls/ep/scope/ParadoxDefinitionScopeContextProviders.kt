@@ -32,7 +32,7 @@ class ParadoxBaseDefinitionScopeContextProvider: ParadoxDefinitionScopeContextPr
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val configGroup = definitionInfo.configGroup
-        val configs = configGroup.extendedDefinitions.getAllByTemplate(definitionInfo.name, definition, configGroup)
+        val configs = configGroup.extendedDefinitions.findByPattern(definitionInfo.name, definition, configGroup).orEmpty()
         val config = configs.findLast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) } ?: return null
         val result = config.config.scopeContext
         return result
@@ -46,7 +46,7 @@ class ParadoxGameRuleScopeContextProvider : ParadoxDefinitionScopeContextProvide
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val configGroup = definitionInfo.configGroup
-        val config = configGroup.extendedGameRules.getByTemplate(definitionInfo.name, definition, configGroup)
+        val config = configGroup.extendedGameRules.findByPattern(definitionInfo.name, definition, configGroup)
         val result = config?.config?.scopeContext
         return result
     }
@@ -59,7 +59,7 @@ class ParadoxOnActionScopeContextProvider : ParadoxDefinitionScopeContextProvide
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val configGroup = definitionInfo.configGroup
-        val config = configGroup.extendedOnActions.getByTemplate(definitionInfo.name, definition, configGroup)
+        val config = configGroup.extendedOnActions.findByPattern(definitionInfo.name, definition, configGroup)
         val result = config?.config?.scopeContext
         return result
     }

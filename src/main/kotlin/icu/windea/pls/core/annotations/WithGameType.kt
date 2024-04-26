@@ -12,4 +12,3 @@ import icu.windea.pls.model.*
 annotation class WithGameType(
 	vararg val value: ParadoxGameType
 )
-

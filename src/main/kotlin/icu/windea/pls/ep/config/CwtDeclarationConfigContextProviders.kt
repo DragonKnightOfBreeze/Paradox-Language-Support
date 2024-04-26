@@ -50,7 +50,7 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
         if(definitionType != "game_rule") return null
         if(definitionName.isNullOrEmpty()) return null
-        val gameRuleConfig = configGroup.extendedGameRules.getByTemplate(definitionName, element, configGroup) ?: return null
+        val gameRuleConfig = configGroup.extendedGameRules.findByPattern(definitionName, element, configGroup) ?: return null
         if(gameRuleConfig.config.configs.isNullOrEmpty()) return null
         return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, gameType, configGroup)
             .apply { this.gameRuleConfig = gameRuleConfig }
@@ -83,7 +83,7 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
         if(definitionType != "on_action") return null
         if(definitionName.isNullOrEmpty()) return null
-        val onActionConfig = configGroup.extendedOnActions.getByTemplate(definitionName, element, configGroup) ?: return null
+        val onActionConfig = configGroup.extendedOnActions.findByPattern(definitionName, element, configGroup) ?: return null
         return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, gameType, configGroup)
             .apply { this.onActionConfig = onActionConfig }
     }

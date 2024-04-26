@@ -3,6 +3,7 @@ package icu.windea.pls.ep.expression
 import icu.windea.pls.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.ep.expression.CwtDataExpressionResolver.*
 
 class BaseCwtDataExpressionResolver : CwtDataExpressionResolver {
@@ -204,7 +205,7 @@ class ExtendedCwtDataExpressionResolver : CwtDataExpressionResolver {
     }
 }
 
-class ConstantCwtDataExpressionResolver : CwtDataExpressionResolver {
+class ConstantCwtDataExpressionResolver : CwtDataExpressionResolver, CwtConfigPatternAware {
     private val excludeCharacters = "$[]<>".toCharArray()
     
     override fun resolve(expressionString: String): Result? {
@@ -213,14 +214,14 @@ class ConstantCwtDataExpressionResolver : CwtDataExpressionResolver {
     }
 }
 
-class TemplateExpressionCwtDataExpressionResolver : CwtDataExpressionResolver {
+class TemplateExpressionCwtDataExpressionResolver : CwtDataExpressionResolver, CwtConfigPatternAware {
     override fun resolve(expressionString: String): Result? {
         if(CwtTemplateExpression.resolve(expressionString).expressionString.isNotEmpty()) return Result(expressionString, CwtDataTypes.TemplateExpression)
         return null
     }
 }
 
-class AntExpressionCwtDataExpressionResolver: CwtDataExpressionResolver {
+class AntExpressionCwtDataExpressionResolver: CwtDataExpressionResolver, CwtConfigPatternAware {
     private val prefix = "ant:"
     private val prefixIgnoreCase = "ant.i:"
     
@@ -233,7 +234,7 @@ class AntExpressionCwtDataExpressionResolver: CwtDataExpressionResolver {
     }
 }
 
-class RegexCwtDataExpressionResolver: CwtDataExpressionResolver {
+class RegexCwtDataExpressionResolver: CwtDataExpressionResolver, CwtConfigPatternAware {
     private val prefix = "re:"
     private val prefixIgnoreCase = "re.i:"
     

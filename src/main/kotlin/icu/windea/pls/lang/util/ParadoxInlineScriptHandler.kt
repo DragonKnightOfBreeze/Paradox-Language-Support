@@ -167,7 +167,7 @@ object ParadoxInlineScriptHandler {
     
     private fun doGetInferredContextConfigsFromConfig(contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, inlineScriptExpression: String, matchOptions: Int): List<CwtMemberConfig<*>> {
         val configGroup = context.configGroup
-        val config = configGroup.extendedInlineScripts.getByTemplate(inlineScriptExpression, contextElement, configGroup, matchOptions) ?: return emptyList()
+        val config = configGroup.extendedInlineScripts.findByPattern(inlineScriptExpression, contextElement, configGroup, matchOptions) ?: return emptyList()
         return config.getContextConfigs()
     }
     

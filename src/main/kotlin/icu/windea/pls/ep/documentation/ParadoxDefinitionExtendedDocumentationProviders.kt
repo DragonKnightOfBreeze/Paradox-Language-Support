@@ -13,7 +13,7 @@ class ParadoxBaseDefinitionExtendedDocumentationProvider : ParadoxDefinitionExte
         if(definitionName.isEmpty()) return null
         if(definitionName.isParameterized()) return null
         val configGroup = definitionInfo.configGroup
-        val configs = configGroup.extendedDefinitions.getAllByTemplate(definitionName, definition, configGroup)
+        val configs = configGroup.extendedDefinitions.findByPattern(definitionName, definition, configGroup).orEmpty()
         val config = configs.findLast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) } ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation
@@ -27,7 +27,7 @@ class ParadoxGameRuleExtendedDocumentationProvider : ParadoxDefinitionExtendedDo
         if(definitionName.isParameterized()) return null
         if(definitionInfo.type != "game_rule") return null
         val configGroup = definitionInfo.configGroup
-        val config = configGroup.extendedGameRules.getByTemplate(definitionName, definition, configGroup) ?: return null
+        val config = configGroup.extendedGameRules.findByPattern(definitionName, definition, configGroup) ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation
     }
@@ -40,7 +40,7 @@ class ParadoxOnActionExtendedDocumentationProvider : ParadoxDefinitionExtendedDo
         if(definitionName.isParameterized()) return null
         if(definitionInfo.type != "on_action") return null
         val configGroup = definitionInfo.configGroup
-        val config = configGroup.extendedOnActions.getByTemplate(definitionInfo.name, definition, configGroup) ?: return null
+        val config = configGroup.extendedOnActions.findByPattern(definitionInfo.name, definition, configGroup) ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation
     }

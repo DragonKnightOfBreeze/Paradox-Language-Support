@@ -12,7 +12,7 @@ class ParadoxBaseDynamicValueExtendedDocumentationProvider : ParadoxDynamicValue
         if(name.isParameterized()) return null
         val configGroup = getConfigGroup(element.project, element.gameType)
         val configs = configGroup.extendedDynamicValues[element.dynamicValueType] ?:return null
-        val config = configs.getByTemplate(name, element, configGroup) ?: return null
+        val config = configs.findByPattern(name, element, configGroup) ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation
     }

@@ -61,4 +61,11 @@ object CwtDataTypeGroups {
         CwtDataTypes.SyncedLocalisation,
         CwtDataTypes.InlineLocalisation
     )
+    
+    val PatternLike = arrayOf(
+        CwtDataTypes.Constant,
+        CwtDataTypes.TemplateExpression,
+        CwtDataTypes.AntExpression,
+        CwtDataTypes.Regex
+    )
 }

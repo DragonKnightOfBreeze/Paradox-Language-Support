@@ -76,11 +76,3 @@ fun CwtTemplateExpression.resolveReferences(text: String, configGroup: CwtConfig
 fun CwtTemplateExpression.processResolveResult(contextElement: PsiElement, configGroup: CwtConfigGroup, processor: Processor<String>) {
     CwtTemplateExpressionHandler.processResolveResult(contextElement, this, configGroup, processor)
 }
-
-fun <C : CwtConfig<*>> Map<String, List<C>>.getAllByTemplate(text: String, contextElement: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int = CwtConfigMatcher.Options.Default): List<C> {
-    return get(text) ?: entries.find { (k) -> CwtTemplateExpression.resolve(k).matches(text, contextElement, configGroup, matchOptions) }?.value ?: emptyList()
-}
-
-fun <C : CwtConfig<*>> Map<String, C>.getByTemplate(text: String, contextElement: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int = CwtConfigMatcher.Options.Default): C? {
-    return get(text) ?: entries.find { (k) -> CwtTemplateExpression.resolve(k).matches(text, contextElement, configGroup, matchOptions) }?.value
-}

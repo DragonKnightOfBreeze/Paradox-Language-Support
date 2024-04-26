@@ -7,7 +7,6 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.CwtConfigMatcher.Result
 
 /**
  * 用于匹配脚本表达式和CWT规则表达式。
@@ -33,7 +32,7 @@ interface CwtDataExpressionMatcher {
         config: CwtConfig<*>?,
         configGroup: CwtConfigGroup,
         options: Int = CwtConfigMatcher.Options.Default
-    ): Any?
+    ): CwtConfigMatcher.Result?
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtDataExpressionMatcher>("icu.windea.pls.dataExpressionMatcher")
@@ -48,15 +47,12 @@ interface CwtDataExpressionMatcher {
             config: CwtConfig<*>?,
             configGroup: CwtConfigGroup,
             options: Int
-        ): Result {
+        ): CwtConfigMatcher.Result {
             EP_NAME.extensionList.forEachFast f@{ ep ->
                 val r = ep.matches(element, expression, configExpression, config, configGroup, options)
-                when(r) {
-                    is Result -> return r
-                    is Boolean -> return Result.of(r)
-                }
+                if(r != null) return r
             }
-            return Result.FallbackMatch
+            return CwtConfigMatcher.Result.FallbackMatch
         }
     }
 }
