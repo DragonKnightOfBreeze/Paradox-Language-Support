@@ -175,6 +175,7 @@ class CoreCwtDataExpressionResolver : CwtDataExpressionResolver {
 
 class ExtendedCwtDataExpressionResolver : CwtDataExpressionResolver {
     override fun resolve(expressionString: String): Result? {
+        //remove leading '$' in original config files after resolving
         return when {
             expressionString == "\$any" -> {
                 Result("any", CwtDataTypes.Any)
@@ -212,9 +213,35 @@ class ConstantCwtDataExpressionResolver : CwtDataExpressionResolver {
     }
 }
 
-class TemplateCwtDataExpressionResolver : CwtDataExpressionResolver {
+class TemplateExpressionCwtDataExpressionResolver : CwtDataExpressionResolver {
     override fun resolve(expressionString: String): Result? {
-        if(CwtTemplateExpression.resolve(expressionString).expressionString.isNotEmpty()) return Result(expressionString, CwtDataTypes.Template)
+        if(CwtTemplateExpression.resolve(expressionString).expressionString.isNotEmpty()) return Result(expressionString, CwtDataTypes.TemplateExpression)
+        return null
+    }
+}
+
+class AntExpressionCwtDataExpressionResolver: CwtDataExpressionResolver {
+    private val prefix = "ant:"
+    private val prefixIgnoreCase = "ant.i:"
+    
+    override fun resolve(expressionString: String): Result? {
+        expressionString.removePrefixOrNull(prefix)?.orNull()
+            ?.let { Result(expressionString, CwtDataTypes.AntExpression, it)  }
+        expressionString.removePrefixOrNull(prefixIgnoreCase)?.orNull()
+            ?.let { Result(expressionString, CwtDataTypes.AntExpression, it, true)  }
+        return null
+    }
+}
+
+class RegexCwtDataExpressionResolver: CwtDataExpressionResolver {
+    private val prefix = "re:"
+    private val prefixIgnoreCase = "re.i:"
+    
+    override fun resolve(expressionString: String): Result? {
+        expressionString.removePrefixOrNull(prefix)?.orNull()
+            ?.let { Result(expressionString, CwtDataTypes.Regex, it)  }
+        expressionString.removePrefixOrNull(prefixIgnoreCase)?.orNull()
+            ?.let { Result(expressionString, CwtDataTypes.Regex, it, true)  }
         return null
     }
 }

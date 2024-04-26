@@ -26,7 +26,9 @@ class UnresolvedIconInspection : LocalInspectionTool() {
             
             private fun visitIcon(element: ParadoxLocalisationIcon) {
                 val iconName = element.name ?: return
-                if(iconName.matchesGlobFileName(ignoredIconNames, true)) return //忽略
+                ignoredIconNames.splitOptimized(';').forEach {
+                    if(iconName.matchesGlobPattern(it, true)) return //忽略
+                }
                 val reference = element.reference
                 if(reference == null || reference.resolve() != null) return
                 val location = element.iconId ?: return

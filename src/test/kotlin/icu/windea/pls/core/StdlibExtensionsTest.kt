@@ -5,15 +5,15 @@ import org.junit.*
 class StdlibExtensionsTest {
 	@Test
 	fun matchesGlobFileNameTest(){
-		Assert.assertTrue("abc".matchesGlobFileName("abc"))
-		Assert.assertTrue("abc".matchesGlobFileName("*"))
-		Assert.assertTrue("abc".matchesGlobFileName("ab?"))
-		Assert.assertTrue("abc".matchesGlobFileName("ab*"))
-		Assert.assertTrue("abc".matchesGlobFileName("a?c"))
-		Assert.assertFalse("ab".matchesGlobFileName("a?c"))
-		Assert.assertFalse("abc".matchesGlobFileName("a?"))
-		Assert.assertTrue("abc".matchesGlobFileName("a*c"))
-		Assert.assertFalse("abc".matchesGlobFileName("a*b"))
+		Assert.assertTrue("abc".matchesGlobPattern("abc"))
+		Assert.assertTrue("abc".matchesGlobPattern("*"))
+		Assert.assertTrue("abc".matchesGlobPattern("ab?"))
+		Assert.assertTrue("abc".matchesGlobPattern("ab*"))
+		Assert.assertTrue("abc".matchesGlobPattern("a?c"))
+		Assert.assertFalse("ab".matchesGlobPattern("a?c"))
+		Assert.assertFalse("abc".matchesGlobPattern("a?"))
+		Assert.assertTrue("abc".matchesGlobPattern("a*c"))
+		Assert.assertFalse("abc".matchesGlobPattern("a*b"))
 	}
 	
 	@Test

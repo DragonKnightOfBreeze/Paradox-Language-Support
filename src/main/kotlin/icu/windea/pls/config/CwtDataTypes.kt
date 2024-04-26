@@ -38,17 +38,21 @@ object CwtDataTypes {
     val AliasName = CwtDataType("AliasName")
     val AliasKeysField = CwtDataType("AliasKeysField")
     val AliasMatchLeft = CwtDataType("AliasMatchLeft")
-    val Template = CwtDataType("Template")
-    val Constant = CwtDataType("Constant")
     
     val Any = CwtDataType("Any")
     val Parameter = CwtDataType("Parameter")
     val ParameterValue = CwtDataType("ParameterValue")
     val LocalisationParameter = CwtDataType("LocalisationParameter")
-    val ShaderEffect = CwtDataType("ShaderEffect") //对应`.shader`文件中的effect
-    
+    val ShaderEffect = CwtDataType("ShaderEffect") //effects in .shader files
     @WithGameType(ParadoxGameType.Stellaris)
     val StellarisNameFormat = CwtDataType("StellarisNameFormat")
     @WithGameType(ParadoxGameType.Stellaris)
     val TechnologyWithLevel = CwtDataType("TechnologyWithLevel")
+    
+    val Constant = CwtDataType("Constant")
+    val TemplateExpression = CwtDataType("TemplateExpression") //e.g a_<b>_enum[c]_value[]
+    /** @since 1.3.6 */
+    val AntExpression = CwtDataType("AntExpression") //e.g. /foo/bar?/*
+    /** @since 1.3.6 */
+    val Regex = CwtDataType("Regex") //e.g. foo.*bar
 }

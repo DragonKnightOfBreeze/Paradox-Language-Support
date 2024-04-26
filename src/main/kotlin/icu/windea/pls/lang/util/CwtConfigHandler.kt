@@ -15,14 +15,10 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
-import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.config.*
-import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
@@ -35,7 +31,6 @@ import icu.windea.pls.model.expression.complex.nodes.*
 import icu.windea.pls.model.path.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
-import java.util.*
 import kotlin.collections.isNullOrEmpty
 
 object CwtConfigHandler {
@@ -373,7 +368,7 @@ object CwtConfigHandler {
                 data is ParadoxScriptValue -> ParadoxDataExpression.resolve(data)
                 else -> return@p true
             }
-            val isParameterized = expression.type == ParadoxType.String && expression.text.isParameterized()
+            val isParameterized = expression.type == ParadoxType.String && expression.value.isParameterized()
             //may contain parameter -> can't and should not get occurrences
             if(isParameterized) {
                 occurrenceMap.clear()
@@ -656,8 +651,8 @@ object CwtConfigHandler {
         if(configExpression is CwtValueExpression && expression.isKey == true) return false
         
         if(configExpression.type == CwtDataTypes.Constant) return true
-        if(configExpression.type == CwtDataTypes.EnumValue && configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.text) } == true) return true
-        if(configExpression.type == CwtDataTypes.Value && configExpression.value?.let { configGroup.dynamicValueTypes[it]?.values?.contains(expression.text) } == true) return true
+        if(configExpression.type == CwtDataTypes.EnumValue && configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.value) } == true) return true
+        if(configExpression.type == CwtDataTypes.Value && configExpression.value?.let { configGroup.dynamicValueTypes[it]?.values?.contains(expression.value) } == true) return true
         return false
     }
     

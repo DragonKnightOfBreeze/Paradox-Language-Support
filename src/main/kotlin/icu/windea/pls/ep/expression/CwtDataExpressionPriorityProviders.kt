@@ -45,7 +45,7 @@ class BaseCwtDataExpressionPriorityProvider: CwtDataExpressionPriorityProvider {
             CwtDataTypes.AliasName -> 0.0 //unexpected
             CwtDataTypes.AliasKeysField -> 0.0 //unexpected
             CwtDataTypes.AliasMatchLeft -> 0.0 //unexpected
-            CwtDataTypes.Template -> 65.0
+            CwtDataTypes.TemplateExpression -> 65.0
             else -> 0.0
         }
     }

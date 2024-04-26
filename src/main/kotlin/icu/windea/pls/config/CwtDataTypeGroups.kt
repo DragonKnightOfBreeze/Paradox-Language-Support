@@ -40,7 +40,7 @@ object CwtDataTypeGroups {
     )
     val ConstantLike = arrayOf(
         CwtDataTypes.Constant,
-        CwtDataTypes.Template,
+        CwtDataTypes.TemplateExpression,
     )
     val KeyReference = arrayOf(
         CwtDataTypes.Bool,

@@ -20,7 +20,10 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
 		if(file !is ParadoxLocalisationFile) return null //不期望的结果
 		if(ParadoxFileManager.isLightFile(file.virtualFile)) return null //不检查临时文件
-		if(file.name.matchesGlobFileName(ignoredFileNames, true)) return null //忽略
+		val fileName = file.name
+		ignoredFileNames.splitOptimized(';').forEach {
+			if(fileName.matchesGlobPattern(it, true)) return null //忽略
+		}
 		if(file.propertyLists.size <= 1) return null //不存在多个语言区域，忽略
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
 		holder.registerProblem(file, PlsBundle.message("inspection.localisation.multipleLocales.description"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)

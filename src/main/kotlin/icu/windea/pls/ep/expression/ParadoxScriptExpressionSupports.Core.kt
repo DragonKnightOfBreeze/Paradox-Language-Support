@@ -385,7 +385,7 @@ class ParadoxConstantScriptExpressionSupport : ParadoxScriptConstantLikeExpressi
 
 class ParadoxTemplateScriptExpressionSupport : ParadoxScriptConstantLikeExpressionSupport() {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.Template
+        return config.expression?.type == CwtDataTypes.TemplateExpression
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {

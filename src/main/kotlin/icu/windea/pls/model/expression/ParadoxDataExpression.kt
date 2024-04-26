@@ -15,14 +15,14 @@ import java.util.*
  * 可以指定是否用引号括起。
  */
 interface ParadoxDataExpression {
-    val text: String
+    val value: String
     val type: ParadoxType
     val quoted: Boolean
     val isKey: Boolean?
     
     companion object Resolver {
-        val BlockExpression: ParadoxDataExpression = icu.windea.pls.model.expression.BlockParadoxDataExpression
-        val UnknownExpression: ParadoxDataExpression = icu.windea.pls.model.expression.UnknownParadoxDataExpression
+        val BlockExpression: ParadoxDataExpression = BlockParadoxDataExpression
+        val UnknownExpression: ParadoxDataExpression = UnknownParadoxDataExpression
         
         fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = CwtConfigMatcher.Options.Default): ParadoxDataExpression =
             doResolve(element, matchOptions)
@@ -35,20 +35,20 @@ interface ParadoxDataExpression {
     }
 }
 
-fun ParadoxDataExpression.isParameterized() = type == ParadoxType.String && text.isParameterized()
+fun ParadoxDataExpression.isParameterized() = type == ParadoxType.String && value.isParameterized()
 
 //Implementations
 
 private fun doResolve(element: ParadoxScriptExpressionElement, matchOptions: Int): ParadoxDataExpression {
     return when {
         element is ParadoxScriptBlock -> {
-            icu.windea.pls.model.expression.BlockParadoxDataExpression
+            BlockParadoxDataExpression
         }
         element is ParadoxScriptScriptedVariableReference -> {
             ProgressManager.checkCanceled()
             val valueElement = when {
-                BitUtil.isSet(matchOptions, CwtConfigMatcher.Options.SkipIndex) -> return icu.windea.pls.model.expression.UnknownParadoxDataExpression
-                else -> element.referenceValue ?: return icu.windea.pls.model.expression.UnknownParadoxDataExpression
+                BitUtil.isSet(matchOptions, CwtConfigMatcher.Options.SkipIndex) -> return UnknownParadoxDataExpression
+                else -> element.referenceValue ?: return UnknownParadoxDataExpression
             }
             ParadoxDataExpressionImpl(valueElement.value, valueElement.type, valueElement.text.isLeftQuoted(), false)
         }
@@ -72,21 +72,21 @@ private fun doResolve(text: String, isKey: Boolean?): ParadoxDataExpression {
 }
 
 private class ParadoxDataExpressionImpl(
-    override val text: String,
+    override val value: String,
     override val type: ParadoxType,
     override val quoted: Boolean,
     override val isKey: Boolean?
 ) : ParadoxDataExpression {
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxDataExpression && (text == other.text && quoted == other.quoted)
+        return other is ParadoxDataExpression && (value == other.value && quoted == other.quoted)
     }
     
     override fun hashCode(): Int {
-        return Objects.hash(text, type)
+        return Objects.hash(value, type)
     }
     
     override fun toString(): String {
-        return text
+        return value
     }
 }
 

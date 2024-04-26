@@ -2,6 +2,7 @@
 
 package icu.windea.pls.core
 
+import ai.grazie.nlp.patterns.*
 import com.google.common.cache.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
@@ -303,11 +304,15 @@ fun Collection<String>.toCommaDelimitedString(): String {
 }
 
 fun String.toCommaDelimitedStringList(destination: MutableList<String> = mutableListOf()): MutableList<String> {
-    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().orNull() }
+    return this.split(',').mapNotNullTo(destination) { it.trim().orNull() }
 }
 
 fun String.toCommaDelimitedStringSet(destination: MutableSet<String> = mutableSetOf()): MutableSet<String> {
-    return this.splitToSequence(',').mapNotNullTo(destination) { it.trim().orNull() }
+    return this.split(',').mapNotNullTo(destination) { it.trim().orNull() }
+}
+
+fun String.splitOptimized(vararg delimiters: Char, ignoreCase: Boolean = false, limit: Int = 0): List<String> {
+    return this.split(*delimiters, ignoreCase = ignoreCase, limit = limit).mapNotNull { it.trim().orNull() }
 }
 
 fun String.truncate(limit: Int, ellipsis: String = "..."): String {
@@ -390,13 +395,19 @@ inline fun <reified T> Any?.castOrNull(): T? = this as? T
 
 fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C): C = if(this.isNotEmpty()) block(this) else this
 
-fun String.matchesGlobFileName(pattern: String, ignoreCase: Boolean = false): Boolean {
-    if(pattern.isEmpty()) return false
+/**
+ * 判断当前输入是否匹配指定的通配符表达式。使用"."匹配单个字符，使用"*"匹配任意个字符。
+ */
+fun String.matchesGlobPattern(pattern: String, ignoreCase: Boolean = false): Boolean {
+    if(pattern.isEmpty() && this.isNotEmpty()) return false
     if(pattern == "*") return true
-    return pattern.split(';').any { doMatchGlobFileName(it.trim(), ignoreCase) }
+    val usedPath = this.let { if(ignoreCase) it.lowercase() else it }
+    val usedPattern = pattern.let { if(ignoreCase) it.lowercase() else it }
+    val regex = globPatternToRegexCache.get(usedPattern)
+    return usedPath.matches(regex)
 }
 
-private val globPatternToRegexCache = CacheBuilder.newBuilder().buildCache<String, Regex> {
+private val globPatternToRegexCache = CacheBuilder.newBuilder().maximumSize(10000).buildCache<String, Regex> {
     buildString {
         append("\\Q")
         var i = 0
@@ -413,23 +424,19 @@ private val globPatternToRegexCache = CacheBuilder.newBuilder().buildCache<Strin
     }.toRegex()
 }
 
-private fun String.doMatchGlobFileName(pattern: String, ignoreCase: Boolean): Boolean {
-    val usedPath = this.let { if(ignoreCase) it.lowercase() else it }
-    val usedPattern = pattern.let { if(ignoreCase) it.lowercase() else it }
-    val regex = globPatternToRegexCache.get(usedPattern)
+/**
+ * 判断当前输入是否匹配指定的ANT路径通配符。使用"."匹配单个子路径中的单个字符，使用"*"匹配单个子路径中的任意个字符，使用"**"匹配任意个字符。
+ */
+fun String.matchesAntPath(pattern: String, ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
+    if(pattern.isEmpty() && this.isNotEmpty()) return false
+    if(pattern == "**") return true
+    val usedPath = this.let { if(trimSeparator) it.trimFast('/') else it }.let { if(ignoreCase) it.lowercase() else it }
+    val usedPattern = pattern.let { if(trimSeparator) it.trimFast('/') else it }.let { if(ignoreCase) it.lowercase() else it }
+    val regex = antPatternToRegexCache.get(usedPattern)
     return usedPath.matches(regex)
 }
 
-/**
- * 判断当前路径是否匹配另一个ANT路径通配符。使用"."匹配单个子路径中的单个字符，使用"*"匹配单个子路径中的任意个字符，使用"**"匹配任意个字符。
- */
-fun String.matchesAntPath(pattern: String, ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
-    if(pattern.isEmpty()) return false
-    if(pattern == "**" || pattern == "/**") return true
-    return pattern.split(';').any { doMatchAntPath(it.trim(), ignoreCase, trimSeparator) }
-}
-
-private val antPatternToRegexCache = CacheBuilder.newBuilder().buildCache<String, Regex> {
+private val antPatternToRegexCache = CacheBuilder.newBuilder().maximumSize(10000).buildCache<String, Regex> {
     buildString {
         append("\\Q")
         var i = 0
@@ -454,12 +461,19 @@ private val antPatternToRegexCache = CacheBuilder.newBuilder().buildCache<String
     }.toRegex()
 }
 
-private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean, trimSeparator: Boolean): Boolean {
-    val usedPath = this.let { if(trimSeparator) it.trimFast('/') else it }.let { if(ignoreCase) it.lowercase() else it }
-    val usedPattern = pattern.let { if(trimSeparator) it.trimFast('/') else it }.let { if(ignoreCase) it.lowercase() else it }
-    val regex = antPatternToRegexCache.get(usedPattern)
-    return usedPath.matches(regex)
+/**
+ * 判断当前输入是否匹配指定的正则表达式。
+ */
+fun String.matchesRegex(pattern: String, ignoreCase: Boolean = false): Boolean {
+    if(pattern.isEmpty() && this.isNotEmpty()) return false
+    return when {
+        ignoreCase -> regexCache2.get(pattern).matches(this)
+        else -> regexCache1.get(pattern).matches(this)
+    }
 }
+
+private val regexCache1 = CacheBuilder.newBuilder().maximumSize(10000).buildCache<String, Regex> { it.toRegex() }
+private val regexCache2 = CacheBuilder.newBuilder().maximumSize(10000).buildCache<String, Regex> { it.toRegex(RegexOption.IGNORE_CASE) }
 
 /**
  * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。使用"/"作为路径分隔符。
