@@ -12,7 +12,7 @@ class ParadoxBaseParameterExtendedDocumentationProvider : ParadoxParameterExtend
         if(name.isParameterized()) return null
         val configGroup = getConfigGroup(element.project, element.gameType)
         val configs = configGroup.extendedParameters.findByPattern(name, element, configGroup).orEmpty()
-        val config = configs.findLast { it.contextKey == element.contextKey } ?: return null
+        val config = configs.findLast { it.contextKey.matchByPattern(element.contextKey, element, configGroup) } ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation
     }

@@ -1245,10 +1245,11 @@ object ParadoxCompletionManager {
         val configGroup = context.configGroup ?: return
         val contextKey = context.contextKey ?: return
         val argumentNames = context.argumentNames
+        val contextElement = context.contextElement ?: return
         
         configGroup.extendedParameters.values.forEach { configs0 ->
             configs0.forEach f@{ config0 ->
-                if(config0.contextKey != contextKey) return@f
+                if(!config0.contextKey.matchByPattern(contextKey, contextElement, configGroup)) return@f
                 val name = config0.name
                 if(checkExtendedConfigName(name)) return@f
                 if(argumentNames != null && !argumentNames.add(name)) return@f  //排除已输入的

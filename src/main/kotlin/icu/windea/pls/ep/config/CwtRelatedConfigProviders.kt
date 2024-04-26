@@ -114,7 +114,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
                     ParadoxResolveConstraint.Parameter.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxParameterElement>() ?: continue
                         val configs = configGroup.extendedParameters.findByPattern(element.name, element, configGroup).orEmpty()
-                            .filterTo(result) { it.contextKey == resolved.contextKey }
+                            .filterTo(result) { it.contextKey.matchByPattern(resolved.contextKey, element, configGroup) }
                         result.addAll(configs)
                     }
                     ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference) -> {
@@ -138,7 +138,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
                 it.parents(false).firstNotNullOfOrNull { p -> ParadoxParameterHandler.getParameterElement(p) }
             } ?: return@r0
             val configs = configGroup.extendedParameters.findByPattern(resolved.name, resolved, configGroup).orEmpty()
-                .filterTo(result) { it.contextKey == resolved.contextKey }
+                .filterTo(result) { it.contextKey.matchByPattern(resolved.contextKey, resolved, configGroup) }
             result.addAll(configs)
         }
         
