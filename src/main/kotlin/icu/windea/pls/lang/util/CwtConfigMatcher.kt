@@ -271,12 +271,11 @@ object CwtConfigMatcher {
 private val CwtConfigGroup.configMatchResultCache by createKeyDelegate(CwtConfigContext.Keys) {
     createCachedValue(project) {
         val trackerProvider = ParadoxModificationTrackerProvider.getInstance(project)
-        val dependencyItems = buildList {
-            add(trackerProvider.ScriptFileTracker)
-            add(trackerProvider.LocalisationFileTracker)
-        }
         createNestedCache<VirtualFile, _, _, _> {
             CacheBuilder.newBuilder().buildCache<String, Result>()
-        }.withDependencyItems(dependencyItems)
+        }.withDependencyItems(
+            trackerProvider.ScriptFileTracker,
+            trackerProvider.LocalisationFileTracker,
+        )
     }
 }

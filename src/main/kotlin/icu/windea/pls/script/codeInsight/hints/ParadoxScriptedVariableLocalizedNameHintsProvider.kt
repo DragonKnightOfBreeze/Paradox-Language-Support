@@ -57,7 +57,7 @@ class ParadoxScriptedVariableLocalizedNameHintsProvider: ParadoxScriptHintsProvi
         if(name.isParameterized()) return null
         val gameType = selectGameType(element) ?: return null
         val configGroup = getConfigGroup(element.project, gameType)
-        val config = configGroup.extendedScriptedVariables.findByPattern(name, element, configGroup) ?:return null
+        val config = configGroup.extendedScriptedVariables.findFromPattern(name, element, configGroup) ?:return null
         val hint = config.hint ?: return null
         val hintElement = ParadoxLocalisationElementFactory.createProperty(configGroup.project, "hint", hint)
         //it's necessary to inject fileInfo (so that gameType can be got later)

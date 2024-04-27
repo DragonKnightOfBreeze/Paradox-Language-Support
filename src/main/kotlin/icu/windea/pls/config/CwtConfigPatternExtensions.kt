@@ -36,26 +36,27 @@ private fun doResolveConfigExpression(expressionString: String): CwtKeyExpressio
 }
 
 /**
- * 用当前键来匹配指定的[pattern]，得到匹配的首个结果。
- * @param pattern 允许的数类型：[CwtDataTypeGroups.PatternLike]
- * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配
+ * 用当前键作为通配符来匹配指定的[key]。
+ * @param key 要与通配符进行匹配的键。
+ * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配。
+ * @see CwtDataTypeGroups.PatternLike
  */
-fun String.matchByPattern(
-    pattern: String,
+fun String.matchFromPattern(
+    key: String,
     contextElement: PsiElement,
     configGroup: CwtConfigGroup,
     matchOptions: Int = CwtConfigMatcher.Options.Default,
     fromIndex: Int = 0,
 ): Boolean {
-    if(this == pattern) return true
-    if(pattern.isEmpty()) return this.isEmpty()
-    if(fromIndex < 0 || fromIndex >= this.length || fromIndex >= pattern.length) return false //invalid
+    if(this == key) return true
+    if(key.isEmpty()) return this.isEmpty()
+    if(fromIndex < 0 || fromIndex >= this.length || fromIndex >= key.length) return false //invalid
     if(fromIndex > 0 ) {
         val p1 = this.substring(0, fromIndex)
-        val p2 = pattern.substring(0, fromIndex)
+        val p2 = key.substring(0, fromIndex)
         if(p1 != p2) return false
     }
-    val pattern0 = pattern.substring(fromIndex)
+    val pattern0 = this.substring(fromIndex)
     val configExpression = resolveConfigExpression(pattern0)
     if(configExpression.expressionString.isEmpty()) return false
     val expression = ParadoxDataExpression.resolve(this)
@@ -64,35 +65,37 @@ fun String.matchByPattern(
 }
 
 /**
- * 用当前映射的键来匹配指定的[pattern]，得到匹配的首个结果。
- * @param pattern 允许的数类型：[CwtDataTypeGroups.PatternLike]
- * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配
+ * 用当前映射的键作为通配符来匹配指定的[key]，得到匹配的首个结果。
+ * @param key 要与通配符进行匹配的键。
+ * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配。
+ * @see CwtDataTypeGroups.PatternLike
  */
-fun <V> Map<String, V>.findByPattern(
-    pattern: String,
+fun <V> Map<String, V>.findFromPattern(
+    key: String,
     contextElement: PsiElement,
     configGroup: CwtConfigGroup,
     matchOptions: Int = CwtConfigMatcher.Options.Default,
     fromIndex: Int = 0,
 ): V? {
-    val fastResult = get(pattern)
+    val fastResult = get(key)
     if(fastResult != null) return fastResult
-    return entries.find { (k) -> k.matchByPattern(pattern, contextElement, configGroup, matchOptions, fromIndex) }?.value
+    return entries.find { (k) -> k.matchFromPattern(key, contextElement, configGroup, matchOptions, fromIndex) }?.value
 }
 
 /**
- * 用当前映射的键来匹配指定的[pattern]，得到匹配的首个结果。
- * @param pattern 允许的数类型：[CwtDataTypeGroups.PatternLike]
- * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配
+ * 用当前映射的键作为通配符来匹配指定的[key]，得到匹配的首个结果。
+ * @param key 要与通配符进行匹配的键。
+ * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配。
+ * @see CwtDataTypeGroups.PatternLike
  */
 fun <V> Map<String, V>.filterByPattern(
-    pattern: String,
+    key: String,
     contextElement: PsiElement,
     configGroup: CwtConfigGroup,
     matchOptions: Int = CwtConfigMatcher.Options.Default,
     fromIndex: Int = 0,
 ): List<V> {
-    val fastResult = get(pattern)
+    val fastResult = get(key)
     if(fastResult != null) return fastResult.toSingletonList()
-    return entries.filter { (k) -> k.matchByPattern(pattern, contextElement, configGroup, matchOptions, fromIndex) }.map { it.value }
+    return entries.filter { (k) -> k.matchFromPattern(key, contextElement, configGroup, matchOptions, fromIndex) }.map { it.value }
 }

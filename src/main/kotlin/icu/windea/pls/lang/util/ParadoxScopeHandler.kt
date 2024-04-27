@@ -190,8 +190,11 @@ object ParadoxScopeHandler {
             val file = element.containingFile ?: return@getCachedValue null
             val value = doGetScopeContextOfDefinition(element)
                 ?: doGetScopeContextOfDefinitionMember(element)
-            val tracker = ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker
-            CachedValueProvider.Result.create(value, file, tracker)
+            value.withDependencyItems(
+                file,
+                //getConfigGroup(file.project, selectGameType(file)).modificationTracker,
+                ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker,
+            )
         }
     }
     
@@ -253,7 +256,10 @@ object ParadoxScopeHandler {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContext) {
             val file = element.containingFile ?: return@getCachedValue null
             val value = doGetScopeContextOfLocalisationCommandIdentifier(element)
-            CachedValueProvider.Result.create(value, file)
+            value.withDependencyItems(
+                file,
+                //getConfigGroup(file.project, selectGameType(file)).modificationTracker,
+            )
         }
     }
     

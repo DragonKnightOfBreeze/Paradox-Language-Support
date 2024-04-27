@@ -68,7 +68,7 @@ class ParadoxDynamicValueLocalizedNameHintsProvider : ParadoxScriptHintsProvider
         val type = element.dynamicValueType
         val configGroup = getConfigGroup(element.project, element.gameType)
         val configs = configGroup.extendedDynamicValues[type] ?: return null
-        val config = configs.findByPattern(name, element, configGroup) ?: return null
+        val config = configs.findFromPattern(name, element, configGroup) ?: return null
         val hint = config.hint ?: return null
         val hintElement = ParadoxLocalisationElementFactory.createProperty(configGroup.project, "hint", hint)
         //it's necessary to inject fileInfo (so that gameType can be got later)

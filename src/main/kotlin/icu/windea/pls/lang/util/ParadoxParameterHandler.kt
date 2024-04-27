@@ -257,8 +257,8 @@ object ParadoxParameterHandler {
     
     private fun doGetInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
         val configGroup = getConfigGroup(parameterElement.project, parameterElement.gameType)
-        val configs = configGroup.extendedParameters.findByPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
-        val config = configs.findLast { it.contextKey.matchByPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return emptyList()
+        val configs = configGroup.extendedParameters.findFromPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
+        val config = configs.findLast { it.contextKey.matchFromPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return emptyList()
         return config.getContextConfigs()
     }
     

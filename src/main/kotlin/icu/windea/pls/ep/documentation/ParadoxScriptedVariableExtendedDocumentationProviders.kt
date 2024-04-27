@@ -13,7 +13,7 @@ class ParadoxBaseScriptedVariableExtendedDocumentationProvider : ParadoxScripted
         val gameType = selectGameType(element) ?: return null
         val project = element.project
         val configGroup = getConfigGroup(project, gameType)
-        val config = configGroup.extendedScriptedVariables.findByPattern(name, element, configGroup) ?: return null
+        val config = configGroup.extendedScriptedVariables.findFromPattern(name, element, configGroup) ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation
     }

@@ -2,6 +2,7 @@ package icu.windea.pls.lang.settings
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.options.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
@@ -79,7 +80,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindItem(settings::preferredLocale.toNullableProperty())
                         .onApply {
                             if(oldPreferredLocale != settings.preferredLocale) {
-                                ParadoxCoreHandler.refreshInlayHints()
+                                val openedFiles = ParadoxCoreHandler.findOpenedFiles()
+                                ParadoxCoreHandler.reparseFiles(openedFiles, reparse = false)
                             }
                         }
                 }
@@ -101,7 +103,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                                 fileNames += oldIgnoredFileNameSet
                                 fileNames += settings.ignoredFileNameSet
                                 //设置中的被忽略文件名被更改时，需要重新解析相关文件（IDE之后会自动请求重新索引）
-                                runWriteAction { ParadoxCoreHandler.reparseFilesByFileNames(fileNames) }
+                                val files = ParadoxCoreHandler.findFilesByFileNames(fileNames)
+                                ParadoxCoreHandler.reparseFiles(files)
                             }
                         }
                 }
@@ -279,7 +282,15 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.inlineScriptConfig.tooltip") }
                         .onApply {
                             ParadoxModificationTrackerProvider.InlineScriptConfigInferenceTracker.incModificationCount()
-                            ParadoxCoreHandler.refreshInlineScriptInlayHints()
+                            
+                            //重新解析内联脚本文件
+                            ProjectManager.getInstance().openProjects.forEach { project ->
+                                ParadoxModificationTrackerProvider.getInstance(project).ScriptFileTracker.incModificationCount()
+                                ParadoxModificationTrackerProvider.getInstance(project).InlineScriptsTracker.incModificationCount()
+                            }
+                            //重新解析内联脚本文件
+                            val files = ParadoxCoreHandler.findOpenedFiles { file, _ -> ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null }
+                            ParadoxCoreHandler.reparseFiles(files)
                         }
                 }
                 //scopeContext

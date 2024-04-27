@@ -1249,7 +1249,7 @@ object ParadoxCompletionManager {
         
         configGroup.extendedParameters.values.forEach { configs0 ->
             configs0.forEach f@{ config0 ->
-                if(!config0.contextKey.matchByPattern(contextKey, contextElement, configGroup)) return@f
+                if(!config0.contextKey.matchFromPattern(contextKey, contextElement, configGroup)) return@f
                 val name = config0.name
                 if(checkExtendedConfigName(name)) return@f
                 if(argumentNames != null && !argumentNames.add(name)) return@f  //排除已输入的

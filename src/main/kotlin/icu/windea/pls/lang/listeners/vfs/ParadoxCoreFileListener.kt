@@ -1,11 +1,13 @@
 package icu.windea.pls.lang.listeners.vfs
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 
@@ -147,13 +149,18 @@ class ParadoxCoreFileListener : AsyncFileListener {
     }
     
     private fun reparseOpenedFiles() {
-        runReadAction {
-            //重新解析所有项目的所有已打开的文件
-            ParadoxCoreHandler.reparseOpenedFiles()
-        }
+        //重新解析所有项目的所有已打开的文件
+        val openedFiles = ParadoxCoreHandler.findOpenedFiles()
+        ParadoxCoreHandler.reparseFiles(openedFiles)
     }
     
     private fun refreshInlineScripts() {
-        ParadoxCoreHandler.refreshInlineScriptInlayHints()
+        ProjectManager.getInstance().openProjects.forEach { project ->
+            ParadoxModificationTrackerProvider.getInstance(project).ScriptFileTracker.incModificationCount()
+            ParadoxModificationTrackerProvider.getInstance(project).InlineScriptsTracker.incModificationCount()
+        }
+        //重新解析内联脚本文件
+        val files = ParadoxCoreHandler.findOpenedFiles { file, _ -> ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null }
+        ParadoxCoreHandler.reparseFiles(files)
     }
 }

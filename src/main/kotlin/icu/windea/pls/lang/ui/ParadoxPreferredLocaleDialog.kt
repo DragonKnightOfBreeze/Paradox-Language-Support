@@ -20,7 +20,8 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
                 .bindItem(settings::preferredLocale.toNullableProperty())
                 .onApply {
                     if(oldPreferredLocale != settings.preferredLocale) {
-                        ParadoxCoreHandler.refreshInlayHints()
+                        val openedFiles = ParadoxCoreHandler.findOpenedFiles()
+                        ParadoxCoreHandler.reparseFiles(openedFiles, reparse = false)
                     }
                 }
         }

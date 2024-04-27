@@ -20,14 +20,11 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.data.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.util.data.*
-import icu.windea.pls.localisation.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.path.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.nio.file.*
 import kotlin.io.path.*
@@ -294,63 +291,73 @@ object ParadoxCoreHandler {
         return localeConfig
     }
     
-    @RequiresWriteLock
-    fun reparseFilesByRootFilePaths(rootFilePaths: Set<String>): MutableSet<VirtualFile> {
-        //重新解析指定的根目录中的所有文件，包括非脚本非本地化文件
+    fun findFilesByRootFilePaths(rootFilePaths: Set<String>): MutableSet<VirtualFile> {
         val files = mutableSetOf<VirtualFile>()
-        rootFilePaths.forEach f@{ rootFilePath ->
-            val rootFile = VfsUtil.findFile(rootFilePath.toPathOrNull() ?: return@f, true) ?: return@f
-            VfsUtil.visitChildrenRecursively(rootFile, object : VirtualFileVisitor<Void>() {
-                override fun visitFile(file: VirtualFile): Boolean {
-                    if(file.isFile) files.add(file)
-                    return true
-                }
-            })
+        runReadAction {
+            rootFilePaths.forEach f@{ rootFilePath ->
+                val rootFile = VfsUtil.findFile(rootFilePath.toPathOrNull() ?: return@f, true) ?: return@f
+                VfsUtil.visitChildrenRecursively(rootFile, object : VirtualFileVisitor<Void>() {
+                    override fun visitFile(file: VirtualFile): Boolean {
+                        if(file.isFile) files.add(file)
+                        return true
+                    }
+                })
+            }
         }
-        FileContentUtil.reparseFiles(getDefaultProject(), files, false)
         return files
     }
     
-    @RequiresWriteLock
-    fun reparseFilesByFileNames(fileNames: Set<String>): Set<VirtualFile> {
-        //重新解析指定的根目录中的所有文件，包括非脚本非本地化文件
+    fun findFilesByFileNames(fileNames: Set<String>): Set<VirtualFile> {
         val files = mutableSetOf<VirtualFile>()
-        val project = getTheOnlyOpenOrDefaultProject()
-        FilenameIndex.processFilesByNames(fileNames, false, GlobalSearchScope.allScope(project), null) { file ->
-            if(file.isFile) files.add(file)
-            true
+        runReadAction {
+            val project = getTheOnlyOpenOrDefaultProject()
+            FilenameIndex.processFilesByNames(fileNames, false, GlobalSearchScope.allScope(project), null) { file ->
+                if(file.isFile) files.add(file)
+                true
+            }
         }
-        FileContentUtil.reparseFiles(getDefaultProject(), files, false)
         return files
     }
     
-    @RequiresWriteLock
-    fun reparseOpenedFiles() {
-        //重新解析所有项目的所有已打开的文件
-        FileContentUtil.reparseOpenedFiles()
-    }
-    
-    fun requestReindex(files: Collection<VirtualFile>) {
-        //请求重新索引
-        val fileBasedIndex = FileBasedIndex.getInstance()
-        files.forEach { file ->
-            fileBasedIndex.requestReindex(file)
-        }
-    }
-    
-    fun refreshInlayHints(predicate: (VirtualFile, Project) -> Boolean = { _, _ -> true }) {
-        //刷新符合条件的所有项目的所有已打开的文件的内嵌提示
-        //com.intellij.codeInsight.hints.VcsCodeAuthorInlayHintsProviderKt.refreshCodeAuthorInlayHints
-        try {
+    fun findOpenedFiles(onlyParadoxFiles: Boolean = true, predicate: ((VirtualFile, Project) -> Boolean)? = null): Set<VirtualFile> {
+        val files = mutableSetOf<VirtualFile>()
+        runReadAction {
             val openProjects = ProjectManager.getInstance().openProjects
-            if(openProjects.isEmpty()) return
             for(project in openProjects) {
                 val allEditors = FileEditorManager.getInstance(project).allEditors
-                if(allEditors.isEmpty()) continue
                 for(fileEditor in allEditors) {
                     if(fileEditor is TextEditor) {
                         val file = fileEditor.file
-                        if(predicate(file, project)) {
+                        if(onlyParadoxFiles && !file.fileType.isParadoxFileType()) continue
+                        if(predicate == null || predicate(file, project)) {
+                            files.add(file)
+                        }
+                    }
+                }
+            }
+        }
+        return files
+    }
+    
+    fun reparseFiles(files: Set<VirtualFile>, reparse: Boolean = true, restartDaemon: Boolean = true) {
+        if(files.isEmpty()) return
+        
+        try {
+            //重新解析文件
+            if(reparse) {
+                FileContentUtilCore.reparseFiles(files)
+            }
+            
+            //刷新内嵌提示
+            if(restartDaemon) {
+                val openProjects = ProjectManager.getInstance().openProjects
+                for(project in openProjects) {
+                    val allEditors = FileEditorManager.getInstance(project).allEditors
+                    for(fileEditor in allEditors) {
+                        if(fileEditor is TextEditor) {
+                            val file = fileEditor.file
+                            if(file !in files) continue
+                            
                             val psiFile = file.toPsiFile(project) ?: continue
                             DaemonCodeAnalyzer.getInstance(project).restart(psiFile)
                             
@@ -363,26 +370,6 @@ object ParadoxCoreHandler {
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
             thisLogger().warn(e.message)
-        }
-    }
-    
-    fun refreshInlayHints() {
-        //刷新脚本文件和本地化文件的内嵌提示
-        refreshInlayHints { file, _ ->
-            val fileType = file.fileType
-            fileType == ParadoxScriptFileType || fileType == ParadoxLocalisationFileType
-        }
-    }
-    
-    fun refreshInlineScriptInlayHints() {
-        //重新解析内联脚本文件
-        ProjectManager.getInstance().openProjects.forEach { project ->
-            ParadoxModificationTrackerProvider.getInstance(project).ScriptFileTracker.incModificationCount()
-            ParadoxModificationTrackerProvider.getInstance(project).InlineScriptsTracker.incModificationCount()
-        }
-        //刷新内联脚本文件的内嵌提示
-        refreshInlayHints { file, _ ->
-            ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null
         }
     }
 }

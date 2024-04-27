@@ -12,7 +12,7 @@ class ParadoxBaseComplexEnumValueExtendedDocumentationProvider : ParadoxComplexE
         if(name.isParameterized()) return null
         val configGroup = getConfigGroup(element.project, element.gameType)
         val configs = configGroup.extendedComplexEnumValues[element.enumName] ?: return null
-        val config = configs.findByPattern(name, element, configGroup) ?: return null
+        val config = configs.findFromPattern(name, element, configGroup) ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation
     }

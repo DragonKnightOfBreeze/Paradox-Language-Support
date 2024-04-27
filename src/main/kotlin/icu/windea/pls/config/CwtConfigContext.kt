@@ -44,7 +44,7 @@ class CwtConfigContext(
         val cache = configGroup.configsCache.value.get(rootFile)
         val cachedKey = doGetCacheKey(matchOptions) ?: return emptyList()
         val cached = withRecursionGuard("icu.windea.pls.config.config.CwtConfigContext.getConfigs") {
-            withCheckRecursion(cachedKey) action@{ 
+            withCheckRecursion(cachedKey) action@{
                 try {
                     //use lock-freeze ConcurrentMap.getOrPut to prevent IDE freezing problems
                     cache.asMap().getOrPut(cachedKey) {
@@ -85,15 +85,14 @@ class CwtConfigContext(
 private val CwtConfigGroup.configsCache by createKeyDelegate(CwtConfigContext.Keys) {
     createCachedValue(project) {
         val trackerProvider = ParadoxModificationTrackerProvider.getInstance(project)
-        val dependencyItems = buildList {
-            add(trackerProvider.ScriptFileTracker)
-            add(trackerProvider.LocalisationFileTracker)
-            add(ParadoxModificationTrackerProvider.ParameterConfigInferenceTracker)
-            add(ParadoxModificationTrackerProvider.InlineScriptConfigInferenceTracker)
-        }
         createNestedCache<VirtualFile, _, _, _> {
             CacheBuilder.newBuilder().buildCache<String, List<CwtMemberConfig<*>>>()
-        }.withDependencyItems(dependencyItems)
+        }.withDependencyItems(
+            trackerProvider.ScriptFileTracker,
+            trackerProvider.LocalisationFileTracker,
+            ParadoxModificationTrackerProvider.ParameterConfigInferenceTracker,
+            ParadoxModificationTrackerProvider.InlineScriptConfigInferenceTracker,
+        )
     }
 }
 
