@@ -22,14 +22,28 @@
 ## 1.3.6
 
 * [X] 在内置规则文件的编辑器通知中提供操作，点击可以生成或者导航到对应的项目本地的规则文件
-* [X] #73 扩展CWT规则：支持扩展的数据类型`AntExpression`，用于匹配ANT路径表达式（示例：`ant:/foo/bar?/*`，使用`ant.i:`前缀来忽略大小写，详见参考文档）
-* [X] #73 扩展CWT规则：支持扩展的数据类型`Regex`，用于匹配正则表达式（示例：`re:foo.*bar`，使用`re.i:`前缀来忽略大小写，详见参考文档）
+* [X] #73 扩展CWT规则：支持扩展的数据类型`AntExpression`，用于匹配ANT路径表达式（详见参考文档）
+* [X] #73 扩展CWT规则：支持扩展的数据类型`Regex`，用于匹配正则表达式（详见参考文档）
 * [X] #73 扩展CWT规则：支持在`## context_key`的值中使用模版表达式（详见参考文档）
 * [X] #73 扩展CWT规则：编写扩展的CWT规则时，可以通过字符串字面量以及模版表达式进行匹配的地方，现在也可以通过ANT路径表达式以及正则表达式进行匹配（详见参考文档）
 * [X] #71 修复一个有关作用域上下文切换的问题
 * [X] #74 修复一个有关索引以及引用解析的问题
 * [X] #76 通过扩展的CWT规则提供上下文规则时，允许直接在顶级规则使用`single_alias`（示例：`extended_param = single_alias_right[trigger_clause]`）
 * [X] 优化：如果需要，对于已打开的文件，其文件内容应当及时重新解析，其中的内嵌提示应当及时更新（注意这可能需要先在后台花费一定时间）
+* [X] 优化：优化代码补全的用时
+
+***
+
+* [X] Provide an action in editor notification bar for builtin config files, click to generate (or navigate to) related project-local config file
+* [X] #73 Extend CWT Config: Supports extended data type `AntExpression`, which is used to match ANT expression (see reference documentation for details)
+* [X] #73 Extend CWT Config: Supports extended data type `Regex`, which is used to match regex (see reference documentation for details)
+* [X] #73 Extend CWT Config: Supports for using template expressions for value of `## context_key` (see reference documentation for details)
+* [X] #73 Extend CWT Config: When writing extended CWT configs, in places which can use string literals and template expressions, now can also use ANT expressions and regular expressions (see reference documentation for details)
+* [X] #71 Fix a problem about scope context switching
+* [X] #74 Fix a problem about indexing and reference resolving
+* [X] #76 When provide context configs by extended configs, allows to use `single_alias` at top level directly (e.g. `extended_param = single_alias_right[trigger_clause]`)
+* [X] Optimization: If necessary, for opened files, reparse its file context and refresh its inlay hints (Note that this may take some times in background first)
+* [x] Optimization: Optimize time cost of code completion
 
 ## 1.3.5
 
