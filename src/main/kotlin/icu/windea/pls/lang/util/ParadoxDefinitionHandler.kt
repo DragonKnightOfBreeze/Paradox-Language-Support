@@ -128,11 +128,11 @@ object ParadoxDefinitionHandler {
             val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config ?: return@run
             val propertyValue = element.castOrNull<ParadoxScriptProperty>()?.propertyValue ?: return@run
             //兼容进行代码补全时用户输入未完成的情况
-            val isIncomplete = propertyValue is ParadoxScriptString
+            val isIncomplete = propertyValue.elementType == STRING
                 && propertyValue.text == PlsConstants.dummyIdentifier
                 && propertyValue.isIncomplete()
             if(isIncomplete) return@run
-            val isBlock = propertyValue is ParadoxScriptBlock
+            val isBlock = propertyValue.elementType == BLOCK
             val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
             if(isBlockConfig != isBlock) return false
         }
@@ -162,20 +162,10 @@ object ParadoxDefinitionHandler {
         if(fastResult != null) return fastResult
         
         //判断definition的propertyValue是否需要是block
-        //val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config
-        ////当进行代码补全时需要特殊处理
-        //val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES)
-        //val isBlock = propertyValue?.tokenType?.let { it == BLOCK }
-        //if(declarationConfig != null && isBlock != null) {
-        //    val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
-        //    if(isBlockConfig != isBlock) return false
-        //}
-        
-        //判断definition的propertyValue是否需要是block
         run {
             val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config ?: return@run
             val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES) ?: return@run
-            val isBlock = propertyValue is ParadoxScriptBlock
+            val isBlock = propertyValue.tokenType == BLOCK
             val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
             if(isBlockConfig != isBlock) return false
         }
@@ -566,13 +556,12 @@ object ParadoxDefinitionHandler {
     }
     
     fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub? {
-        if(!checkParentStubWhenCreateDefinitionStub(parentStub)) return null
-        //这里使用scriptProperty.definitionInfo.name而非scriptProperty.name
-        val definitionInfo = psi.definitionInfo ?: return null
-        val rootKey = definitionInfo.rootKey
+        val rootKey = psi.name
         if(rootKey.isParameterized()) return null //排除可能带参数的情况
         if(rootKey.isInlineUsage()) return null //排除是内联调用的情况
+        if(!checkParentStubWhenCreateDefinitionStub(parentStub)) return null
         if(!checkRootKeyWhenCreateDefinitionStub(rootKey, parentStub)) return null
+        val definitionInfo = psi.definitionInfo ?: return null
         val name = definitionInfo.name
         val type = definitionInfo.type
         val subtypes = runCatchingCancelable { definitionInfo.subtypes }.getOrNull() //如果无法在索引时获取，之后再懒加载
@@ -582,13 +571,10 @@ object ParadoxDefinitionHandler {
     }
     
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptPropertyStub? {
-        if(!checkParentStubWhenCreateDefinitionStub(parentStub)) return null
         val rootKey = getNameFromNode(node, tree) ?: return null
         if(rootKey.isParameterized()) return null //排除可能带参数的情况
         if(rootKey.isInlineUsage()) return null //排除是内联调用的情况
-        if(rootKey == "swap_type") {
-            println()
-        }
+        if(!checkParentStubWhenCreateDefinitionStub(parentStub)) return null
         if(!checkRootKeyWhenCreateDefinitionStub(rootKey, parentStub)) return null
         val psi = parentStub.psi
         val file = psi.containingFile
