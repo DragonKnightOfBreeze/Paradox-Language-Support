@@ -151,15 +151,25 @@ tasks {
 		}
 	}
 	patchPluginXml {
-		fun String.toChangeLogText() = lines()
-			.run {
-				val start = indexOfFirst { it.startsWith("## ${version.get()}") }
-				val end = indexOfFirst(start + 1) { it.startsWith("## ") }.let { if(it != -1) it else size }
-				subList(start + 1, end)
-			}
-			.joinToString("\n")
-			.let { """^(\s*)[-*] \[[xX ]\]""".toRegex().replace(it, "$1*") }
-			.let { markdownToHTML(it) }
+		fun String.toChangeLogText(): String {
+			val regex1 = """[-*] \[ ].*""".toRegex()
+			val regex2 = """[-*] \[X].*""".toRegex(RegexOption.IGNORE_CASE)
+			return lines()
+				.run {
+					val start = indexOfFirst { it.startsWith("## ${version.get()}") }
+					val end = indexOfFirst(start + 1) { it.startsWith("## ") }.let { if(it != -1) it else size }
+					subList(start + 1, end)
+				}
+				.mapNotNull {
+					when {
+						it.matches(regex1) -> null //undo
+						it.matches(regex2) -> "*" + it.substring(5) //done
+						else -> it
+					}
+				}
+				.joinToString("\n")
+				.let { markdownToHTML(it) }
+		}
 		
 		sinceBuild.set(providers.gradleProperty("sinceBuild"))
 		untilBuild.set(providers.gradleProperty("untilBuild"))
