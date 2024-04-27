@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -51,25 +50,31 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
     
     override fun findAll(): Set<T> {
         val selector = searchParameters.selector
-        val comparator = getFinalComparator()
-        val result = MutableSet(comparator)
+        val result = mutableSetOf<T>()
         delegateProcessResults(original) {
             result.add(it)
             true
         }
-        return result.filterTo(mutableSetOf()) { selector.selectAll(it) }
+        if(result.isEmpty()) return emptySet()
+        val comparator = getFinalComparator()
+        val sortedResult = MutableSet(comparator)
+        result.filterTo(sortedResult) { selector.selectAll(it) }
+        return sortedResult
     }
     
     override fun forEach(consumer: Processor<in T>): Boolean {
         //TODO 1.2.5+ 需要验证这里的改动（适用排序）是否会显著影响性能
         val selector = searchParameters.selector
-        val comparator = getFinalComparator()
-        val result = MutableSet(comparator)
+        val result = mutableSetOf<T>()
         delegateProcessResults(original) {
             result.add(it)
             true
         }
-        return result.process {
+        if(result.isEmpty()) return true
+        val comparator = getFinalComparator()
+        val sortedResult = MutableSet(comparator)
+        result.filterTo(sortedResult) { selector.selectAll(it) }
+        return sortedResult.process {
             if(selector.selectAll(it)) {
                 consumer.process(it)
             } else {
