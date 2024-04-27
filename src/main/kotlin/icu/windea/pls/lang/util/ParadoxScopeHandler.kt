@@ -237,7 +237,8 @@ object ParadoxScopeHandler {
             return result
         } else {
             //优先基于内联前的规则，如果没有，再基于内联后的规则
-            val scopeContext = config.scopeContext ?: config.resolved().scopeContext ?: parentScopeContext ?: return null
+            val replaceScopes = config.replaceScopes ?: config.resolvedOrNull()?.replaceScopes
+            val scopeContext = replaceScopes?.let { ParadoxScopeContext.resolve(it) } ?: parentScopeContext ?: return null
             val pushScope = config.pushScope ?: config.resolved().pushScope
             val result = scopeContext.resolveNext(pushScope)
             return result
