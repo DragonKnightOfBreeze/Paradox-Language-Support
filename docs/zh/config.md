@@ -223,6 +223,11 @@ inline_scripts = {
 
 	## replace_scopes = { this = country root = country }
 	x
+    
+    # since 1.3.6, using single alias at root level is also available here
+
+	## context_configs_type = multiple
+    x = single_alias_right[trigger_clause]
 }
 ```
 
@@ -238,6 +243,8 @@ parameters = {
     # 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
     # 'x' can also be a pattern expression (template expression, ant expression or regex)
     # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there is various context configs)
+    
+	# since 1.3.6, value of option 'context_key' can also be a pattern expression (template expression, ant expression or regex)
     
     ### Some documentation
     ## context_key = scripted_trigger@some_trigger
@@ -261,7 +268,11 @@ parameters = {
 	## replace_scopes = { this = country root = country }
     x
     
-    # since 1.3.6, value of option 'context_key' can also be a pattern expression (template expression, ant expression or regex)
+	# since 1.3.6, using single alias at root level is also available here
+
+	## context_key = scripted_trigger@some_trigger
+	## context_configs_type = multiple
+	x = single_alias_right[trigger_clause]
 }
 ```
 
