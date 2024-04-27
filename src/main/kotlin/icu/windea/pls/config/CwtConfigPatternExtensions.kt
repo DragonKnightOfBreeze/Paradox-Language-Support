@@ -59,7 +59,7 @@ fun String.matchFromPattern(
     val pattern0 = this.substring(fromIndex)
     val configExpression = resolveConfigExpression(pattern0)
     if(configExpression.expressionString.isEmpty()) return false
-    val expression = ParadoxDataExpression.resolve(this)
+    val expression = ParadoxDataExpression.resolve(key)
     val matchResult = patternMatchers.firstNotNullOfOrNull { it.matches(contextElement, expression, configExpression, null, configGroup, matchOptions) } ?: return false
     return matchResult.get(matchOptions)
 }

@@ -227,9 +227,9 @@ class AntExpressionCwtDataExpressionResolver: CwtDataExpressionResolver, CwtConf
     
     override fun resolve(expressionString: String): Result? {
         expressionString.removePrefixOrNull(prefix)?.orNull()
-            ?.let { Result(expressionString, CwtDataTypes.AntExpression, it)  }
+            ?.let { return Result(expressionString, CwtDataTypes.AntExpression, it)  }
         expressionString.removePrefixOrNull(prefixIgnoreCase)?.orNull()
-            ?.let { Result(expressionString, CwtDataTypes.AntExpression, it, true)  }
+            ?.let { return Result(expressionString, CwtDataTypes.AntExpression, it, true)  }
         return null
     }
 }
@@ -240,9 +240,9 @@ class RegexCwtDataExpressionResolver: CwtDataExpressionResolver, CwtConfigPatter
     
     override fun resolve(expressionString: String): Result? {
         expressionString.removePrefixOrNull(prefix)?.orNull()
-            ?.let { Result(expressionString, CwtDataTypes.Regex, it)  }
+            ?.let { return Result(expressionString, CwtDataTypes.Regex, it)  }
         expressionString.removePrefixOrNull(prefixIgnoreCase)?.orNull()
-            ?.let { Result(expressionString, CwtDataTypes.Regex, it, true)  }
+            ?.let { return Result(expressionString, CwtDataTypes.Regex, it, true)  }
         return null
     }
 }
