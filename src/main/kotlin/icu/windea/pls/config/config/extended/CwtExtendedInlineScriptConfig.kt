@@ -2,8 +2,10 @@ package icu.windea.pls.config.config.extended
 
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 /**
@@ -42,6 +44,7 @@ private class CwtExtendedInlineScriptConfigImpl(
 ) : CwtExtendedInlineScriptConfig {
     override fun getContextConfigs(): List<CwtMemberConfig<*>> {
         if(config !is CwtPropertyConfig) return emptyList()
+        val config = CwtConfigManipulator.inlineSingleAlias(config) ?: config // #76
         val r = when(contextConfigsType) {
             "multiple" -> config.configs.orEmpty()
             else -> config.valueConfig.toSingletonListOrEmpty()

@@ -13,7 +13,6 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.testFramework.*
 import com.intellij.util.*
-import com.intellij.util.concurrency.annotations.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
@@ -342,34 +341,36 @@ object ParadoxCoreHandler {
     fun reparseFiles(files: Set<VirtualFile>, reparse: Boolean = true, restartDaemon: Boolean = true) {
         if(files.isEmpty()) return
         
-        try {
-            //重新解析文件
-            if(reparse) {
-                FileContentUtilCore.reparseFiles(files)
-            }
-            
-            //刷新内嵌提示
-            if(restartDaemon) {
-                val openProjects = ProjectManager.getInstance().openProjects
-                for(project in openProjects) {
-                    val allEditors = FileEditorManager.getInstance(project).allEditors
-                    for(fileEditor in allEditors) {
-                        if(fileEditor is TextEditor) {
-                            val file = fileEditor.file
-                            if(file !in files) continue
-                            
-                            val psiFile = file.toPsiFile(project) ?: continue
-                            DaemonCodeAnalyzer.getInstance(project).restart(psiFile)
-                            
-                            //removed in IU-233
-                            //InlayHintsPassFactory.clearModificationStamp(fileEditor.editor)
+        runInEdt {
+            try {
+                //重新解析文件
+                if(reparse) {
+                    FileContentUtilCore.reparseFiles(files)
+                }
+                
+                //刷新内嵌提示
+                if(restartDaemon) {
+                    val openProjects = ProjectManager.getInstance().openProjects
+                    for(project in openProjects) {
+                        val allEditors = FileEditorManager.getInstance(project).allEditors
+                        for(fileEditor in allEditors) {
+                            if(fileEditor is TextEditor) {
+                                val file = fileEditor.file
+                                if(file !in files) continue
+                                
+                                val psiFile = file.toPsiFile(project) ?: continue
+                                DaemonCodeAnalyzer.getInstance(project).restart(psiFile)
+                                
+                                //removed in IU-233
+                                //InlayHintsPassFactory.clearModificationStamp(fileEditor.editor)
+                            }
                         }
                     }
                 }
+            } catch(e: Exception) {
+                if(e is ProcessCanceledException) throw e
+                thisLogger().warn(e.message)
             }
-        } catch(e: Exception) {
-            if(e is ProcessCanceledException) throw e
-            thisLogger().warn(e.message)
         }
     }
 }

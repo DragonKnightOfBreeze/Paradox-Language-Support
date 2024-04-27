@@ -192,8 +192,8 @@ object ParadoxScopeHandler {
                 ?: doGetScopeContextOfDefinitionMember(element)
             value.withDependencyItems(
                 file,
-                //getConfigGroup(file.project, selectGameType(file)).modificationTracker,
-                ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker,
+                //getConfigGroup(file.project, selectGameType(file)).modificationTracker, //from extended configs
+                ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker, //usages
             )
         }
     }
@@ -258,7 +258,7 @@ object ParadoxScopeHandler {
             val value = doGetScopeContextOfLocalisationCommandIdentifier(element)
             value.withDependencyItems(
                 file,
-                //getConfigGroup(file.project, selectGameType(file)).modificationTracker,
+                //getConfigGroup(file.project, selectGameType(file)).modificationTracker, //from extended configs
             )
         }
     }
