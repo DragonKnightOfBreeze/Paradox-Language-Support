@@ -143,7 +143,7 @@ TODO
 ```cwt
 scripted_variables = {
     # 'x' or 'x = xxx'
-    # 'x' can also be a template expression
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
     
     ### Some documentation
 	## hint = §RSome inlay hint text§!
@@ -156,7 +156,7 @@ scripted_variables = {
 ```cwt
 definitions = {
     # 'x' or 'x = xxx'
-    # 'x' can also be a template expression
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
     
     ### Some documentation
     ## type = civic_or_origin.civic
@@ -174,7 +174,7 @@ definitions = {
 ```cwt
 game_rules = {
     # 'x' or 'x = xxx'
-    # 'x' can also be a template expression
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
     # use 'x = xxx' to override declaration config
     
     ### Some documentation
@@ -188,7 +188,7 @@ game_rules = {
 ```cwt
 on_actions = {
     # 'x' or 'x = xxx'
-    # 'x' can also be a template expression
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
     
     ### Some documentation
     ## replace_scopes = { this = country root = country }
@@ -203,9 +203,8 @@ on_actions = {
 inline_scripts = {
     # 'x' or 'x = xxx'
     # 'x' is a inline script expression, e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
-    # 'x' can also be a template expression
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
     # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there is various context configs)
-    
     # note extended documentation is unavailable for inline scripts
     
     x
@@ -237,7 +236,7 @@ inline_scripts = {
 parameters = {
     # 'x' or 'x = xxx'
     # 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
-    # 'x' can also be a template expression
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
     # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there is various context configs)
     
     ### Some documentation
@@ -261,6 +260,8 @@ parameters = {
 	## context_key = scripted_trigger@some_trigger
 	## replace_scopes = { this = country root = country }
     x
+    
+    # since 1.3.6, value of option 'context_key' can also be a pattern expression (template expression, ant expression or regex)
 }
 ```
 
@@ -274,7 +275,7 @@ parameters = {
 complex_enum_values = {
     component_tag = {
         # 'x' or 'x = xxx'
-        # 'x' can also be a template expression
+        # 'x' can also be a pattern expression (template expression, ant expression or regex)
         
         ### Some documentation
 		## hint = §RSome inlay hint text§!
@@ -289,7 +290,7 @@ complex_enum_values = {
 dynamic_values = {
 	event_target = {
 		# 'x' or 'x = xxx'
-		# 'x' can also be a template expression
+		# 'x' can also be a pattern expression (template expression, ant expression or regex)
 
 		### Some documentation
 		## hint = §RSome inlay hint text§!
@@ -300,11 +301,11 @@ dynamic_values = {
 
 ### FAQ
 
-#### 关于模版表达式
+#### 如何在规则文件中编写模版表达式
+
+模版表达式由字符串字面量以及限定类型的表达式（定义，枚举，动态值）组合而成，用来进行更加灵活的匹配。
 
 ```cwt
-# belows are all valid template expressions
-
 # a string literal, exactly matches 'x'
 x
 # a template expression which contains a reference to jobs, matches 'a_researcher_b', 'a_farmer_b', etc.
@@ -312,11 +313,40 @@ a_<job>_b
 # a template expression which contains a references to enum of weight_or_base, matches 'a_weight_b' and 'a_base_b'
 a_enum[weight_or_base]_b
 # a template expression which contains a references to dynamic value type of anything
-# there is no limit for 'value[anything]', so it's equivalent to regex 'a_.*_b'
+# generally, there is no limit for 'value[anything]', so this expression is equivalent to regex 'a_.*_b'
 a_value[anything]_b
 ```
 
-#### 如何指定作用域上下文
+#### 如何在规则文件中编写ANT表达式 (New in 1.3.6)
+
+从1.3.6开始，可以通过ANT表达式进行更加灵活的匹配。
+
+```cwt
+# a ant expression use prefix 'ant:'
+ant:/foo/bar?/*
+# a ant expression use prefix 'ant.i:' (ignore case)
+ant.i:/foo/bar?/*
+
+# wildcards in ant expression:
+# '?' - used to match any single character
+# '*' - used to match any characters (exclude '/')
+# '**' - used to match any characters
+```
+
+#### 如何在规则文件中编写正则表达式 (New in 1.3.6)
+
+从1.3.6开始，可以通过正则表达式进行更加灵活的匹配。
+
+```cwt
+# a regex use prefix 're:'
+re:foo.*
+# a regex use prefix 're.i:' (ignore case)
+re.i:foo.*
+```
+
+#### 如何在规则文件中指定作用域上下文
+
+在规则文件中，作用域上下文是通过选项`push_scope`与`replace_scope`来指定的。
 
 ```cwt
 # push 'country' scope to scope stack

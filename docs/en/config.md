@@ -144,7 +144,7 @@ TODO
 ```cwt
 scripted_variables = {
     # 'x' or 'x = xxx'
-    # 'x' can also be a template expression
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
     
     ### Some documentation
 	## hint = §RSome inlay hint text§!
@@ -157,7 +157,7 @@ scripted_variables = {
 ```cwt
 definitions = {
     # 'x' or 'x = xxx'
-    # 'x' can also be a template expression
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
     
     ### Some documentation
     ## type = civic_or_origin.civic
@@ -175,7 +175,7 @@ definitions = {
 ```cwt
 game_rules = {
     # 'x' or 'x = xxx'
-    # 'x' can also be a template expression
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
     # use 'x = xxx' to override declaration config
     
     ### Some documentation
@@ -189,7 +189,7 @@ game_rules = {
 ```cwt
 on_actions = {
     # 'x' or 'x = xxx'
-    # 'x' can also be a template expression
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
     
     ### Some documentation
     ## replace_scopes = { this = country root = country }
@@ -204,7 +204,7 @@ on_actions = {
 inline_scripts = {
     # 'x' or 'x = xxx'
     # 'x' is a inline script expression, e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
-    # 'x' can also be a template expression
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
     # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there is various context configs)
     
     # note extended documentation is unavailable for inline scripts
@@ -238,7 +238,7 @@ Example:
 parameters = {
 	# 'x' or 'x = xxx'
 	# 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
-	# 'x' can also be a template expression
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
 	# use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there is various context configs)
 
 	### Some documentation
@@ -262,6 +262,8 @@ parameters = {
 	## context_key = scripted_trigger@some_trigger
 	## replace_scopes = { this = country root = country }
 	x
+    
+    # since 1.3.6, value of option 'context_key' can also be a pattern expression (template expression, ant expression or regex)
 }
 ```
 
@@ -275,7 +277,7 @@ Example:
 complex_enum_values = {
     component_tag = {
         # 'x' or 'x = xxx'
-        # 'x' can also be a template expression
+        # 'x' can also be a pattern expression (template expression, ant expression or regex)
         
         ### Some documentation
         ## hint = §RSome inlay hint text§!
@@ -290,7 +292,7 @@ complex_enum_values = {
 dynamic_values = {
     event_target = {
         # 'x' or 'x = xxx'
-        # 'x' can also be a template expression
+		# 'x' can also be a pattern expression (template expression, ant expression or regex)
         
         ### Some documentation
 		## hint = §RSome inlay hint text§!
@@ -303,9 +305,10 @@ dynamic_values = {
 
 #### About the Template Expression
 
-```cwt
-# belows are all valid template expressions
+Template expressions are composed of string literals and expressions of limited types (definitions, enums and dynamic values),
+and can be used for more flexible matching.
 
+```cwt
 # a string literal, exactly matches 'x'
 x
 # a template expression which contains a reference to jobs, matches 'a_researcher_b', 'a_farmer_b', etc.
@@ -313,11 +316,40 @@ a_<job>_b
 # a template expression which contains a references to enum of weight_or_base, matches 'a_weight_b' and 'a_base_b'
 a_enum[weight_or_base]_b
 # a template expression which contains a references to dynamic value type of anything
-# there is no limit for 'value[anything]', so it's equivalent to regex 'a_.*_b'
+# generally, there is no limit for 'value[anything]', so this expression is equivalent to regex 'a_.*_b'
 a_value[anything]_b
 ```
 
-#### How to Specify the Scope Context
+#### How to Write an ANT Expression in Config Files (New in 1.3.6)
+
+Since 1.3.6, the ANT expression can be used for more flexible matching.
+
+```cwt
+# a ant expression use prefix 'ant:'
+ant:/foo/bar?/*
+# a ant expression use prefix 'ant.i:' (ignore case)
+ant.i:/foo/bar?/*
+
+# wildcards in ant expression:
+# '?' - used to match any single character
+# '*' - used to match any characters (exclude '/')
+# '**' - used to match any characters
+```
+
+#### How to Write a Regex in Config Files (New in 1.3.6)
+
+Since 1.3.6, the Regex can be used for more flexible matching.
+
+```cwt
+# a regex use prefix 're:'
+re:foo.*
+# a regex use prefix 're.i:' (ignore case)
+re.i:foo.*
+```
+
+#### How to Specify the Scope Context in Config Files
+
+In config files, the scope context is specified by option `push_scope` and `replace_scope`.
 
 ```cwt
 # push 'country' scope to scope stack
