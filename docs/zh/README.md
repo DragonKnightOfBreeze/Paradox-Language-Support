@@ -40,6 +40,7 @@ IDEA插件：Paradox语言支持。
 
 * [cwtools/cwtools](https://github.com/cwtools/cwtools)
 * [cwtools/cwtools-vscode](https://github.com/cwtools/cwtools-vscode)
+* [bcssov/IronyModManager](https://github.com/bcssov/IronyModManager)
 * [OldEnt/stellaris-triggers-modifiers-effects-list](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
 * [YiiGuxing/TranslationPlugin](https://github.com/YiiGuxing/TranslationPlugin)
 
