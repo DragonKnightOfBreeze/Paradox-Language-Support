@@ -29,7 +29,7 @@ If some changes are happened, the refresh button will be appeared in the context
 
 The CWT config files use the LIOS overridden strategy based on the file path and the config ID.
 
-For example, if you have written some custom configs in the config file `.config/stellaris/modifiers.cwt` (which is in the project root directory), it will completely override the built-in modifier rules.
+For example, if you have written some custom configs in the config file `.config/stellaris/modifiers.cwt` (which is in the project root directory), it will completely override the built-in modifier configs.
 Since the built-in modifier configs are located in the config file `config/stellaris/modifiers.cwt` (which is in the plugin jar), and both of their path is `modifiers.cwt`.
 
 If these are no content in the custom config file, after applied, the plugin will be unable to resolve any modifier in script files.
@@ -136,7 +136,7 @@ TODO
 
 > [!NOTE]
 > 
-> These configs are basically provided by the users themselves, to enhance plugins' various features,
+> These configs are basically provided by the users themselves, can be used to enhance plugin's language features,
 > such as providing extended quick documentations & inlay hints, and providing additional code completion.
 
 #### Scripted Variables (New in 1.3.5)
@@ -378,12 +378,14 @@ some_config
 
 ### Summary
 
-You can write your own customized config files in the `.config/${gameType}`[^1] directory (which is in the project root directory), and they will be enabled after manually confirming to import.
+You can write your own customized config files in the `.config/${gameType}`[^1] directory (which is in the project root directory),
+and they will be enabled after manually confirming to import.
 
-If some changes are happened, the refresh button will be appeared in the context float toolbar in the upper right corner of the editor. Click it to confirm to import, so these custom config files will be enabled.
+If some changes are happened, the refresh button will be appeared in the context float toolbar in the upper right corner of the editor.
+Click it to confirm to import, so these custom config files will be enabled.
 
-IDE will take some time to reparse the open files,
-And please note that if the changes in the rule files will result in the change of the indexing logic
+IDE will take some time to reparse opened files in background,
+And please note that if the changes in the config files will result in the change of the indexing logic
 (for example, a new definition type is added, or a match condition for some definition type is changed),
 you may need to reindex the whole project (this may take several minutes), to make sure the plugin works properly,
 if in the situation that involves these changes.

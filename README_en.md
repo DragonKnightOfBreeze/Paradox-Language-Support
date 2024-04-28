@@ -13,17 +13,17 @@ IDEA plugin: Support for Paradox language.
 
 Features:
 
-* Supports script language (mainly `*.txt` files) and localization language (`*.yml` files),
-  providing many language features such as code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff, etc.
-* Supports CWT language (`*.cwt` files), providing basic language features.
-* Supports viewing DDS images directly in the IDE, providing some useful editor features including converting to PNG images.
-* Provides quite comprehensive support for most advanced features of script language, such as parameters, scopes, inline scripts and various complex expressions.
-* Renders related type information, scope information, localisation text and DDS images through ways such as quick documentation and inlay hints.
+* Supports script & localization languages and CWT language (used as config files).
+* Provides various almost excellent language features for script & localisation languages, including code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff and more.
+* Provides basic language features for CWT language, including code highlight, code navigation, quick documentation and more.
+* Supports rendering scope context, localisation text, DDS images and other useful information via quick documentation and inlay hints.
+* Supports most advanced features of script & localisation languages (such as parameters, scopes, inline scripts and various complex expressions).
+* Supports customizing extended config files, allowing plugin to provide more perfect language features (such as code navigation, code completion, quick documentation and inlay hints).
 * Automatically recognizes the game directory (containing the launcher settings file `launcher-settings.json`) and mod directory (containing the mod descriptor file `descriptor.mod`).
 
 This plugin has implemented various advanced language features based on [CWT config groups](https://windea.icu/Paradox-Language-Support/#/en/config.md#cwt-config-group), which consists of CWT config files.
 The latest-version config files are already built into this plugin, make it works right out of the box.
-Besides, [customizing](https://windea.icu/Paradox-Language-Support/#/en/config.md#writing-cwt-config-files) and [importing](https://windea.icu/Paradox-Language-Support/#/en/config.md#importing-cwt-config-files) local config files is also supported.
+Besides, [customizing](https://windea.icu/Paradox-Language-Support/#/en/config.md#writing-cwt-config-files) and [importing](https://windea.icu/Paradox-Language-Support/#/en/config.md#importing-cwt-config-files) local config files are also supported.
 
 If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md).
 
@@ -36,9 +36,10 @@ If you encounter any problems during use, feel free to provide feedback via GitH
 Usages:
 
 * Open your mod root directory through the IDE. (It needs to directly contain the mod descriptor file `descriptor.mod`)
-* Open the mod descriptor file, click the mod settings button in the floating toolbar (or editor right-click menu) at the top right of the editor, and configure the game type, game directory, and additional mod dependencies of the mod.
+* Open the mod descriptor file, click the mod settings button in the floating toolbar at the top right of the editor.
+* Configure the game type, game directory, and additional mod dependencies of the mod.
 * Click the OK button to complete the configuration, and then wait for the IDE to complete indexing.
-* Start your mod programming journey!
+* Start your mod programming journey.
 
 Tips:
 
@@ -59,7 +60,7 @@ Tips:
 * To run a global code inspection, refer to the following method:
   * Click `Alt 6` or `Problems` Tool window, open the Problems panel ,then view problems of current file, or run a global code inspection for whole project.
   * Click `Code > Inspect Code...`, run a global code inspection for whole project.
-  * When code inspection is finished ,IDE will show detail inspection result in problems panel.
+  * When code inspection is finished ,IDE will show detail inspection result in Problems panel.
 * To change the global configuration of the plugin, refer to the following method:
   * Click `Settings > Languages & Frameworks > Paradox Language Support` to open the settings page for the plugin.
 * To change the configuration of mod types, game directories, mod dependencies, etc., open the Mod Configuration dialog using one of the following methods:
@@ -72,11 +73,11 @@ Tips:
   * Delete the plugin configuration file `paradox-language-support.xml`. (If you don't known the detail file location, use [Everything](https://www.voidtools.com))
   * Rebuild indices and restart the IDE. (Click `File -> Invalidate Caches... -> Invalidate and Restart`)
 
-Known issues:
+Known Issues:
 
 * Support for games exclude Stellaris is not yet perfect.
 
-## Reference
+## References
 
 Reference manual:
 
