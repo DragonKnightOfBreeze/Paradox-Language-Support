@@ -13,7 +13,7 @@ IDEA plugin: Support for Paradox language.
 
 Features:
 
-* Supports script & localization languages and CWT language (used as config files).
+* Supports script & localisation languages and CWT language (used as config files).
 * Provides various almost excellent language features for script & localisation languages, including code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff and more.
 * Provides basic language features for CWT language, including code highlight, code navigation, quick documentation and more.
 * Supports rendering scope context, localisation text, DDS images and other useful information via quick documentation and inlay hints.
@@ -50,11 +50,11 @@ Tips:
   * Hold down `Ctrl` and click on the target location, to navigate to the declarations or usages of the target.
   * Hold down `Ctrl Shift` and click on the target location, to navigate to the type declarations of the target.
   * Hold down `Alt` and click on the target location, to navigate to the related CWT config declarations of the target.
-  * Hold down `Shift Alt` and click on the target location, to navigate to the related localization declarations of the target definition.
+  * Hold down `Shift Alt` and click on the target location, to navigate to the related localisation declarations of the target definition.
   * Hold down `Ctrl Shift Alt` and click on the target location to navigate to the related image declarations of the target definition.
   * Click `Navigate` or `Go To` in the editor's right-click menu, and choose the target to navigate to.
   * Click `Navigate > Definition Hierarchy` to open the definition hierarchy window, to view the definition implementation relationship of a specific definition type.
-  * Click `Navigate > Call Hierarchy` to open the call hierarchy window, to view the call relationship of definitions, localizations, scripted variables, etc.
+  * Click `Navigate > Call Hierarchy` to open the call hierarchy window, to view the call relationship of definitions, localisations, scripted variables, etc.
   * Click `Alt 1` or `Project` Tool window, open the Project View panel, then click `Project > Paradox Files` in the upper left corner, to view the summarized game and mod files.
   * Click `Alt 1` or `Project` Tool window, open the Project View panel, then click `Project > CWT Config Files` in the upper left corner, to view the summarized CWT config files.
 * To run a global code inspection, refer to the following method:

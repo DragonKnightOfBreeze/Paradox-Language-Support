@@ -19,8 +19,8 @@ or click `Translate Documentation` item in right-click menu.
 
 ### Intention: Copy localisation(s) to the clipboard for locale...
 
-When the cursor selection scope involves localization(s),
-this intention can copy all involved localization(s) to the clipboard,
+When the cursor selection scope involves localisation(s),
+this intention can copy all involved localisation(s) to the clipboard,
 and try to translate the localisation text into the specified locale before doing so.
 
 ![](../assets/images/plugin-integration/intention_copy_loc_for_locale.gif)

@@ -10,7 +10,7 @@ IDEA plugin: Support for Paradox language.
 
 Features:
 
-* Supports script & localization languages and CWT language (used as config files).
+* Supports script & localisation languages and CWT language (used as config files).
 * Provides various almost excellent language features for script & localisation languages, including code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff and more.
 * Provides basic language features for CWT language, including code highlight, code navigation, quick documentation and more.
 * Supports rendering scope context, localisation text, DDS images and other useful information via quick documentation and inlay hints.
