@@ -53,7 +53,7 @@ class ConvertDdsToPngDialog(
                     PlsBundle.message("dds.dialog.convertDdsToPng.info", shortenPath(virtualFile))
                 }
                 else -> {
-                    PlsBundle.message("dds.dialog.convertDdsToPng.1")
+                    PlsBundle.message("dds.dialog.convertDdsToPng.info.1")
                 }
             }
             label(text).bold()

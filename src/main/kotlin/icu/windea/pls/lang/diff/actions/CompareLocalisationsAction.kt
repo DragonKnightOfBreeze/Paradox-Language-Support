@@ -113,7 +113,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         if(localisations.size <= 1) {
             //unexpected, should not be empty here
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
-                PlsBundle.message("diff.compare.localisations.content.title.1"),
+                PlsBundle.message("diff.compare.localisations.content.title.info.1"),
                 NotificationType.INFORMATION
             ).notify(project)
             return null
