@@ -289,8 +289,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                                 ParadoxModificationTrackerProvider.getInstance(project).InlineScriptsTracker.incModificationCount()
                             }
                             //重新解析内联脚本文件
-                            val files = ParadoxCoreHandler.findOpenedFiles { file, _ -> ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null }
-                            ParadoxCoreHandler.reparseFiles(files)
+                            val openedFiles = ParadoxCoreHandler.findOpenedFiles { file, _ -> ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null }
+                            ParadoxCoreHandler.reparseFiles(openedFiles)
                         }
                 }
                 //scopeContext
@@ -300,6 +300,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContext.tooltip") }
                         .onApply {
                             ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount()
+                            val openedFiles = ParadoxCoreHandler.findOpenedFiles()
+                            ParadoxCoreHandler.reparseFiles(openedFiles, reparse = false)
                         }
                 }
                 //eventScopeContext
@@ -309,6 +311,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContext.tooltip") }
                         .onApply {
                             ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount()
+                            val openedFiles = ParadoxCoreHandler.findOpenedFiles()
+                            ParadoxCoreHandler.reparseFiles(openedFiles, reparse = false)
                         }
                 }
                 //onActionScopeContext
@@ -318,6 +322,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.onActionScopeContext.tooltip") }
                         .onApply {
                             ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount()
+                            val openedFiles = ParadoxCoreHandler.findOpenedFiles()
+                            ParadoxCoreHandler.reparseFiles(openedFiles, reparse = false)
                         }
                 }
             }
