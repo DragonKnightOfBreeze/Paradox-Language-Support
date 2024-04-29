@@ -12,5 +12,6 @@ class CwtCodeStylePanel(
 		addIndentOptionsTab(settings)
 		addSpacesTab(settings)
 		addTab(GenerationCodeStylePanel(settings, CwtLanguage))
+		addBlankLinesTab(settings)
 	}
 }

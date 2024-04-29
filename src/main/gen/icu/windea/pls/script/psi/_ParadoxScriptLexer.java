@@ -4,13 +4,11 @@
 package icu.windea.pls.script.psi;
 
 import com.intellij.lexer.*;
-import com.intellij.psi.tree.*;
-
+import com.intellij.psi.tree.IElementType;
 import java.util.*;
 import java.util.concurrent.atomic.*;
 
-import static com.intellij.psi.TokenType.BAD_CHARACTER;
-import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 
@@ -194,8 +192,8 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\0\u070e\0\u0738\0\u070e\0\u04ec\0\u0762\0\u078c\0\u031e\0\u04ec"+
     "\0\u07b6\0\u07e0\0\u080a\0\u0834\0\u085e\0\u0888\0\u0888\0\u08b2"+
     "\0\u08dc\0\u0906\0\u0930\0\u0930\0\u0930\0\u095a\0\u046e\0\u046e"+
-    "\0\u0984\0\u046e\0\u09ae\0\u09d8\0\u0a02\0\u09d8\0\u046e\0\u046e"+
-    "\0\u0a2c\0\u046e\0\u031e\0\u046e\0\u0a56\0\u046e\0\u046e\0\u046e"+
+    "\0\u0984\0\u046e\0\u09ae\0\u09d8\0\u0a02\0\u09d8\0\u046e\0\u0a2c"+
+    "\0\u046e\0\u0a56\0\u046e\0\u031e\0\u046e\0\u046e\0\u046e\0\u046e"+
     "\0\u046e\0\u046e\0\u046e\0\u0a80\0\u046e\0\u0aaa\0\u0ad4\0\u046e"+
     "\0\u046e\0\u0afe\0\u031e\0\u0afe\0\u046e\0\u046e\0\u0b28\0\u039c"+
     "\0\u0b52\0\u041a\0\u046e\0\u031e\0\u046e\0\u046e\0\u046e\0\u0b7c"+
@@ -267,16 +265,16 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\1\50\1\117\2\123\1\53\3\117\2\53\1\117\1\120"+
     "\17\53\1\65\1\53\1\66\12\53\1\61\1\53\1\50"+
     "\1\117\3\53\3\25\2\53\1\30\20\53\1\127\1\53"+
-    "\1\66\12\53\1\61\1\53\1\50\1\25\3\53\3\25"+
-    "\1\130\1\53\1\30\17\53\1\131\2\53\1\132\12\131"+
-    "\1\61\1\53\1\50\1\25\2\53\1\24\3\25\1\24"+
+    "\1\66\12\53\1\61\1\53\1\50\1\25\3\53\3\130"+
+    "\1\131\1\53\1\30\17\53\1\132\2\53\1\133\12\132"+
+    "\1\61\1\53\1\50\1\130\2\53\1\24\3\25\1\24"+
     "\1\27\1\30\5\24\2\31\1\32\1\24\1\33\1\24"+
-    "\1\53\2\24\1\74\1\24\1\133\1\24\1\42\3\24"+
-    "\1\43\1\44\1\24\1\45\2\24\1\46\1\134\1\24"+
-    "\1\50\1\25\2\24\1\53\3\135\2\53\1\30\1\62"+
+    "\1\53\2\24\1\74\1\24\1\134\1\24\1\42\3\24"+
+    "\1\43\1\44\1\24\1\45\2\24\1\46\1\135\1\24"+
+    "\1\50\1\25\2\24\1\53\3\130\2\53\1\30\1\62"+
     "\1\136\1\137\1\140\1\141\1\142\1\143\1\144\1\145"+
     "\1\146\5\53\1\147\2\53\1\150\12\147\1\53\1\151"+
-    "\1\53\1\135\2\53\1\24\3\152\1\153\1\154\1\0"+
+    "\1\53\1\130\2\53\1\24\3\152\1\153\1\154\1\0"+
     "\12\24\1\153\1\155\1\153\20\24\1\0\1\24\1\0"+
     "\1\152\2\24\1\0\3\25\43\0\1\25\2\0\1\24"+
     "\3\152\1\153\1\154\1\0\12\24\1\153\1\156\1\153"+
@@ -344,8 +342,8 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\1\123\1\126\1\123\1\0\4\123\1\0\1\123\1\0"+
     "\12\123\1\0\1\123\2\0\3\123\3\0\2\123\2\0"+
     "\10\123\1\215\1\123\1\0\4\123\1\0\1\123\1\0"+
-    "\12\123\1\0\1\123\2\0\2\123\20\0\1\131\5\0"+
-    "\1\131\3\0\12\131\7\0\3\135\43\0\1\135\22\0"+
+    "\12\123\1\0\1\123\2\0\2\123\1\0\3\130\43\0"+
+    "\1\130\22\0\1\132\5\0\1\132\3\0\12\132\26\0"+
     "\1\216\47\0\1\217\1\0\1\146\5\0\1\147\3\0"+
     "\12\147\26\0\1\147\5\0\1\147\3\0\12\147\7\0"+
     "\3\152\1\155\14\0\3\155\23\0\1\152\2\0\1\220"+
@@ -409,7 +407,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
     "\23\0\11\1\1\11\11\1\2\11\2\1\1\11\5\1"+
     "\2\11\1\1\3\11\30\1\2\11\1\1\1\11\4\1"+
-    "\2\11\1\1\1\11\1\1\1\11\1\1\6\11\1\1"+
+    "\1\11\1\1\1\11\1\1\1\11\1\1\7\11\1\1"+
     "\1\11\2\1\2\11\1\0\2\1\2\11\2\1\1\0"+
     "\1\1\1\11\1\1\3\11\1\0\4\1\1\0\1\11"+
     "\1\1\1\11\1\0\3\1\1\11\1\1\1\0\1\11"+
@@ -977,32 +975,32 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 100: break;
           case 36:
-            { return NOT_SIGN;
+            { return WHITE_SPACE;
             }
           // fall through
           case 101: break;
           case 37:
-            { return CONDITION_PARAMETER_TOKEN;
+            { return NOT_SIGN;
             }
           // fall through
           case 102: break;
           case 38:
-            { yybegin(IN_PARAMETER_CONDITION_BODY); return NESTED_RIGHT_BRACKET;
+            { return CONDITION_PARAMETER_TOKEN;
             }
           // fall through
           case 103: break;
           case 39:
-            { enterState(stack, IN_PARAMETER_CONDITION_BODY); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET;
+            { yybegin(IN_PARAMETER_CONDITION_BODY); return NESTED_RIGHT_BRACKET;
             }
           // fall through
           case 104: break;
           case 40:
-            { enterState(stack, IN_PARAMETER_CONDITION_BODY); return LEFT_BRACE;
+            { enterState(stack, IN_PARAMETER_CONDITION_BODY); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET;
             }
           // fall through
           case 105: break;
           case 41:
-            { return WHITE_SPACE;
+            { enterState(stack, IN_PARAMETER_CONDITION_BODY); return LEFT_BRACE;
             }
           // fall through
           case 106: break;

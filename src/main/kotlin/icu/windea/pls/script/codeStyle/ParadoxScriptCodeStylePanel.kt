@@ -5,12 +5,13 @@ import com.intellij.psi.codeStyle.*
 import icu.windea.pls.script.*
 
 class ParadoxScriptCodeStylePanel(
-	currentSettings: CodeStyleSettings,
-	settings: CodeStyleSettings
+    currentSettings: CodeStyleSettings,
+    settings: CodeStyleSettings
 ) : TabbedLanguageCodeStylePanel(ParadoxScriptLanguage, currentSettings, settings) {
-	override fun initTabs(settings: CodeStyleSettings) {
-		addIndentOptionsTab(settings)
-		addSpacesTab(settings)
-		addTab(GenerationCodeStylePanel(settings, ParadoxScriptLanguage))
-	}
+    override fun initTabs(settings: CodeStyleSettings) {
+        addIndentOptionsTab(settings)
+        addSpacesTab(settings)
+        addTab(GenerationCodeStylePanel(settings, ParadoxScriptLanguage))
+        addBlankLinesTab(settings)
+    }
 }

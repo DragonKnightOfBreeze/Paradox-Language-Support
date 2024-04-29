@@ -294,11 +294,11 @@ SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
     {COMMENT} { return COMMENT; }
 }
 <IN_PARAMETER_CONDITION_EXPRESSION>{
-    {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }
+    {BLANK} { return WHITE_SPACE; }
     "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
-    "!" { return NOT_SIGN; }
     "]" { yybegin(IN_PARAMETER_CONDITION_BODY); return NESTED_RIGHT_BRACKET; }
+    "!" { return NOT_SIGN; }
     {PARAMETER_TOKEN} { return CONDITION_PARAMETER_TOKEN; }
 
     {COMMENT} { return COMMENT; }

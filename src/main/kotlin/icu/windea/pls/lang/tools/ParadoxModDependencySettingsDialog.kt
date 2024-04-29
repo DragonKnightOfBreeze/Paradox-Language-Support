@@ -14,7 +14,7 @@ class ParadoxModDependencySettingsDialog(
     val project: Project,
     val settings: ParadoxModDependencySettingsState,
     parentComponent: Component? = null
-) : DialogWrapper(project, parentComponent, true, IdeModalityType.PROJECT) {
+) : DialogWrapper(project, parentComponent, true, IdeModalityType.IDE) {
     val graph = PropertyGraph()
     val gameTypeProperty = graph.property(settings.finalGameType)
     
