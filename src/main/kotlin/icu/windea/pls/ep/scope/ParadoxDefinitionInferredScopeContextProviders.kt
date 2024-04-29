@@ -143,7 +143,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
     }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if(!getSettings().inference.eventScopeContext) return null
+        if(!getSettings().inference.scopeContextForEvents) return null
         return doGetScopeContextFromCache(definition)
     }
     
@@ -249,7 +249,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
     }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if(!getSettings().inference.eventScopeContext) return null
+        if(!getSettings().inference.scopeContextForEvents) return null
         return doGetScopeContextFromCache(definition)
     }
     
@@ -397,7 +397,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
     }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if(!getSettings().inference.onActionScopeContext) return null
+        if(!getSettings().inference.scopeContextForOnActions) return null
         return doGetScopeContextFromCache(definition)
     }
     

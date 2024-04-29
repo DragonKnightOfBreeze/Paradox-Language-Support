@@ -107,19 +107,19 @@ class ParadoxSettingsState : BaseState() {
     /**
      * 注意：仅可配置是否启用基于使用的推断，基于自定义CWT规则的推断是始终启用的。
      * 
-     * @property parameterConfig 是否推断参数对应的脚本表达式。
-     * @property inlineScriptConfig 是否推断内联脚本的使用位置。
+     * @property configContextForParameters 是否推断参数对应的脚本表达式。
+     * @property configContextForInlineScripts 是否推断内联脚本的使用位置。
      * @property scopeContext 是否推断scripted_trigger、scripted_effect等的作用域上下文。
-     * @property eventScopeContext 是否推断event的作用域上下文。
-     * @property onActionScopeContext 是否推断on_action的作用域上下文。
+     * @property scopeContextForEvents 是否推断event的作用域上下文。
+     * @property scopeContextForOnActions 是否推断on_action的作用域上下文。
      */
     @Tag("inference")
     class InferenceState : BaseState() {
-        var parameterConfig by property(true)
-        var inlineScriptConfig by property(true)
+        var configContextForParameters by property(true)
+        var configContextForInlineScripts by property(true)
         var scopeContext by property(false)
-        var eventScopeContext by property(false)
-        var onActionScopeContext by property(false)
+        var scopeContextForEvents by property(false)
+        var scopeContextForOnActions by property(false)
     }
     
     @Tag("hierarchy")

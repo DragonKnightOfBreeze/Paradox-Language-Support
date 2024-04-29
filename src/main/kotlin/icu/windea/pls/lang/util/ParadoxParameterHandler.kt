@@ -235,7 +235,7 @@ object ParadoxParameterHandler {
      * 尝试推断得到参数对应的上下文CWT规则。
      */
     fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        if(!getSettings().inference.parameterConfig) return emptyList()
+        if(!getSettings().inference.configContextForParameters) return emptyList()
         
         val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
         return parameterInfo.getOrPutUserData(PlsKeys.parameterInferredContextConfigs) {

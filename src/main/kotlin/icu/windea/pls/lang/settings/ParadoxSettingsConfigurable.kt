@@ -266,29 +266,26 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
             }
             //inference
             collapsibleGroup(PlsBundle.message("settings.inference")) {
-                //argumentValue
+                //configContextForParameters
                 row {
-                    checkBox(PlsBundle.message("settings.inference.argumentValueConfig"))
-                        .bindSelected(settings.inference::parameterConfig)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.argumentValueConfig.tooltip") }
+                    checkBox(PlsBundle.message("settings.inference.configContextForParameters"))
+                        .bindSelected(settings.inference::configContextForParameters)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextForParameters.tooltip") }
                         .onApply {
                             ParadoxModificationTrackerProvider.ParameterConfigInferenceTracker.incModificationCount()
                         }
                 }
-                //inlineScriptConfig
+                //configContextForInlineScripts
                 row {
-                    checkBox(PlsBundle.message("settings.inference.inlineScriptConfig"))
-                        .bindSelected(settings.inference::inlineScriptConfig)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.inlineScriptConfig.tooltip") }
+                    checkBox(PlsBundle.message("settings.inference.configContextForInlineScripts"))
+                        .bindSelected(settings.inference::configContextForInlineScripts)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextForInlineScripts.tooltip") }
                         .onApply {
                             ParadoxModificationTrackerProvider.InlineScriptConfigInferenceTracker.incModificationCount()
-                            
-                            //重新解析内联脚本文件
                             ProjectManager.getInstance().openProjects.forEach { project ->
                                 ParadoxModificationTrackerProvider.getInstance(project).ScriptFileTracker.incModificationCount()
                                 ParadoxModificationTrackerProvider.getInstance(project).InlineScriptsTracker.incModificationCount()
                             }
-                            //重新解析内联脚本文件
                             val openedFiles = ParadoxCoreHandler.findOpenedFiles { file, _ -> ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null }
                             ParadoxCoreHandler.reparseFiles(openedFiles)
                         }
@@ -304,22 +301,22 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                             ParadoxCoreHandler.reparseFiles(openedFiles, reparse = false)
                         }
                 }
-                //eventScopeContext
+                //scopeContextForEvents
                 row {
-                    checkBox(PlsBundle.message("settings.inference.eventScopeContext"))
-                        .bindSelected(settings.inference::eventScopeContext)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.eventScopeContext.tooltip") }
+                    checkBox(PlsBundle.message("settings.inference.scopeContextForEvents"))
+                        .bindSelected(settings.inference::scopeContextForEvents)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContextForEvents.tooltip") }
                         .onApply {
                             ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount()
                             val openedFiles = ParadoxCoreHandler.findOpenedFiles()
                             ParadoxCoreHandler.reparseFiles(openedFiles, reparse = false)
                         }
                 }
-                //onActionScopeContext
+                //scopeContextForOnActions
                 row {
-                    checkBox(PlsBundle.message("settings.inference.onActionScopeContext"))
-                        .bindSelected(settings.inference::onActionScopeContext)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.onActionScopeContext.tooltip") }
+                    checkBox(PlsBundle.message("settings.inference.scopeContextForOnActions"))
+                        .bindSelected(settings.inference::scopeContextForOnActions)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContextForOnActions.tooltip") }
                         .onApply {
                             ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount()
                             val openedFiles = ParadoxCoreHandler.findOpenedFiles()
