@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.*
@@ -17,7 +19,6 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
         override fun visitElement(element: PsiElement) {
             ProgressManager.checkCanceled()
             checkComparisonOperator(element)
-            checkQuestionEqualSign(element)
         }
         
         private fun checkComparisonOperator(element: PsiElement) {
@@ -32,7 +33,6 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
             holder.registerProblem(token, message, ProblemHighlightType.GENERIC_ERROR)
         }
         
-        @Suppress("UNUSED_PARAMETER")
         private fun canResolveToNumber(element: ParadoxScriptPropertyKey): Boolean {
             //number, scalar, parametric
             return true
@@ -51,16 +51,6 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
                 element is ParadoxScriptInlineMath -> true
                 else -> false
             }
-        }
-        
-        private fun checkQuestionEqualSign(element: PsiElement) {
-            //不支持的比较操作符（特指`?=`，仅VIC3支持）
-            //https://github.com/cwtools/cwtools/issues/53
-            if(element.elementType != ParadoxScriptElementTypes.QUESTION_EQUAL_SIGN) return
-            val gameType = selectGameType(element) ?: return
-            if(gameType == ParadoxGameType.Vic3) return
-            val message = PlsBundle.message("inspection.script.incorrectScriptSyntax.description.2")
-            holder.registerProblem(element, message, ProblemHighlightType.GENERIC_ERROR)
         }
     }
 }

@@ -12,7 +12,7 @@ enum class ParadoxSeparatorType(
     LE("<="),
     GE(">="),
     //https://github.com/cwtools/cwtools/issues/53
-    @WithGameType(ParadoxGameType.Vic3)
+    //can be used in some game types
     COMPARE("?=");
     
     override fun toString(): String {
