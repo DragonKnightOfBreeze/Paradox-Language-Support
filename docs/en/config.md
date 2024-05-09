@@ -77,19 +77,21 @@ Reference Links:
 
 #### Priorities
 
-Priority configs are used to configure the override order for various targets (files, definitions, etc.).
+Priority configs are used to configure the override order for targets (scripted variables, definitions and localisations).
 
 ```cwt
 priorities = {
-    # LHS - super directory path (relative to game or mod root directory)
-    # RHS - priority (available values: "fios", "lios", "ordered", default value: "lios", ignore case)
-    
-    # fios - use the one that reads first, ignore all remaining items
-    # lios - use the one that reads last (if not specified, use this as default)
-    # ordered - reads by order, no overrides
-    
+	# LHS - file path (relative to game or mod root directory)
+	# RHS - priority (available values: "fios", "lios", "ordered", default value: "lios", ignore case)
+
+	# file path - path of specific directory (declared in type configs, or, e.g. "common/scripted_variables", "localisation") 
+
+	# fios - use the one that reads first, ignore all remaining items
+	# lios - use the one that reads last (if not specified, use this as default)
+	# ordered - reads by order, no overrides
+
 	"events" = fios
-    # ...
+	# ...
 }
 ```
 

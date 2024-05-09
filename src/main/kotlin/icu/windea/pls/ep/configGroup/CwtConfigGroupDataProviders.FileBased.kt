@@ -160,7 +160,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 key == "priorities" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
-                        val k = prop.key.orNull() ?: continue
+                        val k = prop.key.orNull()?.trim('/') ?: continue
                         val v = prop.stringValue?.orNull()?.let { ParadoxPriority.resolve(it) } ?: continue
                         configGroup.priorities[k] = v
                     }
