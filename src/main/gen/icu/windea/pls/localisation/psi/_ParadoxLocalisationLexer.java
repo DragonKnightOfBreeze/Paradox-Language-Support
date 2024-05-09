@@ -4,12 +4,10 @@
 package icu.windea.pls.localisation.psi;
 
 import com.intellij.lexer.*;
-import com.intellij.psi.tree.*;
+import com.intellij.psi.tree.IElementType;
 
-import static com.intellij.psi.TokenType.BAD_CHARACTER;
-import static com.intellij.psi.TokenType.WHITE_SPACE;
-import static icu.windea.pls.core.StdlibExtensionsKt.isExactDigit;
-import static icu.windea.pls.core.StdlibExtensionsKt.isExactLetter;
+import static com.intellij.psi.TokenType.*;
+import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 
@@ -473,7 +471,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     }
     
     private IElementType checkRightQuote() {
-        //NOE double quote should be threat as a string if it's not the last one of current line
+        //NOTE double quote should be threat as a string if it's not the last one of current line
         try {
             int i = zzCurrentPos + 1;
             int length = zzBuffer.length();

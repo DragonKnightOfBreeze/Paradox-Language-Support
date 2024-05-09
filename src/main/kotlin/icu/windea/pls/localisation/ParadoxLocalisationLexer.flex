@@ -78,7 +78,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
     
     private IElementType checkRightQuote() {
-        //NOE double quote should be threat as a string if it's not the last one of current line
+        //NOTE double quote should be threat as a string if it's not the last one of current line
         try {
             int i = zzCurrentPos + 1;
             int length = zzBuffer.length();
