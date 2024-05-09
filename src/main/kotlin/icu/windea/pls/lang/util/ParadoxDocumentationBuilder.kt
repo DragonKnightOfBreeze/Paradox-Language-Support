@@ -12,7 +12,7 @@ object ParadoxDocumentationBuilder {
             var appendSeparator = false
             for(category in categories) {
                 if(appendSeparator) append(", ") else appendSeparator = true
-                appendCwtLink("${gameType.linkToken}modifier_categories/$category", category, contextElement)
+                appendCwtLink("${gameType.prefix}modifier_categories/$category", category, contextElement)
             }
             append("</code>")
         }

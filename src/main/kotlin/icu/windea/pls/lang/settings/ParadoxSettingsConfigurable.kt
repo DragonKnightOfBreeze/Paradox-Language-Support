@@ -12,7 +12,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import icu.windea.pls.model.ParadoxGameType.*
 import java.awt.event.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
@@ -31,7 +31,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                             toolTipText = PlsBundle.message("settings.general.defaultGameType.tooltip")
                         }
                     val oldDefaultGameType = settings.defaultGameType
-                    comboBox(ParadoxGameType.valueList)
+                    comboBox(entries)
                         .bindItem(settings::defaultGameType.toNullableProperty())
                         .onApply {
                             if(oldDefaultGameType != settings.defaultGameType) {
@@ -48,7 +48,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                             toolTipText = PlsBundle.message("settings.general.defaultGameDirectories.tooltip")
                         }
                     val oldDefaultGameDirectories = settings.defaultGameDirectories
-                    ParadoxGameType.values.forEach { oldDefaultGameDirectories.putIfAbsent(it.id, "") }
+                    entries.forEach { oldDefaultGameDirectories.putIfAbsent(it.id, "") }
                     val defaultList = oldDefaultGameDirectories.toMutableEntryList()
                     var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                     val action = { _: ActionEvent ->

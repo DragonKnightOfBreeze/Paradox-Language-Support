@@ -432,7 +432,7 @@ object ParadoxScopeHandler {
         with(builder) {
             when {
                 isUnsureScopeId(scopeId) -> append(scopeId)
-                else -> appendCwtLink("${gameType.linkToken}scopes/$scopeId", scopeId, contextElement)
+                else -> appendCwtLink("${gameType.prefix}scopes/$scopeId", scopeId, contextElement)
             }
         }
     }
@@ -442,11 +442,11 @@ object ParadoxScopeHandler {
             var appendSeparator = false
             scopeContext.toScopeMap().forEach { (systemLink, scope) ->
                 if(appendSeparator) appendBr() else appendSeparator = true
-                appendCwtLink("${gameType.linkToken}system_links/$systemLink", systemLink, contextElement)
+                appendCwtLink("${gameType.prefix}system_links/$systemLink", systemLink, contextElement)
                 append(" = ")
                 when {
                     isUnsureScopeId(scope.id) -> append(scope)
-                    else -> appendCwtLink("${gameType.linkToken}scopes/${scope.id}", scope.id, contextElement)
+                    else -> appendCwtLink("${gameType.prefix}scopes/${scope.id}", scope.id, contextElement)
                 }
             }
         }

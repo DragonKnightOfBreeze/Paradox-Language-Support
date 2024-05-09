@@ -6,7 +6,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.configGroup.*
-import icu.windea.pls.model.*
+import icu.windea.pls.model.ParadoxGameType.*
 
 class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
     //这个方法应当尽可能地快
@@ -23,7 +23,7 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
             if(fileProvider.isBuiltIn()) return@f
             val configGroup = fileProvider.getContainingConfigGroup(vFile, project) ?: return@f
             if(configGroup.gameType == null) {
-                ParadoxGameType.values.forEach { gameType ->
+                entries.forEach { gameType ->
                     configGroups += getConfigGroup(project, gameType)
                 }
             } else {

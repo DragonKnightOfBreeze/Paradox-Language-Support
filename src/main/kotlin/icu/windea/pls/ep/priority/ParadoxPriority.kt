@@ -1,5 +1,7 @@
 package icu.windea.pls.ep.priority
 
+import icu.windea.pls.model.*
+
 /**
  * 覆盖顺序。
  */
@@ -9,5 +11,14 @@ enum class ParadoxPriority {
     /** 后读覆盖（选用最后读取到的那个） */
     LIOS,
     /** 顺序读取 */
-    ORDERED
+    ORDERED;
+    
+    companion object {
+        val valueMap = entries.associateBy { it.name }
+        
+        @JvmStatic
+        fun resolve(name: String): ParadoxPriority? {
+            return valueMap[name.uppercase()]
+        }
+    }
 }

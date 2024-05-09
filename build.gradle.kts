@@ -3,11 +3,10 @@ import org.jetbrains.kotlin.gradle.tasks.*
 import org.jetbrains.kotlin.utils.*
 
 plugins {
-	id("idea")
-	id("org.jetbrains.kotlin.jvm") version "1.8.10"
-	id("org.jetbrains.kotlin.plugin.allopen") version "1.8.10"
-	id("org.jetbrains.intellij") version "1.15.0"
-	id("org.jetbrains.grammarkit") version "2022.3.1"
+	id("org.jetbrains.kotlin.jvm") version "1.9.24"
+	id("org.jetbrains.kotlin.plugin.allopen") version "1.9.24"
+	id("org.jetbrains.intellij") version "1.17.3"
+	id("org.jetbrains.grammarkit") version "2022.3.2.2"
 	id("org.jetbrains.changelog") version "2.0.0"
 }
 
@@ -45,7 +44,7 @@ dependencies {
 	//FROM DDS4J
 	implementation("ar.com.hjg:pngj:2.1.0")
 	//CSV
-	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.14.2") {
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.17.0") {
 		exclude(module = "jackson-annotations")
 		exclude(module = "jackson-core")
 		exclude(module = "jackson-databind")
@@ -53,16 +52,16 @@ dependencies {
 	////Sqlite
 	//implementation("org.xerial:sqlite-jdbc:3.40.1.0")
 	//Javassist
-	implementation("org.javassist:javassist:3.29.2-GA")
+	implementation("org.javassist:javassist:3.30.2-GA")
 	
 	//JUnit
 	testImplementation("junit:junit:4.13.2")
 	//Sqlite
-	testImplementation("org.xerial:sqlite-jdbc:3.40.1.0")
+	testImplementation("org.xerial:sqlite-jdbc:3.41.2.2")
 	//Byte Buddy
-	testImplementation("net.bytebuddy:byte-buddy:1.14.2")
+	testImplementation("net.bytebuddy:byte-buddy:1.14.15")
 	//Javassist
-	testImplementation("org.javassist:javassist:3.29.2-GA")
+	testImplementation("org.javassist:javassist:3.30.2-GA")
 	////JOGL
 	//testImplementation("org.jogamp.jogl:jogl-all:2.3.2")
 	////OPENRNDR

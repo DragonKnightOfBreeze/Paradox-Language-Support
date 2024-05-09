@@ -11,7 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import icu.windea.pls.model.ParadoxGameType.*
 
 class ParadoxModSettingsDialog(
     val project: Project,
@@ -71,7 +71,7 @@ class ParadoxModSettingsDialog(
             row {
                 //gameType
                 label(PlsBundle.message("mod.settings.gameType")).widthGroup("left")
-                comboBox(ParadoxGameType.valueList)
+                comboBox(entries)
                     .bindItem(gameTypeProperty)
                     .columns(18)
                     .onApply { settings.gameType = gameTypeProperty.get() } //set game type to non-default on apply

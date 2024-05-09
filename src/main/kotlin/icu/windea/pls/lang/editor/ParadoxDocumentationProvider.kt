@@ -161,7 +161,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
                 if(appendSeparator) append(" | ") else appendSeparator = true
                 val valueConfig = configGroup.dynamicValueTypes[dynamicValueType]
                 if(valueConfig != null) {
-                    val typeLink = "${gameType.linkToken}values/${dynamicValueType}"
+                    val typeLink = "${gameType.prefix}values/${dynamicValueType}"
                     appendCwtLink(typeLink, dynamicValueType)
                 } else {
                     append(dynamicValueType)
@@ -181,7 +181,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
             append(PlsBundle.message("prefix.complexEnumValue")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
             val complexEnumConfig = configGroup.complexEnums[enumName]
             if(complexEnumConfig != null) {
-                val typeLink = "${gameType.linkToken}complex_enums/${enumName}"
+                val typeLink = "${gameType.prefix}complex_enums/${enumName}"
                 append(": ").appendCwtLink(typeLink, enumName)
             } else {
                 append(": ").append(enumName)

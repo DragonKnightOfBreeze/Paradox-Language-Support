@@ -12,12 +12,9 @@ enum class CwtSeparatorType(
     }
     
     companion object {
-        private val values = values()
-        
         @JvmStatic
         fun resolve(id: Byte): CwtSeparatorType {
-            //access array rather than byte-key map to optimize performance
-            return values[id.toInt()]
+            return entries[id.toInt()]
         }
         
         @JvmStatic

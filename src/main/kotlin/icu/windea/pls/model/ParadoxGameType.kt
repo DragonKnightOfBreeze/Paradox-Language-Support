@@ -25,20 +25,24 @@ enum class ParadoxGameType(
     }
     
     companion object {
-        val values = values()
-        val valueList = values.toList()
+        private val valueMapById = entries.associateBy { it.id }
+        private val valueMapByTitle = entries.associateBy { it.title }
+        private val valueMapBySteamId = entries.associateBy { it.steamId }
         
-        private val valueMap = values.associateBy { it.id }
-        private val valueMapByTitle = values.associateBy { it.title }
-        private val valueMapBySteamId = values.associateBy { it.steamId }
+        @JvmStatic
+        fun resolveById(id: String) = valueMapById[id]
         
-        fun resolve(id: String) = valueMap[id]
-        
+        @JvmStatic
         fun resolveByTitle(title: String) = valueMapByTitle[title]
         
+        @JvmStatic
         fun resolveBySteamId(steamId: String) = valueMapBySteamId[steamId]
         
-        fun canResolve(id: String) = id == "core" || valueMap.containsKey(id)
+        @JvmStatic
+        fun canResolve(id: String) = id == "core" || valueMapById.containsKey(id)
+        
+        @JvmStatic
+        fun placeholder() = Stellaris
     }
 }
 
@@ -46,8 +50,6 @@ val ParadoxGameType?.id get() = this?.id ?: "core"
 
 val ParadoxGameType?.title get() = this?.title ?: "Core"
 
-val ParadoxGameType?.linkToken get() = if(this == null) "" else "${id}:"
+val ParadoxGameType?.prefix get() = if(this == null) "" else "${id}:"
 
 fun ParadoxGameType?.orDefault() = this ?: getSettings().defaultGameType
-
-fun ParadoxGameType.Companion.placeholder() = ParadoxGameType.Stellaris

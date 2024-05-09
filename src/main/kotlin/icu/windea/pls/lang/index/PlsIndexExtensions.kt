@@ -4,6 +4,7 @@ import com.intellij.codeInsight.highlighting.*
 import com.intellij.psi.stubs.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.ParadoxGameType.*
 
 fun ReadWriteAccessDetector.Access.toByte() = this.ordinal
 
@@ -15,14 +16,14 @@ fun Byte.toReadWriteAccess() = when {
 
 fun ParadoxGameType.toByte() = this.ordinal
 
-fun Byte.toGameType() = ParadoxGameType.values[this.toInt()]
+fun Byte.toGameType() = entries[this.toInt()]
 
 fun ParadoxLocalisationCategory.toByte() = this.ordinal
 
-fun Byte.toLocalisationCategory() = ParadoxLocalisationCategory.values[this.toInt()]
+fun Byte.toLocalisationCategory() = ParadoxLocalisationCategory.resolve(this)
 
 
-inline fun <reified T: StubIndexExtension<*,*>> findStubIndex(): T{
+inline fun <reified T : StubIndexExtension<*, *>> findStubIndex(): T {
     return StubIndexExtension.EP_NAME.findExtensionOrFail(T::class.java)
 }
 

@@ -14,8 +14,4 @@ enum class ParadoxLocalisationConstraint(
 ) {
     Default(ParadoxLocalisationNameIndex.KEY, { true }),
     Modifier(ParadoxLocalisationNameIndex.ModifierIndex.KEY, { it.startsWith("mod_", true) }, ignoreCase = true);
-    
-    companion object {
-        val values = values()
-    }
 }

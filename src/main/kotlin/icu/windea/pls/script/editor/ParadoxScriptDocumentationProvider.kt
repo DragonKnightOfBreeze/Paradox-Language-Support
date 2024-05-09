@@ -169,7 +169,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         append(name.orAnonymous().escapeXml())
         append("</b>: ")
         val typeConfig = definitionInfo.typeConfig
-        val typeLink = "${gameType.linkToken}types/${typeConfig.name}"
+        val typeLink = "${gameType.prefix}types/${typeConfig.name}"
         appendCwtLink(typeLink, typeConfig.name)
         val subtypeConfigs = definitionInfo.subtypeConfigs
         if(subtypeConfigs.isNotEmpty()) {
@@ -189,7 +189,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         appendDefinitionLink(gameType, name, definitionInfo.type, definition, name.orAnonymous().escapeXml())
         append(": ")
         val typeConfig = definitionInfo.typeConfig
-        val typeLink = "${gameType.linkToken}types/${typeConfig.name}"
+        val typeLink = "${gameType.prefix}types/${typeConfig.name}"
         appendCwtLink(typeLink, typeConfig.name)
         val subtypeConfigs = definitionInfo.subtypeConfigs
         if(subtypeConfigs.isNotEmpty()) {
@@ -354,7 +354,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
         if(config == null) return
         val eventType = config.eventType
         appendBr()
-        val typeLink = "${gameType.linkToken}types/event/$eventType"
+        val typeLink = "${gameType.prefix}types/event/$eventType"
         append(PlsBundle.message("prefix.eventType")).append(" ").appendCwtLink(typeLink, eventType)
     }
     

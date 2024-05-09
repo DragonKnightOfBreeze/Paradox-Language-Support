@@ -35,7 +35,7 @@ abstract class CwtConfigGroupFileProviderBase: CwtConfigGroupFileProvider {
         if(gameTypeId == "core") {
             return getConfigGroup(project, null)
         } else {
-            val gameType = ParadoxGameType.resolve(gameTypeId) ?: return null
+            val gameType = ParadoxGameType.resolveById(gameTypeId) ?: return null
             return getConfigGroup(project, gameType)
         }
     }

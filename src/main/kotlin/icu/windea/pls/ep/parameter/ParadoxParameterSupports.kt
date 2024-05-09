@@ -219,7 +219,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         appendDefinitionLink(gameType, definitionName, definitionType.first(), parameterElement)
         append(": ")
         val type = definitionType.first()
-        val typeLink = "${gameType.linkToken}types/${type}"
+        val typeLink = "${gameType.prefix}types/${type}"
         appendCwtLink(typeLink, type)
         for((index, t) in definitionType.withIndex()) {
             if(index == 0) continue

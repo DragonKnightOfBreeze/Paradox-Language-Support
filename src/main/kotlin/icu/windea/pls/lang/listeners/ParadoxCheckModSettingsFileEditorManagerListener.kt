@@ -11,6 +11,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.tools.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.ParadoxGameType.*
 
 /**
  * 当打开项目中的模组文件时，检查模组的游戏目录是否已配置。如果未配置则弹出通知。
@@ -51,7 +52,7 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
             val action2 = NotificationAction.createSimple(PlsBundle.message("mod.settings.notification.1.action.2")) {
                 val settings = getSettings()
                 val oldDefaultGameDirectories = settings.defaultGameDirectories
-                ParadoxGameType.values.forEach { oldDefaultGameDirectories.putIfAbsent(it.id, "") }
+                entries.forEach { oldDefaultGameDirectories.putIfAbsent(it.id, "") }
                 val defaultList = oldDefaultGameDirectories.toMutableEntryList()
                 var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                 val dialog = ParadoxGameDirectoriesDialog(list)

@@ -10,6 +10,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.tools.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.ParadoxGameType.*
 
 class ParadoxGameDirectoriesDialog(
     val list: MutableList<Entry<String, String>>
@@ -27,7 +28,7 @@ class ParadoxGameDirectoriesDialog(
     override fun createCenterPanel(): DialogPanel {
         return panel {
             properties.forEach f@{ (gameTypeId, gameDirectoryProperty) ->
-                val gameType = ParadoxGameType.resolve(gameTypeId) ?: return@f
+                val gameType = ParadoxGameType.resolveById(gameTypeId) ?: return@f
                 val gameDirectory by gameDirectoryProperty
                 row {
                     //gameDirectory
@@ -43,7 +44,7 @@ class ParadoxGameDirectoriesDialog(
                         .validationOnApply { ParadoxGameHandler.validateGameDirectory(this, gameType, gameDirectory) }
                 }
             }
-            val quickGameDirectories = ParadoxGameType.values.associateBy({ it.id }, { ParadoxGameHandler.getQuickGameDirectory(it) })
+            val quickGameDirectories = entries.associateBy({ it.id }, { ParadoxGameHandler.getQuickGameDirectory(it) })
             row {
                 link(PlsBundle.message("gameDirectory.quickSelectAll")) {
                     properties.forEach f@{ (gameTypeId, gameDirectoryProperty) ->

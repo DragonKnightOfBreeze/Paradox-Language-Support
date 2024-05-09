@@ -9,6 +9,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.ep.priority.*
 
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
@@ -39,6 +40,8 @@ val CwtConfigGroup.localisationLocalesByCode: MutableMap<String, CwtLocalisation
 val CwtConfigGroup.localisationPredefinedParameters: MutableMap<String, CwtLocalisationPredefinedParameterConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
+val CwtConfigGroup.priorities: MutableMap<String, ParadoxPriority>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 //unused
 val CwtConfigGroup.folders: MutableSet<String>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableSetOf() }

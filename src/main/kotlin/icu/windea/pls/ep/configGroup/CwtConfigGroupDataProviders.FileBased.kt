@@ -146,22 +146,25 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     
     private fun doProcessFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         when(fileConfig.name) {
-            //解析要将其中的文件识别为脚本文件的目录列表 - 仅作记录，插件目前并不这个目录列表来判断是否要将文件识别为脚本文件
-            "folders.cwt" -> resolveFoldersInFile(fileConfig, configGroup)
-            //对于其他情况，不限制文件名，统一处理
-            else -> resolveOthersInFile(fileConfig, configGroup)
+            //解析要将其中的文件识别为脚本文件的目录列表（仅作记录，目前插件并不基于这个来判断文件是否要被识别为脚本文件）
+            "folders.cwt" -> {
+                fileConfig.values.mapTo(configGroup.folders) { it.value }
+                return
+            }
         }
-    }
-    
-    private fun resolveFoldersInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
-        fileConfig.values.mapTo(configGroup.folders) { it.value }
-    }
-    
-    private fun resolveOthersInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
+        
         for(property in fileConfig.properties) {
             val key = property.key
             when {
-                //找到配置文件中的顶级的key为"types"的属性，然后解析它的子属性，添加到types中
+                key == "priorities" -> {
+                    val props = property.properties ?: continue
+                    for(prop in props) {
+                        val k = prop.key
+                        val v = prop.value
+                        
+                    }
+                }
+                
                 key == "types" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
@@ -169,7 +172,6 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.types[typeConfig.name] = typeConfig
                     }
                 }
-                //找到配置文件中的顶级的key为"enums"的属性，然后解析它的子属性，添加到enums和complexEnums中
                 key == "enums" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {

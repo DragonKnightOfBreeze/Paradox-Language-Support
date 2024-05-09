@@ -19,12 +19,19 @@ enum class ParadoxLocalisationCategory(
 	}
 	
 	companion object {
-		val values = values()
+		val values = entries
 		
+		@JvmStatic
+		fun resolve(id: Byte): ParadoxLocalisationCategory {
+			return entries[id.toInt()]
+		}
+		
+		@JvmStatic
 		fun resolve(flag: Boolean): ParadoxLocalisationCategory {
 			return if(flag) Localisation else SyncedLocalisation
 		}
 		
+		@JvmStatic
 		fun resolve(path: ParadoxPath): ParadoxLocalisationCategory? {
 			return when {
 				path.canBeLocalisationPath() -> Localisation
@@ -33,27 +40,32 @@ enum class ParadoxLocalisationCategory(
 			}
 		}
 		
+		@JvmStatic
 		fun resolve(file: VirtualFile): ParadoxLocalisationCategory? {
 			val root = file.fileInfo?.pathToEntry ?: return null
 			return resolve(root)
 		}
 		
+		@JvmStatic
 		fun resolve(file: PsiFile): ParadoxLocalisationCategory? {
 			if(file !is ParadoxLocalisationFile) return null
 			val root = file.fileInfo?.pathToEntry ?: return null
 			return resolve(root)
 		}
 		
+		@JvmStatic
 		fun resolve(property: ParadoxLocalisationProperty): ParadoxLocalisationCategory? {
 			val root = property.fileInfo?.pathToEntry ?: return null
 			return resolve(root)
 		}
 		
+		@JvmStatic
 		fun resolve(propertyReference: ParadoxLocalisationPropertyReference): ParadoxLocalisationCategory? {
 			val root = propertyReference.fileInfo?.pathToEntry ?: return null
 			return resolve(root)
 		}
 		
+		@JvmStatic
 		fun placeholder() = Localisation
 	}
 }

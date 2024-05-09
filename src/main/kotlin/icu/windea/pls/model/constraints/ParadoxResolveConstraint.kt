@@ -13,7 +13,7 @@ import icu.windea.pls.script.references.*
 enum class ParadoxResolveConstraint {
     ScriptedVariable {
         override fun canResolveReference(element: PsiElement): Boolean {
-            return when (element) {
+            return when(element) {
                 is ParadoxScriptedVariableReference -> true
                 else -> false
             }

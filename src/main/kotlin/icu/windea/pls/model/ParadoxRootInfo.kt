@@ -31,7 +31,7 @@ class ParadoxGameRootInfo(
     override val gameRootFile: VirtualFile = doGetGameRootFile()
     
     private fun doGetGameType(): ParadoxGameType {
-        return launcherSettingsInfo.gameId.let { ParadoxGameType.resolve(it) } ?: throw IllegalStateException()
+        return launcherSettingsInfo.gameId.let { ParadoxGameType.resolveById(it) } ?: throw IllegalStateException()
     }
     
     private fun doGetGameRootFile(): VirtualFile {
@@ -63,7 +63,7 @@ data class ParadoxLauncherSettingsInfo(
     val gameId: String,
     val version: String,
     val rawVersion: String,
-    val gameDataPath: String = "%USER_DOCUMENTS%/Paradox Interactive/${ParadoxGameType.resolve(gameId)!!}",
+    val gameDataPath: String = "%USER_DOCUMENTS%/Paradox Interactive/${ParadoxGameType.resolveById(gameId)!!}",
     val dlcPath: String = "",
     val exePath: String,
     val exeArgs: List<String>

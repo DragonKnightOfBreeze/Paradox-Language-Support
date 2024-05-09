@@ -168,7 +168,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
                     //在脚本文件中显示为链接
                     if(configGroup != null) {
                         val gameType = configGroup.gameType
-                        val typeLink = "${gameType.linkToken}${typeCategory}/${typeName}"
+                        val typeLink = "${gameType.prefix}${typeCategory}/${typeName}"
                         append(": ").appendCwtLink(typeLink, typeName, typeElement)
                     } else {
                         append(": ").append(typeName)

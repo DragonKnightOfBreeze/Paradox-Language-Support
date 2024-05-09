@@ -134,25 +134,25 @@ class CwtConfigLinkProvider : DocumentationElementLinkProvider {
             config is CwtSystemLinkConfig -> {
                 val gameType = config.configGroup.gameType
                 val name = config.name
-                val link = "${linkPrefix}${gameType.linkToken}system_links/${name}"
+                val link = "${linkPrefix}${gameType.prefix}system_links/${name}"
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
             config is CwtLinkConfig -> {
                 val gameType = config.configGroup.gameType
                 val name = config.name
-                val link = "${linkPrefix}${gameType.linkToken}links/${name}"
+                val link = "${linkPrefix}${gameType.prefix}links/${name}"
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
             config is CwtLocalisationLinkConfig -> {
                 val gameType = config.configGroup.gameType
                 val name = config.name
-                val link = "${linkPrefix}${gameType.linkToken}localisation_links/${name}"
+                val link = "${linkPrefix}${gameType.prefix}localisation_links/${name}"
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
             config is CwtLocalisationCommandConfig -> {
                 val gameType = config.configGroup.gameType
                 val name = config.name
-                val link = "${linkPrefix}${gameType.linkToken}localisation_commands/${name}"
+                val link = "${linkPrefix}${gameType.prefix}localisation_commands/${name}"
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
         }
@@ -189,7 +189,7 @@ class ParadoxScriptedVariableLinkProvider : DocumentationElementLinkProvider {
         if(element !is ParadoxScriptScriptedVariable) return null
         val gameType = selectGameType(element)
         val name = element.name
-        val link = "${linkPrefix}${gameType.linkToken}${name}"
+        val link = "${linkPrefix}${gameType.prefix}${name}"
         val builder = StringBuilder()
         DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
         return builder.toString()
@@ -233,7 +233,7 @@ class ParadoxDefinitionLinkProvider : DocumentationElementLinkProvider {
         val gameType = definitionInfo.gameType
         val name = definitionInfo.name
         val typesText = definitionInfo.types.joinToString(".")
-        val link = "${linkPrefix}${gameType.linkToken}${typesText}/${name}"
+        val link = "${linkPrefix}${gameType.prefix}${typesText}/${name}"
         val builder = StringBuilder()
         DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
         return builder.toString()
@@ -271,7 +271,7 @@ class ParadoxLocalisationLinkProvider : DocumentationElementLinkProvider {
         if(localisationInfo.category != ParadoxLocalisationCategory.Localisation) return null
         val name = localisationInfo.name
         val gameType = localisationInfo.gameType
-        val link = "${linkPrefix}${gameType.linkToken}${name}"
+        val link = "${linkPrefix}${gameType.prefix}${name}"
         val builder = StringBuilder()
         DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
         return builder.toString()
@@ -337,5 +337,5 @@ class ParadoxModifierLinkProvider: DocumentationElementLinkProvider {
 private fun getGameTypeAndRemain(shortLink: String): Tuple2<ParadoxGameType?, String> {
     val i = shortLink.indexOf(':')
     if(i == -1) return null to shortLink
-    return shortLink.substring(0, i).let { ParadoxGameType.resolve(it) } to shortLink.substring(i + 1)
+    return shortLink.substring(0, i).let { ParadoxGameType.resolveById(it) } to shortLink.substring(i + 1)
 }
