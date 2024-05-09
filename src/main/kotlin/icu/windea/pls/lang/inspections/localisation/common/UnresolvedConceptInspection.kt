@@ -30,18 +30,22 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
             }
             
             private fun visitConcept(element: ParadoxLocalisationConcept) {
-                if(ignoredByConfigs) {
-                    configGroup.extendedDefinitions
-                    val configs = configGroup.extendedDefinitions.findFromPattern(element.name, element, configGroup).orEmpty()
-                    val config = configs.findFast { ParadoxDefinitionTypeExpression.resolve(it.type).matches("concept") }
-                    if(config != null) return
-                }
+                if(isIgnoredByConfigs(element)) return
                 
                 val location = element.conceptName
                 val reference = element.reference
                 if(reference == null || reference.resolve() != null) return
                 val name = element.name
                 holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedConcept.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+            }
+            
+            private fun isIgnoredByConfigs(element: ParadoxLocalisationConcept): Boolean {
+                if(!ignoredByConfigs) return false
+                configGroup.extendedDefinitions
+                val configs = configGroup.extendedDefinitions.findFromPattern(element.name, element, configGroup).orEmpty()
+                val config = configs.findFast { ParadoxDefinitionTypeExpression.resolve(it.type).matches("concept") }
+                if(config != null) return true
+                return false
             }
         }
     }

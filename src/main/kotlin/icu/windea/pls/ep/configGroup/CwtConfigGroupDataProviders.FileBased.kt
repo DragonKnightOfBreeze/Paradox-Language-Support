@@ -52,11 +52,11 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     
     private fun doProcessBuiltInFile(filePath: String, fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         when(filePath) {
-            "settings/folding_settings.pls.cwt" -> resolveFoldingSettingsInFile(fileConfig, configGroup)
-            "settings/postfix_template_settings.pls.cwt" -> resolvePostfixTemplateSettingsInFile(fileConfig, configGroup)
-            "system_links.pls.cwt" -> resolveSystemLinks(fileConfig, configGroup)
-            "localisation_locales.pls.cwt" -> resolveLocalisationLocalesInFile(fileConfig, configGroup)
-            "localisation_predefined_parameters.pls.cwt" -> resolveLocalisationPredefinedParametersInFile(fileConfig, configGroup)
+            "settings/folding_settings.cwt" -> resolveFoldingSettingsInFile(fileConfig, configGroup)
+            "settings/postfix_template_settings.cwt" -> resolvePostfixTemplateSettingsInFile(fileConfig, configGroup)
+            "builtin/system_links.cwt" -> resolveSystemLinks(fileConfig, configGroup)
+            "builtin/localisation_locales.cwt" -> resolveLocalisationLocalesInFile(fileConfig, configGroup)
+            "builtin/localisation_predefined_parameters.cwt" -> resolveLocalisationPredefinedParametersInFile(fileConfig, configGroup)
         }
     }
     
