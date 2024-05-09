@@ -84,7 +84,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
             int length = zzBuffer.length();
             while(i < length) {
                 char c = zzBuffer.charAt(i);
-                if(Character.isWhitespace(c)) break;
+				if(c == '\n' || c == '\r') break;
                 if(c == '"') return STRING_TOKEN;
                 i++;
             }

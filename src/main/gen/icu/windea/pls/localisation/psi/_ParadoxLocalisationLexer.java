@@ -477,7 +477,6 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
             int length = zzBuffer.length();
             while(i < length) {
                 char c = zzBuffer.charAt(i);
-                if(Character.isWhitespace(c)) break;
                 if(c == '"') return STRING_TOKEN;
                 i++;
             }
