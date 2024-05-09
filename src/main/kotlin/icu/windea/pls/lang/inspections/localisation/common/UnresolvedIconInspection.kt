@@ -12,7 +12,7 @@ import javax.swing.*
 /**
  * 无法解析的图标的检查。
  *
- * @property ignoredIconNames （配置项）需要忽略的图标名的模式。使用GLOB模式。忽略大小写。默认为"mod_.*"，以忽略生成的修正对应的图标。
+ * @property ignoredIconNames （配置项）需要忽略的图标名的模式。使用GLOB模式。忽略大小写。
  */
 class UnresolvedIconInspection : LocalInspectionTool() {
     @JvmField var ignoredIconNames = ""
