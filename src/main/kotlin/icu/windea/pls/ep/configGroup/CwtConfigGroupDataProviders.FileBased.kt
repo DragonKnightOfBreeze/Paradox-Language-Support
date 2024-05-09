@@ -10,6 +10,7 @@ import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.ep.priority.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -159,9 +160,9 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 key == "priorities" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
-                        val k = prop.key
-                        val v = prop.value
-                        
+                        val k = prop.key.orNull() ?: continue
+                        val v = prop.stringValue?.orNull()?.let { ParadoxPriority.resolve(it) } ?: continue
+                        configGroup.priorities[k] = v
                     }
                 }
                 

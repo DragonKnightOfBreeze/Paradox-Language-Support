@@ -1,7 +1,5 @@
 package icu.windea.pls.ep.priority
 
-import icu.windea.pls.model.*
-
 /**
  * 覆盖顺序。
  */

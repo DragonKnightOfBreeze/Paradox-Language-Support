@@ -206,8 +206,7 @@
     
     <definitionPresentationProvider implementation="icu.windea.pls.ep.presentation.StellarisTechnologyPresentationProvider"/>
 
-    <priorityProvider implementation="icu.windea.pls.ep.priority.ParadoxBasePriorityProvider" order="last"/>
-    <priorityProvider implementation="icu.windea.pls.ep.priority.StellarisPriorityProvider"/>
+    <priorityProvider implementation="icu.windea.pls.ep.priority.BaseFilePathBasedParadoxPriorityProvider"/>
   </extensions>
   
   <extensions defaultExtensionNs="com.intellij">

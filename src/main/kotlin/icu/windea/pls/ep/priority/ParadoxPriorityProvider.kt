@@ -24,7 +24,7 @@ interface ParadoxPriorityProvider {
         val EP_NAME = ExtensionPointName.create<ParadoxPriorityProvider>("icu.windea.pls.priorityProvider")
         
         fun getPriority(target: Any): ParadoxPriority {
-            val gameType = selectGameType(target)
+            val gameType by lazy { selectGameType(target) }
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(gameType != null && !gameType.supportsByAnnotation(ep)) return@f null
                 ep.getPriority(target)

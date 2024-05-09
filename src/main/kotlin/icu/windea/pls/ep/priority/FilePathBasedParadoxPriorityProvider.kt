@@ -10,21 +10,17 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-abstract class ParadoxFilePathBasedPriorityProvider : ParadoxPriorityProvider {
-    open val fiosPaths: List<String> = emptyList()
-    
-    open val orderedPaths: List<String> = emptyList()
+abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
+    abstract fun getFilePathMap(gameType: ParadoxGameType): Map<String, ParadoxPriority>
     
     override fun getPriority(target: Any): ParadoxPriority? {
         val forcedDefinitionPriority = getForcedDefinitionPriority(target)
         if(forcedDefinitionPriority != null) return forcedDefinitionPriority
         
         val filePath = getFilePath(target) ?: return null
-        return when {
-            filePath in fiosPaths -> ParadoxPriority.FIOS
-            filePath in orderedPaths -> ParadoxPriority.ORDERED
-            else -> null
-        }
+        val gameType = selectGameType(target) ?: return null
+        val filePathMap = getFilePathMap(gameType)
+        return filePathMap.get(filePath)
     }
     
     override fun getPriority(searchParameters: ParadoxSearchParameters<*>): ParadoxPriority? {
@@ -32,11 +28,9 @@ abstract class ParadoxFilePathBasedPriorityProvider : ParadoxPriorityProvider {
         if(forcedDefinitionPriority != null) return forcedDefinitionPriority
         
         val filePath = getFilePath(searchParameters) ?: return null
-        return when {
-            filePath in fiosPaths -> ParadoxPriority.FIOS
-            filePath in orderedPaths -> ParadoxPriority.ORDERED
-            else -> null
-        }
+        val gameType = selectGameType(searchParameters.selector.gameType) ?: return null
+        val filePathMap = getFilePathMap(gameType)
+        return filePathMap.get(filePath)
     }
     
     private fun getFilePath(target: Any): String? {
