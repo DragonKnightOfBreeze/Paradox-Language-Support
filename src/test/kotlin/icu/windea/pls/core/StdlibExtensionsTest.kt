@@ -4,7 +4,7 @@ import org.junit.*
 
 class StdlibExtensionsTest {
 	@Test
-	fun matchesGlobFileNameTest(){
+	fun matchesGlobPatternTest(){
 		Assert.assertTrue("abc".matchesGlobPattern("abc"))
 		Assert.assertTrue("abc".matchesGlobPattern("*"))
 		Assert.assertTrue("abc".matchesGlobPattern("ab?"))
@@ -17,37 +17,37 @@ class StdlibExtensionsTest {
 	}
 	
 	@Test
-	fun matchesAntPathTest(){
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/bar/name**", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("foo/bar/name**", false))
-		Assert.assertTrue("foo/bar/name".matchesAntPath("/foo/bar/name**", false))
-		Assert.assertTrue("foo/bar/name".matchesAntPath("foo/bar/name**", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/bar/name", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/bar/**", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/**", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/**", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/bar/nam?", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/bar/na?e", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/bar/na*?e", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/bar/*", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/bar/*a*e", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/b*r/*a*e", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/b*r/*a*e", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/*foo/*/name", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/*foo/*/n?me", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/*foo/**/n?me", false))
-		Assert.assertTrue("/foo/bar/name".matchesAntPath("/*foo/**r/n?me", false))
-		Assert.assertFalse("/foo/bar/name".matchesAntPath("/foo/*", false))
-		Assert.assertFalse("/foo/bar/name".matchesAntPath("/*/name", false))
-		Assert.assertFalse("/foo/bar/name".matchesAntPath("/foo/bar/na?", false))
-		Assert.assertFalse("/foo/bar/name".matchesAntPath("/foo/bar/", false))
+	fun matchesAntPatternTest(){
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/name**", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("foo/bar/name**", false))
+		Assert.assertTrue("foo/bar/name".matchesAntPattern("/foo/bar/name**", false))
+		Assert.assertTrue("foo/bar/name".matchesAntPattern("foo/bar/name**", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/name", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/**", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/**", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/**", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/nam?", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/na?e", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/na*?e", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/*", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/*a*e", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/b*r/*a*e", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/b*r/*a*e", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/*foo/*/name", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/*foo/*/n?me", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/*foo/**/n?me", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/*foo/**r/n?me", false))
+		Assert.assertFalse("/foo/bar/name".matchesAntPattern("/foo/*", false))
+		Assert.assertFalse("/foo/bar/name".matchesAntPattern("/*/name", false))
+		Assert.assertFalse("/foo/bar/name".matchesAntPattern("/foo/bar/na?", false))
+		Assert.assertFalse("/foo/bar/name".matchesAntPattern("/foo/bar/", false))
 
-		Assert.assertTrue("enums/enum[e]".matchesAntPath("enums/enum[?]", false))
-		Assert.assertTrue("enums/enum[a".matchesAntPath("enums/enum[?", false))
-		Assert.assertFalse("enums/enum[f".matchesAntPath("enums/enum[?]", false))
-		Assert.assertTrue("enums/enum[e]".matchesAntPath("enums/enum[*]", false))
-		Assert.assertFalse("enums/enum[e".matchesAntPath("enums/enum[*]", false))
-		Assert.assertFalse("enums/enum123".matchesAntPath("enums/enum[*]", false))
+		Assert.assertTrue("enums/enum[e]".matchesAntPattern("enums/enum[?]", false))
+		Assert.assertTrue("enums/enum[a".matchesAntPattern("enums/enum[?", false))
+		Assert.assertFalse("enums/enum[f".matchesAntPattern("enums/enum[?]", false))
+		Assert.assertTrue("enums/enum[e]".matchesAntPattern("enums/enum[*]", false))
+		Assert.assertFalse("enums/enum[e".matchesAntPattern("enums/enum[*]", false))
+		Assert.assertFalse("enums/enum123".matchesAntPattern("enums/enum[*]", false))
 	}
 	
 	@Test

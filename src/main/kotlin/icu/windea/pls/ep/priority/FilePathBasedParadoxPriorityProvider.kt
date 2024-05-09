@@ -1,10 +1,9 @@
 package icu.windea.pls.ep.priority
 
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
@@ -17,68 +16,24 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
         val forcedDefinitionPriority = getForcedDefinitionPriority(target)
         if(forcedDefinitionPriority != null) return forcedDefinitionPriority
         
-        val filePath = getFilePath(target) ?: return null
+        val filePaths = mutableSetOf<String>()
+        getFilePaths(target, filePaths)
+        if(filePaths.isEmpty()) return null
         val gameType = selectGameType(target) ?: return null
         val filePathMap = getFilePathMap(gameType)
-        return filePathMap.get(filePath)
+        return filePaths.firstNotNullOfOrNull { filePathMap[it] }
     }
     
     override fun getPriority(searchParameters: ParadoxSearchParameters<*>): ParadoxPriority? {
         val forcedDefinitionPriority = getForcedDefinitionPriority(searchParameters)
         if(forcedDefinitionPriority != null) return forcedDefinitionPriority
         
-        val filePath = getFilePath(searchParameters) ?: return null
-        val gameType = selectGameType(searchParameters.selector.gameType) ?: return null
+        val filePaths = mutableSetOf<String>()
+        getFilePaths(searchParameters, filePaths)
+        if(filePaths.isEmpty()) return null
+        val gameType = searchParameters.selector.gameType ?: return null
         val filePathMap = getFilePathMap(gameType)
-        return filePathMap.get(filePath)
-    }
-    
-    private fun getFilePath(target: Any): String? {
-        return when {
-            target is VirtualFile -> null //ignore
-            target is PsiFileSystemItem -> null //ignore
-            target is ParadoxScriptScriptedVariable -> {
-                val targetPath = target.fileInfo?.pathToEntry?.path ?: return null
-                "common/scripted_variables".takeIf { it.matchesPath(targetPath) }
-            }
-            target is ParadoxScriptDefinitionElement -> {
-                val definitionInfo = target.definitionInfo ?: return null
-                val definitionType = definitionInfo.type
-                val configGroup = definitionInfo.configGroup
-                configGroup.types.get(definitionType)?.path
-            }
-            target is ParadoxLocalisationProperty -> {
-                val localisationCategory = target.localisationInfo?.category ?: return null
-                return when(localisationCategory) {
-                    ParadoxLocalisationCategory.Localisation -> "localisation"
-                    ParadoxLocalisationCategory.SyncedLocalisation -> "localisation_synced"
-                }
-            }
-            else -> null
-        }
-    }
-    
-    private fun getFilePath(searchParameters: ParadoxSearchParameters<*>): String? {
-        return when {
-            searchParameters is ParadoxFilePathSearch.SearchParameters -> null //ignore
-            searchParameters is ParadoxGlobalScriptedVariableSearch.SearchParameters -> {
-                "common/scripted_variables"
-            }
-            searchParameters is ParadoxDefinitionSearch.SearchParameters -> {
-                val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return null
-                val gameType = searchParameters.selector.gameType ?: return null
-                val configGroup = getConfigGroup(searchParameters.project, gameType)
-                val typeConfig = configGroup.types.get(definitionType) ?: return null
-                typeConfig.path
-            }
-            searchParameters is ParadoxLocalisationSearch.SearchParameters -> {
-                "localisation"
-            }
-            searchParameters is ParadoxSyncedLocalisationSearch.SearchParameters -> {
-                "localisation_synced"
-            }
-            else -> null
-        }
+        return filePaths.firstNotNullOfOrNull { filePathMap[it] }
     }
     
     private fun getForcedDefinitionPriority(target: Any): ParadoxPriority? {
@@ -105,5 +60,85 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
         //anonymous -> ORDERED (don't care)
         if(typeConfig.typeKeyFilter != null && typeConfig.nameField == null) return ParadoxPriority.ORDERED
         return null
+    }
+    
+    private fun getFilePaths(target: Any, filePaths: MutableSet<String>) {
+        when {
+            target is ParadoxScriptScriptedVariable -> {
+                val targetPath = target.fileInfo?.pathToEntry?.path ?: return
+                filePaths += ("common/scripted_variables".takeIf { it.matchesPath(targetPath) } ?: return)
+            }
+            target is ParadoxScriptDefinitionElement -> {
+                val definitionInfo = target.definitionInfo ?: return
+                val definitionType = definitionInfo.type
+                val configGroup = definitionInfo.configGroup
+                val config = configGroup.types[definitionType] ?: return
+                getFilePathsFromConfig(config, filePaths)
+            }
+            target is ParadoxComplexEnumValueElement -> {
+                val enumName = target.enumName
+                val configGroup = getConfigGroup(target.project, target.gameType)
+                val config = configGroup.complexEnums[enumName] ?: return
+                getFilePathsFromConfig(config, filePaths)
+            }
+            target is ParadoxLocalisationProperty -> {
+                val localisationCategory = target.localisationInfo?.category ?: return
+                val path = when(localisationCategory) {
+                    ParadoxLocalisationCategory.Localisation -> "localisation"
+                    ParadoxLocalisationCategory.SyncedLocalisation -> "localisation_synced"
+                }
+                filePaths += path
+            }
+        }
+    }
+    
+    private fun getFilePaths(searchParameters: ParadoxSearchParameters<*>, filePaths: MutableSet<String>) {
+        when {
+            searchParameters is ParadoxGlobalScriptedVariableSearch.SearchParameters -> {
+                filePaths += "common/scripted_variables"
+            }
+            searchParameters is ParadoxDefinitionSearch.SearchParameters -> {
+                val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return
+                val gameType = searchParameters.selector.gameType ?: return
+                val configGroup = getConfigGroup(searchParameters.project, gameType)
+                val config = configGroup.types.get(definitionType) ?: return
+                getFilePathsFromConfig(config, filePaths)
+            }
+            searchParameters is ParadoxComplexEnumValueSearch.SearchParameters -> {
+                val enumName = searchParameters.enumName
+                val gameType = searchParameters.selector.gameType ?: return
+                val configGroup = getConfigGroup(searchParameters.project, gameType)
+                val config = configGroup.complexEnums.get(enumName) ?: return
+                getFilePathsFromConfig(config, filePaths)
+            }
+            searchParameters is ParadoxLocalisationSearch.SearchParameters -> {
+                filePaths += "localisation"
+            }
+            searchParameters is ParadoxSyncedLocalisationSearch.SearchParameters -> {
+                filePaths += "localisation_synced"
+            }
+        }
+    }
+    
+    private fun getFilePathsFromConfig(config: CwtTypeConfig, filePaths: MutableSet<String>) {
+        val path = buildString {
+            config.path?.let { append(it) }
+            config.pathFile?.let { append("/").append(it) }
+        }.orNull() ?: return
+        filePaths += path
+        val wildcardPath = config.path ?: return
+        filePaths += wildcardPath
+    }
+    
+    private fun getFilePathsFromConfig(config: CwtComplexEnumConfig, filePaths: MutableSet<String>) {
+        config.path.forEach { p ->
+            val path = buildString {
+                append(p)
+                config.pathFile?.let { append("/").append(it) }
+            }.orNull() ?: return
+            filePaths += path
+            val wildcardPath = p
+            filePaths += wildcardPath
+        }
     }
 }

@@ -304,7 +304,7 @@ class AntExpressionCwtDataExpressionMatcher : CwtDataExpressionMatcher, CwtConfi
         if(configExpression.type == CwtDataTypes.AntExpression) {
             val pattern = configExpression.value ?: return Result.NotMatch
             val ignoreCase = configExpression.extraValue?.castOrNull<Boolean>() ?: false
-            val r = expression.value.matchesAntPath(pattern, ignoreCase)
+            val r = expression.value.matchesAntPattern(pattern, ignoreCase)
             return Result.of(r)
         }
         return null

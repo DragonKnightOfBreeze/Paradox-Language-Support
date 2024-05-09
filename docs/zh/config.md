@@ -80,14 +80,14 @@ prop = {
 
 #### Priorities
 
-优先级规则可以用来配置目标（封装变量，定义与本地化）的覆盖顺序。
+优先级规则可以用来配置目标（封装变量，定义、本地化与复杂枚举）的覆盖顺序。
 
 ```cwt
 priorities = {
     # LHS - file path (relative to game or mod root directory)
     # RHS - priority (available values: "fios", "lios", "ordered", default value: "lios", ignore case)
     
-    # file path - path of specific directory (declared in type configs, or, e.g. "common/scripted_variables", "localisation") 
+    # file path - path of specific directory (e.g. ""common/on_actions", "common/scripted_variables", "localisation") 
     
     # fios - use the one that reads first, ignore all remaining items
     # lios - use the one that reads last (if not specified, use this as default)

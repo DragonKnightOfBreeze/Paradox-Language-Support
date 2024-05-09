@@ -2,7 +2,6 @@
 
 package icu.windea.pls.core
 
-import ai.grazie.nlp.patterns.*
 import com.google.common.cache.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
@@ -425,9 +424,9 @@ private val globPatternToRegexCache = CacheBuilder.newBuilder().maximumSize(1000
 }
 
 /**
- * 判断当前输入是否匹配指定的ANT路径通配符。使用"."匹配单个子路径中的单个字符，使用"*"匹配单个子路径中的任意个字符，使用"**"匹配任意个字符。
+ * 判断当前输入是否匹配指定的ANT表达式。使用"."匹配单个子路径中的单个字符，使用"*"匹配单个子路径中的任意个字符，使用"**"匹配任意个字符。
  */
-fun String.matchesAntPath(pattern: String, ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
+fun String.matchesAntPattern(pattern: String, ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
     if(pattern.isEmpty() && this.isNotEmpty()) return false
     if(pattern == "**") return true
     val usedPath = this.let { if(trimSeparator) it.trimFast('/') else it }.let { if(ignoreCase) it.lowercase() else it }

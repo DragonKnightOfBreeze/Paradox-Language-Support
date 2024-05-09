@@ -82,13 +82,13 @@ object CwtConfigManager {
         if(configPath == null || configPath.isEmpty()) return null
         val path = configPath.path
         return when {
-            element is CwtProperty && path.matchesAntPath("types/type[*]") -> {
+            element is CwtProperty && path.matchesAntPattern("types/type[*]") -> {
                 CwtConfigType.Type
             }
-            element is CwtProperty && path.matchesAntPath("types/type[*]/subtype[*]") -> {
+            element is CwtProperty && path.matchesAntPattern("types/type[*]/subtype[*]") -> {
                 CwtConfigType.Subtype
             }
-            element is CwtProperty && path.matchesAntPath("types/type[*]/modifiers/**") -> {
+            element is CwtProperty && path.matchesAntPattern("types/type[*]/modifiers/**") -> {
                 when {
                     configPath.get(3).surroundsWith("subtype[", "]") -> {
                         if(configPath.length == 5) return CwtConfigType.Modifier
@@ -99,28 +99,28 @@ object CwtConfigManager {
                 }
                 null
             }
-            element is CwtProperty && path.matchesAntPath("enums/enum[*]") -> {
+            element is CwtProperty && path.matchesAntPattern("enums/enum[*]") -> {
                 CwtConfigType.Enum
             }
-            element is CwtValue && path.matchesAntPath("enums/enum[*]/*") -> {
+            element is CwtValue && path.matchesAntPattern("enums/enum[*]/*") -> {
                 CwtConfigType.EnumValue
             }
-            element is CwtProperty && path.matchesAntPath("enums/complex_enum[*]") -> {
+            element is CwtProperty && path.matchesAntPattern("enums/complex_enum[*]") -> {
                 CwtConfigType.ComplexEnum
             }
-            element is CwtProperty && path.matchesAntPath("values/value[*]") -> {
+            element is CwtProperty && path.matchesAntPattern("values/value[*]") -> {
                 CwtConfigType.DynamicValueType
             }
-            element is CwtValue && path.matchesAntPath("values/value[*]/*") -> {
+            element is CwtValue && path.matchesAntPattern("values/value[*]/*") -> {
                 CwtConfigType.DynamicValue
             }
-            element is CwtProperty && path.matchesAntPath("inline[*]") -> {
+            element is CwtProperty && path.matchesAntPattern("inline[*]") -> {
                 CwtConfigType.Inline
             }
-            element is CwtProperty && path.matchesAntPath("single_alias[*]") -> {
+            element is CwtProperty && path.matchesAntPattern("single_alias[*]") -> {
                 CwtConfigType.SingleAlias
             }
-            element is CwtProperty && path.matchesAntPath("alias[*]") -> {
+            element is CwtProperty && path.matchesAntPattern("alias[*]") -> {
                 val aliasName = configPath.get(0).substringIn('[', ']', "").substringBefore(':', "")
                 when {
                     aliasName == "modifier" -> return CwtConfigType.Modifier
@@ -129,58 +129,58 @@ object CwtConfigManager {
                 }
                 CwtConfigType.Alias
             }
-            element is CwtProperty && path.matchesAntPath("links/*") -> {
+            element is CwtProperty && path.matchesAntPattern("links/*") -> {
                 CwtConfigType.Link
             }
-            element is CwtProperty && path.matchesAntPath("localisation_links/*") -> {
+            element is CwtProperty && path.matchesAntPattern("localisation_links/*") -> {
                 CwtConfigType.LocalisationLink
             }
-            element is CwtProperty && path.matchesAntPath("localisation_commands/*") -> {
+            element is CwtProperty && path.matchesAntPattern("localisation_commands/*") -> {
                 CwtConfigType.LocalisationCommand
             }
-            element is CwtProperty && path.matchesAntPath("modifier_categories/*") -> {
+            element is CwtProperty && path.matchesAntPattern("modifier_categories/*") -> {
                 CwtConfigType.ModifierCategory
             }
-            element is CwtProperty && path.matchesAntPath("modifiers/*") -> {
+            element is CwtProperty && path.matchesAntPattern("modifiers/*") -> {
                 CwtConfigType.Modifier
             }
-            element is CwtProperty && path.matchesAntPath("scopes/*") -> {
+            element is CwtProperty && path.matchesAntPattern("scopes/*") -> {
                 CwtConfigType.Scope
             }
-            element is CwtProperty && path.matchesAntPath("scope_groups/*") -> {
+            element is CwtProperty && path.matchesAntPattern("scope_groups/*") -> {
                 CwtConfigType.ScopeGroup
             }
-            element is CwtProperty && path.matchesAntPath("system_links/*") -> {
+            element is CwtProperty && path.matchesAntPattern("system_links/*") -> {
                 CwtConfigType.SystemLink
             }
-            element is CwtProperty && path.matchesAntPath("localisation_locales/*") -> {
+            element is CwtProperty && path.matchesAntPattern("localisation_locales/*") -> {
                 CwtConfigType.LocalisationLocale
             }
-            element is CwtProperty && path.matchesAntPath("localisation_predefined_parameters/*") -> {
+            element is CwtProperty && path.matchesAntPattern("localisation_predefined_parameters/*") -> {
                 CwtConfigType.LocalisationPredefinedParameter
             }
-            path.matchesAntPath("scripted_variables/*") -> {
+            path.matchesAntPattern("scripted_variables/*") -> {
                 CwtConfigType.ExtendedScriptedVariable
             }
-            path.matchesAntPath("definitions/*") -> {
+            path.matchesAntPattern("definitions/*") -> {
                 CwtConfigType.ExtendedDefinition
             }
-            path.matchesAntPath("game_rules/*") -> {
+            path.matchesAntPattern("game_rules/*") -> {
                 CwtConfigType.ExtendedGameRule
             }
-            path.matchesAntPath("on_actions/*") -> {
+            path.matchesAntPattern("on_actions/*") -> {
                 CwtConfigType.ExtendedOnAction
             }
-            path.matchesAntPath("inline_scripts/*") -> {
+            path.matchesAntPattern("inline_scripts/*") -> {
                 CwtConfigType.ExtendedInlineScript
             }
-            path.matchesAntPath("parameters/*") -> {
+            path.matchesAntPattern("parameters/*") -> {
                 CwtConfigType.ExtendedParameter
             }
-            path.matchesAntPath("complex_enum_values/*/*") -> {
+            path.matchesAntPattern("complex_enum_values/*/*") -> {
                 CwtConfigType.ExtendedComplexEnumValue
             }
-            path.matchesAntPath("dynamic_values/*/*") -> {
+            path.matchesAntPattern("dynamic_values/*/*") -> {
                 CwtConfigType.ExtendedDynamicValue
             }
             else -> null
