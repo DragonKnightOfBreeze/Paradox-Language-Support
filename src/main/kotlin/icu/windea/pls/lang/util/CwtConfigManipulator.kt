@@ -79,37 +79,42 @@ object CwtConfigManipulator {
     
     fun inlineSingleAliasOrAlias(element: PsiElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, matchOptions: Int = CwtConfigMatcher.Options.Default): List<CwtPropertyConfig> {
         //内联类型为single_alias_right或alias_match_left的规则
-        val configGroup = config.configGroup
-        val valueExpression = config.valueExpression
-        when(valueExpression.type) {
-            CwtDataTypes.SingleAliasRight -> {
-                val singleAliasName = valueExpression.value ?: return emptyList()
-                val singleAlias = configGroup.singleAliases[singleAliasName] ?: return emptyList()
-                val result = mutableListOf<CwtPropertyConfig>()
-                result.add(singleAlias.inline(config))
-                return result
-            }
-            CwtDataTypes.AliasMatchLeft -> {
-                val aliasName = valueExpression.value ?: return emptyList()
-                val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptyList()
-                val result = mutableListOf<CwtPropertyConfig>()
-                val aliasSubNames = CwtConfigHandler.getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchOptions)
-                aliasSubNames.forEachFast f1@{ aliasSubName ->
-                    val aliases = aliasGroup[aliasSubName] ?: return@f1
-                    aliases.forEachFast f2@{ alias ->
-                        var inlinedConfig = alias.inline(config)
-                        if(inlinedConfig.valueExpression.type == CwtDataTypes.SingleAliasRight) {
-                            val singleAliasName = inlinedConfig.valueExpression.value ?: return@f2
-                            val singleAlias = configGroup.singleAliases[singleAliasName] ?: return@f2
-                            inlinedConfig = singleAlias.inline(inlinedConfig)
+        val result = mutableListOf<CwtMemberConfig<*>>()
+        run {
+            val configGroup = config.configGroup
+            val valueExpression = config.valueExpression
+            when(valueExpression.type) {
+                CwtDataTypes.SingleAliasRight -> {
+                    val singleAliasName = valueExpression.value ?: return@run
+                    val singleAlias = configGroup.singleAliases[singleAliasName] ?: return@run
+                    result.add(singleAlias.inline(config))
+                }
+                CwtDataTypes.AliasMatchLeft -> {
+                    val aliasName = valueExpression.value ?: return@run
+                    val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
+                    val aliasSubNames = CwtConfigHandler.getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchOptions)
+                    aliasSubNames.forEachFast f1@{ aliasSubName ->
+                        val aliases = aliasGroup[aliasSubName] ?: return@f1
+                        aliases.forEachFast f2@{ alias ->
+                            var inlinedConfig = alias.inline(config)
+                            if(inlinedConfig.valueExpression.type == CwtDataTypes.SingleAliasRight) {
+                                val singleAliasName = inlinedConfig.valueExpression.value ?: return@f2
+                                val singleAlias = configGroup.singleAliases[singleAliasName] ?: return@f2
+                                inlinedConfig = singleAlias.inline(inlinedConfig)
+                            }
+                            result.add(inlinedConfig)
                         }
-                        result.add(inlinedConfig)
                     }
                 }
-                return result
             }
-            else -> return emptyList()
         }
+        if(result.isEmpty()) return emptyList()
+        val parentConfig = config.parentConfig
+        if(parentConfig != null) {
+            CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
+        }
+        result.removeIf { it !is CwtPropertyConfig }
+        return result.cast()
     }
     
     fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {

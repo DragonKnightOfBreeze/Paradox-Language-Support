@@ -105,9 +105,7 @@ object CwtConfigHandler {
                                 if(inlinedConfigs.isEmpty()) {
                                     nextResult.add(config)
                                 } else {
-                                    val inlinedConfigs0 = inlinedConfigs.toMutableList<CwtMemberConfig<*>>()
-                                    CwtInjectedConfigProvider.injectConfigs(parentConfig, inlinedConfigs0)
-                                    nextResult.addAll(inlinedConfigs0)
+                                    nextResult.addAll(inlinedConfigs)
                                 }
                             }
                         } else if(config is CwtValueConfig) {
