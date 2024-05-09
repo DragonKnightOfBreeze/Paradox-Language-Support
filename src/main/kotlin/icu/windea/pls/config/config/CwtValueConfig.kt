@@ -99,8 +99,8 @@ private object CwtValueConfigImpls {
         override var parentConfig: CwtMemberConfig<*>? = null
         override var inlineableConfig: CwtInlineableConfig<CwtValue, CwtMemberConfig<CwtValue>>? = null
         
-        override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
-        override val expression: CwtValueExpression get() = valueExpression
+        override val valueExpression: CwtDataExpression get() = if(isBlock) CwtDataExpression.BlockExpression else CwtDataExpression.resolve(value, false)
+        override val expression: CwtDataExpression get() = valueExpression
         
         override fun resolved(): CwtValueConfig = inlineableConfig?.config?.castOrNull<CwtValueConfig>() ?: this
         override fun resolvedOrNull(): CwtValueConfig? = inlineableConfig?.config?.castOrNull<CwtValueConfig>()
@@ -202,7 +202,7 @@ private object CwtValueConfigImpls {
         override val value: String,
         //configs should be always null here
     ) : Delegate(delegate) {
-        override val valueExpression: CwtValueExpression get() = CwtValueExpression.resolve(value)
+        override val valueExpression: CwtDataExpression get() = CwtDataExpression.resolve(value, false)
         override val expression: CwtDataExpression get() = valueExpression
         
         override fun toString(): String = value
@@ -223,8 +223,8 @@ private object CwtValueConfigImpls {
         override var parentConfig: CwtMemberConfig<*>? = null
         override var inlineableConfig: CwtInlineableConfig<CwtValue, CwtMemberConfig<CwtValue>>? = null
         
-        override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
-        override val expression: CwtValueExpression get() = valueExpression
+        override val valueExpression: CwtDataExpression get() = if(isBlock) CwtDataExpression.BlockExpression else CwtDataExpression.resolve(value, false)
+        override val expression: CwtDataExpression get() = valueExpression
         
         override fun resolved(): CwtValueConfig = inlineableConfig?.config?.castOrNull<CwtValueConfig>() ?: this
         override fun resolvedOrNull(): CwtValueConfig? = inlineableConfig?.config?.castOrNull<CwtValueConfig>()

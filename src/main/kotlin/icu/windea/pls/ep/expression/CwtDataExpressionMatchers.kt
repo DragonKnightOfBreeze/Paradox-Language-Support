@@ -218,26 +218,18 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val aliasName = configExpression.value ?: return Result.NotMatch
                 val aliasSubName = CwtConfigHandler.getAliasSubName(element, expression.value, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
-                CwtConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(aliasSubName), null, configGroup)
+                CwtConfigMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup)
             }
             configExpression.type == CwtDataTypes.AliasName -> {
                 if(!expression.type.isStringLikeType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val aliasName = configExpression.value ?: return Result.NotMatch
                 val aliasSubName = CwtConfigHandler.getAliasSubName(element, expression.value, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
-                CwtConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(aliasSubName), null, configGroup)
+                CwtConfigMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup)
             }
             configExpression.type == CwtDataTypes.AliasMatchLeft -> {
                 return Result.NotMatch //不在这里处理
             }
-            else -> null
-        }
-    }
-}
-
-class ExtendedCwtDataExpressionMatcher : CwtDataExpressionMatcher {
-    override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
-        return when {
             configExpression.type == CwtDataTypes.Any -> {
                 Result.FallbackMatch
             }
@@ -280,61 +272,53 @@ class ExtendedCwtDataExpressionMatcher : CwtDataExpressionMatcher {
 
 class ConstantCwtDataExpressionMatcher : CwtDataExpressionMatcher, CwtConfigPatternAware {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
-        return when {
-            configExpression.type == CwtDataTypes.Constant -> {
-                val value = configExpression.value
-                if(configExpression is CwtValueExpression) {
-                    //常量的值也可能是yes/no
-                    val text = expression.value
-                    if((value == "yes" || value == "no") && text.isLeftQuoted()) return Result.NotMatch
-                }
-                //这里也用来匹配空字符串
-                val r = expression.value.equals(value, true) //忽略大小写
-                Result.of(r)
+        if(configExpression.type == CwtDataTypes.Constant) {
+            val value = configExpression.value
+            if(!configExpression.isKey) {
+                //常量的值也可能是yes/no
+                val text = expression.value
+                if((value == "yes" || value == "no") && text.isLeftQuoted()) return Result.NotMatch
             }
-            else -> null
+            //这里也用来匹配空字符串
+            val r = expression.value.equals(value, true) //忽略大小写
+            return Result.of(r)
         }
+        return null
     }
 }
 
 class TemplateExpressionCwtDataExpressionMatcher : CwtDataExpressionMatcher, CwtConfigPatternAware {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
-        return when {
-            configExpression.type == CwtDataTypes.TemplateExpression -> {
-                if(!expression.type.isStringLikeType()) return Result.NotMatch
-                if(expression.isParameterized()) return Result.ParameterizedMatch
-                //允许用引号括起
-                CwtConfigMatcher.Impls.getTemplateMatchResult(element, expression, configExpression, configGroup)
-            }
-            else -> null
+        if(configExpression.type == CwtDataTypes.TemplateExpression) {
+            if(!expression.type.isStringLikeType()) return Result.NotMatch
+            if(expression.isParameterized()) return Result.ParameterizedMatch
+            //允许用引号括起
+            return CwtConfigMatcher.Impls.getTemplateMatchResult(element, expression, configExpression, configGroup)
         }
+        return null
     }
 }
 
 class AntExpressionCwtDataExpressionMatcher : CwtDataExpressionMatcher, CwtConfigPatternAware {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
-        return when {
-            configExpression.type == CwtDataTypes.AntExpression -> {
-                val pattern = configExpression.value ?: return Result.NotMatch
-                val ignoreCase = configExpression.extraValue?.castOrNull<Boolean>() ?: false
-                val r = expression.value.matchesAntPath(pattern, ignoreCase)
-                Result.of(r)
-            }
-            else -> null
+        if(configExpression.type == CwtDataTypes.AntExpression) {
+            val pattern = configExpression.value ?: return Result.NotMatch
+            val ignoreCase = configExpression.extraValue?.castOrNull<Boolean>() ?: false
+            val r = expression.value.matchesAntPath(pattern, ignoreCase)
+            return Result.of(r)
         }
+        return null
     }
 }
 
 class RegexCwtDataExpressionMatcher : CwtDataExpressionMatcher, CwtConfigPatternAware {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
-        return when {
-            configExpression.type == CwtDataTypes.Regex -> {
-                val pattern = configExpression.value ?: return Result.NotMatch
-                val ignoreCase = configExpression.extraValue?.castOrNull<Boolean>() ?: false
-                val r = expression.value.matchesRegex(pattern, ignoreCase)
-                Result.of(r)
-            }
-            else -> null
+        if(configExpression.type == CwtDataTypes.Regex) {
+            val pattern = configExpression.value ?: return Result.NotMatch
+            val ignoreCase = configExpression.extraValue?.castOrNull<Boolean>() ?: false
+            val r = expression.value.matchesRegex(pattern, ignoreCase)
+            return Result.of(r)
         }
+        return null
     }
 }

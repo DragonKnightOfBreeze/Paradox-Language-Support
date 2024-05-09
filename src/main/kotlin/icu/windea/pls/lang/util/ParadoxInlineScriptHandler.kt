@@ -28,7 +28,7 @@ object ParadoxInlineScriptHandler {
     const val inlineScriptExpressionOptionName = "inline_script_expression"
     const val inlineScriptPathExpressionString = "filepath[common/inline_scripts/,.txt]"
     
-    val inlineScriptPathExpression = CwtValueExpression.resolve(inlineScriptPathExpressionString)
+    val inlineScriptPathExpression = CwtDataExpression.resolve(inlineScriptPathExpressionString, false)
     
     val cachedInlineScriptUsageInfoKey = createKey<CachedValue<ParadoxInlineScriptUsageInfo>>("paradox.cached.inlineScriptUsageInfo")
     
@@ -117,7 +117,7 @@ object ParadoxInlineScriptHandler {
         return expression
     }
     
-    fun getExpressionElement(contextReferenceElement: ParadoxScriptProperty):  ParadoxScriptValue? {
+    fun getExpressionElement(contextReferenceElement: ParadoxScriptProperty): ParadoxScriptValue? {
         if(contextReferenceElement.name.lowercase() != inlineScriptKey) return null
         val config = CwtConfigHandler.getConfigs(contextReferenceElement).firstOrNull() ?: return null
         val inlineConfig = config.inlineableConfig?.castOrNull<CwtInlineConfig>() ?: return null

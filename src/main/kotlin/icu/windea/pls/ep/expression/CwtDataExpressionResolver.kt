@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.expression
 
 import com.intellij.openapi.extensions.*
-import icu.windea.pls.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.collections.*
 
 /**
@@ -11,7 +11,7 @@ interface CwtDataExpressionResolver {
     /**
      * 得到解析结果。
      */
-    fun resolve(expressionString: String): Result?
+    fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression?
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtDataExpressionResolver>("icu.windea.pls.dataExpressionResolver")
@@ -19,19 +19,12 @@ interface CwtDataExpressionResolver {
         /**
          * @see CwtDataExpressionResolver.resolve
          */
-        fun resolve(expressionString: String): Result? {
+        fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
             EP_NAME.extensionList.forEachFast f@{ ep ->
-                val r = ep.resolve(expressionString)
+                val r = ep.resolve(expressionString, isKey)
                 if(r != null) return r
             }
             return null
         }
     }
-    
-    data class Result(
-        val expressionString: String,
-        val type: CwtDataType,
-        val value: String? = null,
-        val extraValue: Any? = null
-    )
 }

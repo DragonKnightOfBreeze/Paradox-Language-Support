@@ -94,7 +94,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
             private fun doCheckOccurrence(element: ParadoxScriptMemberElement, position: PsiElement, occurrence: Occurrence, configExpression: CwtDataExpression): Boolean {
                 val (actual, _, max) = occurrence
                 if(max != null && actual > max) {
-                    val isKey = configExpression is CwtKeyExpression
+                    val isKey = configExpression.isKey
                     val isConst = configExpression.type == CwtDataTypes.Constant
                     val description = if(isKey) {
                         when {

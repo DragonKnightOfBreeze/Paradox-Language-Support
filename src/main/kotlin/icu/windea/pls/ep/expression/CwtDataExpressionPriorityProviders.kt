@@ -7,13 +7,28 @@ import icu.windea.pls.config.expression.*
 class BaseCwtDataExpressionPriorityProvider: CwtDataExpressionPriorityProvider {
     override fun getPriority(expression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
         return when(expression.type) {
-            CwtDataTypes.Constant -> 100.0 //highest
             CwtDataTypes.Block -> 100.0 //highest
             CwtDataTypes.Bool -> 100.0 //highest
             CwtDataTypes.Int -> 90.0 //very high
             CwtDataTypes.Float -> 90.0 //very high
             CwtDataTypes.Scalar -> 2.0 //very low
             CwtDataTypes.ColorField -> 90.0 //very high
+            else -> 0.0
+        }
+    }
+}
+
+class CoreCwtDataExpressionPriorityProvider: CwtDataExpressionPriorityProvider {
+    override fun getPriority(expression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
+        return when(expression.type) {
+            CwtDataTypes.Constant -> 100.0 //highest
+            CwtDataTypes.Any -> 1.0 //very low
+            CwtDataTypes.Parameter -> 10.0
+            CwtDataTypes.ParameterValue -> 90.0 //same to Scalar
+            CwtDataTypes.LocalisationParameter -> 10.0
+            CwtDataTypes.ShaderEffect -> 85.0
+            CwtDataTypes.StellarisNameFormat -> 60.0
+            CwtDataTypes.TechnologyWithLevel -> 69.0 //lower than Definition
             CwtDataTypes.PercentageField -> 90.0
             CwtDataTypes.DateField -> 90.0
             CwtDataTypes.Localisation -> 60.0
@@ -46,21 +61,6 @@ class BaseCwtDataExpressionPriorityProvider: CwtDataExpressionPriorityProvider {
             CwtDataTypes.AliasKeysField -> 0.0 //unexpected
             CwtDataTypes.AliasMatchLeft -> 0.0 //unexpected
             CwtDataTypes.TemplateExpression -> 65.0
-            else -> 0.0
-        }
-    }
-}
-
-class ExtendedCwtDataExpressionPriorityProvider: CwtDataExpressionPriorityProvider {
-    override fun getPriority(expression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
-        return when(expression.type) {
-            CwtDataTypes.Any -> 1.0 //very low
-            CwtDataTypes.Parameter -> 10.0
-            CwtDataTypes.ParameterValue -> 90.0 //same to Scalar
-            CwtDataTypes.LocalisationParameter -> 10.0
-            CwtDataTypes.ShaderEffect -> 85.0
-            CwtDataTypes.StellarisNameFormat -> 60.0
-            CwtDataTypes.TechnologyWithLevel -> 69.0 //lower than Definition
             else -> 0.0
         } 
     }

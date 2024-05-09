@@ -34,7 +34,7 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
             ?.findProperty(triggerConfigKey, inline = true)
             ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
-        if(CwtValueExpression.resolve(triggerName).type != CwtDataTypes.Constant) return null //must be predefined trigger
+        if(CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null //must be predefined trigger
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
@@ -70,7 +70,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
             ?: return null
         val triggerProperty = contextProperty.findProperty(Data.TRIGGER_KEY, inline = true) ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
-        if(CwtValueExpression.resolve(triggerName).type != CwtDataTypes.Constant) return null //must be predefined trigger
+        if(CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null //must be predefined trigger
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
@@ -88,7 +88,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
         //for complex_trigger_modifier, skip properties whose value config type is one of the following types:
         //int / float / value_field / int_value_field / variable_field / int_variable_field
         
-        if(configExpression !is CwtKeyExpression) return false
+        if(!configExpression.isKey) return false
         configs.forEach { c1 ->
             val pc = c1.memberConfig.parentConfig?.memberConfig?.castOrNull<CwtPropertyConfig>()
             if(pc?.key != "complex_trigger_modifier") return true

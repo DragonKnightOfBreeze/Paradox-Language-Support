@@ -65,7 +65,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 var keysConst: MutableMap<String, String>? = null
                 var keysNoConst: MutableSet<String>? = null
                 for(key in v.keys) {
-                    if(CwtKeyExpression.resolve(key).type == CwtDataTypes.Constant) {
+                    if(CwtDataExpression.resolve(key, true).type == CwtDataTypes.Constant) {
                         if(keysConst == null) keysConst = caseInsensitiveStringKeyMap()
                         keysConst[key] = key
                     } else {
@@ -77,7 +77,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     configGroup.aliasKeysGroupConst[k] = keysConst
                 }
                 if(!keysNoConst.isNullOrEmpty()) {
-                    configGroup.aliasKeysGroupNoConst[k] = keysNoConst.sortedByPriority({ CwtKeyExpression.resolve(it) }, { configGroup }).toMutableSet()
+                    configGroup.aliasKeysGroupNoConst[k] = keysNoConst.sortedByPriority({ CwtDataExpression.resolve(it, true) }, { configGroup }).toMutableSet()
                 }
             }
         }
@@ -95,7 +95,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 for(parameterConfig in configGroup.parameterConfigs) {
                     val propertyConfig = parameterConfig.parentConfig as? CwtPropertyConfig ?: continue
                     val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
-                    val contextExpression = if(aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression else CwtKeyExpression.resolve(aliasSubName)
+                    val contextExpression = if(aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression else CwtDataExpression.resolve(aliasSubName, true)
                     if(contextExpression.type == CwtDataTypes.Definition) {
                         contextExpression.value?.let { this += it }
                     }

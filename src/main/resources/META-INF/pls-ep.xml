@@ -107,7 +107,6 @@
     
     <dataExpressionResolver id="base" implementation="icu.windea.pls.ep.expression.BaseCwtDataExpressionResolver"/>
     <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.expression.CoreCwtDataExpressionResolver"/>
-    <dataExpressionResolver id="ex" implementation="icu.windea.pls.ep.expression.ExtendedCwtDataExpressionResolver"/>
     <dataExpressionResolver id="constant" implementation="icu.windea.pls.ep.expression.ConstantCwtDataExpressionResolver" order="last"/>
     <dataExpressionResolver id="template" implementation="icu.windea.pls.ep.expression.TemplateExpressionCwtDataExpressionResolver" order="last, after constant"/>
     <dataExpressionResolver id="ant" implementation="icu.windea.pls.ep.expression.AntExpressionCwtDataExpressionResolver"/>
@@ -115,14 +114,13 @@
 
     <dataExpressionMatcher implementation="icu.windea.pls.ep.expression.BaseCwtDataExpressionMatcher"/>
     <dataExpressionMatcher implementation="icu.windea.pls.ep.expression.CoreCwtDataExpressionMatcher"/>
-    <dataExpressionMatcher implementation="icu.windea.pls.ep.expression.ExtendedCwtDataExpressionMatcher"/>
     <dataExpressionMatcher implementation="icu.windea.pls.ep.expression.ConstantCwtDataExpressionMatcher" order="first"/>
     <dataExpressionMatcher implementation="icu.windea.pls.ep.expression.TemplateExpressionCwtDataExpressionMatcher"/>
     <dataExpressionMatcher implementation="icu.windea.pls.ep.expression.AntExpressionCwtDataExpressionMatcher"/>
     <dataExpressionMatcher implementation="icu.windea.pls.ep.expression.RegexCwtDataExpressionMatcher"/>
     
     <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.expression.BaseCwtDataExpressionPriorityProvider"/>
-    <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.expression.ExtendedCwtDataExpressionPriorityProvider"/>
+    <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.expression.CoreCwtDataExpressionPriorityProvider"/>
     
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxBlockScriptExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxBoolScriptExpressionSupport"/>

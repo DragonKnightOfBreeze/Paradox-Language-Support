@@ -20,6 +20,8 @@ interface ParadoxDataExpression {
     val quoted: Boolean
     val isKey: Boolean?
     
+    fun isParameterized() = type == ParadoxType.String && value.isParameterized()
+    
     companion object Resolver {
         val BlockExpression: ParadoxDataExpression = BlockParadoxDataExpression
         val UnknownExpression: ParadoxDataExpression = UnknownParadoxDataExpression
@@ -34,8 +36,6 @@ interface ParadoxDataExpression {
             doResolve(text, isKey)
     }
 }
-
-fun ParadoxDataExpression.isParameterized() = type == ParadoxType.String && value.isParameterized()
 
 //Implementations
 

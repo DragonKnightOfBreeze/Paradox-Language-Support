@@ -357,24 +357,21 @@ private fun applyKeyAndValueInsertHandler(c: InsertionContext, context: Processi
 private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtMemberConfig<*>>>): List<ElementDescriptor> {
     val descriptors = mutableListOf<ElementDescriptor>()
     for((expression, constantConfigs) in constantConfigGroup) {
-        when(expression) {
-            is CwtValueExpression -> {
-                val descriptor = ValueDescriptor(name = expression.expressionString)
-                descriptors.add(descriptor)
+        if(expression.isKey) {
+            val name = expression.expressionString
+            val constantValueExpressions = constantConfigs
+                .mapNotNull { it.castOrNull<CwtPropertyConfig>()?.valueExpression?.takeIf { e -> e.type == CwtDataTypes.Constant } }
+            val mustBeConstantValue = constantValueExpressions.size == constantConfigs.size
+            val value = if(mustBeConstantValue) constantValueExpressions.first().expressionString else ""
+            val constantValues = if(constantValueExpressions.isEmpty()) emptyList() else buildList {
+                if(!mustBeConstantValue) add("")
+                constantValueExpressions.forEach { add(it.expressionString) }
             }
-            is CwtKeyExpression -> {
-                val name = expression.expressionString
-                val constantValueExpressions = constantConfigs
-                    .mapNotNull { it.castOrNull<CwtPropertyConfig>()?.valueExpression?.takeIf { e -> e.type == CwtDataTypes.Constant } }
-                val mustBeConstantValue = constantValueExpressions.size == constantConfigs.size
-                val value = if(mustBeConstantValue) constantValueExpressions.first().expressionString else ""
-                val constantValues = if(constantValueExpressions.isEmpty()) emptyList() else buildList {
-                    if(!mustBeConstantValue) add("")
-                    constantValueExpressions.forEach { add(it.expressionString) }
-                }
-                val descriptor = PropertyDescriptor(name = name, value = value, constantValues = constantValues)
-                descriptors.add(descriptor)
-            }
+            val descriptor = PropertyDescriptor(name = name, value = value, constantValues = constantValues)
+            descriptors.add(descriptor)
+        } else {
+            val descriptor = ValueDescriptor(name = expression.expressionString)
+            descriptors.add(descriptor)
         }
     }
     return descriptors

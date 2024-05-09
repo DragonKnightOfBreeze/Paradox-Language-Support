@@ -94,7 +94,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
             private fun doCheckOccurrence(element: ParadoxScriptMemberElement, position: PsiElement, occurrence: Occurrence, configExpression: CwtDataExpression): Boolean {
                 val (actual, min, _, relaxMin) = occurrence
                 if(min != null && actual < min) {
-                    val isKey = configExpression is CwtKeyExpression
+                    val isKey = configExpression.isKey
                     val isConst = configExpression.type == CwtDataTypes.Constant
                     val description = if(isKey) {
                         when {

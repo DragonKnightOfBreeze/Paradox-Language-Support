@@ -21,7 +21,7 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val desc: String?
     val fromData: Boolean
     val type: String?
-    val dataSource: CwtValueExpression?
+    val dataSource: CwtDataExpression?
     val prefix: String?
     val forDefinitionType: String?
     val inputScopes: Set<String>
@@ -39,7 +39,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtLinkConfigImpl? {
     var desc: String? = null
     var fromData = false
     var type: String? = null
-    var dataSource: CwtValueExpression? = null
+    var dataSource: CwtDataExpression? = null
     var prefix: String? = null
     var inputScopes: Set<String>? = null
     var outputScope: String? = null
@@ -70,7 +70,7 @@ private class CwtLinkConfigImpl(
     override val desc: String? = null,
     override val fromData: Boolean = false,
     override val type: String? = null,
-    override val dataSource: CwtValueExpression?,
+    override val dataSource: CwtDataExpression?,
     override val prefix: String?,
     override val forDefinitionType: String?,
     override val inputScopes: Set<String>,

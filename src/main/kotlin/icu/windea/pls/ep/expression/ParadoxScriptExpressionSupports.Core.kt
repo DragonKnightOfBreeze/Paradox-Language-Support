@@ -9,7 +9,6 @@ import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport.*
@@ -328,12 +327,12 @@ abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpress
         if(annotated) return
         val configExpression = config.expression ?: return
         if(rangeInElement == null) {
-            if(element is ParadoxScriptPropertyKey && configExpression is CwtKeyExpression) return //unnecessary
-            if(element is ParadoxScriptString && configExpression is CwtValueExpression) return //unnecessary
+            if(element is ParadoxScriptPropertyKey && configExpression.isKey) return //unnecessary
+            if(element is ParadoxScriptString && !configExpression.isKey) return //unnecessary
         }
-        val attributesKey = when(configExpression) {
-            is CwtKeyExpression -> ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY
-            is CwtValueExpression -> ParadoxScriptAttributesKeys.STRING_KEY
+        val attributesKey = when {
+            configExpression.isKey -> ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY
+            else -> ParadoxScriptAttributesKeys.STRING_KEY
         }
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)

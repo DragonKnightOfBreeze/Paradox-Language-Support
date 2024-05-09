@@ -49,10 +49,10 @@ private fun doResolve(expressionString: String): CwtTemplateExpression {
                         if(i1 == 0 && nextIndex == expressionString.length) return doResolveEmpty()
                         if(startIndex != i1) {
                             if(snippets == null) snippets = mutableListOf()
-                            snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
+                            snippets.add(CwtDataExpression.resolve(expressionString.substring(startIndex, i1), false))
                         }
                         if(snippets == null) snippets = mutableListOf()
-                        snippets.add(CwtValueExpression.resolve(expressionString.substring(i1, nextIndex)))
+                        snippets.add(CwtDataExpression.resolve(expressionString.substring(i1, nextIndex), false))
                         startIndex = nextIndex
                         continue
                     }
@@ -64,10 +64,10 @@ private fun doResolve(expressionString: String): CwtTemplateExpression {
                         if(i1 == 0 && nextIndex == expressionString.length) return doResolveEmpty()
                         if(startIndex != i1) {
                             if(snippets == null) snippets = mutableListOf()
-                            snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
+                            snippets.add(CwtDataExpression.resolve(expressionString.substring(startIndex, i1), false))
                         }
                         if(snippets == null) snippets = mutableListOf()
-                        snippets.add(CwtValueExpression.resolve(expressionString.substring(i1, nextIndex)))
+                        snippets.add(CwtDataExpression.resolve(expressionString.substring(i1, nextIndex), false))
                         startIndex = nextIndex
                         continue
                     }
@@ -81,10 +81,10 @@ private fun doResolve(expressionString: String): CwtTemplateExpression {
                     if(i1 == 0 && nextIndex == expressionString.length) return doResolveEmpty()
                     if(startIndex != i1) {
                         if(snippets == null) snippets = mutableListOf()
-                        snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex, i1)))
+                        snippets.add(CwtDataExpression.resolve(expressionString.substring(startIndex, i1), false))
                     }
                     if(snippets == null) snippets = mutableListOf()
-                    snippets.add(CwtValueExpression.resolve(expressionString.substring(i1, nextIndex)))
+                    snippets.add(CwtDataExpression.resolve(expressionString.substring(i1, nextIndex), false))
                     startIndex = nextIndex
                     continue
                 }
@@ -93,7 +93,7 @@ private fun doResolve(expressionString: String): CwtTemplateExpression {
             }
             if(snippets == null) return doResolveEmpty()
             if(startIndex != expressionString.length) {
-                snippets.add(CwtValueExpression.resolve(expressionString.substring(startIndex)))
+                snippets.add(CwtDataExpression.resolve(expressionString.substring(startIndex), false))
             }
             CwtTemplateExpressionImpl(expressionString, snippets)
         }

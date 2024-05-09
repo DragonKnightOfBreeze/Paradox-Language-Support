@@ -36,7 +36,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
         
         //根据ddsFileName进行提示
         val fileSelector = fileSelector(project, originalFile).contextSensitive().distinctByFilePath()
-        val ddsFileExpression = CwtValueExpression.resolve("icon[gfx/interface/icons/]")
+        val ddsFileExpression = CwtDataExpression.resolve("icon[gfx/interface/icons/]", false)
         ParadoxFilePathSearch.search(ddsFileExpression, fileSelector).processQueryAsync p@{ ddsFile ->
             ProgressManager.checkCanceled()
             val name = ddsFile.nameWithoutExtension

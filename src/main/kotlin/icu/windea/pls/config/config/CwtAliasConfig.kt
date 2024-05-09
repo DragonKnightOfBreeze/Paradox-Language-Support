@@ -18,8 +18,8 @@ interface CwtAliasConfig : CwtInlineableConfig<CwtProperty, CwtPropertyConfig> {
     val supportedScopes: Set<String>
     val outputScope: String?
     
-    val subNameExpression: CwtKeyExpression
-    override val expression: CwtKeyExpression
+    val subNameExpression: CwtDataExpression
+    override val expression: CwtDataExpression
     
     fun inline(config: CwtPropertyConfig): CwtPropertyConfig
     
@@ -47,7 +47,7 @@ private class CwtAliasConfigImpl(
     override val supportedScopes get() = config.supportedScopes
     override val outputScope get() = config.pushScope
     
-    override val subNameExpression = CwtKeyExpression.resolve(subName)
+    override val subNameExpression = CwtDataExpression.resolve(subName, true)
     override val expression get() = subNameExpression
     
     override fun inline(config: CwtPropertyConfig): CwtPropertyConfig {

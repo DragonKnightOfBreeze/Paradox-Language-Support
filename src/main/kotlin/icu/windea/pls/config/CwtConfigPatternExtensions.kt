@@ -10,30 +10,8 @@ import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.*
 
-interface CwtConfigPatternAware
-
 private val patternResolvers by lazy { CwtDataExpressionResolver.EP_NAME.extensionList.filterFast { it is CwtConfigPatternAware } }
 private val patternMatchers by lazy { CwtDataExpressionMatcher.EP_NAME.extensionList.filterFast { it is CwtConfigPatternAware } }
-
-private class CwtKeyExpressionFromPattern(
-    override val expressionString: String,
-    override val type: CwtDataType,
-    override val value: String?,
-    override val extraValue: Any?
-) : CwtKeyExpression {
-    override fun equals(other: Any?) = this === other || other is CwtKeyExpression && expressionString == other.expressionString
-    override fun hashCode() = expressionString.hashCode()
-    override fun toString() = expressionString
-}
-
-private fun resolveConfigExpression(expressionString: String): CwtKeyExpression = configExpressionCache.get(expressionString)
-
-private val configExpressionCache = CacheBuilder.newBuilder().buildCache<String, CwtKeyExpression> { doResolveConfigExpression(it) }
-
-private fun doResolveConfigExpression(expressionString: String): CwtKeyExpression {
-    val r = patternResolvers.firstNotNullOfOrNull { it.resolve(expressionString) } ?: return CwtKeyExpression.EmptyExpression
-    return CwtKeyExpressionFromPattern(r.expressionString, r.type, r.value, r.extraValue)
-}
 
 /**
  * 用当前键作为通配符来匹配指定的[key]。
@@ -57,7 +35,7 @@ fun String.matchFromPattern(
         if(p1 != p2) return false
     }
     val pattern0 = this.substring(fromIndex)
-    val configExpression = resolveConfigExpression(pattern0)
+    val configExpression = CwtDataExpression.resolve(pattern0, true)
     if(configExpression.expressionString.isEmpty()) return false
     val expression = ParadoxDataExpression.resolve(key)
     val matchResult = patternMatchers.firstNotNullOfOrNull { it.matches(contextElement, expression, configExpression, null, configGroup, matchOptions) } ?: return false

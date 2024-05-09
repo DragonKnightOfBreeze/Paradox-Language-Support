@@ -10,7 +10,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
 interface CwtPropertyConfig : CwtMemberConfig<CwtProperty>, CwtKeyAware {
-    val keyExpression: CwtKeyExpression
+    val keyExpression: CwtDataExpression
     
     val valueConfig: CwtValueConfig?
     
@@ -89,9 +89,9 @@ private object CwtPropertyConfigImpls {
         override var parentConfig: CwtMemberConfig<*>? = null
         override var inlineableConfig: CwtInlineableConfig<CwtProperty, CwtMemberConfig<CwtProperty>>? = null
         
-        override val keyExpression: CwtKeyExpression get() = CwtKeyExpression.resolve(key)
-        override val valueExpression: CwtValueExpression get() = if(isBlock) CwtValueExpression.BlockExpression else CwtValueExpression.resolve(value)
-        override val expression: CwtKeyExpression get() = keyExpression
+        override val keyExpression: CwtDataExpression get() = CwtDataExpression.resolve(key, true)
+        override val valueExpression: CwtDataExpression get() = if(isBlock) CwtDataExpression.BlockExpression else CwtDataExpression.resolve(value, false)
+        override val expression: CwtDataExpression get() = keyExpression
         
         override fun resolved(): CwtPropertyConfig = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>() ?: this
         override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>()
@@ -202,8 +202,8 @@ private object CwtPropertyConfigImpls {
         override val value: String,
         //configs should be always null here
     ) : Delegate(delegate) {
-        override val keyExpression: CwtKeyExpression get() = CwtKeyExpression.resolve(key)
-        override val valueExpression: CwtValueExpression get() = CwtValueExpression.resolve(value)
+        override val keyExpression: CwtDataExpression get() = CwtDataExpression.resolve(key, true)
+        override val valueExpression: CwtDataExpression get() = CwtDataExpression.resolve(value, false)
         override val expression: CwtDataExpression get() = keyExpression
         
         override fun toString(): String = "$key ${separatorType.text} $value"

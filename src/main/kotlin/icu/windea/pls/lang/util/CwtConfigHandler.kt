@@ -550,7 +550,7 @@ object CwtConfigHandler {
         if(result != null) return result
         
         val configGroup = config.configGroup
-        if(configExpression is CwtKeyExpression && configExpression.type in CwtDataTypeGroups.KeyReference) {
+        if(configExpression.isKey && configExpression.type in CwtDataTypeGroups.KeyReference) {
             val resolvedConfig = config.resolved()
             if(resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
                 //特殊处理合成的CWT规则
@@ -574,7 +574,7 @@ object CwtConfigHandler {
         if(result.isNotEmpty()) return result
         
         val configGroup = config.configGroup
-        if(configExpression is CwtKeyExpression && configExpression.type in CwtDataTypeGroups.KeyReference) {
+        if(configExpression.isKey && configExpression.type in CwtDataTypeGroups.KeyReference) {
             val resolvedConfig = config.resolved()
             if(resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
                 //特殊处理合成的CWT规则
@@ -647,8 +647,8 @@ object CwtConfigHandler {
     //region Misc Methods
     fun isConstantMatch(configExpression: CwtDataExpression, expression: ParadoxDataExpression, configGroup: CwtConfigGroup): Boolean {
         //注意这里可能需要在同一循环中同时检查keyExpression和valueExpression，因此这里需要特殊处理
-        if(configExpression is CwtKeyExpression && expression.isKey == false) return false
-        if(configExpression is CwtValueExpression && expression.isKey == true) return false
+        if(configExpression.isKey && expression.isKey == false) return false
+        if(!configExpression.isKey && expression.isKey == true) return false
         
         if(configExpression.type == CwtDataTypes.Constant) return true
         if(configExpression.type == CwtDataTypes.EnumValue && configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.value) } == true) return true
@@ -669,7 +669,7 @@ object CwtConfigHandler {
         if(constKey != null) return constKey
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
         val expression = ParadoxDataExpression.resolve(key, quoted, true)
-        return keys.find { CwtConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchOptions).get(matchOptions) }
+        return keys.find { CwtConfigMatcher.matches(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
     }
     
     fun getAliasSubNames(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = Options.Default): List<String> {
@@ -677,7 +677,7 @@ object CwtConfigHandler {
         if(constKey != null) return listOf(constKey)
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptyList()
         val expression = ParadoxDataExpression.resolve(key, quoted, true)
-        return keys.filter { CwtConfigMatcher.matches(element, expression, CwtKeyExpression.resolve(it), null, configGroup, matchOptions).get(matchOptions) }
+        return keys.filter { CwtConfigMatcher.matches(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
     }
     
     fun getEntryName(config: CwtConfig<*>): String? {

@@ -553,12 +553,12 @@ object ParadoxCompletionManager {
     fun completeConstant(context: ProcessingContext, result: CompletionResultSet) {
         val config = context.config ?: return
         val configExpression = config.expression ?: return
-        val icon = when(configExpression) {
-            is CwtKeyExpression -> PlsIcons.Nodes.Property
-            is CwtValueExpression -> PlsIcons.Nodes.Value
+        val icon = when {
+            configExpression.isKey -> PlsIcons.Nodes.Property
+            else -> PlsIcons.Nodes.Value
         }
         val name = configExpression.value ?: return
-        if(configExpression is CwtValueExpression) {
+        if(!configExpression.isKey) {
             //常量的值也可能是yes/no
             if(name == "yes") {
                 if(context.quoted) return

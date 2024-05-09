@@ -11,7 +11,7 @@ sealed interface CwtMemberConfig<out T : CwtMemberElement> : UserDataHolder, Cwt
     var parentConfig: CwtMemberConfig<*>?
     var inlineableConfig: CwtInlineableConfig<@UnsafeVariance T, CwtMemberConfig<@UnsafeVariance T>>?
     
-    val valueExpression: CwtValueExpression
+    val valueExpression: CwtDataExpression
     override val expression: CwtDataExpression
     
     override fun resolved(): CwtMemberConfig<T> = inlineableConfig?.config?.castOrNull<CwtMemberConfig<T>>() ?: this

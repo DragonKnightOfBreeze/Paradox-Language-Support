@@ -53,7 +53,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
             return INSTANCE.createParadoxQuery(SearchParameters(null, configExpression, selector, ignoreLocale))
         }
         
-        private val iconExpression = CwtValueExpression.resolve("icon[]")
+        private val iconExpression = CwtDataExpression.resolve("icon[]", false)
         
         /**
          *  @see icu.windea.pls.lang.search.ParadoxFilePathSearch.SearchParameters

@@ -17,7 +17,7 @@ import java.lang.invoke.*
 object ParadoxDefineHandler {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
-    val definePathExpression = CwtValueExpression.resolve("filepath[common/defines/,.txt]")
+    val definePathExpression = CwtDataExpression.resolve("filepath[common/defines/,.txt]", false)
     
     @Suppress("UNCHECKED_CAST")
     fun <T> getDefineValue(contextElement: PsiElement, project: Project, path: String, type: Class<T>): T? {
