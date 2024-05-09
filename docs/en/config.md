@@ -6,20 +6,19 @@
 
 PLS implements various advanced language features based on CWT config groups, which consists of many CWT config files.
 
-The data in these config groups first comes from the CWT config files in specific directories,
-after merging and computing, it will be used to implement various features of this plugin.
+The config groups can have different sources. For config groups from the same source, they contain config groups for different game types, and the core config group, which is shared by all game types.
 
 Reference Links:
 
 * [Repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/cwt)
 
-### Built-in config groups
+**Built-in config groups**
 
 Their CWT config files are located in the `config/${gameType}`[^1] directory (which is in the plugin jar), and they will always be enabled.
 
 These config files are from plugin repository and config repositories of each game. Compare to the config files used by CWTools, there are several modifications and extensions. 
 
-### Project local config groups
+**Project local config groups**
 
 Their CWT config files should be placed in the `.config/${gameType}`[^1] directory (which is in the project root directory), and they will be enabled after manually confirming to import.
 
@@ -29,9 +28,11 @@ If some changes are happened, the refresh button will be appeared in the context
 
 The CWT config files use the LIOS overridden strategy based on the file path and the config ID.
 
-For example, if you have written some custom configs in the config file `.config/stellaris/modifiers.cwt` (which is in the project root directory), it will completely override the built-in modifier configs.
-Since the built-in modifier configs are located in the config file `config/stellaris/modifiers.cwt` (which is in the plugin jar), and both of their path is `modifiers.cwt`.
+When reading CWT configs, the plugin will iterate config groups by following order: built-in config groups, project local config groups.
+The core config group is shared by all game types, and will be iterated before the config group for related game type.
 
+For example, if you have written some custom configs in the config file `.config/stellaris/modifiers.cwt` (which is in the project root directory), it will completely override the built-in modifier configs.
+Since the built-in modifier configs are located in the config file `config/stellaris/modifiers.cwt` (which is in the plugin jar), and both of their file path is `modifiers.cwt`.
 If these are no content in the custom config file, after applied, the plugin will be unable to resolve any modifier in script files.
 
 ## CWT Config File{#cwt-config-file}
@@ -73,6 +74,24 @@ Reference Links:
 * [Guidance](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
 
 ### Specifications
+
+#### Priorities
+
+Priority configs are used to configure the override order for various targets (files, definitions, etc.).
+
+```cwt
+priorities = {
+    # LHS - super directory path (relative to game or mod root directory)
+    # RHS - priority (available values: "fios", "lios", "ordered", default value: "lios", ignore case)
+    
+    # fios - use the one that reads first, ignore all remaining items
+    # lios - use the one that reads last (if not specified, use this as default)
+    # ordered - reads by order, no overrides
+    
+	"events" = fios
+    # ...
+}
+```
 
 #### Types and Subtypes
 
@@ -390,4 +409,4 @@ And please note that if the changes in the config files will result in the chang
 you may need to reindex the whole project (this may take several minutes), to make sure the plugin works properly,
 if in the situation that involves these changes.
 
-[^1]: Allowed values for `gameType`: `stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`
+[^1]: Allowed values for `gameType`: `stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3` (or `core` for core config group)

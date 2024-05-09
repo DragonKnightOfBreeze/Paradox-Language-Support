@@ -6,13 +6,13 @@
 
 PLS基于由CWT规则文件组成的CWT规则分组，实现了诸多语言功能。
 
-规则分组中的数据首先来自特定目录下的CWT规则文件，经过合并与计算后，再用于实现插件的各种功能。
+规则分组可以有不同的来源，而同一来源的规则分组中，又包含各自游戏类型的规则分组，以及所有游戏类型共享的核心规则分组。
 
 参考链接：
 
 * [仓库一览](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/cwt)
 
-### 分类
+### 来源
 
 **内置的规则分组**
 
@@ -24,15 +24,19 @@ PLS基于由CWT规则文件组成的CWT规则分组，实现了诸多语言功�
 
 其CWT规则文件需要放到项目根目录中的`.config/${gameType}`[^1]目录下，并且需要手动确认导入。
 
+这些规则文件由用户自定义，可以用来解决涉及规则匹配的代码检查报错，或是增强插件的功能。
+
 如果发生更改，编辑器右上角的上下文悬浮工具栏中会出现刷新按钮。点击确认导入后，即可应用这些自定义的规则文件。
 
 ### 覆盖规则
 
 CWT规则会按照文件路径和规则ID进行后序覆盖。
 
-例如，如果你在项目根目录下的规则文件`.config/stellaris/modifiers.cwt`中编写了自定义的规则，它将完全覆盖插件内置的修正规则。
-因为插件内置的修正规则位于插件jar包中的规则文件`config/stellaris/modifiers.cwt`中，它们的路径都是`modifiers.cwt`。
+读取CWT规则时，插件会依次遍历内置的规则分组与项目本地的规则分组。
+核心规则分组由所有游戏类型共享，会在对应游戏类型的规则分组之前被遍历。
 
+例如，如果你在项目根目录下的规则文件`.config/stellaris/modifiers.cwt`中编写了自定义的规则，它将完全覆盖插件内置的修正规则。
+因为插件内置的修正规则位于插件jar包中的规则文件`config/stellaris/modifiers.cwt`中，它们的文件路径都是`modifiers.cwt`。
 如果此自定义的规则文件中没有任何内容，应用后插件将无法解析脚本文件中的任何修正。
 
 ## CWT规则文件{#cwt-config-file}
@@ -73,6 +77,24 @@ prop = {
 * [指引文档](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
 
 ### 编写规范
+
+#### Priorities
+
+优先级规则可以用来配置目标（文件、定义等）的覆盖顺序。
+
+```cwt
+priorities = {
+    # LHS - super directory path (relative to game or mod root directory)
+    # RHS - priority (available values: "fios", "lios", "ordered", default value: "lios", ignore case)
+    
+    # fios - use the one that reads first, ignore all remaining items
+    # lios - use the one that reads last (if not specified, use this as default)
+    # ordered - reads by order, no overrides
+    
+	"events" = fios
+    # ...
+}
+```
 
 #### Types and Subtypes
 
@@ -386,4 +408,4 @@ IDE将会在后台花费一些时间重新解析已打开的文件，
 并且请注意，如果规则文件的更改会引发索引逻辑的更改 （例如，新增了一种定义类型，或是更改了某种定义类型的匹配条件），
 你可能需要重新索引整个项目（这可能需要花费数分钟），以使在涉及到这些更改的场合，插件能够正常工作。
 
-[^1]: 允许的`gameType`的值：`stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`
+[^1]: 允许的`gameType`的值：`stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`（或者`core`，对于核心规则分组）
