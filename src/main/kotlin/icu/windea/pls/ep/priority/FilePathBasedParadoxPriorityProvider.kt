@@ -137,6 +137,8 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
                 config.pathFile?.let { append("/").append(it) }
             }.orNull() ?: return
             filePaths += path
+        }
+        config.path.forEach { p ->
             val wildcardPath = p
             filePaths += wildcardPath
         }
