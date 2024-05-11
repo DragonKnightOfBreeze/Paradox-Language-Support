@@ -206,12 +206,16 @@ object ParadoxScopeHandler {
             
             //使用提供的作用域上下文
             val scopeContext = ParadoxDefinitionScopeContextProvider.getScopeContext(element, definitionInfo)
+            if(scopeContext != null) {
+                if(scopeContext.isExact == true) return scopeContext
+            }
             
-            //如果推断得到的作用域上下文是确定的，则优先使用推断得到的
+            //除非提供的作用域上下文是准确的，否则再尝试获取推断得到的作用域上下文，并进行合并
             val inferredScopeContext = ParadoxDefinitionInferredScopeContextProvider.getScopeContext(element, definitionInfo)
-            
-            val mergedScopeContext = mergeScopeContext(scopeContext, inferredScopeContext)
-            if(mergedScopeContext != null) return mergedScopeContext
+            if(inferredScopeContext != null) {
+                val mergedScopeContext = mergeScopeContext(scopeContext, inferredScopeContext)
+                if(mergedScopeContext != null) return mergedScopeContext
+            }
             
             return getAnyScopeContext()
         }

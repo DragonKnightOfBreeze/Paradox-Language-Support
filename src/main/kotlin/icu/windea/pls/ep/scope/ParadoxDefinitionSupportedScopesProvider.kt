@@ -6,13 +6,13 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
+/**
+ * 用于为定义提供支持的作用域。
+ */
 @WithGameTypeEP
 interface ParadoxDefinitionSupportedScopesProvider {
     fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
     
-    /**
-     * 得到支持的作用域。
-     */
     fun getSupportedScopes(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String>?
     
     companion object INSTANCE {

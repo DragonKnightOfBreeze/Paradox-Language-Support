@@ -25,6 +25,7 @@ interface ParadoxScopeContext : UserDataHolder {
     object Keys : KeyRegistry("ParadoxScopeContext")
 }
 
+var ParadoxScopeContext.isExact: Boolean? by createKeyDelegate(ParadoxScopeContext.Keys)
 
 //scope context list of scope field expression nodes
 var ParadoxScopeContext.scopeFieldInfo: List<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>? by createKeyDelegate(ParadoxScopeContext.Keys)
