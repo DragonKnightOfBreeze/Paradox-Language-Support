@@ -62,7 +62,16 @@ object CwtDataTypeGroups {
         CwtDataTypes.InlineLocalisation
     )
     
-    val PatternLike = arrayOf(
+    val DefinitionAware = arrayOf(
+        CwtDataTypes.Definition,
+        CwtDataTypes.TechnologyWithLevel
+    )
+    val LocalisationAware = arrayOf(
+        CwtDataTypes.Localisation,
+        CwtDataTypes.InlineLocalisation
+    )
+    
+    val PatternAware = arrayOf(
         CwtDataTypes.Constant,
         CwtDataTypes.TemplateExpression,
         CwtDataTypes.AntExpression,

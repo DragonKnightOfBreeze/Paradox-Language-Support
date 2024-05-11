@@ -6,6 +6,8 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.search.*
@@ -19,11 +21,13 @@ import javax.swing.*
  * * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。
  */
 class UnresolvedPathReferenceInspection : LocalInspectionTool() {
+    @JvmField var ignoredByConfigs = false
     @JvmField var ignoredFileNames = "*.lua;*.tga"
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val project = holder.project
         val file = holder.file
+        val project = holder.project
+        val configGroup = getConfigGroup(project, selectGameType(file))
         
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -37,6 +41,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 if(text.isParameterized()) return //skip if expression is parameterized
                 //match or single
                 val valueConfig = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return
+                if(isIgnoredByConfigs(element, valueConfig)) return
                 val configExpression = valueConfig.expression
                 val location = element
                 if(configExpression.type == CwtDataTypes.AbsoluteFilePath) {
@@ -50,8 +55,9 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
                 if(pathReferenceExpressionSupport != null) {
                     val pathReference = element.value.normalizePath()
-                    val fileNames = pathReferenceExpressionSupport.resolveFileName(configExpression, pathReference)
-                    if(fileNames.isNotNullOrEmpty()) {
+                    run {
+                        val fileNames = pathReferenceExpressionSupport.resolveFileName(configExpression, pathReference)
+                        if(fileNames.isNullOrEmpty()) return@run
                         if(fileNames.any { fileName -> fileName.matchesGlobPattern(ignoredFileNames, true) }) return
                     }
                     val selector = fileSelector(project, file) //use file as context
@@ -60,16 +66,31 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
                 }
             }
+            
+            private fun isIgnoredByConfigs(element: ParadoxScriptStringExpressionElement, memberConfig: CwtMemberConfig<*>): Boolean {
+                if(!ignoredByConfigs) return false
+                val value = element.value
+                val configExpression = memberConfig.expression
+                if(configExpression.expressionString != ParadoxInlineScriptHandler.inlineScriptPathExpressionString) {
+                    val config = configGroup.extendedInlineScripts.findFromPattern(value, element, configGroup)
+                    if(config != null) return true
+                }
+                return false
+            }
         }
     }
     
     override fun createOptionsPanel(): JComponent {
         return panel {
+            //ignoredByConfigs
+            row {
+                checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
+                    .bindSelected(::ignoredByConfigs)
+                    .actionListener { _, component -> ignoredByConfigs = component.isSelected }
+            }
             row {
                 label(PlsBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames"))
                     .applyToComponent { toolTipText = PlsBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames.tooltip") }
-            }
-            row {
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFileNames)
                     .bindWhenTextChanged(::ignoredFileNames)

@@ -1,11 +1,9 @@
 package icu.windea.pls.config
 
-import com.google.common.cache.*
 import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.*
@@ -17,7 +15,7 @@ private val patternMatchers by lazy { CwtDataExpressionMatcher.EP_NAME.extension
  * 用当前键作为通配符来匹配指定的[key]。
  * @param key 要与通配符进行匹配的键。
  * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配。
- * @see CwtDataTypeGroups.PatternLike
+ * @see CwtDataTypeGroups.PatternAware
  */
 fun String.matchFromPattern(
     key: String,
@@ -46,7 +44,7 @@ fun String.matchFromPattern(
  * 用当前映射的键作为通配符来匹配指定的[key]，得到匹配的首个结果。
  * @param key 要与通配符进行匹配的键。
  * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配。
- * @see CwtDataTypeGroups.PatternLike
+ * @see CwtDataTypeGroups.PatternAware
  */
 fun <V> Map<String, V>.findFromPattern(
     key: String,
@@ -64,7 +62,7 @@ fun <V> Map<String, V>.findFromPattern(
  * 用当前映射的键作为通配符来匹配指定的[key]，得到匹配的首个结果。
  * @param key 要与通配符进行匹配的键。
  * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配。
- * @see CwtDataTypeGroups.PatternLike
+ * @see CwtDataTypeGroups.PatternAware
  */
 fun <V> Map<String, V>.filterByPattern(
     key: String,

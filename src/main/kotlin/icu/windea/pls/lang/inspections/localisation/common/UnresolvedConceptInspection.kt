@@ -15,14 +15,17 @@ import javax.swing.*
 
 /**
  * 无法解析的概念的检查。
- * 
+ *
  * @property ignoredByConfigs （配置项）如果对应的扩展的CWT规则存在，是否需要忽略此代码检查。
  */
 class UnresolvedConceptInspection : LocalInspectionTool() {
     @JvmField var ignoredByConfigs = false
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val configGroup = getConfigGroup(holder.project, selectGameType(holder.file))
+        val file = holder.file
+        val project = holder.project
+        val configGroup = getConfigGroup(project, selectGameType(file))
+        
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -31,7 +34,6 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
             
             private fun visitConcept(element: ParadoxLocalisationConcept) {
                 if(isIgnoredByConfigs(element)) return
-                
                 val location = element.conceptName
                 val reference = element.reference
                 if(reference == null || reference.resolve() != null) return
@@ -41,8 +43,8 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
             
             private fun isIgnoredByConfigs(element: ParadoxLocalisationConcept): Boolean {
                 if(!ignoredByConfigs) return false
-                configGroup.extendedDefinitions
-                val configs = configGroup.extendedDefinitions.findFromPattern(element.name, element, configGroup).orEmpty()
+                val name = element.name
+                val configs = configGroup.extendedDefinitions.findFromPattern(name, element, configGroup).orEmpty()
                 val config = configs.findFast { ParadoxDefinitionTypeExpression.resolve(it.type).matches("concept") }
                 if(config != null) return true
                 return false
