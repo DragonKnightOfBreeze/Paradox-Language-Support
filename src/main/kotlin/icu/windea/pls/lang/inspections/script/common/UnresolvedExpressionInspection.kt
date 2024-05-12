@@ -63,9 +63,9 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     val expectedConfigs = getExpectedConfigs(element)
                     if(expectedConfigs.isNotEmpty()) {
                         //判断是否需要排除
-                        if(isExcluded(configs)) return true
+                        if(isExcluded(expectedConfigs)) return true
                         //判断是否需要忽略
-                        if(isIgnoredByConfigs(element.propertyKey, configs)) return true
+                        if(isIgnoredByConfigs(element.propertyKey, expectedConfigs)) return true
                     }
                     val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.expression }
                     expectedExpressions.orNull()?.joinToString()
@@ -101,9 +101,9 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     val expectedConfigs = getExpectedConfigs(element, configContext)
                     if(expectedConfigs.isNotEmpty()) {
                         //判断是否需要排除
-                        if(isExcluded(configs)) return true
+                        if(isExcluded(expectedConfigs)) return true
                         //判断是否需要忽略
-                        if(isIgnoredByConfigs(element, configs)) return true
+                        if(isIgnoredByConfigs(element, expectedConfigs)) return true
                     }
                     val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.expression }
                     val expect = if(showExpectInfo) expectedExpressions.joinToString() else null

@@ -26,7 +26,7 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
         indentOptions.KEEP_INDENTS_ON_EMPTY_LINES = false
         indentOptions.USE_TAB_CHARACTER = false
         commonSettings.LINE_COMMENT_AT_FIRST_COLUMN = false
-        commonSettings.LINE_COMMENT_ADD_SPACE = false
+        commonSettings.LINE_COMMENT_ADD_SPACE = true
     }
     
     override fun customizeSettings(consumer: CodeStyleSettingsCustomizable, settingsType: SettingsType) {
