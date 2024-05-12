@@ -1,3 +1,5 @@
+@file:Suppress("RedundantOverride")
+
 package icu.windea.pls.lang.inspections
 
 import com.intellij.codeInsight.daemon.impl.actions.*
@@ -8,9 +10,6 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -37,23 +36,17 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     override fun getSuppressActions(element: PsiElement?, toolId: String): Array<SuppressQuickFix> {
         if(element == null) return SuppressQuickFix.EMPTY_ARRAY
         return buildList {
-            val fileName = element.containingFile?.name
-            if(fileName != null) {
+            run {
+                val file = element.containingFile ?: return@run
+                val fileName = file.name
                 add(SuppressForFileFix(SuppressionUtil.ALL, fileName))
                 add(SuppressForFileFix(toolId, fileName))
             }
-            var current: PsiElement? = element
-            var level = 1
-            while(current != null) {
-                current = current.findParentDefinition() as? ParadoxScriptProperty
-                if(current != null) {
-                    val definitionName = current.definitionInfo?.name
-                    if(definitionName != null) {
-                        add(SuppressForDefinitionFix(toolId, definitionName, level))
-                        level++
-                    }
-                    current = current.parent
-                }
+            run {
+                val definition = element.findParentDefinition() 
+                if(definition !is ParadoxScriptProperty) return@run
+                val definitionInfo = definition.definitionInfo ?: return@run
+                add(SuppressForDefinitionFix(toolId, definitionInfo))
             }
             add(SuppressForExpressionFix(toolId))
         }.toTypedArray()
@@ -86,23 +79,16 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     
     private class SuppressForDefinitionFix(
         toolId: String,
-        private val definitionName: String,
-        private val depth: Int,
+        private val definitionInfo: ParadoxDefinitionInfo
     ) : SuppressByCommentFix(toolId, ParadoxScriptProperty::class.java) {
-        //definition here should be a property, not file
+        //definition here should be a property, not a file
         
         override fun getText(): String {
-            return PlsBundle.message("suppress.for.definition", definitionName)
+            return PlsBundle.message("suppress.for.definition", definitionInfo.name)
         }
         
-        override fun getContainer(context: PsiElement?): PsiElement? {
-            if(context == null) return null
-            var current: PsiElement = context
-            for(i in 1..depth) {
-                current = current.findParentDefinition() as? ParadoxScriptProperty ?: return null
-                current = current.parent
-            }
-            return current
+        override fun getContainer(context: PsiElement?): PsiElement {
+            return definitionInfo.element
         }
         
         override fun getCommentsFor(container: PsiElement): List<PsiElement> {

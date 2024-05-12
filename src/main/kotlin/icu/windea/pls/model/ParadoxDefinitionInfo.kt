@@ -17,9 +17,9 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 
 /**
- * @property elementPath 相对于所属文件的定义成员路径。
  * @property name 定义的名字。如果是空字符串，则表示定义是匿名的。（注意：不一定与定义的顶级键名相同，例如，可能来自某个属性的值）
  * @property rootKey 定义的顶级键名。（注意：不一定是定义的名字）
+ * @property elementPath 相对于所属文件的定义成员路径。
  */
 class ParadoxDefinitionInfo(
     name0: String?, // null -> lazy get
@@ -30,8 +30,6 @@ class ParadoxDefinitionInfo(
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
     val element: ParadoxScriptDefinitionElement,
-    //element直接作为属性的话可能会有些问题，不过这个缓存会在所在脚本文件变更时被清除，应当问题不大
-    //element不能转为SmartPsiElementPointer然后作为属性，这会导致与ParadoxDefinitionMemberInfo.element引发递归异常
 ) : UserDataHolderBase() {
     //NOTE 部分属性需要使用懒加载
     

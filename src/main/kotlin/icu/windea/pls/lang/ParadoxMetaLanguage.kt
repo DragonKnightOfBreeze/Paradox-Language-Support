@@ -11,14 +11,14 @@ import com.intellij.util.xmlb.annotations.*
 @Suppress("NAME_SHADOWING")
 class ParadoxMetaLanguage: MetaLanguage("PARADOX") {
     private val EP_NAME = ExtensionPointName<ParadoxLanguageEP>("icu.windea.pls.paradoxLanguage")
-    private val LANGS = ExtensionPointUtil.dropLazyValueOnChange(
+    private val LANGUAGES = ExtensionPointUtil.dropLazyValueOnChange(
         ClearableLazyValue.create { ContainerUtil.map2Set(EP_NAME.extensionList) { it.language!! } }, EP_NAME, null)
     
     override fun matchesLanguage(language: Language): Boolean {
         var language = language
-        val langs = LANGS.value
+        val languages = LANGUAGES.value
         while(true) {
-            if(langs.contains(language.id)) return true
+            if(languages.contains(language.id)) return true
             language = language.baseLanguage ?: break
         }
         return false
