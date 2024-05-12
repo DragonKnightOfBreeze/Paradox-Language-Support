@@ -27,17 +27,17 @@
 
 ## 1.3.7
 
-* [X] 更新CWT规则文件以适配Stellaris 3.12.1（基本完成）
+* [X] 更新CWT规则文件以适配Stellaris 3.12.2（基本完成）
 * [X] 优化：优化代码格式化功能，修复一些细节上的BUG
 * [X] 优化：基于CWT规则文件来确定目标（定义、本地化等）的覆盖顺序（可以自定义，参见参考文档）
 * [X] 优化：对于本地化文件，本地化文本中的双引号不需要转义（直到本行最后一个双引号之前为止，视为本地化文本）
-* [X] 优化：如果目标无法解析，但是存在对应的扩展的CWT规则，可以配置是否忽略相关的代码检查 *
+* [X] 优化：如果目标无法解析，但是存在对应的扩展的CWT规则，可以配置是否忽略相关的代码检查
 * [X] 优化：如果可以从扩展的CWT规则文件推断作用域上下文，就不要再尝试从使用推断
 * [X] 其他优化与BUG修复
 
 ***
 
-* [X] Update CWT configs files to match Stellaris 3.12.1 (almost done)
+* [X] Update CWT configs files to match Stellaris 3.12.2 (almost done)
 * [X] Optimization: Optimize code reformatting feature, fixes some details bugs
 * [X] Optimization: Determine override order for targets (definitions, localisations, etc.) based on CWT configs files (Can be customized, see reference documentation for details)
 * [X] Optimization: For localisation file, it's unnecessary to escape double quotes in localisation text
