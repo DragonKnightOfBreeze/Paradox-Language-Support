@@ -21,20 +21,19 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
         //包括其他一些相关的规则
         //目前基本上仅适用于脚本文件中的目标
         
-        val element = ParadoxPsiManager.findScriptExpression(file, offset) ?: return emptyList()
-        
-        val orDefault = element is ParadoxScriptPropertyKey
-        val matchOptions = Options.Default or Options.AcceptDefinition
-        val configs = CwtConfigHandler.getConfigs(element, orDefault, matchOptions)
-        if(configs.isEmpty()) return emptyList()
-        
         val result = mutableListOf<CwtConfig<*>>()
-        val configGroup = getConfigGroup(element.project, selectGameType(element))
-        for(config in configs) {
-            result.add(config)
-            config.resolvedOrNull()?.also { result.add(it) }
+        val configGroup = getConfigGroup(file.project, selectGameType(file))
+        
+        run r0@{
+            val element = ParadoxPsiManager.findScriptExpression(file, offset) ?: return@r0
             
-            if(element is ParadoxScriptStringExpressionElement) {
+            val orDefault = element is ParadoxScriptPropertyKey
+            val matchOptions = Options.Default or Options.AcceptDefinition
+            val configs = CwtConfigHandler.getConfigs(element, orDefault, matchOptions)
+            for(config in configs) {
+                result.add(config)
+                config.resolvedOrNull()?.also { result.add(it) }
+                if(element !is ParadoxScriptStringExpressionElement) continue
                 val name = element.value
                 val configExpression = config.expression
                 when {
@@ -68,78 +67,93 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
         //包括其他一些相关的规则（扩展的规则 - definitions gameRules onActions parameters complexEnumValues dynamicValues）
         //目前基本上仅适用于脚本文件中的目标
         
-        val element = ParadoxPsiManager.findScriptExpression(file, offset)
-        
         val result = mutableSetOf<CwtConfig<*>>()
         val configGroup = getConfigGroup(file.project, selectGameType(file))
         
         run r0@{
             val findOptions = ParadoxPsiManager.FindScriptedVariableOptions.run { BY_NAME or BY_REFERENCE }
-            val element1 = ParadoxPsiManager.findScriptVariable(file, offset, findOptions) ?: return@r0
-            val name = element1.name
+            val element = ParadoxPsiManager.findScriptVariable(file, offset, findOptions) ?: return@r0
+            val name = element.name
             if(name.isNullOrEmpty()) return@r0
             if(name.isParameterized()) return@r0
-            val config = configGroup.extendedScriptedVariables.findFromPattern(name, element1, configGroup)
+            val config = configGroup.extendedScriptedVariables.findFromPattern(name, element, configGroup)
             if(config != null) result.add(config)
         }
         
         run r0@{
-            if(element !is ParadoxScriptPropertyKey) return@r0
-            val definition = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return@r0
+            val findOptions = ParadoxPsiManager.FindDefinitionOptions.run { BY_NAME or BY_ROOT_KEY or BY_REFERENCE }
+            val element = ParadoxPsiManager.findDefinition(file, offset, findOptions) ?: return@r0
+            val definition = element
             val definitionInfo = definition.definitionInfo ?: return@r0
             val definitionName = definitionInfo.name
             if(definitionName.isEmpty()) return@r0
             if(definitionName.isParameterized()) return@r0
             run r1@{
-                val configs = configGroup.extendedDefinitions.findFromPattern(definitionName, definition, configGroup).orEmpty()
-                val matchedConfigs = configs.filter { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) }
+                val extendedConfigs = configGroup.extendedDefinitions.findFromPattern(definitionName, definition, configGroup).orEmpty()
+                val matchedConfigs = extendedConfigs.filter { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) }
                 result.addAll(matchedConfigs)
             }
             run r1@{
                 if(definitionInfo.type != "game_rule") return@r1
-                val config = configGroup.extendedGameRules.findFromPattern(definitionName, element, configGroup)
-                if(config != null) result.add(config)
+                val extendedConfig = configGroup.extendedGameRules.findFromPattern(definitionName, element, configGroup)
+                if(extendedConfig != null) result.add(extendedConfig)
             }
             run r1@{
                 if(definitionInfo.type != "on_action") return@r1
-                val config = configGroup.extendedOnActions.findFromPattern(definitionName, element, configGroup)
-                if(config != null) result.add(config)
+                val extendedConfig = configGroup.extendedOnActions.findFromPattern(definitionName, element, configGroup)
+                if(extendedConfig != null) result.add(extendedConfig)
             }
         }
         
         run r0@{
-            if(element !is ParadoxScriptExpressionElement) return@r0
+            val element = file.findElementAt(offset) {
+                it.parents(false).firstNotNullOfOrNull { p -> ParadoxParameterHandler.getParameterElement(p) }
+            } ?: return@r0
+            val extendedConfigs = configGroup.extendedParameters.findFromPattern(element.name, element, configGroup).orEmpty()
+                .filterTo(result) { it.contextKey.matchFromPattern(element.contextKey, element, configGroup) }
+            result.addAll(extendedConfigs)
+        }
+        
+        run r0@{
+            val element = ParadoxPsiManager.findScriptExpression(file, offset) ?: return@r0
+            if(element !is ParadoxScriptStringExpressionElement) return@r0
+            val name = element.name
+            
             for(reference in element.references) {
                 when {
                     ParadoxResolveConstraint.Parameter.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxParameterElement>() ?: continue
-                        val configs = configGroup.extendedParameters.findFromPattern(element.name, element, configGroup).orEmpty()
+                        val extendedConfigs = configGroup.extendedParameters.findFromPattern(name, element, configGroup).orEmpty()
                             .filterTo(result) { it.contextKey.matchFromPattern(resolved.contextKey, element, configGroup) }
-                        result.addAll(configs)
+                        result.addAll(extendedConfigs)
                     }
                     ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxComplexEnumValueElement>() ?: continue
-                        val configs = configGroup.extendedComplexEnumValues[resolved.enumName] ?: continue
-                        val config = configs.findFromPattern(resolved.name, element, configGroup) ?: continue
-                        result.add(config)
+                        val extendedConfigs = configGroup.extendedComplexEnumValues[resolved.enumName] ?: continue
+                        val extendedConfig = extendedConfigs.findFromPattern(resolved.name, element, configGroup) ?: continue
+                        result.add(extendedConfig)
                     }
                     ParadoxResolveConstraint.DynamicValueStrictly.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxDynamicValueElement>() ?: continue
-                        val configs = configGroup.extendedDynamicValues[resolved.dynamicValueType] ?: continue
-                        val config = configs.findFromPattern(resolved.name, element, configGroup) ?: continue
-                        result.add(config)
+                        val extendedConfigs = configGroup.extendedDynamicValues[resolved.dynamicValueType] ?: continue
+                        val extendedConfig = extendedConfigs.findFromPattern(resolved.name, element, configGroup) ?: continue
+                        result.add(extendedConfig)
                     }
                 }
             }
-        }
-        
-        run r0@{
-            val resolved = file.findElementAt(offset) {
-                it.parents(false).firstNotNullOfOrNull { p -> ParadoxParameterHandler.getParameterElement(p) }
-            } ?: return@r0
-            val configs = configGroup.extendedParameters.findFromPattern(resolved.name, resolved, configGroup).orEmpty()
-                .filterTo(result) { it.contextKey.matchFromPattern(resolved.contextKey, resolved, configGroup) }
-            result.addAll(configs)
+            
+            val orDefault = element is ParadoxScriptPropertyKey
+            val matchOptions = Options.Default or Options.AcceptDefinition
+            val configs = CwtConfigHandler.getConfigs(element, orDefault, matchOptions)
+            for(config in configs) {
+                val configExpression = config.expression
+                when {
+                    configExpression.expressionString == ParadoxInlineScriptHandler.inlineScriptPathExpressionString -> {
+                        val extendedConfig = configGroup.extendedInlineScripts.findFromPattern(name, element, configGroup) ?: continue
+                        result.add(extendedConfig)
+                    }
+                }
+            }
         }
         
         return result.toList()

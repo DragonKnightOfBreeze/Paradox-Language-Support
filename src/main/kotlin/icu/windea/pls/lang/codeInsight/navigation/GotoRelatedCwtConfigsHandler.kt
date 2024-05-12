@@ -25,7 +25,7 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
 		} ?: return null
         val relatedConfigs = CwtRelatedConfigProvider.getRelatedConfigs(file, offset)
         val targets = relatedConfigs.mapNotNull { it.pointer.element }
-        return GotoData(element, targets.toTypedArray(), emptyList())
+        return GotoData(element, targets.distinct().toTypedArray(), emptyList())
     }
 	
 	override fun shouldSortTargets(): Boolean {
