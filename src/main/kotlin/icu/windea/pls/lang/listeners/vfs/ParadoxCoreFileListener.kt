@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.listeners.vfs
 
-import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
@@ -155,10 +154,8 @@ class ParadoxCoreFileListener : AsyncFileListener {
     }
     
     private fun refreshInlineScripts() {
-        ProjectManager.getInstance().openProjects.forEach { project ->
-            ParadoxModificationTrackerProvider.getInstance(project).ScriptFileTracker.incModificationCount()
-            ParadoxModificationTrackerProvider.getInstance(project).InlineScriptsTracker.incModificationCount()
-        }
+        ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
+        ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
         //重新解析内联脚本文件
         val files = ParadoxCoreHandler.findOpenedFiles { file, _ -> ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null }
         ParadoxCoreHandler.reparseFiles(files)

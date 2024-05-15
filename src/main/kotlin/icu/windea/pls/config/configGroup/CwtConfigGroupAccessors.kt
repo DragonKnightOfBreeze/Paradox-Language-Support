@@ -11,15 +11,6 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.priority.*
 
-@MustBeDocumented
-@Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.PROPERTY)
-annotation class Tags(vararg val value: Tag)
-
-enum class Tag {
-    BuiltIn, Settings, Extended, Computed, Collected
-}
-
 @Tags(Tag.Settings, Tag.BuiltIn)
 val CwtConfigGroup.foldingSettings: MutableMap<@CaseInsensitive String, MutableMap<String, CwtFoldingSettingsConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
@@ -206,13 +197,10 @@ val CwtConfigGroup.definitionTypesSkipCheckSystemLink: MutableSet<String>
 val CwtConfigGroup.definitionTypesSupportParameters: MutableSet<String>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableSetOf() }
 
-@Tags(Tag.Computed)
-var CwtConfigGroup.parameterModificationTracker: ModificationTracker
-    by createKeyDelegate(CwtConfigGroup.Keys) { PsiModificationTracker.NEVER_CHANGED }
-
 @Tags(Tag.Collected)
 val CwtConfigGroup.filePathExpressions: MutableSet<CwtDataExpression>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableSetOf() }
 @Tags(Tag.Collected)
 val CwtConfigGroup.parameterConfigs: MutableSet<CwtMemberConfig<*>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableSetOf() }
+

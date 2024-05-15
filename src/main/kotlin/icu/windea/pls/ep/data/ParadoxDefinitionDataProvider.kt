@@ -31,9 +31,8 @@ abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
         return CachedValuesManager.getCachedValue(definition, cachedDataKey) {
             val value = doGetData(definition)
             //invalidated on ScriptedVariablesTracker or InlineScriptsTracker
-            val project = definition.project
-            val tracker1 = ParadoxModificationTrackerProvider.getInstance(project).ScriptedVariablesTracker
-            val tracker2 = ParadoxModificationTrackerProvider.getInstance(project).InlineScriptsTracker
+            val tracker1 = ParadoxModificationTrackers.ScriptedVariablesTracker
+            val tracker2 = ParadoxModificationTrackers.InlineScriptsTracker
             CachedValueProvider.Result.create(value, definition, tracker1, tracker2)
         }
     }

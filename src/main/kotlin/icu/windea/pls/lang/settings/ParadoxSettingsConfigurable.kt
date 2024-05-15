@@ -272,7 +272,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.inference::configContextForParameters)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextForParameters.tooltip") }
                         .onApply {
-                            ParadoxModificationTrackerProvider.ParameterConfigInferenceTracker.incModificationCount()
+                            ParadoxModificationTrackers.ParameterConfigInferenceTracker.incModificationCount()
                         }
                 }
                 //configContextForInlineScripts
@@ -281,11 +281,9 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.inference::configContextForInlineScripts)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextForInlineScripts.tooltip") }
                         .onApply {
-                            ParadoxModificationTrackerProvider.InlineScriptConfigInferenceTracker.incModificationCount()
-                            ProjectManager.getInstance().openProjects.forEach { project ->
-                                ParadoxModificationTrackerProvider.getInstance(project).ScriptFileTracker.incModificationCount()
-                                ParadoxModificationTrackerProvider.getInstance(project).InlineScriptsTracker.incModificationCount()
-                            }
+                            ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
+                            ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
+                            ParadoxModificationTrackers.InlineScriptConfigInferenceTracker.incModificationCount()
                             val openedFiles = ParadoxCoreHandler.findOpenedFiles { file, _ -> ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null }
                             ParadoxCoreHandler.reparseFiles(openedFiles)
                         }
@@ -296,7 +294,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.inference::scopeContext)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContext.tooltip") }
                         .onApply {
-                            ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount()
+                            ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
                             val openedFiles = ParadoxCoreHandler.findOpenedFiles()
                             ParadoxCoreHandler.reparseFiles(openedFiles, reparse = false)
                         }
@@ -307,7 +305,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.inference::scopeContextForEvents)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContextForEvents.tooltip") }
                         .onApply {
-                            ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount()
+                            ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
                             val openedFiles = ParadoxCoreHandler.findOpenedFiles()
                             ParadoxCoreHandler.reparseFiles(openedFiles, reparse = false)
                         }
@@ -318,7 +316,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.inference::scopeContextForOnActions)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContextForOnActions.tooltip") }
                         .onApply {
-                            ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker.incModificationCount()
+                            ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
                             val openedFiles = ParadoxCoreHandler.findOpenedFiles()
                             ParadoxCoreHandler.reparseFiles(openedFiles, reparse = false)
                         }

@@ -44,9 +44,8 @@ object CwtConfigHandler {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigContext) {
             val value = doGetConfigContext(element)
             //invalidated on ScriptFileTracker and LocalisationFileTracker (for loc references)
-            val project = element.project
-            val tracker1 = ParadoxModificationTrackerProvider.getInstance(project).ScriptFileTracker
-            val tracker2 = ParadoxModificationTrackerProvider.getInstance(project).LocalisationFileTracker
+            val tracker1 = ParadoxModificationTrackers.ScriptFileTracker
+            val tracker2 = ParadoxModificationTrackers.LocalisationFileTracker
             CachedValueProvider.Result.create(value, tracker1, tracker2)
         }
     }
@@ -148,9 +147,8 @@ object CwtConfigHandler {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsCache) {
             val value = doGetConfigsCache()
             //invalidated on ScriptFileTracker and LocalisationFileTracker (for loc references)
-            val project = element.project
-            val tracker1 = ParadoxModificationTrackerProvider.getInstance(project).ScriptFileTracker
-            val tracker2 = ParadoxModificationTrackerProvider.getInstance(project).LocalisationFileTracker
+            val tracker1 = ParadoxModificationTrackers.ScriptFileTracker
+            val tracker2 = ParadoxModificationTrackers.LocalisationFileTracker
             CachedValueProvider.Result.create(value, tracker1, tracker2)
         }
     }
@@ -329,9 +327,8 @@ object CwtConfigHandler {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedChildOccurrenceMapCache) {
             val value = doGetChildOccurrenceMapCache()
             //invalidated on ScriptFileTracker and LocalisationFileTracker (for loc references)
-            val project = element.project
-            val tracker1 = ParadoxModificationTrackerProvider.getInstance(project).ScriptFileTracker
-            val tracker2 = ParadoxModificationTrackerProvider.getInstance(project).LocalisationFileTracker
+            val tracker1 = ParadoxModificationTrackers.ScriptFileTracker
+            val tracker2 = ParadoxModificationTrackers.LocalisationFileTracker
             CachedValueProvider.Result.create(value, tracker1, tracker2)
         }
     }

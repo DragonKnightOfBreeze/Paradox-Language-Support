@@ -10,6 +10,7 @@ import com.intellij.ui.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.presentation.*
 import icu.windea.pls.extension.diagram.*
@@ -240,6 +241,8 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
-        override fun getModificationTracker() = ParadoxModificationTrackerProvider.getInstance(project).ScriptFileTracker("common/technologies:txt")
+        override fun getModificationTracker(): PathBasedModificationTracker {
+            return ParadoxModificationTrackers.ScriptFileTracker("common/technologies/**/*.txt")
+        }
     }
 }

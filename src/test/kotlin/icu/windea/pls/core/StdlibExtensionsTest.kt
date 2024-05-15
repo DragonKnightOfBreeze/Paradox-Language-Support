@@ -5,15 +5,15 @@ import org.junit.*
 class StdlibExtensionsTest {
 	@Test
 	fun matchesGlobPatternTest(){
-		Assert.assertTrue("abc".matchesGlobPattern("abc"))
-		Assert.assertTrue("abc".matchesGlobPattern("*"))
-		Assert.assertTrue("abc".matchesGlobPattern("ab?"))
-		Assert.assertTrue("abc".matchesGlobPattern("ab*"))
-		Assert.assertTrue("abc".matchesGlobPattern("a?c"))
-		Assert.assertFalse("ab".matchesGlobPattern("a?c"))
-		Assert.assertFalse("abc".matchesGlobPattern("a?"))
-		Assert.assertTrue("abc".matchesGlobPattern("a*c"))
-		Assert.assertFalse("abc".matchesGlobPattern("a*b"))
+		Assert.assertTrue("abc".matchesPattern("abc"))
+		Assert.assertTrue("abc".matchesPattern("*"))
+		Assert.assertTrue("abc".matchesPattern("ab?"))
+		Assert.assertTrue("abc".matchesPattern("ab*"))
+		Assert.assertTrue("abc".matchesPattern("a?c"))
+		Assert.assertFalse("ab".matchesPattern("a?c"))
+		Assert.assertFalse("abc".matchesPattern("a?"))
+		Assert.assertTrue("abc".matchesPattern("a*c"))
+		Assert.assertFalse("abc".matchesPattern("a*b"))
 	}
 	
 	@Test

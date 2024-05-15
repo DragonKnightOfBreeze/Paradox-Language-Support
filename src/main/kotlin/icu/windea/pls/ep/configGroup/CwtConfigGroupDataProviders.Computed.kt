@@ -103,25 +103,6 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
         }
         
-        run {
-            val definitionTypes = configGroup.definitionTypesSupportParameters
-            val builder = StringBuilder()
-            val keyString = definitionTypes.mapNotNull { configGroup.types.get(it) }.joinToString("|") { config ->
-                buildString {
-                    config.path?.let {
-                        append(it)
-                    }
-                    config.pathFile?.let {
-                        if(isNotEmpty()) append("/")
-                        append(it)
-                    }
-                    config.pathExtension?.let { builder.append(':').append(it) }
-                }
-            }
-            val modificationTracker = ParadoxModificationTrackerProvider.getInstance(configGroup.project).ScriptFileTracker(keyString)
-            configGroup.parameterModificationTracker = MergedModificationTracker(configGroup.modificationTracker, modificationTracker)
-        }
-        
         return true
     }
 }

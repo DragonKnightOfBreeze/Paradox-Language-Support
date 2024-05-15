@@ -3,6 +3,7 @@ package icu.windea.pls.lang.psi
 import com.intellij.psi.impl.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxPsiTreeChangePreprocessor: PsiTreeChangePreprocessor {
@@ -13,20 +14,25 @@ class ParadoxPsiTreeChangePreprocessor: PsiTreeChangePreprocessor {
         if(!PsiModificationTrackerImpl.canAffectPsi(event)) return
         
         val file = event.file ?: return
-        if(file !is ParadoxScriptFile) return
-        val fileInfo = file.fileInfo ?: return
-        val filePath = fileInfo.pathToEntry.path
-        val fileExtension = fileInfo.pathToEntry.fileExtension?.lowercase() //ignore case
-        //注意这里需要先获取服务再获取trackers
-        val trackers = ParadoxModificationTrackerProvider.getInstance(file.project).ScriptFileTrackers.values
-        for(tracker in trackers) {
-            val keys = tracker.keys
-            val keysSize = keys.size
-            for(i in 0 until keysSize) {
-                val key = keys[i]
-                if((filePath.isEmpty() || key.path.matchesPath(filePath)) && (key.extensions.isEmpty() || key.extensions.contains(fileExtension))) {
-                    tracker.incModificationCount()
-                    break
+        when{
+            file is ParadoxScriptFile -> {
+                ParadoxModificationTrackers.LocalisationFileTracker.incModificationCount()
+            } 
+            file is ParadoxLocalisationFile -> {
+                ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
+                
+                val fileInfo = file.fileInfo ?: return
+                val filePath = fileInfo.pathToEntry.path
+                //注意这里需要先获取服务再获取trackers
+                val trackers = ParadoxModificationTrackers.ScriptFileTrackers.values
+                for(tracker in trackers) {
+                    val patterns = tracker.patterns
+                    for(pattern in patterns) {
+                        if(filePath.matchesAntPattern(pattern, ignoreCase = true)) {
+                            tracker.incModificationCount()
+                            break
+                        }
+                    }
                 }
             }
         }

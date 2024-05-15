@@ -57,7 +57,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     run {
                         val fileNames = pathReferenceExpressionSupport.resolveFileName(configExpression, pathReference)
                         if(fileNames.isNullOrEmpty()) return@run
-                        if(fileNames.any { fileName -> fileName.matchesGlobPattern(ignoredFileNames, true) }) return
+                        if(fileNames.any { fileName -> fileName.matchesPattern(ignoredFileNames, true) }) return
                     }
                     val selector = fileSelector(project, file) //use file as context
                     if(ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return

@@ -193,7 +193,7 @@ object ParadoxScopeHandler {
             value.withDependencyItems(
                 file,
                 //getConfigGroup(file.project, selectGameType(file)).modificationTracker, //from extended configs
-                ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker, //usages
+                ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker, //usages
             )
         }
     }

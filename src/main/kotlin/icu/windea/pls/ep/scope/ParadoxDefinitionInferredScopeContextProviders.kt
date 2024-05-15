@@ -43,7 +43,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         return CachedValuesManager.getCachedValue(definition, Data.cachedScopeContextInferenceInfoKey) {
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
-            val tracker0 = ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker
+            val tracker0 = ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker
             val tracker = getTracker(definition)
             CachedValueProvider.Result.create(value, tracker0, tracker)
         }
@@ -51,11 +51,8 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     
     private fun getTracker(definition: ParadoxScriptDefinitionElement): ModificationTracker {
         val configGroup = definition.definitionInfo?.configGroup
-            ?: return ParadoxModificationTrackerProvider.getInstance(definition.project).ScriptFileTracker
-        val keyString = Data.DEFINITION_TYPES
-            .mapNotNull { configGroup.types[it] }
-            .joinToString("|") { it.path.orEmpty() + it.pathExtension?.let { e -> ":$e" }.orEmpty() }
-        return ParadoxModificationTrackerProvider.getInstance(definition.project).ScriptFileTracker(keyString)
+            ?: return ParadoxModificationTrackers.ScriptFileTracker
+        return configGroup.definitionScopeContextModificationTracker
     }
     
     private fun doGetScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
@@ -151,8 +148,8 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         return CachedValuesManager.getCachedValue(definition, Data.cachedScopeContextInferenceInfoKey) {
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
-            val tracker0 = ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker
-            val tracker = ParadoxModificationTrackerProvider.getInstance(definition.project).ScriptFileTracker("common/on_actions:txt")
+            val tracker0 = ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker
+            val tracker = ParadoxModificationTrackers.ScriptFileTracker("common/on_actions/**/*.txt")
             CachedValueProvider.Result.create(value, tracker0, tracker)
         }
     }
@@ -257,8 +254,8 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         return CachedValuesManager.getCachedValue(definition, Data.cachedScopeContextInferenceInfoKey) {
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
-            val tracker0 = ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker
-            val tracker = ParadoxModificationTrackerProvider.getInstance(definition.project).ScriptFileTracker("events:txt")
+            val tracker0 = ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker
+            val tracker = ParadoxModificationTrackers.ScriptFileTracker("events/**/*.txt")
             CachedValueProvider.Result.create(value, tracker0, tracker)
         }
     }
@@ -405,8 +402,8 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         return CachedValuesManager.getCachedValue(definition, Data.cachedScopeContextInferenceInfoKey) {
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
-            val tracker1 = ParadoxModificationTrackerProvider.DefinitionScopeContextInferenceTracker
-            val tracker2 = ParadoxModificationTrackerProvider.getInstance(definition.project).ScriptFileTracker
+            val tracker1 = ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker
+            val tracker2 = ParadoxModificationTrackers.ScriptFileTracker
             CachedValueProvider.Result.create(value, tracker1, tracker2)
         }
     }

@@ -22,7 +22,7 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 		if(ParadoxFileManager.isLightFile(file.virtualFile)) return null //不检查临时文件
 		val fileName = file.name
 		ignoredFileNames.splitOptimized(';').forEach {
-			if(fileName.matchesGlobPattern(it, true)) return null //忽略
+			if(fileName.matchesPattern(it, true)) return null //忽略
 		}
 		if(file.propertyLists.size <= 1) return null //不存在多个语言区域，忽略
 		val holder = ProblemsHolder(manager, file, isOnTheFly)

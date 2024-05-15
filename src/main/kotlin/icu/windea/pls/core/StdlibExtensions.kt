@@ -397,21 +397,27 @@ fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C): C = if(this.isNotEmpty()) 
 /**
  * 判断当前输入是否匹配指定的通配符表达式。使用"."匹配单个字符，使用"*"匹配任意个字符。
  */
-fun String.matchesGlobPattern(pattern: String, ignoreCase: Boolean = false): Boolean {
+fun String.matchesPattern(pattern: String, ignoreCase: Boolean = false): Boolean {
     if(pattern.isEmpty() && this.isNotEmpty()) return false
     if(pattern == "*") return true
-    val usedPath = this.let { if(ignoreCase) it.lowercase() else it }
-    val usedPattern = pattern.let { if(ignoreCase) it.lowercase() else it }
-    val regex = globPatternToRegexCache.get(usedPattern)
-    return usedPath.matches(regex)
+    val cache = if(ignoreCase) patternToRegexCache2 else patternToRegexCache1
+    val path0 = this
+    val pattern0 = pattern
+    return cache.get(pattern0).matches(path0)
 }
 
-private val globPatternToRegexCache = CacheBuilder.newBuilder().maximumSize(10000).buildCache<String, Regex> {
-    buildString {
+private val patternToRegexCache1 = CacheBuilder.newBuilder().maximumSize(10000)
+    .buildCache<String, Regex> { it.patternToRegexString().toRegex() }
+private val patternToRegexCache2 = CacheBuilder.newBuilder().maximumSize(10000)
+    .buildCache<String, Regex> { it.patternToRegexString().toRegex(RegexOption.IGNORE_CASE) }
+
+private fun String.patternToRegexString(): String {
+    val s = this
+    return buildString {
         append("\\Q")
         var i = 0
-        while(i < it.length) {
-            val c = it[i]
+        while(i < s.length) {
+            val c = s[i]
             when {
                 c == '*' -> append("\\E.*\\Q")
                 c == '?' -> append("\\E.\\Q")
@@ -420,7 +426,7 @@ private val globPatternToRegexCache = CacheBuilder.newBuilder().maximumSize(1000
             i++
         }
         append("\\E")
-    }.toRegex()
+    }
 }
 
 /**
@@ -429,21 +435,27 @@ private val globPatternToRegexCache = CacheBuilder.newBuilder().maximumSize(1000
 fun String.matchesAntPattern(pattern: String, ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
     if(pattern.isEmpty() && this.isNotEmpty()) return false
     if(pattern == "**") return true
-    val usedPath = this.let { if(trimSeparator) it.trimFast('/') else it }.let { if(ignoreCase) it.lowercase() else it }
-    val usedPattern = pattern.let { if(trimSeparator) it.trimFast('/') else it }.let { if(ignoreCase) it.lowercase() else it }
-    val regex = antPatternToRegexCache.get(usedPattern)
-    return usedPath.matches(regex)
+    val cache = if(ignoreCase) antPatternToRegexCache2 else antPatternToRegexCache1
+    val path0 = this.let { if(trimSeparator) it.trimFast('/') else it }
+    val pattern0 = pattern.let { if(trimSeparator) it.trimFast('/') else it }
+    return cache.get(pattern0).matches(path0)
 }
 
-private val antPatternToRegexCache = CacheBuilder.newBuilder().maximumSize(10000).buildCache<String, Regex> {
-    var s = buildString {
+private val antPatternToRegexCache1 = CacheBuilder.newBuilder().maximumSize(10000)
+    .buildCache<String, Regex> { it.antPatternToRegexString().toRegex() }
+private val antPatternToRegexCache2 = CacheBuilder.newBuilder().maximumSize(10000)
+    .buildCache<String, Regex> { it.antPatternToRegexString().toRegex(RegexOption.IGNORE_CASE) }
+
+private fun String.antPatternToRegexString(): String {
+    val s = this
+    var r = buildString {
         append("\\Q")
         var i = 0
-        while(i < it.length) {
-            val c = it[i]
+        while(i < s.length) {
+            val c = s[i]
             when {
                 c == '*' -> {
-                    val nc = it.getOrNull(i + 1)
+                    val nc = s.getOrNull(i + 1)
                     if(nc == '*') {
                         i++
                         append("\\E.*\\Q")
@@ -458,9 +470,9 @@ private val antPatternToRegexCache = CacheBuilder.newBuilder().maximumSize(10000
         }
         append("\\E")
     }
-    s = s.replace("\\E\\Q", "")
-    s = s.replace("/\\E.*\\Q/", "\\E(/[^/]*)*\\Q")
-    s.toRegex()
+    r = r.replace("\\E\\Q", "")
+    r = r.replace("/\\E.*\\Q/", "\\E(/[^/]*)*\\Q")
+    return r
 }
 
 /**
@@ -468,14 +480,16 @@ private val antPatternToRegexCache = CacheBuilder.newBuilder().maximumSize(10000
  */
 fun String.matchesRegex(pattern: String, ignoreCase: Boolean = false): Boolean {
     if(pattern.isEmpty() && this.isNotEmpty()) return false
-    return when {
-        ignoreCase -> regexCache2.get(pattern).matches(this)
-        else -> regexCache1.get(pattern).matches(this)
-    }
+    val cache = if(ignoreCase) regexCache2 else regexCache1
+    val path0 = this
+    val pattern0 = pattern
+    return cache.get(pattern0).matches(path0)
 }
 
-private val regexCache1 = CacheBuilder.newBuilder().maximumSize(10000).buildCache<String, Regex> { it.toRegex() }
-private val regexCache2 = CacheBuilder.newBuilder().maximumSize(10000).buildCache<String, Regex> { it.toRegex(RegexOption.IGNORE_CASE) }
+private val regexCache1 = CacheBuilder.newBuilder().maximumSize(10000)
+    .buildCache<String, Regex> { it.toRegex() }
+private val regexCache2 = CacheBuilder.newBuilder().maximumSize(10000)
+    .buildCache<String, Regex> { it.toRegex(RegexOption.IGNORE_CASE) }
 
 /**
  * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。使用"/"作为路径分隔符。

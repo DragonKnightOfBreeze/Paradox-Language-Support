@@ -192,9 +192,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
     
     override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker? {
-        val project = parameterInfo.project
-        val configGroup = getConfigGroup(project, parameterInfo.gameType)
-        return configGroup.parameterModificationTracker
+        val configGroup = getConfigGroup(parameterInfo.project, parameterInfo.gameType)
+        return configGroup.definitionParameterModificationTracker
     }
     
     override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {
@@ -295,7 +294,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
                 expressionElementConfig = CwtConfigHandler.getConfigs(expressionElement).firstOrNull() ?: return null
             }
         }
-        if(!(expressionElementConfig.expression.type in CwtDataTypeGroups.ValueField)) return null
+        if(expressionElementConfig.expression.type !in CwtDataTypeGroups.ValueField) return null
         val configGroup = expressionElementConfig.configGroup
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
@@ -526,7 +525,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     }
     
     override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker {
-        return ParadoxModificationTrackerProvider.getInstance(parameterInfo.project).InlineScriptsTracker
+        return ParadoxModificationTrackers.InlineScriptsTracker
     }
     
     override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {
