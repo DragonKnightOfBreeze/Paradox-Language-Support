@@ -236,7 +236,7 @@ inline fun <T> Query<T>.processQuery(onlyMostRelevant: Boolean = false, consumer
         find()?.let { consumer.process(it as T) }
         return true
     }
-    return forEach(consumer)
+    return this.forEach(consumer)
 }
 
 @Suppress("UNCHECKED_CAST")

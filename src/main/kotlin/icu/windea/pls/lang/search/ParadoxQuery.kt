@@ -49,50 +49,42 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
     }
     
     override fun findAll(): Set<T> {
+        //性能优化：
+        //* 尽可能少地调用MutableSet.add
+        //* 懒加载真正的finalComparator
+        //* 尽可能少地调用排序逻辑（当result中的元素小于等于1个时，不需要调用）
+        
         val selector = searchParameters.selector
-        val result = mutableSetOf<T>()
+        val finalComparator by lazy { getFinalComparator() }
+        val comparator = Comparator<T> c@{ o1, o2 ->
+            if(o1 == o2) return@c 0 
+            finalComparator.compare(o1, o2)
+        }
+        val result = sortedSetOf(comparator)
         delegateProcessResults(original) {
-            result.add(it)
+            if(selector.selectAll(it)) {
+                result += it
+            }
             true
         }
-        if(result.isEmpty()) return emptySet()
-        val comparator = getFinalComparator()
-        val sortedResult = MutableSet(comparator)
-        result.filterTo(sortedResult) { selector.selectAll(it) }
-        return sortedResult
+        return selector.postHandle(result)
     }
     
     override fun forEach(consumer: Processor<in T>): Boolean {
-        //TODO 1.2.5+ 需要验证这里的改动（适用排序）是否会显著影响性能
-        val selector = searchParameters.selector
-        val result = mutableSetOf<T>()
-        delegateProcessResults(original) {
-            result.add(it)
-            true
-        }
-        if(result.isEmpty()) return true
-        val comparator = getFinalComparator()
-        val sortedResult = MutableSet(comparator)
-        result.filterTo(sortedResult) { selector.selectAll(it) }
-        return sortedResult.process {
-            if(selector.selectAll(it)) {
-                consumer.process(it)
-            } else {
-                true
-            }
-        }
+        val result = findAll()
+        return result.process { consumer.process(it) }
     }
     
-    fun getPriorityComparator(): Comparator<T> {
-        return ParadoxPriorityProvider.getComparator(searchParameters)
-    }
-    
-    fun getFinalComparator(): Comparator<T>? {
+    fun getFinalComparator(): Comparator<T> {
         //最终使用的排序器需要将比较结果为0的项按照原有顺序进行排序，除非它们值相等
         var comparator = searchParameters.selector.comparator()
         comparator = comparator thenPossible getPriorityComparator()
         comparator = comparator thenPossible Comparator { o1, o2 -> if(o1 == o2) 0 else 1 }
-        return comparator
+        return comparator!!
+    }
+    
+    fun getPriorityComparator(): Comparator<T> {
+        return ParadoxPriorityProvider.getComparator(searchParameters)
     }
     
     override fun toString(): String {

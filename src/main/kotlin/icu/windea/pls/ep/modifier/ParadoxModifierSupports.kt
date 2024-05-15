@@ -420,7 +420,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val project = configGroup.project
         val selector = definitionSelector(project, definition).contextSensitive()
         val economicCategory = ParadoxDefinitionSearch.search(definitionInfo.name, "economic_category", selector)
-            .findFirst()
+            .find()
             ?: return false
         val economicCategoryInfo = StellarisEconomicCategoryHandler.getInfo(economicCategory) ?: return false
         for(modifierInfo in economicCategoryInfo.modifiers) {

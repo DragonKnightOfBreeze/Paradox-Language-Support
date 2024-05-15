@@ -49,23 +49,23 @@ class ChainedParadoxSelector<T>(
     private var defaultValuePriority = 0
     private var defaultValueLock = Any()
     
-    override fun select(result: T): Boolean {
-        if(!matchesGameType(result)) return false
-        if(selectors.isEmpty()) return super.select(result)
+    override fun select(target: T): Boolean {
+        if(!matchesGameType(target)) return false
+        if(selectors.isEmpty()) return super.select(target)
         var finalSelectResult = true
         var finalSelectDefaultResult = true
         var finalDefaultValuePriority = 0
         selectors.forEachFast { selector ->
-            val selectResult = selector.select(result)
+            val selectResult = selector.select(target)
             finalSelectResult = finalSelectResult && selectResult
             if(selectResult) finalDefaultValuePriority++
-            finalSelectDefaultResult = finalSelectDefaultResult && (selectResult || selector.selectAll(result))
+            finalSelectDefaultResult = finalSelectDefaultResult && (selectResult || selector.selectAll(target))
         }
         if(finalSelectDefaultResult) {
             if(defaultValuePriority == 0 || defaultValuePriority < finalDefaultValuePriority) {
                 synchronized(defaultValueLock) {
                     if(defaultValuePriority == 0 || defaultValuePriority < finalDefaultValuePriority) {
-                        defaultValue = result
+                        defaultValue = target
                         defaultValuePriority = finalDefaultValuePriority
                     }
                 }
@@ -74,11 +74,11 @@ class ChainedParadoxSelector<T>(
         return finalSelectResult
     }
     
-    override fun selectAll(result: T): Boolean {
-        if(!matchesGameType(result)) return false
-        if(selectors.isEmpty()) return super.selectAll(result)
+    override fun selectAll(target: T): Boolean {
+        if(!matchesGameType(target)) return false
+        if(selectors.isEmpty()) return super.selectAll(target)
         selectors.forEachFast { selector ->
-            if(!selector.selectAll(result)) return false
+            if(!selector.selectAll(target)) return false
         }
         return true
     }

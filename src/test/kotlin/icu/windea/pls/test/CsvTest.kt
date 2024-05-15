@@ -1,4 +1,4 @@
-package icu.windea.pls
+package icu.windea.pls.test
 
 import org.junit.*
 

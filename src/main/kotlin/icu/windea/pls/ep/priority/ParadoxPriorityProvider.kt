@@ -41,6 +41,14 @@ interface ParadoxPriorityProvider {
         
         fun <T> getComparator(searchParameters: ParadoxSearchParameters<T>): Comparator<T> {
             val priority = getPriority(searchParameters)
+            val rootFile = searchParameters.selector.rootFile 
+            val rootInfo = rootFile?.fileInfo?.rootInfo 
+            val rootPath = rootFile?.path
+            val settings = when(rootInfo) {
+                is ParadoxGameRootInfo -> getProfilesSettings().gameSettings.get(rootPath)
+                is ParadoxModRootInfo -> getProfilesSettings().modSettings.get(rootPath)
+                else -> null
+            } 
             return Comparator c@{ o1, o2 ->
                 val file1 = selectFile(o1) ?: return@c 1
                 val file2 = selectFile(o2) ?: return@c -1
@@ -62,13 +70,7 @@ interface ParadoxPriorityProvider {
                         ParadoxPriority.ORDERED -> pathResult
                     }
                 }
-                val rootFile = searchParameters.selector.rootFile ?: return@c 1
-                val rootInfo = rootFile.fileInfo?.rootInfo ?: return@c 1
-                val rootPath = rootFile.path
-                val settings = when(rootInfo) {
-                    is ParadoxGameRootInfo -> getProfilesSettings().gameSettings.get(rootPath)
-                    is ParadoxModRootInfo -> getProfilesSettings().modSettings.get(rootPath)
-                } ?: return@c 1
+                if(settings == null) return@c 1
                 val order1 = getOrder(fileInfo1, settings)
                 val order2 = getOrder(fileInfo2, settings)
                 val orderResult = order1.compareTo(order2)

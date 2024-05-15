@@ -58,7 +58,7 @@ object StellarisEconomicCategoryHandler {
             val parents = parentDataMap.keys
             val modifiers = mutableSetOf<StellarisEconomicCategoryModifierInfo>()
             
-            // will generate where use_for_ai_budget = yes (inherited by parent property for _mult modifiers)
+            // will generate when use_for_ai_budget = yes (inherited by parent property for _mult modifiers)
             // <economic_category>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
             // will generate:
             // <economic_category>_<resource>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }

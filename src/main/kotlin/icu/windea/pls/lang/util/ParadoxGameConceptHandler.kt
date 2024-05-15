@@ -13,7 +13,7 @@ object ParadoxGameConceptHandler {
         val definitionSelector = definitionSelector(project, contextElement)
             .contextSensitive()
             .filterBy { it.name == nameOrAlias || it.getData<StellarisGameConceptDataProvider.Data>()?.alias.orEmpty().contains(nameOrAlias) }
-        return ParadoxDefinitionSearch.search("game_concept", definitionSelector).findFirst()
+        return ParadoxDefinitionSearch.search("game_concept", definitionSelector).find()
     }
     
     fun getTextElement(element: ParadoxLocalisationConcept): PsiElement? {

@@ -31,13 +31,13 @@ fun <S : ChainedParadoxSelector<T>, T> S.contextSensitive(condition: Boolean = t
     return this
 }
 
-fun <S : ChainedParadoxSelector<T>, T, K> S.distinctBy(keySelector: (T) -> K): S {
-    selectors += ParadoxDistinctSelector(keySelector)
+fun <S : ChainedParadoxSelector<T>, T> S.filterBy(predicate: (T) -> Boolean): S {
+    selectors += ParadoxFilterSelector(predicate)
     return this
 }
 
-fun <S : ChainedParadoxSelector<T>, T> S.filterBy(predicate: (T) -> Boolean): S {
-    selectors += ParadoxFilterSelector(predicate)
+fun <S : ChainedParadoxSelector<T>, T, K> S.distinctBy(keySelector: (T) -> K): S {
+    selectors += ParadoxDistinctSelector(keySelector)
     return this
 }
 

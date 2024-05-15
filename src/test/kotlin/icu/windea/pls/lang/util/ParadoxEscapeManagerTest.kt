@@ -1,4 +1,4 @@
-package icu.windea.pls.util
+package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.*
 import icu.windea.pls.lang.util.*
