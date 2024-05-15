@@ -436,7 +436,7 @@ fun String.matchesAntPattern(pattern: String, ignoreCase: Boolean = false, trimS
 }
 
 private val antPatternToRegexCache = CacheBuilder.newBuilder().maximumSize(10000).buildCache<String, Regex> {
-    buildString {
+    var s = buildString {
         append("\\Q")
         var i = 0
         while(i < it.length) {
@@ -457,7 +457,10 @@ private val antPatternToRegexCache = CacheBuilder.newBuilder().maximumSize(10000
             i++
         }
         append("\\E")
-    }.toRegex()
+    }
+    s = s.replace("\\E\\Q", "")
+    s = s.replace("/\\E.*\\Q/", "\\E(/[^/]*)*\\Q")
+    s.toRegex()
 }
 
 /**

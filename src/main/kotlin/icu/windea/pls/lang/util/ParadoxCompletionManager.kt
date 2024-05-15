@@ -341,9 +341,8 @@ object ParadoxCompletionManager {
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = getScriptExpressionTailText(context, config)
-        val selector = localisationSelector(project, contextElement).contextSensitive()
-            .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
-        //.distinctByName() //这里selector不需要指定去重
+        //这里selector不需要指定去重
+        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
         ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, LimitedCompletionProcessor { localisation ->
             val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = localisation.containingFile

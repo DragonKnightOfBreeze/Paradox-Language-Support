@@ -25,6 +25,8 @@ class StdlibExtensionsTest {
 		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/name", false))
 		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/**", false))
 		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/**", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/**/name", false))
+		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/**/bar/name", false))
 		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/**", false))
 		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/nam?", false))
 		Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/na?e", false))
