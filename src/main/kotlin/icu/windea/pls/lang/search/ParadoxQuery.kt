@@ -71,6 +71,7 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
     }
     
     override fun forEach(consumer: Processor<in T>): Boolean {
+        //TODO 1.3.8+ 需要检查这里的改动（适用排序）是否会显著影响性能
         val result = findAll()
         return result.process { consumer.process(it) }
     }

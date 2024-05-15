@@ -8,6 +8,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.data.*
@@ -25,7 +26,7 @@ object ParadoxDefineHandler {
         try {
             val selector = fileSelector(project, contextElement).contextSensitive()
             var result: Any? = null
-            ParadoxFilePathSearch.search(definePathExpression, selector).processQueryAsync p@{
+            ParadoxFilePathSearch.search(definePathExpression, selector).findAll().process p@{
                 ProgressManager.checkCanceled()
                 val file = it.toPsiFile(project) ?: return@p true
                 if(file !is ParadoxScriptFile) return@p true

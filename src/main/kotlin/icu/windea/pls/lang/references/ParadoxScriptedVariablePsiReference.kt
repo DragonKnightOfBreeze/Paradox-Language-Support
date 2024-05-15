@@ -3,7 +3,6 @@ package icu.windea.pls.lang.references
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
@@ -58,14 +57,8 @@ class ParadoxScriptedVariablePsiReference(
         val name = element.name ?: return ResolveResult.EMPTY_ARRAY
         val result = mutableListOf<ParadoxScriptScriptedVariable>()
         val selector = scriptedVariableSelector(project, element).contextSensitive()
-        ParadoxLocalScriptedVariableSearch.search(name, selector).processQueryAsync {
-            result.add(it)
-            true
-        }
-        ParadoxGlobalScriptedVariableSearch.search(name, selector).processQueryAsync {
-            result.add(it)
-            true
-        }
+        ParadoxLocalScriptedVariableSearch.search(name, selector).findAll().let { result += it }
+        ParadoxGlobalScriptedVariableSearch.search(name, selector).findAll().let { result += it }
         return result.mapToArray { PsiElementResolveResult(it) }
     }
 }

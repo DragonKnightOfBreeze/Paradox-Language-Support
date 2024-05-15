@@ -31,7 +31,7 @@ class StellarisJobBasedModifierIconProvider: ParadoxModifierIconProvider {
         if(definitionType.substringBefore('.') != "job") return
         val configGroup = modifierConfig.config.configGroup
         val selector = definitionSelector(configGroup.project, element).contextSensitive()
-        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync p@{ definition ->
+        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQuery p@{ definition ->
             ProgressManager.checkCanceled()
             val property = definition.findProperty("icon", inline = true) ?: return@p true
             val propertyValue = property.propertyValue ?: return@p true
