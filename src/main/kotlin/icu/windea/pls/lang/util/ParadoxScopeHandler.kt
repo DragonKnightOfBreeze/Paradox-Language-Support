@@ -217,7 +217,7 @@ object ParadoxScopeHandler {
                 if(mergedScopeContext != null) return mergedScopeContext
             }
             
-            return getAnyScopeContext()
+            return scopeContext ?: getAnyScopeContext()
         }
         return null
     }

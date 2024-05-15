@@ -49,7 +49,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 }
             }, PlsBundle.message("script.goto.relatedLocalisations.search.1", definitionInfo.name), true, project)
             if(!runResult) return null
-            return GotoData(definition, targets.toTypedArray(), emptyList())
+            return GotoData(definition, targets.distinct().toTypedArray(), emptyList())
         }
         val modifierElement = ParadoxModifierHandler.resolveModifier(element)
         if(modifierElement != null) {
@@ -79,7 +79,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 }
             }, PlsBundle.message("script.goto.relatedLocalisations.search.2", modifierElement.name), true, project)
             if(!runResult) return null
-            return GotoData(element, targets.toTypedArray(), emptyList())
+            return GotoData(element, targets.distinct().toTypedArray(), emptyList())
         }
         return null
     }

@@ -1319,12 +1319,13 @@ object ParadoxCompletionManager {
         }
     }
     
+    private val ignoredCharsForExtendedConfigName = ".:<>[]".toCharArray()
+    
     private fun checkExtendedConfigName(text: String) : Boolean {
         //ignored if config name is empty
         if(text.isEmpty()) return true
-        //ignored if config name is a template expression,
-        //although we can use CwtTemplateExpression.processResolveResult to list matched literals
-        if(CwtTemplateExpression.resolve(text).expressionString.isNotEmpty()) return true
+        //ignored if config name is a template expression, ant expression or regex
+        if(text.any { it in ignoredCharsForExtendedConfigName }) return true
         return false
     }
     //endregion

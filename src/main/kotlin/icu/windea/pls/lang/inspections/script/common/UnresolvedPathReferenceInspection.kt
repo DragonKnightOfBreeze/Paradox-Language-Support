@@ -39,8 +39,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 ProgressManager.checkCanceled()
                 val text = element.text
                 if(text.isParameterized()) return //skip if expression is parameterized
-                //match or single
-                val valueConfig = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return
+                val valueConfig = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return //match or single
                 if(isIgnoredByConfigs(element, valueConfig)) return
                 val configExpression = valueConfig.expression
                 val location = element

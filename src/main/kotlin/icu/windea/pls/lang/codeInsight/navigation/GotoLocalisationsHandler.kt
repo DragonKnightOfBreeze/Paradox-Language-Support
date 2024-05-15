@@ -38,7 +38,7 @@ class GotoLocalisationsHandler: GotoTargetHandler() {
         }, PlsBundle.message("script.goto.localisations.search", localisationInfo.name), true, project)
         if(!runResult) return null
         if(targets.isNotEmpty()) targets.removeIf { it == localisation }
-        return GotoData(localisation, targets.toTypedArray(), emptyList())
+        return GotoData(localisation, targets.distinct().toTypedArray(), emptyList())
     }
     
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {

@@ -34,7 +34,7 @@ class GotoFilesHandler : GotoTargetHandler() {
         }, PlsBundle.message("script.goto.files.search", file.name), true, project)
         if(!runResult) return null
         if(targets.isNotEmpty()) targets.removeIf { it == file } //remove current file from targets
-        return GotoData(file, targets.toTypedArray(), emptyList())
+        return GotoData(file, targets.distinct().toTypedArray(), emptyList())
     }
     
     override fun shouldSortTargets(): Boolean {

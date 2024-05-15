@@ -75,7 +75,7 @@ Reference Links:
 
 ### Specifications
 
-#### Priorities
+#### Priorities (New in 1.3.7)
 
 Priority configs are used to configure the override order for targets (scripted variables, definitions, localisations and complex enums).
 

@@ -8,7 +8,7 @@ class CwtGameRuleConfigGeneratorTest {
     fun testForStellaris() {
         CwtGameRuleConfigGenerator(
             ParadoxGameType.Stellaris,
-            "common/game_rules/00_rules.txt",
+            "common/game_rules",
             "cwt/cwtools-stellaris-config/config/game_rules.cwt",
         ).generate()
     }

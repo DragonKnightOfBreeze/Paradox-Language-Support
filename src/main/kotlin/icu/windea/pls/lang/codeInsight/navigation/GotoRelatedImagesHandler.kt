@@ -47,7 +47,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
                 }
             }, PlsBundle.message("script.goto.relatedImages.search.1", definitionInfo.name), true, project)
             if(!runResult) return null
-            return GotoData(definition, targets.toTypedArray(), emptyList())
+            return GotoData(definition, targets.distinct().toTypedArray(), emptyList())
         }
         val modifierElement = ParadoxModifierHandler.resolveModifier(element)
         if(modifierElement != null) {
@@ -63,7 +63,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
                 }
             }, PlsBundle.message("script.goto.relatedImages.search.2", modifierElement.name), true, project)
             if(!runResult) return null
-            return GotoData(element, targets.toTypedArray(), emptyList())
+            return GotoData(element, targets.distinct().toTypedArray(), emptyList())
         }
         return null
     }
