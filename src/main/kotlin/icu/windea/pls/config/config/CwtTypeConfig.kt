@@ -11,9 +11,9 @@ import icu.windea.pls.model.*
  * @property name string
  * @property baseType (property) path: string
  * @property path (property) path: string/path
- * @property pathStrict (property) path_strict: boolean
  * @property pathFile (property) path_file: string/fileName
  * @property pathExtension (property) path_extension: string/fileExtension
+ * @property pathStrict (property) path_strict: boolean
  * @property nameField (property) name_field: string/propertyKey
  * @property nameFromFile (property) name_from_file: boolean
  * @property typePerFile (property) type_per_file: boolean
@@ -32,9 +32,9 @@ interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val baseType: String?
     val path: String?
-    val pathStrict: Boolean
     val pathFile: String?
     val pathExtension: String?
+    val pathStrict: Boolean
     val nameField: String?
     val nameFromFile: Boolean
     val typePerFile: Boolean
@@ -65,9 +65,9 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
     val name = config.key.removeSurroundingOrNull("type[", "]")?.orNull()?.intern() ?: return null
     var baseType: String? = null
     var path: String? = null
-    var pathStrict = false
     var pathFile: String? = null
     var pathExtension: String? = null
+    var pathStrict = false
     var nameField: String? = null
     var nameFromFile = false
     var typePerFile = false
@@ -90,10 +90,10 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
                 "base_type" -> baseType = prop.stringValue
                 //这里的path一般以"game/"开始，需要去除
                 "path" -> path = prop.stringValue?.removePrefix("game")?.trim('/') ?: continue
-                "path_strict" -> pathStrict = prop.booleanValue ?: continue
                 "path_file" -> pathFile = prop.stringValue ?: continue
                 //这里的path_extension一般以"."开始，需要去除
                 "path_extension" -> pathExtension = prop.stringValue?.removePrefix(".") ?: continue
+                "path_strict" -> pathStrict = prop.booleanValue ?: continue
                 "name_field" -> nameField = prop.stringValue ?: continue
                 "name_from_file" -> nameFromFile = prop.booleanValue ?: continue
                 "type_per_file" -> typePerFile = prop.booleanValue ?: continue

@@ -26,7 +26,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 .filter { it.template.expressionString.isEmpty() }
                 .associateByTo(configGroup.predefinedModifiers) { it.name }
         }
-
+        
         run {
             for(typeConfig in configGroup.types.values) {
                 if(typeConfig.baseType == null) continue
@@ -42,14 +42,14 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 configGroup.declarations[typeName] = declarationConfig
             }
         }
-
+        
         run {
             for(linkConfig in configGroup.linksAsScopeNotData.values) {
                 val localisationLinkConfig = CwtLocalisationLinkConfig.resolveFromLink(linkConfig)
                 configGroup.localisationLinks[localisationLinkConfig.name] = localisationLinkConfig
             }
         }
-
+        
         run {
             for(modifier in configGroup.modifiers.values) {
                 //category可能是modifierCategory的name，也可能是modifierCategory的internalId
@@ -59,7 +59,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 }
             }
         }
-
+        
         run {
             for((k, v) in configGroup.aliasGroups) {
                 var keysConst: MutableMap<String, String>? = null
@@ -81,15 +81,15 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 }
             }
         }
-
+        
         run {
-          configGroup.linksAsScopeWithPrefixSorted += configGroup.linksAsScopeWithPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
-          configGroup.linksAsValueWithPrefixSorted += configGroup.linksAsValueWithPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
-          configGroup.linksAsScopeWithoutPrefixSorted += configGroup.linksAsScopeWithoutPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
-          configGroup.linksAsValueWithoutPrefixSorted += configGroup.linksAsValueWithoutPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
-          configGroup.linksAsVariable += configGroup. linksAsValueWithoutPrefix["variable"].toSingletonListOrEmpty()
+            configGroup.linksAsScopeWithPrefixSorted += configGroup.linksAsScopeWithPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
+            configGroup.linksAsValueWithPrefixSorted += configGroup.linksAsValueWithPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
+            configGroup.linksAsScopeWithoutPrefixSorted += configGroup.linksAsScopeWithoutPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
+            configGroup.linksAsValueWithoutPrefixSorted += configGroup.linksAsValueWithoutPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
+            configGroup.linksAsVariable += configGroup.linksAsValueWithoutPrefix["variable"].toSingletonListOrEmpty()
         }
-
+        
         run {
             with(configGroup.definitionTypesSupportParameters) {
                 for(parameterConfig in configGroup.parameterConfigs) {
@@ -106,19 +106,22 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         run {
             val definitionTypes = configGroup.definitionTypesSupportParameters
             val builder = StringBuilder()
-            var isFirst = true
-            for(definitionType in definitionTypes) {
-                val typeConfig = configGroup.types.get(definitionType) ?: continue
-                val filePath = typeConfig.pathFile ?: typeConfig.path ?: continue
-                val fileExtension = typeConfig.pathExtension
-                if(isFirst) isFirst = false else builder.append('|')
-                builder.append(filePath)
-                if(fileExtension != null) builder.append(':').append(fileExtension)
+            val keyString = definitionTypes.mapNotNull { configGroup.types.get(it) }.joinToString("|") { config ->
+                buildString {
+                    config.path?.let {
+                        append(it)
+                    }
+                    config.pathFile?.let {
+                        if(isNotEmpty()) append("/")
+                        append(it)
+                    }
+                    config.pathExtension?.let { builder.append(':').append(it) }
+                }
             }
-            val modificationTracker = ParadoxModificationTrackerProvider.getInstance(configGroup.project).ScriptFileTracker(builder.toString())
+            val modificationTracker = ParadoxModificationTrackerProvider.getInstance(configGroup.project).ScriptFileTracker(keyString)
             configGroup.parameterModificationTracker = MergedModificationTracker(configGroup.modificationTracker, modificationTracker)
         }
-
+        
         return true
     }
 }

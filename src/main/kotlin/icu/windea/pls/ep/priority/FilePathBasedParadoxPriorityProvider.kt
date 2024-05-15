@@ -122,8 +122,13 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
     
     private fun getFilePathsFromConfig(config: CwtTypeConfig, filePaths: MutableSet<String>) {
         val path = buildString {
-            config.path?.let { append(it) }
-            config.pathFile?.let { append("/").append(it) }
+            config.path?.let {
+                append(it)
+            }
+            config.pathFile?.let {
+                if(isNotEmpty()) append("/")
+                append(it)
+            }
         }.orNull() ?: return
         filePaths += path
         val wildcardPath = config.path ?: return
@@ -134,7 +139,10 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
         config.path.forEach { p ->
             val path = buildString {
                 append(p)
-                config.pathFile?.let { append("/").append(it) }
+                config.pathFile?.let {
+                    if(isNotEmpty()) append("/")
+                    append(it)
+                }
             }.orNull() ?: return
             filePaths += path
         }
