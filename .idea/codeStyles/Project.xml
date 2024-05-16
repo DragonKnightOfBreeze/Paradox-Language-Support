@@ -1368,6 +1368,7 @@
       </arrangement>
     </codeStyleSettings>
     <codeStyleSettings language="CWT">
+      <option name="LINE_COMMENT_AT_FIRST_COLUMN" value="true" />
       <indentOptions>
         <option name="USE_TAB_CHARACTER" value="true" />
       </indentOptions>

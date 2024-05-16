@@ -162,6 +162,7 @@ tasks {
 				}
 				.mapNotNull {
 					when {
+						it.contains("(HIDDEN)") -> null //hidden
 						it.matches(regex1) -> null //undo
 						it.matches(regex2) -> "*" + it.substring(5) //done
 						else -> it
