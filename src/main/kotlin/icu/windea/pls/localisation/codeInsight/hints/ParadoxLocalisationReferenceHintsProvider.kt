@@ -44,16 +44,10 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvid
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
         if(element !is ParadoxLocalisationPropertyReference) return true
         if(isIgnored(element)) return true
-        val resolved = element.reference?.resolveLocalisation() //直接解析为本地化以优化性能
-        if(resolved is ParadoxLocalisationProperty) {
-            val localisationInfo = resolved.localisationInfo
-            if(localisationInfo != null) {
-                val presentation = doCollect(resolved, editor, settings)
-                val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
-                val endOffset = element.endOffset
-                sink.addInlineElement(endOffset, true, finalPresentation, false)
-            }
-        }
+        val presentation = doCollect(element, editor, settings)
+        val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
+        val endOffset = element.endOffset
+        sink.addInlineElement(endOffset, true, finalPresentation, false)
         return true
     }
     
@@ -61,8 +55,8 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvid
         return element.firstChild.siblings().any { it is ParadoxLocalisationCommand || it is ParadoxLocalisationScriptedVariableReference }
     }
     
-    private fun PresentationFactory.doCollect(localisation: ParadoxLocalisationProperty, editor: Editor, settings: Settings): InlayPresentation? {
-        return ParadoxLocalisationTextInlayRenderer.render(localisation, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
+    private fun PresentationFactory.doCollect(element: ParadoxLocalisationPropertyReference, editor: Editor, settings: Settings): InlayPresentation? {
+        return ParadoxLocalisationTextInlayRenderer.render(element, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
     }
 }
 

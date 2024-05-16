@@ -7,16 +7,12 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 import java.awt.event.*
@@ -45,6 +41,19 @@ object ParadoxLocalisationTextInlayRenderer {
         context.truncateLimit = truncateLimit
         context.iconHeightLimit = iconHeightLimit
         context.guardStack.addLast(element.name)
+        val r = renderTo(element, context)
+        if(!r) {
+            context.builder.add(factory.smallText("...")) //添加省略号
+        }
+        return mergePresentation(context.builder)
+    }
+    
+    fun render(element: ParadoxLocalisationPropertyReference, factory: PresentationFactory, editor: Editor, truncateLimit: Int, iconHeightLimit: Int): InlayPresentation? {
+        //虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白
+        val context = Context(editor, factory, mutableListOf())
+        context.truncateLimit = truncateLimit
+        context.iconHeightLimit = iconHeightLimit
+        //context.guardStack.addLast(element.name) //不要加上这段代码
         val r = renderTo(element, context)
         if(!r) {
             context.builder.add(factory.smallText("...")) //添加省略号
