@@ -94,7 +94,7 @@ object CwtConfigHandler {
                     if(configs.isNullOrEmpty()) return@f2
                     
                     //如果匹配带参数的子路径时，初始能够匹配到多个结果，则直接返回空列表
-                    //参数值可能是任意值，如果初始能够匹配到多个结果，实际上并不能确定具体的上下文是什么
+                    //参数值可能是任意值，此时实际上并不能确定具体的上下文是什么
                     
                     var matchCount = 0
                     configs.forEachFast f3@{ config ->

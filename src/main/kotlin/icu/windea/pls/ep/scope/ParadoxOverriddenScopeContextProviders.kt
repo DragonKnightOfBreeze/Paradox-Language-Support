@@ -24,8 +24,8 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
     }
     
     override fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
-        //重载complex_trigger_modifier = {...}中属性trigger和parameters的值对应的作用域上下文
-        //重载export_trigger_value_to_variable = {...}中属性trigger和parameters的值对应的作用域上下文
+        //重载complex_trigger_modifier = {...}中属性trigger的值以及属性parameters对应的作用域上下文
+        //重载export_trigger_value_to_variable = {...}中属性trigger的值以及属性parameters对应的作用域上下文
         //兼容trigger_scope的值对应的作用域与当前作用域上下文不匹配的情况
         if(config !is CwtPropertyConfig) return null
         if(config.key != Data.TRIGGER_KEY && config.key != Data.PARAMETERS_KEY) return null
@@ -38,7 +38,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
             ?: return null
         when {
             config.key == Data.TRIGGER_KEY -> {
-                //基于trigger_scope的值得到最终的scopeContext，然后推断作为trigger的值的scopeContext
+                //基于trigger_scope的值得到最终的scopeContext，然后推断属性trigger的值的scopeContext
                 val triggerScopeProperty = complexTriggerModifierProperty.findProperty(Data.TRIGGER_SCOPE_KEY, inline = true) ?: return null
                 val scopeContext = ParadoxScopeHandler.getScopeContext(triggerScopeProperty) ?: return null
                 val scopeField = triggerScopeProperty.propertyValue?.stringText() ?: return null
@@ -49,7 +49,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
                 return ParadoxScopeHandler.getScopeContext(contextElement, scopeFieldExpression, scopeContext)
             }
             config.key == Data.PARAMETERS_KEY -> {
-                //基于trigger的值得到最终的scopeContext，然后推断作为parameters的值的scopeContext
+                //基于trigger的值得到最终的scopeContext，然后推断属性parameters的scopeContext
                 val triggerProperty = complexTriggerModifierProperty.findProperty(Data.TRIGGER_KEY, inline = true) ?: return null
                 val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
                 if(CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null //must be predefined trigger
