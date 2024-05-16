@@ -11,10 +11,10 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
-	override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String {
+	override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
 		return when(node.elementType) {
 			BLOCK -> PlsConstants.blockFolder
-			else -> throw InternalError()
+			else -> null
 		}
 	}
 	
@@ -28,6 +28,9 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 	
 	private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>) {
 		when(node.elementType) {
+			COMMENT -> return //optimization
+			OPTION_COMMENT -> return //optimization
+			DOCUMENTATION_COMMENT -> return //optimization
 			BLOCK -> descriptors.add(FoldingDescriptor(node, node.textRange))
 			//BLOCK -> if(isSpanMultipleLines(node, document)) descriptors.add(FoldingDescriptor(node, node.textRange))
 		}

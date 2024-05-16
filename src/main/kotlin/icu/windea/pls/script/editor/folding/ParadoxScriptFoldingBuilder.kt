@@ -10,11 +10,12 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.editor.folding.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
-    override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String {
+    override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when(node.elementType) {
             BLOCK -> PlsConstants.blockFolder
             PARAMETER_CONDITION -> {
@@ -22,15 +23,15 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
                 PlsConstants.parameterConditionFolder(expression)
             }
             INLINE_MATH -> PlsConstants.inlineMathFolder
-            else -> throw InternalError()
+            else -> null
         }
     }
     
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
         return when(node.elementType) {
             BLOCK -> false
-            PARAMETER_CONDITION -> service<ParadoxFoldingSettings>().collapseParameterConditions
-            INLINE_MATH -> service<ParadoxFoldingSettings>().collapseInlineMathBlocks
+            PARAMETER_CONDITION -> ParadoxFoldingSettings.getInstance().parameterConditionBlocks
+            INLINE_MATH -> ParadoxFoldingSettings.getInstance().inlineMathBlocks
             else -> false
         }
     }
@@ -41,6 +42,8 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     
     private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>) {
         when(node.elementType) {
+            COMMENT -> return //optimization
+            SCRIPTED_VARIABLE -> return //optimization
             BLOCK -> descriptors.add(FoldingDescriptor(node, node.textRange))
             PARAMETER_CONDITION -> descriptors.add(FoldingDescriptor(node, node.textRange))
             INLINE_MATH -> descriptors.add(FoldingDescriptor(node, node.textRange))

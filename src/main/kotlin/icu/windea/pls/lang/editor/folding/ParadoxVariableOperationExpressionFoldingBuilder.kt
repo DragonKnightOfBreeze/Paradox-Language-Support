@@ -23,6 +23,6 @@ class ParadoxVariableOperationExpressionFoldingBuilder : ParadoxExpressionFoldin
     }
     
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
-        return service<ParadoxFoldingSettings>().collapseVariableOperationExpressions
+        return ParadoxFoldingSettings.getInstance().variableOperationExpressions
     }
 }

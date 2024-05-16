@@ -29,7 +29,7 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
     }
     
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
-        return service<ParadoxFoldingSettings>().collapseScriptedVariableReferences
+        return ParadoxFoldingSettings.getInstance().scriptedVariableReferences
     }
     
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
