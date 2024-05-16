@@ -108,15 +108,33 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         if(argSize < 0) return null //unexpected
         var argIndexOffset = 0
         if(injectMethodInfo.hasReceiver) argIndexOffset++
-        return ctClass.getDeclaredMethods(methodName).find f@{ ctMethod ->
+        var ctMethods = ctClass.getDeclaredMethods(methodName).filter f@{ ctMethod ->
             val isStatic = Modifier.isStatic(ctMethod.modifiers)
             if((injectMethodInfo.static && !isStatic) || (!injectMethodInfo.static && isStatic)) return@f false
             if(ctMethod.parameterTypes.size != argSize) return@f false
-            if(ctMethod.parameterTypes.withIndex().any { (i, p) -> p.name != method.parameterTypes[i + argIndexOffset].name }) return@f false
             true
         }
+        run {
+            if(ctMethods.size <= 1) return@run
+            val classPool = ApplicationManager.getApplication().getUserData(CodeInjectorService.classPoolKey) ?: return@run
+            ctMethods = ctMethods.filter { ctMethod ->
+                val size = ctMethod.parameterTypes.size
+                for(i in 0 until size) {
+                    val r = runCatching {
+                        val t1 = ctMethod.parameterTypes[i]
+                        val t2 = method.parameterTypes[i + argIndexOffset]
+                        val t3 = classPool.get(t2.name)
+                        t1.subclassOf(t3)
+                    }.getOrElse { true }
+                    if(!r) return@filter false
+                }
+                true
+            }
+        }
+        return ctMethods.firstOrNull()
     }
     
+    @Suppress("CompanionObjectInExtension")
     companion object {
         //method invoked by injected codes
         

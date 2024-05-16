@@ -26,9 +26,9 @@
 ## 1.3.8
 
 * [X] 优化：优化查询，提高性能，修复有关重载的一些BUG
+* [X] 优化：优化代码格式化功能，修复一些细节上的BUG
 * [X] 优化：允许折叠本地化文件中的本地化引用与本地化图标（完全折叠，可配置，默认不启用，搭配相关的内嵌提示使用）
 * [X] 优化：允许折叠本地化文件中的本地化命令与本地化概念（可配置，默认不启用）
-* [ ] 优化：优化对于CWT文档注释的处理（粘贴，换行，注释，取消注释等操作）
 * [ ] #79 如果可以从扩展的规则文件推断出作为键的参数的类型，需要将键视为此类型，从而继续向下匹配脚本内容与规则
 * [ ] (POSSIBLE) 优化：优化定义规则与复杂枚举规则的路径匹配的逻辑（基于`path`字段的值，可以是一个ANT路径表达式，可以有多个）
 * [ ] (CHECK) 优化追踪更改的逻辑，基于ANT路径表达式进行匹配
@@ -47,7 +47,7 @@
 ***
 
 * [X] Update CWT configs files to match Stellaris 3.12.2 (almost done)
-* [X] Optimization: Optimize code reformatting feature, fixes some details bugs
+* [X] Optimization: Optimize code reformatting feature, fixes some bugs in details
 * [X] Optimization: Determine override order for targets (definitions, localisations, etc.) based on CWT configs files (Can be customized, see reference documentation for details)
 * [X] Optimization: For localisation file, it's unnecessary to escape double quotes in localisation text
 * [X] Optimization: It a target cannot be resolved, but related extended CWT configs exist, related code inspection can be configured to be ignored

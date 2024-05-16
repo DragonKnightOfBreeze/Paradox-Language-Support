@@ -16,8 +16,7 @@ abstract class CodeInjectorBase : CodeInjector() {
     final override fun inject() {
         val codeInjectorInfo = getCodeInjectorInfo() ?: return
         
-        val application = ApplicationManager.getApplication()
-        val classPool = application.getUserData(CodeInjectorService.classPoolKey) ?: return
+        val classPool = ApplicationManager.getApplication().getUserData(CodeInjectorService.classPoolKey) ?: return
         val injectTargetName = codeInjectorInfo.injectTargetName
         val targetClass = classPool.get(injectTargetName)
         putUserData(CodeInjectorService.targetClassKey, targetClass)

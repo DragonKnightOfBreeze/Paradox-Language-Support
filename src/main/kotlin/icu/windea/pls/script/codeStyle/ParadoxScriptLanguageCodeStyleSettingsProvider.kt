@@ -49,16 +49,16 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
     }
     
     private fun customizeSpacingSettings(consumer: CodeStyleSettingsCustomizable) {
-        val spacesAroundOperators = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
-        consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR.name, PlsBundle.message("script.codeStyleSettings.spacing.around.scriptedVariableSeparator"), spacesAroundOperators)
-        consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_PROPERTY_SEPARATOR.name, PlsBundle.message("script.codeStyleSettings.spacing.around.propertySeparator"), spacesAroundOperators)
-        consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_INLINE_MATH_OPERATOR.name, PlsBundle.message("script.codeStyleSettings.spacing.around.inlineMathOperator"), spacesAroundOperators)
+        val spacesAroundOperatorsGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
+        consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR.name, PlsBundle.message("script.codeStyleSettings.spacing.around.scriptedVariableSeparator"), spacesAroundOperatorsGroup)
+        consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_PROPERTY_SEPARATOR.name, PlsBundle.message("script.codeStyleSettings.spacing.around.propertySeparator"), spacesAroundOperatorsGroup)
+        consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_INLINE_MATH_OPERATOR.name, PlsBundle.message("script.codeStyleSettings.spacing.around.inlineMathOperator"), spacesAroundOperatorsGroup)
 
-        val spacesWithin = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
-        consumer.showCustomOption(Settings::class.java, Settings::SPACE_WITHIN_BRACES.name, PlsBundle.message("script.codeStyleSettings.spacing.withIn.braces"), spacesWithin)
-        consumer.showCustomOption(Settings::class.java, Settings::SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS.name, PlsBundle.message("script.codeStyleSettings.spacing.withIn.parameterConditionBrackets"), spacesWithin)
-        consumer.showCustomOption(Settings::class.java, Settings::SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS.name, PlsBundle.message("script.codeStyleSettings.spacing.withIn.parameterConditionExpressionBrackets"), spacesWithin)
-        consumer.showCustomOption(Settings::class.java, Settings::SPACE_WITHIN_INLINE_MATH_BRACKETS.name, PlsBundle.message("script.codeStyleSettings.spacing.withIn.inlineMathBrackets"), spacesWithin)
+        val spacesWithinGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
+        consumer.showCustomOption(Settings::class.java, Settings::SPACE_WITHIN_BRACES.name, PlsBundle.message("script.codeStyleSettings.spacing.withIn.braces"), spacesWithinGroup)
+        consumer.showCustomOption(Settings::class.java, Settings::SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS.name, PlsBundle.message("script.codeStyleSettings.spacing.withIn.parameterConditionBrackets"), spacesWithinGroup)
+        consumer.showCustomOption(Settings::class.java, Settings::SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS.name, PlsBundle.message("script.codeStyleSettings.spacing.withIn.parameterConditionExpressionBrackets"), spacesWithinGroup)
+        consumer.showCustomOption(Settings::class.java, Settings::SPACE_WITHIN_INLINE_MATH_BRACKETS.name, PlsBundle.message("script.codeStyleSettings.spacing.withIn.inlineMathBrackets"), spacesWithinGroup)
     }
     
     private fun customizeBlankLinesSettings(consumer: CodeStyleSettingsCustomizable) {

@@ -38,10 +38,8 @@ class CwtBlock(
                 .between(MEMBERS, MEMBERS).spaces(1) //属性/值之间需要有空格或者换行
                 .aroundInside(SEPARATORS, OPTION).spaceIf(customSettings.SPACE_AROUND_OPTION_SEPARATOR) //间隔符周围按情况可能需要空格
                 .aroundInside(SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //间隔符周围按情况可能需要空格
-                .between(LEFT_BRACE, MEMBERS).spaceIf(customSettings.SPACE_WITHIN_BRACES, true)
-                .between(MEMBERS, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true)
-                .withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true) //花括号内侧按情况可能需要空格
                 .between(LEFT_BRACE, RIGHT_BRACE).none() //花括号之间总是不需要空格
+                .withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true) //花括号内侧按情况可能需要空格
         }
     }
     

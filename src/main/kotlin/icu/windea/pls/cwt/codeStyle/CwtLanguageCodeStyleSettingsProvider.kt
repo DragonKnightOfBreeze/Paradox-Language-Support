@@ -49,12 +49,12 @@ class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
     }
     
     private fun customizeSpacingSettings(consumer: CodeStyleSettingsCustomizable) {
-        val spacesAroundOperators = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
-        consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_OPTION_SEPARATOR.name, PlsBundle.message("cwt.codeStyleSettings.spacing.around.optionSeparator"), spacesAroundOperators)
-        consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_PROPERTY_SEPARATOR.name, PlsBundle.message("cwt.codeStyleSettings.spacing.around.propertySeparator"), spacesAroundOperators)
+        val spacesAroundOperatorsGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
+        consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_OPTION_SEPARATOR.name, PlsBundle.message("cwt.codeStyleSettings.spacing.around.optionSeparator"), spacesAroundOperatorsGroup)
+        consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_PROPERTY_SEPARATOR.name, PlsBundle.message("cwt.codeStyleSettings.spacing.around.propertySeparator"), spacesAroundOperatorsGroup)
         
-        val spacesWithin = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
-        consumer.showCustomOption(Settings::class.java, Settings::SPACE_WITHIN_BRACES.name, PlsBundle.message("cwt.codeStyleSettings.spacing.withIn.braces"), spacesWithin)
+        val spacesWithinGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
+        consumer.showCustomOption(Settings::class.java, Settings::SPACE_WITHIN_BRACES.name, PlsBundle.message("cwt.codeStyleSettings.spacing.withIn.braces"), spacesWithinGroup)
     }
     
     private fun customizeBlankLinesSettings(consumer: CodeStyleSettingsCustomizable) {
@@ -68,8 +68,9 @@ class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
             CommenterOption.LINE_COMMENT_AT_FIRST_COLUMN.name,
             CommenterOption.LINE_COMMENT_ADD_SPACE.name
         )
-        consumer.showCustomOption(Settings::class.java, Settings::OPTION_COMMENT_ADD_SPACE.name, PlsBundle.message("cwt.codeStyleSettings.commenter.optionComment.addSpace"), null)
-        consumer.showCustomOption(Settings::class.java, Settings::DOCUMENTATION_COMMENT_ADD_SPACE.name, PlsBundle.message("cwt.codeStyleSettings.commenter.documentationComment.addSpace"), null)
+        val commentsGroup = CodeStyleSettingsCustomizableOptions.getInstance().WRAPPING_COMMENTS
+        consumer.showCustomOption(Settings::class.java, Settings::OPTION_COMMENT_ADD_SPACE.name, PlsBundle.message("cwt.codeStyleSettings.commenter.optionComment.addSpace"), commentsGroup)
+        consumer.showCustomOption(Settings::class.java, Settings::DOCUMENTATION_COMMENT_ADD_SPACE.name, PlsBundle.message("cwt.codeStyleSettings.commenter.documentationComment.addSpace"), commentsGroup)
     }
     
     class IndentOptionsEditor(

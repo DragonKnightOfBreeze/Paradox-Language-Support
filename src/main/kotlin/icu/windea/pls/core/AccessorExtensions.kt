@@ -18,94 +18,120 @@ class SmartProperty<T : Any, V>(
 }
 
 class SmartMemberProperty<T : Any, V>(
-    val targetClass: KClass<T>,
-    val propertyName: String
+    val propertyName: String,
+    private var targetClassProvider: (() -> KClass<T>)?
 ) {
-    private class DelegateProperty<T : Any, V>(
-        val getter: (T) -> V,
-        val setter: (T, V) -> Unit
-    )
+    private interface DelegateProperty<T : Any, V> {
+        fun get(target: T): V
+        fun set(target: T, value: V)
+    }
     
+    private val targetClass by lazy { targetClassProvider?.invoke() ?: unsupported() }
     private val delegateProperty by lazy { doGetDelegateProperty() }
     
-    fun get(target: T): V = delegateProperty.getter(target)
+    fun get(target: T): V {
+        synchronized(this) {
+            if(targetClassProvider == null) {
+                val targetClass0 = target::class as KClass<T>
+                targetClassProvider = { targetClass0 }
+            }
+        }
+        return delegateProperty?.get(target) ?: unsupported()
+    }
     
-    fun set(target: T, value: V) = delegateProperty.setter(target, value)
+    fun set(target: T, value: V) {
+        delegateProperty?.set(target, value) ?: unsupported()
+    }
     
-    private fun doGetDelegateProperty(): DelegateProperty<T, V> {
+    private fun doGetDelegateProperty(): DelegateProperty<T, V>? {
         try {
-            val memberProperties = buildSet { addAll(targetClass.declaredMemberProperties); addAll(targetClass.memberProperties) }
-            val memberFunctions = buildSet { addAll(targetClass.declaredMemberFunctions); addAll(targetClass.memberFunctions) }
-            val property = memberProperties.find { it.name == propertyName }?.also { it.isAccessible = true }
-            val getter = memberFunctions.find { it.isGetter(propertyName) }?.also { it.isAccessible = true }
-            val setter = memberFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true }
-            return DelegateProperty({ target ->
-                if(!targetClass.isInstance(target)) cannotCast(target, targetClass)
-                when {
-                    property != null -> property.get(target) as V
-                    getter != null -> getter.call(target) as V
-                    else -> unsupported()
+            return object : DelegateProperty<T, V> {
+                private val memberProperties = buildSet { addAll(targetClass.declaredMemberProperties); addAll(targetClass.memberProperties) }
+                private val memberFunctions = buildSet { addAll(targetClass.declaredMemberFunctions); addAll(targetClass.memberFunctions) }
+                private val property = memberProperties.find { it.name == propertyName }?.also { it.isAccessible = true }
+                private val getter = memberFunctions.find { it.isGetter(propertyName) }?.also { it.isAccessible = true }
+                private val setter = memberFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true }
+                
+                override fun get(target: T): V {
+                    if(!targetClass.isInstance(target)) cannotCast(target, targetClass)
+                    return when {
+                        property != null -> property.get(target) as V
+                        getter != null -> getter.call(target) as V
+                        else -> unsupported()
+                    }
                 }
-            }, { target, value ->
-                if(!targetClass.isInstance(target)) cannotCast(target, targetClass)
-                when {
-                    property != null && property is KMutableProperty1 -> (property as KMutableProperty1<T, in Any?>).set(target, value)
-                    setter != null -> setter.call(target, value)
-                    else -> unsupported()
+                
+                override fun set(target: T, value: V) {
+                    if(!targetClass.isInstance(target)) cannotCast(target, targetClass)
+                    when {
+                        property != null && property is KMutableProperty1 -> (property as KMutableProperty1<T, in Any?>).set(target, value)
+                        setter != null -> setter.call(target, value)
+                        else -> unsupported()
+                    }
                 }
-            })
+            }
         } catch(e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
             
             //TODO
+            
+            return null
         }
-        
-        return DelegateProperty({ unsupported() }, { _, _ -> unsupported() })
     }
 }
 
 class SmartStaticProperty<T : Any, V>(
-    val targetClass: KClass<T>,
-    val propertyName: String
+    val propertyName: String,
+    private var targetClassProvider: () -> KClass<T>
 ) {
-    private class DelegateProperty<V>(
-        val getter: () -> V,
-        val setter: (V) -> Unit
-    )
+    private interface DelegateProperty<V> {
+        fun get(): V
+        fun set(value: V)
+    }
     
+    private val targetClass by lazy { targetClassProvider() }
     private val delegateProperty by lazy { doGetDelegateProperty() }
     
-    fun get(): V = delegateProperty.getter()
+    fun get(): V {
+        return delegateProperty?.get() ?: unsupported()
+    }
     
-    fun set(value: V) = delegateProperty.setter(value)
+    fun set(value: V) {
+        delegateProperty?.set(value) ?: unsupported()
+    }
     
-    private fun doGetDelegateProperty(): DelegateProperty<V> {
+    private fun doGetDelegateProperty(): DelegateProperty<V>? {
         try {
-            val staticProperties = targetClass.staticProperties
-            val staticFunctions = targetClass.staticFunctions
-            val property = staticProperties.find { it.name == propertyName }?.also { it.isAccessible = true }
-            val getter = staticFunctions.find { it.isGetter(propertyName) }?.also { it.isAccessible = true }
-            val setter = staticFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true }
-            return DelegateProperty({
-                when {
-                    property != null -> property.get() as V
-                    getter != null -> getter.call(null) as V
-                    else -> unsupported()
+            return object : DelegateProperty<V> {
+                private val staticProperties = targetClass.staticProperties
+                private val staticFunctions = targetClass.staticFunctions
+                private val property = staticProperties.find { it.name == propertyName }?.also { it.isAccessible = true }
+                private val getter = staticFunctions.find { it.isGetter(propertyName) }?.also { it.isAccessible = true }
+                private val setter = staticFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true }
+                
+                override fun get(): V {
+                    return when {
+                        property != null -> property.get() as V
+                        getter != null -> getter.call(null) as V
+                        else -> unsupported()
+                    }
                 }
-            }, { value ->
-                when {
-                    property != null && property is KMutableProperty0 -> (property as KMutableProperty0<in Any?>).set(value)
-                    setter != null -> setter.call(null, value)
-                    else -> unsupported()
+                
+                override fun set(value: V) {
+                    when {
+                        property != null && property is KMutableProperty0 -> (property as KMutableProperty0<in Any?>).set(value)
+                        setter != null -> setter.call(null, value)
+                        else -> unsupported()
+                    }
                 }
-            })
+            }
         } catch(e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
             
             //TODO
+            
+            return null
         }
-        
-        return DelegateProperty({ unsupported() }, { unsupported() })
     }
 }
 
@@ -117,10 +143,19 @@ class SmartFunction<T : Any>(
 }
 
 class SmartMemberFunction<T : Any>(
-    val targetClass: KClass<T>,
-    val functionName: String
+    val functionName: String,
+    private var targetClassProvider: (() -> KClass<T>)?
 ) {
+    private val targetClass by lazy { targetClassProvider?.invoke() ?: unsupported() }
+    
     operator fun invoke(target: T, vararg args: Any?): Any? {
+        synchronized(this) {
+            if(targetClassProvider == null) {
+                val targetClass0 = target::class as KClass<T>
+                targetClassProvider = { targetClass0 }
+            }
+        }
+        
         if(!targetClass.isInstance(target)) cannotCast(target, targetClass)
         val expectedArgsSize = args.size + 1
         
@@ -161,9 +196,11 @@ class SmartMemberFunction<T : Any>(
 }
 
 class SmartStaticFunction<T : Any>(
-    val targetClass: KClass<T>,
-    val functionName: String
+    val functionName: String,
+    private val targetClassProvider: () -> KClass<T>
 ) {
+    private val targetClass by lazy { targetClassProvider() }
+    
     operator fun invoke(vararg args: Any?): Any? {
         val expectedArgsSize = args.size
         
@@ -227,51 +264,53 @@ private fun cannotCast(target: Any, targetClass: KClass<out Any>): Nothing {
 
 
 inline fun <reified T : Any, V> T.property(propertyName: String): SmartProperty<T, V> {
-    return SmartProperty(this, SmartMemberProperty(T::class, propertyName))
+    return SmartProperty(this, SmartMemberProperty(propertyName) { T::class })
 }
 
-inline fun <V> Any.property(propertyName: String, targetClassName: String): SmartProperty<Any, V> {
-    return SmartProperty(this, SmartMemberProperty(targetClassName.toKClass().cast(), propertyName))
+inline fun <V> Any.property(propertyName: String, targetClassName: String?): SmartProperty<Any, V> {
+    return SmartProperty(this, SmartMemberProperty(propertyName) { targetClassName?.toKClass()?.cast() ?: this::class.cast() })
 }
 
 inline fun <reified T : Any, V> memberProperty(propertyName: String): SmartMemberProperty<T, V> {
-    return SmartMemberProperty(T::class, propertyName)
+    return SmartMemberProperty(propertyName) { T::class }
 }
 
-inline fun <V> memberProperty(propertyName: String, targetClassName: String): SmartMemberProperty<Any, V> {
-    return SmartMemberProperty(targetClassName.toKClass().cast(), propertyName)
+inline fun <V> memberProperty(propertyName: String, targetClassName: String?): SmartMemberProperty<Any, V> {
+    if(targetClassName == null) return SmartMemberProperty(propertyName, null)
+    return SmartMemberProperty(propertyName) { targetClassName.toKClass().cast() }
 }
 
 inline fun <reified T : Any, V> staticProperty(propertyName: String): SmartStaticProperty<T, V> {
-    return SmartStaticProperty(T::class, propertyName)
+    return SmartStaticProperty(propertyName) { T::class }
 }
 
 inline fun <V> staticProperty(propertyName: String, targetClassName: String): SmartStaticProperty<Any, V> {
-    return SmartStaticProperty(targetClassName.toKClass().cast(), propertyName)
+    return SmartStaticProperty(propertyName) { targetClassName.toKClass().cast() }
 }
 
 inline fun <reified T : Any> T.function(functionName: String): SmartFunction<T> {
-    return SmartFunction(this, SmartMemberFunction(T::class, functionName))
+    return SmartFunction(this, SmartMemberFunction(functionName) { T::class })
 }
 
-inline fun Any.function(functionName: String, targetClassName: String): SmartFunction<Any> {
-    return SmartFunction(this, SmartMemberFunction(targetClassName.toKClass().cast(), functionName))
+inline fun Any.function(functionName: String, targetClassName: String?): SmartFunction<Any> {
+    return SmartFunction(this, SmartMemberFunction(functionName) { targetClassName?.toKClass()?.cast() ?: this::class.cast() })
 }
 
 inline fun <reified T : Any> memberFunction(functionName: String): SmartMemberFunction<T> {
-    return SmartMemberFunction(T::class, functionName)
+    return SmartMemberFunction(functionName) { T::class }
 }
 
-inline fun memberFunction(functionName: String, targetClassName: String): SmartMemberFunction<Any> {
-    return SmartMemberFunction(targetClassName.toKClass().cast(), functionName)
+inline fun memberFunction(functionName: String, targetClassName: String?): SmartMemberFunction<Any> {
+    if(targetClassName == null) return SmartMemberFunction(functionName, null)
+    return SmartMemberFunction(functionName) { targetClassName.toKClass().cast() }
 }
 
 inline fun <reified T : Any> staticFunction(functionName: String): SmartStaticFunction<T> {
-    return SmartStaticFunction(T::class, functionName)
+    return SmartStaticFunction(functionName) { T::class }
 }
 
 inline fun staticFunction(functionName: String, targetClassName: String): SmartStaticFunction<Any> {
-    return SmartStaticFunction(targetClassName.toKClass().cast(), functionName)
+    return SmartStaticFunction(functionName) { targetClassName.toKClass().cast() }
 }
 
 
