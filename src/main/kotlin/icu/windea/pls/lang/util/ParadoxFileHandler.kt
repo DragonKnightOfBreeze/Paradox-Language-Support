@@ -31,7 +31,7 @@ object ParadoxFileHandler {
     /**
      * 判断目标文件能否引用另一个文件中的内容。
      *
-     * 对于某些蠢驴游戏来说，游戏目录下可以存在多个入口目录（entries）。
+     * 对于某些蠢驴游戏来说，游戏目录下可以存在多个入口目录（entryPaths）。
      * 认为模组目录以及主要入口目录（根目录或者game目录）不能引用次要入口目录（非根目录或者game目录）下的文件中的内容。
      */
     fun canReference(targetFile: VirtualFile?, otherFile: VirtualFile?): Boolean {

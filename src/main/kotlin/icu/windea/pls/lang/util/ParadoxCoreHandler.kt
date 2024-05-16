@@ -261,11 +261,11 @@ object ParadoxCoreHandler {
     private fun resolveEntry(path: ParadoxPath, rootInfo: ParadoxRootInfo): String? {
         if(rootInfo is ParadoxModRootInfo) return null
         val filePath = path.path
-        rootInfo.gameEntry?.let { entry ->
+        rootInfo.gameEntryPath?.let { entry ->
             if(entry == filePath) return null
             if(filePath.contains("$entry/")) return entry
         }
-        rootInfo.gameType.entries.forEach { entry ->
+        rootInfo.gameType.entryPaths.forEach { entry ->
             if(entry == filePath) return null
             if(filePath.contains("$entry/")) return entry
         }

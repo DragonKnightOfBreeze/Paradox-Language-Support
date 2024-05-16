@@ -8,6 +8,10 @@ import java.nio.file.*
 /**
  * @property rootFile 游戏或模组的根目录。
  * @property gameRootFile 游戏文件的根目录。可能等同于rootFile，也可能是其game子目录。
+ * @property gameType 游戏类型。
+ * @property rootPath 游戏根目录。
+ * @property gameRootPath 作为主要入口的根目录。
+ * @property gameEntryPath 作为主要入口的根目录相对于游戏根目录的路径。如果与游戏根目录相同，则为null。
  */
 sealed class ParadoxRootInfo {
     abstract val rootFile: VirtualFile
@@ -17,7 +21,7 @@ sealed class ParadoxRootInfo {
     abstract val rootPath: Path
     abstract val gameRootPath: Path
     
-    val gameEntry: String? by lazy { rootPath.relativize(gameRootPath).toString().orNull() }
+    val gameEntryPath: String? by lazy { rootPath.relativize(gameRootPath).toString().orNull() }
     
     abstract val qualifiedName: String
 }
