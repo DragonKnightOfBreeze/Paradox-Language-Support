@@ -13,6 +13,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.psi.*
+import kotlin.math.*
 
 class BaseCwtDataExpressionMatcher : CwtDataExpressionMatcher {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
@@ -273,14 +274,14 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
 class ConstantCwtDataExpressionMatcher : CwtDataExpressionMatcher, CwtConfigPatternAware {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         if(configExpression.type == CwtDataTypes.Constant) {
-            val value = configExpression.value
+            val value = configExpression.value ?: return Result.NotMatch
             if(!configExpression.isKey) {
                 //常量的值也可能是yes/no
                 val text = expression.value
                 if((value == "yes" || value == "no") && text.isLeftQuoted()) return Result.NotMatch
             }
             //这里也用来匹配空字符串
-            val r = expression.value.equals(value, true) //忽略大小写
+            val r = expression.matchesConstant(value)
             return Result.of(r)
         }
         return null

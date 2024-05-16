@@ -64,8 +64,8 @@ object ParadoxDefinitionHandler {
         
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.pathToEntry //这里使用pathToEntry
-        val elementPath = ParadoxElementPathHandler.get(element, PlsConstants.maxDefinitionDepth)
-        if(elementPath == null) return null
+        val elementPath = ParadoxElementPathHandler.get(element, PlsConstants.maxDefinitionDepth) ?: return null
+        if(elementPath.path.isParameterized()) return null //忽略元素路径带参数的情况
         val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
         val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val typeConfig = getMatchedTypeConfig(element, path, elementPath, rootKey, configGroup)

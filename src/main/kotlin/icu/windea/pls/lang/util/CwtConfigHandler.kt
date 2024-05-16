@@ -110,10 +110,10 @@ object CwtConfigHandler {
                         }
                     }
                     
-                    //如果匹配带参数的子路径时，初始能够匹配到多个结果，则直接返回空列表
+                    //如果需要匹配键，且匹配带参数的子路径时，初始能够匹配到多个结果，则直接返回空列表
                     //因为参数值可能是任意值，此时实际上并不能确定具体的上下文是什么
                     
-                    if(subPathIsParameterized && matchCount > 1) {
+                    if(matchKey && subPathIsParameterized && matchCount > 1) {
                         return emptyList()
                     }
                 }

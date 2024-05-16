@@ -4,6 +4,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -20,7 +21,17 @@ interface ParadoxDataExpression {
     val quoted: Boolean
     val isKey: Boolean?
     
-    fun isParameterized() = type == ParadoxType.String && value.isParameterized()
+    fun isParameterized(): Boolean {
+        return type == ParadoxType.String && value.isParameterized()
+    }
+    
+    fun matchesConstant(v: String): Boolean {
+        if(value.isParameterized()) {
+            //兼容带参数的情况（此时先转化为正则表达式，再进行匹配）
+            return value.toRegexWhenIsParameterized().matches(v)
+        }
+        return value.equals(v, true) //忽略大小写
+    }
     
     companion object Resolver {
         val BlockExpression: ParadoxDataExpression = BlockParadoxDataExpression

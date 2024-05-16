@@ -99,10 +99,6 @@ fun String.isParameterized(): Boolean {
     var isEscaped = false
     this.forEachFast { c ->
         when {
-            c == '\\' -> {
-                isEscaped = true
-                return@forEachFast
-            }
             // a_$PARAM$_b - 高级插值语法 A
             c == '$' -> {
                 if(!isEscaped) return true
@@ -112,9 +108,31 @@ fun String.isParameterized(): Boolean {
                 if(!isEscaped) return true
             }
         }
-        if(isEscaped) isEscaped = false
+        if(c == '\\') {
+            isEscaped = true
+        } else if(isEscaped) {
+            isEscaped = false
+        }
     }
     return false
+}
+
+private val regex1 = """(?<!\\)\$.*?\$""".toRegex()
+private val regex2 = """(?<!\\)\[\[.*?](.*?)]""".toRegex()
+
+fun String.toRegexWhenIsParameterized(): Regex {
+    var s = this
+    s = """\Q$s\E"""
+    s = s.replace(regex1, """\\E.*\\Q""")
+    s = s.replace(regex2) { g ->
+        val dv = g.groupValues[1]
+        when {
+            dv == """\E.*\Q""" -> """\E.*\Q"""
+            else -> """\E(?:\Q$dv\E)?\Q"""
+        }
+    }
+    s = s.replace("""\Q\E""", "")
+    return s.toRegex(RegexOption.IGNORE_CASE)
 }
 
 fun String.isInlineUsage(): Boolean {
