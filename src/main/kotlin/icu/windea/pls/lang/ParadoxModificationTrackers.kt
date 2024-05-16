@@ -25,7 +25,7 @@ object ParadoxModificationTrackers {
     val InlineScriptConfigInferenceTracker = SimpleModificationTracker()
     val DefinitionScopeContextInferenceTracker = SimpleModificationTracker()
     
-    fun getPattern(configs: Collection<CwtTypeConfig>): String {
+    fun getPatternFromTypeConfigs(configs: Collection<CwtTypeConfig>): String {
         val paths = mutableSetOf<String>()
         configs.forEach { config ->
             config.path?.let { p -> paths += p }
@@ -33,7 +33,7 @@ object ParadoxModificationTrackers {
         return paths.joinToString(";")
     }
     
-    fun getPattern(configs: Collection<CwtComplexEnumConfig>): String {
+    fun getPatternFromComplexEnumConfigs(configs: Collection<CwtComplexEnumConfig>): String {
         val paths = mutableSetOf<String>()
         configs.forEach { config ->
             config.path.forEach { p -> paths += p }
