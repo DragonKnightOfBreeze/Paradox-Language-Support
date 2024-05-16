@@ -13,4 +13,9 @@ class CwtCodeStyleSettings(
 	@JvmField var SPACE_AROUND_OPTION_SEPARATOR = true
 	@JvmField var SPACE_AROUND_PROPERTY_SEPARATOR = true
 	@JvmField var SPACE_WITHIN_BRACES = true
+	
+	//commenter settings
+	
+	@JvmField var OPTION_COMMENT_ADD_SPACE = true
+	@JvmField var DOCUMENTATION_COMMENT_ADD_SPACE = true
 }

@@ -68,6 +68,8 @@ class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
             CommenterOption.LINE_COMMENT_AT_FIRST_COLUMN.name,
             CommenterOption.LINE_COMMENT_ADD_SPACE.name
         )
+        consumer.showCustomOption(Settings::class.java, Settings::OPTION_COMMENT_ADD_SPACE.name, PlsBundle.message("cwt.codeStyleSettings.commenter.optionComment.addSpace"), null)
+        consumer.showCustomOption(Settings::class.java, Settings::DOCUMENTATION_COMMENT_ADD_SPACE.name, PlsBundle.message("cwt.codeStyleSettings.commenter.documentationComment.addSpace"), null)
     }
     
     class IndentOptionsEditor(

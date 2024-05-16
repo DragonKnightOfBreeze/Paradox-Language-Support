@@ -19,6 +19,7 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.IfsUtilCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.RefManagerImplCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.SymbolNavigationServiceImplCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.LineCommentCopyPastePreProcessorCodeInjector"/>
     
     <!--code injectors to provide additional features-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>

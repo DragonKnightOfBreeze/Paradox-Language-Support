@@ -11,7 +11,7 @@ class ParadoxScriptCodeStylePanel(
     override fun initTabs(settings: CodeStyleSettings) {
         addIndentOptionsTab(settings)
         addSpacesTab(settings)
-        addTab(GenerationCodeStylePanel(settings, ParadoxScriptLanguage))
         addBlankLinesTab(settings)
+        addTab(GenerationCodeStylePanel(settings, ParadoxScriptLanguage))
     }
 }

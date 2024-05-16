@@ -10,7 +10,7 @@ class ParadoxLocalisationCodeStylePanel(
 ) : TabbedLanguageCodeStylePanel(ParadoxLocalisationLanguage, currentSettings, settings) {
 	override fun initTabs(settings: CodeStyleSettings) {
 		addIndentOptionsTab(settings)
-		addTab(GenerationCodeStylePanel(settings, ParadoxLocalisationLanguage))
 		addBlankLinesTab(settings)
+		addTab(GenerationCodeStylePanel(settings, ParadoxLocalisationLanguage))
 	}
 }

@@ -1,7 +1,5 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.config.extended.*
 import icu.windea.pls.config.config.settings.*
