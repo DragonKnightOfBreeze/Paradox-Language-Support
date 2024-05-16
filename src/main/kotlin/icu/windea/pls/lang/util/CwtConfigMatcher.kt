@@ -44,19 +44,19 @@ object CwtConfigMatcher {
     sealed class Result {
         abstract fun get(options: Int = Options.Default): Boolean
         
-        object NotMatch : Result() {
+        data object NotMatch : Result() {
             override fun get(options: Int) = false
         }
         
-        object ExactMatch : Result() {
+        data object ExactMatch : Result() {
             override fun get(options: Int) = true
         }
         
-        object FallbackMatch : Result() {
+        data object FallbackMatch : Result() {
             override fun get(options: Int) = true
         }
         
-        object ParameterizedMatch : Result() {
+        data object ParameterizedMatch : Result() {
             override fun get(options: Int) = true
         }
         

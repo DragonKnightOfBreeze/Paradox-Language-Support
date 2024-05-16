@@ -93,18 +93,12 @@ object CwtConfigHandler {
                     val configs = parentConfig.configs
                     if(configs.isNullOrEmpty()) return@f2
                     
-                    //如果匹配带参数的子路径时，初始能够匹配到多个结果，则直接返回空列表
-                    //参数值可能是任意值，此时实际上并不能确定具体的上下文是什么
-                    
                     var matchCount = 0
                     configs.forEachFast f3@{ config ->
                         if(config is CwtPropertyConfig) {
-                            val matchPropertyConfig = subPathIsParameterized
-                                || !matchKey
-                                || CwtConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)
+                            val matchPropertyConfig = !matchKey || CwtConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)
                             if(!matchPropertyConfig) return@f3
                             matchCount++
-                            if(subPathIsParameterized && matchCount > 1) return emptyList()
                             val inlinedConfigs = CwtConfigManipulator.inlineSingleAliasOrAlias(element, subPath, isQuoted, config, matchOptions)
                             if(inlinedConfigs.isEmpty()) {
                                 nextResult.add(config)
@@ -114,6 +108,13 @@ object CwtConfigHandler {
                         } else if(config is CwtValueConfig) {
                             nextResult.add(config)
                         }
+                    }
+                    
+                    //如果匹配带参数的子路径时，初始能够匹配到多个结果，则直接返回空列表
+                    //因为参数值可能是任意值，此时实际上并不能确定具体的上下文是什么
+                    
+                    if(subPathIsParameterized && matchCount > 1) {
+                        return emptyList()
                     }
                 }
             }
