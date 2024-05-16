@@ -352,33 +352,35 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
     "," { inConceptText=true; yybegin(IN_CONCEPT_TEXT); return COMMA; }
 }
 <IN_CONCEPT_TEXT> {
+    {WHITE_SPACE} {return WHITE_SPACE; }
     \" { return checkRightQuote(); }
-    "]" {decreaseDepth();yybegin(nextStateForCommand()); return COMMAND_END;}
-    "$" {referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);}
-    "£" {yypushback(yylength()); yybegin(CHECK_ICON_START);}
-    "[" {increaseDepth();commandLocation=CommandLocation.NORMAL; yybegin(IN_COMMAND);return COMMAND_START; }
-    "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
-    "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
+    "]" { decreaseDepth();yybegin(nextStateForCommand()); return COMMAND_END; }
+    "$" { referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START); }
+    "£" { yypushback(yylength()); yybegin(CHECK_ICON_START); }
+    "[" { increaseDepth();commandLocation=CommandLocation.NORMAL; yybegin(IN_COMMAND);return COMMAND_START; }
+    "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
+    "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
+    [^] { yypushback(yylength()); yybegin(IN_RICH_TEXT); }
 }
 
 //colorful text rules
 
 <IN_CHECK_COLORFUL_TEXT_START>{
     {CHECK_COLORFUL_TEXT_START} {
-            //特殊处理
-            //如果匹配到的字符串的第2个字符存在且为字母，则认为代表彩色文本的开始
-            //否则认为是常规字符串
-            boolean isColorfulTextStart = isColorfulTextStart();
-            yypushback(yylength()-1);
-            if(isColorfulTextStart) {
-                yybegin(IN_COLOR_ID);
-                increaseDepth();
-                return COLORFUL_TEXT_START;
-            } else {
-                yybegin(nextStateForText());
-                return STRING_TOKEN;
-            }
+        //特殊处理
+        //如果匹配到的字符串的第2个字符存在且为字母，则认为代表彩色文本的开始
+        //否则认为是常规字符串
+        boolean isColorfulTextStart = isColorfulTextStart();
+        yypushback(yylength()-1);
+        if(isColorfulTextStart) {
+            yybegin(IN_COLOR_ID);
+            increaseDepth();
+            return COLORFUL_TEXT_START;
+        } else {
+            yybegin(nextStateForText());
+            return STRING_TOKEN;
         }
+    }
 }
 <IN_COLOR_ID>{
     {WHITE_SPACE} {yybegin(IN_COLORFUL_TEXT); return WHITE_SPACE; }
@@ -403,7 +405,7 @@ CONCEPT_NAME=[a-zA-Z0-9_]+
     \" { return checkRightQuote(); }
 }
 
-<IN_RICH_TEXT, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT> {
+<IN_RICH_TEXT, IN_COLORFUL_TEXT> {
     "]" {
         if(inConceptText) {
             inConceptText = false;
