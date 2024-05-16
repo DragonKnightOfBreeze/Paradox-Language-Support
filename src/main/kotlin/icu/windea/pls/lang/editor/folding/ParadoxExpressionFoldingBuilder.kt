@@ -14,27 +14,27 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 @WithCwtSettings("settings/folding_settings.cwt", CwtFoldingSettingsConfig::class)
-abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
-	abstract fun getGroupName(): String
-	
-	abstract fun getFoldingGroup(): FoldingGroup?
-	
-	override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-		if(quick) return FoldingDescriptor.EMPTY_ARRAY
-		if(!root.language.isKindOf(ParadoxScriptLanguage)) return FoldingDescriptor.EMPTY_ARRAY
-		val project = root.project
-		val gameType = selectGameType(root) ?: return FoldingDescriptor.EMPTY_ARRAY
-		val configGroup = getConfigGroup(project, gameType)
-		val foldingSettings = configGroup.foldingSettings
-		if(foldingSettings.isEmpty()) return FoldingDescriptor.EMPTY_ARRAY
-		val settingsMap = foldingSettings.get(getGroupName()) ?: return FoldingDescriptor.EMPTY_ARRAY
-		val foldingGroup = getFoldingGroup()
-		val allDescriptors = mutableListOf<FoldingDescriptor>()
-		root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
-			override fun visitElement(element: PsiElement) {
-				if(element is ParadoxScriptProperty) visitProperty(element)
-				if(element.isExpressionOrMemberContext()) super.visitElement(element)
-			}
+abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
+    abstract fun getGroupName(): String
+    
+    abstract fun getFoldingGroup(): FoldingGroup?
+    
+    override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
+        if(quick) return FoldingDescriptor.EMPTY_ARRAY
+        if(!root.language.isKindOf(ParadoxScriptLanguage)) return FoldingDescriptor.EMPTY_ARRAY
+        val project = root.project
+        val gameType = selectGameType(root) ?: return FoldingDescriptor.EMPTY_ARRAY
+        val configGroup = getConfigGroup(project, gameType)
+        val foldingSettings = configGroup.foldingSettings
+        if(foldingSettings.isEmpty()) return FoldingDescriptor.EMPTY_ARRAY
+        val settingsMap = foldingSettings.get(getGroupName()) ?: return FoldingDescriptor.EMPTY_ARRAY
+        val foldingGroup = getFoldingGroup()
+        val allDescriptors = mutableListOf<FoldingDescriptor>()
+        root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+            override fun visitElement(element: PsiElement) {
+                if(element is ParadoxScriptProperty) visitProperty(element)
+                if(element.isExpressionOrMemberContext()) super.visitElement(element)
+            }
             
             private fun visitProperty(element: ParadoxScriptProperty) {
                 val configs = CwtConfigHandler.getConfigs(element)
@@ -85,7 +85,7 @@ abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
                         if(index == 0 && propertyValue is ParadoxScriptBlock) {
                             val propertyValueRange = propertyValue.textRange
                             val textRange = TextRange.create(startOffset, propertyValueRange.startOffset)
-                            val descriptor = FoldingDescriptor(node, textRange, foldingGroup, emptySet(), false, "", null)
+                            val descriptor = FoldingDescriptor(node, textRange, foldingGroup, "")
                             descriptors.add(descriptor)
                             startOffset = propertyValueRange.startOffset
                         }
@@ -100,7 +100,7 @@ abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
                         val textEndOffset = valueRange?.startOffset ?: endOffset
                         val textRange = TextRange.create(textStartOffset, textEndOffset)
                         if(textRange.isEmpty) continue
-                        val descriptor = FoldingDescriptor(descriptorNode, textRange, foldingGroup, emptySet(), false, s, null)
+                        val descriptor = FoldingDescriptor(descriptorNode, textRange, foldingGroup, s)
                         descriptors.add(descriptor)
                     } else {
                         if(s.isEmpty()) return  //invalid
@@ -111,7 +111,7 @@ abstract class ParadoxExpressionFoldingBuilder: FoldingBuilderEx() {
                 allDescriptors.addAll(descriptors)
                 return
             }
-		})
-		return allDescriptors.toTypedArray()
-	}
+        })
+        return allDescriptors.toTypedArray()
+    }
 }

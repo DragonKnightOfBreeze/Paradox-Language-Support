@@ -40,7 +40,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
         val containerConfig = CwtValueConfig.resolve(
             pointer = emptyPointer(),
             configGroup = expressionContextConfigs.first().configGroup,
-            value = PlsConstants.blockFolder,
+            value = PlsConstants.Folders.block,
             valueTypeId = CwtType.Block.id,
             configs = expressionContextConfigs.map { config ->
                 when(config) {

@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.*
 import icu.windea.pls.lang.editor.folding.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
@@ -15,6 +16,8 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         return when(node.elementType) {
             PROPERTY_REFERENCE -> ""
             ICON -> ""
+            COMMAND -> PlsConstants.Folders.command
+            CONCEPT_TEXT -> PlsConstants.Folders.ellipsis
             else -> null
         }
     }
@@ -23,6 +26,15 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         return when(node.elementType) {
             PROPERTY_REFERENCE -> ParadoxFoldingSettings.getInstance().localisationReferencesFully
             ICON -> ParadoxFoldingSettings.getInstance().localisationIconsFully
+            COMMAND -> {
+                val conceptNode = node.findChildByType(CONCEPT)
+                if(conceptNode == null) {
+                    ParadoxFoldingSettings.getInstance().localisationCommands
+                } else {
+                    ParadoxFoldingSettings.getInstance().localisationConcepts
+                }
+            }
+            CONCEPT_TEXT -> ParadoxFoldingSettings.getInstance().localisationConceptTexts
             else -> false
         }
     }
@@ -41,6 +53,27 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             }
             ICON -> {
                 if(settings.localisationIconsFully) descriptors.add(FoldingDescriptor(node, node.textRange))
+            }
+            COMMAND -> {
+                val conceptNode = node.findChildByType(CONCEPT)
+                if(conceptNode == null) {
+                    if(settings.localisationCommands) {
+                        descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Folders.command))
+                    }
+                } else {
+                    if(ParadoxFoldingSettings.getInstance().localisationConcepts) {
+                        val conceptTextNode = conceptNode.findChildByType(CONCEPT_TEXT)
+                        if(conceptTextNode == null) {
+                            descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Folders.concept))
+                        } else {
+                            descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Folders.conceptWithText))
+                        }
+                    }
+                }
+            }
+            CONCEPT_NAME -> return //optimization
+            CONCEPT_TEXT -> {
+                descriptors.add(FoldingDescriptor(node, node.textRange))
             }
         }
         val children = node.getChildren(null)

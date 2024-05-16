@@ -90,7 +90,7 @@ private class ParadoxDataExpressionImpl(
     }
 }
 
-private val BlockParadoxDataExpression = ParadoxDataExpressionImpl(PlsConstants.blockFolder, ParadoxType.Block, false, false)
+private val BlockParadoxDataExpression = ParadoxDataExpressionImpl(PlsConstants.Folders.block, ParadoxType.Block, false, false)
 
 private val UnknownParadoxDataExpression = ParadoxDataExpressionImpl(PlsConstants.unknownString, ParadoxType.Unknown, false, false)
 

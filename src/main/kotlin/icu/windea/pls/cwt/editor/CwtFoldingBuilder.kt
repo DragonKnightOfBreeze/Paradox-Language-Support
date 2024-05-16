@@ -13,7 +13,7 @@ import icu.windea.pls.cwt.psi.CwtElementTypes.*
 class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 	override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
 		return when(node.elementType) {
-			BLOCK -> PlsConstants.blockFolder
+			BLOCK -> PlsConstants.Folders.block
 			else -> null
 		}
 	}

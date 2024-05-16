@@ -2,7 +2,6 @@ package icu.windea.pls.config.config.extended
 
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.util.*
@@ -53,7 +52,7 @@ private class CwtExtendedInlineScriptConfigImpl(
         val containerConfig = CwtValueConfig.resolve(
             pointer = emptyPointer(),
             configGroup = r.first().configGroup,
-            value = PlsConstants.blockFolder,
+            value = PlsConstants.Folders.block,
             valueTypeId = CwtType.Block.id,
             configs = r,
             options = config.options,

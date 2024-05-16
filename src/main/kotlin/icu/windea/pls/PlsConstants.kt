@@ -26,12 +26,6 @@ object PlsConstants {
     const val launcherSettingsFileName = "launcher-settings.json"
     const val descriptorFileName = "descriptor.mod"
     
-    const val ellipsis = "..."
-    //const val commentFolder = "#..."
-    const val blockFolder = "{...}"
-    fun parameterConditionFolder(expression: String) = "[[$expression]...]"
-    const val inlineMathFolder = "@[...]"
-    
     const val anonymousString = "(anonymous)"
     const val unknownString = "(unknown)"
     const val unresolvedString = "(unresolved)"
@@ -45,6 +39,16 @@ object PlsConstants {
     
     //val eraseMarker = TextAttributes()
     //val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
+    
+    object Folders {
+        const val ellipsis = "..."
+        const val block = "{...}"
+        val parameterCondition = { expression: String -> "[[$expression]...]" }
+        const val inlineMath = "@[...]"
+        const val command = "[...]"
+        const val concept = "['...']"
+        const val conceptWithText = "['...', ...]"
+    }
     
     object Patterns {
         val scriptedVariableNameRegex = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()

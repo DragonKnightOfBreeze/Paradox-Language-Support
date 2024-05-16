@@ -58,7 +58,7 @@ private class CwtExtendedParameterConfigImpl(
         val containerConfig = CwtValueConfig.resolve(
             pointer = emptyPointer(),
             configGroup = r.first().configGroup,
-            value = PlsConstants.blockFolder,
+            value = PlsConstants.Folders.block,
             valueTypeId = CwtType.Block.id,
             configs = r,
             options = config.options,

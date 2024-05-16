@@ -2,7 +2,6 @@ package icu.windea.pls.script.editor.folding
 
 import com.intellij.lang.*
 import com.intellij.lang.folding.*
-import com.intellij.openapi.components.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -10,19 +9,19 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.editor.folding.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when(node.elementType) {
-            BLOCK -> PlsConstants.blockFolder
+            BLOCK -> PlsConstants.Folders.block
             PARAMETER_CONDITION -> {
-                val expression = node.psi.castOrNull<ParadoxScriptParameterCondition>()?.conditionExpression ?: PlsConstants.ellipsis
-                PlsConstants.parameterConditionFolder(expression)
+                val expression = node.psi.castOrNull<ParadoxScriptParameterCondition>()?.conditionExpression
+                if(expression == null) return PlsConstants.Folders.ellipsis
+                PlsConstants.Folders.parameterCondition(expression)
             }
-            INLINE_MATH -> PlsConstants.inlineMathFolder
+            INLINE_MATH -> PlsConstants.Folders.inlineMath
             else -> null
         }
     }

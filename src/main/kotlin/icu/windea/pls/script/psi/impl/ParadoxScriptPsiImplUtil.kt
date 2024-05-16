@@ -28,7 +28,7 @@ object ParadoxScriptPsiImplUtil {
     //region ParadoxScriptRootBlock
     @JvmStatic
     fun getValue(element: ParadoxScriptRootBlock): String {
-        return PlsConstants.blockFolder
+        return PlsConstants.Folders.block
     }
     
     @JvmStatic
@@ -493,7 +493,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getValue(element: ParadoxScriptBlock): String {
-        return PlsConstants.blockFolder
+        return PlsConstants.Folders.block
     }
     
     @JvmStatic
@@ -550,7 +550,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getExpression(element: ParadoxScriptBlock): String {
-        return PlsConstants.blockFolder
+        return PlsConstants.Folders.block
     }
     //endregion
     
@@ -618,7 +618,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getPresentationText(element: ParadoxScriptParameterCondition): String? {
-        return element.conditionExpression?.let { PlsConstants.parameterConditionFolder(it) }
+        return element.conditionExpression?.let { PlsConstants.Folders.parameterCondition(it) }
     }
     //endregion
     
@@ -652,7 +652,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getPresentationText(element: ParadoxScriptInlineParameterCondition): String? {
-        return element.conditionExpression?.let { PlsConstants.parameterConditionFolder(it) }
+        return element.conditionExpression?.let { PlsConstants.Folders.parameterCondition(it) }
     }
     //endregion
     
@@ -693,7 +693,7 @@ object ParadoxScriptPsiImplUtil {
     //region ParadoxScriptInlineMath
     @JvmStatic
     fun getValue(element: ParadoxScriptInlineMath): String {
-        return PlsConstants.inlineMathFolder
+        return PlsConstants.Folders.inlineMath
     }
     
     @JvmStatic
@@ -703,7 +703,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getExpression(element: ParadoxScriptInlineMath): String {
-        return PlsConstants.inlineMathFolder
+        return PlsConstants.Folders.inlineMath
     }
     //endregion
     

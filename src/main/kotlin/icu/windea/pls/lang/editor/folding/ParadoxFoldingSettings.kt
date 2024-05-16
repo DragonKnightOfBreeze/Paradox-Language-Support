@@ -8,6 +8,9 @@ import com.intellij.util.xmlb.*
  * @property inlineMathBlocks 是否默认折叠内联数学表达式块。默认启用。
  * @property localisationReferencesFully 是否允许且默认折叠本地化引用。完全折叠。默认不启用。
  * @property localisationIconsFully 是否允许且默认折叠本地化图标。完全折叠。默认不启用。
+ * @property localisationCommands 是否允许且默认折叠本地化命令。默认不启用。
+ * @property localisationConcepts 是否允许且默认折叠本地化概念。默认不启用。
+ * @property localisationConceptTexts 是否默认折叠本地化概念的自定义文本。默认不启用。
  * @property scriptedVariableReferences 是否默认折叠封装变量引用。折叠为解析后的值。默认启用。
  * @property variableOperationExpressions （基于内置规则文件）是否默认折叠变量操作表达式。折叠为简化形式。默认启用。
  */
@@ -17,6 +20,9 @@ class ParadoxFoldingSettings : PersistentStateComponent<ParadoxFoldingSettings>{
 	var inlineMathBlocks = true
 	var localisationReferencesFully = false
 	var localisationIconsFully = false
+	var localisationCommands = false
+	var localisationConcepts = false
+	var localisationConceptTexts = false
 	var scriptedVariableReferences = true
 	var variableOperationExpressions = true
 	
