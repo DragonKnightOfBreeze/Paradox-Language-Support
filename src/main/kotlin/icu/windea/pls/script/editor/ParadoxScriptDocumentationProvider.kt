@@ -223,7 +223,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
                 if(sections != null && getSettings().documentation.renderRelatedLocalisationsForDefinitions) {
                     //加上渲染后的相关本地化文本
                     val richText = ParadoxLocalisationTextHtmlRenderer.render(resolved.element, forDoc = true)
-                    sections.put("<code>$key</code>", richText)
+                    sections.put(key, richText)
                 }
             }
         }
@@ -271,7 +271,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
                         }
                         else -> continue
                     }
-                    sections.put("<code>$key</code>", buildString { appendImgTag(url) })
+                    sections.put(key, buildString { appendImgTag(url) })
                 }
             }
         }

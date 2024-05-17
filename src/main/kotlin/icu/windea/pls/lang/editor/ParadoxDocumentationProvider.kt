@@ -250,11 +250,11 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         if(sections != null && render) {
             if(nameLocalisation != null) {
                 val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
-                sections.put("<code>name</code>", richText)
+                sections.put("name", richText)
             }
             if(descLocalisation != null) {
                 val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation, forDoc = true)
-                sections.put("<code>desc</code>", richText)
+                sections.put("desc", richText)
             }
         }
     }
@@ -285,7 +285,7 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
         if(sections != null && render) {
             if(iconFile != null) {
                 val url = ParadoxImageResolver.resolveUrlByFile(iconFile) ?: ParadoxImageResolver.getDefaultUrl()
-                sections.put("<code>icon</code>", buildString { appendImgTag(url) })
+                sections.put("icon", buildString { appendImgTag(url) })
             }
         }
     }
