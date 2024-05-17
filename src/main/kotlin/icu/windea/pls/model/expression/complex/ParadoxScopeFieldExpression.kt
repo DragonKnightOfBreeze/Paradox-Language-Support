@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.codeInsight.completion.*
@@ -12,7 +13,7 @@ import icu.windea.pls.model.expression.complex.errors.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 /**
- * 作用域字段表达式。
+ * 作用域字段表达式。对应的CWT规则类型为[CwtDataTypeGroups.ScopeField]。
  *
  * 语法：
  *
@@ -29,11 +30,9 @@ import icu.windea.pls.model.expression.complex.nodes.*
  *
  * 示例：
  *
- * ```
- * root
- * root.owner
- * event_target:some_target
- * ```
+ * * `root`
+ * * `root.owner`
+ * * `event_target:some_target`
  */
 interface ParadoxScopeFieldExpression : ParadoxComplexExpression {
     companion object Resolver {
@@ -41,9 +40,6 @@ interface ParadoxScopeFieldExpression : ParadoxComplexExpression {
             doResolve(expression, range, configGroup)
     }
 }
-
-val ParadoxScopeFieldExpression.scopeNodes: List<ParadoxScopeFieldExpressionNode>
-    get() = nodes.filterIsInstance<ParadoxScopeFieldExpressionNode>()
 
 //Implementations
 

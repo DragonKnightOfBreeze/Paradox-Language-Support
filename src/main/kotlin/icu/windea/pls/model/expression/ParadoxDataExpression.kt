@@ -4,16 +4,13 @@ import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
 /**
- * 数据表达式，对应脚本语言中的一个键或值。
- *
- * 可以指定是否用引号括起。
+ * 数据表达式，对应脚本语言中的某处键/值。
  */
 interface ParadoxDataExpression {
     val value: String
@@ -21,17 +18,8 @@ interface ParadoxDataExpression {
     val quoted: Boolean
     val isKey: Boolean?
     
-    fun isParameterized(): Boolean {
-        return type == ParadoxType.String && value.isParameterized()
-    }
-    
-    fun matchesConstant(v: String): Boolean {
-        if(value.isParameterized()) {
-            //兼容带参数的情况（此时先转化为正则表达式，再进行匹配）
-            return value.toRegexWhenIsParameterized().matches(v)
-        }
-        return value.equals(v, true) //忽略大小写
-    }
+    fun isParameterized(): Boolean
+    fun matchesConstant(v: String): Boolean
     
     companion object Resolver {
         val BlockExpression: ParadoxDataExpression = BlockParadoxDataExpression
@@ -88,6 +76,20 @@ private class ParadoxDataExpressionImpl(
     override val quoted: Boolean,
     override val isKey: Boolean?
 ) : ParadoxDataExpression {
+    private val regexWhenIsParameterized by lazy { value.toRegexWhenIsParameterized() }
+    
+    override fun isParameterized(): Boolean {
+        return type == ParadoxType.String && value.isParameterized()
+    }
+    
+    override fun matchesConstant(v: String): Boolean {
+        if(value.isParameterized()) {
+            //兼容带参数的情况（此时先转化为正则表达式，再进行匹配）
+            return regexWhenIsParameterized.matches(v)
+        }
+        return value.equals(v, true) //忽略大小写
+    }
+    
     override fun equals(other: Any?): Boolean {
         return other is ParadoxDataExpression && (value == other.value && quoted == other.quoted)
     }

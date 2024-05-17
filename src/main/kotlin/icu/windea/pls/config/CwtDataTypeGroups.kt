@@ -20,6 +20,12 @@ object CwtDataTypeGroups {
         CwtDataTypes.FilePath,
         CwtDataTypes.Icon,
     )
+    
+    val DynamicValue = arrayOf(
+        CwtDataTypes.Value,
+        CwtDataTypes.ValueSet,
+        CwtDataTypes.DynamicValue,
+    )
     val ScopeField = arrayOf(
         CwtDataTypes.ScopeField,
         CwtDataTypes.Scope,
@@ -33,11 +39,10 @@ object CwtDataTypeGroups {
         CwtDataTypes.IntVariableField,
         CwtDataTypes.VariableField,
     )
-    val DynamicValue = arrayOf(
-        CwtDataTypes.Value,
-        CwtDataTypes.ValueSet,
-        CwtDataTypes.DynamicValue,
+    val GameObject = arrayOf(
+        CwtDataTypes.GameObject
     )
+    
     val ConstantLike = arrayOf(
         CwtDataTypes.Constant,
         CwtDataTypes.TemplateExpression,

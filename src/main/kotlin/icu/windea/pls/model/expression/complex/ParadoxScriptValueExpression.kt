@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -14,7 +15,7 @@ import icu.windea.pls.model.expression.complex.nodes.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 封装值表达式。
+ * 封装值表达式。作为[ParadoxValueFieldExpression]的一部分。
  *
  * 语法：
  *
@@ -27,10 +28,8 @@ import icu.windea.pls.script.psi.*
  *
  * 示例：
  *
- * ```
- * some_sv
- * some_sv|PARAM|VALUE|
- * ```
+ * * `some_sv`
+ * * `some_sv|PARAM|VALUE|`
  */
 interface ParadoxScriptValueExpression : ParadoxComplexExpression {
     val config: CwtConfig<*>
@@ -40,24 +39,6 @@ interface ParadoxScriptValueExpression : ParadoxComplexExpression {
             doResolve(expression, range, configGroup, config)
     }
 }
-
-val ParadoxScriptValueExpression.scriptValueNode: ParadoxScriptValueExpressionNode
-    get() = nodes.first().cast()
-val ParadoxScriptValueExpression.argumentNodes: List<Tuple2<ParadoxScriptValueArgumentExpressionNode, ParadoxScriptValueArgumentValueExpressionNode?>>
-    get() = buildList {
-        var argumentNode: ParadoxScriptValueArgumentExpressionNode? = null
-        for(node in nodes) {
-            if(node is ParadoxScriptValueArgumentExpressionNode) {
-                argumentNode = node
-            } else if(node is ParadoxScriptValueArgumentValueExpressionNode && argumentNode != null) {
-                add(tupleOf(argumentNode, node))
-                argumentNode = null
-            }
-        }
-        if(argumentNode != null) {
-            add(tupleOf(argumentNode, null))
-        }
-    }
 
 //Implementations
 

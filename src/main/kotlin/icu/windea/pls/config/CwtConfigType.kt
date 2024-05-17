@@ -87,16 +87,22 @@ enum class CwtConfigType(
         override val descriptionText get() = PlsBundle.message("cwt.description.effect")
         override val icon get() = PlsIcons.Nodes.Effect
     },
-    ScopeGroup("scope group", true) {
-        override val prefix get() = PlsBundle.message("prefix.scopeGroup")
-        override val descriptionText get() = PlsBundle.message("cwt.description.scopeGroup")
-        override val icon get() = PlsIcons.Nodes.Scope
-    },
     Scope("scope", true) {
         override val prefix get() = PlsBundle.message("prefix.scope")
         override val descriptionText get() = PlsBundle.message("cwt.description.scope")
         override val icon get() = PlsIcons.Nodes.Scope
     },
+    ScopeGroup("scope group", true) {
+        override val prefix get() = PlsBundle.message("prefix.scopeGroup")
+        override val descriptionText get() = PlsBundle.message("cwt.description.scopeGroup")
+        override val icon get() = PlsIcons.Nodes.Scope
+    },
+    GameObjectType("game object type", true) {
+        override val prefix get() = PlsBundle.message("prefix.gameObjectType")
+        override val descriptionText get() = PlsBundle.message("cwt.description.gameObjectType")
+        override val icon get() = PlsIcons.Nodes.GameObjectType
+    },
+    
     SystemLink("system link", true) {
         override val prefix get() = PlsBundle.message("prefix.systemLink")
         override val descriptionText get() = PlsBundle.message("cwt.description.systemLink")

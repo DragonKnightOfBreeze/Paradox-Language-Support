@@ -11,8 +11,9 @@ import icu.windea.pls.model.expression.complex.errors.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 /**
- * 用于表达式脚本语言中的复杂表达式，对应匹配特定CWT规则类型的key或value（或者它们的特定部分）。
- * 目前认为不能用引号括起。
+ * 复杂表达式，对应脚本语言/本地化语言中的某些特定的标识符。
+ * 
+ * （插件目前认为）复杂表达式不能用引号括起。
  */
 interface ParadoxComplexExpression : ParadoxExpressionNode {
     val configGroup: CwtConfigGroup
@@ -36,6 +37,7 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
         dataType in CwtDataTypeGroups.ScopeField -> ParadoxScopeFieldExpression.resolve(expression, range, configGroup)
         dataType in CwtDataTypeGroups.ValueField -> ParadoxValueFieldExpression.resolve(expression, range, configGroup)
         dataType in CwtDataTypeGroups.VariableField -> ParadoxVariableFieldExpression.resolve(expression, range, configGroup)
+        dataType in CwtDataTypeGroups.GameObject -> ParadoxGameObjectExpression.resolve(expression, range, configGroup)
         else -> null
     }
 }

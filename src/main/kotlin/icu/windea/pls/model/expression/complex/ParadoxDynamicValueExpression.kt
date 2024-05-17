@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -14,7 +15,7 @@ import icu.windea.pls.model.expression.complex.errors.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 /**
- * 动态值表达式。
+ * 动态值表达式。对应的CWT规则类型为[CwtDataTypeGroups.DynamicValue]。
  *
  * 语法：
  *
@@ -26,10 +27,8 @@ import icu.windea.pls.model.expression.complex.nodes.*
  *
  * 示例：
  *
- * ```
- * some_variable
- * some_variable@root
- * ```
+ * * `some_variable`
+ * * `some_variable@root`
  */
 interface ParadoxDynamicValueExpression : ParadoxComplexExpression {
     val configs: List<CwtConfig<*>>
@@ -42,11 +41,6 @@ interface ParadoxDynamicValueExpression : ParadoxComplexExpression {
             doResolve(expression, range, configGroup, configs)
     }
 }
-
-val ParadoxDynamicValueExpression.scopeFieldExpression: ParadoxScopeFieldExpression?
-    get() = nodes.getOrNull(2)?.cast()
-val ParadoxDynamicValueExpression.dynamicValueNode: ParadoxDynamicValueExpressionNode
-    get() = nodes.get(0).cast()
 
 //Implementations
 

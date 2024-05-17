@@ -150,6 +150,9 @@ object CwtConfigManager {
             element is CwtProperty && path.matchesAntPattern("scope_groups/*") -> {
                 CwtConfigType.ScopeGroup
             }
+            element is CwtProperty && path.matchesAntPattern("game_object_types/*") -> {
+                CwtConfigType.GameObjectType
+            }
             element is CwtProperty && path.matchesAntPattern("system_links/*") -> {
                 CwtConfigType.SystemLink
             }

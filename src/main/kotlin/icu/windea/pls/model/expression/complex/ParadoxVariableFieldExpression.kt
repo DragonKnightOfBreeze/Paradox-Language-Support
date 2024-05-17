@@ -14,15 +14,12 @@ import icu.windea.pls.model.expression.complex.errors.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 /**
- * 变量字段表达式。
- *
- * 相较于值字段表达式（[ParadoxValueFieldExpression]），仅支持调用变量（可带上作用域信息）。
+ * 变量字段表达式。作为[ParadoxValueFieldExpression]的子集。
+ * 相较之下，仅支持调用变量（可带上作用域信息）。
  *
  * 示例：
  *
- * ```
- * root.owner.some_variable
- * ```
+ * `root.owner.some_variable`
  */
 interface ParadoxVariableFieldExpression : ParadoxComplexExpression {
     companion object Resolver {
@@ -30,11 +27,6 @@ interface ParadoxVariableFieldExpression : ParadoxComplexExpression {
             doResolve(expression, range, configGroup)
     }
 }
-
-val ParadoxVariableFieldExpression.scopeNodes: List<ParadoxScopeFieldExpressionNode>
-    get() = nodes.filterIsInstance<ParadoxScopeFieldExpressionNode>()
-val ParadoxVariableFieldExpression.variableNode: ParadoxDataExpressionNode
-    get() = nodes.last().cast()
 
 //Implementations
 

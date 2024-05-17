@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -15,7 +16,7 @@ import icu.windea.pls.model.expression.complex.errors.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 /**
- * 值字段表达式。
+ * 值字段表达式。对应的CWT规则类型为[CwtDataTypeGroups.ValueField]。
  *
  * 语法：
  *
@@ -38,11 +39,9 @@ import icu.windea.pls.model.expression.complex.nodes.*
  *
  * 示例：
  *
- * ```
- * trigger:some_trigger
- * value:some_sv|PARAM1|VALUE1|PARAM2|VALUE2|
- * root.owner.some_variable
- * ```
+ * * `trigger:some_trigger`
+ * * `value:some_sv|PARAM1|VALUE1|PARAM2|VALUE2|`
+ * * `root.owner.some_variable`
  */
 interface ParadoxValueFieldExpression : ParadoxComplexExpression {
     companion object Resolver {
@@ -50,14 +49,6 @@ interface ParadoxValueFieldExpression : ParadoxComplexExpression {
             doResolve(expression, range, configGroup)
     }
 }
-
-val ParadoxValueFieldExpression.scopeNodes: List<ParadoxScopeFieldExpressionNode>
-    get() = nodes.filterIsInstance<ParadoxScopeFieldExpressionNode>()
-val ParadoxValueFieldExpression.valueFieldNode: ParadoxValueFieldExpressionNode
-    get() = nodes.last().cast()
-val ParadoxValueFieldExpression.scriptValueExpression: ParadoxScriptValueExpression?
-    get() = this.valueFieldNode.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
-        ?.dataSourceNode?.nodes?.findIsInstance<ParadoxScriptValueExpression>()
 
 //Implementations
 

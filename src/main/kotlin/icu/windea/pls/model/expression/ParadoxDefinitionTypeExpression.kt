@@ -7,11 +7,9 @@ import icu.windea.pls.model.*
  *
  * 示例：
  *
- * ```
- * event
- * event.hidden
- * event.hidden.country_event
- * ```
+ * * `event`
+ * * `event.hidden`
+ * * `event.hidden.country_event`
  *
  * 用途：
  *
