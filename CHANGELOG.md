@@ -33,7 +33,7 @@
 * [X] #79 匹配脚本内容与规则时，如果带参数的键的规则类型是唯一确定的，则需要继续向下匹配
 * [ ] #79 匹配脚本内容与规则时，如果作为参数的键的规则类型可以被推断出来且是匹配的，则需要继续向下匹配
 * [X] (HIDDEN) 优化追踪更改的逻辑，基于ANT路径表达式进行匹配 *
-* [ ] (HIDDEN) 实现`CwtSwitchOverriddenScopeContextProvider`
+* [ ] (HIDDEN) 实现`ParadoxSwitchOverriddenScopeContextProvider`
 * [ ] 其他优化与BUG修复
 
 ## 1.3.7

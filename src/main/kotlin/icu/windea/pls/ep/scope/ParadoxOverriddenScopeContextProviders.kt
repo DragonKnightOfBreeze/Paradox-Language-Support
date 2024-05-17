@@ -15,6 +15,21 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.psi.*
 
+class ParadoxSwitchOverriddenScopeContextProvider: ParadoxOverriddenScopeContextProvider {
+    object Data {
+        const val CASE_KEY = "scalar"
+        const val DEFAULT_KEy = "default"
+        val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
+        val CONTEXT_NAMES = arrayOf("switch", "inverted_switch")
+    }
+    
+    override fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
+        //重载switch = {...}中对应的CWT规则为scalar的属性以及属性default对应的作用域上下文
+        //重载inverted_switch = {...}中对应的CWT规则为scalar的属性以及属性default对应的作用域上下文
+        return null //TODO
+    }
+}
+
 class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxOverriddenScopeContextProvider {
     object Data {
         const val TRIGGER_KEY = "trigger"

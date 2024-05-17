@@ -202,6 +202,7 @@
     
     <dynamicValueInferredScopeContextProvider implementation="icu.windea.pls.ep.scope.ParadoxBaseDynamicValueInferredScopeContextProvider" order="last"/>
 
+    <overriddenScopeContextProvider implementation="icu.windea.pls.ep.scope.ParadoxSwitchOverriddenScopeContextProvider"/>
     <overriddenScopeContextProvider implementation="icu.windea.pls.ep.scope.ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider"/>
     
     <definitionPresentationProvider implementation="icu.windea.pls.ep.presentation.StellarisTechnologyPresentationProvider"/>
