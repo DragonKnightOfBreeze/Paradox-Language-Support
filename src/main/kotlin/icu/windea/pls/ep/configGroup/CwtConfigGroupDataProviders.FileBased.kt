@@ -268,9 +268,15 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 key == "scope_groups" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
-                        val scopeGroupName = prop.key
                         val scopeGroupConfig = CwtScopeGroupConfig.resolve(prop) ?: continue
-                        configGroup.scopeGroups[scopeGroupName] = scopeGroupConfig
+                        configGroup.scopeGroups[scopeGroupConfig.name] = scopeGroupConfig
+                    }
+                }
+                key == "game_object_types" -> {
+                    val props = property.properties ?: continue
+                    for(prop in props) {
+                        val gameObjectTypeConfig = CwtGameObjectTypeConfig.resolve(prop) ?: continue
+                        configGroup.gameObjectTypes[gameObjectTypeConfig.name] = gameObjectTypeConfig
                     }
                 }
                 key == "scripted_variables" -> {

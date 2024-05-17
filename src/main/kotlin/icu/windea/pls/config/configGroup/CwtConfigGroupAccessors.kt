@@ -102,6 +102,10 @@ val CwtConfigGroup.modifierCategories: MutableMap<String, CwtModifierCategoryCon
 val CwtConfigGroup.modifiers: MutableMap<@CaseInsensitive String, CwtModifierConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
+//name - config
+val CwtConfigGroup.gameObjectTypes: MutableMap<String, CwtGameObjectTypeConfig>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
+
 //template_expression - configs
 @Tags(Tag.Extended)
 val CwtConfigGroup.extendedScriptedVariables: MutableMap<String, CwtExtendedScriptedVariableConfig>
