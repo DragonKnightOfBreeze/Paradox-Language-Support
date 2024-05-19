@@ -11,24 +11,6 @@ import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
-val <T : CwtMemberElement> CwtMemberConfig<T>.isBlock: Boolean
-    get() = configs != null
-
-val CwtMemberConfig<*>.isRoot: Boolean
-    get() = when(this) {
-        is CwtPropertyConfig -> this.parentConfig == null
-        is CwtValueConfig -> this.parentConfig == null && this.propertyConfig == null
-    }
-
-val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<*>
-    get() = when(this) {
-        is CwtPropertyConfig -> this
-        is CwtValueConfig -> propertyConfig ?: this
-    }
-
-val CwtValueConfig.isTagConfig: Boolean
-    get() = findOptionValue("tag") != null
-
 val CwtMemberConfig.Keys.cardinality by createKey<CwtCardinalityExpression>("cwt.memberConfig.cardinality")
 val CwtMemberConfig.Keys.cardinalityMinDefine by createKey<String>("cwt.memberConfig.cardinalityMinDefine")
 val CwtMemberConfig.Keys.cardinalityMaxDefine by createKey<String>("cwt.memberConfig.cardinalityMaxDefine")
@@ -37,6 +19,7 @@ val CwtMemberConfig.Keys.scopeContext by createKey<ParadoxScopeContext>("cwt.mem
 val CwtMemberConfig.Keys.replaceScopes by createKey<Map<String, String>>("cwt.memberConfig.replaceScopes")
 val CwtMemberConfig.Keys.pushScope by createKey<String>("cwt.memberConfig.pushScope")
 val CwtMemberConfig.Keys.supportedScopes by createKey<Set<String>>("cwt.memberConfig.supportedScopes")
+val CwtMemberConfig.Keys.originalConfig by createKey<CwtMemberConfig<*>>("cwt.memberConfig.originalConfig")
 val CwtMemberConfig.Keys.overriddenProvider by createKey<CwtOverriddenConfigProvider>("cwt.memberConfig.overriddenProvider")
 
 //may on:
@@ -110,26 +93,7 @@ val CwtMemberConfig<*>.supportedScopes
         if(r.isNullOrEmpty()) ParadoxScopeHandler.anyScopeIdSet else r
     }
 
-fun <T : CwtMemberElement> CwtMemberConfig<T>.toOccurrence(contextElement: PsiElement, project: Project): Occurrence {
-    val cardinality = this.cardinality ?: return Occurrence(0, null, null, false)
-    val cardinalityMinDefine = this.cardinalityMinDefine
-    val cardinalityMaxDefine = this.cardinalityMaxDefine
-    val occurrence = Occurrence(0, cardinality.min, cardinality.max, cardinality.relaxMin)
-    if(cardinalityMinDefine != null) {
-        val defineValue = ParadoxDefineHandler.getDefineValue(contextElement, project, cardinalityMinDefine, Int::class.java)
-        if(defineValue != null) {
-            occurrence.min = defineValue
-            occurrence.minDefine = cardinalityMinDefine
-        }
-    }
-    if(cardinalityMaxDefine != null) {
-        val defineValue = ParadoxDefineHandler.getDefineValue(contextElement, project, cardinalityMaxDefine, Int::class.java)
-        if(defineValue != null) {
-            occurrence.max = defineValue
-            occurrence.maxDefine = cardinalityMaxDefine
-        }
-    }
-    return occurrence
-}
-
-var CwtMemberConfig<*>.overriddenProvider by CwtMemberConfig.Keys.overriddenProvider
+val CwtMemberConfig<*>.originalConfig 
+    get() = getUserData(CwtMemberConfig.Keys.originalConfig) ?: this 
+val CwtMemberConfig<*>.overriddenProvider 
+    get() = getUserData(CwtMemberConfig.Keys.overriddenProvider) 

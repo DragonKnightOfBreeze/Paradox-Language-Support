@@ -35,7 +35,7 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
             ?.findProperty(triggerConfigKey, inline = true)
             ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
-        if(CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null //must be predefined trigger
+        if(CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null //must be a predefined trigger
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
@@ -71,7 +71,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
             ?: return null
         val triggerProperty = contextProperty.findProperty(Data.TRIGGER_KEY, inline = true) ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
-        if(CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null //must be predefined trigger
+        if(CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null //must be a predefined trigger
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val resultConfigs = mutableListOf<CwtPropertyConfig>()

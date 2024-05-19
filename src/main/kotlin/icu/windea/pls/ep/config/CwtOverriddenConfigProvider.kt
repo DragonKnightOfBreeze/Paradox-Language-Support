@@ -33,7 +33,10 @@ interface CwtOverriddenConfigProvider {
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null
                 ep.getOverriddenConfigs(contextElement, config).orNull()
-                    ?.onEach { it.overriddenProvider = ep }
+                    ?.onEach {
+                        it.putUserData(CwtMemberConfig.Keys.originalConfig, config)
+                        it.putUserData(CwtMemberConfig.Keys.overriddenProvider, ep)
+                    }
                     ?.also { PlsStatus.overrideConfig.set(true) } //set overrideConfigStatus
             }
         }

@@ -152,6 +152,21 @@ private fun ParadoxScriptProperty.doProcessPropertyChild(conditional: Boolean, i
 }
 
 /**
+ * 向上得到第一个定义。
+ * 可能为null，可能为自身。
+ */
+fun PsiElement.findParentDefinition(): ParadoxScriptDefinitionElement? {
+    if(language != ParadoxScriptLanguage) return null
+    var current: PsiElement = this
+    while(current !is PsiDirectory) {
+        ProgressManager.checkCanceled()
+        if(current is ParadoxScriptDefinitionElement && current.definitionInfo != null) return current
+        current = current.parent ?: break
+    }
+    return null
+}
+
+/**
  * 得到指定名字的属性。
  * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果为空字符串且自身是脚本属性，则返回自身。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
@@ -180,6 +195,89 @@ fun PsiElement.findProperty(
         }
     }
     return result
+}
+
+/**
+ * 得到符合指定条件的属性。可能为null，可能是定义，可能是脚本文件。
+ * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
+ * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
+ */
+fun PsiElement.findProperty(
+    conditional: Boolean = false,
+    inline: Boolean = false,
+    propertyPredicate: (String) -> Boolean
+): ParadoxScriptProperty? {
+    if(language != ParadoxScriptLanguage) return null
+    if(propertyPredicate("")) return this as? ParadoxScriptProperty
+    val block = when {
+        this is ParadoxScriptDefinitionElement -> this.block
+        this is ParadoxScriptBlock -> this
+        else -> null
+    }
+    var result: ParadoxScriptProperty? = null
+    block?.processProperty(conditional, inline) {
+        if(propertyPredicate(it.name)) {
+            result = it
+            false
+        } else {
+            true
+        }
+    }
+    return result
+}
+
+/**
+ * 向上得到第一个属性。可能为null，可能是定义，可能是脚本文件。
+ * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果得到的是脚本文件，则忽略。
+ * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
+ */
+fun PsiElement.findParentProperty(
+    propertyName: String? = null,
+    ignoreCase: Boolean = true,
+    fromParentBlock: Boolean = false
+): ParadoxScriptDefinitionElement? {
+    if(language != ParadoxScriptLanguage) return null
+    var current: PsiElement = when {
+        fromParentBlock -> this.parentOfType<ParadoxScriptBlockElement>() ?: return null
+        this is ParadoxScriptProperty -> this.parent
+        else -> this
+    }
+    while(current !is PsiFile) {
+        ProgressManager.checkCanceled()
+        if(current is ParadoxScriptDefinitionElement) {
+            if(propertyName == null || propertyName.equals(current.name, ignoreCase)) return current
+        }
+        if(current is ParadoxScriptBlock && !current.isPropertyValue()) return null
+        current = current.parent ?: break
+    }
+    if(current is ParadoxScriptFile) return current
+    return null
+}
+
+/**
+ * 向上得到第一个符合指定条件的属性。可能为null，可能是定义，可能是脚本文件。
+ * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
+ */
+fun PsiElement.findParentProperty(
+    fromParentBlock: Boolean = false,
+    propertyPredicate: (String) -> Boolean
+): ParadoxScriptDefinitionElement? {
+    if(language != ParadoxScriptLanguage) return null
+    var current: PsiElement = when {
+        fromParentBlock -> this.parentOfType<ParadoxScriptBlockElement>() ?: return null
+        this is ParadoxScriptProperty -> this.parent
+        else -> this
+    }
+    while(current !is PsiFile) {
+        ProgressManager.checkCanceled()
+        if(current is ParadoxScriptDefinitionElement) {
+            if(propertyPredicate(current.name)) return current
+        }
+        if(current is ParadoxScriptBlock && !current.isPropertyValue()) return null
+        current = current.parent ?: break
+    }
+    if(current is ParadoxScriptFile) return current
+    return null
 }
 
 /**
@@ -217,48 +315,6 @@ fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
             return current.castOrNull<ParadoxScriptProperty>()?.propertyValue() as? T
         }
     }
-    return null
-}
-
-
-/**
- * 向上得到第一个定义。
- * 可能为null，可能为自身。
- */
-fun PsiElement.findParentDefinition(): ParadoxScriptDefinitionElement? {
-    if(language != ParadoxScriptLanguage) return null
-    var current: PsiElement = this
-    while(current !is PsiDirectory) {
-        ProgressManager.checkCanceled()
-        if(current is ParadoxScriptDefinitionElement && current.definitionInfo != null) return current
-        current = current.parent ?: break
-    }
-    return null
-}
-
-/**
- * 向上得到第一个属性。可能为null，可能是定义，可能是脚本文件。
- * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果得到的是脚本文件，则忽略。
- * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
- */
-fun PsiElement.findParentProperty(
-    propertyName: String? = null,
-    ignoreCase: Boolean = true,
-    fromParentBlock: Boolean = false
-): ParadoxScriptDefinitionElement? {
-    if(language != ParadoxScriptLanguage) return null
-    var current: PsiElement = when {
-        fromParentBlock -> this.parentOfType<ParadoxScriptBlockElement>() ?: return null
-        this is ParadoxScriptProperty -> this.parent
-        else -> this
-    }
-    while(current !is PsiFile) {
-        ProgressManager.checkCanceled()
-        if(current is ParadoxScriptDefinitionElement) return current.takeIf { propertyName == null || propertyName.equals(it.name, ignoreCase) }
-        if(current is ParadoxScriptBlock && !current.isPropertyValue()) return null
-        current = current.parent ?: break
-    }
-    if(current is ParadoxScriptFile) return current
     return null
 }
 
