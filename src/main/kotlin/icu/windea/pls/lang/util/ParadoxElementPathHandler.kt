@@ -22,16 +22,16 @@ object ParadoxElementPathHandler {
     fun get(element: PsiElement, maxDepth: Int = -1): ParadoxElementPath? {
         var current: PsiElement = element
         var depth = 0
-        val subPaths = LinkedList<String>()
+        val originalSubPaths = LinkedList<String>()
         while(current !is PsiFile) {
             when {
                 current is ParadoxScriptProperty -> {
                     val p = current.propertyKey.text
-                    subPaths.addFirst(p.unquote())
+                    originalSubPaths.addFirst(p)
                     depth++
                 }
                 current is ParadoxScriptValue && current.isBlockValue() -> {
-                    subPaths.addFirst("-")
+                    originalSubPaths.addFirst("-")
                     depth++
                 }
             }
@@ -43,10 +43,10 @@ object ParadoxElementPathHandler {
             val virtualFile = selectFile(current)
             val injectedElementPathPrefix = virtualFile?.getUserData(PlsKeys.injectedElementPathPrefix)
             if(injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
-                subPaths.addAll(0, injectedElementPathPrefix.subPaths)
+                originalSubPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }
-        return ParadoxElementPath.resolve(subPaths)
+        return ParadoxElementPath.resolve(originalSubPaths)
     }
     
     /**
@@ -62,7 +62,7 @@ object ParadoxElementPathHandler {
                     val p = current.firstChild(tree, PROPERTY_KEY)
                         ?.firstChild(tree, PROPERTY_KEY_TOKEN)
                         ?.internNode(tree)?.toString() ?: return null
-                    originalSubPaths.addFirst(p.unquote())
+                    originalSubPaths.addFirst(p)
                     depth++
                 }
                 ParadoxScriptTokenSets.VALUES.contains(current.tokenType) && tree.getParent(current)?.tokenType == BLOCK -> {

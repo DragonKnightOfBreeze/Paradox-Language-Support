@@ -298,9 +298,7 @@ fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
     var current: ParadoxScriptMemberElement = this
     if(path.isNotEmpty()) {
         val elementPath = ParadoxElementPath.resolve(path)
-        val subPathInfos = elementPath.subPaths
-        for(subPathInfo in subPathInfos) {
-            val subPath = subPathInfo.subPath
+        for(subPath in elementPath.subPaths) {
             if(subPath == "-") return null //TODO 暂不支持
             current = current.findProperty(subPath, ignoreCase, conditional, inline) ?: return null
         }
@@ -334,10 +332,11 @@ fun ParadoxScriptMemberElement.findParentByPath(
     var current: ParadoxScriptMemberElement = this
     if(path.isNotEmpty()) {
         val elementPath = ParadoxElementPath.resolve(path)
-        val subPathInfos = elementPath.subPaths
-        for(subPathInfo in subPathInfos.reversed()) {
-            val subPath = subPathInfo.subPath
-            if(subPath == "-") return null //TODO 暂不支持
+        for(subPath in elementPath.subPaths.reversed()) {
+            if(subPath == "-") {
+                
+                return null //TODO 暂不支持 
+            }
             current = current.findParentProperty(subPath, ignoreCase) ?: return null
         }
     }

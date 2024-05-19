@@ -76,13 +76,13 @@ object CwtConfigHandler {
         
         var result: List<CwtMemberConfig<*>> = rootConfigs
         
-        elementPathFromRoot.subPaths.forEachIndexedFast f1@{ i, info ->
+        elementPathFromRoot.subPaths.forEachIndexedFast f1@{ i, subPath ->
             ProgressManager.checkCanceled()
             
             //如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
             //如果整个过程中的某个key匹配内联规则的名字（如，inline_script），则需要内联此内联规则
             
-            val (_, subPath, isQuoted) = info
+            val isQuoted = false //TODO
             val subPathIsParameterized = subPath.isParameterized()
             val matchKey = isPropertyValue || i < elementPathFromRoot.subPaths.lastIndex
             val expression = ParadoxDataExpression.resolve(subPath, isQuoted, true)

@@ -13,13 +13,17 @@ import icu.windea.pls.core.collections.*
  * * `foo/"bar"` - 对应所属文件或定义中名为"foo"的属性的值（代码块）中，名为"bar"的属性（属性名在脚本中用引号括起）
  * * `foo/-` - 对应所属文件或定义中名为"foo"的属性的值（代码块）中，任意的值
  *
- * @property path 使用"/"分割的路径（预先移除括起的双引号）。
+ * @property path 使用"/"分隔的路径（预先移除括起的双引号）。
+ * @property originalPath 使用"/"分隔的路径（保留括起的双引号）。
  * @property isParameterized 路径中是否带有参数（即使无法解析或者存在语法错误）。
  */
 interface ParadoxElementPath : Iterable<String> {
     val path: String
     val subPaths: List<String>
     val length: Int
+    
+    val originalPath: String
+    val originalSubPaths: List<String>
     
     fun isEmpty(): Boolean = length == 0
     fun isNotEmpty(): Boolean = length != 0
@@ -29,9 +33,9 @@ interface ParadoxElementPath : Iterable<String> {
     companion object Resolver {
         val Empty: ParadoxElementPath = EmptyParadoxElementPath
         
-        fun resolve(path: String): ParadoxElementPath = doResolve(path)
+        fun resolve(originalPath: String): ParadoxElementPath = doResolve(originalPath)
         
-        fun resolve(subPaths: List<String>): ParadoxElementPath = doResolve(subPaths)
+        fun resolve(originalSubPaths: List<String>): ParadoxElementPath = doResolve(originalSubPaths)
     }
 }
 
@@ -79,21 +83,63 @@ fun ParadoxElementPath.matchEntire(other: List<String>, ignoreCase: Boolean = tr
 
 //Implementations (interned)
 
-private fun doResolve(path: String): ParadoxElementPath {
-    if(path.isEmpty()) return EmptyParadoxElementPath
-    return ParadoxElementPathImplA(path)
+private fun doResolve(originalPath: String): ParadoxElementPath {
+    if(originalPath.isEmpty()) return EmptyParadoxElementPath
+    return ParadoxElementPathImplA(originalPath)
 }
 
-private fun doResolve(subPaths: List<String>): ParadoxElementPath {
-    if(subPaths.isEmpty()) return EmptyParadoxElementPath
-    return ParadoxElementPathImplB(subPaths)
+private fun doResolve(originalSubPaths: List<String>): ParadoxElementPath {
+    if(originalSubPaths.isEmpty()) return EmptyParadoxElementPath
+    return ParadoxElementPathImplB(originalSubPaths)
 }
 
 private class ParadoxElementPathImplA(
     path: String
 ) : ParadoxElementPath {
-    override val path: String = path.intern()
-    override val subPaths: List<String> = buildList {
+    override val originalPath: String = path.intern()
+    override val originalSubPaths: List<String> = path2SubPaths(path)
+    
+    override val subPaths: List<String> = originalSubPaths.mapFast { it.unquote().intern() }
+    override val path: String = subPaths2Path(subPaths)
+    
+    override val length: Int = subPaths.size
+    
+    override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
+    override fun hashCode() = path.hashCode()
+    override fun toString() = path
+}
+
+private class ParadoxElementPathImplB(
+    originalSubPaths: List<String>
+) : ParadoxElementPath {
+    override val originalSubPaths: List<String> = originalSubPaths.mapFast { it.intern() }
+    override val originalPath: String = subPaths2Path(originalSubPaths)
+    
+    override val subPaths: List<String> = originalSubPaths.mapFast { it.unquote().intern() }
+    override val path: String = subPaths2Path(subPaths)
+    
+    override val length: Int = originalSubPaths.size
+    
+    override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
+    override fun hashCode() = path.hashCode()
+    override fun toString() = path
+}
+
+private object EmptyParadoxElementPath : ParadoxElementPath {
+    override val path: String = ""
+    override val subPaths: List<String> = emptyList()
+    override val length: Int = 0
+    
+    override val originalPath: String = ""
+    override val originalSubPaths: List<String> = emptyList()
+    
+    override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
+    override fun hashCode() = path.hashCode()
+    override fun toString() = path
+}
+
+private fun path2SubPaths(path: String): List<String> {
+    return buildList {
         val builder = StringBuilder()
         var escape = false
         path.forEachFast { c ->
@@ -115,40 +161,17 @@ private class ParadoxElementPathImplA(
             add(builder.toString().intern())
         }
     }
-    override val length: Int = subPaths.size
-    
-    override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
-    override fun hashCode() = path.hashCode()
-    override fun toString() = path
 }
 
-private class ParadoxElementPathImplB(
-    subPaths: List<String>
-) : ParadoxElementPath {
-    override val path: String = buildString {
-        var isFirst = true
-        subPaths.forEachFast { p ->
-            if(isFirst) isFirst = false else append('/')
-            p.forEachFast { c ->
-                if(c == '/') append('\\')
-                append(c)
-            }
+private fun subPaths2Path(originalSubPaths: List<String>): String {
+    val builder = StringBuilder()
+    var isFirst = true
+    originalSubPaths.forEachFast { p ->
+        if(isFirst) isFirst = false else builder.append('/')
+        p.forEachFast { c ->
+            if(c == '/') builder.append('\\')
+            builder.append(c)
         }
-    }.intern()
-    override val subPaths: List<String> = subPaths.mapFast { it.intern() }
-    override val length: Int = subPaths.size
-    
-    override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
-    override fun hashCode() = path.hashCode()
-    override fun toString() = path
-}
-
-private object EmptyParadoxElementPath: ParadoxElementPath {
-    override val path: String = ""
-    override val subPaths: List<String> = emptyList()
-    override val length: Int = 0
-    
-    override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
-    override fun hashCode() = path.hashCode()
-    override fun toString() = path
+    }
+    return builder.toString().intern()
 }
