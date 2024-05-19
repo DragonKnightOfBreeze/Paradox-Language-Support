@@ -103,7 +103,7 @@ object ParadoxScopeHandler {
     
     fun findParentMember(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
         return element.parents(withSelf = false)
-            .find { it is ParadoxScriptDefinitionElement || (it is ParadoxScriptBlock && it.isBlockValue()) }
+            .find { it is ParadoxScriptDefinitionElement || (it is ParadoxScriptBlock && it.isBlockMember()) }
             .castOrNull<ParadoxScriptMemberElement>()
     }
     
@@ -324,7 +324,7 @@ object ParadoxScopeHandler {
                 doGetScopeContextBySystemLinkNode(contextElement, node, inputScopeContext, inExpression)
                     ?: getUnknownScopeContext(inputScopeContext, isFrom)
             }
-            is ParadoxParameterizedScopeFieldExpressionNode -> getAnyScopeContext()
+            is ParadoxParameterizedScopeFieldExpressionNode -> getAnyScopeContext() //TODO 1.3.8+
             //error
             is ParadoxErrorScopeFieldExpressionNode -> getUnknownScopeContext(inputScopeContext)
         }

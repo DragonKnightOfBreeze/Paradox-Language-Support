@@ -11,7 +11,7 @@ class ParadoxScriptValueRemover : ParadoxScriptUnwrapper() {
     }
     
     override fun isApplicableTo(e: PsiElement): Boolean {
-        return (e is ParadoxScriptValue && e !is ParadoxScriptBlock) && e.isBlockValue()
+        return (e is ParadoxScriptValue && e !is ParadoxScriptBlock) && e.isBlockMember()
     }
     
     override fun doUnwrap(element: PsiElement, context: Context) {

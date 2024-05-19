@@ -6,6 +6,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
@@ -119,8 +120,8 @@ private object CwtValueConfigImpls {
         documentation: String? = null,
         propertyConfig: CwtPropertyConfig? = null,
     ) : Impl(pointer, configGroup, value, valueTypeId, propertyConfig) {
-        override val configs = configs
-        override val options = options
+        override val configs = configs?.toMutableIfNotEmptyInActual()
+        override val options = options?.toMutableIfNotEmptyInActual()
         override val documentation = documentation
     }
     
@@ -133,7 +134,7 @@ private object CwtValueConfigImpls {
         configs: List<CwtMemberConfig<*>>? = null,
         propertyConfig: CwtPropertyConfig? = null,
     ) : Impl(pointer, configGroup, value, valueTypeId, propertyConfig) {
-        override val configs = configs
+        override val configs = configs?.toMutableIfNotEmptyInActual()
         override val options get() = null
         override val documentation get() = null
     }
@@ -149,7 +150,7 @@ private object CwtValueConfigImpls {
         propertyConfig: CwtPropertyConfig? = null,
     ) : Impl(pointer, configGroup, value, valueTypeId, propertyConfig) {
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        override val options = options
+        override val options = options?.toMutableIfNotEmptyInActual()
         override val documentation = documentation
     }
     
@@ -186,7 +187,7 @@ private object CwtValueConfigImpls {
         delegate: CwtValueConfig,
         configs: List<CwtMemberConfig<*>>? = null,
     ) : Delegate(delegate) {
-        override val configs = configs
+        override val configs = configs?.toMutableIfNotEmptyInActual()
     }
     
     //12 + 4 * 4 = 28 => 32

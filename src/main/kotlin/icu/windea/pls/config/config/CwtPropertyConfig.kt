@@ -6,6 +6,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
@@ -111,8 +112,8 @@ private object CwtPropertyConfigImpls {
         options: List<CwtOptionMemberConfig<*>>? = null,
         documentation: String? = null,
     ) : Impl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
-        override val configs = configs
-        override val options = options
+        override val configs = configs?.toMutableIfNotEmptyInActual()
+        override val options = options?.toMutableIfNotEmptyInActual()
         override val documentation = documentation
     }
     
@@ -126,7 +127,7 @@ private object CwtPropertyConfigImpls {
         separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
         configs: List<CwtMemberConfig<*>>? = null,
     ) : Impl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
-        override val configs = configs
+        override val configs = configs?.toMutableIfNotEmptyInActual()
         override val options get() = null
         override val documentation get() = null
     }
@@ -143,7 +144,7 @@ private object CwtPropertyConfigImpls {
         documentation: String? = null,
     ) : Impl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        override val options = options
+        override val options = options?.toMutableIfNotEmptyInActual()
         override val documentation = documentation
     }
     
@@ -185,7 +186,7 @@ private object CwtPropertyConfigImpls {
         delegate: CwtPropertyConfig,
         configs: List<CwtMemberConfig<*>>? = null,
     ) : Delegate(delegate) {
-        override val configs = configs
+        override val configs = configs?.toMutableIfNotEmptyInActual()
     }
     
     //12 + 5 * 4 = 32 => 32

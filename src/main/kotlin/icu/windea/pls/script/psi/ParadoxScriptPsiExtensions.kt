@@ -17,6 +17,9 @@ inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlockElement.valueList(
     return findChildren()
 }
 
+fun ParadoxScriptMemberElement.isBlockMember() :Boolean {
+    return parent.let { it is ParadoxScriptBlockElement || it is ParadoxScriptParameterCondition }
+}
 
 fun ParadoxScriptValue.isScriptedVariableValue(): Boolean {
     return parent is ParadoxScriptScriptedVariable
@@ -24,10 +27,6 @@ fun ParadoxScriptValue.isScriptedVariableValue(): Boolean {
 
 fun ParadoxScriptValue.isPropertyValue(): Boolean {
     return parent is ParadoxScriptProperty
-}
-
-fun ParadoxScriptValue.isBlockValue(): Boolean {
-    return parent.let { it is ParadoxScriptBlockElement || it is ParadoxScriptParameterCondition }
 }
 
 fun ParadoxScriptExpressionElement.isExpression(): Boolean {

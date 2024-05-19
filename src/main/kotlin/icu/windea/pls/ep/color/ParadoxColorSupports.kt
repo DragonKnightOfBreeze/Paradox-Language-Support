@@ -153,7 +153,7 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
     private fun getColorType(element: ParadoxScriptBlock): String? {
         val elementToGetOption: ParadoxScriptMemberElement? = when {
             element.isPropertyValue() -> element.parent as? ParadoxScriptProperty
-            element.isBlockValue() -> element
+            element.isBlockMember() -> element
             else -> null
         }
         if(elementToGetOption == null) return null

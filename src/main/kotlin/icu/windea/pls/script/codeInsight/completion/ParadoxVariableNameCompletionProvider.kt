@@ -20,7 +20,7 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptString>() ?: return
         if(element.text.isParameterized()) return
-        if(!element.isBlockValue()) return
+        if(!element.isBlockMember()) return
         val parentProperty = element.findParentProperty() ?: return
         val configs = CwtConfigHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
         if(configs.isEmpty()) return

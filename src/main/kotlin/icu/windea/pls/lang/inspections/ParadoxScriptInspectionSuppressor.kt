@@ -24,7 +24,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         while(current !is PsiFile) {
             current = current.parent ?: return false
             ProgressManager.checkCanceled()
-            if(current is ParadoxScriptProperty || (current is ParadoxScriptValue && current.isBlockValue())) {
+            if(current is ParadoxScriptProperty || (current is ParadoxScriptValue && current.isBlockMember())) {
                 if(isSuppressedInComment(current, toolId)) return true
                 if(isSuppressedForDefinition(current, toolId)) return true
             }
@@ -112,7 +112,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         override fun getContainer(context: PsiElement?): PsiElement? {
             if(context == null) return null
             return context.parents(true)
-                .find { it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockValue()) }
+                .find { it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockMember()) }
         }
         
         override fun getCommentsFor(container: PsiElement): List<PsiElement> {

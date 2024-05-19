@@ -31,7 +31,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         if(!ParadoxScriptTokenSets.VARIABLE_VALUE_TOKENS.contains(context.elementType)) return emptyList()
         ProgressManager.checkCanceled()
         val stringElement = context.parent?.castOrNull<ParadoxScriptValue>() ?: return emptyList()
-        if(!stringElement.isBlockValue()) return emptyList()
+        if(!stringElement.isBlockMember()) return emptyList()
         val parentProperty = stringElement.findParentProperty() ?: return emptyList()
         val configs = CwtConfigHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
         if(configs.isEmpty()) return emptyList()

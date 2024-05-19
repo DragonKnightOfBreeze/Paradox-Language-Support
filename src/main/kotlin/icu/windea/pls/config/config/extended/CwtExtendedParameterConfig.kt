@@ -47,7 +47,13 @@ private class CwtExtendedParameterConfigImpl(
     override val contextKey: String,
     override val contextConfigsType: String,
 ) : CwtExtendedParameterConfig {
+    private val _contextConfigs by lazy { doGetContextConfigs() }
+    
     override fun getContextConfigs(): List<CwtMemberConfig<*>> {
+        return _contextConfigs
+    }
+    
+    private fun doGetContextConfigs(): List<CwtMemberConfig<*>> {
         if(config !is CwtPropertyConfig) return emptyList()
         val config = CwtConfigManipulator.inlineSingleAlias(config) ?: config // #76
         val r = when(contextConfigsType) {

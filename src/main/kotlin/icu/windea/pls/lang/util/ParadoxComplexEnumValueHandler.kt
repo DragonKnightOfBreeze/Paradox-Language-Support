@@ -88,7 +88,7 @@ object ParadoxComplexEnumValueHandler {
             }
         } else if(config is CwtValueConfig) {
             if(config.stringValue == "enum_name") {
-                if(element !is ParadoxScriptString || !element.isBlockValue()) return false
+                if(element !is ParadoxScriptString || !element.isBlockMember()) return false
             } else {
                 return false
             }
@@ -214,7 +214,7 @@ object ParadoxComplexEnumValueHandler {
     private fun PsiElement.findParentPropertyOrBockValue(): PsiElement? {
         if(language != ParadoxScriptLanguage) return null
         return parents(false).find {
-            it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockValue())
+            it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockMember())
         }
     }
     

@@ -43,10 +43,11 @@ object CwtConfigHandler {
     private fun doGetConfigContextFromCache(element: ParadoxScriptMemberElement): CwtConfigContext? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigContext) {
             val value = doGetConfigContext(element)
-            //invalidated on ScriptFileTracker and LocalisationFileTracker (for loc references)
-            val tracker1 = ParadoxModificationTrackers.ScriptFileTracker
-            val tracker2 = ParadoxModificationTrackers.LocalisationFileTracker
-            CachedValueProvider.Result.create(value, tracker1, tracker2)
+            val trackers = buildList<Any> {
+                this += ParadoxModificationTrackers.ScriptFileTracker
+                this += ParadoxModificationTrackers.LocalisationFileTracker //for loc references
+            }
+            value.withDependencyItems(trackers)
         }
     }
     
@@ -76,21 +77,25 @@ object CwtConfigHandler {
         
         var result: List<CwtMemberConfig<*>> = rootConfigs
         
-        elementPathFromRoot.subPaths.forEachIndexedFast f1@{ i, subPath ->
+        val subPaths = elementPathFromRoot.subPaths
+        val originalSubPaths = elementPathFromRoot.originalSubPaths
+        subPaths.forEachIndexedFast f1@{ i, subPath ->
             ProgressManager.checkCanceled()
             
             //如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
             //如果整个过程中的某个key匹配内联规则的名字（如，inline_script），则需要内联此内联规则
             
-            val isQuoted = false //TODO
-            val subPathIsParameterized = subPath.isParameterized()
-            val matchKey = isPropertyValue || i < elementPathFromRoot.subPaths.lastIndex
+            val isQuoted = subPath != originalSubPaths[i]
+            val isParameterized = subPath.isParameterized()
+            val shift = subPaths.lastIndex - i
+            val matchesKey = isPropertyValue || shift > 0
             val expression = ParadoxDataExpression.resolve(subPath, isQuoted, true)
             val nextResult = mutableListOf<CwtMemberConfig<*>>()
             
-            val parameterizedKeyConfig: CwtMemberConfig<*>? by lazy {
-                
-                null
+            val parameterizedKeyConfigs by lazy {
+                if(!isParameterized) return@lazy null
+                if(!subPath.surroundsWith('$', '$')) return@lazy null //must be full parameterized yet
+                ParadoxParameterHandler.getParameterizedKeyConfigs(element, shift)
             }
             
             run r1@{
@@ -98,19 +103,30 @@ object CwtConfigHandler {
                     val configs = parentConfig.configs
                     if(configs.isNullOrEmpty()) return@f2
                     
-                    var matchCount = 0
+                    var count = 0
                     configs.forEachFast f3@{ config ->
                         if(config is CwtPropertyConfig) {
-                            val matchPropertyConfig = !matchKey || CwtConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)
-                            if(!matchPropertyConfig) return@f3
-                            matchCount++
+                            fun processFinalConfig(config: CwtPropertyConfig) {
+                                doMatchParameterizedKeyConfigs(parameterizedKeyConfigs, config.keyExpression)?.let {
+                                    if(!it) return
+                                    nextResult.add(config)
+                                    return
+                                }
+                                count++
+                                nextResult.add(config)
+                            }
+                            
+                            if(subPath == "-") return@f3
+                            val matchesPropertyConfig = !matchesKey || CwtConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)
+                            if(!matchesPropertyConfig) return@f3
                             val inlinedConfigs = CwtConfigManipulator.inlineSingleAliasOrAlias(element, subPath, isQuoted, config, matchOptions)
                             if(inlinedConfigs.isEmpty()) {
-                                nextResult.add(config)
+                                processFinalConfig(config)
                             } else {
-                                nextResult.addAll(inlinedConfigs)
+                                inlinedConfigs.forEachFast { processFinalConfig(it) }
                             }
                         } else if(config is CwtValueConfig) {
+                            if(subPath != "-") return@f3
                             nextResult.add(config)
                         }
                     }
@@ -118,7 +134,7 @@ object CwtConfigHandler {
                     //如果需要匹配键，且匹配带参数的子路径时，初始能够匹配到多个结果，则直接返回空列表
                     //因为参数值可能是任意值，此时实际上并不能确定具体的上下文是什么
                     
-                    if(matchKey && subPathIsParameterized && matchCount > 1) {
+                    if(matchesKey && isParameterized && count > 1) {
                         return emptyList()
                     }
                 }
@@ -126,7 +142,7 @@ object CwtConfigHandler {
             
             result = nextResult
             
-            if(matchKey) result = doOptimizeContextConfigs(element, result, expression, matchOptions)
+            if(matchesKey) result = doOptimizeContextConfigs(element, result, expression, matchOptions)
         }
         
         if(isPropertyValue) {
@@ -156,10 +172,11 @@ object CwtConfigHandler {
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>> {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsCache) {
             val value = doGetConfigsCache()
-            //invalidated on ScriptFileTracker and LocalisationFileTracker (for loc references)
-            val tracker1 = ParadoxModificationTrackers.ScriptFileTracker
-            val tracker2 = ParadoxModificationTrackers.LocalisationFileTracker
-            CachedValueProvider.Result.create(value, tracker1, tracker2)
+            val trackers = buildList<Any> {
+                this += ParadoxModificationTrackers.ScriptFileTracker
+                this += ParadoxModificationTrackers.LocalisationFileTracker //for loc references
+            }
+            value.withDependencyItems(trackers)
         }
     }
     
@@ -188,6 +205,13 @@ object CwtConfigHandler {
         if(isDefinition && element is ParadoxScriptDefinitionElement && !BitUtil.isSet(matchOptions, Options.AcceptDefinition)) return emptyList()
         val configGroup = configContext.configGroup
         
+        val parameterizedKeyConfigs by lazy {
+            val expression = keyExpression ?: return@lazy null
+            if(!expression.isParameterized()) return@lazy null
+            if(!expression.value.surroundsWith('$', '$')) return@lazy null //must be full parameterized yet
+            ParadoxParameterHandler.getParameterizedKeyConfigs(element, 0)
+        }
+        
         //得到所有待匹配的结果
         ProgressManager.checkCanceled()
         val contextConfigs = configContext.getConfigs(matchOptions)
@@ -198,6 +222,7 @@ object CwtConfigHandler {
                     element is ParadoxScriptProperty -> config is CwtPropertyConfig && run {
                         if(keyExpression == null) return@run true
                         if(isDefinition) return@run true
+                        doMatchParameterizedKeyConfigs(parameterizedKeyConfigs, config.keyExpression)?.let { return@run it }
                         CwtConfigMatcher.matches(element, keyExpression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)
                     }
                     
@@ -231,6 +256,16 @@ object CwtConfigHandler {
         //如果仍然无结果且需要使用默认值，则返回所有可能匹配的规则，否则返回空列表
         if(orDefault) return contextConfigsToMatch
         return emptyList()
+    }
+    
+    private fun doMatchParameterizedKeyConfigs(pkConfigs: List<CwtValueConfig>?, configExpression: CwtDataExpression): Boolean? {
+        //如果作为参数的键的规则类型可以（从扩展的CWT规则）推断出来且是匹配的，则需要继续向下匹配
+        //目前要求推断结果必须是唯一的
+        //目前不支持从使用推断 - 这可能会导致规则上下文的递归解析
+        
+        if(pkConfigs == null) return null
+        if(pkConfigs.size != 1) return null //must be unique yet
+        return CwtConfigManipulator.mergeAndMatchesValueConfig(pkConfigs, configExpression)
     }
     
     private fun doGetFinalMatchedConfigs(matchResultValues: MutableList<ResultValue<CwtMemberConfig<*>>>, matchOptions: Int): List<CwtMemberConfig<*>> {
@@ -336,10 +371,11 @@ object CwtConfigHandler {
     private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMemberElement): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedChildOccurrenceMapCache) {
             val value = doGetChildOccurrenceMapCache()
-            //invalidated on ScriptFileTracker and LocalisationFileTracker (for loc references)
-            val tracker1 = ParadoxModificationTrackers.ScriptFileTracker
-            val tracker2 = ParadoxModificationTrackers.LocalisationFileTracker
-            CachedValueProvider.Result.create(value, tracker1, tracker2)
+            val trackers = buildList<Any> {
+                this += ParadoxModificationTrackers.ScriptFileTracker
+                this += ParadoxModificationTrackers.LocalisationFileTracker //for loc references
+            }
+            value.withDependencyItems(trackers)
         }
     }
     

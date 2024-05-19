@@ -24,7 +24,7 @@ class ParadoxInlineScriptInvocationCompletionProvider: CompletionProvider<Comple
         val element = position.parent.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
         if(element.text.isParameterized()) return
         if(element is ParadoxScriptString) {
-            if(!element.isBlockValue()) return
+            if(!element.isBlockMember()) return
         } else if(element is ParadoxScriptPropertyKey) {
             //if element is property key, related property value should be a string or clause (after resolving)
             val propertyValue = element.propertyValue

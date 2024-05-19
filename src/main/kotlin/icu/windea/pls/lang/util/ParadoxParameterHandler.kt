@@ -30,11 +30,11 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
+import icu.windea.pls.model.path.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
-@Suppress("UNUSED_PARAMETER")
 object ParadoxParameterHandler {
     /**
      * 得到[element]对应的参数上下文信息。
@@ -235,16 +235,26 @@ object ParadoxParameterHandler {
      * 尝试推断得到参数对应的上下文CWT规则。
      */
     fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        if(!getSettings().inference.configContextForParameters) return emptyList()
-        
         val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
         return parameterInfo.getOrPutUserData(PlsKeys.parameterInferredContextConfigs) {
             ProgressManager.checkCanceled()
             withRecursionGuard("icu.windea.pls.lang.ParadoxParameterHandler.getInferredContextConfigs") {
                 withCheckRecursion(parameterElement) {
                     doGetInferredContextConfigs(parameterElement)
+                        .also { doOptimizeContextConfigsByLocation(parameterElement, it) }
                 }
             } ?: emptyList()
+        }
+    }
+    
+    /**
+     * 尝试（从扩展的CWT规则）推断得到参数对应的上下文CWT规则。
+     */
+    fun getInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
+        val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
+        return parameterInfo.getOrPutUserData(PlsKeys.parameterInferredContextConfigsFromConfig) {
+            doGetInferredContextConfigsFromConfig(parameterElement)
+                .also { doOptimizeContextConfigsByLocation(parameterElement, it) }
         }
     }
     
@@ -252,7 +262,40 @@ object ParadoxParameterHandler {
         val fromConfig = doGetInferredContextConfigsFromConfig(parameterElement)
         if(fromConfig.isNotEmpty()) return fromConfig
         
+        if(!getSettings().inference.configContextForParameters) return emptyList()
+        
         return doGetInferredContextConfigsFromUsages(parameterElement)
+    }
+    
+    private fun doOptimizeContextConfigsByLocation(parameterElement: ParadoxParameterElement, contextConfigs: List<CwtMemberConfig<*>>) {
+        val parent = parameterElement.parent?.parent
+        contextConfigs.forEachFast f1@{
+            val configs = it.configs
+            if(configs.isNullOrEmpty()) return@f1
+            if(configs !is MutableList) return@f1
+            val keysToDistinct = mutableSetOf<String>()
+            val opConfigs = mutableListOf<CwtMemberConfig<*>>()
+            configs.forEachFast f2@{ config ->
+                when(config) {
+                    is CwtPropertyConfig -> {
+                        if(parent is ParadoxScriptPropertyKey) {
+                            if(config.isBlock) return@f2
+                            if(!keysToDistinct.add(config.key)) return@f2
+                            val opConfig = CwtValueConfig.resolve(emptyPointer(), config.configGroup, config.key)
+                            opConfigs += opConfig
+                        } else {
+                            opConfigs += config
+                        }
+                    }
+                    is CwtValueConfig -> {
+                        if(!keysToDistinct.add(config.value)) return@f2
+                        opConfigs += config
+                    }
+                }
+            }
+            configs.clear()
+            configs += opConfigs
+        }
     }
     
     private fun doGetInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
@@ -291,6 +334,24 @@ object ParadoxParameterHandler {
             else -> false
         }
     }
+    
+    /**
+     * @param shift 从[element]开始向上的偏移，偏移量与[ParadoxElementPath]的长度的判定方式是一致的。
+     */
+    fun getParameterizedKeyConfigs(element: PsiElement, shift: Int): List<CwtValueConfig>? {
+        val parameterizedProperty = element.parentsOfType<ParadoxScriptMemberElement>()
+            .filter { it.isBlockMember() }
+            .elementAtOrNull(shift)
+            ?: return null
+        val propertyKey = parameterizedProperty.castOrNull<ParadoxScriptProperty>()?.propertyKey ?: return null
+        val parameter = propertyKey.findChild<ParadoxParameter>() ?: return null
+        val parameterElement = getParameterElement(parameter) ?: return null
+        val contextConfigs = getInferredContextConfigsFromConfig(parameterElement)
+        val configs = contextConfigs.singleOrNull()?.configs
+            ?.filterNotFast { it !is CwtValueConfig || it.isBlock }
+        if(configs.isNullOrEmpty()) return null
+        return configs.cast()
+    }
 }
 
 //rootFile -> cacheKey -> parameterInfo
@@ -303,3 +364,4 @@ private val CwtConfigGroup.parameterInfoCache by createKeyDelegate(CwtConfigCont
 
 private val PlsKeys.parameterInferredConfig by createKey<CwtValueConfig>("paradox.parameterInferredConfig")
 private val PlsKeys.parameterInferredContextConfigs by createKey<List<CwtMemberConfig<*>>>("paradox.parameterInferredContextConfigs")
+private val PlsKeys.parameterInferredContextConfigsFromConfig by createKey<List<CwtMemberConfig<*>>>("paradox.parameterInferredContextConfigsFromConfig")

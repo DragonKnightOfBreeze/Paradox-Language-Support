@@ -30,7 +30,7 @@ object ParadoxElementPathHandler {
                     originalSubPaths.addFirst(p)
                     depth++
                 }
-                current is ParadoxScriptValue && current.isBlockValue() -> {
+                current is ParadoxScriptValue && current.isBlockMember() -> {
                     originalSubPaths.addFirst("-")
                     depth++
                 }

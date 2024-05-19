@@ -35,8 +35,8 @@ class ParadoxInDefinitionCompletionProvider : CompletionProvider<CompletionParam
         //兼容参数值（包括整行或多行参数值）和内联脚本文件中内容
         
         val parameterValueQuoted = CwtConfigHandler.getConfigContext(file)?.parameterValueQuoted
-        val mayBeKey = parameterValueQuoted != false && (element is ParadoxScriptPropertyKey || (element is ParadoxScriptValue && element.isBlockValue()))
-        val mayBeValue = element is ParadoxScriptString && element.isBlockValue()
+        val mayBeKey = parameterValueQuoted != false && (element is ParadoxScriptPropertyKey || (element is ParadoxScriptValue && element.isBlockMember()))
+        val mayBeValue = element is ParadoxScriptString && element.isBlockMember()
         val mayBePropertyValue = parameterValueQuoted != false && (element is ParadoxScriptString && element.isPropertyValue())
         
         val resultToUse = result.withPrefixMatcher(keyword)

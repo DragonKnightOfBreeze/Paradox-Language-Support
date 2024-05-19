@@ -254,5 +254,21 @@ object CwtConfigManipulator {
         if(d1 == d2) return d1
         return "$d1\n<br><br>\n$d2"
     }
+    
+    fun mergeAndMatchesValueConfig(configs: List<CwtValueConfig>, configExpression: CwtDataExpression): Boolean {
+        if(configs.isEmpty()) return false
+        for(config in configs) {
+            val e1 = configExpression //expect
+            val e2 = config.expression //actual (e.g., from parameterized key)
+            val e3 = mergeExpressionString(e1, e2) ?: continue //merged
+            
+            //"scope_field" merge "scope[country]" = "scope[country]" -> true
+            
+            //TODO 1.3.8+ optimize merge & match logic
+            
+            if(e3 == e2.expressionString) return true
+        }
+        return false
+    }
     //endregion
 }

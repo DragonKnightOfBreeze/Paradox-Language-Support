@@ -83,6 +83,18 @@ inline fun <T> List<T>.filterFast(predicate: (T) -> Boolean): List<T> {
     return filterToFast(ArrayList(), predicate)
 }
 
+inline fun <T, C : MutableCollection<in T>> List<T>.filterNotToFast(destination: C, predicate: (T) -> Boolean): C {
+    forEachFast { e ->
+        if (!predicate(e)) destination.add(e)
+    }
+    return destination
+}
+
+inline fun <T> List<T>.filterNotFast(predicate: (T) -> Boolean): List<T> {
+    if(isEmpty()) return emptyList() //optimize
+    return filterNotToFast(ArrayList(), predicate)
+}
+
 inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceToFast(destination: C): C {
     forEachFast { e ->
         if(e is R) destination.add(e)
