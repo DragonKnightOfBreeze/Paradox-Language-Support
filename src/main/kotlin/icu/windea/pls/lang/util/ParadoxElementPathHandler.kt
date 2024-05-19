@@ -22,16 +22,16 @@ object ParadoxElementPathHandler {
     fun get(element: PsiElement, maxDepth: Int = -1): ParadoxElementPath? {
         var current: PsiElement = element
         var depth = 0
-        val originalSubPaths = LinkedList<String>()
+        val subPaths = LinkedList<String>()
         while(current !is PsiFile) {
             when {
                 current is ParadoxScriptProperty -> {
                     val p = current.propertyKey.text
-                    originalSubPaths.addFirst(p)
+                    subPaths.addFirst(p.unquote())
                     depth++
                 }
                 current is ParadoxScriptValue && current.isBlockValue() -> {
-                    originalSubPaths.addFirst("-")
+                    subPaths.addFirst("-")
                     depth++
                 }
             }
@@ -43,10 +43,10 @@ object ParadoxElementPathHandler {
             val virtualFile = selectFile(current)
             val injectedElementPathPrefix = virtualFile?.getUserData(PlsKeys.injectedElementPathPrefix)
             if(injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
-                originalSubPaths.addAll(0, injectedElementPathPrefix.subPaths.map { it.rawSubPath })
+                subPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }
-        return ParadoxElementPath.resolve(originalSubPaths)
+        return ParadoxElementPath.resolve(subPaths)
     }
     
     /**
@@ -62,7 +62,7 @@ object ParadoxElementPathHandler {
                     val p = current.firstChild(tree, PROPERTY_KEY)
                         ?.firstChild(tree, PROPERTY_KEY_TOKEN)
                         ?.internNode(tree)?.toString() ?: return null
-                    originalSubPaths.addFirst(p)
+                    originalSubPaths.addFirst(p.unquote())
                     depth++
                 }
                 ParadoxScriptTokenSets.VALUES.contains(current.tokenType) && tree.getParent(current)?.tokenType == BLOCK -> {
@@ -78,7 +78,7 @@ object ParadoxElementPathHandler {
             val virtualFile = file
             val injectedElementPathPrefix = virtualFile.getUserData(PlsKeys.injectedElementPathPrefix)
             if(injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
-                originalSubPaths.addAll(0, injectedElementPathPrefix.subPaths.map { it.rawSubPath })
+                originalSubPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }
         return ParadoxElementPath.resolve(originalSubPaths)

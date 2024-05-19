@@ -185,7 +185,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), text, fileInfo) }
         val elementPath = definition.definitionInfo?.elementPath
         if(elementPath != null && elementPath.length > 1) {
-            val elementPathPrefix = ParadoxElementPath.resolve(elementPath.subPaths.dropLast(1).map { it.rawSubPath })
+            val elementPathPrefix = ParadoxElementPath.resolve(elementPath.subPaths.dropLast(1))
             tempFile.putUserData(PlsKeys.injectedElementPathPrefix, elementPathPrefix)
         }
         //return contentFactory.createDocument(project, tempFile)

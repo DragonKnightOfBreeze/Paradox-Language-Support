@@ -88,6 +88,11 @@ object CwtConfigHandler {
             val expression = ParadoxDataExpression.resolve(subPath, isQuoted, true)
             val nextResult = mutableListOf<CwtMemberConfig<*>>()
             
+            val parameterizedKeyConfig: CwtMemberConfig<*>? by lazy {
+                
+                null
+            }
+            
             run r1@{
                 result.forEachFast f2@{ parentConfig ->
                     val configs = parentConfig.configs
