@@ -2,24 +2,6 @@
   <extensions defaultExtensionNs="com.intellij">
     <projectConfigurable id="pls.diagram" parentId="pls" bundle="messages.PlsDiagramBundle" key="settings.diagram"
                          instance="icu.windea.pls.extension.diagram.settings.ParadoxDiagramSettingsConfigurable"/>
-    <projectConfigurable id="pls.diagram.Stellaris.EventTree" parentId="pls.diagram" bundle="messages.PlsDiagramBundle" key="stellaris.eventTree.name"
-                         instance="icu.windea.pls.extension.diagram.settings.StellarisEventTreeDiagramSettingsConfigurable"/>
-    <projectConfigurable id="pls.diagram.Stellaris.TechnologyTree" parentId="pls.diagram" bundle="messages.PlsDiagramBundle" key="stellaris.technologyTree.name"
-                         instance="icu.windea.pls.extension.diagram.settings.StellarisTechnologyTreeDiagramSettingsConfigurable"/>
-    <projectConfigurable id="pls.diagram.Ck2.EventTree" parentId="pls.diagram" bundle="messages.PlsDiagramBundle" key="ck2.eventTree.name"
-                         instance="icu.windea.pls.extension.diagram.settings.Ck2EventTreeDiagramSettingsConfigurable"/>
-    <projectConfigurable id="pls.diagram.Ck3.EventTree" parentId="pls.diagram" bundle="messages.PlsDiagramBundle" key="ck3.eventTree.name"
-                         instance="icu.windea.pls.extension.diagram.settings.Ck3EventTreeDiagramSettingsConfigurable"/>
-    <projectConfigurable id="pls.diagram.Eu4.EventTree" parentId="pls.diagram" bundle="messages.PlsDiagramBundle" key="eu4.eventTree.name"
-                         instance="icu.windea.pls.extension.diagram.settings.Eu4EventTreeDiagramSettingsConfigurable"/>
-    <projectConfigurable id="pls.diagram.Hoi4.EventTree" parentId="pls.diagram" bundle="messages.PlsDiagramBundle" key="hoi4.eventTree.name"
-                         instance="icu.windea.pls.extension.diagram.settings.Hoi4EventTreeDiagramSettingsConfigurable"/>
-    <projectConfigurable id="pls.diagram.Ir.EventTree" parentId="pls.diagram" bundle="messages.PlsDiagramBundle" key="ir.eventTree.name"
-                         instance="icu.windea.pls.extension.diagram.settings.IrEventTreeDiagramSettingsConfigurable"/>
-    <projectConfigurable id="pls.diagram.Vic2.EventTree" parentId="pls.diagram" bundle="messages.PlsDiagramBundle" key="vic2.eventTree.name"
-                         instance="icu.windea.pls.extension.diagram.settings.Vic2EventTreeDiagramSettingsConfigurable"/>
-    <projectConfigurable id="pls.diagram.Vic3.EventTree" parentId="pls.diagram" bundle="messages.PlsDiagramBundle" key="vic3.eventTree.name"
-                         instance="icu.windea.pls.extension.diagram.settings.Vic3EventTreeDiagramSettingsConfigurable"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij.diagram">

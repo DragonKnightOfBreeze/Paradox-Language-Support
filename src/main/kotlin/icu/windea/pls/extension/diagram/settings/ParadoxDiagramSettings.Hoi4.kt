@@ -1,9 +1,7 @@
 package icu.windea.pls.extension.diagram.settings
 
 import com.intellij.openapi.components.*
-import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.ui.*
@@ -14,19 +12,19 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import kotlinx.coroutines.*
 
-@WithGameType(ParadoxGameType.Ck2)
+@WithGameType(ParadoxGameType.Hoi4)
 @Service(Service.Level.PROJECT)
-@State(name = "ParadoxDiagramSettings.Ck2.EventTree", storages = [Storage("paradox-language-support.xml")])
-class Ck2EventTreeDiagramSettings(
+@State(name = "ParadoxDiagramSettings.Hoi4.EventTree", storages = [Storage("paradox-language-support.xml")])
+class Hoi4EventTreeDiagramSettings(
     val project: Project
-) : ParadoxEventTreeDiagramSettings<Ck2EventTreeDiagramSettings.State>(State()) {
+) : ParadoxEventTreeDiagramSettings<Hoi4EventTreeDiagramSettings.State>(State()) {
     companion object {
-        const val ID = "pls.diagram.Ck2.EventTree"
+        const val ID = "pls.diagram.Hoi4.EventTree"
     }
     
     override val id: String = ID
-    override val configurableClass: Class<out Configurable> = Ck2EventTreeDiagramSettingsConfigurable::class.java
     
     class State : ParadoxDiagramSettings.State() {
         override var scopeType by string()
@@ -40,50 +38,34 @@ class Ck2EventTreeDiagramSettings(
         
         inner class TypeSettings {
             val hidden  by type withDefault true
-            val triggered  by type withDefault true
         }
     }
     
-    override fun initSettings() {
-        val eventTypes = ParadoxEventHandler.getTypes(project, ParadoxGameType.Ck2)
-        eventTypes.forEach { state.eventType.putIfAbsent(it, true) }
-    }
-}
-
-@WithGameType(ParadoxGameType.Ck2)
-class Ck2EventTreeDiagramSettingsConfigurable(
-    val project: Project
-) : BoundConfigurable(PlsDiagramBundle.message("ck2.eventTree.name")), SearchableConfigurable {
-    override fun getId() = Ck2EventTreeDiagramSettings.ID
-    
-    val settings = project.service<Ck2EventTreeDiagramSettings>().state
-    
-    fun initSettings() {
-        project.service<Ck2EventTreeDiagramSettings>().initSettings()
-    }
-    
-    override fun createPanel(): DialogPanel {
-        initSettings()
+    override fun Panel.buildConfigurablePanel(coroutineScope: CoroutineScope) {
+        val settings = state
+        val eventTypes = ParadoxEventHandler.getTypes(project, ParadoxGameType.Hoi4)
+        eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
+        settings.updateSettings()
         
-        return panel {
+        collapsibleGroup(PlsDiagramBundle.message("hoi4.eventTree.name")) {
             row {
                 label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
             }
             if(settings.type.isNotEmpty()) {
                 lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
-                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("ck2.eventTree.settings.type")))
+                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("hoi4.eventTree.settings.type")))
                         .applyToComponent { isThirdStateEnabled = false }
-                        .customize(UnscaledGaps(3, 0, 3, 0))
+                        .smaller()
                         .also { cb = it }
                 }
                 indent {
                     settings.type.keys.forEach { key ->
                         row {
-                            checkBox(PlsDiagramBundle.message("ck2.eventTree.settings.type.${key}"))
+                            checkBox(PlsDiagramBundle.message("hoi4.eventTree.settings.type.${key}"))
                                 .bindSelected(settings.type.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
-                                .customize(UnscaledGaps(3, 0, 3, 0))
+                                .smaller()
                         }
                     }
                 }
@@ -91,27 +73,22 @@ class Ck2EventTreeDiagramSettingsConfigurable(
             if(settings.eventType.isNotEmpty()) {
                 lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
-                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("ck2.eventTree.settings.eventType")))
+                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("hoi4.eventTree.settings.eventType")))
                         .applyToComponent { isThirdStateEnabled = false }
-                        .customize(UnscaledGaps(3, 0, 3, 0))
+                        .smaller()
                         .also { cb = it }
                 }
                 indent {
                     settings.eventType.keys.forEach { key ->
                         row {
-                            checkBox(PlsDiagramBundle.message("ck2.eventTree.settings.eventType.option", key))
+                            checkBox(PlsDiagramBundle.message("hoi4.eventTree.settings.eventType.option", key))
                                 .bindSelected(settings.eventType.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
-                                .customize(UnscaledGaps(3, 0, 3, 0))
+                                .smaller()
                         }
                     }
                 }
             }
         }
-    }
-    
-    override fun apply() {
-        super.apply()
-        settings.updateSettings()
     }
 }

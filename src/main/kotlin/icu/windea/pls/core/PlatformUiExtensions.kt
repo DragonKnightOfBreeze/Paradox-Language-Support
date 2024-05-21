@@ -14,6 +14,7 @@ import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.MutableProperty
+import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.ui.scale.*
 import com.intellij.ui.table.*
 import com.intellij.util.*
@@ -187,3 +188,5 @@ fun Cell<JBTextField>.bindIntWhenTextChanged(property: KMutableProperty0<Int>): 
         }
     }
 }
+
+fun <T : JComponent> Cell<T>.smaller() = customize(UnscaledGaps(2, 0, 2, 0))

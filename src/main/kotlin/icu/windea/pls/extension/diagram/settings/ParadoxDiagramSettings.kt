@@ -1,11 +1,11 @@
 package icu.windea.pls.extension.diagram.settings
 
 import com.intellij.openapi.components.*
-import com.intellij.openapi.options.*
+import com.intellij.ui.dsl.builder.*
+import kotlinx.coroutines.*
 
 abstract class ParadoxDiagramSettings<T: ParadoxDiagramSettings.State>(initialState: T) : SimplePersistentStateComponent<T>(initialState) {
     abstract val id: String
-    abstract val configurableClass: Class<out Configurable>
     
     abstract class State: BaseState() {
         abstract var scopeType: String?
@@ -13,7 +13,11 @@ abstract class ParadoxDiagramSettings<T: ParadoxDiagramSettings.State>(initialSt
         fun updateSettings() = incrementModificationCount()
     }
     
-    open fun initSettings() {
-        state.updateSettings()
+    fun buildConfigurablePanel(coroutineScope: CoroutineScope, panel: Panel) {
+        panel.buildConfigurablePanel(coroutineScope)
+    }
+    
+    open fun Panel.buildConfigurablePanel(coroutineScope: CoroutineScope) {
+        
     }
 }
