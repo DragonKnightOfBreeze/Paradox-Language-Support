@@ -105,10 +105,8 @@ class ParadoxClauseTemplateSettingsDialog: DialogWrapper(null) {
                 label(PlsBundle.message("settings.completion.clauseTemplate.dialog.maxMemberCountInOneLine")).applyToComponent {
                     toolTipText = PlsBundle.message("settings.completion.clauseTemplate.dialog.maxMemberCountInOneLine.tooltip")
                 }
-                intTextField(0..10).bindIntText(settings::maxMemberCountInOneLine)
+                intTextField(1..10).bindIntText(settings::maxMemberCountInOneLine)
             }
         }
     }
-    
-    
 }
