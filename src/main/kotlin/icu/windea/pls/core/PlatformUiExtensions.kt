@@ -189,4 +189,4 @@ fun Cell<JBTextField>.bindIntWhenTextChanged(property: KMutableProperty0<Int>): 
     }
 }
 
-fun <T : JComponent> Cell<T>.smaller() = customize(UnscaledGaps(2, 0, 2, 0))
+fun <T : JComponent> Cell<T>.smaller() = customize(UnscaledGaps(3, 0, 3, 0))
