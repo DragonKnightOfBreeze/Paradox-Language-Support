@@ -24,7 +24,7 @@ object ParadoxGameHandler {
     }
     
     fun getQuickGameDirectory(gameType: ParadoxGameType): String? {
-        val path = getSteamGamePath(gameType.steamId, gameType.title)
+        val path = Paths.getSteamGamePath(gameType.steamId, gameType.title)
         if(path == null || path.toPathOrNull()?.takeIf { it.exists() } == null) return null
         return path
     }

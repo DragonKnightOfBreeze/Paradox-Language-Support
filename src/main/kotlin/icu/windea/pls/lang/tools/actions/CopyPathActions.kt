@@ -47,28 +47,28 @@ abstract class CopyPathAction : DumbAwareAction() {
 
 class CopySteamPathAction : CopyPathAction() {
     override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
-        return getSteamPath()?.toPathOrNull()
+        return Paths.getSteamPath()?.toPathOrNull()
     }
 }
 
 class CopySteamGamePathAction : CopyPathAction() {
     override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
         val gameType = fileInfo.rootInfo.gameType
-        return getSteamGamePath(gameType.steamId, gameType.title)?.toPathOrNull()
+        return Paths.getSteamGamePath(gameType.steamId, gameType.title)?.toPathOrNull()
     }
 }
 
 class CopySteamWorkshopPathAction : CopyPathAction() {
     override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
         val gameType = fileInfo.rootInfo.gameType
-        return getSteamWorkshopPath(gameType.steamId)?.toPathOrNull()
+        return Paths.getSteamWorkshopPath(gameType.steamId)?.toPathOrNull()
     }
 }
 
 class CopyGameDataPathAction : CopyPathAction() {
     override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
         val gameType = fileInfo.rootInfo.gameType
-        return getGameDataPath(gameType.title)?.toPathOrNull()
+        return Paths.getGameDataPath(gameType.title)?.toPathOrNull()
     }
 }
 

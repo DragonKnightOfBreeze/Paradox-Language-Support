@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.tools
 
+import com.intellij.codeInsight.util.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.project.*
@@ -12,6 +13,8 @@ import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.ParadoxGameType.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.*
 
 class ParadoxModSettingsDialog(
     val project: Project,
@@ -98,12 +101,11 @@ class ParadoxModSettingsDialog(
                     .align(Align.FILL)
                     .validationOnApply { ParadoxGameHandler.validateGameDirectory(this, gameType, gameDirectory) }
             }
-            val quickGameDirectory = ParadoxGameHandler.getQuickGameDirectory(gameType)
             row {
                 link(PlsBundle.message("gameDirectory.quickSelect")) f@{
-                    if(gameDirectory.isNotNullOrEmpty()) return@f
-                    gameDirectory = quickGameDirectory ?: return@f
-                }.enabled(quickGameDirectory != null)
+                    val quickGameDirectory = ParadoxGameHandler.getQuickGameDirectory(gameType)?.orNull() ?: return@f
+                    gameDirectory = quickGameDirectory
+                }
             }
             row {
                 //modDirectory

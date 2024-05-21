@@ -46,28 +46,28 @@ abstract class OpenUrlAction : DumbAwareAction() {
 class OpenGameStorePageInSteamAction : OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
-        return getSteamGameStoreLinkInSteam(steamId)
+        return Urls.getSteamGameStoreUrlInSteam(steamId)
     }
 }
 
 class OpenGameStorePageInSteamWebsiteAction : OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
-        return getSteamGameStoreLink(steamId)
+        return Urls.getSteamGameStoreUrl(steamId)
     }
 }
 
 class OpenGameWorkshopPageInSteamAction : OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
-        return getSteamGameWorkshopLinkInSteam(steamId)
+        return Urls.getSteamGameWorkshopUrlInSteam(steamId)
     }
 }
 
 class OpenGameWorkshopPageInSteamWebsiteAction : OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
-        return getSteamGameWorkshopLink(steamId)
+        return Urls.getSteamGameWorkshopUrl(steamId)
     }
 }
 
@@ -82,7 +82,7 @@ class OpenModPageInSteamAction : OpenUrlAction() {
     
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
         val steamId = fileInfo.rootInfo.castOrNull<ParadoxModRootInfo>()?.descriptorInfo?.remoteFileId ?: return null
-        return getSteamWorkshopLinkInSteam(steamId)
+        return Urls.getSteamWorkshopUrlInSteam(steamId)
     }
 }
 
@@ -97,7 +97,7 @@ class OpenModPageInSteamWebsiteAction : OpenUrlAction() {
     
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
         val steamId = fileInfo.rootInfo.castOrNull<ParadoxModRootInfo>()?.descriptorInfo?.remoteFileId ?: return null
-        return getSteamWorkshopLink(steamId)
+        return Urls.getSteamWorkshopUrl(steamId)
     }
     
 }

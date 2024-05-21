@@ -31,7 +31,7 @@ open class ParadoxFromLauncherImporter : ParadoxModImporter {
     override fun execute(project: Project, tableView: TableView<ParadoxModDependencySettingsState>, tableModel: ParadoxModDependenciesTableModel) {
         val settings = tableModel.settings
         val gameType = settings.gameType.orDefault()
-        val gameDataPath = getGameDataPath(gameType.title)?.toPathOrNull() ?: return
+        val gameDataPath = Paths.getGameDataPath(gameType.title)?.toPathOrNull() ?: return
         if(!gameDataPath.exists()) {
             notifyWarning(settings, project, PlsBundle.message("mod.importer.error.gameDataDir", gameDataPath))
             return

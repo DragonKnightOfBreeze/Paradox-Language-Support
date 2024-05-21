@@ -67,7 +67,7 @@ class GoToSteamPathAction : GoToPathAction() {
         val gameType = e.gameTypeProperty?.get() ?: e.gameType
         if(gameType == null) return false
         if(targetPath == null) {
-            targetPath = getSteamPath()?.toPathOrNull()
+            targetPath = Paths.getSteamPath()?.toPathOrNull()
         }
         return true
     }
@@ -83,7 +83,7 @@ class GoToSteamGamePathAction : GoToPathAction() {
         if(gameType == null) return false
         if(this.targetPath == null || this.gameType != gameType) {
             this.gameType = gameType
-            this.targetPath = getSteamGamePath(gameType.steamId, gameType.title)?.toPathOrNull()
+            this.targetPath = Paths.getSteamGamePath(gameType.steamId, gameType.title)?.toPathOrNull()
         }
         return true
     }
@@ -100,7 +100,7 @@ class GoToSteamWorkshopPathAction : GoToPathAction() {
         if(gameType == null) return false
         if(this.targetPath == null || this.gameType != gameType) {
             this.gameType = gameType
-            this.targetPath = getSteamWorkshopPath(gameType.steamId)?.toPathOrNull()
+            this.targetPath = Paths.getSteamWorkshopPath(gameType.steamId)?.toPathOrNull()
         }
         return true
     }
@@ -117,7 +117,7 @@ class GoToGameDataPathAction : GoToPathAction() {
         if(gameType == null) return false
         if(this.targetPath == null || this.gameType != gameType) {
             this.gameType = gameType
-            this.targetPath = getGameDataPath(gameType.title)?.toPathOrNull()
+            this.targetPath = Paths.getGameDataPath(gameType.title)?.toPathOrNull()
         }
         return true
     }

@@ -1,6 +1,5 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.collaboration.util.*
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*

@@ -74,7 +74,7 @@ class StellarisEventTreeDiagramSettingsConfigurable(
                 label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
             }
             if(settings.type.isNotEmpty()) {
-                lateinit var cb : Cell<ThreeStateCheckBox>
+                lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.eventTree.settings.type")))
                         .applyToComponent { isThirdStateEnabled = false }
@@ -93,7 +93,7 @@ class StellarisEventTreeDiagramSettingsConfigurable(
                 }
             }
             if(settings.eventType.isNotEmpty()) {
-                lateinit var cb : Cell<ThreeStateCheckBox>
+                lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.eventTree.settings.eventType")))
                         .applyToComponent { isThirdStateEnabled = false }
@@ -147,10 +147,8 @@ class StellarisTechnologyTreeDiagramSettings(
         
         val typeSettings = TypeSettings()
         
-        val areaNames = mutableMapOf<String, () -> String?>()
-        val categoryNames = mutableMapOf<String, () -> String?>()
-        
-        fun a(){}
+        val areaNameProviders = mutableMapOf<String, () -> String?>()
+        val categoryNameProviders = mutableMapOf<String, () -> String?>()
         
         inner class TypeSettings {
             val start by type withDefault true
@@ -169,9 +167,10 @@ class StellarisTechnologyTreeDiagramSettings(
         areas.forEach { state.area.putIfAbsent(it, true) }
         val categories = ParadoxTechnologyHandler.Stellaris.getTechnologyCategories(project, null)
         categories.forEach { state.category.putIfAbsent(it.name, true) }
-        areas.forEach { state.areaNames.put(it) { ParadoxPresentationHandler.getText(it.uppercase(), project) } }
-        categories.forEach { state.categoryNames.put(it.name) { ParadoxPresentationHandler.getNameText(it) } }
         super.initSettings()
+        
+        areas.forEach { state.areaNameProviders.put(it) { ParadoxPresentationHandler.getText(it.uppercase(), project) } }
+        categories.forEach { state.categoryNameProviders.put(it.name) { ParadoxPresentationHandler.getNameText(it) } }
     }
 }
 
@@ -248,11 +247,11 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                                 .bindSelected(settings.area.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
                                 .customize(UnscaledGaps(3, 0, 3, 0))
-                            //add localized name as comment lazily
-                            settings.areaNames.get(key)?.let { p ->
-                                comment("")
-                                    .customize(UnscaledGaps(3, 16, 3, 0))
-                                    .applyToComponent { coroutineScope.launch { text = readAction(p) } }
+                            
+                            //add related localized name as comment lazily
+                            comment("").customize(UnscaledGaps(3, 16, 3, 0)).applyToComponent t@{
+                                val p = settings.areaNameProviders.get(key) ?: return@t
+                                coroutineScope.launch { text = readAction(p) }
                             }
                         }
                     }
@@ -273,10 +272,11 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
                                 .bindSelected(settings.category.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
                                 .customize(UnscaledGaps(3, 0, 3, 0))
-                            //add localized name as comment lazily
-                            settings.categoryNames.get(key)?.let { p ->
-                                comment("").customize(UnscaledGaps(3, 16, 3, 0))
-                                    .applyToComponent { coroutineScope.launch { text = readAction(p) } }
+                            
+                            //add related localized name as comment lazily
+                            comment("").customize(UnscaledGaps(3, 16, 3, 0)).applyToComponent t@{
+                                val p = settings.categoryNameProviders.get(key) ?: return@t
+                                coroutineScope.launch { text = readAction(p) }
                             }
                         }
                     }
@@ -288,5 +288,11 @@ class StellarisTechnologyTreeDiagramSettingsConfigurable(
     override fun apply() {
         super.apply()
         settings.updateSettings()
+    }
+    
+    override fun disposeUIResources() {
+        super<BoundConfigurable>.disposeUIResources()
+        settings.areaNameProviders.clear()
+        settings.categoryNameProviders.clear()
     }
 }

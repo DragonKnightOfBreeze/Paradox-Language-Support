@@ -11,7 +11,6 @@ import icu.windea.pls.lang.tools.*
 import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.ParadoxGameType.*
 import javax.swing.*
 
 class ParadoxGameDirectoriesDialog(val list: MutableList<Entry<String, String>>) : DialogWrapper(null) {
@@ -44,16 +43,16 @@ class ParadoxGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
                         .validationOnApply { ParadoxGameHandler.validateGameDirectory(this, gameType, gameDirectory) }
                 }
             }
-            val quickGameDirectories = entries.associateBy({ it.id }, { ParadoxGameHandler.getQuickGameDirectory(it) })
+            
             row {
                 link(PlsBundle.message("gameDirectory.quickSelectAll")) {
                     properties.forEach f@{ (gameTypeId, gameDirectoryProperty) ->
+                        val gameType = ParadoxGameType.resolveById(gameTypeId) ?: return@f
+                        val quickGameDirectory = ParadoxGameHandler.getQuickGameDirectory(gameType)?.orNull() ?: return@f
                         var gameDirectory by gameDirectoryProperty
-                        val quickGameDirectory = quickGameDirectories[gameTypeId]
-                        if(gameDirectory.isNotNullOrEmpty()) return@f
-                        gameDirectory = quickGameDirectory ?: return@f
+                        gameDirectory = quickGameDirectory
                     }
-                }.enabled(quickGameDirectories.isNotEmpty())
+                }
             }
         }
     }

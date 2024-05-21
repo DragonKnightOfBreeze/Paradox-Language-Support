@@ -48,20 +48,6 @@ inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): B
 //endregion
 
 //region Common Extensions
-fun getDefaultProject() = ProjectManager.getInstance().defaultProject
-
-fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
-
-//from official documentation: Never acquire service instances prematurely or store them in fields for later use.
-
-fun getSettings() = service<ParadoxSettings>().state
-
-fun getProfilesSettings() = service<ParadoxProfilesSettings>().state
-
-fun getConfigGroup(gameType: ParadoxGameType?) = getDefaultProject().service<CwtConfigGroupService>().getConfigGroup(gameType)
-
-fun getConfigGroup(project: Project, gameType: ParadoxGameType?) = project.service<CwtConfigGroupService>().getConfigGroup(gameType)
-
 /**
  * 比较游戏版本。允许通配符，如："3.3.*"
  */
@@ -368,10 +354,10 @@ fun StringBuilder.appendFileInfoHeader(element: PsiElement): StringBuilder {
         appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
         if(remoteFileId != null) {
             append(" | ")
-            appendLink(getSteamWorkshopLinkInSteam(remoteFileId), PlsBundle.message("text.steamLinkLabel"))
+            appendLink(Urls.getSteamWorkshopUrlInSteam(remoteFileId), PlsBundle.message("text.steamLinkLabel"))
             appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
             append(" | ")
-            appendLink(getSteamWorkshopLink(remoteFileId), PlsBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标
+            appendLink(Urls.getSteamWorkshopUrl(remoteFileId), PlsBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标
         }
     }
     append("</span>")
