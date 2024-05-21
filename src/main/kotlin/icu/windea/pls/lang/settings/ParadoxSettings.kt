@@ -27,6 +27,15 @@ class ParadoxSettingsState : BaseState() {
     var preferredLocale by string("auto")
     var ignoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
     
+    val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet(caseInsensitiveStringSet()).orEmpty() }
+    
+    val localeList by lazy {
+        buildList {
+            add("auto")
+            addAll(ParadoxLocaleHandler.getLocaleConfigMapById(pingPreferred = false).keys)
+        }
+    }
+    
     @get:Property(surroundWithTag = false)
     var documentation by property(DocumentationState())
     @get:Property(surroundWithTag = false)
@@ -70,8 +79,7 @@ class ParadoxSettingsState : BaseState() {
      * @property completeInlineScriptInvocations 进行代码补全时，是否需要提供对内联脚本调用的代码补全。
      * @property completeVariableNames 进行代码补全时，是否需要在效果的子句中提示变量名。
      * @property completeWithValue 进行代码补全时，如果可能，将会另外提供提示项，自动插入常量字符串或者花括号。
-     * @property completeWithClauseTemplate 进行代码补全时，如果可能，将会另外提供提示项，自动插入从句内联模版。
-     * @property maxMemberCountInOneLine 当插入从句内联模版时，当要插入的从句中的属性的个数不超过时，会把所有属性放到同一行。
+     * @property completeWithClauseTemplate 进行代码补全时，如果可能，将会另外提供提示项，自动插入从句模版。
      * @property completeOnlyScopeIsMatched 如果存在，是否仅提供匹配当前作用域的提示项。
      * @property completeByLocalizedName 是否也根据定义和修正的本地化名字来进行代码补全。
      * @property completeByExtendedCwtConfigs 是否也根据扩展的CWT规则来进行代码补全。
@@ -85,10 +93,20 @@ class ParadoxSettingsState : BaseState() {
         var completeVariableNames by property(true)
         var completeWithValue by property(true)
         var completeWithClauseTemplate by property(true)
-        var maxMemberCountInOneLine by property(2)
         var completeOnlyScopeIsMatched by property(true)
         var completeByLocalizedName by property(false)
         var completeByExtendedCwtConfigs by property(false)
+        
+        @get:Property(surroundWithTag = false)
+        var clauseTemplate by property(ClauseTemplateState())
+        
+        /**
+         * @property maxMemberCountInOneLine 当插入从句模版时，当要插入的从句中的属性的个数不超过时，会把所有属性放到同一行。
+         */
+        @Tag("clauseTemplate")
+        class ClauseTemplateState: BaseState() {
+            var maxMemberCountInOneLine by property(2)
+        }
     }
     
     /**
@@ -102,24 +120,6 @@ class ParadoxSettingsState : BaseState() {
         var localisationStrategy by enum(LocalisationGenerationStrategy.SpecificText)
         var localisationStrategyText by string("REPLACE_ME")
         var localisationStrategyLocale by string("auto")
-    }
-    
-    /**
-     * 注意：仅可配置是否启用基于使用的推断，基于自定义CWT规则的推断是始终启用的。
-     * 
-     * @property configContextForParameters 是否推断参数对应的脚本表达式。
-     * @property configContextForInlineScripts 是否推断内联脚本的使用位置。
-     * @property scopeContext 是否推断scripted_trigger、scripted_effect等的作用域上下文。
-     * @property scopeContextForEvents 是否推断event的作用域上下文。
-     * @property scopeContextForOnActions 是否推断on_action的作用域上下文。
-     */
-    @Tag("inference")
-    class InferenceState : BaseState() {
-        var configContextForParameters by property(true)
-        var configContextForInlineScripts by property(true)
-        var scopeContext by property(false)
-        var scopeContextForEvents by property(false)
-        var scopeContextForOnActions by property(false)
     }
     
     @Tag("hierarchy")
@@ -142,6 +142,24 @@ class ParadoxSettingsState : BaseState() {
     }
     
     /**
+     * 注意：仅可配置是否启用基于使用的推断，基于自定义CWT规则的推断是始终启用的。
+     * 
+     * @property configContextForParameters 是否推断参数对应的脚本表达式。
+     * @property configContextForInlineScripts 是否推断内联脚本的使用位置。
+     * @property scopeContext 是否推断scripted_trigger、scripted_effect等的作用域上下文。
+     * @property scopeContextForEvents 是否推断event的作用域上下文。
+     * @property scopeContextForOnActions 是否推断on_action的作用域上下文。
+     */
+    @Tag("inference")
+    class InferenceState : BaseState() {
+        var configContextForParameters by property(true)
+        var configContextForInlineScripts by property(true)
+        var scopeContext by property(false)
+        var scopeContextForEvents by property(false)
+        var scopeContextForOnActions by property(false)
+    }
+    
+    /**
      * @property defaultDiffGroup 进行DIFF时，初始打开的DIFF分组。默认初始打开VS副本的DIFF分组。
      */
     @Tag("diff")
@@ -157,15 +175,6 @@ class ParadoxSettingsState : BaseState() {
     class OthersState : BaseState() {
         var showEditorContextToolbar by property(true)
         var showLocalisationFloatingToolbar by property(true)
-    }
-    
-    val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet(caseInsensitiveStringSet()).orEmpty() }
-    
-    val localeList by lazy {
-        buildList {
-            add("auto")
-            addAll(ParadoxLocaleHandler.getLocaleConfigMapById(pingPreferred = false).keys)
-        }
     }
 }
 

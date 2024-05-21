@@ -142,7 +142,6 @@ class IntroduceGlobalScriptedVariableDialog(
 	
 	override fun doOKAction() {
 		RecentsManager.getInstance(project).registerRecentEntry(RECENT_KEYS, filePath)
-		
 		super.doOKAction()
 	}
 }

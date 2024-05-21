@@ -2,7 +2,6 @@ package icu.windea.pls.lang.settings
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.options.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
@@ -10,6 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.editor.folding.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.ParadoxGameType.*
@@ -21,6 +21,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
     @Suppress("DialogTitleCapitalization")
     override fun createPanel(): DialogPanel {
         val settings = getSettings()
+        val foldingSettings = ParadoxFoldingSettings.getInstance()
         return panel {
             //general
             group(PlsBundle.message("settings.general")) {
@@ -53,11 +54,9 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                     val action = { _: ActionEvent ->
                         val dialog = ParadoxGameDirectoriesDialog(list)
-                        if(dialog.showAndGet()) {
-                            list = dialog.resultList
-                        }
+                        if(dialog.showAndGet()) list = dialog.resultList
                     }
-                    link(PlsBundle.message("settings.general.configureDefaultGameDirectories"), action)
+                    link(PlsBundle.message("settings.general.defaultGameDirectories.link"), action)
                         .onApply {
                             settings.defaultGameDirectories = list.toMutableMap()
                             if(oldDefaultGameDirectories != settings.defaultGameDirectories) {
@@ -166,6 +165,54 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showParameters.tooltip") }
                 }
             }
+            //folding
+            collapsibleGroup(PlsBundle.message("settings.folding")) {
+                //parameterConditionBlocks
+                row {
+                    checkBox(PlsBundle.message("settings.folding.parameterConditionBlocks"))
+                        .bindSelected(foldingSettings::parameterConditionBlocks)
+                }
+                //inlineMathBlocks
+                row {
+                    checkBox(PlsBundle.message("settings.folding.inlineMathBlocks"))
+                        .bindSelected(foldingSettings::inlineMathBlocks)
+                }
+                //localisationReferencesFully
+                row {
+                    checkBox(PlsBundle.message("settings.folding.localisationReferencesFully"))
+                        .bindSelected(foldingSettings::localisationReferencesFully)
+                }
+                //localisationIconsFully
+                row {
+                    checkBox(PlsBundle.message("settings.folding.localisationIconsFully"))
+                        .bindSelected(foldingSettings::localisationIconsFully)
+                }
+                //localisationCommands
+                row {
+                    checkBox(PlsBundle.message("settings.folding.localisationCommands"))
+                        .bindSelected(foldingSettings::localisationCommands)
+                }
+                //localisationConcepts
+                row {
+                    checkBox(PlsBundle.message("settings.folding.localisationConcepts"))
+                        .bindSelected(foldingSettings::localisationConcepts)
+                }
+                //localisationConceptTexts
+                row {
+                    checkBox(PlsBundle.message("settings.folding.localisationConceptTexts"))
+                        .bindSelected(foldingSettings::localisationConceptTexts)
+                }
+                //scriptedVariableReferences
+                row {
+                    checkBox(PlsBundle.message("settings.folding.scriptedVariableReferences"))
+                        .bindSelected(foldingSettings::parameterConditionBlocks)
+                }
+                //variableOperationExpressions
+                row {
+                    checkBox(PlsBundle.message("settings.folding.variableOperationExpressions"))
+                        .bindSelected(foldingSettings::variableOperationExpressions)
+                }
+            }
             //completion
             collapsibleGroup(PlsBundle.message("settings.completion")) {
                 //completeScriptedVariableNames
@@ -200,22 +247,16 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeWithValue.tooltip") }
                 }
                 //completeWithClauseTemplate
-                lateinit var completeWithClauseTemplateCb: Cell<JBCheckBox>
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeWithClauseTemplate"))
                         .bindSelected(settings.completion::completeWithClauseTemplate)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeWithClauseTemplate.tooltip") }
-                        .also { completeWithClauseTemplateCb = it }
-                }
-                indent {
-                    //maxExpressionCountInOneLine
-                    row {
-                        label(PlsBundle.message("settings.completion.maxMemberCountInOneLine")).applyToComponent {
-                            toolTipText = PlsBundle.message("settings.completion.maxMemberCountInOneLine.tooltip")
-                        }
-                        intTextField(0..10).bindIntText(settings.completion::maxMemberCountInOneLine)
+                    
+                    link(PlsBundle.message("settings.completion.clauseTemplate.link")) {
+                        val dialog = ParadoxClauseTemplateSettingsDialog()
+                        dialog.show()
                     }
-                }.enabledIf(completeWithClauseTemplateCb.selected)
+                }
                 //completeOnlyScopeIsMatched
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeOnlyScopeIsMatched"))
@@ -243,7 +284,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     textField().bindText(settings.generation::fileNamePrefix.toNonNullableProperty(""))
                 }.visible(false)
                 //localisationStrategy
-                buttonsGroup(PlsBundle.message("settings.generation.localisationStrategy")) {
+                buttonsGroup(PlsBundle.message("settings.generation.localisationStrategy"), indent = false) {
                     row {
                         radioButton(PlsBundle.message("settings.generation.localisationStrategy.0"), LocalisationGenerationStrategy.EmptyText)
                     }
@@ -263,6 +304,35 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                             .enabledIf(rbCell.selected)
                     }
                 }.bind(settings.generation::localisationStrategy)
+            }
+            //hierarchy
+            collapsibleGroup(PlsBundle.message("settings.hierarchy")) {
+                //showScriptedVariablesInCallHierarchy
+                row {
+                    checkBox(PlsBundle.message("settings.hierarchy.showScriptedVariablesInCallHierarchy"))
+                        .bindSelected(settings.hierarchy::showScriptedVariablesInCallHierarchy)
+                }
+                //showDefinitionsInCallHierarchy
+                row {
+                    checkBox(PlsBundle.message("settings.hierarchy.showDefinitionsInCallHierarchy"))
+                        .bindSelected(settings.hierarchy::showDefinitionsInCallHierarchy)
+                    
+                    val defaultList = settings.hierarchy.definitionTypeBindingsInCallHierarchy.toMutableEntryList()
+                    var list = defaultList.mapTo(mutableListOf()) { it.copy() }
+                    val action = { _: ActionEvent ->
+                        val dialog = ParadoxDefinitionTypeBindingsInCallHierarchyDialog(list)
+                        if(dialog.showAndGet()) list = dialog.resultList
+                    }
+                    link(PlsBundle.message("settings.hierarchy.definitionTypeBindings.link"), action)
+                        .onApply { settings.hierarchy.definitionTypeBindingsInCallHierarchy = list.toMutableMap() }
+                        .onReset { list = defaultList }
+                        .onIsModified { list != defaultList }
+                }
+                //showLocalisationsInCallHierarchy
+                row {
+                    checkBox(PlsBundle.message("settings.hierarchy.showLocalisationsInCallHierarchy"))
+                        .bindSelected(settings.hierarchy::showLocalisationsInCallHierarchy)
+                }
             }
             //inference
             collapsibleGroup(PlsBundle.message("settings.inference")) {
@@ -320,40 +390,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                             val openedFiles = ParadoxCoreHandler.findOpenedFiles()
                             ParadoxCoreHandler.reparseFiles(openedFiles, reparse = false)
                         }
-                }
-            }
-            //hierarchy
-            collapsibleGroup(PlsBundle.message("settings.hierarchy")) {
-                //showScriptedVariablesInCallHierarchy
-                row {
-                    checkBox(PlsBundle.message("settings.hierarchy.showScriptedVariablesInCallHierarchy"))
-                        .bindSelected(settings.hierarchy::showScriptedVariablesInCallHierarchy)
-                }
-                //showDefinitionsInCallHierarchy
-                row {
-                    lateinit var cbCell: Cell<JBCheckBox>
-                    checkBox(PlsBundle.message("settings.hierarchy.showDefinitionsInCallHierarchy"))
-                        .bindSelected(settings.hierarchy::showDefinitionsInCallHierarchy)
-                        .apply { cbCell = this }
-                    
-                    val defaultList = settings.hierarchy.definitionTypeBindingsInCallHierarchy.toMutableEntryList()
-                    var list = defaultList.mapTo(mutableListOf()) { it.copy() }
-                    val action = { _: ActionEvent ->
-                        val dialog = ParadoxDefinitionTypeBindingsInCallHierarchyDialog(list)
-                        if(dialog.showAndGet()) {
-                            list = dialog.resultList
-                        }
-                    }
-                    link(PlsBundle.message("settings.hierarchy.configureDefinitionTypeBindings"), action)
-                        .enabledIf(cbCell.selected)
-                        .onApply { settings.hierarchy.definitionTypeBindingsInCallHierarchy = list.toMutableMap() }
-                        .onReset { list = defaultList }
-                        .onIsModified { list != defaultList }
-                }
-                //showLocalisationsInCallHierarchy
-                row {
-                    checkBox(PlsBundle.message("settings.hierarchy.showLocalisationsInCallHierarchy"))
-                        .bindSelected(settings.hierarchy::showLocalisationsInCallHierarchy)
                 }
             }
             //diff
