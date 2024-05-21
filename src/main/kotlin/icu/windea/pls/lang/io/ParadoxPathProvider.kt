@@ -19,14 +19,14 @@ import java.util.concurrent.*
 //游戏模组安装目录：~\Documents\Paradox Interactive\{gameName}\mod
 
 @Service
-class ParadoxPathProvider(coroutineScope: CoroutineScope) {
+class ParadoxPathProvider(private val coroutineScope: CoroutineScope) {
     //使用不会自动清理的缓存
     private val steamPathCache = ConcurrentHashMap<String, String>()
     
-    init {
+    fun init() {
         //preload cached values
-        coroutineScope.launch { 
-            launch { 
+        coroutineScope.launch {
+            launch {
                 steamPathCache.put("", doGetSteamPath())
             }
             ParadoxGameType.entries.forEach { gameType ->

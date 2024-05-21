@@ -32,7 +32,7 @@
     <fileTypeOverrider implementation="icu.windea.pls.lang.ParadoxFileTypeOverrider" order="first"/>
     <utf8BomOptionProvider implementation="icu.windea.pls.lang.ParadoxUtf8BomOptionProvider"/>
     
-    <vfs.asyncListener implementation="icu.windea.pls.lang.listeners.vfs.ParadoxCoreFileListener"/>
+    <vfs.asyncListener implementation="icu.windea.pls.lang.ParadoxCoreFileListener"/>
 
     <projectViewPane implementation="icu.windea.pls.lang.projectView.CwtConfigFilesViewPane"/>
     <projectViewPane implementation="icu.windea.pls.lang.projectView.ParadoxFilesViewPane"/>
@@ -141,6 +141,10 @@
     <parameterSearch implementation="icu.windea.pls.lang.search.ParadoxParameterSearcher"/>
     <localisationParameterSearch implementation="icu.windea.pls.lang.search.ParadoxLocalisationParameterSearcher"/>
   </extensions>
+  
+  <applicationListeners>
+    <listener class="icu.windea.pls.lang.ParadoxPreloadListener" topic="com.intellij.ide.AppLifecycleListener"/>
+  </applicationListeners>
   
   <applicationListeners>
     <listener class="icu.windea.pls.lang.listeners.ParadoxRefreshOnDefaultGameTypeChangedListener"
