@@ -88,7 +88,7 @@ interface ParadoxModDependenciesPopupActions {
         
         private fun getTargetUrl(): String? {
             val steamId = getSteamId() ?: return null
-            return Urls.getSteamWorkshopUrlInSteam(steamId)
+            return UrlProvider.getSteamWorkshopUrlInSteam(steamId)
         }
         
         private fun getSteamId(): String? {
@@ -132,7 +132,7 @@ interface ParadoxModDependenciesPopupActions {
         
         private fun getTargetUrl(): String? {
             val steamId = getSteamId() ?: return null
-            return Urls.getSteamWorkshopUrl(steamId)
+            return UrlProvider.getSteamWorkshopUrl(steamId)
         }
         
         private fun getSteamId(): String? {
@@ -214,7 +214,7 @@ interface ParadoxModDependenciesPopupActions {
         
         private fun getTargetUrl(): String? {
             val steamId = getSteamId() ?: return null
-            return Urls.getSteamWorkshopUrlInSteam(steamId)
+            return UrlProvider.getSteamWorkshopUrlInSteam(steamId)
         }
         
         private fun getSteamId(): String? {

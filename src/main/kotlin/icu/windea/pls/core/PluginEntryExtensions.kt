@@ -21,6 +21,6 @@ fun getConfigGroup(gameType: ParadoxGameType?) = getDefaultProject().service<Cwt
 
 fun getConfigGroup(project: Project, gameType: ParadoxGameType?) = project.service<CwtConfigGroupService>().getConfigGroup(gameType)
 
-val Paths get() = service<ParadoxPathProvider>()
+val PathProvider get() = service<ParadoxPathProvider>()
 
-val Urls get() = service<ParadoxUrlProvider>()
+val UrlProvider get() = service<ParadoxUrlProvider>()

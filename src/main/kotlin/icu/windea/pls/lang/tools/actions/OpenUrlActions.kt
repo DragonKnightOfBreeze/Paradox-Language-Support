@@ -46,28 +46,28 @@ abstract class OpenUrlAction : DumbAwareAction() {
 class OpenGameStorePageInSteamAction : OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
-        return Urls.getSteamGameStoreUrlInSteam(steamId)
+        return UrlProvider.getSteamGameStoreUrlInSteam(steamId)
     }
 }
 
 class OpenGameStorePageInSteamWebsiteAction : OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
-        return Urls.getSteamGameStoreUrl(steamId)
+        return UrlProvider.getSteamGameStoreUrl(steamId)
     }
 }
 
 class OpenGameWorkshopPageInSteamAction : OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
-        return Urls.getSteamGameWorkshopUrlInSteam(steamId)
+        return UrlProvider.getSteamGameWorkshopUrlInSteam(steamId)
     }
 }
 
 class OpenGameWorkshopPageInSteamWebsiteAction : OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
-        return Urls.getSteamGameWorkshopUrl(steamId)
+        return UrlProvider.getSteamGameWorkshopUrl(steamId)
     }
 }
 
@@ -82,7 +82,7 @@ class OpenModPageInSteamAction : OpenUrlAction() {
     
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
         val steamId = fileInfo.rootInfo.castOrNull<ParadoxModRootInfo>()?.descriptorInfo?.remoteFileId ?: return null
-        return Urls.getSteamWorkshopUrlInSteam(steamId)
+        return UrlProvider.getSteamWorkshopUrlInSteam(steamId)
     }
 }
 
@@ -97,7 +97,7 @@ class OpenModPageInSteamWebsiteAction : OpenUrlAction() {
     
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
         val steamId = fileInfo.rootInfo.castOrNull<ParadoxModRootInfo>()?.descriptorInfo?.remoteFileId ?: return null
-        return Urls.getSteamWorkshopUrl(steamId)
+        return UrlProvider.getSteamWorkshopUrl(steamId)
     }
     
 }

@@ -152,14 +152,14 @@ object ParadoxCoreHandler {
             //如果模组目录直接位于游戏创意工坊目录下，直接推断为对应的游戏类型
             val steamWorkshopDir = parentDir ?: return@runCatchingCancelable null
             val steamId = steamWorkshopDir.name
-            ParadoxGameType.resolveBySteamId(steamId)?.takeIf { Paths.getSteamWorkshopPath(steamId) == steamWorkshopDir.toNioPath().absolutePathString() }
+            ParadoxGameType.resolveBySteamId(steamId)?.takeIf { PathProvider.getSteamWorkshopPath(steamId) == steamWorkshopDir.toNioPath().absolutePathString() }
         }.getOrNull()?.let { return it }
         runCatchingCancelable {
             //如果模组目录直接位于游戏数据目录下的mod子目录下，直接推断为对应的游戏类型
             val modDir = parentDir.takeIf { it.name == "mod" } ?: return@runCatchingCancelable null
             val gameDataDir = modDir.parent ?: return@runCatchingCancelable null
             val gameName = gameDataDir.name
-            ParadoxGameType.resolveByTitle(gameName)?.takeIf { Paths.getGameDataPath(gameName) == gameDataDir.toNioPath().absolutePathString() }
+            ParadoxGameType.resolveByTitle(gameName)?.takeIf { PathProvider.getGameDataPath(gameName) == gameDataDir.toNioPath().absolutePathString() }
         }.getOrNull()?.let { return it }
         return null
     }
