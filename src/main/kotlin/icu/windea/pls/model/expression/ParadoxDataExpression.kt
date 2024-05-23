@@ -19,6 +19,7 @@ interface ParadoxDataExpression {
     val isKey: Boolean?
     
     fun isParameterized(): Boolean
+    fun isFullParameterized(): Boolean
     fun matchesConstant(v: String): Boolean
     
     companion object Resolver {
@@ -80,6 +81,10 @@ private class ParadoxDataExpressionImpl(
     
     override fun isParameterized(): Boolean {
         return type == ParadoxType.String && value.isParameterized()
+    }
+    
+    override fun isFullParameterized(): Boolean {
+        return type == ParadoxType.String && value.isFullParameterized()
     }
     
     override fun matchesConstant(v: String): Boolean {

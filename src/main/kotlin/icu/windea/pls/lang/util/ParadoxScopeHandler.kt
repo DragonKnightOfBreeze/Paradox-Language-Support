@@ -245,12 +245,13 @@ object ParadoxScopeHandler {
         } else {
             //优先基于内联前的规则，如果没有，再基于内联后的规则
             val replaceScopes = config.replaceScopes ?: config.resolvedOrNull()?.replaceScopes
-            val scopeContext = replaceScopes?.let { ParadoxScopeContext.resolve(it) } ?: parentScopeContext ?: return null
             val pushScope = config.pushScope ?: config.resolved().pushScope
+            val scopeContext = replaceScopes?.let { ParadoxScopeContext.resolve(it) } ?: parentScopeContext ?: return null
             val result = scopeContext.resolveNext(pushScope)
             return result
         }
     }
+    
     
     fun getScopeContext(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext? {
         return doGetScopeContextFromCache(element)
@@ -321,10 +322,11 @@ object ParadoxScopeHandler {
             }
             is ParadoxSystemLinkExpressionNode -> {
                 val isFrom = node.config.baseId.lowercase() == "from"
-                doGetScopeContextBySystemLinkNode(contextElement, node, inputScopeContext, inExpression)
-                    ?: getUnknownScopeContext(inputScopeContext, isFrom)
+                doGetScopeContextBySystemLinkNode(contextElement, node, inputScopeContext, inExpression)?: getUnknownScopeContext(inputScopeContext, isFrom)
             }
-            is ParadoxParameterizedScopeFieldExpressionNode -> getAnyScopeContext() //TODO 1.3.8+
+            is ParadoxParameterizedScopeFieldExpressionNode -> {
+                doGetScopeContextByParameterizedNode(contextElement, node, inputScopeContext, inExpression)
+            }
             //error
             is ParadoxErrorScopeFieldExpressionNode -> getUnknownScopeContext(inputScopeContext)
         }
@@ -411,6 +413,47 @@ object ParadoxScopeHandler {
         } ?: return null
         val isFrom = baseId == "From"
         return inputScopeContext.resolveNext(systemLinkContext, isFrom)
+    }
+    
+    private fun doGetScopeContextByParameterizedNode(contextElement: PsiElement, node: ParadoxParameterizedScopeFieldExpressionNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext {
+        run r1@{
+            if(!node.text.isFullParameterized()) return@r1
+            val offset = node.rangeInExpression.startOffset
+            val parameter = contextElement.findElementAt(offset)?.castOrNull<ParadoxParameter>() ?: return@r1
+            if(parameter.text != node.text) return@r1
+            val parameterElement = ParadoxParameterHandler.getParameterElement(parameter) ?: return@r1
+            val configGroup = node.configGroup
+            val configs = configGroup.extendedParameters.findFromPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
+            val config = configs.findLast { it.contextKey.matchFromPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return@r1
+            
+            //ex_param = scope[country]
+            //-> country (don't validate)
+            run r2@{
+                val inferredScope = config.config.castOrNull<CwtPropertyConfig>()?.valueExpression
+                    ?.takeIf { it.type == CwtDataTypes.Scope }
+                    ?.value?.orNull() ?: return@r2
+                return inputScopeContext.resolveNext(inferredScope)
+            }
+            
+            //## push_scope = country
+            //ex_param = ...
+            //-> country (don't validate)
+            run r2@{ 
+                val inferredScopeContext = getScopeContextFromOptions(config.config, inputScopeContext) ?: return@r2
+                return inferredScopeContext
+            }
+        }
+        return getAnyScopeContext()
+    }
+    
+    
+    fun getScopeContextFromOptions(config: CwtMemberConfig<*>, inputScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
+        //优先基于内联前的规则，如果没有，再基于内联后的规则
+        val replaceScopes = config.replaceScopes ?: config.resolvedOrNull()?.replaceScopes
+        val pushScope = config.pushScope ?: config.resolved().pushScope
+        val scopeContext = replaceScopes?.let { ParadoxScopeContext.resolve(it) } ?: inputScopeContext ?: return null
+        val result = scopeContext.resolveNext(pushScope)
+        return result
     }
     
     fun getAnyScopeContext(): ParadoxScopeContext {

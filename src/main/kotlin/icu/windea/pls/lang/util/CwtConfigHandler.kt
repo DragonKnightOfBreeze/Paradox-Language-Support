@@ -87,6 +87,7 @@ object CwtConfigHandler {
             
             val isQuoted = subPath != originalSubPaths[i]
             val isParameterized = subPath.isParameterized()
+            val isFullParameterized = subPath.isFullParameterized()
             val shift = subPaths.lastIndex - i
             val matchesKey = isPropertyValue || shift > 0
             val expression = ParadoxDataExpression.resolve(subPath, isQuoted, true)
@@ -94,7 +95,7 @@ object CwtConfigHandler {
             
             val parameterizedKeyConfigs by lazy {
                 if(!isParameterized) return@lazy null
-                if(!subPath.surroundsWith('$', '$')) return@lazy null //must be full parameterized yet
+                if(!isFullParameterized) return@lazy null //must be full parameterized yet
                 ParadoxParameterHandler.getParameterizedKeyConfigs(element, shift)
             }
             
@@ -208,7 +209,7 @@ object CwtConfigHandler {
         val parameterizedKeyConfigs by lazy {
             val expression = keyExpression ?: return@lazy null
             if(!expression.isParameterized()) return@lazy null
-            if(!expression.value.surroundsWith('$', '$')) return@lazy null //must be full parameterized yet
+            if(!expression.isFullParameterized()) return@lazy null //must be full parameterized yet
             ParadoxParameterHandler.getParameterizedKeyConfigs(element, 0)
         }
         

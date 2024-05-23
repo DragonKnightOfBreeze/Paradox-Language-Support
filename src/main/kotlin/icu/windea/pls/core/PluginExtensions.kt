@@ -103,6 +103,10 @@ fun String.isParameterized(): Boolean {
     return false
 }
 
+fun String.isFullParameterized() : Boolean {
+    return this.length >= 2 && surroundsWith('$', '$') && this[lastIndex - 1] != '\\'
+}
+
 private val regex1 = """(?<!\\)\$.*?\$""".toRegex()
 private val regex2 = """(?<!\\)\[\[.*?](.*?)]""".toRegex()
 
