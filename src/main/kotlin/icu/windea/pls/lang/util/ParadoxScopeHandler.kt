@@ -439,15 +439,14 @@ object ParadoxScopeHandler {
             //ex_param = ...
             //-> country (don't validate)
             run r2@{ 
-                val inferredScopeContext = getScopeContextFromOptions(config.config, inputScopeContext) ?: return@r2
+                val inferredScopeContext = getScopeContextFromConfigOptions(config.config, inputScopeContext) ?: return@r2
                 return inferredScopeContext
             }
         }
         return getAnyScopeContext()
     }
     
-    
-    fun getScopeContextFromOptions(config: CwtMemberConfig<*>, inputScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
+    fun getScopeContextFromConfigOptions(config: CwtMemberConfig<*>, inputScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
         //优先基于内联前的规则，如果没有，再基于内联后的规则
         val replaceScopes = config.replaceScopes ?: config.resolvedOrNull()?.replaceScopes
         val pushScope = config.pushScope ?: config.resolved().pushScope
