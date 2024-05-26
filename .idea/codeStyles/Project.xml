@@ -123,7 +123,6 @@
       <option name="USE_SEMICOLON_AFTER_STATEMENT" value="false" />
       <option name="FORCE_SEMICOLON_STYLE" value="true" />
       <option name="SPACE_BEFORE_FUNCTION_LEFT_PARENTH" value="false" />
-      <option name="USE_EXPLICIT_JS_EXTENSION" value="TRUE" />
       <option name="SPACE_BEFORE_ASYNC_ARROW_LPAREN" value="false" />
       <option name="IMPORT_PREFER_ABSOLUTE_PATH" value="TRUE" />
     </JSCodeStyleSettings>

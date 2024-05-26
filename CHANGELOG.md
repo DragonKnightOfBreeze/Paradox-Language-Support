@@ -32,10 +32,23 @@
 * [X] 优化：涉及CWT选项注释与文档注释时，粘贴文本以及行注释/取消行注释能够得到正确的结果
 * [X] 优化：允许折叠本地化文件中的本地化引用与本地化图标（完全折叠，可配置，默认不启用，搭配相关的内嵌提示使用）
 * [X] 优化：允许折叠本地化文件中的本地化命令与本地化概念（可配置，默认不启用）
-* [X] #79 匹配脚本内容与规则时，如果带参数的键的规则类型是唯一确定的，则需要继续向下匹配
-* [X] #79 匹配脚本内容与规则时，如果作为参数的键的规则类型可以（从扩展的CWT规则）推断出来且是匹配的，则需要继续向下匹配
-* [X] #79 如果`$scope$`表示一个作用域连接，也尝试（从扩展的CWT规则）推断其作用域上下文 *
+* [X] #79 优化：匹配脚本内容与规则时，如果带参数的键的规则类型是唯一确定的，则需要继续向下匹配
+* [X] #79 优化：匹配脚本内容与规则时，如果作为参数的键的规则类型可以（从扩展的CWT规则）推断出来且是匹配的，则需要继续向下匹配
+* [X] #79 优化：如果`$scope$`表示一个作用域连接，也尝试（从扩展的CWT规则）推断其作用域上下文
 * [X] 其他优化与BUG修复
+
+***
+
+* [X] Optimization: Optimize search implementation, performance improvement, bug fixes about override
+* [X] Optimization: Optimize code reformat implementation, bug fixes about details
+* [X] Optimization: Optimize plugin settings page
+* [X] Optimization: Paste, comment / uncomment with line comment now work correctly when CWT option comments or documentation comments are involved
+* [X] Optimization: Now it's available to fold localisation references & icons in localisation files (fully folded, configurable, disabled by default, use with relevant inlay hints)
+* [X] Optimization: Now it's available to fold localisation commands & concepts (configurable, disabled by default)
+* [X] #79 Optimization: When match script content with configs, if the config type of parameterized key can be determined uniquely, it's necessary to continue matching down
+* [X] #79 Optimization: When match script content with configs, if the config type of parameterized key can be inferred and matched (via extended CWT configs), it's necessary to continue matching down
+* [X] #79 Optimization: If `$scope$` represents an scope link, also try to infer its scope context (via extended CWT configs)
+* [X] Other optimizations and bug fixes
 
 ## 1.3.7
 

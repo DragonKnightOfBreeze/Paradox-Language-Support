@@ -157,7 +157,7 @@ STRING_TOKEN=([^\"$£§\[\]\r\n\\]|\\.|\[\[)+  //it's unnecessary to escape doub
 CHECK_COMMAND_START=\[[^\r\n\]]*.?
 COMMAND_SCOPE_ID_WITH_SUFFIX=[^\r\n.\[\]]+\.
 COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
-CONCEPT_NAME=[a-zA-Z0-9_]+
+CONCEPT_NAME=[a-zA-Z0-9_:]+
 
 %%
 

@@ -322,7 +322,7 @@ object ParadoxScopeHandler {
             }
             is ParadoxSystemLinkExpressionNode -> {
                 val isFrom = node.config.baseId.lowercase() == "from"
-                doGetScopeContextBySystemLinkNode(contextElement, node, inputScopeContext, inExpression)?: getUnknownScopeContext(inputScopeContext, isFrom)
+                doGetScopeContextBySystemLinkNode(contextElement, node, inputScopeContext, inExpression) ?: getUnknownScopeContext(inputScopeContext, isFrom)
             }
             is ParadoxParameterizedScopeFieldExpressionNode -> {
                 doGetScopeContextByParameterizedNode(contextElement, node, inputScopeContext, inExpression)
@@ -419,7 +419,7 @@ object ParadoxScopeHandler {
         run r1@{
             if(!node.text.isFullParameterized()) return@r1
             val offset = node.rangeInExpression.startOffset
-            val parameter = contextElement.findElementAt(offset)?.castOrNull<ParadoxParameter>() ?: return@r1
+            val parameter = contextElement.findElementAt(offset)?.parentOfType<ParadoxParameter>() ?: return@r1
             if(parameter.text != node.text) return@r1
             val parameterElement = ParadoxParameterHandler.getParameterElement(parameter) ?: return@r1
             val configGroup = node.configGroup
@@ -438,7 +438,7 @@ object ParadoxScopeHandler {
             //## push_scope = country
             //ex_param = ...
             //-> country (don't validate)
-            run r2@{ 
+            run r2@{
                 val inferredScopeContext = getScopeContextFromConfigOptions(config.config, inputScopeContext) ?: return@r2
                 return inferredScopeContext
             }
