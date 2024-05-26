@@ -11,18 +11,21 @@
 * [ ] ［长期］为冲突检测 & 代码合并功能提供基础的支持
 * [ ] 支持模组本地的CWT规则分组
 * [ ] 优化：导入CWT规则分组后，尝试优化为仅需重新解析和重新索引必要的文件
-* [ ] ［待定］优化：优化定义规则与复杂枚举规则的路径匹配的逻辑（基于`path`字段的值，可以是一个ANT路径表达式，可以有多个）
 * [ ] 优化：为Stellaris提供较为完善的适用于`define`的CWT规则文件
+* [ ] ［待定］优化：优化定义规则与复杂枚举规则的路径匹配的逻辑（基于`path`字段的值，可以是一个ANT路径表达式，可以有多个）
 * [ ] BUG修复：基于覆盖顺序对本地化进行排序时，位于`replace`及其子目录下的同名本地化应当拥有更高的优先级（尽管目前没有相关的代码检查）
 * [ ] #60 BUG修复：兼容用引号括起的参数值中的那些用转义后的引号括起的字面量，正常进行规则匹配（例如，`p = "\"v\""`中的的`\"v\"`）
 * [ ] #67 对于条件参数，布尔值应当是合法的默认值，且`PARAM = $PARAM|no$`应当等同于`[[PARAM] PARAM = $PARAM$ ]`（同时提供相应的代码补全、意向操作等）
 * [ ] #68 扩展CWT规则：支持通过扩展的选项指定规则的子规则的继承关系（基于`## inherit_configs`，初步支持，忽略选项不合法的情况，详见参考文档）
 * [ ] #68 扩展CWT规则：支持通过扩展的选项指定规则的选项的继承关系（基于`## inherit_options`，初步支持，忽略选项不合法的情况，详见参考文档）
 * [ ] #68 扩展CWT规则：支持通过扩展的选项指定规则的文档注释的继承关系（基于`## inherit_doc`，初步支持，忽略选项不合法的情况，详见参考文档）
-* [ ] #72 更加完善的基于使用的对脚本参数的上下文规则的推断
-* [ ] #78 支持通过扩展的CWT规则文件为动态值（如`event_target`）指定作用域上下文 - 提供更加完善的支持（实现有变化，相见参考文档）
 * [ ] #80 BUG修复：对于作用域的正确性的检查，也应当对参数值生效
+
+## 1.3.9
+
+* [ ] 优化：查看快速文档时，支持快速切换本地化的语言区域（在弹出窗口中提供语言区域的下拉框与切换按钮，在更多菜单中提供语言区域的选择按钮）
 * [ ] #56 支持从数据库对象生成的概念（同时提供相应的代码补全、代码导航与代码检查）
+* [ ] #78 支持通过扩展的CWT规则文件为动态值（如`event_target`）指定作用域上下文 - 提供更加完善的支持（相见参考文档）
 
 ## 1.3.8
 
@@ -32,6 +35,7 @@
 * [X] 优化：涉及CWT选项注释与文档注释时，粘贴文本以及行注释/取消行注释能够得到正确的结果
 * [X] 优化：允许折叠本地化文件中的本地化引用与本地化图标（完全折叠，可配置，默认不启用，搭配相关的内嵌提示使用）
 * [X] 优化：允许折叠本地化文件中的本地化命令与本地化概念（可配置，默认不启用）
+* [X] #72 也将`"$PARAM$"`中的`$PARAM$`识别为参数
 * [X] #79 优化：匹配脚本内容与规则时，如果带参数的键的规则类型是唯一确定的，则需要继续向下匹配
 * [X] #79 优化：匹配脚本内容与规则时，如果作为参数的键的规则类型可以（从扩展的CWT规则）推断出来且是匹配的，则需要继续向下匹配
 * [X] #79 优化：如果`$scope$`表示一个作用域连接，也尝试（从扩展的CWT规则）推断其作用域上下文
@@ -45,6 +49,7 @@
 * [X] Optimization: Paste, comment / uncomment with line comment now work correctly when CWT option comments or documentation comments are involved
 * [X] Optimization: Now it's available to fold localisation references & icons in localisation files (fully folded, configurable, disabled by default, use with relevant inlay hints)
 * [X] Optimization: Now it's available to fold localisation commands & concepts (configurable, disabled by default)
+* [X] #72 Treat `$PARAM$` in `"$PARAM$"` as a parameter
 * [X] #79 Optimization: When match script content with configs, if the config type of parameterized key can be determined uniquely, it's necessary to continue matching down
 * [X] #79 Optimization: When match script content with configs, if the config type of parameterized key can be inferred and matched (via extended CWT configs), it's necessary to continue matching down
 * [X] #79 Optimization: If `$scope$` represents an scope link, also try to infer its scope context (via extended CWT configs)

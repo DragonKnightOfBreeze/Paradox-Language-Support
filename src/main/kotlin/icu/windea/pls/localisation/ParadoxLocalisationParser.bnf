@@ -103,7 +103,7 @@ private property_reference_parameter ::= PROPERTY_REFERENCE_PARAMETER_TOKEN //TO
 //scripted variable reference
 scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_TOKEN {
   implements=[
-    "icu.windea.pls.core.psi.ParadoxScriptedVariableReference"
+    "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
   ]
   methods=[getIcon getName setName getReference getType getExpression]
 }
@@ -136,7 +136,7 @@ private command_expression ::= (command_scope DOT)* command_field {
 }
 //noinspection BnfUnusedRule
 command_identifier ::= {
-  implements="icu.windea.pls.core.psi.ParadoxTypedElement"
+  implements="icu.windea.pls.lang.psi.ParadoxTypedElement"
   implements=[
     "com.intellij.psi.NavigatablePsiElement"  
   ]
