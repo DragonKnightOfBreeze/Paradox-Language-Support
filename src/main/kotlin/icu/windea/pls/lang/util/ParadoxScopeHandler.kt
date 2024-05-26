@@ -179,7 +179,7 @@ object ParadoxScopeHandler {
     }
     
     /**
-     * 注意，如果输入的是值为子句的属性，这里得到的会是子句中的作用域上下文，而非此属性所在子句中的作用域上下文。
+     * 注意，如果输入的是值为子句的属性，这里得到的会是此子句中的作用域上下文，而非此属性所在子句中的作用域上下文。
      */
     fun getScopeContext(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
         return doGetScopeContextFromCache(element)

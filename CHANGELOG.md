@@ -19,7 +19,6 @@
 * [ ] #68 扩展CWT规则：支持通过扩展的选项指定规则的子规则的继承关系（基于`## inherit_configs`，初步支持，忽略选项不合法的情况，详见参考文档）
 * [ ] #68 扩展CWT规则：支持通过扩展的选项指定规则的选项的继承关系（基于`## inherit_options`，初步支持，忽略选项不合法的情况，详见参考文档）
 * [ ] #68 扩展CWT规则：支持通过扩展的选项指定规则的文档注释的继承关系（基于`## inherit_doc`，初步支持，忽略选项不合法的情况，详见参考文档）
-* [ ] #80 BUG修复：对于作用域的正确性的检查，也应当对参数值生效
 
 ## 1.3.9
 
@@ -39,6 +38,7 @@
 * [X] #79 优化：匹配脚本内容与规则时，如果带参数的键的规则类型是唯一确定的，则需要继续向下匹配
 * [X] #79 优化：匹配脚本内容与规则时，如果作为参数的键的规则类型可以（从扩展的CWT规则）推断出来且是匹配的，则需要继续向下匹配
 * [X] #79 优化：如果`$scope$`表示一个作用域连接，也尝试（从扩展的CWT规则）推断其作用域上下文
+* [X] #80 BUG修复：对于作用域的正确性的检查应当尽可能地适用
 * [X] 其他优化与BUG修复
 
 ***
@@ -52,7 +52,8 @@
 * [X] #72 Treat `$PARAM$` in `"$PARAM$"` as a parameter
 * [X] #79 Optimization: When match script content with configs, if the config type of parameterized key can be determined uniquely, it's necessary to continue matching down
 * [X] #79 Optimization: When match script content with configs, if the config type of parameterized key can be inferred and matched (via extended CWT configs), it's necessary to continue matching down
-* [X] #79 Optimization: If `$scope$` represents an scope link, also try to infer its scope context (via extended CWT configs)
+* [X] #79 Optimization: If `$scope$` represents a scope link, also try to infer its scope context (via extended CWT configs)
+* [X] #80 Bug fix: Incorrect expression inspection for scope field expressions should be available wherever possible
 * [X] Other optimizations and bug fixes
 
 ## 1.3.7

@@ -76,7 +76,7 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
         val configGroup = config.configGroup
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup) ?: return
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
-        val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return
+        val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: ParadoxScopeHandler.getAnyScopeContext()
         val scopeContext = ParadoxScopeHandler.getScopeContext(element, scopeFieldExpression, parentScopeContext)
         if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return
         val expression = element.expression ?: return
@@ -96,7 +96,7 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
         val configGroup = config.configGroup
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup) ?: return
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
-        val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return
+        val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: ParadoxScopeHandler.getAnyScopeContext()
         val scopeContext = ParadoxScopeHandler.getScopeContext(element, scopeFieldExpression, parentScopeContext)
         if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return
         val expression = element.expression ?: return

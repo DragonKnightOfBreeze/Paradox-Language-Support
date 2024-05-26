@@ -129,6 +129,10 @@ private class SimpleParadoxScopeContext(
     override val fromFromFrom: ParadoxScopeContext? get() = null
     override val fromFromFromFrom: ParadoxScopeContext? get() = null
     override val prevStack: List<ParadoxScopeContext> get() = emptyList()
+    
+    override fun toString(): String {
+        return toScopeMap().toString()
+    }
 }
 
 private class DefaultParadoxScopeContext(
@@ -139,6 +143,10 @@ private class DefaultParadoxScopeContext(
     override val fromFromFrom: ParadoxScopeContext? = null,
     override val fromFromFromFrom: ParadoxScopeContext? = null,
     override val prevStack: List<ParadoxScopeContext> = emptyList()
-) : UserDataHolderBase(), ParadoxScopeContext
+) : UserDataHolderBase(), ParadoxScopeContext {
+    override fun toString(): String {
+        return toScopeMap().toString()
+    }
+}
 
 private val EmptyParadoxScopeContext = SimpleParadoxScopeContext(ParadoxScope.Any)
