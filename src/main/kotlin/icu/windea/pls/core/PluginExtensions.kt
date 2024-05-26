@@ -8,6 +8,7 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
+import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.testFramework.*
@@ -30,40 +31,7 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.lang.Integer.*
 
-//region Stdlib Extensions
-inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {
-    val oldValue = this.get()
-    val newValue = value
-    if(newValue == null) {
-        return true
-    } else if(oldValue == null) {
-        this.set(newValue)
-        return true
-    } else {
-        val mergedValue = mergeAction(oldValue, newValue)
-        this.set(mergedValue)
-        return mergedValue != null
-    }
-}
-//endregion
-
 //region Common Extensions
-/**
- * 比较游戏版本。允许通配符，如："3.3.*"
- */
-infix fun String.compareGameVersion(otherVersion: String): Int {
-    val versionSnippets = this.split('.')
-    val otherVersionSnippets = otherVersion.split('.')
-    val minSnippetSize = min(versionSnippets.size, otherVersionSnippets.size)
-    for(i in 0 until minSnippetSize) {
-        val versionSnippet = versionSnippets[i]
-        val otherVersionSnippet = otherVersionSnippets[i]
-        if(versionSnippet == otherVersionSnippet || versionSnippet == "*" || otherVersion == "*") continue
-        return versionSnippet.compareTo(otherVersionSnippet)
-    }
-    return 0
-}
-
 fun FileType.isParadoxFileType() = this == ParadoxScriptFileType || this == ParadoxLocalisationFileType
 
 fun Language.isParadoxLanguage() = this.isKindOf(ParadoxScriptLanguage) || this.isKindOf(ParadoxLocalisationLanguage)
@@ -136,6 +104,56 @@ fun ParadoxGameType?.supportsByAnnotation(target: Any): Boolean {
     if(this == null) return true
     val targetGameType = target.javaClass.getAnnotation(WithGameType::class.java)?.value
     return targetGameType == null || this in targetGameType
+}
+
+inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {
+    val oldValue = this.get()
+    val newValue = value
+    if(newValue == null) {
+        return true
+    } else if(oldValue == null) {
+        this.set(newValue)
+        return true
+    } else {
+        val mergedValue = mergeAction(oldValue, newValue)
+        this.set(mergedValue)
+        return mergedValue != null
+    }
+}
+
+/**
+ * 比较游戏版本。允许通配符，如："3.3.*"
+ */
+infix fun String.compareGameVersion(otherVersion: String): Int {
+    val versionSnippets = this.split('.')
+    val otherVersionSnippets = otherVersion.split('.')
+    val minSnippetSize = min(versionSnippets.size, otherVersionSnippets.size)
+    for(i in 0 until minSnippetSize) {
+        val versionSnippet = versionSnippets[i]
+        val otherVersionSnippet = otherVersionSnippets[i]
+        if(versionSnippet == otherVersionSnippet || versionSnippet == "*" || otherVersion == "*") continue
+        return versionSnippet.compareTo(otherVersionSnippet)
+    }
+    return 0
+}
+
+fun String?.orAnonymous() = if(isNullOrEmpty()) PlsConstants.anonymousString else this
+fun String?.orUnknown() = if(isNullOrEmpty()) PlsConstants.unknownString else this
+fun String?.orUnresolved() = if(isNullOrEmpty()) PlsConstants.unresolvedString else this
+
+fun String.escapeXml() = if(this.isEmpty()) "" else StringUtil.escapeXmlEntities(this)
+
+fun String.escapeBlank(): String {
+    var builder: StringBuilder? = null
+    for((i, c) in this.withIndex()) {
+        if(c.isWhitespace()) {
+            if(builder == null) builder = StringBuilder(substring(0, i))
+            builder.append("&nbsp;")
+        } else {
+            builder?.append(c)
+        }
+    }
+    return builder?.toString() ?: this
 }
 //endregion
 
@@ -319,19 +337,17 @@ fun StringBuilder.appendModifierLink(name: String, label: String = name.escapeXm
  * @param local 输入的[url]是否是本地绝对路径。
  */
 fun StringBuilder.appendImgTag(url: String, local: Boolean = true): StringBuilder {
-    append("<img src=\"")
-    if(local) append(url.toFileUrl()) else append(url)
-    append("\" />")
+    val finalUrl = if(local) url.toFileUrl() else url
+    append("<img src=\"").append(finalUrl).append("\"/>")
     return this
 }
 
 fun StringBuilder.appendImgTag(url: String, width: Int, height: Int, local: Boolean = true): StringBuilder {
-    append("<img src=\"")
-    if(local) append(url.toFileUrl()) else append(url)
+    val finalUrl = if(local) url.toFileUrl() else url
+    append("<img src=\"").append(finalUrl).append("\"")
     //这里不能使用style="..."
-    append("\" width=\"").append(width).append("\" height=\"").append(height)
-    append(" vspace=\"0\" hspace=\"0\"")
-    append("\"/>")
+    append(" width=\"").append(width).append("\" height=\"").append(height).append("\" vspace=\"0\" hspace=\"0\"")
+    append("/>")
     return this
 }
 
