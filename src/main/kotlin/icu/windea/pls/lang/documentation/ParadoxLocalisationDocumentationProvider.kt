@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.editor
+package icu.windea.pls.lang.documentation
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*

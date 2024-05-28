@@ -1,7 +1,8 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.documentation
 
 import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 object ParadoxDocumentationBuilder {

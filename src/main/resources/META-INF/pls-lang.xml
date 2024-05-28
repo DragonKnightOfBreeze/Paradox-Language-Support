@@ -50,7 +50,7 @@
     
     <findUsagesHandlerFactory implementation="icu.windea.pls.lang.findUsages.ParadoxFindUsagesHandlerFactory"/>
     
-    <lang.documentationProvider language="PARADOX" implementationClass="icu.windea.pls.lang.editor.ParadoxDocumentationProvider"/>
+    <lang.documentationProvider language="PARADOX" implementationClass="icu.windea.pls.lang.documentation.ParadoxDocumentationProvider"/>
     
     <applicationService serviceImplementation="icu.windea.pls.lang.editor.folding.ParadoxFoldingSettings"/>
     <codeFoldingOptionsProvider instance="icu.windea.pls.lang.editor.folding.ParadoxFoldingOptionsProvider"/>

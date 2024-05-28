@@ -5,6 +5,10 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.cwt.psi.*
 
+/**
+ * @see icu.windea.pls.inject.injectors.CommentByLineCommentHandlerCodeInjector
+ * @see icu.windea.pls.inject.injectors.LineCommentCopyPastePreProcessorCodeInjector
+ */
 class CwtCommenter : CodeDocumentationAwareCommenterEx {
     companion object {
         const val LINE_COMMENT_PREFIX = "#"

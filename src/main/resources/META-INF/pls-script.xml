@@ -18,7 +18,7 @@
     <breadcrumbsInfoProvider implementation="icu.windea.pls.script.editor.ParadoxScriptBreadCrumbsProvider"/>
     <colorProvider implementation="icu.windea.pls.script.editor.ParadoxScriptColorProvider"/>
     <lang.quoteHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptQuoteHandler"/>
-    <lang.documentationProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptDocumentationProvider"/>
+    <lang.documentationProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.documentation.ParadoxScriptDocumentationProvider"/>
     <lang.findUsagesProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
     <elementDescriptionProvider implementation="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
     <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>

@@ -1,6 +1,4 @@
-@file:Suppress("UNUSED_PARAMETER")
-
-package icu.windea.pls.script.editor
+package icu.windea.pls.lang.documentation
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*

@@ -1,6 +1,4 @@
-@file:Suppress("UnusedReceiverParameter")
-
-package icu.windea.pls.lang.editor
+package icu.windea.pls.lang.documentation
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
