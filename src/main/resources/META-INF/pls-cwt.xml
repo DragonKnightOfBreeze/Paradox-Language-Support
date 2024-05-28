@@ -10,7 +10,6 @@
     <lang.braceMatcher language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtBraceMatcher"/>
     <lang.foldingBuilder language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtFoldingBuilder"/>
     <lang.quoteHandler language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtQuoteHandler"/>
-    <lang.documentationProvider language="CWT" implementationClass="icu.windea.pls.lang.documentation.CwtDocumentationProvider"/>
     <lang.findUsagesProvider language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
     <elementDescriptionProvider implementation="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
     <lang.commenter language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>

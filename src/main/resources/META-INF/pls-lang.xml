@@ -49,8 +49,11 @@
     <createDirectoryCompletionContributor implementation="icu.windea.pls.lang.actions.ParadoxCreateDirectoryCompletionContributor"/>
     
     <findUsagesHandlerFactory implementation="icu.windea.pls.lang.findUsages.ParadoxFindUsagesHandlerFactory"/>
-    
+
+    <lang.documentationProvider language="CWT" implementationClass="icu.windea.pls.lang.documentation.CwtDocumentationProvider"/>
     <lang.documentationProvider language="PARADOX" implementationClass="icu.windea.pls.lang.documentation.ParadoxDocumentationProvider"/>
+    <lang.documentationProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.documentation.ParadoxScriptDocumentationProvider"/>
+    <lang.documentationProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.documentation.ParadoxLocalisationDocumentationProvider"/>
     
     <applicationService serviceImplementation="icu.windea.pls.lang.editor.folding.ParadoxFoldingSettings"/>
     <codeFoldingOptionsProvider instance="icu.windea.pls.lang.editor.folding.ParadoxFoldingOptionsProvider"/>
