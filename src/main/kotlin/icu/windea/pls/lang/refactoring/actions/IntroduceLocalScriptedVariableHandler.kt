@@ -11,6 +11,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.lang.refactoring.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*

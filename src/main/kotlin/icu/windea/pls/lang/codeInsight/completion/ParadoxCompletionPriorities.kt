@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.codeInsight.completion
 
-object PlsCompletionPriorities {
+object ParadoxCompletionPriorities {
     const val pinnedPriority = 1000.0
     const val keywordPriority = 10.0
     const val rootKeyPriority = 100.0

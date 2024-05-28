@@ -17,7 +17,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.codeStyle.*
@@ -27,7 +27,7 @@ import javax.swing.*
 fun LookupElement.withPriority(priority: Double?, offset: Double = 0.0): LookupElement {
     val scopeMatched = getUserData(PlsKeys.scopeMismatched) != true
     if(priority == null && scopeMatched) return this
-    val finalPriority = (priority ?: 0.0) + offset + (if(scopeMatched) 0 else PlsCompletionPriorities.scopeMismatchOffset)
+    val finalPriority = (priority ?: 0.0) + offset + (if(scopeMatched) 0 else ParadoxCompletionPriorities.scopeMismatchOffset)
     return PrioritizedLookupElement.withPriority(this, finalPriority)
 }
 
@@ -165,7 +165,7 @@ fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(
     }
 }
 
-fun PlsLookupElementBuilder.build(context: ProcessingContext): PlsLookupElement? {
+fun ParadoxLookupElementBuilder.build(context: ProcessingContext): CompositeLookupElement? {
     if((!scopeMatched || !context.scopeMatched) && getSettings().completion.completeOnlyScopeIsMatched) return null
     
     val config = context.config
@@ -286,7 +286,7 @@ fun PlsLookupElementBuilder.build(context: ProcessingContext): PlsLookupElement?
         }
     }
     
-    return PlsLookupElement(result, extraElements)
+    return CompositeLookupElement(result, extraElements)
 }
 
 private fun getIconToUse(icon: Icon?, config: CwtConfig<*>?): Icon? {
@@ -377,12 +377,6 @@ private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtM
     return descriptors
 }
 
-fun CompletionResultSet.addPlsElement(lookupElement: PlsLookupElement?) {
-    if(lookupElement == null) return
-    addElement(lookupElement)
-    lookupElement.extraElements.forEachFast { addElement(it) }
-}
-
 fun CompletionResultSet.addSimpleScriptExpressionElement(lookupElement: LookupElement?, context: ProcessingContext) {
     if(lookupElement == null) return
     val id = lookupElement.lookupString
@@ -393,7 +387,7 @@ fun CompletionResultSet.addSimpleScriptExpressionElement(lookupElement: LookupEl
 fun CompletionResultSet.addBlockScriptExpressionElement(context: ProcessingContext) {
     val id = "{...}"
     if(context.completionIds?.add(id) == false) return
-    val lookupElement = PlsLookupElements.blockLookupElement
+    val lookupElement = ParadoxLookupElements.blockLookupElement
     addElement(lookupElement)
     
     //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
@@ -405,7 +399,7 @@ fun CompletionResultSet.addBlockScriptExpressionElement(context: ProcessingConte
             val lookupElement1 = LookupElementBuilder.create("")
                 .withPresentableText(tailText1)
                 .withExpandClauseTemplateInsertHandler(context, entryConfigs)
-            addElement(lookupElement1.withPriority(PlsCompletionPriorities.keywordPriority))
+            addElement(lookupElement1.withPriority(ParadoxCompletionPriorities.keywordPriority))
         }
     }
 }

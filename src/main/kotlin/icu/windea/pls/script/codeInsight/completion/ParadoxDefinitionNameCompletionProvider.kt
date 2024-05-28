@@ -106,7 +106,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		if(definitionInfo.name.isEmpty()) return true //ignore anonymous definitions
 		val icon = PlsIcons.Nodes.Definition(definitionInfo.type)
 		val typeFile = definition.containingFile
-		val lookupElement = PlsLookupElementBuilder.create(definition, definitionInfo.name)
+		val lookupElement = ParadoxLookupElementBuilder.create(definition, definitionInfo.name)
 			.withIcon(icon)
 			.withTypeText(typeFile?.name)
 			.withTypeIcon(typeFile?.icon)
@@ -117,7 +117,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 				it.withLocalizedNames(localizedNames)
 			}
 			.build(context)
-		result.addPlsElement(lookupElement)
+		result.addElement(lookupElement)
 		return true
 	}
 }

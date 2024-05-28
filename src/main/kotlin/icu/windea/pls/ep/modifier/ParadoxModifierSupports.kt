@@ -81,7 +81,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
             val typeFile = modifierConfig.pointer.containingFile
             val name = modifierConfig.name
             val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxPredefinedModifierSupport)
-            val lookupElement = PlsLookupElementBuilder.create(modifierElement, name)
+            val lookupElement = ParadoxLookupElementBuilder.create(modifierElement, name)
                 .withIcon(PlsIcons.Nodes.Modifier)
                 .withTailText(tailText)
                 .withTypeText(typeFile?.name)
@@ -93,7 +93,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
                     it.withLocalizedNames(localizedNames)
                 }
                 .build(context)
-            result.addPlsElement(lookupElement)
+            result.addElement(lookupElement)
         }
     }
     
@@ -159,7 +159,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                 if(!modifierNames.add(name)) return@p true
                 
                 val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
-                val lookupElement = PlsLookupElementBuilder.create(modifierElement, name)
+                val lookupElement = ParadoxLookupElementBuilder.create(modifierElement, name)
                     .withIcon(PlsIcons.Nodes.Modifier)
                     .withTailText(tailText)
                     .withTypeText(typeFile?.name)
@@ -171,7 +171,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                         it.withLocalizedNames(localizedNames)
                     }
                     .build(context)
-                result.addPlsElement(lookupElement)
+                result.addElement(lookupElement)
                 true
             }
         }
@@ -359,7 +359,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
                 if(!modifierNames.add(name)) continue
                 
                 val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@StellarisEconomicCategoryModifierSupport)
-                val lookupElement = PlsLookupElementBuilder.create(modifierElement, name)
+                val lookupElement = ParadoxLookupElementBuilder.create(modifierElement, name)
                     .withIcon(PlsIcons.Nodes.Modifier)
                     .withTailText(tailText)
                     .withTypeText(typeText)
@@ -371,7 +371,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
                         it.withLocalizedNames(localizedNames)
                     }
                     .build(context)
-                result.addPlsElement(lookupElement)
+                result.addElement(lookupElement)
             }
             true
         }

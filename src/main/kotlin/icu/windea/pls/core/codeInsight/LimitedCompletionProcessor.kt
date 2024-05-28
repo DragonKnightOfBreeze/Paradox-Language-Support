@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight.completion
+package icu.windea.pls.core.codeInsight
 
 import com.intellij.openapi.util.registry.*
 import com.intellij.util.*

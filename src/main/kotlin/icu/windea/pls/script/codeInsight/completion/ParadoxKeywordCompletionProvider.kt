@@ -25,8 +25,8 @@ class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters
 		
 		context.initialize(parameters)
 		
-		result.addElement(PlsLookupElements.yesLookupElement)
-		result.addElement(PlsLookupElements.noLookupElement)
-		result.addElement(PlsLookupElements.blockLookupElement)
+		result.addElement(ParadoxLookupElements.yesLookupElement)
+		result.addElement(ParadoxLookupElements.noLookupElement)
+		result.addElement(ParadoxLookupElements.blockLookupElement)
 	}
 }

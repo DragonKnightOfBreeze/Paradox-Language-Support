@@ -30,6 +30,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
+import com.intellij.patterns.*
 import com.intellij.profile.codeInspection.*
 import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
@@ -50,6 +51,7 @@ import com.intellij.util.xmlb.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
@@ -373,17 +375,41 @@ fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate(
 
 fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
 
-fun interface TemplateEditingFinishedListener : TemplateEditingListener {
-    override fun beforeTemplateFinished(state: TemplateState, template: Template?) {}
-    
-    override fun templateCancelled(template: Template) {
-        templateFinished(template, false)
-    }
-    
-    override fun currentVariableChanged(templateState: TemplateState, template: Template, oldIndex: Int, newIndex: Int) {}
-    
-    override fun waitingForInput(template: Template) {}
+fun PsiElement.getKeyword(offsetInParent: Int): String {
+    return text.substring(0, offsetInParent).unquote()
 }
+
+fun PsiElement.getFullKeyword(offsetInParent: Int): String {
+    return (text.substring(0, offsetInParent) + text.substring(offsetInParent + PlsConstants.dummyIdentifier.length)).unquote()
+}
+
+fun PsiElement.isIncomplete(): Boolean {
+    val file = containingFile
+    val originalFile = file.originalFile
+    if(originalFile === file) return false
+    val startOffset = startOffset
+    file.findElementAt(startOffset)
+    val e1 = file.findElementAt(startOffset) ?: return false
+    val e2 = originalFile.findElementAt(startOffset) ?: return true
+    if(e1.elementType != e2.elementType) return true
+    if(e1.textLength != e2.textLength) return true
+    return false
+}
+
+/**
+ * 如果不指定[CompletionType]，IDE的默认实现会让对应的[CompletionProvider]相比指定[CompletionType]的后执行。
+ */
+fun CompletionContributor.extend(place: ElementPattern<out PsiElement>, provider: CompletionProvider<CompletionParameters>) {
+    extend(CompletionType.BASIC, place, provider)
+    extend(CompletionType.SMART, place, provider)
+}
+
+fun CompletionResultSet.addElement(lookupElement: CompositeLookupElement?) {
+    if(lookupElement == null) return
+    addElement(lookupElement.element)
+    lookupElement.extraElements.forEachFast { extraElement -> addElement(extraElement) }
+}
+
 //endregion
 
 //region Editor & Document Extensions

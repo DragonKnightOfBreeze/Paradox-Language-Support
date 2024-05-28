@@ -17,7 +17,7 @@ import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
-class PlsLookupElementBuilder(
+class ParadoxLookupElementBuilder(
     val element: PsiElement?,
     val lookupString: String
 ) {
@@ -57,13 +57,13 @@ class PlsLookupElementBuilder(
     
     companion object {
         @JvmStatic
-        fun create(lookupString: String): PlsLookupElementBuilder {
-            return PlsLookupElementBuilder(null, lookupString)
+        fun create(lookupString: String): ParadoxLookupElementBuilder {
+            return ParadoxLookupElementBuilder(null, lookupString)
         }
         
         @JvmStatic
-        fun create(element: PsiElement?, lookupString: String): PlsLookupElementBuilder {
-            return PlsLookupElementBuilder(element, lookupString)
+        fun create(element: PsiElement?, lookupString: String): ParadoxLookupElementBuilder {
+            return ParadoxLookupElementBuilder(element, lookupString)
         }
     }
 }

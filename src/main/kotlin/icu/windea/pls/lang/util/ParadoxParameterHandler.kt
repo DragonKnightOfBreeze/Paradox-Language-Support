@@ -139,12 +139,12 @@ object ParadoxParameterHandler {
                 parameter is ParadoxParameter -> ParadoxParameterSupport.resolveParameter(parameter)
                 else -> null
             } ?: continue
-            val lookupElement = PlsLookupElementBuilder.create(parameterElement, parameterName)
+            val lookupElement = ParadoxLookupElementBuilder.create(parameterElement, parameterName)
                 .withIcon(PlsIcons.Nodes.Parameter)
                 .withTypeText(parameterElement.contextName)
                 .withTypeIcon(parameterElement.contextIcon)
                 .build(context)
-            result.addPlsElement(lookupElement)
+            result.addElement(lookupElement)
         }
         
         val contextKey = ParadoxParameterSupport.getContextKeyFromContext(parameterContext) ?: return
@@ -175,12 +175,12 @@ object ParadoxParameterHandler {
                     parameter is ParadoxParameter -> ParadoxParameterSupport.resolveParameter(parameter)
                     else -> null
                 } ?: continue
-                val lookupElement = PlsLookupElementBuilder.create(parameterElement, parameterName)
+                val lookupElement = ParadoxLookupElementBuilder.create(parameterElement, parameterName)
                     .withIcon(PlsIcons.Nodes.Parameter)
                     .withTypeText(parameterElement.contextName)
                     .withTypeIcon(parameterElement.contextIcon)
                     .build(context)
-                result.addPlsElement(lookupElement)
+                result.addElement(lookupElement)
             }
             true
         }
