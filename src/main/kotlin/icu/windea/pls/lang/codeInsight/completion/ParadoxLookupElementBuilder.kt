@@ -1,20 +1,6 @@
 package icu.windea.pls.lang.codeInsight.completion
 
-import com.intellij.application.options.*
-import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.lookup.*
-import com.intellij.openapi.editor.*
 import com.intellij.psi.*
-import com.intellij.ui.*
-import com.intellij.util.*
-import icons.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.codeStyle.*
-import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 class ParadoxLookupElementBuilder(

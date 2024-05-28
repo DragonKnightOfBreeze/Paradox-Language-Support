@@ -15,7 +15,6 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.path.*
-import kotlin.collections.component1
 
 inline fun CwtMemberConfig<*>.processParent(inline: Boolean = false, processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
     var parent = this.parentConfig

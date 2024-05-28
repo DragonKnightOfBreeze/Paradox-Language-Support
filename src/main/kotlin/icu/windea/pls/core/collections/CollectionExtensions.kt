@@ -2,11 +2,9 @@
 
 package icu.windea.pls.core.collections
 
-import com.google.common.base.*
 import icu.windea.pls.core.*
 import java.util.*
-import java.util.concurrent.CopyOnWriteArrayList
-import kotlin.collections.ArrayList
+import java.util.concurrent.*
 
 inline fun <T> Array<T>?.orNull() = this?.takeIf { it.isNotEmpty() }
 

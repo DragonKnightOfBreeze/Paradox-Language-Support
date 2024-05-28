@@ -1,6 +1,6 @@
 package icu.windea.pls.config.config
 
-import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.util.*
 
 

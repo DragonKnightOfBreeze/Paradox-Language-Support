@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.tools
 
-import com.intellij.codeInsight.util.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.project.*
@@ -13,8 +12,6 @@ import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.ParadoxGameType.*
-import kotlinx.coroutines.*
-import kotlin.coroutines.*
 
 class ParadoxModSettingsDialog(
     val project: Project,

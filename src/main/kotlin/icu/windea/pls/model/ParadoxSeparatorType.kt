@@ -1,7 +1,5 @@
 package icu.windea.pls.model;
 
-import icu.windea.pls.core.annotations.*
-
 enum class ParadoxSeparatorType(
     val text: String
 ) {

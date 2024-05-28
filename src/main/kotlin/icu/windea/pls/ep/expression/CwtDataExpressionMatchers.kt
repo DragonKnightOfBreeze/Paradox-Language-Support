@@ -13,7 +13,6 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.psi.*
-import kotlin.math.*
 
 class BaseCwtDataExpressionMatcher : CwtDataExpressionMatcher {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {

@@ -3,7 +3,6 @@ package icu.windea.pls.extension.diagram.settings
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.ui.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.core.*

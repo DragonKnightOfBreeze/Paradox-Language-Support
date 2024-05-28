@@ -3,7 +3,6 @@ package icu.windea.pls.script.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.patterns.PlatformPatterns.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptCompletionContributor : CompletionContributor() {

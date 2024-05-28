@@ -1,10 +1,8 @@
 package icu.windea.pls.lang.codeInsight.template.postfix
 
 import com.intellij.codeInsight.template.postfix.templates.*
-import com.intellij.codeInsight.template.postfix.templates.editable.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 

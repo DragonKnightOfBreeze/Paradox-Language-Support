@@ -3,7 +3,7 @@ package icu.windea.pls.model
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import javax.swing.Icon
+import javax.swing.*
 
 /**
  * @param contextNameRange 表示作用域名字的那段文本在整个文件中的文本范围。

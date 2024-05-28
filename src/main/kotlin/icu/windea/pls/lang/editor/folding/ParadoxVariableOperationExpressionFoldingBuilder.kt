@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.editor.folding
 
 import com.intellij.lang.*
-import com.intellij.openapi.components.*
 import com.intellij.openapi.editor.*
 
 class ParadoxVariableOperationExpressionFoldingBuilder : ParadoxExpressionFoldingBuilder() {
