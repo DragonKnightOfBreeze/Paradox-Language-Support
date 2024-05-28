@@ -28,7 +28,7 @@ import java.awt.datatransfer.*
 //cn.yiiguxing.plugin.translate.action.TranslateAndReplaceAction
 
 /**
- * 复制本地化到剪贴板并在这之前尝试将本地化文本翻译到指定的语言区域。（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）
+ * 复制本地化到剪贴板并在这之前尝试将本地化文本翻译为指定的语言区域。（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
@@ -55,7 +55,6 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
         }
     }
     
-    //TODO 采用文档翻译 （将需要翻译的文本中的特殊标记用<span translate="no"></span>包围起来，然后再进行翻译）
     //cn.yiiguxing.plugin.translate.trans.google.GoogleTranslator.translateDocumentation
     
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {

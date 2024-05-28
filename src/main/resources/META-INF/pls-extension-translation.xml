@@ -1,10 +1,4 @@
 <idea-plugin>
-  <extensions defaultExtensionNs="cn.yiiguxing.plugin.translate">
-    <documentationElementProvider language="CWT" implementationClass="icu.windea.pls.extension.translation.CwtDocumentationElementProvider"/>
-    <documentationElementProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.extension.translation.ParadoxScriptDocumentationElementProvider"/>
-    <documentationElementProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.extension.translation.ParadoxLocalisationDocumentationElementProvider"/>
-  </extensions>
-  
   <extensions defaultExtensionNs="com.intellij">
     <lang.documentationProvider language="CWT" order="first" implementationClass="cn.yiiguxing.plugin.translate.provider.TranslatedDocumentationProvider"/>
     <lang.documentationProvider language="PARADOX_SCRIPT" order="first" implementationClass="cn.yiiguxing.plugin.translate.provider.TranslatedDocumentationProvider"/>
