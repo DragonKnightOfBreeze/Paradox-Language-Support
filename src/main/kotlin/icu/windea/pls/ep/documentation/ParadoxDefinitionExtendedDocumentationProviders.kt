@@ -8,7 +8,7 @@ import icu.windea.pls.model.expression.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxBaseDefinitionExtendedDocumentationProvider : ParadoxDefinitionExtendedDocumentationProvider {
-    override fun getDocumentation(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String? {
+    override fun getDocumentationContent(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String? {
         val definitionName = definitionInfo.name
         if(definitionName.isEmpty()) return null
         if(definitionName.isParameterized()) return null
@@ -21,7 +21,7 @@ class ParadoxBaseDefinitionExtendedDocumentationProvider : ParadoxDefinitionExte
 }
 
 class ParadoxGameRuleExtendedDocumentationProvider : ParadoxDefinitionExtendedDocumentationProvider {
-    override fun getDocumentation(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String? {
+    override fun getDocumentationContent(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String? {
         val definitionName = definitionInfo.name
         if(definitionName.isEmpty()) return null
         if(definitionName.isParameterized()) return null
@@ -34,7 +34,7 @@ class ParadoxGameRuleExtendedDocumentationProvider : ParadoxDefinitionExtendedDo
 }
 
 class ParadoxOnActionExtendedDocumentationProvider : ParadoxDefinitionExtendedDocumentationProvider {
-    override fun getDocumentation(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String? {
+    override fun getDocumentationContent(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String? {
         val definitionName = definitionInfo.name
         if(definitionName.isEmpty()) return null
         if(definitionName.isParameterized()) return null

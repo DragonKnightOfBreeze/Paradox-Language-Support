@@ -6,7 +6,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxBaseScriptedVariableExtendedDocumentationProvider : ParadoxScriptedVariableExtendedDocumentationProvider {
-    override fun getDocumentation(element: ParadoxScriptScriptedVariable): String? {
+    override fun getDocumentationContent(element: ParadoxScriptScriptedVariable): String? {
         val name = element.name
         if(name.isNullOrEmpty()) return null
         if(name.isParameterized()) return null

@@ -334,20 +334,20 @@ class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
     }
     
     private fun StringBuilder.buildDocumentationContent(element: ParadoxParameterElement) {
-        ParadoxParameterExtendedDocumentationProvider.buildDocumentation(element) { documentation ->
-            content { append(documentation) }
+        ParadoxParameterExtendedDocumentationProvider.buildDocumentationContent(element) { content ->
+            content { append(content) }
         }
     }
     
     private fun StringBuilder.buildDocumentationContent(element: ParadoxComplexEnumValueElement) {
-        ParadoxComplexEnumValueExtendedDocumentationProvider.buildDocumentation(element) { documentation ->
-            content { append(documentation) }
+        ParadoxComplexEnumValueExtendedDocumentationProvider.buildDocumentationContent(element) { content ->
+            content { append(content) }
         }
     }
     
     private fun StringBuilder.buildDocumentationContent(element: ParadoxDynamicValueElement) {
-        ParadoxDynamicValueExtendedDocumentationProvider.buildDocumentation(element) { documentation ->
-            content { append(documentation) }
+        ParadoxDynamicValueExtendedDocumentationProvider.buildDocumentationContent(element) { content ->
+            content { append(content) }
         }
     }
     

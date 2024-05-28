@@ -1,8 +1,8 @@
 <idea-plugin>
   <extensions defaultExtensionNs="cn.yiiguxing.plugin.translate">
-    <docElementProvider language="CWT" implementationClass="icu.windea.pls.extension.translation.CwtDocumentationElementProvider"/>
-    <docElementProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.extension.translation.ParadoxScriptDocumentationElementProvider"/>
-    <docElementProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.extension.translation.ParadoxLocalisationDocumentationElementProvider"/>
+    <documentationElementProvider language="CWT" implementationClass="icu.windea.pls.extension.translation.CwtDocumentationElementProvider"/>
+    <documentationElementProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.extension.translation.ParadoxScriptDocumentationElementProvider"/>
+    <documentationElementProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.extension.translation.ParadoxLocalisationDocumentationElementProvider"/>
   </extensions>
   
   <extensions defaultExtensionNs="com.intellij">

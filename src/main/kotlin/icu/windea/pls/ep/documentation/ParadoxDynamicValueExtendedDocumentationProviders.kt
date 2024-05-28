@@ -6,7 +6,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.psi.*
 
 class ParadoxBaseDynamicValueExtendedDocumentationProvider : ParadoxDynamicValueExtendedDocumentationProvider {
-    override fun getDocumentation(element: ParadoxDynamicValueElement): String? {
+    override fun getDocumentationContent(element: ParadoxDynamicValueElement): String? {
         val name = element.name
         if(name.isEmpty()) return null
         if(name.isParameterized()) return null

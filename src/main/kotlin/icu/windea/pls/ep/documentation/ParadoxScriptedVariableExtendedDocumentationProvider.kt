@@ -11,19 +11,17 @@ import icu.windea.pls.script.psi.*
  */
 @WithGameTypeEP
 interface ParadoxScriptedVariableExtendedDocumentationProvider {
-    fun getDocumentation(element: ParadoxScriptScriptedVariable): String?
+    fun getDocumentationContent(element: ParadoxScriptScriptedVariable): String?
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxScriptedVariableExtendedDocumentationProvider>("icu.windea.pls.scriptedVariableExtendedDocumentationProvider")
         
-        fun buildDocumentation(element: ParadoxScriptScriptedVariable, action: (String) -> Unit) {
+        fun buildDocumentationContent(element: ParadoxScriptScriptedVariable, action: (String) -> Unit) {
             val gameType = selectGameType(element)
             EP_NAME.extensionList.forEachFast f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
-                val documentation = ep.getDocumentation(element)?.orNull()
-                if(documentation != null) {
-                    action(documentation)
-                }
+                val content = ep.getDocumentationContent(element)?.orNull() ?: return@f
+                action(content)
             }
         }
     }

@@ -357,14 +357,14 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
     }
     
     private fun StringBuilder.buildDocumentationContent(element: ParadoxScriptScriptedVariable) {
-        ParadoxScriptedVariableExtendedDocumentationProvider.buildDocumentation(element) { documentation ->
-            content { append(documentation) }
+        ParadoxScriptedVariableExtendedDocumentationProvider.buildDocumentationContent(element) { content ->
+            content { append(content) }
         }
     }
     
     private fun StringBuilder.buildDocumentationContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-        ParadoxDefinitionExtendedDocumentationProvider.buildDocumentation(element, definitionInfo) { documentation ->
-            content { append(documentation) }
+        ParadoxDefinitionExtendedDocumentationProvider.buildDocumentationContent(element, definitionInfo) { content ->
+            content { append(content) }
         }
     }
     
