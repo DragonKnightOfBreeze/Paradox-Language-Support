@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.codeInsight.template.postfix
 
 import com.intellij.codeInsight.template.postfix.templates.*
+import com.intellij.codeInsight.template.postfix.templates.editable.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -32,9 +33,11 @@ class ParadoxPostfixTemplateProvider: PostfixTemplateProvider {
 		return "paradox.script"
 	}
 	
-	override fun getPresentableName(): String {
-		return PlsBundle.message("postfixTemplateProvider.script.name")
-	}
+	//not allow customizing postfix templates so far
+	
+	//override fun getPresentableName(): String {
+	//	return PlsBundle.message("postfixTemplateProvider.script.name")
+	//}
 	
 	override fun isTerminalSymbol(currentChar: Char): Boolean {
 		return currentChar == '.'
