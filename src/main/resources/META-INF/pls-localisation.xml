@@ -39,9 +39,9 @@
 
     <!--floating toolbar-->
     <customizableActionGroupProvider
-        implementation="icu.windea.pls.localisation.ui.floating.FloatingToolbarCustomizableGroupProvider"/>
+        implementation="icu.windea.pls.localisation.ui.floating.ParadoxLocalisationFloatingToolbarCustomizableGroupProvider"/>
     <textEditorCustomizer
-        implementation="icu.windea.pls.localisation.ui.floating.AddFloatingToolbarTextEditorCustomizer"/>
+        implementation="icu.windea.pls.localisation.ui.floating.ParadoxLocalisationTextEditorCustomizer"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>

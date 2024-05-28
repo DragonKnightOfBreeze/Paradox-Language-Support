@@ -10,10 +10,10 @@ import icu.windea.pls.localisation.*
 
 //org.intellij.plugins.markdown.ui.floating.AddFloatingToolbarTextEditorCustomizer
 
-class AddFloatingToolbarTextEditorCustomizer: TextEditorCustomizer {
+class ParadoxLocalisationTextEditorCustomizer: TextEditorCustomizer {
     override fun customize(textEditor: TextEditor) {
         if (shouldAcceptEditor(textEditor) && shouldShowFloatingToolbar()) {
-            val toolbar = FloatingToolbar(textEditor, "Pls.ParadoxLocalisation.Toolbar.Floating")
+            val toolbar = ParadoxLocalisationFloatingToolbar(textEditor, "Pls.ParadoxLocalisation.Toolbar.Floating")
             Disposer.register(textEditor, toolbar)
         }
     }

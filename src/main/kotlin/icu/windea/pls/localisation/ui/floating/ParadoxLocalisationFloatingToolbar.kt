@@ -19,7 +19,7 @@ import java.awt.event.*
 import javax.swing.*
 import kotlin.properties.*
 
-//org.intellij.plugins.markdown.ui.floating.FloatingToolbar
+//org.intellij.plugins.markdown.ui.floating.MarkdownFloatingToolbar
 //不要参考最新的写法进行重构 - 会无法正常显示悬浮工具栏
 
 /**
@@ -35,7 +35,7 @@ import kotlin.properties.*
  * @see icu.windea.pls.localisation.ui.actions.styling.SetColorGroup
  * @see icu.windea.pls.localisation.ui.actions.styling.SetColorAction
  */
-class FloatingToolbar(
+class ParadoxLocalisationFloatingToolbar(
     val textEditor: TextEditor,
     private val actionGroupId: String
 ) : Disposable {
