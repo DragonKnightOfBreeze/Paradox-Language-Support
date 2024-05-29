@@ -264,11 +264,6 @@ val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorInfo?
 //endregion
 
 //region Documentation Extensions
-fun StringBuilder.appendIf(condition: Boolean, text: String): StringBuilder {
-    if(condition) append(text)
-    return this
-}
-
 fun StringBuilder.appendExternalLinkIcon(): StringBuilder {
     append("<icon src='ide/external_link_arrow.svg'/>")
     return this
@@ -420,24 +415,5 @@ fun StringBuilder.appendBr(): StringBuilder {
 
 fun StringBuilder.appendIndent(): StringBuilder {
     return append("&nbsp;&nbsp;&nbsp;&nbsp;")
-}
-
-fun getDocumentation(documentationLines: List<String>?, html: Boolean): String? {
-    if(documentationLines.isNullOrEmpty()) return null
-    return buildString {
-        var isLineBreak = false
-        for(line in documentationLines) {
-            if(!isLineBreak) {
-                isLineBreak = true
-            } else {
-                append("<br>")
-            }
-            if(line.endsWith('\\')) {
-                isLineBreak = false
-            }
-            val l = line.trimEnd('\\')
-            if(html) append(l) else append(l.escapeXml())
-        }
-    }
 }
 //endregion

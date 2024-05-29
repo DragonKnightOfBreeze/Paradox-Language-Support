@@ -980,6 +980,25 @@ fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
         else -> element
     }
 }
+
+fun getDocumentation(documentationLines: List<String>?, html: Boolean): String? {
+    if(documentationLines.isNullOrEmpty()) return null
+    return buildString {
+        var isLineBreak = false
+        for(line in documentationLines) {
+            if(!isLineBreak) {
+                isLineBreak = true
+            } else {
+                append("<br>")
+            }
+            if(line.endsWith('\\')) {
+                isLineBreak = false
+            }
+            val l = line.trimEnd('\\')
+            if(html) append(l) else append(l.escapeXml())
+        }
+    }
+}
 //endregion
 
 //region Language Injection Extensions
