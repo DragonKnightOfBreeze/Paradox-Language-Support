@@ -35,7 +35,7 @@ data class StellarisEconomicCategoryModifierInfo(
     val name = resolveName(key)
     
     fun resolveName(key: String?): String {
-        return buildString { 
+        return buildString {
             if(key != null) append(key).append("_")
             if(resource != null) append(resource).append("_")
             append(category).append("_").append(type)

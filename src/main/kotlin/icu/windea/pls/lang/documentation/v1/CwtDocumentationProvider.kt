@@ -45,7 +45,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             val configType = element.configType
             val project = element.project
             val configGroup = getConfigGroup(element, originalElement, project)
-            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
+            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, null)
         }
     }
     
@@ -58,7 +58,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             val configType = element.configType
             val project = element.project
             val configGroup = getConfigGroup(element, originalElement, project)
-            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
+            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, null)
         }
     }
     
@@ -68,7 +68,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             val configType = null
             val project = element.project
             val configGroup = getConfigGroup(project, element.gameType)
-            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
+            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, null)
         }
     }
     
@@ -89,7 +89,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             val configGroup = getConfigGroup(element, originalElement, project)
             //images, localisations, scope infos
             val sectionsList = List(3) { mutableMapOf<String, String>() }
-            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, true, sectionsList)
+            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, sectionsList)
             buildDocumentationContent(element)
             buildSections(sectionsList)
         }
@@ -105,7 +105,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             val project = element.project
             val configGroup = getConfigGroup(element, originalElement, project)
             val sectionsList = List(2) { mutableMapOf<String, String>() }
-            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, true, sectionsList)
+            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, sectionsList)
             buildDocumentationContent(element)
             buildSections(sectionsList)
         }
@@ -119,21 +119,13 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
             val configGroup = getConfigGroup(project, element.gameType)
             //images, localisations, scope infos
             val sectionsList = List(3) { mutableMapOf<String, String>() }
-            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, false, null)
+            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, null)
             buildDocumentationContent(element)
             buildSections(sectionsList)
         }
     }
     
-    private fun StringBuilder.buildPropertyOrStringDefinition(
-        element: PsiElement,
-        originalElement: PsiElement?,
-        name: String,
-        configType: CwtConfigType?,
-        configGroup: CwtConfigGroup?,
-        showDetail: Boolean,
-        sectionsList: List<MutableMap<String, String>>?
-    ) {
+    private fun StringBuilder.buildPropertyOrStringDefinition(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, sectionsList: List<MutableMap<String, String>>?) {
         definition {
             appendCwtConfigFileInfoHeader(element)
             
