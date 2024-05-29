@@ -60,7 +60,7 @@ private fun computeLocalDocumentation(element: PsiElement, originalElement: PsiE
         is ParadoxParameterElement -> getParameterDoc(element, originalElement, quickNavigation)
         is ParadoxLocalisationParameterElement -> getLocalisationParameterDoc(element, originalElement, quickNavigation)
         is ParadoxComplexEnumValueElement -> getComplexEnumValueDoc(element, originalElement, quickNavigation)
-        is ParadoxDynamicValueElement -> getDynamicValueDoc(element, originalElement,quickNavigation)
+        is ParadoxDynamicValueElement -> getDynamicValueDoc(element, originalElement, quickNavigation)
         is ParadoxModifierElement -> getModifierDoc(element, originalElement, quickNavigation)
         is ParadoxScriptScriptedVariable -> getScriptedVariableDoc(element, originalElement, quickNavigation)
         is ParadoxScriptProperty -> getPropertyDoc(element, originalElement, quickNavigation)
@@ -370,11 +370,11 @@ private fun StringBuilder.addModifierScope(element: ParadoxModifierElement, name
     val contextElement = element
     val categoryNames = modifierCategories.keys
     if(categoryNames.isNotEmpty()) {
-        sections.put(PlsBundle.message("sectionTitle.categories"), ParadoxDocumentationBuilder.getModifierCategoriesText(categoryNames, gameType, contextElement))
+        sections.put(PlsBundle.message("sectionTitle.categories"), getModifierCategoriesText(categoryNames, gameType, contextElement))
     }
     
     val supportedScopes = ParadoxScopeHandler.getSupportedScopes(modifierCategories)
-    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxDocumentationBuilder.getScopesText(supportedScopes, gameType, contextElement))
+    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
 }
 
 private fun StringBuilder.addScopeContext(element: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
@@ -392,7 +392,7 @@ private fun StringBuilder.addScopeContext(element: PsiElement, name: String, con
     if(scopeContext == null) return
     //TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
     // 因为这里的referenceElement是整个stringExpression，得到的作用域上下文会是脚本表达式最终的作用域上下文
-    sections.put(PlsBundle.message("sectionTitle.scopeContext"), ParadoxDocumentationBuilder.getScopeContextText(scopeContext, gameType, element))
+    sections.put(PlsBundle.message("sectionTitle.scopeContext"), getScopeContextText(scopeContext, gameType, element))
 }
 
 private fun StringBuilder.buildDocumentationContent(element: ParadoxParameterElement) {
@@ -567,7 +567,7 @@ private fun StringBuilder.addRelatedImagesForDefinition(element: ParadoxScriptPr
         } else if(resolved.element != null) {
             val nameOrFilePath = resolved.nameOrFilePath
             val gameType = definitionInfo.gameType
-            val v = when{
+            val v = when {
                 nameOrFilePath.startsWith("GFX") -> buildString { appendDefinitionLink(gameType, nameOrFilePath, "sprite", element) }
                 else -> buildString { appendFilePathLink(gameType, nameOrFilePath, nameOrFilePath, element) }
             }
@@ -614,11 +614,11 @@ private fun StringBuilder.addModifierScopeForDefinition(element: ParadoxScriptPr
     val modifierCategories = ParadoxDefinitionModifierProvider.getModifierCategories(element, definitionInfo) ?: return
     val categoryNames = modifierCategories.keys
     if(categoryNames.isNotEmpty()) {
-        sections.put(PlsBundle.message("sectionTitle.categories"), ParadoxDocumentationBuilder.getModifierCategoriesText(categoryNames, gameType, element))
+        sections.put(PlsBundle.message("sectionTitle.categories"), getModifierCategoriesText(categoryNames, gameType, element))
     }
     
     val supportedScopes = ParadoxScopeHandler.getSupportedScopes(modifierCategories)
-    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), ParadoxDocumentationBuilder.getScopesText(supportedScopes, gameType, element))
+    sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, element))
 }
 
 private fun StringBuilder.addScopeContextForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
@@ -633,7 +633,7 @@ private fun StringBuilder.addScopeContextForDefinition(element: ParadoxScriptPro
     if(!ParadoxScopeHandler.isScopeContextSupported(element, indirect = true)) return
     val scopeContext = ParadoxScopeHandler.getScopeContext(element)
     if(scopeContext == null) return
-    sections.put(PlsBundle.message("sectionTitle.scopeContext"), ParadoxDocumentationBuilder.getScopeContextText(scopeContext, gameType, element))
+    sections.put(PlsBundle.message("sectionTitle.scopeContext"), getScopeContextText(scopeContext, gameType, element))
 }
 
 private fun StringBuilder.addParametersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {
