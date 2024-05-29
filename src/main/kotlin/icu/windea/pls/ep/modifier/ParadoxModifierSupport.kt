@@ -86,7 +86,7 @@ interface ParadoxModifierSupport {
             }
         }
         
-        fun getDocumentationDefinition(element: ParadoxModifierElement, builder: StringBuilder): Boolean {
+        fun getDocumentationDefinition(element: ParadoxModifierElement, builder: DocumentationBuilder): Boolean {
             val gameType = element.gameType
             return EP_NAME.extensionList.any f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f false
@@ -94,7 +94,7 @@ interface ParadoxModifierSupport {
             }
         }
         
-        fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean {
+        fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean {
             val gameType = definitionInfo.gameType
             return EP_NAME.extensionList.any f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f false

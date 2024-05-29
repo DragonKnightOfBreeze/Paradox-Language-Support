@@ -210,7 +210,7 @@ private fun getLocalisationColorDoc(element: ParadoxLocalisationColorfulText, or
 private fun DocumentationBuilder.buildParameterDefinition(element: ParadoxParameterElement) {
     val name = element.name
     definition {
-        val r = ParadoxParameterSupport.getDocumentationDefinition(element, this.content)
+        val r = ParadoxParameterSupport.getDocumentationDefinition(element, this)
         if(!r) {
             //显示默认的快速文档
             append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
@@ -221,7 +221,7 @@ private fun DocumentationBuilder.buildParameterDefinition(element: ParadoxParame
 private fun DocumentationBuilder.buildLocalisationParameterDefinition(element: ParadoxLocalisationParameterElement) {
     val name = element.name
     definition {
-        val r = ParadoxLocalisationParameterSupport.getDocumentationDefinition(element, this.content)
+        val r = ParadoxLocalisationParameterSupport.getDocumentationDefinition(element, this)
         if(!r) {
             //显示默认的快速文档
             append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
@@ -275,7 +275,7 @@ private fun DocumentationBuilder.buildComplexEnumValueDefinition(element: Parado
 private fun DocumentationBuilder.buildModifierDefinition(element: ParadoxModifierElement, sectionsList: List<MutableMap<String, String>>?) {
     val name = element.name
     definition {
-        val r = ParadoxModifierSupport.getDocumentationDefinition(element, this.content)
+        val r = ParadoxModifierSupport.getDocumentationDefinition(element, this)
         if(!r) {
             //显示默认的快速文档
             append(PlsBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
@@ -585,7 +585,7 @@ private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxS
 }
 
 private fun DocumentationBuilder.addGeneratedModifiersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-    ParadoxModifierSupport.buildDDocumentationDefinitionForDefinition(element, definitionInfo, this.content)
+    ParadoxModifierSupport.buildDDocumentationDefinitionForDefinition(element, definitionInfo, this)
 }
 
 private fun DocumentationBuilder.addModifierScopeForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, sections: MutableMap<String, String>?) {

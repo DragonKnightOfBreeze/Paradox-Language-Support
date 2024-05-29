@@ -47,7 +47,7 @@ interface ParadoxLocalisationParameterSupport {
             }
         }
         
-        fun getDocumentationDefinition(element: ParadoxLocalisationParameterElement, builder: StringBuilder): Boolean {
+        fun getDocumentationDefinition(element: ParadoxLocalisationParameterElement, builder: DocumentationBuilder): Boolean {
             return EP_NAME.extensionList.any { ep ->
                 ep.buildDocumentationDefinition(element, builder) 
             }

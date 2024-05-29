@@ -123,7 +123,7 @@ interface ParadoxParameterSupport {
             }
         }
         
-        fun getDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean {
+        fun getDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: DocumentationBuilder): Boolean {
             return EP_NAME.extensionList.any { ep ->
                 ep.buildDocumentationDefinition(parameterElement, builder)
             }
