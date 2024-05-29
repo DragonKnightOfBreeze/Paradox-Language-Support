@@ -7,7 +7,7 @@ import icu.windea.pls.*
 /**
  * 提供对快速文档链接的支持，用于点击跳转到对应的定义/本地化等。
  */
-interface DocumentationElementLinkProvider {
+interface ParadoxDocumentationLinkProvider {
     val linkPrefix: String
     
     fun resolve(link: String, contextElement: PsiElement): PsiElement?
@@ -17,7 +17,7 @@ interface DocumentationElementLinkProvider {
     fun create(element: PsiElement, plainLink: Boolean = true): String? = null
     
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<DocumentationElementLinkProvider>("icu.windea.pls.documentationElementLinkProvider")
+        val EP_NAME = ExtensionPointName.create<ParadoxDocumentationLinkProvider>("icu.windea.pls.documentationLinkProvider")
         
         fun supports(link: String): Boolean {
             return EP_NAME.extensionList.any { ep ->

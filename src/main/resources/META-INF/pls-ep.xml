@@ -13,7 +13,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.configGroupDataProvider" interface="icu.windea.pls.ep.configGroup.CwtConfigGroupDataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupFileProvider" interface="icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionDataProvider" interface="icu.windea.pls.ep.data.ParadoxDefinitionDataProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.documentationElementLinkProvider" interface="icu.windea.pls.ep.documentation.DocumentationElementLinkProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.documentationLinkProvider" interface="icu.windea.pls.ep.documentation.ParadoxDocumentationLinkProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptedVariableExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxScriptedVariableExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxDefinitionExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.parameterExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxParameterExtendedDocumentationProvider" dynamic="true"/>
@@ -86,12 +86,12 @@
     <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisTechnologyDataProvider"/>
     <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisEventDataProvider"/>
     
-    <documentationElementLinkProvider implementation="icu.windea.pls.ep.documentation.CwtConfigLinkProvider"/>
-    <documentationElementLinkProvider implementation="icu.windea.pls.ep.documentation.ParadoxScriptedVariableLinkProvider"/>
-    <documentationElementLinkProvider implementation="icu.windea.pls.ep.documentation.ParadoxDefinitionLinkProvider"/>
-    <documentationElementLinkProvider implementation="icu.windea.pls.ep.documentation.ParadoxLocalisationLinkProvider"/>
-    <documentationElementLinkProvider implementation="icu.windea.pls.ep.documentation.ParadoxFilePathLinkProvider"/>
-    <documentationElementLinkProvider implementation="icu.windea.pls.ep.documentation.ParadoxModifierLinkProvider"/>
+    <documentationLinkProvider implementation="icu.windea.pls.ep.documentation.CwtConfigLinkProvider"/>
+    <documentationLinkProvider implementation="icu.windea.pls.ep.documentation.ParadoxScriptedVariableLinkProvider"/>
+    <documentationLinkProvider implementation="icu.windea.pls.ep.documentation.ParadoxDefinitionLinkProvider"/>
+    <documentationLinkProvider implementation="icu.windea.pls.ep.documentation.ParadoxLocalisationLinkProvider"/>
+    <documentationLinkProvider implementation="icu.windea.pls.ep.documentation.ParadoxFilePathLinkProvider"/>
+    <documentationLinkProvider implementation="icu.windea.pls.ep.documentation.ParadoxModifierLinkProvider"/>
     
     <scriptedVariableExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxBaseScriptedVariableExtendedDocumentationProvider" order="last"/>
     

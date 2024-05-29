@@ -132,7 +132,7 @@ fun DocumentationBuilder.appendCwtLink(shortLink: String, linkText: String, cont
     val linkPrefix = CwtConfigLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix$shortLink".escapeXml()
     val finalLinkText = linkText.escapeXml()
-    if(context != null && DocumentationElementLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if(context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     appendPsiLink(finalLink, finalLinkText)
     return this
 }
@@ -148,7 +148,7 @@ fun DocumentationBuilder.appendDefinitionLink(
     val linkPrefix = ParadoxDefinitionLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix${gameType.prefix}$typeExpression/$name".escapeXml()
     val finalLinkText = label
-    if(context != null && DocumentationElementLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if(context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 
@@ -162,7 +162,7 @@ fun DocumentationBuilder.appendLocalisationLink(
     val linkPrefix = ParadoxLocalisationLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix${gameType.prefix}$name".escapeXml()
     val finalLinkText = label
-    if(context != null && DocumentationElementLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if(context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 
@@ -177,7 +177,7 @@ fun DocumentationBuilder.appendFilePathLink(
     val linkPrefix = ParadoxFilePathLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix${gameType.prefix}$filePath".escapeXml()
     val finalLinkText = label
-    if(context != null && DocumentationElementLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if(context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 

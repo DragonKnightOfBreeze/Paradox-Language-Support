@@ -18,10 +18,10 @@ class ParadoxPathReference(
     }
     
     override fun resolve(): PsiElement? {
-        return DocumentationElementLinkProvider.resolve(link, element)
+        return ParadoxDocumentationLinkProvider.resolve(link, element)
     }
     
     override fun getUnresolvedMessagePattern(): String {
-        return DocumentationElementLinkProvider.getUnresolvedMessage(link)
+        return ParadoxDocumentationLinkProvider.getUnresolvedMessage(link)
     }
 }

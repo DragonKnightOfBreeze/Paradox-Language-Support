@@ -238,7 +238,7 @@ object ParadoxLocalisationTextHtmlRenderer {
                 val s = reference.rangeInElement.substring(text)
                 context.builder.append(s.escapeXml())
             } else {
-                val link = DocumentationElementLinkProvider.create(resolved)
+                val link = ParadoxDocumentationLinkProvider.create(resolved)
                 if(link != null) {
                     //如果没有颜色，这里需要使用文档的默认前景色，以显示为普通文本
                     val useDefaultColor = context.colorStack.isEmpty()

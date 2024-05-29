@@ -15,7 +15,7 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-class CwtConfigLinkProvider : DocumentationElementLinkProvider {
+class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
     // e.g.
     // cwt:stellaris:types/civic_or_origin/civic
     
@@ -160,7 +160,7 @@ class CwtConfigLinkProvider : DocumentationElementLinkProvider {
     }
 }
 
-class ParadoxScriptedVariableLinkProvider : DocumentationElementLinkProvider {
+class ParadoxScriptedVariableLinkProvider : ParadoxDocumentationLinkProvider {
     // e.g.
     // pdx-sv:some_sv
     // pdx-sv:stellaris:some_sv
@@ -196,7 +196,7 @@ class ParadoxScriptedVariableLinkProvider : DocumentationElementLinkProvider {
     }
 }
 
-class ParadoxDefinitionLinkProvider : DocumentationElementLinkProvider {
+class ParadoxDefinitionLinkProvider : ParadoxDocumentationLinkProvider {
     // e.g.
     // pdx-def:origin_default
     // pdx-def:civic_or_origin.origin/origin_default
@@ -240,7 +240,7 @@ class ParadoxDefinitionLinkProvider : DocumentationElementLinkProvider {
     }
 }
 
-class ParadoxLocalisationLinkProvider : DocumentationElementLinkProvider {
+class ParadoxLocalisationLinkProvider : ParadoxDocumentationLinkProvider {
     // e.g.
     // pdx-loc:KEY
     // pdx-loc:stellaris:KEY
@@ -278,7 +278,7 @@ class ParadoxLocalisationLinkProvider : DocumentationElementLinkProvider {
     }
 }
 
-class ParadoxFilePathLinkProvider: DocumentationElementLinkProvider {
+class ParadoxFilePathLinkProvider: ParadoxDocumentationLinkProvider {
     // e.g. 
     // pdx-path:path
     // pdx-path:stellaris:path
@@ -309,7 +309,7 @@ class ParadoxFilePathLinkProvider: DocumentationElementLinkProvider {
     }
 }
 
-class ParadoxModifierLinkProvider: DocumentationElementLinkProvider {
+class ParadoxModifierLinkProvider: ParadoxDocumentationLinkProvider {
     // e.g.
     // modifier:job_researcher_add
     
