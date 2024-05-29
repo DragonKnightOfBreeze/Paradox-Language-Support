@@ -11,6 +11,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.newvfs.*
 import com.intellij.platform.backend.presentation.*
 import com.intellij.psi.*
+import icu.windea.pls.config.config.*
 
 fun defaultTargetPresentation(element: PsiElement):TargetPresentation {
     //this implementation is similar to [com.intellij.codeInsight.navigation.targetPresentation], with some modifications

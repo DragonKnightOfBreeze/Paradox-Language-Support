@@ -75,7 +75,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                             toolTipText = PlsBundle.message("settings.general.preferredLocale.tooltip")
                         }
                     val oldPreferredLocale = settings.preferredLocale
-                    localeComboBox(settings)
+                    localeComboBox(addAuto = true)
                         .bindItem(settings::preferredLocale.toNullableProperty())
                         .onApply {
                             if(oldPreferredLocale != settings.preferredLocale) {
@@ -163,6 +163,15 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.documentation.showParameters"))
                         .bindSelected(settings.documentation::showParameters)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showParameters.tooltip") }
+                }
+                //locale
+                row {
+                    label(PlsBundle.message("settings.documentation.locale"))
+                        .applyToComponent {
+                            toolTipText = PlsBundle.message("settings.documentation.locale.tooltip")
+                        }
+                    localeComboBox(addAuto = true)
+                        .bindItem(settings.documentation::locale.toNullableProperty())
                 }
             }
             //folding
@@ -299,7 +308,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         lateinit var rbCell: Cell<JBRadioButton>
                         radioButton(PlsBundle.message("settings.generation.localisationStrategy.2"), LocalisationGenerationStrategy.FromLocale)
                             .apply { rbCell = this }
-                        localeComboBox(settings)
+                        localeComboBox(addAuto = true)
                             .bindItem(settings.generation::localisationStrategyLocale.toNullableProperty())
                             .enabledIf(rbCell.selected)
                     }

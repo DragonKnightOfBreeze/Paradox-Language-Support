@@ -50,6 +50,7 @@
     
     <findUsagesHandlerFactory implementation="icu.windea.pls.lang.findUsages.ParadoxFindUsagesHandlerFactory"/>
 
+    <documentationActionProvider implementation="icu.windea.pls.lang.documentation.ParadoxDocumentationActionProvider"/>
     <platform.backend.documentation.psiTargetProvider implementation="icu.windea.pls.lang.documentation.CwtPsiDocumentationTargetProvider"/>
     <platform.backend.documentation.psiTargetProvider implementation="icu.windea.pls.lang.documentation.ParadoxPsiDocumentationTargetProvider"/>
     <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.documentation.CwtDocumentationLinkHandler"/>

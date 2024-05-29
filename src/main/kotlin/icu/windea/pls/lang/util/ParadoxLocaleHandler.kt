@@ -10,6 +10,12 @@ object ParadoxLocaleHandler {
         return getLocale(getSettings().preferredLocale.orEmpty())
     }
     
+    fun getUsedLocaleInDocumentation(): CwtLocalisationLocaleConfig? {
+        val localeInSettings = getSettings().documentation.locale?.orNull()
+        if(localeInSettings == null) return null
+        return getLocale(localeInSettings)
+    }
+    
     fun getLocale(localeString: String): CwtLocalisationLocaleConfig {
         //基于localeString得到对应的语言区域
         if(localeString.isNotEmpty() && localeString != "auto") {

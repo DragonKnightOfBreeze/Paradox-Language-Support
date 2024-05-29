@@ -16,7 +16,7 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
         row {
             val settings = getSettings()
             val oldPreferredLocale = settings.preferredLocale
-            localeComboBox(settings)
+            localeComboBox(addAuto = true)
                 .bindItem(settings::preferredLocale.toNullableProperty())
                 .onApply {
                     if(oldPreferredLocale != settings.preferredLocale) {

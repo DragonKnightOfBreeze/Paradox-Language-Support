@@ -10,6 +10,7 @@ import com.intellij.psi.util.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
@@ -294,11 +295,13 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: Parado
     val render = getSettings().documentation.renderNameDescForModifiers
     val gameType = configGroup.gameType ?: return
     val project = configGroup.project
+    val usedLocale = ParadoxLocaleHandler.getUsedLocaleInDocumentation()
+    val finalUsedLocale = usedLocale ?: ParadoxLocaleHandler.getPreferredLocale()
     val nameLocalisation = run {
         val keys = ParadoxModifierHandler.getModifierNameKeys(name, element)
         keys.firstNotNullOfOrNull { key ->
             val selector = localisationSelector(project, element).contextSensitive()
-                .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+                .preferLocale(finalUsedLocale)
                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
         }
@@ -307,7 +310,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: Parado
         val keys = ParadoxModifierHandler.getModifierDescKeys(name, element)
         keys.firstNotNullOfOrNull { key ->
             val selector = localisationSelector(project, element).contextSensitive()
-                .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+                .preferLocale(finalUsedLocale)
                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
         }
@@ -325,11 +328,11 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: Parado
     }
     if(sections != null && render) {
         if(nameLocalisation != null) {
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, locale = usedLocale?.id, forDoc = true)
             sections.put("name", richText)
         }
         if(descLocalisation != null) {
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation, locale = usedLocale?.id, forDoc = true)
             sections.put("desc", richText)
         }
     }
@@ -507,11 +510,13 @@ private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: P
     val localisationInfos = definitionInfo.localisations
     if(localisationInfos.isEmpty()) return
     val project = element.project
+    val usedLocale = ParadoxLocaleHandler.getUsedLocaleInDocumentation()
+    val finalUsedLocale = usedLocale ?: ParadoxLocaleHandler.getPreferredLocale()
     val map = mutableMapOf<String, String>()
     val sectionKeys = mutableSetOf<String>()
     for((key, locationExpression, required) in localisationInfos) {
         if(sectionKeys.contains(key)) continue
-        val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+        val selector = localisationSelector(project, element).contextSensitive().preferLocale(finalUsedLocale)
         val resolved = locationExpression.resolve(element, definitionInfo, selector) ?: continue //发生意外，直接跳过
         if(resolved.message != null) {
             map.put(key, resolved.message)
@@ -524,7 +529,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: P
             sectionKeys.add(key)
             if(sections != null && getSettings().documentation.renderRelatedLocalisationsForDefinitions) {
                 //加上渲染后的相关本地化文本
-                val richText = ParadoxLocalisationTextHtmlRenderer.render(resolved.element, forDoc = true)
+                val richText = ParadoxLocalisationTextHtmlRenderer.render(resolved.element, locale = usedLocale?.id, forDoc = true)
                 sections.put(key, richText)
             }
         }
@@ -688,7 +693,22 @@ private fun DocumentationBuilder.buildLocalisationDefinition(element: ParadoxLoc
 private fun DocumentationBuilder.buildLocalisationSections(element: ParadoxLocalisationProperty) {
     //加上渲染后的本地化文本
     if(!getSettings().documentation.renderLocalisationForLocalisations) return
-    val richText = ParadoxLocalisationTextHtmlRenderer.render(element, forDoc = true)
+    val locale = selectLocale(element)
+    val usedLocale = ParadoxLocaleHandler.getUsedLocaleInDocumentation()
+    val usedElement = when {
+        usedLocale == null -> element
+        usedLocale == locale -> element
+        else -> {
+            val selector = localisationSelector(element.project, element).contextSensitive().preferLocale(usedLocale)
+            val category = element.category
+            when(category) {
+                ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.search(element.name, selector).find()
+                ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(element.name, selector).find()
+                null -> element
+            }?.castOrNull<ParadoxLocalisationProperty>() ?: element
+        }
+    }
+    val richText = ParadoxLocalisationTextHtmlRenderer.render(usedElement, locale = usedLocale?.id, forDoc = true)
     if(richText.isNotEmpty()) {
         sections {
             section(PlsBundle.message("sectionTitle.text"), richText)

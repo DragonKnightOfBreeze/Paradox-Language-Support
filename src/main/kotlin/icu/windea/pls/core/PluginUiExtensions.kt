@@ -6,14 +6,19 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.util.*
 
-fun Row.localeComboBox(settings: ParadoxSettingsState): Cell<ComboBox<String>> {
-    return comboBox(settings.localeList, SimpleListCellRenderer.create { label, value: String, _ ->
-        if(value == "auto") {
-            label.text = PlsBundle.message("locale.auto")
-        } else {
-            label.text = getConfigGroup(null).localisationLocalesById.getValue(value).description
+fun Row.localeComboBox(addDefault: Boolean = false, addAuto: Boolean = false): Cell<ComboBox<String>> {
+    val localeList = buildList {
+        if(addDefault) add("")
+        if(addAuto) add("auto")
+        addAll(ParadoxLocaleHandler.getLocaleConfigMapById(pingPreferred = false).keys)
+    }
+    return comboBox(localeList, SimpleListCellRenderer.create { label, value: String, _ ->
+        when(value) {
+            "" -> label.text = PlsBundle.message("locale.default")
+            "auto" -> label.text = PlsBundle.message("locale.auto")
+            else -> label.text = getConfigGroup(null).localisationLocalesById.getValue(value).description
         }
     })
 }

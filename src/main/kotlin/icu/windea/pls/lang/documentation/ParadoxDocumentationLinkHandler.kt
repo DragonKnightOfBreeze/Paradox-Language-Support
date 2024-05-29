@@ -11,4 +11,3 @@ class ParadoxDocumentationLinkHandler: DocumentationLinkHandler {
         return LinkResolveResult.resolvedTarget(documentationTarget)
     }
 }
-

@@ -29,13 +29,6 @@ class ParadoxSettingsState : BaseState() {
     
     val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet(caseInsensitiveStringSet()).orEmpty() }
     
-    val localeList by lazy {
-        buildList {
-            add("auto")
-            addAll(ParadoxLocaleHandler.getLocaleConfigMapById(pingPreferred = false).keys)
-        }
-    }
-    
     @get:Property(surroundWithTag = false)
     var documentation by property(DocumentationState())
     @get:Property(surroundWithTag = false)
@@ -61,6 +54,7 @@ class ParadoxSettingsState : BaseState() {
      * @property showScopes 是否需要在文档中显示作用域信息（如果支持且存在）。
      * @property showScopeContext 是否需要在文档中显示作用域上下文（如果支持且存在）。
      * @property showParameters 是否需要在文档中显示参数信息（如果支持且存在。）
+     * @property locale 在快速文档中使用的语言区域。如果为空，则表示使用对应的语言区域或者偏好的语言区域。
      */
     @Tag("documentation")
     class DocumentationState : BaseState() {
@@ -73,6 +67,7 @@ class ParadoxSettingsState : BaseState() {
         var showScopes by property(true)
         var showScopeContext by property(true)
         var showParameters by property(true)
+        var locale by string("")
     }
     
     /**

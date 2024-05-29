@@ -174,11 +174,13 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
     val contextElement = referenceElement
     val gameType = configGroup.gameType ?: return
     val project = configGroup.project
+    val usedLocale = ParadoxLocaleHandler.getUsedLocaleInDocumentation()
+    val finalUsedLocale = usedLocale ?: ParadoxLocaleHandler.getPreferredLocale()
     val nameLocalisation = run {
         val keys = ParadoxModifierHandler.getModifierNameKeys(name, contextElement)
         keys.firstNotNullOfOrNull { key ->
             val selector = localisationSelector(project, contextElement).contextSensitive()
-                .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+                .preferLocale(finalUsedLocale)
                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
         }
@@ -187,7 +189,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
         val keys = ParadoxModifierHandler.getModifierDescKeys(name, contextElement)
         keys.firstNotNullOfOrNull { key ->
             val selector = localisationSelector(project, contextElement).contextSensitive()
-                .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+                .preferLocale(finalUsedLocale)
                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
         }
@@ -205,11 +207,11 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
     }
     if(sections != null && render) {
         if(nameLocalisation != null) {
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, locale = usedLocale?.id, forDoc = true)
             sections.put("name", richText)
         }
         if(descLocalisation != null) {
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation, locale = usedLocale?.id, forDoc = true)
             sections.put("desc", richText)
         }
     }

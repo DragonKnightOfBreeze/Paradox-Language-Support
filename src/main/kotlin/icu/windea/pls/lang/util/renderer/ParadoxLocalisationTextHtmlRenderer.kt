@@ -4,13 +4,11 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.ep.*
 import icu.windea.pls.ep.documentation.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
@@ -28,23 +26,22 @@ object ParadoxLocalisationTextHtmlRenderer {
     class Context(
         var builder: DocumentationBuilder,
         val element: ParadoxLocalisationProperty,
+        var color: Color? = null,
+        var locale: String? = null,
+        var forDoc: Boolean = false,
     ) {
         val gameType by lazy { selectGameType(element) }
         
-        var color: Color? = null
-        var forDoc: Boolean = false
         val guardStack = LinkedList<String>() //防止StackOverflow
         val colorStack = LinkedList<Color>()
     }
     
-    fun render(element: ParadoxLocalisationProperty, color: Color? = null, forDoc: Boolean = false): String {
-        return buildDocumentation { renderTo(this, element, color, forDoc) }
+    fun render(element: ParadoxLocalisationProperty, color: Color? = null, locale: String? = null, forDoc: Boolean = false): String {
+        return buildDocumentation { renderTo(this, element, color, locale, forDoc) }
     }
     
-    fun renderTo(builder: DocumentationBuilder, element: ParadoxLocalisationProperty, color: Color? = null, forDoc: Boolean = false) {
-        val context = Context(builder, element)
-        context.color = color
-        context.forDoc = forDoc
+    fun renderTo(builder: DocumentationBuilder, element: ParadoxLocalisationProperty, color: Color? = null, locale: String? = null, forDoc: Boolean = false) {
+        val context = Context(builder, element, color, locale, forDoc)
         context.guardStack.addLast(element.name)
         renderTo(element, context)
     }
@@ -52,6 +49,13 @@ object ParadoxLocalisationTextHtmlRenderer {
     private fun renderTo(element: ParadoxLocalisationProperty, context: Context) {
         val richTextList = element.propertyValue?.richTextList
         if(richTextList.isNullOrEmpty()) return
+        if(context.forDoc) {
+            val locale = context.locale
+            if(locale != null) {
+                //添加语言区域标记
+                context.builder.append("<span locale=\"$locale\"/>")
+            }
+        }
         val color = context.color
         if(color != null) {
             context.colorStack.addLast(color)
