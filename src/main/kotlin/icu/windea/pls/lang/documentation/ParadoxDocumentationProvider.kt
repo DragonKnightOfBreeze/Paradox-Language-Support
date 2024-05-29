@@ -21,11 +21,6 @@ import icu.windea.pls.script.psi.*
 
 @Suppress("UNUSED_PARAMETER")
 class ParadoxDocumentationProvider : AbstractDocumentationProvider() {
-    override fun getDocumentationElementForLookupItem(psiManager: PsiManager?, `object`: Any?, element: PsiElement?): PsiElement? {
-        if(`object` is PsiElement) return `object`
-        return super.getDocumentationElementForLookupItem(psiManager, `object`, element)
-    }
-    
     override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
         if(link == null || context == null) return null
         return DocumentationElementLinkProvider.resolve(link, context)
