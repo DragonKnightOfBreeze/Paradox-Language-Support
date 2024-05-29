@@ -3,6 +3,12 @@
 package icu.windea.pls.core.documentation
 
 import com.intellij.lang.documentation.*
+import icu.windea.pls.core.documentation.DocumentationBuilder.*
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.iterator
 
 inline fun DocumentationBuilder.definition(block: DocumentationBuilder.() -> Unit): DocumentationBuilder {
     append(DocumentationMarkup.DEFINITION_START)
@@ -38,5 +44,16 @@ inline fun DocumentationBuilder.grayed(block: DocumentationBuilder.() -> Unit): 
     append(DocumentationMarkup.GRAYED_START)
     block(this)
     append(DocumentationMarkup.GRAYED_END)
+    return this
+}
+
+fun DocumentationBuilder.buildSections(sectionsList: List<Map<String, String>>): DocumentationBuilder {
+    sections {
+        for(sections in sectionsList) {
+            for((key, value) in sections) {
+                section(key, value)
+            }
+        }
+    }
     return this
 }

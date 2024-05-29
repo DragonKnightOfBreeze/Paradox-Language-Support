@@ -15,6 +15,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.documentation.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.psi.*
@@ -66,7 +67,7 @@ private fun computeLocalDocumentation(element: PsiElement, originalElement: PsiE
 }
 
 private fun getPropertyDoc(element: CwtProperty, originalElement: PsiElement?, quickNavigation: Boolean): String {
-    return buildString {
+    return DocumentationBuilder.buildDocumentation {
         val name = element.name
         val configType = element.configType
         val project = element.project
@@ -74,7 +75,7 @@ private fun getPropertyDoc(element: CwtProperty, originalElement: PsiElement?, q
         //images, localisations, scope infos
         val sectionsList = List(3) { mutableMapOf<String, String>() }
         buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, sectionsList)
-        if(quickNavigation) return@buildString
+        if(quickNavigation) return@buildDocumentation
         buildDocumentationContent(element)
         buildSections(sectionsList)
     }
@@ -84,21 +85,21 @@ private fun getStringDoc(element: CwtString, originalElement: PsiElement?, quick
     //only for property value or block value
     if(!element.isPropertyValue() && !element.isBlockValue()) return null
     
-    return buildString {
+    return DocumentationBuilder.buildDocumentation {
         val name = element.name
         val configType = element.configType
         val project = element.project
         val configGroup = getConfigGroup(element, originalElement, project)
         val sectionsList = List(2) { mutableMapOf<String, String>() }
         buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, sectionsList)
-        if(quickNavigation) return@buildString
+        if(quickNavigation) return@buildDocumentation
         buildDocumentationContent(element)
         buildSections(sectionsList)
     }
 }
 
 private fun getMemberConfigDoc(element: CwtMemberConfigElement, originalElement: PsiElement?, quickNavigation: Boolean): String {
-    return buildString {
+    return DocumentationBuilder.buildDocumentation {
         val name = element.name
         val configType = null
         val project = element.project
@@ -106,13 +107,13 @@ private fun getMemberConfigDoc(element: CwtMemberConfigElement, originalElement:
         //images, localisations, scope infos
         val sectionsList = List(3) { mutableMapOf<String, String>() }
         buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, null)
-        if(quickNavigation) return@buildString
+        if(quickNavigation) return@buildDocumentation
         buildDocumentationContent(element)
         buildSections(sectionsList)
     }
 }
 
-private fun StringBuilder.buildPropertyOrStringDefinition(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, sectionsList: List<MutableMap<String, String>>?) {
+private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, sectionsList: List<MutableMap<String, String>>?) {
     definition {
         appendCwtConfigFileInfoHeader(element)
         
@@ -168,7 +169,7 @@ private fun StringBuilder.buildPropertyOrStringDefinition(element: PsiElement, o
     }
 }
 
-private fun StringBuilder.addModifierRelatedLocalisations(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
     val render = getSettings().documentation.renderNameDescForModifiers
     val contextElement = referenceElement
     val gameType = configGroup.gameType ?: return
@@ -214,7 +215,7 @@ private fun StringBuilder.addModifierRelatedLocalisations(element: PsiElement, r
     }
 }
 
-private fun StringBuilder.addModifierIcon(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
     val render = getSettings().documentation.renderIconForModifiers
     val contextElement = referenceElement
     val gameType = configGroup.gameType ?: return
@@ -236,12 +237,12 @@ private fun StringBuilder.addModifierIcon(element: PsiElement, referenceElement:
     if(sections != null && render) {
         if(iconFile != null) {
             val url = ParadoxImageResolver.resolveUrlByFile(iconFile) ?: ParadoxImageResolver.getDefaultUrl()
-            sections.put("icon", buildString { appendImgTag(url) })
+            sections.put("icon", DocumentationBuilder.buildDocumentation { appendImgTag(url) })
         }
     }
 }
 
-private fun StringBuilder.addScope(element: PsiElement, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+private fun DocumentationBuilder.addScope(element: PsiElement, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
     //即使是在CWT文件中，如果可以推断得到CWT规则组，也显示作用域信息
     
     if(!getSettings().documentation.showScopes) return
@@ -325,7 +326,7 @@ private fun StringBuilder.addScope(element: PsiElement, name: String, configType
     }
 }
 
-private fun StringBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+private fun DocumentationBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
     //进行代码提示时也显示作用域上下文信息
     //@Suppress("DEPRECATION")
     //if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
@@ -343,7 +344,7 @@ private fun StringBuilder.addScopeContext(element: PsiElement, referenceElement:
     sections.put(PlsBundle.message("sectionTitle.scopeContext"), getScopeContextText(scopeContext, gameType, element))
 }
 
-private fun StringBuilder.buildDocumentationContent(element: PsiElement) {
+private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
     //渲染文档注释（可能需要作为HTML）
     var current: PsiElement = element
     var documentationLines: LinkedList<String>? = null
@@ -374,16 +375,6 @@ private fun StringBuilder.buildDocumentationContent(element: PsiElement) {
     val documentation = getDocumentation(documentationLines, html)
     content {
         append(documentation)
-    }
-}
-
-private fun StringBuilder.buildSections(sectionsList: List<Map<String, String>>) {
-    sections {
-        for(sections in sectionsList) {
-            for((key, value) in sections) {
-                section(key, value)
-            }
-        }
     }
 }
 

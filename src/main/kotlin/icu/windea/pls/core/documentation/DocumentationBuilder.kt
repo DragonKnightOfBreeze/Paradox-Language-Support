@@ -3,15 +3,19 @@ package icu.windea.pls.core.documentation
 interface DocumentationBuilder {
     val content: StringBuilder
     
-    fun append(string: String) = content.append(string)
+    fun append(string: String) = apply { content.append(string) }
     
-    fun append(value: Any?) = content.append(value)
+    fun append(value: Any?) = apply { content.append(value) }
     
     companion object {
-        fun buildDocumentation(): DocumentationBuilder = Default()
+        inline fun buildDocumentation(builderAction: DocumentationBuilder.() -> Unit): String {
+            val builder = Default()
+            builder.builderAction()
+            return builder.content.toString()
+        }
     }
     
-    private class Default : DocumentationBuilder {
+    class Default : DocumentationBuilder {
         override val content: StringBuilder = StringBuilder()
     }
 }
