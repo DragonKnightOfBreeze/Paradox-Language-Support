@@ -10,6 +10,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.documentation.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
@@ -41,13 +42,13 @@ interface ParadoxModifierSupport {
      * 构建修正的快速文档中的定义部分。
      * @return 此解析器是否适用。
      */
-    fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: StringBuilder): Boolean = false
+    fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: DocumentationBuilder): Boolean = false
     
     /**
      * 构建定义的快速文档中的定义部分中的对应的生成的修正的那一部分。
      * @return 此解析器是否适用。
      */
-    fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean = false
+    fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = false
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxModifierSupport>("icu.windea.pls.modifierSupport")

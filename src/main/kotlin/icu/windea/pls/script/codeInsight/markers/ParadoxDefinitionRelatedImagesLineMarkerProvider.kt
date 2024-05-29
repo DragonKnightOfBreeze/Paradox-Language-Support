@@ -39,10 +39,10 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : RelatedItemLineMarkerPr
 				targets.addAll(resolved.elements)
 			}
 			if(resolved.message != null) {
-				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
+				if(isFirst) isFirst = false else tooltipBuilder.append("<br>")
 				tooltipBuilder.append(PlsBundle.message("prefix.relatedImage")).append(" ").append(key).append(" = ").append(resolved.message)
 			} else if(resolved.elements.isNotEmpty() && keys.add(key)) {
-				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
+				if(isFirst) isFirst = false else tooltipBuilder.append("<br>")
 				tooltipBuilder.append(PlsBundle.message("prefix.relatedImage")).append(" ").append(key).append(" = ").append(resolved.nameOrFilePath)
 			}
 		}

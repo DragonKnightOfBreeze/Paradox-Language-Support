@@ -10,7 +10,9 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.documentation.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -196,7 +198,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return configGroup.definitionParameterModificationTracker
     }
     
-    override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {
+    override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: DocumentationBuilder): Boolean = with(builder) {
         val definitionName = parameterElement.definitionName ?: return false
         val definitionType = parameterElement.definitionTypes ?: return false
         if(definitionType.isEmpty()) return false
@@ -528,7 +530,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return ParadoxModificationTrackers.InlineScriptsTracker
     }
     
-    override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: StringBuilder): Boolean = with(builder) {
+    override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: DocumentationBuilder): Boolean = with(builder) {
         val inlineScriptExpression = parameterElement.inlineScriptExpression ?: return false
         if(inlineScriptExpression.isEmpty()) return false
         val filePath = ParadoxInlineScriptHandler.getInlineScriptFilePath(inlineScriptExpression) ?: return false

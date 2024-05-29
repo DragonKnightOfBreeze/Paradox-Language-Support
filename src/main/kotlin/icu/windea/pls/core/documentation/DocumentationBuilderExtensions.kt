@@ -3,12 +3,17 @@
 package icu.windea.pls.core.documentation
 
 import com.intellij.lang.documentation.*
-import icu.windea.pls.core.documentation.DocumentationBuilder.*
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.iterator
+
+inline fun buildDocumentation(builderAction: DocumentationBuilder.() -> Unit): String {
+    val builder = DocumentationBuilder()
+    builder.builderAction()
+    return builder.content.toString()
+}
 
 inline fun DocumentationBuilder.definition(block: DocumentationBuilder.() -> Unit): DocumentationBuilder {
     append(DocumentationMarkup.DEFINITION_START)

@@ -78,7 +78,7 @@ private fun computeLocalDocumentation(element: PsiElement, originalElement: PsiE
 }
 
 private fun getParameterDoc(element: ParadoxParameterElement, originalElement: PsiElement?, quickNavigation: Boolean): String {
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         buildParameterDefinition(element)
         if(quickNavigation) return@buildDocumentation
         buildDocumentationContent(element)
@@ -86,13 +86,13 @@ private fun getParameterDoc(element: ParadoxParameterElement, originalElement: P
 }
 
 private fun getLocalisationParameterDoc(element: ParadoxLocalisationParameterElement, originalElement: PsiElement?, quickNavigation: Boolean): String {
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         buildLocalisationParameterDefinition(element)
     }
 }
 
 private fun getComplexEnumValueDoc(element: ParadoxComplexEnumValueElement, originalElement: PsiElement?, quickNavigation: Boolean): String {
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         val sectionsList = List(1) { mutableMapOf<String, String>() }
         buildComplexEnumValueDefinition(element, sectionsList)
         if(quickNavigation) return@buildDocumentation
@@ -102,7 +102,7 @@ private fun getComplexEnumValueDoc(element: ParadoxComplexEnumValueElement, orig
 }
 
 private fun getDynamicValueDoc(element: ParadoxDynamicValueElement, originalElement: PsiElement?, quickNavigation: Boolean): String {
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         val sectionsList = List(1) { mutableMapOf<String, String>() }
         buildDynamicValueDefinition(element, sectionsList)
         if(quickNavigation) return@buildDocumentation
@@ -112,7 +112,7 @@ private fun getDynamicValueDoc(element: ParadoxDynamicValueElement, originalElem
 }
 
 private fun getModifierDoc(element: ParadoxModifierElement, originalElement: PsiElement?, quickNavigation: Boolean): String {
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         val sectionsList = List(3) { mutableMapOf<String, String>() }
         buildModifierDefinition(element, sectionsList)
         if(quickNavigation) return@buildDocumentation
@@ -122,7 +122,7 @@ private fun getModifierDoc(element: ParadoxModifierElement, originalElement: Psi
 
 private fun getScriptedVariableDoc(element: ParadoxScriptScriptedVariable, originalElement: PsiElement?, quickNavigation: Boolean): String? {
     val name = element.name ?: return null
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         buildScriptedVariableDefinition(element, name)
         if(quickNavigation) return@buildDocumentation
         buildDocumentationContent(element)
@@ -134,7 +134,7 @@ private fun getPropertyDoc(element: ParadoxScriptProperty, originalElement: PsiE
     val definitionInfo = element.definitionInfo
     if(definitionInfo != null) return getDefinitionDoc(element, definitionInfo, originalElement, quickNavigation)
     val name = element.name
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         buildPropertyDefinition(element, name)
         if(quickNavigation) return@buildDocumentation
         buildLineCommentContent(element)
@@ -142,7 +142,7 @@ private fun getPropertyDoc(element: ParadoxScriptProperty, originalElement: PsiE
 }
 
 private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, originalElement: PsiElement?, quickNavigation: Boolean): String {
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         //在definition部分，相关图片信息显示在相关本地化信息之后，在sections部分则显示在之前
         val sectionsList = List(4) { mutableMapOf<String, String>() }
         buildDefinitionDefinition(element, definitionInfo, sectionsList)
@@ -157,20 +157,20 @@ private fun getLocalisationPropertyDoc(element: ParadoxLocalisationProperty, ori
     val name = element.name
     val category = element.category
     if(category != null) return getLocalisationDoc(element, name, category, originalElement, quickNavigation)
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         buildLocalisationPropertyDefinition(element)
     }
 }
 
 private fun getLocalisationLocaleDoc(element: ParadoxLocalisationLocale, originalElement: PsiElement?, quickNavigation: Boolean): String {
     val name = element.name
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         buildLocalisationLocaleDefinition(name)
     }
 }
 
 private fun getLocalisationDoc(element: ParadoxLocalisationProperty, name: String, category: ParadoxLocalisationCategory, originalElement: PsiElement?, quickNavigation: Boolean): String {
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         buildLocalisationDefinition(element, category, name)
         if(quickNavigation) return@buildDocumentation
         buildLineCommentContent(element)
@@ -180,28 +180,28 @@ private fun getLocalisationDoc(element: ParadoxLocalisationProperty, name: Strin
 
 private fun getLocalisationIconDoc(element: ParadoxLocalisationIcon, originalElement: PsiElement?, quickNavigation: Boolean): String? {
     val name = element.name ?: return null
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         buildLocalisationIconDefinition(name)
     }
 }
 
 private fun getLocalisationCommandScopeDoc(element: ParadoxLocalisationCommandScope, originalElement: PsiElement?, quickNavigation: Boolean): String {
     val name = element.name
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         buildLocalisationCommandScopeDefinition(name)
     }
 }
 
 private fun getLocalisationCommandFieldDoc(element: ParadoxLocalisationCommandField, originalElement: PsiElement?, quickNavigation: Boolean): String {
     val name = element.name
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         buildLocalisationCommandFieldDefinition(name)
     }
 }
 
 private fun getLocalisationColorDoc(element: ParadoxLocalisationColorfulText, originalElement: PsiElement?, quickNavigation: Boolean): String? {
     val name = element.name ?: return null
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         //加上元素定义信息
         buildLocalisationColorDefinition(name)
     }
@@ -356,7 +356,7 @@ private fun DocumentationBuilder.addModifierIcon(element: ParadoxModifierElement
     if(sections != null && render) {
         if(iconFile != null) {
             val url = ParadoxImageResolver.resolveUrlByFile(iconFile) ?: ParadoxImageResolver.getDefaultUrl()
-            sections.put("icon", DocumentationBuilder.buildDocumentation { appendImgTag(url) })
+            sections.put("icon", buildDocumentation { appendImgTag(url) })
         }
     }
 }
@@ -516,7 +516,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: P
         if(resolved.message != null) {
             map.put(key, resolved.message)
         } else if(resolved.element != null) {
-            map.put(key, DocumentationBuilder.buildDocumentation { appendLocalisationLink(definitionInfo.gameType, resolved.name, element) })
+            map.put(key, buildDocumentation { appendLocalisationLink(definitionInfo.gameType, resolved.name, element) })
         } else if(required) {
             map.putIfAbsent(key, resolved.name)
         }
@@ -551,8 +551,8 @@ private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxS
             val nameOrFilePath = resolved.nameOrFilePath
             val gameType = definitionInfo.gameType
             val v = when {
-                nameOrFilePath.startsWith("GFX") -> DocumentationBuilder.buildDocumentation { appendDefinitionLink(gameType, nameOrFilePath, "sprite", element) }
-                else -> DocumentationBuilder.buildDocumentation { appendFilePathLink(gameType, nameOrFilePath, nameOrFilePath, element) }
+                nameOrFilePath.startsWith("GFX") -> buildDocumentation { appendDefinitionLink(gameType, nameOrFilePath, "sprite", element) }
+                else -> buildDocumentation { appendFilePathLink(gameType, nameOrFilePath, nameOrFilePath, element) }
             }
             map.put(key, v)
         } else if(required) {
@@ -573,7 +573,7 @@ private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxS
                     }
                     else -> continue
                 }
-                sections.put(key, DocumentationBuilder.buildDocumentation { appendImgTag(url) })
+                sections.put(key, buildDocumentation { appendImgTag(url) })
             }
         }
     }
@@ -625,7 +625,7 @@ private fun DocumentationBuilder.addParametersForDefinition(element: ParadoxScri
     if(sections == null) return
     val parameterContextInfo = ParadoxParameterSupport.getContextInfo(element) ?: return
     if(parameterContextInfo.parameters.isEmpty()) return //ignore
-    val parametersText = DocumentationBuilder.buildDocumentation {
+    val parametersText = buildDocumentation {
         var isFirst = true
         parameterContextInfo.parameters.forEach { (parameterName, elements) ->
             if(isFirst) isFirst = false else append("<br>")

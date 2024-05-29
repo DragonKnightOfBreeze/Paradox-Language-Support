@@ -5,11 +5,13 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.documentation.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.*
 import icu.windea.pls.ep.documentation.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.image.*
@@ -24,7 +26,7 @@ import javax.swing.*
 @Suppress("unused")
 object ParadoxLocalisationTextHtmlRenderer {
     class Context(
-        var builder: StringBuilder,
+        var builder: DocumentationBuilder,
         val element: ParadoxLocalisationProperty,
     ) {
         val gameType by lazy { selectGameType(element) }
@@ -36,10 +38,10 @@ object ParadoxLocalisationTextHtmlRenderer {
     }
     
     fun render(element: ParadoxLocalisationProperty, color: Color? = null, forDoc: Boolean = false): String {
-        return buildString { renderTo(this, element, color, forDoc) }
+        return buildDocumentation { renderTo(this, element, color, forDoc) }
     }
     
-    fun renderTo(builder: StringBuilder, element: ParadoxLocalisationProperty, color: Color? = null, forDoc: Boolean = false) {
+    fun renderTo(builder: DocumentationBuilder, element: ParadoxLocalisationProperty, color: Color? = null, forDoc: Boolean = false) {
         val context = Context(builder, element)
         context.color = color
         context.forDoc = forDoc
@@ -75,7 +77,7 @@ object ParadoxLocalisationTextHtmlRenderer {
     }
     
     private fun renderStringTo(element: ParadoxLocalisationString, context: Context) {
-        ParadoxEscapeManager.unescapeLocalisationString(element.text.escapeXml(), context.builder, ParadoxEscapeManager.Type.Html)
+        ParadoxEscapeManager.unescapeLocalisationString(element.text.escapeXml(), context.builder.content, ParadoxEscapeManager.Type.Html)
     }
     
     private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {
@@ -151,7 +153,7 @@ object ParadoxLocalisationTextHtmlRenderer {
                 else -> null
             }
             if(richTextList != null) {
-                val newBuilder = StringBuilder()
+                val newBuilder = DocumentationBuilder()
                 val oldBuilder = context.builder
                 context.builder = newBuilder
                 for(v in richTextList) {

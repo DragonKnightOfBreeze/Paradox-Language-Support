@@ -474,30 +474,6 @@ object ParadoxScopeHandler {
         }
     }
     
-    fun buildScopeDoc(scopeId: String, gameType: ParadoxGameType?, contextElement: PsiElement, builder: StringBuilder) {
-        with(builder) {
-            when {
-                isUnsureScopeId(scopeId) -> append(scopeId)
-                else -> appendCwtLink("${gameType.prefix}scopes/$scopeId", scopeId, contextElement)
-            }
-        }
-    }
-    
-    fun buildScopeContextDoc(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement, builder: StringBuilder) {
-        with(builder) {
-            var appendSeparator = false
-            scopeContext.toScopeMap().forEach { (systemLink, scope) ->
-                if(appendSeparator) appendBr() else appendSeparator = true
-                appendCwtLink("${gameType.prefix}system_links/$systemLink", systemLink, contextElement)
-                append(" = ")
-                when {
-                    isUnsureScopeId(scope.id) -> append(scope)
-                    else -> appendCwtLink("${gameType.prefix}scopes/${scope.id}", scope.id, contextElement)
-                }
-            }
-        }
-    }
-    
     fun mergeScopeId(scopeId: String?, otherScopeId: String?): String? {
         if(scopeId == otherScopeId) return scopeId
         if(scopeId == anyScopeId || otherScopeId == anyScopeId) return anyScopeId

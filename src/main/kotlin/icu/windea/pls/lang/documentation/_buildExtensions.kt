@@ -1,14 +1,18 @@
-package icu.windea.pls.core.documentation
+@file:Suppress("UnusedReceiverParameter")
+
+package icu.windea.pls.lang.documentation
 
 import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.documentation.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.ep.documentation.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.ParadoxScopeHandler.isUnsureScopeId
 import icu.windea.pls.model.*
 
 fun DocumentationBuilder.appendBr(): DocumentationBuilder {
@@ -185,5 +189,69 @@ fun DocumentationBuilder.appendModifierLink(
     val finalLink = "$linkPrefix$name".escapeXml()
     val finalLinkText = label
     return appendPsiLink(finalLink, finalLinkText)
+}
+
+fun DocumentationBuilder.buildScopeDoc(scopeId: String, gameType: ParadoxGameType?, contextElement: PsiElement): DocumentationBuilder {
+    when {
+        isUnsureScopeId(scopeId) -> append(scopeId)
+        else -> appendCwtLink("${gameType.prefix}scopes/$scopeId", scopeId, contextElement)
+    }
+    return this
+}
+
+fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement): DocumentationBuilder {
+    var appendSeparator = false
+    scopeContext.toScopeMap().forEach { (systemLink, scope) ->
+        if(appendSeparator) appendBr() else appendSeparator = true
+        appendCwtLink("${gameType.prefix}system_links/$systemLink", systemLink, contextElement)
+        append(" = ")
+        when {
+            isUnsureScopeId(scope.id) -> append(scope)
+            else -> appendCwtLink("${gameType.prefix}scopes/${scope.id}", scope.id, contextElement)
+        }
+    }
+    return this
+}
+
+fun DocumentationBuilder.getModifierCategoriesText(categories: Set<String>, gameType: ParadoxGameType, contextElement: PsiElement): String {
+    if(categories.isEmpty()) return ""
+    return buildDocumentation {
+        append("<code>")
+        var appendSeparator = false
+        for(category in categories) {
+            if(appendSeparator) append(", ") else appendSeparator = true
+            appendCwtLink("${gameType.prefix}modifier_categories/$category", category, contextElement)
+        }
+        append("</code>")
+    }
+}
+
+fun DocumentationBuilder.getScopeText(scopeId: String, gameType: ParadoxGameType, contextElement: PsiElement): String {
+    return buildDocumentation {
+        append("<code>")
+        buildScopeDoc(scopeId, gameType, contextElement)
+        append("</code>")
+    }
+}
+
+fun DocumentationBuilder.getScopesText(scopeIds: Set<String>, gameType: ParadoxGameType, contextElement: PsiElement): String {
+    if(scopeIds.isEmpty()) return ""
+    return buildDocumentation {
+        append("<code>")
+        var appendSeparator = false
+        for(scopeId in scopeIds) {
+            if(appendSeparator) append(", ") else appendSeparator = true
+            buildScopeDoc(scopeId, gameType, contextElement)
+        }
+        append("</code>")
+    }
+}
+
+fun DocumentationBuilder.getScopeContextText(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement): String {
+    return buildDocumentation {
+        append("<code>")
+        buildScopeContextDoc(scopeContext, gameType, contextElement)
+        append("</code>")
+    }
 }
 

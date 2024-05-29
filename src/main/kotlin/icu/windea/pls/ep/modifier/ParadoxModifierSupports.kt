@@ -13,9 +13,11 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.documentation.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
+import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.search.*
@@ -186,7 +188,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         return modifierElement.modifierConfig?.categoryConfigMap
     }
     
-    override fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: StringBuilder): Boolean = with(builder) {
+    override fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: DocumentationBuilder): Boolean = with(builder) {
         val modifierConfig = modifierElement.modifierConfig ?: return false
         val templateReferences = modifierElement.templateReferences ?: return false
         
@@ -272,7 +274,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         return true
     }
     
-    override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean = with(builder) {
+    override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = with(builder) {
         val modifiers = definitionInfo.modifiers
         if(modifiers.isEmpty()) return false
         for(modifier in modifiers) {
@@ -388,7 +390,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         return StellarisEconomicCategoryHandler.resolveModifierCategory(modifierCategory, configGroup)
     }
     
-    override fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: StringBuilder): Boolean = with(builder) {
+    override fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: DocumentationBuilder): Boolean = with(builder) {
         val gameType = modifierElement.gameType
         val economicCategoryInfo = modifierElement.economicCategoryInfo ?: return false
         val modifierInfo = modifierElement.economicCategoryModifierInfo ?: return false
@@ -414,7 +416,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         return true
     }
     
-    override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: StringBuilder): Boolean = with(builder) {
+    override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = with(builder) {
         val gameType = definitionInfo.gameType
         val configGroup = definitionInfo.configGroup
         val project = configGroup.project

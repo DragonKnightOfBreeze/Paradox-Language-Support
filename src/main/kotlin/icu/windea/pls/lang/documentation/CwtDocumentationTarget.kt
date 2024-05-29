@@ -67,7 +67,7 @@ private fun computeLocalDocumentation(element: PsiElement, originalElement: PsiE
 }
 
 private fun getPropertyDoc(element: CwtProperty, originalElement: PsiElement?, quickNavigation: Boolean): String {
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         val name = element.name
         val configType = element.configType
         val project = element.project
@@ -85,7 +85,7 @@ private fun getStringDoc(element: CwtString, originalElement: PsiElement?, quick
     //only for property value or block value
     if(!element.isPropertyValue() && !element.isBlockValue()) return null
     
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         val name = element.name
         val configType = element.configType
         val project = element.project
@@ -99,7 +99,7 @@ private fun getStringDoc(element: CwtString, originalElement: PsiElement?, quick
 }
 
 private fun getMemberConfigDoc(element: CwtMemberConfigElement, originalElement: PsiElement?, quickNavigation: Boolean): String {
-    return DocumentationBuilder.buildDocumentation {
+    return buildDocumentation {
         val name = element.name
         val configType = null
         val project = element.project
@@ -237,7 +237,7 @@ private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceE
     if(sections != null && render) {
         if(iconFile != null) {
             val url = ParadoxImageResolver.resolveUrlByFile(iconFile) ?: ParadoxImageResolver.getDefaultUrl()
-            sections.put("icon", DocumentationBuilder.buildDocumentation { appendImgTag(url) })
+            sections.put("icon", buildDocumentation { appendImgTag(url) })
         }
     }
 }

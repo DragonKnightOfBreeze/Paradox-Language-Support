@@ -7,6 +7,8 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.documentation.*
+import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
@@ -52,7 +54,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         return resolved
     }
     
-    override fun buildDocumentationDefinition(element: ParadoxLocalisationParameterElement, builder: StringBuilder): Boolean = with(builder) {
+    override fun buildDocumentationDefinition(element: ParadoxLocalisationParameterElement, builder: DocumentationBuilder): Boolean = with(builder) {
         //不加上文件信息
         
         //加上名字
