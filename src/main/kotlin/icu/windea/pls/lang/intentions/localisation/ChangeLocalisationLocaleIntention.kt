@@ -8,6 +8,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -52,7 +53,7 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
         private val value: ParadoxLocalisationLocale,
         values: Array<CwtLocalisationLocaleConfig>
     ) : BaseListPopupStep<CwtLocalisationLocaleConfig>(PlsBundle.message("intention.changeLocalisationLocale.title"), *values) {
-        override fun getIconFor(value: CwtLocalisationLocaleConfig) = value.icon
+        override fun getIconFor(value: CwtLocalisationLocaleConfig) = PlsIcons.LocalisationNodes.Locale
         
         override fun getTextFor(value: CwtLocalisationLocaleConfig) = value.text
         

@@ -4,7 +4,6 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.cwt.psi.*
@@ -27,7 +26,6 @@ object ParadoxLocalisationTextHtmlRenderer {
         var builder: DocumentationBuilder,
         val element: ParadoxLocalisationProperty,
         var color: Color? = null,
-        var locale: String? = null,
         var forDoc: Boolean = false,
     ) {
         val gameType by lazy { selectGameType(element) }
@@ -36,12 +34,12 @@ object ParadoxLocalisationTextHtmlRenderer {
         val colorStack = LinkedList<Color>()
     }
     
-    fun render(element: ParadoxLocalisationProperty, color: Color? = null, locale: String? = null, forDoc: Boolean = false): String {
-        return buildDocumentation { renderTo(this, element, color, locale, forDoc) }
+    fun render(element: ParadoxLocalisationProperty, color: Color? = null, forDoc: Boolean = false): String {
+        return buildDocumentation { renderTo(this, element, color) }
     }
     
-    fun renderTo(builder: DocumentationBuilder, element: ParadoxLocalisationProperty, color: Color? = null, locale: String? = null, forDoc: Boolean = false) {
-        val context = Context(builder, element, color, locale, forDoc)
+    fun renderTo(builder: DocumentationBuilder, element: ParadoxLocalisationProperty, color: Color? = null, forDoc: Boolean = false) {
+        val context = Context(builder, element, color, forDoc)
         context.guardStack.addLast(element.name)
         renderTo(element, context)
     }
@@ -49,13 +47,6 @@ object ParadoxLocalisationTextHtmlRenderer {
     private fun renderTo(element: ParadoxLocalisationProperty, context: Context) {
         val richTextList = element.propertyValue?.richTextList
         if(richTextList.isNullOrEmpty()) return
-        if(context.forDoc) {
-            val locale = context.locale
-            if(locale != null) {
-                //添加语言区域标记
-                context.builder.append("<span locale=\"$locale\"/>")
-            }
-        }
         val color = context.color
         if(color != null) {
             context.colorStack.addLast(color)

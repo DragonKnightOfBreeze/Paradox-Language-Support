@@ -1,10 +1,15 @@
 package icu.windea.pls.core.documentation
 
-class DocumentationBuilder {
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.core.util.*
+
+class DocumentationBuilder: UserDataHolderBase() {
     val content: StringBuilder = StringBuilder()
     
     fun append(string: String) = apply { content.append(string) }
     
     fun append(value: Any?) = apply { content.append(value) }
+    
+    object Keys: KeyRegistry("DocumentationBuilder")
 }
 

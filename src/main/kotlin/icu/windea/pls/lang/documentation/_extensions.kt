@@ -9,9 +9,12 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.newvfs.*
+import com.intellij.platform.backend.documentation.*
 import com.intellij.platform.backend.presentation.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.*
 
 fun defaultTargetPresentation(element: PsiElement):TargetPresentation {
     //this implementation is similar to [com.intellij.codeInsight.navigation.targetPresentation], with some modifications
@@ -41,4 +44,20 @@ private fun ItemPresentation.getColoredAttributes(): TextAttributes? {
 
 private fun ItemPresentation.getContainerText(): String? {
     return locationString
+}
+
+interface LocaleAwareDocumentationTarget: DocumentationTarget {
+    var targetLocale: String?
+    
+}
+
+fun LocaleAwareDocumentationTarget.getTargetLocaleConfig(): CwtLocalisationLocaleConfig? {
+    val targetLocale = targetLocale
+    if(targetLocale == null) return null
+    if(targetLocale == "auto") return CwtLocalisationLocaleConfig.AUTO
+    return ParadoxLocaleHandler.getLocaleConfigById(targetLocale)
+}
+
+fun LocaleAwareDocumentationTarget.setTargetLocaleConfig(localeConfig: CwtLocalisationLocaleConfig?) {
+    targetLocale = localeConfig?.id
 }

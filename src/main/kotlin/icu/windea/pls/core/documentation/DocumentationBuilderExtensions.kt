@@ -3,11 +3,8 @@
 package icu.windea.pls.core.documentation
 
 import com.intellij.lang.documentation.*
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.iterator
+import icu.windea.pls.core.util.*
+import icu.windea.pls.core.*
 
 inline fun buildDocumentation(builderAction: DocumentationBuilder.() -> Unit): String {
     val builder = DocumentationBuilder()
@@ -41,7 +38,7 @@ inline fun DocumentationBuilder.section(title: CharSequence, value: CharSequence
     append(title).append(": ")
     append(DocumentationMarkup.SECTION_SEPARATOR).append("<p>")
     append(value)
-    append(DocumentationMarkup.SECTION_END)
+    append(DocumentationMarkup.SECTIONS_END)
     return this
 }
 
@@ -52,7 +49,19 @@ inline fun DocumentationBuilder.grayed(block: DocumentationBuilder.() -> Unit): 
     return this
 }
 
-fun DocumentationBuilder.buildSections(sectionsList: List<Map<String, String>>): DocumentationBuilder {
+var DocumentationBuilder.sectionsList: List<MutableMap<String, String>>? by createKeyDelegate(DocumentationBuilder.Keys)
+
+fun DocumentationBuilder.initSections(listSize: Int) {
+    sectionsList = List(listSize) { mutableMapOf() }
+}
+
+fun DocumentationBuilder.getSections(index: Int): MutableMap<String, String>? {
+    return sectionsList?.getOrNull(index)
+}
+
+fun DocumentationBuilder.buildSections() {
+    val sectionsList = this.sectionsList
+    if(sectionsList.isNullOrEmpty()) return
     sections {
         for(sections in sectionsList) {
             for((key, value) in sections) {
@@ -60,5 +69,4 @@ fun DocumentationBuilder.buildSections(sectionsList: List<Map<String, String>>):
             }
         }
     }
-    return this
 }

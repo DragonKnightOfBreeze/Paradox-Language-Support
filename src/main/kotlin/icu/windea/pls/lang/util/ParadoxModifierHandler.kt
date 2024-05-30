@@ -132,7 +132,7 @@ object ParadoxModifierHandler {
         val keys = getModifierNameKeys(name, element)
         return keys.firstNotNullOfOrNull { key ->
             val selector = localisationSelector(project, element)
-                .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+                .preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
             val localizedNames = mutableSetOf<String>()
             ParadoxLocalisationSearch.search(key, selector).processQueryAsync { localisation ->

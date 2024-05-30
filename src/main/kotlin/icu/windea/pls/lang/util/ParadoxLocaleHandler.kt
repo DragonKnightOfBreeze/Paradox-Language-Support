@@ -1,22 +1,27 @@
 package icu.windea.pls.lang.util
 
+import com.intellij.psi.PsiElement
+import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 
 object ParadoxLocaleHandler {
-    fun getPreferredLocale(): CwtLocalisationLocaleConfig {
-        return getLocale(getSettings().preferredLocale.orEmpty())
+    fun getPreferredLocaleConfig(): CwtLocalisationLocaleConfig {
+        return getLocaleConfig(getSettings().preferredLocale.orEmpty())
     }
     
-    fun getUsedLocaleInDocumentation(): CwtLocalisationLocaleConfig? {
-        val localeInSettings = getSettings().documentation.locale?.orNull()
-        if(localeInSettings == null) return null
-        return getLocale(localeInSettings)
+    fun getUsedLocaleInDocumentation(element: PsiElement, defaultLocale: CwtLocalisationLocaleConfig? = null): CwtLocalisationLocaleConfig {
+        val cache = element.getOrPutUserData(PlsKeys.documentationLocale) { "auto" }
+        val usedLocaleFromCache = when {
+            cache == "auto" -> null
+            else -> getLocaleConfigById(cache)
+        }
+        return usedLocaleFromCache ?: defaultLocale ?: getPreferredLocaleConfig()
     }
     
-    fun getLocale(localeString: String): CwtLocalisationLocaleConfig {
+    fun getLocaleConfig(localeString: String): CwtLocalisationLocaleConfig {
         //基于localeString得到对应的语言区域
         if(localeString.isNotEmpty() && localeString != "auto") {
             val localesById = getConfigGroup(null).localisationLocalesById
@@ -29,10 +34,14 @@ object ParadoxLocaleHandler {
         return localesByCode.get(userLanguage) ?: localesByCode.get("en") ?: throw IllegalStateException()
     }
     
+    fun getLocaleConfigById(id: String): CwtLocalisationLocaleConfig? {
+        return getConfigGroup(null).localisationLocalesById[id]
+    }
+    
     fun getLocaleConfigs(pingPreferred: Boolean = true, noDefault: Boolean = true): List<CwtLocalisationLocaleConfig> {
         var locales: Collection<CwtLocalisationLocaleConfig> = getConfigGroup(null).localisationLocalesById.values
         if(pingPreferred) {
-            val preferredLocale = getPreferredLocale()
+            val preferredLocale = getPreferredLocaleConfig()
             locales = locales.pinned { it == preferredLocale }
         }
         if(noDefault) {
@@ -41,11 +50,4 @@ object ParadoxLocaleHandler {
         return locales.toListOrThis()
     }
     
-    fun getLocaleConfigMapById(pingPreferred: Boolean = true, noDefault: Boolean = true): Map<String, CwtLocalisationLocaleConfig> {
-        return getLocaleConfigs(pingPreferred, noDefault).associateBy { it.id }
-    }
-    
-    fun getLocaleConfigMapByShortId(pingPreferred: Boolean = true, noDefault: Boolean = true): Map<String, CwtLocalisationLocaleConfig> {
-        return getLocaleConfigs(pingPreferred, noDefault).associateBy { it.id.removePrefix("l_") }
-    }
 }

@@ -10,7 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.lang.ui.*
+import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.script.psi.*
@@ -34,9 +34,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField var checkModifierDescriptions = false
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val allLocaleMap = ParadoxLocaleHandler.getLocaleConfigMapById()
+        val allLocaleMap = ParadoxLocaleHandler.getLocaleConfigs().associateBy { it.id }
         val locales = mutableSetOf<CwtLocalisationLocaleConfig>()
-        if(checkForPreferredLocale) locales.add(ParadoxLocaleHandler.getPreferredLocale())
+        if(checkForPreferredLocale) locales.add(ParadoxLocaleHandler.getPreferredLocaleConfig())
         if(checkForSpecificLocales) this.locales.mapNotNullTo(locales) { allLocaleMap.get(it) }
         if(locales.isEmpty()) return PsiElementVisitor.EMPTY_VISITOR
         return object : PsiElementVisitor() {
@@ -132,7 +132,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     .bindSelected(::checkForSpecificLocales)
                     .actionListener { _, component -> checkForSpecificLocales = component.isSelected }
                 cell(ActionLink(PlsBundle.message("inspection.script.missingLocalisation.option.checkForSpecificLocales.configure")) {
-                    val allLocaleMap = ParadoxLocaleHandler.getLocaleConfigMapById()
+                    val allLocaleMap = ParadoxLocaleHandler.getLocaleConfigs().associateBy { it.id }
                     val selectedLocales = locales.mapNotNull { allLocaleMap.get(it) }
                     val dialog = ParadoxLocaleCheckBoxDialog(selectedLocales, allLocaleMap.values)
                     if(dialog.showAndGet()) {

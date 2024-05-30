@@ -695,7 +695,7 @@ object ParadoxDefinitionHandler {
         if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
         val project = definitionInfo.project
         for(primaryLocalisation in primaryLocalisations) {
-            val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+            val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
             val resolved = primaryLocalisation.locationExpression.resolve(element, definitionInfo, selector)
             val key = resolved?.name ?: continue
             return key
@@ -721,7 +721,7 @@ object ParadoxDefinitionHandler {
         if(primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
         val project = definitionInfo.project
         for(primaryLocalisation in primaryLocalisations) {
-            val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+            val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
             val resolved = primaryLocalisation.locationExpression.resolve(element, definitionInfo, selector)
             val localisation = resolved?.element ?: continue
             return localisation
@@ -749,7 +749,7 @@ object ParadoxDefinitionHandler {
         val project = definitionInfo.project
         val result = mutableSetOf<ParadoxLocalisationProperty>()
         for(primaryLocalisation in primaryLocalisations) {
-            val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+            val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
             val resolved = primaryLocalisation.locationExpression.resolveAll(element, definitionInfo, selector)
             val localisations = resolved?.elements ?: continue
             result.addAll(localisations)

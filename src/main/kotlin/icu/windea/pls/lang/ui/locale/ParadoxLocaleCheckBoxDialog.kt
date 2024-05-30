@@ -1,6 +1,6 @@
 @file:Suppress("CanBeParameter")
 
-package icu.windea.pls.lang.ui
+package icu.windea.pls.lang.ui.locale
 
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*

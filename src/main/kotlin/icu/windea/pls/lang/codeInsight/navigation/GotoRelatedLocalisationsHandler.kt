@@ -40,7 +40,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     ProgressManager.checkCanceled()
                     //need read action here
                     runReadAction {
-                        val selector = localisationSelector(project, definition).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+                        val selector = localisationSelector(project, definition).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
                         val resolved = locationExpression.resolveAll(definition, definitionInfo, selector)
                         if(resolved != null && resolved.elements.isNotEmpty()) {
                             targets.addAll(resolved.elements)
@@ -60,7 +60,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                         val keys = ParadoxModifierHandler.getModifierNameKeys(modifierElement.name, modifierElement)
                         val result = keys.firstNotNullOfOrNull { key ->
                             val selector = localisationSelector(project, element).contextSensitive()
-                                .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+                                .preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
                                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
                             ParadoxLocalisationSearch.search(key, selector).findAll().orNull()
                         }
@@ -70,7 +70,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                         val keys = ParadoxModifierHandler.getModifierDescKeys(modifierElement.name, modifierElement)
                         val result = keys.firstNotNullOfOrNull { key ->
                             val selector = localisationSelector(project, element).contextSensitive()
-                                .preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+                                .preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
                                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
                             ParadoxLocalisationSearch.search(key, selector).findAll().orNull()
                         }

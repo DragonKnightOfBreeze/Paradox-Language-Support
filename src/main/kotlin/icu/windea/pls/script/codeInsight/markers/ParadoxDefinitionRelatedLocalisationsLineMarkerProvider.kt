@@ -38,7 +38,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
 		val project = element.project
 		for((key, locationExpression) in localisationInfos) {
 			ProgressManager.checkCanceled()
-			val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+			val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
 			val resolved = locationExpression.resolveAll(element, definitionInfo, selector) ?: continue
 			if(resolved.elements.isNotEmpty()) {
 				targets.addAll(resolved.elements)

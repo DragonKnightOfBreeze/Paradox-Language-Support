@@ -9,8 +9,6 @@ interface CwtLocalisationPredefinedParameterConfig : CwtDelegatedConfig<CwtPrope
     val mockValue: String
     val description: String
     
-    val icon: Icon get() = PlsIcons.Nodes.PredefinedParameter
-    
     companion object {
         fun resolve(config: CwtPropertyConfig): CwtLocalisationPredefinedParameterConfig {
             return doResolve(config)

@@ -9,8 +9,6 @@ interface CwtSystemLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfi
     val description: String
     val name: String
     
-    val icon get() = PlsIcons.Nodes.SystemScope
-    
     companion object {
         fun resolve(config: CwtPropertyConfig): CwtSystemLinkConfig = doResolve(config)
     }

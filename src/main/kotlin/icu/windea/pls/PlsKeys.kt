@@ -60,6 +60,8 @@ val PlsKeys.parameterValueInjectionInfos by createKey<List<ParameterValueInjecti
 
 //用于将CWT规则临时写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
 val PlsKeys.cwtConfig by createKey<CwtConfig<*>>("paradox.cwtConfig")
+//用于标记快速文档使用的本地化语言区域
+val PlsKeys.documentationLocale by createKey<String>("paradox.documentationLocale")
 //用于在进行代码补全时标记光标位置
 val PlsKeys.completionOffset by createKey<Int>("paradox.completionOffset")
 //用于在进行代码补全时标记作用域不匹配

@@ -10,6 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.ui.*
+import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.script.psi.*
@@ -38,9 +39,9 @@ class ParadoxGenerateLocalisationsHandler(
             ParadoxLocalisationGenerator.generate(context, selectedElements, project, file, selected)
         }
         
-        val selectedLocale = ParadoxLocaleHandler.getPreferredLocale()
+        val selectedLocale = ParadoxLocaleHandler.getPreferredLocaleConfig()
         val allLocales = ParadoxLocaleHandler.getLocaleConfigs()
-        val localePopup = ParadoxLocalePopup(selectedLocale, allLocales, onChosen)
+        val localePopup = ParadoxLocaleListPopup(selectedLocale, allLocales, onChosen)
         JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
     }
     

@@ -6,6 +6,7 @@ import com.intellij.model.*
 import com.intellij.openapi.project.*
 import com.intellij.platform.backend.documentation.*
 import com.intellij.platform.backend.presentation.*
+import com.intellij.pom.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.suggested.*
@@ -31,7 +32,7 @@ import java.util.*
 
 //org.jetbrains.kotlin.idea.k2.codeinsight.quickDoc.KotlinDocumentationTarget
 
-class CwtDocumentationTarget(val element: PsiElement, val originalElement: PsiElement?) : DocumentationTarget {
+class CwtDocumentationTarget(val element: PsiElement, val originalElement: PsiElement?) : LocaleAwareDocumentationTarget {
     override fun createPointer(): Pointer<out DocumentationTarget> {
         val elementPtr = element.createSmartPointer()
         val originalElementPtr = originalElement?.createSmartPointer()
@@ -40,6 +41,11 @@ class CwtDocumentationTarget(val element: PsiElement, val originalElement: PsiEl
             ParadoxDocumentationTarget(element, originalElementPtr?.dereference())
         }
     }
+    
+    override val navigatable: Navigatable?
+        get() = element as? Navigatable
+    
+    @Volatile override var targetLocale: String? = null
     
     override fun computePresentation(): TargetPresentation {
         return defaultTargetPresentation(element)
@@ -51,11 +57,17 @@ class CwtDocumentationTarget(val element: PsiElement, val originalElement: PsiEl
     
     override fun computeDocumentation(): DocumentationResult {
         return DocumentationResult.asyncDocumentation {
+            element.putUserData(PlsKeys.documentationLocale, targetLocale)
             val html = computeLocalDocumentation(element, originalElement, false) ?: return@asyncDocumentation null
+            targetLocale = element.getUserData(PlsKeys.documentationLocale)
             DocumentationResult.documentation(html)
         }
     }
 }
+
+private const val SECTIONS_INFO = 0
+private const val SECTIONS_IMAGES = 1
+private const val SECTIONS_LOC = 2
 
 private fun computeLocalDocumentation(element: PsiElement, originalElement: PsiElement?, quickNavigation: Boolean): String? {
     return when(element) {
@@ -72,12 +84,11 @@ private fun getPropertyDoc(element: CwtProperty, originalElement: PsiElement?, q
         val configType = element.configType
         val project = element.project
         val configGroup = getConfigGroup(element, originalElement, project)
-        //images, localisations, scope infos
-        val sectionsList = List(3) { mutableMapOf<String, String>() }
-        buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, sectionsList)
+        if(!quickNavigation) initSections(3)
+        buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup)
         if(quickNavigation) return@buildDocumentation
         buildDocumentationContent(element)
-        buildSections(sectionsList)
+        buildSections()
     }
 }
 
@@ -90,11 +101,11 @@ private fun getStringDoc(element: CwtString, originalElement: PsiElement?, quick
         val configType = element.configType
         val project = element.project
         val configGroup = getConfigGroup(element, originalElement, project)
-        val sectionsList = List(2) { mutableMapOf<String, String>() }
-        buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, sectionsList)
+        if(!quickNavigation) initSections(3)
+        buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup)
         if(quickNavigation) return@buildDocumentation
         buildDocumentationContent(element)
-        buildSections(sectionsList)
+        buildSections()
     }
 }
 
@@ -104,16 +115,15 @@ private fun getMemberConfigDoc(element: CwtMemberConfigElement, originalElement:
         val configType = null
         val project = element.project
         val configGroup = getConfigGroup(project, element.gameType)
-        //images, localisations, scope infos
-        val sectionsList = List(3) { mutableMapOf<String, String>() }
-        buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup, null)
+        if(!quickNavigation) initSections(3)
+        buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup)
         if(quickNavigation) return@buildDocumentation
         buildDocumentationContent(element)
-        buildSections(sectionsList)
+        buildSections()
     }
 }
 
-private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, sectionsList: List<MutableMap<String, String>>?) {
+private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?) {
     definition {
         appendCwtConfigFileInfoHeader(element)
         
@@ -156,31 +166,30 @@ private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiEle
         
         if(configGroup != null) {
             if(referenceElement != null && configType == CwtConfigType.Modifier) {
-                addModifierRelatedLocalisations(element, referenceElement, name, configGroup, sectionsList?.get(2))
-                addModifierIcon(element, referenceElement, name, configGroup, sectionsList?.get(1))
+                addModifierRelatedLocalisations(element, referenceElement, name, configGroup)
+                addModifierIcon(element, referenceElement, name, configGroup)
             }
             if(element is CwtProperty || (element is CwtMemberConfigElement && element.config is CwtPropertyConfig)) {
-                addScope(element, name, configType, configGroup, sectionsList?.get(0))
+                addScope(element, name, configType, configGroup)
             }
             if(referenceElement != null) {
-                addScopeContext(element, referenceElement, configGroup, sectionsList?.get(0))
+                addScopeContext(element, referenceElement, configGroup)
             }
         }
     }
 }
 
-private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
     val render = getSettings().documentation.renderNameDescForModifiers
     val contextElement = referenceElement
     val gameType = configGroup.gameType ?: return
     val project = configGroup.project
-    val usedLocale = ParadoxLocaleHandler.getUsedLocaleInDocumentation()
-    val finalUsedLocale = usedLocale ?: ParadoxLocaleHandler.getPreferredLocale()
+    val usedLocale = ParadoxLocaleHandler.getUsedLocaleInDocumentation(element)
     val nameLocalisation = run {
         val keys = ParadoxModifierHandler.getModifierNameKeys(name, contextElement)
         keys.firstNotNullOfOrNull { key ->
             val selector = localisationSelector(project, contextElement).contextSensitive()
-                .preferLocale(finalUsedLocale)
+                .preferLocale(usedLocale)
                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
         }
@@ -189,7 +198,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
         val keys = ParadoxModifierHandler.getModifierDescKeys(name, contextElement)
         keys.firstNotNullOfOrNull { key ->
             val selector = localisationSelector(project, contextElement).contextSensitive()
-                .preferLocale(finalUsedLocale)
+                .preferLocale(usedLocale)
                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
         }
@@ -205,19 +214,20 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
         append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
         append("desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement)
     }
+    val sections = getSections(SECTIONS_LOC)
     if(sections != null && render) {
         if(nameLocalisation != null) {
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, locale = usedLocale?.id, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
             sections.put("name", richText)
         }
         if(descLocalisation != null) {
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation, locale = usedLocale?.id, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation, forDoc = true)
             sections.put("desc", richText)
         }
     }
 }
 
-private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
     val render = getSettings().documentation.renderIconForModifiers
     val contextElement = referenceElement
     val gameType = configGroup.gameType ?: return
@@ -236,6 +246,7 @@ private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceE
         append(PlsBundle.message("prefix.relatedImage")).append(" ")
         append("icon = ").appendFilePathLink(gameType, iconPath, iconPath, contextElement)
     }
+    val sections = getSections(SECTIONS_IMAGES)
     if(sections != null && render) {
         if(iconFile != null) {
             val url = ParadoxImageResolver.resolveUrlByFile(iconFile) ?: ParadoxImageResolver.getDefaultUrl()
@@ -244,7 +255,7 @@ private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceE
     }
 }
 
-private fun DocumentationBuilder.addScope(element: PsiElement, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+private fun DocumentationBuilder.addScope(element: PsiElement, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup) {
     //即使是在CWT文件中，如果可以推断得到CWT规则组，也显示作用域信息
     
     if(!getSettings().documentation.showScopes) return
@@ -252,6 +263,7 @@ private fun DocumentationBuilder.addScope(element: PsiElement, name: String, con
     //为link提示名字、描述、输入作用域、输出作用域的文档注释
     //为alias modifier localisation_command等提供分类、支持的作用域的文档注释
     //仅为脚本文件和本地化文件中的引用提供
+    val sections = getSections(SECTIONS_INFO)
     val gameType = configGroup.gameType ?: return
     val contextElement = element
     when(configType) {
@@ -328,15 +340,15 @@ private fun DocumentationBuilder.addScope(element: PsiElement, name: String, con
     }
 }
 
-private fun DocumentationBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup, sections: MutableMap<String, String>?) {
+private fun DocumentationBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup) {
     //进行代码提示时也显示作用域上下文信息
     //@Suppress("DEPRECATION")
     //if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
     
     if(!getSettings().documentation.showScopeContext) return
     
+    val sections = getSections(0) ?: return
     val gameType = configGroup.gameType ?: return
-    if(sections == null) return
     val memberElement = referenceElement.parentOfType<ParadoxScriptMemberElement>(true) ?: return
     if(!ParadoxScopeHandler.isScopeContextSupported(memberElement, indirect = true)) return
     val scopeContext = ParadoxScopeHandler.getScopeContext(memberElement)

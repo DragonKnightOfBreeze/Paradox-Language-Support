@@ -20,6 +20,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.extension.translation.*
 import icu.windea.pls.lang.ui.*
+import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
@@ -134,9 +135,9 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
             ).notify(project)
         }
         
-        val selectedLocale = ParadoxLocaleHandler.getPreferredLocale()
+        val selectedLocale = ParadoxLocaleHandler.getPreferredLocaleConfig()
         val allLocales = ParadoxLocaleHandler.getLocaleConfigs()
-        val localePopup = ParadoxLocalePopup(selectedLocale, allLocales, onChosen = onChosen)
+        val localePopup = ParadoxLocaleListPopup(selectedLocale, allLocales, onChosen = onChosen)
         JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
     }
     

@@ -94,7 +94,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
     
     private fun getFilePathsIgnoreLocale(filePath: String): Set<String>? {
         if(!filePath.endsWith(".yml", true)) return null //仅限本地化文件
-        val localeStrings = ParadoxLocaleHandler.getLocaleConfigMapByShortId().keys
+        val localeStrings = ParadoxLocaleHandler.getLocaleConfigs().map { it.shortId }
         var index = 0
         var usedLocaleString: String? = null
         for(localeString in localeStrings) {

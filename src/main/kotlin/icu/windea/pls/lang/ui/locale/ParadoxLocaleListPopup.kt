@@ -1,20 +1,19 @@
 @file:Suppress("CanBeParameter")
 
-package icu.windea.pls.lang.ui
+package icu.windea.pls.lang.ui.locale
 
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 
-class ParadoxLocalePopup(
+class ParadoxLocaleListPopup(
 	val selectedLocale: CwtLocalisationLocaleConfig?,
 	val allLocales: List<CwtLocalisationLocaleConfig>,
-	private val onChosen: (selected: CwtLocalisationLocaleConfig) -> Unit //必须传入，否则没有意义
+	private val onChosen: (selected: CwtLocalisationLocaleConfig) -> Unit
 ) : BaseListPopupStep<CwtLocalisationLocaleConfig>(PlsBundle.message("ui.popup.selectLocale.title"), allLocales) {
-	var locale: CwtLocalisationLocaleConfig? = null //初始为null
-	
-	override fun getIconFor(value: CwtLocalisationLocaleConfig) = value.icon
+	override fun getIconFor(value: CwtLocalisationLocaleConfig) = if(value.id == "auto") null else PlsIcons.LocalisationNodes.Locale
 	
 	override fun getTextFor(value: CwtLocalisationLocaleConfig) = value.text
 	

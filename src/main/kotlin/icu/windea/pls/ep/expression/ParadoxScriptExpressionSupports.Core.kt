@@ -35,14 +35,14 @@ class ParadoxLocalisationScriptExpressionSupport : ParadoxScriptExpressionSuppor
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         val configGroup = config.configGroup
         val project = configGroup.project
-        val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleHandler.getPreferredLocale(), exact)
+        val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig(), exact)
         return ParadoxLocalisationSearch.search(expression, selector).find()
     }
     
     override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
         val configGroup = config.configGroup
         val project = configGroup.project
-        val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+        val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
         return ParadoxLocalisationSearch.search(expression, selector).findAll()
     }
     
@@ -68,14 +68,14 @@ class ParadoxSyncedLocalisationScriptExpressionSupport : ParadoxScriptExpression
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         val configGroup = config.configGroup
         val project = configGroup.project
-        val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleHandler.getPreferredLocale(), exact)
+        val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig(), exact)
         return ParadoxSyncedLocalisationSearch.search(expression, selector).find()
     }
     
     override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
         val configGroup = config.configGroup
         val project = configGroup.project
-        val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+        val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
         return ParadoxSyncedLocalisationSearch.search(expression, selector).findAll()
     }
     
@@ -102,7 +102,7 @@ class ParadoxInlineLocalisationScriptExpressionSupport : ParadoxScriptExpression
         if(element.text.isLeftQuoted()) return null //inline string
         val configGroup = config.configGroup
         val project = configGroup.project
-        val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleHandler.getPreferredLocale(), exact)
+        val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig(), exact)
         return ParadoxSyncedLocalisationSearch.search(expression, selector).find()
     }
     
@@ -110,7 +110,7 @@ class ParadoxInlineLocalisationScriptExpressionSupport : ParadoxScriptExpression
         if(element.text.isLeftQuoted()) return emptySet() //specific expression
         val configGroup = config.configGroup
         val project = configGroup.project
-        val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocale())
+        val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
         return ParadoxLocalisationSearch.search(expression, selector).findAll()
     }
     

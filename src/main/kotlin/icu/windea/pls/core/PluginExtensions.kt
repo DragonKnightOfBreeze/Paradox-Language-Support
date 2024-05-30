@@ -208,7 +208,7 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
         from == null -> null
         from is CwtLocalisationLocaleConfig -> from
         from is VirtualFile -> from.getUserData(PlsKeys.injectedLocaleConfig)
-        from is PsiDirectory -> ParadoxLocaleHandler.getPreferredLocale()
+        from is PsiDirectory -> ParadoxLocaleHandler.getPreferredLocaleConfig()
         from is PsiFile -> ParadoxCoreHandler.getLocaleConfig(from.virtualFile ?: return null, from.project)
         from is ParadoxLocalisationLocale -> from.name.toLocale(from)
         from is ParadoxLocalisationPropertyList -> selectLocale(from.locale)
@@ -216,7 +216,7 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
             ?: selectLocale(from.containingFile)
         from is StubBasedPsiElementBase<*> && from.language == ParadoxLocalisationLanguage -> selectLocale(from.containingFile)
         from is PsiElement && from.language == ParadoxLocalisationLanguage -> selectLocale(from.parent)
-        else -> ParadoxLocaleHandler.getPreferredLocale()
+        else -> ParadoxLocaleHandler.getPreferredLocaleConfig()
     }
 }
 

@@ -50,7 +50,6 @@
     
     <findUsagesHandlerFactory implementation="icu.windea.pls.lang.findUsages.ParadoxFindUsagesHandlerFactory"/>
 
-    <documentationActionProvider implementation="icu.windea.pls.lang.documentation.ParadoxDocumentationActionProvider"/>
     <platform.backend.documentation.psiTargetProvider implementation="icu.windea.pls.lang.documentation.CwtPsiDocumentationTargetProvider"/>
     <platform.backend.documentation.psiTargetProvider implementation="icu.windea.pls.lang.documentation.ParadoxPsiDocumentationTargetProvider"/>
     <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.documentation.CwtDocumentationLinkHandler"/>
@@ -171,6 +170,14 @@
   </projectListeners>
   
   <actions>
+    <group id="Pls.Documentation.PrimaryGroup">
+      <separator/>
+      <action id="Pls.Documentation.ChangeLocale" class="icu.windea.pls.lang.documentation.actions.ChangeQuickDocLocalisationLocaleAction">
+        <keyboard-shortcut keymap="$default" first-keystroke="control shift u"/>
+      </action>
+      <add-to-group group-id="Documentation.PrimaryGroup"/>
+    </group>
+    
     <action id="Pls.OpenInSteam" class="icu.windea.pls.lang.actions.OpenInSteamAction" icon="PlsIcons.Steam">
       <add-to-group group-id="RevealGroup" anchor="last"/>
       <override-text place="RevealInPopup"/>

@@ -11,6 +11,8 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.editor.folding.*
 import icu.windea.pls.lang.listeners.*
+import icu.windea.pls.lang.ui.*
+import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.ParadoxGameType.*
 import java.awt.event.*
@@ -163,15 +165,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.documentation.showParameters"))
                         .bindSelected(settings.documentation::showParameters)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showParameters.tooltip") }
-                }
-                //locale
-                row {
-                    label(PlsBundle.message("settings.documentation.locale"))
-                        .applyToComponent {
-                            toolTipText = PlsBundle.message("settings.documentation.locale.tooltip")
-                        }
-                    localeComboBox(addAuto = true)
-                        .bindItem(settings.documentation::locale.toNullableProperty())
                 }
             }
             //folding
