@@ -34,15 +34,14 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxDocumentationTarget(
     val element: PsiElement,
-    val originalElement: PsiElement?,
-    @Volatile override var targetLocale: String? = null
-) : LocaleAwareDocumentationTarget {
+    val originalElement: PsiElement?
+) : DocumentationTarget {
     override fun createPointer(): Pointer<out DocumentationTarget> {
         val elementPtr = element.createSmartPointer()
         val originalElementPtr = originalElement?.createSmartPointer()
         return Pointer {
             val element = elementPtr.dereference() ?: return@Pointer null
-            ParadoxDocumentationTarget(element, originalElementPtr?.dereference(), targetLocale)
+            ParadoxDocumentationTarget(element, originalElementPtr?.dereference())
         }
     }
     
@@ -59,9 +58,7 @@ class ParadoxDocumentationTarget(
     
     override fun computeDocumentation(): DocumentationResult {
         return DocumentationResult.asyncDocumentation {
-            element.putUserData(PlsKeys.documentationLocale, targetLocale)
             val html = computeLocalDocumentation(element, originalElement, false) ?: return@asyncDocumentation null
-            targetLocale = element.getUserData(PlsKeys.documentationLocale)
             DocumentationResult.documentation(html)
         }
     }
@@ -159,7 +156,7 @@ private fun getPropertyDoc(element: ParadoxScriptProperty, originalElement: PsiE
 private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, originalElement: PsiElement?, quickNavigation: Boolean): String {
     return buildDocumentation {
         //在definition部分，相关图片信息显示在相关本地化信息之后，在sections部分则显示在之前
-        sectionsList = List(4) { mutableMapOf<String, String>() }
+        sectionsList = List(4) { mutableMapOf() }
         buildDefinitionDefinition(element, definitionInfo)
         if(quickNavigation) return@buildDocumentation
         buildDocumentationContent(element, definitionInfo)

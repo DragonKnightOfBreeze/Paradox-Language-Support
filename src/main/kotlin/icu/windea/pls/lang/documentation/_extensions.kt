@@ -78,18 +78,9 @@ private fun getDocumentationTarget(element: PsiElement, originalElement: PsiElem
     }
 }
 
-interface LocaleAwareDocumentationTarget: DocumentationTarget {
-    var targetLocale: String?
-    
-}
-
-fun LocaleAwareDocumentationTarget.getTargetLocaleConfig(): CwtLocalisationLocaleConfig? {
-    val targetLocale = targetLocale
-    if(targetLocale == null) return null
-    if(targetLocale == "auto") return CwtLocalisationLocaleConfig.AUTO
-    return ParadoxLocaleHandler.getLocaleConfigById(targetLocale)
-}
-
-fun LocaleAwareDocumentationTarget.setTargetLocaleConfig(localeConfig: CwtLocalisationLocaleConfig?) {
-    targetLocale = localeConfig?.id
-}
+val DocumentationTarget.targetElement: PsiElement? 
+    get() = when {
+        this is CwtDocumentationTarget -> this.element
+        this is ParadoxDocumentationTarget -> this.element
+        else -> null
+    }
