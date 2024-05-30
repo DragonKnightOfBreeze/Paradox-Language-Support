@@ -174,20 +174,22 @@ class SmartMemberFunction<T : Any>(
             }
         } catch(e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
-            
-            val targetJavaClass = targetClass.java
-            val declaredMethods = buildSet { addAll(targetJavaClass.declaredMethods); addAll(targetJavaClass.methods) }
-            for(method in declaredMethods) {
-                if(Modifier.isStatic(method.modifiers)) continue
-                if(method.name != functionName) continue
-                if(method.parameters.size != expectedArgsSize) continue
-                try {
-                    method.isAccessible = true
-                    return method.invoke(target, *args)
-                } catch(e: Throwable) {
-                    if(e is ProcessCanceledException) throw e
-                    //ignore
-                }
+        }
+        
+        //fallback to java reflection
+        
+        val targetJavaClass = targetClass.java
+        val declaredMethods = buildSet { addAll(targetJavaClass.declaredMethods); addAll(targetJavaClass.methods) }
+        for(method in declaredMethods) {
+            if(Modifier.isStatic(method.modifiers)) continue
+            if(method.name != functionName) continue
+            if(method.parameters.size != expectedArgsSize) continue
+            try {
+                method.isAccessible = true
+                return method.invoke(target, *args)
+            } catch(e: Throwable) {
+                if(e is ProcessCanceledException) throw e
+                //ignore
             }
         }
         
@@ -219,19 +221,21 @@ class SmartStaticFunction<T : Any>(
             }
         } catch(e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
-            
-            val targetJavaClass = targetClass.java
-            val staticMethods = targetJavaClass.declaredMethods.filter { Modifier.isStatic(it.modifiers) }
-            for(method in staticMethods) {
-                if(method.name != functionName) continue
-                if(method.parameters.size != expectedArgsSize) continue
-                try {
-                    method.isAccessible = true
-                    return method.invoke(null, *args)
-                } catch(e: Throwable) {
-                    if(e is ProcessCanceledException) throw e
-                    //ignore
-                }
+        }
+        
+        //fallback to java reflection
+        
+        val targetJavaClass = targetClass.java
+        val staticMethods = targetJavaClass.declaredMethods.filter { Modifier.isStatic(it.modifiers) }
+        for(method in staticMethods) {
+            if(method.name != functionName) continue
+            if(method.parameters.size != expectedArgsSize) continue
+            try {
+                method.isAccessible = true
+                return method.invoke(null, *args)
+            } catch(e: Throwable) {
+                if(e is ProcessCanceledException) throw e
+                //ignore
             }
         }
         

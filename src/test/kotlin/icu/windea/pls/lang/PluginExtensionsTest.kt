@@ -1,4 +1,4 @@
-package icu.windea.pls.core
+package icu.windea.pls.lang
 
 import org.junit.*
 

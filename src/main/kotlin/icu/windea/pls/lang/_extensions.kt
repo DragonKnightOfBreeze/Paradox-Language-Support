@@ -158,21 +158,6 @@ infix fun String.compareGameVersion(otherVersion: String): Int {
 fun String?.orAnonymous() = if(isNullOrEmpty()) PlsConstants.anonymousString else this
 fun String?.orUnknown() = if(isNullOrEmpty()) PlsConstants.unknownString else this
 fun String?.orUnresolved() = if(isNullOrEmpty()) PlsConstants.unresolvedString else this
-
-fun String.escapeXml() = if(this.isEmpty()) "" else StringUtil.escapeXmlEntities(this)
-
-fun String.escapeBlank(): String {
-    var builder: StringBuilder? = null
-    for((i, c) in this.withIndex()) {
-        if(c.isWhitespace()) {
-            if(builder == null) builder = StringBuilder(substring(0, i))
-            builder.append("&nbsp;")
-        } else {
-            builder?.append(c)
-        }
-    }
-    return builder?.toString() ?: this
-}
 //endregion
 
 //region Select Extensions

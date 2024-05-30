@@ -22,19 +22,19 @@ val SearchRequestCollector.wordRequests: MutableList<PsiSearchRequest> by member
 val SearchRequestCollector.queryRequests: MutableList<QuerySearchRequest> by memberProperty<SearchRequestCollector, _>("myQueryRequests")
 
 //com.intellij.psi.impl.source.tree.injected.DocumentWindowImpl.getShreds
-private val DocumentWindow_getShreds = memberFunction("getShreds", "com.intellij.psi.impl.source.tree.injected.DocumentWindowImpl")
 fun DocumentWindow.getShreds(): Place? {
-    return runCatchingCancelable { DocumentWindow_getShreds(this) }.getOrNull()?.cast()
+    val function = memberFunction("getShreds", "com.intellij.psi.impl.source.tree.injected.DocumentWindowImpl")
+    return runCatchingCancelable { function(this) }.getOrNull()?.cast()
 }
 
 //com.intellij.codeInsight.documentation.DocumentationFontSize.getDocumentationFontSize
-private val _getDocumentationFontSize = staticFunction("getDocumentationFontSize", "com.intellij.codeInsight.documentation.DocumentationFontSize")
 fun getDocumentationFontSize(): FontSize {
-    return runCatchingCancelable { _getDocumentationFontSize() }.getOrNull()?.cast() ?: FontSize.SMALL
+    val function = staticFunction("getDocumentationFontSize", "com.intellij.codeInsight.documentation.DocumentationFontSize")
+    return runCatchingCancelable { function() }.getOrNull()?.cast() ?: FontSize.SMALL
 }
 
 //com.intellij.lang.documentation.psi.psiDocumentationTargets
-private val _psiDocumentationTargets = staticFunction("psiDocumentationTargets", "com.intellij.lang.documentation.psi.UtilKt")
 fun psiDocumentationTargets(element: PsiElement, originalElement: PsiElement?): List<DocumentationTarget> {
-    return runCatchingCancelable { _psiDocumentationTargets(element, originalElement) }.getOrNull()?.cast() ?: emptyList()
+    val function = staticFunction("psiDocumentationTargets", "com.intellij.lang.documentation.psi.UtilKt")
+    return runCatchingCancelable { function(element, originalElement) }.getOrNull()?.cast() ?: emptyList()
 }

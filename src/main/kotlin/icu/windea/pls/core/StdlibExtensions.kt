@@ -3,6 +3,7 @@
 package icu.windea.pls.core
 
 import com.google.common.cache.*
+import com.intellij.openapi.util.text.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
@@ -295,6 +296,21 @@ fun String.quoteIfNecessary(): String {
     //如果包含空白或者双引号的话要使用双引号括起
     if(any { it.isWhitespace() || it == '"' }) return this.quote()
     return this
+}
+
+fun String.escapeXml() = if(this.isEmpty()) "" else StringUtil.escapeXmlEntities(this)
+
+fun String.escapeBlank(): String {
+    var builder: StringBuilder? = null
+    for((i, c) in this.withIndex()) {
+        if(c.isWhitespace()) {
+            if(builder == null) builder = StringBuilder(substring(0, i))
+            builder.append("&nbsp;")
+        } else {
+            builder?.append(c)
+        }
+    }
+    return builder?.toString() ?: this
 }
 
 fun Collection<String>.toCommaDelimitedString(): String {
