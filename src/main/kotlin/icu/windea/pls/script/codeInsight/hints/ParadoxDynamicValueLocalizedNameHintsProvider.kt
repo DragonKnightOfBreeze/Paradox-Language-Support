@@ -66,14 +66,16 @@ class ParadoxDynamicValueLocalizedNameHintsProvider : ParadoxScriptHintsProvider
         val name = element.name
         if(name.isEmpty()) return null
         if(name.isParameterized()) return null
-        val type = element.dynamicValueType
         val configGroup = getConfigGroup(element.project, element.gameType)
-        val configs = configGroup.extendedDynamicValues[type] ?: return null
-        val config = configs.findFromPattern(name, element, configGroup) ?: return null
-        val hint = config.hint ?: return null
-        val hintElement = ParadoxLocalisationElementFactory.createProperty(configGroup.project, "hint", hint)
-        //it's necessary to inject fileInfo (so that gameType can be got later)
-        hintElement.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
-        return ParadoxLocalisationTextInlayRenderer.render(hintElement, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
+        for(type in element.dynamicValueTypes) {
+            val configs = configGroup.extendedDynamicValues[type] ?: continue
+            val config = configs.findFromPattern(name, element, configGroup) ?: continue
+            val hint = config.hint ?: continue
+            val hintElement = ParadoxLocalisationElementFactory.createProperty(configGroup.project, "hint", hint)
+            //it's necessary to inject fileInfo (so that gameType can be got later)
+            hintElement.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
+            return ParadoxLocalisationTextInlayRenderer.render(hintElement, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
+        }
+        return null
     }
 }

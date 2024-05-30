@@ -29,7 +29,10 @@ class ParadoxDynamicValueElement(
     constructor(parent: PsiElement, info: ParadoxDynamicValueInfo, project: Project)
         : this(parent, info.name, info.dynamicValueType, info.readWriteAccess, info.gameType, project)
     
-    val dynamicValueType = dynamicValueTypes.first()
+    val dynamicValueType = when {
+        dynamicValueTypes.size == 2 && "event_target" in dynamicValueTypes && "global_event_target" in dynamicValueTypes -> "event_target"
+        else -> dynamicValueTypes.joinToString(" | ")
+    }
     
     override fun getIcon(): Icon {
         val dynamicValueType = dynamicValueTypes.first() //first is ok

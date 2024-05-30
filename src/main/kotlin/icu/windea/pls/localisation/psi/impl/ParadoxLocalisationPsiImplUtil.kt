@@ -359,14 +359,7 @@ object ParadoxLocalisationPsiImplUtil {
         return when {
             config is CwtLocalisationLinkConfig -> "localisation scope"
             config is CwtSystemLinkConfig -> "system link"
-            resolved is ParadoxDynamicValueElement -> {
-                val dynamicValueType = resolved.dynamicValueType
-                when {
-                    dynamicValueType == "event_target" -> "value[event_target]"
-                    dynamicValueType == "global_event_target" -> "value[global_event_target]"
-                    else -> null
-                }
-            }
+            resolved is ParadoxDynamicValueElement -> resolved.dynamicValueType
             else -> null
         }
     }

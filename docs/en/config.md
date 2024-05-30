@@ -322,12 +322,18 @@ complex_enum_values = {
 ```cwt
 dynamic_values = {
     event_target = {
-        # 'x' or 'x = xxx'
+		# 'x' or 'x = xxx'
 		# 'x' can also be a pattern expression (template expression, ant expression or regex)
-        
-        ### Some documentation
+
+		### Some documentation
 		## hint = §RSome inlay hint text§!
-        x
+		x
+
+		# since 1.3.9, scope context related options are also available here
+		# only receive push scope (this scope), ignore others (like root scope, etc.)
+
+		## push_scope = country
+		x
     }
 }
 ```
