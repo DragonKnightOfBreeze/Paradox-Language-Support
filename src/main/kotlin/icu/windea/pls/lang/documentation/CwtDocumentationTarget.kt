@@ -38,7 +38,7 @@ class CwtDocumentationTarget(val element: PsiElement, val originalElement: PsiEl
         val originalElementPtr = originalElement?.createSmartPointer()
         return Pointer {
             val element = elementPtr.dereference() ?: return@Pointer null
-            ParadoxDocumentationTarget(element, originalElementPtr?.dereference())
+            CwtDocumentationTarget(element, originalElementPtr?.dereference())
         }
     }
     

@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.ui.*
 import com.intellij.util.*
+import icons.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.codeInsight.completion.*
@@ -55,7 +56,8 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
             val element = locale.pointer.element ?: continue
             val typeFile = locale.pointer.containingFile
             val matched = localeIdFromFileName?.let { it == locale.id }
-            val lookupElement = LookupElementBuilder.create(element, locale.id).withIcon(locale.icon)
+            val lookupElement = LookupElementBuilder.create(element, locale.id)
+                .withIcon(PlsIcons.LocalisationNodes.Locale)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withInsertHandler(insertHandler)
                 .letIf(matched == false) {
