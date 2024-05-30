@@ -25,10 +25,10 @@ object ParadoxLocaleHandler {
     fun getUsedLocaleInDocumentation(element: PsiElement, defaultLocale: CwtLocalisationLocaleConfig? = null): CwtLocalisationLocaleConfig {
         val cache = element.getOrPutUserData(PlsKeys.documentationLocale) { defaultLocale?.id ?: "auto" }
         val localeFromCache = when {
-            cache == "auto" -> null
-            else -> getLocaleConfigById(cache)
+            cache == "auto" -> getPreferredLocaleConfig()
+            else -> getLocaleConfigById(cache) ?: defaultLocale ?: getPreferredLocaleConfig()
         }
-        return localeFromCache ?: defaultLocale ?: getPreferredLocaleConfig()
+        return localeFromCache
     }
     
     fun getLocaleConfig(localeString: String): CwtLocalisationLocaleConfig {
