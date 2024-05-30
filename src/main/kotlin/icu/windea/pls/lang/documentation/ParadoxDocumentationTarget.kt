@@ -32,20 +32,22 @@ import icu.windea.pls.script.psi.*
 
 //org.jetbrains.kotlin.idea.k2.codeinsight.quickDoc.KotlinDocumentationTarget
 
-class ParadoxDocumentationTarget(val element: PsiElement, val originalElement: PsiElement?) : LocaleAwareDocumentationTarget {
+class ParadoxDocumentationTarget(
+    val element: PsiElement,
+    val originalElement: PsiElement?,
+    @Volatile override var targetLocale: String? = null
+) : LocaleAwareDocumentationTarget {
     override fun createPointer(): Pointer<out DocumentationTarget> {
         val elementPtr = element.createSmartPointer()
         val originalElementPtr = originalElement?.createSmartPointer()
         return Pointer {
             val element = elementPtr.dereference() ?: return@Pointer null
-            ParadoxDocumentationTarget(element, originalElementPtr?.dereference())
+            ParadoxDocumentationTarget(element, originalElementPtr?.dereference(), targetLocale)
         }
     }
     
     override val navigatable: Navigatable?
         get() = element as? Navigatable
-    
-    @Volatile override var targetLocale: String? = null
     
     override fun computePresentation(): TargetPresentation {
         return defaultTargetPresentation(element)
