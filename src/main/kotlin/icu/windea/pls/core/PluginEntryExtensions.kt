@@ -3,7 +3,6 @@ package icu.windea.pls.core
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.io.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.io.*
 import icu.windea.pls.model.*

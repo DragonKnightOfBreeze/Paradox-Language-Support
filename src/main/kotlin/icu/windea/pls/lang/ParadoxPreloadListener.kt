@@ -2,7 +2,6 @@ package icu.windea.pls.lang
 
 import com.intellij.ide.*
 import com.intellij.openapi.components.*
-import icu.windea.pls.lang.io.*
 import icu.windea.pls.lang.util.io.*
 
 /**

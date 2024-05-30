@@ -1,10 +1,8 @@
 package icu.windea.pls.core
 
-import com.intellij.codeInsight.documentation.*
 import com.intellij.extapi.psi.*
 import com.intellij.injected.editor.*
 import com.intellij.lang.*
-import com.intellij.openapi.components.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -17,11 +15,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.ep.configGroup.*
-import icu.windea.pls.ep.documentation.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*

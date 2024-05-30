@@ -1,6 +1,6 @@
 package icu.windea.pls.core.documentation
 
-import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.openapi.util.*
 import icu.windea.pls.core.util.*
 
 class DocumentationBuilder: UserDataHolderBase() {

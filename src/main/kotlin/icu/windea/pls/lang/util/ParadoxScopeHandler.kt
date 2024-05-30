@@ -19,8 +19,6 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.model.expression.complex.nodes.*
 import icu.windea.pls.script.psi.*
-import kotlin.collections.component1
-import kotlin.collections.component2
 import kotlin.collections.set
 
 /**

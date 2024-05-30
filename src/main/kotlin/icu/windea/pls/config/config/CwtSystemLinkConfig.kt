@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config
 
-import icons.*
 import icu.windea.pls.cwt.psi.*
 
 interface CwtSystemLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {

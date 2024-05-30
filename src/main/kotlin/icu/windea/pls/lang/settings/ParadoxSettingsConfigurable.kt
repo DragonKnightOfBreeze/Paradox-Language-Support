@@ -11,7 +11,6 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.editor.folding.*
 import icu.windea.pls.lang.listeners.*
-import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.ParadoxGameType.*

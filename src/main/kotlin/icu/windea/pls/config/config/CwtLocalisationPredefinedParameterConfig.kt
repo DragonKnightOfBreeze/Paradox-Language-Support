@@ -1,8 +1,6 @@
 package icu.windea.pls.config.config
 
-import icons.*
 import icu.windea.pls.cwt.psi.*
-import javax.swing.*
 
 interface CwtLocalisationPredefinedParameterConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val id: String

@@ -75,8 +75,8 @@ import java.util.logging.*
 import java.util.logging.Logger
 import javax.swing.*
 import javax.swing.text.*
-import kotlin.reflect.*
 import kotlin.collections.isNullOrEmpty
+import kotlin.reflect.*
 
 //region Stdlib Extensions
 fun String.compareToIgnoreCase(other: String): Int {
