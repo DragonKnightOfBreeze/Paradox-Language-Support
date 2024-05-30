@@ -48,20 +48,6 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                     resolved is ParadoxScriptProperty -> {
                         return
                     }
-                    //variable
-                    resolved is ParadoxDynamicValueElement -> {
-                        val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
-                        val supportedScopeContext = ParadoxScopeHandler.getScopeContext(resolved)
-                        val supportedScope = supportedScopeContext.scope.id
-                        val configGroup = getConfigGroup(resolved.project, resolved.gameType)
-                        if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScope, configGroup)) {
-                            val description = PlsBundle.message(
-                                "inspection.localisation.incorrectScope.description.2",
-                                element.name, supportedScope, scopeContext.scope.id
-                            )
-                            holder.registerProblem(element, description)
-                        }
-                    }
                 }
             }
         }
