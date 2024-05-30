@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.actions.*
 import icu.windea.pls.lang.hierarchy.*

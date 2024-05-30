@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*

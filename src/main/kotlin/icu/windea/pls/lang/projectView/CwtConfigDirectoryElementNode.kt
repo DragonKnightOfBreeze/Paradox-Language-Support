@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.model.*
 

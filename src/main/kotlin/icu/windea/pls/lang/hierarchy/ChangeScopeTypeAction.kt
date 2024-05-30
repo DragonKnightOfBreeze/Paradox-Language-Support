@@ -7,6 +7,7 @@ import com.intellij.openapi.application.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.scope.type.*
 import java.awt.*
 import javax.swing.*

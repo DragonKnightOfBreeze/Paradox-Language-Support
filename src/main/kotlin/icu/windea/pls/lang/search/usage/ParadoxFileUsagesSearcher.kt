@@ -8,6 +8,7 @@ import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.ep.expression.*
 import kotlin.experimental.*
 

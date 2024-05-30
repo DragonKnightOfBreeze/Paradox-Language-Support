@@ -6,6 +6,7 @@ import com.intellij.ui.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.tools.actions.*
 import java.awt.event.*

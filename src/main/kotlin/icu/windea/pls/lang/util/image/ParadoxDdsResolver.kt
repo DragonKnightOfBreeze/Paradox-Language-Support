@@ -4,6 +4,7 @@ import com.google.common.cache.*
 import com.intellij.openapi.diagnostic.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.core.util.*
 import java.lang.invoke.*
 import java.nio.file.*

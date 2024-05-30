@@ -6,6 +6,7 @@ import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.fileEditor.impl.text.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
 
 //org.intellij.plugins.markdown.ui.floating.AddFloatingToolbarTextEditorCustomizer

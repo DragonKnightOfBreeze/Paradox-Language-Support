@@ -9,6 +9,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.testFramework.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import java.lang.invoke.*
 import java.nio.file.*

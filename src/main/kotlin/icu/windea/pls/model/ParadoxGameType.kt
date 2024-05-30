@@ -1,6 +1,7 @@
 package icu.windea.pls.model
 
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 
 /**
  * @property id ID。

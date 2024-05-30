@@ -11,6 +11,7 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.injected.*
 import com.intellij.psi.search.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 
 val DefaultActionGroup.children: MutableList<AnAction> by memberProperty<DefaultActionGroup, _>("mySortedChildren")
 
@@ -33,7 +34,7 @@ fun getDocumentationFontSize(): FontSize {
 }
 
 //com.intellij.lang.documentation.psi.psiDocumentationTargets
-private val _psiDocumentationTargets = staticFunction("psiDocumentationTargets", "com.intellij.lang.documentation.psi.UtilsKt")
+private val _psiDocumentationTargets = staticFunction("psiDocumentationTargets", "com.intellij.lang.documentation.psi.UtilKt")
 fun psiDocumentationTargets(element: PsiElement, originalElement: PsiElement?): List<DocumentationTarget> {
     return runCatchingCancelable { _psiDocumentationTargets(element, originalElement) }.getOrNull()?.cast() ?: emptyList()
 }

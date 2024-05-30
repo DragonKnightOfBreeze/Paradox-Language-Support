@@ -8,6 +8,7 @@ import com.intellij.ui.table.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import java.awt.*
 import javax.swing.*
 import javax.swing.event.*

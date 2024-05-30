@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.ep.configGroup.*
 import java.util.function.Function

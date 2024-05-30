@@ -3,6 +3,7 @@ package icu.windea.pls.lang.tools
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 import java.awt.*
 import javax.swing.*

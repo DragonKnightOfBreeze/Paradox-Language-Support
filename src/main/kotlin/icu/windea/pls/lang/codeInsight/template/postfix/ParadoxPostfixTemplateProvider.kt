@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 
 class ParadoxPostfixTemplateProvider: PostfixTemplateProvider {
 	private val defaultTemplates by lazy {

@@ -1,6 +1,7 @@
 package icu.windea.pls.script.psi
 
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.impl.*
 
 val ParadoxScriptScriptedVariable.greenStub: ParadoxScriptScriptedVariableStub?

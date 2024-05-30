@@ -3,6 +3,7 @@ package icu.windea.pls.ep.expression
 import icu.windea.pls.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 
 class BaseCwtDataExpressionResolver : CwtDataExpressionResolver {
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {

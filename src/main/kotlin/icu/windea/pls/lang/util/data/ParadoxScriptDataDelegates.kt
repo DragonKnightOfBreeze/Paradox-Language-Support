@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util.data
 
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.data.*
 import icu.windea.pls.script.psi.*

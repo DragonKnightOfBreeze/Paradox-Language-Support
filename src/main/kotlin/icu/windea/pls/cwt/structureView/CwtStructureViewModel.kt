@@ -5,6 +5,7 @@ import com.intellij.ide.util.treeView.smartTree.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtStructureViewModel(

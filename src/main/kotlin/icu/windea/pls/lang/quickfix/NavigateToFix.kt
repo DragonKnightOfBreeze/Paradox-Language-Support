@@ -8,6 +8,7 @@ import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 
 abstract class NavigateToFix(
     val key: String,

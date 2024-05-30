@@ -2,6 +2,7 @@ package icu.windea.pls.ep.priority
 
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.settings.*

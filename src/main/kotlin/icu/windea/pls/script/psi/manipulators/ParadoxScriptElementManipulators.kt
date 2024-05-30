@@ -3,6 +3,7 @@ package icu.windea.pls.script.psi.manipulators
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createString

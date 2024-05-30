@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.codeInsight.completion.*

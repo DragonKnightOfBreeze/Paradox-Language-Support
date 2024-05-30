@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 class CopySteamPageProvider: DumbAwareCopyPathProvider() {

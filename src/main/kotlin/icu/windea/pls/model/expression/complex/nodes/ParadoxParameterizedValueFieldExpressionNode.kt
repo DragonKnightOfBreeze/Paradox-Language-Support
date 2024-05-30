@@ -2,6 +2,7 @@ package icu.windea.pls.model.expression.complex.nodes
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.highlighter.*
 
 class ParadoxParameterizedValueFieldExpressionNode(

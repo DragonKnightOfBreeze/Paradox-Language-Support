@@ -17,6 +17,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.extension.translation.*
 import icu.windea.pls.lang.ui.locale.*

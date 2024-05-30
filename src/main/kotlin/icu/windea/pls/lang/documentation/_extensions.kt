@@ -4,7 +4,6 @@ package icu.windea.pls.lang.documentation
 
 import com.intellij.codeInsight.navigation.*
 import com.intellij.ide.util.*
-import com.intellij.lang.documentation.impl.*
 import com.intellij.navigation.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.colors.*
@@ -15,9 +14,9 @@ import com.intellij.platform.backend.documentation.*
 import com.intellij.platform.backend.presentation.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 
 private val logger = Logger.getInstance("#icu.windea.pls.lang.documentation")

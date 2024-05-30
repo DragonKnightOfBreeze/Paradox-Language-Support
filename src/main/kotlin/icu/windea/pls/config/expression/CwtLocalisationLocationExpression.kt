@@ -6,6 +6,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.CwtLocalisationLocationExpression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*

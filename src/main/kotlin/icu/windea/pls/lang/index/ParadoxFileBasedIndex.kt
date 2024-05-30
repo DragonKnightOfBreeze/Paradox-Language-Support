@@ -8,6 +8,7 @@ import com.intellij.util.indexing.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import java.io.*
 
 abstract class ParadoxFileBasedIndex<T>: FileBasedIndexExtension<String, T>() {

@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 
 class ParadoxFilesPaneSelectInTarget(project: Project) : ProjectViewSelectInTarget(project) {
     override fun canSelect(file: PsiFileSystemItem?): Boolean {

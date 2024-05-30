@@ -5,6 +5,7 @@ package icu.windea.pls.core.util
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import java.util.concurrent.*
 import kotlin.reflect.*
 

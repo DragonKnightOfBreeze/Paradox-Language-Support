@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 object ParadoxGameHandler {
