@@ -3,6 +3,7 @@ package icu.windea.pls.core
 import com.intellij.extapi.psi.*
 import com.intellij.injected.editor.*
 import com.intellij.lang.*
+import com.intellij.openapi.components.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -16,7 +17,9 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.io.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
@@ -24,6 +27,26 @@ import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.lang.Integer.*
+
+//region Entry Extensions
+fun getDefaultProject() = ProjectManager.getInstance().defaultProject
+
+fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
+
+//from official documentation: Never acquire service instances prematurely or store them in fields for later use.
+
+fun getSettings() = service<ParadoxSettings>().state
+
+fun getProfilesSettings() = service<ParadoxProfilesSettings>().state
+
+fun getConfigGroup(gameType: ParadoxGameType?) = getDefaultProject().service<CwtConfigGroupService>().getConfigGroup(gameType)
+
+fun getConfigGroup(project: Project, gameType: ParadoxGameType?) = project.service<CwtConfigGroupService>().getConfigGroup(gameType)
+
+val PathProvider get() = service<ParadoxPathProvider>()
+
+val UrlProvider get() = service<ParadoxUrlProvider>()
+//endregion
 
 //region Common Extensions
 fun FileType.isParadoxFileType() = this == ParadoxScriptFileType || this == ParadoxLocalisationFileType

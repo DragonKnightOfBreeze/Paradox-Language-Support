@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.core
 
 import com.intellij.openapi.actionSystem.*
@@ -27,8 +25,6 @@ import java.net.*
 import javax.swing.*
 import javax.swing.table.*
 import javax.swing.text.*
-import kotlin.collections.component1
-import kotlin.collections.component2
 import kotlin.properties.*
 import kotlin.reflect.*
 

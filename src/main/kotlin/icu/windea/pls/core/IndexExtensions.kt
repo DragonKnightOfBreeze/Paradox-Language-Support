@@ -47,7 +47,6 @@ inline fun <T> DataOutput.writeList(collection: List<T>, action: (T) -> Unit) {
     collection.forEachFast { action(it) }
 }
 
-
 val StubBasedPsiElementBase<*>.containingFileStub: PsiFileStub<*>?
     get() {
         val stub = this.greenStub ?: return null

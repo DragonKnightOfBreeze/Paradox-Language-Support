@@ -23,6 +23,8 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.keymap.*
+import com.intellij.openapi.observable.properties.*
+import com.intellij.openapi.observable.util.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
@@ -43,10 +45,18 @@ import com.intellij.psi.util.*
 import com.intellij.refactoring.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
 import com.intellij.testFramework.common.*
+import com.intellij.ui.*
+import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.Cell
+import com.intellij.ui.dsl.builder.MutableProperty
+import com.intellij.ui.dsl.gridLayout.*
+import com.intellij.ui.scale.*
+import com.intellij.ui.table.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import com.intellij.util.io.*
+import com.intellij.util.ui.*
 import com.intellij.util.xmlb.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -65,7 +75,10 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import it.unimi.dsi.fastutil.*
 import it.unimi.dsi.fastutil.objects.*
+import java.awt.*
+import java.awt.image.*
 import java.io.*
+import java.net.*
 import java.nio.file.*
 import java.util.*
 import java.util.Arrays
@@ -74,8 +87,10 @@ import java.util.function.*
 import java.util.logging.*
 import java.util.logging.Logger
 import javax.swing.*
+import javax.swing.table.*
 import javax.swing.text.*
 import kotlin.collections.isNullOrEmpty
+import kotlin.properties.*
 import kotlin.reflect.*
 
 //region Stdlib Extensions
