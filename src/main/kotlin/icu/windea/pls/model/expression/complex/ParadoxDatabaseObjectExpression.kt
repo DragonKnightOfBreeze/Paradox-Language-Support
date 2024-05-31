@@ -27,12 +27,12 @@ import icu.windea.pls.model.expression.complex.nodes.*
  */
 interface ParadoxDatabaseObjectExpression: ParadoxComplexExpression {
     companion object Resolver {
-        fun resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? =
-            doResolve(expression, range, configGroup)
+        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? =
+            doResolve(expressionString, range, configGroup)
     }
 }
 
-private fun doResolve(expression: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
+private fun doResolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
     TODO()
 }
 

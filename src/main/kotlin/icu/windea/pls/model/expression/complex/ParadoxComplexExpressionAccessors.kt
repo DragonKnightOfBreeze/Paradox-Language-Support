@@ -1,8 +1,20 @@
 package icu.windea.pls.model.expression.complex
 
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.model.expression.complex.nodes.*
+
+//val ParadoxComplexExpressionNode.parentExpression: ParadoxComplexExpression
+//    get() {
+//        var current = this
+//        while(true) {
+//            if(current is ParadoxComplexExpression) return current
+//            current = current.parentNode ?: throw IllegalStateException()
+//        }
+//    }
+//val ParadoxComplexExpressionNode.configGroup: CwtConfigGroup
+//    get() = parentExpression.configGroup
 
 val ParadoxDynamicValueExpression.scopeFieldExpression: ParadoxScopeFieldExpression?
     get() = nodes.getOrNull(2)?.cast()

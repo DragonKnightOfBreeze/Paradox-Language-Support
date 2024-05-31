@@ -33,20 +33,20 @@ interface ParadoxDynamicValueExpression : ParadoxComplexExpression {
     val configs: List<CwtConfig<*>>
     
     companion object Resolver {
-        fun resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? =
-            doResolve(expression, range, configGroup, config.toSingletonList())
+        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? =
+            doResolve(expressionString, range, configGroup, config.toSingletonList())
         
-        fun resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? =
-            doResolve(expression, range, configGroup, configs)
+        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? =
+            doResolve(expressionString, range, configGroup, configs)
     }
 }
 
 //Implementations
 
-private fun doResolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
-    val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expression)
+private fun doResolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
+    val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expressionString)
     //skip if text is a parameter with unary operator prefix
-    if(CwtConfigHandler.isUnaryOperatorAwareParameter(expression, parameterRanges)) return null
+    if(CwtConfigHandler.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
     
     val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
     
@@ -54,16 +54,16 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
     val offset = range.startOffset
     var index: Int
     var tokenIndex = -1
-    val textLength = expression.length
+    val textLength = expressionString.length
     while(tokenIndex < textLength) {
         index = tokenIndex + 1
-        tokenIndex = expression.indexOf('@', index)
+        tokenIndex = expressionString.indexOf('@', index)
         if(tokenIndex != -1 && CwtConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
         if(tokenIndex == -1) {
             tokenIndex = textLength
         }
         //resolve dynamicValueNode
-        val nodeText = expression.substring(0, tokenIndex)
+        val nodeText = expressionString.substring(0, tokenIndex)
         val nodeTextRange = TextRange.create(offset, tokenIndex + offset)
         val node = ParadoxDynamicValueNode.resolve(nodeText, nodeTextRange, configs, configGroup)
         if(node == null) return null //unexpected
@@ -73,7 +73,7 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
             val atNode = ParadoxMarkerNode("@", TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset))
             nodes.add(atNode)
             //resolve scope expression
-            val expText = expression.substring(tokenIndex + 1)
+            val expText = expressionString.substring(tokenIndex + 1)
             val expTextRange = TextRange.create(tokenIndex + 1 + offset, textLength + offset)
             val expNode = ParadoxScopeFieldExpression.resolve(expText, expTextRange, configGroup)!!
             nodes.add(expNode)
@@ -82,7 +82,7 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
     }
     //handle mismatch situation
     if(!incomplete && nodes.isEmpty()) return null
-    return ParadoxDynamicValueExpressionImpl(expression, range, nodes, configGroup, configs)
+    return ParadoxDynamicValueExpressionImpl(expressionString, range, nodes, configGroup, configs)
 }
 
 private class ParadoxDynamicValueExpressionImpl(

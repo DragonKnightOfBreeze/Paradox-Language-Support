@@ -43,20 +43,20 @@ import icu.windea.pls.model.expression.complex.nodes.*
  */
 interface ParadoxValueFieldExpression : ParadoxComplexExpression {
     companion object Resolver {
-        fun resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? =
-            doResolve(expression, range, configGroup)
+        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? =
+            doResolve(expressionString, range, configGroup)
     }
 }
 
 //Implementations
 
-private fun doResolve(expression: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? {
+private fun doResolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? {
     //skip if text represents an int or float
-    if(isNumber(expression)) return null
+    if(isNumber(expressionString)) return null
     
-    val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expression)
+    val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expressionString)
     //skip if text is a parameter with unary operator prefix
-    if(CwtConfigHandler.isUnaryOperatorAwareParameter(expression, parameterRanges)) return null
+    if(CwtConfigHandler.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
     
     val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
     
@@ -66,13 +66,13 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
     var index: Int
     var tokenIndex = -1
     var startIndex = 0
-    val textLength = expression.length
+    val textLength = expressionString.length
     while(tokenIndex < textLength) {
         index = tokenIndex + 1
-        tokenIndex = expression.indexOf('.', index)
+        tokenIndex = expressionString.indexOf('.', index)
         if(tokenIndex != -1 && CwtConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
-        if(tokenIndex != -1 && expression.indexOf('@', index).let { it != -1 && it < tokenIndex && !CwtConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
-        if(tokenIndex != -1 && expression.indexOf('|', index).let { it != -1 && it < tokenIndex && !CwtConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
+        if(tokenIndex != -1 && expressionString.indexOf('@', index).let { it != -1 && it < tokenIndex && !CwtConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
+        if(tokenIndex != -1 && expressionString.indexOf('|', index).let { it != -1 && it < tokenIndex && !CwtConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
         val dotNode = if(tokenIndex != -1) {
             val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
             ParadoxOperatorNode(".", dotRange)
@@ -84,7 +84,7 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
             isLast = true
         }
         //resolve node
-        val nodeText = expression.substring(startIndex, tokenIndex)
+        val nodeText = expressionString.substring(startIndex, tokenIndex)
         val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
         startIndex = tokenIndex + 1
         val node = when {
@@ -96,7 +96,7 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
         nodes.add(node)
         if(dotNode != null) nodes.add(dotNode)
     }
-    return ParadoxValueFieldExpressionImpl(expression, range, nodes, configGroup)
+    return ParadoxValueFieldExpressionImpl(expressionString, range, nodes, configGroup)
 }
 
 private fun isNumber(text: String): Boolean {

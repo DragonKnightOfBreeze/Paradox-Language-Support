@@ -34,17 +34,17 @@ interface ParadoxScriptValueExpression : ParadoxComplexExpression {
     val config: CwtConfig<*>
     
     companion object Resolver {
-        fun resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? =
-            doResolve(expression, range, configGroup, config)
+        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? =
+            doResolve(expressionString, range, configGroup, config)
     }
 }
 
 //Implementations
 
-private fun doResolve(expression: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
-    val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expression)
+private fun doResolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
+    val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expressionString)
     //skip if text is a parameter with unary operator prefix
-    if(CwtConfigHandler.isUnaryOperatorAwareParameter(expression, parameterRanges)) return null
+    if(CwtConfigHandler.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
     
     val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
     
@@ -56,10 +56,10 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
     var index: Int
     var tokenIndex = -1
     var startIndex = 0
-    val textLength = expression.length
+    val textLength = expressionString.length
     while(tokenIndex < textLength) {
         index = tokenIndex + 1
-        tokenIndex = expression.indexOf('|', index)
+        tokenIndex = expressionString.indexOf('|', index)
         if(tokenIndex != -1 && CwtConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
         val pipeNode = if(tokenIndex != -1) {
             val pipeRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
@@ -72,7 +72,7 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
         }
         if(!incomplete && index == tokenIndex && tokenIndex == textLength) break
         //resolve node
-        val nodeText = expression.substring(startIndex, tokenIndex)
+        val nodeText = expressionString.substring(startIndex, tokenIndex)
         val nodeRange = TextRange.create(startIndex + offset, tokenIndex + offset)
         startIndex = tokenIndex + 1
         val node = when {
@@ -93,7 +93,7 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
         if(pipeNode != null) nodes.add(pipeNode)
         n++
     }
-    return ParadoxScriptValueExpressionImpl(expression, range, nodes, configGroup, config)
+    return ParadoxScriptValueExpressionImpl(expressionString, range, nodes, configGroup, config)
 }
 
 private class ParadoxScriptValueExpressionImpl(
