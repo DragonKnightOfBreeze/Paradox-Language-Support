@@ -21,7 +21,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.ep.expression.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.CwtConfigMatcher.Options
 import icu.windea.pls.lang.util.CwtConfigMatcher.ResultValue
@@ -533,7 +532,7 @@ object CwtConfigHandler {
         doAnnotateComplexExpression(element, expression, holder, config)
     }
     
-    private fun doAnnotateComplexExpression(element: ParadoxScriptStringExpressionElement, expressionNode: ParadoxExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>) {
+    private fun doAnnotateComplexExpression(element: ParadoxScriptStringExpressionElement, expressionNode: ParadoxComplexExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>) {
         val attributesKey = expressionNode.getAttributesKey()
         val mustUseAttributesKey = attributesKey != ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY && attributesKey != ParadoxScriptAttributesKeys.STRING_KEY
         if(attributesKey != null && mustUseAttributesKey) {
@@ -555,9 +554,9 @@ object CwtConfigHandler {
         }
     }
     
-    private fun doAnnotateComplexExpressionByAttributesKey(expressionNode: ParadoxExpressionNode, element: ParadoxScriptStringExpressionElement, holder: AnnotationHolder, attributesKey: TextAttributesKey) {
+    private fun doAnnotateComplexExpressionByAttributesKey(expressionNode: ParadoxComplexExpressionNode, element: ParadoxScriptStringExpressionElement, holder: AnnotationHolder, attributesKey: TextAttributesKey) {
         val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRange.unquote(element.text).startOffset)
-        if(expressionNode is ParadoxTokenExpressionNode) {
+        if(expressionNode is ParadoxTokenNode) {
             //override default highlight by highlighter (property key or string)
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeToAnnotate).textAttributes(HighlighterColors.TEXT).create()
         }

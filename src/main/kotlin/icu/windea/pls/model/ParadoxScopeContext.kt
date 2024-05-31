@@ -29,7 +29,7 @@ interface ParadoxScopeContext : UserDataHolder {
 var ParadoxScopeContext.isExact: Boolean? by createKeyDelegate(ParadoxScopeContext.Keys)
 
 //scope context list of scope field expression nodes
-var ParadoxScopeContext.scopeFieldInfo: List<Tuple2<ParadoxScopeFieldExpressionNode, ParadoxScopeContext>>? by createKeyDelegate(ParadoxScopeContext.Keys)
+var ParadoxScopeContext.scopeFieldInfo: List<Tuple2<ParadoxScopeFieldNode, ParadoxScopeContext>>? by createKeyDelegate(ParadoxScopeContext.Keys)
 
 var ParadoxScopeContext.overriddenProvider: ParadoxOverriddenScopeContextProvider? by createKeyDelegate(ParadoxScopeContext.Keys)
 

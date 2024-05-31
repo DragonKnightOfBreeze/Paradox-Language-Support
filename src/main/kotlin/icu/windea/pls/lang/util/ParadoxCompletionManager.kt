@@ -760,7 +760,7 @@ object ParadoxCompletionManager {
         }
     }
     
-    fun completeScopeLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?, dataSourceNodeToCheck: ParadoxExpressionNode?) {
+    fun completeScopeLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?, dataSourceNodeToCheck: ParadoxComplexExpressionNode?) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val config = context.config
@@ -772,8 +772,8 @@ object ParadoxCompletionManager {
             else -> configGroup.linksAsScopeWithPrefix.values.filter { prefix == it.prefix }
         }
         
-        if(dataSourceNodeToCheck is ParadoxScopeFieldExpressionNode) {
-            completeForScopeExpressionNode(dataSourceNodeToCheck, context, result)
+        if(dataSourceNodeToCheck is ParadoxScopeFieldNode) {
+            completeForScopeNode(dataSourceNodeToCheck, context, result)
             context.scopeContext = scopeContext
             return
         }
@@ -840,7 +840,7 @@ object ParadoxCompletionManager {
         }
     }
     
-    fun completeValueLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?, dataSourceNodeToCheck: ParadoxExpressionNode?, variableOnly: Boolean = false) {
+    fun completeValueLinkDataSource(context: ProcessingContext, result: CompletionResultSet, prefix: String?, dataSourceNodeToCheck: ParadoxComplexExpressionNode?, variableOnly: Boolean = false) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val config = context.config
@@ -954,6 +954,10 @@ object ParadoxCompletionManager {
         val isKey = context.isKey
         if(isKey != true || config !is CwtPropertyConfig) return
         ParadoxParameterHandler.completeArguments(contextElement, context, result)
+    }
+    
+    fun completeDatabaseObjectExpression(context: ProcessingContext, result: CompletionResultSet) {
+        //TODO 1.3.9+
     }
     
     fun completePredefinedLocalisationScope(context: ProcessingContext, result: CompletionResultSet) {

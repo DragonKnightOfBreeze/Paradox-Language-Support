@@ -45,7 +45,7 @@ object CwtDataTypes {
     val LocalisationParameter = CwtDataType("LocalisationParameter")
     val ShaderEffect = CwtDataType("ShaderEffect") //effects in .shader files
     
-    val GameObject = CwtDataType("GameObject")
+    val DatabaseObject = CwtDataType("DatabaseObject")
     
     @WithGameType(ParadoxGameType.Stellaris)
     val StellarisNameFormat = CwtDataType("StellarisNameFormat")

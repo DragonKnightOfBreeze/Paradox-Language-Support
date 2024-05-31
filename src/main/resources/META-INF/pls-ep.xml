@@ -144,6 +144,7 @@
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScopeFieldExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxValueFieldExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxVariableFieldExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxDatabaseObjectExpressionSupport"/>
     
     <pathReferenceExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxIconReferenceExpressionSupport"/>
     <pathReferenceExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxFilePathReferenceExpressionSupport"/>

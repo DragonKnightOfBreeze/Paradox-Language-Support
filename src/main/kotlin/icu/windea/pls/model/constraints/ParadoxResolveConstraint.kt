@@ -49,13 +49,13 @@ enum class ParadoxResolveConstraint {
                     val configExpression = reference.configExpression
                     configExpression.type == CwtDataTypes.Definition
                 }
-                is ParadoxDataExpressionNode.Reference -> {
+                is ParadoxDataSourceNode.Reference -> {
                     reference.linkConfigs.any { linkConfig ->
                         val configExpression = linkConfig.expression ?: return@any false
                         configExpression.type == CwtDataTypes.Definition
                     }
                 }
-                is ParadoxScriptValueExpressionNode.Reference -> true //<script_value>
+                is ParadoxScriptValueNode.Reference -> true //<script_value>
                 is ParadoxLocalisationIconPsiReference -> true
                 is ParadoxLocalisationCommandFieldPsiReference -> true //<scripted_loc>
                 is ParadoxLocalisationConceptPsiReference -> true //<game_concept>
@@ -100,7 +100,7 @@ enum class ParadoxResolveConstraint {
                     val configExpression = reference.config.expression ?: return false
                     configExpression.type == CwtDataTypes.Parameter
                 }
-                is ParadoxScriptValueArgumentExpressionNode.Reference -> true
+                is ParadoxScriptValueArgumentNode.Reference -> true
                 is ParadoxParameterPsiReference -> true
                 is ParadoxConditionParameterPsiReference -> true
                 else -> false
@@ -145,7 +145,7 @@ enum class ParadoxResolveConstraint {
                     val configExpression = reference.configExpression
                     configExpression.type == CwtDataTypes.EnumValue
                 }
-                is ParadoxDataExpressionNode.Reference -> {
+                is ParadoxDataSourceNode.Reference -> {
                     reference.linkConfigs.any { linkConfig ->
                         val configExpression = linkConfig.expression ?: return@any false
                         configExpression.type == CwtDataTypes.EnumValue
@@ -176,13 +176,13 @@ enum class ParadoxResolveConstraint {
                     val configExpression = reference.configExpression
                     configExpression.type in CwtDataTypeGroups.DynamicValue
                 }
-                is ParadoxDataExpressionNode.Reference -> {
+                is ParadoxDataSourceNode.Reference -> {
                     reference.linkConfigs.any { linkConfig ->
                         val configExpression = linkConfig.expression ?: return@any false
                         configExpression.type in CwtDataTypeGroups.DynamicValue
                     }
                 }
-                is ParadoxDynamicValueExpressionNode.Reference -> true
+                is ParadoxDynamicValueNode.Reference -> true
                 is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
                 is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
                 else -> false
@@ -205,7 +205,7 @@ enum class ParadoxResolveConstraint {
                     val configExpression = reference.config.expression ?: return false
                     configExpression.type in CwtDataTypeGroups.DynamicValue
                 }
-                is ParadoxDynamicValueExpressionNode.Reference -> true
+                is ParadoxDynamicValueNode.Reference -> true
                 is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
                 is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
                 else -> false

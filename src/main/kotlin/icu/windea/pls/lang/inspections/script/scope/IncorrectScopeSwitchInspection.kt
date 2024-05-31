@@ -13,7 +13,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.complex.nodes.*
@@ -45,7 +44,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                     for((scopeNode, scopeContext) in scopeFieldInfo) {
                         val rangeInExpression = scopeNode.rangeInExpression
                         when(scopeNode) {
-                            is ParadoxScopeLinkExpressionNode -> {
+                            is ParadoxScopeLinkNode -> {
                                 val parentScopeContext = scopeContext.prev ?: continue
                                 val inputScopes = scopeNode.config.inputScopes
                                 val configGroup = config.configGroup
@@ -58,12 +57,12 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                 }
                             }
                             //TODO 1.3.0+ dynamic value (expression)
-                            is ParadoxScopeLinkFromDataExpressionNode -> {
+                            is ParadoxScopeLinkFromDataNode -> {
                                 
                             }
                             //NOTE may depends on usages
                             //check when root parent scope context is not from event, scripted_trigger or scripted_effect
-                            is ParadoxSystemLinkExpressionNode -> {
+                            is ParadoxSystemLinkNode -> {
                                 if(!checkForSystemLink) continue
                                 if(scopeContext.scope.id == ParadoxScopeHandler.unknownScopeId) {
                                     val definitionType = definitionInfo?.type ?: continue
@@ -75,9 +74,9 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                     holder.registerProblem(propertyKey, rangeInExpression, description)
                                 }
                             }
-                            is ParadoxParameterizedScopeFieldExpressionNode -> pass()
+                            is ParadoxParameterizedScopeFieldNode -> pass()
                             //error
-                            is ParadoxErrorScopeFieldExpressionNode -> break
+                            is ParadoxErrorScopeFieldNode -> break
                         }
                     }
                 }

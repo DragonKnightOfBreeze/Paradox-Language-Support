@@ -4,17 +4,16 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.nodes.*
 import icu.windea.pls.script.psi.*
 
-fun ParadoxComplexExpression.processAllNodes(processor: Processor<ParadoxExpressionNode>): Boolean {
+fun ParadoxComplexExpression.processAllNodes(processor: Processor<ParadoxComplexExpressionNode>): Boolean {
     return doProcessAllNodes(processor)
 }
 
-private fun ParadoxExpressionNode.doProcessAllNodes(processor: Processor<ParadoxExpressionNode>): Boolean {
+private fun ParadoxComplexExpressionNode.doProcessAllNodes(processor: Processor<ParadoxComplexExpressionNode>): Boolean {
     val r = processor.process(this)
     if(!r) return false
     if(nodes.isNotEmpty()) {
@@ -26,11 +25,11 @@ private fun ParadoxExpressionNode.doProcessAllNodes(processor: Processor<Paradox
     return true
 }
 
-fun ParadoxComplexExpression.processAllLeafNodes(processor: Processor<ParadoxExpressionNode>): Boolean {
+fun ParadoxComplexExpression.processAllLeafNodes(processor: Processor<ParadoxComplexExpressionNode>): Boolean {
     return doProcessAllLeafNodes(processor)
 }
 
-private fun ParadoxExpressionNode.doProcessAllLeafNodes(processor: Processor<ParadoxExpressionNode>): Boolean {
+private fun ParadoxComplexExpressionNode.doProcessAllLeafNodes(processor: Processor<ParadoxComplexExpressionNode>): Boolean {
     if(nodes.isNotEmpty()) {
         for(node in nodes) {
             val r1 = node.doProcessAllLeafNodes(processor)
@@ -48,7 +47,7 @@ fun ParadoxComplexExpression.getReferences(element: ParadoxScriptStringExpressio
     return references.toTypedArray()
 }
 
-private fun ParadoxExpressionNode.doGetReferences(element: ParadoxScriptStringExpressionElement, references: MutableList<PsiReference>) {
+private fun ParadoxComplexExpressionNode.doGetReferences(element: ParadoxScriptStringExpressionElement, references: MutableList<PsiReference>) {
     val reference = this.getReference(element)
     if(reference != null) {
         references.add(reference)
@@ -64,12 +63,12 @@ private fun ParadoxExpressionNode.doGetReferences(element: ParadoxScriptStringEx
 /**
  * @return 是否已经输入了前缀。
  */
-fun completeForScopeExpressionNode(node: ParadoxScopeFieldExpressionNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
+fun completeForScopeNode(node: ParadoxScopeFieldNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
     val contextElement = context.contextElement!!
     val offsetInParent = context.offsetInParent!!
     val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
     val nodeRange = node.rangeInExpression
-    val linkFromDataNode = node.castOrNull<ParadoxScopeLinkFromDataExpressionNode>()
+    val linkFromDataNode = node.castOrNull<ParadoxScopeLinkFromDataNode>()
     val prefixNode = linkFromDataNode?.prefixNode
     val dataSourceNode = linkFromDataNode?.dataSourceNode
     val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
@@ -113,14 +112,14 @@ fun completeForScopeExpressionNode(node: ParadoxScopeFieldExpressionNode, contex
 /**
  * @return 是否已经输入了前缀。
  */
-fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
+fun completeForValueNode(node: ParadoxValueFieldNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
     val contextElement = context.contextElement!!
     val keyword = context.keyword
     val keywordOffset = context.keywordOffset
     val offsetInParent = context.offsetInParent!!
     val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
     val nodeRange = node.rangeInExpression
-    val linkFromDataNode = node.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
+    val linkFromDataNode = node.castOrNull<ParadoxValueLinkFromDataNode>()
     val prefixNode = linkFromDataNode?.prefixNode
     val dataSourceNode = linkFromDataNode?.dataSourceNode
     val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
@@ -156,7 +155,7 @@ fun completeForValueExpressionNode(node: ParadoxValueFieldExpressionNode, contex
     }
 }
 
-fun completeForVariableDataExpressionNode(node: ParadoxDataExpressionNode, context: ProcessingContext, result: CompletionResultSet) {
+fun completeForVariableDataSourceNode(node: ParadoxDataSourceNode, context: ProcessingContext, result: CompletionResultSet) {
     val offsetInParent = context.offsetInParent!!
     val nodeRange = node.rangeInExpression
     val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)

@@ -10,6 +10,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 object ParadoxCompletionKeys : KeyRegistry("PlsCompletion")
@@ -34,7 +35,7 @@ var ProcessingContext.scopeName: String? by createKeyDelegate(ParadoxCompletionK
 var ProcessingContext.scopeGroupName: String? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.isInt: Boolean? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.prefix: String? by createKeyDelegate(ParadoxCompletionKeys)
-var ProcessingContext.dataSourceNodeToCheck: ParadoxExpressionNode? by createKeyDelegate(ParadoxCompletionKeys)
+var ProcessingContext.dataSourceNodeToCheck: ParadoxComplexExpressionNode? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.showScriptExpressionTailText: Boolean by createKeyDelegate(ParadoxCompletionKeys) { true }
 var ProcessingContext.contextKey: String? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.argumentNames: MutableSet<String>? by createKeyDelegate(ParadoxCompletionKeys)

@@ -7,8 +7,6 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.expression.complex.errors.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 /**
@@ -16,10 +14,10 @@ import icu.windea.pls.model.expression.complex.nodes.*
  * 
  * （插件目前认为）复杂表达式不能用引号括起。
  */
-interface ParadoxComplexExpression : ParadoxExpressionNode {
+interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
     val configGroup: CwtConfigGroup
     
-    fun validate(): List<ParadoxExpressionError> = emptyList()
+    fun validate(): List<ParadoxComplexExpressionError> = emptyList()
     
     fun complete(context: ProcessingContext, result: CompletionResultSet) = pass()
     
@@ -38,7 +36,7 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
         dataType in CwtDataTypeGroups.ScopeField -> ParadoxScopeFieldExpression.resolve(expression, range, configGroup)
         dataType in CwtDataTypeGroups.ValueField -> ParadoxValueFieldExpression.resolve(expression, range, configGroup)
         dataType in CwtDataTypeGroups.VariableField -> ParadoxVariableFieldExpression.resolve(expression, range, configGroup)
-        dataType in CwtDataTypeGroups.GameObject -> ParadoxGameObjectExpression.resolve(expression, range, configGroup)
+        dataType in CwtDataTypeGroups.DatabaseObject -> ParadoxDatabaseObjectExpression.resolve(expression, range, configGroup)
         else -> null
     }
 }

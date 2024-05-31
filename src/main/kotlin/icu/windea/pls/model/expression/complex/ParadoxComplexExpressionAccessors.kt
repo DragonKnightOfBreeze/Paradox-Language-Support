@@ -1,27 +1,26 @@
 package icu.windea.pls.model.expression.complex
 
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 val ParadoxDynamicValueExpression.scopeFieldExpression: ParadoxScopeFieldExpression?
     get() = nodes.getOrNull(2)?.cast()
-val ParadoxDynamicValueExpression.dynamicValueNode: ParadoxDynamicValueExpressionNode
+val ParadoxDynamicValueExpression.dynamicValueNode: ParadoxDynamicValueNode
     get() = nodes.get(0).cast()
 
-val ParadoxScopeFieldExpression.scopeNodes: List<ParadoxScopeFieldExpressionNode>
-    get() = nodes.filterIsInstance<ParadoxScopeFieldExpressionNode>()
+val ParadoxScopeFieldExpression.scopeNodes: List<ParadoxScopeFieldNode>
+    get() = nodes.filterIsInstance<ParadoxScopeFieldNode>()
 
-val ParadoxScriptValueExpression.scriptValueNode: ParadoxScriptValueExpressionNode
+val ParadoxScriptValueExpression.scriptValueNode: ParadoxScriptValueNode
     get() = nodes.first().cast()
-val ParadoxScriptValueExpression.argumentNodes: List<Tuple2<ParadoxScriptValueArgumentExpressionNode, ParadoxScriptValueArgumentValueExpressionNode?>>
+val ParadoxScriptValueExpression.argumentNodes: List<Tuple2<ParadoxScriptValueArgumentNode, ParadoxScriptValueArgumentValueNode?>>
     get() = buildList {
-        var argumentNode: ParadoxScriptValueArgumentExpressionNode? = null
+        var argumentNode: ParadoxScriptValueArgumentNode? = null
         for(node in nodes) {
-            if(node is ParadoxScriptValueArgumentExpressionNode) {
+            if(node is ParadoxScriptValueArgumentNode) {
                 argumentNode = node
-            } else if(node is ParadoxScriptValueArgumentValueExpressionNode && argumentNode != null) {
+            } else if(node is ParadoxScriptValueArgumentValueNode && argumentNode != null) {
                 add(tupleOf(argumentNode, node))
                 argumentNode = null
             }
@@ -31,15 +30,15 @@ val ParadoxScriptValueExpression.argumentNodes: List<Tuple2<ParadoxScriptValueAr
         }
     }
 
-val ParadoxValueFieldExpression.scopeNodes: List<ParadoxScopeFieldExpressionNode>
-    get() = nodes.filterIsInstance<ParadoxScopeFieldExpressionNode>()
-val ParadoxValueFieldExpression.valueFieldNode: ParadoxValueFieldExpressionNode
+val ParadoxValueFieldExpression.scopeNodes: List<ParadoxScopeFieldNode>
+    get() = nodes.filterIsInstance<ParadoxScopeFieldNode>()
+val ParadoxValueFieldExpression.valueFieldNode: ParadoxValueFieldNode
     get() = nodes.last().cast()
 val ParadoxValueFieldExpression.scriptValueExpression: ParadoxScriptValueExpression?
-    get() = this.valueFieldNode.castOrNull<ParadoxValueLinkFromDataExpressionNode>()
+    get() = this.valueFieldNode.castOrNull<ParadoxValueLinkFromDataNode>()
         ?.dataSourceNode?.nodes?.findIsInstance<ParadoxScriptValueExpression>()
 
-val ParadoxVariableFieldExpression.scopeNodes: List<ParadoxScopeFieldExpressionNode>
-    get() = nodes.filterIsInstance<ParadoxScopeFieldExpressionNode>()
-val ParadoxVariableFieldExpression.variableNode: ParadoxDataExpressionNode
+val ParadoxVariableFieldExpression.scopeNodes: List<ParadoxScopeFieldNode>
+    get() = nodes.filterIsInstance<ParadoxScopeFieldNode>()
+val ParadoxVariableFieldExpression.variableNode: ParadoxDataSourceNode
     get() = nodes.last().cast()

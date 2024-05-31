@@ -39,8 +39,8 @@ object CwtDataTypeGroups {
         CwtDataTypes.IntVariableField,
         CwtDataTypes.VariableField,
     )
-    val GameObject = arrayOf(
-        CwtDataTypes.GameObject
+    val DatabaseObject = arrayOf(
+        CwtDataTypes.DatabaseObject
     )
     
     val ConstantLike = arrayOf(

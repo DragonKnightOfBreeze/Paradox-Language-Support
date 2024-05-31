@@ -6,13 +6,11 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
-import icu.windea.pls.model.expression.complex.errors.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 /**
@@ -62,7 +60,7 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
     
     val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
     
-    val nodes = mutableListOf<ParadoxExpressionNode>()
+    val nodes = mutableListOf<ParadoxComplexExpressionNode>()
     val offset = range.startOffset
     var isLast = false
     var index: Int
@@ -77,7 +75,7 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
         if(tokenIndex != -1 && expression.indexOf('|', index).let { it != -1 && it < tokenIndex && !CwtConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
         val dotNode = if(tokenIndex != -1) {
             val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
-            ParadoxOperatorExpressionNode(".", dotRange)
+            ParadoxOperatorNode(".", dotRange)
         } else {
             null
         }
@@ -90,11 +88,11 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
         val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
         startIndex = tokenIndex + 1
         val node = when {
-            isLast -> ParadoxValueFieldExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
-            else -> ParadoxScopeFieldExpressionNode.resolve(nodeText, nodeTextRange, configGroup)
+            isLast -> ParadoxValueFieldNode.resolve(nodeText, nodeTextRange, configGroup)
+            else -> ParadoxScopeFieldNode.resolve(nodeText, nodeTextRange, configGroup)
         }
         //handle mismatch situation
-        if(!incomplete && nodes.isEmpty() && node is ParadoxErrorExpressionNode) return null
+        if(!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
         nodes.add(node)
         if(dotNode != null) nodes.add(dotNode)
     }
@@ -108,26 +106,26 @@ private fun isNumber(text: String): Boolean {
 private class ParadoxValueFieldExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxExpressionNode>,
+    override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup
 ) : ParadoxValueFieldExpression {
-    override fun validate(): List<ParadoxExpressionError> {
-        val errors = mutableListOf<ParadoxExpressionError>()
+    override fun validate(): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
         var malformed = false
         for((index, node) in nodes.withIndex()) {
             val isLast = index == nodes.lastIndex
             when(node) {
-                is ParadoxScopeFieldExpressionNode -> {
+                is ParadoxScopeFieldNode -> {
                     if(node.text.isEmpty()) {
                         if(!malformed) {
                             malformed = true
                         }
                     } else {
-                        if(node is ParadoxScopeLinkFromDataExpressionNode) {
+                        if(node is ParadoxScopeLinkFromDataNode) {
                             val dataSourceNode = node.dataSourceNode
                             for(dataSourceChildNode in dataSourceNode.nodes) {
                                 when(dataSourceChildNode) {
-                                    is ParadoxDataExpressionNode -> {
+                                    is ParadoxDataSourceNode -> {
                                         if(dataSourceChildNode.text.isEmpty()) {
                                             if(!malformed) {
                                                 malformed = true
@@ -136,24 +134,24 @@ private class ParadoxValueFieldExpressionImpl(
                                             malformed = true
                                         }
                                     }
-                                    is ParadoxScopeFieldExpressionNode -> {
+                                    is ParadoxScopeFieldNode -> {
                                         if(dataSourceChildNode.text.isEmpty()) {
                                             if(isLast) {
-                                                val error = ParadoxMissingScopeExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingScope"))
+                                                val error = ParadoxComplexExpressionErrors.missingScopeField(rangeInExpression)
                                                 errors.add(error)
                                             } else if(!malformed) {
                                                 malformed = true
                                             }
                                         } else {
-                                            if(dataSourceChildNode is ParadoxScopeLinkFromDataExpressionNode) {
+                                            if(dataSourceChildNode is ParadoxScopeLinkFromDataNode) {
                                                 val nestedDataSourceNode = dataSourceChildNode.dataSourceNode
                                                 for(nestedDataSourceChildNode in nestedDataSourceNode.nodes) {
                                                     when(nestedDataSourceChildNode) {
-                                                        is ParadoxDataExpressionNode -> {
+                                                        is ParadoxDataSourceNode -> {
                                                             if(nestedDataSourceChildNode.text.isEmpty()) {
                                                                 if(isLast) {
                                                                     val expect = nestedDataSourceChildNode.linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
-                                                                    val error = ParadoxMissingScopeLinkDataSourceExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingScopeLinkDataSource", expect))
+                                                                    val error = ParadoxComplexExpressionErrors.missingScopeLinkDataSource(rangeInExpression, expect)
                                                                     errors.add(error)
                                                                 } else if(!malformed) {
                                                                     malformed = true
@@ -165,7 +163,7 @@ private class ParadoxValueFieldExpressionImpl(
                                                         is ParadoxComplexExpression -> {
                                                             errors.addAll(nestedDataSourceChildNode.validate())
                                                         }
-                                                        is ParadoxErrorTokenExpressionNode -> {
+                                                        is ParadoxErrorTokenNode -> {
                                                             malformed = true
                                                         }
                                                     }
@@ -176,7 +174,7 @@ private class ParadoxValueFieldExpressionImpl(
                                     is ParadoxComplexExpression -> {
                                         errors.addAll(dataSourceChildNode.validate())
                                     }
-                                    is ParadoxErrorTokenExpressionNode -> {
+                                    is ParadoxErrorTokenNode -> {
                                         malformed = true
                                     }
                                 }
@@ -184,24 +182,24 @@ private class ParadoxValueFieldExpressionImpl(
                         }
                     }
                 }
-                is ParadoxValueFieldExpressionNode -> {
+                is ParadoxValueFieldNode -> {
                     if(node.text.isEmpty()) {
                         if(isLast) {
-                            val error = ParadoxMissingValueFieldExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingValueField"))
+                            val error = ParadoxComplexExpressionErrors.missingValueField(rangeInExpression)
                             errors.add(error)
                         } else if(!malformed) {
                             malformed = true
                         }
                     } else {
-                        if(node is ParadoxValueLinkFromDataExpressionNode) {
+                        if(node is ParadoxValueLinkFromDataNode) {
                             val dataSourceNode = node.dataSourceNode
                             for(dataSourceChildNode in dataSourceNode.nodes) {
                                 when(dataSourceChildNode) {
-                                    is ParadoxDataExpressionNode -> {
+                                    is ParadoxDataSourceNode -> {
                                         if(dataSourceChildNode.text.isEmpty()) {
                                             if(isLast) {
                                                 val expect = dataSourceChildNode.linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
-                                                val error = ParadoxMissingValueLinkDataSourceExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingValueLinkDataSource", expect))
+                                                val error = ParadoxComplexExpressionErrors.missingValueLinkDataSource(rangeInExpression, expect)
                                                 errors.add(error)
                                             } else if(!malformed) {
                                                 malformed = true
@@ -213,7 +211,7 @@ private class ParadoxValueFieldExpressionImpl(
                                     is ParadoxComplexExpression -> {
                                         errors.addAll(dataSourceChildNode.validate())
                                     }
-                                    is ParadoxErrorTokenExpressionNode -> {
+                                    is ParadoxErrorTokenNode -> {
                                         malformed = true
                                     }
                                 }
@@ -224,13 +222,13 @@ private class ParadoxValueFieldExpressionImpl(
             }
         }
         if(malformed) {
-            val error = ParadoxMalformedValueFieldExpressionExpressionError(rangeInExpression, PlsBundle.message("script.expression.malformedValueFieldExpression", text))
+            val error = ParadoxComplexExpressionErrors.malformedValueFieldExpression(rangeInExpression, text)
             errors.add(0, error)
         }
         return errors
     }
     
-    private fun isValid(node: ParadoxExpressionNode): Boolean {
+    private fun isValid(node: ParadoxComplexExpressionNode): Boolean {
         return node.text.isExactParameterAwareIdentifier()
     }
     
@@ -250,24 +248,24 @@ private class ParadoxValueFieldExpressionImpl(
             val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset
             if(!inRange) {
                 //如果光标位置之前存在无法解析的scope（除非被解析为scopeLinkFromData，例如，"event_target:xxx"），不要进行补全
-                if(node is ParadoxErrorExpressionNode || node.text.isEmpty()) break
+                if(node is ParadoxErrorNode || node.text.isEmpty()) break
             }
-            if(node is ParadoxScopeFieldExpressionNode) {
+            if(node is ParadoxScopeFieldNode) {
                 if(inRange) {
                     context.scopeContext = scopeContextInExpression
-                    completeForScopeExpressionNode(node, context, result)
+                    completeForScopeNode(node, context, result)
                     break
                 } else {
                     val inExpression = i != 0
                     scopeContextInExpression = ParadoxScopeHandler.getScopeContext(contextElement, node, scopeContextInExpression, inExpression)
                 }
-            } else if(node is ParadoxValueFieldExpressionNode) {
+            } else if(node is ParadoxValueFieldNode) {
                 if(inRange) {
                     context.scopeContext = scopeContextInExpression
-                    val scopeExpressionNode = ParadoxScopeFieldExpressionNode.resolve(node.text, node.rangeInExpression, configGroup)
-                    val afterPrefix = completeForScopeExpressionNode(scopeExpressionNode, context, result)
+                    val scopeNode = ParadoxScopeFieldNode.resolve(node.text, node.rangeInExpression, configGroup)
+                    val afterPrefix = completeForScopeNode(scopeNode, context, result)
                     if(afterPrefix) break
-                    completeForValueExpressionNode(node, context, result)
+                    completeForValueNode(node, context, result)
                     break
                 }
             }

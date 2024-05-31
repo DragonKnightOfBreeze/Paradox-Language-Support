@@ -217,6 +217,10 @@ class CoreCwtDataExpressionResolver : CwtDataExpressionResolver {
             return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.ShaderEffect)
         }
         
+        if(expressionString == "\$database_object") {
+            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.DatabaseObject)
+        }
+        
         expressionString.removeSurroundingOrNull("stellaris_name_format[", "]")?.let { v ->
             val value = v.orNull()
             return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.StellarisNameFormat, value)

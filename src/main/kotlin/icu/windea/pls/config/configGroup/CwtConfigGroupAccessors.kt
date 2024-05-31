@@ -5,7 +5,6 @@ import icu.windea.pls.config.config.extended.*
 import icu.windea.pls.config.config.settings.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.priority.*
@@ -104,7 +103,7 @@ val CwtConfigGroup.modifiers: MutableMap<@CaseInsensitive String, CwtModifierCon
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
 //name - config
-val CwtConfigGroup.gameObjectTypes: MutableMap<String, CwtGameObjectTypeConfig>
+val CwtConfigGroup.databaseObjectTypes: MutableMap<String, CwtDatabaseObjectTypeConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
 //template_expression - configs

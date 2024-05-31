@@ -8,7 +8,6 @@ import icu.windea.pls.config.config.settings.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.priority.*
@@ -273,11 +272,11 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.scopeGroups[scopeGroupConfig.name] = scopeGroupConfig
                     }
                 }
-                key == "game_object_types" -> {
+                key == "database_object_types" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
-                        val gameObjectTypeConfig = CwtGameObjectTypeConfig.resolve(prop) ?: continue
-                        configGroup.gameObjectTypes[gameObjectTypeConfig.name] = gameObjectTypeConfig
+                        val databaseObjectTypeConfig = CwtDatabaseObjectTypeConfig.resolve(prop) ?: continue
+                        configGroup.databaseObjectTypes[databaseObjectTypeConfig.name] = databaseObjectTypeConfig
                     }
                 }
                 key == "scripted_variables" -> {

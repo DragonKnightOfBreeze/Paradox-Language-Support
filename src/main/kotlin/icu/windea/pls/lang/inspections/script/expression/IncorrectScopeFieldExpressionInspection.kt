@@ -8,15 +8,13 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.*
-import icu.windea.pls.model.expression.complex.errors.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 不正确的作用域字段表达式的检查。
+ * 不正确的[ParadoxScopeFieldExpression]的检查。
  *
  * @property reportsUnresolvedDs 是否报告无法解析的DS引用。
  */
@@ -35,30 +33,24 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
                 val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val configGroup = config.configGroup
                 val dataType = config.expression.type
-                if(dataType in CwtDataTypeGroups.ScopeField) {
-                    val value = element.value
-                    val textRange = TextRange.create(0, value.length)
-                    val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup) ?: return
-                    handleErrors(element, scopeFieldExpression)
-                }
+                if(dataType !in CwtDataTypeGroups.ScopeField) return
+                val value = element.value
+                val textRange = TextRange.create(0, value.length)
+                val expression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup) ?: return
+                handleErrors(element, expression)
             }
             
-            private fun handleErrors(element: ParadoxScriptStringExpressionElement, scopeFieldExpression: ParadoxScopeFieldExpression) {
-                scopeFieldExpression.validate().forEach { error ->
-                    handleError(element, error)
-                }
-                scopeFieldExpression.processAllNodes { node ->
-                    val unresolvedError = node.getUnresolvedError(element)
-                    if(unresolvedError != null) {
-                        handleError(element, unresolvedError)
-                    }
+            private fun handleErrors(element: ParadoxScriptStringExpressionElement, expression: ParadoxScopeFieldExpression) {
+                expression.validate().forEach { error -> handleError(element, error) }
+                expression.processAllNodes { node ->
+                    node.getUnresolvedError(element)?.let { error -> handleError(element, error) }
                     true
                 }
             }
             
-            private fun handleError(element: ParadoxScriptStringExpressionElement, error: ParadoxExpressionError) {
-                if(reportsUnresolvedDs && error is ParadoxUnresolvedScopeLinkDataSourceExpressionError) return
-                holder.registerScriptExpressionError(element, error)
+            private fun handleError(element: ParadoxScriptStringExpressionElement, error: ParadoxComplexExpressionError) {
+                if(!reportsUnresolvedDs && error.code == ParadoxComplexExpressionErrorCodes.UnresolvedDataSource) return
+                holder.registerScriptExpressionError(error, element)
             }
         }
     }

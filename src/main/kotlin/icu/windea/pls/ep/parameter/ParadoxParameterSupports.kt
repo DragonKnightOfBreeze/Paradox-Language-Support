@@ -12,7 +12,6 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.core.documentation.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
@@ -235,8 +234,8 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
 
 /**
  * @see icu.windea.pls.model.expression.complex.ParadoxScriptValueExpression
- * @see icu.windea.pls.model.expression.complex.nodes.ParadoxScriptValueArgumentExpressionNode
- * @see icu.windea.pls.model.expression.complex.nodes.ParadoxScriptValueArgumentValueExpressionNode
+ * @see icu.windea.pls.model.expression.complex.nodes.ParadoxScriptValueArgumentNode
+ * @see icu.windea.pls.model.expression.complex.nodes.ParadoxScriptValueArgumentValueNode
  */
 class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
     override fun isContext(element: ParadoxScriptDefinitionElement) = false
@@ -346,10 +345,10 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         if(definitionName.isParameterized()) return null //skip if context name is parameterized
         val definitionTypes = listOf("script_value")
         val argumentNode = scriptValueExpression.nodes.find f@{
-            if(it !is ParadoxScriptValueArgumentExpressionNode) return@f false
+            if(it !is ParadoxScriptValueArgumentNode) return@f false
             if(it.rangeInExpression != rangeInElement) return@f false
             true
-        } as? ParadoxScriptValueArgumentExpressionNode ?: return null
+        } as? ParadoxScriptValueArgumentNode ?: return null
         val name = argumentNode.text
         val contextName = definitionName
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])

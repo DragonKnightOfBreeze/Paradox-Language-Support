@@ -5,7 +5,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.complex.*
@@ -89,24 +88,24 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
         return result
     }
     
-    private fun getConfigFromNode(expressionElement: ParadoxScriptStringExpressionElement, expressionConfig: CwtMemberConfig<*>, node: ParadoxExpressionNode): CwtValueConfig? {
+    private fun getConfigFromNode(expressionElement: ParadoxScriptStringExpressionElement, expressionConfig: CwtMemberConfig<*>, node: ParadoxComplexExpressionNode): CwtValueConfig? {
         return when {
-            node is ParadoxDataExpressionNode -> {
+            node is ParadoxDataSourceNode -> {
                 node.linkConfigs.firstNotNullOfOrNull { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), it.configGroup, e.expressionString) } }
             }
-            node is ParadoxDynamicValueExpressionNode -> {
+            node is ParadoxDynamicValueNode -> {
                 node.configs.firstOrNull()?.let { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), it.configGroup, e.expressionString) } }
             }
-            node is ParadoxScriptValueExpressionNode -> {
+            node is ParadoxScriptValueNode -> {
                 node.config.let { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), it.configGroup, e.expressionString) } }
             }
-            node is ParadoxScopeFieldExpressionNode -> {
+            node is ParadoxScopeFieldNode -> {
                 expressionConfig.let { CwtValueConfig.resolve(emptyPointer(), it.configGroup, "scope_field") } //scope field node
             }
-            node is ParadoxValueFieldExpressionNode -> {
+            node is ParadoxValueFieldNode -> {
                 expressionConfig.let { CwtValueConfig.resolve(emptyPointer(), it.configGroup, "value_field") } //value field node
             }
-            node is ParadoxScriptValueArgumentValueExpressionNode -> {
+            node is ParadoxScriptValueArgumentValueNode -> {
                 val argumentNode = node.argumentNode ?: return null
                 val passingParameterElement = ParadoxParameterSupport.resolveArgument(expressionElement, argumentNode.rangeInExpression, expressionConfig) ?: return null
                 val passingContextConfigs = ParadoxParameterHandler.getInferredContextConfigs(passingParameterElement)

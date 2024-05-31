@@ -7,7 +7,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.CwtConfigMatcher.Result
 import icu.windea.pls.model.*
@@ -205,6 +204,15 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 val textRange = TextRange.create(0, expression.value.length)
                 val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression.value, textRange, configGroup)
                 val r = variableFieldExpression != null
+                Result.of(r)
+            }
+            configExpression.type in CwtDataTypeGroups.DatabaseObject -> {
+                if(expression.quoted) return Result.NotMatch //不允许用引号括起
+                if(!expression.type.isStringType()) return Result.NotMatch
+                if(expression.isParameterized()) return Result.ParameterizedMatch
+                val textRange = TextRange.create(0, expression.value.length)
+                val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(expression.value, textRange, configGroup)
+                val r = databaseObjectExpression != null
                 Result.of(r)
             }
             configExpression.type == CwtDataTypes.Modifier -> {

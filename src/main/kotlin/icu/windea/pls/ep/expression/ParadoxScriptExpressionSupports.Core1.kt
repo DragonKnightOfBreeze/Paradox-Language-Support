@@ -8,7 +8,6 @@ import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.*
@@ -197,5 +196,34 @@ class ParadoxVariableFieldExpressionSupport : ParadoxScriptExpressionSupport {
             }
             else -> {}
         }
+    }
+}
+
+class ParadoxDatabaseObjectExpressionSupport : ParadoxScriptExpressionSupport {
+    override fun supports(config: CwtConfig<*>): Boolean {
+        return config.expression?.type in CwtDataTypeGroups.DatabaseObject
+    }
+    
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+        if(element !is ParadoxScriptStringExpressionElement) return
+        if(expression.isLeftQuoted()) return
+        val configGroup = config.configGroup
+        val range = rangeInElement ?: TextRange.create(0, expression.length)
+        val variableFieldExpression = ParadoxDatabaseObjectExpression.resolve(expression, range, configGroup) ?: return
+        CwtConfigHandler.annotateComplexExpression(element, variableFieldExpression, holder, config)
+    }
+    
+    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+        if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
+        if(expression.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
+        val configGroup = config.configGroup
+        val range = TextRange.create(0, expression.length).unquote(expression)
+        val variableFieldExpression = ParadoxDatabaseObjectExpression.resolve(expression, range, configGroup)
+        if(variableFieldExpression == null) return PsiReference.EMPTY_ARRAY
+        return variableFieldExpression.getReferences(element)
+    }
+    
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        ParadoxCompletionManager.completeDatabaseObjectExpression(context, result)
     }
 }

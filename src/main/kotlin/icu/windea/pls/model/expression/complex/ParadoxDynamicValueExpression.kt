@@ -7,12 +7,10 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.expression.complex.errors.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 /**
@@ -52,7 +50,7 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
     
     val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
     
-    val nodes = mutableListOf<ParadoxExpressionNode>()
+    val nodes = mutableListOf<ParadoxComplexExpressionNode>()
     val offset = range.startOffset
     var index: Int
     var tokenIndex = -1
@@ -67,12 +65,12 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
         //resolve dynamicValueNode
         val nodeText = expression.substring(0, tokenIndex)
         val nodeTextRange = TextRange.create(offset, tokenIndex + offset)
-        val node = ParadoxDynamicValueExpressionNode.resolve(nodeText, nodeTextRange, configs, configGroup)
+        val node = ParadoxDynamicValueNode.resolve(nodeText, nodeTextRange, configs, configGroup)
         if(node == null) return null //unexpected
         nodes.add(node)
         if(tokenIndex != textLength) {
             //resolve at token
-            val atNode = ParadoxMarkerExpressionNode("@", TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset))
+            val atNode = ParadoxMarkerNode("@", TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset))
             nodes.add(atNode)
             //resolve scope expression
             val expText = expression.substring(tokenIndex + 1)
@@ -90,23 +88,23 @@ private fun doResolve(expression: String, range: TextRange, configGroup: CwtConf
 private class ParadoxDynamicValueExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxExpressionNode>,
+    override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup,
     override val configs: List<CwtConfig<*>>
 ) : ParadoxDynamicValueExpression {
-    override fun validate(): List<ParadoxExpressionError> {
-        val errors = mutableListOf<ParadoxExpressionError>()
+    override fun validate(): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
         var malformed = false
         for(node in nodes) {
             when(node) {
-                is ParadoxDynamicValueExpressionNode -> {
+                is ParadoxDynamicValueNode -> {
                     if(!malformed && !isValid(node)) {
                         malformed = true
                     }
                 }
                 is ParadoxScopeFieldExpression -> {
                     if(node.text.isEmpty()) {
-                        val error = ParadoxMissingScopeFieldExpressionExpressionError(rangeInExpression, PlsBundle.message("script.expression.missingScopeFieldExpression"))
+                        val error = ParadoxComplexExpressionErrors.missingScopeFieldExpression(rangeInExpression)
                         errors.add(error)
                     }
                     errors.addAll(node.validate())
@@ -114,15 +112,14 @@ private class ParadoxDynamicValueExpressionImpl(
             }
         }
         if(malformed) {
-            val error = ParadoxMalformedDynamicValueExpressionExpressionError(rangeInExpression, PlsBundle.message("script.expression.malformedDynamicValueExpression", text))
-            errors.add(0, error)
+            errors.add(0, ParadoxComplexExpressionErrors.malformedDynamicValueExpression(rangeInExpression, text))
         }
         return errors
     }
     
-    private fun isValid(node: ParadoxExpressionNode): Boolean {
+    private fun isValid(node: ParadoxComplexExpressionNode): Boolean {
         return when(node) {
-            is ParadoxDynamicValueExpressionNode -> node.text.isExactParameterAwareIdentifier('.') //兼容点号
+            is ParadoxDynamicValueNode -> node.text.isExactParameterAwareIdentifier('.') //兼容点号
             else -> node.text.isExactParameterAwareIdentifier()
         }
     }
@@ -144,7 +141,7 @@ private class ParadoxDynamicValueExpressionImpl(
         for(node in nodes) {
             val nodeRange = node.rangeInExpression
             val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset
-            if(node is ParadoxDynamicValueExpressionNode) {
+            if(node is ParadoxDynamicValueNode) {
                 if(inRange) {
                     val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
