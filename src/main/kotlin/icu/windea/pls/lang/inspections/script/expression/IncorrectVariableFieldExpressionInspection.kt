@@ -17,7 +17,7 @@ import javax.swing.*
  * 不正确的[ParadoxVariableFieldExpression]的检查。
  */
 class IncorrectVariableFieldExpressionInspection : LocalInspectionTool() {
-    @JvmField var reportsUnresolvedDs = true
+    @JvmField var reportsUnresolved = true
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
@@ -48,7 +48,7 @@ class IncorrectVariableFieldExpressionInspection : LocalInspectionTool() {
             }
             
             private fun handleError(element: ParadoxScriptStringExpressionElement, error: ParadoxComplexExpressionError) {
-                if(!reportsUnresolvedDs && error.code == ParadoxComplexExpressionErrorCodes.UnresolvedDataSource) return
+                if(!reportsUnresolved && error.isUnresolvedError()) return
                 holder.registerScriptExpressionError(error, element)
             }
         }
@@ -56,10 +56,11 @@ class IncorrectVariableFieldExpressionInspection : LocalInspectionTool() {
     
     override fun createOptionsPanel(): JComponent {
         return panel {
+            //reportsUnresolved
             row {
-                checkBox(PlsBundle.message("inspection.script.incorrectVariableFieldExpression.option.reportsUnresolvedDs"))
-                    .bindSelected(::reportsUnresolvedDs)
-                    .actionListener { _, component -> reportsUnresolvedDs = component.isSelected }
+                checkBox(PlsBundle.message("inspection.script.incorrectExpression.option.reportsUnresolved"))
+                    .bindSelected(::reportsUnresolved)
+                    .actionListener { _, component -> reportsUnresolved = component.isSelected }
             }
         }
     }

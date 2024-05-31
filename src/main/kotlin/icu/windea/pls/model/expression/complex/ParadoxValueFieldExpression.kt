@@ -21,14 +21,14 @@ import icu.windea.pls.model.expression.complex.nodes.*
  * ```bnf
  * value_field_expression ::= scope * value_field
  * scope ::= system_link | scope_link | scope_link_from_data
- * system_link ::= TOKEN //predefined by CWT Config (in system_links.pls.cwt)
- * scope_link ::= TOKEN //predefined by CWT Config (in links.cwt)
- * scope_link_from_data ::= scope_link_prefix scope_link_data_source //predefined by CWT Config (in links.cwt)
+ * system_link ::= TOKEN //predefined by CWT Config (see system_links.cwt)
+ * scope_link ::= TOKEN //predefined by CWT Config (see links.cwt)
+ * scope_link_from_data ::= scope_link_prefix scope_link_data_source //predefined by CWT Config (see links.cwt)
  * scope_link_prefix ::= TOKEN //e.g. "event_target:" while the link's prefix is "event_target:"
  * scope_link_data_source ::= expression //e.g. "some_variable" while the link's data source is "value[variable]"
  * value_field ::= value_link | value_link_from_data
- * value_link ::= TOKEN //predefined by CWT Config (in links.cwt, from_data = false, type = both | value)
- * value_link_from_data ::= value_link_prefix value_link_data_source //predefined by CWT Config (in links.cwt, from_data = true, type = both | value)
+ * value_link ::= TOKEN //predefined by CWT Config (see links.cwt)
+ * value_link_from_data ::= value_link_prefix value_link_data_source //predefined by CWT Config (see links.cwt)
  * value_link_prefix ::= TOKEN //e.g. "value:" while the link's prefix is "value:"
  * value_link_data_source ::= expression //e.g. "some" while the link's data source is "value[variable]"
  * expression ::= data_expression | dynamic_value_expression | sv_expression //see: ParadoxDataExpression, ParadoxDynamicValueExpression

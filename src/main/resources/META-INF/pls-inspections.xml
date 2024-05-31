@@ -227,6 +227,12 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.expression.group"
                      groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectDynamicValueExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectDatabaseObjectExpression"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.script.incorrectDatabaseObjectExpression"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.expression.group"
+                     groupPathKey="inspection.script.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectDatabaseObjectExpressionInspection"/>
     <!--endregion-->
     <!--region Paradox script/Events-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectEventId"

@@ -16,10 +16,10 @@ import javax.swing.*
 /**
  * 不正确的[ParadoxScopeFieldExpression]的检查。
  *
- * @property reportsUnresolvedDs 是否报告无法解析的DS引用。
+ * @property reportsUnresolved 是否报告无法解析的DS引用。
  */
 class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
-    @JvmField var reportsUnresolvedDs = true
+    @JvmField var reportsUnresolved = true
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
@@ -49,7 +49,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
             }
             
             private fun handleError(element: ParadoxScriptStringExpressionElement, error: ParadoxComplexExpressionError) {
-                if(!reportsUnresolvedDs && error.code == ParadoxComplexExpressionErrorCodes.UnresolvedDataSource) return
+                if(!reportsUnresolved && error.isUnresolvedError()) return
                 holder.registerScriptExpressionError(error, element)
             }
         }
@@ -57,10 +57,11 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
     
     override fun createOptionsPanel(): JComponent {
         return panel {
+            //reportsUnresolved
             row {
-                checkBox(PlsBundle.message("inspection.script.incorrectScopeFieldExpression.option.reportsUnresolvedDs"))
-                    .bindSelected(::reportsUnresolvedDs)
-                    .actionListener { _, component -> reportsUnresolvedDs = component.isSelected }
+                checkBox(PlsBundle.message("inspection.script.incorrectExpression.option.reportsUnresolved"))
+                    .bindSelected(::reportsUnresolved)
+                    .actionListener { _, component -> reportsUnresolved = component.isSelected }
             }
         }
     }

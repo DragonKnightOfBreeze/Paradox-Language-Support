@@ -3,10 +3,28 @@ package icu.windea.pls.model.expression.complex
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
+/**
+ * 动态值表达式。对应的CWT规则类型为[CwtDataTypeGroups.DynamicValue]。
+ *
+ * 语法：
+ *
+ * ```bnf
+ * database_object_expression ::= prefix ":" database_object (":" swapped_database_object)?
+ * prefix ::= TOKEN //predefined by CWT Config (see database_object_types.cwt)
+ * database_object ::= TOKEN //predefined by CWT Config (see database_object_types.cwt)
+ * swapped_database_object ::= TOKEN //predefined by CWT Config (see database_object_types.cwt)
+ * ```
+ *
+ * 示例：
+ *
+ * * `civic:some_civic`
+ * * `civic:some_civic:some_swapped_civic`
+ */
 interface ParadoxDatabaseObjectExpression: ParadoxComplexExpression {
     companion object Resolver {
         fun resolve(expression: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? =
