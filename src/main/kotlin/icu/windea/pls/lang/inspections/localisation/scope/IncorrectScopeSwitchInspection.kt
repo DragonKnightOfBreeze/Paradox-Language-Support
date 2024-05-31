@@ -58,20 +58,6 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                             //}
                         }
                     }
-                    //event target or global event target
-                    resolved is ParadoxDynamicValueElement -> {
-                        val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return
-                        val supportedScopeContext = ParadoxScopeHandler.getScopeContext(resolved)
-                        val supportedScope = supportedScopeContext.scope.id
-                        val configGroup = getConfigGroup(resolved.project, resolved.gameType)
-                        if(!ParadoxScopeHandler.matchesScope(scopeContext, supportedScope, configGroup)) {
-                            val description = PlsBundle.message(
-                                "inspection.localisation.incorrectScopeSwitch.description.2",
-                                element.name, supportedScope, scopeContext.scope.id
-                            )
-                            holder.registerProblem(element, description)
-                        }
-                    }
                 }
             }
         }

@@ -10,7 +10,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 /**
- * 复杂表达式，对应脚本语言/本地化语言中的某些特定的标识符。
+ * 复杂表达式，对应脚本语言/本地化语言中的某段特定的标识符。
  * 
  * （插件目前认为）复杂表达式不能用引号括起。
  */

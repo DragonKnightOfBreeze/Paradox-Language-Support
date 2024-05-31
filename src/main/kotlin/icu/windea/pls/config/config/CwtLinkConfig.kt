@@ -27,6 +27,9 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val inputScopes: Set<String>
     val outputScope: String?
     
+    //output_scope = null -> transfer scope based on data source
+    //e.g., for 'event_target', output_scope should be null
+    
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig): CwtLinkConfig? = doResolve(config)
     }

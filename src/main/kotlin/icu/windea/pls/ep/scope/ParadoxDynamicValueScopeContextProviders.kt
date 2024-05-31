@@ -15,11 +15,14 @@ class ParadoxBaseDynamicValueScopeContextProvider: ParadoxDynamicValueScopeConte
     
     override fun getScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContext? {
         val name = element.name
-        val type = element.dynamicValueType
+        val types = element.dynamicValueTypes
         val configGroup = getConfigGroup(element.project, element.gameType)
-        val configs = configGroup.extendedDynamicValues[type] ?: return null
-        val config = configs.findFromPattern(name, element, configGroup) ?: return null
-        val result = config.config.scopeContext
-        return result
+        for(type in types) {
+            val configs = configGroup.extendedDynamicValues[type] ?: continue
+            val config = configs.findFromPattern(name, element, configGroup) ?: continue
+            val result = config.config.scopeContext ?: continue
+            return result
+        }
+        return null
     }
 }

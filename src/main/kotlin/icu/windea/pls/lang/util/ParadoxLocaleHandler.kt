@@ -5,21 +5,30 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
 
 object ParadoxLocaleHandler {
     fun getPreferredLocaleConfig(): CwtLocalisationLocaleConfig {
         return getLocaleConfig(getSettings().preferredLocale.orEmpty())
     }
     
-    fun getUsedLocaleInDocumentation(element: PsiElement, defaultLocale: CwtLocalisationLocaleConfig? = null): CwtLocalisationLocaleConfig {
-        val cache = element.getOrPutUserData(PlsKeys.documentationLocale) { defaultLocale?.id ?: "auto" }
-        val usedLocaleFromCache = when {
-            cache == "auto" -> null
+    fun getLocaleInDocumentation(element: PsiElement): CwtLocalisationLocaleConfig? {
+        val cache = element.getUserData(PlsKeys.documentationLocale) ?: return null
+        val localeFromCache = when {
+            cache == "auto" -> CwtLocalisationLocaleConfig.AUTO
             else -> getLocaleConfigById(cache)
         }
-        return usedLocaleFromCache ?: defaultLocale ?: getPreferredLocaleConfig()
+        return localeFromCache
+    }
+    
+    fun getUsedLocaleInDocumentation(element: PsiElement, defaultLocale: CwtLocalisationLocaleConfig? = null): CwtLocalisationLocaleConfig {
+        val cache = element.getOrPutUserData(PlsKeys.documentationLocale) { defaultLocale?.id ?: "auto" }
+        val localeFromCache = when {
+            cache == "auto" -> getPreferredLocaleConfig()
+            else -> getLocaleConfigById(cache) ?: defaultLocale ?: getPreferredLocaleConfig()
+        }
+        return localeFromCache
     }
     
     fun getLocaleConfig(localeString: String): CwtLocalisationLocaleConfig {

@@ -172,9 +172,8 @@
   <actions>
     <group id="Pls.Documentation.PrimaryGroup">
       <separator/>
-      <action id="Pls.Documentation.ChangeLocale" class="icu.windea.pls.lang.documentation.actions.ChangeQuickDocLocalisationLocaleAction">
-        <keyboard-shortcut keymap="$default" first-keystroke="control shift u"/>
-      </action>
+      <action id="Pls.Documentation.ChangeLocale" class="icu.windea.pls.lang.documentation.actions.ChangeQuickDocLocalisationLocaleAction"/>
+      <action id="Pls.Documentation.ResetLocale" class="icu.windea.pls.lang.documentation.actions.ResetQuickDocLocalisationLocaleAction"/>
       <add-to-group group-id="Documentation.PrimaryGroup"/>
     </group>
     

@@ -8,7 +8,6 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.scope.*
@@ -186,8 +185,7 @@ object ParadoxScopeHandler {
     private fun doGetScopeContextFromCache(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContext) {
             val file = element.containingFile ?: return@getCachedValue null
-            val value = doGetScopeContextOfDefinition(element)
-                ?: doGetScopeContextOfDefinitionMember(element)
+            val value = doGetScopeContextOfDefinition(element) ?: doGetScopeContextOfDefinitionMember(element)
             value.withDependencyItems(
                 file,
                 //getConfigGroup(file.project, selectGameType(file)).modificationTracker, //from extended configs
@@ -289,8 +287,7 @@ object ParadoxScopeHandler {
             }
             prevResolved is ParadoxDynamicValueElement -> {
                 val prevScopeContext = prevElement.prevIdentifier?.let { getScopeContext(it) } ?: getAnyScopeContext()
-                val scopeContext = getScopeContext(prevResolved)
-                return prevScopeContext.resolveNext(scopeContext)
+                return getScopeContext(prevResolved, prevScopeContext)
             }
         }
         return getUnknownScopeContext()
@@ -336,15 +333,18 @@ object ParadoxScopeHandler {
         return inputScopeContext.resolveNext(linkConfig.outputScope)
     }
     
-    fun getScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContext {
-        return doGetScopeContextFromCache(element)
+    fun getScopeContext(element: ParadoxDynamicValueElement, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+        //only receive push scope (this scope), ignore others (like root scope, etc.)
+        val scopeContext = doGetScopeContextFromCache(element)
+        return inputScopeContext.resolveNext(scopeContext.scope.id)
     }
     
     private fun doGetScopeContextFromCache(element: ParadoxDynamicValueElement): ParadoxScopeContext {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContext) {
             val value = doGetScopeContextOfDynamicValue(element)
-            val tracker = ModificationTracker.NEVER_CHANGED
-            CachedValueProvider.Result.create(value, tracker)
+            value.withDependencyItems(
+                //getConfigGroup(file.project, selectGameType(file)).modificationTracker, //from extended configs
+            )
         }
     }
     
@@ -364,32 +364,40 @@ object ParadoxScopeHandler {
     private fun doGetScopeContextByScopeLinkFromDataNode(contextElement: PsiElement, node: ParadoxScopeLinkFromDataNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext {
         val linkConfig = node.linkConfigs.firstOrNull() // first is ok
         if(linkConfig == null) return getUnknownScopeContext(inputScopeContext) //unexpected
-        if(linkConfig.outputScope == null) {
-            val dataType = linkConfig.expression?.type
-            if(dataType != null) {
-                when {
-                    //hidden:event_target:xxx = {...}
-                    dataType in CwtDataTypeGroups.ScopeField -> {
-                        val nestedNode = node.dataSourceNode.nodes.findIsInstance<ParadoxScopeFieldNode>()
-                        if(nestedNode == null) return getUnknownScopeContext(inputScopeContext) //unexpected
-                        return getScopeContext(contextElement, nestedNode, inputScopeContext, inExpression)
-                    }
-                    //event_target:xxx = {...}
-                    dataType in CwtDataTypeGroups.DynamicValue -> {
-                        val dynamicValueExpression = node.dataSourceNode.nodes.findIsInstance<ParadoxDynamicValueExpression>()
-                        if(dynamicValueExpression == null) return getUnknownScopeContext(inputScopeContext) //unexpected
-                        val configGroup = dynamicValueExpression.configGroup
-                        val dynamicValueNode = dynamicValueExpression.dynamicValueNode
-                        val name = dynamicValueNode.text
-                        val configExpressions = dynamicValueNode.configs.mapNotNullTo(mutableSetOf()) { it.expression }
-                        val expressionElement = contextElement.castOrNull<ParadoxScriptStringExpressionElement>() ?: return getAnyScopeContext()
-                        val dynamicValueElement = ParadoxDynamicValueHandler.resolveDynamicValue(expressionElement, name, configExpressions, configGroup) ?: return getAnyScopeContext()
-                        return getScopeContext(dynamicValueElement)
-                    }
+        if(linkConfig.outputScope != null) return inputScopeContext.resolveNext(linkConfig.outputScope)
+        
+        //output_scope = null -> transfer scope based on data source
+        val dataType = linkConfig.expression?.type
+        if(dataType == null) return inputScopeContext
+        when {
+            //hidden:event_target:xxx = {...}
+            dataType in CwtDataTypeGroups.ScopeField -> {
+                val nestedNode = node.dataSourceNode.nodes.findIsInstance<ParadoxScopeFieldNode>()
+                if(nestedNode == null) return getUnknownScopeContext(inputScopeContext) //unexpected
+                return getScopeContext(contextElement, nestedNode, inputScopeContext, inExpression)
+            }
+            //event_target:xxx = {...}
+            dataType in CwtDataTypeGroups.DynamicValue -> {
+                val dynamicValueExpression = node.dataSourceNode.nodes.findIsInstance<ParadoxDynamicValueExpression>()
+                if(dynamicValueExpression == null) return getUnknownScopeContext(inputScopeContext) //unexpected
+                val configGroup = dynamicValueExpression.configGroup
+                val dynamicValueNode = dynamicValueExpression.dynamicValueNode
+                val name = dynamicValueNode.text
+                val configExpressions = dynamicValueNode.configs.mapNotNullTo(mutableSetOf()) { it.expression }
+                val expressionElement = when {
+                    contextElement is ParadoxScriptProperty -> contextElement.propertyKey
+                    else -> contextElement.castOrNull<ParadoxScriptStringExpressionElement>()
                 }
+                if(expressionElement == null) return getAnyScopeContext()
+                val dynamicValueElement = ParadoxDynamicValueHandler.resolveDynamicValue(expressionElement, name, configExpressions, configGroup)
+                if(dynamicValueElement == null) return getAnyScopeContext()
+                return getScopeContext(dynamicValueElement, inputScopeContext)
+            }
+            //unexpected, or other specific situations
+            else -> {
+                return inputScopeContext
             }
         }
-        return inputScopeContext.resolveNext(linkConfig.outputScope)
     }
     
     private fun doGetScopeContextBySystemLinkNode(contextElement: PsiElement, node: ParadoxSystemLinkNode, inputScopeContext: ParadoxScopeContext, inExpression: Boolean): ParadoxScopeContext? {

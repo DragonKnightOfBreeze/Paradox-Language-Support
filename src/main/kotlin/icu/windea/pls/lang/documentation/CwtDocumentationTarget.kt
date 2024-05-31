@@ -35,15 +35,14 @@ import java.util.*
 
 class CwtDocumentationTarget(
     val element: PsiElement,
-    val originalElement: PsiElement?,
-    @Volatile override var targetLocale: String? = null
-) : LocaleAwareDocumentationTarget {
+    val originalElement: PsiElement?
+) : DocumentationTarget {
     override fun createPointer(): Pointer<out DocumentationTarget> {
         val elementPtr = element.createSmartPointer()
         val originalElementPtr = originalElement?.createSmartPointer()
         return Pointer {
             val element = elementPtr.dereference() ?: return@Pointer null
-            CwtDocumentationTarget(element, originalElementPtr?.dereference(), targetLocale)
+            CwtDocumentationTarget(element, originalElementPtr?.dereference())
         }
     }
     
@@ -60,9 +59,7 @@ class CwtDocumentationTarget(
     
     override fun computeDocumentation(): DocumentationResult {
         return DocumentationResult.asyncDocumentation {
-            element.putUserData(PlsKeys.documentationLocale, targetLocale)
             val html = computeLocalDocumentation(element, originalElement, false) ?: return@asyncDocumentation null
-            targetLocale = element.getUserData(PlsKeys.documentationLocale)
             DocumentationResult.documentation(html)
         }
     }
@@ -279,8 +276,9 @@ private fun DocumentationBuilder.addScope(element: PsiElement, name: String, con
             if(sections != null) {
                 val inputScopes = linkConfig.inputScopes
                 sections.put(PlsBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
-                val outputScope = linkConfig.outputScope
-                if(outputScope != null) sections.put(PlsBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
+                
+                val outputScope = linkConfig.outputScope ?: ParadoxScopeHandler.anyScopeId
+                sections.put(PlsBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
             }
         }
         CwtConfigType.LocalisationLink -> {
@@ -293,8 +291,8 @@ private fun DocumentationBuilder.addScope(element: PsiElement, name: String, con
                 val inputScopes = linkConfig.inputScopes
                 sections.put(PlsBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
                 
-                val outputScope = linkConfig.outputScope
-                if(outputScope != null) sections.put(PlsBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
+                val outputScope = linkConfig.outputScope?: ParadoxScopeHandler.anyScopeId
+                sections.put(PlsBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
             }
         }
         CwtConfigType.Modifier -> {

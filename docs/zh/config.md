@@ -330,6 +330,12 @@ dynamic_values = {
 		### Some documentation
 		## hint = §RSome inlay hint text§!
 		x
+
+		# since 1.3.9, scope context related options are also available here
+		# only receive push scope (this scope), ignore others (like root scope, etc.)
+
+		## push_scope = country
+		x
 	}
 }
 ```
