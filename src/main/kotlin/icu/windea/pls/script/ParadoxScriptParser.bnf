@@ -132,7 +132,7 @@ int ::= INT_TOKEN {
     "com.intellij.psi.ContributedReferenceHost"
   ]
   methods=[
-    getName getValue getIntValue getType
+    getValue getIntValue getType
     getReference getReferences
   ]
 }
@@ -142,7 +142,7 @@ float ::= FLOAT_TOKEN {
     "com.intellij.psi.PsiLiteralValue"
     "com.intellij.psi.ContributedReferenceHost"
   ]
-  methods=[getName getValue getFloatValue getType]
+  methods=[getValue getFloatValue getType]
 }
 string ::= string_part <<checkRightTemplate>> (<<processTemplate>> string_part) * {
   extends=value
@@ -152,7 +152,7 @@ string ::= string_part <<checkRightTemplate>> (<<processTemplate>> string_part) 
     "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
   ]
   methods=[
-    getIcon getName getValue setValue getStringValue
+    getIcon getValue setValue getStringValue
     getType getExpression getConfigExpression
     getReference getReferences toString
   ]

@@ -1,14 +1,18 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.navigation.*;
-import com.intellij.psi.search.*;
-import icu.windea.pls.lang.psi.*;
-import icu.windea.pls.lang.references.*;
-import icu.windea.pls.model.*;
+import java.util.List;
 import org.jetbrains.annotations.*;
-
-import javax.swing.*;
+import com.intellij.psi.PsiElement;
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
+import icu.windea.pls.lang.psi.ParadoxParameterAwareElement;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference;
+import icu.windea.pls.model.ParadoxType;
+import javax.swing.Icon;
 
 public interface ParadoxScriptInlineMathScriptedVariableReference extends ParadoxScriptInlineMathFactor, ParadoxScriptedVariableReference, ParadoxParameterAwareElement {
 

@@ -1,13 +1,19 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi.impl;
 
-import com.intellij.lang.*;
-import com.intellij.navigation.*;
-import com.intellij.psi.*;
-import com.intellij.psi.search.*;
-import icu.windea.pls.model.*;
-import icu.windea.pls.script.psi.*;
+import java.util.List;
 import org.jetbrains.annotations.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import icu.windea.pls.script.psi.*;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.model.ParadoxType;
 
 public class ParadoxScriptIntImpl extends ParadoxScriptValueImpl implements ParadoxScriptInt {
 
@@ -24,12 +30,6 @@ public class ParadoxScriptIntImpl extends ParadoxScriptValueImpl implements Para
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public String getName() {
-    return ParadoxScriptPsiImplUtil.getName(this);
   }
 
   @Override
