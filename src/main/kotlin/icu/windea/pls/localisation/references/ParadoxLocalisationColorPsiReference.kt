@@ -15,7 +15,7 @@ import icu.windea.pls.model.*
 class ParadoxLocalisationColorPsiReference(
 	element: ParadoxLocalisationColorfulText,
 	rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxLocalisationColorfulText>(element, rangeInElement), AttributesKeyAware {
+) : PsiReferenceBase<ParadoxLocalisationColorfulText>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		return element.setName(newElementName)
 	}
@@ -24,7 +24,7 @@ class ParadoxLocalisationColorPsiReference(
 		return element.colorConfig?.pointer?.element
 	}
 	
-	override fun getAttributesKey(): TextAttributesKey? {
+	fun getAttributesKey(): TextAttributesKey? {
 		return element.colorConfig?.color?.let { ParadoxLocalisationAttributesKeys.getColorKey(it) }
 	}
 }

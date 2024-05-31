@@ -4,10 +4,9 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptExpressionReferenceProvider : PsiReferenceProvider() {

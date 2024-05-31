@@ -21,7 +21,7 @@ class ParadoxLocalisationCommandScopePsiReference(
     element: ParadoxLocalisationCommandScope,
     rangeInElement: TextRange,
     val prefix: String?
-) : PsiReferenceBase<ParadoxLocalisationCommandScope>(element, rangeInElement), AttributesKeyAware {
+) : PsiReferenceBase<ParadoxLocalisationCommandScope>(element, rangeInElement) {
     val project by lazy { element.project }
     
     override fun handleElementRename(newElementName: String): PsiElement {
@@ -66,7 +66,7 @@ class ParadoxLocalisationCommandScopePsiReference(
         return null
     }
     
-    override fun getAttributesKey(): TextAttributesKey? {
+    fun getAttributesKey(): TextAttributesKey? {
         val element = element
         val name = rangeInElement.substring(element.text)
         val gameType = selectGameType(element) ?: return null

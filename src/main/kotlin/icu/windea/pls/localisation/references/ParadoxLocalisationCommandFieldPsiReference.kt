@@ -6,15 +6,13 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 import icu.windea.pls.script.highlighter.*
 
 /**
@@ -23,7 +21,7 @@ import icu.windea.pls.script.highlighter.*
 class ParadoxLocalisationCommandFieldPsiReference(
 	element: ParadoxLocalisationCommandField,
 	rangeInElement: TextRange
-) : PsiPolyVariantReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement), AttributesKeyAware {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement) {
 	val project by lazy { element.project }
 	
 	override fun handleElementRename(newElementName: String): PsiElement {
@@ -98,7 +96,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		return arrayOf(PsiElementResolveResult(ParadoxDynamicValueElement(element, name, "variable", Access.Read, gameType, project)))
 	}
 	
-	override fun getAttributesKey(): TextAttributesKey? {
+	fun getAttributesKey(): TextAttributesKey? {
 		val element = element
 		val name = element.name
 		val gameType = selectGameType(element) ?: return null

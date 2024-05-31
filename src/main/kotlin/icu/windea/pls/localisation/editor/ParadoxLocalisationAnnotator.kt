@@ -78,7 +78,7 @@ class ParadoxLocalisationAnnotator : Annotator {
     
     private fun annotateCommandScope(element: ParadoxLocalisationCommandScope, holder: AnnotationHolder) {
         //颜色高亮
-        val attributesKey = element.reference.getAttributesKey() ?: return
+        val attributesKey = element.reference. getAttributesKey() ?: return
         holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
     }
     
