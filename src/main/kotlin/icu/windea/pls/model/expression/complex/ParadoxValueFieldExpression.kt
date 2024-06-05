@@ -51,10 +51,13 @@ interface ParadoxValueFieldExpression : ParadoxComplexExpression {
 //Implementations
 
 private fun doResolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? {
-    //skip if text represents an int or float
+    if(expressionString.isEmpty()) return null
+    
+    //skip if text is a number
     if(isNumber(expressionString)) return null
     
     val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expressionString)
+    
     //skip if text is a parameter with unary operator prefix
     if(CwtConfigHandler.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
     

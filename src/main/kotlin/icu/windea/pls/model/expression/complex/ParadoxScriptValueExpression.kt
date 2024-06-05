@@ -42,9 +42,9 @@ interface ParadoxScriptValueExpression : ParadoxComplexExpression {
 //Implementations
 
 private fun doResolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
+    if(expressionString.isEmpty()) return null
+    
     val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expressionString)
-    //skip if text is a parameter with unary operator prefix
-    if(CwtConfigHandler.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
     
     val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
     

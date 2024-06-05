@@ -9,7 +9,9 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 /**
- * 动态值表达式。对应的CWT规则类型为[CwtDataTypeGroups.DynamicValue]。
+ * 数据库对象表达式。对应的CWT规则类型为[CwtDataTypeGroups.DatabaseObject]。
+ * 
+ * 也可以在本地化文件中作为概念名称使用。（如，`['civic:some_civic', ...]`）
  *
  * 语法：
  *
@@ -34,6 +36,17 @@ interface ParadoxDatabaseObjectExpression: ParadoxComplexExpression {
 
 private fun doResolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
     TODO()
+    
+    //if(expressionString.isEmpty()) return null
+    //
+    //val colonIndex1 = expressionString.indexOf(':')
+    //if(colonIndex1 == -1) return null
+    //val colonIndex2 = expressionString.indexOf(':', colonIndex1 + 1)
+    //
+    //val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+    //val expression = ParadoxDatabaseObjectExpressionImpl(expressionString, range, nodes, configGroup)
+    //
+    //return expression
 }
 
 private class ParadoxDatabaseObjectExpressionImpl(

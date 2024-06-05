@@ -43,9 +43,9 @@ interface ParadoxScopeFieldExpression : ParadoxComplexExpression {
 //Implementations
 
 private fun doResolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
+    if(expressionString.isEmpty()) return null
+    
     val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expressionString)
-    //skip if text is a parameter with unary operator prefix
-    if(CwtConfigHandler.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
     
     val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
     
