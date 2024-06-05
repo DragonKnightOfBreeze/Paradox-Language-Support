@@ -20,11 +20,21 @@
 * [ ] #68 扩展CWT规则：支持通过扩展的选项指定规则的选项的继承关系（基于`## inherit_options`，初步支持，忽略选项不合法的情况，详见参考文档）
 * [ ] #68 扩展CWT规则：支持通过扩展的选项指定规则的文档注释的继承关系（基于`## inherit_doc`，初步支持，忽略选项不合法的情况，详见参考文档）
 
+## 1.3.10
+
+* [ ] #56 新功能：支持从数据库对象生成的概念（同时提供相应的代码补全、代码导航与代码检查）
+
 ## 1.3.9
 
+* [X] 更新CWT规则文件以适配Stellaris 3.12.3
 * [X] 新功能：支持切换快速文档中的本地化使用的语言区域（如果可用，打开快速文档后，在右键菜单或者右下角更多菜单中，点击`Change Localisation Locale`）
-* [ ] #56 新功能：支持从数据库对象生成的概念（同时提供相应的代码补全、代码导航与代码检查）
-* [X] #78 优化：支持通过扩展的CWT规则文件为动态值（如`event_target`）指定作用域上下文 - 提供更加完善的支持（相见参考文档）
+* [X] #78 优化：支持通过扩展的CWT规则文件为动态值（如`event_target`）指定作用域上下文 - 提供更加完善的支持（详见参考文档）
+
+***
+
+* [X] Update CWT configs files to match Stellaris 3.12.3
+* [X] New feature: Supports to change localisation locale in quick documentation (If available, open quick documentation, then click `Change Localisation Locale` in Right Click Menu or More Menus in the bottom-right corner)
+* [X] #78 Optimization: Support for specifying the scope context for dynamic values (e.g., `event_target`) via extended CWT configs - more perfect support (See reference documentation for details)
 
 ## 1.3.8
 
