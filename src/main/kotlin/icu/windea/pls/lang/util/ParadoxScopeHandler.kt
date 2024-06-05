@@ -11,6 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.scope.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.CwtConfigMatcher.Options
 import icu.windea.pls.localisation.psi.*
