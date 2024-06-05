@@ -6,7 +6,6 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.refactoring.inline.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.refactoring.*
 import icu.windea.pls.lang.search.scope.*

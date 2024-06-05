@@ -48,8 +48,6 @@ import com.intellij.testFramework.common.*
 import com.intellij.ui.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.builder.Cell
-import com.intellij.ui.dsl.builder.MutableProperty
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.ui.scale.*
 import com.intellij.ui.table.*
@@ -60,7 +58,6 @@ import com.intellij.util.ui.*
 import com.intellij.util.xmlb.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.core.collections.*

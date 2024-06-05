@@ -3,7 +3,6 @@ package icu.windea.pls.lang.psi
 import com.intellij.psi.impl.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 

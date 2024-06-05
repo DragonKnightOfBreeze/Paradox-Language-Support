@@ -4,8 +4,8 @@ package icu.windea.pls.core.documentation
 
 import com.intellij.lang.documentation.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.*
 
 inline fun buildDocumentation(builderAction: DocumentationBuilder.() -> Unit): String {
     val builder = DocumentationBuilder()

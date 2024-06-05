@@ -6,8 +6,8 @@ import com.intellij.refactoring.rename.naming.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*

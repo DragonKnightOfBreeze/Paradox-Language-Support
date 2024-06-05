@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.listeners
 
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*

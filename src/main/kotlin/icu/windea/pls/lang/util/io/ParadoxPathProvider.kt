@@ -2,7 +2,6 @@ package icu.windea.pls.lang.util.io
 
 import com.intellij.openapi.components.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import kotlinx.coroutines.*
 import java.util.concurrent.*

@@ -3,9 +3,8 @@ package icu.windea.pls.lang.inspections.script.inference
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.ep.scope.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 

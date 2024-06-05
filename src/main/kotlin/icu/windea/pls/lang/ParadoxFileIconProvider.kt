@@ -5,8 +5,6 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import javax.swing.*
 

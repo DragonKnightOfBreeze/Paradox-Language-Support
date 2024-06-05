@@ -5,12 +5,17 @@ import com.intellij.psi.*
 import com.intellij.refactoring.rename.naming.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.annotations.api.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.script.psi.*
+import kotlin.collections.MutableMap
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.iterator
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
 
 /**
  * 用于在重命名定义时自动重命名由其生成的修正（如果存在）。

@@ -1,8 +1,8 @@
 package icu.windea.pls.model.path
 
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
 
 /**
  * 定义或定义属性相对于所属文件或定义的路径。保留大小写。

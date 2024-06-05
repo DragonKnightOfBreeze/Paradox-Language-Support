@@ -17,7 +17,6 @@ import com.intellij.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.lang.util.image.*
 import java.io.*

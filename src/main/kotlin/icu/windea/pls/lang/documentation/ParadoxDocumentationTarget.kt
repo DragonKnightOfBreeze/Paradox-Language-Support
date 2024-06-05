@@ -13,12 +13,12 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.ep.documentation.*
 import icu.windea.pls.ep.inherit.*
 import icu.windea.pls.ep.modifier.*
 import icu.windea.pls.ep.parameter.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*

@@ -3,7 +3,6 @@ package icu.windea.pls.lang.search.selector
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 fun <S : ChainedParadoxSelector<T>, T> S.withGameType(gameType: ParadoxGameType?): S {

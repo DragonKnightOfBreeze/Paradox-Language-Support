@@ -3,9 +3,8 @@ package icu.windea.pls.ep.presentation
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.extensions.*
 import com.intellij.openapi.progress.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*

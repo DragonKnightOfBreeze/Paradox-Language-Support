@@ -1,7 +1,6 @@
 package icu.windea.pls.model.path
 
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
 
 /**

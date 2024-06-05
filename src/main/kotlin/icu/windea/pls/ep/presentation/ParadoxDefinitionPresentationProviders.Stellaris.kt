@@ -2,7 +2,6 @@ package icu.windea.pls.ep.presentation
 
 import com.intellij.ui.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.ep.data.*
 import icu.windea.pls.ep.data.StellarisTechnologyDataProvider.*

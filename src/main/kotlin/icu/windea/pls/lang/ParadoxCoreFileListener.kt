@@ -4,7 +4,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*

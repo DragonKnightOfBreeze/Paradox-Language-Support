@@ -9,7 +9,6 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*

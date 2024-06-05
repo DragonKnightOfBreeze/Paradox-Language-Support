@@ -5,7 +5,6 @@ import com.intellij.ide.actions.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 

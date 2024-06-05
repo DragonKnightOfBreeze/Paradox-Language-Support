@@ -1,7 +1,6 @@
 package icu.windea.pls.dds
 
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.image.*
 import kotlin.io.path.*

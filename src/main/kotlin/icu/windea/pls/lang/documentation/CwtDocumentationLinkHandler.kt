@@ -4,7 +4,6 @@ import com.intellij.codeInsight.documentation.*
 import com.intellij.platform.backend.documentation.*
 import com.intellij.platform.backend.documentation.DocumentationLinkHandler
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.ep.documentation.*
 
 class CwtDocumentationLinkHandler: DocumentationLinkHandler {

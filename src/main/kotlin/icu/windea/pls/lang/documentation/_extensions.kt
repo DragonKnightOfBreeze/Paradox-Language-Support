@@ -13,11 +13,9 @@ import com.intellij.openapi.vfs.newvfs.*
 import com.intellij.platform.backend.documentation.*
 import com.intellij.platform.backend.presentation.*
 import com.intellij.psi.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 
 private val logger = Logger.getInstance("#icu.windea.pls.lang.documentation")
 
