@@ -1,5 +1,6 @@
 package icu.windea.pls.ep.configGroup
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.config.configGroup.*
@@ -7,10 +8,10 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
-abstract class CwtConfigGroupFileProviderBase: CwtConfigGroupFileProvider {
+abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
     override fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean {
         val gameTypeId = configGroup.gameType.id
-        val rootDirectory = getRootDirectory(configGroup.project) ?: return true
+        val rootDirectory = getRootDirectory(configGroup.project, false) ?: return true
         if(gameTypeId != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, consumer) }
         rootDirectory.findChild(gameTypeId)?.let { doProcessFiles(it, consumer) }
         return true
@@ -30,7 +31,7 @@ abstract class CwtConfigGroupFileProviderBase: CwtConfigGroupFileProvider {
     }
     
     override fun getContainingConfigGroup(file: VirtualFile, project: Project): CwtConfigGroup? {
-        val rootDirectory = getRootDirectory(project) ?: return null
+        val rootDirectory = getRootDirectory(project, false) ?: return null
         val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return null
         val gameTypeId = relativePath.substringBefore('/')
         if(gameTypeId == "core") {
@@ -52,10 +53,11 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         return true
     }
     
-    override fun getRootDirectory(project: Project): VirtualFile? {
+    override fun getRootDirectory(project: Project, createIfMissing: Boolean): VirtualFile? {
         val rootPath = "/config"
         val rootUrl = rootPath.toClasspathUrl()
-        return VfsUtil.findFileByURL(rootUrl)
+        val file = VfsUtil.findFileByURL(rootUrl)
+        return file
     }
 }
 
@@ -65,10 +67,14 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * 对应的规则文件位于项目根目录中的`.config/${gameType}`目录下。
  */
 class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
-    override fun getRootDirectory(project: Project): VirtualFile? {
+    override fun getRootDirectory(project: Project, createIfMissing: Boolean): VirtualFile? {
         val projectRootDirectory = project.guessProjectDir() ?: return null
         val rootPath = ".config"
-        return VfsUtil.findRelativeFile(projectRootDirectory, rootPath)
+        val file = VfsUtil.findRelativeFile(projectRootDirectory, rootPath)
+        if(file == null && createIfMissing) {
+            return runWriteAction { VfsUtil.createDirectoryIfMissing(projectRootDirectory, rootPath) }
+        }
+        return file
     }
 }
 

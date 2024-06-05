@@ -9,12 +9,12 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.configGroup.*
 
-class CwtConfigFilesPaneSelectInTarget(project: Project): ProjectViewSelectInTarget(project) {
+class CwtConfigFilesPaneSelectInTarget(private val project: Project): ProjectViewSelectInTarget(project) {
     override fun canSelect(file: PsiFileSystemItem?): Boolean {
         val vFile = PsiUtilCore.getVirtualFile(file)
         if(vFile == null || !vFile.isValid) return false
         CwtConfigGroupFileProvider.EP_NAME.extensionList.forEach f@{ fileProvider ->
-            val rootDirectory = fileProvider.getRootDirectory(myProject) ?: return@f
+            val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val relativePath = VfsUtil.getRelativePath(vFile, rootDirectory) ?: return@f
             if(relativePath.isNotNullOrEmpty()) return true
         }

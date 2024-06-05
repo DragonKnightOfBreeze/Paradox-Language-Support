@@ -11,7 +11,7 @@ import icu.windea.pls.config.configGroup.*
 interface CwtConfigGroupFileProvider {
     fun isBuiltIn(): Boolean = false
     
-    fun getRootDirectory(project: Project): VirtualFile?
+    fun getRootDirectory(project: Project, createIfMissing: Boolean = false): VirtualFile?
     
     fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean
     

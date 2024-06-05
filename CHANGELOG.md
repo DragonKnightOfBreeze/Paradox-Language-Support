@@ -29,12 +29,14 @@
 * [X] 更新CWT规则文件以适配Stellaris 3.12.3
 * [X] 新功能：支持切换快速文档中的本地化使用的语言区域（如果可用，打开快速文档后，在右键菜单或者右下角更多菜单中，点击`Change Localisation Locale`）
 * [X] #78 优化：支持通过扩展的CWT规则文件为动态值（如`event_target`）指定作用域上下文 - 提供更加完善的支持（详见参考文档）
+* [X] 其他优化与BUG修复
 
 ***
 
 * [X] Update CWT configs files to match Stellaris 3.12.3
 * [X] New feature: Supports to change localisation locale in quick documentation (If available, open quick documentation, then click `Change Localisation Locale` in Right Click Menu or More Menus in the bottom-right corner)
 * [X] #78 Optimization: Support for specifying the scope context for dynamic values (e.g., `event_target`) via extended CWT configs - more perfect support (See reference documentation for details)
+* [X] Other optimizations and bug fixes
 
 ## 1.3.8
 
