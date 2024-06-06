@@ -13,6 +13,7 @@ import com.intellij.openapi.vfs.newvfs.*
 import com.intellij.platform.backend.documentation.*
 import com.intellij.platform.backend.presentation.*
 import com.intellij.psi.*
+import com.intellij.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
@@ -28,7 +29,7 @@ fun getTargetPresentation(element: PsiElement):TargetPresentation {
     val presentableText: String = itemPresentation?.presentableText
         ?: (element as? PsiNamedElement)?.name
         ?: element.text
-    val moduleTextWithIcon = PsiElementListCellRenderer.getModuleTextWithIcon(element)
+    val moduleTextWithIcon = getModuleTextWithIcon(element)
     return TargetPresentation
         .builder(presentableText)
         .backgroundColor(file?.let { VfsPresentationUtil.getFileBackgroundColor(project, file) })
@@ -37,6 +38,17 @@ fun getTargetPresentation(element: PsiElement):TargetPresentation {
         .containerText(itemPresentation?.getContainerText(), file?.let { fileStatusAttributes(project, file) })
         .locationText(moduleTextWithIcon?.text, moduleTextWithIcon?.icon)
         .presentation()
+}
+
+private fun getModuleTextWithIcon(value: Any?): TextWithIcon? {
+    //copied from [com.intellij.ide.util.PsiElementListCellRenderer.getModuleTextWithIcon]
+    
+    val factory = ModuleRendererFactory.findInstance(value)
+    if(factory is PlatformModuleRendererFactory) {
+        // it won't display any new information
+        return null
+    }
+    return factory.getModuleTextWithIcon(value)
 }
 
 private fun ItemPresentation.getColoredAttributes(): TextAttributes? {
