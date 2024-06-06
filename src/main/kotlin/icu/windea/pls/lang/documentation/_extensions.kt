@@ -19,7 +19,7 @@ import icu.windea.pls.lang.*
 
 private val logger = Logger.getInstance("#icu.windea.pls.lang.documentation")
 
-fun defaultTargetPresentation(element: PsiElement):TargetPresentation {
+fun getTargetPresentation(element: PsiElement):TargetPresentation {
     //similar to [com.intellij.codeInsight.navigation.targetPresentation], with some modifications
     
     val project = element.project
@@ -51,14 +51,6 @@ private fun ItemPresentation.getContainerText(): String? {
 
 fun getDocumentationTargets(element: PsiElement, originalElement: PsiElement?): List<DocumentationTarget> {
     //delegate to [com.intellij.lang.documentation.psi.psiDocumentationTargets] or use fallback logic
-    
-    //for (ext in PsiDocumentationTargetProvider.EP_NAME.extensionList) {
-    //    val targets = ext.documentationTargets(element, originalElement)
-    //    if (targets.isNotEmpty()) return targets
-    //}
-    //return listOf(PsiElementDocumentationTarget(element.project, element, originalElement))
-    ////val targets = PsiDocumentationTargetProvider.EP_NAME.extensionList.flatMap { it.documentationTargets(element, originalElement) }
-    ////return targets.ifEmpty { listOf(PsiElementDocumentationTarget (element.project, element, originalElement)) }
     
     val targets = psiDocumentationTargets(element, originalElement)
     if(targets.isNotEmpty()) return targets

@@ -49,7 +49,7 @@ class ParadoxDocumentationTarget(
         get() = element as? Navigatable
     
     override fun computePresentation(): TargetPresentation {
-        return defaultTargetPresentation(element)
+        return getTargetPresentation(element)
     }
     
     override fun computeDocumentationHint(): String? {
