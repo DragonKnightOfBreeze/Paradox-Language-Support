@@ -1,6 +1,5 @@
 package icu.windea.pls.core
 
-import icu.windea.pls.lang.*
 import org.junit.*
 
 class StdlibExtensionsTest {
