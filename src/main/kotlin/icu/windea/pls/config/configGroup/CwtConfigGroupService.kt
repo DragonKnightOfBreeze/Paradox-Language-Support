@@ -8,23 +8,38 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.progress.impl.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import kotlinx.coroutines.*
 import java.util.concurrent.*
 
 @Service(Service.Level.PROJECT)
 class CwtConfigGroupService(
-    val project: Project
+    private val project: Project,
+    private val coroutineScope: CoroutineScope
 ) {
     private val logger = logger<CwtConfigGroupService>()
     private val cache = ConcurrentHashMap<String, CwtConfigGroup>()
     
+    fun init() {
+        //preload config groups
+        coroutineScope.launch {
+            launch {
+                getConfigGroup(null)
+            }
+            ParadoxGameType.entries.forEach { gameType ->
+                launch {
+                    getConfigGroup(gameType)
+                }
+            }
+        }
+    }
+    
     fun getConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
-        return cache.getOrPut(gameType.id) { createConfigGroup(gameType) }
+        return cache.computeIfAbsent(gameType.id) { createConfigGroup(gameType) }
     }
     
     fun getConfigGroups(): Map<String, CwtConfigGroup> {
@@ -37,7 +52,7 @@ class CwtConfigGroupService(
         logger.info("Initialize CWT config group '$gameTypeId'...")
         val start = System.currentTimeMillis()
         
-        val configGroup = createConfigGroupInProgress(gameType)
+        val configGroup = doCreateConfigGroup(gameType)
         
         val end = System.currentTimeMillis()
         logger.info("Initialize CWT config group '$gameTypeId' finished in ${end - start} ms.")
@@ -59,7 +74,7 @@ class CwtConfigGroupService(
                     val start = System.currentTimeMillis()
                     
                     ReadAction.nonBlocking(Callable {
-                        val newConfigGroup = createConfigGroupInProgress(configGroup.gameType)
+                        val newConfigGroup = doCreateConfigGroup(configGroup.gameType)
                         newConfigGroup.copyUserDataTo(configGroup)
                         configGroup.modificationTracker.incModificationCount()
                     }).expireWhen { project.isDisposed }.wrapProgress(indicator).executeSynchronously()
@@ -101,7 +116,7 @@ class CwtConfigGroupService(
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, progressIndicator)
     }
     
-    private fun createConfigGroupInProgress(gameType: ParadoxGameType?): CwtConfigGroup {
+    private fun doCreateConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
         val configGroup = CwtConfigGroup(gameType, project)
         val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
         dataProviders.all f@{ dataProvider ->

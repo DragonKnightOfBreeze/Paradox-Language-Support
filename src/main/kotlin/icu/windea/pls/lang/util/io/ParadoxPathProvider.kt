@@ -41,7 +41,7 @@ class ParadoxPathProvider(private val coroutineScope: CoroutineScope) {
      * 得到Steam目录的路径。
      */
     fun getSteamPath(): String? {
-        val result = steamPathCache.getOrPut("") { doGetSteamPath() }.orNull()
+        val result = steamPathCache.computeIfAbsent("") { doGetSteamPath() }.orNull()
         return result
     }
     
@@ -62,7 +62,7 @@ class ParadoxPathProvider(private val coroutineScope: CoroutineScope) {
      * 得到指定ID对应的Steam游戏目录的路径。
      */
     fun getSteamGamePath(steamId: String, gameName: String): String? {
-        val result = steamPathCache.getOrPut(steamId) { doGetSteamGamePath(steamId) }.orNull()
+        val result = steamPathCache.computeIfAbsent(steamId) { doGetSteamGamePath(steamId) }.orNull()
         if(result != null) return result
         //不准确，可以放在不同库目录下
         return getSteamPath()?.let { steamPath -> """$steamPath\steamapps\common\$gameName""" }
