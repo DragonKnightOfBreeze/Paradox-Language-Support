@@ -11,6 +11,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.settings.*
 import javax.swing.*
 
+//each library each project
+
 class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
     @Volatile var roots: MutableSet<VirtualFile> = mutableSetOf()
     

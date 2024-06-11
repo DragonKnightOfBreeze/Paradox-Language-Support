@@ -1,4 +1,6 @@
 <idea-plugin>
+  <resource-bundle>messages.PlsBundle</resource-bundle>
+  
   <extensionPoints>
     <extensionPoint qualifiedName="icu.windea.pls.paradoxLanguage" beanClass="icu.windea.pls.lang.ParadoxMetaLanguage$ParadoxLanguageEP" dynamic="true"/>
     
@@ -146,8 +148,14 @@
   </extensions>
   
   <applicationListeners>
-    <listener class="icu.windea.pls.lang.ParadoxPreloadListener" topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="icu.windea.pls.lang.ParadoxPreloadListener"
+              topic="com.intellij.ide.AppLifecycleListener"/>
   </applicationListeners>
+
+  <projectListeners>
+    <listener class="icu.windea.pls.lang.ParadoxCheckModSettingsFileEditorManagerListener"
+              topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+  </projectListeners>
   
   <applicationListeners>
     <listener class="icu.windea.pls.lang.listeners.ParadoxRefreshOnDefaultGameTypeChangedListener"
@@ -163,11 +171,6 @@
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateSettingsOnRootInfoChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxRootInfoListener"/>
   </applicationListeners>
-  
-  <projectListeners>
-    <listener class="icu.windea.pls.lang.listeners.ParadoxCheckModSettingsFileEditorManagerListener"
-              topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
-  </projectListeners>
   
   <actions>
     <group id="Pls.Documentation.PrimaryGroup">
