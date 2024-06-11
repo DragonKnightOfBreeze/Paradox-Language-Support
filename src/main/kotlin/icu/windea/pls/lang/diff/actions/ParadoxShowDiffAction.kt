@@ -33,7 +33,7 @@ abstract class ParadoxShowDiffAction : AnAction() {
     protected abstract fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain?
     
     protected fun getDefaultIndex(producers: List<DiffRequestProducer>, currentIndex: Int): Int {
-        val defaultDiffGroup = getSettings().diff.defaultDiffGroup
+        val defaultDiffGroup = getSettings().others.defaultDiffGroup
         return when(defaultDiffGroup) {
             DiffGroupStrategy.VsCopy -> currentIndex
             DiffGroupStrategy.First -> 0

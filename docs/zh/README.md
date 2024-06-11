@@ -19,7 +19,7 @@ IDEA插件：Paradox语言支持。
 * 支持自定义扩展的规则文件，从而允许插件提供更加完善的语言功能（例如代码导航、代码补全、快速文档和内嵌提示）。
 * 自动识别游戏目录（包含启动器配置文件`launcher-settings.json`）和模组目录（包含模组描述符文件`descriptor.mod`）。
 
-此插件基于由CWT规则文件组成的[CWT规则分组](https://windea.icu/Paradox-Language-Support/#/zh/config.md#cwt-config-group)，实现了诸多语言功能。
+此插件基于由CWT规则文件组成的[CWT规则分组](https://windea.icu/Paradox-Language-Support/#/zh/config.md#config-group)，实现了诸多语言功能。
 插件已经内置了最新版本的规则文件，以便开箱即用。
 除此之外，插件也支持[自定义](https://windea.icu/Paradox-Language-Support/#/zh/config.md#writing-cwt-config-files)与[导入](https://windea.icu/Paradox-Language-Support/#/zh/config.md#importing-cwt-config-files)本地的规则文件。
 

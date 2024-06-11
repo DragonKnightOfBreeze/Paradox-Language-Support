@@ -1131,7 +1131,7 @@ object ParadoxCompletionManager {
     
     //region Extended Completion Methods
     fun completeExtendedScriptedVariable(context: ProcessingContext, result: CompletionResultSet) {
-        if(!getSettings().completion.completeByExtendedCwtConfigs) return
+        if(!getSettings().completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
         
         val configGroup = context.configGroup ?: return
@@ -1151,7 +1151,7 @@ object ParadoxCompletionManager {
     }
     
     fun completeExtendedDefinition(context: ProcessingContext, result: CompletionResultSet) {
-        if(!getSettings().completion.completeByExtendedCwtConfigs) return
+        if(!getSettings().completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
         
         val config = context.config ?: return
@@ -1220,7 +1220,7 @@ object ParadoxCompletionManager {
     }
     
     fun completeExtendedInlineScript(context: ProcessingContext, result: CompletionResultSet) {
-        if(!getSettings().completion.completeByExtendedCwtConfigs) return
+        if(!getSettings().completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
         
         val config = context.config ?: return
@@ -1245,7 +1245,7 @@ object ParadoxCompletionManager {
     }
     
     fun completeExtendedParameter(context: ProcessingContext, result: CompletionResultSet) {
-        if(!getSettings().completion.completeByExtendedCwtConfigs) return
+        if(!getSettings().completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
         
         val configGroup = context.configGroup ?: return
@@ -1273,7 +1273,7 @@ object ParadoxCompletionManager {
     }
     
     fun completeExtendedComplexEnumValue(context: ProcessingContext, result: CompletionResultSet) {
-        if(!getSettings().completion.completeByExtendedCwtConfigs) return
+        if(!getSettings().completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
         
         val config = context.config ?: return
@@ -1299,7 +1299,7 @@ object ParadoxCompletionManager {
     }
     
     fun completeExtendedDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
-        if(!getSettings().completion.completeByExtendedCwtConfigs) return
+        if(!getSettings().completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
         
         val config = context.config ?: return

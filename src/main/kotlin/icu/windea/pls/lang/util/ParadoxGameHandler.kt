@@ -17,7 +17,7 @@ object ParadoxGameHandler {
         val gameDirectory0 = gameDirectory?.normalizeAbsolutePath()?.orNull() ?: return null
         val path = gameDirectory0.toPathOrNull()
         if(path == null) return builder.error(PlsBundle.message("gameDirectory.error.1"))
-        val rootFile = VfsUtil.findFile(path, false)?.takeIf { it.exists() }
+        val rootFile = VfsUtil.findFile(path, true)?.takeIf { it.exists() }
         if(rootFile == null) return builder.error(PlsBundle.message("gameDirectory.error.2"))
         val rootInfo = rootFile.rootInfo
         if(rootInfo !is ParadoxGameRootInfo) return builder.error(PlsBundle.message("gameDirectory.error.3", gameType.title))
@@ -32,7 +32,7 @@ object ParadoxGameHandler {
     
     fun getGameVersionFromGameDirectory(gameDirectory: String?): String? {
         val gameDirectory0 = gameDirectory?.normalizeAbsolutePath()?.orNull() ?: return null
-        val rootFile = gameDirectory0.toVirtualFile(false)?.takeIf { it.exists() } ?: return null
+        val rootFile = gameDirectory0.toVirtualFile(true)?.takeIf { it.exists() } ?: return null
         val rootInfo = rootFile.rootInfo
         if(rootInfo !is ParadoxGameRootInfo) return null
         return rootInfo.launcherSettingsInfo.rawVersion

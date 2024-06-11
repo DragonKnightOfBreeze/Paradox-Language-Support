@@ -69,6 +69,9 @@ object PlsConstants {
         const val diffDirectory = "diff"
         val diffDirectoryPath = dataDirectoryPath.resolve(diffDirectory)
         
+        const val configDirectory = "config"
+        val configDirectoryPath = dataDirectoryPath.resolve(configDirectory)
+        
         const val unknownPng = "unknown.png"
         val unknownPngPath = imagesDirectoryPath.resolve(unknownPng)
         val unknownPngClasspathUrl = "/images/$unknownPng".toClasspathUrl()

@@ -2,10 +2,12 @@ package icu.windea.pls.lang.settings
 
 import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.annotations.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
+import kotlin.io.path.*
 
 /**
  * PLS设置。可以在设置页面`Settings > Languages & Frameworks > Paradox Language Support`中进行配置。
@@ -19,12 +21,14 @@ class ParadoxSettings : SimplePersistentStateComponent<ParadoxSettingsState>(Par
  * @property defaultGameDirectories 默认的游戏目录映射。
  * @property preferredLocale 偏好的语言区域。
  * @property ignoredFileNames 需要忽略的文件名（不识别为脚本和本地化文件，逗号分隔，不区分大小写）
+ * @property localConfigDirectory 全局的本地规则分组所在的根目录。
  */
 class ParadoxSettingsState : BaseState() {
     var defaultGameType by enum(ParadoxGameType.Stellaris)
     var defaultGameDirectories by map<String, String>()
     var preferredLocale by string("auto")
     var ignoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
+    var localConfigDirectory by string(PlsConstants.Paths.configDirectoryPath.pathString)
     
     val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet(caseInsensitiveStringSet()).orEmpty() }
     
@@ -38,8 +42,6 @@ class ParadoxSettingsState : BaseState() {
     var inference by property(InferenceState())
     @get:Property(surroundWithTag = false)
     var hierarchy by property(HierarchyState())
-    @get:Property(surroundWithTag = false)
-    var diff by property(DiffState())
     @get:Property(surroundWithTag = false)
     var others by property(OthersState())
     
@@ -74,7 +76,7 @@ class ParadoxSettingsState : BaseState() {
      * @property completeWithClauseTemplate 进行代码补全时，如果可能，将会另外提供提示项，自动插入从句模版。
      * @property completeOnlyScopeIsMatched 如果存在，是否仅提供匹配当前作用域的提示项。
      * @property completeByLocalizedName 是否也根据定义和修正的本地化名字来进行代码补全。
-     * @property completeByExtendedCwtConfigs 是否也根据扩展的CWT规则来进行代码补全。
+     * @property completeByExtendedConfigs 是否也根据扩展的规则来进行代码补全。
      */
     @Tag("completion")
     class CompletionState : BaseState() {
@@ -87,7 +89,7 @@ class ParadoxSettingsState : BaseState() {
         var completeWithClauseTemplate by property(true)
         var completeOnlyScopeIsMatched by property(true)
         var completeByLocalizedName by property(false)
-        var completeByExtendedCwtConfigs by property(false)
+        var completeByExtendedConfigs by property(false)
         
         @get:Property(surroundWithTag = false)
         var clauseTemplate by property(ClauseTemplateState())
@@ -134,7 +136,7 @@ class ParadoxSettingsState : BaseState() {
     }
     
     /**
-     * 注意：仅可配置是否启用基于使用的推断，基于自定义CWT规则的推断是始终启用的。
+     * 注意：仅可配置是否启用基于使用的推断，基于自定义规则的推断是始终启用的。
      * 
      * @property configContextForParameters 是否推断参数对应的脚本表达式。
      * @property configContextForInlineScripts 是否推断内联脚本的使用位置。
@@ -152,21 +154,15 @@ class ParadoxSettingsState : BaseState() {
     }
     
     /**
-     * @property defaultDiffGroup 进行DIFF时，初始打开的DIFF分组。默认初始打开VS副本的DIFF分组。
-     */
-    @Tag("diff")
-    class DiffState: BaseState() {
-        var defaultDiffGroup by enum(DiffGroupStrategy.VsCopy)
-    }
-    
-    /**
      * @property showEditorContextToolbar 是否在编辑器右上角显示上下文工具栏。
      * @property showLocalisationFloatingToolbar 是否在选中本地化文本时显示悬浮工具栏。
+     * @property defaultDiffGroup 进行DIFF时，初始打开的DIFF分组。默认初始打开VS副本的DIFF分组。
      */
     @Tag("others")
     class OthersState : BaseState() {
         var showEditorContextToolbar by property(true)
         var showLocalisationFloatingToolbar by property(true)
+        var defaultDiffGroup by enum(DiffGroupStrategy.VsCopy)
     }
 }
 

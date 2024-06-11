@@ -1,34 +1,49 @@
 # Config Groups & Config Files
 
-## CWT Config Group{#cwt-config-group}
+## CWT Config Group{#config-group}
 
 ### Summary
 
-PLS implements various advanced language features based on CWT config groups, which consists of many CWT config files.
+PLS implements various advanced language features based on config groups, which consists of many CWT config files.
 
-The config groups can have different sources. For config groups from the same source, they contain config groups for different game types, and the core config group, which is shared by all game types.
+Config groups can have different sources. For config groups from the same source, there are config groups for different game types, and the core config group, which is shared by all game types.
 
 Reference Links:
 
 * [Repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/cwt)
 
-**Built-in config groups**
+### Sources
 
-Their CWT config files are located in the `config/${gameType}`[^1] directory (which is in the plugin jar), and they will always be enabled.
+#### Built-in Config Groups{#builtin-config-groups}
 
-These config files are from plugin repository and config repositories of each game. Compare to the config files used by CWTools, there are several modifications and extensions. 
+* Path: `config/{gameType}`[^1] (in the plugin jar)
+* Enabled: Always
+* Customizable ：No
 
-**Project local config groups**
+These config files are from plugin repository and config repositories of each game. Compare to the config files used by CWTools, there are several modifications and extensions.
 
-Their CWT config files should be placed in the `.config/${gameType}`[^1] directory (which is in the project root directory), and they will be enabled after manually confirming to import.
+#### Local Config Groups{#local-config-groups}
 
-If some changes are happened, the refresh button will be appeared in the context float toolbar in the upper right corner of the editor. Click it to confirm to import, so these custom config files will be enabled.
+* Path: `{rootPath}/{gameType}`[^1] (`rootPath` need be to be configured in plugin's settings page)
+* Enabled: Yes if path is existing
+* Customizable ：Yes
 
-### Overridden strategy
+Containing config files are customized by users themselves. Available for all projects. Changes should be confirmed to import manually.
 
-The CWT config files use the LIOS overridden strategy based on the file path and the config ID.
+#### Project Config Groups{#project-config-groups}
 
-When reading CWT configs, the plugin will iterate config groups by following order: built-in config groups, project local config groups.
+* Path: `.config/{gameType}`[^1] (in the project root directory)
+* Enabled: Yes if path is existing
+* Customizable ：Yes
+
+Containing config files are customized by users themselves. Only available for this project. Changes should be confirmed to import manually.
+
+### Overridden Strategy
+
+Configs use the LIOS overridden strategy based on the file path and the config ID.
+
+When reading configs, the plugin will iterate config groups by following order:
+built-in config groups, local config groups, and project config groups.
 The core config group is shared by all game types, and will be iterated before the config group for related game type.
 
 For example, if you have written some custom configs in the config file `.config/stellaris/modifiers.cwt` (which is in the project root directory), it will completely override the built-in modifier configs.
@@ -405,11 +420,11 @@ some_config
 
 ### Summary
 
-You can write your own customized config files in the `.config/${gameType}`[^1] directory (which is in the project root directory),
-and they will be enabled after manually confirming to import.
+You can write customized config files in directories of [local config groups](#local-config-groups) or [project config groups](project-config-groups).
+They are helpful for optimizing plugin's built-in configs, or enhancing plugin's features.
 
 If some changes are happened, the refresh button will be appeared in the context float toolbar in the upper right corner of the editor.
-Click it to confirm to import, so these custom config files will be enabled.
+Click it to confirm to import, so changes of these custom config files will be applied.
 
 IDE will take some time to reparse opened files in background,
 And please note that if the changes in the config files will result in the change of the indexing logic

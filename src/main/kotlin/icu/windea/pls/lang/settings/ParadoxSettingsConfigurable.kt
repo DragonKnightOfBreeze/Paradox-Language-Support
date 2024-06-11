@@ -3,6 +3,7 @@ package icu.windea.pls.lang.settings
 import com.intellij.openapi.application.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.ui.*
+import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDescriptor
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
@@ -11,6 +12,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.editor.folding.*
 import icu.windea.pls.lang.listeners.*
+import icu.windea.pls.lang.tools.*
 import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.ParadoxGameType.*
@@ -29,9 +31,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 //defaultGameType
                 row {
                     label(PlsBundle.message("settings.general.defaultGameType")).widthGroup("general")
-                        .applyToComponent {
-                            toolTipText = PlsBundle.message("settings.general.defaultGameType.tooltip")
-                        }
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameType.tooltip") }
                     val oldDefaultGameType = settings.defaultGameType
                     comboBox(entries)
                         .bindItem(settings::defaultGameType.toNullableProperty())
@@ -46,9 +46,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 //defaultGameDirectories
                 row {
                     label(PlsBundle.message("settings.general.defaultGameDirectories")).widthGroup("general")
-                        .applyToComponent {
-                            toolTipText = PlsBundle.message("settings.general.defaultGameDirectories.tooltip")
-                        }
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameDirectories.tooltip") }
                     val oldDefaultGameDirectories = settings.defaultGameDirectories
                     entries.forEach { oldDefaultGameDirectories.putIfAbsent(it.id, "") }
                     val defaultList = oldDefaultGameDirectories.toMutableEntryList()
@@ -72,9 +70,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 //preferredLocale
                 row {
                     label(PlsBundle.message("settings.general.preferredLocale")).widthGroup("general")
-                        .applyToComponent {
-                            toolTipText = PlsBundle.message("settings.general.preferredLocale.tooltip")
-                        }
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.preferredLocale.tooltip") }
                     val oldPreferredLocale = settings.preferredLocale
                     localeComboBox(addAuto = true)
                         .bindItem(settings::preferredLocale.toNullableProperty())
@@ -88,9 +84,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 //ignoredFileNames
                 row {
                     label(PlsBundle.message("settings.general.ignoredFileNames")).widthGroup("general")
-                        .applyToComponent {
-                            toolTipText = PlsBundle.message("settings.general.ignoredFileNames.tooltip")
-                        }
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.ignoredFileNames.tooltip") }
                     val oldIgnoredFileNameSet = settings.ignoredFileNameSet
                     expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                         .bindText(settings::ignoredFileNames.toNonNullableProperty(""))
@@ -107,6 +101,17 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                                 ParadoxCoreHandler.reparseFiles(files)
                             }
                         }
+                }
+                //localConfigDirectory
+                row {
+                    label(PlsBundle.message("settings.general.localConfigDirectory")).widthGroup("left")
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.localConfigDirectory.tooltip") }
+                    val descriptor = ParadoxDirectoryDescriptor()
+                        .withTitle(PlsBundle.message("settings.general.localConfigDirectory.title"))
+                        .asBrowseFolderDescriptor()
+                    textFieldWithBrowseButton(null, null, descriptor) { it.path }
+                        .bindText(settings::localConfigDirectory.toNonNullableProperty(""))
+                        .align(Align.FILL)
                 }
             }
             //documentation
@@ -273,7 +278,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 //completeByExtendedCwtConfigs
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeByExtendedCwtConfigs"))
-                        .bindSelected(settings.completion::completeByExtendedCwtConfigs)
+                        .bindSelected(settings.completion::completeByExtendedConfigs)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeByExtendedCwtConfigs.tooltip") }
                 }
             }
@@ -393,21 +398,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         }
                 }
             }
-            //diff
-            collapsibleGroup(PlsBundle.message("settings.diff")) {
-                //defaultDiffGroup
-                buttonsGroup(PlsBundle.message("settings.diff.defaultDiffGroup"), indent = false) {
-                    row {
-                        radioButton(PlsBundle.message("settings.diff.defaultDiffGroup.0"), DiffGroupStrategy.VsCopy)
-                    }
-                    row {
-                        radioButton(PlsBundle.message("settings.diff.defaultDiffGroup.1"), DiffGroupStrategy.First)
-                    }
-                    row {
-                        radioButton(PlsBundle.message("settings.diff.defaultDiffGroup.2"), DiffGroupStrategy.Last)
-                    }
-                }.bind(settings.diff::defaultDiffGroup)
-            }
             //others
             collapsibleGroup(PlsBundle.message("settings.others")) {
                 //showEditorContextToolbar
@@ -420,6 +410,18 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.others.showLocalisationFloatingToolbar"))
                         .bindSelected(settings.others::showLocalisationFloatingToolbar)
                 }
+                //defaultDiffGroup
+                buttonsGroup(PlsBundle.message("settings.others.defaultDiffGroup"), indent = false) {
+                    row {
+                        radioButton(PlsBundle.message("settings.others.defaultDiffGroup.0"), DiffGroupStrategy.VsCopy)
+                    }
+                    row {
+                        radioButton(PlsBundle.message("settings.others.defaultDiffGroup.1"), DiffGroupStrategy.First)
+                    }
+                    row {
+                        radioButton(PlsBundle.message("settings.others.defaultDiffGroup.2"), DiffGroupStrategy.Last)
+                    }
+                }.bind(settings.others::defaultDiffGroup)
             }
         }
     }
