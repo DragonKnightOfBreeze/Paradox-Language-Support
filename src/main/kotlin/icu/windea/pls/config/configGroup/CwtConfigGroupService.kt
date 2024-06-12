@@ -28,11 +28,11 @@ class CwtConfigGroupService(
         //preload config groups
         coroutineScope.launch {
             launch {
-                getConfigGroup(null)
+                runReadAction { getConfigGroup(null) }
             }
             ParadoxGameType.entries.forEach { gameType ->
                 launch {
-                    getConfigGroup(gameType)
+                    runReadAction { getConfigGroup(gameType) }
                 }
             }
         }

@@ -14,7 +14,7 @@ import javax.swing.*
 //each library each project
 
 class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
-    val roots: MutableSet<VirtualFile> by lazy { computeRoots() }
+    val roots: MutableSet<VirtualFile> = mutableSetOf()
     
     override fun getSourceRoots(): Collection<VirtualFile> {
         return roots

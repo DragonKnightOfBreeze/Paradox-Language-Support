@@ -72,3 +72,5 @@ val PlsKeys.scopeMismatched by createKey<Boolean>("paradox.scopeMismatched")
 val PlsKeys.parameterRanges by createKey<List<TextRange>>("paradox.parameterRanges")
 //用于标记图片的帧数信息以便后续进行切分
 val PlsKeys.frameInfo by createKey<FrameInfo>("paradox.frameInfo")
+//用于标记某个虚拟文件是否是内置的
+val PlsKeys.builtIn by createKey<Boolean>("paradox.builtIn")
