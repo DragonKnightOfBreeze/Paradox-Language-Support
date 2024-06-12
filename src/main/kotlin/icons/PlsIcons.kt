@@ -7,6 +7,7 @@ import javax.swing.*
 object PlsIcons {
     @JvmField val GameDirectory = AllIcons.Modules.SourceRoot
     @JvmField val ModDirectory = AllIcons.Modules.SourceRoot
+    @JvmField val ConfigGroupDirectory = AllIcons.Nodes.ConfigFolder
     @JvmField val Library = AllIcons.Nodes.PpLibFolder
     @JvmField val Image = loadIcon("/icons/image.svg")
     @JvmField val Presentation = loadIcon("/icons/presentation.svg")
