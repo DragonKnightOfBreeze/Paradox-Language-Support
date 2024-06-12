@@ -115,7 +115,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 }
                 //localConfigDirectory
                 row {
-                    label(PlsBundle.message("settings.general.localConfigDirectory")).widthGroup("left")
+                    label(PlsBundle.message("settings.general.localConfigDirectory")).widthGroup("general")
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.localConfigDirectory.tooltip") }
                     val descriptor = ParadoxDirectoryDescriptor()
                         .withTitle(PlsBundle.message("settings.general.localConfigDirectory.title"))
@@ -123,6 +123,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     var localConfigDirectory = settings.localConfigDirectory
                     textFieldWithBrowseButton(null, null, descriptor) { it.path }
                         .bindText(settings::localConfigDirectory.toNonNullableProperty(""))
+                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                         .align(Align.FILL)
                         .onApply {
                             val oldLocalConfigDirectory = localConfigDirectory.orEmpty()

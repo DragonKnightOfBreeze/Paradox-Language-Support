@@ -28,7 +28,7 @@ class ParadoxSettingsState : BaseState() {
     var defaultGameDirectories by map<String, String>()
     var preferredLocale by string("auto")
     var ignoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
-    var localConfigDirectory by string(PlsConstants.Paths.configDirectoryPath.pathString)
+    var localConfigDirectory by string()
     
     val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet(caseInsensitiveStringSet()).orEmpty() }
     

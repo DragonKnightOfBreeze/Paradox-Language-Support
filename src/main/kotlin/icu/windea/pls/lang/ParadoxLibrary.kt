@@ -14,7 +14,7 @@ import javax.swing.*
 //each library each project
 
 class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
-    val roots: MutableSet<VirtualFile> = mutableSetOf()
+    @Volatile var roots: Set<VirtualFile> = emptySet()
     
     override fun getSourceRoots(): Collection<VirtualFile> {
         return roots
@@ -45,8 +45,7 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
         val oldRoots = roots
         val newRoots = computeRoots()
         if(oldRoots == newRoots) return
-        roots.clear()
-        roots += newRoots
+        roots = newRoots
         runInEdt(ModalityState.nonModal()) {
             runWriteAction {
                 val libraryName = PlsBundle.message("library.name")
@@ -68,13 +67,13 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
         for(modSettings in allModSettings.modSettings.values) {
             val modDirectory = modSettings.modDirectory ?: continue
             val modFile = modDirectory.toVirtualFile(false) ?: continue
-            if(!modFile.isValid) continue
+            if(!modFile.exists()) continue
             if(!projectFileIndex.isInContent(modFile)) continue
             run {
                 val gameDirectory = modSettings.finalGameDirectory ?: return@run
                 if(newPaths.contains(gameDirectory)) return@run
                 val gameFile = gameDirectory.toVirtualFile(false) ?: return@run
-                if(!gameFile.isValid) return@run
+                if(!gameFile.exists()) return@run
                 if(projectFileIndex.isInContent(gameFile)) return@run
                 newRoots.add(gameFile)
             }
@@ -83,7 +82,7 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
                 if(newPaths.contains(modDependencyDirectory)) continue
                 if(modDependencyDirectory == modDirectory) continue //需要排除这种情况
                 val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: continue
-                if(!modDependencyFile.isValid) continue
+                if(!modDependencyFile.exists()) continue
                 if(projectFileIndex.isInContent(modDependencyFile)) continue
                 newRoots.add(modDependencyFile)
             }
@@ -91,13 +90,13 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
         for(gameSettings in allModSettings.gameSettings.values) {
             val gameDirectory = gameSettings.gameDirectory ?: continue
             val gameFile = gameDirectory.toVirtualFile(false) ?: continue
-            if(!gameFile.isValid) continue
+            if(!gameFile.exists()) continue
             if(!projectFileIndex.isInContent(gameFile)) continue
             for(modDependencySettings in gameSettings.modDependencies) {
                 val modDependencyDirectory = modDependencySettings.modDirectory ?: continue
                 if(newPaths.contains(modDependencyDirectory)) continue
                 val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: continue
-                if(!modDependencyFile.isValid) continue
+                if(!modDependencyFile.exists()) continue
                 if(projectFileIndex.isInContent(modDependencyFile)) continue
                 newRoots.add(modDependencyFile)
             }

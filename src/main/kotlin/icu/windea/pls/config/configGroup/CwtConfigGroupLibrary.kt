@@ -14,9 +14,9 @@ import javax.swing.*
 //each library each project
 
 class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
-    val roots: MutableSet<VirtualFile> = mutableSetOf()
+    @Volatile var roots: Set<VirtualFile> = emptySet()
     
-    override fun getSourceRoots(): MutableCollection<VirtualFile> {
+    override fun getSourceRoots(): Collection<VirtualFile> {
         return roots
     }
     
@@ -45,8 +45,7 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
         val oldRoots = roots
         val newRoots = computeRoots()
         if(oldRoots == newRoots) return
-        roots.clear()
-        roots += newRoots
+        roots = newRoots
         runInEdt(ModalityState.nonModal()) {
             runWriteAction {
                 val libraryName = PlsBundle.message("configGroup.library.name")
@@ -61,11 +60,12 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
     
     private fun doComputeRoots(): MutableSet<VirtualFile> {
         val newRoots = mutableSetOf<VirtualFile>()
+        val projectFileIndex = ProjectFileIndex.getInstance(project)
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEachFast f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             if(!rootDirectory.exists()) return@f
-            rootDirectory.putUserData(PlsKeys.builtIn, fileProvider.isBuiltIn())
+            if(projectFileIndex.isInContent(rootDirectory)) return@f
             newRoots += rootDirectory
         }
         return newRoots

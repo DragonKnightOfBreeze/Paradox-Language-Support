@@ -7,14 +7,13 @@ import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.openapi.project.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 
 //com.intellij.openapi.externalSystem.autoimport.ProjectRefreshAction
 
 class ConfigGroupRefreshAction : DumbAwareAction(), TooltipDescriptionProvider {
     init {
-        templatePresentation.icon = PlsIcons.Actions.RefreshConfigGroup
+        templatePresentation.icon = PlsIcons.Actions.RefreshConfigGroups
         templatePresentation.text = PlsBundle.message("configGroup.refresh.action.text")
         templatePresentation.description = PlsBundle.message("configGroup.refresh.action.desc")
     }

@@ -26,6 +26,11 @@
 * [X] 新功能：支持全局的本地规则分组（可在插件配置页面中配置所在的目录）
 * [X] 优化：在项目视图中显示规则分组的位置（作为外部库）
 
+***
+
+* [X] New feature: Support for global local config groups (Can be configured in plugin's settings page)
+* [X] Optimization: Show locations of config groups in project view (as external libraries)
+
 ## 1.3.9
 
 * [X] 更新CWT规则文件以适配Stellaris 3.12.3
