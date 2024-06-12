@@ -3,7 +3,7 @@ package icu.windea.pls.ep.configGroup
 import icu.windea.pls.config.configGroup.*
 
 /**
- * 用于初始CWT规则分组中预先定义的那些数据。
+ * 用于初始规则分组中预先定义的那些数据。
  */
 class PredefinedCwtConfigGroupDataProvider: CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {

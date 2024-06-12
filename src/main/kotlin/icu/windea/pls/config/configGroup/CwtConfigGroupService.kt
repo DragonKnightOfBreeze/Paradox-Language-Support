@@ -49,13 +49,13 @@ class CwtConfigGroupService(
     fun createConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
         val gameTypeId = gameType.id
         
-        logger.info("Initialize CWT config group '$gameTypeId'...")
+        logger.info("Initialize config group '$gameTypeId'...")
         val start = System.currentTimeMillis()
         
         val configGroup = doCreateConfigGroup(gameType)
         
         val end = System.currentTimeMillis()
-        logger.info("Initialize CWT config group '$gameTypeId' finished in ${end - start} ms.")
+        logger.info("Initialize config group '$gameTypeId' finished in ${end - start} ms.")
         
         return configGroup
     }
@@ -70,7 +70,7 @@ class CwtConfigGroupService(
                 configGroups.forEach { configGroup ->
                     val gameTypeId = configGroup.gameType.id
                     
-                    logger.info("Refresh CWT config group '$gameTypeId'...")
+                    logger.info("Refresh config group '$gameTypeId'...")
                     val start = System.currentTimeMillis()
                     
                     ReadAction.nonBlocking(Callable {
@@ -80,7 +80,7 @@ class CwtConfigGroupService(
                     }).expireWhen { project.isDisposed }.wrapProgress(indicator).executeSynchronously()
                     
                     val end = System.currentTimeMillis()
-                    logger.info("Refresh CWT config group '$gameTypeId' finished in ${end - start} ms.")
+                    logger.info("Refresh config group '$gameTypeId' finished in ${end - start} ms.")
                 }
                 
                 //重新解析已打开的文件

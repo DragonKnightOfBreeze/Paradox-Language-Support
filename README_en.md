@@ -21,7 +21,7 @@ Features:
 * Supports customizing extended config files, allowing plugin to provide more perfect language features (such as code navigation, code completion, quick documentation and inlay hints).
 * Automatically recognizes the game directory (containing the launcher settings file `launcher-settings.json`) and mod directory (containing the mod descriptor file `descriptor.mod`).
 
-This plugin has implemented various advanced language features based on [CWT config groups](https://windea.icu/Paradox-Language-Support/#/en/config.md#config-group), which consists of CWT config files.
+This plugin has implemented various advanced language features based on [config groups](https://windea.icu/Paradox-Language-Support/#/en/config.md#config-group), which consists of CWT config files.
 The latest-version config files are already built into this plugin, make it works right out of the box.
 Besides, [customizing](https://windea.icu/Paradox-Language-Support/#/en/config.md#writing-cwt-config-files) and [importing](https://windea.icu/Paradox-Language-Support/#/en/config.md#importing-cwt-config-files) local config files are also supported.
 

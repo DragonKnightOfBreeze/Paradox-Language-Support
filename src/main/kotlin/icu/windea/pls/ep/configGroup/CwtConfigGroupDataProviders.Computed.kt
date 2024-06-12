@@ -12,7 +12,7 @@ import kotlin.collections.component2
 import kotlin.collections.set
 
 /**
- * 用于初始CWT规则分组中需要经过计算的那些数据。
+ * 用于初始规则分组中需要经过计算的那些数据。
  */
 class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {

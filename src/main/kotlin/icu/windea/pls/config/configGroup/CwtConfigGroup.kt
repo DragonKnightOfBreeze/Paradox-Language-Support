@@ -8,7 +8,7 @@ import icu.windea.pls.model.*
 import java.util.concurrent.atomic.*
 
 /**
- * CWT规则分组。
+ * 规则分组。
  * @property gameType 对应的游戏类型。如果为null，则会得到共用的核心规则分组。
  * @property project 对应的项目。如果不需要访问PSI，可以直接传入默认项目。
  */

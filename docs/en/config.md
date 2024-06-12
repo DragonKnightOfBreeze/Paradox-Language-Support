@@ -1,6 +1,6 @@
 # Config Groups & Config Files
 
-## CWT Config Group{#config-group}
+## Config Group{#config-group}
 
 ### Summary
 

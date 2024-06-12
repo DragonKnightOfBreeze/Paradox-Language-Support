@@ -16,7 +16,7 @@ import kotlin.collections.component2
 import kotlin.collections.set
 
 /**
- * 用于初始CWT规则分组中基于文件内容的那些数据。
+ * 用于初始规则分组中基于文件内容的那些数据。
  */
 class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {
