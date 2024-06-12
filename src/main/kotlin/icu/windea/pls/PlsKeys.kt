@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
@@ -19,6 +20,7 @@ import java.awt.*
 object PlsKeys : KeyRegistry()
 
 val PlsKeys.library by createKey<ParadoxLibrary>("paradox.library")
+val PlsKeys.configGroupLibrary by createKey<CwtConfigGroupLibrary>("cwt.configGroup.library")
 
 val PlsKeys.rootInfo by createKey<Any>("paradox.rootInfo")
 val PlsKeys.fileInfo by createKey<Any>("paradox.fileInfo")

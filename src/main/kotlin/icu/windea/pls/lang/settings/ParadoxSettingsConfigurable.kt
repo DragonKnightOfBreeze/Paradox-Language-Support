@@ -32,14 +32,17 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 row {
                     label(PlsBundle.message("settings.general.defaultGameType")).widthGroup("general")
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameType.tooltip") }
-                    val oldDefaultGameType = settings.defaultGameType
+                    var defaultGameType = settings.defaultGameType
                     comboBox(entries)
                         .bindItem(settings::defaultGameType.toNullableProperty())
                         .onApply {
-                            if(oldDefaultGameType != settings.defaultGameType) {
+                            val oldDefaultGameType = defaultGameType
+                            val newDefaultGameType = settings.defaultGameType
+                            if(oldDefaultGameType != newDefaultGameType) {
+                                defaultGameType = newDefaultGameType
                                 val messageBus = ApplicationManager.getApplication().messageBus
                                 messageBus.syncPublisher(ParadoxDefaultGameTypeListener.TOPIC)
-                                    .onChange(oldDefaultGameType, settings.defaultGameType)
+                                    .onChange(oldDefaultGameType, newDefaultGameType)
                             }
                         }
                 }
@@ -47,10 +50,9 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 row {
                     label(PlsBundle.message("settings.general.defaultGameDirectories")).widthGroup("general")
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameDirectories.tooltip") }
-                    val oldDefaultGameDirectories = settings.defaultGameDirectories
-                    entries.forEach { oldDefaultGameDirectories.putIfAbsent(it.id, "") }
-                    val defaultList = oldDefaultGameDirectories.toMutableEntryList()
-                    var list = defaultList.mapTo(mutableListOf()) { it.copy() }
+                    var defaultGameDirectories = settings.defaultGameDirectories
+                    entries.forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
+                    var list = defaultGameDirectories.toMutableEntryList().mapTo(mutableListOf()) { it.copy() }
                     val action = { _: ActionEvent ->
                         val dialog = ParadoxGameDirectoriesDialog(list)
                         if(dialog.showAndGet()) list = dialog.resultList
@@ -58,24 +60,30 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     link(PlsBundle.message("settings.general.defaultGameDirectories.link"), action)
                         .onApply {
                             settings.defaultGameDirectories = list.toMutableMap()
-                            if(oldDefaultGameDirectories != settings.defaultGameDirectories) {
+                            val oldDefaultGameDirectories = defaultGameDirectories.toMap()
+                            val newDefaultGameDirectories = settings.defaultGameDirectories
+                            if(oldDefaultGameDirectories != newDefaultGameDirectories) {
+                                defaultGameDirectories = newDefaultGameDirectories
                                 val messageBus = ApplicationManager.getApplication().messageBus
                                 messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC)
-                                    .onChange(oldDefaultGameDirectories, settings.defaultGameDirectories)
+                                    .onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
                             }
                         }
-                        .onReset { list = defaultList }
-                        .onIsModified { list != defaultList }
+                        .onReset { list = defaultGameDirectories.toMutableEntryList() }
+                        .onIsModified { list != defaultGameDirectories.toMutableEntryList() }
                 }
                 //preferredLocale
                 row {
                     label(PlsBundle.message("settings.general.preferredLocale")).widthGroup("general")
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.preferredLocale.tooltip") }
-                    val oldPreferredLocale = settings.preferredLocale
+                    var preferredLocale = settings.preferredLocale
                     localeComboBox(addAuto = true)
                         .bindItem(settings::preferredLocale.toNullableProperty())
                         .onApply {
-                            if(oldPreferredLocale != settings.preferredLocale) {
+                            val oldPreferredLocale = preferredLocale
+                            val newPreferredLocale = settings.preferredLocale
+                            if(oldPreferredLocale != newPreferredLocale) {
+                                preferredLocale = newPreferredLocale
                                 val openedFiles = ParadoxCoreHandler.findOpenedFiles()
                                 ParadoxCoreHandler.reparseFiles(openedFiles, reparse = false)
                             }
@@ -85,17 +93,20 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 row {
                     label(PlsBundle.message("settings.general.ignoredFileNames")).widthGroup("general")
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.ignoredFileNames.tooltip") }
-                    val oldIgnoredFileNameSet = settings.ignoredFileNameSet
+                    var ignoredFileNameSet = settings.ignoredFileNameSet
                     expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                         .bindText(settings::ignoredFileNames.toNonNullableProperty(""))
                         .comment(PlsBundle.message("settings.general.ignoredFileNames.comment"))
                         .align(Align.FILL)
                         .resizableColumn()
                         .onApply {
-                            if(oldIgnoredFileNameSet != settings.ignoredFileNameSet) {
+                            val oldIgnoredFileNameSet = ignoredFileNameSet.toSet()
+                            val newIgnoredFileNameSet = settings.ignoredFileNameSet
+                            if(oldIgnoredFileNameSet != newIgnoredFileNameSet) {
+                                ignoredFileNameSet = newIgnoredFileNameSet
                                 val fileNames = mutableSetOf<String>()
                                 fileNames += oldIgnoredFileNameSet
-                                fileNames += settings.ignoredFileNameSet
+                                fileNames += newIgnoredFileNameSet
                                 //设置中的被忽略文件名被更改时，需要重新解析相关文件（IDE之后会自动请求重新索引）
                                 val files = ParadoxCoreHandler.findFilesByFileNames(fileNames)
                                 ParadoxCoreHandler.reparseFiles(files)
@@ -109,9 +120,20 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     val descriptor = ParadoxDirectoryDescriptor()
                         .withTitle(PlsBundle.message("settings.general.localConfigDirectory.title"))
                         .asBrowseFolderDescriptor()
+                    var localConfigDirectory = settings.localConfigDirectory
                     textFieldWithBrowseButton(null, null, descriptor) { it.path }
                         .bindText(settings::localConfigDirectory.toNonNullableProperty(""))
                         .align(Align.FILL)
+                        .onApply {
+                            val oldLocalConfigDirectory = localConfigDirectory.orEmpty()
+                            val newLocalConfigDirectory = settings.localConfigDirectory.orEmpty()
+                            if(oldLocalConfigDirectory != newLocalConfigDirectory) {
+                                localConfigDirectory = newLocalConfigDirectory
+                                val messageBus = ApplicationManager.getApplication().messageBus
+                                messageBus.syncPublisher(ParadoxLocalConfigDirectoryListener.TOPIC)
+                                    .onChange(oldLocalConfigDirectory, newLocalConfigDirectory)
+                            }
+                        }
                 }
             }
             //documentation

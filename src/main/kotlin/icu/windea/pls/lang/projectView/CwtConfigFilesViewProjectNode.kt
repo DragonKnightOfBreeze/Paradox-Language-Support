@@ -8,6 +8,7 @@ import com.intellij.openapi.module.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.ParadoxGameType.*
@@ -26,7 +27,8 @@ class CwtConfigFilesViewProjectNode(
     
     private fun canRepresent(file: VirtualFile): Boolean {
         if(!file.isDirectory) return false
-        CwtConfigGroupFileProvider.EP_NAME.extensionList.forEach f@{ fileProvider ->
+        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
+        fileProviders.forEachFast f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             if(file == rootDirectory) return true
         }
@@ -34,7 +36,8 @@ class CwtConfigFilesViewProjectNode(
     }
     
     override fun contains(file: VirtualFile): Boolean {
-        CwtConfigGroupFileProvider.EP_NAME.extensionList.forEach f@{ fileProvider ->
+        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
+        fileProviders.forEachFast f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return@f
             val gameId = relativePath.substringBefore('/')

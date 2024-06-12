@@ -27,7 +27,6 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.lang.Integer.*
 
-//region Entry Extensions
 fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
 fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
@@ -45,9 +44,7 @@ fun getConfigGroup(project: Project, gameType: ParadoxGameType?) = project.servi
 val PathProvider get() = service<ParadoxPathProvider>()
 
 val UrlProvider get() = service<ParadoxUrlProvider>()
-//endregion
 
-//region Common Extensions
 fun FileType.isParadoxFileType() = this == ParadoxScriptFileType || this == ParadoxLocalisationFileType
 
 fun Language.isParadoxLanguage() = this.isKindOf(ParadoxScriptLanguage) || this.isKindOf(ParadoxLocalisationLanguage)
@@ -156,9 +153,7 @@ infix fun String.compareGameVersion(otherVersion: String): Int {
 fun String?.orAnonymous() = if(isNullOrEmpty()) PlsConstants.anonymousString else this
 fun String?.orUnknown() = if(isNullOrEmpty()) PlsConstants.unknownString else this
 fun String?.orUnresolved() = if(isNullOrEmpty()) PlsConstants.unresolvedString else this
-//endregion
 
-//region Select Extensions
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
     return when {
         from == null -> null
@@ -224,15 +219,9 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
 private fun String.toLocale(from: PsiElement): CwtLocalisationLocaleConfig? {
     return getConfigGroup(from.project, null).localisationLocalesById.get(this)
 }
-//endregion
 
-//region PsiElement Extensions
 val Project.paradoxLibrary: ParadoxLibrary
-    get() {
-        return this.getOrPutUserData(PlsKeys.library) {
-            ParadoxLibrary(this)
-        }
-    }
+    get() = this.getOrPutUserData(PlsKeys.library) { ParadoxLibrary(this) }
 
 //注意：不要更改直接调用CachedValuesManager.getCachedValue(...)的那个顶级方法（静态方法）的方法声明，IDE内部会进行检查
 //如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
@@ -262,4 +251,3 @@ val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorInfo?
         val colorId = this.name ?: return null
         return ParadoxTextColorHandler.getInfo(colorId, project, this)
     }
-//endregion

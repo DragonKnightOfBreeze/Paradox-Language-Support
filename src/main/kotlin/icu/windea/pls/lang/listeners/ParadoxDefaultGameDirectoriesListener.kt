@@ -6,7 +6,7 @@ import com.intellij.util.messages.*
  * 监听默认游戏目录映射的更改。
  */
 interface ParadoxDefaultGameDirectoriesListener {
-    fun onChange(oldGameDirectories: Map<String, String>, gameDirectories: Map<String, String>)
+    fun onChange(oldGameDirectories: Map<String, String>, newGameDirectories: Map<String, String>)
     
     companion object {
         @Topic.AppLevel

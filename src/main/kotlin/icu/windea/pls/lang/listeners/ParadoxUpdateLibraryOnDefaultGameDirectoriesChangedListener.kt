@@ -13,8 +13,8 @@ import icu.windea.pls.lang.*
  * @see ParadoxLibraryProvider
  */
 class ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener : ParadoxDefaultGameDirectoriesListener {
-    override fun onChange(oldGameDirectories: Map<String, String>, gameDirectories: Map<String, String>) {
-        val directories = gameDirectories.values.toMutableSet()
+    override fun onChange(oldGameDirectories: Map<String, String>, newGameDirectories: Map<String, String>) {
+        val directories = newGameDirectories.values.toMutableSet()
         directories.removeAll(oldGameDirectories.values.toSet())
         doUpdateLibrary(directories)
     }
@@ -26,8 +26,8 @@ class ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener : ParadoxDefau
             if(project.isDisposed) continue
             val isInProject = runReadAction { roots.any { root -> ProjectFileIndex.getInstance(project).isInContent(root) } }
             if(!isInProject) continue
-            val paradoxLibrary = project.paradoxLibrary
-            paradoxLibrary.refreshRoots()
+            val library = project.paradoxLibrary
+            library.refreshRoots()
         }
     }
 }

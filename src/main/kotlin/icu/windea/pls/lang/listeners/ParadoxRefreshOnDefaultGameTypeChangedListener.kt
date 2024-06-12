@@ -8,7 +8,7 @@ import icu.windea.pls.model.*
  * 当默认游戏类型变更后，重新解析文件。
  */
 class ParadoxRefreshOnDefaultGameTypeChangedListener : ParadoxDefaultGameTypeListener {
-    override fun onChange(oldGameType: ParadoxGameType, gameType: ParadoxGameType) {
+    override fun onChange(oldGameType: ParadoxGameType, newGameType: ParadoxGameType) {
         val modDirectories = mutableSetOf<String>()
         getProfilesSettings().modDescriptorSettings.values.forEach { settings ->
             if(settings.gameType == null) {

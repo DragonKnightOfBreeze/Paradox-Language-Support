@@ -3,6 +3,7 @@ package icu.windea.pls.lang.projectView
 import com.intellij.ide.projectView.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.model.*
 import java.util.*
@@ -15,7 +16,8 @@ class CwtConfigDirectoryElement(
     override fun getRoots(): Collection<VirtualFile> {
         val roots = mutableSetOf<VirtualFile>()
         val gameTypeId = gameType.id
-        CwtConfigGroupFileProvider.EP_NAME.extensionList.forEach f@{ fileProvider ->
+        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
+        fileProviders.forEachFast f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val dir = rootDirectory.findChild(gameTypeId) ?: return@f
             val file = VfsUtil.findRelativeFile(dir, path) ?: return@f

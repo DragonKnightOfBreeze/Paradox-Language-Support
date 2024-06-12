@@ -21,7 +21,8 @@ object CwtConfigManager {
         val file = element.containingFile ?: return null
         val vFile = file.virtualFile ?: return null
         val project = file.project
-        return CwtConfigGroupFileProvider.EP_NAME.extensionList.firstNotNullOfOrNull { fileProvider ->
+        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
+        return fileProviders.firstNotNullOfOrNull { fileProvider ->
             fileProvider.getContainingConfigGroup(vFile, project)
         }
     }

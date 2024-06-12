@@ -107,7 +107,8 @@ fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): Doc
     val file = element.containingFile ?: return this
     val vFile = file.virtualFile ?: return this
     val project = file.project
-    val (fileProvider, configGroup, filePath) = CwtConfigGroupFileProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ fileProvider ->
+    val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
+    val (fileProvider, configGroup, filePath) = fileProviders.firstNotNullOfOrNull f@{ fileProvider ->
         val configGroup = fileProvider.getContainingConfigGroup(vFile, project) ?: return@f null
         val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f null
         val filePath = VfsUtil.getRelativePath(vFile, rootDirectory)?.substringAfter('/') ?: return@f null
@@ -116,10 +117,8 @@ fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): Doc
     //规则分组信息
     val gameType = configGroup.gameType
     append("[").append(gameType?.title ?: "Core").append(" Config]")
-    if(fileProvider.isBuiltIn()) {
-        grayed {
-            append(" ").append(PlsBundle.message("text.builtIn"))
-        }
+    grayed {
+        append(" ").append(fileProvider.getHintMessage())
     }
     appendBr()
     //文件信息（相对于规则分组根目录的路径）

@@ -2,11 +2,10 @@ package icu.windea.pls.config.configGroup
 
 import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.psi.impl.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.configGroup.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.model.ParadoxGameType.*
 
 class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
@@ -32,10 +31,8 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
             }
         }
         val configGroupsToChange = configGroups.filter { !it.changed.get() }
-        if(configGroupsToChange.isNotEmpty()) {
-            configGroupsToChange.forEachFast { configGroup -> configGroup.changed.set(true) }
-            FloatingToolbarProvider.getProvider<ConfigGroupRefreshFloatingProvider>()
-                .updateToolbarComponents(project)
-        }
+        if(configGroupsToChange.isEmpty()) return
+        configGroupsToChange.forEachFast { configGroup -> configGroup.changed.set(true) }
+        FloatingToolbarProvider.getProvider<ConfigGroupRefreshFloatingProvider>().updateToolbarComponents(project)
     }
 }

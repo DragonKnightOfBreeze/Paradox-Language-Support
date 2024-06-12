@@ -57,10 +57,12 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         val rootPath = "/config"
         val rootUrl = rootPath.toClasspathUrl()
         val file = VfsUtil.findFileByURL(rootUrl)
-        return file
+        return file?.takeIf { it.isDirectory }
     }
     
-    override fun getNotificationMessage() = PlsBundle.message("configGroup.config.file.message.1")
+    override fun getHintMessage() = PlsBundle.message("configGroup.hint.1")
+    
+    override fun getNotificationMessage() = PlsBundle.message("configGroup.notification.1")
 }
 
 /**
@@ -74,10 +76,12 @@ class LocalCwtConfigGroupFileProvider: CwtConfigGroupFileProviderBase() {
         val directory0 = directory?.normalizeAbsolutePath()?.orNull() ?: return null
         val path = directory0.toPathOrNull() ?: return null
         val file = VfsUtil.findFile(path, true)
-        return file
+        return file?.takeIf { it.isDirectory }
     }
     
-    override fun getNotificationMessage() = PlsBundle.message("configGroup.config.file.message.2")
+    override fun getHintMessage() = PlsBundle.message("configGroup.hint.2")
+    
+    override fun getNotificationMessage() = PlsBundle.message("configGroup.notification.2")
 }
 
 /**
@@ -90,9 +94,11 @@ class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         val projectRootDirectory = project.guessProjectDir() ?: return null
         val rootPath = ".config"
         val file = VfsUtil.findRelativeFile(projectRootDirectory, rootPath)
-        return file
+        return file?.takeIf { it.isDirectory }
     }
     
-    override fun getNotificationMessage() = PlsBundle.message("configGroup.config.file.message.3")
+    override fun getHintMessage() = PlsBundle.message("configGroup.hint.3")
+    
+    override fun getNotificationMessage() = PlsBundle.message("configGroup.notification.3")
 }
 

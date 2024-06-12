@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.model.*
 
@@ -28,7 +29,8 @@ class CwtConfigGameElementNode(
         if(!file.isDirectory) return false
         if(file.name != value.gameType.id) return false
         val rootDir = file.parent ?: return false
-        CwtConfigGroupFileProvider.EP_NAME.extensionList.forEach f@{ fileProvider ->
+        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
+        fileProviders.forEachFast f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             if(rootDir == rootDirectory) return true
         }
@@ -36,7 +38,8 @@ class CwtConfigGameElementNode(
     }
     
     override fun contains(file: VirtualFile): Boolean {
-        CwtConfigGroupFileProvider.EP_NAME.extensionList.forEach f@{ fileProvider ->
+        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
+        fileProviders.forEachFast f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return@f
             val gameId = relativePath.substringBefore('/')
@@ -50,7 +53,8 @@ class CwtConfigGameElementNode(
         val gameTypeId = value.gameType.id
         val children = mutableSetOf<AbstractTreeNode<*>>()
         val directoryNames = mutableSetOf<String>()
-        CwtConfigGroupFileProvider.EP_NAME.extensionList.forEach f@{ fileProvider ->
+        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
+        fileProviders.forEachFast f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val dir = rootDirectory.findChild(gameTypeId) ?: return@f
             dir.children.forEach { file ->

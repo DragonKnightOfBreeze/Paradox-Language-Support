@@ -20,7 +20,9 @@ interface CwtConfigGroupFileProvider {
      */
     fun getContainingConfigGroup(file: VirtualFile, project: Project): CwtConfigGroup?
     
-    fun getNotificationMessage(): String?
+    fun getHintMessage(): String
+    
+    fun getNotificationMessage(): String
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtConfigGroupFileProvider>("icu.windea.pls.configGroupFileProvider")

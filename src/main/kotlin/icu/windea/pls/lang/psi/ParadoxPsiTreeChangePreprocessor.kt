@@ -6,18 +6,18 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxPsiTreeChangePreprocessor: PsiTreeChangePreprocessor {
-    //com.intellij.psi.impl.PsiModificationTrackerImpl.treeChanged
-    
+//com.intellij.psi.impl.PsiModificationTrackerImpl
+
+class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
     //这个方法应当尽可能地快
     override fun treeChanged(event: PsiTreeChangeEventImpl) {
         if(!PsiModificationTrackerImpl.canAffectPsi(event)) return
         
         val file = event.file ?: return
-        when{
+        when {
             file is ParadoxScriptFile -> {
                 ParadoxModificationTrackers.LocalisationFileTracker.incModificationCount()
-            } 
+            }
             file is ParadoxLocalisationFile -> {
                 ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
                 

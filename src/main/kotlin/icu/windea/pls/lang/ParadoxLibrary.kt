@@ -14,7 +14,7 @@ import javax.swing.*
 //each library each project
 
 class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
-    @Volatile var roots: MutableSet<VirtualFile> = mutableSetOf()
+    val roots: MutableSet<VirtualFile> by lazy { computeRoots() }
     
     override fun getSourceRoots(): Collection<VirtualFile> {
         return roots
@@ -40,7 +40,26 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
         return project.hashCode()
     }
     
+    @Suppress("UnstableApiUsage")
+    fun refreshRoots() {
+        val oldRoots = roots
+        val newRoots = computeRoots()
+        if(oldRoots == newRoots) return
+        roots.clear()
+        roots += newRoots
+        runInEdt(ModalityState.nonModal()) {
+            runWriteAction {
+                val libraryName = PlsBundle.message("library.name")
+                AdditionalLibraryRootsListener.fireAdditionalLibraryChanged(project, libraryName, oldRoots, newRoots, libraryName)
+            }
+        }
+    }
+    
     fun computeRoots(): MutableSet<VirtualFile> {
+        return runReadAction { doComputeRoots() }
+    }
+    
+    private fun doComputeRoots(): MutableSet<VirtualFile> {
         //这里仅需要收集不在项目中的游戏目录和模组目录
         val newPaths = mutableSetOf<String>()
         val newRoots = mutableSetOf<VirtualFile>()
@@ -84,27 +103,5 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
             }
         }
         return newRoots
-    }
-    
-    
-    //org.jetbrains.kotlin.idea.core.script.ucache.ScriptClassRootsUpdater.doUpdate
-    
-    @Suppress("UnstableApiUsage")
-    fun refreshRoots() {
-        val oldRoots = roots
-        val newRoots = runReadAction { computeRoots() }
-        if(oldRoots == newRoots) return
-        roots = newRoots
-        runInEdt(ModalityState.nonModal()) {
-            runWriteAction {
-                AdditionalLibraryRootsListener.fireAdditionalLibraryChanged(
-                    project,
-                    PlsBundle.message("library.name"),
-                    oldRoots,
-                    newRoots,
-                    PlsBundle.message("library.name")
-                )
-            }
-        }
     }
 }
