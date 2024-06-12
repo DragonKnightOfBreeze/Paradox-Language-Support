@@ -61,7 +61,7 @@
     <navbar implementation="icu.windea.pls.script.navigation.ParadoxScriptNavBar"/>
     <lang.psiStructureViewFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.script.usages.ParadoxDefinitionFileStructureGroupRuleProvider"/>
-    <fileIconProvider implementation="icu.windea.pls.lang.ParadoxFileIconProvider"/>
+    <iconProvider implementation="icu.windea.pls.lang.ParadoxIconProvider" order="first"/>
     <openapi.vcs.changes.ui.filePathIconProvider implementation="icu.windea.pls.lang.ParadoxFilePathIconProvider"/>
     <lang.surroundDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.surroundWith.ParadoxScriptSurroundDescriptor"/>
     <lang.unwrapDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.unwrap.ParadoxScriptUnwrapDescriptor"/>

@@ -9,7 +9,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 /**
- * 在项目视图中为规则分组目录提供特定的图标和额外的信息文本。
+ * 在项目视图中为规则分组所在的目录提供特定的图标和额外的信息文本。
  */
 class CwtConfigProjectViewDecorator: ProjectViewNodeDecorator {
     override fun decorate(node: ProjectViewNode<*>, data: PresentationData) {
@@ -19,7 +19,9 @@ class CwtConfigProjectViewDecorator: ProjectViewNodeDecorator {
             val fileProvider = fileProviders.findFast { it.getRootDirectory(node.project) == file  } ?: return
             if(data.locationString != null) return //忽略存在locationString的情况
             data.setIcon(PlsIcons.ConfigGroupDirectory)
-            data.locationString = fileProvider.getHintMessage()
+            if(node.parent is SyntheticLibraryElementNode) {
+                data.locationString = fileProvider.getHintMessage()
+            }
         }
     }
 }
