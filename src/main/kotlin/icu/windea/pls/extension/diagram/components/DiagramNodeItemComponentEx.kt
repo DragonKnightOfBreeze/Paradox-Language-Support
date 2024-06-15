@@ -2,9 +2,6 @@ package icu.windea.pls.extension.diagram.components
 
 import com.intellij.diagram.*
 import com.intellij.diagram.components.*
-import com.intellij.ui.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.extension.diagram.*
 import java.awt.*
 
@@ -13,28 +10,7 @@ import java.awt.*
 //com.intellij.diagram.components.DiagramNodeItemComponent
 
 class DiagramNodeItemComponentEx : DiagramNodeItemComponent() {
-    private var useComponent = false
-    
     //使用自定义组件时myLeft和myRight的宽度应当为0
-    
-    init {
-        val left = object : SimpleColoredComponent() {
-            override fun getPreferredSize() = super.getPreferredSize().alsoIf(useComponent) { it.width = 0 }
-        }
-        val right = object : SimpleColoredComponent() {
-            override fun getPreferredSize() = super.getPreferredSize().alsoIf(useComponent) { it.width = 0 }
-        }
-        this.left = left
-        this.right = right
-        removeAll()
-        add(left, BorderLayout.WEST)
-        add(right, BorderLayout.EAST)
-        left.isOpaque = true
-        left.isIconOpaque = true
-        right.isOpaque = true
-        right.isIconOpaque = true
-        this.isOpaque = true
-    }
     
     @Suppress("UNCHECKED_CAST")
     override fun setUp(owner: DiagramNodeBodyComponent, builder: DiagramBuilder, node: DiagramNode<Any>, element: Any?, selected: Boolean) {
@@ -48,11 +24,12 @@ class DiagramNodeItemComponentEx : DiagramNodeItemComponent() {
             val component = elementManager.getItemComponent(nodeElement, element, builder)
             if(component != null) {
                 add(component)
-                useComponent = true
+                left.size = Dimension(0, left.preferredSize.height)
+                right.size = Dimension(0, right.preferredSize.height)
             } else {
-                useComponent = false
+                left.size = left.preferredSize
+                right.size = right.preferredSize
             }
-            this.size = this.preferredSize
         }
     }
 }

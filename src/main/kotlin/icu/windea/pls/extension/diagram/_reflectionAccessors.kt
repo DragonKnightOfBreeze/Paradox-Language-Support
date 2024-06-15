@@ -11,7 +11,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
-var DiagramNodeItemComponentEx.left: SimpleColoredComponent by memberProperty<DiagramNodeItemComponent, _>("myLeft")
-var DiagramNodeItemComponentEx.right: SimpleColoredComponent by memberProperty<DiagramNodeItemComponent, _>("myRight")
+var DiagramNodeItemComponent.left: SimpleColoredComponent by memberProperty<DiagramNodeItemComponent, _>("myLeft")
+var DiagramNodeItemComponent.right: SimpleColoredComponent by memberProperty<DiagramNodeItemComponent, _>("myRight")
 
 var DiagramNodeBodyComponent.itemComponent: DiagramNodeItemComponent by memberProperty<DiagramNodeBodyComponent, _>("myItemComponent")

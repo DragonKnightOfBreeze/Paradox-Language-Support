@@ -2,11 +2,14 @@
 
 package icu.windea.pls.core
 
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import java.lang.reflect.*
 import kotlin.reflect.*
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.*
+
+private val logger = Logger.getInstance("#icu.windea.pls.core.ReflectionAccessorExtensions")
 
 class SmartProperty<T : Any, V>(
     val target: T,
@@ -46,17 +49,19 @@ class SmartMemberProperty<T : Any, V>(
     private fun doGetDelegateProperty(): DelegateProperty<T, V>? {
         try {
             return object : DelegateProperty<T, V> {
-                private val memberProperties = buildSet { addAll(targetClass.declaredMemberProperties); addAll(targetClass.memberProperties) }
-                private val memberFunctions = buildSet { addAll(targetClass.declaredMemberFunctions); addAll(targetClass.memberFunctions) }
-                private val property = memberProperties.find { it.name == propertyName }?.also { it.isAccessible = true }
-                private val getter = memberFunctions.find { it.isGetter(propertyName) }?.also { it.isAccessible = true }
-                private val setter = memberFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true }
+                private val memberProperties by lazy { buildSet { addAll(targetClass.declaredMemberProperties); addAll(targetClass.memberProperties) } }
+                private val memberFunctions by lazy { buildSet { addAll(targetClass.declaredMemberFunctions); addAll(targetClass.memberFunctions) } }
+                private val property by lazy { memberProperties.find { it.name == propertyName }?.also { it.isAccessible = true } }
+                private val getter by lazy { memberFunctions.find { it.isGetter(propertyName) }?.also { it.isAccessible = true } }
+                private val setter by lazy { memberFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true } }
+                private val javaField by lazy { targetClass.java.getFieldOptimized(propertyName, static = false) }
                 
                 override fun get(target: T): V {
                     if(!targetClass.isInstance(target)) cannotCast(target, targetClass)
                     return when {
-                        property != null -> property.get(target) as V
-                        getter != null -> getter.call(target) as V
+                        property != null -> property!!.get(target) as V
+                        getter != null -> getter!!.call(target) as V
+                        javaField != null -> javaField!!.get(target) as V
                         else -> unsupported()
                     }
                 }
@@ -65,16 +70,15 @@ class SmartMemberProperty<T : Any, V>(
                     if(!targetClass.isInstance(target)) cannotCast(target, targetClass)
                     when {
                         property != null && property is KMutableProperty1 -> (property as KMutableProperty1<T, in Any?>).set(target, value)
-                        setter != null -> setter.call(target, value)
+                        setter != null -> setter!!.call(target, value)
+                        javaField != null -> javaField!!.set(target, value)
                         else -> unsupported()
                     }
                 }
             }
         } catch(e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
-            
-            //TODO
-            
+            logger.error(e)
             return null
         }
     }
@@ -103,16 +107,18 @@ class SmartStaticProperty<T : Any, V>(
     private fun doGetDelegateProperty(): DelegateProperty<V>? {
         try {
             return object : DelegateProperty<V> {
-                private val staticProperties = targetClass.staticProperties
-                private val staticFunctions = targetClass.staticFunctions
-                private val property = staticProperties.find { it.name == propertyName }?.also { it.isAccessible = true }
-                private val getter = staticFunctions.find { it.isGetter(propertyName) }?.also { it.isAccessible = true }
-                private val setter = staticFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true }
+                private val staticProperties by lazy { targetClass.staticProperties }
+                private val staticFunctions by lazy { targetClass.staticFunctions }
+                private val property by lazy { staticProperties.find { it.name == propertyName }?.also { it.isAccessible = true } }
+                private val getter by lazy { staticFunctions.find { it.isGetter(propertyName) }?.also { it.isAccessible = true } }
+                private val setter by lazy { staticFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true } }
+                private val javaField by lazy { targetClass.java.getFieldOptimized(propertyName, static = true) }
                 
                 override fun get(): V {
                     return when {
-                        property != null -> property.get() as V
-                        getter != null -> getter.call(null) as V
+                        property != null -> property!!.get() as V
+                        getter != null -> getter!!.call(null) as V
+                        javaField != null -> javaField!!.get(null) as V
                         else -> unsupported()
                     }
                 }
@@ -120,16 +126,15 @@ class SmartStaticProperty<T : Any, V>(
                 override fun set(value: V) {
                     when {
                         property != null && property is KMutableProperty0 -> (property as KMutableProperty0<in Any?>).set(value)
-                        setter != null -> setter.call(null, value)
+                        setter != null -> setter!!.call(null, value)
+                        javaField != null -> javaField!!.set(null, value)
                         else -> unsupported()
                     }
                 }
             }
         } catch(e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
-            
-            //TODO
-            
+            logger.error(e)
             return null
         }
     }
@@ -160,34 +165,32 @@ class SmartMemberFunction<T : Any>(
         val expectedArgsSize = args.size + 1
         
         try {
-            val declaredFunctions = buildSet { addAll(targetClass.declaredFunctions); addAll(targetClass.functions) }
-            for(function in declaredFunctions) {
+            val functions = buildSet { addAll(targetClass.declaredFunctions); addAll(targetClass.functions) }
+            for(function in functions) {
                 if(function.name != functionName) continue
                 if(function.parameters.size != expectedArgsSize) continue
                 try {
                     function.isAccessible = true
                     return function.call(target, *args)
-                } catch(e: Throwable) {
+                } catch(e: Exception) {
                     if(e is ProcessCanceledException) throw e
                     //ignore
                 }
             }
         } catch(e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
+            logger.error(e)
         }
         
         //fallback to java reflection
         
         val targetJavaClass = targetClass.java
-        val declaredMethods = buildSet { addAll(targetJavaClass.declaredMethods); addAll(targetJavaClass.methods) }
-        for(method in declaredMethods) {
-            if(Modifier.isStatic(method.modifiers)) continue
-            if(method.name != functionName) continue
+        val methods = targetJavaClass.getMethodsOptimized(functionName, static = false)
+        for(method in methods) {
             if(method.parameters.size != expectedArgsSize) continue
             try {
-                method.isAccessible = true
                 return method.invoke(target, *args)
-            } catch(e: Throwable) {
+            } catch(e: Exception) {
                 if(e is ProcessCanceledException) throw e
                 //ignore
             }
@@ -214,26 +217,25 @@ class SmartStaticFunction<T : Any>(
                 try {
                     function.isAccessible = true
                     return function.call(null, *args)
-                } catch(e: Throwable) {
+                } catch(e: Exception) {
                     if(e is ProcessCanceledException) throw e
                     //ignore
                 }
             }
         } catch(e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
+            logger.error(e)
         }
         
         //fallback to java reflection
         
         val targetJavaClass = targetClass.java
-        val staticMethods = targetJavaClass.declaredMethods.filter { Modifier.isStatic(it.modifiers) }
+        val staticMethods = targetJavaClass.getMethodsOptimized(functionName, static = true)
         for(method in staticMethods) {
-            if(method.name != functionName) continue
             if(method.parameters.size != expectedArgsSize) continue
             try {
-                method.isAccessible = true
                 return method.invoke(null, *args)
-            } catch(e: Throwable) {
+            } catch(e: Exception) {
                 if(e is ProcessCanceledException) throw e
                 //ignore
             }
@@ -258,12 +260,35 @@ private fun KFunction<*>.isSetter(propertyName: String): Boolean {
     return false
 }
 
+private fun Class<*>.getFieldOptimized(name: String, static: Boolean? = null): Field? {
+    try {
+        val field = tryGetField { getDeclaredField(name) } ?: tryGetField { getField(name) } ?: return null
+        if(static != null && static != Modifier.isStatic(field.modifiers)) return null
+        field.trySetAccessible()
+        return field
+    } catch(e: Exception) {
+        //ignored
+        return null
+    }
+}
+
+private fun Class<*>.getMethodsOptimized(name: String, static: Boolean? = null): List<Method> {
+    return buildSet { addAll(declaredMethods); addAll(methods) }
+        .filter { it.name == name }
+        .filterNot { static != null && static != Modifier.isStatic(it.modifiers) }
+        .onEach { it.trySetAccessible() }
+}
+
 private fun unsupported(): Nothing {
-    throw UnsupportedOperationException()
+    val message = "Unsupported reflection accessor"
+    logger.error(message)
+    throw UnsupportedOperationException(message)
 }
 
 private fun cannotCast(target: Any, targetClass: KClass<out Any>): Nothing {
-    throw ClassCastException("Actual target class ${target::class.qualifiedName} cannot cast to target class ${targetClass.qualifiedName}")
+    val message = "Actual target class ${target::class.qualifiedName} cannot cast to target class ${targetClass.qualifiedName}"
+    logger.error(message)
+    throw ClassCastException(message)
 }
 
 

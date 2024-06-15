@@ -339,11 +339,11 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: Parado
     val sections = getSections(SECTIONS_LOC)
     if(sections != null && render) {
         if(nameLocalisation != null) {
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation)
             sections.put("name", richText)
         }
         if(descLocalisation != null) {
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation)
             sections.put("desc", richText)
         }
     }
@@ -541,7 +541,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: P
             sectionKeys.add(key)
             if(sections != null && getSettings().documentation.renderRelatedLocalisationsForDefinitions) {
                 //加上渲染后的相关本地化文本
-                val richText = ParadoxLocalisationTextHtmlRenderer.render(resolved.element, forDoc = true)
+                val richText = ParadoxLocalisationTextHtmlRenderer.render(resolved.element)
                 sections.put(key, richText)
             }
         }
@@ -720,7 +720,7 @@ private fun DocumentationBuilder.buildLocalisationSections(element: ParadoxLocal
             }?.castOrNull<ParadoxLocalisationProperty>() ?: element
         }
     }
-    val richText = ParadoxLocalisationTextHtmlRenderer.render(usedElement, forDoc = true)
+    val richText = ParadoxLocalisationTextHtmlRenderer.render(usedElement)
     if(richText.isNotEmpty()) {
         sections {
             section(PlsBundle.message("sectionTitle.text"), richText)

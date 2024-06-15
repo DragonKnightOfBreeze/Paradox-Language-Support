@@ -215,11 +215,11 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
     val sections = getSections(SECTIONS_LOC)
     if(sections != null && render) {
         if(nameLocalisation != null) {
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation)
             sections.put("name", richText)
         }
         if(descLocalisation != null) {
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation)
             sections.put("desc", richText)
         }
     }
