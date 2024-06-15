@@ -4,7 +4,6 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
-@Suppress("unused")
 object ParadoxScriptDataResolver {
 	/**
 	 * 解析脚本文件的数据。跳过不合法的[PsiElement]。

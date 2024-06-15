@@ -40,7 +40,6 @@ import javax.swing.*
  * * 忽略直接位于游戏或模组入口目录下的文件。
  * * TODO 按照覆盖顺序进行排序。
  */
-@Suppress("ComponentNotRegistered", "DEPRECATION")
 class CompareLocalisationsAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
         val file =  e.getData(CommonDataKeys.VIRTUAL_FILE)

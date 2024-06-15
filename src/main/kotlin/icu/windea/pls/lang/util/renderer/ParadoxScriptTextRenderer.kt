@@ -5,7 +5,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
-@Suppress("unused", "KotlinConstantConditions")
 object ParadoxScriptTextRenderer {
     fun render(element: ParadoxScriptProperty, renderInBlock: Boolean = false, conditional: Boolean = false, inline: Boolean = false): String {
         return buildString { renderTo(element, this, renderInBlock, conditional, inline) }

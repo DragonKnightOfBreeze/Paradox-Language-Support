@@ -1,4 +1,4 @@
-@file:Suppress("UnstableApiUsage", "UNUSED_PARAMETER", "UnusedReceiverParameter")
+@file:Suppress("UnstableApiUsage", "UNUSED_PARAMETER")
 
 package icu.windea.pls.lang.documentation
 

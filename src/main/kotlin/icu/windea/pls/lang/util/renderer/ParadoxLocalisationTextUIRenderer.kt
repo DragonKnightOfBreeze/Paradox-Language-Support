@@ -7,7 +7,6 @@ import icu.windea.pls.localisation.psi.*
 import java.awt.*
 import javax.swing.*
 
-@Suppress("unused")
 object ParadoxLocalisationTextUIRenderer {
     //com.intellij.openapi.actionSystem.impl.ActionToolbarImpl.paintToImage
     

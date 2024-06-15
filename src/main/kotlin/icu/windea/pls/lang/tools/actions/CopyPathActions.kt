@@ -1,5 +1,3 @@
-@file:Suppress("ComponentNotRegistered")
-
 package icu.windea.pls.lang.tools.actions
 
 import com.intellij.openapi.actionSystem.*

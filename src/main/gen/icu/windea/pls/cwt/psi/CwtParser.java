@@ -8,7 +8,6 @@ import com.intellij.psi.tree.*;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 
-@SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class CwtParser implements PsiParser, LightPsiParser {
 
   public ASTNode parse(IElementType t, PsiBuilder b) {

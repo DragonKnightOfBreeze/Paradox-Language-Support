@@ -6,7 +6,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 
-@Suppress("unused")
 object ParadoxScriptDataValueResolver {
     /**
      * 解析脚本文件的数据。跳过不合法的[PsiElement]。

@@ -35,7 +35,6 @@ class AutomaticRelatedImagesRenamer(element: PsiElement, newName: String) : Auto
     
     override fun getDialogTitle() = PlsBundle.message("rename.relatedImages.title")
     
-    @Suppress("DialogTitleCapitalization")
     override fun getDialogDescription() = PlsBundle.message("rename.relatedImages.desc")
     
     override fun entityName() = PlsBundle.message("rename.relatedImages.entityName")

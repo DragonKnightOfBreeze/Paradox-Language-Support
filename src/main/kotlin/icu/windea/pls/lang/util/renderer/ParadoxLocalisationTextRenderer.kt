@@ -13,7 +13,6 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
-@Suppress("unused", "UNUSED_PARAMETER")
 object ParadoxLocalisationTextRenderer {
     class Context(
         var builder: StringBuilder

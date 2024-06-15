@@ -77,7 +77,6 @@ class ParadoxScriptedVariableInlineProcessor(
         }
     }
     
-    @Suppress("DialogTitleCapitalization")
     override fun performRefactoring(usages: Array<out UsageInfo>) {
         var position: RangeMarker? = null
         if(editor != null) {

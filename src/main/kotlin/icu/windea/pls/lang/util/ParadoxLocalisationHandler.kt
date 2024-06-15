@@ -15,7 +15,6 @@ import icu.windea.pls.model.*
 /**
  * 用于处理本地化信息。
  */
-@Suppress("unused", "UNUSED_PARAMETER")
 object ParadoxLocalisationHandler {
     fun getInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         //快速判断

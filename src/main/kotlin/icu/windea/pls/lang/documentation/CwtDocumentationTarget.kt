@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage", "UnusedReceiverParameter")
-
 package icu.windea.pls.lang.documentation
 
 import com.intellij.model.*

@@ -6,7 +6,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.util.*
 
-@Suppress("UnstableApiUsage", "EqualsOrHashCode")
 class ParadoxGameSearchScope(
     project: Project,
     val contextFile: VirtualFile?,

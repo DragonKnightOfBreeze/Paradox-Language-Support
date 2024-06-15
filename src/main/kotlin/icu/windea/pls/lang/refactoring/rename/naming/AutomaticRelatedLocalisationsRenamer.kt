@@ -36,7 +36,6 @@ class AutomaticRelatedLocalisationsRenamer(element: PsiElement, newName: String)
     
     override fun getDialogTitle() = PlsBundle.message("rename.relatedLocalisations.title")
     
-    @Suppress("DialogTitleCapitalization")
     override fun getDialogDescription() = PlsBundle.message("rename.relatedLocalisations.desc")
     
     override fun entityName() = PlsBundle.message("rename.relatedLocalisations.entityName")

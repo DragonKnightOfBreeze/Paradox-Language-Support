@@ -8,7 +8,6 @@ import com.intellij.psi.tree.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationParserUtil.*;
 
-@SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
 
   public ASTNode parse(IElementType t, PsiBuilder b) {

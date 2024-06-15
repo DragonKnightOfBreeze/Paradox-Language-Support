@@ -7,7 +7,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 
-class ParadoxRootVfsResolver() : DiagramVfsResolver<PsiElement> {
+class ParadoxRootVfsResolver : DiagramVfsResolver<PsiElement> {
     //based on rootFile
     
     override fun getQualifiedName(element: PsiElement?): String? {

@@ -29,7 +29,6 @@ import icu.windea.pls.script.psi.impl.*
  * @see ParadoxScriptDefinitionElement
  * @see ParadoxDefinitionInfo
  */
-@Suppress("unused", "UNUSED_PARAMETER")
 object ParadoxDefinitionHandler {
     //get info & match methods
     

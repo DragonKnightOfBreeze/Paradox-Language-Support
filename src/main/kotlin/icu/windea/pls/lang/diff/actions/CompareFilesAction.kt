@@ -35,7 +35,6 @@ import javax.swing.*
  * * 可以用于比较二进制文件。（如DDS图片）
  * * TODO 按照覆盖顺序进行排序。
  */
-@Suppress("ComponentNotRegistered", "DEPRECATION")
 class CompareFilesAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)?.singleOrNull()

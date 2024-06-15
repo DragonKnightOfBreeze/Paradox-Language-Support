@@ -41,7 +41,6 @@ class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: S
     
     override fun getDialogTitle() = PlsBundle.message("rename.generatedModifiersNameDesc.title")
     
-    @Suppress("DialogTitleCapitalization")
     override fun getDialogDescription() = PlsBundle.message("rename.generatedModifiersNameDesc.desc")
     
     override fun entityName() = PlsBundle.message("rename.generatedModifiersNameDesc.entityName")

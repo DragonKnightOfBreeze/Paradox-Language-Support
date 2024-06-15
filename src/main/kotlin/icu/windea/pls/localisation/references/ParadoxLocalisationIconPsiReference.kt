@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.localisation.references
 
 import com.intellij.openapi.util.*

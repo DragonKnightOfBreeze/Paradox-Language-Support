@@ -21,7 +21,6 @@ import java.awt.*
 import java.util.*
 import javax.swing.*
 
-@Suppress("unused")
 object ParadoxLocalisationTextHtmlRenderer {
     class Context(
         var builder: DocumentationBuilder,
