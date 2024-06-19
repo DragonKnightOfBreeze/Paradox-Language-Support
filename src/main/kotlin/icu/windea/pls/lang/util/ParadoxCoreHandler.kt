@@ -91,6 +91,7 @@ object ParadoxCoreHandler {
     }
     
     private fun getLauncherSettingsFile(root: VirtualFile): VirtualFile? {
+        if(root.name == "launcher") return null
         //launcher-settings.json
         root.findChild(PlsConstants.launcherSettingsFileName)
             ?.takeIf { !it.isDirectory }
