@@ -12,7 +12,7 @@ enum class ParadoxPriority {
     ORDERED;
     
     companion object {
-        val valueMap = entries.associateBy { it.name }
+        private val valueMap = entries.associateBy { it.name }
         
         @JvmStatic
         fun resolve(name: String): ParadoxPriority? {

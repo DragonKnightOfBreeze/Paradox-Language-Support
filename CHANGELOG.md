@@ -24,10 +24,12 @@
 ## 1.3.11
 
 * [X] BUG修复：修复图表（如科技树）无法正常显示的问题
+* [X] 优化：优化对游戏目录的判断
 
 ***
 
-* [X] BUG fix: fixes a problem that diagrams (e.g., Technology Tree Diagram) cannot be opened correctly
+* [X] BUG fix: Fixes a problem that diagrams (e.g., Technology Tree Diagram) cannot be opened correctly
+* [X] Optimization: Optimize the logic to determine game directory
 
 ## 1.3.10
 

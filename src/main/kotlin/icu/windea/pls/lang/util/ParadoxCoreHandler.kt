@@ -80,7 +80,7 @@ object ParadoxCoreHandler {
         }
         
         // 尝试从此目录向下递归查找launcher-settings.json，如果找到，再根据"dlcPath"的值获取游戏文件的根目录
-        // 注意游戏文件可能位于此目录的game子目录中，而非直接位于此目录中
+        // 注意游戏文件的根目录可能是此目录的game子目录，而非此目录自身
         val launcherSettingsFile = disableLogger { getLauncherSettingsFile(rootFile) }
         if(launcherSettingsFile != null) {
             val launcherSettingsInfo = getLauncherSettingsInfo(launcherSettingsFile) ?: return null
@@ -149,19 +149,23 @@ object ParadoxCoreHandler {
     
     fun getInferredGameType(rootInfo: ParadoxModRootInfo): ParadoxGameType? {
         val parentDir = rootInfo.rootFile.parent
-        runCatchingCancelable {
+        runCatchingCancelable r@{
             //如果模组目录直接位于游戏创意工坊目录下，直接推断为对应的游戏类型
-            val steamWorkshopDir = parentDir ?: return@runCatchingCancelable null
+            val steamWorkshopDir = parentDir ?: return@r
             val steamId = steamWorkshopDir.name
-            ParadoxGameType.resolveBySteamId(steamId)?.takeIf { PathProvider.getSteamWorkshopPath(steamId) == steamWorkshopDir.toNioPath().absolutePathString() }
-        }.getOrNull()?.let { return it }
-        runCatchingCancelable {
+            val gameType = ParadoxGameType.entries.find { it.steamId == steamId } ?: return@r
+            if(PathProvider.getSteamWorkshopPath(steamId) != steamWorkshopDir.toNioPath().absolutePathString()) return@r
+            return gameType
+        }
+        runCatchingCancelable r@{
             //如果模组目录直接位于游戏数据目录下的mod子目录下，直接推断为对应的游戏类型
-            val modDir = parentDir.takeIf { it.name == "mod" } ?: return@runCatchingCancelable null
-            val gameDataDir = modDir.parent ?: return@runCatchingCancelable null
+            val modDir = parentDir.takeIf { it.name == "mod" } ?: return@r
+            val gameDataDir = modDir.parent ?: return@r
             val gameName = gameDataDir.name
-            ParadoxGameType.resolveByTitle(gameName)?.takeIf { PathProvider.getGameDataPath(gameName) == gameDataDir.toNioPath().absolutePathString() }
-        }.getOrNull()?.let { return it }
+            val gameType = ParadoxGameType.entries.find { it.title == gameName } ?: return@r
+            if(PathProvider.getGameDataPath(gameName) != gameDataDir.toNioPath().absolutePathString()) return@r
+            return gameType
+        }
         return null
     }
     

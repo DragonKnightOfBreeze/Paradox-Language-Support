@@ -36,7 +36,7 @@ class ParadoxGameRootInfo(
     override val gameRootFile: VirtualFile = doGetGameRootFile()
     
     private fun doGetGameType(): ParadoxGameType {
-        return launcherSettingsInfo.gameId.let { ParadoxGameType.resolveById(it) } ?: throw IllegalStateException()
+        return ParadoxGameType.entries.find { it.gameId == launcherSettingsInfo.gameId } ?: throw IllegalStateException()
     }
     
     private fun doGetGameRootFile(): VirtualFile {
@@ -64,31 +64,24 @@ class ParadoxGameRootInfo(
     }
 }
 
-data class ParadoxLauncherSettingsInfo(
-    val gameId: String,
-    val version: String,
-    val rawVersion: String,
-    val gameDataPath: String = "%USER_DOCUMENTS%/Paradox Interactive/${ParadoxGameType.resolveById(gameId)!!}",
-    val dlcPath: String = "",
-    val exePath: String,
-    val exeArgs: List<String>
-)
-
 class ParadoxModRootInfo(
     override val rootFile: VirtualFile,
     val descriptorFile: VirtualFile,
     val descriptorInfo: ParadoxModDescriptorInfo
 ) : ParadoxRootInfo() {
     val inferredGameType: ParadoxGameType? = doGetInferredGameType()
-    override val gameType: ParadoxGameType
-        get() = inferredGameType
-            ?: getProfilesSettings().modDescriptorSettings.get(rootFile.path)?.gameType
-            ?: getSettings().defaultGameType
-    override val gameRootFile: VirtualFile
-        get() = rootFile
+    override val gameType: ParadoxGameType get() = doGetGameType()
+    
+    override val gameRootFile: VirtualFile get() = rootFile
     
     private fun doGetInferredGameType(): ParadoxGameType? {
         return ParadoxCoreHandler.getInferredGameType(this)
+    }
+    
+    private fun doGetGameType(): ParadoxGameType {
+        return inferredGameType
+            ?: getProfilesSettings().modDescriptorSettings.get(rootFile.path)?.gameType
+            ?: getSettings().defaultGameType
     }
     
     override val rootPath: Path = rootFile.toNioPath()
@@ -109,6 +102,18 @@ class ParadoxModRootInfo(
         return rootFile.hashCode()
     }
 }
+
+data class ParadoxLauncherSettingsInfo(
+    val gameId: String,
+    val version: String,
+    val rawVersion: String,
+    val distPlatform: String = "steam",
+    val gameDataPath: String = "%USER_DOCUMENTS%/Paradox Interactive/${ParadoxGameType.resolve(gameId)}",
+    val modPath: String = "mod",
+    val dlcPath: String = "",
+    val exePath: String,
+    val exeArgs: List<String>
+)
 
 data class ParadoxModDescriptorInfo(
     val name: String,

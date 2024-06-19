@@ -118,7 +118,7 @@ object ParadoxDefinitionHandler {
             if(element !is ParadoxScriptProperty) return false
         }
         
-        val fastResult = matchesTypeFast(path, elementPath, rootKey, typeConfig, configGroup)
+        val fastResult = matchesTypeFast(path, elementPath, rootKey, typeConfig)
         if(fastResult != null) return fastResult
         
         //判断definition的propertyValue是否需要是block
@@ -156,7 +156,7 @@ object ParadoxDefinitionHandler {
             if(elementType != PROPERTY) return false
         }
         
-        val fastResult = matchesTypeFast(path, elementPath, rootKey, typeConfig, configGroup)
+        val fastResult = matchesTypeFast(path, elementPath, rootKey, typeConfig)
         if(fastResult != null) return fastResult
         
         //判断definition的propertyValue是否需要是block
@@ -175,8 +175,7 @@ object ParadoxDefinitionHandler {
         path: ParadoxPath,
         elementPath: ParadoxElementPath,
         rootKey: String,
-        typeConfig: CwtTypeConfig,
-        configGroup: CwtConfigGroup
+        typeConfig: CwtTypeConfig
     ): Boolean? {
         //判断path是否匹配
         val pathConfig = typeConfig.path ?: return false
@@ -314,7 +313,7 @@ object ParadoxDefinitionHandler {
         configGroup: CwtConfigGroup,
         matchOptions: Int = CwtConfigMatcher.Options.Default
     ): Boolean {
-        val fastResult = matchesSubtypeFast(rootKey, subtypeConfig, subtypeConfigs, configGroup)
+        val fastResult = matchesSubtypeFast(rootKey, subtypeConfig, subtypeConfigs)
         if(fastResult != null) return fastResult
         
         //根据config对property进行内容匹配
@@ -326,8 +325,7 @@ object ParadoxDefinitionHandler {
     fun matchesSubtypeFast(
         rootKey: String,
         subtypeConfig: CwtSubtypeConfig,
-        subtypeConfigs: MutableList<CwtSubtypeConfig>,
-        configGroup: CwtConfigGroup
+        subtypeConfigs: MutableList<CwtSubtypeConfig>
     ): Boolean? {
         //如果only_if_not存在，且已经匹配指定的任意子类型，则不匹配
         val onlyIfNotConfig = subtypeConfig.onlyIfNot
@@ -371,7 +369,7 @@ object ParadoxDefinitionHandler {
         val blockElement = definitionElement.block
         if(childValueConfigs.isNotEmpty()) {
             //匹配值列表
-            if(!doMatchValues(definitionElement, blockElement, childValueConfigs, configGroup, matchOptions)) return false //继续匹配
+            if(!doMatchValues(blockElement, childValueConfigs, configGroup, matchOptions)) return false //继续匹配
         }
         val childPropertyConfigs = propertyConfig.properties.orEmpty()
         if(childPropertyConfigs.isNotEmpty()) {
@@ -409,12 +407,12 @@ object ParadoxDefinitionHandler {
                 }
                 //匹配alias
                 CwtConfigHandler.isAliasEntryConfig(propertyConfig) -> {
-                    return doMatchAlias(definitionElement, propertyElement, propertyConfig, configGroup, matchOptions)
+                    return doMatchAlias(definitionElement, propertyElement, propertyConfig, matchOptions)
                 }
                 propertyConfig.configs.orEmpty().isNotEmpty() -> {
                     val blockElement = propertyElement.block
                     //匹配值列表
-                    if(!doMatchValues(definitionElement, blockElement, propertyConfig.values.orEmpty(), configGroup, matchOptions)) return false
+                    if(!doMatchValues(blockElement, propertyConfig.values.orEmpty(), configGroup, matchOptions)) return false
                     //匹配属性列表
                     if(!doMatchProperties(definitionElement, blockElement, propertyConfig.properties.orEmpty(), configGroup, matchOptions)) return false
                 }
@@ -460,7 +458,6 @@ object ParadoxDefinitionHandler {
     }
     
     private fun doMatchValues(
-        definitionElement: ParadoxScriptDefinitionElement,
         blockElement: ParadoxScriptBlockElement?,
         valueConfigs: List<CwtValueConfig>,
         configGroup: CwtConfigGroup,
@@ -503,9 +500,10 @@ object ParadoxDefinitionHandler {
         definitionElement: ParadoxScriptDefinitionElement,
         propertyElement: ParadoxScriptProperty,
         propertyConfig: CwtPropertyConfig,
-        configGroup: CwtConfigGroup,
         matchOptions: Int
     ): Boolean {
+        val configGroup = propertyConfig.configGroup
+        
         //aliasName和aliasSubName需要匹配
         val aliasName = propertyConfig.keyExpression.value ?: return false
         val key = propertyElement.name
@@ -549,7 +547,7 @@ object ParadoxDefinitionHandler {
         //NOTE 这里不处理需要内联的情况
         val name = getNameWhenCreateDefinitionStub(typeConfig, rootKey, node, tree)
         val type = typeConfig.name
-        val subtypes = getSubtypesWhenCreateDefinitionStub(typeConfig, rootKey, configGroup) //如果无法在索引时获取，之后再懒加载
+        val subtypes = getSubtypesWhenCreateDefinitionStub(typeConfig, rootKey) //如果无法在索引时获取，之后再懒加载
         return ParadoxScriptFileStubImpl(file, name, type, subtypes, gameType)
     }
     
@@ -588,7 +586,7 @@ object ParadoxDefinitionHandler {
         //NOTE 这里不处理需要内联的情况
         val name = getNameWhenCreateDefinitionStub(typeConfig, rootKey, node, tree)
         val type = typeConfig.name
-        val subtypes = getSubtypesWhenCreateDefinitionStub(typeConfig, rootKey, configGroup) //如果无法在索引时获取，之后再懒加载
+        val subtypes = getSubtypesWhenCreateDefinitionStub(typeConfig, rootKey) //如果无法在索引时获取，之后再懒加载
         return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
     }
     
@@ -631,11 +629,11 @@ object ParadoxDefinitionHandler {
         }
     }
     
-    private fun getSubtypesWhenCreateDefinitionStub(typeConfig: CwtTypeConfig, rootKey: String, configGroup: CwtConfigGroup): List<String>? {
+    private fun getSubtypesWhenCreateDefinitionStub(typeConfig: CwtTypeConfig, rootKey: String): List<String>? {
         val subtypesConfig = typeConfig.subtypes
         val result = mutableListOf<CwtSubtypeConfig>()
         for(subtypeConfig in subtypesConfig.values) {
-            if(matchesSubtypeFast(rootKey, subtypeConfig, result, configGroup) ?: return null) {
+            if(matchesSubtypeFast(rootKey, subtypeConfig, result) ?: return null) {
                 result.add(subtypeConfig)
             }
         }
