@@ -1,7 +1,7 @@
 <p>IDEA plugin: Support for Paradox language.</p>
 <p>Features:</p>
 <ul>
-<li>Supports script & localisation languages and CWT language (used as config files).</li>
+<li>Supports script & localisation languages and CWT language (used by config files).</li>
 <li>Provides various almost excellent language features for script &amp; localisation languages, including code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff and more.</li>
 <li>Provides basic language features for CWT language, including code highlight, code navigation, quick documentation and more.</li>
 <li>Supports rendering scope context, localisation text, DDS images and other useful information via quick documentation and inlay hints.</li>
@@ -20,7 +20,7 @@ Besides, <a href="https://windea.icu/Paradox-Language-Support/#/en/config.md#wri
 <p>IDEA插件：Paradox语言支持。</p>
 <p>特性：</p>
 <ul>
-<li>支持脚本语言与本地化语言，以及用作规则文件的CWT语言。</li>
+<li>支持脚本语言与本地化语言，以及规则文件所使用的CWT语言。</li>
 <li>为脚本语言与本地化语言提供诸多较为完备的语言功能，包括代码高亮、代码导航、代码补全、代码检查、代码重构、快速文档、内嵌提示、动态模版、代码层级、图表、差异比较等。</li>
 <li>为CWT语言提供基础的语言功能，包括代码高亮、代码导航、快速文档等。</li>
 <li>支持通过快速文档与内嵌提示等方式，渲染作用域上下文、本地化文本、DDS图片以及其他有用的信息。</li>
