@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.parameter
 
 import com.intellij.openapi.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
@@ -36,20 +35,15 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             val passingContextConfigs = ParadoxParameterHandler.getInferredContextConfigs(passingParameterElement)
             return passingContextConfigs
         }
-        if(expressionContextConfigs.isEmpty()) return emptyList()
-        val containerConfig = CwtValueConfig.resolve(
-            pointer = emptyPointer(),
-            configGroup = expressionContextConfigs.first().configGroup,
-            value = PlsConstants.Folders.block,
-            valueTypeId = CwtType.Block.id,
-            configs = expressionContextConfigs.map { config ->
-                when(config) {
-                    is CwtPropertyConfig -> config.delegated(CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
-                    is CwtValueConfig -> config.delegated(CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
-                }
+        val finalConfigs = expressionContextConfigs.map { config ->
+            when(config) {
+                is CwtPropertyConfig -> config.delegated(CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
+                is CwtValueConfig -> config.delegated(CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
             }
-        )
-        return listOf(containerConfig)
+        }
+        val configGroup = expressionContextConfigs.first().configGroup
+        val contextConfig = CwtConfigManipulator.inlineAsValueConfig(null, finalConfigs, configGroup)
+        return listOf(contextConfig)
     }
 }
 

@@ -166,6 +166,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val gameType = config.configGroup.gameType ?: return null
         val project = config.configGroup.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
+        result.containingContextReference = contextReferenceElement.createPointer(project)
         result.definitionName = definitionName
         result.definitionTypes = definitionTypes
         return result
@@ -506,6 +507,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val gameType = config.configGroup.gameType ?: return null
         val project = config.configGroup.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
+        result.containingContextReference = contextReferenceElement.createPointer(project)
         result.inlineScriptExpression = expression
         return result
     }

@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.psi.*
+import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -8,6 +9,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.config.*
+import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
 
 object CwtConfigManipulator {
@@ -77,6 +79,18 @@ object CwtConfigManipulator {
         return inlined
     }
     
+    fun inlineAsValueConfig(config: CwtMemberConfig<*>?, configs: List<CwtMemberConfig<*>>?, configGroup: CwtConfigGroup): CwtValueConfig {
+        return CwtValueConfig.resolve(
+            pointer = emptyPointer(),
+            configGroup = configGroup,
+            value = PlsConstants.Folders.block,
+            valueTypeId = CwtType.Block.id,
+            configs = configs,
+            options = config?.options,
+            documentation = config?.documentation
+        )
+    }
+    
     fun inlineSingleAliasOrAlias(element: PsiElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, matchOptions: Int = CwtConfigMatcher.Options.Default): List<CwtPropertyConfig> {
         //内联类型为single_alias_right或alias_match_left的规则
         val result = mutableListOf<CwtMemberConfig<*>>()
@@ -131,6 +145,7 @@ object CwtConfigManipulator {
             else -> return null
         }
     }
+
     //endregion
     
     //region Merge Methods

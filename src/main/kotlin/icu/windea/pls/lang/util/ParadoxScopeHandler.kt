@@ -432,11 +432,12 @@ object ParadoxScopeHandler {
             val configGroup = node.configGroup
             val configs = configGroup.extendedParameters.findFromPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
             val config = configs.findLast { it.contextKey.matchFromPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return@r1
+            val containerConfig = config.getContainerConfig(parameterElement)
             
             //ex_param = scope[country]
-            //-> country (don't validate)
+            //result: country (don't validate & inline allowed)
             run r2@{
-                val inferredScope = config.config.castOrNull<CwtPropertyConfig>()?.valueExpression
+                val inferredScope = containerConfig.castOrNull<CwtPropertyConfig>()?.valueExpression
                     ?.takeIf { it.type == CwtDataTypes.Scope }
                     ?.value?.orNull() ?: return@r2
                 return inputScopeContext.resolveNext(inferredScope)
@@ -444,9 +445,9 @@ object ParadoxScopeHandler {
             
             //## push_scope = country
             //ex_param = ...
-            //-> country (don't validate)
+            //result: country (don't validate & inline allowed)
             run r2@{
-                val inferredScopeContext = getScopeContextFromConfigOptions(config.config, inputScopeContext) ?: return@r2
+                val inferredScopeContext = getScopeContextFromConfigOptions(containerConfig, inputScopeContext) ?: return@r2
                 return inferredScopeContext
             }
         }

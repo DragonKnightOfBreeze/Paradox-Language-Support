@@ -1,23 +1,24 @@
 package icu.windea.pls.config.config.extended
 
-import icu.windea.pls.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
 
 /**
  * @property name template_expression
- * @property contextConfigsType (option) context_configs_type: string = "single"
+ * @property contextConfigsType (option) context_configs_type: string = "single" ("single" | "multiple")
  */
 interface CwtExtendedInlineScriptConfig : CwtExtendedConfig {
     val name: String
     val contextConfigsType: String
     
     /**
-     * 得到由其声明的上下文CWT规则列表。
+     * 得到处理后的作为上下文规则的容器的规则。
+     */
+    fun getContainerConfig(): CwtMemberConfig<*>
+    
+    /**
+     * 得到由其声明的上下文规则列表。
      */
     fun getContextConfigs(): List<CwtMemberConfig<*>>
     
@@ -42,29 +43,33 @@ private class CwtExtendedInlineScriptConfigImpl(
     override val name: String,
     override val contextConfigsType: String,
 ) : CwtExtendedInlineScriptConfig {
+    private val _containerConfig by lazy { doGetContainerConfig() }
     private val _contextConfigs by lazy { doGetContextConfigs() }
+    
+    override fun getContainerConfig(): CwtMemberConfig<*> {
+        return _containerConfig
+    }
     
     override fun getContextConfigs(): List<CwtMemberConfig<*>> {
         return _contextConfigs
     }
     
+    private fun doGetContainerConfig(): CwtMemberConfig<*> {
+        return when(config) {
+            is CwtPropertyConfig -> CwtConfigManipulator.inlineSingleAlias(config) ?: config // #76
+            else -> config
+        }
+    }
+    
     private fun doGetContextConfigs(): List<CwtMemberConfig<*>> {
-        if(config !is CwtPropertyConfig) return emptyList()
-        val config = CwtConfigManipulator.inlineSingleAlias(config) ?: config // #76
+        val containerConfig = _containerConfig
+        if(containerConfig !is CwtPropertyConfig) return emptyList()
         val r = when(contextConfigsType) {
-            "multiple" -> config.configs.orEmpty()
-            else -> config.valueConfig.toSingletonListOrEmpty()
+            "multiple" -> containerConfig.configs.orEmpty()
+            else -> containerConfig.valueConfig.toSingletonListOrEmpty()
         }
         if(r.isEmpty()) return emptyList()
-        val containerConfig = CwtValueConfig.resolve(
-            pointer = emptyPointer(),
-            configGroup = r.first().configGroup,
-            value = PlsConstants.Folders.block,
-            valueTypeId = CwtType.Block.id,
-            configs = r,
-            options = config.options,
-            documentation = config.documentation
-        )
-        return listOf(containerConfig)
+        val contextConfig = CwtConfigManipulator.inlineAsValueConfig(config, r, config.configGroup)
+        return listOf(contextConfig)
     }
 }

@@ -238,7 +238,7 @@ inline_scripts = {
     # 'x' or 'x = xxx'
     # 'x' is a inline script expression, e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
     # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there is various context configs)
+    # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
     # note extended documentation is unavailable for inline scripts
     
     x
@@ -276,7 +276,7 @@ parameters = {
     # 'x' or 'x = xxx'
     # 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
     # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there is various context configs)
+    # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
     
 	# since 1.3.6, value of option 'context_key' can also be a pattern expression (template expression, ant expression or regex)
     
@@ -307,6 +307,14 @@ parameters = {
 	## context_key = scripted_trigger@some_trigger
 	## context_configs_type = multiple
 	x = single_alias_right[trigger_clause]
+    
+    # since 1.3.12, config context and scope context can be specified to inherit from the parameter context
+    # e.g. for parameter 'x' with context key 'scripted_trigger@some_trigger', the parameter context is scripted trigger 'some_trigger'
+    
+	## context_key = scripted_trigger@some_trigger
+    ## inherit_config_context
+	## inherit_scope_context
+    x
 }
 ```
 
@@ -416,7 +424,7 @@ some_config
 
 ### 概述
 
-你可以在[本地的规则分组](#builtin-config-groups)或者[项目的规则分组](#project-config-groups)对应的目录下编写自定义的规则文件。
+你可以在[本地的规则分组](#local-config-groups)或者[项目的规则分组](#project-config-groups)对应的目录下编写自定义的规则文件。
 它们可以用来完善插件内置的规则，或是增强插件的功能。
 
 如果发生更改，编辑器右上角的上下文悬浮工具栏中会出现刷新按钮。
