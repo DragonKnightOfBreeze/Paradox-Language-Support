@@ -1,24 +1,24 @@
 package icu.windea.pls.config.config.extended
 
+import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.script.psi.*
 
 /**
  * @property name (key) template_expression
  * @property contextKey (option) context_key: string
  * @property contextConfigsType (option) context_configs_type: string = "single" ("single" | "multiple")
- * @property inheritConfigContext (option value) inherit_config_context
- * @property inheritScopeContext (option value) inherit_scope_context
+ * @property inherit (option value) inherit
  */
 interface CwtExtendedParameterConfig : CwtExtendedConfig {
     val name: String
     val contextKey: String
     val contextConfigsType: String
-    val inheritScopeContext: Boolean
-    val inheritConfigContext: Boolean
+    val inherit: Boolean
     
     /**
      * 得到处理后的作为上下文规则的容器的规则。
@@ -46,9 +46,8 @@ private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? {
     }
     val contextKey = config.findOption("context_key")?.stringValue ?: return null
     val contextConfigsType = config.findOption("context_configs_type")?.stringValue ?: "single"
-    val inheritConfigContext = config.findOptionValue("inherit_config_context") != null
-    val inheritScopeContext = config.findOptionValue("inherit_scope_context") != null
-    return CwtExtendedParameterConfigImpl(config, name, contextKey, contextConfigsType, inheritConfigContext, inheritScopeContext)
+    val inherit = config.findOptionValue("inherit") != null
+    return CwtExtendedParameterConfigImpl(config, name, contextKey, contextConfigsType, inherit)
 }
 
 private class CwtExtendedParameterConfigImpl(
@@ -56,22 +55,24 @@ private class CwtExtendedParameterConfigImpl(
     override val name: String,
     override val contextKey: String,
     override val contextConfigsType: String,
-    override val inheritConfigContext: Boolean,
-    override val inheritScopeContext: Boolean,
+    override val inherit: Boolean,
 ) : CwtExtendedParameterConfig {
     private val _containerConfig by lazy { doGetContainerConfig() }
     private val _contextConfigs by lazy { doGetContextConfigs() }
     
     override fun getContainerConfig(parameterElement: ParadoxParameterElement): CwtMemberConfig<*> {
-        if(inheritScopeContext) {
-            //TODO 1.3.12
-        }
         return _containerConfig
     }
     
     override fun getContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        if(inheritConfigContext) {
-            //TODO 1.3.12
+        if(inherit) {
+            run {
+                val contextReferenceElement = parameterElement.containingContextReference?.element ?: return@run
+                val parentElement = contextReferenceElement.parentOfType<ParadoxScriptMemberElement>(false) ?: return@run
+                val contextConfigs = CwtConfigHandler.getConfigContext(parentElement)?.getConfigs().orEmpty()
+                return contextConfigs
+            }
+            return emptyList()
         }
         return _contextConfigs
     }

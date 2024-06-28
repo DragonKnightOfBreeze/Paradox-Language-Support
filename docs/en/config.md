@@ -311,12 +311,11 @@ parameters = {
 	## context_configs_type = multiple
 	x = single_alias_right[trigger_clause]
     
-    # since 1.3.12, config context and scope context can be specified to inherit from the parameter context
-    # e.g. for parameter 'x' with context key 'scripted_trigger@some_trigger', the parameter context is scripted trigger 'some_trigger'
+    # since 1.3.12, a parameter's config context and scope context can be specified to inherit from its context
+    # e.g. for parameter 'x' with context key 'scripted_trigger@some_trigger', its context is scripted trigger 'some_trigger'
     
 	## context_key = scripted_trigger@some_trigger
-    ## inherit_config_context
-	## inherit_scope_context
+    ## inherit
     x
 }
 ```
