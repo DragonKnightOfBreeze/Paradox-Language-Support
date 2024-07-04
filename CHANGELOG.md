@@ -9,7 +9,7 @@
 * [ ] 优化：支持模组本地的规则分组
 * [ ] 优化：导入规则分组后，尝试优化为仅需重新解析和重新索引必要的文件
 * [ ] 优化：为Stellaris提供较为完善的适用于`define`的CWT规则文件
-* [ ] BUG修复：基于覆盖顺序对本地化进行排序时，位于`replace`及其子目录下的同名本地化应当拥有更高的优先级（尽管目前没有相关的代码检查）
+* [ ] 优化：基于覆盖顺序对本地化进行排序时，位于`replace`及其子目录下的同名本地化应当拥有更高的优先级（尽管目前没有相关的代码检查）
 * [ ] #56 新功能：支持从数据库对象生成的概念（同时提供相应的代码补全、代码导航与代码检查）
 * [ ] #60 BUG修复：兼容用引号括起的参数值中的那些用转义后的引号括起的字面量，正常进行规则匹配（例如，`p = "\"v\""`中的的`\"v\"`）
 * [ ] #81 扩展CWT规则：允许引用指定路径的已存在的规则
@@ -21,7 +21,15 @@
 ## 1.3.12
 
 * [X] #67 尝试推断在条件表达式以及内联数学块中使用过的参数的上下文规则
+* [X] #67 考虑到`PARAM = $PARAM|no$`等同于`[[PARAM] PARAM = $PARAM$ ]`，为此添加一些额外的意向操作
 * [X] #68 允许指定参数的规则上下文与作用域上下文，使其与参数上下文的保持一致（基于`## inherit`，详见参考文档）
+
+***
+
+* [X] #67 Try to infer context configs of parameters which are used in condition expression and inline math blocks
+* [X] #68 Add some extra intention actions during to the equality of `PARAM = $PARAM|no$` and `[[PARAM] PARAM = $PARAM$ ]`
+* [X] #68 Allow to specify a parameter's config context and scope context, to make them consistent with the parameter contexts (Base on `## inherit`, see reference documentation for details)
+* 
 
 ## 1.3.11
 

@@ -66,6 +66,18 @@
       <categoryKey>intention.script.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.script.CopyLocalisationTextAsHtmlIntention</className>
     </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.ConditionalSnippetToPropertyFormatIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.ConditionalSnippetToBlockFormatIntention</className>
+    </intentionAction>
     <!--endregion-->
 
     <!--region Paradox localisation-->
