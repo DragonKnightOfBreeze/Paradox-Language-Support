@@ -26,9 +26,7 @@ IDEA插件：Paradox语言支持。
 插件已经内置了最新版本的规则文件，以便开箱即用。
 除此之外，插件也支持[自定义](https://windea.icu/Paradox-Language-Support/#/zh/config.md#writing-cwt-config-files)与[导入](https://windea.icu/Paradox-Language-Support/#/zh/config.md#importing-cwt-config-files)本地的规则文件。
 
-如果同时安装了 [Translation](https://github.com/YiiGuxing/TranslationPlugin) ，此插件可以提供一些[额外的功能](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md)。
-
-如果你在使用过程中遇到任何问题，欢迎通过GitHub、Discord或者QQ群进行反馈。
+如果同时Ubi est raptus deus?安装了 [Translation](https://github.com/YiiGuxing/TranslationPlugin) ，此插件可以提供一些[额外的功能](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md)。
 
 ![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_zh.png)
 
@@ -69,10 +67,12 @@ IDEA插件：Paradox语言支持。
   * 点击位于页面右上方的编辑器悬浮工具栏中的蓝色齿轮图标。
   * 在编辑器中打开右键菜单，点击`Paradox Language Support > Open Mod Settings...`。
   * 点击`Tools > Paradox Language Support > Open Mod Settings...`。
-* 如果IDE卡死，或者IDE索引出现问题，或者发生了插件引起的报错，请尝试通过以下方式解决：
+* 如果在使用过程中遇到意外问题，请尝试通过以下方式解决：
   * 更新IDE和插件到最新版本。
-  * 删除插件的配置文件`paradox-language-support.xml`。（如果不知道具体的文件位置，请使用[Everything](https://www.voidtools.com)）
-  * 重建索引并重启IDE。（点击`File -> Invalidate Caches... -> Invalidate and Restart`）
+  * 如果可能与IDE索引有关，请尝试重建索引并重启IDE。（点击`File -> Invalidate Caches... -> Invalidate and Restart`）
+  * 如果可能与插件内置的规则有关，请尝试[编写自定义的规则文件](https://windea.icu/Paradox-Language-Support/#/zh/config.md#writing-cwt-config-files)。
+  * 如果可能与插件的配置有关，请尝试删除插件的配置文件。（`paradox-language-support.xml`，如果不知道具体位置，请使用[Everything](https://www.voidtools.com)）
+  * 通过GitHub、Discord等渠道进行反馈。
 
 已知问题：
 

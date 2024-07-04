@@ -24,8 +24,6 @@ Besides, [customizing](https://windea.icu/Paradox-Language-Support/#/en/config.m
 
 If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md).
 
-If you encounter any problems during use, feel free to provide feedback via GitHub or Discord.
-
 ![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_en.png)
 
 ## References

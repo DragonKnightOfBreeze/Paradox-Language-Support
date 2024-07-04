@@ -27,8 +27,6 @@ Besides, [customizing](https://windea.icu/Paradox-Language-Support/#/en/config.m
 
 If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md).
 
-If you encounter any problems during use, feel free to provide feedback via GitHub or Discord.
-
 ![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_en.png)
 
 ## Quick Start
@@ -68,10 +66,12 @@ Tips:
   * Click the blue gear icon in the editor floating toolbar located in the upper right corner of the page.
   * In the editor, open the context menu and click `Paradox Language Support > Open Mod Settings...`.
   * Click `Tools > Paradox Language Support > Open Mod Settings...`.
-* If the IDE freezes, or its indices encounter some problems,  or it throws an error caused by the plugin, try the following:
+* If you encounter some unexpected problems during use, try the following:
   * Update the IDE and plugin to the latest version.
-  * Delete the plugin configuration file `paradox-language-support.xml`. (If you don't known the detail file location, use [Everything](https://www.voidtools.com))
-  * Rebuild indices and restart the IDE. (Click `File -> Invalidate Caches... -> Invalidate and Restart`)
+  * If it may be related to IDE indices, try to rebuild indices and restart the IDE. (Click `File -> Invalidate Caches... -> Invalidate and Restart`)
+  * If it ma ybe related to plugin's built-in configs, try to [write custom config files](https://windea.icu/Paradox-Language-Support/#/en/config.md#writing-cwt-config-files). 
+  * If it may be related to plugin configuration, try to delete the plugin configuration file. (`paradox-language-support.xml`. If you don't know the detailed location, use [Everything](https://www.voidtools.com))
+  * Send feedback via GitHub, Discord, etc.
 
 Known Issues:
 

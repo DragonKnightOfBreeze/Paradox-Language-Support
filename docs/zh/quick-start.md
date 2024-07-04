@@ -35,10 +35,12 @@
     * 点击位于页面右上方的编辑器悬浮工具栏中的蓝色齿轮图标。
     * 在编辑器中打开右键菜单，点击`Paradox Language Support > Open Mod Settings...`。
     * 点击`Tools > Paradox Language Support > Open Mod Settings...`。
-* 如果IDE卡死，或者IDE索引出现问题，或者发生了插件引起的报错，请尝试通过以下方式解决：
-    * 更新IDE和插件到最新版本。
-    * 删除插件的配置文件`paradox-language-support.xml`。（如果不知道具体的文件位置，请使用[Everything](https://www.voidtools.com)）
-    * 重建索引并重启IDE。（点击`File -> Invalidate Caches... -> Invalidate and Restart`）
+* 如果在使用过程中遇到意外问题，请尝试通过以下方式解决：
+  * 更新IDE和插件到最新版本。
+  * 如果可能与IDE索引有关，请尝试重建索引并重启IDE。（点击`File -> Invalidate Caches... -> Invalidate and Restart`）
+  * 如果可能与插件内置的规则有关，请尝试[编写自定义的规则文件](https://windea.icu/Paradox-Language-Support/#/zh/config.md#writing-cwt-config-files)。
+  * 如果可能与插件的配置有关，请尝试删除插件的配置文件。（`paradox-language-support.xml`，如果不知道具体位置，请使用[Everything](https://www.voidtools.com)）
+  * 通过GitHub、Discord等渠道进行反馈。
 
 ## 已知问题
 
