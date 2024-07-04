@@ -29,7 +29,6 @@
 * [X] #67 Try to infer context configs of parameters which are used in condition expression and inline math blocks
 * [X] #68 Add some extra intention actions during to the equality of `PARAM = $PARAM|no$` and `[[PARAM] PARAM = $PARAM$ ]`
 * [X] #68 Allow to specify a parameter's config context and scope context, to make them consistent with the parameter contexts (Base on `## inherit`, see reference documentation for details)
-* 
 
 ## 1.3.11
 
