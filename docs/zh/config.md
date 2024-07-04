@@ -88,23 +88,23 @@ prop = {
 
 ### 编写规范
 
-#### Priorities (New in 1.3.7)
+#### Priorities *(New in 1.3.7)*
 
 优先级规则可以用来配置目标（封装变量，定义、本地化与复杂枚举）的覆盖顺序。
 
 ```cwt
 priorities = {
-    # LHS - file path (relative to game or mod root directory)
-    # RHS - priority (available values: "fios", "lios", "ordered", default value: "lios", ignore case)
-    
-    # file path - path of specific directory (e.g. ""common/on_actions", "common/scripted_variables", "localisation") 
-    
-    # fios - use the one that reads first, ignore all remaining items
-    # lios - use the one that reads last (if not specified, use this as default)
-    # ordered - reads by order, no overrides
-    
+	# LHS - file path (relative to game or mod root directory)
+	# RHS - priority (available values: "fios", "lios", "ordered", default value: "lios", ignore case)
+
+	# file path - path of specific directory (e.g. ""common/on_actions", "common/scripted_variables", "localisation") 
+
+	# fios - use the one that reads first, ignore all remaining items
+	# lios - use the one that reads last (if not specified, use this as default)
+	# ordered - reads by order, no overrides
+
 	"events" = fios
-    # ...
+	# ...
 }
 ```
 
@@ -150,8 +150,8 @@ TODO
 
 ### 编写规范（内置的CWT规则）
 
-> [!NOTE]
-> 
+> [!warning]
+>
 > 这些规则目前是只读的，不要试图修改或扩展它们。
 
 #### System Links
@@ -168,20 +168,20 @@ TODO
 
 ### 编写规范（扩展的CWT规则）
 
-> [!NOTE]
+> [!tip]
 >
 > 这些规则基本上由用户自行编写，用于强化插件的语言功能，例如提供扩展的快速文档、内嵌提示，以及提供额外的代码补全。
 
-#### Scripted Variables (New in 1.3.5)
+#### Scripted Variables *(New in 1.3.5)*
 
 ```cwt
 scripted_variables = {
-    # 'x' or 'x = xxx'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    
-    ### Some documentation
+	# 'x' or 'x = xxx'
+	# 'x' can also be a pattern expression (template expression, ant expression or regex)
+
+	### Some documentation
 	## hint = §RSome inlay hint text§!
-    x
+	x
 }
 ```
 
@@ -189,13 +189,13 @@ scripted_variables = {
 
 ```cwt
 definitions = {
-    # 'x' or 'x = xxx'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    
-    ### Some documentation
-    ## type = civic_or_origin.civic
-    x
-    
+	# 'x' or 'x = xxx'
+	# 'x' can also be a pattern expression (template expression, ant expression or regex)
+
+	### Some documentation
+	## type = civic_or_origin.civic
+	x
+
 	# since 1.3.5, scope context related options are also available here
 	## type = scripted_trigger
 	## replace_scopes = { this = country root = country }
@@ -207,13 +207,13 @@ definitions = {
 
 ```cwt
 game_rules = {
-    # 'x' or 'x = xxx'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    # use 'x = xxx' to override declaration config
-    
-    ### Some documentation
-    ## replace_scopes = { this = country root = country }
-    x
+	# 'x' or 'x = xxx'
+	# 'x' can also be a pattern expression (template expression, ant expression or regex)
+	# use 'x = xxx' to override declaration config
+
+	### Some documentation
+	## replace_scopes = { this = country root = country }
+	x
 }
 ```
 
@@ -221,13 +221,13 @@ game_rules = {
 
 ```cwt
 on_actions = {
-    # 'x' or 'x = xxx'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    
-    ### Some documentation
-    ## replace_scopes = { this = country root = country }
-    ## event_type = country
-    x
+	# 'x' or 'x = xxx'
+	# 'x' can also be a pattern expression (template expression, ant expression or regex)
+
+	### Some documentation
+	## replace_scopes = { this = country root = country }
+	## event_type = country
+	x
 }
 ```
 
@@ -235,104 +235,104 @@ on_actions = {
 
 ```cwt
 inline_scripts = {
-    # 'x' or 'x = xxx'
-    # 'x' is a inline script expression, e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
-    # note extended documentation is unavailable for inline scripts
-    
-    x
+	# 'x' or 'x = xxx'
+	# 'x' is a inline script expression, e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
+	# 'x' can also be a pattern expression (template expression, ant expression or regex)
+	# use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
+	# note extended documentation is unavailable for inline scripts
 
-    # more detailed examples for declaring context config(s)
+	x
 
-    ## context_configs_type = multiple
-    x = {
-        ## cardinality = 0..1
-        potential = single_alias_right[trigger_clause]
-        ## cardinality = 0..1
-        possible = single_alias_right[trigger_clause]
-    }
+	# more detailed examples for declaring context config(s)
+
+	## context_configs_type = multiple
+	x = {
+		## cardinality = 0..1
+		potential = single_alias_right[trigger_clause]
+		## cardinality = 0..1
+		possible = single_alias_right[trigger_clause]
+	}
 
 	# since 1.3.5, scope context related options are also available here
 
 	## replace_scopes = { this = country root = country }
 	x
-    
-    # since 1.3.6, using single alias at root level is also available here
+
+	# since 1.3.6, using single alias at root level is also available here
 
 	## context_configs_type = multiple
-    x = single_alias_right[trigger_clause]
+	x = single_alias_right[trigger_clause]
 }
 ```
 
 示例：
 
-![](../assets/images/config/inline_scripts_1.png)
+![](/images/config/inline_scripts_1.png)
 
 #### Parameters
 
 ```cwt
 parameters = {
-    # 'x' or 'x = xxx'
-    # 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
-    
+	# 'x' or 'x = xxx'
+	# 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
+	# 'x' can also be a pattern expression (template expression, ant expression or regex)
+	# use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
+
 	# since 1.3.6, value of option 'context_key' can also be a pattern expression (template expression, ant expression or regex)
-    
-    ### Some documentation
-    ## context_key = scripted_trigger@some_trigger
-    x
-    
-    # more detailed examples for declaring context config(s)
+
+	### Some documentation
+	## context_key = scripted_trigger@some_trigger
+	x
+
+	# more detailed examples for declaring context config(s)
 
 	## context_key = scripted_trigger@some_trigger
-    x = localistion
+	x = localistion
 
 	## context_key = scripted_trigger@some_trigger
-    ## context_configs_type = multiple
-    x = {
-        localisation
-        scalar
-    }
-    
-    # since 1.3.5, scope context related options are also available here
+	## context_configs_type = multiple
+	x = {
+		localisation
+		scalar
+	}
+
+	# since 1.3.5, scope context related options are also available here
 
 	## context_key = scripted_trigger@some_trigger
 	## replace_scopes = { this = country root = country }
-    x
-    
+	x
+
 	# since 1.3.6, using single alias at root level is also available here
 
 	## context_key = scripted_trigger@some_trigger
 	## context_configs_type = multiple
 	x = single_alias_right[trigger_clause]
-    
-    # since 1.3.12, a parameter's config context and scope context can be specified to inherit from its context
-    # e.g. for parameter 'x' with context key 'scripted_trigger@some_trigger', its context is scripted trigger 'some_trigger'
-    
+
+	# since 1.3.12, a parameter's config context and scope context can be specified to inherit from its context
+	# e.g. for parameter 'x' with context key 'scripted_trigger@some_trigger', its context is scripted trigger 'some_trigger'
+
 	## context_key = scripted_trigger@some_trigger
-    ## inherit
-    x
+	## inherit
+	x
 }
 ```
 
 示例：
 
-![](../assets/images/config/parameters_1.png)
+![](/images/config/parameters_1.png)
 
 #### Complex Enum Values
 
 ```cwt
 complex_enum_values = {
-    component_tag = {
-        # 'x' or 'x = xxx'
-        # 'x' can also be a pattern expression (template expression, ant expression or regex)
-        
-        ### Some documentation
+	component_tag = {
+		# 'x' or 'x = xxx'
+		# 'x' can also be a pattern expression (template expression, ant expression or regex)
+
+		### Some documentation
 		## hint = §RSome inlay hint text§!
-        x
-    }
+		x
+	}
 }
 ```
 
@@ -375,7 +375,7 @@ a_enum[weight_or_base]_b
 a_value[anything]_b
 ```
 
-#### 如何在规则文件中编写ANT表达式 (New in 1.3.6)
+#### 如何在规则文件中编写ANT表达式 *(New in 1.3.6)*
 
 从1.3.6开始，可以通过ANT表达式进行更加灵活的匹配。
 
@@ -391,7 +391,7 @@ ant.i:/foo/bar?/*
 # '**' - used to match any characters
 ```
 
-#### 如何在规则文件中编写正则表达式 (New in 1.3.6)
+#### 如何在规则文件中编写正则表达式 *(New in 1.3.6)*
 
 从1.3.6开始，可以通过正则表达式进行更加灵活的匹配。
 

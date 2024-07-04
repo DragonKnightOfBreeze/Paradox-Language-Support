@@ -1,9 +1,0 @@
-* **开始**
-  * [简介](./)
-  * [快速开始](quick-start.md)
-* **功能介绍**
-  * [核心功能](core-features.md)
-  * [高级功能](advance-features.md)
-  * [插件设置](plugin-settings.md)
-  * [插件集成](plugin-integration.md)
-  * [规则分组与规则文件](config.md)

@@ -6,7 +6,8 @@
 
 PLS implements various advanced language features based on config groups, which consists of many CWT config files.
 
-Config groups can have different sources. For config groups from the same source, there are config groups for different game types, and the core config group, which is shared by all game types.
+Config groups can have different sources. For config groups from the same source, there are config groups for different
+game types, and the core config group, which is shared by all game types.
 
 Reference Links:
 
@@ -20,7 +21,8 @@ Reference Links:
 * Enabled: Always
 * Customizable ：No
 
-These config files are from plugin repository and config repositories of each game. Compare to the config files used by CWTools, there are several modifications and extensions.
+These config files are from plugin repository and config repositories of each game. Compare to the config files used by
+CWTools, there are several modifications and extensions.
 
 #### Local Config Groups{#local-config-groups}
 
@@ -28,7 +30,8 @@ These config files are from plugin repository and config repositories of each ga
 * Enabled: Yes if path is existing
 * Customizable ：Yes
 
-Containing config files are customized by users themselves. Available for all projects. Changes should be confirmed to import manually.
+Containing config files are customized by users themselves. Available for all projects. Changes should be confirmed to
+import manually.
 
 #### Project Config Groups{#project-config-groups}
 
@@ -36,7 +39,8 @@ Containing config files are customized by users themselves. Available for all pr
 * Enabled: Yes if path is existing
 * Customizable ：Yes
 
-Containing config files are customized by users themselves. Only available for this project. Changes should be confirmed to import manually.
+Containing config files are customized by users themselves. Only available for this project. Changes should be confirmed
+to import manually.
 
 ### Overridden Strategy
 
@@ -46,15 +50,19 @@ When reading configs, the plugin will iterate config groups by following order:
 built-in config groups, local config groups, and project config groups.
 The core config group is shared by all game types, and will be iterated before the config group for related game type.
 
-For example, if you have written some custom configs in the config file `.config/stellaris/modifiers.cwt` (which is in the project root directory), it will completely override the built-in modifier configs.
-Since the built-in modifier configs are located in the config file `config/stellaris/modifiers.cwt` (which is in the plugin jar), and both of their file path is `modifiers.cwt`.
-If these are no content in the custom config file, after applied, the plugin will be unable to resolve any modifier in script files.
+For example, if you have written some custom configs in the config file `.config/stellaris/modifiers.cwt` (which is in
+the project root directory), it will completely override the built-in modifier configs.
+Since the built-in modifier configs are located in the config file `config/stellaris/modifiers.cwt` (which is in the
+plugin jar), and both of their file path is `modifiers.cwt`.
+If these are no content in the custom config file, after applied, the plugin will be unable to resolve any modifier in
+script files.
 
 ## CWT Config File{#cwt-config-file}
 
 ### Summary
 
-CWT config file use its own file format, which can be considered as a variant of paradox script language. Its file extension is `.cwt`.
+CWT config file use its own file format, which can be considered as a variant of paradox script language. Its file
+extension is `.cwt`.
 
 ### Syntax
 
@@ -90,9 +98,10 @@ Reference Links:
 
 ### Specifications
 
-#### Priorities (New in 1.3.7)
+#### Priorities *(New in 1.3.7)*
 
-Priority configs are used to configure the override order for targets (scripted variables, definitions, localisations and complex enums).
+Priority configs are used to configure the override order for targets (scripted variables, definitions, localisations
+and complex enums).
 
 ```cwt
 priorities = {
@@ -152,7 +161,7 @@ TODO
 
 ### Specifications (Builtin CWT Configs)
 
-> [!NOTE]
+> [!warning]
 >
 > These configs are currently read only, DO NOT try to modify or extend them.
 
@@ -170,12 +179,12 @@ TODO
 
 ### Specifications (Extended CWT Configs)
 
-> [!NOTE]
-> 
+> [!tip]
+>
 > These configs are basically provided by the users themselves, can be used to enhance plugin's language features,
 > such as providing extended quick documentations & inlay hints, and providing additional code completion.
 
-#### Scripted Variables (New in 1.3.5)
+#### Scripted Variables *(New in 1.3.5)*
 
 ```cwt
 scripted_variables = {
@@ -270,7 +279,7 @@ inline_scripts = {
 
 Example:
 
-![](../assets/images/config/inline_scripts_1.png)
+![](/images/config/inline_scripts_1.png)
 
 #### Parameters
 
@@ -322,7 +331,7 @@ parameters = {
 
 Example:
 
-![](../assets/images/config/parameters_1.png)
+![](/images/config/parameters_1.png)
 
 #### Complex Enum Values
 
@@ -364,7 +373,8 @@ dynamic_values = {
 
 #### About the Template Expression
 
-Template expressions are composed of string literals and expressions of limited types (definitions, enums and dynamic values),
+Template expressions are composed of string literals and expressions of limited types (definitions, enums and dynamic
+values),
 and can be used for more flexible matching.
 
 ```cwt
@@ -379,7 +389,7 @@ a_enum[weight_or_base]_b
 a_value[anything]_b
 ```
 
-#### How to Write an ANT Expression in Config Files (New in 1.3.6)
+#### How to Write an ANT Expression in Config Files *(New in 1.3.6)*
 
 Since 1.3.6, the ANT expression can be used for more flexible matching.
 
@@ -395,7 +405,7 @@ ant.i:/foo/bar?/*
 # '**' - used to match any characters
 ```
 
-#### How to Write a Regex in Config Files (New in 1.3.6)
+#### How to Write a Regex in Config Files *(New in 1.3.6)*
 
 Since 1.3.6, the Regex can be used for more flexible matching.
 
@@ -427,10 +437,12 @@ some_config
 
 ### Summary
 
-You can write customized config files in directories of [local config groups](#local-config-groups) or [project config groups](project-config-groups).
+You can write customized config files in directories of [local config groups](#local-config-groups)
+or [project config groups](project-config-groups).
 They are helpful for optimizing plugin's built-in configs, or enhancing plugin's features.
 
-If some changes are happened, the refresh button will be appeared in the context float toolbar in the upper right corner of the editor.
+If some changes are happened, the refresh button will be appeared in the context float toolbar in the upper right corner
+of the editor.
 Click it to confirm to import, so changes of these custom config files will be applied.
 
 IDE will take some time to reparse opened files in background,
@@ -439,4 +451,5 @@ And please note that if the changes in the config files will result in the chang
 you may need to reindex the whole project (this may take several minutes), to make sure the plugin works properly,
 if in the situation that involves these changes.
 
-[^1]: Allowed values for `gameType`: `stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3` (or `core` for core config group)
+[^1]: Allowed values for `gameType`: `stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3` (or `core` for core
+config group)
