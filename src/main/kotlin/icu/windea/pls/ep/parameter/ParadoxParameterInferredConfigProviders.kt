@@ -4,16 +4,21 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.model.expression.complex.nodes.*
 import icu.windea.pls.script.psi.*
 
+/**
+ * 用于推断在脚本表达式中使用的参数的上下文规则，适用于部分简单的场合。
+ */
 class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfigProvider {
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
-        //要求整个作为脚本表达式
-        return parameterInfo.isEntireExpression
+        return parameterInfo.expressionElement != null && parameterInfo.isEntireExpression
     }
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
@@ -47,15 +52,17 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     }
 }
 
-class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInferredConfigProvider {
+/**
+ * 用于推断在脚本表达式中使用的参数的上下文规则，适用于参数作为复杂表达式节点的场合。
+ */
+class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParameterInferredConfigProvider {
     //root.trigger:$PARAM$ -> alias_keys_field[trigger]
-    //root.$PARAM$.owner -> scope_field (expression node)
+    //root.$PARAM$.owner -> scope_field
     //root.value:$PARAM$|K|V| -> <script_value>
-    //root.value:some_script_value|K|$PARAM$| -> from parameter K
+    //root.value:some_script_value|K|$PARAM$| -> (from parameter K)
     
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
-        //要求不整个作为脚本表达式
-        return !parameterInfo.isEntireExpression
+        return parameterInfo.expressionElement != null &&!parameterInfo.isEntireExpression
     }
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
@@ -83,21 +90,22 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
     }
     
     private fun getConfigFromNode(expressionElement: ParadoxScriptStringExpressionElement, expressionConfig: CwtMemberConfig<*>, node: ParadoxComplexExpressionNode): CwtValueConfig? {
+        val configGroup = expressionConfig.configGroup
         return when {
             node is ParadoxDataSourceNode -> {
-                node.linkConfigs.firstNotNullOfOrNull { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), it.configGroup, e.expressionString) } }
+                node.linkConfigs.firstNotNullOfOrNull { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
             }
             node is ParadoxDynamicValueNode -> {
-                node.configs.firstOrNull()?.let { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), it.configGroup, e.expressionString) } }
+                node.configs.firstOrNull()?.let { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
             }
             node is ParadoxScriptValueNode -> {
-                node.config.let { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), it.configGroup, e.expressionString) } }
+                node.config.let { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
             }
             node is ParadoxScopeFieldNode -> {
-                expressionConfig.let { CwtValueConfig.resolve(emptyPointer(), it.configGroup, "scope_field") } //scope field node
+                CwtValueConfig.resolve(emptyPointer(), configGroup, "scope_field")
             }
             node is ParadoxValueFieldNode -> {
-                expressionConfig.let { CwtValueConfig.resolve(emptyPointer(), it.configGroup, "value_field") } //value field node
+                CwtValueConfig.resolve(emptyPointer(), configGroup, "value_field")
             }
             node is ParadoxScriptValueArgumentValueNode -> {
                 val argumentNode = node.argumentNode ?: return null
@@ -108,5 +116,25 @@ class ParadoxComplexExpressionNodeInferredConfigProvider : ParadoxParameterInfer
             }
             else -> null
         }
+    }
+}
+
+/**
+ * 用于推断不在脚本表达式中使用的参数的上下文规则。适用于参数在条件表达式以及内联数学块中使用的场合。
+ */
+class ParadoxNotInExpressionParameterInferredConfigProvider: ParadoxParameterInferredConfigProvider {
+    override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
+        return parameterInfo.expressionElement == null
+    }
+    
+    override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
+        val configGroup = getConfigGroup(parameterContextInfo.project, parameterContextInfo.gameType)
+        val element = parameterInfo.element
+        val config = when {
+            element is ParadoxConditionParameter -> CwtValueConfig.resolve(emptyPointer(), configGroup, "bool")
+            element is ParadoxScriptInlineMathParameter -> CwtValueConfig.resolve(emptyPointer(), configGroup, "float")
+            else -> null
+        }
+        return config?.toSingletonList()
     }
 }

@@ -5,7 +5,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
@@ -27,8 +26,10 @@ class ParadoxParameterContextInfo(
         val conditionStack: Deque<ReversibleValue<String>>? = null,
     ) {
         val element: PsiElement? get() = elementPointer.element
-        val expressionElement: ParadoxScriptStringExpressionElement? get() = elementPointer.element?.parent?.castOrNull()
         val parameterElement: ParadoxParameterElement? get() = elementPointer.element?.let { ParadoxParameterHandler.getParameterElement(it) }
+        
+        val expressionElement: ParadoxScriptStringExpressionElement?
+            get() = elementPointer.element?.parent?.castOrNull()
         
         val rangeInExpressionElement: TextRange?
             get() {

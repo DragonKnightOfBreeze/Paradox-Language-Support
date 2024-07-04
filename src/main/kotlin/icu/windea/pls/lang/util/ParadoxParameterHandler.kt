@@ -87,7 +87,7 @@ object ParadoxParameterHandler {
             private fun visitParameter(element: ParadoxParameter) {
                 val name = element.name ?: return
                 val defaultValue = element.defaultValue
-                val conditionalStack = ArrayDeque(fileConditionStack)
+                val conditionalStack = ArrayDeque(fileConditionStack).orNull()
                 val info = ParadoxParameterContextInfo.Parameter(element.createPointer(file), name, defaultValue, conditionalStack)
                 parameters.getOrPut(name) { mutableListOf() }.add(info)
                 //不需要继续向下遍历
@@ -114,11 +114,9 @@ object ParadoxParameterHandler {
             //如果带有默认值，则为可选
             if(parameterInfo.defaultValue != null) return@f true
             //如果基于条件表达式上下文是可选的，则为可选
-            if(parameterInfo.conditionStack.isNotEmpty()
-                && parameterInfo.conditionStack.all { it.where { n -> parameterName == n || (argumentNames != null && argumentNames.contains(n)) } }) return@f true
+            if(parameterInfo.conditionStack.all { it.where { n -> parameterName == n || (argumentNames != null && argumentNames.contains(n)) } }) return@f true
             //如果作为传入参数的值，则认为是可选的
-            if(parameterInfo.expressionConfigs.isNotEmpty()
-                && parameterInfo.expressionConfigs.any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataTypes.Parameter }) return@f true
+            if(parameterInfo.expressionConfigs.any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataTypes.Parameter }) return@f true
             false
         }
     }

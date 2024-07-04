@@ -7,7 +7,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxCoreDefinitionScopeContextProvider: ParadoxDefinitionScopeContextProvider {
+class ParadoxDefaultDefinitionScopeContextProvider: ParadoxDefinitionScopeContextProvider {
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
         return true
     }

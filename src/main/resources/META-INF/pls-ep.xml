@@ -184,11 +184,12 @@
     <parameterSupport implementation="icu.windea.pls.ep.parameter.ParadoxInlineScriptParameterSupport"/>
 
     <parameterInferredConfigProvider implementation="icu.windea.pls.ep.parameter.ParadoxBaseParameterInferredConfigProvider"/>
-    <parameterInferredConfigProvider implementation="icu.windea.pls.ep.parameter.ParadoxComplexExpressionNodeInferredConfigProvider"/>
+    <parameterInferredConfigProvider implementation="icu.windea.pls.ep.parameter.ParadoxComplexExpressionNodeParameterInferredConfigProvider"/>
+    <parameterInferredConfigProvider implementation="icu.windea.pls.ep.parameter.ParadoxNotInExpressionParameterInferredConfigProvider"/>
     
     <localisationParameterSupport implementation="icu.windea.pls.ep.parameter.ParadoxBaseLocalisationParameterSupport"/>
 
-    <definitionScopeContextProvider id="core" implementation="icu.windea.pls.ep.scope.ParadoxCoreDefinitionScopeContextProvider" order="last"/>
+    <definitionScopeContextProvider id="core" implementation="icu.windea.pls.ep.scope.ParadoxDefaultDefinitionScopeContextProvider" order="last"/>
     <definitionScopeContextProvider id="base" implementation="icu.windea.pls.ep.scope.ParadoxBaseDefinitionScopeContextProvider" order="last, before core"/>
     <definitionScopeContextProvider implementation="icu.windea.pls.ep.scope.ParadoxGameRuleScopeContextProvider"/>
     <definitionScopeContextProvider implementation="icu.windea.pls.ep.scope.ParadoxOnActionScopeContextProvider"/>
