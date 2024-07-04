@@ -4,7 +4,7 @@ import { head } from "./configs/index.js"
 import theme from "./theme.js"
 
 export default defineUserConfig({
-  base: "/",
+  base: "/Paradox-Language-Support/",
   head,
   locales: {
     "/zh/": {
