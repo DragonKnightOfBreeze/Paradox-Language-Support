@@ -9,13 +9,13 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
-private val propertyFormatRegex = "(\\w+)\\s*=\\s*\\\$\\1|no\\\$".toRegex()
-private val blockFormatRegex = " \\[\\[(\\w+)]\\s*\\1\\s*=\\s*\\\$\\1\\$\\s*]".toRegex()
+private val propertyFormatRegex = "(\\w+)\\s*=\\s*\\$\\1\\|no\\$".toRegex()
+private val blockFormatRegex = "\\[\\[(\\w+)]\\s*\\1\\s*=\\s*\\$\\1\\$\\s*]".toRegex()
 
 private val propertyTemplate = { p: String -> "$p = \$$p|no\$" }
 private val blockTemplate = { p: String -> "[[$p] $p = \$$p\$ ]" }
 
-class ConditionalSnippetToPropertyFormatIntention: IntentionAction {
+class ConditionalSnippetToPropertyFormatIntention : IntentionAction {
     override fun getText() = PlsBundle.message("intention.conditionalSnippetToPropertyFormat")
     
     override fun getFamilyName() = text
@@ -46,12 +46,12 @@ class ConditionalSnippetToPropertyFormatIntention: IntentionAction {
     }
     
     private fun findElement(file: PsiFile, offset: Int): PsiElement? {
-        return file.findElementAt(offset) { it.parentOfType<ParadoxScriptProperty>() }
+        return file.findElementAt(offset) { it.parentOfType<ParadoxScriptParameterCondition>() }
     }
 }
 
-class ConditionalSnippetToBlockFormatIntention : IntentionAction{
-    override fun getText() = PlsBundle.message("intention.conditionalSnippetToPropertyFormat")
+class ConditionalSnippetToBlockFormatIntention : IntentionAction {
+    override fun getText() = PlsBundle.message("intention.conditionalSnippetToBlockFormat")
     
     override fun getFamilyName() = text
     
@@ -62,7 +62,7 @@ class ConditionalSnippetToBlockFormatIntention : IntentionAction{
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return false
         val text = element.text
-        return blockFormatRegex.matches(text)
+        return propertyFormatRegex.matches(text)
     }
     
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
@@ -81,6 +81,6 @@ class ConditionalSnippetToBlockFormatIntention : IntentionAction{
     }
     
     private fun findElement(file: PsiFile, offset: Int): PsiElement? {
-        return file.findElementAt(offset) { it.parentOfType<ParadoxScriptParameterCondition>() }
+        return file.findElementAt(offset) { it.parentOfType<ParadoxScriptProperty>() }
     }
 }
