@@ -6,8 +6,8 @@
 
 PLS implements various advanced language features based on config groups, which consists of many CWT config files.
 
-Config groups can have different sources. For config groups from the same source, there are config groups for different
-game types, and the core config group, which is shared by all game types.
+Config groups can have different sources. For config groups from the same source,
+there are config groups for different game types, and the core config group, which is shared by all game types.
 
 Reference Links:
 
@@ -21,8 +21,8 @@ Reference Links:
 * Enabled: Always
 * Customizable ：No
 
-These config files are from plugin repository and config repositories of each game. Compare to the config files used by
-CWTools, there are several modifications and extensions.
+These config files are from plugin repository and config repositories of each game.
+Compare to the config files used by CWTools, there are several modifications and extensions.
 
 #### Local Config Groups{#local-config-groups}
 
@@ -30,8 +30,8 @@ CWTools, there are several modifications and extensions.
 * Enabled: Yes if path is existing
 * Customizable ：Yes
 
-Containing config files are customized by users themselves. Available for all projects. Changes should be confirmed to
-import manually.
+Containing config files are customized by users themselves. Available for all projects.
+Changes should be confirmed to import manually.
 
 #### Project Config Groups{#project-config-groups}
 
@@ -39,8 +39,8 @@ import manually.
 * Enabled: Yes if path is existing
 * Customizable ：Yes
 
-Containing config files are customized by users themselves. Only available for this project. Changes should be confirmed
-to import manually.
+Containing config files are customized by users themselves. Only available for this project.
+Changes should be confirmed to import manually.
 
 ### Overridden Strategy
 
@@ -50,19 +50,18 @@ When reading configs, the plugin will iterate config groups by following order:
 built-in config groups, local config groups, and project config groups.
 The core config group is shared by all game types, and will be iterated before the config group for related game type.
 
-For example, if you have written some custom configs in the config file `.config/stellaris/modifiers.cwt` (which is in
-the project root directory), it will completely override the built-in modifier configs.
-Since the built-in modifier configs are located in the config file `config/stellaris/modifiers.cwt` (which is in the
-plugin jar), and both of their file path is `modifiers.cwt`.
-If these are no content in the custom config file, after applied, the plugin will be unable to resolve any modifier in
-script files.
+For example, if you have written some custom configs in the config file `.config/stellaris/modifiers.cwt`
+(which is in the project root directory), it will completely override the built-in modifier configs.
+Since the built-in modifier configs are located in the config file `config/stellaris/modifiers.cwt`
+(which is in the plugin jar), and both of their file path is `modifiers.cwt`.
+If these are no content in the custom config file, after applied, the plugin will be unable to resolve any modifier in script files.
 
 ## CWT Config File{#cwt-config-file}
 
 ### Summary
 
-CWT config file use its own file format, which can be considered as a variant of paradox script language. Its file
-extension is `.cwt`.
+CWT config file use its own file format, which can be considered as a variant of paradox script language.
+Its file extension is `.cwt`.
 
 ### Syntax
 
@@ -77,9 +76,9 @@ The basic syntax of a CWT config file is as follows:
 ## option_0 = { k = v }
 ## option_value
 prop = {
-	# line comment
-	k = v
-	v
+    # line comment
+    k = v
+    v
 }
 ```
 
@@ -90,7 +89,7 @@ prop = {
 In progress.
 
 Listed below are just some of the writing specifications used for config customization,
-For more detailed writing specifications, please refer to the reference links below and the built-in config files.
+for more detailed writing specifications, please refer to the reference links below and the built-in config files.
 
 Reference Links:
 
@@ -100,22 +99,21 @@ Reference Links:
 
 #### Priorities *(New in 1.3.7)*
 
-Priority configs are used to configure the override order for targets (scripted variables, definitions, localisations
-and complex enums).
+Priority configs are used to configure the override order for targets (scripted variables, definitions, localisations and complex enums).
 
 ```cwt
 priorities = {
-	# LHS - file path (relative to game or mod root directory)
-	# RHS - priority (available values: "fios", "lios", "ordered", default value: "lios", ignore case)
-
-	# file path - path of specific directory (e.g. ""common/on_actions", "common/scripted_variables", "localisation") 
-
-	# fios - use the one that reads first, ignore all remaining items
-	# lios - use the one that reads last (if not specified, use this as default)
-	# ordered - reads by order, no overrides
-
-	"events" = fios
-	# ...
+    # LHS - file path (relative to game or mod root directory)
+    # RHS - priority (available values: "fios", "lios", "ordered", default value: "lios", ignore case)
+    
+    # file path - path of specific directory (e.g. ""common/on_actions", "common/scripted_variables", "localisation")
+    
+    # fios - use the one that reads first, ignore all remaining items
+    # lios - use the one that reads last (if not specified, use this as default)
+    # ordered - reads by order, no overrides
+    
+    "events" = fios
+    # ...
 }
 ```
 
@@ -192,7 +190,7 @@ scripted_variables = {
     # 'x' can also be a pattern expression (template expression, ant expression or regex)
     
     ### Some documentation
-	## hint = §RSome inlay hint text§!
+    ## hint = §RSome inlay hint text§!
     x
 }
 ```
@@ -208,10 +206,10 @@ definitions = {
     ## type = civic_or_origin.civic
     x
     
-	# since 1.3.5, scope context related options are also available here
-	## type = scripted_trigger
-	## replace_scopes = { this = country root = country }
-	x
+    # since 1.3.5, scope context related options are also available here
+    ## type = scripted_trigger
+    ## replace_scopes = { this = country root = country }
+    x
 }
 ```
 
@@ -265,14 +263,14 @@ inline_scripts = {
         possible = single_alias_right[trigger_clause]
     }
 
-	# since 1.3.5, scope context related options are also available here
+    # since 1.3.5, scope context related options are also available here
 
-	## replace_scopes = { this = country root = country }
-	x
+    ## replace_scopes = { this = country root = country }
+    x
     
     # since 1.3.6, using single alias at root level is also available here
-
-	## context_configs_type = multiple
+    
+    ## context_configs_type = multiple
     x = single_alias_right[trigger_clause]
 }
 ```
@@ -285,45 +283,45 @@ Example:
 
 ```cwt
 parameters = {
-	# 'x' or 'x = xxx'
-	# 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
+    # 'x' or 'x = xxx'
+    # 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
     # 'x' can also be a pattern expression (template expression, ant expression or regex)
-	# use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
-
-	# since 1.3.6, value of option 'context_key' can also be a pattern expression (template expression, ant expression or regex)
+    # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
     
-	### Some documentation
-	## context_key = scripted_trigger@some_trigger
-	x
-
-	# more detailed examples for declaring context config(s)
-
-	## context_key = scripted_trigger@some_trigger
-	x = localistion
-
-	## context_key = scripted_trigger@some_trigger
-	## context_configs_type = multiple
-	x = {
-		localisation
-		scalar
-	}
-
-	# since 1.3.5, scope context related options are also available here
-
-	## context_key = scripted_trigger@some_trigger
-	## replace_scopes = { this = country root = country }
+    # since 1.3.6, value of option 'context_key' can also be a pattern expression (template expression, ant expression or regex)
+    
+    ### Some documentation
+    ## context_key = scripted_trigger@some_trigger
     x
     
-	# since 1.3.6, using single alias at root level is also available here
-
-	## context_key = scripted_trigger@some_trigger
-	## context_configs_type = multiple
-	x = single_alias_right[trigger_clause]
+    # more detailed examples for declaring context config(s)
+    
+    ## context_key = scripted_trigger@some_trigger
+    x = localistion
+    
+    ## context_key = scripted_trigger@some_trigger
+    ## context_configs_type = multiple
+    x = {
+        localisation
+        scalar
+    }
+    
+    # since 1.3.5, scope context related options are also available here
+    
+    ## context_key = scripted_trigger@some_trigger
+    ## replace_scopes = { this = country root = country }
+    x
+    
+    # since 1.3.6, using single alias at root level is also available here
+    
+    ## context_key = scripted_trigger@some_trigger
+    ## context_configs_type = multiple
+    x = single_alias_right[trigger_clause]
     
     # since 1.3.12, a parameter's config context and scope context can be specified to inherit from its context
     # e.g. for parameter 'x' with context key 'scripted_trigger@some_trigger', its context is scripted trigger 'some_trigger'
     
-	## context_key = scripted_trigger@some_trigger
+    ## context_key = scripted_trigger@some_trigger
     ## inherit
     x
 }
@@ -353,18 +351,18 @@ complex_enum_values = {
 ```cwt
 dynamic_values = {
     event_target = {
-		# 'x' or 'x = xxx'
-		# 'x' can also be a pattern expression (template expression, ant expression or regex)
+        # 'x' or 'x = xxx'
+        # 'x' can also be a pattern expression (template expression, ant expression or regex)
 
-		### Some documentation
-		## hint = §RSome inlay hint text§!
-		x
+        ### Some documentation
+        ## hint = §RSome inlay hint text§!
+        x
 
-		# since 1.3.9, scope context related options are also available here
-		# only receive push scope (this scope), ignore others (like root scope, etc.)
+        # since 1.3.9, scope context related options are also available here
+        # only receive push scope (this scope), ignore others (like root scope, etc.)
 
-		## push_scope = country
-		x
+        ## push_scope = country
+        x
     }
 }
 ```
@@ -373,8 +371,7 @@ dynamic_values = {
 
 #### About the Template Expression
 
-Template expressions are composed of string literals and expressions of limited types (definitions, enums and dynamic
-values),
+Template expressions are composed of string literals and expressions of limited types (definitions, enums and dynamic values),
 and can be used for more flexible matching.
 
 ```cwt
@@ -437,12 +434,10 @@ some_config
 
 ### Summary
 
-You can write customized config files in directories of [local config groups](#local-config-groups)
-or [project config groups](project-config-groups).
+You can write customized config files in directories of [local config groups](#local-config-groups) or [project config groups](#project-config-groups).
 They are helpful for optimizing plugin's built-in configs, or enhancing plugin's features.
 
-If some changes are happened, the refresh button will be appeared in the context float toolbar in the upper right corner
-of the editor.
+If some changes are happened, the refresh button will be appeared in the context float toolbar in the upper right corner of the editor.
 Click it to confirm to import, so changes of these custom config files will be applied.
 
 IDE will take some time to reparse opened files in background,
@@ -451,5 +446,4 @@ And please note that if the changes in the config files will result in the chang
 you may need to reindex the whole project (this may take several minutes), to make sure the plugin works properly,
 if in the situation that involves these changes.
 
-[^1]: Allowed values for `gameType`: `stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3` (or `core` for core
-config group)
+[^1]: Allowed values for `gameType`: `stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3` (or `core` for core config group)

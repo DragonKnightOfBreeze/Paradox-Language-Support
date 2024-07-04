@@ -68,9 +68,9 @@ CWT规则文件的基本语法如下所示：
 ## option_0 = { k = v }
 ## option_value
 prop = {
-	# line comment
-	k = v
-	v
+    # line comment
+    k = v
+    v
 }
 ```
 
@@ -94,17 +94,17 @@ prop = {
 
 ```cwt
 priorities = {
-	# LHS - file path (relative to game or mod root directory)
-	# RHS - priority (available values: "fios", "lios", "ordered", default value: "lios", ignore case)
-
-	# file path - path of specific directory (e.g. ""common/on_actions", "common/scripted_variables", "localisation") 
-
-	# fios - use the one that reads first, ignore all remaining items
-	# lios - use the one that reads last (if not specified, use this as default)
-	# ordered - reads by order, no overrides
-
-	"events" = fios
-	# ...
+    # LHS - file path (relative to game or mod root directory)
+    # RHS - priority (available values: "fios", "lios", "ordered", default value: "lios", ignore case)
+    
+    # file path - path of specific directory (e.g. ""common/on_actions", "common/scripted_variables", "localisation")
+    
+    # fios - use the one that reads first, ignore all remaining items
+    # lios - use the one that reads last (if not specified, use this as default)
+    # ordered - reads by order, no overrides
+    
+    "events" = fios
+    # ...
 }
 ```
 
@@ -176,12 +176,12 @@ TODO
 
 ```cwt
 scripted_variables = {
-	# 'x' or 'x = xxx'
-	# 'x' can also be a pattern expression (template expression, ant expression or regex)
-
-	### Some documentation
-	## hint = §RSome inlay hint text§!
-	x
+    # 'x' or 'x = xxx'
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    
+    ### Some documentation
+    ## hint = §RSome inlay hint text§!
+    x
 }
 ```
 
@@ -189,17 +189,17 @@ scripted_variables = {
 
 ```cwt
 definitions = {
-	# 'x' or 'x = xxx'
-	# 'x' can also be a pattern expression (template expression, ant expression or regex)
-
-	### Some documentation
-	## type = civic_or_origin.civic
-	x
-
-	# since 1.3.5, scope context related options are also available here
-	## type = scripted_trigger
-	## replace_scopes = { this = country root = country }
-	x
+    # 'x' or 'x = xxx'
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    
+    ### Some documentation
+    ## type = civic_or_origin.civic
+    x
+    
+    # since 1.3.5, scope context related options are also available here
+    ## type = scripted_trigger
+    ## replace_scopes = { this = country root = country }
+    x
 }
 ```
 
@@ -207,13 +207,13 @@ definitions = {
 
 ```cwt
 game_rules = {
-	# 'x' or 'x = xxx'
-	# 'x' can also be a pattern expression (template expression, ant expression or regex)
-	# use 'x = xxx' to override declaration config
-
-	### Some documentation
-	## replace_scopes = { this = country root = country }
-	x
+    # 'x' or 'x = xxx'
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    # use 'x = xxx' to override declaration config
+    
+    ### Some documentation
+    ## replace_scopes = { this = country root = country }
+    x
 }
 ```
 
@@ -221,13 +221,13 @@ game_rules = {
 
 ```cwt
 on_actions = {
-	# 'x' or 'x = xxx'
-	# 'x' can also be a pattern expression (template expression, ant expression or regex)
-
-	### Some documentation
-	## replace_scopes = { this = country root = country }
-	## event_type = country
-	x
+    # 'x' or 'x = xxx'
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    
+    ### Some documentation
+    ## replace_scopes = { this = country root = country }
+    ## event_type = country
+    x
 }
 ```
 
@@ -235,33 +235,33 @@ on_actions = {
 
 ```cwt
 inline_scripts = {
-	# 'x' or 'x = xxx'
-	# 'x' is a inline script expression, e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
-	# 'x' can also be a pattern expression (template expression, ant expression or regex)
-	# use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
-	# note extended documentation is unavailable for inline scripts
+    # 'x' or 'x = xxx'
+    # 'x' is a inline script expression, e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
+    # note extended documentation is unavailable for inline scripts
+    
+    x
 
-	x
+    # more detailed examples for declaring context config(s)
 
-	# more detailed examples for declaring context config(s)
+    ## context_configs_type = multiple
+    x = {
+        ## cardinality = 0..1
+        potential = single_alias_right[trigger_clause]
+        ## cardinality = 0..1
+        possible = single_alias_right[trigger_clause]
+    }
 
-	## context_configs_type = multiple
-	x = {
-		## cardinality = 0..1
-		potential = single_alias_right[trigger_clause]
-		## cardinality = 0..1
-		possible = single_alias_right[trigger_clause]
-	}
+    # since 1.3.5, scope context related options are also available here
 
-	# since 1.3.5, scope context related options are also available here
-
-	## replace_scopes = { this = country root = country }
-	x
-
-	# since 1.3.6, using single alias at root level is also available here
-
-	## context_configs_type = multiple
-	x = single_alias_right[trigger_clause]
+    ## replace_scopes = { this = country root = country }
+    x
+    
+    # since 1.3.6, using single alias at root level is also available here
+    
+    ## context_configs_type = multiple
+    x = single_alias_right[trigger_clause]
 }
 ```
 
@@ -273,47 +273,47 @@ inline_scripts = {
 
 ```cwt
 parameters = {
-	# 'x' or 'x = xxx'
-	# 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
-	# 'x' can also be a pattern expression (template expression, ant expression or regex)
-	# use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
-
-	# since 1.3.6, value of option 'context_key' can also be a pattern expression (template expression, ant expression or regex)
-
-	### Some documentation
-	## context_key = scripted_trigger@some_trigger
-	x
-
-	# more detailed examples for declaring context config(s)
-
-	## context_key = scripted_trigger@some_trigger
-	x = localistion
-
-	## context_key = scripted_trigger@some_trigger
-	## context_configs_type = multiple
-	x = {
-		localisation
-		scalar
-	}
-
-	# since 1.3.5, scope context related options are also available here
-
-	## context_key = scripted_trigger@some_trigger
-	## replace_scopes = { this = country root = country }
-	x
-
-	# since 1.3.6, using single alias at root level is also available here
-
-	## context_key = scripted_trigger@some_trigger
-	## context_configs_type = multiple
-	x = single_alias_right[trigger_clause]
-
-	# since 1.3.12, a parameter's config context and scope context can be specified to inherit from its context
-	# e.g. for parameter 'x' with context key 'scripted_trigger@some_trigger', its context is scripted trigger 'some_trigger'
-
-	## context_key = scripted_trigger@some_trigger
-	## inherit
-	x
+    # 'x' or 'x = xxx'
+    # 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
+    
+    # since 1.3.6, value of option 'context_key' can also be a pattern expression (template expression, ant expression or regex)
+    
+    ### Some documentation
+    ## context_key = scripted_trigger@some_trigger
+    x
+    
+    # more detailed examples for declaring context config(s)
+    
+    ## context_key = scripted_trigger@some_trigger
+    x = localistion
+    
+    ## context_key = scripted_trigger@some_trigger
+    ## context_configs_type = multiple
+    x = {
+        localisation
+        scalar
+    }
+    
+    # since 1.3.5, scope context related options are also available here
+    
+    ## context_key = scripted_trigger@some_trigger
+    ## replace_scopes = { this = country root = country }
+    x
+    
+    # since 1.3.6, using single alias at root level is also available here
+    
+    ## context_key = scripted_trigger@some_trigger
+    ## context_configs_type = multiple
+    x = single_alias_right[trigger_clause]
+    
+    # since 1.3.12, a parameter's config context and scope context can be specified to inherit from its context
+    # e.g. for parameter 'x' with context key 'scripted_trigger@some_trigger', its context is scripted trigger 'some_trigger'
+    
+    ## context_key = scripted_trigger@some_trigger
+    ## inherit
+    x
 }
 ```
 
@@ -325,14 +325,14 @@ parameters = {
 
 ```cwt
 complex_enum_values = {
-	component_tag = {
-		# 'x' or 'x = xxx'
-		# 'x' can also be a pattern expression (template expression, ant expression or regex)
-
-		### Some documentation
-		## hint = §RSome inlay hint text§!
-		x
-	}
+    component_tag = {
+        # 'x' or 'x = xxx'
+        # 'x' can also be a pattern expression (template expression, ant expression or regex)
+        
+        ### Some documentation
+        ## hint = §RSome inlay hint text§!
+        x
+    }
 }
 ```
 
@@ -340,20 +340,20 @@ complex_enum_values = {
 
 ```cwt
 dynamic_values = {
-	event_target = {
-		# 'x' or 'x = xxx'
-		# 'x' can also be a pattern expression (template expression, ant expression or regex)
+    event_target = {
+        # 'x' or 'x = xxx'
+        # 'x' can also be a pattern expression (template expression, ant expression or regex)
 
-		### Some documentation
-		## hint = §RSome inlay hint text§!
-		x
+        ### Some documentation
+        ## hint = §RSome inlay hint text§!
+        x
 
-		# since 1.3.9, scope context related options are also available here
-		# only receive push scope (this scope), ignore others (like root scope, etc.)
+        # since 1.3.9, scope context related options are also available here
+        # only receive push scope (this scope), ignore others (like root scope, etc.)
 
-		## push_scope = country
-		x
-	}
+        ## push_scope = country
+        x
+    }
 }
 ```
 

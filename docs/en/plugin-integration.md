@@ -8,8 +8,7 @@ PLS will provide bellow additional features:
 ### Translate documentation
 
 When the cursor is over a definition name, a localisation name or some other positions,
-can translate documentation content by click and select `Translate Documentation` icon button in quick documentation
-popup window,
+can translate documentation content by click and select `Translate Documentation` icon button in quick documentation popup window,
 or click `Translate Documentation` item in right-click menu.
 
 ![](/images/plugin-integration/translate_documentation.gif)
