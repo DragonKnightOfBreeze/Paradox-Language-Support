@@ -1,5 +1,5 @@
 :root {
-  --theme-color: #257ac5;
+  --theme-color: #1a71bd;
   --theme-color-dark: #2f89d7;
   --theme-color-light: #6bafea;
   --theme-color-mask: rgba(41, 129, 206, 0.15);
@@ -7,18 +7,4 @@
 
 .vp-nav-links {
   padding-right: 2rem;
-}
-
-//custom styles
-
-.portrait-image {
-  width: 480px;
-  height: 480px;
-}
-
-.portrait-image-note {
-  font-size: 12px !important;
-  font-style: italic !important;
-  color: grey !important;
-  text-align: left !important;
 }
