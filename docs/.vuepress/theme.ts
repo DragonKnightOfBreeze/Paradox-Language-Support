@@ -17,7 +17,7 @@ export default hopeTheme({
 
   docsDir: "docs",
   docsBranch: "master",
-  
+
   pure: true,
   breadcrumb: false,
   navbarLayout: {

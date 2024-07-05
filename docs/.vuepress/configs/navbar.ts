@@ -5,5 +5,5 @@ export const navbarZh: NavbarOptions = [
 ]
 
 export const navbarEn: NavbarOptions = [
-  { text: "Home", link: "https://www.windea.icu" }
+  { text: "Main Page", link: "https://www.windea.icu" }
 ]
