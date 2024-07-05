@@ -1,3 +1,10 @@
+.vp-brand {
+  //hide brand on mobile
+  @media (max-width: 959px) {
+    display: none;
+  }
+}
+
 .vp-nav-links {
   padding-right: 2rem;
 }
