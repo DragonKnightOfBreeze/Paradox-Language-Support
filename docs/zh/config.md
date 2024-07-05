@@ -1,6 +1,6 @@
 # 规则分组与规则文件
 
-## 规则分组{#config-group}
+## 规则分组 {#config-group}
 
 ### 概述
 
@@ -14,7 +14,7 @@ PLS基于由CWT规则文件组成的规则分组，实现了诸多语言功能�
 
 ### 来源
 
-#### 内置的规则分组{#builtin-config-groups}
+#### 内置的规则分组 {#builtin-config-groups}
 
 * 路径：`config/{gameType}`[^1]（位于插件jar包中）
 * 是否启用：始终启用
@@ -22,7 +22,7 @@ PLS基于由CWT规则文件组成的规则分组，实现了诸多语言功能�
 
 其中的规则文件来自插件仓库以及各自游戏的规则仓库，相较于CWTools所使用的规则文件，它们经过一定的修改和扩展。
 
-#### 本地的规则分组{#local-config-groups}
+#### 本地的规则分组 {#local-config-groups}
 
 * 路径：`{rootPath}/{gameType}`[^1]（可在插件的配置页面中配置`rootPath`对应的文件路径）
 * 是否启用：如果路径存在
@@ -30,7 +30,7 @@ PLS基于由CWT规则文件组成的规则分组，实现了诸多语言功能�
 
 其中的规则文件由用户自定义，适用于所有项目。对它们的更改需要手动确认导入。
 
-#### 项目的规则分组{#project-config-groups}
+#### 项目的规则分组 {#project-config-groups}
 
 * 路径：`.config/{gameType}`[^1]（位于项目根目录中）
 * 是否启用：如果路径存在
@@ -49,7 +49,7 @@ PLS基于由CWT规则文件组成的规则分组，实现了诸多语言功能�
 因为插件内置的修正规则位于插件jar包中的规则文件`config/stellaris/modifiers.cwt`中，它们的文件路径都是`modifiers.cwt`。
 如果此自定义的规则文件中没有任何内容，应用后插件将无法解析脚本文件中的任何修正。
 
-## CWT规则文件{#cwt-config-file}
+## CWT规则文件 {#cwt-config-file}
 
 ### 概述
 
@@ -74,7 +74,7 @@ prop = {
 }
 ```
 
-## 编写CWT规则文件{#writing-cwt-config-files}
+## 编写CWT规则文件 {#writing-cwt-config-files}
 
 ### 概述
 
@@ -267,7 +267,7 @@ inline_scripts = {
 
 示例：
 
-![](/images/config/inline_scripts_1.png)
+![](../images/config/inline_scripts_1.png)
 
 #### Parameters
 
@@ -319,7 +319,7 @@ parameters = {
 
 示例：
 
-![](/images/config/parameters_1.png)
+![](../images/config/parameters_1.png)
 
 #### Complex Enum Values
 
@@ -419,7 +419,7 @@ some_config
 some_config
 ```
 
-## 导入CWT规则文件{#importing-cwt-config-files}
+## 导入CWT规则文件 {#importing-cwt-config-files}
 
 ### 概述
 

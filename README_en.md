@@ -21,13 +21,13 @@ Features:
 * Supports customizing extended config files, allowing plugin to provide more perfect language features (such as code navigation, code completion, quick documentation and inlay hints).
 * Automatically recognizes the game directory (containing the launcher settings file `launcher-settings.json`) and mod directory (containing the mod descriptor file `descriptor.mod`).
 
-This plugin has implemented various advanced language features based on [config groups](https://windea.icu/Paradox-Language-Support/#/en/config.md#config-group), which consists of CWT config files.
+This plugin has implemented various advanced language features based on [config groups](https://windea.icu/Paradox-Language-Support/en/config.md#config-group), which consists of CWT config files.
 The latest-version config files are already built into this plugin, make it works right out of the box.
-Besides, [customizing](https://windea.icu/Paradox-Language-Support/#/en/config.md#writing-cwt-config-files) and [importing](https://windea.icu/Paradox-Language-Support/#/en/config.md#importing-cwt-config-files) local config files are also supported.
+Besides, [customizing](https://windea.icu/Paradox-Language-Support/en/config.md#writing-cwt-config-files) and [importing](https://windea.icu/Paradox-Language-Support/en/config.md#importing-cwt-config-files) local config files are also supported.
 
-If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md).
+If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](https://windea.icu/Paradox-Language-Support/zh/plugin-integration.md).
 
-![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_en.png)
+![](https://windea.icu/Paradox-Language-Support/images/preview_1_en.png)
 
 ## Quick Start
 
@@ -69,7 +69,7 @@ Tips:
 * If you encounter some unexpected problems during use, try the following:
   * Update the IDE and plugin to the latest version.
   * If it may be related to IDE indices, try to rebuild indices and restart the IDE. (Click `File -> Invalidate Caches... -> Invalidate and Restart`)
-  * If it ma ybe related to plugin's built-in configs, try to [write custom config files](https://windea.icu/Paradox-Language-Support/#/en/config.md#writing-cwt-config-files). 
+  * If it ma ybe related to plugin's built-in configs, try to [write custom config files](https://windea.icu/Paradox-Language-Support/en/config.md#writing-cwt-config-files). 
   * If it may be related to plugin configuration, try to delete the plugin configuration file. (`paradox-language-support.xml`. If you don't know the detailed location, use [Everything](https://www.voidtools.com))
   * Send feedback via GitHub, Discord, etc.
 

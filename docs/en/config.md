@@ -1,6 +1,6 @@
 # Config Groups & Config Files
 
-## Config Group{#config-group}
+## Config Group {#config-group}
 
 ### Summary
 
@@ -15,7 +15,7 @@ Reference Links:
 
 ### Sources
 
-#### Built-in Config Groups{#builtin-config-groups}
+#### Built-in Config Groups {#builtin-config-groups}
 
 * Path: `config/{gameType}`[^1] (in the plugin jar)
 * Enabled: Always
@@ -24,7 +24,7 @@ Reference Links:
 These config files are from plugin repository and config repositories of each game.
 Compare to the config files used by CWTools, there are several modifications and extensions.
 
-#### Local Config Groups{#local-config-groups}
+#### Local Config Groups {#local-config-groups}
 
 * Path: `{rootPath}/{gameType}`[^1] (`rootPath` need be to be configured in plugin's settings page)
 * Enabled: Yes if path is existing
@@ -33,7 +33,7 @@ Compare to the config files used by CWTools, there are several modifications and
 Containing config files are customized by users themselves. Available for all projects.
 Changes should be confirmed to import manually.
 
-#### Project Config Groups{#project-config-groups}
+#### Project Config Groups {#project-config-groups}
 
 * Path: `.config/{gameType}`[^1] (in the project root directory)
 * Enabled: Yes if path is existing
@@ -56,7 +56,7 @@ Since the built-in modifier configs are located in the config file `config/stell
 (which is in the plugin jar), and both of their file path is `modifiers.cwt`.
 If these are no content in the custom config file, after applied, the plugin will be unable to resolve any modifier in script files.
 
-## CWT Config File{#cwt-config-file}
+## CWT Config File {#cwt-config-file}
 
 ### Summary
 
@@ -82,7 +82,7 @@ prop = {
 }
 ```
 
-## Writing CWT Config Files{#writing-cwt-config-files}
+## Writing CWT Config Files {#writing-cwt-config-files}
 
 ### Summary
 
@@ -277,7 +277,7 @@ inline_scripts = {
 
 Example:
 
-![](/images/config/inline_scripts_1.png)
+![](../images/config/inline_scripts_1.png)
 
 #### Parameters
 
@@ -329,7 +329,7 @@ parameters = {
 
 Example:
 
-![](/images/config/parameters_1.png)
+![](../images/config/parameters_1.png)
 
 #### Complex Enum Values
 
@@ -430,7 +430,7 @@ some_config
 some_config
 ```
 
-## Importing CWT Config Files{#importing-cwt-config-files}
+## Importing CWT Config Files {#importing-cwt-config-files}
 
 ### Summary
 

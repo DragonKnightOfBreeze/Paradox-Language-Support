@@ -8,7 +8,7 @@
 
 当光标位于定义的名字、本地化的名字等位置时，可以通过点击并选择快速文档弹出窗口中的`Translate Documentation`图标按钮，或者点击右键菜单中的`Translate Documentation`选项翻译文档内容。
 
-![](/images/plugin-integration/translate_documentation.gif)
+![](../images/plugin-integration/translate_documentation.gif)
 
 > [!warning]
 >
@@ -18,7 +18,7 @@
 
 当光标选取范围涉及到本地化时，此意向可以将所有涉及到的本地化复制到剪切板，并且在这之前尝试将本地化文本翻译为指定的语言区域。
 
-![](/images/plugin-integration/intention_copy_loc_for_locale.gif)
+![](../images/plugin-integration/intention_copy_loc_for_locale.gif)
 
 > [!warning]
 >

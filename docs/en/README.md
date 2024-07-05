@@ -18,13 +18,13 @@ Features:
 * Supports customizing extended config files, allowing plugin to provide more perfect language features (such as code navigation, code completion, quick documentation and inlay hints).
 * Automatically recognizes the game directory (containing the launcher settings file `launcher-settings.json`) and mod directory (containing the mod descriptor file `descriptor.mod`).
 
-This plugin has implemented various advanced language features based on [config groups](https://windea.icu/Paradox-Language-Support/#/en/config.md#config-group), which consists of CWT config files.
+This plugin has implemented various advanced language features based on [config groups](config.md#config-group), which consists of CWT config files.
 The latest-version config files are already built into this plugin, make it works right out of the box.
-Besides, [customizing](https://windea.icu/Paradox-Language-Support/#/en/config.md#writing-cwt-config-files) and [importing](https://windea.icu/Paradox-Language-Support/#/en/config.md#importing-cwt-config-files) local config files are also supported.
+Besides, [customizing](config.md#writing-cwt-config-files) and [importing](config.md#importing-cwt-config-files) local config files are also supported.
 
-If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md).
+If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](plugin-integration.md).
 
-![](https://windea.icu/Paradox-Language-Support/assets/images/preview_1_en.png)
+![](../images/preview_1_en.png)
 
 ## References
 
