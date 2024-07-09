@@ -1,7 +1,6 @@
 package icu.windea.pls.model
 
 import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
@@ -26,30 +25,15 @@ class ParadoxParameterContextInfo(
         val conditionStack: Deque<ReversibleValue<String>>? = null,
     ) {
         val element: PsiElement? get() = elementPointer.element
+        val parentElement: PsiElement? get() = elementPointer.element?.parent
         val parameterElement: ParadoxParameterElement? get() = elementPointer.element?.let { ParadoxParameterHandler.getParameterElement(it) }
-        
-        val expressionElement: ParadoxScriptStringExpressionElement?
-            get() = elementPointer.element?.parent?.castOrNull()
-        
-        val rangeInExpressionElement: TextRange?
-            get() {
-                if(expressionElement == null) return null
-                return element?.textRangeInParent
-            }
-        
-        val isEntireExpression: Boolean
-            get() {
-                val element = element
-                if(element == null) return false
-                return element.prevSibling.let { it == null || it.text == "\"" } && element.nextSibling.let { it == null || it.text == "\"" }
-            }
         
         /**
          * 获取此参数对应的脚本表达式所对应的CWT规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
          */
         val expressionConfigs: List<CwtMemberConfig<*>>
             get() {
-                val expressionElement = expressionElement
+                val expressionElement = parentElement.castOrNull<ParadoxScriptStringExpressionElement>()
                 if(expressionElement == null) return emptyList()
                 return when {
                     expressionElement is ParadoxScriptPropertyKey -> {

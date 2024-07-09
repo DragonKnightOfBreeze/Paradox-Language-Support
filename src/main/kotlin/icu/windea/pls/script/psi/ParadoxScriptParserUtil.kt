@@ -71,29 +71,4 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
         }
         return false
     }
-    
-    @JvmStatic
-    fun processSnippet(b: PsiBuilder, l: Int): Boolean {
-        //remapping token types for parameter default values and inline parameter condition snippets
-        if(b !is Builder) return true
-        val templateType = b.state.currentFrame.parentFrame.elementType
-        if(templateType !in ParadoxScriptTokenSets.TEMPLATE_TYPES && templateType != PROPERTY) return true
-        b.setTokenTypeRemapper m@{ t, _, _, _ ->
-            if(t in ParadoxScriptTokenSets.SNIPPET_TYPES) return@m SNIPPET_TOKEN
-            if(b.state.currentFrame.elementType == PARAMETER) {
-                if(t == INT_TOKEN || t == FLOAT_TOKEN) return@m SNIPPET_TOKEN
-            }
-            t
-        }
-        return true
-    }
-    
-    @JvmStatic
-    fun postProcessSnippet(b: PsiBuilder, l: Int) : Boolean {
-        if(b !is Builder) return true
-        val templateType = b.state.currentFrame.parentFrame.elementType
-        if(templateType !in ParadoxScriptTokenSets.TEMPLATE_TYPES && templateType != PROPERTY) return true
-        b.setTokenTypeRemapper(null)
-        return true
-    }
 }

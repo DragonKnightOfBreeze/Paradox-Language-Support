@@ -17,6 +17,12 @@ import javax.swing.Icon;
 public interface ParadoxScriptInlineMathScriptedVariableReference extends ParadoxScriptInlineMathFactor, ParadoxScriptedVariableReference, ParadoxParameterAwareElement {
 
   @NotNull
+  List<ParadoxScriptInlineMathParameter> getInlineMathParameterList();
+
+  @NotNull
+  List<ParadoxScriptInlineParameterCondition> getInlineParameterConditionList();
+
+  @NotNull
   Icon getIcon(@IconFlags int flags);
 
   @Nullable

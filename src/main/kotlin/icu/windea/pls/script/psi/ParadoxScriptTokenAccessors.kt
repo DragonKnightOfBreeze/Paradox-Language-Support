@@ -3,7 +3,6 @@ package icu.windea.pls.script.psi
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -24,11 +23,7 @@ val ParadoxScriptParameter.idElement: PsiElement? get() = findChild(PARAMETER_TO
 
 val ParadoxScriptInlineMathParameter.idElement: PsiElement? get() = findChild(PARAMETER_TOKEN)
 
-val ParadoxParameter.defaultValueToken: PsiElement?
-	get() = when {
-		this is ParadoxScriptInlineMathParameter -> findChild(ParadoxScriptTokenSets.INLINE_MATH_PARAMETER_VALUE_TOKENS)
-		else -> findChild(ParadoxScriptTokenSets.PARAMETER_VALUE_TOKENS)
-	}
+val ParadoxParameter.defaultValueToken: PsiElement? get() = findChild(ParadoxScriptTokenSets.PARAMETER_VALUE_TOKENS)
 
 val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptValue? get() = siblings(forward = true, withSelf = false).findIsInstance()
 

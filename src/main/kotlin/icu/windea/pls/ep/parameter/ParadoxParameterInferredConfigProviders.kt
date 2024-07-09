@@ -3,6 +3,7 @@ package icu.windea.pls.ep.parameter
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
@@ -14,21 +15,55 @@ import icu.windea.pls.model.expression.complex.nodes.*
 import icu.windea.pls.script.psi.*
 
 /**
+ * 用于基于所在位置推断参数的上下文规则。
+ */
+class ParadoxDefaultExpressionParameterInferredConfigProvider: ParadoxParameterInferredConfigProvider {
+    override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
+        return true
+    }
+    
+    override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
+        val configGroup = getConfigGroup(parameterContextInfo.project, parameterContextInfo.gameType)
+        return getConfig(parameterInfo, configGroup)?.toSingletonList()
+    }
+    
+    private fun getConfig(parameterInfo: ParadoxParameterContextInfo.Parameter, configGroup: CwtConfigGroup): CwtMemberConfig<*>? {
+        val element = parameterInfo.element ?: return null
+        val parentElement = parameterInfo.parentElement ?: return null
+        when {
+            element is ParadoxConditionParameter -> return CwtValueConfig.resolve(emptyPointer(), configGroup, "bool")
+            element is ParadoxScriptParameter -> {
+                if(parentElement.text.isFullParameterized()) return null
+                return CwtValueConfig.resolve(emptyPointer(), configGroup, "scalar")
+            }
+            element is ParadoxScriptInlineMathParameter -> {
+                if(parentElement.text.isFullParameterized()) return CwtValueConfig.resolve(emptyPointer(), configGroup, "float")
+                return CwtValueConfig.resolve(emptyPointer(), configGroup, "scalar")
+            }
+            else -> return null
+        }
+    }
+}
+
+/**
  * 用于推断在脚本表达式中使用的参数的上下文规则，适用于部分简单的场合。
  */
 class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfigProvider {
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
-        return parameterInfo.expressionElement != null && parameterInfo.isEntireExpression
+        val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return false
+        if(!expressionElement.text.isFullParameterized()) return false
+        return true
     }
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
-        val expressionElement = parameterInfo.expressionElement ?: return null
+        val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return null
+        if(!expressionElement.text.isFullParameterized()) return null
         val expressionContextConfigs = CwtConfigHandler.getConfigContext(expressionElement)?.getConfigs().orEmpty()
-        val contextConfigs = doGetContextConfigsFromExpressionContextConfigs(expressionContextConfigs, parameterInfo)
+        val contextConfigs = getContextConfigsFromExpressionContextConfigs(expressionContextConfigs, parameterInfo)
         return contextConfigs
     }
     
-    private fun doGetContextConfigsFromExpressionContextConfigs(expressionContextConfigs: List<CwtMemberConfig<*>>, parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>>{
+    private fun getContextConfigsFromExpressionContextConfigs(expressionContextConfigs: List<CwtMemberConfig<*>>, parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>>{
         if(expressionContextConfigs.isEmpty()) return emptyList()
         val expressionContextConfig = expressionContextConfigs.find { it.expression.type == CwtDataTypes.ParameterValue }
         if(expressionContextConfig != null) {
@@ -62,11 +97,14 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
     //root.value:some_script_value|K|$PARAM$| -> (from parameter K)
     
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
-        return parameterInfo.expressionElement != null &&!parameterInfo.isEntireExpression
+        val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return false
+        if(expressionElement.text.isFullParameterized()) return false
+        return true
     }
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
-        val expressionElement = parameterInfo.expressionElement ?: return null
+        val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return null
+        if(expressionElement.text.isFullParameterized()) return null
         if(expressionElement.text.isLeftQuoted()) return null
         val expressionConfigs = parameterInfo.expressionConfigs
         val configs = expressionConfigs.mapNotNull { getConfigFromExpressionConfig(expressionElement, it, parameterInfo) }
@@ -77,7 +115,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
         val configGroup = expressionConfig.configGroup
         val textRange = TextRange.create(0, expressionElement.text.length)
         val expression = ParadoxComplexExpression.resolve(expressionElement.text, textRange, configGroup, expressionConfig) ?: return null
-        val rangeInExpressionElement = parameterInfo.rangeInExpressionElement
+        val rangeInExpressionElement = parameterInfo.element?.textRangeInParent
         var result: CwtValueConfig? = null
         expression.processAllNodes p@{ node ->
             if(node.rangeInExpression == rangeInExpressionElement) {
@@ -116,25 +154,5 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
             }
             else -> null
         }
-    }
-}
-
-/**
- * 用于推断不在脚本表达式中使用的参数的上下文规则。适用于参数在条件表达式以及内联数学块中使用的场合。
- */
-class ParadoxNotInExpressionParameterInferredConfigProvider: ParadoxParameterInferredConfigProvider {
-    override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
-        return parameterInfo.expressionElement == null
-    }
-    
-    override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
-        val configGroup = getConfigGroup(parameterContextInfo.project, parameterContextInfo.gameType)
-        val element = parameterInfo.element
-        val config = when {
-            element is ParadoxConditionParameter -> CwtValueConfig.resolve(emptyPointer(), configGroup, "bool")
-            element is ParadoxScriptInlineMathParameter -> CwtValueConfig.resolve(emptyPointer(), configGroup, "float")
-            else -> null
-        }
-        return config?.toSingletonList()
     }
 }

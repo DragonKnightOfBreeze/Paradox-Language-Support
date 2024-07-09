@@ -183,9 +183,9 @@
     <parameterSupport implementation="icu.windea.pls.ep.parameter.ParadoxScriptValueInlineParameterSupport"/>
     <parameterSupport implementation="icu.windea.pls.ep.parameter.ParadoxInlineScriptParameterSupport"/>
 
+    <parameterInferredConfigProvider implementation="icu.windea.pls.ep.parameter.ParadoxDefaultExpressionParameterInferredConfigProvider" order="last"/>
     <parameterInferredConfigProvider implementation="icu.windea.pls.ep.parameter.ParadoxBaseParameterInferredConfigProvider"/>
     <parameterInferredConfigProvider implementation="icu.windea.pls.ep.parameter.ParadoxComplexExpressionNodeParameterInferredConfigProvider"/>
-    <parameterInferredConfigProvider implementation="icu.windea.pls.ep.parameter.ParadoxNotInExpressionParameterInferredConfigProvider"/>
     
     <localisationParameterSupport implementation="icu.windea.pls.ep.parameter.ParadoxBaseLocalisationParameterSupport"/>
 

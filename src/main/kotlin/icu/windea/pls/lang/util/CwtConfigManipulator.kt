@@ -231,6 +231,10 @@ object CwtConfigManipulator {
                 CwtDataTypes.Float, CwtDataTypes.ValueField, CwtDataTypes.VariableField -> "float"
                 else -> null
             }
+            CwtDataTypes.Scalar -> when(t2) {
+                CwtDataTypes.Block, CwtDataTypes.ColorField -> null
+                else -> "scalar"
+            }
             CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> when(t2) {
                 CwtDataTypes.ScopeField -> e1.expressionString
                 CwtDataTypes.Scope -> if(e2.value == "any") e1.expressionString else null
