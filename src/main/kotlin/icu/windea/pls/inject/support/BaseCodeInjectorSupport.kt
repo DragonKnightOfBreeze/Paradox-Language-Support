@@ -111,8 +111,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         var ctMethods = ctClass.getDeclaredMethods(methodName).filter f@{ ctMethod ->
             val isStatic = Modifier.isStatic(ctMethod.modifiers)
             if((injectMethodInfo.static && !isStatic) || (!injectMethodInfo.static && isStatic)) return@f false
-            if(ctMethod.parameterTypes.size != argSize) return@f false
-            true
+            ctMethod.parameterTypes.size >= argSize
         }
         run {
             if(ctMethods.size <= 1) return@run
@@ -129,6 +128,12 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
                     if(!r) return@filter false
                 }
                 true
+            }
+        }
+        run {
+            if(ctMethods.size <= 1) return@run
+            ctMethods = ctMethods.filter { ctMethod ->
+                ctMethod.parameterTypes.size == argSize
             }
         }
         return ctMethods.firstOrNull()
