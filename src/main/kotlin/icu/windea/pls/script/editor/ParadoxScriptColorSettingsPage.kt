@@ -47,6 +47,8 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("script.displayName.valueLinkValue"), ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.valueLinkPrefix"), ParadoxScriptAttributesKeys.VALUE_LINK_PREFIX_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.valueLinkDataSource"), ParadoxScriptAttributesKeys.VALUE_LINK_DATA_SOURCE_KEY),
+        AttributesDescriptor(PlsBundle.message("script.displayName.databaseObjectType"), ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE_KEY),
+        AttributesDescriptor(PlsBundle.message("script.displayName.databaseObject"), ParadoxScriptAttributesKeys.DATABASE_OBJECT_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.modifier"), ParadoxScriptAttributesKeys.MODIFIER_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.trigger"), ParadoxScriptAttributesKeys.TRIGGER_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.effect"), ParadoxScriptAttributesKeys.EFFECT_KEY),
@@ -54,6 +56,8 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
     )
     
     private val _tagToDescriptorMap = mapOf(
+        "MARKER" to ParadoxScriptAttributesKeys.MARKER_KEY,
+        "OPERATOR" to ParadoxScriptAttributesKeys.OPERATOR_KEY,
         "DEFINITION" to ParadoxScriptAttributesKeys.DEFINITION_KEY,
         "DEFINITION_NAME" to ParadoxScriptAttributesKeys.DEFINITION_NAME_KEY,
         "DEFINITION_REFERENCE" to ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY,
@@ -70,6 +74,8 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         "VALUE_LINK_VALUE" to ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY,
         "VALUE_LINK_PREFIX" to ParadoxScriptAttributesKeys.VALUE_LINK_PREFIX_KEY,
         "VALUE_LINK_DATA_SOURCE" to ParadoxScriptAttributesKeys.VALUE_LINK_DATA_SOURCE_KEY,
+        "DATABASE_OBJECT_TYPE" to ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE_KEY,
+        "DATABASE_OBJECT" to ParadoxScriptAttributesKeys.DATABASE_OBJECT_KEY,
         "TAG" to ParadoxScriptAttributesKeys.TAG_KEY,
         "MODIFIER" to ParadoxScriptAttributesKeys.MODIFIER_KEY,
         "TRIGGER" to ParadoxScriptAttributesKeys.TRIGGER_KEY,

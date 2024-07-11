@@ -31,6 +31,9 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         //unused
         //AttributesDescriptor(PlsBundle.message("localisation.displayName.localisation"), ParadoxLocalisationAttributesKeys.LOCALISATION_KEY),
         //AttributesDescriptor(PlsBundle.message("localisation.displayName.syncedLocalisation"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY),
+        
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.databaseObjectType"), ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.databaseObject"), ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY),
     )
     
     override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxLocalisationLanguage, null, null)

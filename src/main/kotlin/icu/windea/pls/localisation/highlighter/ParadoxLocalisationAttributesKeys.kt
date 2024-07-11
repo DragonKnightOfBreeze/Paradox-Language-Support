@@ -9,6 +9,7 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import com.intellij.openapi.editor.markup.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 import java.awt.*
 
 object ParadoxLocalisationAttributesKeys {
@@ -34,7 +35,10 @@ object ParadoxLocalisationAttributesKeys {
 	//unused
 	//@JvmField val LOCALISATION_KEY = createTextAttributesKey("PARADOX_LOCALISATION.LOCALISATION", PROPERTY_KEY_KEY)
 	//@JvmField val SYNCED_LOCALISATION_KEY = createTextAttributesKey("PARADOX_LOCALISATION.SYNCED_LOCALISATION", PROPERTY_KEY_KEY)
-	
+    
+    @JvmField val DATABASE_OBJECT_TYPE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.DATABASE_OBJECT_TYPE", KEYWORD)
+    @JvmField val DATABASE_OBJECT_KEY = createTextAttributesKey("PARADOX_LOCALISATION.DATABASE_OBJECT", DEFINITION_REFERENCE_KEY)
+    
 	private val colorKeyCache = CacheBuilder.newBuilder().buildCache { color: Color ->
 		createTextAttributesKey("PARADOX_LOCALISATION.COLOR_${color.rgb}", IDENTIFIER.defaultAttributes.clone().apply {
 			foregroundColor = color
