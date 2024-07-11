@@ -6,6 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
@@ -92,8 +93,8 @@ private class ParadoxScopeFieldExpressionImpl(
     override fun validate(): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
         var malformed = false
-        for((index, node) in nodes.withIndex()) {
-            val isLast = index == nodes.lastIndex
+        for((i, node) in nodes.withIndex()) {
+            val isLast = i == nodes.lastIndex
             when(node) {
                 is ParadoxScopeFieldNode -> {
                     if(node.text.isEmpty()) {

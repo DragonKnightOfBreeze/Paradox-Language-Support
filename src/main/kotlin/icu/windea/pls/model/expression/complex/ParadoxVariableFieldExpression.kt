@@ -95,8 +95,8 @@ private class ParadoxVariableFieldExpressionImpl(
     override fun validate(): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
         var malformed = false
-        for((index, node) in nodes.withIndex()) {
-            val isLast = index == nodes.lastIndex
+        for((i, node) in nodes.withIndex()) {
+            val isLast = i == nodes.lastIndex
             when(node) {
                 is ParadoxScopeFieldNode -> {
                     if(node.text.isEmpty()) {

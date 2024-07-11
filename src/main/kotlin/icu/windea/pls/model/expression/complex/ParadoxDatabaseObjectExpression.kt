@@ -56,7 +56,19 @@ private class ParadoxDatabaseObjectExpressionImpl(
     override val configGroup: CwtConfigGroup
 ) : ParadoxDatabaseObjectExpression {
     override fun validate(): List<ParadoxComplexExpressionError> {
-        TODO()
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        var malformed = false
+        for(node in nodes) {
+            if(node.text.isEmpty()){
+                malformed = true
+                break
+            }
+        }
+        if(malformed) {
+            val error = ParadoxComplexExpressionErrors.malformedGameObjectExpression(rangeInExpression, text)
+            errors.add(0, error)
+        }
+        return errors
     }
     
     private fun isValid(node: ParadoxComplexExpressionNode): Boolean {

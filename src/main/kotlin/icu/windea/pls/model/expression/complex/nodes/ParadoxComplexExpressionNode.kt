@@ -25,4 +25,3 @@ interface ParadoxComplexExpressionNode {
     
     fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxComplexExpressionError? = null
 }
-
