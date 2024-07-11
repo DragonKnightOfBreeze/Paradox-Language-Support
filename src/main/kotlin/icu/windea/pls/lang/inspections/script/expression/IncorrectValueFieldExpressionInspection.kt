@@ -16,7 +16,7 @@ import javax.swing.*
 /**
  * 不正确的[ParadoxValueFieldExpression]的检查。
  * 
- * @property reportsUnresolved 是否报告无法解析的DS引用。
+ * @property reportsUnresolved 是否报告无法解析的引用。
  */
 class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
     @JvmField var reportsUnresolved = true

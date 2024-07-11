@@ -15,6 +15,8 @@ import javax.swing.*
 
 /**
  * 不正确的[ParadoxDatabaseObjectExpression]的检查。
+ *
+ * @property reportsUnresolved 是否报告无法解析的引用。
  */
 class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
     @JvmField var reportsUnresolved = true

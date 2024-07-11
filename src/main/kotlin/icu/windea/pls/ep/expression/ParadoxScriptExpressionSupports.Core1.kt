@@ -209,8 +209,8 @@ class ParadoxDatabaseObjectExpressionSupport : ParadoxScriptExpressionSupport {
         if(expression.isLeftQuoted()) return
         val configGroup = config.configGroup
         val range = rangeInElement ?: TextRange.create(0, expression.length)
-        val variableFieldExpression = ParadoxDatabaseObjectExpression.resolve(expression, range, configGroup) ?: return
-        CwtConfigHandler.annotateComplexExpression(element, variableFieldExpression, holder, config)
+        val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(expression, range, configGroup) ?: return
+        CwtConfigHandler.annotateComplexExpression(element, databaseObjectExpression, holder, config)
     }
     
     override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
@@ -218,9 +218,9 @@ class ParadoxDatabaseObjectExpressionSupport : ParadoxScriptExpressionSupport {
         if(expression.isLeftQuoted()) return PsiReference.EMPTY_ARRAY
         val configGroup = config.configGroup
         val range = TextRange.create(0, expression.length).unquote(expression)
-        val variableFieldExpression = ParadoxDatabaseObjectExpression.resolve(expression, range, configGroup)
-        if(variableFieldExpression == null) return PsiReference.EMPTY_ARRAY
-        return variableFieldExpression.getReferences(element)
+        val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(expression, range, configGroup)
+        if(databaseObjectExpression == null) return PsiReference.EMPTY_ARRAY
+        return databaseObjectExpression.getReferences(element)
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {

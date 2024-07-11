@@ -97,12 +97,12 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
         return when {
             configExpression.type == CwtDataTypes.PercentageField -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
-                val r = ParadoxType.isPercentageField(expression.value)
+                val r = ParadoxTypeHandler.isPercentageField(expression.value)
                 Result.of(r)
             }
             configExpression.type == CwtDataTypes.DateField -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
-                val r = ParadoxType.isDateField(expression.value)
+                val r = ParadoxTypeHandler.isDateField(expression.value)
                 Result.of(r)
             }
             configExpression.type == CwtDataTypes.Localisation -> {
