@@ -29,7 +29,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     @JvmField var showExpectInfo = true
     @JvmField var ignoredByConfigs = false
     
-    //如果一个表达式（属性/值）无法解析，需要跳过直接检测下一个表达式，而不是向下检查它的子节点
+    //如果一个表达式（属性/值）无法解析，需要跳过直接检测下一个表达式，而不是继续向下检查它的子节点
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         var suppressed: PsiElement? = null
@@ -52,7 +52,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             private fun visitProperty(element: ParadoxScriptProperty): Boolean {
                 if(suppressed != null && suppressed.isAncestor(element)) return true
                 
-                //skip checking property if property key may contain parameters
+                //skip checking property if property key is parameterized
                 val propertyKey = element.propertyKey
                 if(propertyKey.text.isParameterized()) return false
                 val configContext = CwtConfigHandler.getConfigContext(element) ?: return true
@@ -60,7 +60,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 if(configContext.getConfigs().isEmpty()) return true
                 val configs = CwtConfigHandler.getConfigs(element)
                 if(configs.isEmpty()) {
-                    //优先使用重载后的规则
                     val expectedConfigs = getExpectedConfigs(element)
                     if(expectedConfigs.isNotEmpty()) {
                         //判断是否需要排除
@@ -81,7 +80,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     //skip checking children
                     return false
                 }
-                return true
+                return continueCheck(configs)
             }
             
             private fun visitValue(element: ParadoxScriptValue): Boolean {
@@ -89,8 +88,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 
                 if(suppressed != null && suppressed.isAncestor(element)) return true
                 
-                //also check if element is a scripted_variable_reference
-                //skip checking value if it may contain parameters
+                //skip checking value if it is parameterized
                 if(element is ParadoxScriptString && element.text.isParameterized()) return false
                 if(element is ParadoxScriptScriptedVariableReference && element.text.isParameterized()) return false
                 val configContext = CwtConfigHandler.getConfigContext(element) ?: return true
@@ -98,7 +96,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 if(configContext.getConfigs().isEmpty()) return true
                 val configs = CwtConfigHandler.getConfigs(element, orDefault = false)
                 if(configs.isEmpty()) {
-                    //优先使用重载后的规则
                     val expectedConfigs = getExpectedConfigs(element, configContext)
                     if(expectedConfigs.isNotEmpty()) {
                         //判断是否需要排除
@@ -118,11 +115,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     //skip checking children
                     return false
                 }
-                //any规则不需要再向下检查
-                if(configs.any { it.expression.type == CwtDataTypes.Any }) {
-                    return false
-                }
-                return true
+                return continueCheck(configs)
             }
             
             private fun getExpectedConfigs(element: ParadoxScriptProperty): List<CwtPropertyConfig> {
@@ -134,6 +127,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     contextConfigs.forEachFast f@{ contextConfig ->
                         contextConfig.configs?.forEachFast f1@{ c1 ->
                             val c = if(c1 is CwtPropertyConfig) c1 else return@f1
+                            //优先使用重载后的规则
                             val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, c)
                             if(overriddenConfigs.isNotNullOrEmpty()) {
                                 addAll(overriddenConfigs)
@@ -185,6 +179,12 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     }
                 }
                 return false
+            }
+            
+            private fun continueCheck(configs: List<CwtMemberConfig<*>>): Boolean {
+                //any规则不需要再向下检查
+                if(configs.any { it.expression.type == CwtDataTypes.Any }) return false
+                return true
             }
             
             private fun getFixes(element: PsiElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
