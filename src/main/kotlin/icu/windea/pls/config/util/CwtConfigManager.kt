@@ -7,7 +7,6 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
@@ -152,8 +151,8 @@ object CwtConfigManager {
             element is CwtProperty && path.matchesAntPattern("scope_groups/*") -> {
                 CwtConfigType.ScopeGroup
             }
-            element is CwtProperty && path.matchesAntPattern("game_object_types/*") -> {
-                CwtConfigType.GameObjectType
+            element is CwtProperty && path.matchesAntPattern("database_object_types/*") -> {
+                CwtConfigType.DatabaseObjectType
             }
             element is CwtProperty && path.matchesAntPattern("system_links/*") -> {
                 CwtConfigType.SystemLink

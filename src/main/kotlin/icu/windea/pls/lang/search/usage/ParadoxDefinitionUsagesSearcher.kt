@@ -45,7 +45,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
                 }
             }
             type == "concept" -> {
-                var data = target.getData<StellarisGameConceptDataProvider.Data>()
+                val data = target.getData<StellarisGameConceptDataProvider.Data>()
                 data?.alias?.forEach { words.add(it) }
             }
         }

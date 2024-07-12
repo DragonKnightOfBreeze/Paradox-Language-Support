@@ -1,9 +1,13 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi;
 
-import com.intellij.psi.*;
-import icu.windea.pls.lang.psi.*;
 import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.NavigatablePsiElement;
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
+import icu.windea.pls.lang.psi.ParadoxTypedElement;
+import com.intellij.psi.PsiListLikeElement;
 
 public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
@@ -33,7 +37,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitConceptName(@NotNull ParadoxLocalisationConceptName o) {
-    visitPsiElement(o);
+    visitExpressionElement(o);
   }
 
   public void visitConceptText(@NotNull ParadoxLocalisationConceptText o) {
@@ -96,6 +100,10 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitParadoxTypedElement(@NotNull ParadoxTypedElement o) {
     visitElement(o);
+  }
+
+  public void visitExpressionElement(@NotNull ParadoxLocalisationExpressionElement o) {
+    visitPsiElement(o);
   }
 
   public void visitNamedElement(@NotNull ParadoxLocalisationNamedElement o) {

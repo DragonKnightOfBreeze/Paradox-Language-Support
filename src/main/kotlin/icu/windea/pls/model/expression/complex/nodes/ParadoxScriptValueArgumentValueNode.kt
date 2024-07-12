@@ -4,6 +4,7 @@ import com.intellij.lang.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.highlighter.*
 
@@ -41,8 +42,8 @@ class ParadoxScriptValueArgumentValueNode(
     //    if(text.isEmpty()) return null
     //    val reference = valueNode.getReference(element)
     //    if(reference?.resolve() == null) return null //skip if script value cannot be resolved
-    //    if(argumentNode == null) return null
-    //    return Reference(element, rangeInExpression, this)
+    //    val rangeInElement = rangeInExpression.shiftRight(CwtConfigHandler.getExpressionOffset(element))
+    //    return Reference(element, rangeInElement, this)
     //}
     //
     //class Reference(
@@ -59,4 +60,10 @@ class ParadoxScriptValueArgumentValueNode(
     //    }
     //}
     //endregion
+    
+    companion object Resolver {
+        fun resolve(text: String, textRange: TextRange, valueNode: ParadoxScriptValueNode?, argumentNode: ParadoxScriptValueArgumentNode?, configGroup: CwtConfigGroup): ParadoxScriptValueArgumentValueNode {
+            return ParadoxScriptValueArgumentValueNode(text, textRange, valueNode, argumentNode, configGroup)
+        }
+    }
 }

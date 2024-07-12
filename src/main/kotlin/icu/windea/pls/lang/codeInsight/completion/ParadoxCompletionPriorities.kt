@@ -9,6 +9,7 @@ object ParadoxCompletionPriorities {
     const val complexEnumPriority = 80.0
     const val scopeLinkPrefixPriority = 70.0
     const val valueLinkPrefixPriority = 70.0
+    const val databaseObjectTypePriority = 70.0
     const val systemScopePriority = 60.0
     const val scopePriority = 60.0
     

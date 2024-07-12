@@ -30,7 +30,8 @@ class ParadoxDynamicValueNode(
     
     override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
         if(text.isParameterized()) return null
-        return Reference(element, rangeInExpression, text, configs, configGroup)
+        val rangeInElement = rangeInExpression.shiftRight(CwtConfigHandler.getExpressionOffset(element))
+        return Reference(element, rangeInElement, text, configs, configGroup)
     }
     
     class Reference(

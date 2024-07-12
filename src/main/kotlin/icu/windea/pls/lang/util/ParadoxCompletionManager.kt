@@ -5,6 +5,7 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.patterns.*
+import com.intellij.psi.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
@@ -337,6 +338,9 @@ object ParadoxCompletionManager {
         val config = context.config ?: return
         val keyword = context.keyword
         
+        //优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
+        if(keyword.isNotEmpty() && !PlsConstants.Patterns.localisationPropertyNameRegex.matches(keyword)) return
+        
         //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
         
@@ -400,6 +404,9 @@ object ParadoxCompletionManager {
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
             if(definitionInfo.name.isEmpty()) return@p true //ignore anonymous definitions
+            
+            //apply extraFilter since it's necessary
+            if(context.extraFilter?.invoke(definition) == false) return@p true
             
             //排除不匹配可能存在的supported_scopes的情况
             val supportedScopes = ParadoxDefinitionSupportedScopesProvider.getSupportedScopes(definition, definitionInfo)
@@ -618,10 +625,10 @@ object ParadoxCompletionManager {
         if(quoted) return
         
         //基于当前位置的代码补全
-        val keywordOffset = context.keywordOffset
-        val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         try {
             PlsStatus.incompleteComplexExpression.set(true)
+            val keywordOffset = context.keywordOffset
+            val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
             val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup) ?: return
             return scopeFieldExpression.complete(context, result)
         } finally {
@@ -638,10 +645,10 @@ object ParadoxCompletionManager {
         if(quoted) return
         
         //基于当前位置的代码补全
-        val keywordOffset = context.keywordOffset
-        val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         try {
             PlsStatus.incompleteComplexExpression.set(true)
+            val keywordOffset = context.keywordOffset
+            val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
             val valueFieldExpression = ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup) ?: return
             return valueFieldExpression.complete(context, result)
         } finally {
@@ -658,10 +665,10 @@ object ParadoxCompletionManager {
         if(quoted) return
         
         //基于当前位置的代码补全
-        val keywordOffset = context.keywordOffset
-        val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         try {
             PlsStatus.incompleteComplexExpression.set(true)
+            val keywordOffset = context.keywordOffset
+            val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
             val variableFieldExpression = ParadoxVariableFieldExpression.resolve(keyword, textRange, configGroup) ?: return
             return variableFieldExpression.complete(context, result)
         } finally {
@@ -679,12 +686,30 @@ object ParadoxCompletionManager {
         if(quoted) return
         
         //基于当前位置的代码补全
-        val keywordOffset = context.keywordOffset
-        val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         try {
             PlsStatus.incompleteComplexExpression.set(true)
+            val keywordOffset = context.keywordOffset
+            val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
             val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(keyword, textRange, configGroup, config) ?: return
             return dynamicValueExpression.complete(context, result)
+        } finally {
+            PlsStatus.incompleteComplexExpression.remove()
+        }
+    }
+    
+    
+    fun completeDatabaseObjectExpression(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val keyword = context.keyword
+        val configGroup = context.configGroup!!
+        
+        //基于当前位置的代码补全
+        try {
+            PlsStatus.incompleteComplexExpression.set(true)
+            val keywordOffset = context.keywordOffset
+            val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
+            val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(keyword, textRange, configGroup) ?: return
+            return databaseObjectExpression.complete(context, result)
         } finally {
             PlsStatus.incompleteComplexExpression.remove()
         }
@@ -917,10 +942,10 @@ object ParadoxCompletionManager {
         
         if(configs.isNotNullOrEmpty()) {
             for(c in configs) {
-                doComplete( c)
+                doComplete(c)
             }
         } else if(config != null) {
-            doComplete( config)
+            doComplete(config)
         }
     }
     
@@ -932,7 +957,6 @@ object ParadoxCompletionManager {
         val tailText = getScriptExpressionTailText(context, config)
         val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
         val dynamicValueTypeConfigs = valueConfig.valueConfigMap.values
-        if(dynamicValueTypeConfigs.isEmpty()) return
         for(dynamicValueTypeConfig in dynamicValueTypeConfigs) {
             val name = dynamicValueTypeConfig.value
             val element = dynamicValueTypeConfig.pointer.element ?: continue
@@ -947,6 +971,47 @@ object ParadoxCompletionManager {
         }
     }
     
+    fun completeDatabaseObjectType(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val configGroup = context.configGroup!!
+        val tailText = " from database object types"
+        val configs = configGroup.databaseObjectTypes.values
+        for(config in configs) {
+            val name = config.name
+            val element = config.pointer.element ?: continue
+            val typeFile = config.pointer.containingFile
+            val lookupElement = ParadoxLookupElementBuilder.create(element, name)
+                .withIcon(PlsIcons.Nodes.DynamicValue)
+                .withTailText(tailText)
+                .withTypeText(typeFile?.name)
+                .withTypeIcon(typeFile?.icon)
+                .withPriority(ParadoxCompletionPriorities.databaseObjectTypePriority)
+                .build(context)
+            result.addElement(lookupElement)
+        }
+    }
+    
+    fun completeDatabaseObject(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val configGroup = context.configGroup!!
+        val node = context.node?.castOrNull<ParadoxDatabaseObjectNode>() ?: return
+        val config = node.config ?: return
+        val typeToSearch = if(node.index == 0) config.type else config.swapType
+        if(typeToSearch == null) return
+        val extraFilter = f@{ e: PsiElement ->
+            val definition = e as? ParadoxScriptDefinitionElement ?: return@f true
+            node.checkDatabaseObject(definition, typeToSearch)
+        }
+        val mockConfig = CwtValueConfig.resolve(emptyPointer(), configGroup, "<$typeToSearch>")
+        val oldExtraFilter = context.extraFilter
+        val oldConfig = context.config
+        context.extraFilter = extraFilter
+        context.config = mockConfig
+        completeDefinition(context, result)
+        context.extraFilter = oldExtraFilter
+        context.config = oldConfig
+    }
+    
     fun completeParameter(context: ProcessingContext, result: CompletionResultSet) {
         val config = context.config ?: return
         //提示参数名（仅限key）
@@ -954,10 +1019,6 @@ object ParadoxCompletionManager {
         val isKey = context.isKey
         if(isKey != true || config !is CwtPropertyConfig) return
         ParadoxParameterHandler.completeArguments(contextElement, context, result)
-    }
-    
-    fun completeDatabaseObjectExpression(context: ProcessingContext, result: CompletionResultSet) {
-        //TODO 1.3.9+
     }
     
     fun completePredefinedLocalisationScope(context: ProcessingContext, result: CompletionResultSet) {
@@ -1327,7 +1388,7 @@ object ParadoxCompletionManager {
     
     private val ignoredCharsForExtendedConfigName = ".:<>[]".toCharArray()
     
-    private fun checkExtendedConfigName(text: String) : Boolean {
+    private fun checkExtendedConfigName(text: String): Boolean {
         //ignored if config name is empty
         if(text.isEmpty()) return true
         //ignored if config name is a template expression, ant expression or regex

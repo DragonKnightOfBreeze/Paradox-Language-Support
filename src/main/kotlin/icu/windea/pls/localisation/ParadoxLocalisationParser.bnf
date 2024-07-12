@@ -151,12 +151,14 @@ command_field ::= COMMAND_FIELD_TOKEN | property_reference { //can be property r
   methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
 }
 private concept_expression ::= concept
-concept ::= concept_name (COMMA concept_text) ? {
+concept ::= LEFT_SINGLE_QUOTE concept_name RIGHT_SINGLE_QUOTE (COMMA concept_text) ? {
   pin=1
   methods=[getIcon getName setName getReference]
 }
-concept_name ::= LEFT_SINGLE_QUOTE CONCEPT_NAME_TOKEN RIGHT_SINGLE_QUOTE {
+concept_name ::= CONCEPT_NAME_TOKEN {
   pin=1
+  methods=[getName getValue setValue]
+  implements="icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement"
 }
 concept_text ::= rich_text *
 

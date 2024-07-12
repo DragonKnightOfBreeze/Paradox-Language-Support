@@ -30,7 +30,8 @@ class ParadoxDataSourceNode(
     override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
         if(linkConfigs.isEmpty()) return null
         if(text.isParameterized()) return null
-        return Reference(element, rangeInExpression, linkConfigs)
+        val rangeInElement = rangeInExpression.shiftRight(CwtConfigHandler.getExpressionOffset(element))
+        return Reference(element, rangeInElement, linkConfigs)
     }
     
     override fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxComplexExpressionError? {

@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
@@ -20,7 +21,8 @@ class ParadoxScopeLinkNode(
     }
     
     override fun getReference(element: ParadoxScriptStringExpressionElement): Reference {
-        return Reference(element, rangeInExpression, config)
+        val rangeInElement = rangeInExpression.shiftRight(CwtConfigHandler.getExpressionOffset(element))
+        return Reference(element, rangeInElement, config)
     }
     
     class Reference(

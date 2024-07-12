@@ -1,17 +1,19 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi;
 
-import com.intellij.navigation.*;
-import com.intellij.psi.*;
-import com.intellij.psi.search.*;
-import icu.windea.pls.localisation.references.*;
+import java.util.List;
 import org.jetbrains.annotations.*;
-
-import javax.swing.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.localisation.references.ParadoxLocalisationConceptPsiReference;
+import javax.swing.Icon;
 
 public interface ParadoxLocalisationConcept extends PsiElement {
 
-  @NotNull
+  @Nullable
   ParadoxLocalisationConceptName getConceptName();
 
   @Nullable

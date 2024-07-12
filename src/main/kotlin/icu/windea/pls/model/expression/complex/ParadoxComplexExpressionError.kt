@@ -2,8 +2,9 @@ package icu.windea.pls.model.expression.complex
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.util.*
-import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.util.*
 
 data class ParadoxComplexExpressionError(
     val code: Int,
@@ -67,6 +68,20 @@ object ParadoxComplexExpressionErrors {
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.unresolvedScriptValue", value))
     }
     
+    fun unresolvedDatabaseObjectType(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.UnresolvedDatabaseObjectType
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.unresolvedDatabaseObjectType", value))
+    }
+    
+    fun unresolvedDatabaseObject(rangeInExpression: TextRange, value: String, type: String?): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.UnresolvedDatabaseObject
+        val description = when {
+            type != null -> PlsBundle.message("script.expression.unresolvedDatabaseObject", value, type)
+            else -> PlsBundle.message("script.expression.unresolvedDatabaseObject.1", value)
+        }
+        return ParadoxComplexExpressionError(code, rangeInExpression, description)
+    }
+    
     //missing
     
     fun missingScopeField(rangeInExpression: TextRange): ParadoxComplexExpressionError {
@@ -99,7 +114,6 @@ object ParadoxComplexExpressionErrors {
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingScopeFieldExpression"))
     }
     
-    
     fun missingParameterValue(rangeInExpression: TextRange): ParadoxComplexExpressionError {
         val code = ParadoxComplexExpressionErrorCodes.MissingParameterValue
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingParameterValue"))
@@ -118,6 +132,8 @@ object ParadoxComplexExpressionErrorCodes {
     const val UnresolvedValueField = 201
     const val UnresolvedDataSource = 202
     const val UnresolvedScriptValue = 203
+    const val UnresolvedDatabaseObjectType = 204
+    const val UnresolvedDatabaseObject = 205
     
     const val MissingScopeField = 300
     const val MissingValueField = 301
@@ -134,14 +150,14 @@ fun ParadoxComplexExpressionError.isUnresolvedError() = this.code in 200..299
 
 fun ParadoxComplexExpressionError.isMissingError() = this.code in 300..399
 
-fun ProblemsHolder.registerScriptExpressionError(error: ParadoxComplexExpressionError, element: PsiElement, startOffset: Int = 0) {
+fun ProblemsHolder.registerExpressionError(error: ParadoxComplexExpressionError, element: ParadoxExpressionElement) {
     val description = error.description
     val highlightType = when {
         error.highlightType != null -> error.highlightType
         error.isUnresolvedError() -> ProblemHighlightType.LIKE_UNKNOWN_SYMBOL
         else -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
     }
-    val rangeInElement = error.rangeInExpression.shiftRight(startOffset)
+    val rangeInElement = error.rangeInExpression.shiftRight(CwtConfigHandler.getExpressionOffset(element))
     registerProblem(element, description, highlightType, rangeInElement)
 }
 

@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.lang.annotation.*
-import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
@@ -24,6 +23,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.CwtConfigMatcher.Options
 import icu.windea.pls.lang.util.CwtConfigMatcher.ResultValue
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.model.expression.complex.*
@@ -432,36 +432,33 @@ object CwtConfigHandler {
     //endregion
     
     //region Expression Methods
-    fun getExpressionText(element: ParadoxScriptExpressionElement, rangeInElement: TextRange? = null): String {
+    fun getExpressionText(element: ParadoxExpressionElement, rangeInElement: TextRange? = null): String {
         return when {
             element is ParadoxScriptBlock -> "" //should not be used
             element is ParadoxScriptInlineMath -> "" //should not be used
-            else -> rangeInElement?.substring(element.text) ?: element.text.unquote()
+            rangeInElement != null -> rangeInElement.substring(element.text)
+            element is ParadoxScriptStringExpressionElement -> element.text.unquote()
+            else -> element.text
         }
     }
     
-    fun getExpressionTextRange(element: ParadoxScriptExpressionElement): TextRange {
+    fun getExpressionTextRange(element: ParadoxExpressionElement): TextRange {
         return when {
-            element is ParadoxScriptBlock -> TextRange.create(0, 1) //left curly brace
-            element is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent
-            else -> {
-                val text = element.text
-                TextRange.create(0, text.length).unquote(text) //unquoted text 
-            }
+            element is ParadoxScriptBlock -> TextRange.create(0, 1) //"{"
+            element is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent //"@[" or "@\["
+            element is ParadoxScriptStringExpressionElement -> TextRange.create(0, element.text.length).unquote(element.text)
+            else -> TextRange.create(0, element.text.length)
         }
     }
     
-    fun getExpressionTextRange(element: ParadoxScriptExpressionElement, text: String): TextRange {
+    fun getExpressionOffset(element: ParadoxExpressionElement): Int {
         return when {
-            element is ParadoxScriptBlock -> TextRange.create(0, 1) //left curly brace
-            element is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent
-            else -> {
-                TextRange.create(0, text.length).unquote(text) //unquoted text 
-            }
+            element is ParadoxScriptStringExpressionElement && element.text.isLeftQuoted() -> 1
+            else -> 0
         }
     }
     
-    fun getParameterRanges(element: ParadoxScriptExpressionElement): List<TextRange> {
+    fun getParameterRanges(element: ParadoxExpressionElement): List<TextRange> {
         var parameterRanges: MutableList<TextRange>? = null
         element.processChild { parameter ->
             if(parameter is ParadoxParameter) {
@@ -473,7 +470,7 @@ object CwtConfigHandler {
         return parameterRanges.orEmpty()
     }
     
-    fun getParameterRangesInExpression(element: ParadoxScriptExpressionElement): List<TextRange> {
+    fun getParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
         var parameterRanges: MutableList<TextRange>? = null
         element.processChild { parameter ->
             if(parameter is ParadoxParameter) {
@@ -556,10 +553,6 @@ object CwtConfigHandler {
     
     private fun doAnnotateComplexExpressionByAttributesKey(expressionNode: ParadoxComplexExpressionNode, element: ParadoxScriptStringExpressionElement, holder: AnnotationHolder, attributesKey: TextAttributesKey) {
         val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRange.unquote(element.text).startOffset)
-        if(expressionNode is ParadoxTokenNode) {
-            //override default highlight by highlighter (property key or string)
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeToAnnotate).textAttributes(HighlighterColors.TEXT).create()
-        }
         annotateScriptExpression(element, rangeToAnnotate, attributesKey, holder)
     }
     //endregion
@@ -568,7 +561,6 @@ object CwtConfigHandler {
     fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): Array<out PsiReference>? {
         ProgressManager.checkCanceled()
         if(configExpression == null) return null
-        
         val expression = getExpressionText(element, rangeInElement)
         
         val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expression, config, isKey)

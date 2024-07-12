@@ -10,7 +10,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 object ParadoxCompletionKeys : KeyRegistry("PlsCompletion")
@@ -26,6 +25,7 @@ var ProcessingContext.rightQuoted: Boolean? by createKeyDelegate(ParadoxCompleti
 var ProcessingContext.offsetInParent: Int? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.keyword: String by createKeyDelegate(ParadoxCompletionKeys) { "" }
 var ProcessingContext.keywordOffset: Int by createKeyDelegate(ParadoxCompletionKeys) { 0 }
+var ProcessingContext.extraFilter: ((PsiElement) -> Boolean)? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.isKey: Boolean? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.config: CwtConfig<*>? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.configs: Collection<CwtConfig<*>> by createKeyDelegate(ParadoxCompletionKeys) { emptyList() }
@@ -39,6 +39,7 @@ var ProcessingContext.dataSourceNodeToCheck: ParadoxComplexExpressionNode? by cr
 var ProcessingContext.showScriptExpressionTailText: Boolean by createKeyDelegate(ParadoxCompletionKeys) { true }
 var ProcessingContext.contextKey: String? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.argumentNames: MutableSet<String>? by createKeyDelegate(ParadoxCompletionKeys)
+var ProcessingContext.node: ParadoxComplexExpressionNode? by createKeyDelegate(ParadoxCompletionKeys)
 
 fun ProcessingContext.initialize(parameters: CompletionParameters) {
     this.parameters = parameters

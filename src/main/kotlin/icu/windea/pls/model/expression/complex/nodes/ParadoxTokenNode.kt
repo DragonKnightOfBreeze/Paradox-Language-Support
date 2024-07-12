@@ -1,3 +1,3 @@
 package icu.windea.pls.model.expression.complex.nodes
 
-interface ParadoxTokenNode : ParadoxComplexExpressionNode
+sealed interface ParadoxTokenNode : ParadoxComplexExpressionNode

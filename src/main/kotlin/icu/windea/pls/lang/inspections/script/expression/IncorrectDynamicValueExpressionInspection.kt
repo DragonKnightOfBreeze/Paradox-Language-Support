@@ -21,7 +21,6 @@ class IncorrectDynamicValueExpressionInspection : LocalInspectionTool() {
             }
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                ProgressManager.checkCanceled()
                 val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val configGroup = config.configGroup
                 val dataType = config.expression.type
@@ -41,7 +40,7 @@ class IncorrectDynamicValueExpressionInspection : LocalInspectionTool() {
             }
             
             private fun handleError(element: ParadoxScriptStringExpressionElement, error: ParadoxComplexExpressionError) {
-                holder.registerScriptExpressionError(error, element)
+                holder.registerExpressionError(error, element)
             }
         }
     }

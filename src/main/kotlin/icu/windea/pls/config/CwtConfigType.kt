@@ -3,7 +3,6 @@ package icu.windea.pls.config
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import javax.swing.*
 
 enum class CwtConfigType(
@@ -98,10 +97,10 @@ enum class CwtConfigType(
         override val descriptionText get() = PlsBundle.message("cwt.description.scopeGroup")
         override val icon get() = PlsIcons.Nodes.Scope
     },
-    GameObjectType("game object type", true) {
-        override val prefix get() = PlsBundle.message("prefix.gameObjectType")
-        override val descriptionText get() = PlsBundle.message("cwt.description.gameObjectType")
-        override val icon get() = PlsIcons.Nodes.GameObjectType
+    DatabaseObjectType("database object type", true) {
+        override val prefix get() = PlsBundle.message("prefix.databaseObjectType")
+        override val descriptionText get() = PlsBundle.message("cwt.description.databaseObjectType")
+        override val icon get() = PlsIcons.Nodes.DatabaseObjectType
     },
     
     SystemLink("system link", true) {

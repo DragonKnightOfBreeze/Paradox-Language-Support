@@ -420,13 +420,13 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getName(element: ParadoxLocalisationConcept): String {
-        return element.conceptName.idElement?.text?.trim().orEmpty()
+        return element.conceptName?.idElement?.text?.trim().orEmpty()
     }
     
     @JvmStatic
     fun setName(element: ParadoxLocalisationConcept, name: String): ParadoxLocalisationConcept {
         val nameElement = element.conceptName
-        if(nameElement.idElement == null) throw IncorrectOperationException() //不支持重命名
+        if(nameElement?.idElement == null) throw IncorrectOperationException() //不支持重命名
         val newNameElement = ParadoxLocalisationElementFactory.createConceptName(element.project, name)
         nameElement.replace(newNameElement)
         return element
@@ -436,13 +436,31 @@ object ParadoxLocalisationPsiImplUtil {
     fun getReference(element: ParadoxLocalisationConcept): ParadoxLocalisationConceptPsiReference? {
         return CachedValuesManager.getCachedValue(element) {
             val value = run {
-                val rangeInElement = element.conceptName.idElement?.textRangeInParent ?: return@run null
+                val rangeInElement = element.conceptName?.idElement?.textRangeInParent ?: return@run null
                 ParadoxLocalisationConceptPsiReference(element, rangeInElement)
             }
             CachedValueProvider.Result.create(value, element)
         }
     }
     //endregion
+    
+    //region ParadoxLocalisationConceptName
+    @JvmStatic
+    fun getName(element: ParadoxLocalisationConceptName): String {
+        return element.text
+    }
+    
+    @JvmStatic
+    fun getValue(element: ParadoxLocalisationConceptName): String {
+        return element.text
+    }
+    
+    @JvmStatic
+    fun setValue(element: ParadoxLocalisationConceptName, value: String): ParadoxLocalisationConceptName {
+        val newElement = ParadoxLocalisationElementFactory.createConceptName(element.project, value)
+        return element.replace(newElement).cast()
+    }
+    //endregion    
     
     //region ParadoxLocalisationColorfulText
     @JvmStatic

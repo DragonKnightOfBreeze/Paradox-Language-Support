@@ -3,10 +3,13 @@ package icu.windea.pls.model.expression.complex
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.codeInsight.completion.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 /**
@@ -62,35 +65,87 @@ class ParadoxDatabaseObjectExpression private constructor(
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        //val contextElement = context.contextElement!!
-        //val keyword = context.keyword
-        //val keywordOffset = context.keywordOffset
-        //val offsetInParent = context.offsetInParent!!
-        //val isKey = context.isKey
-        //
-        //context.isKey = null
-        //
-        //TODO
-        //
-        //context.keyword = keyword
-        //context.keywordOffset = keywordOffset
-        //context.isKey = isKey
+        val keyword = context.keyword
+        val keywordOffset = context.keywordOffset
+        val offsetInParent = context.offsetInParent!!
+        val isKey = context.isKey
+        val oldNode = context.node
+        
+        for(node in nodes) {
+            val nodeRange = node.rangeInExpression
+            val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset
+            if(node is ParadoxDatabaseObjectTypeNode) {
+                if(inRange) {
+                    val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+                    val resultToUse = result.withPrefixMatcher(keywordToUse)
+                    context.keyword = keywordToUse
+                    context.keywordOffset = node.rangeInExpression.startOffset
+                    context.node = node
+                    ParadoxCompletionManager.completeDatabaseObjectType(context, resultToUse)
+                    break
+                }
+            } else if(node is ParadoxDatabaseObjectNode) {
+                if(inRange) {
+                    val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+                    val resultToUse = result.withPrefixMatcher(keywordToUse)
+                    context.keyword = keywordToUse
+                    context.keywordOffset = node.rangeInExpression.startOffset
+                    context.node = node
+                    ParadoxCompletionManager.completeDatabaseObject(context, resultToUse)
+                    break
+                }
+            }
+        }
+        
+        context.keyword = keyword
+        context.keywordOffset = keywordOffset
+        context.isKey = isKey
+        context.node = oldNode
     }
     
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
-            TODO()
+            if(expressionString.isEmpty()) return null
             
-            //if(expressionString.isEmpty()) return null
-            //
-            //val colonIndex1 = expressionString.indexOf(':')
-            //if(colonIndex1 == -1) return null
-            //val colonIndex2 = expressionString.indexOf(':', colonIndex1 + 1)
-            //
-            //val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-            //val expression = ParadoxDatabaseObjectExpressionImpl(expressionString, range, nodes, configGroup)
-            //
-            //return expression
+            val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
+            
+            val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+            val expression = ParadoxDatabaseObjectExpression(expressionString, range, nodes, configGroup)
+            run r1@{
+                val offset = range.startOffset
+                val colonIndex1 = expressionString.indexOf(':')
+                if(colonIndex1 == -1 && !incomplete) return null
+                run r2@{
+                    val nodeText = if(colonIndex1 == -1) expressionString else expressionString.substring(0, colonIndex1)
+                    val nodeTextRange = TextRange.from(offset, nodeText.length)
+                    val node = ParadoxDatabaseObjectTypeNode.resolve(nodeText, nodeTextRange, configGroup)
+                    nodes += node
+                }
+                if(colonIndex1 == -1) return@r1
+                run r2@{ 
+                    val node = ParadoxMarkerNode(":", TextRange.from(colonIndex1, 1))
+                    nodes += node
+                }
+                val colonIndex2 = expressionString.indexOf(':', colonIndex1 + 1)
+                run r2@{
+                    val nodeText = if(colonIndex2 == -1) expressionString.substring(colonIndex1 + 1) else expressionString.substring(colonIndex1 + 1, colonIndex2)
+                    val nodeTextRange = TextRange.from(colonIndex1 + 1, nodeText.length)
+                    val node = ParadoxDatabaseObjectNode(nodeText, nodeTextRange, expression, 0)
+                    nodes += node
+                }
+                if(colonIndex2 == -1) return@r1
+                run r2@{
+                    val node = ParadoxMarkerNode(":", TextRange.from(colonIndex2, 1))
+                    nodes += node
+                }
+                run r2@{ 
+                    val nodeText = expressionString.substring(colonIndex2 + 1)
+                    val nodeTextRange = TextRange.from(colonIndex2 + 1, nodeText.length)
+                    val node = ParadoxDatabaseObjectNode(nodeText, nodeTextRange, expression, 1)
+                    nodes += node
+                }
+            }
+            return expression
         }
     }
 }

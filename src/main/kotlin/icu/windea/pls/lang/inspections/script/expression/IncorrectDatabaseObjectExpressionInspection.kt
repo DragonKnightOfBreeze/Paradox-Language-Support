@@ -7,7 +7,6 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.psi.*
@@ -29,14 +28,12 @@ class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
             }
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                ProgressManager.checkCanceled()
-                if(element.text.isLeftQuoted()) return //忽略
                 val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return
                 val configGroup = config.configGroup
                 val dataType = config.expression.type
-                if(dataType !in CwtDataTypeGroups.VariableField) return
+                if(dataType !in CwtDataTypeGroups.DatabaseObject) return
                 val value = element.value
-                val textRange = TextRange.create(0, value.length)
+                val textRange = TextRange.create(0, value.length);
                 val expression = ParadoxDatabaseObjectExpression.resolve(value, textRange, configGroup) ?: return
                 handleErrors(element, expression)
             }
@@ -51,7 +48,7 @@ class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
             
             private fun handleError(element: ParadoxScriptStringExpressionElement, error: ParadoxComplexExpressionError) {
                 if(!reportsUnresolved && error.isUnresolvedError()) return
-                holder.registerScriptExpressionError(error, element)
+                holder.registerExpressionError(error, element)
             }
         }
     }

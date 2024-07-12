@@ -55,7 +55,7 @@ enum class ParadoxResolveConstraint {
                         configExpression.type == CwtDataTypes.Definition
                     }
                 }
-                is ParadoxScriptValueExpression.Node.Reference -> true //<script_value>
+                is ParadoxScriptValueNode.Reference -> true //<script_value>
                 is ParadoxLocalisationIconPsiReference -> true
                 is ParadoxLocalisationCommandFieldPsiReference -> true //<scripted_loc>
                 is ParadoxLocalisationConceptPsiReference -> true //<game_concept>
@@ -100,7 +100,7 @@ enum class ParadoxResolveConstraint {
                     val configExpression = reference.config.expression ?: return false
                     configExpression.type == CwtDataTypes.Parameter
                 }
-                is ParadoxScriptValueExpression.ArgumentNode.Reference -> true
+                is ParadoxScriptValueArgumentNode.Reference -> true
                 is ParadoxParameterPsiReference -> true
                 is ParadoxConditionParameterPsiReference -> true
                 else -> false

@@ -199,15 +199,15 @@ class ParadoxScriptValueExpression private constructor(
                 startIndex = tokenIndex + 1
                 val node = when {
                     n == 0 -> {
-                        resolveNode(nodeText, nodeRange, config, configGroup)
+                        ParadoxScriptValueNode.resolve(nodeText, nodeRange, config, configGroup)
                             .also { valueNode = it }
                     }
                     n % 2 == 1 -> {
-                        resolveArgumentNode(nodeText, nodeRange, valueNode, configGroup)
+                        ParadoxScriptValueArgumentNode.resolve(nodeText, nodeRange, valueNode, configGroup)
                             .also { argumentNode = it }
                     }
                     n % 2 == 0 -> {
-                        resolveArgumentValueNode(nodeText, nodeRange, valueNode, argumentNode, configGroup)
+                        ParadoxScriptValueArgumentValueNode.resolve(nodeText, nodeRange, valueNode, argumentNode, configGroup)
                     }
                     else -> throw InternalError()
                 }
@@ -216,18 +216,6 @@ class ParadoxScriptValueExpression private constructor(
                 n++
             }
             return ParadoxScriptValueExpression(expressionString, range, nodes, configGroup, config)
-        }
-        
-        fun resolveNode(text: String, textRange: TextRange, config: CwtConfig<*>, configGroup: CwtConfigGroup): ParadoxScriptValueNode {
-            return ParadoxScriptValueNode(text, textRange, config, configGroup)
-        }
-        
-        fun resolveArgumentNode(text: String, textRange: TextRange, valueNode: ParadoxScriptValueNode?, configGroup: CwtConfigGroup): ParadoxScriptValueArgumentNode {
-            return ParadoxScriptValueArgumentNode(text, textRange, valueNode, configGroup)
-        }
-        
-        fun resolveArgumentValueNode(text: String, textRange: TextRange, valueNode: ParadoxScriptValueNode?, argumentNode: ParadoxScriptValueArgumentNode?, configGroup: CwtConfigGroup): ParadoxScriptValueArgumentValueNode {
-            return ParadoxScriptValueArgumentValueNode(text, textRange, valueNode, argumentNode, configGroup)
         }
     }
 }
