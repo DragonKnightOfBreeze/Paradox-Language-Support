@@ -5,6 +5,7 @@ import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
@@ -20,78 +21,17 @@ import icu.windea.pls.model.expression.complex.nodes.*
  *
  * `root.owner.some_variable`
  */
-interface ParadoxVariableFieldExpression : ParadoxComplexExpression {
-    companion object Resolver {
-        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? =
-            doResolve(expressionString, range, configGroup)
-    }
-}
-
-//Implementations
-
-private fun doResolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {
-    if(expressionString.isEmpty()) return null
-    
-    //skip if text is a number
-    if(isNumber(expressionString)) return null
-    
-    val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expressionString)
-    
-    //skip if text is a parameter with unary operator prefix
-    if(CwtConfigHandler.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
-    
-    val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
-    
-    val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-    val expression = ParadoxVariableFieldExpressionImpl(expressionString, range, nodes, configGroup)
-    val offset = range.startOffset
-    var isLast = false
-    var index: Int
-    var tokenIndex = -1
-    var startIndex = 0
-    val textLength = expressionString.length
-    while(tokenIndex < textLength) {
-        index = tokenIndex + 1
-        tokenIndex = expressionString.indexOf('.', index)
-        if(tokenIndex != -1 && CwtConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
-        if(tokenIndex != -1 && expressionString.indexOf('@', index).let { it != -1 && it < tokenIndex && !CwtConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
-        if(tokenIndex != -1 && expressionString.indexOf('|', index).let { it != -1 && it < tokenIndex && !CwtConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
-        val dotNode = if(tokenIndex != -1) {
-            val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
-            ParadoxOperatorNode(".", dotRange)
-        } else {
-            null
-        }
-        if(tokenIndex == -1) {
-            tokenIndex = textLength
-            isLast = true
-        }
-        //resolve node
-        val nodeText = expressionString.substring(startIndex, tokenIndex)
-        val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
-        startIndex = tokenIndex + 1
-        val node = when {
-            isLast -> ParadoxDataSourceNode.resolve(nodeText, nodeTextRange, configGroup.linksAsVariable)
-            else -> ParadoxScopeFieldNode.resolve(nodeText, nodeTextRange, configGroup)
-        }
-        //handle mismatch situation
-        if(!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
-        nodes.add(node)
-        if(dotNode != null) nodes.add(dotNode)
-    }
-    return expression
-}
-
-private fun isNumber(text: String): Boolean {
-    return ParadoxDataExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
-}
-
-private class ParadoxVariableFieldExpressionImpl(
+class ParadoxVariableFieldExpression(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup
-) : ParadoxVariableFieldExpression {
+) : ParadoxComplexExpression.Base() {
+    val scopeNodes: List<ParadoxScopeFieldNode>
+        get() = nodes.filterIsInstance<ParadoxScopeFieldNode>()
+    val variableNode: ParadoxDataSourceNode
+        get() = nodes.last().cast()
+    
     override fun validate(): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
         var malformed = false
@@ -235,15 +175,62 @@ private class ParadoxVariableFieldExpressionImpl(
         context.scopeContext = scopeContext
     }
     
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is ParadoxVariableFieldExpression && text == other.text
-    }
-    
-    override fun hashCode(): Int {
-        return text.hashCode()
-    }
-    
-    override fun toString(): String {
-        return text
+    companion object Resolver {
+        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {
+            if(expressionString.isEmpty()) return null
+            
+            //skip if text is a number
+            if(isNumber(expressionString)) return null
+            
+            val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expressionString)
+            
+            //skip if text is a parameter with unary operator prefix
+            if(CwtConfigHandler.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
+            
+            val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
+            
+            val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+            val expression = ParadoxVariableFieldExpression(expressionString, range, nodes, configGroup)
+            val offset = range.startOffset
+            var isLast = false
+            var index: Int
+            var tokenIndex = -1
+            var startIndex = 0
+            val textLength = expressionString.length
+            while(tokenIndex < textLength) {
+                index = tokenIndex + 1
+                tokenIndex = expressionString.indexOf('.', index)
+                if(tokenIndex != -1 && CwtConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
+                if(tokenIndex != -1 && expressionString.indexOf('@', index).let { it != -1 && it < tokenIndex && !CwtConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
+                if(tokenIndex != -1 && expressionString.indexOf('|', index).let { it != -1 && it < tokenIndex && !CwtConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
+                val dotNode = if(tokenIndex != -1) {
+                    val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
+                    ParadoxOperatorNode(".", dotRange)
+                } else {
+                    null
+                }
+                if(tokenIndex == -1) {
+                    tokenIndex = textLength
+                    isLast = true
+                }
+                //resolve node
+                val nodeText = expressionString.substring(startIndex, tokenIndex)
+                val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
+                startIndex = tokenIndex + 1
+                val node = when {
+                    isLast -> ParadoxDataSourceNode.resolve(nodeText, nodeTextRange, configGroup.linksAsVariable)
+                    else -> ParadoxScopeFieldNode.resolve(nodeText, nodeTextRange, configGroup)
+                }
+                //handle mismatch situation
+                if(!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
+                nodes.add(node)
+                if(dotNode != null) nodes.add(dotNode)
+            }
+            return expression
+        }
+        
+        private fun isNumber(text: String): Boolean {
+            return ParadoxDataExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
+        }
     }
 }

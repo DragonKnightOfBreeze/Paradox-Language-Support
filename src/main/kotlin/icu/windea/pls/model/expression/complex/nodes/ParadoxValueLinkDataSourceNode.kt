@@ -1,5 +1,7 @@
 package icu.windea.pls.model.expression.complex.nodes
 
+import com.intellij.lang.*
+import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -12,8 +14,10 @@ class ParadoxValueLinkDataSourceNode(
     override val rangeInExpression: TextRange,
     val linkConfigs: List<CwtLinkConfig>,
     override val nodes: List<ParadoxComplexExpressionNode>
-) : ParadoxComplexExpressionNode {
-    override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_LINK_DATA_SOURCE_KEY
+) : ParadoxComplexExpressionNode.Base() {
+    override fun getAttributesKey(language: Language): TextAttributesKey {
+        return ParadoxScriptAttributesKeys.VALUE_LINK_DATA_SOURCE_KEY
+    }
     
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxValueLinkDataSourceNode {

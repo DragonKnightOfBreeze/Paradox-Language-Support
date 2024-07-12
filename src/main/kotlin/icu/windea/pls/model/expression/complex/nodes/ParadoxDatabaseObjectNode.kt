@@ -7,14 +7,14 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.script.highlighter.*
 
-class ParadoxMarkerNode(
+class ParadoxDatabaseObjectNode(
     override val text: String,
     override val rangeInExpression: TextRange
-) : ParadoxComplexExpressionNode.Base(), ParadoxTokenNode {
+) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKey(language: Language): TextAttributesKey {
         return when(language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.MARKER_KEY
-            else -> ParadoxScriptAttributesKeys.MARKER_KEY
+            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY
+            else -> ParadoxScriptAttributesKeys.DATABASE_OBJECT_KEY
         }
     }
 }

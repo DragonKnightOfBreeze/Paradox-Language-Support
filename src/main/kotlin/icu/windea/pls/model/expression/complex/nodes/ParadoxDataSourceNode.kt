@@ -19,7 +19,7 @@ class ParadoxDataSourceNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     val linkConfigs: List<CwtLinkConfig>
-) : ParadoxComplexExpressionNode {
+) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
         if(text.isParameterized()) return null
         return linkConfigs.find { linkConfig ->
@@ -44,13 +44,6 @@ class ParadoxDataSourceNode(
         val reference = getReference(element)
         if(reference == null || reference.resolveFirst() != null) return null
         return ParadoxComplexExpressionErrors.unresolvedDataSource(rangeInExpression, text, expect)
-    }
-    
-    companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxDataSourceNode {
-            //text may contain parameters
-            return ParadoxDataSourceNode(text, textRange, linkConfigs)
-        }
     }
     
     class Reference(
@@ -110,6 +103,13 @@ class ParadoxDataSourceNode(
             return linkConfigs.flatMap { linkConfig ->
                 CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, linkConfig, configExpression = linkConfig.expression)
             }.mapToArray { PsiElementResolveResult(it) }
+        }
+    }
+    
+    companion object Resolver {
+        fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxDataSourceNode {
+            //text may contain parameters
+            return ParadoxDataSourceNode(text, textRange, linkConfigs)
         }
     }
 }

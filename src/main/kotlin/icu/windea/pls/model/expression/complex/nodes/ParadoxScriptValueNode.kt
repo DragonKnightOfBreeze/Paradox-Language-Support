@@ -1,5 +1,6 @@
 package icu.windea.pls.model.expression.complex.nodes
 
+import com.intellij.lang.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -19,8 +20,8 @@ class ParadoxScriptValueNode(
     override val rangeInExpression: TextRange,
     val config: CwtConfig<*>,
     val configGroup: CwtConfigGroup
-) : ParadoxComplexExpressionNode {
-    override fun getAttributesKey(): TextAttributesKey? {
+) : ParadoxComplexExpressionNode.Base() {
+    override fun getAttributesKey(language: Language): TextAttributesKey? {
         if(text.isEmpty()) return null
         return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
     }
@@ -38,12 +39,6 @@ class ParadoxScriptValueNode(
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
         return Reference(element, rangeInExpression, text, config, configGroup)
-    }
-    
-    companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, config: CwtConfig<*>, configGroup: CwtConfigGroup): ParadoxScriptValueNode {
-            return ParadoxScriptValueNode(text, textRange, config, configGroup)
-        }
     }
     
     class Reference(

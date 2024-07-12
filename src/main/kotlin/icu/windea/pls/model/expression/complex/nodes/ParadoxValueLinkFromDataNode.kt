@@ -10,7 +10,7 @@ class ParadoxValueLinkFromDataNode(
     override val rangeInExpression: TextRange,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
     val linkConfigs: List<CwtLinkConfig>,
-) : ParadoxValueFieldNode {
+) : ParadoxComplexExpressionNode.Base(), ParadoxValueFieldNode {
     val prefixNode get() = nodes.findIsInstance<ParadoxValueLinkPrefixNode>()
     val dataSourceNode get() = nodes.findIsInstance<ParadoxValueLinkDataSourceNode>()!!
     

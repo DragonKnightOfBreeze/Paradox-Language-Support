@@ -1,5 +1,7 @@
 package icu.windea.pls.model.expression.complex.nodes
 
+import com.intellij.lang.*
+import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
@@ -12,17 +14,13 @@ class ParadoxValueLinkNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     val config: CwtLinkConfig
-) : ParadoxValueFieldNode {
-    override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY
+) : ParadoxComplexExpressionNode.Base(), ParadoxValueFieldNode {
+    override fun getAttributesKey(language: Language): TextAttributesKey {
+        return ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY
+    }
     
-    override fun getReference(element: ParadoxScriptStringExpressionElement) = ParadoxScopeLinkNode.Reference(element, rangeInExpression, config)
-    
-    companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxValueLinkNode? {
-            val config = configGroup.linksAsValueNotData.get(text)
-                ?: return null
-            return ParadoxValueLinkNode(text, textRange, config)
-        }
+    override fun getReference(element: ParadoxScriptStringExpressionElement): ParadoxScopeLinkNode.Reference {
+        return ParadoxScopeLinkNode.Reference(element, rangeInExpression, config)
     }
     
     class Reference(
@@ -35,5 +33,13 @@ class ParadoxValueLinkNode(
         }
         
         override fun resolve() = config.pointer.element
+    }
+    
+    companion object Resolver {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxValueLinkNode? {
+            val config = configGroup.linksAsValueNotData.get(text)
+                ?: return null
+            return ParadoxValueLinkNode(text, textRange, config)
+        }
     }
 }

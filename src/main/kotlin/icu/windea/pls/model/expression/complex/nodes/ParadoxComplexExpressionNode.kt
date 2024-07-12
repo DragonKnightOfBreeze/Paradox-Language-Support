@@ -1,5 +1,6 @@
 package icu.windea.pls.model.expression.complex.nodes
 
+import com.intellij.lang.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -17,11 +18,25 @@ interface ParadoxComplexExpressionNode {
     val rangeInExpression: TextRange
     val nodes: List<ParadoxComplexExpressionNode> get() = emptyList()
     
-    fun getAttributesKey(): TextAttributesKey? = null
+    fun getAttributesKey(language: Language): TextAttributesKey? = null
     
     fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? = null
     
     fun getReference(element: ParadoxScriptStringExpressionElement): PsiReference? = null
     
     fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxComplexExpressionError? = null
+    
+    abstract class Base : ParadoxComplexExpressionNode {
+        override fun equals(other: Any?): Boolean {
+            return this === other || (other is ParadoxComplexExpressionNode && this.javaClass == other.javaClass && text == other.text)
+        }
+        
+        override fun hashCode(): Int {
+            return text.hashCode()
+        }
+        
+        override fun toString(): String {
+            return text
+        }
+    }
 }

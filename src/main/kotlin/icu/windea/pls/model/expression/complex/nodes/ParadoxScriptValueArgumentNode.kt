@@ -1,5 +1,6 @@
 package icu.windea.pls.model.expression.complex.nodes
 
+import com.intellij.lang.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -14,26 +15,20 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptValueArgumentNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    val scriptValueNode: ParadoxScriptValueNode?,
+    val valueNode: ParadoxScriptValueNode?,
     val configGroup: CwtConfigGroup
-) : ParadoxComplexExpressionNode {
-    override fun getAttributesKey(): TextAttributesKey? {
+) : ParadoxComplexExpressionNode.Base() {
+    override fun getAttributesKey(language: Language): TextAttributesKey? {
         if(text.isEmpty()) return null
         return ParadoxScriptAttributesKeys.ARGUMENT_KEY
     }
     
     override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
-        if(scriptValueNode == null) return null
+        if(valueNode == null) return null
         if(text.isEmpty()) return null
-        val reference = scriptValueNode.getReference(element)
+        val reference = valueNode.getReference(element)
         if(reference?.resolve() == null) return null //skip if script value cannot be resolved
         return Reference(element, rangeInExpression, this)
-    }
-    
-    companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, scriptValueNode: ParadoxScriptValueNode?, configGroup: CwtConfigGroup): ParadoxScriptValueArgumentNode {
-            return ParadoxScriptValueArgumentNode(text, textRange, scriptValueNode, configGroup)
-        }
     }
     
     /**

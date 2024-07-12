@@ -1,5 +1,7 @@
 package icu.windea.pls.model.expression.complex.nodes
 
+import com.intellij.lang.*
+import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.*
@@ -9,8 +11,10 @@ class ParadoxParameterizedScopeFieldNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     val configGroup: CwtConfigGroup
-) : ParadoxScopeFieldNode {
-    override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCOPE_KEY
+) : ParadoxComplexExpressionNode.Base(), ParadoxScopeFieldNode {
+    override fun getAttributesKey(language: Language): TextAttributesKey {
+        return ParadoxScriptAttributesKeys.SCOPE_KEY
+    }
     
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxParameterizedScopeFieldNode? {

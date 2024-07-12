@@ -10,7 +10,7 @@ class ParadoxScopeLinkFromDataNode(
     override val rangeInExpression: TextRange,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
     val linkConfigs: List<CwtLinkConfig>,
-) : ParadoxScopeFieldNode {
+) : ParadoxComplexExpressionNode.Base(), ParadoxScopeFieldNode {
     val prefixNode get() = nodes.findIsInstance<ParadoxScopeLinkPrefixNode>()
     val dataSourceNode get() = nodes.findIsInstance<ParadoxScopeLinkDataSourceNode>()!!
     

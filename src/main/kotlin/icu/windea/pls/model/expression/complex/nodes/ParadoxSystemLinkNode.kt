@@ -1,5 +1,7 @@
 package icu.windea.pls.model.expression.complex.nodes
 
+import com.intellij.lang.*
+import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
@@ -13,19 +15,13 @@ class ParadoxSystemLinkNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     val config: CwtSystemLinkConfig
-) : ParadoxScopeFieldNode {
-    override fun getAttributesKey() = ParadoxScriptAttributesKeys.SYSTEM_LINK_KEY
+) : ParadoxComplexExpressionNode.Base(), ParadoxScopeFieldNode {
+    override fun getAttributesKey(language: Language): TextAttributesKey {
+        return ParadoxScriptAttributesKeys.SYSTEM_LINK_KEY
+    }
     
     override fun getReference(element: ParadoxScriptStringExpressionElement): Reference {
         return Reference(element, rangeInExpression, config.pointer.element)
-    }
-    
-    companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxSystemLinkNode? {
-            val config = configGroup.systemLinks.get(text)
-                ?: return null
-            return ParadoxSystemLinkNode(text, textRange, config)
-        }
     }
     
     class Reference(
@@ -38,5 +34,12 @@ class ParadoxSystemLinkNode(
         }
         
         override fun resolve() = resolved
+    }
+    
+    companion object Resolver {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxSystemLinkNode? {
+            val config = configGroup.systemLinks.get(text) ?: return null
+            return ParadoxSystemLinkNode(text, textRange, config)
+        }
     }
 }

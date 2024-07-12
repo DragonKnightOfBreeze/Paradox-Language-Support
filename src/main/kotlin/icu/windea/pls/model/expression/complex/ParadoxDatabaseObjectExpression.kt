@@ -1,15 +1,13 @@
 package icu.windea.pls.model.expression.complex
 
 import com.intellij.codeInsight.completion.*
-import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.model.expression.complex.nodes.*
-import icu.windea.pls.script.highlighter.*
 
 /**
  * 数据库对象表达式。对应的CWT规则类型为[CwtDataTypeGroups.DatabaseObject]。
@@ -30,12 +28,19 @@ import icu.windea.pls.script.highlighter.*
  * * `civic:some_civic`
  * * `civic:some_civic:some_swapped_civic`
  */
-class ParadoxDatabaseObjectExpression(
+class ParadoxDatabaseObjectExpression private constructor(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup
-) : ParadoxComplexExpression {
+) : ParadoxComplexExpression.Base() {
+    val typeNode: ParadoxDatabaseObjectTypeNode?
+        get() = nodes.getOrNull(0)?.cast()
+    val valueNode: ParadoxDatabaseObjectNode?
+        get() = nodes.getOrNull(2)?.cast()
+    val swapValueNode: ParadoxDatabaseObjectNode?
+        get() = nodes.getOrNull(4)?.cast()
+    
     override fun validate(): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
         var malformed = false
@@ -72,59 +77,21 @@ class ParadoxDatabaseObjectExpression(
         //context.isKey = isKey
     }
     
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is ParadoxDatabaseObjectExpression && text == other.text
-    }
-    
-    override fun hashCode(): Int {
-        return text.hashCode()
-    }
-    
-    override fun toString(): String {
-        return text
-    }
-    
-    interface Nodes {
-        class Type(
-            override val text: String,
-            override val rangeInExpression: TextRange
-        ) : ParadoxComplexExpressionNode {
-            override fun getAttributesKey() = ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE_KEY
-        }
-        
-        class Value(
-            override val text: String,
-            override val rangeInExpression: TextRange
-        ) : ParadoxComplexExpressionNode {
-            override fun getAttributesKey() = ParadoxScriptAttributesKeys.DATABASE_OBJECT_KEY
-        }
-        
-        class SwapValue(
-            override val text: String,
-            override val rangeInExpression: TextRange
-        ) : ParadoxComplexExpressionNode {
-            override fun getAttributesKey() = ParadoxScriptAttributesKeys.DATABASE_OBJECT_KEY
-        }
-    }
-    
     companion object Resolver {
-        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? =
-            doResolve(expressionString, range, configGroup)
+        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
+            TODO()
+            
+            //if(expressionString.isEmpty()) return null
+            //
+            //val colonIndex1 = expressionString.indexOf(':')
+            //if(colonIndex1 == -1) return null
+            //val colonIndex2 = expressionString.indexOf(':', colonIndex1 + 1)
+            //
+            //val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+            //val expression = ParadoxDatabaseObjectExpressionImpl(expressionString, range, nodes, configGroup)
+            //
+            //return expression
+        }
     }
-}
-
-private fun doResolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
-    TODO()
-    
-    //if(expressionString.isEmpty()) return null
-    //
-    //val colonIndex1 = expressionString.indexOf(':')
-    //if(colonIndex1 == -1) return null
-    //val colonIndex2 = expressionString.indexOf(':', colonIndex1 + 1)
-    //
-    //val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-    //val expression = ParadoxDatabaseObjectExpressionImpl(expressionString, range, nodes, configGroup)
-    //
-    //return expression
 }
 

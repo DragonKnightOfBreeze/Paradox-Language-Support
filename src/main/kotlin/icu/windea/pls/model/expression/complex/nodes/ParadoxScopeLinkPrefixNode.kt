@@ -1,5 +1,7 @@
 package icu.windea.pls.model.expression.complex.nodes
 
+import com.intellij.lang.*
+import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
@@ -12,17 +14,13 @@ class ParadoxScopeLinkPrefixNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val linkConfigs: List<CwtLinkConfig>
-) : ParadoxLinkPrefixNode {
-    override fun getAttributesKey() = ParadoxScriptAttributesKeys.SCOPE_LINK_PREFIX_KEY
+) : ParadoxComplexExpressionNode.Base(), ParadoxLinkPrefixNode {
+    override fun getAttributesKey(language: Language): TextAttributesKey {
+        return ParadoxScriptAttributesKeys.SCOPE_LINK_PREFIX_KEY
+    }
     
     override fun getReference(element: ParadoxScriptStringExpressionElement): Reference {
         return Reference(element, rangeInExpression, linkConfigs)
-    }
-    
-    companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkPrefixNode {
-            return ParadoxScopeLinkPrefixNode(text, textRange, linkConfigs)
-        }
     }
     
     class Reference(
@@ -36,6 +34,12 @@ class ParadoxScopeLinkPrefixNode(
         
         override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
             return linkConfigs.mapNotNull { it.pointer.element }.mapToArray { PsiElementResolveResult(it) }
+        }
+    }
+    
+    companion object Resolver {
+        fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkPrefixNode {
+            return ParadoxScopeLinkPrefixNode(text, textRange, linkConfigs)
         }
     }
 }

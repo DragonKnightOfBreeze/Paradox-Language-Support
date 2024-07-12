@@ -38,6 +38,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("script.displayName.pathReference"), ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.enumValue"), ParadoxScriptAttributesKeys.ENUM_VALUE_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.complexEnumValue"), ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE_KEY),
+        
         AttributesDescriptor(PlsBundle.message("script.displayName.variable"), ParadoxScriptAttributesKeys.VARIABLE_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.dynamicValue"), ParadoxScriptAttributesKeys.DYNAMIC_VALUE_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.systemLink"), ParadoxScriptAttributesKeys.SYSTEM_LINK_KEY),
@@ -49,6 +50,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("script.displayName.valueLinkDataSource"), ParadoxScriptAttributesKeys.VALUE_LINK_DATA_SOURCE_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.databaseObjectType"), ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.databaseObject"), ParadoxScriptAttributesKeys.DATABASE_OBJECT_KEY),
+        
         AttributesDescriptor(PlsBundle.message("script.displayName.modifier"), ParadoxScriptAttributesKeys.MODIFIER_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.trigger"), ParadoxScriptAttributesKeys.TRIGGER_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.effect"), ParadoxScriptAttributesKeys.EFFECT_KEY),

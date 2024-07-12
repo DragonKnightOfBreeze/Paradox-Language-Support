@@ -17,4 +17,3 @@ data class ParadoxTextColorInfo(
     val icon = ColorIcon(16, color)
     val text = "$name = { $r $g $b }"
 }
-

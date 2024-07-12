@@ -12,17 +12,18 @@ import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.nodes.*
 import icu.windea.pls.script.psi.*
+import kotlin.Pair
 
 /**
- * 封装值表达式。作为[ParadoxValueFieldExpression]的一部分。
+ * 脚本值表达式。作为[ParadoxValueFieldExpression]的一部分。
  *
  * 语法：
  *
  * ```bnf
- * script_value_expression ::= script_value ("|" (param_name "|" param_value "|")+)?
+ * script_value_expression ::= script_value ("|" (arg_name "|" arg_value "|")+)?
  * script_value ::= TOKEN //matching config expression "<script_value>"
- * param_name ::= TOKEN //parameter name, no surrounding "$"
- * param_value ::= TOKEN //boolean, int, float or string
+ * arg_name ::= TOKEN //argument name, no surrounding "$"
+ * arg_value ::= TOKEN //boolean, int, float or string
  * ```
  *
  * 示例：
@@ -30,79 +31,31 @@ import icu.windea.pls.script.psi.*
  * * `some_sv`
  * * `some_sv|PARAM|VALUE|`
  */
-interface ParadoxScriptValueExpression : ParadoxComplexExpression {
-    val config: CwtConfig<*>
-    
-    companion object Resolver {
-        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? =
-            doResolve(expressionString, range, configGroup, config)
-    }
-}
-
-//Implementations
-
-private fun doResolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
-    if(expressionString.isEmpty()) return null
-    
-    val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expressionString)
-    
-    val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
-    
-    val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-    val offset = range.startOffset
-    var n = 0
-    var scriptValueNode: ParadoxScriptValueNode? = null
-    var parameterNode: ParadoxScriptValueArgumentNode? = null
-    var index: Int
-    var tokenIndex = -1
-    var startIndex = 0
-    val textLength = expressionString.length
-    while(tokenIndex < textLength) {
-        index = tokenIndex + 1
-        tokenIndex = expressionString.indexOf('|', index)
-        if(tokenIndex != -1 && CwtConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
-        val pipeNode = if(tokenIndex != -1) {
-            val pipeRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
-            ParadoxMarkerNode("|", pipeRange)
-        } else {
-            null
-        }
-        if(tokenIndex == -1) {
-            tokenIndex = textLength
-        }
-        if(!incomplete && index == tokenIndex && tokenIndex == textLength) break
-        //resolve node
-        val nodeText = expressionString.substring(startIndex, tokenIndex)
-        val nodeRange = TextRange.create(startIndex + offset, tokenIndex + offset)
-        startIndex = tokenIndex + 1
-        val node = when {
-            n == 0 -> {
-                ParadoxScriptValueNode.resolve(nodeText, nodeRange, config, configGroup)
-                    .also { scriptValueNode = it }
-            }
-            n % 2 == 1 -> {
-                ParadoxScriptValueArgumentNode.resolve(nodeText, nodeRange, scriptValueNode, configGroup)
-                    .also { parameterNode = it }
-            }
-            n % 2 == 0 -> {
-                ParadoxScriptValueArgumentValueNode.resolve(nodeText, nodeRange, scriptValueNode, parameterNode, configGroup)
-            }
-            else -> throw InternalError()
-        }
-        nodes.add(node)
-        if(pipeNode != null) nodes.add(pipeNode)
-        n++
-    }
-    return ParadoxScriptValueExpressionImpl(expressionString, range, nodes, configGroup, config)
-}
-
-private class ParadoxScriptValueExpressionImpl(
+class ParadoxScriptValueExpression private constructor(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup,
-    override val config: CwtConfig<*>
-) : ParadoxScriptValueExpression {
+    val config: CwtConfig<*>
+) : ParadoxComplexExpression.Base() {
+    val scriptValueNode: ParadoxScriptValueNode
+        get() = nodes.first().cast()
+    val argumentNodes: List<Pair<ParadoxScriptValueArgumentNode, ParadoxScriptValueArgumentValueNode?>>
+        get() = buildList {
+            var argumentNode: ParadoxScriptValueArgumentNode? = null
+            for(node in nodes) {
+                if(node is ParadoxScriptValueArgumentNode) {
+                    argumentNode = node
+                } else if(node is ParadoxScriptValueArgumentValueNode && argumentNode != null) {
+                    add(tupleOf(argumentNode, node))
+                    argumentNode = null
+                }
+            }
+            if(argumentNode != null) {
+                add(tupleOf(argumentNode, null))
+            }
+        }
+    
     override fun validate(): List<ParadoxComplexExpressionError> {
         var malformed = false
         val errors = mutableListOf<ParadoxComplexExpressionError>()
@@ -209,15 +162,73 @@ private class ParadoxScriptValueExpressionImpl(
         context.scopeMatched = scopeMatched
     }
     
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is ParadoxScriptValueExpression && text == other.text
-    }
-    
-    override fun hashCode(): Int {
-        return text.hashCode()
-    }
-    
-    override fun toString(): String {
-        return text
+    companion object Resolver {
+        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
+            if(expressionString.isEmpty()) return null
+            
+            val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expressionString)
+            
+            val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
+            
+            val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+            val offset = range.startOffset
+            var n = 0
+            var valueNode: ParadoxScriptValueNode? = null
+            var argumentNode: ParadoxScriptValueArgumentNode? = null
+            var index: Int
+            var tokenIndex = -1
+            var startIndex = 0
+            val textLength = expressionString.length
+            while(tokenIndex < textLength) {
+                index = tokenIndex + 1
+                tokenIndex = expressionString.indexOf('|', index)
+                if(tokenIndex != -1 && CwtConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
+                val pipeNode = if(tokenIndex != -1) {
+                    val pipeRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
+                    ParadoxMarkerNode("|", pipeRange)
+                } else {
+                    null
+                }
+                if(tokenIndex == -1) {
+                    tokenIndex = textLength
+                }
+                if(!incomplete && index == tokenIndex && tokenIndex == textLength) break
+                //resolve node
+                val nodeText = expressionString.substring(startIndex, tokenIndex)
+                val nodeRange = TextRange.create(startIndex + offset, tokenIndex + offset)
+                startIndex = tokenIndex + 1
+                val node = when {
+                    n == 0 -> {
+                        resolveNode(nodeText, nodeRange, config, configGroup)
+                            .also { valueNode = it }
+                    }
+                    n % 2 == 1 -> {
+                        resolveArgumentNode(nodeText, nodeRange, valueNode, configGroup)
+                            .also { argumentNode = it }
+                    }
+                    n % 2 == 0 -> {
+                        resolveArgumentValueNode(nodeText, nodeRange, valueNode, argumentNode, configGroup)
+                    }
+                    else -> throw InternalError()
+                }
+                nodes.add(node)
+                if(pipeNode != null) nodes.add(pipeNode)
+                n++
+            }
+            return ParadoxScriptValueExpression(expressionString, range, nodes, configGroup, config)
+        }
+        
+        fun resolveNode(text: String, textRange: TextRange, config: CwtConfig<*>, configGroup: CwtConfigGroup): ParadoxScriptValueNode {
+            return ParadoxScriptValueNode(text, textRange, config, configGroup)
+        }
+        
+        fun resolveArgumentNode(text: String, textRange: TextRange, valueNode: ParadoxScriptValueNode?, configGroup: CwtConfigGroup): ParadoxScriptValueArgumentNode {
+            return ParadoxScriptValueArgumentNode(text, textRange, valueNode, configGroup)
+        }
+        
+        fun resolveArgumentValueNode(text: String, textRange: TextRange, valueNode: ParadoxScriptValueNode?, argumentNode: ParadoxScriptValueArgumentNode?, configGroup: CwtConfigGroup): ParadoxScriptValueArgumentValueNode {
+            return ParadoxScriptValueArgumentValueNode(text, textRange, valueNode, argumentNode, configGroup)
+        }
     }
 }
+

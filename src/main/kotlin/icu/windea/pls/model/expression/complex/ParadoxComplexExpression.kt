@@ -21,22 +21,31 @@ interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
     
     fun complete(context: ProcessingContext, result: CompletionResultSet) = pass()
     
-    companion object Resolver {
-        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? =
-            doResolve(expressionString, range, configGroup, config)
+    abstract class Base : ParadoxComplexExpression {
+        override fun equals(other: Any?): Boolean {
+            return this === other || (other is ParadoxComplexExpression && this.javaClass == other.javaClass && text == other.text)
+        }
+        
+        override fun hashCode(): Int {
+            return text.hashCode()
+        }
+        
+        override fun toString(): String {
+            return text
+        }
     }
-}
-
-//Implementations
-
-private fun doResolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
-    val dataType = config.expression?.type ?: return null
-    return when {
-        dataType in CwtDataTypeGroups.DynamicValue -> ParadoxDynamicValueExpression.resolve(expressionString, range, configGroup, config)
-        dataType in CwtDataTypeGroups.ScopeField -> ParadoxScopeFieldExpression.resolve(expressionString, range, configGroup)
-        dataType in CwtDataTypeGroups.ValueField -> ParadoxValueFieldExpression.resolve(expressionString, range, configGroup)
-        dataType in CwtDataTypeGroups.VariableField -> ParadoxVariableFieldExpression.resolve(expressionString, range, configGroup)
-        dataType in CwtDataTypeGroups.DatabaseObject -> ParadoxDatabaseObjectExpression.resolve(expressionString, range, configGroup)
-        else -> null
+    
+    companion object Resolver {
+        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
+            val dataType = config.expression?.type ?: return null
+            return when {
+                dataType in CwtDataTypeGroups.DynamicValue -> ParadoxDynamicValueExpression.resolve(expressionString, range, configGroup, config)
+                dataType in CwtDataTypeGroups.ScopeField -> ParadoxScopeFieldExpression.resolve(expressionString, range, configGroup)
+                dataType in CwtDataTypeGroups.ValueField -> ParadoxValueFieldExpression.resolve(expressionString, range, configGroup)
+                dataType in CwtDataTypeGroups.VariableField -> ParadoxVariableFieldExpression.resolve(expressionString, range, configGroup)
+                dataType in CwtDataTypeGroups.DatabaseObject -> ParadoxDatabaseObjectExpression.resolve(expressionString, range, configGroup)
+                else -> null
+            }
+        }
     }
 }

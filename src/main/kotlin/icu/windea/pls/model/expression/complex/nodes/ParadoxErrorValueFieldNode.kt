@@ -8,7 +8,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxErrorValueFieldNode(
     override val text: String,
     override val rangeInExpression: TextRange
-) : ParadoxValueFieldNode, ParadoxErrorNode {
+) : ParadoxComplexExpressionNode.Base(), ParadoxValueFieldNode, ParadoxErrorNode {
     override fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxComplexExpressionError? {
         if(nodes.isNotEmpty()) return null
         if(text.isEmpty()) return null

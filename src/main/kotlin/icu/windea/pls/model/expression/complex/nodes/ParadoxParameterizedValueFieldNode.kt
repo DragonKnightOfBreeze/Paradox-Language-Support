@@ -1,5 +1,7 @@
 package icu.windea.pls.model.expression.complex.nodes
 
+import com.intellij.lang.*
+import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.highlighter.*
@@ -7,8 +9,10 @@ import icu.windea.pls.script.highlighter.*
 class ParadoxParameterizedValueFieldNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-) : ParadoxValueFieldNode {
-    override fun getAttributesKey() = ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY
+) : ParadoxComplexExpressionNode.Base(), ParadoxValueFieldNode {
+    override fun getAttributesKey(language: Language): TextAttributesKey {
+        return ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY
+    }
     
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange): ParadoxParameterizedValueFieldNode? {
