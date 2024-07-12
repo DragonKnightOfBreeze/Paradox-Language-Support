@@ -11,7 +11,7 @@ import java.util.*
  * 定义子类型表达式。
  *
  * 示例：
- * 
+ *
  * * `a`
  * * `!a`
  * * `a&b`
@@ -20,35 +20,17 @@ import java.util.*
  *
  * * 在CWT规则文件中，`subtype[X]`表示作为其值的子句中的规则仅限匹配此定义子类型表达式的定义。其中`X`即是一个定义子类型表达式。
  */
-interface ParadoxDefinitionSubtypeExpression {
+class ParadoxDefinitionSubtypeExpression private constructor(
     val expressionString: String
-    val subtypes: List<ReversibleValue<String>>
+) {
+    val subtypes: List<ReversibleValue<String>> = expressionString.split('&').map { ReversibleValue(it) }
     
-    fun matches(subtypes: Collection<String>): Boolean
-    fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean
-    
-    companion object Resolver {
-        fun resolve(expressionString: String): ParadoxDefinitionSubtypeExpression = doResolve(expressionString)
-    }
-}
-
-//Implementations
-
-private fun doResolve(expressionString: String): ParadoxDefinitionSubtypeExpression {
-    return ParadoxDefinitionSubtypeExpressionImpl(expressionString)
-}
-
-private class ParadoxDefinitionSubtypeExpressionImpl(
-    override val expressionString: String
-) : ParadoxDefinitionSubtypeExpression {
-    override val subtypes: List<ReversibleValue<String>> = expressionString.split('&').map { ReversibleValue(it) }
-    
-    override fun matches(subtypes: Collection<String>): Boolean {
+    fun matches(subtypes: Collection<String>): Boolean {
         //目前仅支持"!"和"&"的组合
         return this.subtypes.all { t -> t.where { subtypes.contains(it) } }
     }
     
-    override fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean {
+    fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean {
         return matches(definitionInfo.subtypes)
     }
     
@@ -62,5 +44,11 @@ private class ParadoxDefinitionSubtypeExpressionImpl(
     
     override fun toString(): String {
         return expressionString
+    }
+    
+    companion object Resolver {
+        fun resolve(expressionString: String): ParadoxDefinitionSubtypeExpression {
+            return ParadoxDefinitionSubtypeExpression(expressionString)
+        }
     }
 }

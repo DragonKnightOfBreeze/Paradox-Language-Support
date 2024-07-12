@@ -6,7 +6,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.util.*
@@ -152,6 +151,6 @@ class ParadoxDefinitionInfo(
         return Objects.hash(name, typesText, gameType)
     }
     
-    object Keys: KeyRegistry()
+    object Keys : KeyRegistry("ParadoxDefinitionInfo")
 }
 
