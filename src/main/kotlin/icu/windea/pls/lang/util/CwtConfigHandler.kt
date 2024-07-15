@@ -34,6 +34,73 @@ import icu.windea.pls.script.psi.*
 import kotlin.collections.isNullOrEmpty
 
 object CwtConfigHandler {
+    //region Common Methods
+    fun getExpressionText(element: ParadoxExpressionElement, rangeInElement: TextRange? = null): String {
+        return when {
+            element is ParadoxScriptBlock -> "" //should not be used
+            element is ParadoxScriptInlineMath -> "" //should not be used
+            rangeInElement != null -> rangeInElement.substring(element.text)
+            element is ParadoxScriptStringExpressionElement -> element.text.unquote()
+            else -> element.text
+        }
+    }
+    
+    fun getExpressionTextRange(element: ParadoxExpressionElement): TextRange {
+        return when {
+            element is ParadoxScriptBlock -> TextRange.create(0, 1) //"{"
+            element is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent //"@[" or "@\["
+            element is ParadoxScriptStringExpressionElement -> TextRange.create(0, element.text.length).unquote(element.text)
+            else -> TextRange.create(0, element.text.length)
+        }
+    }
+    
+    fun getExpressionOffset(element: ParadoxExpressionElement): Int {
+        return when {
+            element is ParadoxScriptStringExpressionElement && element.text.isLeftQuoted() -> 1
+            else -> 0
+        }
+    }
+    
+    fun getParameterRanges(element: ParadoxExpressionElement): List<TextRange> {
+        var parameterRanges: MutableList<TextRange>? = null
+        element.processChild { parameter ->
+            if(parameter is ParadoxParameter) {
+                if(parameterRanges == null) parameterRanges = mutableListOf()
+                parameterRanges?.add(parameter.textRange)
+            }
+            true
+        }
+        return parameterRanges.orEmpty()
+    }
+    
+    fun getParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
+        var parameterRanges: MutableList<TextRange>? = null
+        element.processChild { parameter ->
+            if(parameter is ParadoxParameter) {
+                if(parameterRanges == null) parameterRanges = mutableListOf()
+                parameterRanges?.add(parameter.textRangeInParent)
+            }
+            true
+        }
+        return parameterRanges.orEmpty()
+    }
+    
+    fun getParameterRangesInExpression(expression: String): List<TextRange> {
+        val indices = expression.indicesOf('$')
+        if(indices.size <= 1) return emptyList()
+        return indices.windowed(2, 2, false) { TextRange.create(it[0], it[1] + 1) }
+    }
+    
+    fun isUnaryOperatorAwareParameter(text: String, parameterRanges: List<TextRange>): Boolean {
+        return text.firstOrNull()?.let { it == '+' || it == '-' } == true
+            && parameterRanges.singleOrNull()?.let { it.startOffset == 1 && it.endOffset == text.length } == true
+    }
+    
+    fun inParameterRanges(parameterRanges: List<TextRange>, index: Int): Boolean {
+        return parameterRanges.any { index in it }
+    }
+    //endregion
+    
     //region Core Methods
     fun getConfigContext(element: PsiElement): CwtConfigContext? {
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return null
@@ -428,73 +495,6 @@ object CwtConfigHandler {
             true
         }
         return occurrenceMap
-    }
-    //endregion
-    
-    //region Expression Methods
-    fun getExpressionText(element: ParadoxExpressionElement, rangeInElement: TextRange? = null): String {
-        return when {
-            element is ParadoxScriptBlock -> "" //should not be used
-            element is ParadoxScriptInlineMath -> "" //should not be used
-            rangeInElement != null -> rangeInElement.substring(element.text)
-            element is ParadoxScriptStringExpressionElement -> element.text.unquote()
-            else -> element.text
-        }
-    }
-    
-    fun getExpressionTextRange(element: ParadoxExpressionElement): TextRange {
-        return when {
-            element is ParadoxScriptBlock -> TextRange.create(0, 1) //"{"
-            element is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent //"@[" or "@\["
-            element is ParadoxScriptStringExpressionElement -> TextRange.create(0, element.text.length).unquote(element.text)
-            else -> TextRange.create(0, element.text.length)
-        }
-    }
-    
-    fun getExpressionOffset(element: ParadoxExpressionElement): Int {
-        return when {
-            element is ParadoxScriptStringExpressionElement && element.text.isLeftQuoted() -> 1
-            else -> 0
-        }
-    }
-    
-    fun getParameterRanges(element: ParadoxExpressionElement): List<TextRange> {
-        var parameterRanges: MutableList<TextRange>? = null
-        element.processChild { parameter ->
-            if(parameter is ParadoxParameter) {
-                if(parameterRanges == null) parameterRanges = mutableListOf()
-                parameterRanges?.add(parameter.textRange)
-            }
-            true
-        }
-        return parameterRanges.orEmpty()
-    }
-    
-    fun getParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
-        var parameterRanges: MutableList<TextRange>? = null
-        element.processChild { parameter ->
-            if(parameter is ParadoxParameter) {
-                if(parameterRanges == null) parameterRanges = mutableListOf()
-                parameterRanges?.add(parameter.textRangeInParent)
-            }
-            true
-        }
-        return parameterRanges.orEmpty()
-    }
-    
-    fun getParameterRangesInExpression(expression: String): List<TextRange> {
-        val indices = expression.indicesOf('$')
-        if(indices.size <= 1) return emptyList()
-        return indices.windowed(2, 2, false) { TextRange.create(it[0], it[1] + 1) }
-    }
-    
-    fun isUnaryOperatorAwareParameter(text: String, parameterRanges: List<TextRange>): Boolean {
-        return text.firstOrNull()?.let { it == '+' || it == '-' } == true
-            && parameterRanges.singleOrNull()?.let { it.startOffset == 1 && it.endOffset == text.length } == true
-    }
-    
-    fun inParameterRanges(parameterRanges: List<TextRange>, index: Int): Boolean {
-        return parameterRanges.any { index in it }
     }
     //endregion
     
