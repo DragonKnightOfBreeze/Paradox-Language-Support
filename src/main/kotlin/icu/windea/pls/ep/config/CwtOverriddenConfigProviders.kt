@@ -67,7 +67,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
         ProgressManager.checkCanceled()
         val contextProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
             .filter { it.name.lowercase() in Data.CONTEXT_NAMES }
-            .find { CwtConfigHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
+            .find { ParadoxExpressionHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
             ?: return null
         val triggerProperty = contextProperty.findProperty(Data.TRIGGER_KEY, inline = true) ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null

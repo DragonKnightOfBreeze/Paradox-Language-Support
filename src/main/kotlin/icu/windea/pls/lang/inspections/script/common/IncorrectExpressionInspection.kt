@@ -26,7 +26,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                  if(element is ParadoxScriptBoolean) return
                 
                 //得到完全匹配的CWT规则
-                val config = CwtConfigHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return
+                val config = ParadoxExpressionHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return
                 
                 //开始检查
                 ParadoxIncorrectExpressionChecker.check(element, config, holder)

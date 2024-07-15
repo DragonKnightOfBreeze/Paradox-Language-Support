@@ -47,7 +47,7 @@ class ParadoxDatabaseObjectNode(
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
         if(config == null) return null
-        val rangeInElement = rangeInExpression.shiftRight(CwtConfigHandler.getExpressionOffset(element))
+        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
         return Reference(element, rangeInElement, this)
     }
     

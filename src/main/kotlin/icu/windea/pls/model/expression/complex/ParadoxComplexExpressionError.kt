@@ -157,7 +157,7 @@ fun ProblemsHolder.registerExpressionError(error: ParadoxComplexExpressionError,
         error.isUnresolvedError() -> ProblemHighlightType.LIKE_UNKNOWN_SYMBOL
         else -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
     }
-    val rangeInElement = error.rangeInExpression.shiftRight(CwtConfigHandler.getExpressionOffset(element))
+    val rangeInElement = error.rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
     registerProblem(element, description, highlightType, rangeInElement)
 }
 

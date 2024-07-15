@@ -42,7 +42,7 @@ class ParadoxScriptValueArgumentValueNode(
     //    if(text.isEmpty()) return null
     //    val reference = valueNode.getReference(element)
     //    if(reference?.resolve() == null) return null //skip if script value cannot be resolved
-    //    val rangeInElement = rangeInExpression.shiftRight(CwtConfigHandler.getExpressionOffset(element))
+    //    val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
     //    return Reference(element, rangeInElement, this)
     //}
     //

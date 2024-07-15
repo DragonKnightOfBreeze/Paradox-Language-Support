@@ -50,7 +50,7 @@ object ParadoxInlineScriptHandler {
     }
     
     private fun doGetUsageInfo(element: ParadoxScriptProperty, file: PsiFile = element.containingFile): ParadoxInlineScriptUsageInfo? {
-        //这里不能调用CwtConfigHandler.getConfigs，因为需要处理内联的情况，会导致StackOverflow
+        //这里不能调用ParadoxExpressionHandler.getConfigs，因为是需要处理内联的情况，可能会导致StackOverflow
         
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
@@ -120,7 +120,7 @@ object ParadoxInlineScriptHandler {
     
     fun getExpressionElement(contextReferenceElement: ParadoxScriptProperty): ParadoxScriptValue? {
         if(contextReferenceElement.name.lowercase() != inlineScriptKey) return null
-        val config = CwtConfigHandler.getConfigs(contextReferenceElement).firstOrNull() ?: return null
+        val config = ParadoxExpressionHandler.getConfigs(contextReferenceElement).firstOrNull() ?: return null
         val inlineConfig = config.inlineableConfig?.castOrNull<CwtInlineConfig>() ?: return null
         if(inlineConfig.name != inlineScriptKey) return null
         val expressionLocation = inlineConfig.config.findOption { it.key == inlineScriptExpressionOptionName }?.stringValue ?: return null
@@ -135,7 +135,7 @@ object ParadoxInlineScriptHandler {
             contextReferenceElement = contextReferenceElement.findParentProperty()?.castOrNull<ParadoxScriptProperty>() ?: return null
         }
         if(contextReferenceElement.name.lowercase() != inlineScriptKey) return null
-        val config = CwtConfigHandler.getConfigs(contextReferenceElement).firstOrNull() ?: return null
+        val config = ParadoxExpressionHandler.getConfigs(contextReferenceElement).firstOrNull() ?: return null
         val inlineConfig = config.inlineableConfig?.castOrNull<CwtInlineConfig>() ?: return null
         if(inlineConfig.name != inlineScriptKey) return null
         val expressionLocation = inlineConfig.config.findOption { it.key == inlineScriptExpressionOptionName }?.stringValue ?: return null
@@ -184,7 +184,7 @@ object ParadoxInlineScriptHandler {
             val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true
             if(!p.name.equals(inlineScriptKey, true)) return@p true
             val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p true
-            val usageConfigContext = CwtConfigHandler.getConfigContext(memberElement) ?: return@p true
+            val usageConfigContext = ParadoxExpressionHandler.getConfigContext(memberElement) ?: return@p true
             val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
             // merge
             result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {

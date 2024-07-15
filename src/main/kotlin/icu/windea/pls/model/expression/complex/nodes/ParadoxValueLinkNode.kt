@@ -21,7 +21,7 @@ class ParadoxValueLinkNode(
     }
     
     override fun getReference(element: ParadoxScriptStringExpressionElement): ParadoxScopeLinkNode.Reference {
-        val rangeInElement = rangeInExpression.shiftRight(CwtConfigHandler.getExpressionOffset(element))
+        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
         return ParadoxScopeLinkNode.Reference(element, rangeInElement, config)
     }
     

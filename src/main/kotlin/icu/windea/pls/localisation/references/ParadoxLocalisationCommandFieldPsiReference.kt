@@ -57,7 +57,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		val configGroup = getConfigGroup(project, gameType)
 		
 		//尝试识别为预定义的localisation_command
-		val localisationCommand = CwtConfigHandler.resolvePredefinedLocalisationCommand(name, configGroup)
+		val localisationCommand = ParadoxExpressionHandler.resolvePredefinedLocalisationCommand(name, configGroup)
 		if(localisationCommand != null) return localisationCommand
 		
 		//尝试识别为<scripted_loc>
@@ -80,7 +80,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		val configGroup = getConfigGroup(project, gameType)
 		
 		//尝试识别为预定义的localisation_command
-		val localisationCommand = CwtConfigHandler.resolvePredefinedLocalisationCommand(name, configGroup)
+		val localisationCommand = ParadoxExpressionHandler.resolvePredefinedLocalisationCommand(name, configGroup)
 		if(localisationCommand != null) return arrayOf(PsiElementResolveResult(localisationCommand))
 		
 		//尝试识别为<scripted_loc>
@@ -103,7 +103,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 		val configGroup = getConfigGroup(project, gameType)
 		
 		//尝试识别为预定义的localisation_command
-		val localisationCommand = CwtConfigHandler.resolvePredefinedLocalisationCommand(name, configGroup)
+		val localisationCommand = ParadoxExpressionHandler.resolvePredefinedLocalisationCommand(name, configGroup)
 		if(localisationCommand != null) return null //no highlight
 		
 		//尝试识别为<scripted_loc>

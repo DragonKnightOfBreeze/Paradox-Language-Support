@@ -175,7 +175,7 @@ class ParadoxScopeFieldExpression private constructor(
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
             if(expressionString.isEmpty()) return null
             
-            val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expressionString)
+            val parameterRanges = ParadoxExpressionHandler.getParameterRangesInExpression(expressionString)
             
             val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
             
@@ -188,9 +188,9 @@ class ParadoxScopeFieldExpression private constructor(
             while(tokenIndex < textLength) {
                 index = tokenIndex + 1
                 tokenIndex = expressionString.indexOf('.', index)
-                if(tokenIndex != -1 && CwtConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
-                if(tokenIndex != -1 && expressionString.indexOf('@', index).let { it != -1 && it < tokenIndex && !CwtConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
-                if(tokenIndex != -1 && expressionString.indexOf('|', index).let { it != -1 && it < tokenIndex && !CwtConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
+                if(tokenIndex != -1 && ParadoxExpressionHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
+                if(tokenIndex != -1 && expressionString.indexOf('@', index).let { it != -1 && it < tokenIndex && !ParadoxExpressionHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
+                if(tokenIndex != -1 && expressionString.indexOf('|', index).let { it != -1 && it < tokenIndex && !ParadoxExpressionHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
                 val dotNode = if(tokenIndex != -1) {
                     val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
                     ParadoxOperatorNode(".", dotRange)

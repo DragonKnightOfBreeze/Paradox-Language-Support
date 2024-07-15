@@ -5,7 +5,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
@@ -32,11 +31,11 @@ class ParadoxInDefinitionCompletionProvider : CompletionProvider<CompletionParam
         context.keyword = keyword
         context.quoted = quoted
         context.rightQuoted = rightQuoted
-        context.expressionOffset = CwtConfigHandler.getExpressionOffset(element)
+        context.expressionOffset = ParadoxExpressionHandler.getExpressionOffset(element)
         
         //兼容参数值（包括整行或多行参数值）和内联脚本文件中内容
         
-        val parameterValueQuoted = CwtConfigHandler.getConfigContext(file)?.parameterValueQuoted
+        val parameterValueQuoted = ParadoxExpressionHandler.getConfigContext(file)?.parameterValueQuoted
         val mayBeKey = parameterValueQuoted != false && (element is ParadoxScriptPropertyKey || (element is ParadoxScriptValue && element.isBlockMember()))
         val mayBeValue = element is ParadoxScriptString && element.isBlockMember()
         val mayBePropertyValue = parameterValueQuoted != false && (element is ParadoxScriptString && element.isPropertyValue())

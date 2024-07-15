@@ -140,7 +140,7 @@ data class ParadoxLocalisationCodeInsightContext(
             if(!element.isExpression()) return null
             val expression = element.value
             if(expression.isEmpty() || expression.isParameterized()) return null
-            val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return null
+            val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return null
             fromModifier(element, config, locales, fromInspection = fromInspection)?.let { return it }
             if(forReference) {
                 fromReference(element, config, locales, fromInspection = fromInspection)?.let { return it }

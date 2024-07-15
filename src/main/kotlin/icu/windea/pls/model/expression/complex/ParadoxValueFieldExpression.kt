@@ -232,10 +232,10 @@ class ParadoxValueFieldExpression private constructor(
             //skip if text is a number
             if(isNumber(expressionString)) return null
             
-            val parameterRanges = CwtConfigHandler.getParameterRangesInExpression(expressionString)
+            val parameterRanges = ParadoxExpressionHandler.getParameterRangesInExpression(expressionString)
             
             //skip if text is a parameter with unary operator prefix
-            if(CwtConfigHandler.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
+            if(ParadoxExpressionHandler.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
             
             val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
             
@@ -249,9 +249,9 @@ class ParadoxValueFieldExpression private constructor(
             while(tokenIndex < textLength) {
                 index = tokenIndex + 1
                 tokenIndex = expressionString.indexOf('.', index)
-                if(tokenIndex != -1 && CwtConfigHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
-                if(tokenIndex != -1 && expressionString.indexOf('@', index).let { it != -1 && it < tokenIndex && !CwtConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
-                if(tokenIndex != -1 && expressionString.indexOf('|', index).let { it != -1 && it < tokenIndex && !CwtConfigHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
+                if(tokenIndex != -1 && ParadoxExpressionHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
+                if(tokenIndex != -1 && expressionString.indexOf('@', index).let { it != -1 && it < tokenIndex && !ParadoxExpressionHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
+                if(tokenIndex != -1 && expressionString.indexOf('|', index).let { it != -1 && it < tokenIndex && !ParadoxExpressionHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
                 val dotNode = if(tokenIndex != -1) {
                     val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
                     ParadoxOperatorNode(".", dotRange)

@@ -72,7 +72,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
                     if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
                         ProgressManager.checkCanceled()
                         val matchOptions = CwtConfigMatcher.Options.SkipIndex or CwtConfigMatcher.Options.SkipScope
-                        val configs = CwtConfigHandler.getConfigs(element, matchOptions = matchOptions)
+                        val configs = ParadoxExpressionHandler.getConfigs(element, matchOptions = matchOptions)
                         if(configs.isEmpty()) return@run
                         val definitionInfo = definitionInfoStack.lastOrNull() ?: return@run
                         extensionList.forEachFast { ep ->

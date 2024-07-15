@@ -79,7 +79,7 @@ class BaseCwtDataExpressionMatcher : CwtDataExpressionMatcher {
         } ?: return false
         //简单判断：如果block中包含configsInBlock声明的必须的任意propertyKey（作为常量字符串，忽略大小写），则认为匹配
         //注意：不同的子句规则可以拥有部分相同的propertyKey
-        val keys = CwtConfigHandler.getInBlockKeys(config)
+        val keys = ParadoxExpressionHandler.getInBlockKeys(config)
         if(keys.isEmpty()) return true
         val actualKeys = mutableSetOf<String>()
         //注意这里需要考虑内联和可选的情况
@@ -225,14 +225,14 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 if(!expression.type.isStringLikeType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val aliasName = configExpression.value ?: return Result.NotMatch
-                val aliasSubName = CwtConfigHandler.getAliasSubName(element, expression.value, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
+                val aliasSubName = ParadoxExpressionHandler.getAliasSubName(element, expression.value, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
                 CwtConfigMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup)
             }
             configExpression.type == CwtDataTypes.AliasName -> {
                 if(!expression.type.isStringLikeType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val aliasName = configExpression.value ?: return Result.NotMatch
-                val aliasSubName = CwtConfigHandler.getAliasSubName(element, expression.value, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
+                val aliasSubName = ParadoxExpressionHandler.getAliasSubName(element, expression.value, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
                 CwtConfigMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup)
             }
             configExpression.type == CwtDataTypes.AliasMatchLeft -> {

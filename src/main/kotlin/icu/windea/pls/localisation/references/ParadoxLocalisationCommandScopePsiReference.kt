@@ -6,12 +6,10 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 import icu.windea.pls.script.highlighter.*
 
 /**
@@ -48,9 +46,9 @@ class ParadoxLocalisationCommandScopePsiReference(
         
         if(prefix == null) {
             //尝试识别为system_link或者localisation_scope
-            val systemLink = CwtConfigHandler.resolvePredefinedScope(name, configGroup)
+            val systemLink = ParadoxExpressionHandler.resolvePredefinedScope(name, configGroup)
             if(systemLink != null) return systemLink
-            val localisationScope = CwtConfigHandler.resolvePredefinedLocalisationScope(name, configGroup)
+            val localisationScope = ParadoxExpressionHandler.resolvePredefinedLocalisationScope(name, configGroup)
             if(localisationScope != null) return localisationScope
         }
         
@@ -74,9 +72,9 @@ class ParadoxLocalisationCommandScopePsiReference(
         
         if(prefix == null) {
             //尝试识别为system_link或者localisation_scope
-            val systemLink = CwtConfigHandler.resolvePredefinedScope(name, configGroup)
+            val systemLink = ParadoxExpressionHandler.resolvePredefinedScope(name, configGroup)
             if(systemLink != null) return ParadoxScriptAttributesKeys.SYSTEM_LINK_KEY
-            val localisationScope = CwtConfigHandler.resolvePredefinedLocalisationScope(name, configGroup)
+            val localisationScope = ParadoxExpressionHandler.resolvePredefinedLocalisationScope(name, configGroup)
             if(localisationScope != null) return ParadoxScriptAttributesKeys.SCOPE_KEY
         }
         

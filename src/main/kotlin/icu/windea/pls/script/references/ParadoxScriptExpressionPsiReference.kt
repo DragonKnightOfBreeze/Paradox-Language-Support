@@ -54,7 +54,7 @@ class ParadoxScriptExpressionPsiReference(
     }
     
     override fun getReferences(): Array<out PsiReference>? {
-        return CwtConfigHandler.getReferences(element, rangeInElement, config, config.expression, isKey)
+        return ParadoxExpressionHandler.getReferences(element, rangeInElement, config, config.expression, isKey)
     }
     
     //缓存解析结果以优化性能
@@ -81,12 +81,12 @@ class ParadoxScriptExpressionPsiReference(
     
     private fun doResolve(): PsiElement? {
         //根据对应的expression进行解析
-        return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, isKey)
+        return ParadoxExpressionHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, isKey)
     }
     
     private fun doMultiResolve(): Array<out ResolveResult> {
         //根据对应的expression进行解析
-        return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, isKey)
+        return ParadoxExpressionHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, isKey)
             .mapToArray { PsiElementResolveResult(it) }
     }
 }

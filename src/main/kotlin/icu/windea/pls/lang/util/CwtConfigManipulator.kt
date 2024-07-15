@@ -106,7 +106,7 @@ object CwtConfigManipulator {
                 CwtDataTypes.AliasMatchLeft -> {
                     val aliasName = valueExpression.value ?: return@run
                     val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
-                    val aliasSubNames = CwtConfigHandler.getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchOptions)
+                    val aliasSubNames = ParadoxExpressionHandler.getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchOptions)
                     aliasSubNames.forEachFast f1@{ aliasSubName ->
                         val aliases = aliasGroup[aliasSubName] ?: return@f1
                         aliases.forEachFast f2@{ alias ->

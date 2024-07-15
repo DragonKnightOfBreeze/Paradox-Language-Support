@@ -13,7 +13,7 @@ class ParadoxInlineScriptInlineSupport : ParadoxInlineSupport {
         val expression = info.expression
         return withRecursionGuard("icu.windea.pls.lang.inline.ParadoxInlineScriptInlineSupport.inlineElement") a1@{
             withCheckRecursion(expression) a2@{
-                val configContext = CwtConfigHandler.getConfigContext(element) ?: return@a2 null
+                val configContext = ParadoxExpressionHandler.getConfigContext(element) ?: return@a2 null
                 val project = configContext.configGroup.project
                 ParadoxInlineScriptHandler.getInlineScriptFile(expression, element, project)
             }

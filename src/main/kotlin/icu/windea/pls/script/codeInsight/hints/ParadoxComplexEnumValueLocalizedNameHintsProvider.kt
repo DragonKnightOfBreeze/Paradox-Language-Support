@@ -62,7 +62,7 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
             return true
         }
         
-        val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return true
+        val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return true
         val configGroup = config.configGroup
         val type = config.expression.type
         if(type != CwtDataTypes.EnumValue) return true

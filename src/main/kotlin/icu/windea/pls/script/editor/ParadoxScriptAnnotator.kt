@@ -2,7 +2,6 @@ package icu.windea.pls.script.editor
 
 import com.intellij.lang.annotation.*
 import com.intellij.lang.annotation.HighlightSeverity.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -120,7 +119,7 @@ class ParadoxScriptAnnotator : Annotator {
         }
         
         val isKey = element is ParadoxScriptPropertyKey
-        val config = CwtConfigHandler.getConfigs(element, orDefault = isKey).firstOrNull()
+        val config = ParadoxExpressionHandler.getConfigs(element, orDefault = isKey).firstOrNull()
         if(config != null) {
             //如果不是字符串，除非是定义引用，否则不作高亮
             if(element !is ParadoxScriptStringExpressionElement && config.expression.type != CwtDataTypes.Definition) {
@@ -135,7 +134,7 @@ class ParadoxScriptAnnotator : Annotator {
             if(element is ParadoxScriptStringExpressionElement) {
                 val elementText = element.text
                 if(elementText.contains('$')) {
-                    val parameterRanges = CwtConfigHandler.getParameterRanges(element)
+                    val parameterRanges = ParadoxExpressionHandler.getParameterRanges(element)
                     //缓存参数文本范围
                     element.putUserData(PlsKeys.parameterRanges, parameterRanges)
                     //如果参数直接作为整个脚本表达式，不需要进行额外的高亮
@@ -157,6 +156,6 @@ class ParadoxScriptAnnotator : Annotator {
     }
     
     private fun annotateScriptExpression(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: AnnotationHolder) {
-        CwtConfigHandler.annotateScriptExpression(element, null, config, holder)
+        ParadoxExpressionHandler.annotateScriptExpression(element, null, config, holder)
     }
 }

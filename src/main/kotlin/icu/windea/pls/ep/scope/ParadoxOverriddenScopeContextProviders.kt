@@ -34,7 +34,7 @@ class ParadoxSwitchOverriddenScopeContextProvider: ParadoxOverriddenScopeContext
         ProgressManager.checkCanceled()
         val containerProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
             .filter { it.name.lowercase() in Data.CONTEXT_NAMES }
-            .find { CwtConfigHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
+            .find { ParadoxExpressionHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
             ?: return null
         //基于trigger的值得到最终的scopeContext，然后推断目标属性的scopeContext
         val triggerProperty = containerProperty.findProperty(inline = true) { it in Data.TRIGGER_KEYS }  ?: return null
@@ -67,7 +67,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         ProgressManager.checkCanceled()
         val containerProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
             .filter { it.name.lowercase() in Data.CONTEXT_NAMES }
-            .find { CwtConfigHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
+            .find { ParadoxExpressionHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
             ?: return null
         if(config1.key == Data.TRIGGER_KEY) {
             //基于trigger_scope的值得到最终的scopeContext，然后推断属性trigger的值的scopeContext

@@ -30,7 +30,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
             
             val orDefault = element is ParadoxScriptPropertyKey
             val matchOptions = Options.Default or Options.AcceptDefinition
-            val configs = CwtConfigHandler.getConfigs(element, orDefault, matchOptions)
+            val configs = ParadoxExpressionHandler.getConfigs(element, orDefault, matchOptions)
             for(config in configs) {
                 result.add(config)
                 config.resolvedOrNull()?.also { result.add(it) }
@@ -147,7 +147,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             
             val orDefault = element is ParadoxScriptPropertyKey
             val matchOptions = Options.Default or Options.AcceptDefinition
-            val configs = CwtConfigHandler.getConfigs(element, orDefault, matchOptions)
+            val configs = ParadoxExpressionHandler.getConfigs(element, orDefault, matchOptions)
             for(config in configs) {
                 val configExpression = config.expression
                 when {

@@ -47,7 +47,7 @@ object ParadoxCompletionManager {
     }
     
     fun addKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
-        val configContext = CwtConfigHandler.getConfigContext(memberElement)
+        val configContext = ParadoxExpressionHandler.getConfigContext(memberElement)
         if(configContext == null) return
         if(!configContext.isRootOrMember()) {
             //仅提示不在定义声明中的rootKey    
@@ -58,7 +58,7 @@ object ParadoxCompletionManager {
         val configGroup = configContext.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
-        val parentConfigs = CwtConfigHandler.getConfigs(memberElement, matchOptions = matchOptions)
+        val parentConfigs = ParadoxExpressionHandler.getConfigs(memberElement, matchOptions = matchOptions)
         val configs = mutableListOf<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
@@ -70,7 +70,7 @@ object ParadoxCompletionManager {
             }
         }
         if(configs.isEmpty()) return
-        val occurrenceMap = CwtConfigHandler.getChildOccurrenceMap(memberElement, parentConfigs)
+        val occurrenceMap = ParadoxExpressionHandler.getChildOccurrenceMap(memberElement, parentConfigs)
         
         context.isKey = true
         context.configGroup = configGroup
@@ -100,14 +100,14 @@ object ParadoxCompletionManager {
     }
     
     fun addValueCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
-        val configContext = CwtConfigHandler.getConfigContext(memberElement)
+        val configContext = ParadoxExpressionHandler.getConfigContext(memberElement)
         if(configContext == null) return
         if(!configContext.isRootOrMember()) return
         
         val configGroup = configContext.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
-        val parentConfigs = CwtConfigHandler.getConfigs(memberElement, matchOptions = matchOptions)
+        val parentConfigs = ParadoxExpressionHandler.getConfigs(memberElement, matchOptions = matchOptions)
         val configs = mutableListOf<CwtValueConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
@@ -117,7 +117,7 @@ object ParadoxCompletionManager {
             }
         }
         if(configs.isEmpty()) return
-        val occurrenceMap = CwtConfigHandler.getChildOccurrenceMap(memberElement, parentConfigs)
+        val occurrenceMap = ParadoxExpressionHandler.getChildOccurrenceMap(memberElement, parentConfigs)
         
         context.isKey = false
         context.configGroup = configGroup
@@ -144,7 +144,7 @@ object ParadoxCompletionManager {
     }
     
     fun addPropertyValueCompletions(element: ParadoxScriptStringExpressionElement, propertyElement: ParadoxScriptProperty, context: ProcessingContext, result: CompletionResultSet) {
-        val configContext = CwtConfigHandler.getConfigContext(element)
+        val configContext = ParadoxExpressionHandler.getConfigContext(element)
         if(configContext == null) return
         if(!configContext.isRootOrMember()) return
         
@@ -605,7 +605,7 @@ object ParadoxCompletionManager {
         val template = CwtTemplateExpression.resolve(configExpression.expressionString)
         val tailText = getScriptExpressionTailText(context, config)
         template.processResolveResult(contextElement, configGroup) { expression ->
-            val templateExpressionElement = CwtConfigHandler.resolveTemplateExpression(contextElement, expression, configExpression, configGroup)
+            val templateExpressionElement = ParadoxExpressionHandler.resolveTemplateExpression(contextElement, expression, configExpression, configGroup)
             val lookupElement = ParadoxLookupElementBuilder.create(templateExpressionElement, expression)
                 .withIcon(PlsIcons.Nodes.TemplateExpression)
                 .withTailText(tailText)

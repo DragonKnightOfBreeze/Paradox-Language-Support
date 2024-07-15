@@ -5,7 +5,6 @@ import com.intellij.usages.*
 import com.intellij.usages.impl.rules.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
@@ -31,7 +30,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
                     return ParadoxUsageType.COMPLEX_ENUM_VALUE
                 }
                 
-                val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return null
+                val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return null
                 val configExpression = config.expression
                 val type = configExpression.type
                 //in invocation expression

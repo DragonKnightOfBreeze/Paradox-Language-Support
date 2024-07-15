@@ -31,7 +31,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
             
             private fun visitScriptProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
-                val configs = CwtConfigHandler.getConfigs(element)
+                val configs = ParadoxExpressionHandler.getConfigs(element)
                 val config = configs.firstOrNull()
                 if(config == null) return
                 val definitionInfo by lazy { element.findParentDefinition()?.definitionInfo }

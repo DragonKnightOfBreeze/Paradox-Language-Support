@@ -58,7 +58,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return null
         if(!expressionElement.text.isFullParameterized()) return null
-        val expressionContextConfigs = CwtConfigHandler.getConfigContext(expressionElement)?.getConfigs().orEmpty()
+        val expressionContextConfigs = ParadoxExpressionHandler.getConfigContext(expressionElement)?.getConfigs().orEmpty()
         val contextConfigs = getContextConfigsFromExpressionContextConfigs(expressionContextConfigs, parameterInfo)
         return contextConfigs
     }

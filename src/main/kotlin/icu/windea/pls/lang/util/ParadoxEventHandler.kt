@@ -125,7 +125,7 @@ object ParadoxEventHandler {
                 val value = element.value
                 if(result.contains(value)) return
                 if(!isValidEventId(value)) return //排除非法的事件ID
-                val configs = CwtConfigHandler.getConfigs(element)
+                val configs = ParadoxExpressionHandler.getConfigs(element)
                 val isEventConfig = configs.any { isEventConfig(it) }
                 if(isEventConfig) {
                     result.add(value)

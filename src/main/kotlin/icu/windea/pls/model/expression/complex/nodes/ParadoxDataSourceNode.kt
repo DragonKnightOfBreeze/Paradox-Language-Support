@@ -23,14 +23,14 @@ class ParadoxDataSourceNode(
     override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
         if(text.isParameterized()) return null
         return linkConfigs.find { linkConfig ->
-            CwtConfigHandler.resolveScriptExpression(element, rangeInExpression, linkConfig, linkConfig.expression, exact = false) != null
+            ParadoxExpressionHandler.resolveScriptExpression(element, rangeInExpression, linkConfig, linkConfig.expression, exact = false) != null
         } ?: linkConfigs.firstOrNull()
     }
     
     override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
         if(linkConfigs.isEmpty()) return null
         if(text.isParameterized()) return null
-        val rangeInElement = rangeInExpression.shiftRight(CwtConfigHandler.getExpressionOffset(element))
+        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
         return Reference(element, rangeInElement, linkConfigs)
     }
     
@@ -66,7 +66,7 @@ class ParadoxDataSourceNode(
         
         override fun getReferences(): Array<out PsiReference>? {
             return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-                CwtConfigHandler.getReferences(element, rangeInElement, linkConfig, linkConfig.expression).orNull()
+                ParadoxExpressionHandler.getReferences(element, rangeInElement, linkConfig, linkConfig.expression).orNull()
             }
         }
         
@@ -95,14 +95,14 @@ class ParadoxDataSourceNode(
         private fun doResolve(): PsiElement? {
             val element = element
             return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-                CwtConfigHandler.resolveScriptExpression(element, rangeInElement, linkConfig, linkConfig.expression)
+                ParadoxExpressionHandler.resolveScriptExpression(element, rangeInElement, linkConfig, linkConfig.expression)
             }
         }
         
         private fun doMultiResolve(): Array<out ResolveResult> {
             val element = element
             return linkConfigs.flatMap { linkConfig ->
-                CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, linkConfig, configExpression = linkConfig.expression)
+                ParadoxExpressionHandler.multiResolveScriptExpression(element, rangeInElement, linkConfig, configExpression = linkConfig.expression)
             }.mapToArray { PsiElementResolveResult(it) }
         }
     }

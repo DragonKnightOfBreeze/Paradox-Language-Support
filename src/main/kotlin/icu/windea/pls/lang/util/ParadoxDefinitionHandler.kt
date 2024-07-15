@@ -402,11 +402,11 @@ object ParadoxDefinitionHandler {
                     return CwtConfigMatcher.matches(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchOptions).get(matchOptions)
                 }
                 //匹配single_alias
-                CwtConfigHandler.isSingleAliasEntryConfig(propertyConfig) -> {
+                ParadoxExpressionHandler.isSingleAliasEntryConfig(propertyConfig) -> {
                     return doMatchSingleAlias(definitionElement, propertyElement, propertyConfig, configGroup, matchOptions)
                 }
                 //匹配alias
-                CwtConfigHandler.isAliasEntryConfig(propertyConfig) -> {
+                ParadoxExpressionHandler.isAliasEntryConfig(propertyConfig) -> {
                     return doMatchAlias(definitionElement, propertyElement, propertyConfig, matchOptions)
                 }
                 propertyConfig.configs.orEmpty().isNotEmpty() -> {
@@ -508,7 +508,7 @@ object ParadoxDefinitionHandler {
         val aliasName = propertyConfig.keyExpression.value ?: return false
         val key = propertyElement.name
         val quoted = propertyElement.propertyKey.text.isLeftQuoted()
-        val aliasSubName = CwtConfigHandler.getAliasSubName(propertyElement, key, quoted, aliasName, configGroup, matchOptions) ?: return false
+        val aliasSubName = ParadoxExpressionHandler.getAliasSubName(propertyElement, key, quoted, aliasName, configGroup, matchOptions) ?: return false
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return false
         val aliases = aliasGroup[aliasSubName] ?: return false
         return aliases.any { alias ->

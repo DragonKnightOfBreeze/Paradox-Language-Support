@@ -108,7 +108,7 @@ data class ParadoxImageCodeInsightContext(
         ): ParadoxImageCodeInsightContext? {
             val expression = element.value
             if(expression.isEmpty() || expression.isParameterized()) return null
-            val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return null
+            val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return null
             fromModifier(element, config, fromInspection = fromInspection)?.let { return it }
             return null
         }

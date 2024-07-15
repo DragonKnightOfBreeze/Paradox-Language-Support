@@ -22,7 +22,7 @@ class TooLongScopeLinkInspection : LocalInspectionTool() {
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
                 if(element.text.isLeftQuoted()) return //忽略
-                val config = CwtConfigHandler.getConfigs(element).firstOrNull() ?: return
+                val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return
                 val configGroup = config.configGroup
                 val dataType = config.expression.type
                 when {

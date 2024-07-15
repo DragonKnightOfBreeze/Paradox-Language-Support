@@ -23,7 +23,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.CwtConfigMatcher.Options
 import icu.windea.pls.lang.util.CwtConfigMatcher.ResultValue
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.model.expression.complex.*
@@ -33,7 +32,7 @@ import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.isNullOrEmpty
 
-object CwtConfigHandler {
+object ParadoxExpressionHandler {
     //region Common Methods
     fun getExpressionText(element: ParadoxExpressionElement, rangeInElement: TextRange? = null): String {
         return when {

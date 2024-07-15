@@ -77,7 +77,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
                 val parentProperties = parentBlock.parentsOfType<ParadoxScriptProperty>(withSelf = false)
                 for(prop in parentProperties) {
                     //infer context config
-                    val propConfig = CwtConfigHandler.getConfigs(prop).firstOrNull() as? CwtPropertyConfig ?: continue
+                    val propConfig = ParadoxExpressionHandler.getConfigs(prop).firstOrNull() as? CwtPropertyConfig ?: continue
                     if(propConfig.expression.type != CwtDataTypes.Definition) continue
                     if(propConfig.configs?.any { it is CwtPropertyConfig && it.expression.type == CwtDataTypes.Parameter } != true) continue
                     contextConfig = propConfig
@@ -294,7 +294,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
                 val pipeIndex = text.indexOf('|', text.indexOf("value:").let { if(it != -1) it + 6 else return null })
                 if(pipeIndex == -1) return null
                 if(offset != -1 && pipeIndex >= offset - expressionElement.startOffset) return null //要求光标在管道符之后（如果offset不为-1）
-                expressionElementConfig = CwtConfigHandler.getConfigs(expressionElement).firstOrNull() ?: return null
+                expressionElementConfig = ParadoxExpressionHandler.getConfigs(expressionElement).firstOrNull() ?: return null
             }
         }
         if(expressionElementConfig.expression.type !in CwtDataTypeGroups.ValueField) return null
@@ -423,7 +423,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
                 val parentProperties = parentBlock.parentsOfType<ParadoxScriptProperty>(withSelf = false)
                 for(prop in parentProperties) {
                     //infer context config
-                    val propConfig = CwtConfigHandler.getConfigs(prop).firstOrNull() ?: continue
+                    val propConfig = ParadoxExpressionHandler.getConfigs(prop).firstOrNull() ?: continue
                     val propInlineConfig = propConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptHandler.inlineScriptKey } ?: continue
                     if(propInlineConfig.config.configs?.any { it is CwtPropertyConfig && it.expression.type == CwtDataTypes.Parameter } != true) continue
                     inlineConfig = propInlineConfig

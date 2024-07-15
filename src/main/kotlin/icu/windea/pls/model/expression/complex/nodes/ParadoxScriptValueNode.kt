@@ -38,7 +38,7 @@ class ParadoxScriptValueNode(
     override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
-        val rangeInElement = rangeInExpression.shiftRight(CwtConfigHandler.getExpressionOffset(element))
+        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
         return Reference(element, rangeInElement, text, config, configGroup)
     }
     
@@ -78,11 +78,11 @@ class ParadoxScriptValueNode(
         }
         
         private fun doResolve(): PsiElement? {
-            return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config, config.expression)
+            return ParadoxExpressionHandler.resolveScriptExpression(element, rangeInElement, config, config.expression)
         }
         
         private fun doMultiResolve(): Array<out ResolveResult> {
-            return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression)
+            return ParadoxExpressionHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression)
                 .mapToArray { PsiElementResolveResult(it) }
         }
     }

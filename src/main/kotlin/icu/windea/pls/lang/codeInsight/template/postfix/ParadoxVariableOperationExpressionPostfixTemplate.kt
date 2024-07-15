@@ -8,7 +8,6 @@ import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.config.settings.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.CwtConfigMatcher.Options
@@ -34,7 +33,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         val stringElement = context.parent?.castOrNull<ParadoxScriptValue>() ?: return emptyList()
         if(!stringElement.isBlockMember()) return emptyList()
         val parentProperty = stringElement.findParentProperty() ?: return emptyList()
-        val configs = CwtConfigHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
+        val configs = ParadoxExpressionHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
         if(configs.isEmpty()) return emptyList()
         val configGroup = configs.first().configGroup
         val expression = ParadoxDataExpression.resolve(setting.id, isQuoted = false, isKey = true)
