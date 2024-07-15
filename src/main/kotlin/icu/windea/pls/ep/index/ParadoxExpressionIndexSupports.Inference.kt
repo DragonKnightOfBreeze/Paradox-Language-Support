@@ -11,6 +11,10 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 class ParadoxInferredScopeContextAwareDefinitionIndexSupport : ParadoxExpressionIndexSupport<ParadoxInferredScopeContextAwareDefinitionInfo> {
+    object Data {
+        val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect")
+    }
+    
     private val compressComparator = compareBy<ParadoxInferredScopeContextAwareDefinitionInfo> { it.typeExpression }
     
     override fun id() = ParadoxExpressionIndexId.InferredScopeContextAwareDefinition.code
@@ -24,7 +28,7 @@ class ParadoxInferredScopeContextAwareDefinitionIndexSupport : ParadoxExpression
             val dataType = config.expression.type
             if(dataType != CwtDataTypes.Definition) return
             val definitionType = config.expression.value?.substringBefore('.') ?: return
-            if(definitionType !in ParadoxExpressionIndexHandler.inferredScopeContextAwareDefinitionTypes) return
+            if(definitionType !in Data.DEFINITION_TYPES) return
         }
         
         val definitionName = element.value
