@@ -83,7 +83,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         "MODIFIER" to ParadoxScriptAttributesKeys.MODIFIER_KEY,
         "TRIGGER" to ParadoxScriptAttributesKeys.TRIGGER_KEY,
         "EFFECT" to ParadoxScriptAttributesKeys.EFFECT_KEY,
-        "VARIABLE" to ParadoxScriptAttributesKeys.VARIABLE_KEY
+        "VARIABLE" to ParadoxScriptAttributesKeys.VARIABLE_KEY,
     )
     
     override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxScriptLanguage, null, null)

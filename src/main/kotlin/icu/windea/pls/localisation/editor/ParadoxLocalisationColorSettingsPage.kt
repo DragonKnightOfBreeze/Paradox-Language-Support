@@ -6,6 +6,7 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.highlighter.*
+import icu.windea.pls.script.highlighter.*
 
 class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(
@@ -34,6 +35,13 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         
         AttributesDescriptor(PlsBundle.message("localisation.displayName.databaseObjectType"), ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.databaseObject"), ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY),
+    )
+    
+    private val _tagToDescriptorMap = mapOf(
+        "MARKER" to ParadoxLocalisationAttributesKeys.MARKER_KEY,
+        "OPERATOR" to ParadoxLocalisationAttributesKeys.OPERATOR_KEY,
+        "DATABASE_OBJECT_TYPE" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY,
+        "DATABASE_OBJECT" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY,
     )
     
     override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxLocalisationLanguage, null, null)

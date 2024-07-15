@@ -55,6 +55,9 @@ enum class ParadoxResolveConstraint {
                         configExpression.type == CwtDataTypes.Definition
                     }
                 }
+                is ParadoxDatabaseObjectNode.Reference -> {
+                    true
+                }
                 is ParadoxScriptValueNode.Reference -> true //<script_value>
                 is ParadoxLocalisationIconPsiReference -> true
                 is ParadoxLocalisationCommandFieldPsiReference -> true //<scripted_loc>

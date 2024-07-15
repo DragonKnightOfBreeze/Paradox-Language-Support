@@ -1,18 +1,14 @@
 @var = 1
 
+# Line comment
 settings = {
-	# Line comment
-	variable_value = @var
 	boolean_value = yes
 	number_value = 1.0
+	number_value = @var
 	string_value = Foo
 	string_value = "Foo\n bar "
-	property_value = {
+	values = {
 		foo = bar
-		number < 1
-	}
-	list_value = {
-		"A" "B" "C"
 	}
 	values = { 1 2 3 }
 	color = rgb { 142 188 241 }
