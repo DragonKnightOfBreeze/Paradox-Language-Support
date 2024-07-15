@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
@@ -28,19 +29,19 @@ class ParadoxDynamicValueNode(
         }
     }
     
-    override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
+    override fun getReference(element: ParadoxExpressionElement): Reference? {
         if(text.isParameterized()) return null
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
         return Reference(element, rangeInElement, text, configs, configGroup)
     }
     
     class Reference(
-        element: ParadoxScriptStringExpressionElement,
+        element: ParadoxExpressionElement,
         rangeInElement: TextRange,
         val name: String,
         val configs: List<CwtConfig<*>>,
         val configGroup: CwtConfigGroup
-    ) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+    ) : PsiReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
         val configExpressions = configs.mapNotNull { it.expression }
         
         override fun handleElementRename(newElementName: String): PsiElement {

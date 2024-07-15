@@ -10,6 +10,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.highlighter.*
@@ -26,7 +27,8 @@ class ParadoxScriptValueNode(
         return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
     }
     
-    override fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxComplexExpressionError? {
+    override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
+        if(element !is ParadoxScriptStringExpressionElement) return null //unexpected
         if(nodes.isNotEmpty()) return null
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
@@ -35,7 +37,8 @@ class ParadoxScriptValueNode(
         return ParadoxComplexExpressionErrors.unresolvedScriptValue(rangeInExpression, text)
     }
     
-    override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
+    override fun getReference(element: ParadoxExpressionElement): Reference? {
+        if(element !is ParadoxScriptStringExpressionElement) return null //unexpected
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))

@@ -61,6 +61,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.*
@@ -704,6 +705,28 @@ fun PsiReference.resolveFirst(): PsiElement? {
     } else {
         this.resolve()
     }
+}
+
+fun PsiReference.collectReferences(): Array<out PsiReference> {
+    if(this is PsiReferencesAware) {
+        val result = mutableListOf<PsiReference>()
+        doCollectReferences(this, result)
+        return result.toTypedArray()
+    }
+    return arrayOf(this)
+}
+
+private fun doCollectReferences(sourceReference: PsiReference, result: MutableList<PsiReference>) {
+    if(sourceReference is PsiReferencesAware) {
+        val references = sourceReference.getReferences()
+        if(references.isNotNullOrEmpty()) {
+            references.forEachFast { reference ->
+                doCollectReferences(reference, result)
+            }
+            return
+        }
+    }
+    result.add(sourceReference)
 }
 
 /**

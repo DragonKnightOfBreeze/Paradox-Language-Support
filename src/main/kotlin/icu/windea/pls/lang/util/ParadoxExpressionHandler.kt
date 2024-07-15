@@ -498,12 +498,7 @@ object ParadoxExpressionHandler {
     //endregion
     
     //region Annotate Methods
-    fun annotateScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, holder: AnnotationHolder) {
-        val expression = getExpressionText(element, rangeInElement)
-        ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expression, holder, config)
-    }
-    
-    fun annotateScriptExpression(element: ParadoxScriptExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
+    fun annotateExpression(element: ParadoxExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
         if(range.isEmpty) return
         if(element !is ParadoxScriptStringExpressionElement) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
@@ -523,23 +518,29 @@ object ParadoxExpressionHandler {
         }
     }
     
-    fun annotateComplexExpression(element: ParadoxScriptExpressionElement, expression: ParadoxComplexExpression, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if(element !is ParadoxScriptStringExpressionElement) return
+    fun annotateComplexExpression(element: ParadoxExpressionElement, expression: ParadoxComplexExpression, holder: AnnotationHolder, config: CwtConfig<*>? = null) {
         doAnnotateComplexExpression(element, expression, holder, config)
     }
     
-    private fun doAnnotateComplexExpression(element: ParadoxScriptStringExpressionElement, expressionNode: ParadoxComplexExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>) {
+    private fun doAnnotateComplexExpression(element: ParadoxExpressionElement, expressionNode: ParadoxComplexExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>? = null) {
         val attributesKey = expressionNode.getAttributesKey(element.language)
-        val mustUseAttributesKey = attributesKey != ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY && attributesKey != ParadoxScriptAttributesKeys.STRING_KEY
-        if(attributesKey != null && mustUseAttributesKey) {
-            doAnnotateComplexExpressionByAttributesKey(expressionNode, element, holder, attributesKey)
-        } else {
-            val attributesKeyConfig = expressionNode.getAttributesKeyConfig(element)
-            if(attributesKeyConfig != null) {
-                val rangeInElement = expressionNode.rangeInExpression.shiftRight(if(element.text.isLeftQuoted()) 1 else 0)
-                annotateScriptExpression(element, rangeInElement, attributesKeyConfig, holder)
-            } else if(attributesKey != null) {
-                doAnnotateComplexExpressionByAttributesKey(expressionNode, element, holder, attributesKey)
+        
+        run {
+            val mustUseAttributesKey = attributesKey != ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY && attributesKey != ParadoxScriptAttributesKeys.STRING_KEY
+            if(attributesKey != null && mustUseAttributesKey) {
+                doAnnotateComplexExpressionByAttributesKey(element, expressionNode, holder, attributesKey)
+                return@run
+            }
+            if(element is ParadoxScriptStringExpressionElement) {
+                val attributesKeyConfig = expressionNode.getAttributesKeyConfig(element)
+                if(attributesKeyConfig != null) {
+                    val rangeInElement = expressionNode.rangeInExpression.shiftRight(if(element.text.isLeftQuoted()) 1 else 0)
+                    annotateScriptExpression(element, rangeInElement, attributesKeyConfig, holder)
+                    return@run
+                } 
+            }
+            if(attributesKey != null) {
+                doAnnotateComplexExpressionByAttributesKey(element, expressionNode, holder, attributesKey)
             }
         }
         
@@ -550,9 +551,14 @@ object ParadoxExpressionHandler {
         }
     }
     
-    private fun doAnnotateComplexExpressionByAttributesKey(expressionNode: ParadoxComplexExpressionNode, element: ParadoxScriptStringExpressionElement, holder: AnnotationHolder, attributesKey: TextAttributesKey) {
+    private fun doAnnotateComplexExpressionByAttributesKey(element: ParadoxExpressionElement, expressionNode: ParadoxComplexExpressionNode, holder: AnnotationHolder, attributesKey: TextAttributesKey) {
         val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRange.unquote(element.text).startOffset)
-        annotateScriptExpression(element, rangeToAnnotate, attributesKey, holder)
+        annotateExpression(element, rangeToAnnotate, attributesKey, holder)
+    }
+    
+    fun annotateScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, holder: AnnotationHolder) {
+        val expression = getExpressionText(element, rangeInElement)
+        ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expression, holder, config)
     }
     //endregion
     

@@ -23,7 +23,8 @@ class ParadoxScriptValueArgumentNode(
         return ParadoxScriptAttributesKeys.ARGUMENT_KEY
     }
     
-    override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
+    override fun getReference(element: ParadoxExpressionElement): Reference? {
+        if(element !is ParadoxScriptStringExpressionElement) return null //unexpected
         if(valueNode == null) return null
         if(text.isEmpty()) return null
         val reference = valueNode.getReference(element)

@@ -10,12 +10,12 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.highlighter.*
-import icu.windea.pls.script.psi.*
 
 class ParadoxDatabaseObjectTypeNode(
     override val text: String,
@@ -29,7 +29,7 @@ class ParadoxDatabaseObjectTypeNode(
         }
     }
     
-    override fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxComplexExpressionError? {
+    override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
         val reference = getReference(element)
@@ -37,7 +37,7 @@ class ParadoxDatabaseObjectTypeNode(
         return ParadoxComplexExpressionErrors.unresolvedDatabaseObjectType(rangeInExpression, text)
     }
     
-    override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
+    override fun getReference(element: ParadoxExpressionElement): Reference? {
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))

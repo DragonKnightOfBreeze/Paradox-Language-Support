@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.psi.*
@@ -21,6 +22,7 @@ class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
     @JvmField var reportsUnresolved = true
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        val configGroup = getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -29,11 +31,10 @@ class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return
-                val configGroup = config.configGroup
                 val dataType = config.expression.type
                 if(dataType !in CwtDataTypeGroups.DatabaseObject) return
                 val value = element.value
-                val textRange = TextRange.create(0, value.length);
+                val textRange = TextRange.create(0, value.length)
                 val expression = ParadoxDatabaseObjectExpression.resolve(value, textRange, configGroup) ?: return
                 handleErrors(element, expression)
             }

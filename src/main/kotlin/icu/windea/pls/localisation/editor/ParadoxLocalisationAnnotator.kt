@@ -11,6 +11,7 @@ import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.localisation.highlighter.ParadoxLocalisationAttributesKeys as Keys
 
 @Suppress("UNUSED_PARAMETER")
@@ -24,6 +25,7 @@ class ParadoxLocalisationAnnotator : Annotator {
             is ParadoxLocalisationColorfulText -> annotateColorfulText(element, holder)
             is ParadoxLocalisationCommandScope -> annotateCommandScope(element, holder)
             is ParadoxLocalisationCommandField -> annotateCommandField(element, holder)
+            is ParadoxLocalisationConceptName -> annotateConceptName(element, holder)
         }
     }
     
@@ -78,7 +80,7 @@ class ParadoxLocalisationAnnotator : Annotator {
     
     private fun annotateCommandScope(element: ParadoxLocalisationCommandScope, holder: AnnotationHolder) {
         //颜色高亮
-        val attributesKey = element.reference. getAttributesKey() ?: return
+        val attributesKey = element.reference.getAttributesKey() ?: return
         holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
     }
     
@@ -86,5 +88,16 @@ class ParadoxLocalisationAnnotator : Annotator {
         //颜色高亮
         val attributesKey = element.reference?.getAttributesKey() ?: return
         holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+    }
+    
+    private fun annotateConceptName(element: ParadoxLocalisationConceptName, holder: AnnotationHolder) {
+        run {
+            if(!element.isDatabaseObjectExpression()) return@run
+            val configGroup = getConfigGroup(element.project, selectGameType(element))
+            val value = element.value
+            val textRange = TextRange.create(0, value.length)
+            val expression = ParadoxDatabaseObjectExpression.resolve(value, textRange, configGroup) ?: return
+            ParadoxExpressionHandler.annotateComplexExpression(element, expression, holder)
+        }
     }
 }

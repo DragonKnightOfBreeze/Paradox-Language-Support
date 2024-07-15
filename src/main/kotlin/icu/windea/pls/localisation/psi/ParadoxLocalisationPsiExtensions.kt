@@ -73,3 +73,7 @@ fun PsiElement.isRichTextContext(): Boolean {
 	return this is ParadoxLocalisationPropertyList || this is ParadoxLocalisationProperty || this is ParadoxLocalisationPropertyValue 
 		|| this is ParadoxLocalisationColorfulText || this is ParadoxLocalisationCommand || this is ParadoxLocalisationConceptText
 }
+
+fun ParadoxLocalisationExpressionElement.isDatabaseObjectExpression(): Boolean {
+    return this is ParadoxLocalisationConceptName && this.textContains(':') //简单判断
+}

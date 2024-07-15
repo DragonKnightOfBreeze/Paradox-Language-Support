@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.psi.*
@@ -14,22 +15,22 @@ import javax.swing.*
 
 /**
  * 不正确的[ParadoxValueFieldExpression]的检查。
- * 
+ *
  * @property reportsUnresolved 是否报告无法解析的引用。
  */
 class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
     @JvmField var reportsUnresolved = true
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        val configGroup = getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
                 if(element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
             }
-        
+            
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return
-                val configGroup = config.configGroup
                 val dataType = config.expression.type
                 if(dataType !in CwtDataTypeGroups.ValueField) return
                 val value = element.value
@@ -37,7 +38,7 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
                 val expression = ParadoxValueFieldExpression.resolve(value, textRange, configGroup) ?: return
                 handleErrors(element, expression)
             }
-        
+            
             private fun handleErrors(element: ParadoxScriptStringExpressionElement, expression: ParadoxValueFieldExpression) {
                 expression.validate().forEach { error -> handleError(element, error) }
                 expression.processAllNodes { node ->
@@ -45,7 +46,7 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
                     true
                 }
             }
-        
+            
             private fun handleError(element: ParadoxScriptStringExpressionElement, error: ParadoxComplexExpressionError) {
                 if(!reportsUnresolved && error.isUnresolvedError()) return
                 holder.registerExpressionError(error, element)

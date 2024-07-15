@@ -37,7 +37,7 @@ class StellarisTechnologyWithLevelScriptExpressionSupport : ParadoxScriptExpress
             if(offset <= 0) return@run
             val attributesKey = ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
             val range1 = range.let { TextRange.create(it.startOffset, it.startOffset + offset) }
-            ParadoxExpressionHandler.annotateScriptExpression(element, range1, attributesKey, holder)
+            ParadoxExpressionHandler.annotateExpression(element, range1, attributesKey, holder)
         }
         run {
             val offset = separatorIndex

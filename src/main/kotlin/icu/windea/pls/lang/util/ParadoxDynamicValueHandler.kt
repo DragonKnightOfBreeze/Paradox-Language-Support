@@ -26,17 +26,15 @@ object ParadoxDynamicValueHandler {
         }
     }
     
-    fun resolveDynamicValue(element: ParadoxScriptExpressionElement, name: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxDynamicValueElement? {
+    fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxDynamicValueElement? {
         val gameType = configGroup.gameType ?: return null
-        if(element !is ParadoxScriptStringExpressionElement) return null
         val readWriteAccess = getReadWriteAccess(configExpression)
         val dynamicValueType = configExpression.value ?: return null
         return ParadoxDynamicValueElement(element, name, dynamicValueType, readWriteAccess, gameType, configGroup.project)
     }
     
-    fun resolveDynamicValue(element: ParadoxScriptExpressionElement, name: String, configExpressions: Iterable<CwtDataExpression>, configGroup: CwtConfigGroup): ParadoxDynamicValueElement? {
+    fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpressions: Iterable<CwtDataExpression>, configGroup: CwtConfigGroup): ParadoxDynamicValueElement? {
         val gameType = configGroup.gameType ?: return null
-        if(element !is ParadoxScriptStringExpressionElement) return null
         val configExpression = configExpressions.firstOrNull() ?: return null
         val readWriteAccess = getReadWriteAccess(configExpression)
         val dynamicValueTypes = configExpressions.mapNotNullTo(mutableSetOf()) { it.value }

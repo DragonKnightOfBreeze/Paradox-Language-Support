@@ -5,8 +5,8 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.lang.psi.*
 import icu.windea.pls.model.expression.complex.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 复杂表达式的节点。复杂表达式由数个节点组成，本身也是一个节点。
@@ -20,11 +20,11 @@ interface ParadoxComplexExpressionNode {
     
     fun getAttributesKey(language: Language): TextAttributesKey? = null
     
-    fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? = null
+    fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? = null
     
-    fun getReference(element: ParadoxScriptStringExpressionElement): PsiReference? = null
+    fun getReference(element: ParadoxExpressionElement): PsiReference? = null
     
-    fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxComplexExpressionError? = null
+    fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? = null
     
     abstract class Base : ParadoxComplexExpressionNode {
         override fun equals(other: Any?): Boolean {

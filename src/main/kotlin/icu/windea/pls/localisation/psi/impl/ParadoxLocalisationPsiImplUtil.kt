@@ -434,11 +434,14 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxLocalisationConcept): ParadoxLocalisationConceptPsiReference? {
+        val conceptName = element.conceptName ?: return null
+        
+        //作为复杂表达式的场合，另行处理（参见：ParadoxLocalisationReferenceContributor）
+        if(conceptName.isDatabaseObjectExpression()) return null
+        
+        val rangeInElement = conceptName.idElement?.textRangeInParent ?: return null
         return CachedValuesManager.getCachedValue(element) {
-            val value = run {
-                val rangeInElement = element.conceptName?.idElement?.textRangeInParent ?: return@run null
-                ParadoxLocalisationConceptPsiReference(element, rangeInElement)
-            }
+            val value = ParadoxLocalisationConceptPsiReference(element, rangeInElement)
             CachedValueProvider.Result.create(value, element)
         }
     }

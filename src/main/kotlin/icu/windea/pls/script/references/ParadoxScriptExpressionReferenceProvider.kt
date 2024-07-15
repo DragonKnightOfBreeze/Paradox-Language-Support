@@ -34,31 +34,9 @@ class ParadoxScriptExpressionReferenceProvider : PsiReferenceProvider() {
             val config = configs.firstOrNull() ?: return@run
             val textRange = ParadoxExpressionHandler.getExpressionTextRange(element) //unquoted text
             val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
-            return collectReferences(reference)
+            return reference.collectReferences()
         }
         
         return PsiReference.EMPTY_ARRAY
-    }
-    
-    private fun collectReferences(reference: PsiReference): Array<out PsiReference> {
-        if(reference is PsiReferencesAware) {
-            val result = mutableListOf<PsiReference>()
-            doCollectReferences(reference, result)
-            return result.toTypedArray()
-        }
-        return arrayOf(reference)
-    }
-    
-    private fun doCollectReferences(sourceReference: PsiReference, result: MutableList<PsiReference>) {
-        if(sourceReference is PsiReferencesAware) {
-            val references = sourceReference.getReferences()
-            if(references.isNotNullOrEmpty()) {
-                references.forEachFast { reference ->
-                    doCollectReferences(reference, result)
-                }
-                return
-            }
-        }
-        result.add(sourceReference)
     }
 }

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections.script.expression
+package icu.windea.pls.lang.inspections.localisation.expression
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
@@ -6,19 +6,17 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.expression.complex.*
-import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 不正确的[ParadoxScopeFieldExpression]的检查。
+ * 不正确的[ParadoxDatabaseObjectExpression]的检查。
  *
  * @property reportsUnresolved 是否报告无法解析的引用。
  */
-class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
+class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
     @JvmField var reportsUnresolved = true
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -26,20 +24,18 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if(element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
+                if(element is ParadoxLocalisationConceptName) visitConceptName(element)
             }
             
-            private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return
-                val dataType = config.expression.type
-                if(dataType !in CwtDataTypeGroups.ScopeField) return
+            private fun visitConceptName(element: ParadoxLocalisationConceptName) {
+                if(!element.isDatabaseObjectExpression()) return
                 val value = element.value
                 val textRange = TextRange.create(0, value.length)
-                val expression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup) ?: return
+                val expression = ParadoxDatabaseObjectExpression.resolve(value, textRange, configGroup) ?: return
                 handleErrors(element, expression)
             }
             
-            private fun handleErrors(element: ParadoxScriptStringExpressionElement, expression: ParadoxScopeFieldExpression) {
+            private fun handleErrors(element: ParadoxLocalisationExpressionElement, expression: ParadoxDatabaseObjectExpression) {
                 expression.validate().forEach { error -> handleError(element, error) }
                 expression.processAllNodes { node ->
                     node.getUnresolvedError(element)?.let { error -> handleError(element, error) }
@@ -47,7 +43,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
                 }
             }
             
-            private fun handleError(element: ParadoxScriptStringExpressionElement, error: ParadoxComplexExpressionError) {
+            private fun handleError(element: ParadoxLocalisationExpressionElement, error: ParadoxComplexExpressionError) {
                 if(!reportsUnresolved && error.isUnresolvedError()) return
                 holder.registerExpressionError(error, element)
             }

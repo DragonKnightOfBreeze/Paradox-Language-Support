@@ -11,6 +11,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.psi.*
@@ -20,21 +21,16 @@ class ParadoxDataSourceNode(
     override val rangeInExpression: TextRange,
     val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxComplexExpressionNode.Base() {
-    override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
+    override fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? {
+        if(element !is ParadoxScriptStringExpressionElement) return null //unexpected
         if(text.isParameterized()) return null
         return linkConfigs.find { linkConfig ->
             ParadoxExpressionHandler.resolveScriptExpression(element, rangeInExpression, linkConfig, linkConfig.expression, exact = false) != null
         } ?: linkConfigs.firstOrNull()
     }
     
-    override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
-        if(linkConfigs.isEmpty()) return null
-        if(text.isParameterized()) return null
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
-        return Reference(element, rangeInElement, linkConfigs)
-    }
-    
-    override fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxComplexExpressionError? {
+    override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
+        if(element !is ParadoxScriptStringExpressionElement) return null //unexpected
         if(nodes.isNotEmpty()) return null
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
@@ -45,6 +41,14 @@ class ParadoxDataSourceNode(
         val reference = getReference(element)
         if(reference == null || reference.resolveFirst() != null) return null
         return ParadoxComplexExpressionErrors.unresolvedDataSource(rangeInExpression, text, expect)
+    }
+    
+    override fun getReference(element: ParadoxExpressionElement): Reference? {
+        if(element !is ParadoxScriptStringExpressionElement) return null //unexpected
+        if(linkConfigs.isEmpty()) return null
+        if(text.isParameterized()) return null
+        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
+        return Reference(element, rangeInElement, linkConfigs)
     }
     
     class Reference(

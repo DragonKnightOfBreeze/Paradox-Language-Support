@@ -29,7 +29,7 @@ class ParadoxDynamicValueExpressionSupport : ParadoxScriptExpressionSupport {
                 "variable" -> ParadoxScriptAttributesKeys.VARIABLE_KEY
                 else -> ParadoxScriptAttributesKeys.DYNAMIC_VALUE_KEY
             }
-            ParadoxExpressionHandler.annotateScriptExpression(element, element.textRange.unquote(element.text), attributesKey, holder)
+            ParadoxExpressionHandler.annotateExpression(element, element.textRange.unquote(element.text), attributesKey, holder)
             return
         }
         val configGroup = config.configGroup

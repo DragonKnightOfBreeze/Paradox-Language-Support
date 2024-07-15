@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.inherit.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
@@ -33,7 +34,7 @@ class ParadoxDatabaseObjectNode(
         }
     }
     
-    override fun getUnresolvedError(element: ParadoxScriptStringExpressionElement): ParadoxComplexExpressionError? {
+    override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
         if(config == null) return null
@@ -43,7 +44,7 @@ class ParadoxDatabaseObjectNode(
         return ParadoxComplexExpressionErrors.unresolvedDatabaseObject(rangeInExpression, text, typeToSearch)
     }
     
-    override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
+    override fun getReference(element: ParadoxExpressionElement): Reference? {
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
         if(config == null) return null
@@ -65,10 +66,10 @@ class ParadoxDatabaseObjectNode(
     }
     
     class Reference(
-        element: ParadoxScriptStringExpressionElement,
+        element: ParadoxExpressionElement,
         rangeInElement: TextRange,
         val node: ParadoxDatabaseObjectNode
-    ): PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+    ): PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
         val expression = node.expression
         val project = expression.configGroup.project
         val config = expression.typeNode?.config

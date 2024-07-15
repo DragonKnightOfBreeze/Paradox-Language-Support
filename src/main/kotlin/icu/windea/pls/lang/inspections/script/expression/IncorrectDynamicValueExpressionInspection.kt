@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.psi.*
@@ -14,6 +15,7 @@ import icu.windea.pls.script.psi.*
  */
 class IncorrectDynamicValueExpressionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        val configGroup = getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -22,7 +24,6 @@ class IncorrectDynamicValueExpressionInspection : LocalInspectionTool() {
             
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return
-                val configGroup = config.configGroup
                 val dataType = config.expression.type
                 if(dataType !in CwtDataTypeGroups.DynamicValue) return
                 val value = element.value

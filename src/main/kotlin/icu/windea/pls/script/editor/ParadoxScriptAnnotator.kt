@@ -144,7 +144,7 @@ class ParadoxScriptAnnotator : Annotator {
                 }
             }
             //高亮脚本表达式
-            annotateScriptExpression(element, config, holder)
+            annotateScriptExpression(element, holder, config)
         }
     }
     
@@ -155,7 +155,7 @@ class ParadoxScriptAnnotator : Annotator {
             .create()
     }
     
-    private fun annotateScriptExpression(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: AnnotationHolder) {
+    private fun annotateScriptExpression(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, config: CwtMemberConfig<*>) {
         ParadoxExpressionHandler.annotateScriptExpression(element, null, config, holder)
     }
 }
