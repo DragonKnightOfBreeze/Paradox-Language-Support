@@ -67,16 +67,18 @@ class ParadoxDatabaseObjectExpression private constructor(
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val keyword = context.keyword
         val keywordOffset = context.keywordOffset
-        val offsetInParent = context.offsetInParent!!
-        val isKey = context.isKey
         val oldNode = context.node
+        val isKey = context.isKey
         
+        context.isKey = null
+        
+        val offset = context.offsetInParent!! - context.expressionOffset
+        if(offset < 0) return //unexpected
         for(node in nodes) {
-            val nodeRange = node.rangeInExpression
-            val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset
+            val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
             if(node is ParadoxDatabaseObjectTypeNode) {
                 if(inRange) {
-                    val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+                    val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
                     context.keywordOffset = node.rangeInExpression.startOffset
@@ -86,7 +88,7 @@ class ParadoxDatabaseObjectExpression private constructor(
                 }
             } else if(node is ParadoxDatabaseObjectNode) {
                 if(inRange) {
-                    val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+                    val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
                     context.keywordOffset = node.rangeInExpression.startOffset
@@ -99,8 +101,8 @@ class ParadoxDatabaseObjectExpression private constructor(
         
         context.keyword = keyword
         context.keywordOffset = keywordOffset
-        context.isKey = isKey
         context.node = oldNode
+        context.isKey = isKey
     }
     
     companion object Resolver {

@@ -100,19 +100,20 @@ class ParadoxScriptValueExpression private constructor(
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val keyword = context.keyword
         val keywordOffset = context.keywordOffset
-        val offsetInParent = context.offsetInParent!!
-        val isKey = context.isKey
         val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
         val scopeMatched = context.scopeMatched
+        val isKey = context.isKey
         
-        context.scopeContext = null //don't check now
+        context.scopeContext = null //skip check scope context here
+        context.isKey = null
         
+        val offset = context.offsetInParent!! - context.expressionOffset
+        if(offset < 0) return //unexpected
         for(node in nodes) {
-            val nodeRange = node.rangeInExpression
-            val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset
+            val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
             if(node is ParadoxScriptValueNode) {
                 if(inRange) {
-                    val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+                    val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
                     context.keywordOffset = node.rangeInExpression.startOffset
@@ -126,7 +127,7 @@ class ParadoxScriptValueExpression private constructor(
                 }
             } else if(node is ParadoxScriptValueArgumentNode) {
                 if(inRange && scriptValueNode.text.isNotEmpty()) {
-                    val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+                    val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
                     context.keywordOffset = node.rangeInExpression.startOffset
@@ -136,7 +137,7 @@ class ParadoxScriptValueExpression private constructor(
                 if(inRange && scriptValueNode.text.isNotEmpty()) {
                     //尝试提示传入参数的值
                     run {
-                        val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+                        val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                         val resultToUse = result.withPrefixMatcher(keywordToUse)
                         val element = context.contextElement as? ParadoxScriptStringExpressionElement ?: return@run
                         val parameterElement = node.argumentNode?.getReference(element)?.resolve() ?: return@run
@@ -157,9 +158,9 @@ class ParadoxScriptValueExpression private constructor(
         }
         context.keyword = keyword
         context.keywordOffset = keywordOffset
-        context.isKey = isKey
         context.scopeContext = scopeContext
         context.scopeMatched = scopeMatched
+        context.isKey = isKey
     }
     
     companion object Resolver {

@@ -32,6 +32,7 @@ class ParadoxInDefinitionCompletionProvider : CompletionProvider<CompletionParam
         context.keyword = keyword
         context.quoted = quoted
         context.rightQuoted = rightQuoted
+        context.expressionOffset = CwtConfigHandler.getExpressionOffset(element)
         
         //兼容参数值（包括整行或多行参数值）和内联脚本文件中内容
         

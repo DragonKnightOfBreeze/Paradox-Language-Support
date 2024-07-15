@@ -45,6 +45,7 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         context.keyword = keyword
         context.quoted = quoted
         context.rightQuoted = rightQuoted
+        context.expressionOffset = CwtConfigHandler.getExpressionOffset(element)
         
         val mockConfig = CwtValueConfig.resolve(emptyPointer(), configGroup, "value[variable]")
         context.config = mockConfig

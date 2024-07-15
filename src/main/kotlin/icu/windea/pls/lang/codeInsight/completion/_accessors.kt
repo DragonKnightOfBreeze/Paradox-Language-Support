@@ -20,11 +20,12 @@ var ProcessingContext.gameType: ParadoxGameType? by createKeyDelegate(ParadoxCom
 var ProcessingContext.configGroup: CwtConfigGroup? by createKeyDelegate(ParadoxCompletionKeys)
 
 var ProcessingContext.contextElement: PsiElement? by createKeyDelegate(ParadoxCompletionKeys)
-var ProcessingContext.quoted: Boolean by createKeyDelegate(ParadoxCompletionKeys) { false }
-var ProcessingContext.rightQuoted: Boolean? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.offsetInParent: Int? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.keyword: String by createKeyDelegate(ParadoxCompletionKeys) { "" }
 var ProcessingContext.keywordOffset: Int by createKeyDelegate(ParadoxCompletionKeys) { 0 }
+var ProcessingContext.quoted: Boolean by createKeyDelegate(ParadoxCompletionKeys) { false }
+var ProcessingContext.rightQuoted: Boolean? by createKeyDelegate(ParadoxCompletionKeys)
+var ProcessingContext.expressionOffset: Int by createKeyDelegate(ParadoxCompletionKeys) { 0 }
 var ProcessingContext.extraFilter: ((PsiElement) -> Boolean)? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.isKey: Boolean? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.config: CwtConfig<*>? by createKeyDelegate(ParadoxCompletionKeys)

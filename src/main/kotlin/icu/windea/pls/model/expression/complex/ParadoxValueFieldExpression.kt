@@ -184,16 +184,16 @@ class ParadoxValueFieldExpression private constructor(
         val contextElement = context.contextElement!!
         val keyword = context.keyword
         val keywordOffset = context.keywordOffset
-        val offsetInParent = context.offsetInParent!!
-        val isKey = context.isKey
         val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
+        val isKey = context.isKey
         
         context.isKey = null
         
+        val offset = context.offsetInParent!! - context.expressionOffset
+        if(offset < 0) return //unexpected
         var scopeContextInExpression = scopeContext
         for((i, node) in nodes.withIndex()) {
-            val nodeRange = node.rangeInExpression
-            val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset
+            val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
             if(!inRange) {
                 //如果光标位置之前存在无法解析的scope（除非被解析为scopeLinkFromData，例如，"event_target:xxx"），不要进行补全
                 if(node is ParadoxErrorNode || node.text.isEmpty()) break
@@ -221,8 +221,8 @@ class ParadoxValueFieldExpression private constructor(
         
         context.keyword = keyword
         context.keywordOffset = keywordOffset
-        context.isKey = isKey
         context.scopeContext = scopeContext
+        context.isKey = isKey
     }
     
     companion object Resolver {

@@ -38,6 +38,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 		context.keyword = keyword
 		context.quoted = quoted
 		context.rightQuoted = rightQuoted
+        context.expressionOffset = CwtConfigHandler.getExpressionOffset(element)
 		
 		val gameType = selectGameType(file) ?: return
 		val configGroup = getConfigGroup(project, gameType)

@@ -77,23 +77,23 @@ class ParadoxDynamicValueExpression private constructor(
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val keyword = context.keyword
         val keywordOffset = context.keywordOffset
-        val offsetInParent = context.offsetInParent!!
-        val isKey = context.isKey
         val config = context.config
         val configs = context.configs
         val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
+        val isKey = context.isKey
         
         context.config = this.configs.first()
         context.configs = this.configs
-        context.scopeContext = null //don't check now
+        context.scopeContext = null //skip check scope context here
         context.isKey = null
         
+        val offset = context.offsetInParent!! - context.expressionOffset
+        if(offset < 0) return //unexpected
         for(node in nodes) {
-            val nodeRange = node.rangeInExpression
-            val inRange = offsetInParent >= nodeRange.startOffset && offsetInParent <= nodeRange.endOffset
+            val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
             if(node is ParadoxDynamicValueNode) {
                 if(inRange) {
-                    val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+                    val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
                     context.keywordOffset = node.rangeInExpression.startOffset
@@ -102,7 +102,7 @@ class ParadoxDynamicValueExpression private constructor(
                 }
             } else if(node is ParadoxScopeFieldExpression) {
                 if(inRange) {
-                    val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+                    val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
                     context.keywordOffset = node.rangeInExpression.startOffset
@@ -114,10 +114,10 @@ class ParadoxDynamicValueExpression private constructor(
         
         context.keyword = keyword
         context.keywordOffset = keywordOffset
-        context.isKey = isKey
         context.config = config
         context.configs = configs
         context.scopeContext = scopeContext
+        context.isKey = isKey
     }
     
     companion object Resolver {

@@ -47,6 +47,7 @@ class ParadoxInlineScriptInvocationCompletionProvider: CompletionProvider<Comple
         context.keyword = keyword
         context.quoted = quoted
         context.rightQuoted = rightQuoted
+        context.expressionOffset = CwtConfigHandler.getExpressionOffset(element)
         
         ParadoxCompletionManager.completeInlineScriptInvocation(context, result)
     }
