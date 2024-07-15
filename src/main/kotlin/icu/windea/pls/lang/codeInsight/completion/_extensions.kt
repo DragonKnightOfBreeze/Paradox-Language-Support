@@ -17,8 +17,8 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.codeInsight.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.codeStyle.*
@@ -70,9 +70,10 @@ fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(
     val config = context.config!!
     val propertyName = ParadoxExpressionHandler.getEntryName(config)
     
+    val isKey = context.isKey
     return this.withInsertHandler { c, _ ->
-        if(context.isKey == true) {
-            applyKeyAndValueInsertHandler(c, context, null, true)
+        if(isKey == true) {
+            applyKeyAndValueInsertHandler(c, context, isKey, null, true)
         } else {
             applyValueInsertHandler(c, context, true)
         }
@@ -188,17 +189,18 @@ fun ParadoxLookupElementBuilder.build(context: ProcessingContext): CompositeLook
         else -> false
     }
     
-    val isKeyOrValueOnly = context.contextElement is ParadoxScriptPropertyKey || context.isKey != true
-    val isKey = context.isKey == true
+    val isKey = context.isKey
+    val isKeyOnly = context.contextElement is ParadoxScriptPropertyKey && isKey != false
+    val isValueOnly = context.contextElement is ParadoxScriptValue && isKey != true
     val isBlock = targetConfig?.isBlock ?: false
     
     val finalLookupString = when {
-        context.keywordOffset == 0 -> lookupString.quoteIfNecessary()
+        isKey != null && context.keywordOffset == 0 -> lookupString.quoteIfNecessary()
         else -> lookupString
     }
     //这里ID不一定等同于lookupString
     val id = when {
-        isKeyOrValueOnly -> finalLookupString
+        isKeyOnly || isValueOnly -> finalLookupString
         constantValue != null -> "$finalLookupString = $constantValue"
         insertCurlyBraces -> "$finalLookupString = {...}"
         else -> finalLookupString
@@ -242,7 +244,7 @@ fun ParadoxLookupElementBuilder.build(context: ProcessingContext): CompositeLook
         lookupElement = lookupElement.withPresentableText(presentableText!!)
     }
     val finalTailText = buildString {
-        if(!isKeyOrValueOnly) {
+        if(!isKeyOnly && !isValueOnly) {
             if(constantValue != null) append(" = ").append(constantValue)
             if(insertCurlyBraces) append(" = {...}")
         }
@@ -258,21 +260,17 @@ fun ParadoxLookupElementBuilder.build(context: ProcessingContext): CompositeLook
         lookupElement = lookupElement.withItemTextForeground(JBColor.GRAY)
     }
     
-    if(isKeyOrValueOnly) {
-        lookupElement = lookupElement.withInsertHandler { c, _ ->
-            applyKeyOrValueInsertHandler(context, c)
-        }
-    } else if(isKey) {
-        lookupElement = lookupElement.withInsertHandler { c, _ ->
-            applyKeyAndValueInsertHandler(c, context, constantValue, insertCurlyBraces)
-        }
+    if(isKeyOnly || isValueOnly) { //key or value only
+        lookupElement = lookupElement.withInsertHandler { c, _ -> applyKeyOrValueInsertHandler(c, context, isKey) }
+    } else if(isKey == true) { // key with value
+        lookupElement = lookupElement.withInsertHandler { c, _ -> applyKeyAndValueInsertHandler(c, context, isKey, constantValue, insertCurlyBraces) }
     }
     
     val result = lookupElement.withPriority(priority)
     val extraElements = mutableListOf<LookupElement>()
     
     //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
-    if(isKey && !isKeyOrValueOnly && isBlock && config != null && getSettings().completion.completeWithClauseTemplate) {
+    if(isKey == true && !isKeyOnly && isBlock && config != null && getSettings().completion.completeWithClauseTemplate) {
         val entryConfigs = ParadoxExpressionHandler.getEntryConfigs(config)
         if(entryConfigs.isNotEmpty()) {
             val tailText1 = buildString {
@@ -312,22 +310,25 @@ private fun getIconToUse(icon: Icon?, config: CwtConfig<*>?): Icon? {
     return icon
 }
 
-private fun skipOrInsertRightQuote(context: ProcessingContext, editor: Editor) {
+private fun skipOrInsertRightQuote(context: ProcessingContext, editor: Editor, isKey: Boolean?) {
+    //这里的isKey需要在创建LookupElement时就预先获取（之后可能会有所变更）
+    //这里的isKey如果是null，表示已经填充的只是KEY或VALUE的其中一部分
     if(context.quoted) {
         val offset = editor.caretModel.offset
         val charsSequence = editor.document.charsSequence
-        if(charsSequence.get(offset) == '"' && charsSequence.get(offset - 1) != '\\') {
-            //移到右边的双引号之后
-            editor.caretModel.moveToOffset(offset + 1)
+        val rightQuoted = charsSequence.get(offset) == '"' && charsSequence.get(offset - 1) != '\\'
+        if(rightQuoted) {
+            //在必要时将光标移到右双引号之后
+            if(isKey != null) editor.caretModel.moveToOffset(offset + 1)
         } else {
-            //插入缺失的右边的双引号
-            EditorModificationUtil.insertStringAtCaret(editor, "\"")
+            //插入缺失的右双引号，且在必要时将光标移到右双引号之后
+            EditorModificationUtil.insertStringAtCaret(editor, "\"", false, isKey != null)
         }
     }
 }
 
-private fun applyKeyOrValueInsertHandler(context: ProcessingContext, c: InsertionContext) {
-    skipOrInsertRightQuote(context, c.editor)
+private fun applyKeyOrValueInsertHandler(c: InsertionContext, context: ProcessingContext, isKey: Boolean?) {
+    skipOrInsertRightQuote(context, c.editor, isKey)
 }
 
 @Suppress("UNUSED_PARAMETER", "SameParameterValue")
@@ -339,9 +340,9 @@ private fun applyValueInsertHandler(c: InsertionContext, context: ProcessingCont
     EditorModificationUtil.insertStringAtCaret(c.editor, text, false, true, length)
 }
 
-private fun applyKeyAndValueInsertHandler(c: InsertionContext, context: ProcessingContext, constantValue: String?, insertCurlyBraces: Boolean) {
+private fun applyKeyAndValueInsertHandler(c: InsertionContext, context: ProcessingContext, isKey: Boolean?, constantValue: String?, insertCurlyBraces: Boolean) {
     val editor = c.editor
-    skipOrInsertRightQuote(context, c.editor)
+    skipOrInsertRightQuote(context, c.editor, isKey)
     val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
     val text = buildString {
         append(if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "=")
