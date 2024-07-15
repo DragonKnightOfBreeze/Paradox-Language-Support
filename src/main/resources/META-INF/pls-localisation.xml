@@ -13,6 +13,7 @@
     <lang.quoteHandler language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationQuoteHandler"/>
     <lang.findUsagesProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationFindUsagesProvider"/>
     <elementDescriptionProvider implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationFindUsagesProvider"/>
+    <extendWordSelectionHandler implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationWordSelectionHandler"/>
     <annotator language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationAnnotator"/>
     <errorQuickFixProvider implementation="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationErrorQuickFixProvider"/>
     <declarationRangeHandler key="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList" implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationDeclarationRangeHandler"/>

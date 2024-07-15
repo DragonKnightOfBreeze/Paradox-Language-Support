@@ -10,7 +10,7 @@ object PlsConstants {
     val cwtColorSettingsSample = "/samples/Cwt.colorSettings.txt".toClasspathUrl().readText()
     val cwtCodeStyleSettingsSample = "/samples/Cwt.codeStyleSettings.txt".toClasspathUrl().readText()
     
-    val paradoxLocalisationColorSettingsSample = "/samples/ParadoxLocalisation.colorSettings.txt".toClasspathUrl().readText()
+    var paradoxLocalisationColorSettingsSample = "/samples/ParadoxLocalisation.colorSettings.txt".toClasspathUrl().readText()
     val paradoxLocalisationCodeStyleSettingsDemoText = "/samples/ParadoxLocalisation.codeStyleSettings.txt".toClasspathUrl().readText()
     
     val paradoxScriptColorSettingsSample = "/samples/ParadoxScript.colorSettings.txt".toClasspathUrl().readText()
