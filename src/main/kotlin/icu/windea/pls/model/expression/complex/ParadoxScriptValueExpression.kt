@@ -91,9 +91,9 @@ class ParadoxScriptValueExpression private constructor(
     
     private fun isValid(node: ParadoxComplexExpressionNode): Boolean {
         return when(node) {
-            is ParadoxScriptValueArgumentNode -> node.text.isExactIdentifier()
+            is ParadoxScriptValueArgumentNode -> node.text.isIdentifier()
             is ParadoxScriptValueArgumentValueNode -> true //兼容数字文本、字符串文本、封装变量引用等，这里直接返回true
-            else -> node.text.isExactParameterAwareIdentifier()
+            else -> node.text.isParameterAwareIdentifier()
         }
     }
     
@@ -183,7 +183,7 @@ class ParadoxScriptValueExpression private constructor(
             while(tokenIndex < textLength) {
                 index = tokenIndex + 1
                 tokenIndex = expressionString.indexOf('|', index)
-                if(tokenIndex != -1 && ParadoxExpressionHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
+                if(tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //这里需要跳过参数文本
                 val pipeNode = if(tokenIndex != -1) {
                     val pipeRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
                     ParadoxMarkerNode("|", pipeRange)

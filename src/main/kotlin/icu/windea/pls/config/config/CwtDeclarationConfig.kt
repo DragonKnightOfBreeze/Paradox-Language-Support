@@ -21,7 +21,7 @@ interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
 //Implementations (interned)
 
 private fun doResolve(config: CwtPropertyConfig, name: String?): CwtDeclarationConfig? {
-    val name0 = name ?: config.key.takeIf { it.isExactIdentifier() } ?: return null
+    val name0 = name ?: config.key.takeIf { it.isIdentifier() } ?: return null
     return CwtDeclarationConfigImpl(config, name0)
 }
 

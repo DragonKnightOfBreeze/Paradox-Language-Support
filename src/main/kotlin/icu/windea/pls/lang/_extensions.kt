@@ -7,9 +7,11 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
+import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.testFramework.*
+import com.intellij.util.text.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -49,43 +51,67 @@ fun FileType.isParadoxFileType() = this == ParadoxScriptFileType || this == Para
 
 fun Language.isParadoxLanguage() = this.isKindOf(ParadoxScriptLanguage) || this.isKindOf(ParadoxLocalisationLanguage)
 
-fun String.isExactParameterAwareIdentifier(vararg extraChars: Char): Boolean {
-    var isParameter = false
-    this.forEachFast { c ->
-        when {
-            c == '$' -> isParameter = !isParameter
-            isParameter -> {}
-            c.isExactIdentifierChar() || c in extraChars -> {}
-            else -> return false
+fun Char.isIdentifierChar(): Boolean {
+    return StringUtil.isJavaIdentifierPart(this)
+}
+
+fun String.isIdentifier(vararg extraChars: Char): Boolean {
+    return this.all { c -> c.isIdentifierChar() || c in extraChars }
+}
+
+fun String.isParameterAwareIdentifier(vararg extraChars: Char): Boolean {
+    //比较复杂的判断逻辑
+    val fullRange = TextRange.create(0, this.length)
+    val parameterRanges = this.getParameterRanges()
+    val ranges = TextRangeUtil.excludeRanges(fullRange, parameterRanges)
+    ranges.forEach f@{ range ->
+        for(i in range.startOffset..range.endOffset) {
+            if(i >= this.length) continue
+            val c = this[i]
+            if(c.isIdentifierChar() || c in extraChars) continue
+            return false
         }
     }
     return true
 }
 
 fun String.isParameterized(): Boolean {
-    var isEscaped = false
-    this.forEachFast { c ->
-        when {
-            // a_$PARAM$_b - 高级插值语法 A
-            c == '$' -> {
-                if(!isEscaped) return true
-            }
-            // a_[[PARAM]b]_c - 高级插值语法 B
-            c == '[' -> {
-                if(!isEscaped) return true
-            }
-        }
-        if(c == '\\') {
-            isEscaped = true
-        } else if(isEscaped) {
-            isEscaped = false
-        }
-    }
+    //快速判断，不检测带参数后的语法是否合法
+    if(this.length < 2) return false
+    // a_$PARAM$_b - 高级插值语法 A
+    if(this.indexOf('$').let { c -> c != -1 && !isEscapedCharAt(c) }) return true
+    // a_[[PARAM]b]_c - 高级插值语法 B
+    if(this.indexOf('[').let { c -> c != -1 && !isEscapedCharAt(c) }) return true
     return false
 }
 
-fun String.isFullParameterized() : Boolean {
-    return this.length >= 2 && surroundsWith('$', '$') && this[lastIndex - 1] != '\\'
+fun String.isFullParameterized(): Boolean {
+    //快速判断，不检测带参数后的语法是否合法
+    if(this.length < 2) return false
+    // $PARAM$ - 仅限 高级插值语法 A
+    if(surroundsWith('$', '$') && !isEscapedCharAt(lastIndex)) return true
+    return false
+}
+
+fun String.getParameterRanges(): List<TextRange> {
+    //TODO 1.3.13
+    //val ranges = mutableListOf<TextRange>()
+    //var startIndex = 0
+    //while(true) {
+    //    for(i in startIndex..lastIndex) {
+    //        val c = this[i]
+    //        if((c == '$' || c == '[') && !isEscapedCharAt(i)) {
+    //            
+    //        }
+    //    }
+    //    var i = this.indexOfFirst { it == '$' || it == '[' }
+    //    if(this.isEscapedCharAt(i)) i = -1
+    //}
+    //return ranges
+    
+    val indices = indicesOf('$')
+    if(indices.size <= 1) return emptyList()
+    return indices.windowed(2, 2, false) { TextRange.create(it[0], it[1] + 1) }
 }
 
 private val regex1 = """(?<!\\)\$.*?\$""".toRegex()
@@ -184,7 +210,7 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
         from == null -> null
         from is ParadoxGameType -> from
         from is VirtualFileWindow -> selectGameType(from.delegate) //for injected PSI
-        from is LightVirtualFileBase && from.originalFile != null  -> selectGameType(from.originalFile)
+        from is LightVirtualFileBase && from.originalFile != null -> selectGameType(from.originalFile)
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
         from is PsiDirectory -> selectGameType(selectFile(from))
         from is PsiFile -> selectGameType(selectFile(from))

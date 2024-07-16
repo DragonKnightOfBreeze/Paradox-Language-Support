@@ -97,4 +97,12 @@ class StdlibExtensionsTest {
 		Assert.assertTrue("123\\\\\"".isRightQuoted())
 		Assert.assertTrue("\\\\\"".isRightQuoted())
 	}
+    
+    @Test
+    fun isEscapedCharAt(){
+        Assert.assertFalse("abcd".isEscapedCharAt(3))
+        Assert.assertTrue("ab\\d".isEscapedCharAt(3))
+        Assert.assertFalse("a\\\\d".isEscapedCharAt(3))
+        Assert.assertTrue("\\\\\\d".isEscapedCharAt(3))
+    }
 }

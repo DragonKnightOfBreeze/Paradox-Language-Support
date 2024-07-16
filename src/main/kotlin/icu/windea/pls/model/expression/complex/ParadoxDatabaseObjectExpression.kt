@@ -61,7 +61,7 @@ class ParadoxDatabaseObjectExpression private constructor(
     }
     
     private fun isValid(node: ParadoxComplexExpressionNode): Boolean {
-        return node.text.isExactParameterAwareIdentifier()
+        return node.text.isParameterAwareIdentifier()
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {

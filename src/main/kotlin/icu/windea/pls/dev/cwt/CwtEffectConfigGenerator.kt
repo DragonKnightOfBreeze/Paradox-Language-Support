@@ -1,6 +1,7 @@
 package icu.windea.pls.dev.cwt
 
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import java.io.*
 
@@ -96,7 +97,7 @@ class CwtEffectConfigGenerator(
                     setScopeOption(lineIndex, lines, info).let { lineIndex += it }
                     resortOptions(lineIndex, lines).let { lineIndex += it }
                 } else {
-                    if(name.isExactIdentifier()) {
+                    if(name.isIdentifier()) {
                         unknownNames.add(name)
                     }
                 }

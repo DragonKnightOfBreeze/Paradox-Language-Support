@@ -69,8 +69,8 @@ class ParadoxDynamicValueExpression private constructor(
     
     private fun isValid(node: ParadoxComplexExpressionNode): Boolean {
         return when(node) {
-            is ParadoxDynamicValueNode -> node.text.isExactParameterAwareIdentifier('.') //兼容点号
-            else -> node.text.isExactParameterAwareIdentifier()
+            is ParadoxDynamicValueNode -> node.text.isParameterAwareIdentifier('.') //兼容点号
+            else -> node.text.isParameterAwareIdentifier()
         }
     }
     
@@ -140,7 +140,7 @@ class ParadoxDynamicValueExpression private constructor(
             while(tokenIndex < textLength) {
                 index = tokenIndex + 1
                 tokenIndex = expressionString.indexOf('@', index)
-                if(tokenIndex != -1 && ParadoxExpressionHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
+                if(tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //这里需要跳过参数文本
                 if(tokenIndex == -1) {
                     tokenIndex = textLength
                 }

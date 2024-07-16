@@ -127,7 +127,7 @@ class ParadoxVariableFieldExpression(
     }
     
     private fun isValid(node: ParadoxComplexExpressionNode): Boolean {
-        return node.text.isExactParameterAwareIdentifier()
+        return node.text.isParameterAwareIdentifier()
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -200,9 +200,9 @@ class ParadoxVariableFieldExpression(
             while(tokenIndex < textLength) {
                 index = tokenIndex + 1
                 tokenIndex = expressionString.indexOf('.', index)
-                if(tokenIndex != -1 && ParadoxExpressionHandler.inParameterRanges(parameterRanges, tokenIndex)) continue //这里需要跳过参数文本
-                if(tokenIndex != -1 && expressionString.indexOf('@', index).let { it != -1 && it < tokenIndex && !ParadoxExpressionHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
-                if(tokenIndex != -1 && expressionString.indexOf('|', index).let { it != -1 && it < tokenIndex && !ParadoxExpressionHandler.inParameterRanges(parameterRanges, it) }) tokenIndex = -1
+                if(tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //这里需要跳过参数文本
+                if(tokenIndex != -1 && expressionString.indexOf('@', index).let { it != -1 && it < tokenIndex && !parameterRanges.any { it in it } }) tokenIndex = -1
+                if(tokenIndex != -1 && expressionString.indexOf('|', index).let { it != -1 && it < tokenIndex && !parameterRanges.any { it in it } }) tokenIndex = -1
                 val dotNode = if(tokenIndex != -1) {
                     val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
                     ParadoxOperatorNode(".", dotRange)

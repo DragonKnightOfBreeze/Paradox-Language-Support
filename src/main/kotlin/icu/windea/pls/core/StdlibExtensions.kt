@@ -221,14 +221,6 @@ fun Char.isExactDigit(): Boolean {
     return this in '0'..'9'
 }
 
-fun Char.isExactIdentifierChar(): Boolean {
-    return this == '_' || this.isExactLetter() || this.isExactDigit()
-}
-
-fun String.isExactIdentifier(vararg extraChars: Char): Boolean {
-    return this.all { it.isExactIdentifierChar() || it in extraChars }
-}
-
 fun String.isLeftQuoted(): Boolean {
     return startsWith('"')
 }
@@ -296,6 +288,18 @@ fun String.quoteIfNecessary(): String {
     //如果包含空白或者双引号的话要使用双引号括起
     if(any { it.isWhitespace() || it == '"' }) return this.quote()
     return this
+}
+
+/**
+ * 判断当前字符串中的指定索引[index]的字符是否被转义。（在前面有连续的奇数个反斜线）
+ */
+fun String.isEscapedCharAt(index: Int) : Boolean {
+    if(index == 0) return false
+    var n = 0
+    for(i in (index - 1) downTo  0) {
+        if(this[i] == '\\') n++ else break
+    }
+    return n % 2 == 1
 }
 
 fun String.escapeXml() = if(this.isEmpty()) "" else StringUtil.escapeXmlEntities(this)

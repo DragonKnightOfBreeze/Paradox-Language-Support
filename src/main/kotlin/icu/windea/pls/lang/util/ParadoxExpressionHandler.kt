@@ -63,10 +63,10 @@ object ParadoxExpressionHandler {
     
     fun getParameterRanges(element: ParadoxExpressionElement): List<TextRange> {
         var parameterRanges: MutableList<TextRange>? = null
-        element.processChild { parameter ->
-            if(parameter is ParadoxParameter) {
+        element.processChild { e ->
+            if(e is ParadoxParameter || e is ParadoxScriptInlineParameterCondition) {
                 if(parameterRanges == null) parameterRanges = mutableListOf()
-                parameterRanges?.add(parameter.textRange)
+                parameterRanges?.add(e.textRange)
             }
             true
         }
@@ -75,10 +75,10 @@ object ParadoxExpressionHandler {
     
     fun getParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
         var parameterRanges: MutableList<TextRange>? = null
-        element.processChild { parameter ->
-            if(parameter is ParadoxParameter) {
+        element.processChild { e ->
+            if(e is ParadoxParameter || e is ParadoxScriptInlineParameterCondition) {
                 if(parameterRanges == null) parameterRanges = mutableListOf()
-                parameterRanges?.add(parameter.textRangeInParent)
+                parameterRanges?.add(e.textRangeInParent)
             }
             true
         }
@@ -94,10 +94,6 @@ object ParadoxExpressionHandler {
     fun isUnaryOperatorAwareParameter(text: String, parameterRanges: List<TextRange>): Boolean {
         return text.firstOrNull()?.let { it == '+' || it == '-' } == true
             && parameterRanges.singleOrNull()?.let { it.startOffset == 1 && it.endOffset == text.length } == true
-    }
-    
-    fun inParameterRanges(parameterRanges: List<TextRange>, index: Int): Boolean {
-        return parameterRanges.any { index in it }
     }
     //endregion
     
