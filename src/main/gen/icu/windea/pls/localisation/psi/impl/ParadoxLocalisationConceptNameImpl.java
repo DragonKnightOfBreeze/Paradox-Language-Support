@@ -11,6 +11,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
@@ -46,6 +47,30 @@ public class ParadoxLocalisationConceptNameImpl extends ASTWrapperPsiElement imp
   @NotNull
   public ParadoxLocalisationConceptName setValue(@NotNull String value) {
     return ParadoxLocalisationPsiImplUtil.setValue(this, value);
+  }
+
+  @Override
+  @NotNull
+  public String getExpression() {
+    return ParadoxLocalisationPsiImplUtil.getExpression(this);
+  }
+
+  @Override
+  @Nullable
+  public String getConfigExpression() {
+    return ParadoxLocalisationPsiImplUtil.getConfigExpression(this);
+  }
+
+  @Override
+  @Nullable
+  public PsiReference getReference() {
+    return ParadoxLocalisationPsiImplUtil.getReference(this);
+  }
+
+  @Override
+  @NotNull
+  public PsiReference[] getReferences() {
+    return ParadoxLocalisationPsiImplUtil.getReferences(this);
   }
 
   @Override

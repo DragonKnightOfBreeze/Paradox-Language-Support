@@ -334,6 +334,12 @@ object ParadoxCompletionManager {
         context.scopeContext = scopeContext
     }
     
+    fun completeLocalisationExpression(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        
+        ParadoxLocalisationExpressionSupport.complete(context, result)
+    }
+    
     fun completeLocalisation(context: ProcessingContext, result: CompletionResultSet) {
         val config = context.config ?: return
         val keyword = context.keyword
@@ -1146,6 +1152,7 @@ object ParadoxCompletionManager {
         val keysToDistinct = mutableSetOf<String>()
         ParadoxDefinitionSearch.search("game_concept", conceptSelector).processQueryAsync p@{ element ->
             val tailText = " from concepts"
+            val typeFile = element.containingFile
             val icon = PlsIcons.LocalisationNodes.Concept
             run action@{
                 val key = element.name
@@ -1153,6 +1160,8 @@ object ParadoxCompletionManager {
                 val lookupElement = LookupElementBuilder.create(element, key)
                     .withIcon(icon)
                     .withTailText(tailText, true)
+                    .withTypeText(typeFile?.name)
+                    .withTypeText(typeFile?.name, typeFile?.icon, true)
                 result.addElement(lookupElement)
             }
             element.getData<StellarisGameConceptDataProvider.Data>()?.alias?.forEach action@{ alias ->
@@ -1161,6 +1170,7 @@ object ParadoxCompletionManager {
                 val lookupElement = LookupElementBuilder.create(element, key)
                     .withIcon(icon)
                     .withTailText(tailText, true)
+                    .withTypeText(typeFile?.name, typeFile?.icon, true)
                 result.addElement(lookupElement)
             }
             true

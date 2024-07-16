@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.NavigatablePsiElement;
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
 import icu.windea.pls.lang.psi.ParadoxTypedElement;
+import com.intellij.psi.ContributedReferenceHost;
 import com.intellij.psi.PsiListLikeElement;
 
 public class ParadoxLocalisationVisitor extends PsiElementVisitor {
@@ -38,6 +39,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitConceptName(@NotNull ParadoxLocalisationConceptName o) {
     visitExpressionElement(o);
+    // visitContributedReferenceHost(o);
   }
 
   public void visitConceptText(@NotNull ParadoxLocalisationConceptText o) {

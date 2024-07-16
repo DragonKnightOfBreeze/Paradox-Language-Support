@@ -16,7 +16,7 @@ class ParadoxScriptExpressionReferenceProvider : PsiReferenceProvider() {
         if(element !is ParadoxScriptExpressionElement || !element.isExpression()) return PsiReference.EMPTY_ARRAY
         
         //尝试兼容可能包含参数的情况
-        //if(text.isParameterized()) return PsiReference.EMPTY_ARRAY
+        //if(element.text.isParameterized()) return PsiReference.EMPTY_ARRAY
         
         //尝试解析为复杂枚举值声明
         run {

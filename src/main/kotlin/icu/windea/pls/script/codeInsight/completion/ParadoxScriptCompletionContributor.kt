@@ -4,7 +4,6 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.patterns.PlatformPatterns.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptCompletionContributor : CompletionContributor() {
@@ -21,10 +20,10 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		
 		extend(scriptedVariableReferencePattern, ParadoxScriptedVariableCompletionProvider())
 		
-		//当用户可能正在输入一个propertyKey或string时提示
-		val inDefinitionPattern = psiElement()
+		//当用户可能正在输入一个scriptExpression时提示
+		val expressionPattern = psiElement()
 			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
-		extend(inDefinitionPattern, ParadoxInDefinitionCompletionProvider())
+		extend(expressionPattern, ParadoxScriptExpressionCompletionProvider())
 		
 		//当用户可能正在输入一个eventId时提示
 		val eventIdPattern = psiElement()
@@ -39,6 +38,11 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		val parameterPattern = psiElement()
 			.withElementType(ParadoxScriptTokenSets.PARAMETER_TOKENS)
 		extend(parameterPattern, ParadoxParameterCompletionProvider())
+        
+        //当用户可能正在输入内联脚本调用的key（即"inline_script"）使提示
+        val inlineScriptInvocationPattern = psiElement()
+            .withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
+        extend(inlineScriptInvocationPattern, ParadoxInlineScriptInvocationCompletionProvider())
 		
 		//当用户可能正在输入一个scriptedVariable的名字时提示（除非用户也可能正在输入一个引用的名字）
 		val scriptedVariableNamePattern = psiElement()
@@ -54,11 +58,6 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		val variableNamePattern = psiElement()
 			.withElementType(ParadoxScriptTokenSets.STRING_TOKENS)
 		extend(CompletionType.BASIC, variableNamePattern, ParadoxVariableNameCompletionProvider())
-		
-		//当用户可能正在输入内联脚本调用的key（即"inline_script"）使提示
-		val inlineScriptInvocationPattern = psiElement()
-			.withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
-		extend(inlineScriptInvocationPattern, ParadoxInlineScriptInvocationCompletionProvider())
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {

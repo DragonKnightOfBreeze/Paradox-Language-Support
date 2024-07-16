@@ -11,7 +11,6 @@ import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.localisation.highlighter.ParadoxLocalisationAttributesKeys as Keys
 
 @Suppress("UNUSED_PARAMETER")
@@ -25,8 +24,9 @@ class ParadoxLocalisationAnnotator : Annotator {
             is ParadoxLocalisationColorfulText -> annotateColorfulText(element, holder)
             is ParadoxLocalisationCommandScope -> annotateCommandScope(element, holder)
             is ParadoxLocalisationCommandField -> annotateCommandField(element, holder)
-            is ParadoxLocalisationConceptName -> annotateConceptName(element, holder)
         }
+        
+        if(element is ParadoxLocalisationExpressionElement) annotateExpression(element, holder)
     }
     
     private fun checkSyntax(element: PsiElement, holder: AnnotationHolder) {
@@ -90,14 +90,7 @@ class ParadoxLocalisationAnnotator : Annotator {
         holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
     }
     
-    private fun annotateConceptName(element: ParadoxLocalisationConceptName, holder: AnnotationHolder) {
-        run {
-            if(!element.isDatabaseObjectExpression()) return@run
-            val configGroup = getConfigGroup(element.project, selectGameType(element))
-            val value = element.value
-            val textRange = TextRange.create(0, value.length)
-            val expression = ParadoxDatabaseObjectExpression.resolve(value, textRange, configGroup) ?: return
-            ParadoxExpressionHandler.annotateComplexExpression(element, expression, holder)
-        }
+    private fun annotateExpression(element: ParadoxLocalisationExpressionElement, holder: AnnotationHolder) {
+        ParadoxExpressionHandler.annotateExpression(element, null, holder)
     }
 }

@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.model.ParadoxType;
@@ -46,6 +47,18 @@ public class ParadoxScriptFloatImpl extends ParadoxScriptValueImpl implements Pa
   @NotNull
   public ParadoxType getType() {
     return ParadoxScriptPsiImplUtil.getType(this);
+  }
+
+  @Override
+  @Nullable
+  public PsiReference getReference() {
+    return ParadoxScriptPsiImplUtil.getReference(this);
+  }
+
+  @Override
+  @NotNull
+  public PsiReference[] getReferences() {
+    return ParadoxScriptPsiImplUtil.getReferences(this);
   }
 
   @Override

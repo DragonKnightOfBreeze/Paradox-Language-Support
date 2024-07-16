@@ -437,7 +437,7 @@ object ParadoxLocalisationPsiImplUtil {
         val conceptName = element.conceptName ?: return null
         
         //作为复杂表达式的场合，另行处理（参见：ParadoxLocalisationReferenceContributor）
-        if(conceptName.isDatabaseObjectExpression()) return null
+        if(conceptName.isComplexExpression()) return null
         
         val rangeInElement = conceptName.idElement?.textRangeInParent ?: return null
         return CachedValuesManager.getCachedValue(element) {
@@ -463,7 +463,18 @@ object ParadoxLocalisationPsiImplUtil {
         val newElement = ParadoxLocalisationElementFactory.createConceptName(element.project, value)
         return element.replace(newElement).cast()
     }
-    //endregion    
+    
+    @JvmStatic
+    fun getExpression(element: ParadoxLocalisationConceptName): String {
+        return element.name
+    }
+    
+    @JvmStatic
+    fun getConfigExpression(element: ParadoxLocalisationConceptName): String? {
+        if(element.isDatabaseObjectExpression()) return "\$database_object"
+        return null
+    }
+    //endregion
     
     //region ParadoxLocalisationColorfulText
     @JvmStatic
@@ -490,6 +501,17 @@ object ParadoxLocalisationPsiImplUtil {
         }
     }
     //endregion
+    
+    @JvmStatic
+    fun getReference(element: PsiElement): PsiReference? {
+        return element.references.singleOrNull()
+    }
+    
+    @JvmStatic
+    fun getReferences(element: PsiElement): Array<out PsiReference> {
+        //这里不需要进行缓存
+        return PsiReferenceService.getService().getContributedReferences(element)
+    }
     
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {

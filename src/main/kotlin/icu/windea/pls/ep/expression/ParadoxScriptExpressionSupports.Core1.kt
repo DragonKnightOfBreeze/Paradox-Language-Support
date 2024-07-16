@@ -15,7 +15,7 @@ import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
 
-class ParadoxDynamicValueExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type in CwtDataTypeGroups.DynamicValue
     }
@@ -63,7 +63,7 @@ class ParadoxDynamicValueExpressionSupport : ParadoxScriptExpressionSupport {
     }
 }
 
-class ParadoxScopeFieldExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type in CwtDataTypeGroups.ScopeField
     }
@@ -109,7 +109,7 @@ class ParadoxScopeFieldExpressionSupport : ParadoxScriptExpressionSupport {
     }
 }
 
-class ParadoxValueFieldExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type in CwtDataTypeGroups.ValueField
     }
@@ -149,7 +149,7 @@ class ParadoxValueFieldExpressionSupport : ParadoxScriptExpressionSupport {
     }
 }
 
-class ParadoxVariableFieldExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type in CwtDataTypeGroups.VariableField
     }
@@ -189,7 +189,7 @@ class ParadoxVariableFieldExpressionSupport : ParadoxScriptExpressionSupport {
     }
 }
 
-class ParadoxDatabaseObjectExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type in CwtDataTypeGroups.DatabaseObject
     }

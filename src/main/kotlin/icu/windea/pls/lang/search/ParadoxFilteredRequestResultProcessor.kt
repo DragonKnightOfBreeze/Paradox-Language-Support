@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.search
 
 import com.intellij.psi.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.constraints.*
 

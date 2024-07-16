@@ -25,8 +25,14 @@
 ## 1.3.13
 
 * [X] 支持内联脚本块中的带参数的封装变量引用（如`k = @[ foo$p$bar + 1 ]`）
-* [ ] #56 支持从数据库对象生成的概念（同时提供相应的代码补全、代码导航与代码检查）
-* [ ] 其他优化与BUG修复
+* [X] #56 支持从数据库对象生成的概念（同时提供相应的代码补全、代码导航与代码检查等功能）
+* [X] 其他优化与BUG修复
+
+***
+
+* [X] Supports parameterized scripted variable references in inline math blocks (e.g., `k = @[ foo$p$bar + 1 ]`)
+* [X] #56 Supports concepts from database objects (with relevant features such as code completion, code navigation and code inspection)
+* [X] Other optimizations and bug fixes
 
 ## 1.3.12
 

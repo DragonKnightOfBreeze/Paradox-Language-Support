@@ -134,10 +134,7 @@ int ::= INT_TOKEN {
     "com.intellij.psi.PsiLiteralValue"
     "com.intellij.psi.ContributedReferenceHost"
   ]
-  methods=[
-    getValue getIntValue getType
-    getReference getReferences
-  ]
+  methods=[getValue getIntValue getType getReference getReferences]
 }
 float ::= FLOAT_TOKEN {
   extends=value
@@ -145,7 +142,7 @@ float ::= FLOAT_TOKEN {
     "com.intellij.psi.PsiLiteralValue"
     "com.intellij.psi.ContributedReferenceHost"
   ]
-  methods=[getValue getFloatValue getType]
+  methods=[getValue getFloatValue getType getReference getReferences]
 }
 //can be parameterized
 string ::= string_part <<checkRightTemplate>> (<<processTemplate>> string_part) * {

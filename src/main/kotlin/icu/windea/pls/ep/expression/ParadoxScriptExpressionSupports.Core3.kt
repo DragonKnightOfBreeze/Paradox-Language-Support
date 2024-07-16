@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
 
 @WithGameType(ParadoxGameType.Stellaris)
-class StellarisTechnologyWithLevelScriptExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressionSupport {
     //https://github.com/cwtools/cwtools-vscode/issues/58
     
     private val typeExpression = "<technology.repeatable>"
@@ -70,7 +70,7 @@ class StellarisTechnologyWithLevelScriptExpressionSupport : ParadoxScriptExpress
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        val definitionScriptExpressionSupport = ParadoxScriptExpressionSupport.EP_NAME.findExtension(ParadoxDefinitionScriptExpressionSupport::class.java) ?: return
+        val definitionScriptExpressionSupport = ParadoxScriptExpressionSupport.EP_NAME.findExtension(ParadoxScriptDefinitionExpressionSupport::class.java) ?: return
         
         val keyword = context.keyword
         val keywordOffset = context.keywordOffset

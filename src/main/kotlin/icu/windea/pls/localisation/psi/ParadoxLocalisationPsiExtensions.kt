@@ -74,6 +74,10 @@ fun PsiElement.isRichTextContext(): Boolean {
 		|| this is ParadoxLocalisationColorfulText || this is ParadoxLocalisationCommand || this is ParadoxLocalisationConceptText
 }
 
+fun ParadoxLocalisationExpressionElement.isComplexExpression(): Boolean {
+    return isDatabaseObjectExpression()
+}
+
 fun ParadoxLocalisationExpressionElement.isDatabaseObjectExpression(): Boolean {
     return this is ParadoxLocalisationConceptName && this.textContains(':') //简单判断
 }

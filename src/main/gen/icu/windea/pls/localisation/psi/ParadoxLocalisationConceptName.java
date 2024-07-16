@@ -4,11 +4,13 @@ package icu.windea.pls.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ContributedReferenceHost;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxLocalisationConceptName extends ParadoxLocalisationExpressionElement {
+public interface ParadoxLocalisationConceptName extends ParadoxLocalisationExpressionElement, ContributedReferenceHost {
 
   @NotNull
   String getName();
@@ -18,6 +20,18 @@ public interface ParadoxLocalisationConceptName extends ParadoxLocalisationExpre
 
   @NotNull
   ParadoxLocalisationConceptName setValue(@NotNull String value);
+
+  @NotNull
+  String getExpression();
+
+  @Nullable
+  String getConfigExpression();
+
+  @Nullable
+  PsiReference getReference();
+
+  @NotNull
+  PsiReference[] getReferences();
 
   @NotNull
   ItemPresentation getPresentation();

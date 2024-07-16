@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.codeInsight.completion.*
@@ -8,11 +9,12 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 
 /**
- * 提供命令字段作用域的代码补全。
+ * 提供本地化表达式相关的代码补全。基于规则文件。
  */
-class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxLocalisationExpressionCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val element = parameters.position.parent.castOrNull<ParadoxLocalisationCommandIdentifier>() ?: return
+        val element = parameters.position.parentOfType<ParadoxLocalisationExpressionElement>() ?: return
+        if(!element.isComplexExpression()) return
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
         
@@ -20,13 +22,7 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
         context.contextElement = element
         context.offsetInParent = offsetInParent
         context.keyword = keyword
-        context.scopeContext = ParadoxScopeHandler.getScopeContext(element)
         
-        //提示scope
-        ParadoxCompletionManager.completeSystemScope(context, result)
-        ParadoxCompletionManager.completePredefinedLocalisationScope(context, result)
-        
-        //提示value[event_target]和value[global_event_target]
-        ParadoxCompletionManager.completeEventTarget(context, result)
+        ParadoxCompletionManager.completeLocalisationExpression(context, result)
     }
 }

@@ -20,6 +20,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.complexEnumValueExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxComplexEnumValueExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dynamicValueExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxDynamicValueExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.localisationExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.pathReferenceExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.expressionIndexSupport" interface="icu.windea.pls.ep.index.ParadoxExpressionIndexSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionInheritSupport" interface="icu.windea.pls.ep.inherit.ParadoxDefinitionInheritSupport" dynamic="true"/>
@@ -123,29 +124,32 @@
     <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.expression.BaseCwtDataExpressionPriorityProvider"/>
     <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.expression.CoreCwtDataExpressionPriorityProvider"/>
     
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxBlockScriptExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxBoolScriptExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptBlockExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptBoolExpressionSupport"/>
     
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxLocalisationScriptExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxSyncedLocalisationScriptExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxInlineLocalisationScriptExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxDefinitionScriptExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxPathReferenceScriptExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxEnumValueScriptExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxModifierScriptExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxAliasNameScriptExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxConstantScriptExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxTemplateScriptExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptLocalisationExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptSyncedLocalisationExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptInlineLocalisationExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptDefinitionExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptPathReferenceExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptEnumValueExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptModifierExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptAliasNameExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptConstantExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptTemplateExpressionSupport"/>
     
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxParameterScriptExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxLocalisationParameterScriptExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.StellarisTechnologyWithLevelScriptExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptDynamicValueExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptScopeFieldExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptValueFieldExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptVariableFieldExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptDatabaseObjectExpressionSupport"/>
+
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptParameterExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptLocalisationParameterExpressionSupport"/>
     
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxDynamicValueExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScopeFieldExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxValueFieldExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxVariableFieldExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxDatabaseObjectExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptTechnologyWithLevelExpressionSupport"/>
+    
+    <localisationExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxLocalisationDatabaseObjectExpressionSupport"/>
     
     <pathReferenceExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxIconReferenceExpressionSupport"/>
     <pathReferenceExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxFilePathReferenceExpressionSupport"/>

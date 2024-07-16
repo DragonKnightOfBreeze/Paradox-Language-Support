@@ -11,13 +11,12 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 提供定义的相关代码补全。基于CWT规则文件。
+ * 提供脚本表达式相关的代码补全。基于规则文件。
  */
-class ParadoxInDefinitionCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxScriptExpressionCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position.parentOfType<ParadoxScriptStringExpressionElement>() ?: return
-        
-        ProgressManager.checkCanceled()
+        if(!element.isExpression()) return
         
         val file = parameters.originalFile
         val quoted = element.text.isLeftQuoted()

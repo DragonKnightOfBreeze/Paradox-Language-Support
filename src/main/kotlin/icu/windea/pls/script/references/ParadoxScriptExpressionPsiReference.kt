@@ -15,7 +15,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 /**
- * @see icu.windea.pls.script.codeInsight.completion.ParadoxInDefinitionCompletionProvider
+ * @see icu.windea.pls.script.codeInsight.completion.ParadoxScriptExpressionCompletionProvider
  */
 class ParadoxScriptExpressionPsiReference(
     element: ParadoxScriptExpressionElement,
@@ -81,12 +81,12 @@ class ParadoxScriptExpressionPsiReference(
     
     private fun doResolve(): PsiElement? {
         //根据对应的expression进行解析
-        return ParadoxExpressionHandler.resolveScriptExpression(element, rangeInElement, config, config.expression, isKey)
+        return ParadoxExpressionHandler.resolveExpression(element, rangeInElement, config, config.expression, isKey)
     }
     
     private fun doMultiResolve(): Array<out ResolveResult> {
         //根据对应的expression进行解析
-        return ParadoxExpressionHandler.multiResolveScriptExpression(element, rangeInElement, config, config.expression, isKey)
+        return ParadoxExpressionHandler.multiResolveExpression(element, rangeInElement, config, config.expression, isKey)
             .mapToArray { PsiElementResolveResult(it) }
     }
 }

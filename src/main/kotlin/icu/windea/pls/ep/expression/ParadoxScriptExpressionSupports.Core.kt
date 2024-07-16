@@ -21,7 +21,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxLocalisationScriptExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataTypes.Localisation
     }
@@ -54,7 +54,7 @@ class ParadoxLocalisationScriptExpressionSupport : ParadoxScriptExpressionSuppor
     }
 }
 
-class ParadoxSyncedLocalisationScriptExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataTypes.Localisation
     }
@@ -87,7 +87,7 @@ class ParadoxSyncedLocalisationScriptExpressionSupport : ParadoxScriptExpression
     }
 }
 
-class ParadoxInlineLocalisationScriptExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataTypes.InlineLocalisation
     }
@@ -123,7 +123,7 @@ class ParadoxInlineLocalisationScriptExpressionSupport : ParadoxScriptExpression
     }
 }
 
-class ParadoxDefinitionScriptExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataTypes.Definition
     }
@@ -158,7 +158,7 @@ class ParadoxDefinitionScriptExpressionSupport : ParadoxScriptExpressionSupport 
     }
 }
 
-class ParadoxPathReferenceScriptExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type in CwtDataTypeGroups.PathReference
     }
@@ -205,7 +205,7 @@ class ParadoxPathReferenceScriptExpressionSupport : ParadoxScriptExpressionSuppo
     }
 }
 
-class ParadoxEnumValueScriptExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataTypes.EnumValue
     }
@@ -255,7 +255,7 @@ class ParadoxEnumValueScriptExpressionSupport : ParadoxScriptExpressionSupport {
     }
 }
 
-class ParadoxModifierScriptExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataTypes.Modifier
     }
@@ -279,7 +279,7 @@ class ParadoxModifierScriptExpressionSupport : ParadoxScriptExpressionSupport {
     }
 }
 
-class ParadoxAliasNameScriptExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         val type = config.expression?.type ?: return false
         return type == CwtDataTypes.AliasName || type == CwtDataTypes.AliasKeysField
@@ -301,7 +301,7 @@ class ParadoxAliasNameScriptExpressionSupport : ParadoxScriptExpressionSupport {
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
         val aliasSubName = ParadoxExpressionHandler.getAliasSubName(element, expression, element.text.isLeftQuoted(), aliasName, configGroup)
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return null
-        return ParadoxExpressionHandler.resolveScriptExpression(element, rangeInElement, alias, alias.expression, isKey, exact)
+        return ParadoxExpressionHandler.resolveExpression(element, rangeInElement, alias, alias.expression, isKey, exact)
     }
     
     override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
@@ -310,7 +310,7 @@ class ParadoxAliasNameScriptExpressionSupport : ParadoxScriptExpressionSupport {
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptySet()
         val aliasSubName = ParadoxExpressionHandler.getAliasSubName(element, expression, element.text.isLeftQuoted(), aliasName, configGroup)
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return emptySet()
-        return ParadoxExpressionHandler.multiResolveScriptExpression(element, rangeInElement, alias, alias.expression, isKey)
+        return ParadoxExpressionHandler.multiResolveExpression(element, rangeInElement, alias, alias.expression, isKey)
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -363,7 +363,7 @@ abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpress
     }
 }
 
-class ParadoxConstantScriptExpressionSupport : ParadoxScriptConstantLikeExpressionSupport() {
+class ParadoxScriptConstantExpressionSupport : ParadoxScriptConstantLikeExpressionSupport() {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataTypes.Constant
     }
@@ -383,7 +383,7 @@ class ParadoxConstantScriptExpressionSupport : ParadoxScriptConstantLikeExpressi
     }
 }
 
-class ParadoxTemplateScriptExpressionSupport : ParadoxScriptConstantLikeExpressionSupport() {
+class ParadoxScriptTemplateExpressionSupport : ParadoxScriptConstantLikeExpressionSupport() {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataTypes.TemplateExpression
     }

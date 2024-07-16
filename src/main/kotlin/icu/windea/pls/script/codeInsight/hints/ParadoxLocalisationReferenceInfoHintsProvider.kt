@@ -59,7 +59,7 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
         val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull()
             ?.takeIf { it.expression.type in expressionTypes }
             ?: return true
-        val resolved = ParadoxExpressionHandler.resolveScriptExpression(element, null, config, config.expression, true)
+        val resolved = ParadoxExpressionHandler.resolveExpression(element, null, config, config.expression, true)
         if(resolved is ParadoxLocalisationProperty) {
             val localisationInfo = resolved.localisationInfo
             if(localisationInfo != null) {

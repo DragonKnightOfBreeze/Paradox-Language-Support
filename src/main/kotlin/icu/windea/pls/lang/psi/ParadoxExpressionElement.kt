@@ -8,7 +8,7 @@ import icu.windea.pls.localisation.psi.*
  * @see ParadoxScriptExpressionElement
  * @see ParadoxLocalisationExpressionElement
  */
-interface ParadoxExpressionElement: NavigatablePsiElement {
+interface ParadoxExpressionElement: NavigatablePsiElement, ParadoxTypedElement {
     override fun getName(): String
     
     val value: String

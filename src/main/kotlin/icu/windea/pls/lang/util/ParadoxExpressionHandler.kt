@@ -23,6 +23,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.CwtConfigMatcher.Options
 import icu.windea.pls.lang.util.CwtConfigMatcher.ResultValue
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.model.expression.complex.*
@@ -498,6 +499,16 @@ object ParadoxExpressionHandler {
     //endregion
     
     //region Annotate Methods
+    fun annotateExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, holder: AnnotationHolder) {
+        val expression = getExpressionText(element, rangeInElement)
+        ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expression, holder, config)
+    }
+    
+    fun annotateExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder) {
+        val expression = getExpressionText(element, rangeInElement)
+        ParadoxLocalisationExpressionSupport.annotate(element, rangeInElement, expression, holder)
+    }
+    
     fun annotateExpression(element: ParadoxExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
         if(range.isEmpty) return
         if(element !is ParadoxScriptStringExpressionElement) {
@@ -535,9 +546,9 @@ object ParadoxExpressionHandler {
                 val attributesKeyConfig = expressionNode.getAttributesKeyConfig(element)
                 if(attributesKeyConfig != null) {
                     val rangeInElement = expressionNode.rangeInExpression.shiftRight(if(element.text.isLeftQuoted()) 1 else 0)
-                    annotateScriptExpression(element, rangeInElement, attributesKeyConfig, holder)
+                    annotateExpression(element, rangeInElement, attributesKeyConfig, holder)
                     return@run
-                } 
+                }
             }
             if(attributesKey != null) {
                 doAnnotateComplexExpressionByAttributesKey(element, expressionNode, holder, attributesKey)
@@ -555,11 +566,6 @@ object ParadoxExpressionHandler {
         val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRange.unquote(element.text).startOffset)
         annotateExpression(element, rangeToAnnotate, attributesKey, holder)
     }
-    
-    fun annotateScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, holder: AnnotationHolder) {
-        val expression = getExpressionText(element, rangeInElement)
-        ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expression, holder, config)
-    }
     //endregion
     
     //region Resolve Methods
@@ -569,19 +575,12 @@ object ParadoxExpressionHandler {
         val expression = getExpressionText(element, rangeInElement)
         
         val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expression, config, isKey)
-        if(result.isNotNullOrEmpty()) return result
-        
-        return null
+        return result.orNull()
     }
     
-    /**
-     * @param element 需要解析的PSI元素。
-     * @param rangeInElement 需要解析的文本在需要解析的PSI元素对应的整个文本中的位置。
-     */
-    fun resolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+    fun resolveExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
         ProgressManager.checkCanceled()
         if(configExpression == null) return null
-        
         val expression = getExpressionText(element, rangeInElement)
         if(expression.isParameterized()) return null //排除引用文本带参数的情况
         
@@ -590,22 +589,14 @@ object ParadoxExpressionHandler {
         
         val configGroup = config.configGroup
         if(configExpression.isKey && configExpression.type in CwtDataTypeGroups.KeyReference) {
-            val resolvedConfig = config.resolved()
-            if(resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
-                //特殊处理合成的CWT规则
-                val gameType = configGroup.gameType ?: return null
-                val project = configGroup.project
-                return CwtMemberConfigElement(element, resolvedConfig, gameType, project)
-            }
-            return resolvedConfig.pointer.element
+            return getResolvedConfigElement(config, configGroup, element)
         }
         return null
     }
     
-    fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): Collection<PsiElement> {
+    fun multiResolveExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): Collection<PsiElement> {
         ProgressManager.checkCanceled()
         if(configExpression == null) return emptySet()
-        
         val expression = getExpressionText(element, rangeInElement)
         if(expression.isParameterized()) return emptySet() //排除引用文本带参数的情况
         
@@ -614,16 +605,46 @@ object ParadoxExpressionHandler {
         
         val configGroup = config.configGroup
         if(configExpression.isKey && configExpression.type in CwtDataTypeGroups.KeyReference) {
-            val resolvedConfig = config.resolved()
-            if(resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
-                //特殊处理合成的CWT规则
-                val gameType = configGroup.gameType ?: return emptySet()
-                val project = configGroup.project
-                return CwtMemberConfigElement(element, resolvedConfig, gameType, project).toSingletonSetOrEmpty()
-            }
-            return resolvedConfig.pointer.element.toSingletonSetOrEmpty()
+            return getResolvedConfigElement(config, configGroup, element).toSingletonSetOrEmpty()
         }
         return emptySet()
+    }
+    
+    private fun getResolvedConfigElement(config: CwtConfig<*>, configGroup: CwtConfigGroup, element: ParadoxScriptExpressionElement): PsiElement? {
+        val resolvedConfig = config.resolved()
+        if(resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
+            //特殊处理合成的CWT规则
+            val gameType = configGroup.gameType ?: return null
+            val project = configGroup.project
+            return CwtMemberConfigElement(element, resolvedConfig, gameType, project)
+        }
+        return resolvedConfig.pointer.element
+    }
+    
+    fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): Array<out PsiReference>? {
+        ProgressManager.checkCanceled()
+        val expression = getExpressionText(element, rangeInElement)
+        
+        val result = ParadoxLocalisationExpressionSupport.getReferences(element, rangeInElement, expression)
+        return result.orNull()
+    }
+    
+    fun resolveExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): PsiElement? {
+        ProgressManager.checkCanceled()
+        val expression = getExpressionText(element, rangeInElement)
+        if(expression.isParameterized()) return null //排除引用文本带参数的情况
+        
+        val result = ParadoxLocalisationExpressionSupport.resolve(element, rangeInElement, expression)
+        return result
+    }
+    
+    fun multiResolveExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): Collection<PsiElement> {
+        ProgressManager.checkCanceled()
+        val expression = getExpressionText(element, rangeInElement)
+        if(expression.isParameterized()) return emptySet() //排除引用文本带参数的情况
+        
+        val result = ParadoxLocalisationExpressionSupport.multiResolve(element, rangeInElement, expression)
+        return result
     }
     
     fun resolveModifier(element: ParadoxScriptExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {

@@ -5,8 +5,8 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.codeInsight.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
@@ -37,7 +37,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
             .contextSensitive()
             .preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
             .notSamePosition(element)
-            //.distinctByName() //这里selector不需要指定去重
+        //.distinctByName() //这里selector不需要指定去重
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> {
             ProgressManager.checkCanceled()
             val name = it.name

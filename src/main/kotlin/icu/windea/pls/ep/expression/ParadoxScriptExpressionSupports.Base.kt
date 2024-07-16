@@ -9,7 +9,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxBlockScriptExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataTypes.Block
     }
@@ -23,7 +23,7 @@ class ParadoxBlockScriptExpressionSupport : ParadoxScriptExpressionSupport {
     }
 }
 
-class ParadoxBoolScriptExpressionSupport: ParadoxScriptExpressionSupport {
+class ParadoxScriptBoolExpressionSupport: ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataTypes.Bool
     }

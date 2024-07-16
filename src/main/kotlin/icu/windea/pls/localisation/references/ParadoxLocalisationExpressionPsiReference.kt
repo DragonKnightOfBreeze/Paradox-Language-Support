@@ -1,0 +1,67 @@
+package icu.windea.pls.localisation.references
+
+import com.intellij.openapi.util.*
+import com.intellij.psi.*
+import com.intellij.psi.impl.source.resolve.*
+import com.intellij.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.psi.*
+import icu.windea.pls.cwt.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.localisation.psi.*
+
+class ParadoxLocalisationExpressionPsiReference(
+    element: ParadoxLocalisationExpressionElement,
+    rangeInElement: TextRange
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationExpressionElement>(element, rangeInElement), PsiReferencesAware {
+    val project by lazy { element.project }
+    
+    override fun handleElementRename(newElementName: String): PsiElement {
+        val resolved = resolve()
+        return when {
+            resolved == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+            resolved.language == CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
+            resolved.language.isParadoxLanguage() -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+            else -> throw IncorrectOperationException()
+        }
+    }
+    
+    override fun getReferences(): Array<out PsiReference>? {
+        return ParadoxExpressionHandler.getReferences(element, rangeInElement)
+    }
+    
+    //缓存解析结果以优化性能
+    
+    private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationExpressionPsiReference, PsiElement> {
+        override fun resolve(ref: ParadoxLocalisationExpressionPsiReference, incompleteCode: Boolean): PsiElement? {
+            return ref.doResolve()
+        }
+    }
+    
+    private object MultiResolver : ResolveCache.PolyVariantResolver<ParadoxLocalisationExpressionPsiReference> {
+        override fun resolve(ref: ParadoxLocalisationExpressionPsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
+            return ref.doMultiResolve()
+        }
+    }
+    
+    override fun resolve(): PsiElement? {
+        return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
+    }
+    
+    override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+        return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
+    }
+    
+    private fun doResolve(): PsiElement? {
+        //根据对应的expression进行解析
+        return ParadoxExpressionHandler.resolveExpression(element, rangeInElement)
+    }
+    
+    private fun doMultiResolve(): Array<out ResolveResult> {
+        //根据对应的expression进行解析
+        return ParadoxExpressionHandler.multiResolveExpression(element, rangeInElement)
+            .mapToArray { PsiElementResolveResult(it) }
+    }
+}
