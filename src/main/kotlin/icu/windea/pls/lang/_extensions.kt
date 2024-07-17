@@ -17,7 +17,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.io.*
@@ -60,12 +59,12 @@ fun String.isIdentifier(vararg extraChars: Char): Boolean {
 }
 
 fun String.isParameterAwareIdentifier(vararg extraChars: Char): Boolean {
-    //比较复杂的判断逻辑
+    //比较复杂的实现逻辑
     val fullRange = TextRange.create(0, this.length)
     val parameterRanges = this.getParameterRanges()
     val ranges = TextRangeUtil.excludeRanges(fullRange, parameterRanges)
     ranges.forEach f@{ range ->
-        for(i in range.startOffset..range.endOffset) {
+        for(i in range.startOffset until range.endOffset) {
             if(i >= this.length) continue
             val c = this[i]
             if(c.isIdentifierChar() || c in extraChars) continue
@@ -94,24 +93,48 @@ fun String.isFullParameterized(): Boolean {
 }
 
 fun String.getParameterRanges(): List<TextRange> {
-    //TODO 1.3.13
-    //val ranges = mutableListOf<TextRange>()
-    //var startIndex = 0
-    //while(true) {
-    //    for(i in startIndex..lastIndex) {
-    //        val c = this[i]
-    //        if((c == '$' || c == '[') && !isEscapedCharAt(i)) {
-    //            
-    //        }
-    //    }
-    //    var i = this.indexOfFirst { it == '$' || it == '[' }
-    //    if(this.isEscapedCharAt(i)) i = -1
-    //}
-    //return ranges
-    
-    val indices = indicesOf('$')
-    if(indices.size <= 1) return emptyList()
-    return indices.windowed(2, 2, false) { TextRange.create(it[0], it[1] + 1) }
+    //比较复杂的实现逻辑
+    val ranges = mutableListOf<TextRange>()
+    // a_$PARAM$_b - 高级插值语法 A - 深度计数
+    var depth1 = 0
+    // a_[[PARAM]b]_c - 高级插值语法 B - 深度计数
+    var depth2 = 0
+    var startIndex = -1
+    var endIndex = -1
+    for((i, c) in this.withIndex()) {
+        if(c == '$' && !isEscapedCharAt(i)) {
+            if(depth2 > 0) continue
+            if(depth1 == 0) {
+                startIndex = i
+                endIndex = -1
+                depth1++
+            } else {
+                endIndex = i
+                ranges += TextRange.create(startIndex, endIndex + 1)
+                depth1--
+                
+            }
+        } else if(c == '[' && !isEscapedCharAt(i)) {
+            if(depth1 > 0) continue
+            if(depth2 == 0) {
+                startIndex = i
+                endIndex = -1
+            }
+            depth2++
+        } else if(c == ']' && !isEscapedCharAt(i)) {
+            if(depth1 > 0) continue
+            if(depth2 <= 0) continue
+            depth2--
+            if(depth2 == 0) {
+                endIndex = i
+                ranges += TextRange.create(startIndex, endIndex + 1)
+            }
+        }
+    }
+    if(startIndex != -1 && endIndex == -1) {
+        ranges += TextRange.create(startIndex, this.length)
+    }
+    return ranges
 }
 
 private val regex1 = """(?<!\\)\$.*?\$""".toRegex()

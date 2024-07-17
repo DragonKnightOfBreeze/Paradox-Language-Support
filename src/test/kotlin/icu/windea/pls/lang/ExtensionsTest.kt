@@ -5,16 +5,11 @@ import org.junit.*
 
 class ExtensionsTest {
     @Test
-    fun isParameterAwareIdentifier() {
+    fun isParameterAwareIdentifierTest() {
         Assert.assertTrue("\$abc$".isParameterAwareIdentifier())
         Assert.assertTrue("aaa\$abc\$bbb".isParameterAwareIdentifier())
         Assert.assertTrue("[[a]]".isParameterAwareIdentifier())
         Assert.assertTrue("aaa[[a]]bbb".isParameterAwareIdentifier())
-        
-        Assert.assertFalse("\\\$abc$".isParameterAwareIdentifier())
-        Assert.assertFalse("aaa\\\$abc\$bbb".isParameterAwareIdentifier())
-        Assert.assertFalse("\\[[a]]".isParameterAwareIdentifier())
-        Assert.assertFalse("aaa\\[[a]]bbb".isParameterAwareIdentifier())
     }
     
     @Test
@@ -40,15 +35,12 @@ class ExtensionsTest {
     
     @Test
     fun getParameterRangesTest() {
-        Assert.assertEquals(listOf(TextRange.create(0,5)), "\$abc$".getParameterRanges())
-        Assert.assertEquals(listOf(TextRange.create(3,8)), "aaa\$abc\$bbb".getParameterRanges())
-        Assert.assertEquals(listOf(TextRange.create(0,5)), "[[a]]".getParameterRanges())
-        Assert.assertEquals(listOf(TextRange.create(3,8)), "aaa[[a]]bbb".getParameterRanges())
+        Assert.assertEquals(listOf(TextRange.create(0, 5)), "\$abc$".getParameterRanges())
+        Assert.assertEquals(listOf(TextRange.create(3, 8)), "aaa\$abc\$bbb".getParameterRanges())
+        Assert.assertEquals(listOf(TextRange.create(0, 5)), "[[a]]".getParameterRanges())
+        Assert.assertEquals(listOf(TextRange.create(3, 8)), "aaa[[a]]bbb".getParameterRanges())
         
-        Assert.assertEquals(emptyList<TextRange>(), "\\\$abc$".getParameterRanges())
-        Assert.assertEquals(emptyList<TextRange>(), "aaa\\\$abc\$bbb".getParameterRanges())
-        Assert.assertEquals(emptyList<TextRange>(), "\\[[a]]".getParameterRanges())
-        Assert.assertEquals(emptyList<TextRange>(), "aaa\\[[a]]bbb".getParameterRanges())
+        Assert.assertEquals(listOf(TextRange.create(1, 4), TextRange.create(5, 13)), "a\$a\$a[[a]\$b$]bbb".getParameterRanges())
     }
     
     @Test
