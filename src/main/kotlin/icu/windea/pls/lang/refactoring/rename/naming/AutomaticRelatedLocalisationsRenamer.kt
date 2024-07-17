@@ -8,12 +8,8 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.script.psi.*
-import kotlin.collections.MutableMap
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.forEach
-import kotlin.collections.iterator
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
 
 /**

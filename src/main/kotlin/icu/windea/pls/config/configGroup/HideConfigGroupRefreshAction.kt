@@ -6,7 +6,6 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 
 //com.intellij.openapi.externalSystem.autoimport.HideProjectRefreshActions

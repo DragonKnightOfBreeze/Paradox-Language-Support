@@ -6,7 +6,6 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.highlighter.*
-import icu.windea.pls.script.highlighter.*
 
 class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(

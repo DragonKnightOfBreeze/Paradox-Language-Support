@@ -10,7 +10,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.highlighter.*
-import icu.windea.pls.script.psi.*
 
 class ParadoxScopeLinkPrefixNode(
     override val text: String,

@@ -1,6 +1,6 @@
 package icu.windea.pls.test
 
-import org.junit.Test
+import org.junit.*
 
 class SortedSetTest {
     @Test

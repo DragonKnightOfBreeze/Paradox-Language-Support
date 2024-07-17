@@ -6,7 +6,6 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.script.psi.*
 
 object ParadoxDynamicValueHandler {
     const val EVENT_TARGET_PREFIX = "event_target:"

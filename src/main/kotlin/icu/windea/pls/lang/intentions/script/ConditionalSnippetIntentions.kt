@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.intentions.script
 
-import com.intellij.codeInsight.intention.IntentionAction
+import com.intellij.codeInsight.intention.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*

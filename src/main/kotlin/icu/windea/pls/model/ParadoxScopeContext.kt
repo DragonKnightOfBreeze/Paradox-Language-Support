@@ -2,7 +2,6 @@ package icu.windea.pls.model
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.scope.*
 import icu.windea.pls.model.expression.complex.nodes.*

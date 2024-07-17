@@ -5,8 +5,6 @@ import com.intellij.ide.projectView.impl.nodes.*
 import icons.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.configGroup.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
 
 /**
  * 在项目视图中为规则分组所在的目录提供特定的图标和额外的信息文本。

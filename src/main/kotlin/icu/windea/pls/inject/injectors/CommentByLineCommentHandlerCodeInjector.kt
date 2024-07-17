@@ -4,7 +4,6 @@ import com.intellij.lang.*
 import com.intellij.openapi.editor.*
 import com.intellij.util.text.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.cwt.editor.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*

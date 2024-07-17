@@ -8,9 +8,9 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.CwtImageLocationExpression.*
 import icu.windea.pls.config.expression.CwtImageLocationExpression.ResolveResult
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.dds.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*

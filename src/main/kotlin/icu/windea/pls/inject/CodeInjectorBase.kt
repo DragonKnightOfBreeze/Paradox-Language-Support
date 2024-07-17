@@ -5,7 +5,6 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.inject.annotations.*
 import kotlin.reflect.full.*
 

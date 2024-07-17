@@ -2,7 +2,6 @@ package icu.windea.pls.lang.util.renderer
 
 import com.intellij.util.ui.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.*
 import javax.swing.*

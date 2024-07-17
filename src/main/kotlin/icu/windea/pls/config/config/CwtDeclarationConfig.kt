@@ -2,8 +2,8 @@ package icu.windea.pls.config.config
 
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.model.expression.*
 
 /**
