@@ -119,19 +119,19 @@ icon ::= ICON_START icon_name [PIPE icon_frame] ICON_END {
   ]
   methods=[getIcon getName setName getFrame getReference]
 }
-private icon_name ::= command | property_reference | ICON_TOKEN //can be command / property reference
-private icon_frame ::= ICON_FRAME | property_reference //can be property reference (resolved as parameter)
+private icon_name ::= command | property_reference | ICON_TOKEN //can be parameterized
+private icon_frame ::= ICON_FRAME | property_reference //can be parameterized
 
 //command rules
 
 //see: https://stellaris.paradoxwikis.com/Localisation_modding#Bracket_Commands
-command ::= COMMAND_START (concept_expression | command_expression)? COMMAND_END{
+command ::= COMMAND_START (concept_expression | command_expression) ? COMMAND_END {
   pin=1
   extends=rich_text
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationRichText"
   methods=[getIcon]
 }
-private command_expression ::= (command_scope DOT)* command_field {
+private command_expression ::= (command_scope DOT) * command_field {
   pin=1
 }
 //noinspection BnfUnusedRule
@@ -142,11 +142,11 @@ command_identifier ::= {
   ]
   methods=[getPrevIdentifier getNextIdentifier]
 }
-command_scope ::= COMMAND_SCOPE_TOKEN {
+command_scope ::= COMMAND_SCOPE_TOKEN | property_reference { //can be parameterized
   extends=command_identifier
   methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
 }
-command_field ::= COMMAND_FIELD_TOKEN | property_reference { //can be property reference (resolved as parameter)
+command_field ::= COMMAND_FIELD_TOKEN | property_reference { //can be parameterized
   extends=command_identifier
   methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
 }
@@ -155,7 +155,7 @@ concept ::= LEFT_SINGLE_QUOTE concept_name RIGHT_SINGLE_QUOTE (COMMA concept_tex
   pin=1
   methods=[getIcon getName setName getReference]
 }
-concept_name ::= CONCEPT_NAME_TOKEN {
+concept_name ::= (CONCEPT_NAME_TOKEN | property_reference)* { //can be parameterized
   pin=1
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement"

@@ -128,7 +128,7 @@ class ParadoxDynamicValueExpression private constructor(
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
             if(expressionString.isEmpty()) return null
             
-            val parameterRanges = ParadoxExpressionHandler.getParameterRangesInExpression(expressionString)
+            val parameterRanges = expressionString.getParameterRanges()
             
             val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
             

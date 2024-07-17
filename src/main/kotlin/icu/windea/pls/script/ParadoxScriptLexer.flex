@@ -294,7 +294,7 @@ SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
     "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { yybegin(IN_PARAMETER_CONDITION_EXPRESSION); return NESTED_LEFT_BRACKET; }
-    "]" {exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
+    "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
 
     {COMMENT} { return COMMENT; }
     {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }

@@ -13,6 +13,9 @@ import com.intellij.psi.search.SearchScope;
 public interface ParadoxLocalisationConceptName extends ParadoxLocalisationExpressionElement, ContributedReferenceHost {
 
   @NotNull
+  List<ParadoxLocalisationPropertyReference> getPropertyReferenceList();
+
+  @NotNull
   String getName();
 
   @NotNull

@@ -33,6 +33,12 @@ public class ParadoxLocalisationConceptNameImpl extends ASTWrapperPsiElement imp
 
   @Override
   @NotNull
+  public List<ParadoxLocalisationPropertyReference> getPropertyReferenceList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationPropertyReference.class);
+  }
+
+  @Override
+  @NotNull
   public String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }

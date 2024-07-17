@@ -20,8 +20,6 @@ class ParadoxScopeLinkDataSourceNode(
     
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkDataSourceNode {
-            //val parameterRanges = ParadoxExpressionHandler.getParameterRangesInExpression(text)
-            
             //text may contain parameters
             //child node can be dynamicValueExpression
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()

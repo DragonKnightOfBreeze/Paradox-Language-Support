@@ -175,7 +175,7 @@ class ParadoxScopeFieldExpression private constructor(
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
             if(expressionString.isEmpty()) return null
             
-            val parameterRanges = ParadoxExpressionHandler.getParameterRangesInExpression(expressionString)
+            val parameterRanges = expressionString.getParameterRanges()
             
             val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
             

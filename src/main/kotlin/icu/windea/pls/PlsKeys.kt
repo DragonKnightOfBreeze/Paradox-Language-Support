@@ -51,6 +51,7 @@ val PlsKeys.cachedDefineValues by createKey<CachedValue<MutableMap<String, Any?>
 val PlsKeys.cachedColor by createKey<CachedValue<Color>>("paradox.cached.color")
 val PlsKeys.cachedParameterContextInfo by createKey<CachedValue<ParadoxParameterContextInfo>>("paradox.cached.parameterContextInfo")
 val PlsKeys.cachedGameConceptAlias by createKey<CachedValue<Set<String>>>("paradox.cached.gameConcept.alias")
+val PlsKeys.cachedParameterRanges by createKey<CachedValue<List<TextRange>>>("paradox.cached.parameterRanges")
 
 val PlsKeys.cachedConfigPath by createKey<CachedValue<CwtConfigPath>>("cwt.cached.configPath")
 val PlsKeys.cachedConfigType by createKey<CachedValue<CwtConfigType>>("cwt.cached.configType")
@@ -68,7 +69,5 @@ val PlsKeys.documentationLocale by createKey<String>("paradox.documentationLocal
 val PlsKeys.completionOffset by createKey<Int>("paradox.completionOffset")
 //用于在进行代码补全时标记作用域不匹配
 val PlsKeys.scopeMismatched by createKey<Boolean>("paradox.scopeMismatched")
-//用于在进行颜色高亮时标记参数在脚本表达式中的文本范围
-val PlsKeys.parameterRanges by createKey<List<TextRange>>("paradox.parameterRanges")
 //用于标记图片的帧数信息以便后续进行切分
 val PlsKeys.frameInfo by createKey<FrameInfo>("paradox.frameInfo")

@@ -232,7 +232,7 @@ class ParadoxValueFieldExpression private constructor(
             //skip if text is a number
             if(isNumber(expressionString)) return null
             
-            val parameterRanges = ParadoxExpressionHandler.getParameterRangesInExpression(expressionString)
+            val parameterRanges = expressionString.getParameterRanges()
             
             //skip if text is a parameter with unary operator prefix
             if(ParadoxExpressionHandler.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null

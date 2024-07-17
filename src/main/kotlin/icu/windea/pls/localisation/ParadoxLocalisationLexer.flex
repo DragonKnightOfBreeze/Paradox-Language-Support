@@ -44,7 +44,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
     
     private enum ReferenceLocation {
-        NORMAL, ICON, ICON_FRAME, COMMAND;
+        NORMAL, ICON, ICON_FRAME, COMMAND, CONCEPT_NAME;
     }
     
     private int nextStateForPropertyReference(){
@@ -53,6 +53,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
             case ICON -> IN_ICON_ID_FINISHED;
             case ICON_FRAME -> IN_ICON_FRAME_FINISHED;
             case COMMAND -> IN_COMMAND_SCOPE_OR_FIELD;
+			case CONCEPT_NAME -> IN_CONCEPT;
         };
     }
     
@@ -164,8 +165,8 @@ CONCEPT_NAME=[a-zA-Z0-9_:]+
 //core rules
 
 <YYINITIAL> {
-    {WHITE_SPACE} {return WHITE_SPACE; }
-    {COMMENT} {return COMMENT; } //这里可以有注释
+    {WHITE_SPACE} { return WHITE_SPACE; }
+    {COMMENT} { return COMMENT; } //这里可以有注释
     ^ {LOCALE_TOKEN} ":" \s* $ {
         //本地化文件中可以没有，或者有多个locale - 主要是为了兼容localisation/languages.yml
         //locale之前必须没有任何缩进
@@ -186,140 +187,140 @@ CONCEPT_NAME=[a-zA-Z0-9_:]+
     }
 }
 <IN_LOCALE_COLON>{
-    {WHITE_SPACE} {return WHITE_SPACE; }
-    ":" {yybegin(IN_LOCALE_END); return COLON; }
+    {WHITE_SPACE} { return WHITE_SPACE; }
+    ":" { yybegin(IN_LOCALE_END); return COLON; }
 }
 <IN_LOCALE_END>{
-    {WHITE_SPACE} {return WHITE_SPACE; }
-    {END_OF_LINE_COMMENT} {return COMMENT; }
+    {WHITE_SPACE} { return WHITE_SPACE; }
+    {END_OF_LINE_COMMENT} { return COMMENT; }
 }
 <IN_PROPERTY_COLON>{
-    {WHITE_SPACE} {return WHITE_SPACE;}
-    ":" {yybegin(IN_PROPERTY_NUMBER); return COLON; }
+    {WHITE_SPACE} { return WHITE_SPACE; }
+    ":" { yybegin(IN_PROPERTY_NUMBER); return COLON; }
 }
 <IN_PROPERTY_NUMBER>{
-    {WHITE_SPACE} {yybegin(IN_PROPERTY_VALUE); return WHITE_SPACE;}
-    {NUMBER} {yybegin(IN_PROPERTY_VALUE); return PROPERTY_NUMBER;}
-    \" {yybegin(IN_RICH_TEXT); return LEFT_QUOTE; }
+    {WHITE_SPACE} { yybegin(IN_PROPERTY_VALUE); return WHITE_SPACE; }
+    {NUMBER} { yybegin(IN_PROPERTY_VALUE); return PROPERTY_NUMBER; }
+    \" { yybegin(IN_RICH_TEXT); return LEFT_QUOTE; }
 }
 <IN_PROPERTY_VALUE> {
-    {WHITE_SPACE} {return WHITE_SPACE;}
-    \" {yybegin(IN_RICH_TEXT); return LEFT_QUOTE; }
+    {WHITE_SPACE} { return WHITE_SPACE; }
+    \" { yybegin(IN_RICH_TEXT); return LEFT_QUOTE; }
 }
 <IN_RICH_TEXT>{
     \" { return checkRightQuote(); }
-    "$" {referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);}
-    "£" {yypushback(yylength()); yybegin(CHECK_ICON_START);}
+    "$" { referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START); }
+    "£" { yypushback(yylength()); yybegin(CHECK_ICON_START); }
     "[" { increaseDepth(); commandLocation=CommandLocation.NORMAL; yybegin(IN_COMMAND); return COMMAND_START; }
-    "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
-    "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;} //允许多余的重置颜色标记
+    "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
+    "§!" { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; } //允许多余的重置颜色标记
 }
 
 //reference rules
 
 <CHECK_PROPERTY_REFERENCE_START>{
     {CHECK_PROPERTY_REFERENCE_START} {
-            //特殊处理
-            //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_TOKEN或者command，或者是@，则认为代表属性引用的开始
-            boolean isReferenceStart = isReferenceStart();
-            yypushback(yylength()-1);
-            if(isReferenceStart){
-                yybegin(IN_PROPERTY_REFERENCE);
-                return PROPERTY_REFERENCE_START;
-            } else {
-                yybegin(nextStateForText());
-                return STRING_TOKEN;
-            }
+        //特殊处理
+        //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_TOKEN或者command，或者是@，则认为代表属性引用的开始
+        boolean isReferenceStart = isReferenceStart();
+        yypushback(yylength()-1);
+        if(isReferenceStart){
+            yybegin(IN_PROPERTY_REFERENCE);
+            return PROPERTY_REFERENCE_START;
+        } else {
+            yybegin(nextStateForText());
+            return STRING_TOKEN;
         }
+    }
 }
 <IN_PROPERTY_REFERENCE>{
-    {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE;}
+    {WHITE_SPACE} { yybegin(nextStateForText()); return WHITE_SPACE; }
     \" { return checkRightQuote(); }
-    "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
-    "[" {increaseDepth();commandLocation=CommandLocation.REFERENCE; yybegin(IN_COMMAND); return COMMAND_START; }
-    "|" {yybegin(IN_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE;}
-    "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
-    "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
-    "@" {yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_NAME); return AT;}
-    {PROPERTY_REFERENCE_TOKEN} {return PROPERTY_REFERENCE_TOKEN;}
+    "$" { yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END; }
+    "[" { increaseDepth(); commandLocation=CommandLocation.REFERENCE; yybegin(IN_COMMAND); return COMMAND_START; }
+    "|" { yybegin(IN_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE; }
+    "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
+    "§!" { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
+    "@" { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_NAME); return AT; }
+    {PROPERTY_REFERENCE_TOKEN} { return PROPERTY_REFERENCE_TOKEN; }
 }
 <IN_PROPERTY_REFERENCE_PARAMETER_TOKEN>{
-    {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; } 
+    {WHITE_SPACE} { yybegin(nextStateForText()); return WHITE_SPACE; } 
     \" { return checkRightQuote(); }
-    "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
-    "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
-    "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
-    {PROPERTY_REFERENCE_PARAMETER_TOKEN} {return PROPERTY_REFERENCE_PARAMETER_TOKEN;}
+    "$" { yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END; }
+    "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
+    "§!" { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
+    {PROPERTY_REFERENCE_PARAMETER_TOKEN} { return PROPERTY_REFERENCE_PARAMETER_TOKEN; }
 }
 <IN_SCRIPTED_VARIABLE_REFERENCE_NAME>{
-    {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
+    {WHITE_SPACE} { yybegin(nextStateForText()); return WHITE_SPACE; }
     \" { return checkRightQuote(); }
-    "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
-    "[" {increaseDepth();commandLocation=CommandLocation.REFERENCE; yybegin(IN_COMMAND);return COMMAND_START; }
-    "|" {yybegin(IN_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE;}
-    "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
-    "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
-    {SCRIPTED_VARIABLE_ID} {return SCRIPTED_VARIABLE_REFERENCE_TOKEN;}
+    "$" { yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END; }
+    "[" { increaseDepth(); commandLocation=CommandLocation.REFERENCE; yybegin(IN_COMMAND); return COMMAND_START; }
+    "|" { yybegin(IN_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE; }
+    "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
+    "§!" { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
+    {SCRIPTED_VARIABLE_ID} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
 }
 
 //icon rules
 
 <CHECK_ICON_START>{
     {CHECK_ICON_START} {
-            //特殊处理
-            //如果匹配到的字符串的第2个字符存在且为字母、数字或下划线或者$，则认为代表图标的开始
-            //否则认为是常规字符串
-            boolean isIconStart = isIconStart();
-            yypushback(yylength()-1);
-            if(isIconStart){
-                yybegin(IN_ICON);
-                return ICON_START;
-            }else{
-                yybegin(nextStateForText());
-                return STRING_TOKEN;
-            }
+        //特殊处理
+        //如果匹配到的字符串的第2个字符存在且为字母、数字或下划线或者$，则认为代表图标的开始
+        //否则认为是常规字符串
+        boolean isIconStart = isIconStart();
+        yypushback(yylength()-1);
+        if(isIconStart){
+            yybegin(IN_ICON);
+            return ICON_START;
+        }else{
+            yybegin(nextStateForText());
+            return STRING_TOKEN;
         }
+    }
 }
 <IN_ICON>{
-    {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
+    {WHITE_SPACE} { yybegin(nextStateForText()); return WHITE_SPACE; }
     \" { return checkRightQuote(); }
-    "£" {yybegin(nextStateForText()); return ICON_END;}
-    "$" {referenceLocation=ReferenceLocation.ICON; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);}
-    "[" {increaseDepth(); commandLocation=CommandLocation.ICON; yybegin(IN_COMMAND); return COMMAND_START;}
-    "|" {yybegin(IN_ICON_FRAME); return PIPE;}
-    "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
-    "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
-    {ICON_TOKEN} {yybegin(IN_ICON_ID_FINISHED); return ICON_TOKEN;}
+    "£" { yybegin(nextStateForText()); return ICON_END; }
+    "$" { referenceLocation=ReferenceLocation.ICON; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START); }
+    "[" { increaseDepth(); commandLocation=CommandLocation.ICON; yybegin(IN_COMMAND); return COMMAND_START; }
+    "|" { yybegin(IN_ICON_FRAME); return PIPE; }
+    "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
+    "§!" { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
+    {ICON_TOKEN} { yybegin(IN_ICON_ID_FINISHED); return ICON_TOKEN; }
 }
 <IN_ICON_ID_FINISHED>{
-    {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
+    {WHITE_SPACE} { yybegin(nextStateForText()); return WHITE_SPACE; }
     \" { return checkRightQuote(); }
-    "£" {yybegin(nextStateForText()); return ICON_END;}
-    "|" {yybegin(IN_ICON_FRAME); return PIPE;}
-    "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
-    "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
+    "£" { yybegin(nextStateForText()); return ICON_END; }
+    "|" { yybegin(IN_ICON_FRAME); return PIPE; }
+    "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
+    "§!" { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
 }
 <IN_ICON_FRAME>{
-    {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
+    {WHITE_SPACE} { yybegin(nextStateForText()); return WHITE_SPACE; }
     \" { return checkRightQuote(); }
-    "$" {referenceLocation=ReferenceLocation.ICON_FRAME; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);}
-    "£" {yybegin(nextStateForText()); return ICON_END;}
-    "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
-    "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
-    {ICON_FRAME} {yybegin(IN_ICON_FRAME_FINISHED); return ICON_FRAME;}
+    "$" { referenceLocation=ReferenceLocation.ICON_FRAME; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START); }
+    "£" { yybegin(nextStateForText()); return ICON_END; }
+    "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
+    "§!" { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
+    {ICON_FRAME} { yybegin(IN_ICON_FRAME_FINISHED); return ICON_FRAME; }
 }
 <IN_ICON_FRAME_FINISHED>{
-    {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
+    {WHITE_SPACE} { yybegin(nextStateForText()); return WHITE_SPACE; }
     \" { return checkRightQuote(); }
-    "£" {yybegin(nextStateForText()); return ICON_END;}
-    "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
-    "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
+    "£" { yybegin(nextStateForText()); return ICON_END; }
+    "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
+    "§!" { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
 }
  
 //command rules
  
 <IN_COMMAND>{
-    {WHITE_SPACE} {return WHITE_SPACE; }
+    {WHITE_SPACE} { return WHITE_SPACE; }
     . {
         if(yycharat(0) == '\'') {
             yybegin(IN_CONCEPT);
@@ -331,35 +332,36 @@ CONCEPT_NAME=[a-zA-Z0-9_:]+
     }
 }
 <IN_COMMAND_SCOPE_OR_FIELD>{
-    {WHITE_SPACE} {return WHITE_SPACE; }
+    {WHITE_SPACE} { return WHITE_SPACE; }
     \" { return checkRightQuote(); }
-    "]" {decreaseDepth(); yybegin(nextStateForCommand()); return COMMAND_END;}
-    "$" {referenceLocation=ReferenceLocation.COMMAND; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);}
-    "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
-    "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
-    "." {yybegin(IN_COMMAND_SCOPE_OR_FIELD); return DOT;}
-    {COMMAND_SCOPE_ID_WITH_SUFFIX} {yypushback(1); return COMMAND_SCOPE_TOKEN;}
-    {COMMAND_FIELD_ID_WITH_SUFFIX} {yypushback(1); return COMMAND_FIELD_TOKEN;}
+    "]" { decreaseDepth(); yybegin(nextStateForCommand()); return COMMAND_END; }
+    "$" { referenceLocation=ReferenceLocation.COMMAND; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START); }
+    "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
+    "§!" { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
+    "." { yybegin(IN_COMMAND_SCOPE_OR_FIELD); return DOT; }
+    {COMMAND_SCOPE_ID_WITH_SUFFIX} { yypushback(1); return COMMAND_SCOPE_TOKEN; }
+    {COMMAND_FIELD_ID_WITH_SUFFIX} { yypushback(1); return COMMAND_FIELD_TOKEN; }
 }
 <IN_CONCEPT> {
-    {WHITE_SPACE} {return WHITE_SPACE; }
+    {WHITE_SPACE} { return WHITE_SPACE; }
     \" { return checkRightQuote(); }
-    "]" {decreaseDepth();yybegin(nextStateForCommand()); return COMMAND_END;}
-    "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
-    "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
+    "]" { decreaseDepth(); yybegin(nextStateForCommand()); return COMMAND_END; }
+    "$" { referenceLocation=ReferenceLocation.CONCEPT_NAME; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START); }
+    "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
+    "§!" { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
     "'" { return RIGHT_SINGLE_QUOTE; }
     {CONCEPT_NAME} { return CONCEPT_NAME_TOKEN; }
     "," { inConceptText=true; yybegin(IN_CONCEPT_TEXT); return COMMA; }
 }
 <IN_CONCEPT_TEXT> {
-    {WHITE_SPACE} {return WHITE_SPACE; }
+    {WHITE_SPACE} { return WHITE_SPACE; }
     \" { return checkRightQuote(); }
-    "]" { decreaseDepth();yybegin(nextStateForCommand()); return COMMAND_END; }
+    "]" { decreaseDepth(); yybegin(nextStateForCommand()); return COMMAND_END; }
     "$" { referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START); }
     "£" { yypushback(yylength()); yybegin(CHECK_ICON_START); }
-    "[" { increaseDepth();commandLocation=CommandLocation.NORMAL; yybegin(IN_COMMAND);return COMMAND_START; }
+    "[" { increaseDepth(); commandLocation=CommandLocation.NORMAL; yybegin(IN_COMMAND); return COMMAND_START; }
     "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
-    "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
+    "§!" { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
     [^] { yypushback(yylength()); yybegin(IN_RICH_TEXT); }
 }
 
@@ -383,25 +385,25 @@ CONCEPT_NAME=[a-zA-Z0-9_:]+
     }
 }
 <IN_COLOR_ID>{
-    {WHITE_SPACE} {yybegin(IN_COLORFUL_TEXT); return WHITE_SPACE; }
+    {WHITE_SPACE} { yybegin(IN_COLORFUL_TEXT); return WHITE_SPACE; }
     \" { return checkRightQuote(); }
-    "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
-    "§!" {decreaseDepth(); decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
-    {COLOR_TOKEN} {yybegin(IN_COLORFUL_TEXT); return COLOR_TOKEN;}
-    [^] {yypushback(yylength()); yybegin(IN_COLORFUL_TEXT); } //提高兼容性
+    "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
+    "§!" { decreaseDepth(); decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
+    {COLOR_TOKEN} { yybegin(IN_COLORFUL_TEXT); return COLOR_TOKEN; }
+    [^] { yypushback(yylength()); yybegin(IN_COLORFUL_TEXT); } //提高兼容性
 }
 <IN_COLORFUL_TEXT>{
     \" { return checkRightQuote(); }
-    "$" {referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START);}
-    "£" {yypushback(yylength()); yybegin(CHECK_ICON_START);}
-    "[" {increaseDepth();commandLocation=CommandLocation.NORMAL; yybegin(IN_COMMAND);return COMMAND_START; }
-    "§" {yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START);}
-    "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
+    "$" { referenceLocation=ReferenceLocation.NORMAL; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START); }
+    "£" { yypushback(yylength()); yybegin(CHECK_ICON_START); }
+    "[" { increaseDepth(); commandLocation=CommandLocation.NORMAL; yybegin(IN_COMMAND); return COMMAND_START; }
+    "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
+    "§!" { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
 }
 
 <IN_PROPERTY_END>{
-    {WHITE_SPACE} {return WHITE_SPACE; }
-    {END_OF_LINE_COMMENT} {return COMMENT; }
+    {WHITE_SPACE} { return WHITE_SPACE; }
+    {END_OF_LINE_COMMENT} { return COMMENT; }
     \" { return checkRightQuote(); }
 }
 
@@ -421,4 +423,4 @@ CONCEPT_NAME=[a-zA-Z0-9_:]+
 }
 
 {EOL} { depth=0; inConceptText=false; yybegin(YYINITIAL); return WHITE_SPACE; }
-[^] {return BAD_CHARACTER; }
+[^] { return BAD_CHARACTER; }

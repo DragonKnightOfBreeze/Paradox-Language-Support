@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.highlighter.*
@@ -21,7 +22,7 @@ class ParadoxValueLinkDataSourceNode(
     
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxValueLinkDataSourceNode {
-            val parameterRanges = ParadoxExpressionHandler.getParameterRangesInExpression(text)
+            val parameterRanges = text.getParameterRanges()
             
             //text may contain parameters
             //child node can be dynamicValueExpression / scriptValueExpression

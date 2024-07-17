@@ -13,6 +13,9 @@ import javax.swing.Icon;
 
 public interface ParadoxLocalisationCommandScope extends ParadoxLocalisationCommandIdentifier {
 
+  @Nullable
+  ParadoxLocalisationPropertyReference getPropertyReference();
+
   @NotNull
   Icon getIcon(@IconFlags int flags);
 

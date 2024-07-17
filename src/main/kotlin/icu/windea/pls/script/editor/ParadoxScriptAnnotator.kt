@@ -130,19 +130,6 @@ class ParadoxScriptAnnotator : Annotator {
                 holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(Keys.TAG_KEY).create()
                 return
             }
-            //缓存参数范围
-            if(element is ParadoxScriptStringExpressionElement) {
-                val elementText = element.text
-                if(elementText.contains('$')) {
-                    val parameterRanges = ParadoxExpressionHandler.getParameterRanges(element)
-                    //缓存参数文本范围
-                    element.putUserData(PlsKeys.parameterRanges, parameterRanges)
-                    //如果参数直接作为整个脚本表达式，不需要进行额外的高亮
-                    if(parameterRanges.singleOrNull()?.length == elementText.unquote().length) {
-                        return
-                    }
-                }
-            }
             //高亮脚本表达式
             annotateExpression(element, holder, config)
         }

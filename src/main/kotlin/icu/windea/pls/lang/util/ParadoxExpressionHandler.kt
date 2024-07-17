@@ -61,10 +61,21 @@ object ParadoxExpressionHandler {
         }
     }
     
-    fun getParameterRanges(element: ParadoxExpressionElement): List<TextRange> {
+    fun getParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
+        return doGetParameterRangesInExpressionFromCache(element)
+    }
+    
+    private fun doGetParameterRangesInExpressionFromCache(element: ParadoxExpressionElement): List<TextRange> {
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParameterRanges) {
+            val value = doGetParameterRangesInExpression(element)
+            value.withDependencyItems(element)
+        }
+    }
+    
+    private fun doGetParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
         var parameterRanges: MutableList<TextRange>? = null
         element.processChild { e ->
-            if(e is ParadoxParameter || e is ParadoxScriptInlineParameterCondition) {
+            if(isParameterElementInExpression(e)) {
                 if(parameterRanges == null) parameterRanges = mutableListOf()
                 parameterRanges?.add(e.textRange)
             }
@@ -73,22 +84,9 @@ object ParadoxExpressionHandler {
         return parameterRanges.orEmpty()
     }
     
-    fun getParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
-        var parameterRanges: MutableList<TextRange>? = null
-        element.processChild { e ->
-            if(e is ParadoxParameter || e is ParadoxScriptInlineParameterCondition) {
-                if(parameterRanges == null) parameterRanges = mutableListOf()
-                parameterRanges?.add(e.textRangeInParent)
-            }
-            true
-        }
-        return parameterRanges.orEmpty()
-    }
-    
-    fun getParameterRangesInExpression(expression: String): List<TextRange> {
-        val indices = expression.indicesOf('$')
-        if(indices.size <= 1) return emptyList()
-        return indices.windowed(2, 2, false) { TextRange.create(it[0], it[1] + 1) }
+    fun isParameterElementInExpression(element: PsiElement): Boolean {
+        return element is ParadoxParameter || element is ParadoxScriptInlineParameterCondition
+            || element is ParadoxLocalisationPropertyReference
     }
     
     fun isUnaryOperatorAwareParameter(text: String, parameterRanges: List<TextRange>): Boolean {
@@ -507,21 +505,16 @@ object ParadoxExpressionHandler {
     
     fun annotateExpression(element: ParadoxExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
         if(range.isEmpty) return
-        if(element !is ParadoxScriptStringExpressionElement) {
+        //进行特殊代码高亮时，可能需要跳过字符串表达式中的参数部分
+        val parameterRanges = getParameterRangesInExpression(element)
+        if(parameterRanges.isEmpty()) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
             return
         }
-        //进行特殊代码高亮时，可能需要跳过字符串表达式中的参数部分
-        val parameterRanges = element.getUserData(PlsKeys.parameterRanges).orEmpty()
-        if(parameterRanges.isEmpty()) {
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
-        } else {
-            val finalRanges = TextRangeUtil.excludeRanges(range, parameterRanges)
-            finalRanges.forEach { r ->
-                if(!r.isEmpty) {
-                    holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r).textAttributes(attributesKey).create()
-                }
-            }
+        val finalRanges = TextRangeUtil.excludeRanges(range, parameterRanges)
+        for(r in finalRanges) {
+            if(r.isEmpty) continue
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r).textAttributes(attributesKey).create()
         }
     }
     
