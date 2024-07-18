@@ -8,7 +8,7 @@ import icu.windea.pls.localisation.psi.*
 import java.util.*
 
 private val NAME = ID.create<String, Void>("paradox.file.locale.index")
-private const val VERSION = 51 //1.3.4
+private const val VERSION = 52 //1.3.14
 
 /**
  * 用于索引文件的语言区域。
@@ -21,7 +21,7 @@ class ParadoxFileLocaleIndex : ScalarIndexExtension<String>() {
         val INSTANCE by lazy { findIndex<ParadoxFileLocaleIndex>() }
         val NAME = ID.create<String, Void>("paradox.file.locale.index")
         
-        private const val VERSION = 51 //1.3.4
+        private const val VERSION = 52 //1.3.14
     }
     
     override fun getName() = NAME

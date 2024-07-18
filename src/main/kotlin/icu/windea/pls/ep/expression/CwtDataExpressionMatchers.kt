@@ -126,15 +126,15 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 CwtConfigMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
             }
             configExpression.type == CwtDataTypes.Definition -> {
-                //注意这里可能是一个整数，例如，对于<technology_tier>
+                //can be a integer here (e.g., for <technology_tier>)
                 if(!expression.type.isStringType() && expression.type != ParadoxType.Int) return Result.NotMatch
-                if(!expression.value.isParameterAwareIdentifier()) return Result.NotMatch
+                if(!expression.value.isParameterAwareIdentifier('.')) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 CwtConfigMatcher.Impls.getDefinitionMatchResult(element, expression, configExpression, project)
             }
             configExpression.type == CwtDataTypes.AbsoluteFilePath -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
-                Result.ExactMatch //总是认为匹配
+                Result.ExactMatch
             }
             configExpression.type in CwtDataTypeGroups.PathReference -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
@@ -146,13 +146,13 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val name = expression.value
                 val enumName = configExpression.value ?: return Result.NotMatch //invalid cwt config
-                //匹配简单枚举
+                //match simple enums
                 val enumConfig = configGroup.enums[enumName]
                 if(enumConfig != null) {
                     val r = name in enumConfig.values
                     return Result.of(r)
                 }
-                //匹配复杂枚举
+                //match complex enums
                 val complexEnumConfig = configGroup.complexEnums[enumName]
                 if(complexEnumConfig != null) {
                     //complexEnumValue的值必须合法
