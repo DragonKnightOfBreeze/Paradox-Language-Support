@@ -33,6 +33,7 @@ class StellarisEconomicCategoryDataProvider: ParadoxDefinitionDataProvider<Stell
 class StellarisGameConceptDataProvider : ParadoxDefinitionDataProvider<StellarisGameConceptDataProvider.Data>() {
     class Data(data: ParadoxScriptData) : ParadoxDefinitionData {
         val icon: String? by data.get("icon")
+        val tooltipOverride: String? by data.get("tooltip_override")
         val alias: Set<String>? by data.get("alias")
     }
     
