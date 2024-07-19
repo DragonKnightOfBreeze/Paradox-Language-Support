@@ -307,7 +307,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val economicCategories = ParadoxDefinitionSearch.search("economic_category", selector).findAll()
         for(economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
-            val economicCategoryInfo = StellarisEconomicCategoryHandler.getInfo(economicCategory) ?: continue
+            val economicCategoryInfo = ParadoxEconomicCategoryHandler.getInfo(economicCategory) ?: continue
             for(economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
                 if(economicCategoryModifierInfo.name == modifierName) return true
             }
@@ -323,7 +323,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val economicCategories = ParadoxDefinitionSearch.search("economic_category", selector).findAll()
         for(economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
-            val economicCategoryInfo = StellarisEconomicCategoryHandler.getInfo(economicCategory) ?: continue
+            val economicCategoryInfo = ParadoxEconomicCategoryHandler.getInfo(economicCategory) ?: continue
             for(economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
                 if(economicCategoryModifierInfo.name == modifierName) {
                     val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
@@ -345,9 +345,9 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val selector = definitionSelector(configGroup.project, element).contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{ economicCategory ->
             ProgressManager.checkCanceled()
-            val economicCategoryInfo = StellarisEconomicCategoryHandler.getInfo(economicCategory) ?: return@p true
+            val economicCategoryInfo = ParadoxEconomicCategoryHandler.getInfo(economicCategory) ?: return@p true
             //排除不匹配modifier的supported_scopes的情况
-            val modifierCategories = StellarisEconomicCategoryHandler.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
+            val modifierCategories = ParadoxEconomicCategoryHandler.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
             val supportedScopes = ParadoxScopeHandler.getSupportedScopes(modifierCategories)
             val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
@@ -387,7 +387,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val economicCategoryInfo = modifierElement.economicCategoryInfo ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory //may be null
         val configGroup = getConfigGroup(modifierElement.project, modifierElement.gameType)
-        return StellarisEconomicCategoryHandler.resolveModifierCategory(modifierCategory, configGroup)
+        return ParadoxEconomicCategoryHandler.resolveModifierCategory(modifierCategory, configGroup)
     }
     
     override fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: DocumentationBuilder): Boolean = with(builder) {
@@ -424,7 +424,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val economicCategory = ParadoxDefinitionSearch.search(definitionInfo.name, "economic_category", selector)
             .find()
             ?: return false
-        val economicCategoryInfo = StellarisEconomicCategoryHandler.getInfo(economicCategory) ?: return false
+        val economicCategoryInfo = ParadoxEconomicCategoryHandler.getInfo(economicCategory) ?: return false
         for(modifierInfo in economicCategoryInfo.modifiers) {
             appendBr()
             append(PlsBundle.message("prefix.generatedModifier")).append(" ")

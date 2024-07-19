@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.*
 import java.lang.invoke.*
 
 @WithGameType(ParadoxGameType.Stellaris)
-object StellarisEconomicCategoryHandler {
+object ParadoxEconomicCategoryHandler {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
     val cachedEconomicCategoryInfoKey = createKey<CachedValue<StellarisEconomicCategoryInfo>>("paradox.cached.economicCategoryInfo")
@@ -113,7 +113,7 @@ object StellarisEconomicCategoryHandler {
     
     private fun collectParentData(contextElement: PsiElement, data: Data, map: MutableMap<String, Data> = mutableMapOf()): Map<String, Data> {
         val parent = data.parent ?: return map
-        withRecursionGuard("icu.windea.pls.lang.StellarisEconomicCategoryHandler.collectParentData") {
+        withRecursionGuard("icu.windea.pls.lang.ParadoxEconomicCategoryHandler.collectParentData") {
             withCheckRecursion(parent) {
                 val selector = definitionSelector(contextElement.project, contextElement).contextSensitive()
                 ParadoxDefinitionSearch.search(parent, "economic_category", selector).processQuery p@{

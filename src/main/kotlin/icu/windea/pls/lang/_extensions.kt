@@ -17,6 +17,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.ep.data.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.io.*
@@ -300,3 +301,10 @@ val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorInfo?
         val colorId = this.name ?: return null
         return ParadoxTextColorHandler.getInfo(colorId, project, this)
     }
+
+/**
+ * 获取定义的指定类型的数据。
+ */
+inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.getData(): T? {
+    return ParadoxDefinitionDataProvider.getData(T::class.java, this)
+}

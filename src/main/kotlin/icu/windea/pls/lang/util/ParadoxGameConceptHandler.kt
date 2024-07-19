@@ -4,6 +4,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.data.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
@@ -24,14 +25,24 @@ object ParadoxGameConceptHandler {
     fun getTextElement(element: ParadoxLocalisationConcept): PsiElement? {
         val conceptText = element.conceptText
         if(conceptText != null) return conceptText
-        run {
-            val resolved = element.reference?.resolve() ?: return@run
+        run r1@{
+            val resolved = element.reference?.resolve() ?: return@r1
+            run r2@{
+                val tooltipOverride = resolved.findProperty("tooltip_override", inline = true)
+                    ?.propertyValue?.castOrNull<ParadoxScriptString>()
+                    ?: return@r2
+                val override = tooltipOverride.references.lastOrNull()?.resolve()
+                when {
+                    override is ParadoxScriptDefinitionElement -> return ParadoxDefinitionHandler.getPrimaryLocalisation(override)
+                    override is ParadoxLocalisationProperty -> return override
+                }
+            }
             return ParadoxDefinitionHandler.getPrimaryLocalisation(resolved)
         }
-        run {
+        run r1@{
             val resolved = element.conceptName?.references?.findLast { it is ParadoxDatabaseObjectNode.Reference }
                 ?.resolve()?.castOrNull<ParadoxScriptDefinitionElement>()
-                ?: return@run
+                ?: return@r1
             return ParadoxDefinitionHandler.getPrimaryLocalisation(resolved)
         }
         return null

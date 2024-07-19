@@ -29,7 +29,7 @@ object ParadoxScriptedModifierHandler {
         
         fun getModifierCategoryOptionValues(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
             val valueConfig = enumConfig.valueConfigMap.getValue(finalValue)
-            return valueConfig.getOrPutUserData(StellarisEconomicCategoryHandler.modifierCategoriesKey, emptySet()) {
+            return valueConfig.getOrPutUserData(ParadoxEconomicCategoryHandler.modifierCategoriesKey, emptySet()) {
                 valueConfig.findOption("modifier_categories")?.getOptionValues()
             }
         }
