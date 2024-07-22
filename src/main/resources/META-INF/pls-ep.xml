@@ -82,11 +82,11 @@
     <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.LocalCwtConfigGroupFileProvider"/>
     <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.ProjectCwtConfigGroupFileProvider"/>
     
-    <definitionDataProvider implementation="icu.windea.pls.ep.data.ParadoxSpriteDataProvider"/>
-    <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisEconomicCategoryDataProvider"/>
-    <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisGameConceptDataProvider"/>
-    <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisTechnologyDataProvider"/>
-    <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisEventDataProvider"/>
+    <definitionDataProvider implementation="icu.windea.pls.ep.data.ParadoxSpriteData$Provider"/>
+    <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisEconomicCategoryData$Provider"/>
+    <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisGameConceptData$Provider"/>
+    <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisTechnologyData$Provider"/>
+    <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisEventData$Provider"/>
     
     <documentationLinkProvider implementation="icu.windea.pls.ep.documentation.CwtConfigLinkProvider"/>
     <documentationLinkProvider implementation="icu.windea.pls.ep.documentation.ParadoxScriptedVariableLinkProvider"/>

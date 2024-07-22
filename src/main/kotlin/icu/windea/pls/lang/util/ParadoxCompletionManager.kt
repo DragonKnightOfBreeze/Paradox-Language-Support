@@ -1164,7 +1164,7 @@ object ParadoxCompletionManager {
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                 result.addElement(lookupElement)
             }
-            element.getData<StellarisGameConceptDataProvider.Data>()?.alias?.forEach action@{ alias ->
+            element.getData<StellarisGameConceptData>()?.alias?.forEach action@{ alias ->
                 val key = alias
                 if(!keysToDistinct.add(key)) return@action
                 val lookupElement = LookupElementBuilder.create(element, key)

@@ -12,7 +12,6 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.data.*
-import icu.windea.pls.ep.data.StellarisEconomicCategoryDataProvider.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -50,7 +49,7 @@ object ParadoxEconomicCategoryHandler {
         try {
             val name = definition.name.orNull() ?: return null
             val resources = getResources(definition).orNull() ?: return null //unexpected
-            val data = definition.getData<Data>() ?: return null
+            val data = definition.getData<StellarisEconomicCategoryData>() ?: return null
             val parentDataMap = collectParentData(definition, data)
             
             val useForAiBudget = data.useForAiBudget
@@ -111,14 +110,14 @@ object ParadoxEconomicCategoryHandler {
             .mapTo(mutableSetOf()) { it.name }  //it.name is ok
     }
     
-    private fun collectParentData(contextElement: PsiElement, data: Data, map: MutableMap<String, Data> = mutableMapOf()): Map<String, Data> {
+    private fun collectParentData(contextElement: PsiElement, data: StellarisEconomicCategoryData, map: MutableMap<String, StellarisEconomicCategoryData> = mutableMapOf()): Map<String, StellarisEconomicCategoryData> {
         val parent = data.parent ?: return map
         withRecursionGuard("icu.windea.pls.lang.ParadoxEconomicCategoryHandler.collectParentData") {
             withCheckRecursion(parent) {
                 val selector = definitionSelector(contextElement.project, contextElement).contextSensitive()
                 ParadoxDefinitionSearch.search(parent, "economic_category", selector).processQuery p@{
                     ProgressManager.checkCanceled()
-                    val parentData = it.getData<Data>() ?: return@p true
+                    val parentData = it.getData<StellarisEconomicCategoryData>() ?: return@p true
                     map.put(parent, parentData)
                     collectParentData(contextElement, parentData, map)
                     true

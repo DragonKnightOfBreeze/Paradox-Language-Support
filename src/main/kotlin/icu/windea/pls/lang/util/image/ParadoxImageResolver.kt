@@ -32,7 +32,7 @@ object ParadoxImageResolver {
         val newFrameInfo = when {
             frameInfo == null -> null
             definitionInfo.type == "sprite" -> {
-                val noOfFrames = definition.getData<ParadoxSpriteDataProvider.Data>()?.noOfFrames
+                val noOfFrames = definition.getData<ParadoxSpriteData>()?.noOfFrames
                 if(noOfFrames != null) frameInfo.copy(frames = noOfFrames) else frameInfo
             }
             else -> frameInfo

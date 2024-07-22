@@ -106,7 +106,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
         const val ID = "Stellaris.TechnologyTree"
         val ITEM_PROPERTY_KEYS = arrayOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels")
         
-        val nodeDataKey = createKey<StellarisTechnologyDataProvider.Data>("stellaris.technologyTree.node.data")
+        val nodeDataKey = createKey<StellarisTechnologyData>("stellaris.technologyTree.node.data")
     }
     
     private val _colorManager = ColorManager()
@@ -173,7 +173,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
             }
             for(technology in technologies) {
                 ProgressManager.checkCanceled()
-                val data = technology.getData<StellarisTechnologyDataProvider.Data>() ?: continue
+                val data = technology.getData<StellarisTechnologyData>() ?: continue
                 //循环科技 ..> 循环科技
                 val levels = data.levels
                 if(levels != null) {
@@ -199,7 +199,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
             provider as StellarisTechnologyTreeDiagramProvider
             
             val definitionInfo = definition.definitionInfo ?: return false
-            val data = definition.getData<StellarisTechnologyDataProvider.Data>() ?: return false
+            val data = definition.getData<StellarisTechnologyData>() ?: return false
             val settings = provider.getDiagramSettings(project).state
             
             //对于每组配置，只要其中任意一个配置匹配即可

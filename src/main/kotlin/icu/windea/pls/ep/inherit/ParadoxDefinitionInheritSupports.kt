@@ -36,7 +36,7 @@ class StellarisEventInheritSupport: ParadoxDefinitionInheritSupport {
     override fun getSuperDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
         //子事件应当有子类型"inherited"，并且父事件应当和子事件有相同的事件类型
         if(definitionInfo.type != "event" || !definitionInfo.subtypes.contains("inherited")) return null
-        val data = definition.getData<StellarisEventDataProvider.Data>() ?: return null
+        val data = definition.getData<StellarisEventData>() ?: return null
         val parentDefinitionName = data.base ?: return null
         val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()
         val parentDefinition = ParadoxDefinitionSearch.search(parentDefinitionName, "event", selector).find() ?: return null

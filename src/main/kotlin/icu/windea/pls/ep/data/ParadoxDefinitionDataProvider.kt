@@ -11,15 +11,6 @@ import icu.windea.pls.lang.util.data.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-/**
- * 用于获取定义数据。
- *
- * 这里直接获取的应当是未加工过的必要的数据。
- *
- * 需要解析封装变量，不需要判断是否合法。兼容需要内联的情况。
- *
- * @see ParadoxDefinitionData
- */
 @WithGameTypeEP
 abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
     val dataType: Class<T> by lazy { javaClass.genericSuperclass.genericType(0)!! }
