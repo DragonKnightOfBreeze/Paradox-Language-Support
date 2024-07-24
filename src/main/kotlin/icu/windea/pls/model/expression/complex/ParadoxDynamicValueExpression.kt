@@ -130,7 +130,7 @@ class ParadoxDynamicValueExpression private constructor(
             
             val parameterRanges = expressionString.getParameterRanges()
             
-            val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
+            val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
             
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val offset = range.startOffset

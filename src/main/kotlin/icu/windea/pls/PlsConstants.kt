@@ -6,17 +6,6 @@ import icu.windea.pls.core.*
 object PlsConstants {
     val locationClass = PlsIcons::class.java
     
-    val cwtColorSettingsSample = "/samples/Cwt.colorSettings.txt".toClasspathUrl().readText()
-    val cwtCodeStyleSettingsSample = "/samples/Cwt.codeStyleSettings.txt".toClasspathUrl().readText()
-    
-    var paradoxLocalisationColorSettingsSample = "/samples/ParadoxLocalisation.colorSettings.txt".toClasspathUrl().readText()
-    val paradoxLocalisationCodeStyleSettingsDemoText = "/samples/ParadoxLocalisation.codeStyleSettings.txt".toClasspathUrl().readText()
-    
-    val paradoxScriptColorSettingsSample = "/samples/ParadoxScript.colorSettings.txt".toClasspathUrl().readText()
-    val paradoxScriptCodeStyleSettingsSample = "/samples/ParadoxScript.codeStyleSettings.txt".toClasspathUrl().readText()
-    
-    const val dummyIdentifier = "windea"
-    
     val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
     
     val scriptFileExtensions = arrayOf("txt", "gfx", "gui", "asset", "dlc", "settings")
@@ -30,6 +19,8 @@ object PlsConstants {
     const val unknownString = "(unknown)"
     const val unresolvedString = "(unresolved)"
     
+    const val dummyIdentifier = "windea"
+    
     const val defaultScriptedVariableName = "var"
     
     //定义相对于脚本文件的最大深度（目前指定为4，即最多跳过3个rootKey） - 用于优化性能
@@ -39,6 +30,17 @@ object PlsConstants {
     
     //val eraseMarker = TextAttributes()
     //val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
+    
+    object Samples {
+        val cwtColorSettings = "/samples/Cwt.colorSettings.txt".toClasspathUrl().readText()
+        val cwtCodeStyleSettings = "/samples/Cwt.codeStyleSettings.txt".toClasspathUrl().readText()
+        
+        val paradoxLocalisationColorSettings = "/samples/ParadoxLocalisation.colorSettings.txt".toClasspathUrl().readText()
+        val paradoxLocalisationCodeStyleSettings = "/samples/ParadoxLocalisation.codeStyleSettings.txt".toClasspathUrl().readText()
+        
+        val paradoxScriptColorSettings = "/samples/ParadoxScript.colorSettings.txt".toClasspathUrl().readText()
+        val paradoxScriptCodeStyleSettings = "/samples/ParadoxScript.codeStyleSettings.txt".toClasspathUrl().readText()
+    }
     
     object Folders {
         const val ellipsis = "..."

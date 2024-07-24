@@ -23,18 +23,18 @@ import java.lang.invoke.*
 object ParadoxEconomicCategoryHandler {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
-    val cachedEconomicCategoryInfoKey = createKey<CachedValue<StellarisEconomicCategoryInfo>>("paradox.cached.economicCategoryInfo")
+    val cachedEconomicCategoryInfoKey = createKey<CachedValue<ParadoxEconomicCategoryInfo>>("paradox.cached.economicCategoryInfo")
     val modifierCategoriesKey = createKey<Set<String>>("stellaris.economicCategory.modifierCategories")
     
     /**
      * 输入[definition]的定义类型应当保证是`economic_category`。
      */
-    fun getInfo(definition: ParadoxScriptDefinitionElement): StellarisEconomicCategoryInfo? {
+    fun getInfo(definition: ParadoxScriptDefinitionElement): ParadoxEconomicCategoryInfo? {
         if(selectGameType(definition) != ParadoxGameType.Stellaris) return null
         return doGetInfoFromCache(definition)
     }
     
-    private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): StellarisEconomicCategoryInfo? {
+    private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxEconomicCategoryInfo? {
         if(definition !is ParadoxScriptProperty) return null
         return CachedValuesManager.getCachedValue(definition, cachedEconomicCategoryInfoKey) {
             ProgressManager.checkCanceled()
@@ -43,7 +43,7 @@ object ParadoxEconomicCategoryHandler {
         }
     }
     
-    private fun doGetInfo(definition: ParadoxScriptProperty): StellarisEconomicCategoryInfo? {
+    private fun doGetInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         //这种写法可能存在一定性能问题，但是问题不大
         //兼容继承的mult修正
         try {
@@ -56,7 +56,7 @@ object ParadoxEconomicCategoryHandler {
             val useForAiBudgetForMult = parentDataMap.values.any { it.useForAiBudget }
             
             val parents = parentDataMap.keys
-            val modifiers = mutableSetOf<StellarisEconomicCategoryModifierInfo>()
+            val modifiers = mutableSetOf<ParadoxEconomicCategoryModifierInfo>()
             
             // will generate when use_for_ai_budget = yes (inherited by parent property for _mult modifiers)
             // <economic_category>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
@@ -66,10 +66,10 @@ object ParadoxEconomicCategoryHandler {
             fun addModifier(key: String, category: String, type: String, triggered: Boolean, useParentIcon: Boolean) {
                 if(key.isEmpty()) return //skip invalid keys
                 if(useForAiBudget || (type == "mult" && useForAiBudgetForMult)) {
-                    modifiers.add(StellarisEconomicCategoryModifierInfo(key, null, category, type, triggered, useParentIcon))
+                    modifiers.add(ParadoxEconomicCategoryModifierInfo(key, null, category, type, triggered, useParentIcon))
                 }
                 resources.forEach { resource ->
-                    modifiers.add(StellarisEconomicCategoryModifierInfo(key, resource, category, type, triggered, useParentIcon))
+                    modifiers.add(ParadoxEconomicCategoryModifierInfo(key, resource, category, type, triggered, useParentIcon))
                 }
             }
             
@@ -96,7 +96,7 @@ object ParadoxEconomicCategoryHandler {
                 }
             }
             
-            return StellarisEconomicCategoryInfo(name, data.parent, useForAiBudget, data.modifierCategory, parents, modifiers)
+            return ParadoxEconomicCategoryInfo(name, data.parent, useForAiBudget, data.modifierCategory, parents, modifiers)
         } catch(e: Exception) {
             if(e is ProcessCanceledException) throw e
             logger.error(e)

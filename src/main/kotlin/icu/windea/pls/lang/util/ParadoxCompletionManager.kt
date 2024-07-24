@@ -632,13 +632,13 @@ object ParadoxCompletionManager {
         
         //基于当前位置的代码补全
         try {
-            PlsStatus.incompleteComplexExpression.set(true)
+            PlsStates.incompleteComplexExpression.set(true)
             val keywordOffset = context.keywordOffset
             val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
             val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup) ?: return
             return scopeFieldExpression.complete(context, result)
         } finally {
-            PlsStatus.incompleteComplexExpression.remove()
+            PlsStates.incompleteComplexExpression.remove()
         }
     }
     
@@ -652,13 +652,13 @@ object ParadoxCompletionManager {
         
         //基于当前位置的代码补全
         try {
-            PlsStatus.incompleteComplexExpression.set(true)
+            PlsStates.incompleteComplexExpression.set(true)
             val keywordOffset = context.keywordOffset
             val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
             val valueFieldExpression = ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup) ?: return
             return valueFieldExpression.complete(context, result)
         } finally {
-            PlsStatus.incompleteComplexExpression.remove()
+            PlsStates.incompleteComplexExpression.remove()
         }
     }
     
@@ -672,13 +672,13 @@ object ParadoxCompletionManager {
         
         //基于当前位置的代码补全
         try {
-            PlsStatus.incompleteComplexExpression.set(true)
+            PlsStates.incompleteComplexExpression.set(true)
             val keywordOffset = context.keywordOffset
             val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
             val variableFieldExpression = ParadoxVariableFieldExpression.resolve(keyword, textRange, configGroup) ?: return
             return variableFieldExpression.complete(context, result)
         } finally {
-            PlsStatus.incompleteComplexExpression.remove()
+            PlsStates.incompleteComplexExpression.remove()
         }
     }
     
@@ -693,13 +693,13 @@ object ParadoxCompletionManager {
         
         //基于当前位置的代码补全
         try {
-            PlsStatus.incompleteComplexExpression.set(true)
+            PlsStates.incompleteComplexExpression.set(true)
             val keywordOffset = context.keywordOffset
             val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
             val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(keyword, textRange, configGroup, config) ?: return
             return dynamicValueExpression.complete(context, result)
         } finally {
-            PlsStatus.incompleteComplexExpression.remove()
+            PlsStates.incompleteComplexExpression.remove()
         }
     }
     
@@ -711,13 +711,13 @@ object ParadoxCompletionManager {
         
         //基于当前位置的代码补全
         try {
-            PlsStatus.incompleteComplexExpression.set(true)
+            PlsStates.incompleteComplexExpression.set(true)
             val keywordOffset = context.keywordOffset
             val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
             val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(keyword, textRange, configGroup) ?: return
             return databaseObjectExpression.complete(context, result)
         } finally {
-            PlsStatus.incompleteComplexExpression.remove()
+            PlsStates.incompleteComplexExpression.remove()
         }
     }
     

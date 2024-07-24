@@ -37,7 +37,7 @@ interface CwtOverriddenConfigProvider {
                         it.putUserData(CwtMemberConfig.Keys.originalConfig, config)
                         it.putUserData(CwtMemberConfig.Keys.overriddenProvider, ep)
                     }
-                    ?.also { PlsStatus.overrideConfig.set(true) } //set overrideConfigStatus
+                    ?.also { PlsStates.overrideConfig.set(true) } //set overrideConfigStatus
             }
         }
     }

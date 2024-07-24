@@ -109,7 +109,7 @@ class ParadoxDatabaseObjectExpression private constructor(
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
             if(expressionString.isEmpty()) return null
             
-            val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
+            val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
             
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val expression = ParadoxDatabaseObjectExpression(expressionString, range, nodes, configGroup)

@@ -76,8 +76,8 @@ object CwtConfigMatcher {
                 return when {
                     this is LazySimpleMatch -> BitUtil.isSet(options, Options.Relax)
                     this is LazyBlockAwareMatch -> BitUtil.isSet(options, Options.Relax)
-                    this is LazyIndexAwareMatch -> BitUtil.isSet(options, Options.SkipIndex) || PlsStatus.indexing.get() == true
-                    this is LazyScopeAwareMatch -> BitUtil.isSet(options, Options.SkipScope) || PlsStatus.indexing.get() == true
+                    this is LazyIndexAwareMatch -> BitUtil.isSet(options, Options.SkipIndex) || PlsStates.indexing.get() == true
+                    this is LazyScopeAwareMatch -> BitUtil.isSet(options, Options.SkipScope) || PlsStates.indexing.get() == true
                     else -> false
                 }
             }
@@ -150,7 +150,7 @@ object CwtConfigMatcher {
     object Impls {
         fun getCachedMatchResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
             ProgressManager.checkCanceled()
-            if(PlsStatus.indexing.get() == true) return Result.ExactMatch // indexing -> should not visit indices -> treat as exact match
+            if(PlsStates.indexing.get() == true) return Result.ExactMatch // indexing -> should not visit indices -> treat as exact match
             val psiFile = element.containingFile ?: return Result.NotMatch
             val project = psiFile.project
             val rootFile = selectRootFile(psiFile) ?: return Result.NotMatch

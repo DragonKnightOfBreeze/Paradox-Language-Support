@@ -1,6 +1,6 @@
 package icu.windea.pls
 
-object PlsStatus {
+object PlsStates {
     /**
      * 用于标记当前线程是否正在编制索引。（更具体点，是否正在为脚本文件或者本地化文件编制基于文件的索引）
      * @see icu.windea.pls.lang.index.ParadoxFileBasedIndex

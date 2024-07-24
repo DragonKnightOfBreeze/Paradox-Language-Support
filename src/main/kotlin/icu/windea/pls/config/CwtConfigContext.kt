@@ -52,8 +52,8 @@ class CwtConfigContext(
                     }
                 } finally {
                     //use uncached result if there are overridden configs (cannot be cached)
-                    if(PlsStatus.overrideConfig.get() == true) cache.invalidate(cachedKey)
-                    PlsStatus.overrideConfig.remove()
+                    if(PlsStates.overrideConfig.get() == true) cache.invalidate(cachedKey)
+                    PlsStates.overrideConfig.remove()
                 }
             }
         } ?: emptyList() //unexpected recursion, return empty list

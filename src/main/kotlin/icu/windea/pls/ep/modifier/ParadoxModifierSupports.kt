@@ -30,8 +30,8 @@ import icu.windea.pls.script.psi.*
 //region Extensions
 
 val ParadoxModifierSupport.Keys.templateReferences by createKey<List<ParadoxTemplateSnippetExpressionReference>>("paradox.modifier.support.templateReferences")
-val ParadoxModifierSupport.Keys.economicCategoryInfo by createKey<StellarisEconomicCategoryInfo>("paradox.modifier.support.economicCategoryInfo")
-val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by createKey<StellarisEconomicCategoryModifierInfo>("paradox.modifier.support.economicCategoryModifierInfo")
+val ParadoxModifierSupport.Keys.economicCategoryInfo by createKey<ParadoxEconomicCategoryInfo>("paradox.modifier.support.economicCategoryInfo")
+val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by createKey<ParadoxEconomicCategoryModifierInfo>("paradox.modifier.support.economicCategoryModifierInfo")
 
 var ParadoxModifierInfo.templateReferences by ParadoxModifierSupport.Keys.templateReferences
 var ParadoxModifierInfo.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
@@ -298,7 +298,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
  * 提供对通过经济类型（`economic_category`）生成的修正的支持。
  */
 @WithGameType(ParadoxGameType.Stellaris)
-class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
+class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         ProgressManager.checkCanceled()
         val modifierName = name
@@ -360,7 +360,7 @@ class StellarisEconomicCategoryModifierSupport : ParadoxModifierSupport {
                 //排除重复的
                 if(!modifierNames.add(name)) continue
                 
-                val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@StellarisEconomicCategoryModifierSupport)
+                val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxEconomicCategoryModifierSupport)
                 val lookupElement = ParadoxLookupElementBuilder.create(modifierElement, name)
                     .withIcon(PlsIcons.Nodes.Modifier)
                     .withTailText(tailText)

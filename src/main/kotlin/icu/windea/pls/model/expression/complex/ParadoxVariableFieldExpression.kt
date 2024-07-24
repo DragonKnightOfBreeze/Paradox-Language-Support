@@ -187,7 +187,7 @@ class ParadoxVariableFieldExpression(
             //skip if text is a parameter with unary operator prefix
             if(ParadoxExpressionHandler.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
             
-            val incomplete = PlsStatus.incompleteComplexExpression.get() ?: false
+            val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
             
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val expression = ParadoxVariableFieldExpression(expressionString, range, nodes, configGroup)

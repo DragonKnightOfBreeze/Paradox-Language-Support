@@ -19,7 +19,7 @@ class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {
 }
 
 @WithGameType(ParadoxGameType.Stellaris)
-class StellarisJobBasedModifierIconProvider: ParadoxModifierIconProvider {
+class ParadoxJobBasedModifierIconProvider: ParadoxModifierIconProvider {
     //对于由job生成的那些修正，需要应用特殊的图标继承逻辑
     
     override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
@@ -44,7 +44,7 @@ class StellarisJobBasedModifierIconProvider: ParadoxModifierIconProvider {
 }
 
 @WithGameType(ParadoxGameType.Stellaris)
-class StellarisEconomicCategoryBasedModifierIconProvider: ParadoxModifierIconProvider {
+class ParadoxEconomicCategoryBasedModifierIconProvider: ParadoxModifierIconProvider {
     //对于由economic_category生成的那些修正，需要应用特殊的图标继承逻辑
     
     override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {

@@ -173,13 +173,13 @@
     
     <modifierSupport implementation="icu.windea.pls.ep.modifier.ParadoxPredefinedModifierSupport"/>
     <modifierSupport implementation="icu.windea.pls.ep.modifier.ParadoxTemplateModifierSupport"/>
-    <modifierSupport implementation="icu.windea.pls.ep.modifier.StellarisEconomicCategoryModifierSupport"/>
+    <modifierSupport implementation="icu.windea.pls.ep.modifier.ParadoxEconomicCategoryModifierSupport"/>
     
     <modifierNameDescProvider implementation="icu.windea.pls.ep.modifier.ParadoxBaseModifierNameDescProvider"/>
     
     <modifierIconProvider implementation="icu.windea.pls.ep.modifier.ParadoxBaseModifierIconProvider"/>
-    <modifierIconProvider implementation="icu.windea.pls.ep.modifier.StellarisJobBasedModifierIconProvider"/>
-    <modifierIconProvider implementation="icu.windea.pls.ep.modifier.StellarisEconomicCategoryBasedModifierIconProvider"/>
+    <modifierIconProvider implementation="icu.windea.pls.ep.modifier.ParadoxJobBasedModifierIconProvider"/>
+    <modifierIconProvider implementation="icu.windea.pls.ep.modifier.ParadoxEconomicCategoryBasedModifierIconProvider"/>
     
     <definitionModifierProvider implementation="icu.windea.pls.ep.modifier.StellarisScriptedModifierDefinitionModifierProvider"/>
 

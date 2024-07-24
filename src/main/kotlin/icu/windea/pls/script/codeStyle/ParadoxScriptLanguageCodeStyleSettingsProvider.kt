@@ -4,6 +4,7 @@ import com.intellij.application.options.*
 import com.intellij.psi.codeStyle.*
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsConstants.Samples
 import icu.windea.pls.core.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings as Settings
@@ -13,7 +14,7 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
     
     override fun getConfigurableDisplayName() = PlsBundle.message("options.script.displayName")
     
-    override fun getCodeSample(settingsType: SettingsType) = PlsConstants.paradoxScriptCodeStyleSettingsSample
+    override fun getCodeSample(settingsType: SettingsType) = Samples.paradoxScriptCodeStyleSettings
     
     override fun createCustomSettings(settings: CodeStyleSettings) = Settings(settings)
     
@@ -53,7 +54,7 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
         consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR.name, PlsBundle.message("script.codeStyleSettings.spacing.around.scriptedVariableSeparator"), spacesAroundOperatorsGroup)
         consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_PROPERTY_SEPARATOR.name, PlsBundle.message("script.codeStyleSettings.spacing.around.propertySeparator"), spacesAroundOperatorsGroup)
         consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_INLINE_MATH_OPERATOR.name, PlsBundle.message("script.codeStyleSettings.spacing.around.inlineMathOperator"), spacesAroundOperatorsGroup)
-
+        
         val spacesWithinGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
         consumer.showCustomOption(Settings::class.java, Settings::SPACE_WITHIN_BRACES.name, PlsBundle.message("script.codeStyleSettings.spacing.withIn.braces"), spacesWithinGroup)
         consumer.showCustomOption(Settings::class.java, Settings::SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS.name, PlsBundle.message("script.codeStyleSettings.spacing.withIn.parameterConditionBrackets"), spacesWithinGroup)
