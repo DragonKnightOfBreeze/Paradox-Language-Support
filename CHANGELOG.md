@@ -26,11 +26,13 @@
 
 * [X] 正确渲染从数据库对象生成的概念的文本
 * [X] 修复对于`param = "$param$"`，当可以推断`param`的规则上下文时，无法推断`$param$`的规则上下文的问题
+* [X] 其他优化与BUG修复
 
 ***
 
 * [X] Render concepts from database objects correctly
 * [X] Fix a problem that for `param = "$param$"`, when config context of `param` can be inferred, config context of `$param$` cannot be inferred
+* [X] Other optimizations and bug fixes
 
 ## 1.3.14
 
