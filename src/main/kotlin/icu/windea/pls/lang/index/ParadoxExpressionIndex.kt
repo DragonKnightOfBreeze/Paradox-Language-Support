@@ -34,7 +34,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         val INSTANCE by lazy { findIndex<ParadoxExpressionIndex>() }
         val NAME = ID.create<String, List<ParadoxExpressionInfo>>("paradox.expression.index")
         
-        private const val VERSION = 52 //1.3.14
+        private const val VERSION = 53 //1.3.15
         private val markerKey = createKey<Boolean>("paradox.expression.index.marker")
         
         fun <ID : ParadoxExpressionIndexId<T>, T : ParadoxExpressionInfo> processQuery(
