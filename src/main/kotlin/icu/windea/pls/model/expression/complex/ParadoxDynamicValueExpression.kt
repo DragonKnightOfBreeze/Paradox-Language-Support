@@ -42,37 +42,7 @@ class ParadoxDynamicValueExpression private constructor(
     val scopeFieldExpression: ParadoxScopeFieldExpression?
         get() = nodes.getOrNull(2)?.cast()
     
-    override fun validate(): List<ParadoxComplexExpressionError> {
-        val errors = mutableListOf<ParadoxComplexExpressionError>()
-        var malformed = false
-        for(node in nodes) {
-            when(node) {
-                is ParadoxDynamicValueNode -> {
-                    if(!malformed && !isValid(node)) {
-                        malformed = true
-                    }
-                }
-                is ParadoxScopeFieldExpression -> {
-                    if(node.text.isEmpty()) {
-                        val error = ParadoxComplexExpressionErrors.missingScopeFieldExpression(rangeInExpression)
-                        errors.add(error)
-                    }
-                    errors.addAll(node.validate())
-                }
-            }
-        }
-        if(malformed) {
-            errors.add(0, ParadoxComplexExpressionErrors.malformedDynamicValueExpression(rangeInExpression, text))
-        }
-        return errors
-    }
-    
-    private fun isValid(node: ParadoxComplexExpressionNode): Boolean {
-        return when(node) {
-            is ParadoxDynamicValueNode -> node.text.isParameterAwareIdentifier('.') //兼容点号
-            else -> node.text.isParameterAwareIdentifier()
-        }
-    }
+    override val errors by lazy { validate() }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val keyword = context.keyword
@@ -167,10 +137,36 @@ class ParadoxDynamicValueExpression private constructor(
             return ParadoxDynamicValueExpression(expressionString, range, nodes, configGroup, configs)
         }
         
-        fun resolveValueNode(text: String, textRange: TextRange, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup): ParadoxDynamicValueNode? {
-            //text may contain parameters
-            if(configs.any { c -> c.expression?.type !in CwtDataTypeGroups.DynamicValue }) return null
-            return ParadoxDynamicValueNode(text, textRange, configs, configGroup)
+        private fun ParadoxDynamicValueExpression.validate(): List<ParadoxComplexExpressionError> {
+            val errors = mutableListOf<ParadoxComplexExpressionError>()
+            var malformed = false
+            for(node in nodes) {
+                when(node) {
+                    is ParadoxDynamicValueNode -> {
+                        if(!malformed && !node.isValid()) {
+                            malformed = true
+                        }
+                    }
+                    is ParadoxScopeFieldExpression -> {
+                        if(node.text.isEmpty()) {
+                            errors += ParadoxComplexExpressionErrors.missingScopeFieldExpression(rangeInExpression)
+                        }
+                        errors += node.errors
+                    }
+                }
+            }
+            if(malformed) {
+                errors += ParadoxComplexExpressionErrors.malformedDynamicValueExpression(rangeInExpression, text)
+            }
+            return errors.pinned { it.isMalformedError() }
         }
+        
+        private fun ParadoxComplexExpressionNode.isValid(): Boolean {
+            return when(this) {
+                is ParadoxDynamicValueNode -> text.isParameterAwareIdentifier('.') //兼容点号
+                else -> text.isParameterAwareIdentifier()
+            }
+        }
+        
     }
 }

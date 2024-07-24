@@ -7,7 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.nodes.*
@@ -20,8 +20,8 @@ import icu.windea.pls.model.expression.complex.nodes.*
  * 语法：
  *
  * ```bnf
- * database_object_expression ::= prefix ":" database_object (":" swapped_database_object)?
- * prefix ::= TOKEN //predefined by CWT Config (see database_object_types.cwt)
+ * database_object_expression ::= database_object_type ":" database_object (":" swapped_database_object)?
+ * database_object_type ::= TOKEN //predefined by CWT Config (see database_object_types.cwt)
  * database_object ::= TOKEN //predefined by CWT Config (see database_object_types.cwt)
  * swapped_database_object ::= TOKEN //predefined by CWT Config (see database_object_types.cwt)
  * ```
@@ -44,25 +44,7 @@ class ParadoxDatabaseObjectExpression private constructor(
     val swapValueNode: ParadoxDatabaseObjectNode?
         get() = nodes.getOrNull(4)?.cast()
     
-    override fun validate(): List<ParadoxComplexExpressionError> {
-        val errors = mutableListOf<ParadoxComplexExpressionError>()
-        var malformed = false
-        for(node in nodes) {
-            if(node.text.isEmpty()) {
-                malformed = true
-                break
-            }
-        }
-        if(malformed) {
-            val error = ParadoxComplexExpressionErrors.malformedGameObjectExpression(rangeInExpression, text)
-            errors.add(0, error)
-        }
-        return errors
-    }
-    
-    private fun isValid(node: ParadoxComplexExpressionNode): Boolean {
-        return node.text.isParameterAwareIdentifier()
-    }
+    override val errors by lazy { validate() }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val keyword = context.keyword
@@ -124,7 +106,7 @@ class ParadoxDatabaseObjectExpression private constructor(
                     nodes += node
                 }
                 if(colonIndex1 == -1) return@r1
-                run r2@{ 
+                run r2@{
                     val node = ParadoxMarkerNode(":", TextRange.from(colonIndex1, 1))
                     nodes += node
                 }
@@ -132,7 +114,7 @@ class ParadoxDatabaseObjectExpression private constructor(
                 run r2@{
                     val nodeText = if(colonIndex2 == -1) expressionString.substring(colonIndex1 + 1) else expressionString.substring(colonIndex1 + 1, colonIndex2)
                     val nodeTextRange = TextRange.from(colonIndex1 + 1, nodeText.length)
-                    val node = ParadoxDatabaseObjectNode(nodeText, nodeTextRange, expression, 0)
+                    val node = ParadoxDatabaseObjectNode.resolve(nodeText, nodeTextRange, expression, 0)
                     nodes += node
                 }
                 if(colonIndex2 == -1) return@r1
@@ -140,14 +122,29 @@ class ParadoxDatabaseObjectExpression private constructor(
                     val node = ParadoxMarkerNode(":", TextRange.from(colonIndex2, 1))
                     nodes += node
                 }
-                run r2@{ 
+                run r2@{
                     val nodeText = expressionString.substring(colonIndex2 + 1)
                     val nodeTextRange = TextRange.from(colonIndex2 + 1, nodeText.length)
-                    val node = ParadoxDatabaseObjectNode(nodeText, nodeTextRange, expression, 1)
+                    val node = ParadoxDatabaseObjectNode.resolve(nodeText, nodeTextRange, expression, 1)
                     nodes += node
                 }
             }
             return expression
+        }
+        
+        private fun ParadoxDatabaseObjectExpression.validate(): List<ParadoxComplexExpressionError> {
+            val errors = mutableListOf<ParadoxComplexExpressionError>()
+            var malformed = false
+            for(node in nodes) {
+                if(node.text.isEmpty()) {
+                    malformed = true
+                    break
+                }
+            }
+            if(malformed) {
+                errors += ParadoxComplexExpressionErrors.malformedGameObjectExpression(rangeInExpression, text)
+            }
+            return errors.pinned { it.isMalformedError() }
         }
     }
 }

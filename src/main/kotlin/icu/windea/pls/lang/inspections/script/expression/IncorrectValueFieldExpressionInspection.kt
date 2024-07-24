@@ -40,11 +40,8 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
             }
             
             private fun handleErrors(element: ParadoxScriptStringExpressionElement, expression: ParadoxValueFieldExpression) {
-                expression.validate().forEach { error -> handleError(element, error) }
-                expression.processAllNodes { node ->
-                    node.getUnresolvedError(element)?.let { error -> handleError(element, error) }
-                    true
-                }
+                expression.errors.forEach { error -> handleError(element, error) }
+                expression.processAllNodes { node -> node.getUnresolvedError(element)?.let { error -> handleError(element, error) }.let { true } }
             }
             
             private fun handleError(element: ParadoxScriptStringExpressionElement, error: ParadoxComplexExpressionError) {

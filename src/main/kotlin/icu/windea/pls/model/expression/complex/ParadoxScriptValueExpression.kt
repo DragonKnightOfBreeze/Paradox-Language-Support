@@ -7,6 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
@@ -56,46 +57,7 @@ class ParadoxScriptValueExpression private constructor(
             }
         }
     
-    override fun validate(): List<ParadoxComplexExpressionError> {
-        var malformed = false
-        val errors = mutableListOf<ParadoxComplexExpressionError>()
-        var pipeCount = 0
-        var lastIsParameter = false
-        for(node in nodes) {
-            if(node is ParadoxTokenNode) {
-                pipeCount++
-            } else {
-                if(!malformed && (node.text.isEmpty() || !isValid(node))) {
-                    malformed = true
-                }
-                when(node) {
-                    is ParadoxScriptValueArgumentNode -> lastIsParameter = true
-                    is ParadoxScriptValueArgumentValueNode -> lastIsParameter = false
-                }
-            }
-        }
-        //0, 1, 3, 5, ...
-        if(!malformed && pipeCount != 0 && pipeCount % 2 == 0) {
-            malformed = true
-        }
-        if(malformed) {
-            val error = ParadoxComplexExpressionErrors.malformedScriptValueExpression(rangeInExpression, text)
-            errors.add(error)
-        }
-        if(lastIsParameter) {
-            val error = ParadoxComplexExpressionErrors.missingParameterValue(rangeInExpression)
-            errors.add(error)
-        }
-        return errors
-    }
-    
-    private fun isValid(node: ParadoxComplexExpressionNode): Boolean {
-        return when(node) {
-            is ParadoxScriptValueArgumentNode -> node.text.isIdentifier()
-            is ParadoxScriptValueArgumentValueNode -> true //兼容数字文本、字符串文本、封装变量引用等，这里直接返回true
-            else -> node.text.isParameterAwareIdentifier()
-        }
-    }
+    override val errors by lazy { validate() }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val keyword = context.keyword
@@ -217,6 +179,45 @@ class ParadoxScriptValueExpression private constructor(
                 n++
             }
             return ParadoxScriptValueExpression(expressionString, range, nodes, configGroup, config)
+        }
+        
+        private fun ParadoxScriptValueExpression.validate(): List<ParadoxComplexExpressionError> {
+            var malformed = false
+            val errors = mutableListOf<ParadoxComplexExpressionError>()
+            var pipeCount = 0
+            var lastIsParameter = false
+            for(node in nodes) {
+                if(node is ParadoxTokenNode) {
+                    pipeCount++
+                } else {
+                    if(!malformed && (node.text.isEmpty() || !node.isValid())) {
+                        malformed = true
+                    }
+                    when(node) {
+                        is ParadoxScriptValueArgumentNode -> lastIsParameter = true
+                        is ParadoxScriptValueArgumentValueNode -> lastIsParameter = false
+                    }
+                }
+            }
+            //0, 1, 3, 5, ...
+            if(!malformed && pipeCount != 0 && pipeCount % 2 == 0) {
+                malformed = true
+            }
+            if(malformed) {
+                errors += ParadoxComplexExpressionErrors.malformedScriptValueExpression(rangeInExpression, text)
+            }
+            if(lastIsParameter) {
+                errors += ParadoxComplexExpressionErrors.missingParameterValue(rangeInExpression)
+            }
+            return errors.pinned { it.isMalformedError() }
+        }
+        
+        private fun ParadoxComplexExpressionNode.isValid(): Boolean {
+            return when(this) {
+                is ParadoxScriptValueArgumentNode -> text.isIdentifier()
+                is ParadoxScriptValueArgumentValueNode -> true //兼容数字文本、字符串文本、封装变量引用等，这里直接返回true
+                else -> text.isParameterAwareIdentifier()
+            }
         }
     }
 }

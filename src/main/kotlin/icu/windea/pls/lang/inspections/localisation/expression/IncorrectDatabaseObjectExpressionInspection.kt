@@ -36,11 +36,8 @@ class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
             }
             
             private fun handleErrors(element: ParadoxLocalisationExpressionElement, expression: ParadoxDatabaseObjectExpression) {
-                expression.validate().forEach { error -> handleError(element, error) }
-                expression.processAllNodes { node ->
-                    node.getUnresolvedError(element)?.let { error -> handleError(element, error) }
-                    true
-                }
+                expression.errors.forEach { error -> handleError(element, error) }
+                expression.processAllNodes { node -> node.getUnresolvedError(element)?.let { error -> handleError(element, error) }.let { true } }
             }
             
             private fun handleError(element: ParadoxLocalisationExpressionElement, error: ParadoxComplexExpressionError) {

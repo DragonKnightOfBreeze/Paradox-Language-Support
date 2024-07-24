@@ -15,9 +15,8 @@ import icu.windea.pls.model.expression.complex.nodes.*
  * （插件目前认为）复杂表达式不能用引号括起。
  */
 interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
+    val errors: List<ParadoxComplexExpressionError>
     val configGroup: CwtConfigGroup
-    
-    fun validate(): List<ParadoxComplexExpressionError> = emptyList()
     
     fun complete(context: ProcessingContext, result: CompletionResultSet) = pass()
     

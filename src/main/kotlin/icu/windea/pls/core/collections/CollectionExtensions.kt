@@ -89,30 +89,28 @@ inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -
 
 inline fun <T> Iterable<T>.pinned(predicate: (T) -> Boolean): List<T> {
     val result = mutableListOf<T>()
-    var elementToPin: T? = null
+    val elementsToPin = mutableListOf<T>()
     for(e in this) {
-        if(elementToPin == null && predicate(e)) {
-            elementToPin = e
+        if(predicate(e)) {
+            elementsToPin += e
         } else {
-            result.add(e)
+            result += e
         }
     }
-    if(elementToPin != null) result.add(0, elementToPin)
-    return result
+    return elementsToPin + result
 }
 
 inline fun <T> Iterable<T>.pinnedLast(predicate: (T) -> Boolean): List<T> {
     val result = mutableListOf<T>()
-    var elementToPin: T? = null
+    val elementsToPin = mutableListOf<T>()
     for(e in this) {
-        if(elementToPin == null && predicate(e)) {
-            elementToPin = e
+        if(predicate(e)) {
+            elementsToPin += e
         } else {
-            result.add(e)
+            result += e
         }
     }
-    if(elementToPin != null) result.add(elementToPin)
-    return result
+    return result + elementsToPin
 }
 
 fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
