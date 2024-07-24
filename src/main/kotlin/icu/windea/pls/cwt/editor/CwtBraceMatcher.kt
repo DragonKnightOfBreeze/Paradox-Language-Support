@@ -7,7 +7,7 @@ import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtBraceMatcher : PairedBraceMatcher {
     private val _bracePairs = arrayOf(
-        BracePair(LEFT_BRACE, RIGHT_BRACE, true)
+        BracePair(LEFT_BRACE, RIGHT_BRACE, true),
     )
     
     override fun getPairs(): Array<BracePair> = _bracePairs
