@@ -3,6 +3,7 @@ package icu.windea.pls.script.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.util.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
@@ -47,8 +48,7 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         context.rightQuoted = rightQuoted
         context.expressionOffset = ParadoxExpressionHandler.getExpressionOffset(element)
         
-        val mockConfig = CwtValueConfig.resolve(emptyPointer(), configGroup, "value[variable]")
-        context.config = mockConfig
+        context.config = configGroup.mockVariableConfig
         
         ParadoxCompletionManager.completeDynamicValueExpression(context, result)
     }

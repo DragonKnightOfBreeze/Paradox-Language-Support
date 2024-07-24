@@ -16,14 +16,14 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.model.ParadoxType;
 
-public class ParadoxLocalisationConceptNameImpl extends ASTWrapperPsiElement implements ParadoxLocalisationConceptName {
+public class ParadoxLocalisationCommandTextImpl extends ASTWrapperPsiElement implements ParadoxLocalisationCommandText {
 
-  public ParadoxLocalisationConceptNameImpl(@NotNull ASTNode node) {
+  public ParadoxLocalisationCommandTextImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
-    visitor.visitConceptName(this);
+    visitor.visitCommandText(this);
   }
 
   @Override
@@ -52,7 +52,7 @@ public class ParadoxLocalisationConceptNameImpl extends ASTWrapperPsiElement imp
 
   @Override
   @NotNull
-  public ParadoxLocalisationConceptName setValue(@NotNull String value) {
+  public ParadoxLocalisationCommandText setValue(@NotNull String value) {
     return ParadoxLocalisationPsiImplUtil.setValue(this, value);
   }
 

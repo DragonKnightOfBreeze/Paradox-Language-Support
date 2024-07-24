@@ -12,11 +12,11 @@ import icu.windea.pls.model.expression.complex.*
 import javax.swing.*
 
 /**
- * 不正确的[ParadoxDatabaseObjectExpression]的检查。
+ * 不正确的[ParadoxCommandExpression]的检查。
  *
  * @property reportsUnresolved 是否报告无法解析的引用。
  */
-class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
+class IncorrectCommandExpressionInspection : LocalInspectionTool() {
     @JvmField var reportsUnresolved = true
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -28,10 +28,10 @@ class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
             }
             
             private fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
-                if(!element.isDatabaseObjectExpression()) return
+                if(!element.isCommandExpression()) return
                 val value = element.value
                 val textRange = TextRange.create(0, value.length)
-                val expression = ParadoxDatabaseObjectExpression.resolve(value, textRange, configGroup) ?: return
+                val expression = ParadoxCommandExpression.resolve(value, textRange, configGroup) ?: return
                 handleErrors(element, expression)
             }
             
@@ -58,5 +58,3 @@ class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
         }
     }
 }
-
-

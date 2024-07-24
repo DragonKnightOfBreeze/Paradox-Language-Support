@@ -110,7 +110,7 @@ class ParadoxDynamicValueExpression private constructor(
             while(tokenIndex < textLength) {
                 index = tokenIndex + 1
                 tokenIndex = expressionString.indexOf('@', index)
-                if(tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //这里需要跳过参数文本
+                if(tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
                 if(tokenIndex == -1) {
                     tokenIndex = textLength
                 }

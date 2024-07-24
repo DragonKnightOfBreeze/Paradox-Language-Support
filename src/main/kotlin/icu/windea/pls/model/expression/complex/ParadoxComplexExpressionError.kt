@@ -20,6 +20,7 @@ object ParadoxComplexExpressionErrorCodes {
     const val MalformedDynamicValueExpression = 103
     const val MalformedScriptValueExpression = 104
     const val MalformedGameObjectExpression = 105
+    const val MalformedLocalisationCommandExpression = 106
     
     const val UnresolvedScopeField = 200
     const val UnresolvedValueField = 201
@@ -27,6 +28,8 @@ object ParadoxComplexExpressionErrorCodes {
     const val UnresolvedScriptValue = 203
     const val UnresolvedDatabaseObjectType = 204
     const val UnresolvedDatabaseObject = 205
+    const val UnresolvedCommandScope = 206
+    const val UnresolvedCommandField = 207
     
     const val MissingScopeField = 300
     const val MissingValueField = 301
@@ -87,6 +90,11 @@ object ParadoxComplexExpressionErrors {
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedGameObjectExpression", text))
     }
     
+    fun malformedLocalisationCommandExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.MalformedLocalisationCommandExpression
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedLocalisationCommandExpression", text))
+    }
+    
     //unresolved
     
     fun unresolvedScopeField(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
@@ -121,6 +129,16 @@ object ParadoxComplexExpressionErrors {
             else -> PlsBundle.message("script.expression.unresolvedDatabaseObject.1", value)
         }
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
+    }
+    
+    fun unresolvedCommandScope(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.UnresolvedCommandScope
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.unresolvedCommandScope", value))
+    }
+    
+    fun unresolvedCommandField(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.UnresolvedCommandField
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.unresolvedCommandField", value))
     }
     
     //missing

@@ -74,7 +74,11 @@ fun PsiElement.isRichTextContext(): Boolean {
 }
 
 fun ParadoxLocalisationExpressionElement.isComplexExpression(): Boolean {
-    return isDatabaseObjectExpression()
+    return isCommandExpression() || isDatabaseObjectExpression()
+}
+
+fun ParadoxLocalisationExpressionElement.isCommandExpression(): Boolean {
+    return this is ParadoxLocalisationCommandText //简单判断
 }
 
 fun ParadoxLocalisationExpressionElement.isDatabaseObjectExpression(): Boolean {

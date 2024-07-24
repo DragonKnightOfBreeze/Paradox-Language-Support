@@ -9,7 +9,8 @@ enum class CwtType(
     Int(2, "int"),
     Float(3, "float"),
     String(4, "string"),
-    Block(5, "block");
+    Block(5, "block"),
+    ;
     
     override fun toString(): kotlin.String {
         return text

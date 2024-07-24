@@ -412,6 +412,35 @@ object ParadoxLocalisationPsiImplUtil {
     }
     //endregion
     
+    //region ParadoxLocalisationCommandText
+    @JvmStatic
+    fun getName(element: ParadoxLocalisationCommandText): String {
+        return element.text
+    }
+    
+    @JvmStatic
+    fun getValue(element: ParadoxLocalisationCommandText): String {
+        return element.text
+    }
+    
+    @JvmStatic
+    fun setValue(element: ParadoxLocalisationCommandText, value: String): ParadoxLocalisationCommandText {
+        val newElement = ParadoxLocalisationElementFactory.createCommandText(element.project, value)
+        return element.replace(newElement).cast()
+    }
+    
+    @JvmStatic
+    fun getType(element: ParadoxLocalisationCommandText): ParadoxType? {
+        if(element.isCommandExpression()) return ParadoxType.CommandExpression
+        return null
+    }
+    
+    @JvmStatic
+    fun getExpression(element: ParadoxLocalisationCommandText): String {
+        return element.name
+    }
+    //endregion
+    
     //region ParadoxLocalisationConcept
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationConcept, @IconFlags flags: Int): Icon {
@@ -465,14 +494,14 @@ object ParadoxLocalisationPsiImplUtil {
     }
     
     @JvmStatic
-    fun getExpression(element: ParadoxLocalisationConceptName): String {
-        return element.name
+    fun getType(element: ParadoxLocalisationConceptName): ParadoxType? {
+        if(element.isDatabaseObjectExpression()) return ParadoxType.DatabaseObjectExpression
+        return null
     }
     
     @JvmStatic
-    fun getConfigExpression(element: ParadoxLocalisationConceptName): String? {
-        if(element.isDatabaseObjectExpression()) return "\$database_object"
-        return null
+    fun getExpression(element: ParadoxLocalisationConceptName): String {
+        return element.name
     }
     //endregion
     

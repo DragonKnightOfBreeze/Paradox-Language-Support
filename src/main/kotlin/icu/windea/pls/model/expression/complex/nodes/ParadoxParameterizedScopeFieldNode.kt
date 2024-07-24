@@ -11,7 +11,7 @@ class ParadoxParameterizedScopeFieldNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     val configGroup: CwtConfigGroup
-) : ParadoxComplexExpressionNode.Base(), ParadoxScopeFieldNode {
+) : ParadoxComplexExpressionNode.Base(), ParadoxScopeFieldNode, ParadoxParameterizedNode {
     override fun getAttributesKey(language: Language): TextAttributesKey {
         return ParadoxScriptAttributesKeys.SCOPE_KEY
     }

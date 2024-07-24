@@ -386,6 +386,12 @@
                      implementationClass="icu.windea.pls.lang.inspections.localisation.scope.TooLongScopeLinkInspection"/>
     <!--endregion-->
     <!--region Paradox localisation/Complex expressions-->
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectCommandExpression"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.localisation.incorrectCommandExpression"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.expression.group"
+                     groupPathKey="inspection.localisation.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.localisation.expression.IncorrectCommandExpressionInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectDatabaseObjectExpression"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="inspection.localisation.incorrectDatabaseObjectExpression"

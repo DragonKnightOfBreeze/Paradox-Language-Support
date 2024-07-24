@@ -9,7 +9,7 @@ import icu.windea.pls.script.highlighter.*
 class ParadoxParameterizedValueFieldNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-) : ParadoxComplexExpressionNode.Base(), ParadoxValueFieldNode {
+) : ParadoxComplexExpressionNode.Base(), ParadoxValueFieldNode, ParadoxParameterizedNode {
     override fun getAttributesKey(language: Language): TextAttributesKey {
         return ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY
     }

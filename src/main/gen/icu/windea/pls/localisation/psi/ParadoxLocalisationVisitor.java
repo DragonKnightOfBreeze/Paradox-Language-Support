@@ -33,6 +33,11 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     visitCommandIdentifier(o);
   }
 
+  public void visitCommandText(@NotNull ParadoxLocalisationCommandText o) {
+    visitExpressionElement(o);
+    // visitContributedReferenceHost(o);
+  }
+
   public void visitConcept(@NotNull ParadoxLocalisationConcept o) {
     visitPsiElement(o);
   }

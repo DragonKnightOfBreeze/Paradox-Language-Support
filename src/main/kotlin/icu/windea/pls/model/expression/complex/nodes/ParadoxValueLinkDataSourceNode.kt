@@ -43,7 +43,7 @@ class ParadoxValueLinkDataSourceNode(
                 while(tokenIndex < textLength) {
                     index = tokenIndex + 1
                     tokenIndex = text.indexOf('|', index)
-                    if(tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //这里需要跳过参数文本
+                    if(tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
                     if(tokenIndex == -1) break
                     val scriptValueConfig = linkConfigs.find { it.name == "script_value" }
                     if(scriptValueConfig == null) {

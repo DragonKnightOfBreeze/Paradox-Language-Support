@@ -4,10 +4,10 @@ import com.intellij.lang.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.references.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
@@ -44,17 +44,8 @@ class ParadoxDatabaseObjectTypeNode(
         return Reference(element, rangeInElement, config?.pointer?.element)
     }
     
-    class Reference(
-        element: PsiElement,
-        rangeInElement: TextRange,
-        val resolved: CwtProperty?
-    ): PsiReferenceBase<PsiElement>(element, rangeInElement) {
-        override fun handleElementRename(newElementName: String): PsiElement {
-            throw IncorrectOperationException() //cannot rename cwt config
-        }
-        
-        override fun resolve() = resolved
-    }
+    class Reference(element: PsiElement, rangeInElement: TextRange, resolved: CwtProperty?) :
+        PsiResolvedReference<CwtProperty>(element, rangeInElement, resolved)
     
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectTypeNode {

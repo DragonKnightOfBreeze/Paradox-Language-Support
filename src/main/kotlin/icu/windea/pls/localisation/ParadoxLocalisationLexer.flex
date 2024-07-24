@@ -52,8 +52,8 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
             case NORMAL -> nextStateForText();
             case ICON -> IN_ICON_ID_FINISHED;
             case ICON_FRAME -> IN_ICON_FRAME_FINISHED;
-            case COMMAND -> IN_COMMAND_SCOPE_OR_FIELD;
-			case CONCEPT_NAME -> IN_CONCEPT;
+            case COMMAND -> IN_COMMAND_TEXT;
+			case CONCEPT_NAME -> IN_CONCEPT_NAME;
         };
     }
     
@@ -119,8 +119,8 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %s IN_ICON_FRAME
 %s IN_ICON_FRAME_FINISHED
 %s IN_COMMAND
-%s IN_COMMAND_SCOPE_OR_FIELD
-%s IN_CONCEPT
+%s IN_COMMAND_TEXT
+%s IN_CONCEPT_NAME
 %s IN_CONCEPT_TEXT
 %s IN_COLOR_ID
 %s IN_COLORFUL_TEXT
@@ -149,16 +149,15 @@ PROPERTY_KEY_CHAR=[a-zA-Z0-9_.\-']
 PROPERTY_KEY_TOKEN={PROPERTY_KEY_CHAR}+
 PROPERTY_REFERENCE_TOKEN={PROPERTY_KEY_CHAR}+
 PROPERTY_REFERENCE_PARAMETER_TOKEN=[^\"$£§\[\r\n\\]+
-SCRIPTED_VARIABLE_ID=[a-zA-Z_][a-zA-Z0-9_]*
+SCRIPTED_VARIABLE_TOKEN=[a-zA-Z_][a-zA-Z0-9_]*
 ICON_TOKEN=[a-zA-Z0-9\-_\\/]+
-ICON_FRAME=[1-9][0-9]* // positive integer
+ICON_FRAME=[1-9][0-9]* //positive integer
 COLOR_TOKEN=[a-zA-Z0-9]
-STRING_TOKEN=([^\"$£§\[\]\r\n\\]|\\.|\[\[)+  //it's unnecessary to escape double quotes in loc text in fact
+STRING_TOKEN=([^\"$£§\[\]\r\n\\]|\\.|\[\[)+ //it's unnecessary to escape double quotes in loc text in fact
 
 CHECK_COMMAND_START=\[[^\r\n\]]*.?
-COMMAND_SCOPE_ID_WITH_SUFFIX=[^\r\n.\[\]]+\.
-COMMAND_FIELD_ID_WITH_SUFFIX=[^\r\n.\[\]]+\]
-CONCEPT_NAME=[a-zA-Z0-9_:]+
+COMMAND_TEXT_TOKEN=[^\r\n\[\]]+
+CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
 
 %%
 
@@ -260,7 +259,7 @@ CONCEPT_NAME=[a-zA-Z0-9_:]+
     "|" { yybegin(IN_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE; }
     "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
     "§!" { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
-    {SCRIPTED_VARIABLE_ID} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
+    {SCRIPTED_VARIABLE_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
 }
 
 //icon rules
@@ -323,26 +322,24 @@ CONCEPT_NAME=[a-zA-Z0-9_:]+
     {WHITE_SPACE} { return WHITE_SPACE; }
     . {
         if(yycharat(0) == '\'') {
-            yybegin(IN_CONCEPT);
+            yybegin(IN_CONCEPT_NAME);
             return LEFT_SINGLE_QUOTE;
         } else {
             yypushback(1);
-            yybegin(IN_COMMAND_SCOPE_OR_FIELD);
+            yybegin(IN_COMMAND_TEXT);
         }
     }
 }
-<IN_COMMAND_SCOPE_OR_FIELD>{
+<IN_COMMAND_TEXT>{
     {WHITE_SPACE} { return WHITE_SPACE; }
     \" { return checkRightQuote(); }
     "]" { decreaseDepth(); yybegin(nextStateForCommand()); return COMMAND_END; }
     "$" { referenceLocation=ReferenceLocation.COMMAND; yypushback(yylength()); yybegin(CHECK_PROPERTY_REFERENCE_START); }
     "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
     "§!" { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
-    "." { yybegin(IN_COMMAND_SCOPE_OR_FIELD); return DOT; }
-    {COMMAND_SCOPE_ID_WITH_SUFFIX} { yypushback(1); return COMMAND_SCOPE_TOKEN; }
-    {COMMAND_FIELD_ID_WITH_SUFFIX} { yypushback(1); return COMMAND_FIELD_TOKEN; }
+    {COMMAND_TEXT_TOKEN} { return COMMAND_TEXT_TOKEN; }
 }
-<IN_CONCEPT> {
+<IN_CONCEPT_NAME> {
     {WHITE_SPACE} { return WHITE_SPACE; }
     \" { return checkRightQuote(); }
     "]" { decreaseDepth(); yybegin(nextStateForCommand()); return COMMAND_END; }
@@ -350,7 +347,7 @@ CONCEPT_NAME=[a-zA-Z0-9_:]+
     "§" { yypushback(yylength()); yybegin(IN_CHECK_COLORFUL_TEXT_START); }
     "§!" { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END; }
     "'" { return RIGHT_SINGLE_QUOTE; }
-    {CONCEPT_NAME} { return CONCEPT_NAME_TOKEN; }
+    {CONCEPT_NAME_TOKEN} { return CONCEPT_NAME_TOKEN; }
     "," { inConceptText=true; yybegin(IN_CONCEPT_TEXT); return COMMA; }
 }
 <IN_CONCEPT_TEXT> {

@@ -2,6 +2,7 @@ package icu.windea.pls.lang.references
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.util.*
 import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.psi.*
 

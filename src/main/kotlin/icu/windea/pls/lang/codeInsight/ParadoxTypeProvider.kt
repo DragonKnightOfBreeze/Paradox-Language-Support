@@ -67,6 +67,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
             element.configExpression?.let { configExpression ->
                 add(makeHtmlRow(PlsBundle.message("title.configExpression"), configExpression))
             }
+            
             //scope context
             run {
                 val memberElement = getMemberElement(element)

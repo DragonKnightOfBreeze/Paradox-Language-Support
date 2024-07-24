@@ -249,50 +249,50 @@ object ParadoxScopeHandler {
         }
     }
     
-    
-    fun getScopeContext(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext? {
-        return doGetScopeContextFromCache(element)
-    }
-    
-    private fun doGetScopeContextFromCache(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContext) {
-            val file = element.containingFile ?: return@getCachedValue null
-            val value = doGetScopeContextOfLocalisationCommandIdentifier(element)
-            value.withDependencyItems(
-                file,
-                //getConfigGroup(file.project, selectGameType(file)).modificationTracker, //from extended configs
-            )
-        }
-    }
-    
-    private fun doGetScopeContextOfLocalisationCommandIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext {
-        val prevElement = element.prevIdentifier
-        val prevResolved = prevElement?.reference?.resolve()
-        when {
-            //system link or localisation scope
-            prevResolved is CwtProperty -> {
-                val config = prevResolved.getUserData(PlsKeys.cwtConfig)
-                when(config) {
-                    is CwtLocalisationLinkConfig -> {
-                        val prevScopeContext = prevElement.prevIdentifier?.let { getScopeContext(it) } ?: getAnyScopeContext()
-                        return prevScopeContext.resolveNext(config.outputScope)
-                    }
-                    is CwtSystemLinkConfig -> {
-                        return getAnyScopeContext()
-                    }
-                    //predefined event target - no scope info in cwt files yet
-                    is CwtValueConfig -> {
-                        return getAnyScopeContext()
-                    }
-                }
-            }
-            prevResolved is ParadoxDynamicValueElement -> {
-                val prevScopeContext = prevElement.prevIdentifier?.let { getScopeContext(it) } ?: getAnyScopeContext()
-                return getScopeContext(prevResolved, prevScopeContext)
-            }
-        }
-        return getUnknownScopeContext()
-    }
+    //TODO 1.3.15+
+    //fun getScopeContext(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext? {
+    //    return doGetScopeContextFromCache(element)
+    //}
+    //
+    //private fun doGetScopeContextFromCache(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext? {
+    //    return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContext) {
+    //        val file = element.containingFile ?: return@getCachedValue null
+    //        val value = doGetScopeContextOfLocalisationCommandIdentifier(element)
+    //        value.withDependencyItems(
+    //            file,
+    //            //getConfigGroup(file.project, selectGameType(file)).modificationTracker, //from extended configs
+    //        )
+    //    }
+    //}
+    //
+    //private fun doGetScopeContextOfLocalisationCommandIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxScopeContext {
+    //    val prevElement = element.prevIdentifier
+    //    val prevResolved = prevElement?.reference?.resolve()
+    //    when {
+    //        //system link or localisation scope
+    //        prevResolved is CwtProperty -> {
+    //            val config = prevResolved.getUserData(PlsKeys.cwtConfig)
+    //            when(config) {
+    //                is CwtLocalisationLinkConfig -> {
+    //                    val prevScopeContext = prevElement.prevIdentifier?.let { getScopeContext(it) } ?: getAnyScopeContext()
+    //                    return prevScopeContext.resolveNext(config.outputScope)
+    //                }
+    //                is CwtSystemLinkConfig -> {
+    //                    return getAnyScopeContext()
+    //                }
+    //                //predefined event target - no scope info in cwt files yet
+    //                is CwtValueConfig -> {
+    //                    return getAnyScopeContext()
+    //                }
+    //            }
+    //        }
+    //        prevResolved is ParadoxDynamicValueElement -> {
+    //            val prevScopeContext = prevElement.prevIdentifier?.let { getScopeContext(it) } ?: getAnyScopeContext()
+    //            return getScopeContext(prevResolved, prevScopeContext)
+    //        }
+    //    }
+    //    return getUnknownScopeContext()
+    //}
     
     fun getScopeContext(contextElement: PsiElement, scopeFieldExpression: ParadoxScopeFieldExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val scopeNodes = scopeFieldExpression.scopeNodes

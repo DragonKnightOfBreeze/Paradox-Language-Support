@@ -25,13 +25,14 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
         val colorPattern = psiElement().atStartOf(psiElement().afterLeaf("§"))
         extend(colorPattern, ParadoxLocalisationColorCompletionProvider())
         
-        //当用户可能正在输入一个commandScope的名字时提示
-        val commandScopePattern = psiElement(COMMAND_SCOPE_TOKEN)
-        extend(commandScopePattern, ParadoxLocalisationCommandScopeCompletionProvider())
-        
-        //当用户可能正在输入一个commandScope或者commandField的名字时提示
-        val commandFieldPattern = psiElement(COMMAND_FIELD_TOKEN)
-        extend(commandFieldPattern, ParadoxLocalisationCommandFieldCompletionProvider())
+        //TODO 1.3.15+
+        ////当用户可能正在输入一个commandScope的名字时提示
+        //val commandScopePattern = psiElement(COMMAND_SCOPE_TOKEN)
+        //extend(commandScopePattern, ParadoxLocalisationCommandScopeCompletionProvider())
+        //
+        ////当用户可能正在输入一个commandScope或者commandField的名字时提示
+        //val commandFieldPattern = psiElement(COMMAND_FIELD_TOKEN)
+        //extend(commandFieldPattern, ParadoxLocalisationCommandFieldCompletionProvider())
         
         //当用户可能正在输入一个conceptName时提示
         val conceptNamePattern = psiElement(CONCEPT_NAME_TOKEN)

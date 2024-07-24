@@ -131,6 +131,7 @@ command ::= COMMAND_START (concept_expression | command_expression) ? COMMAND_EN
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationRichText"
   methods=[getIcon]
 }
+
 private command_expression ::= (command_scope DOT) * command_field {
   pin=1
 }
@@ -150,6 +151,15 @@ command_field ::= COMMAND_FIELD_TOKEN | property_reference { //can be parameteri
   extends=command_identifier
   methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
 }
+
+command_text ::= (CONCEPT_NAME_TOKEN | property_reference)* { //can be parameterized
+  implements=[
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement"
+    "com.intellij.psi.ContributedReferenceHost"
+  ]
+  methods=[getName getValue setValue getType getExpression getReference getReferences]
+}
+
 private concept_expression ::= concept
 concept ::= LEFT_SINGLE_QUOTE concept_name RIGHT_SINGLE_QUOTE (COMMA concept_text) ? {
   pin=1
@@ -161,7 +171,7 @@ concept_name ::= (CONCEPT_NAME_TOKEN | property_reference)* { //can be parameter
     "icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement"
     "com.intellij.psi.ContributedReferenceHost"
   ]
-  methods=[getName getValue setValue getExpression getConfigExpression getReference getReferences]
+  methods=[getName getValue setValue getType getExpression getReference getReferences]
 }
 concept_text ::= rich_text *
 
