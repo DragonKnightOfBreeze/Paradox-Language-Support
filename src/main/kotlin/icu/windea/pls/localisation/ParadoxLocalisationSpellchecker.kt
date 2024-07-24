@@ -15,8 +15,10 @@ class ParadoxLocalisationSpellchecker : SpellcheckingStrategy() {
             LOCALE_TOKEN -> emptyTokenizer
             PROPERTY_KEY_TOKEN -> compactTextTokenizer
             PROPERTY_REFERENCE_TOKEN -> emptyTokenizer
-            COMMAND_SCOPE, COMMAND_FIELD, ICON_TOKEN -> textTokenizer
+            ICON_TOKEN -> textTokenizer
             STRING_TOKEN -> textTokenizer
+            COMMAND_TEXT_TOKEN -> textTokenizer
+            CONCEPT_NAME_TOKEN -> textTokenizer
             COMMENT -> textTokenizer
             else -> emptyTokenizer
         }

@@ -42,8 +42,8 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationStringCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationPropertyReferenceCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationIconCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationCommandScopeCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationCommandFieldCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationCommandTextCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationConceptCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationConceptNameCodeInjector"/>
   </extensions>
 </idea-plugin>

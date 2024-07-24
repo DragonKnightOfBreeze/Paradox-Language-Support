@@ -77,13 +77,6 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
                     add(makeHtmlRow(PlsBundle.message("title.scopeContext"), text))
                 }
             }
-            run {
-                if(element is ParadoxLocalisationCommandIdentifier) {
-                    val scopeContext = ParadoxScopeHandler.getScopeContext(element) ?: return@run
-                    val text = scopeContext.toScopeMap().entries.joinToString("\n") { (key, value) -> "$key = $value" }
-                    add(makeHtmlRow(PlsBundle.message("title.scopeContext"), text))
-                }
-            }
         }
         return HtmlChunk.tag("table").children(children).toString()
     }

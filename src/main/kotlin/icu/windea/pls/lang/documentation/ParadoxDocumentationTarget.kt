@@ -82,8 +82,6 @@ private fun computeLocalDocumentation(element: PsiElement, originalElement: PsiE
         is ParadoxLocalisationLocale -> getLocalisationLocaleDoc(element, originalElement, quickNavigation)
         is ParadoxLocalisationProperty -> getLocalisationPropertyDoc(element, originalElement, quickNavigation)
         is ParadoxLocalisationIcon -> getLocalisationIconDoc(element, originalElement, quickNavigation)
-        is ParadoxLocalisationCommandScope -> getLocalisationCommandScopeDoc(element, originalElement, quickNavigation)
-        is ParadoxLocalisationCommandField -> getLocalisationCommandFieldDoc(element, originalElement, quickNavigation)
         is ParadoxLocalisationColorfulText -> getLocalisationColorDoc(element, originalElement, quickNavigation)
         else -> null
     }
@@ -194,20 +192,6 @@ private fun getLocalisationIconDoc(element: ParadoxLocalisationIcon, originalEle
     val name = element.name ?: return null
     return buildDocumentation {
         buildLocalisationIconDefinition(name)
-    }
-}
-
-private fun getLocalisationCommandScopeDoc(element: ParadoxLocalisationCommandScope, originalElement: PsiElement?, quickNavigation: Boolean): String {
-    val name = element.name
-    return buildDocumentation {
-        buildLocalisationCommandScopeDefinition(name)
-    }
-}
-
-private fun getLocalisationCommandFieldDoc(element: ParadoxLocalisationCommandField, originalElement: PsiElement?, quickNavigation: Boolean): String {
-    val name = element.name
-    return buildDocumentation {
-        buildLocalisationCommandFieldDefinition(name)
     }
 }
 
@@ -732,20 +716,6 @@ private fun DocumentationBuilder.buildLocalisationIconDefinition(name: String) {
     definition {
         //加上元素定义信息
         append(PlsBundle.message("prefix.localisationIcon")).append(" <b>").append(name).append("</b>")
-    }
-}
-
-private fun DocumentationBuilder.buildLocalisationCommandScopeDefinition(name: String) {
-    definition {
-        //加上元素定义信息
-        append(PlsBundle.message("prefix.localisationCommandScope")).append(" <b>").append(name).append("</b>")
-    }
-}
-
-private fun DocumentationBuilder.buildLocalisationCommandFieldDefinition(name: String) {
-    definition {
-        //加上元素定义信息
-        append(PlsBundle.message("prefix.localisationCommandField")).append(" <b>").append(name).append("</b>")
     }
 }
 

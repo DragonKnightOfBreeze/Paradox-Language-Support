@@ -132,27 +132,8 @@ command ::= COMMAND_START (concept_expression | command_expression) ? COMMAND_EN
   methods=[getIcon]
 }
 
-private command_expression ::= (command_scope DOT) * command_field {
-  pin=1
-}
-//noinspection BnfUnusedRule
-command_identifier ::= {
-  implements="icu.windea.pls.lang.psi.ParadoxTypedElement"
-  implements=[
-    "com.intellij.psi.NavigatablePsiElement"  
-  ]
-  methods=[getPrevIdentifier getNextIdentifier]
-}
-command_scope ::= COMMAND_SCOPE_TOKEN | property_reference { //can be parameterized
-  extends=command_identifier
-  methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
-}
-command_field ::= COMMAND_FIELD_TOKEN | property_reference { //can be parameterized
-  extends=command_identifier
-  methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier getExpression getConfigExpression]
-}
-
-command_text ::= (CONCEPT_NAME_TOKEN | property_reference)* { //can be parameterized
+private command_expression ::= command_text
+command_text ::= (COMMAND_TEXT_TOKEN | property_reference)* { //can be parameterized
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement"
     "com.intellij.psi.ContributedReferenceHost"

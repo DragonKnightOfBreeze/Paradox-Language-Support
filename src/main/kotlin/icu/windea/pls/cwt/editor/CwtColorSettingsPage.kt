@@ -4,7 +4,6 @@ import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.options.colors.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.PlsConstants.Samples
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.highlighter.*
 
@@ -37,5 +36,5 @@ class CwtColorSettingsPage : ColorSettingsPage {
     
     override fun getDisplayName() = PlsBundle.message("options.cwt.displayName")
     
-    override fun getDemoText() = Samples.cwtColorSettings
+    override fun getDemoText() = PlsConstants.Samples.cwtColorSettings
 }

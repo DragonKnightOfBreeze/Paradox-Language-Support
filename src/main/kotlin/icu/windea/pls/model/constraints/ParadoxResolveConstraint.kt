@@ -33,7 +33,6 @@ enum class ParadoxResolveConstraint {
                 is ParadoxLocalisationExpressionElement -> element.isComplexExpression()
                 is ParadoxScriptInt -> element.isExpression()
                 is ParadoxLocalisationIcon -> true
-                is ParadoxLocalisationCommandField -> true //<scripted_loc>
                 is ParadoxLocalisationConcept -> true //<game_concept>
                 is ParadoxLocalisationColorfulText -> true //<text_color>
                 else -> false
@@ -56,12 +55,10 @@ enum class ParadoxResolveConstraint {
                         configExpression.type == CwtDataTypes.Definition
                     }
                 }
-                is ParadoxDatabaseObjectNode.Reference -> {
-                    true
-                }
                 is ParadoxScriptValueNode.Reference -> true //<script_value>
+                is ParadoxScriptedCommandFieldNode.Reference -> true //<scripted_loc>
+                is ParadoxDatabaseObjectNode.Reference -> true
                 is ParadoxLocalisationIconPsiReference -> true
-                is ParadoxLocalisationCommandFieldPsiReference -> true //<scripted_loc>
                 is ParadoxLocalisationConceptPsiReference -> true //<game_concept>
                 is ParadoxLocalisationColorPsiReference -> true //<text_color>
                 else -> false
@@ -164,8 +161,7 @@ enum class ParadoxResolveConstraint {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when(element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
-                is ParadoxLocalisationCommandScope -> true
-                is ParadoxLocalisationCommandField -> true
+                is ParadoxLocalisationExpressionElement -> element.isCommandExpression()
                 else -> false
             }
         }
@@ -187,8 +183,8 @@ enum class ParadoxResolveConstraint {
                     }
                 }
                 is ParadoxDynamicValueNode.Reference -> true
-                is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
-                is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
+                is ParadoxDynamicCommandScopeNode.Reference -> true //value[event_target], value[global_event_target]
+                is ParadoxDynamicCommandFieldNode.Reference -> true //value[variable]
                 else -> false
             }
         }
@@ -197,8 +193,7 @@ enum class ParadoxResolveConstraint {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when(element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
-                is ParadoxLocalisationCommandScope -> true
-                is ParadoxLocalisationCommandField -> true
+                is ParadoxLocalisationExpressionElement -> element.isCommandExpression()
                 else -> false
             }
         }
@@ -210,8 +205,8 @@ enum class ParadoxResolveConstraint {
                     configExpression.type in CwtDataTypeGroups.DynamicValue
                 }
                 is ParadoxDynamicValueNode.Reference -> true
-                is ParadoxLocalisationCommandScopePsiReference -> true //value[event_target], value[global_event_target]
-                is ParadoxLocalisationCommandFieldPsiReference -> true //value[variable]
+                is ParadoxDynamicCommandScopeNode.Reference -> true //value[event_target], value[global_event_target]
+                is ParadoxDynamicCommandFieldNode.Reference -> true //value[variable]
                 else -> false
             }
         }

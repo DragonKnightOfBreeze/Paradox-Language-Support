@@ -26,8 +26,6 @@ class ParadoxLocalisationSyntaxHighlighter(
         private val PROPERTY_REFERENCE_PARAMETER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.PROPERTY_REFERENCE_PARAMETER_KEY)
         private val SCRIPTED_VARIABLE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.SCRIPTED_VARIABLE_KEY)
         private val ICON_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.ICON_KEY)
-        private val COMMAND_SCOPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY)
-        private val COMMAND_FIELD_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY)
         private val COMMAND_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMAND_KEY)
         private val CONCEPT_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.CONCEPT_KEY)
         private val COLOR_ID_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COLOR_KEY)
@@ -41,7 +39,7 @@ class ParadoxLocalisationSyntaxHighlighter(
     }
     
     override fun getTokenHighlights(tokenType: IElementType?) = when(tokenType) {
-        COLON, DOT -> OPERATOR_KEYS
+        COLON -> OPERATOR_KEYS
         PROPERTY_REFERENCE_START, PROPERTY_REFERENCE_END, ICON_START, ICON_END -> MARKER_KEYS
         COMMAND_START, COMMAND_END, COLORFUL_TEXT_START, COLORFUL_TEXT_END -> MARKER_KEYS
         PIPE, COMMA -> MARKER_KEYS
@@ -54,8 +52,6 @@ class ParadoxLocalisationSyntaxHighlighter(
         STRING_TOKEN, LEFT_QUOTE, RIGHT_QUOTE, LEFT_SINGLE_QUOTE, RIGHT_SINGLE_QUOTE -> STRING_KEYS
         PROPERTY_NUMBER, ICON_FRAME -> NUMBER_KEYS
         ICON_TOKEN -> ICON_KEYS
-        COMMAND_SCOPE_TOKEN -> COMMAND_SCOPE_KEYS
-        COMMAND_FIELD_TOKEN -> COMMAND_FIELD_KEYS
         COMMAND_TEXT_TOKEN -> COMMAND_KEYS
         CONCEPT_NAME_TOKEN -> CONCEPT_KEYS
         COLOR_TOKEN -> COLOR_ID_KEYS

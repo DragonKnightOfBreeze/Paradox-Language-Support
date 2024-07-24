@@ -332,18 +332,6 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
                      groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedColorInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedCommandScope"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.unresolvedCommandScope"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
-                     implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedCommandScopeInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedCommandField"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.unresolvedCommandField"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
-                     implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedCommandFieldInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedConcept"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="inspection.localisation.unresolvedConcept"

@@ -20,8 +20,8 @@ object ParadoxUsageType {
     val LOCALISATION_REFERENCE = UsageType { PlsBundle.message("usageType.localisationReference") }
     val LOCALISATION_ICON = UsageType { PlsBundle.message("usageType.localisationIcon") }
     val LOCALISATION_COLOR = UsageType { PlsBundle.message("usageType.localisationColor") }
-    val LOCALISATION_COMMAND_SCOPE = UsageType { PlsBundle.message("usageType.localisationCommandScope") }
-    val LOCALISATION_COMMAND_FIELD = UsageType { PlsBundle.message("usageType.localisationCommandField") }
+    val LOCALISATION_COMMAND_TEXT = UsageType { PlsBundle.message("usageType.localisationCommandText") }
+    val LOCALISATION_CONCEPT_NAME = UsageType { PlsBundle.message("usageType.localisationConceptName") }
     
     val COMPLEX_ENUM_VALUE = UsageType { PlsBundle.message("usageType.complexEnumValue") }
     

@@ -7,8 +7,10 @@ import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.script.highlighter.*
 
 class ParadoxDynamicCommandScopeNode(
@@ -17,7 +19,7 @@ class ParadoxDynamicCommandScopeNode(
     val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNode.Base(), ParadoxCommandScopeNode {
     override fun getAttributesKey(language: Language): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.DYNAMIC_VALUE_KEY
+        return ParadoxLocalisationAttributesKeys.DYNAMIC_COMMAND_SCOPE_KEY
     }
     
     override fun getReference(element: ParadoxExpressionElement): Reference {
@@ -46,7 +48,8 @@ class ParadoxDynamicCommandScopeNode(
     }
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandScopeNode {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandScopeNode? {
+            if(!text.isIdentifier()) return null
             return ParadoxDynamicCommandScopeNode(text, textRange, configGroup)
         }
     }

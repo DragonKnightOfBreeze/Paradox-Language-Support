@@ -51,22 +51,8 @@ object ParadoxLocalisationElementFactory {
     }
     
     @JvmStatic
-    fun createCommandScope(project: Project, name: String): ParadoxLocalisationCommandScope {
-        return createPropertyValue(project, "[$name.GetName]")
-            .findChild<ParadoxLocalisationCommand>()
-            ?.findChild() ?: throw IncorrectOperationException()
-    }
-    
-    @JvmStatic
-    fun createCommandField(project: Project, name: String): ParadoxLocalisationCommandField {
-        return createPropertyValue(project, "[$name]")
-            .findChild<ParadoxLocalisationCommand>()
-            ?.findChild() ?: throw IncorrectOperationException()
-    }
-    
-    @JvmStatic
-    fun createCommandText(project: Project, name: String): ParadoxLocalisationCommandText {
-        return createPropertyValue(project, "[$name]")
+    fun createCommandText(project: Project, text: String): ParadoxLocalisationCommandText {
+        return createPropertyValue(project, "[$text]")
             .findChild<ParadoxLocalisationCommand>()
             ?.findChild() ?: throw IncorrectOperationException()
     }

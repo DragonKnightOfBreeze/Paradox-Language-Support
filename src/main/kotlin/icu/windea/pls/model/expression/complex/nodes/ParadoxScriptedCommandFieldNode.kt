@@ -13,13 +13,13 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.script.highlighter.*
 
-class ParadoxDynamicCommandFieldNode(
+class ParadoxScriptedCommandFieldNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNode.Base(), ParadoxCommandFieldNode {
     override fun getAttributesKey(language: Language): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.DYNAMIC_COMMAND_FIELD_KEY
+        return ParadoxLocalisationAttributesKeys.SCRIPTED_COMMAND_FIELD_KEY
     }
     
     override fun getReference(element: ParadoxExpressionElement): Reference {
@@ -45,9 +45,9 @@ class ParadoxDynamicCommandFieldNode(
     }
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandFieldNode? {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScriptedCommandFieldNode? {
             if(!text.isIdentifier()) return null
-            return ParadoxDynamicCommandFieldNode(text, textRange, configGroup)
+            return ParadoxScriptedCommandFieldNode(text, textRange, configGroup)
         }
     }
 }

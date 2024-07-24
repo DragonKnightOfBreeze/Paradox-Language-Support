@@ -4,7 +4,6 @@ import com.intellij.application.options.*
 import com.intellij.psi.codeStyle.*
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
 import icu.windea.pls.*
-import icu.windea.pls.PlsConstants.Samples
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.*
 
@@ -13,7 +12,7 @@ class ParadoxLocalisationLanguageCodeStyleSettingsProvider : LanguageCodeStyleSe
     
     override fun getConfigurableDisplayName() = PlsBundle.message("options.localisation.displayName")
     
-    override fun getCodeSample(settingsType: SettingsType) = Samples.paradoxScriptCodeStyleSettings
+    override fun getCodeSample(settingsType: SettingsType) = PlsConstants.Samples.paradoxLocalisationCodeStyleSettings
     
     override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxLocalisationCodeStyleSettings(settings)
     

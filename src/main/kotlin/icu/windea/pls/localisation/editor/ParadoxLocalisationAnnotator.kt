@@ -22,11 +22,8 @@ class ParadoxLocalisationAnnotator : Annotator {
             is ParadoxLocalisationProperty -> annotateProperty(element, holder)
             is ParadoxLocalisationPropertyReference -> annotatePropertyReference(element, holder)
             is ParadoxLocalisationColorfulText -> annotateColorfulText(element, holder)
-            is ParadoxLocalisationCommandScope -> annotateCommandScope(element, holder)
-            is ParadoxLocalisationCommandField -> annotateCommandField(element, holder)
+            is ParadoxLocalisationExpressionElement -> annotateExpression(element, holder)
         }
-        
-        if(element is ParadoxLocalisationExpressionElement) annotateExpression(element, holder)
     }
     
     private fun checkSyntax(element: PsiElement, holder: AnnotationHolder) {
@@ -76,18 +73,6 @@ class ParadoxLocalisationAnnotator : Annotator {
         val location = element.idElement ?: return
         val attributesKey = element.reference?.getAttributesKey() ?: return
         holder.newSilentAnnotation(INFORMATION).range(location).textAttributes(attributesKey).create()
-    }
-    
-    private fun annotateCommandScope(element: ParadoxLocalisationCommandScope, holder: AnnotationHolder) {
-        //颜色高亮
-        val attributesKey = element.reference.getAttributesKey() ?: return
-        holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
-    }
-    
-    private fun annotateCommandField(element: ParadoxLocalisationCommandField, holder: AnnotationHolder) {
-        //颜色高亮
-        val attributesKey = element.reference?.getAttributesKey() ?: return
-        holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
     }
     
     private fun annotateExpression(element: ParadoxLocalisationExpressionElement, holder: AnnotationHolder) {

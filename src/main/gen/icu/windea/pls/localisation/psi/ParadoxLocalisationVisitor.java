@@ -6,7 +6,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.NavigatablePsiElement;
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
-import icu.windea.pls.lang.psi.ParadoxTypedElement;
 import com.intellij.psi.ContributedReferenceHost;
 import com.intellij.psi.PsiListLikeElement;
 
@@ -19,18 +18,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   public void visitCommand(@NotNull ParadoxLocalisationCommand o) {
     visitRichText(o);
     // visitRichText(o);
-  }
-
-  public void visitCommandField(@NotNull ParadoxLocalisationCommandField o) {
-    visitCommandIdentifier(o);
-  }
-
-  public void visitCommandIdentifier(@NotNull ParadoxLocalisationCommandIdentifier o) {
-    visitParadoxTypedElement(o);
-  }
-
-  public void visitCommandScope(@NotNull ParadoxLocalisationCommandScope o) {
-    visitCommandIdentifier(o);
   }
 
   public void visitCommandText(@NotNull ParadoxLocalisationCommandText o) {
@@ -102,10 +89,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitParadoxScriptedVariableReference(@NotNull ParadoxScriptedVariableReference o) {
-    visitElement(o);
-  }
-
-  public void visitParadoxTypedElement(@NotNull ParadoxTypedElement o) {
     visitElement(o);
   }
 

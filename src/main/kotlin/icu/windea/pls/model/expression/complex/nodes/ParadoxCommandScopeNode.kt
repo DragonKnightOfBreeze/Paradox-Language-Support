@@ -7,8 +7,9 @@ sealed interface ParadoxCommandScopeNode: ParadoxComplexExpressionNode {
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxCommandScopeNode {
             ParadoxParameterizedCommandScopeNode.resolve(text, textRange)?.let { return it }
-            ParadoxDynamicCommandScopeNode.resolve(text, textRange, configGroup)?.let { return it }
             ParadoxPredefinedCommandScopeNode.resolve(text, textRange, configGroup)?.let { return it }
+            ParadoxSystemCommandScopeNode.resolve(text, textRange, configGroup)?.let { return it }
+            ParadoxDynamicCommandScopeNode.resolve(text, textRange, configGroup)?.let { return it }
             return ParadoxErrorCommandScopeNode(text, textRange)
         }
     }

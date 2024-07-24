@@ -4,7 +4,6 @@ import com.intellij.application.options.*
 import com.intellij.psi.codeStyle.*
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
 import icu.windea.pls.*
-import icu.windea.pls.PlsConstants.Samples
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings as Settings
@@ -14,7 +13,7 @@ class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
     
     override fun getConfigurableDisplayName() = PlsBundle.message("options.cwt.displayName")
     
-    override fun getCodeSample(settingsType: SettingsType) = Samples.cwtCodeStyleSettings
+    override fun getCodeSample(settingsType: SettingsType) = PlsConstants.Samples.cwtCodeStyleSettings
     
     override fun createCustomSettings(settings: CodeStyleSettings) = Settings(settings)
     

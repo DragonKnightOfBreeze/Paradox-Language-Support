@@ -156,7 +156,7 @@ COLOR_TOKEN=[a-zA-Z0-9]
 STRING_TOKEN=([^\"$£§\[\]\r\n\\]|\\.|\[\[)+ //it's unnecessary to escape double quotes in loc text in fact
 
 CHECK_COMMAND_START=\[[^\r\n\]]*.?
-COMMAND_TEXT_TOKEN=[^\r\n\[\]]+
+COMMAND_TEXT_TOKEN=[^\r\n.\[\]]+
 CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
 
 %%

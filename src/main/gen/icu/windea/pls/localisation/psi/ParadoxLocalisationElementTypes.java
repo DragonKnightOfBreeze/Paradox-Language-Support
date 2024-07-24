@@ -10,9 +10,6 @@ public interface ParadoxLocalisationElementTypes {
 
   IElementType COLORFUL_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("COLORFUL_TEXT");
   IElementType COMMAND = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND");
-  IElementType COMMAND_FIELD = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND_FIELD");
-  IElementType COMMAND_IDENTIFIER = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND_IDENTIFIER");
-  IElementType COMMAND_SCOPE = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND_SCOPE");
   IElementType COMMAND_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND_TEXT");
   IElementType CONCEPT = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT");
   IElementType CONCEPT_NAME = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_NAME");
@@ -35,12 +32,10 @@ public interface ParadoxLocalisationElementTypes {
   IElementType COLOR_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("COLOR_TOKEN");
   IElementType COMMA = ParadoxLocalisationElementTypeFactory.getTokenType("COMMA");
   IElementType COMMAND_END = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_END");
-  IElementType COMMAND_FIELD_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_FIELD_TOKEN");
-  IElementType COMMAND_SCOPE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_SCOPE_TOKEN");
   IElementType COMMAND_START = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_START");
+  IElementType COMMAND_TEXT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_TEXT_TOKEN");
   IElementType COMMENT = ParadoxLocalisationElementTypeFactory.getTokenType("COMMENT");
   IElementType CONCEPT_NAME_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("CONCEPT_NAME_TOKEN");
-  IElementType DOT = ParadoxLocalisationElementTypeFactory.getTokenType("DOT");
   IElementType ICON_END = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_END");
   IElementType ICON_FRAME = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_FRAME");
   IElementType ICON_START = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_START");
@@ -68,15 +63,6 @@ public interface ParadoxLocalisationElementTypes {
       }
       else if (type == COMMAND) {
         return new ParadoxLocalisationCommandImpl(node);
-      }
-      else if (type == COMMAND_FIELD) {
-        return new ParadoxLocalisationCommandFieldImpl(node);
-      }
-      else if (type == COMMAND_IDENTIFIER) {
-        return new ParadoxLocalisationCommandIdentifierImpl(node);
-      }
-      else if (type == COMMAND_SCOPE) {
-        return new ParadoxLocalisationCommandScopeImpl(node);
       }
       else if (type == COMMAND_TEXT) {
         return new ParadoxLocalisationCommandTextImpl(node);

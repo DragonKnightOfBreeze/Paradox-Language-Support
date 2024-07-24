@@ -123,9 +123,9 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         val extensionList = ParadoxExpressionIndexSupport.EP_NAME.extensionList
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if(element is ParadoxLocalisationCommandIdentifier) {
+                if(element is ParadoxLocalisationCommandText) {
                     extensionList.forEach f@{ ep -> 
-                        ep.indexLocalisationCommandIdentifier(element, fileData)
+                        ep.indexLocalisationCommandText(element, fileData)
                     }
                 }
                 if(element.isRichTextContext()) super.visitElement(element)

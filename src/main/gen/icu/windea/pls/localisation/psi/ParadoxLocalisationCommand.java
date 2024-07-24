@@ -12,8 +12,8 @@ import javax.swing.Icon;
 
 public interface ParadoxLocalisationCommand extends ParadoxLocalisationRichText {
 
-  @NotNull
-  List<ParadoxLocalisationCommandIdentifier> getCommandIdentifierList();
+  @Nullable
+  ParadoxLocalisationCommandText getCommandText();
 
   @Nullable
   ParadoxLocalisationConcept getConcept();

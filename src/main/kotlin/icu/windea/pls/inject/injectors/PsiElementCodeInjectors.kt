@@ -96,17 +96,19 @@ class ParadoxLocalisationPropertyReferenceCodeInjector : CodeInjectorBase()
 @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
 class ParadoxLocalisationIconCodeInjector : CodeInjectorBase()
 
-@InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationCommandScopeImpl", pluginId = "icu.windea.pls")
-@InjectFieldBasedCache("getName", cleanup = "subtreeChanged")
+@InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationCommandTextImpl", pluginId = "icu.windea.pls")
+//@InjectFieldBasedCache("getName", cleanup = "subtreeChanged") // = text
+//@InjectFieldBasedCache("getValue", cleanup = "subtreeChanged") // = text
 @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
-class ParadoxLocalisationCommandScopeCodeInjector : CodeInjectorBase()
-
-@InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationCommandFieldImpl", pluginId = "icu.windea.pls")
-@InjectFieldBasedCache("getName", cleanup = "subtreeChanged")
-@InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
-class ParadoxLocalisationCommandFieldCodeInjector : CodeInjectorBase()
+class ParadoxLocalisationCommandTextCodeInjector : CodeInjectorBase()
 
 @InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationConceptImpl", pluginId = "icu.windea.pls")
 @InjectFieldBasedCache("getName", cleanup = "subtreeChanged")
 @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
 class ParadoxLocalisationConceptCodeInjector : CodeInjectorBase()
+
+@InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationConceptNameImpl", pluginId = "icu.windea.pls")
+//@InjectFieldBasedCache("getName", cleanup = "subtreeChanged") // = text
+//@InjectFieldBasedCache("getValue", cleanup = "subtreeChanged") // = text
+@InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
+class ParadoxLocalisationConceptNameCodeInjector : CodeInjectorBase()

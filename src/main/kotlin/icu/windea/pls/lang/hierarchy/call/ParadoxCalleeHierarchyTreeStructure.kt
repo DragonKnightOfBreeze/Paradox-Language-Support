@@ -58,11 +58,11 @@ class ParadoxCalleeHierarchyTreeStructure(
                     element is ParadoxScriptExpressionElement && element.isExpression() -> {
                         addDescriptor(element) //definition | localisation
                     }
+                    element is ParadoxLocalisationExpressionElement && element.isComplexExpression() -> {
+                        addDescriptor(element) //definition
+                    }
                     element is ParadoxLocalisationPropertyReference -> {
                         addDescriptor(element) //localisation
-                    }
-                    element is ParadoxLocalisationCommandField -> {
-                        addDescriptor(element) //<scripted_loc>
                     }
                 }
                 if(element is ParadoxScriptInlineMath) {

@@ -21,11 +21,14 @@ import org.jetbrains.kotlin.idea.base.codeInsight.handlers.fixers.*
  * 
  * ```bnf
  * command_expression ::= command_scope * (command_field)
- * command_scope := predefined_command_scope | dynamic_command_scope
- * predefined_command_scope := TOKEN //predefined by CWT Config (see localisation scopes)
- * dynamic_command_scope := TOKEN //TOKEN is an event target
+ * command_scope := system_command_scope | predefined_command_scope | dynamic_command_scope
+ * system_command_scope := TOKEN //predefined by CWT Config (see system links)
+ * predefined_command_scope := TOKEN //predefined by CWT Config (see localisation links)
+ * dynamic_command_scope := TOKEN //matching config expression "value[event_target]" or "value[global_event_target]"
+ * command_field ::= predefined_command_field | scripted_command_field | dynamic_command_field
  * predefined_command_field := TOKEN //predefined by CWT Config (see localisation commands)
- * dynamic_command_field ::= TOKEN //TOKEN is an variable
+ * scripted_command_field ::= TOKEN //matching config expression "<scripted_loc>"
+ * dynamic_command_field ::= TOKEN //matching config  expression "value[variable]"
  * ```
  * 
  * 示例：

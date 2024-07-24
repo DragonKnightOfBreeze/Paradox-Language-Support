@@ -96,7 +96,7 @@ class ParadoxDynamicValueIndexSupport : ParadoxExpressionIndexSupport<ParadoxDyn
         }
     }
     
-    override fun indexLocalisationCommandIdentifier(element: ParadoxLocalisationCommandIdentifier, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+    override fun indexLocalisationCommandText(element: ParadoxLocalisationCommandText, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         val constraint = ParadoxResolveConstraint.DynamicValue
         if(!constraint.canResolveReference(element)) return
         element.references.forEach f@{ reference ->

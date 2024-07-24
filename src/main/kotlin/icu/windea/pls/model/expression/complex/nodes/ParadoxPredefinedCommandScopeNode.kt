@@ -18,7 +18,7 @@ class ParadoxPredefinedCommandScopeNode(
     val config: CwtLocalisationLinkConfig
 ) : ParadoxComplexExpressionNode.Base(), ParadoxCommandScopeNode {
     override fun getAttributesKey(language: Language): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY
+        return ParadoxLocalisationAttributesKeys.PREDEFINED_COMMAND_SCOPE_KEY
     }
     
     override fun getReference(element: ParadoxExpressionElement): Reference {

@@ -4,7 +4,6 @@ import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.options.colors.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.PlsConstants.Samples
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.highlighter.*
 
@@ -20,8 +19,6 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("localisation.displayName.propertyReferenceParameter"), ParadoxLocalisationAttributesKeys.PROPERTY_REFERENCE_PARAMETER_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.scriptedVariable"), ParadoxLocalisationAttributesKeys.SCRIPTED_VARIABLE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.icon"), ParadoxLocalisationAttributesKeys.ICON_KEY),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.commandScope"), ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.commandField"), ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.concept"), ParadoxLocalisationAttributesKeys.CONCEPT_KEY), //#008080
         AttributesDescriptor(PlsBundle.message("localisation.displayName.color"), ParadoxLocalisationAttributesKeys.COLOR_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.string"), ParadoxLocalisationAttributesKeys.STRING_KEY),
@@ -33,6 +30,13 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         //AttributesDescriptor(PlsBundle.message("localisation.displayName.localisation"), ParadoxLocalisationAttributesKeys.LOCALISATION_KEY),
         //AttributesDescriptor(PlsBundle.message("localisation.displayName.syncedLocalisation"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY),
         
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.predefinedCommandScope"), ParadoxLocalisationAttributesKeys.PREDEFINED_COMMAND_SCOPE_KEY),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.systemCommandScope"), ParadoxLocalisationAttributesKeys.SYSTEM_COMMAND_SCOPE_KEY),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.dynamicCommandScope"), ParadoxLocalisationAttributesKeys.DYNAMIC_COMMAND_SCOPE_KEY),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.predefinedCommandField"), ParadoxLocalisationAttributesKeys.PREDEFINED_COMMAND_FIELD_KEY),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.scriptedCommandField"), ParadoxLocalisationAttributesKeys.SCRIPTED_COMMAND_FIELD_KEY),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.dynamicCommandField"), ParadoxLocalisationAttributesKeys.DYNAMIC_COMMAND_FIELD_KEY),
+        
         AttributesDescriptor(PlsBundle.message("localisation.displayName.databaseObjectType"), ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.databaseObject"), ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY),
     )
@@ -40,6 +44,12 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
     private val _tagToDescriptorMap = mapOf(
         "MARKER" to ParadoxLocalisationAttributesKeys.MARKER_KEY,
         "OPERATOR" to ParadoxLocalisationAttributesKeys.OPERATOR_KEY,
+        "PREDEFINED_COMMAND_SCOPE" to ParadoxLocalisationAttributesKeys.PREDEFINED_COMMAND_SCOPE_KEY,
+        "SYSTEM_COMMAND_SCOPE" to ParadoxLocalisationAttributesKeys.SYSTEM_COMMAND_SCOPE_KEY,
+        "DYNAMIC_COMMAND_SCOPE" to ParadoxLocalisationAttributesKeys.DYNAMIC_COMMAND_SCOPE_KEY,
+        "PREDEFINED_COMMAND_FIELD" to ParadoxLocalisationAttributesKeys.PREDEFINED_COMMAND_FIELD_KEY,
+        "SCRIPTED_COMMAND_FIELD" to ParadoxLocalisationAttributesKeys.SCRIPTED_COMMAND_FIELD_KEY,
+        "DYNAMIC_COMMAND_FIELD" to ParadoxLocalisationAttributesKeys.DYNAMIC_COMMAND_FIELD_KEY,
         "DATABASE_OBJECT_TYPE" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY,
         "DATABASE_OBJECT" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY,
     )
@@ -56,5 +66,5 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
     
     override fun getDisplayName() = PlsBundle.message("options.localisation.displayName")
     
-    override fun getDemoText() = Samples.paradoxLocalisationColorSettings
+    override fun getDemoText() = PlsConstants.Samples.paradoxLocalisationColorSettings
 }
