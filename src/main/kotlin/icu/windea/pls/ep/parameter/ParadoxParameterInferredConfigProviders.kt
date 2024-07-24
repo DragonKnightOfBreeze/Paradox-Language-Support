@@ -51,13 +51,13 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider: ParadoxParameterI
 class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfigProvider {
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
         val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return false
-        if(!expressionElement.text.isFullParameterized()) return false
+        if(!expressionElement.value.isFullParameterized()) return false
         return true
     }
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return null
-        if(!expressionElement.text.isFullParameterized()) return null
+        if(!expressionElement.value.isFullParameterized()) return null
         val expressionContextConfigs = ParadoxExpressionHandler.getConfigContext(expressionElement)?.getConfigs().orEmpty()
         val contextConfigs = getContextConfigsFromExpressionContextConfigs(expressionContextConfigs, parameterInfo)
         return contextConfigs
@@ -98,14 +98,13 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
     
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
         val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return false
-        if(expressionElement.text.isFullParameterized()) return false
+        if(expressionElement.value.isFullParameterized()) return false
         return true
     }
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return null
-        if(expressionElement.text.isFullParameterized()) return null
-        if(expressionElement.text.isLeftQuoted()) return null
+        if(expressionElement.value.isFullParameterized()) return null
         val expressionConfigs = parameterInfo.expressionConfigs
         val configs = expressionConfigs.mapNotNull { getConfigFromExpressionConfig(expressionElement, it, parameterInfo) }
         return configs

@@ -471,7 +471,7 @@ object ParadoxExpressionHandler {
                 data is ParadoxScriptValue -> ParadoxDataExpression.resolve(data)
                 else -> return@p true
             }
-            val isParameterized = expression.type == ParadoxType.String && expression.value.isParameterized()
+            val isParameterized = expression.type == ParadoxType.String && expression.text.isParameterized()
             //may contain parameter -> can't and should not get occurrences
             if(isParameterized) {
                 occurrenceMap.clear()
@@ -700,8 +700,8 @@ object ParadoxExpressionHandler {
         if(!configExpression.isKey && expression.isKey == true) return false
         
         if(configExpression.type == CwtDataTypes.Constant) return true
-        if(configExpression.type == CwtDataTypes.EnumValue && configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.value) } == true) return true
-        if(configExpression.type == CwtDataTypes.Value && configExpression.value?.let { configGroup.dynamicValueTypes[it]?.values?.contains(expression.value) } == true) return true
+        if(configExpression.type == CwtDataTypes.EnumValue && configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.text) } == true) return true
+        if(configExpression.type == CwtDataTypes.Value && configExpression.value?.let { configGroup.dynamicValueTypes[it]?.values?.contains(expression.text) } == true) return true
         return false
     }
     

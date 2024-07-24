@@ -160,7 +160,7 @@ object CwtConfigMatcher {
         }
         
         fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {
-            val name = expression.value
+            val name = expression.text
             val cacheKey = "l#$name"
             return getCachedMatchResult(element, cacheKey) {
                 val selector = localisationSelector(project, element)
@@ -169,7 +169,7 @@ object CwtConfigMatcher {
         }
         
         fun getSyncedLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {
-            val name = expression.value
+            val name = expression.text
             val cacheKey = "ls#$name"
             return getCachedMatchResult(element, cacheKey) {
                 val selector = localisationSelector(project, element)
@@ -178,7 +178,7 @@ object CwtConfigMatcher {
         }
         
         fun getDefinitionMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, project: Project): Result {
-            val name = expression.value
+            val name = expression.text
             val typeExpression = configExpression.value ?: return Result.NotMatch //invalid cwt config
             val cacheKey = "d#${typeExpression}#${name}"
             return getCachedMatchResult(element, cacheKey) {
@@ -188,7 +188,7 @@ object CwtConfigMatcher {
         }
         
         fun getPathReferenceMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, project: Project): Result {
-            val pathReference = expression.value.normalizePath()
+            val pathReference = expression.text.normalizePath()
             val cacheKey = "p#${pathReference}#${configExpression}"
             return getCachedMatchResult(element, cacheKey) {
                 val selector = fileSelector(project, element)
@@ -218,8 +218,8 @@ object CwtConfigMatcher {
         }
         
         fun getScopeFieldMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
-            val textRange = TextRange.create(0, expression.value.length)
-            val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.value, textRange, configGroup)
+            val textRange = TextRange.create(0, expression.text.length)
+            val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup)
             if(scopeFieldExpression == null) return Result.NotMatch
             when(configExpression.type) {
                 CwtDataTypes.ScopeField -> return Result.ExactMatch
@@ -248,7 +248,7 @@ object CwtConfigMatcher {
         }
         
         fun getModifierMatchResult(element: PsiElement, expression: ParadoxDataExpression, configGroup: CwtConfigGroup): Result {
-            val name = expression.value
+            val name = expression.text
             val cacheKey = "m#${name}"
             return getCachedMatchResult(element, cacheKey) {
                 ParadoxModifierHandler.matchesModifier(name, element, configGroup)
@@ -256,7 +256,7 @@ object CwtConfigMatcher {
         }
         
         fun getTemplateMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
-            val exp = expression.value
+            val exp = expression.text
             val template = configExpression.expressionString
             val cacheKey = "t#${template}#${exp}"
             return getCachedMatchResult(element, cacheKey) {
