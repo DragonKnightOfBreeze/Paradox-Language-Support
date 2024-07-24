@@ -57,7 +57,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         return ParadoxPsiManager.findLocalisation(file, offset)
     }
     
-    private fun findFastElement(e: AnActionEvent): ParadoxLocalisationProperty? {
+    private fun findElement(e: AnActionEvent): ParadoxLocalisationProperty? {
         val element = e.getData(CommonDataKeys.PSI_ELEMENT)
         if(element is ParadoxLocalisationProperty && element.localisationInfo != null) return element
         return null
@@ -74,7 +74,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
-        var localisation = findFastElement(e)
+        var localisation = findElement(e)
         if(localisation == null) {
             val project = e.project ?: return
             val file = findFile(e) ?: return
@@ -88,7 +88,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
     }
     
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
-        var localisation = findFastElement(e)
+        var localisation = findElement(e)
         if(localisation == null) {
             val project = e.project ?: return null
             val file = findFile(e) ?: return null

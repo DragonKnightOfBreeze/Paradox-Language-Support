@@ -3,7 +3,6 @@ package icu.windea.pls.ep.expression
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
-import icu.windea.pls.core.collections.*
 
 /**
  * 用于得到CWT规则表达式的优先级。
@@ -23,7 +22,7 @@ interface CwtDataExpressionPriorityProvider {
          * @see CwtDataExpressionPriorityProvider.getPriority
          */
         fun getPriority(expression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 val r = ep.getPriority(expression, configGroup)
                 if(r > 0) return r
             }

@@ -8,7 +8,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.model.*
 
@@ -30,7 +29,7 @@ class CwtConfigDirectoryElementNode(
         if(!file.isDirectory) return false
         val gameTypeId = value.gameType.id
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        fileProviders.forEachFast f@{ fileProvider ->
+        fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val dir = rootDirectory.findChild(gameTypeId) ?: return@f
             val relativePath = VfsUtil.getRelativePath(file, dir)
@@ -41,7 +40,7 @@ class CwtConfigDirectoryElementNode(
     
     override fun contains(file: VirtualFile): Boolean {
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        fileProviders.forEachFast f@{ fileProvider ->
+        fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return@f
             val gameId = relativePath.substringBefore('/')
@@ -57,7 +56,7 @@ class CwtConfigDirectoryElementNode(
         val children = mutableSetOf<AbstractTreeNode<*>>()
         val directoryNames = mutableSetOf<String>()
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        fileProviders.forEachFast f@{ fileProvider ->
+        fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val dir = rootDirectory.findChild(gameTypeId)?.let { VfsUtil.findRelativeFile(it, path) } ?: return@f
             dir.children.forEach { file ->
@@ -79,7 +78,7 @@ class CwtConfigDirectoryElementNode(
     override fun isValid(): Boolean {
         val gameTypeId = value.gameType.id
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        fileProviders.forEachFast f@{ fileProvider ->
+        fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val dir = rootDirectory.findChild(gameTypeId) ?: return@f
             val relativeFile = VfsUtil.findRelativeFile(dir, value.path)

@@ -9,7 +9,6 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.util.io.*
-import icu.windea.pls.core.collections.*
 import java.io.*
 
 inline fun <T, V> DataInput.readOrReadFrom(from: T?, selector: (T) -> V, readAction: () -> V): V {
@@ -44,7 +43,7 @@ inline fun <T> DataOutput.writeList(collection: Collection<T>, action: (T) -> Un
 
 inline fun <T> DataOutput.writeList(collection: List<T>, action: (T) -> Unit) {
     writeIntFast(collection.size)
-    collection.forEachFast { action(it) }
+    collection.forEach { action(it) }
 }
 
 val StubBasedPsiElementBase<*>.containingFileStub: PsiFileStub<*>?

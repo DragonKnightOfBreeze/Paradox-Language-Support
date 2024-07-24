@@ -9,7 +9,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
@@ -73,7 +72,7 @@ interface ParadoxModifierSupport {
         
         fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
             val gameType = context.gameType ?: return
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 ep.completeModifier(context, result, modifierNames)
             }

@@ -3,7 +3,6 @@ package icu.windea.pls.lang.search.selector
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.settings.*
@@ -56,7 +55,7 @@ class ChainedParadoxSelector<T>(
         var finalSelectResult = true
         var finalSelectDefaultResult = true
         var finalDefaultValuePriority = 0
-        selectors.forEachFast { selector ->
+        selectors.forEach { selector ->
             val selectResult = selector.select(target)
             finalSelectResult = finalSelectResult && selectResult
             if(selectResult) finalDefaultValuePriority++
@@ -78,7 +77,7 @@ class ChainedParadoxSelector<T>(
     override fun selectAll(target: T): Boolean {
         if(!matchesGameType(target)) return false
         if(selectors.isEmpty()) return super.selectAll(target)
-        selectors.forEachFast { selector ->
+        selectors.forEach { selector ->
             if(!selector.selectAll(target)) return false
         }
         return true
@@ -90,7 +89,7 @@ class ChainedParadoxSelector<T>(
     override fun comparator(): Comparator<T>? {
         if(selectors.isEmpty()) return super.comparator()
         var comparator: Comparator<T>? = null
-        selectors.forEachFast { selector ->
+        selectors.forEach { selector ->
             comparator = comparator thenPossible selector.comparator()
         }
         return comparator

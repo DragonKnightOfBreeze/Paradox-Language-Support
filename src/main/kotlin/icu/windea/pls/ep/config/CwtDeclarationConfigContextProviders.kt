@@ -6,7 +6,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.config.extended.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -27,7 +26,7 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
         val gameTypeId = context.gameType.id
         val definitionSubtypes = context.definitionSubtypes
         val subtypesToDistinct = declarationConfig.subtypesUsedInDeclaration
-        val subtypes = definitionSubtypes?.filterFast { it in subtypesToDistinct }.orEmpty()
+        val subtypes = definitionSubtypes?.filter { it in subtypesToDistinct }.orEmpty()
         val typeString = subtypes.joinToString(".", context.definitionType + ".")
         return "b@$gameTypeId#$typeString"
     }
@@ -39,7 +38,7 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
         finalRootConfig.declarationConfigContext = context
         if(configs == null) return finalRootConfig
         configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
-        configs.forEachFast { it.parentConfig = finalRootConfig }
+        configs.forEach { it.parentConfig = finalRootConfig }
         return finalRootConfig
     }
 }
@@ -71,7 +70,7 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         finalRootConfig.declarationConfigContext = context
         if(configs == null) return finalRootConfig
         configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
-        configs.forEachFast { it.parentConfig = finalRootConfig }
+        configs.forEach { it.parentConfig = finalRootConfig }
         return finalRootConfig
     }
 }
@@ -101,7 +100,7 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         finalRootConfig.declarationConfigContext = context
         if(configs == null) return finalRootConfig
         configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
-        configs.forEachFast { it.parentConfig = finalRootConfig }
+        configs.forEach { it.parentConfig = finalRootConfig }
         return finalRootConfig
     }
 }

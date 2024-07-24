@@ -5,7 +5,6 @@ package icu.windea.pls.core
 import com.google.common.cache.*
 import com.intellij.openapi.util.text.*
 import icu.windea.pls.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import java.io.*
 import java.net.*
@@ -184,6 +183,28 @@ fun String.substringInLast(prefix: String, suffix: String, missingDelimiterValue
     return substring(prefixIndex + prefix.length, suffixIndex)
 }
 
+fun String.trimFast(c: Char): String {
+    var startIndex = 0
+    var endIndex = length - 1
+    var startFound = false
+    while(startIndex <= endIndex) {
+        val index = if(!startFound) startIndex else endIndex
+        val match = this[index] == c
+        if(!startFound) {
+            if(!match)
+                startFound = true
+            else
+                startIndex += 1
+        } else {
+            if(!match)
+                break
+            else
+                endIndex -= 1
+        }
+    }
+    return substring(startIndex, endIndex + 1)
+}
+
 private val blankRegex = "\\s+".toRegex()
 
 fun String.splitByBlank(limit: Int = 0): List<String> {
@@ -247,7 +268,7 @@ fun String.quote(): String {
     if(start && end) return s
     return buildString {
         append("\"")
-        s.forEachFast { c ->
+        s.forEach { c ->
             when(c) {
                 '"' -> append("\\\"")
                 '\\' -> append("\\\\")
@@ -265,7 +286,7 @@ fun String.unquote(): String {
     val end = isRightQuoted()
     return buildString {
         var escape = false
-        s.forEachIndexedFast f@{ i, c ->
+        s.forEachIndexed f@{ i, c ->
             if(start && i == 0) return@f
             if(end && i == s.lastIndex) return@f
             if(escape) {

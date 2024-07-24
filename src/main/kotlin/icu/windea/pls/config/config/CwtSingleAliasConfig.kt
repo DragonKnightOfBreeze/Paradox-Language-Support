@@ -1,7 +1,6 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.util.*
 
@@ -37,7 +36,7 @@ private class CwtSingleAliasConfigImpl(
             options = config.options
         )
         inlined.parentConfig = config.parentConfig
-        inlined.configs?.forEachFast { it.parentConfig = inlined }
+        inlined.configs?.forEach { it.parentConfig = inlined }
         inlined.inlineableConfig = config.inlineableConfig //should not set to this - a single alias config do not inline property key  
         return inlined
     }

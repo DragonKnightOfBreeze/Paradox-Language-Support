@@ -85,7 +85,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
                 val indexId = ParadoxExpressionIndexId.InferredScopeContextAwareDefinition
                 ParadoxExpressionIndex.processQuery(indexId, project, gameType, searchScope) p@{ file, infos ->
                     val psiFile = file.toPsiFile(project) ?: return@p true
-                    infos.forEachFast f@{ info ->
+                    infos.forEach f@{ info ->
                         //TODO 1.0.6+ 这里对应的引用可能属于某个复杂表达式的一部分（目前不需要考虑兼容这种情况）
                         val definitionName = info.definitionName
                         if(definitionName != definitionInfo.name) return@f //matches definition name
@@ -190,7 +190,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
             val indexId = ParadoxExpressionIndexId.EventInOnAction
             ParadoxExpressionIndex.processQuery(indexId, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
-                infos.forEachFast f@{ info ->
+                infos.forEach f@{ info ->
                     val eventName = info.eventName
                     if(eventName != thisEventName) return@f
                     val containingOnActionName = info.containingOnActionName
@@ -296,7 +296,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
             val indexId = ParadoxExpressionIndexId.EventInEvent
             ParadoxExpressionIndex.processQuery(indexId, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
-                infos.forEachFast f@{ info ->
+                infos.forEach f@{ info ->
                     val eventName = info.eventName
                     if(eventName != thisEventName) return@f
                     val containingEventName = info.containingEventName
@@ -447,7 +447,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
             val indexId = ParadoxExpressionIndexId.OnActionInEvent
             ParadoxExpressionIndex.processQuery(indexId, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
-                infos.forEachFast f@{ info ->
+                infos.forEach f@{ info ->
                     val onActionName = info.onActionName
                     if(onActionName != thisOnActionName) return@f
                     val containingEventName = info.containingEventName

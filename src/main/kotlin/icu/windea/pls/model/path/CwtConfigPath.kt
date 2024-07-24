@@ -39,7 +39,7 @@ private class CwtConfigPathImpl(
     path: String
 ) : CwtConfigPath {
     override val path: String = path.intern()
-    override val subPaths: List<String> = path.split('/').mapFast { it.intern() }
+    override val subPaths: List<String> = path.split('/').map { it.intern() }
     override val length: Int = subPaths.size
     
     override fun equals(other: Any?) = this === other || other is CwtConfigPath && path == other.path

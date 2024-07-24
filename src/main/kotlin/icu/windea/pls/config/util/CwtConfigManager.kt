@@ -7,7 +7,6 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.configGroup.*
@@ -203,14 +202,14 @@ object CwtConfigManager {
         if(configPath.isEmpty()) return emptyList()
         val pathList = configPath.split('/')
         var r: List<CwtMemberConfig<*>> = emptyList()
-        pathList.forEachFast { p ->
+        pathList.forEach { p ->
             if(p == "-") {
                 if(r.isEmpty()) {
                     r = fileConfig.values
                 } else {
                     r = buildList {
-                        r.forEachFast { c1 ->
-                            c1.configs?.forEachFast { c2 ->
+                        r.forEach { c1 ->
+                            c1.configs?.forEach { c2 ->
                                 if(c2 is CwtValueConfig) this += c2
                             }
                         }
@@ -218,11 +217,11 @@ object CwtConfigManager {
                 }
             } else {
                 if(r.isEmpty()) {
-                    r = fileConfig.properties.filterFast { c -> c.key.equals(p, true) }
+                    r = fileConfig.properties.filter { c -> c.key.equals(p, true) }
                 } else {
                     r = buildList {
-                        r.forEachFast { c1 ->
-                            c1.configs?.forEachFast { c2 ->
+                        r.forEach { c1 ->
+                            c1.configs?.forEach { c2 ->
                                 if(c2 is CwtPropertyConfig && c2.key.equals(p, true)) this += c2
                             }
                         }

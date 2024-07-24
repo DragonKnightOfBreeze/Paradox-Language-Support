@@ -5,7 +5,6 @@ import com.intellij.ide.projectView.impl.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icons.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.configGroup.*
 import javax.swing.*
@@ -22,7 +21,7 @@ class CwtConfigIconProvider : IconProvider(), DumbAware {
                 if(ProjectRootsUtil.isModuleContentRoot(file, project)) return null
                 if(ProjectRootsUtil.isModuleSourceRoot(file, project)) return null
                 val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-                val fileProvider = fileProviders.findFast { it.getRootDirectory(project) == file }
+                val fileProvider = fileProviders.find { it.getRootDirectory(project) == file }
                 if(fileProvider == null) return null
                 return PlsIcons.ConfigGroupDirectory
             }
@@ -30,7 +29,7 @@ class CwtConfigIconProvider : IconProvider(), DumbAware {
                 val file = element.virtualFile
                 val project = element.project
                 val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-                val fileProvider = fileProviders.findFast { it.getContainingConfigGroup(file, project) != null }
+                val fileProvider = fileProviders.find { it.getContainingConfigGroup(file, project) != null }
                 if(fileProvider == null) return null
                 return PlsIcons.FileTypes.CwtConfig
             }

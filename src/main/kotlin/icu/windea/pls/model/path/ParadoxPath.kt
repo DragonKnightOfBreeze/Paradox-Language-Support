@@ -1,7 +1,6 @@
 package icu.windea.pls.model.path
 
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 
 /**
  * 文件或目录相对于游戏或模组根路径的路径。保留大小写。
@@ -67,7 +66,7 @@ private class ParadoxPathImplA(
     path: String
 ) : ParadoxPath {
     override val path: String = path.intern()
-    override val subPaths: List<String> = path.split('/').mapFast { it.intern() }
+    override val subPaths: List<String> = path.split('/').map { it.intern() }
     override val parent: String = path.substringBeforeLast('/', "").intern()
     override val root: String = path.substringBefore('/', "").intern()
     override val fileName: String = subPaths.lastOrNull()?.intern().orEmpty()
@@ -82,7 +81,7 @@ private class ParadoxPathImplA(
 private class ParadoxPathImplB(
     subPaths: List<String>
 ) : ParadoxPath {
-    override val subPaths: List<String> = subPaths.mapFast { it.intern() }
+    override val subPaths: List<String> = subPaths.map { it.intern() }
     override val path: String = subPaths.joinToString("/").intern()
     override val parent: String = path.substringBeforeLast('/', "").intern()
     override val root: String = path.substringBefore('/', "").intern()

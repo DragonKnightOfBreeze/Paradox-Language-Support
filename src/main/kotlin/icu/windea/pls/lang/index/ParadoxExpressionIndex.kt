@@ -8,7 +8,6 @@ import com.intellij.psi.search.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.index.*
 import icu.windea.pls.lang.*
@@ -80,7 +79,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         val definitionInfoStack = ArrayDeque<ParadoxDefinitionInfo>()
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                extensionList.forEachFast { ep ->
+                extensionList.forEach { ep ->
                     ep.indexScriptElement(element, fileData)
                 }
                 
@@ -100,8 +99,8 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
                         val configs = ParadoxExpressionHandler.getConfigs(element, matchOptions = matchOptions)
                         if(configs.isEmpty()) return@run
                         val definitionInfo = definitionInfoStack.lastOrNull() ?: return@run
-                        extensionList.forEachFast { ep ->
-                            configs.forEachFast { config ->
+                        extensionList.forEach { ep ->
+                            configs.forEach { config ->
                                 ep.indexScriptExpression(element, config, definitionInfo, fileData)
                             }
                         }
@@ -125,7 +124,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if(element is ParadoxLocalisationCommandIdentifier) {
-                    extensionList.forEachFast f@{ ep -> 
+                    extensionList.forEach f@{ ep -> 
                         ep.indexLocalisationCommandIdentifier(element, fileData)
                     }
                 }
@@ -139,7 +138,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         val extensionList = ParadoxExpressionIndexSupport.EP_NAME.extensionList
         fileData.mapValues { (k, v) ->
             val id = k.toByte()
-            val support = extensionList.findFast { it.id() == id }
+            val support = extensionList.find { it.id() == id }
                 ?.castOrNull<ParadoxExpressionIndexSupport<ParadoxExpressionInfo>>()
                 ?: throw UnsupportedOperationException()
             support.compressData(v)
@@ -152,14 +151,14 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         if(value.isEmpty()) return
         
         val type = value.first().javaClass
-        val support = ParadoxExpressionIndexSupport.EP_NAME.extensionList.findFast { it.type() == type }
+        val support = ParadoxExpressionIndexSupport.EP_NAME.extensionList.find { it.type() == type }
             ?.castOrNull<ParadoxExpressionIndexSupport<ParadoxExpressionInfo>>()
             ?: throw UnsupportedOperationException()
         storage.writeByte(support.id().toInt())
         val gameType = value.first().gameType
         storage.writeByte(gameType.toByte())
         var previousInfo: ParadoxExpressionInfo? = null
-        value.forEachFast { info ->
+        value.forEach { info ->
             support.writeData(storage, info, previousInfo, gameType)
             previousInfo = info
         }
@@ -170,7 +169,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         if(size == 0) return emptyList()
         
         val id = storage.readByte()
-        val support = ParadoxExpressionIndexSupport.EP_NAME.extensionList.findFast { it.id() == id }
+        val support = ParadoxExpressionIndexSupport.EP_NAME.extensionList.find { it.id() == id }
             ?.castOrNull<ParadoxExpressionIndexSupport<ParadoxExpressionInfo>>()
             ?: throw UnsupportedOperationException()
         val gameType = storage.readByte().toGameType()

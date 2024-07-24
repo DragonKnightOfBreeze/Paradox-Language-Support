@@ -3,7 +3,6 @@ package icu.windea.pls.ep.scope
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -34,7 +33,7 @@ interface ParadoxDefinitionInferredScopeContextProvider {
         fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
             val gameType = definitionInfo.gameType
             var map: Map<String, String>? = null
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 if(!ep.supports(definition, definitionInfo)) return@f
                 val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
@@ -53,7 +52,7 @@ interface ParadoxDefinitionInferredScopeContextProvider {
         fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
             val gameType = definitionInfo.gameType
             var errorMessage: String? = null
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 if(!ep.supports(definition, definitionInfo)) return@f
                 val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
@@ -70,7 +69,7 @@ interface ParadoxDefinitionInferredScopeContextProvider {
         fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
             val gameType = definitionInfo.gameType
             var message: String? = null
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 if(!ep.supports(definition, definitionInfo)) return@f
                 val info = ep.getScopeContext(definition, definitionInfo) ?: return@f

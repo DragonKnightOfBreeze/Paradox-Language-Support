@@ -267,13 +267,13 @@ object ParadoxParameterHandler {
     
     private fun doOptimizeContextConfigsByLocation(parameterElement: ParadoxParameterElement, contextConfigs: List<CwtMemberConfig<*>>) {
         val parent = parameterElement.parent?.parent
-        contextConfigs.forEachFast f1@{
+        contextConfigs.forEach f1@{
             val configs = it.configs
             if(configs.isNullOrEmpty()) return@f1
             if(configs !is MutableList) return@f1
             val keysToDistinct = mutableSetOf<String>()
             val opConfigs = mutableListOf<CwtMemberConfig<*>>()
-            configs.forEachFast f2@{ config ->
+            configs.forEach f2@{ config ->
                 when(config) {
                     is CwtPropertyConfig -> {
                         if(parent is ParadoxScriptPropertyKey) {
@@ -346,7 +346,7 @@ object ParadoxParameterHandler {
         val parameterElement = getParameterElement(parameter) ?: return null
         val contextConfigs = getInferredContextConfigsFromConfig(parameterElement)
         val configs = contextConfigs.singleOrNull()?.configs
-            ?.filterNotFast { it !is CwtValueConfig || it.isBlock }
+            ?.filterNot { it !is CwtValueConfig || it.isBlock }
         if(configs.isNullOrEmpty()) return null
         return configs.cast()
     }

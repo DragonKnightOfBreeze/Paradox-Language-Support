@@ -124,8 +124,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val parentConfigContext = ParadoxExpressionHandler.getConfigContext(parentMemberElement) ?: return emptyList()
                 return buildList {
                     val contextConfigs = parentConfigContext.getConfigs()
-                    contextConfigs.forEachFast f@{ contextConfig ->
-                        contextConfig.configs?.forEachFast f1@{ c1 ->
+                    contextConfigs.forEach f@{ contextConfig ->
+                        contextConfig.configs?.forEach f1@{ c1 ->
                             val c = if(c1 is CwtPropertyConfig) c1 else return@f1
                             //优先使用重载后的规则
                             val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, c)
@@ -142,7 +142,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             private fun getExpectedConfigs(element: ParadoxScriptValue, configContext: CwtConfigContext): List<CwtValueConfig> {
                 return buildList {
                     val contextConfigs = configContext.getConfigs()
-                    contextConfigs.forEachFast f@{ contextConfig ->
+                    contextConfigs.forEach f@{ contextConfig ->
                         val c = if(contextConfig is CwtValueConfig) contextConfig else return@f
                         val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, c)
                         if(overriddenConfigs.isNotNullOrEmpty()) {
@@ -166,7 +166,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     if(configExpression.type in CwtDataTypeGroups.DefinitionAware) {
                         val definitionType = configExpression.value ?: continue
                         val configs = configGroup.extendedDefinitions.findFromPattern(value, element, configGroup).orEmpty()
-                        val config = configs.findFast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionType) }
+                        val config = configs.find { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionType) }
                         if(config != null) return true
                         if(definitionType == "game_rule") {
                             val config1 = configGroup.extendedGameRules.findFromPattern(value, element, configGroup)

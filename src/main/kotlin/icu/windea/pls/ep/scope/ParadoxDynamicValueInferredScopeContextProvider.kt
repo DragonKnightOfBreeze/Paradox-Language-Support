@@ -2,7 +2,6 @@ package icu.windea.pls.ep.scope
 
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
@@ -25,7 +24,7 @@ interface ParadoxDynamicValueInferredScopeContextProvider {
         fun getScopeContext(dynamicValue: ParadoxDynamicValueElement): ParadoxScopeContext? {
             val gameType = dynamicValue.gameType
             var map: Map<String, String>? = null
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 if(!ep.supports(dynamicValue)) return@f
                 val info = ep.getScopeContext(dynamicValue) ?: return@f

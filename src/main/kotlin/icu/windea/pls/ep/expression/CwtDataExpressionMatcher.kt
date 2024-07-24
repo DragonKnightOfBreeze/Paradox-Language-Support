@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.util.*
 
 /**
@@ -48,7 +47,7 @@ interface CwtDataExpressionMatcher {
             configGroup: CwtConfigGroup,
             options: Int
         ): CwtConfigMatcher.Result {
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 val r = ep.matches(element, expression, configExpression, config, configGroup, options)
                 if(r != null) return r
             }

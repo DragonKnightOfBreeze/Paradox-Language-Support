@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.util
 
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import java.time.format.*
 
 object ParadoxTypeHandler {
@@ -19,7 +18,7 @@ object ParadoxTypeHandler {
         //use handwrite implementation to optimize memory and restrict validation
         //can be: 0, 1, 01, -1
         var isFirst = true
-        value.forEachFast f@{ c ->
+        value.forEach f@{ c ->
             if(isFirst) {
                 isFirst = false
                 if(c == '+' || c == '-') return@f
@@ -37,7 +36,7 @@ object ParadoxTypeHandler {
         //can be: 0, 1, 01, -1, 0.0, 1.0, 01.0, .0
         var isFirst = true
         var containsDot = false
-        value.forEachFast f@{ c ->
+        value.forEach f@{ c ->
             if(isFirst) {
                 isFirst = false
                 if(c == '+' || c == '-') return@f

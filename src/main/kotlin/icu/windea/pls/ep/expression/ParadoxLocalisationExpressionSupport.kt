@@ -49,7 +49,7 @@ interface ParadoxLocalisationExpressionSupport {
         
         fun annotate(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder) {
             val gameType = selectGameType(element)
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 if(!ep.supports(element)) return@f
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 ep.annotate(element, rangeInElement, expression, holder)
@@ -58,7 +58,7 @@ interface ParadoxLocalisationExpressionSupport {
         
         fun resolve(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expression: String): PsiElement? {
             val gameType = selectGameType(element)
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 if(!ep.supports(element)) return@f
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 val r = ep.resolve(element, rangeInElement, expression)
@@ -69,7 +69,7 @@ interface ParadoxLocalisationExpressionSupport {
         
         fun multiResolve(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expression: String): Collection<PsiElement> {
             val gameType = selectGameType(element)
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 if(!ep.supports(element)) return@f
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 val r = ep.multiResolve(element, rangeInElement, expression).orNull()
@@ -80,7 +80,7 @@ interface ParadoxLocalisationExpressionSupport {
         
         fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expression: String): Array<out PsiReference>? {
             val gameType = selectGameType(element)
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 if(!ep.supports(element)) return@f
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 val r = ep.getReferences(element, rangeInElement, expression).orNull()
@@ -92,7 +92,7 @@ interface ParadoxLocalisationExpressionSupport {
         fun complete(context: ProcessingContext, result: CompletionResultSet) {
             val element = context.contextElement?.castOrNull<ParadoxLocalisationExpressionElement>() ?: return
             val gameType by lazy { selectGameType(element) }
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 if(!ep.supports(element)) return@f
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 ep.complete(context, result)

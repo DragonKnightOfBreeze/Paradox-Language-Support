@@ -58,7 +58,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         return ParadoxPsiManager.findDefinition(file, offset)
     }
     
-    private fun findFastElement(e: AnActionEvent): ParadoxScriptDefinitionElement? {
+    private fun findElement(e: AnActionEvent): ParadoxScriptDefinitionElement? {
         val element = e.getData(CommonDataKeys.PSI_ELEMENT)
         if(element is ParadoxScriptDefinitionElement && element.definitionInfo != null) return element
         return null
@@ -75,7 +75,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
-        var definition = findFastElement(e)
+        var definition = findElement(e)
         if(definition == null) {
             val project = e.project ?: return
             val file = findFile(e) ?: return
@@ -89,7 +89,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     }
     
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
-        var definition = findFastElement(e)
+        var definition = findElement(e)
         if(definition == null) {
             val project = e.project ?: return null
             val file = findFile(e) ?: return null

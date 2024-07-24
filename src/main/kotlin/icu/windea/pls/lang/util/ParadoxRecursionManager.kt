@@ -35,7 +35,7 @@ object ParadoxRecursionManager {
             override fun visitElement(e: PsiElement) {
                 run {
                     if(!ParadoxResolveConstraint.ScriptedVariable.canResolveReference(e)) return@run
-                    e.references.orNull()?.forEachFast f@{ r ->
+                    e.references.orNull()?.forEach f@{ r ->
                         ProgressManager.checkCanceled()
                         if(!ParadoxResolveConstraint.ScriptedVariable.canResolve(r)) return@f
                         val resolved = r.resolve()?.castOrNull<ParadoxScriptScriptedVariable>() ?: return@f
@@ -77,7 +77,7 @@ object ParadoxRecursionManager {
             override fun visitElement(e: PsiElement) {
                 run {
                     if(!ParadoxResolveConstraint.Localisation.canResolveReference(e)) return@run
-                    e.references.orNull()?.forEachFast f@{ r ->
+                    e.references.orNull()?.forEach f@{ r ->
                         ProgressManager.checkCanceled()
                         if(!ParadoxResolveConstraint.Localisation.canResolve(r)) return@f
                         val resolved = r.resolve()?.castOrNull<ParadoxLocalisationProperty>() ?: return@f
@@ -128,7 +128,7 @@ object ParadoxRecursionManager {
                 run {
                     if(!ParadoxResolveConstraint.Definition.canResolveReference(e)) return@run
                     if(predicate != null && !predicate(element, e)) return@run
-                    e.references.orNull()?.forEachFast f@{ r ->
+                    e.references.orNull()?.forEach f@{ r ->
                         ProgressManager.checkCanceled()
                         if(!ParadoxResolveConstraint.Definition.canResolve(r)) return@f
                         val resolved = r.resolve()?.castOrNull<ParadoxScriptDefinitionElement>() ?: return@f

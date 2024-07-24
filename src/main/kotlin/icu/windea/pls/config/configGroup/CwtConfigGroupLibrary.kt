@@ -7,7 +7,6 @@ import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.configGroup.*
 import javax.swing.*
 
@@ -62,7 +61,7 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
         val newRoots = mutableSetOf<VirtualFile>()
         val projectFileIndex = ProjectFileIndex.getInstance(project)
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        fileProviders.forEachFast f@{ fileProvider ->
+        fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             if(!rootDirectory.exists()) return@f
             if(projectFileIndex.isInContent(rootDirectory)) return@f

@@ -4,7 +4,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 
@@ -21,7 +20,7 @@ class ParadoxCoreFileListener : AsyncFileListener {
         
         //处理描述符文件的变动
         run {
-            events.forEachFast { event ->
+            events.forEach { event ->
                 when(event) {
                     is VFileCreateEvent -> {
                         if(event.childName.equals(PlsConstants.descriptorFileName, true)) {
@@ -76,7 +75,7 @@ class ParadoxCoreFileListener : AsyncFileListener {
         
         //处理内联脚本文件的变动
         run {
-            events.forEachFast { event ->
+            events.forEach { event ->
                 when(event) {
                     is VFileMoveEvent -> {
                         if(ParadoxInlineScriptHandler.getInlineScriptExpression(event.file) != null) {
@@ -98,7 +97,7 @@ class ParadoxCoreFileListener : AsyncFileListener {
         
         //处理本地化文件的语言区域的变动
         run {
-            events.forEachFast { event ->
+            events.forEach { event ->
                 when(event) {
                     is VFileContentChangeEvent -> {
                         if(event.file.fileType == ParadoxLocalisationFileType) {

@@ -4,7 +4,6 @@ import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.navigation.*
 
@@ -24,7 +23,7 @@ interface CwtRelatedConfigProvider {
         fun getRelatedConfigs(file: PsiFile, offset: Int): List<CwtConfig<*>> {
             val gameType = selectGameType(file) ?: return emptyList()
             val result = mutableListOf<CwtConfig<*>>()
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 val r = ep.getRelatedConfigs(file, offset)
                 result += r

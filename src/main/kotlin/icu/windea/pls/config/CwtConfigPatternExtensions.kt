@@ -8,8 +8,8 @@ import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.*
 
-private val patternResolvers by lazy { CwtDataExpressionResolver.EP_NAME.extensionList.filterFast { it is CwtConfigPatternAware } }
-private val patternMatchers by lazy { CwtDataExpressionMatcher.EP_NAME.extensionList.filterFast { it is CwtConfigPatternAware } }
+private val patternResolvers by lazy { CwtDataExpressionResolver.EP_NAME.extensionList.filter { it is CwtConfigPatternAware } }
+private val patternMatchers by lazy { CwtDataExpressionMatcher.EP_NAME.extensionList.filter { it is CwtConfigPatternAware } }
 
 /**
  * 用当前键作为通配符来匹配指定的[key]。

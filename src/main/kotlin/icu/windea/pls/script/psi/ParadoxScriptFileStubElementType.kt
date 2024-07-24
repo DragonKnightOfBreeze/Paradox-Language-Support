@@ -8,7 +8,6 @@ import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
@@ -60,7 +59,7 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
                 dataStream.writeInt(-1)
             } else {
                 dataStream.writeInt(subtypes.size)
-                subtypes.forEachFast { subtype -> dataStream.writeName(subtype) }
+                subtypes.forEach { subtype -> dataStream.writeName(subtype) }
             }
             dataStream.writeByte(stub.gameType.toByte())
         }

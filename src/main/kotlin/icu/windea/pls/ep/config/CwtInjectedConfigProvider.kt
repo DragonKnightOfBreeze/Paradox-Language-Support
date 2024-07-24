@@ -3,7 +3,6 @@ package icu.windea.pls.ep.config
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 
 /**
@@ -27,7 +26,7 @@ interface CwtInjectedConfigProvider {
         fun injectConfigs(parentConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>) : Boolean {
             val gameType = parentConfig.configGroup.gameType
             var r = false
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 r = r || ep.injectConfigs(parentConfig, configs)
             }

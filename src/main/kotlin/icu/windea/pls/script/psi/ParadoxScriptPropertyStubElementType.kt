@@ -2,7 +2,6 @@ package icu.windea.pls.script.psi
 
 import com.intellij.lang.*
 import com.intellij.psi.stubs.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -56,7 +55,7 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
             dataStream.writeInt(-1)
         } else {
             dataStream.writeInt(subtypes.size)
-            subtypes.forEachFast { subtype -> dataStream.writeName(subtype) }
+            subtypes.forEach { subtype -> dataStream.writeName(subtype) }
         }
         dataStream.writeName(stub.rootKey)
         dataStream.writeName(stub.elementPath.path)

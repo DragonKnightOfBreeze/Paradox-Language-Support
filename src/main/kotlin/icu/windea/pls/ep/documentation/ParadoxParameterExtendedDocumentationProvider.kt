@@ -3,7 +3,6 @@ package icu.windea.pls.ep.documentation
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 
@@ -19,7 +18,7 @@ interface ParadoxParameterExtendedDocumentationProvider {
         
         fun buildDocumentationContent(element: ParadoxParameterElement, action: (String) -> Unit) {
             val gameType = element.gameType
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 val content = ep.getDocumentationContent(element)?.orNull() ?: return@f
                 action(content)

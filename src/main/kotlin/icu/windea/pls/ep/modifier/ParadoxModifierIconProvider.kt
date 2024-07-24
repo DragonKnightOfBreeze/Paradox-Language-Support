@@ -3,7 +3,6 @@ package icu.windea.pls.ep.modifier
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.elementInfo.*
 
@@ -21,7 +20,7 @@ interface ParadoxModifierIconProvider {
         fun getModifierIconPaths(element: PsiElement, modifierInfo: ParadoxModifierInfo): Set<String> {
             val gameType = modifierInfo.gameType
             return buildSet {
-                EP_NAME.extensionList.forEachFast f@{ ep ->
+                EP_NAME.extensionList.forEach f@{ ep ->
                     if(!gameType.supportsByAnnotation(ep)) return@f
                     ep.addModifierIconPath(modifierInfo, element, this)
                 }

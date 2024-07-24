@@ -4,7 +4,6 @@ package icu.windea.pls.config.config
 
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.model.*
 
 interface CwtKeyAware : CwtValueAware {
@@ -34,23 +33,23 @@ interface CwtOptionsAware {
     val options: List<CwtOptionMemberConfig<*>>?
 }
 
-inline fun CwtOptionsAware.findOption(key: String): CwtOptionConfig? = options?.findFast { it is CwtOptionConfig && it.key == key }?.cast()
+inline fun CwtOptionsAware.findOption(key: String): CwtOptionConfig? = options?.find { it is CwtOptionConfig && it.key == key }?.cast()
 
-inline fun CwtOptionsAware.findOption(predicate: (CwtOptionConfig) -> Boolean): CwtOptionConfig? = options?.findFast { it is CwtOptionConfig && predicate(it) }?.cast()
+inline fun CwtOptionsAware.findOption(predicate: (CwtOptionConfig) -> Boolean): CwtOptionConfig? = options?.find { it is CwtOptionConfig && predicate(it) }?.cast()
 
-inline fun CwtOptionsAware.findOptions(key: String): List<CwtOptionConfig>? = options?.filterFast { it is CwtOptionConfig && it.key == key }?.cast()
+inline fun CwtOptionsAware.findOptions(key: String): List<CwtOptionConfig>? = options?.filter { it is CwtOptionConfig && it.key == key }?.cast()
 
-inline fun CwtOptionsAware.findOptions(predicate: (CwtOptionConfig) -> Boolean): List<CwtOptionConfig> = options?.filterFast { it is CwtOptionConfig && predicate(it) }.orEmpty().cast()
+inline fun CwtOptionsAware.findOptions(predicate: (CwtOptionConfig) -> Boolean): List<CwtOptionConfig> = options?.filter { it is CwtOptionConfig && predicate(it) }.orEmpty().cast()
 
-inline fun CwtOptionsAware.findOptions(): List<CwtOptionConfig>? = options?.filterIsInstanceFast<CwtOptionConfig>()
+inline fun CwtOptionsAware.findOptions(): List<CwtOptionConfig>? = options?.filterIsInstance<CwtOptionConfig>()
 
-inline fun CwtOptionsAware.findOptionValue(value: String): CwtOptionValueConfig? = options?.findFast { it is CwtOptionValueConfig && it.value == value }?.cast()
+inline fun CwtOptionsAware.findOptionValue(value: String): CwtOptionValueConfig? = options?.find { it is CwtOptionValueConfig && it.value == value }?.cast()
 
-inline fun CwtOptionsAware.findOptionValues(): List<CwtOptionValueConfig>? = options?.filterIsInstanceFast<CwtOptionValueConfig>()
+inline fun CwtOptionsAware.findOptionValues(): List<CwtOptionValueConfig>? = options?.filterIsInstance<CwtOptionValueConfig>()
 
 interface CwtConfigsAware {
     val configs: List<CwtMemberConfig<*>>?
 }
 
-inline val CwtConfigsAware.values: List<CwtValueConfig>? get() = configs?.filterIsInstanceFast<CwtValueConfig>()
-inline val CwtConfigsAware.properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstanceFast<CwtPropertyConfig>()
+inline val CwtConfigsAware.values: List<CwtValueConfig>? get() = configs?.filterIsInstance<CwtValueConfig>()
+inline val CwtConfigsAware.properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstance<CwtPropertyConfig>()

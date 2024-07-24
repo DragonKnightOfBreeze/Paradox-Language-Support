@@ -3,7 +3,6 @@ package icu.windea.pls.lang.projectView
 import com.intellij.ide.projectView.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.model.*
 import java.util.*
@@ -16,7 +15,7 @@ class CwtConfigGameElement(
         val roots = mutableSetOf<VirtualFile>()
         val gameTypeId = gameType.id
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        fileProviders.forEachFast f@{ fileProvider ->
+        fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val file = rootDirectory.findChild(gameTypeId) ?: return@f
             if(file.isDirectory) roots += file

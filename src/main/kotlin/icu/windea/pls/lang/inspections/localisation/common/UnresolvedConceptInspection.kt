@@ -7,7 +7,6 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.expression.*
@@ -45,7 +44,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
                 if(!ignoredByConfigs) return false
                 val name = element.name
                 val configs = configGroup.extendedDefinitions.findFromPattern(name, element, configGroup).orEmpty()
-                val config = configs.findFast { ParadoxDefinitionTypeExpression.resolve(it.type).matches("concept") }
+                val config = configs.find { ParadoxDefinitionTypeExpression.resolve(it.type).matches("concept") }
                 if(config != null) return true
                 return false
             }

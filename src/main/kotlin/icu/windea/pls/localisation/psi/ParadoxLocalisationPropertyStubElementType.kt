@@ -2,7 +2,6 @@ package icu.windea.pls.localisation.psi
 
 import com.intellij.lang.*
 import com.intellij.psi.stubs.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
@@ -46,7 +45,7 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
         when(stub.category) {
             ParadoxLocalisationCategory.Localisation -> {
                 //sink.occurrence(ParadoxLocalisationNameIndexKey, stub.name)
-                entries.forEachFast { constraint ->
+                entries.forEach { constraint ->
                     if(constraint.predicate(stub.name)) {
                         val name = if(constraint.ignoreCase) stub.name.lowercase() else stub.name
                         sink.occurrence(constraint.indexKey, name)

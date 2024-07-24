@@ -309,7 +309,7 @@ object CwtConfigResolver {
         //var inheritDocValue: String? = null
         //
         //val oldOptions = mutableListOf<CwtOptionMemberConfig<*>>()
-        //config.options?.forEachFast { o ->
+        //config.options?.forEach { o ->
         //    when(o){
         //        is CwtOptionConfig -> when(o.key) {
         //            "inherit_configs" -> o.stringValue?.let { inheritConfigsValue = it }

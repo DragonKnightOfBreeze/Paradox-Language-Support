@@ -382,7 +382,7 @@ fun CompletionContributor.extend(place: ElementPattern<out PsiElement>, provider
 fun CompletionResultSet.addElement(lookupElement: CompositeLookupElement?) {
     if(lookupElement == null) return
     addElement(lookupElement.element)
-    lookupElement.extraElements.forEachFast { extraElement -> addElement(extraElement) }
+    lookupElement.extraElements.forEach { extraElement -> addElement(extraElement) }
 }
 
 //endregion
@@ -720,7 +720,7 @@ private fun doCollectReferences(sourceReference: PsiReference, result: MutableLi
     if(sourceReference is PsiReferencesAware) {
         val references = sourceReference.getReferences()
         if(references.isNotNullOrEmpty()) {
-            references.forEachFast { reference ->
+            references.forEach { reference ->
                 doCollectReferences(reference, result)
             }
             return

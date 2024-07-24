@@ -4,7 +4,6 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
@@ -20,7 +19,7 @@ interface ParadoxIncorrectExpressionChecker {
         
         fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
             val gameType = config.configGroup.gameType ?: return
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 ep.check(element, config, holder)
             }

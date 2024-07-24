@@ -1,7 +1,6 @@
 package icu.windea.pls.model.path
 
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 
 /**
@@ -100,7 +99,7 @@ private class ParadoxElementPathImplA(
     override val originalPath: String = path.intern()
     override val originalSubPaths: List<String> = path2SubPaths(path)
     
-    override val subPaths: List<String> = originalSubPaths.mapFast { it.unquote().intern() }
+    override val subPaths: List<String> = originalSubPaths.map { it.unquote().intern() }
     override val path: String = subPaths2Path(subPaths)
     
     override val length: Int = subPaths.size
@@ -113,10 +112,10 @@ private class ParadoxElementPathImplA(
 private class ParadoxElementPathImplB(
     originalSubPaths: List<String>
 ) : ParadoxElementPath {
-    override val originalSubPaths: List<String> = originalSubPaths.mapFast { it.intern() }
+    override val originalSubPaths: List<String> = originalSubPaths.map { it.intern() }
     override val originalPath: String = subPaths2Path(originalSubPaths)
     
-    override val subPaths: List<String> = originalSubPaths.mapFast { it.unquote().intern() }
+    override val subPaths: List<String> = originalSubPaths.map { it.unquote().intern() }
     override val path: String = subPaths2Path(subPaths)
     
     override val length: Int = originalSubPaths.size
@@ -143,7 +142,7 @@ private fun path2SubPaths(path: String): List<String> {
     return buildList {
         val builder = StringBuilder()
         var escape = false
-        path.forEachFast { c ->
+        path.forEach { c ->
             when {
                 c == '\\' -> {
                     escape = true
@@ -167,9 +166,9 @@ private fun path2SubPaths(path: String): List<String> {
 private fun subPaths2Path(originalSubPaths: List<String>): String {
     val builder = StringBuilder()
     var isFirst = true
-    originalSubPaths.forEachFast { p ->
+    originalSubPaths.forEach { p ->
         if(isFirst) isFirst = false else builder.append('/')
-        p.forEachFast { c ->
+        p.forEach { c ->
             if(c == '/') builder.append('\\')
             builder.append(c)
         }

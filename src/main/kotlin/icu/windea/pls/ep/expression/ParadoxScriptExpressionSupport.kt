@@ -51,7 +51,7 @@ interface ParadoxScriptExpressionSupport {
         fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
             val gameType = config.configGroup.gameType
             withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.annotate") {
-                EP_NAME.extensionList.forEachFast f@{ ep ->
+                EP_NAME.extensionList.forEach f@{ ep ->
                     if(!ep.supports(config)) return@f
                     if(!gameType.supportsByAnnotation(ep)) return@f
                     withCheckRecursion("${ep.javaClass.name}@annotate@${expression}") {
@@ -64,7 +64,7 @@ interface ParadoxScriptExpressionSupport {
         fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
             val gameType = config.configGroup.gameType
             withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.resolve") {
-                EP_NAME.extensionList.forEachFast f@{ ep ->
+                EP_NAME.extensionList.forEach f@{ ep ->
                     if(!ep.supports(config)) return@f
                     if(!gameType.supportsByAnnotation(ep)) return@f
                     val r = withCheckRecursion("${ep.javaClass.name}@resolve@${expression}") {
@@ -79,7 +79,7 @@ interface ParadoxScriptExpressionSupport {
         fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
             val gameType = config.configGroup.gameType
             withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.multiResolve") {
-                EP_NAME.extensionList.forEachFast f@{ ep ->
+                EP_NAME.extensionList.forEach f@{ ep ->
                     if(!ep.supports(config)) return@f
                     if(!gameType.supportsByAnnotation(ep)) return@f
                     val r = withCheckRecursion("${ep.javaClass.name}@multiResolve@${expression}") {
@@ -94,7 +94,7 @@ interface ParadoxScriptExpressionSupport {
         fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {
             val gameType = config.configGroup.gameType
             withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.getReferences") {
-                EP_NAME.extensionList.forEachFast f@{ ep ->
+                EP_NAME.extensionList.forEach f@{ ep ->
                     if(!ep.supports(config)) return@f
                     if(!gameType.supportsByAnnotation(ep)) return@f
                     val r = withCheckRecursion("${ep.javaClass.name}@multiResolve@${expression}") {
@@ -110,7 +110,7 @@ interface ParadoxScriptExpressionSupport {
             val config = context.config ?: return
             val gameType = config.configGroup.gameType
             withRecursionGuard("icu.windea.pls.lang.expression.ParadoxScriptExpressionSupport.complete") {
-                EP_NAME.extensionList.forEachFast f@{ ep ->
+                EP_NAME.extensionList.forEach f@{ ep ->
                     if(!ep.supports(config)) return@f
                     if(!gameType.supportsByAnnotation(ep)) return@f
                     withCheckRecursion("${ep.javaClass.name}@complete${context.keyword}") {

@@ -18,7 +18,7 @@ object CwtConfigManipulator {
         val cs1 = config.configs
         if(cs1.isNullOrEmpty()) return cs1
         val result = mutableListOf<CwtMemberConfig<*>>()
-        cs1.forEachFast f1@{ c1 ->
+        cs1.forEach f1@{ c1 ->
             result += c1.delegated(deepCopyConfigs(c1), parentConfig)
         }
         CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
@@ -29,7 +29,7 @@ object CwtConfigManipulator {
         val cs1 = config.configs
         if(cs1.isNullOrEmpty()) return cs1
         val result = mutableListOf<CwtMemberConfig<*>>()
-        cs1.forEachFast f1@{ c1 ->
+        cs1.forEach f1@{ c1 ->
             if(c1 is CwtPropertyConfig) {
                 val subtypeExpression = c1.key.removeSurroundingOrNull("subtype[", "]")
                 if(subtypeExpression != null) {
@@ -73,7 +73,7 @@ object CwtConfigManipulator {
                 else -> deepCopyConfigs(config)
             },
         )
-        inlined.configs?.forEachFast { it.parentConfig = inlined }
+        inlined.configs?.forEach { it.parentConfig = inlined }
         inlined.parentConfig = config.parentConfig
         inlined.inlineableConfig = config.inlineableConfig
         return inlined
@@ -107,9 +107,9 @@ object CwtConfigManipulator {
                     val aliasName = valueExpression.value ?: return@run
                     val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
                     val aliasSubNames = ParadoxExpressionHandler.getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchOptions)
-                    aliasSubNames.forEachFast f1@{ aliasSubName ->
+                    aliasSubNames.forEach f1@{ aliasSubName ->
                         val aliases = aliasGroup[aliasSubName] ?: return@f1
-                        aliases.forEachFast f2@{ alias ->
+                        aliases.forEach f2@{ alias ->
                             var inlinedConfig = alias.inline(config)
                             if(inlinedConfig.valueExpression.type == CwtDataTypes.SingleAliasRight) {
                                 val singleAliasName = inlinedConfig.valueExpression.value ?: return@f2
@@ -160,8 +160,8 @@ object CwtConfigManipulator {
         
         //merge multiple configs
         val result = mutableListOf<CwtMemberConfig<*>>()
-        cs1.forEachFast f1@{ config ->
-            cs2.forEachFast f2@{ otherConfig ->
+        cs1.forEach f1@{ config ->
+            cs2.forEach f2@{ otherConfig ->
                 val resultConfig = mergeConfig(config, otherConfig)
                 if(resultConfig != null) result.add(resultConfig)
             }

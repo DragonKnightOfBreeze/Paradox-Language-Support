@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.util
 
-import icu.windea.pls.core.collections.*
 import java.util.*
 import java.util.function.*
 
@@ -11,7 +10,7 @@ object ParadoxEscapeManager {
     
     fun unescapeScriptExpression(value: String, builder: StringBuilder, type: Type = Type.Default) {
         var isEscape = false
-        value.forEachFast f@{ c ->
+        value.forEach f@{ c ->
             if(isEscape) {
                 isEscape = false
                 when(c) {
@@ -51,7 +50,7 @@ object ParadoxEscapeManager {
     fun unescapeLocalisationString(value: String, builder: StringBuilder, type: Type = Type.Default) {
         var isEscape = false
         var isLeftBracket = false
-        value.forEachFast f@{ c ->
+        value.forEach f@{ c ->
             if(isLeftBracket) {
                 isLeftBracket = false
                 if(c == '[') {

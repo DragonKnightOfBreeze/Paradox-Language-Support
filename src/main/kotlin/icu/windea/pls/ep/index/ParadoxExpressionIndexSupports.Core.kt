@@ -2,7 +2,6 @@ package icu.windea.pls.ep.index
 
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
@@ -86,7 +85,7 @@ class ParadoxDynamicValueIndexSupport : ParadoxExpressionIndexSupport<ParadoxDyn
     override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         val constraint = ParadoxResolveConstraint.DynamicValue
         if(!constraint.canResolveReference(element)) return
-        element.references.forEachFast f@{ reference ->
+        element.references.forEach f@{ reference ->
             if(!constraint.canResolve(reference)) return@f
             val resolved = reference.resolve()
             if(resolved !is ParadoxDynamicValueElement) return@f
@@ -100,7 +99,7 @@ class ParadoxDynamicValueIndexSupport : ParadoxExpressionIndexSupport<ParadoxDyn
     override fun indexLocalisationCommandIdentifier(element: ParadoxLocalisationCommandIdentifier, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         val constraint = ParadoxResolveConstraint.DynamicValue
         if(!constraint.canResolveReference(element)) return
-        element.references.forEachFast f@{ reference ->
+        element.references.forEach f@{ reference ->
             if(!constraint.canResolve(reference)) return@f
             val resolved = reference.resolve()
             if(resolved !is ParadoxDynamicValueElement) return@f
@@ -141,7 +140,7 @@ class ParadoxParameterIndexSupport : ParadoxExpressionIndexSupport<ParadoxParame
     override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         val constraint = ParadoxResolveConstraint.Parameter
         if(!constraint.canResolveReference(element)) return
-        element.references.forEachFast f@{ reference ->
+        element.references.forEach f@{ reference ->
             if(!constraint.canResolve(reference)) return@f
             val resolved = reference.resolve()
             if(resolved !is ParadoxParameterElement) return@f
@@ -181,7 +180,7 @@ class ParadoxLocalisationParameterIndexSupport : ParadoxExpressionIndexSupport<P
     override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         val constraint = ParadoxResolveConstraint.LocalisationParameter
         if(!constraint.canResolveReference(element)) return
-        element.references.forEachFast f@{ reference ->
+        element.references.forEach f@{ reference ->
             if(!constraint.canResolve(reference)) return@f
             val resolved = reference.resolve()
             if(resolved !is ParadoxLocalisationParameterElement) return@f

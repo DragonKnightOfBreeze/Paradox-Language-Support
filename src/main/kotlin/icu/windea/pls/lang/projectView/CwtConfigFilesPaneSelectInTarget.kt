@@ -7,7 +7,6 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.configGroup.*
 
 class CwtConfigFilesPaneSelectInTarget(private val project: Project): ProjectViewSelectInTarget(project) {
@@ -15,7 +14,7 @@ class CwtConfigFilesPaneSelectInTarget(private val project: Project): ProjectVie
         val vFile = PsiUtilCore.getVirtualFile(file)
         if(vFile == null || !vFile.isValid) return false
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        fileProviders.forEachFast f@{ fileProvider ->
+        fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val relativePath = VfsUtil.getRelativePath(vFile, rootDirectory) ?: return@f
             if(relativePath.isNotNullOrEmpty()) return true

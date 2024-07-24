@@ -4,7 +4,6 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
@@ -22,8 +21,8 @@ abstract class ExpressionStringBasedCwtInjectedConfigProvider : CwtInjectedConfi
                     r = r || (injectedKeys != null || injectedValues != null)
                     if(injectedKeys == null && injectedValues == null) continue
                     var i0 = i + 1
-                    (injectedKeys ?: listOf(key)).forEachFast { injectedKey ->
-                        (injectedValues ?: listOf(value)).forEachFast { injectedValue ->
+                    (injectedKeys ?: listOf(key)).forEach { injectedKey ->
+                        (injectedValues ?: listOf(value)).forEach { injectedValue ->
                             configs.add(i0, config.delegatedWith(injectedKey, injectedValue))
                             i0++
                         }
@@ -36,7 +35,7 @@ abstract class ExpressionStringBasedCwtInjectedConfigProvider : CwtInjectedConfi
                     r = r || injectedValues != null
                     if(injectedValues == null) continue
                     var i0 = i + 1
-                    injectedValues.forEachFast { injectedValue ->
+                    injectedValues.forEach { injectedValue ->
                         configs.add(i0, config.delegatedWith(injectedValue))
                         i0++
                     }

@@ -3,7 +3,6 @@ package icu.windea.pls.ep.documentation
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -20,7 +19,7 @@ interface ParadoxDefinitionExtendedDocumentationProvider {
         
         fun buildDocumentationContent(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, action: (String) -> Unit) {
             val gameType = definitionInfo.gameType
-            EP_NAME.extensionList.forEachFast f@{ ep ->
+            EP_NAME.extensionList.forEach f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f
                 val content = ep.getDocumentationContent(definition, definitionInfo)?.orNull() ?: return@f
                 action(content)

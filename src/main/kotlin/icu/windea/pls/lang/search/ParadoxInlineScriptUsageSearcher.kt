@@ -5,7 +5,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
@@ -33,7 +32,7 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
             
             val fileData = ParadoxExpressionIndex.INSTANCE.getFileData(file, project, ParadoxExpressionIndexId.InlineScriptUsage)
             if(fileData.isEmpty()) return@p true
-            fileData.forEachFast f@{ info ->
+            fileData.forEach f@{ info ->
                 if(expression != info.expression) return@f
                 info.virtualFile = file
                 val r = consumer.process(info)

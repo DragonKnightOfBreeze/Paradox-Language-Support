@@ -3,7 +3,6 @@ package icu.windea.pls.lang.projectView
 import com.intellij.ide.projectView.*
 import com.intellij.ide.projectView.impl.nodes.*
 import icons.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.configGroup.*
 
 /**
@@ -14,7 +13,7 @@ class CwtConfigProjectViewDecorator: ProjectViewNodeDecorator {
         if(node is PsiDirectoryNode) {
             val file = node.virtualFile ?: return
             val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-            val fileProvider = fileProviders.findFast { it.getRootDirectory(node.project) == file  } ?: return
+            val fileProvider = fileProviders.find { it.getRootDirectory(node.project) == file  } ?: return
             if(data.locationString != null) return //忽略存在locationString的情况
             data.setIcon(PlsIcons.ConfigGroupDirectory)
             if(node.parent is SyntheticLibraryElementNode) {
