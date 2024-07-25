@@ -10,6 +10,32 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.expression.complex.*
 
+class ParadoxLocalisationCommandExpressionSupport: ParadoxLocalisationExpressionSupport {
+    override fun supports(element: ParadoxLocalisationExpressionElement): Boolean {
+        return element.isCommandExpression()
+    }
+    
+    override fun annotate(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder) {
+        val configGroup = getConfigGroup(element.project, selectGameType(element))
+        val value = element.value
+        val textRange = TextRange.create(0, value.length)
+        val commandExpression = ParadoxCommandExpression.resolve(value, textRange, configGroup) ?: return
+        ParadoxExpressionHandler.annotateComplexExpression(element, commandExpression, holder)
+    }
+    
+    override fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expression: String): Array<out PsiReference>? {
+        val configGroup = getConfigGroup(element.project, selectGameType(element))
+        val range = TextRange.create(0, expression.length)
+        val commandExpression = ParadoxCommandExpression.resolve(expression, range, configGroup)
+        if(commandExpression == null) return PsiReference.EMPTY_ARRAY
+        return commandExpression.getReferences(element)
+    }
+    
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        ParadoxCompletionManager.completeCommandExpression(context, result)
+    }
+}
+
 class ParadoxLocalisationDatabaseObjectExpressionSupport: ParadoxLocalisationExpressionSupport {
     override fun supports(element: ParadoxLocalisationExpressionElement): Boolean {
         return element.isDatabaseObjectExpression()

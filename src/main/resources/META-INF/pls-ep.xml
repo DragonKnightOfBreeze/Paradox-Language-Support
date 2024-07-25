@@ -149,6 +149,7 @@
     
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptTechnologyWithLevelExpressionSupport"/>
     
+    <localisationExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxLocalisationCommandExpressionSupport"/>
     <localisationExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxLocalisationDatabaseObjectExpressionSupport"/>
     
     <pathReferenceExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxIconReferenceExpressionSupport"/>

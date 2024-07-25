@@ -17,7 +17,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.config.*
-import icu.windea.pls.ep.data.*
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.ep.scope.*
 import icu.windea.pls.lang.*
@@ -698,6 +697,22 @@ object ParadoxCompletionManager {
         }
     }
     
+    fun completeCommandExpression(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val keyword = context.keyword
+        val configGroup = context.configGroup!!
+        
+        //基于当前位置的代码补全
+        try {
+            PlsStates.incompleteComplexExpression.set(true)
+            val keywordOffset = context.keywordOffset
+            val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
+            val commandExpression = ParadoxCommandExpression.resolve(keyword, textRange, configGroup) ?: return
+            return commandExpression.complete(context, result)
+        } finally {
+            PlsStates.incompleteComplexExpression.remove()
+        }
+    }
     
     fun completeDatabaseObjectExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
