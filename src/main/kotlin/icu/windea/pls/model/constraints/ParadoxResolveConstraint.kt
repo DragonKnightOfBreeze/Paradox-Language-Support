@@ -33,6 +33,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxLocalisationExpressionElement -> element.isComplexExpression()
                 is ParadoxScriptInt -> element.isExpression()
                 is ParadoxLocalisationIcon -> true
+                is ParadoxLocalisationCommandText -> true //<scripted_loc>
                 is ParadoxLocalisationConcept -> true //<game_concept>
                 is ParadoxLocalisationColorfulText -> true //<text_color>
                 else -> false
@@ -56,7 +57,7 @@ enum class ParadoxResolveConstraint {
                     }
                 }
                 is ParadoxScriptValueNode.Reference -> true //<script_value>
-                is ParadoxDynamicCommandFieldNode.Reference -> true //<scripted_loc>
+                is ParadoxDynamicCommandFieldLinkNode.Reference -> true //<scripted_loc>
                 is ParadoxDatabaseObjectNode.Reference -> true
                 is ParadoxLocalisationIconPsiReference -> true
                 is ParadoxLocalisationConceptPsiReference -> true //<game_concept>
@@ -184,7 +185,7 @@ enum class ParadoxResolveConstraint {
                 }
                 is ParadoxDynamicValueNode.Reference -> true
                 is ParadoxDynamicCommandScopeLinkValueNode.Reference -> true //value[event_target], value[global_event_target]
-                is ParadoxDynamicCommandFieldNode.Reference -> true //value[variable]
+                is ParadoxDynamicCommandFieldLinkNode.Reference -> true //value[variable]
                 else -> false
             }
         }
@@ -206,7 +207,7 @@ enum class ParadoxResolveConstraint {
                 }
                 is ParadoxDynamicValueNode.Reference -> true
                 is ParadoxDynamicCommandScopeLinkValueNode.Reference -> true //value[event_target], value[global_event_target]
-                is ParadoxDynamicCommandFieldNode.Reference -> true //value[variable]
+                is ParadoxDynamicCommandFieldLinkNode.Reference -> true //value[variable]
                 else -> false
             }
         }

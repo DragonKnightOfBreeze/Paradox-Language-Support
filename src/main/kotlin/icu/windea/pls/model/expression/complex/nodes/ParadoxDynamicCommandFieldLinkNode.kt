@@ -15,7 +15,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxDynamicCommandFieldNode(
+class ParadoxDynamicCommandFieldLinkNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     val configGroup: CwtConfigGroup
@@ -95,9 +95,9 @@ class ParadoxDynamicCommandFieldNode(
     }
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandFieldNode? {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandFieldLinkNode? {
             if(!text.isIdentifier()) return null
-            return ParadoxDynamicCommandFieldNode(text, textRange, configGroup)
+            return ParadoxDynamicCommandFieldLinkNode(text, textRange, configGroup)
         }
     }
 }
