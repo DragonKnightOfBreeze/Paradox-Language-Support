@@ -114,7 +114,7 @@ class ParadoxDatabaseObjectExpression private constructor(
                 run r2@{
                     val nodeText = if(colonIndex2 == -1) expressionString.substring(colonIndex1 + 1) else expressionString.substring(colonIndex1 + 1, colonIndex2)
                     val nodeTextRange = TextRange.from(colonIndex1 + 1, nodeText.length)
-                    val node = ParadoxDatabaseObjectNode.resolve(nodeText, nodeTextRange, expression, 0)
+                    val node = ParadoxDatabaseObjectNode.resolve(nodeText, nodeTextRange, expression, isBase = true)
                     nodes += node
                 }
                 if(colonIndex2 == -1) return@r1
@@ -125,7 +125,7 @@ class ParadoxDatabaseObjectExpression private constructor(
                 run r2@{
                     val nodeText = expressionString.substring(colonIndex2 + 1)
                     val nodeTextRange = TextRange.from(colonIndex2 + 1, nodeText.length)
-                    val node = ParadoxDatabaseObjectNode.resolve(nodeText, nodeTextRange, expression, 1)
+                    val node = ParadoxDatabaseObjectNode.resolve(nodeText, nodeTextRange, expression, isBase = false)
                     nodes += node
                 }
             }

@@ -26,12 +26,14 @@
 
 * [X] 正确渲染从数据库对象生成的概念的文本
 * [X] 修复对于`param = "$param$"`，当可以推断`param`的规则上下文时，无法推断`$param$`的规则上下文的问题
+* [X] 支持在数据库对象表达式中重复引用基础数据库对象，以在游戏中强制显示为非转换形式（如`authoritry:auth_oligarchic:auth_oligarchic`） *
 * [X] 其他优化与BUG修复
 
 ***
 
 * [X] Render concepts from database objects correctly
 * [X] Fix a problem that for `param = "$param$"`, when config context of `param` can be inferred, config context of `$param$` cannot be inferred
+* [X] Supports referencing base database objects in database object expression repeatedly to force show non-swapped form in the game (e.g., `authoritry:auth_oligarchic:auth_oligarchic`)
 * [X] Other optimizations and bug fixes
 
 ## 1.3.14

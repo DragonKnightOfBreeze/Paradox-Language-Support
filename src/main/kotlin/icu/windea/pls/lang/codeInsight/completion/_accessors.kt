@@ -36,8 +36,8 @@ var ProcessingContext.scopeName: String? by createKeyDelegate(ParadoxCompletionK
 var ProcessingContext.scopeGroupName: String? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.isInt: Boolean? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.prefix: String? by createKeyDelegate(ParadoxCompletionKeys)
+var ProcessingContext.expressionTailText: String? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.dataSourceNodeToCheck: ParadoxComplexExpressionNode? by createKeyDelegate(ParadoxCompletionKeys)
-var ProcessingContext.showScriptExpressionTailText: Boolean by createKeyDelegate(ParadoxCompletionKeys) { true }
 var ProcessingContext.contextKey: String? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.argumentNames: MutableSet<String>? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.node: ParadoxComplexExpressionNode? by createKeyDelegate(ParadoxCompletionKeys)

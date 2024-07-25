@@ -197,13 +197,13 @@ object ParadoxCompletionManager {
         return maxCount == null || actualCount < maxCount
     }
     
-    fun getScriptExpressionTailText(
+    fun getExpressionTailText(
         context: ProcessingContext,
         config: CwtConfig<*>?,
         withConfigExpression: Boolean = true,
         withFileName: Boolean = true,
     ): String? {
-        if(!context.showScriptExpressionTailText) return null
+        context.expressionTailText?.let { return it }
         
         return buildString {
             if(withConfigExpression) {
@@ -353,7 +353,7 @@ object ParadoxCompletionManager {
         val configGroup = config.configGroup
         val project = configGroup.project
         val contextElement = context.contextElement
-        val tailText = getScriptExpressionTailText(context, config)
+        val tailText = getExpressionTailText(context, config)
         //这里selector不需要指定去重
         val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
         ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, LimitedCompletionProcessor { localisation ->
@@ -380,7 +380,7 @@ object ParadoxCompletionManager {
         val configGroup = config.configGroup
         val project = configGroup.project
         val contextElement = context.contextElement
-        val tailText = getScriptExpressionTailText(context, config)
+        val tailText = getExpressionTailText(context, config)
         //这里selector不需要指定去重
         val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
         ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector) { syncedLocalisation ->
@@ -404,7 +404,7 @@ object ParadoxCompletionManager {
         val configGroup = config.configGroup
         val project = configGroup.project
         val contextElement = context.contextElement
-        val tailText = getScriptExpressionTailText(context, config)
+        val tailText = getExpressionTailText(context, config)
         val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search(typeExpression, selector).processQueryAsync p@{ definition ->
             ProgressManager.checkCanceled()
@@ -427,12 +427,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile.name)
                 .withTypeIcon(typeFile.icon)
                 .withScopeMatched(scopeMatched)
-                .letIf(getSettings().completion.completeByLocalizedName) {
-                    //如果启用，也基于定义的本地化名字进行代码补全
-                    ProgressManager.checkCanceled()
-                    val localizedNames = ParadoxDefinitionHandler.getLocalizedNames(definition)
-                    it.withLocalizedNames(localizedNames)
-                }
+                .withLocalizedNamesIfNecessary(definition)
                 .build(context)
             result.addElement(lookupElement)
             true
@@ -449,7 +444,7 @@ object ParadoxCompletionManager {
         val contextElement = context.contextElement
         val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
         if(pathReferenceExpressionSupport != null) {
-            val tailText = getScriptExpressionTailText(context, config)
+            val tailText = getExpressionTailText(context, config)
             val fileExtensions = when(config) {
                 is CwtMemberConfig<*> -> ParadoxFilePathHandler.getFileExtensionOptionValues(config)
                 else -> emptySet()
@@ -489,7 +484,7 @@ object ParadoxCompletionManager {
         val configGroup = config.configGroup
         val project = configGroup.project
         val contextElement = context.contextElement!!
-        val tailText = getScriptExpressionTailText(context, config)
+        val tailText = getExpressionTailText(context, config)
         //提示简单枚举
         val enumConfig = configGroup.enums[enumName]
         if(enumConfig != null) {
@@ -609,7 +604,7 @@ object ParadoxCompletionManager {
         if(contextElement !is ParadoxScriptStringExpressionElement) return
         val configExpression = config.expression ?: return
         val template = CwtTemplateExpression.resolve(configExpression.expressionString)
-        val tailText = getScriptExpressionTailText(context, config)
+        val tailText = getExpressionTailText(context, config)
         template.processResolveResult(contextElement, configGroup) { expression ->
             val templateExpressionElement = ParadoxExpressionHandler.resolveTemplateExpression(contextElement, expression, configExpression, configGroup)
             val lookupElement = ParadoxLookupElementBuilder.create(templateExpressionElement, expression)
@@ -960,7 +955,7 @@ object ParadoxCompletionManager {
         val configGroup = context.configGroup!!
         val config = context.config
         
-        val tailText = getScriptExpressionTailText(context, config)
+        val tailText = getExpressionTailText(context, config)
         val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
         val dynamicValueTypeConfigs = valueConfig.valueConfigMap.values
         for(dynamicValueTypeConfig in dynamicValueTypeConfigs) {
@@ -1002,20 +997,52 @@ object ParadoxCompletionManager {
         val configGroup = context.configGroup!!
         val node = context.node?.castOrNull<ParadoxDatabaseObjectNode>() ?: return
         val config = node.config ?: return
-        val typeToSearch = if(node.index == 0) config.type else config.swapType
+        val typeToSearch = if(node.isBase) config.type else config.swapType
         if(typeToSearch == null) return
+        
+        val tailText = " from database object type ${config.name}"
+        
+        run {
+            //complete forced base database object
+            if(!node.isPossibleForcedBase()) return@run
+            val valueNode = node.expression.valueNode ?: return@run 
+            val project = configGroup.project
+            val contextElement = context.contextElement
+            val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
+            ParadoxDefinitionSearch.search(valueNode.text, config.type, selector).processQueryAsync p@{ definition ->
+                ProgressManager.checkCanceled()
+                val definitionInfo = definition.definitionInfo ?: return@p true
+                if(definitionInfo.name.isEmpty()) return@p true //ignore anonymous definitions
+                
+                val name = definitionInfo.name
+                val typeFile = definition.containingFile
+                val lookupElement = ParadoxLookupElementBuilder.create(definition, name)
+                    .withIcon(PlsIcons.Nodes.Definition(definitionInfo.type))
+                    .withTailText(tailText)
+                    .withTypeText(typeFile.name)
+                    .withTypeIcon(typeFile.icon)
+                    .withLocalizedNamesIfNecessary(definition)
+                    .build(context)
+                result.addElement(lookupElement)
+                true
+            }
+        }
+        
         val extraFilter = f@{ e: PsiElement ->
             val definition = e as? ParadoxScriptDefinitionElement ?: return@f true
-            node.checkDatabaseObject(definition, typeToSearch)
+            node.isValidDatabaseObject(definition, typeToSearch)
         }
         val mockConfig = CwtValueConfig.resolve(emptyPointer(), configGroup, "<$typeToSearch>")
         val oldExtraFilter = context.extraFilter
         val oldConfig = context.config
+        val oldTailText = context.expressionTailText
         context.extraFilter = extraFilter
         context.config = mockConfig
+        context.expressionTailText = tailText
         completeDefinition(context, result)
         context.extraFilter = oldExtraFilter
         context.config = oldConfig
+        context.expressionTailText = oldTailText
     }
     
     fun completeParameter(context: ProcessingContext, result: CompletionResultSet) {
@@ -1228,7 +1255,7 @@ object ParadoxCompletionManager {
         val config = context.config ?: return
         val typeExpression = config.expression?.value ?: return
         val configGroup = config.configGroup
-        val tailText = getScriptExpressionTailText(context, config)
+        val tailText = getExpressionTailText(context, config)
         
         run r1@{
             configGroup.extendedDefinitions.values.forEach { configs0 ->
@@ -1296,7 +1323,7 @@ object ParadoxCompletionManager {
         
         val config = context.config ?: return
         val configGroup = config.configGroup
-        val tailText = getScriptExpressionTailText(context, config)
+        val tailText = getExpressionTailText(context, config)
         
         configGroup.extendedInlineScripts.values.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
@@ -1350,7 +1377,7 @@ object ParadoxCompletionManager {
         val config = context.config ?: return
         val enumName = config.expression?.value ?: return
         val configGroup = config.configGroup
-        val tailText = getScriptExpressionTailText(context, config)
+        val tailText = getExpressionTailText(context, config)
         
         configGroup.extendedComplexEnumValues[enumName]?.values?.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
@@ -1376,7 +1403,7 @@ object ParadoxCompletionManager {
         val config = context.config ?: return
         val dynamicValueType = config.expression?.value ?: return
         val configGroup = config.configGroup
-        val tailText = getScriptExpressionTailText(context, config)
+        val tailText = getExpressionTailText(context, config)
         
         configGroup.extendedDynamicValues[dynamicValueType]?.values?.forEach f@{ config0 ->
             ProgressManager.checkCanceled()

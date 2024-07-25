@@ -23,7 +23,7 @@ class ParadoxDatabaseObjectNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     val expression: ParadoxDatabaseObjectExpression,
-    val index: Int
+    val isBase: Boolean
 ) : ParadoxComplexExpressionNode.Base() {
     val config = expression.typeNode?.config
     
@@ -40,7 +40,7 @@ class ParadoxDatabaseObjectNode(
         if(config == null) return null
         val reference = getReference(element)
         if(reference == null || reference.resolveFirst() != null) return null
-        val typeToSearch = if(index == 0) config.type else config.swapType
+        val typeToSearch = if(isBase) config.type else config.swapType
         return ParadoxComplexExpressionErrors.unresolvedDatabaseObject(rangeInExpression, text, typeToSearch)
     }
     
@@ -52,16 +52,32 @@ class ParadoxDatabaseObjectNode(
         return Reference(element, rangeInElement, this)
     }
     
-    fun checkDatabaseObject(definition: ParadoxScriptDefinitionElement, typeToSearch: String): Boolean {
+    fun isForcedBase(): Boolean {
+        //referencing base database objects repeatedly is supported, to force show non-swapped form in the game
+        //(pre-condition: database object type can be swapped & database object names should be the same)
+        if(isBase || config?.swapType == null) return false
+        val baseName = expression.valueNode?.text?.orNull()
+        return baseName != null && baseName == text
+    }
+    
+    fun isPossibleForcedBase(): Boolean {
+        if(isBase || config?.swapType == null) return false
+        val baseName = expression.valueNode?.text?.orNull()
+        return baseName != null
+    }
+    
+    fun isValidDatabaseObject(definition: ParadoxScriptDefinitionElement, typeToSearch: String): Boolean {
         val definitionInfo = definition.definitionInfo ?: return false
+        if(definitionInfo.name.isEmpty()) return false
         if(definitionInfo.type != typeToSearch) return false
-        if(index == 0) return true
+        if(isBase) return true
         
         //filter out mismatched swap definition vs base definition
-        val expectedSuperDefinitionName = expression.valueNode?.text ?: return false
+        val expectedSuperDefinitionName = expression.valueNode?.text?.orNull() ?: return false
         val expectedSuperDefinitionType = config?.type ?: return false
-        val superDefinition = ParadoxDefinitionInheritSupport.getSuperDefinition(definition, definitionInfo)?: return false
+        val superDefinition = ParadoxDefinitionInheritSupport.getSuperDefinition(definition, definitionInfo) ?: return false
         val superDefinitionInfo = superDefinition.definitionInfo ?: return false
+        if(superDefinitionInfo.name.isEmpty()) return false
         return superDefinitionInfo.name == expectedSuperDefinitionName && superDefinitionInfo.type == expectedSuperDefinitionType
     }
     
@@ -69,7 +85,7 @@ class ParadoxDatabaseObjectNode(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
         val node: ParadoxDatabaseObjectNode
-    ): PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
+    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
         val expression = node.expression
         val project = expression.configGroup.project
         val config = expression.typeNode?.config
@@ -80,7 +96,7 @@ class ParadoxDatabaseObjectNode(
         
         //缓存解析结果以优化性能
         
-        private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement>{
+        private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {
             override fun resolve(ref: Reference, incompleteCode: Boolean): PsiElement? {
                 return ref.doResolve()
             }
@@ -103,28 +119,28 @@ class ParadoxDatabaseObjectNode(
         private fun doResolve(): PsiElement? {
             if(config == null) return null
             val name = node.text
-            val typeToSearch = if(node.index == 0) config.type else config.swapType
+            val typeToSearch = if(node.isBase || node.isForcedBase()) config.type else config.swapType
             if(typeToSearch == null) return null
             val selector = definitionSelector(project, element).contextSensitive()
             return ParadoxDefinitionSearch.search(name, typeToSearch, selector).find()
-                ?.takeIf { node.checkDatabaseObject(it, typeToSearch) }
+                ?.takeIf { node.isValidDatabaseObject(it, typeToSearch) }
         }
         
         private fun doMultiResolve(): Array<out ResolveResult> {
             if(config == null) return ResolveResult.EMPTY_ARRAY
             val name = node.text
-            val typeToSearch = if(node.index == 0) config.type else config.swapType
+            val typeToSearch = if(node.isBase || node.isForcedBase()) config.type else config.swapType
             if(typeToSearch == null) return ResolveResult.EMPTY_ARRAY
             val selector = definitionSelector(project, element).contextSensitive()
             return ParadoxDefinitionSearch.search(name, typeToSearch, selector).findAll()
-                .filter { node.checkDatabaseObject(it, typeToSearch) }
+                .filter { node.isValidDatabaseObject(it, typeToSearch) }
                 .mapToArray { PsiElementResolveResult(it) }
         }
     }
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, expression: ParadoxDatabaseObjectExpression, index: Int): ParadoxDatabaseObjectNode {
-            return ParadoxDatabaseObjectNode(text, textRange, expression, index)
+        fun resolve(text: String, textRange: TextRange, expression: ParadoxDatabaseObjectExpression, isBase: Boolean): ParadoxDatabaseObjectNode {
+            return ParadoxDatabaseObjectNode(text, textRange, expression, isBase)
         }
     }
 }

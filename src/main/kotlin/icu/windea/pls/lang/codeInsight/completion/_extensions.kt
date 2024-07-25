@@ -8,6 +8,7 @@ import com.intellij.codeInsight.template.impl.*
 import com.intellij.openapi.command.*
 import com.intellij.openapi.command.impl.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import com.intellij.util.*
@@ -164,6 +165,15 @@ fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(
             }
             WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.expandClauseTemplate.name"), null, command, file)
         }
+    }
+}
+
+fun ParadoxLookupElementBuilder.withLocalizedNamesIfNecessary(definition: ParadoxScriptDefinitionElement): ParadoxLookupElementBuilder {
+    return this.letIf(getSettings().completion.completeByLocalizedName) {
+        //如果启用，也基于定义的本地化名字进行代码补全
+        ProgressManager.checkCanceled()
+        val localizedNames = ParadoxDefinitionHandler.getLocalizedNames(definition)
+        it.withLocalizedNames(localizedNames)
     }
 }
 

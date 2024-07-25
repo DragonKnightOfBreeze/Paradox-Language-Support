@@ -64,7 +64,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 						
 						context.config = config
 						context.isKey = true
-						context.showScriptExpressionTailText = false
+						context.expressionTailText = ""
 						
 						//排除正在输入的那一个
 						val selector = definitionSelector(project, file).contextSensitive()
@@ -86,7 +86,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 					
 					context.config = config
 					context.isKey = false
-					context.showScriptExpressionTailText = false
+					context.expressionTailText = ""
 					
 					//这里需要基于rootKey过滤结果
 					//排除正在输入的那一个
