@@ -67,6 +67,8 @@ class ParadoxDatabaseObjectNode(
     }
     
     fun isValidDatabaseObject(definition: ParadoxScriptDefinitionElement, typeToSearch: String): Boolean {
+        if(isForcedBase()) return true
+        
         val definitionInfo = definition.definitionInfo ?: return false
         if(definitionInfo.name.isEmpty()) return false
         if(definitionInfo.type != typeToSearch) return false
