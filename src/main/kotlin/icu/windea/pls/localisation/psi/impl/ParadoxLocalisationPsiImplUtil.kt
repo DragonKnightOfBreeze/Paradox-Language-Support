@@ -1,7 +1,6 @@
 package icu.windea.pls.localisation.psi.impl
 
 import com.intellij.navigation.*
-import com.intellij.openapi.util.*
 import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.*
@@ -9,8 +8,6 @@ import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
@@ -18,19 +15,11 @@ import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.search.scope.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.references.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
 import javax.swing.*
-
-//getName 确定进行重构和导航时显示的PsiElement的名字
-//setName 确定进行重命名时的逻辑
-//getTextOffset 确定选中一个PsiElement时，哪一部分会高亮显示
-//getReference 确定选中一个PsiElement时，哪些其他的PsiElement会同时高亮显示
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationPsiImplUtil {
@@ -332,13 +321,13 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getReference(element: ParadoxLocalisationConcept): ParadoxLocalisationConceptPsiReference? {
-        val conceptName = element.conceptName ?: return null
+        val nameElement = element.conceptName ?: return null
         
         //作为复杂表达式的场合，另行处理（参见：ParadoxLocalisationReferenceContributor）
-        if(conceptName.isComplexExpression()) return null
+        if(nameElement.isComplexExpression()) return null
         
-        val rangeInElement = conceptName.idElement?.textRangeInParent ?: return null
         return CachedValuesManager.getCachedValue(element) {
+            val rangeInElement = nameElement.textRangeInParent
             val value = ParadoxLocalisationConceptPsiReference(element, rangeInElement)
             CachedValueProvider.Result.create(value, element)
         }
