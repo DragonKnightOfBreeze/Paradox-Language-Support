@@ -79,7 +79,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
     
     private IElementType checkRightQuote() {
-        //NOTE double quote should be threat as a string if it's not the last one of current line
+        //double quote should be threat as string if it's not the last one of current line
         try {
             int i = zzCurrentPos + 1;
             int length = zzBuffer.length();
@@ -156,7 +156,7 @@ COLOR_TOKEN=[a-zA-Z0-9]
 STRING_TOKEN=([^\"$£§\[\]\r\n\\]|\\.|\[\[)+ //it's unnecessary to escape double quotes in loc text in fact
 
 CHECK_COMMAND_START=\[[^\r\n\]]*.?
-COMMAND_TEXT_TOKEN=[^\r\n.\[\]]+
+COMMAND_TEXT_TOKEN=[^\r\n\[\]]+
 CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
 
 %%
