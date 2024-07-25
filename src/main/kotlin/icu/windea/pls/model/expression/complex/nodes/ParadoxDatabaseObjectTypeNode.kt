@@ -22,8 +22,8 @@ class ParadoxDatabaseObjectTypeNode(
     override val rangeInExpression: TextRange,
     val config: CwtDatabaseObjectTypeConfig?
 ) : ParadoxComplexExpressionNode.Base() {
-    override fun getAttributesKey(language: Language): TextAttributesKey {
-        return when(language) {
+    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
+        return when(element.language) {
             ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY
             else -> ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE_KEY
         }

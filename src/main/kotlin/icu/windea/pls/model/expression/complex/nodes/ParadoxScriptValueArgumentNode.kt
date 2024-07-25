@@ -18,7 +18,7 @@ class ParadoxScriptValueArgumentNode(
     val valueNode: ParadoxScriptValueNode?,
     val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNode.Base() {
-    override fun getAttributesKey(language: Language): TextAttributesKey? {
+    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         if(text.isEmpty()) return null
         return ParadoxScriptAttributesKeys.ARGUMENT_KEY
     }

@@ -20,21 +20,22 @@ import org.jetbrains.kotlin.idea.base.codeInsight.handlers.fixers.*
  * 语法：
  * 
  * ```bnf
- * command_expression ::= command_scope * (command_field)
- * command_scope := system_command_scope | predefined_command_scope | dynamic_command_scope
- * system_command_scope := TOKEN //predefined by CWT Config (see system links)
- * predefined_command_scope := TOKEN //predefined by CWT Config (see localisation links)
- * dynamic_command_scope := TOKEN //matching config expression "value[event_target]" or "value[global_event_target]"
- * command_field ::= predefined_command_field | scripted_command_field | dynamic_command_field
- * predefined_command_field := TOKEN //predefined by CWT Config (see localisation commands)
- * scripted_command_field ::= TOKEN //matching config expression "<scripted_loc>"
- * dynamic_command_field ::= TOKEN //matching config  expression "value[variable]"
+ * command_expression ::= command_scope_link * (command_field_link)
+ * command_scope_link := system_command_scope_link | predefined_command_scope_link | dynamic_command_scope_link
+ * system_command_scope_link := TOKEN //predefined by CWT Config (see system links)
+ * predefined_command_scope_link := TOKEN //predefined by CWT Config (see localisation links)
+ * dynamic_command_scope_link := dynamic_command_scope_link_prefix ? dynamic_command_scope_link_value
+ * dynamic_command_scope_link_prefix := TOKEN //"event_target:"
+ * dynamic_command_scope_link_value := TOKEN //matching config expression "value[event_target]" or "value[global_event_target]"
+ * command_field_link ::= predefined_command_field_link | dynamic_command_field_link
+ * predefined_command_field_link := TOKEN //predefined by CWT Config (see localisation commands)
+ * dynamic_command_field_link ::= TOKEN //matching config expression "<scripted_loc>" or "value[variable]"
  * ```
  * 
  * 示例：
  * 
  * * `Root.GetName`
- * * `Root.Owner.var`
+ * * `Root.Owner.event_target:some_event_target.var`
  */
 class ParadoxCommandExpression private constructor(
     override val text: String,
@@ -74,8 +75,8 @@ class ParadoxCommandExpression private constructor(
                         val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
                         startIndex = tokenIndex + 1
                         val node = when {
-                            tokenIndex != textLength -> ParadoxCommandScopeNode.resolve(nodeText, nodeTextRange, configGroup)
-                            else -> ParadoxCommandFieldNode.resolve(nodeText, nodeTextRange, configGroup)
+                            tokenIndex != textLength -> ParadoxCommandScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
+                            else -> ParadoxCommandFieldLinkNode.resolve(nodeText, nodeTextRange, configGroup)
                         }
                         nodes += node
                     }

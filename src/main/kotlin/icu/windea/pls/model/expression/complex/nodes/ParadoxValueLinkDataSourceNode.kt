@@ -6,6 +6,7 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.psi.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.highlighter.*
 
@@ -15,7 +16,7 @@ class ParadoxValueLinkDataSourceNode(
     val linkConfigs: List<CwtLinkConfig>,
     override val nodes: List<ParadoxComplexExpressionNode>
 ) : ParadoxComplexExpressionNode.Base() {
-    override fun getAttributesKey(language: Language): TextAttributesKey {
+    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.VALUE_LINK_DATA_SOURCE_KEY
     }
     

@@ -523,7 +523,7 @@ object ParadoxExpressionHandler {
     }
     
     private fun doAnnotateComplexExpression(element: ParadoxExpressionElement, expressionNode: ParadoxComplexExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>? = null) {
-        val attributesKey = expressionNode.getAttributesKey(element.language)
+        val attributesKey = expressionNode.getAttributesKey(element)
         
         run {
             val mustUseAttributesKey = attributesKey != ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY && attributesKey != ParadoxScriptAttributesKeys.STRING_KEY

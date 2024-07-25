@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.psi.*
 import icu.windea.pls.script.highlighter.*
 
 class ParadoxParameterizedScopeFieldNode(
@@ -12,7 +13,7 @@ class ParadoxParameterizedScopeFieldNode(
     override val rangeInExpression: TextRange,
     val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNode.Base(), ParadoxScopeFieldNode, ParadoxParameterizedNode {
-    override fun getAttributesKey(language: Language): TextAttributesKey {
+    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.SCOPE_KEY
     }
     

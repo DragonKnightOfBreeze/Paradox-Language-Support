@@ -18,7 +18,7 @@ interface ParadoxComplexExpressionNode {
     val rangeInExpression: TextRange
     val nodes: List<ParadoxComplexExpressionNode> get() = emptyList()
     
-    fun getAttributesKey(language: Language): TextAttributesKey? = null
+    fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? = null
     
     fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? = null
     

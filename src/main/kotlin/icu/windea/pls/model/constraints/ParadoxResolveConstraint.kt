@@ -56,7 +56,7 @@ enum class ParadoxResolveConstraint {
                     }
                 }
                 is ParadoxScriptValueNode.Reference -> true //<script_value>
-                is ParadoxScriptedCommandFieldNode.Reference -> true //<scripted_loc>
+                is ParadoxDynamicCommandFieldNode.Reference -> true //<scripted_loc>
                 is ParadoxDatabaseObjectNode.Reference -> true
                 is ParadoxLocalisationIconPsiReference -> true
                 is ParadoxLocalisationConceptPsiReference -> true //<game_concept>
@@ -183,7 +183,7 @@ enum class ParadoxResolveConstraint {
                     }
                 }
                 is ParadoxDynamicValueNode.Reference -> true
-                is ParadoxDynamicCommandScopeNode.Reference -> true //value[event_target], value[global_event_target]
+                is ParadoxDynamicCommandScopeLinkValueNode.Reference -> true //value[event_target], value[global_event_target]
                 is ParadoxDynamicCommandFieldNode.Reference -> true //value[variable]
                 else -> false
             }
@@ -205,7 +205,7 @@ enum class ParadoxResolveConstraint {
                     configExpression.type in CwtDataTypeGroups.DynamicValue
                 }
                 is ParadoxDynamicValueNode.Reference -> true
-                is ParadoxDynamicCommandScopeNode.Reference -> true //value[event_target], value[global_event_target]
+                is ParadoxDynamicCommandScopeLinkValueNode.Reference -> true //value[event_target], value[global_event_target]
                 is ParadoxDynamicCommandFieldNode.Reference -> true //value[variable]
                 else -> false
             }

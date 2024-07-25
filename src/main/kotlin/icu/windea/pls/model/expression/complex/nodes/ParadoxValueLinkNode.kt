@@ -18,7 +18,7 @@ class ParadoxValueLinkNode(
     override val rangeInExpression: TextRange,
     val config: CwtLinkConfig
 ) : ParadoxComplexExpressionNode.Base(), ParadoxValueFieldNode {
-    override fun getAttributesKey(language: Language): TextAttributesKey {
+    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY
     }
     

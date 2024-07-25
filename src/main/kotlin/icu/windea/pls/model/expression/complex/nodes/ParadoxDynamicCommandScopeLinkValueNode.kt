@@ -1,6 +1,5 @@
 package icu.windea.pls.model.expression.complex.nodes
 
-import com.intellij.lang.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -11,15 +10,14 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.highlighter.*
-import icu.windea.pls.script.highlighter.*
 
-class ParadoxScriptedCommandFieldNode(
+class ParadoxDynamicCommandScopeLinkValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     val configGroup: CwtConfigGroup
-) : ParadoxComplexExpressionNode.Base(), ParadoxCommandFieldNode {
-    override fun getAttributesKey(language: Language): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.SCRIPTED_COMMAND_FIELD_KEY
+) : ParadoxComplexExpressionNode.Base() {
+    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
+        return ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE_KEY
     }
     
     override fun getReference(element: ParadoxExpressionElement): Reference {
@@ -33,21 +31,24 @@ class ParadoxScriptedCommandFieldNode(
         val name: String,
         val configGroup: CwtConfigGroup
     ) : PsiReferenceBase<ParadoxExpressionElement>(element, rangeInElement), PsiReferencesAware {
-        val configExpression = configGroup.mockVariableConfig.expression
+        val configExpressions = listOf(
+            configGroup.mockEventTargetConfig.expression,
+            configGroup.mockGlobalEventTargetConfig.expression,
+        )
         
         override fun handleElementRename(newElementName: String): PsiElement {
             return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
         }
         
         override fun resolve(): PsiElement? {
-            return ParadoxDynamicValueHandler.resolveDynamicValue(element, name, configExpression, configGroup)
+            return ParadoxDynamicValueHandler.resolveDynamicValue(element, name, configExpressions, configGroup)
         }
     }
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScriptedCommandFieldNode? {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandScopeLinkValueNode? {
             if(!text.isIdentifier()) return null
-            return ParadoxScriptedCommandFieldNode(text, textRange, configGroup)
+            return ParadoxDynamicCommandScopeLinkValueNode(text, textRange, configGroup)
         }
     }
 }

@@ -11,14 +11,13 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.highlighter.*
-import icu.windea.pls.script.highlighter.*
 
-class ParadoxSystemCommandScopeNode(
+class ParadoxSystemCommandScopeLinkNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     val config: CwtSystemLinkConfig
-) : ParadoxComplexExpressionNode.Base(), ParadoxCommandScopeNode {
-    override fun getAttributesKey(language: Language): TextAttributesKey {
+) : ParadoxComplexExpressionNode.Base(), ParadoxCommandScopeLinkNode {
+    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxLocalisationAttributesKeys.SYSTEM_COMMAND_SCOPE_KEY
     }
     
@@ -31,9 +30,9 @@ class ParadoxSystemCommandScopeNode(
         PsiResolvedReference<CwtProperty>(element, rangeInElement, resolved)
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxSystemCommandScopeNode? {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxSystemCommandScopeLinkNode? {
             val config = configGroup.systemLinks[text] ?: return null
-            return ParadoxSystemCommandScopeNode(text, textRange, config)
+            return ParadoxSystemCommandScopeLinkNode(text, textRange, config)
         }
     }
 }

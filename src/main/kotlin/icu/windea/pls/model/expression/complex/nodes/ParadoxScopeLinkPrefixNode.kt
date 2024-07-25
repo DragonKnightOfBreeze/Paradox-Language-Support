@@ -15,7 +15,7 @@ class ParadoxScopeLinkPrefixNode(
     override val rangeInExpression: TextRange,
     override val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxComplexExpressionNode.Base(), ParadoxLinkPrefixNode {
-    override fun getAttributesKey(language: Language): TextAttributesKey {
+    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.SCOPE_LINK_PREFIX_KEY
     }
     

@@ -22,7 +22,7 @@ class ParadoxScriptValueNode(
     val config: CwtConfig<*>,
     val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNode.Base() {
-    override fun getAttributesKey(language: Language): TextAttributesKey? {
+    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         if(text.isEmpty()) return null
         return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
     }
