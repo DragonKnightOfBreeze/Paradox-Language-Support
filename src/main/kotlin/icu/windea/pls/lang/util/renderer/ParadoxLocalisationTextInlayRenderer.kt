@@ -165,9 +165,9 @@ object ParadoxLocalisationTextInlayRenderer {
     }
     
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context): Boolean = with(context.factory) {
+        //显示解析后的概念文本
         val concept = element.concept
         if(concept != null) {
-            //使用要显示的文本
             val conceptTextElement = ParadoxGameConceptHandler.getTextElement(concept)
             val richTextList = when {
                 conceptTextElement is ParadoxLocalisationConceptText -> conceptTextElement.richTextList

@@ -138,9 +138,11 @@ object ParadoxLocalisationTextHtmlRenderer {
     }
     
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
+        //显示解析后的概念文本
         val conceptElement = element.concept
         if(conceptElement != null) {
-            //使用要显示的文本
+            val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
+            val conceptColor = EditorColorsManager.getInstance().globalScheme.getAttributes(conceptAttributesKey).foregroundColor
             val conceptTextElement = ParadoxGameConceptHandler.getTextElement(conceptElement)
             val richTextList = when {
                 conceptTextElement is ParadoxLocalisationConceptText -> conceptTextElement.richTextList
@@ -157,18 +159,20 @@ object ParadoxLocalisationTextHtmlRenderer {
                 context.builder = oldBuilder
                 val conceptText = newBuilder.toString()
                 val concept = conceptElement.reference?.resolve()
-                if(concept == null) {
+                if(concept != null) {
+                    val conceptName = concept.definitionInfo?.name.orAnonymous()
+                    if(conceptColor != null) context.builder.append("<span style=\"color: #").append(conceptColor.toHex()).append("\">")
+                    context.builder.appendDefinitionLink(context.gameType.orDefault(), conceptName, "game_concept", context.element, label = conceptText)
+                    if(conceptColor != null) context.builder.append("</span>")
+                } else {
+                    if(conceptColor != null) context.builder.append("<span style=\"color: #").append(conceptColor.toHex()).append("\">")
                     context.builder.append(conceptText)
-                    return
+                    if(conceptColor != null) context.builder.append("</span>")
                 }
-                val conceptName = concept.definitionInfo?.name.orAnonymous()
-                val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
-                val conceptColor = EditorColorsManager.getInstance().globalScheme.getAttributes(conceptAttributesKey).foregroundColor
-                if(conceptColor != null) context.builder.append("<span style=\"color: #").append(conceptColor.toHex()).append("\">")
-                context.builder.appendDefinitionLink(context.gameType.orDefault(), conceptName, "game_concept", context.element, label = conceptText)
-                if(conceptColor != null) context.builder.append("</span>")
             } else {
+                if(conceptColor != null) context.builder.append("<span style=\"color: #").append(conceptColor.toHex()).append("\">")
                 context.builder.append(conceptElement.name)
+                if(conceptColor != null) context.builder.append("</span>")
             }
             return
         }

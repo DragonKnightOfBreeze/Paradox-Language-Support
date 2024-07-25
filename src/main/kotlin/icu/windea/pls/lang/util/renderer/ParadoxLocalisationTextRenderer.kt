@@ -1,14 +1,8 @@
 package icu.windea.pls.lang.util.renderer
 
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
@@ -81,15 +75,16 @@ object ParadoxLocalisationTextRenderer {
         }
     }
     
+    @Suppress("UNUSED_PARAMETER")
     private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context) {
         //忽略
         //builder.append(":${element.name}:")
     }
     
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
+        //显示解析后的概念文本
         val concept = element.concept
         if(concept != null) {
-            //使用要显示的文本
             val conceptTextElement = ParadoxGameConceptHandler.getTextElement(concept)
             val richTextList = when {
                 conceptTextElement is ParadoxLocalisationConceptText -> conceptTextElement.richTextList
@@ -105,7 +100,8 @@ object ParadoxLocalisationTextRenderer {
             }
             return
         }
-        //使用原始文本
+        
+        //直接显示命令文本
         context.builder.append(element.text)
     }
     
