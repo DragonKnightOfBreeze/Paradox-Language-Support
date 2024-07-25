@@ -166,15 +166,16 @@ object ParadoxLocalisationTextInlayRenderer {
     
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context): Boolean = with(context.factory) {
         //显示解析后的概念文本
-        val concept = element.concept
-        if(concept != null) {
-            val conceptTextElement = ParadoxGameConceptHandler.getTextElement(concept)
+        run r1@{
+            val concept = element.concept ?: return@r1
+            val (referenceElement, textElement) = ParadoxGameConceptHandler.getReferenceElementAndTextElement(concept)
             val richTextList = when {
-                conceptTextElement is ParadoxLocalisationConceptText -> conceptTextElement.richTextList
-                conceptTextElement is ParadoxLocalisationProperty -> conceptTextElement.propertyValue?.richTextList
+                textElement is ParadoxLocalisationConceptText -> textElement.richTextList
+                textElement is ParadoxLocalisationProperty -> textElement.propertyValue?.richTextList
                 else -> null
             }
-            if(richTextList != null) {
+            run r2@{
+                if(richTextList == null) return@r2
                 val newBuilder = mutableListOf<InlayPresentation>()
                 val oldBuilder = context.builder
                 context.builder = newBuilder
@@ -193,7 +194,7 @@ object ParadoxLocalisationTextInlayRenderer {
                 
                 val attributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
                 presentation = WithAttributesPresentation(presentation, conceptAttributesKey, context.editor, attributesFlags)
-                presentation = onHover(psiSingleReference(presentation) { concept.reference?.resolve() }, object : InlayPresentationFactory.HoverListener {
+                presentation = onHover(psiSingleReference(presentation) { referenceElement }, object : InlayPresentationFactory.HoverListener {
                     override fun onHover(event: MouseEvent, translated: Point) {
                         attributesFlags.isDefault = true //change foreground
                     }
@@ -201,13 +202,12 @@ object ParadoxLocalisationTextInlayRenderer {
                     override fun onHoverFinished() {
                         attributesFlags.isDefault = false //reset foreground
                     }
-                    
                 })
                 context.builder.add(presentation)
                 if(!continueProcess) return false
-            } else {
-                context.builder.add(smallText(concept.name))
+                return continueProcess(context)
             }
+            context.builder.add(smallText(concept.name))
             return continueProcess(context)
         }
         

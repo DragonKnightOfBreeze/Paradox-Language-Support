@@ -139,17 +139,18 @@ object ParadoxLocalisationTextHtmlRenderer {
     
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
         //显示解析后的概念文本
-        val conceptElement = element.concept
-        if(conceptElement != null) {
+        run r1@{
+            val concept = element.concept ?: return@r1
             val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
             val conceptColor = EditorColorsManager.getInstance().globalScheme.getAttributes(conceptAttributesKey).foregroundColor
-            val conceptTextElement = ParadoxGameConceptHandler.getTextElement(conceptElement)
+            val (referenceElement, textElement) = ParadoxGameConceptHandler.getReferenceElementAndTextElement(concept)
             val richTextList = when {
-                conceptTextElement is ParadoxLocalisationConceptText -> conceptTextElement.richTextList
-                conceptTextElement is ParadoxLocalisationProperty -> conceptTextElement.propertyValue?.richTextList
+                textElement is ParadoxLocalisationConceptText -> textElement.richTextList
+                textElement is ParadoxLocalisationProperty -> textElement.propertyValue?.richTextList
                 else -> null
             }
-            if(richTextList != null) {
+            run r2@{
+                if(richTextList == null) return@r2
                 val newBuilder = DocumentationBuilder()
                 val oldBuilder = context.builder
                 context.builder = newBuilder
@@ -158,22 +159,18 @@ object ParadoxLocalisationTextHtmlRenderer {
                 }
                 context.builder = oldBuilder
                 val conceptText = newBuilder.toString()
-                val concept = conceptElement.reference?.resolve()
-                if(concept != null) {
-                    val conceptName = concept.definitionInfo?.name.orAnonymous()
-                    if(conceptColor != null) context.builder.append("<span style=\"color: #").append(conceptColor.toHex()).append("\">")
-                    context.builder.appendDefinitionLink(context.gameType.orDefault(), conceptName, "game_concept", context.element, label = conceptText)
-                    if(conceptColor != null) context.builder.append("</span>")
-                } else {
-                    if(conceptColor != null) context.builder.append("<span style=\"color: #").append(conceptColor.toHex()).append("\">")
-                    context.builder.append(conceptText)
-                    if(conceptColor != null) context.builder.append("</span>")
-                }
-            } else {
+                if(referenceElement !is ParadoxScriptDefinitionElement) return@r2
+                val definitionInfo = referenceElement.definitionInfo ?: return@r2
+                val definitionName = definitionInfo.name.orAnonymous()
+                val definitionType = definitionInfo.type
                 if(conceptColor != null) context.builder.append("<span style=\"color: #").append(conceptColor.toHex()).append("\">")
-                context.builder.append(conceptElement.name)
+                context.builder.appendDefinitionLink(context.gameType.orDefault(), definitionName, definitionType, context.element, label = conceptText)
                 if(conceptColor != null) context.builder.append("</span>")
+                return
             }
+            if(conceptColor != null) context.builder.append("<span style=\"color: #").append(conceptColor.toHex()).append("\">")
+            context.builder.append(concept.name)
+            if(conceptColor != null) context.builder.append("</span>")
             return
         }
         

@@ -10,7 +10,6 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expression.complex.nodes.*
 import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
@@ -23,31 +22,31 @@ object ParadoxGameConceptHandler {
     }
     
     /**
-     * @return [ParadoxLocalisationConceptText] or [ParadoxLocalisationProperty]
+     * * locationElement: [ParadoxScriptDefinitionElement]
+     * * textElement: [ParadoxLocalisationConceptText] or [ParadoxLocalisationProperty]
      */
-    fun getTextElement(element: ParadoxLocalisationConcept): PsiElement? {
+    fun getReferenceElementAndTextElement(element: ParadoxLocalisationConcept): Tuple2<PsiElement?, PsiElement?> {
         val conceptText = element.conceptText
-        if(conceptText != null) return conceptText
         run r1@{
             val resolved = element.reference?.resolve() ?: return@r1
+            if(conceptText != null) return resolved to conceptText
             run r2@{
                 val tooltipOverride = resolved.findProperty("tooltip_override", inline = true)
                     ?.propertyValue?.castOrNull<ParadoxScriptString>()
                     ?: return@r2
-                val override = tooltipOverride.references.lastOrNull()?.resolve()
+                val override = tooltipOverride.references.lastOrNull()?.resolve() ?: return@r2
                 when {
-                    override is ParadoxScriptDefinitionElement -> return ParadoxDefinitionHandler.getPrimaryLocalisation(override)
-                    override is ParadoxLocalisationProperty -> return override
+                    override is ParadoxScriptDefinitionElement -> return resolved to ParadoxDefinitionHandler.getPrimaryLocalisation(override)
+                    override is ParadoxLocalisationProperty -> return resolved to override
                 }
             }
-            return ParadoxDefinitionHandler.getPrimaryLocalisation(resolved)
+            return resolved to ParadoxDefinitionHandler.getPrimaryLocalisation(resolved)
         }
         run r1@{
-            val resolved = element.conceptName?.references?.findLast { it is ParadoxDatabaseObjectNode.Reference }
-                ?.resolve()?.castOrNull<ParadoxScriptDefinitionElement>()
-                ?: return@r1
-            return ParadoxDefinitionHandler.getPrimaryLocalisation(resolved)
+            val resolved = element.conceptName?.references?.lastOrNull()?.resolve()?.castOrNull<ParadoxScriptDefinitionElement>() ?: return@r1
+            if(conceptText != null) return resolved to conceptText
+            return resolved to ParadoxDefinitionHandler.getPrimaryLocalisation(resolved)
         }
-        return null
+        return null to null
     }
 }

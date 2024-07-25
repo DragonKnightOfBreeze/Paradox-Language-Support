@@ -83,21 +83,22 @@ object ParadoxLocalisationTextRenderer {
     
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
         //显示解析后的概念文本
-        val concept = element.concept
-        if(concept != null) {
-            val conceptTextElement = ParadoxGameConceptHandler.getTextElement(concept)
+        run r1@{
+            val concept = element.concept ?: return@r1
+            val (_, textElement) = ParadoxGameConceptHandler.getReferenceElementAndTextElement(concept)
             val richTextList = when {
-                conceptTextElement is ParadoxLocalisationConceptText -> conceptTextElement.richTextList
-                conceptTextElement is ParadoxLocalisationProperty -> conceptTextElement.propertyValue?.richTextList
+                textElement is ParadoxLocalisationConceptText -> textElement.richTextList
+                textElement is ParadoxLocalisationProperty -> textElement.propertyValue?.richTextList
                 else -> null
             }
-            if(richTextList != null) {
+            run r2@{
+                if(richTextList == null) return@r2
                 for(v in richTextList) {
                     renderTo(v, context)
                 }
-            } else {
-                context.builder.append(concept.text)
+                return
             }
+            context.builder.append(concept.text)
             return
         }
         
