@@ -10,6 +10,10 @@ class DocumentationBuilder : UserDataHolderBase() {
     
     fun append(value: Any?) = apply { content.append(value) }
     
+    override fun toString(): String {
+        return content.toString()
+    }
+    
     object Keys : KeyRegistry("DocumentationBuilder")
 }
 
