@@ -18,8 +18,8 @@ class ParadoxInlineScriptInvocationCompletionProvider: CompletionProvider<Comple
         if(!getSettings().completion.completeInlineScriptInvocations) return
         
         //要求位于脚本文件中且此文件位于游戏或模组目录下
-        val originalFile = parameters.originalFile
-        if(originalFile !is ParadoxScriptFile || selectRootFile(originalFile) == null) return
+        val file = parameters.originalFile
+        if(file !is ParadoxScriptFile || selectRootFile(file) == null) return
         
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptStringExpressionElement>() ?: return

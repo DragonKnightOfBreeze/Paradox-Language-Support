@@ -389,7 +389,7 @@ private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtM
     return descriptors
 }
 
-fun CompletionResultSet.addSimpleScriptExpressionElement(lookupElement: LookupElement?, context: ProcessingContext) {
+fun CompletionResultSet.addSimpleElement(lookupElement: LookupElement?, context: ProcessingContext) {
     if(lookupElement == null) return
     val id = lookupElement.lookupString
     if(context.completionIds?.add(id) == false) return

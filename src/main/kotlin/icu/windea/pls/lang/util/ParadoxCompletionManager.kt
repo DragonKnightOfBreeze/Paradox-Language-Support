@@ -572,12 +572,12 @@ object ParadoxCompletionManager {
             //常量的值也可能是yes/no
             if(name == "yes") {
                 if(context.quoted) return
-                result.addSimpleScriptExpressionElement(ParadoxLookupElements.yesLookupElement, context)
+                result.addSimpleElement(ParadoxLookupElements.yesLookupElement, context)
                 return
             }
             if(name == "no") {
                 if(context.quoted) return
-                result.addSimpleScriptExpressionElement(ParadoxLookupElements.noLookupElement, context)
+                result.addSimpleElement(ParadoxLookupElements.noLookupElement, context)
                 return
             }
         }
@@ -1166,40 +1166,6 @@ object ParadoxCompletionManager {
                 .withTailText(tailText, true)
                 .withCaseSensitivity(false) //忽略大小写
             result.addElement(lookupElement)
-            true
-        }
-    }
-    
-    fun completeConcept(context: ProcessingContext, result: CompletionResultSet) {
-        ProgressManager.checkCanceled()
-        val file = context.parameters?.originalFile ?: return
-        val project = file.project
-        
-        val conceptSelector = definitionSelector(project, file).contextSensitive().distinctByName()
-        val keysToDistinct = mutableSetOf<String>()
-        ParadoxDefinitionSearch.search("game_concept", conceptSelector).processQueryAsync p@{ element ->
-            val tailText = " from concepts"
-            val typeFile = element.containingFile
-            val icon = PlsIcons.LocalisationNodes.Concept
-            run action@{
-                val key = element.name
-                if(!keysToDistinct.add(key)) return@action
-                val lookupElement = LookupElementBuilder.create(element, key)
-                    .withIcon(icon)
-                    .withTailText(tailText, true)
-                    .withTypeText(typeFile?.name)
-                    .withTypeText(typeFile?.name, typeFile?.icon, true)
-                result.addElement(lookupElement)
-            }
-            element.getData<StellarisGameConceptData>()?.alias?.forEach action@{ alias ->
-                val key = alias
-                if(!keysToDistinct.add(key)) return@action
-                val lookupElement = LookupElementBuilder.create(element, key)
-                    .withIcon(icon)
-                    .withTailText(tailText, true)
-                    .withTypeText(typeFile?.name, typeFile?.icon, true)
-                result.addElement(lookupElement)
-            }
             true
         }
     }
