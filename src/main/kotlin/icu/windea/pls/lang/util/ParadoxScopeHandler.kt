@@ -337,7 +337,7 @@ object ParadoxScopeHandler {
                     }
                 }
             }
-            is ParadoxCommandFieldLinkNode -> return inputScopeContext
+            is ParadoxCommandFieldNode -> return inputScopeContext
             else -> return null
         }
     }
@@ -474,22 +474,22 @@ object ParadoxScopeHandler {
                     }
                 }
             }
-            is ParadoxCommandFieldLinkNode -> {
+            is ParadoxCommandFieldNode -> {
                 when(node) {
                     //dynamic -> any (NOTE cannot be inferred from extended configs, not supported yet)
-                    is ParadoxParameterizedCommandFieldLinkNode -> {
+                    is ParadoxParameterizedCommandFieldNode -> {
                         return anyScopeIdSet
                     }
                     //predefined -> static
-                    is ParadoxPredefinedCommandFieldLinkNode -> {
+                    is ParadoxPredefinedCommandFieldNode -> {
                         return node.config.supportedScopes
                     }
                     //dynamic -> any (NOTE cannot be inferred from extended configs, not supported yet)
-                    is ParadoxDynamicCommandFieldLinkNode -> {
+                    is ParadoxDynamicCommandFieldNode -> {
                         return anyScopeIdSet
                     }
                     //error -> any
-                    is ParadoxErrorCommandFieldLinkNode -> {
+                    is ParadoxErrorCommandFieldNode -> {
                         return anyScopeIdSet
                     }
                 }

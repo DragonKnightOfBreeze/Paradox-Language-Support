@@ -56,7 +56,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                     holder.registerProblem(element, range, description)
                                     break //only reports first problem per complex expression
                                 }
-                                is ParadoxCommandFieldLinkNode -> break
+                                is ParadoxCommandFieldNode -> break
                             }
                         }
                     }

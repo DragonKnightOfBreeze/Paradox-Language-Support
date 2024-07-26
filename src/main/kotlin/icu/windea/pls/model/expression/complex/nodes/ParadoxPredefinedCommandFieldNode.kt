@@ -1,6 +1,5 @@
 package icu.windea.pls.model.expression.complex.nodes
 
-import com.intellij.lang.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -12,12 +11,12 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.highlighter.*
 
-class ParadoxPredefinedCommandFieldLinkNode(
+class ParadoxPredefinedCommandFieldNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val config: CwtLocalisationCommandConfig
-) : ParadoxComplexExpressionNode.Base(), ParadoxCommandFieldLinkNode {
+) : ParadoxComplexExpressionNode.Base(), ParadoxCommandFieldNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY
     }
@@ -31,9 +30,9 @@ class ParadoxPredefinedCommandFieldLinkNode(
         PsiResolvedReference<CwtProperty>(element, rangeInElement, resolved)
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxPredefinedCommandFieldLinkNode? {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxPredefinedCommandFieldNode? {
             val config = configGroup.localisationCommands[text] ?: return null
-            return ParadoxPredefinedCommandFieldLinkNode(text, textRange, configGroup, config)
+            return ParadoxPredefinedCommandFieldNode(text, textRange, configGroup, config)
         }
     }
 }

@@ -76,7 +76,7 @@ class ParadoxCommandExpression private constructor(
                         startIndex = tokenIndex + 1
                         val node = when {
                             tokenIndex != textLength -> ParadoxCommandScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
-                            else -> ParadoxCommandFieldLinkNode.resolve(nodeText, nodeTextRange, configGroup)
+                            else -> ParadoxCommandFieldNode.resolve(nodeText, nodeTextRange, configGroup)
                         }
                         nodes += node
                     }

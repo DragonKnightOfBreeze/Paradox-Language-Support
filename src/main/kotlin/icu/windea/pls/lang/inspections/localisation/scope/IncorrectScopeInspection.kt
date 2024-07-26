@@ -44,7 +44,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                                     val outputScopeContext = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, inputScopeContext)
                                     inputScopeContext = outputScopeContext ?: ParadoxScopeHandler.getUnknownScopeContext(inputScopeContext)
                                 }
-                                is ParadoxCommandFieldLinkNode -> {
+                                is ParadoxCommandFieldNode -> {
                                     val supportedScopes = ParadoxScopeHandler.getSupportedScopesOfNode(element, node, inputScopeContext)
                                     val matched = ParadoxScopeHandler.matchesScope(inputScopeContext, supportedScopes, configGroup)
                                     val outputScopeContext = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, inputScopeContext)

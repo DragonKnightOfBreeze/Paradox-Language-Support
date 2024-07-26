@@ -15,11 +15,11 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxDynamicCommandFieldLinkNode(
+class ParadoxDynamicCommandFieldNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup
-) : ParadoxComplexExpressionNode.Base(), ParadoxCommandFieldLinkNode {
+) : ParadoxComplexExpressionNode.Base(), ParadoxCommandFieldNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         return when(getReference(element).resolve()) {
             is ParadoxScriptDefinitionElement -> ParadoxLocalisationAttributesKeys.SCRIPTED_LOC_KEY
@@ -95,9 +95,9 @@ class ParadoxDynamicCommandFieldLinkNode(
     }
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandFieldLinkNode? {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandFieldNode? {
             if(!text.isIdentifier()) return null
-            return ParadoxDynamicCommandFieldLinkNode(text, textRange, configGroup)
+            return ParadoxDynamicCommandFieldNode(text, textRange, configGroup)
         }
     }
 }
