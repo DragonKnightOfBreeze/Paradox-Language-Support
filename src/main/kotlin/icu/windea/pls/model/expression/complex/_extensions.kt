@@ -8,6 +8,7 @@ import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.nodes.*
+import icu.windea.pls.script.psi.*
 
 fun ParadoxComplexExpression.processAllNodes(processor: Processor<ParadoxComplexExpressionNode>): Boolean {
     return doProcessAllNodes(processor)
@@ -64,7 +65,7 @@ private fun ParadoxComplexExpressionNode.doGetReferences(element: ParadoxExpress
  * @return 是否已经输入了前缀。
  */
 fun completeForScopeNode(node: ParadoxScopeFieldNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
-    val contextElement = context.contextElement!!
+    val element = context.contextElement?.castOrNull<ParadoxScriptExpressionElement>() ?: return true
     val offsetInParent = context.offsetInParent!!
     val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
     val nodeRange = node.rangeInExpression
@@ -74,8 +75,8 @@ fun completeForScopeNode(node: ParadoxScopeFieldNode, context: ProcessingContext
     val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
     val endOffset = dataSourceNode?.rangeInExpression?.startOffset ?: -1
     if(prefixNode != null && dataSourceNode != null && offsetInParent >= dataSourceNode.rangeInExpression.startOffset) {
-        val scopeContextResult = ParadoxScopeHandler.getScopeContext(contextElement, prefixNode, scopeContext)
-        context.scopeContext = scopeContextResult
+        context.scopeContext = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, scopeContext)
+            ?: ParadoxScopeHandler.getUnknownScopeContext(scopeContext)
         
         val keywordToUse = dataSourceNode.text.substring(0, offsetInParent - endOffset)
         val resultToUse = result.withPrefixMatcher(keywordToUse)
@@ -113,7 +114,7 @@ fun completeForScopeNode(node: ParadoxScopeFieldNode, context: ProcessingContext
  * @return 是否已经输入了前缀。
  */
 fun completeForValueNode(node: ParadoxValueFieldNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
-    val contextElement = context.contextElement!!
+    val element = context.contextElement?.castOrNull<ParadoxScriptExpressionElement>() ?: return true
     val keyword = context.keyword
     val keywordOffset = context.keywordOffset
     val offsetInParent = context.offsetInParent!!
@@ -125,8 +126,8 @@ fun completeForValueNode(node: ParadoxValueFieldNode, context: ProcessingContext
     val dataSourceNodeToCheck = dataSourceNode?.nodes?.first()
     val endOffset = dataSourceNode?.rangeInExpression?.startOffset ?: -1
     if(prefixNode != null && dataSourceNode != null && offsetInParent >= dataSourceNode.rangeInExpression.startOffset) {
-        val scopeContextResult = ParadoxScopeHandler.getScopeContext(contextElement, prefixNode, scopeContext)
-        context.scopeContext = scopeContextResult
+        context.scopeContext = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, scopeContext)
+            ?: ParadoxScopeHandler.getUnknownScopeContext(scopeContext)
         
         val keywordToUse = dataSourceNode.text.substring(0, offsetInParent - endOffset)
         val resultToUse = result.withPrefixMatcher(keywordToUse)

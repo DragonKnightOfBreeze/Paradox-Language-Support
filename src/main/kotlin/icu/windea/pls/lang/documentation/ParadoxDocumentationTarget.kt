@@ -388,7 +388,7 @@ private fun DocumentationBuilder.addScopeContext(element: PsiElement, name: Stri
     val gameType = configGroup.gameType ?: return
     val memberElement = element.parentOfType<ParadoxScriptMemberElement>(true) ?: return
     if(!ParadoxScopeHandler.isScopeContextSupported(memberElement, indirect = true)) return
-    val scopeContext = ParadoxScopeHandler.getScopeContext(memberElement)
+    val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement)
     if(scopeContext == null) return
     //TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
     // 因为这里的referenceElement是整个stringExpression，得到的作用域上下文会是脚本表达式最终的作用域上下文
@@ -616,7 +616,7 @@ private fun DocumentationBuilder.addScopeContextForDefinition(element: ParadoxSc
     val sections = getSections(SECTIONS_INFO) ?: return
     val gameType = definitionInfo.gameType
     if(!ParadoxScopeHandler.isScopeContextSupported(element, indirect = true)) return
-    val scopeContext = ParadoxScopeHandler.getScopeContext(element)
+    val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(element)
     if(scopeContext == null) return
     sections.put(PlsBundle.message("sectionTitle.scopeContext"), getScopeContextText(scopeContext, gameType, element))
 }

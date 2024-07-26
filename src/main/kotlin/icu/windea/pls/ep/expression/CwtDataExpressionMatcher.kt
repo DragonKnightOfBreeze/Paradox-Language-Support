@@ -6,6 +6,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.expression.*
 
 /**
  * 用于匹配脚本表达式和CWT规则表达式。
@@ -26,7 +27,7 @@ interface CwtDataExpressionMatcher {
      */
     fun matches(
         element: PsiElement,
-        expression: icu.windea.pls.model.expression.ParadoxDataExpression,
+        expression: ParadoxDataExpression,
         configExpression: CwtDataExpression,
         config: CwtConfig<*>?,
         configGroup: CwtConfigGroup,
@@ -41,7 +42,7 @@ interface CwtDataExpressionMatcher {
          */
         fun matches(
             element: PsiElement,
-            expression: icu.windea.pls.model.expression.ParadoxDataExpression,
+            expression: ParadoxDataExpression,
             configExpression: CwtDataExpression,
             config: CwtConfig<*>?,
             configGroup: CwtConfigGroup,

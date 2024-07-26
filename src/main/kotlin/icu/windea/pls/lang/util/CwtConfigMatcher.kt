@@ -218,6 +218,11 @@ object CwtConfigMatcher {
         }
         
         fun getScopeFieldMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
+            val expressionElement = when {
+                element is ParadoxScriptStringExpressionElement -> element
+                element is ParadoxScriptProperty -> element.propertyKey
+                else -> return Result.NotMatch
+            }
             val textRange = TextRange.create(0, expression.text.length)
             val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup)
             if(scopeFieldExpression == null) return Result.NotMatch
@@ -227,8 +232,8 @@ object CwtConfigMatcher {
                     val expectedScope = configExpression.value ?: return Result.ExactMatch
                     return Result.LazyScopeAwareMatch p@{
                         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
-                        val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return@p true
-                        val scopeContext = ParadoxScopeHandler.getScopeContext(element, scopeFieldExpression, parentScopeContext)
+                        val parentScopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement) ?: return@p true
+                        val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
                         if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return@p true
                         false
                     }
@@ -237,8 +242,8 @@ object CwtConfigMatcher {
                     val expectedScopeGroup = configExpression.value ?: return Result.ExactMatch
                     return Result.LazyScopeAwareMatch p@{
                         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
-                        val parentScopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return@p true
-                        val scopeContext = ParadoxScopeHandler.getScopeContext(element, scopeFieldExpression, parentScopeContext)
+                        val parentScopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement) ?: return@p true
+                        val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
                         if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return@p true
                         false
                     }

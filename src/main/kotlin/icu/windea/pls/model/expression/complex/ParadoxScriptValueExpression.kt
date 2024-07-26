@@ -60,6 +60,7 @@ class ParadoxScriptValueExpression private constructor(
     override val errors by lazy { validate() }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        val element = context.contextElement?.castOrNull<ParadoxScriptExpressionElement>() ?: return
         val keyword = context.keyword
         val keywordOffset = context.keywordOffset
         val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
@@ -93,7 +94,7 @@ class ParadoxScriptValueExpression private constructor(
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
                     context.keywordOffset = node.rangeInExpression.startOffset
-                    ParadoxParameterHandler.completeArguments(context.contextElement!!, context, resultToUse)
+                    ParadoxParameterHandler.completeArguments(element, context, resultToUse)
                 }
             } else if(node is ParadoxScriptValueArgumentValueNode && getSettings().inference.configContextForParameters) {
                 if(inRange && scriptValueNode.text.isNotEmpty()) {
@@ -101,7 +102,6 @@ class ParadoxScriptValueExpression private constructor(
                     run {
                         val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                         val resultToUse = result.withPrefixMatcher(keywordToUse)
-                        val element = context.contextElement as? ParadoxScriptStringExpressionElement ?: return@run
                         val parameterElement = node.argumentNode?.getReference(element)?.resolve() ?: return@run
                         val inferredContextConfigs = ParadoxParameterHandler.getInferredContextConfigs(parameterElement)
                         val inferredConfig = inferredContextConfigs.singleOrNull()?.castOrNull<CwtValueConfig>() ?: return@run

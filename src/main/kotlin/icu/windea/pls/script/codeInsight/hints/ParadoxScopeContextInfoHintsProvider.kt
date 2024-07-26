@@ -56,7 +56,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		val isAtLineEnd = editor.document.isAtLineEnd(offset, true)
 		if(!isAtLineEnd) return true //show only if there are no non-blank characters after '{'
 		if(!ParadoxScopeHandler.isScopeContextSupported(element, indirect = true)) return true
-		val scopeContext = ParadoxScopeHandler.getScopeContext(element)
+		val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(element)
 		if(scopeContext != null) {
 			if(settings.showOnlyIfScopeIsChanged && !ParadoxScopeHandler.isScopeContextChanged(element, scopeContext)) return true
 			

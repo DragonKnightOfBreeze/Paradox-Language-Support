@@ -73,7 +73,7 @@ object ParadoxCompletionManager {
         
         context.isKey = true
         context.configGroup = configGroup
-        context.scopeContext = ParadoxScopeHandler.getScopeContext(memberElement)
+        context.scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement)
         
         configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
             for(config in configsWithSameKey) {
@@ -120,7 +120,7 @@ object ParadoxCompletionManager {
         
         context.isKey = false
         context.configGroup = configGroup
-        context.scopeContext = ParadoxScopeHandler.getScopeContext(memberElement)
+        context.scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement)
         
         for(config in configs) {
             if(shouldComplete(config, occurrenceMap)) {
@@ -153,7 +153,7 @@ object ParadoxCompletionManager {
         
         context.isKey = false
         context.configGroup = configGroup
-        context.scopeContext = ParadoxScopeHandler.getScopeContext(propertyElement)
+        context.scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(propertyElement)
         
         for(config in configs) {
             if(config is CwtValueConfig) {

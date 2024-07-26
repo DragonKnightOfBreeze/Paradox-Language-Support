@@ -72,13 +72,14 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         if(config1.key == Data.TRIGGER_KEY) {
             //基于trigger_scope的值得到最终的scopeContext，然后推断属性trigger的值的scopeContext
             val triggerScopeProperty = containerProperty.findProperty(Data.TRIGGER_SCOPE_KEY, inline = true) ?: return null
-            val scopeContext = ParadoxScopeHandler.getScopeContext(triggerScopeProperty) ?: return null
-            val scopeField = triggerScopeProperty.propertyValue?.stringText() ?: return null
+            val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(triggerScopeProperty) ?: return null
+            val pv = triggerScopeProperty.propertyValue ?: return null
+            val scopeField = pv.stringText() ?: return null
             if(scopeField.isLeftQuoted()) return null
             val textRange = TextRange.create(0, scopeField.length)
             val configGroup = config1.configGroup
             val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup) ?: return null
-            return ParadoxScopeHandler.getScopeContext(contextElement, scopeFieldExpression, scopeContext)
+            return ParadoxScopeHandler.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContext)
         }
         //基于trigger的值得到最终的scopeContext，然后推断属性parameters的scopeContext
         val triggerProperty = containerProperty.findProperty(Data.TRIGGER_KEY, inline = true) ?: return null

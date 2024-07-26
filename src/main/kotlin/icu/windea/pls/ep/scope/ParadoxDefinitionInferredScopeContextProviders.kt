@@ -93,7 +93,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
                         if(eventType != definitionInfo.type) return@f //matches definition type
                         val e = psiFile.findElementAt(info.elementOffset) ?: return@f
                         val m = e.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@f
-                        val scopeContext = ParadoxScopeHandler.getScopeContext(m) ?: return@f
+                        val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(m) ?: return@f
                         val map = with(scopeContext) {
                             buildMap {
                                 put("this", scope.id)
@@ -307,7 +307,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             ProgressManager.checkCanceled()
                             val scopesElement = psiFile.findElementAt(scopesElementOffset)?.parentOfType<ParadoxScriptProperty>() ?: return@p false
                             val scopesBlockElement = scopesElement.block ?: return@p false
-                            val scopeContextOfScopesElement = ParadoxScopeHandler.getScopeContext(scopesElement)
+                            val scopeContextOfScopesElement = ParadoxScopeHandler.getSwitchedScopeContext(scopesElement)
                             val map = mutableMapOf<String, String>()
                             scopesBlockElement.processProperty(inline = true) pp@{
                                 ProgressManager.checkCanceled()
@@ -324,7 +324,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                                 if(scopeField.isLeftQuoted()) return@pp true
                                 val textRange = TextRange.create(0, scopeField.length)
                                 val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup) ?: return@pp true
-                                val scopeContextOfEachScope = ParadoxScopeHandler.getScopeContext(it, scopeFieldExpression, scopeContextOfScopesElement)
+                                val scopeContextOfEachScope = ParadoxScopeHandler.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
                                 map.put(n, scopeContextOfEachScope.scope.id)
                                 
                                 true
@@ -458,7 +458,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             ProgressManager.checkCanceled()
                             val scopesElement = psiFile.findElementAt(scopesElementOffset)?.parentOfType<ParadoxScriptProperty>() ?: return@p false
                             val scopesBlockElement = scopesElement.block ?: return@p false
-                            val scopeContextOfScopesElement = ParadoxScopeHandler.getScopeContext(scopesElement)
+                            val scopeContextOfScopesElement = ParadoxScopeHandler.getSwitchedScopeContext(scopesElement)
                             val map = mutableMapOf<String, String>()
                             scopesBlockElement.processProperty(inline = true) pp@{
                                 ProgressManager.checkCanceled()
@@ -475,7 +475,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                                 if(scopeField.isLeftQuoted()) return@pp true
                                 val textRange = TextRange.create(0, scopeField.length)
                                 val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup) ?: return@pp true
-                                val scopeContextOfEachScope = ParadoxScopeHandler.getScopeContext(it, scopeFieldExpression, scopeContextOfScopesElement)
+                                val scopeContextOfEachScope = ParadoxScopeHandler.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
                                 map.put(n, scopeContextOfEachScope.scope.id)
                                 
                                 true

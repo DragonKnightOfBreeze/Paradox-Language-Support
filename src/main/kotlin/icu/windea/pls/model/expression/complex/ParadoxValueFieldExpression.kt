@@ -14,6 +14,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.model.expression.complex.nodes.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 值字段表达式。对应的CWT规则类型为[CwtDataTypeGroups.ValueField]。
@@ -60,7 +61,7 @@ class ParadoxValueFieldExpression private constructor(
     override val errors by lazy { validate() }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        val contextElement = context.contextElement!!
+        val element = context.contextElement?.castOrNull<ParadoxScriptExpressionElement>() ?: return
         val keyword = context.keyword
         val keywordOffset = context.keywordOffset
         val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
@@ -71,7 +72,7 @@ class ParadoxValueFieldExpression private constructor(
         val offset = context.offsetInParent!! - context.expressionOffset
         if(offset < 0) return //unexpected
         var scopeContextInExpression = scopeContext
-        for((i, node) in nodes.withIndex()) {
+        for(node in nodes) {
             val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
             if(!inRange) {
                 //如果光标位置之前存在无法解析的scope（除非被解析为scopeLinkFromData，例如，"event_target:xxx"），不要进行补全
@@ -83,8 +84,8 @@ class ParadoxValueFieldExpression private constructor(
                     completeForScopeNode(node, context, result)
                     break
                 } else {
-                    val inExpression = i != 0
-                    scopeContextInExpression = ParadoxScopeHandler.getScopeContext(contextElement, node, scopeContextInExpression, inExpression)
+                    scopeContextInExpression = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
+                        ?: ParadoxScopeHandler.getUnknownScopeContext(scopeContextInExpression)
                 }
             } else if(node is ParadoxValueFieldNode) {
                 if(inRange) {

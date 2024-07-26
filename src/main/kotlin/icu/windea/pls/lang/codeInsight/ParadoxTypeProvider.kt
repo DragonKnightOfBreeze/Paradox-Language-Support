@@ -72,7 +72,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
             run {
                 val memberElement = getMemberElement(element)
                 if(memberElement != null && ParadoxScopeHandler.isScopeContextSupported(memberElement, indirect = true)) {
-                    val scopeContext = ParadoxScopeHandler.getScopeContext(memberElement) ?: return@run
+                    val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement) ?: return@run
                     val text = scopeContext.toScopeMap().entries.joinToString("\n") { (key, value) -> "$key = $value" }
                     add(makeHtmlRow(PlsBundle.message("title.scopeContext"), text))
                 }
