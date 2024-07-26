@@ -17,7 +17,7 @@ class UnsupportedParameterUsageInspection: LocalInspectionTool() {
                 if(element is ParadoxParameter || element is ParadoxConditionParameter) {
                     val resolved = element.reference?.resolve()
                     if(resolved == null) {
-                        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameterUsage.description.1"))
+                        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameterUsage.desc.1"))
                     }
                 }
             }

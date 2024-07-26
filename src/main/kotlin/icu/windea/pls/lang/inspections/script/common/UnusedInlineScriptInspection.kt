@@ -20,7 +20,7 @@ class UnusedInlineScriptInspection : LocalInspectionTool() {
         if(hasUsages) return null
         
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        val description = PlsBundle.message("inspection.script.unusedInlineScript.description", inlineScriptExpression)
+        val description = PlsBundle.message("inspection.script.unusedInlineScript.desc", inlineScriptExpression)
         holder.registerProblem(file, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL)
         return holder.resultsArray
     }

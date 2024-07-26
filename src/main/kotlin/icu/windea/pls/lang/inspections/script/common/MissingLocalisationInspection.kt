@@ -99,7 +99,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     ?: codeInsightInfo.name?.let { PlsBundle.message("inspection.script.missingLocalisation.from.1", it) }
                     ?: return null
                 val localeId = codeInsightInfo.locale.id
-                return PlsBundle.message("inspection.script.missingLocalisation.description", from, localeId)
+                return PlsBundle.message("inspection.script.missingLocalisation.desc", from, localeId)
             }
             
             private fun getFixes(element: PsiElement, context: ParadoxLocalisationCodeInsightContext): List<LocalQuickFix> {

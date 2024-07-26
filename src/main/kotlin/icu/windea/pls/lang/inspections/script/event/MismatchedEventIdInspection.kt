@@ -51,7 +51,7 @@ class MismatchedEventIdInspection : LocalInspectionTool() {
                 } ?: continue
                 val eventId = eventIdProperty.stringValue() ?: continue
                 if(!ParadoxEventHandler.isMatchedEventId(eventId, namespace)) {
-                    holder.registerProblem(eventIdProperty, PlsBundle.message("inspection.script.mismatchedEventId.description", eventId, namespace))
+                    holder.registerProblem(eventIdProperty, PlsBundle.message("inspection.script.mismatchedEventId.desc", eventId, namespace))
                 }
             }
         }

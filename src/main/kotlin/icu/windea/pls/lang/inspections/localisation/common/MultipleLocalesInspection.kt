@@ -26,7 +26,7 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 		}
 		if(file.propertyLists.size <= 1) return null //不存在多个语言区域，忽略
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		holder.registerProblem(file, PlsBundle.message("inspection.localisation.multipleLocales.description"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+		holder.registerProblem(file, PlsBundle.message("inspection.localisation.multipleLocales.desc"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
 		return holder.resultsArray
 	}
 	

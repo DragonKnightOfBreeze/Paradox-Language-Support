@@ -22,7 +22,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
                 val reference = element.reference
                 if(reference == null || reference.resolve() != null) return
                 val name = element.name ?: return
-                holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedColor.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+                holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedColor.desc", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
     }

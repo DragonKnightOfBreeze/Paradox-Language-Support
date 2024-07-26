@@ -99,19 +99,19 @@ class MissingExpressionInspection : LocalInspectionTool() {
                     val isConst = configExpression.type == CwtDataTypes.Constant
                     val description = if(isKey) {
                         when {
-                            isConst -> PlsBundle.message("inspection.script.missingExpression.description.1.1", configExpression)
-                            else -> PlsBundle.message("inspection.script.missingExpression.description.1.2", configExpression)
+                            isConst -> PlsBundle.message("inspection.script.missingExpression.desc.1.1", configExpression)
+                            else -> PlsBundle.message("inspection.script.missingExpression.desc.1.2", configExpression)
                         }
                     } else {
                         when {
-                            isConst -> PlsBundle.message("inspection.script.missingExpression.description.2.1", configExpression)
-                            else -> PlsBundle.message("inspection.script.missingExpression.description.2.2", configExpression)
+                            isConst -> PlsBundle.message("inspection.script.missingExpression.desc.2.1", configExpression)
+                            else -> PlsBundle.message("inspection.script.missingExpression.desc.2.2", configExpression)
                         }
                     }
                     val minDefine = occurrence.minDefine
                     val detail = when {
-                        minDefine == null -> PlsBundle.message("inspection.script.missingExpression.description.detail.1", min, actual)
-                        else -> PlsBundle.message("inspection.script.missingExpression.description.detail.2", min, actual, minDefine)
+                        minDefine == null -> PlsBundle.message("inspection.script.missingExpression.desc.detail.1", min, actual)
+                        else -> PlsBundle.message("inspection.script.missingExpression.desc.detail.2", min, actual, minDefine)
                     }
                     val highlightType = when {
                         relaxMin -> ProblemHighlightType.WEAK_WARNING //weak warning (wave lines), not warning

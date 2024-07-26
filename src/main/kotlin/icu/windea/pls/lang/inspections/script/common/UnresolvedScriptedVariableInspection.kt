@@ -33,7 +33,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 					IntroduceLocalVariableFix(name, element),
 					IntroduceGlobalVariableFix(name, element)
 				)
-				val message = PlsBundle.message("inspection.script.unresolvedScriptedVariable.description", name)
+				val message = PlsBundle.message("inspection.script.unresolvedScriptedVariable.desc", name)
 				holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *quickFixes.toTypedArray())
 			}
 		}

@@ -50,7 +50,7 @@ class IncorrectOverriddenForDefinitionInspection : LocalInspectionTool() {
                 if(firstRootInfo.rootFile != rootInfo.rootFile) {
                     //different root file -> incorrect override
                     val locationElement = element.propertyKey
-                    val message = PlsBundle.message("inspection.script.incorrectOverriddenForDefinition.description", name, priority)
+                    val message = PlsBundle.message("inspection.script.incorrectOverriddenForDefinition.desc", name, priority)
                     val fix = NavigateToOverriddenDefinitionsFix(name, element, results)
                     holder.registerProblem(locationElement, message, fix)
                 }

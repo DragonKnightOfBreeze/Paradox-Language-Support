@@ -26,7 +26,7 @@ class UnsupportedScriptedVariableUsageInspection: LocalInspectionTool() {
                         if(resolved.parent !is ParadoxScriptRootBlock) return //快速判断
                         val fileInfo = resolved.fileInfo ?: return
                         if(!"common/scripted_variables".matchesPath(fileInfo.pathToEntry.path)) return
-                        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedScriptedVariableUsage.description.1"))
+                        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedScriptedVariableUsage.desc.1"))
                     }
                 }
             }

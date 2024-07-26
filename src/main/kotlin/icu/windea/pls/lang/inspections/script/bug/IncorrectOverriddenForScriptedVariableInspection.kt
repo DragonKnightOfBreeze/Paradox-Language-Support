@@ -51,7 +51,7 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
                 if(firstRootInfo.rootFile != rootInfo.rootFile) {
                     //different root file -> incorrect override
                     val locationElement = element.scriptedVariableName
-                    val message = PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.description", name, priority)
+                    val message = PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.desc", name, priority)
                     val fix = NavigateToOverriddenScriptedVariablesFix(name, element, results)
                     holder.registerProblem(locationElement, message, fix)
                 }

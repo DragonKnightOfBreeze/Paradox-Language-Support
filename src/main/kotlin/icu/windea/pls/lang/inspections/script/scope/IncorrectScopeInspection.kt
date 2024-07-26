@@ -34,13 +34,13 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                     if(element is ParadoxScriptProperty) {
                         val propertyKey = element.propertyKey
                         val description = PlsBundle.message(
-                            "inspection.script.incorrectScope.description.1",
+                            "inspection.script.incorrectScope.desc.1",
                             propertyKey.expression, supportedScopes.joinToString(), parentScopeContext.scope.id
                         )
                         holder.registerProblem(propertyKey, description)
                     } else if(element is ParadoxScriptString && config.expression.type == CwtDataTypes.AliasKeysField) {
                         val description = PlsBundle.message(
-                            "inspection.script.incorrectScope.description.2",
+                            "inspection.script.incorrectScope.desc.2",
                             element.expression, supportedScopes.joinToString(), parentScopeContext.scope.id
                         )
                         holder.registerProblem(element, description)

@@ -35,7 +35,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 val recursions = mutableSetOf<PsiElement>()
                 ParadoxRecursionManager.isRecursiveLocalisation(element, recursions)
                 if(recursions.isEmpty()) return
-                val message = PlsBundle.message("inspection.localisation.unsupportedRecursion.description.1")
+                val message = PlsBundle.message("inspection.localisation.unsupportedRecursion.desc.1")
                 val location = element.propertyKey
                 holder.registerProblem(location, message, NavigateToRecursionFix(name, element, recursions))
             }

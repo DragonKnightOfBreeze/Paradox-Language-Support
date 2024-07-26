@@ -43,7 +43,7 @@ class OverriddenForDefinitionInspection : LocalInspectionTool() {
                 if(results.size < 2) return //no override -> skip
                 
                 val locationElement = element.propertyKey
-                val message = PlsBundle.message("inspection.script.overriddenForDefinition.description", name)
+                val message = PlsBundle.message("inspection.script.overriddenForDefinition.desc", name)
                 val fix = NavigateToOverriddenDefinitionsFix(name, element, results)
                 holder.registerProblem(locationElement, message, fix)
             }

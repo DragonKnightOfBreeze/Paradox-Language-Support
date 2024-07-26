@@ -71,9 +71,9 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     expectedExpressions.orNull()?.joinToString()
                     val expect = if(showExpectInfo) expectedExpressions.joinToString() else null
                     val message = when {
-                        expect == null -> PlsBundle.message("inspection.script.unresolvedExpression.description.1.1", propertyKey.expression)
-                        expect.isNotEmpty() -> PlsBundle.message("inspection.script.unresolvedExpression.description.1.2", propertyKey.expression, expect)
-                        else -> PlsBundle.message("inspection.script.unresolvedExpression.description.1.3", propertyKey.expression)
+                        expect == null -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.1", propertyKey.expression)
+                        expect.isNotEmpty() -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.2", propertyKey.expression, expect)
+                        else -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.3", propertyKey.expression)
                     }
                     val fixes = getFixes(element, expectedConfigs).toTypedArray()
                     holder.registerProblem(element, message, *fixes)
@@ -106,9 +106,9 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.expression }
                     val expect = if(showExpectInfo) expectedExpressions.joinToString() else null
                     val message = when {
-                        expect == null -> PlsBundle.message("inspection.script.unresolvedExpression.description.2.1", element.expression)
-                        expect.isNotEmpty() -> PlsBundle.message("inspection.script.unresolvedExpression.description.2.2", element.expression, expect)
-                        else -> PlsBundle.message("inspection.script.unresolvedExpression.description.2.3", element.expression)
+                        expect == null -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.1", element.expression)
+                        expect.isNotEmpty() -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.2", element.expression, expect)
+                        else -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.3", element.expression)
                     }
                     val fixes = getFixes(element, expectedConfigs).toTypedArray()
                     holder.registerProblem(element, message, *fixes)

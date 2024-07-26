@@ -27,7 +27,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
             if(canResolveToNumber(propertyKey)) return
             val propertyValue = element.propertyValue ?: return
             if(canResolveToNumber(propertyValue)) return
-            val message = PlsBundle.message("inspection.script.incorrectScriptSyntax.description.1")
+            val message = PlsBundle.message("inspection.script.incorrectScriptSyntax.desc.1")
             holder.registerProblem(token, message, ProblemHighlightType.GENERIC_ERROR)
         }
         

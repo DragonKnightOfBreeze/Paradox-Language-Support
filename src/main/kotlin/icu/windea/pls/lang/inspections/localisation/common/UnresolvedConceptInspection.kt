@@ -37,7 +37,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
                 val reference = element.reference
                 if(reference == null || reference.resolve() != null) return
                 val name = element.name
-                holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedConcept.description", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+                holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedConcept.desc", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
             
             private fun isIgnoredByConfigs(element: ParadoxLocalisationConcept): Boolean {

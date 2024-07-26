@@ -32,7 +32,7 @@ class IncorrectEventNamespaceInspection : LocalInspectionTool() {
                 if(ParadoxEventHandler.isValidEventNamespace(eventNamespace)) return
                 val nameElement = if(nameField == null) element.propertyKey else element.findProperty(nameField)?.propertyValue
                 if(nameElement == null) return //忽略
-                holder.registerProblem(nameElement, PlsBundle.message("inspection.script.incorrectEventNamespace.description", eventNamespace))
+                holder.registerProblem(nameElement, PlsBundle.message("inspection.script.incorrectEventNamespace.desc", eventNamespace))
             }
         }
     }

@@ -26,7 +26,7 @@ class MissingLocaleInspection : LocalInspectionTool() {
         }
         if(file.propertyLists.all { it.locale != null }) return null //没有问题，跳过
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        holder.registerProblem(file, PlsBundle.message("inspection.localisation.missingLocale.description"))
+        holder.registerProblem(file, PlsBundle.message("inspection.localisation.missingLocale.desc"))
         return holder.resultsArray
     }
     

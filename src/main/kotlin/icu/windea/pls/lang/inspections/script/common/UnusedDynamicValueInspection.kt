@@ -82,7 +82,7 @@ class UnusedDynamicValueInspection : LocalInspectionTool() {
             }
             
             private fun registerProblem(element: PsiElement, name: String, dynamicValueType: String, range: TextRange) {
-                val message = PlsBundle.message("inspection.script.unusedDynamicValue.description", name, dynamicValueType)
+                val message = PlsBundle.message("inspection.script.unusedDynamicValue.desc", name, dynamicValueType)
                 holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range)
             }
         }

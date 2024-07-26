@@ -39,7 +39,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 val recursions = mutableSetOf<PsiElement>()
                 ParadoxRecursionManager.isRecursiveScriptedVariable(element, recursions)
                 if(recursions.isEmpty()) return
-                val message = PlsBundle.message("inspection.script.unsupportedRecursion.description.1")
+                val message = PlsBundle.message("inspection.script.unsupportedRecursion.desc.1")
                 val location = element.scriptedVariableName
                 holder.registerProblem(location, message, NavigateToRecursionFix(name, element, recursions))
             }
@@ -56,8 +56,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 ParadoxRecursionManager.isRecursiveDefinition(element, recursions) { _, re -> ParadoxPsiManager.isInvocationReference(element, re) }
                 if(recursions.isEmpty()) return
                 val message = when {
-                    definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.unsupportedRecursion.description.2.1")
-                    definitionInfo.type == "scripted_effect" -> PlsBundle.message("inspection.script.unsupportedRecursion.description.2.2")
+                    definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.2.1")
+                    definitionInfo.type == "scripted_effect" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.2.2")
                     else -> return
                 }
                 val location = element.propertyKey

@@ -34,7 +34,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 		if(!isValid) {
 			val holder = ProblemsHolder(manager, file, isOnTheFly)
 			val bom = if(hasBom) "BOM" else "NO BOM"
-			holder.registerProblem(file, PlsBundle.message("inspection.localisation.incorrectFileEncoding.description", charset, bom),
+			holder.registerProblem(file, PlsBundle.message("inspection.localisation.incorrectFileEncoding.desc", charset, bom),
 				ChangeToCorrectFileEncodingFix(file)
 			)
 			return holder.resultsArray

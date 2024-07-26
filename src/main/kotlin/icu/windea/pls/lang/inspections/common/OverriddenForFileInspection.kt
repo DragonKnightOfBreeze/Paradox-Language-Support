@@ -37,7 +37,7 @@ class OverriddenForFileInspection : LocalInspectionTool() {
                 if(results.size < 2) return //no override -> skip
                 
                 val locationElement = file
-                val message = PlsBundle.message("inspection.overriddenForFile.description", path)
+                val message = PlsBundle.message("inspection.overriddenForFile.desc", path)
                 val fix = NavigateToOverriddenFilesFix(path, file, results)
                 holder.registerProblem(locationElement, message, fix)
             }

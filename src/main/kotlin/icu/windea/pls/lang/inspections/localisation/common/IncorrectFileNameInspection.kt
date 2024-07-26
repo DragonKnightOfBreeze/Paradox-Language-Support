@@ -53,7 +53,7 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
             if(localeIdFromFile != null) this += RenameLocaleFix(locale, localeIdFromFile)
         }.toTypedArray<LocalQuickFix>()
         //将检查注册在locale上，而非file上
-        holder.registerProblem(locale, PlsBundle.message("inspection.localisation.incorrectFileName.description", fileName, localeId), *quickFixes)
+        holder.registerProblem(locale, PlsBundle.message("inspection.localisation.incorrectFileName.desc", fileName, localeId), *quickFixes)
         return holder.resultsArray
     }
 	

@@ -44,7 +44,7 @@ class OverriddenForScriptedVariableInspection : LocalInspectionTool() {
                 if(results.size < 2) return //no override -> skip
                 
                 val locationElement = element.scriptedVariableName
-                val message = PlsBundle.message("inspection.script.overriddenForScriptedVariable.description", name)
+                val message = PlsBundle.message("inspection.script.overriddenForScriptedVariable.desc", name)
                 val fix = NavigateToOverriddenScriptedVariablesFix(name, element, results)
                 holder.registerProblem(locationElement, message, fix)
             }

@@ -82,7 +82,7 @@ class MissingImageInspection : LocalInspectionTool() {
                     ?: codeInsightInfo.gfxName?.let { PlsBundle.message("inspection.script.missingImage.from.2", it) }
                     ?: codeInsightInfo.filePath?.let { PlsBundle.message("inspection.script.missingImage.from.1", it) }
                     ?: return null
-                return PlsBundle.message("inspection.script.missingImage.description", from)
+                return PlsBundle.message("inspection.script.missingImage.desc", from)
             }
         }
     }

@@ -82,7 +82,7 @@ class UnsetDynamicValueInspection : LocalInspectionTool() {
             }
             
             private fun registerProblem(element: PsiElement, name: String, dynamicValueType: String, range: TextRange) {
-                val message = PlsBundle.message("inspection.script.unsetDynamicValue.description", name, dynamicValueType)
+                val message = PlsBundle.message("inspection.script.unsetDynamicValue.desc", name, dynamicValueType)
                 holder.registerProblem(element, message, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, range)
             }
         }
