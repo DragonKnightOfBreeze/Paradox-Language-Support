@@ -5,7 +5,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
@@ -32,36 +31,39 @@ class IncorrectScopeInspection : LocalInspectionTool() {
             }
             
             fun checkExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
-                complexExpression.processAllNodes p1@{ node ->
-                    if(node is ParadoxComplexExpression) doCheckExpression(element, node)
-                    true
-                }
+                doCheckExpression(element, complexExpression)
             }
             
             private fun doCheckExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
-                val fieldLinkNode = complexExpression.nodes.lastOrNull()?.castOrNull<ParadoxCommandFieldLinkNode>() ?: return
-                val supportedScopes = when(fieldLinkNode) {
-                    //parameterized -> skip
-                    is ParadoxParameterizedCommandFieldLinkNode -> null
-                    //localisation_command
-                    is ParadoxPredefinedCommandFieldLinkNode -> fieldLinkNode.config.supportedScopes
-                    //scripted_loc or variable -> skip
-                    is ParadoxDynamicCommandFieldLinkNode -> null
-                    //error -> skip
-                    is ParadoxErrorCommandFieldLinkNode -> null
+                var inputScopeContext = ParadoxScopeHandler.getAnyScopeContext()
+                when(complexExpression) {
+                    is ParadoxCommandExpression -> {
+                        for(node in complexExpression.nodes) {
+                            when(node) {
+                                is ParadoxCommandScopeLinkNode -> {
+                                    val outputScopeContext = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, inputScopeContext)
+                                    inputScopeContext = outputScopeContext ?: ParadoxScopeHandler.getUnknownScopeContext(inputScopeContext)
+                                }
+                                is ParadoxCommandFieldLinkNode -> {
+                                    val supportedScopes = ParadoxScopeHandler.getSupportedScopesOfNode(element, node, inputScopeContext)
+                                    val outputScopeContext = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, inputScopeContext)
+                                    inputScopeContext = outputScopeContext ?: ParadoxScopeHandler.getUnknownScopeContext(inputScopeContext)
+                                    
+                                    if(supportedScopes.isNullOrEmpty() || outputScopeContext == null) continue
+                                    val matched = ParadoxScopeHandler.matchesScope(outputScopeContext, supportedScopes, configGroup)
+                                    if(!matched) continue
+                                    val offset = ParadoxExpressionHandler.getExpressionOffset(element)
+                                    val startOffset = offset + node.rangeInExpression.startOffset
+                                    val endOffset = offset + node.rangeInExpression.endOffset
+                                    val range = TextRange.create(startOffset, endOffset)
+                                    val description = PlsBundle.message("inspection.localisation.incorrectScope.desc.1", node.text, supportedScopes, outputScopeContext.scope)
+                                    holder.registerProblem(element, range, description)
+                                    break //only reports first problem per complex expression
+                                }
+                            }
+                        }
+                    }
                 }
-                if(supportedScopes.isNullOrEmpty()) return
-                
-                val scopeNodes = complexExpression.nodes.filterIsInstance<ParadoxScopeFieldNode>()
-                val max = ParadoxScopeHandler.maxScopeLinkSize
-                val actual = scopeNodes.size
-                if(actual <= max) return
-                val offset = ParadoxExpressionHandler.getExpressionOffset(element)
-                val startOffset = offset + scopeNodes.first().rangeInExpression.startOffset
-                val endOffset = offset + scopeNodes.last().rangeInExpression.endOffset
-                val range = TextRange.create(startOffset, endOffset)
-                val description = PlsBundle.message("inspection.localisation.incorrectScopeLinkChain.desc.1", max, actual)
-                holder.registerProblem(element, range, description)
             }
         }
     }

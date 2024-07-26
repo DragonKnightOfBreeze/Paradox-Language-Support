@@ -33,14 +33,11 @@ class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
             }
             
             fun checkExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
-                complexExpression.processAllNodes p1@{ node ->
-                    if(node is ParadoxComplexExpression) doCheckExpression(element, node)
-                    true
-                }
+                doCheckExpression(element, complexExpression)
             }
             
             private fun doCheckExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
-                val scopeNodes = complexExpression.nodes.filterIsInstance<ParadoxScopeFieldNode>()
+                val scopeNodes = complexExpression.nodes.filterIsInstance<ParadoxCommandScopeLinkNode>()
                 val max = ParadoxScopeHandler.maxScopeLinkSize
                 val actual = scopeNodes.size
                 if(actual <= max) return
