@@ -46,17 +46,17 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                                 }
                                 is ParadoxCommandFieldLinkNode -> {
                                     val supportedScopes = ParadoxScopeHandler.getSupportedScopesOfNode(element, node, inputScopeContext)
+                                    val matched = ParadoxScopeHandler.matchesScope(inputScopeContext, supportedScopes, configGroup)
                                     val outputScopeContext = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, inputScopeContext)
                                     inputScopeContext = outputScopeContext ?: ParadoxScopeHandler.getUnknownScopeContext(inputScopeContext)
                                     
                                     if(supportedScopes.isNullOrEmpty() || outputScopeContext == null) continue
-                                    val matched = ParadoxScopeHandler.matchesScope(outputScopeContext, supportedScopes, configGroup)
-                                    if(!matched) continue
+                                    if(matched) continue
                                     val offset = ParadoxExpressionHandler.getExpressionOffset(element)
                                     val startOffset = offset + node.rangeInExpression.startOffset
                                     val endOffset = offset + node.rangeInExpression.endOffset
                                     val range = TextRange.create(startOffset, endOffset)
-                                    val description = PlsBundle.message("inspection.localisation.incorrectScope.desc.1", node.text, supportedScopes, outputScopeContext.scope)
+                                    val description = PlsBundle.message("inspection.localisation.incorrectScope.desc.1", node.text, supportedScopes.joinToString(", "), outputScopeContext.scope)
                                     holder.registerProblem(element, range, description)
                                     break //only reports first problem per complex expression
                                 }
