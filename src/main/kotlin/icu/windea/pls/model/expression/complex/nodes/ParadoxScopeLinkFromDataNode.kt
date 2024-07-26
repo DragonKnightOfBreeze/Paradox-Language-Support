@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.*
 class ParadoxScopeLinkFromDataNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
     override val configGroup: CwtConfigGroup,
     val linkConfigs: List<CwtLinkConfig>,
 ) : ParadoxComplexExpressionNode.Base(), ParadoxScopeFieldNode {

@@ -15,7 +15,7 @@ import icu.windea.pls.script.highlighter.*
 
 class ParadoxScopeLinkNode(
     override val text: String,
-    override val rangeInExpression: TextRange,,
+    override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val config: CwtLinkConfig
 ) : ParadoxComplexExpressionNode.Base(), ParadoxScopeFieldNode {
