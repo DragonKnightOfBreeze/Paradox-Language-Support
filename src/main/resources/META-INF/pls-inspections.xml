@@ -195,12 +195,12 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.scope.group"
                      groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.scope.IncorrectScopeSwitchInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptTooLongScopeLink"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeLinkChain"
                      enabledByDefault="true" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.tooLongScopeLink"
+                     bundle="messages.PlsBundle" key="inspection.script.incorrectScopeLinkChain"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.scope.group"
                      groupPathKey="inspection.script.groupPath"
-                     implementationClass="icu.windea.pls.lang.inspections.script.scope.TooLongScopeLinkInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.script.scope.IncorrectScopeLinkChainInspection"/>
     <!--endregion-->
     <!--region Paradox script/Complex expressions-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeFieldExpression"
@@ -366,12 +366,12 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation.scope.group"
                      groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.scope.IncorrectScopeSwitchInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationTooLongScopeLink"
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectScopeLinkChain"
                      enabledByDefault="true" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.localisation.tooLongScopeLink"
+                     bundle="messages.PlsBundle" key="inspection.localisation.incorrectScopeLinkChain"
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation.scope.group"
                      groupPathKey="inspection.localisation.groupPath"
-                     implementationClass="icu.windea.pls.lang.inspections.localisation.scope.TooLongScopeLinkInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.localisation.scope.IncorrectScopeLinkChainInspection"/>
     <!--endregion-->
     <!--region Paradox localisation/Complex expressions-->
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectCommandExpression"
