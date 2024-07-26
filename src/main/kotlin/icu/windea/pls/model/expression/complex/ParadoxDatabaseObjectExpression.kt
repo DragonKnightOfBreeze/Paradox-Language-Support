@@ -107,25 +107,25 @@ class ParadoxDatabaseObjectExpression private constructor(
                 }
                 if(colonIndex1 == -1) return@r1
                 run r2@{
-                    val node = ParadoxMarkerNode(":", TextRange.from(colonIndex1, 1))
+                    val node = ParadoxMarkerNode(":", TextRange.from(colonIndex1, 1), configGroup)
                     nodes += node
                 }
                 val colonIndex2 = expressionString.indexOf(':', colonIndex1 + 1)
                 run r2@{
                     val nodeText = if(colonIndex2 == -1) expressionString.substring(colonIndex1 + 1) else expressionString.substring(colonIndex1 + 1, colonIndex2)
                     val nodeTextRange = TextRange.from(colonIndex1 + 1, nodeText.length)
-                    val node = ParadoxDatabaseObjectNode.resolve(nodeText, nodeTextRange, expression, isBase = true)
+                    val node = ParadoxDatabaseObjectNode.resolve(nodeText, nodeTextRange, configGroup, expression, isBase = true)
                     nodes += node
                 }
                 if(colonIndex2 == -1) return@r1
                 run r2@{
-                    val node = ParadoxMarkerNode(":", TextRange.from(colonIndex2, 1))
+                    val node = ParadoxMarkerNode(":", TextRange.from(colonIndex2, 1), configGroup)
                     nodes += node
                 }
                 run r2@{
                     val nodeText = expressionString.substring(colonIndex2 + 1)
                     val nodeTextRange = TextRange.from(colonIndex2 + 1, nodeText.length)
-                    val node = ParadoxDatabaseObjectNode.resolve(nodeText, nodeTextRange, expression, isBase = false)
+                    val node = ParadoxDatabaseObjectNode.resolve(nodeText, nodeTextRange, configGroup, expression, isBase = false)
                     nodes += node
                 }
             }

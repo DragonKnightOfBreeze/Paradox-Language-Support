@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.model.expression.complex.*
@@ -13,15 +14,16 @@ import icu.windea.pls.script.highlighter.*
 class ParadoxValueLinkDataSourceNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    val linkConfigs: List<CwtLinkConfig>,
-    override val nodes: List<ParadoxComplexExpressionNode>
+    override val nodes: List<ParadoxComplexExpressionNode>,
+    override val configGroup: CwtConfigGroup,
+    val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.VALUE_LINK_DATA_SOURCE_KEY
     }
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxValueLinkDataSourceNode {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxValueLinkDataSourceNode {
             val parameterRanges = text.getParameterRanges()
             
             //text may contain parameters
@@ -30,7 +32,6 @@ class ParadoxValueLinkDataSourceNode(
             run {
                 val configs = linkConfigs.filter { it.dataSource?.type in CwtDataTypeGroups.DynamicValue }
                 if(configs.isNotEmpty()) {
-                    val configGroup = linkConfigs.first().configGroup
                     val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
                     nodes.add(node)
                 }
@@ -50,14 +51,13 @@ class ParadoxValueLinkDataSourceNode(
                     if(scriptValueConfig == null) {
                         val dataText = text.substring(0, tokenIndex)
                         val dataRange = TextRange.create(offset, tokenIndex + offset)
-                        val dataNode = ParadoxDataSourceNode.resolve(dataText, dataRange, linkConfigs)
+                        val dataNode = ParadoxDataSourceNode.resolve(dataText, dataRange, configGroup, linkConfigs)
                         nodes.add(dataNode)
                         val errorText = text.substring(tokenIndex)
                         val errorRange = TextRange.create(tokenIndex + offset, text.length + offset)
-                        val errorNode = ParadoxErrorTokenNode(errorText, errorRange)
+                        val errorNode = ParadoxErrorTokenNode(errorText, errorRange, configGroup)
                         nodes.add(errorNode)
                     } else {
-                        val configGroup = linkConfigs.first().configGroup
                         val node = ParadoxScriptValueExpression.resolve(text, textRange, configGroup, scriptValueConfig)
                         if(node != null) nodes.add(node)
                     }
@@ -66,10 +66,10 @@ class ParadoxValueLinkDataSourceNode(
             }
             run {
                 if(nodes.isNotEmpty()) return@run
-                val node = ParadoxDataSourceNode.resolve(text, textRange, linkConfigs)
+                val node = ParadoxDataSourceNode.resolve(text, textRange, configGroup, linkConfigs)
                 nodes.add(node)
             }
-            return ParadoxValueLinkDataSourceNode(text, textRange, linkConfigs, nodes)
+            return ParadoxValueLinkDataSourceNode(text, textRange, nodes, configGroup, linkConfigs)
         }
     }
 }

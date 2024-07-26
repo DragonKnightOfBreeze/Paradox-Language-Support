@@ -9,7 +9,8 @@ class ParadoxValueLinkFromDataNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
-    val linkConfigs: List<CwtLinkConfig>,
+    override val configGroup: CwtConfigGroup,
+    val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxComplexExpressionNode.Base(), ParadoxValueFieldNode {
     val prefixNode get() = nodes.findIsInstance<ParadoxValueLinkPrefixNode>()
     val dataSourceNode get() = nodes.findIsInstance<ParadoxValueLinkDataSourceNode>()!!
@@ -25,22 +26,22 @@ class ParadoxValueLinkFromDataNode(
                 //prefix node
                 val prefixText = linkConfigs.first().prefix!!
                 val prefixRange = TextRange.create(offset, prefixText.length + offset)
-                val prefixNode = ParadoxValueLinkPrefixNode.resolve(prefixText, prefixRange, linkConfigs)
+                val prefixNode = ParadoxValueLinkPrefixNode.resolve(prefixText, prefixRange, configGroup, linkConfigs)
                 nodes.add(prefixNode)
                 //data source node
                 val dataSourceText = text.drop(prefixText.length)
                 val dataSourceRange = TextRange.create(prefixText.length + offset, text.length + offset)
-                val dataSourceNode = ParadoxValueLinkDataSourceNode.resolve(dataSourceText, dataSourceRange, linkConfigs)
+                val dataSourceNode = ParadoxValueLinkDataSourceNode.resolve(dataSourceText, dataSourceRange, configGroup, linkConfigs)
                 nodes.add(dataSourceNode)
-                return ParadoxValueLinkFromDataNode(text, textRange, nodes, linkConfigs)
+                return ParadoxValueLinkFromDataNode(text, textRange, nodes, configGroup, linkConfigs)
             } else {
                 //没有前缀且允许没有前缀
                 val linkConfigsNoPrefix = configGroup.linksAsValueWithoutPrefixSorted
                 if(linkConfigsNoPrefix.isNotEmpty()) {
                     //这里直接认为匹配
-                    val node = ParadoxValueLinkDataSourceNode.resolve(text, textRange, linkConfigsNoPrefix)
+                    val node = ParadoxValueLinkDataSourceNode.resolve(text, textRange, configGroup,linkConfigsNoPrefix)
                     nodes.add(node)
-                    return ParadoxValueLinkFromDataNode(text, textRange, nodes, linkConfigs)
+                    return ParadoxValueLinkFromDataNode(text, textRange, nodes, configGroup, linkConfigs)
                 }
             }
             return null

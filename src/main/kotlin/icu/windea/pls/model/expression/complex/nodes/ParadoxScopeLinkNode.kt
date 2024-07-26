@@ -15,7 +15,8 @@ import icu.windea.pls.script.highlighter.*
 
 class ParadoxScopeLinkNode(
     override val text: String,
-    override val rangeInExpression: TextRange,
+    override val rangeInExpression: TextRange,,
+    override val configGroup: CwtConfigGroup,
     val config: CwtLinkConfig
 ) : ParadoxComplexExpressionNode.Base(), ParadoxScopeFieldNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
@@ -34,7 +35,7 @@ class ParadoxScopeLinkNode(
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScopeLinkNode? {
             val config = configGroup.linksAsScopeNotData.get(text)
                 ?: return null
-            return ParadoxScopeLinkNode(text, textRange, config)
+            return ParadoxScopeLinkNode(text, textRange, configGroup, config)
         }
     }
 }

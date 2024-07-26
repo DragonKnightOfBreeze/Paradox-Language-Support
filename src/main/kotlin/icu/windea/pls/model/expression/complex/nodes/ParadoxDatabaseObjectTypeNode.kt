@@ -1,6 +1,5 @@
 package icu.windea.pls.model.expression.complex.nodes
 
-import com.intellij.lang.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -20,6 +19,7 @@ import icu.windea.pls.script.highlighter.*
 class ParadoxDatabaseObjectTypeNode(
     override val text: String,
     override val rangeInExpression: TextRange,
+    override val configGroup: CwtConfigGroup,
     val config: CwtDatabaseObjectTypeConfig?
 ) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
@@ -50,7 +50,7 @@ class ParadoxDatabaseObjectTypeNode(
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectTypeNode {
             val config = configGroup.databaseObjectTypes.get(text)
-            return ParadoxDatabaseObjectTypeNode(text, textRange, config)
+            return ParadoxDatabaseObjectTypeNode(text, textRange, configGroup, config)
         }
     }
 }

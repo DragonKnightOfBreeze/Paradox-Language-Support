@@ -6,6 +6,7 @@ import com.intellij.psi.impl.source.resolve.*
 import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
@@ -19,6 +20,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxDataSourceNode(
     override val text: String,
     override val rangeInExpression: TextRange,
+    override val configGroup: CwtConfigGroup,
     val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? {
@@ -112,9 +114,9 @@ class ParadoxDataSourceNode(
     }
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxDataSourceNode {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxDataSourceNode {
             //text may contain parameters
-            return ParadoxDataSourceNode(text, textRange, linkConfigs)
+            return ParadoxDataSourceNode(text, textRange, configGroup, linkConfigs)
         }
     }
 }

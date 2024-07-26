@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxDynamicCommandFieldLinkNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    val configGroup: CwtConfigGroup
+    override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNode.Base(), ParadoxCommandFieldLinkNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         return when(getReference(element).resolve()) {

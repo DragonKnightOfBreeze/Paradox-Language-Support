@@ -11,7 +11,7 @@ import icu.windea.pls.script.highlighter.*
 class ParadoxParameterizedScopeFieldNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    val configGroup: CwtConfigGroup
+    override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNode.Base(), ParadoxScopeFieldNode, ParadoxParameterizedNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.SCOPE_KEY

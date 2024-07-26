@@ -14,11 +14,11 @@ import org.jetbrains.kotlin.idea.base.codeInsight.handlers.fixers.*
 
 /**
  * （本地化）命令表达式。
- * 
+ *
  * 可以在本地化文件中作为命令文本使用。（如，`[Root.GetName]`）
- * 
+ *
  * 语法：
- * 
+ *
  * ```bnf
  * command_expression ::= command_scope_link * (command_field_link)
  * command_scope_link := system_command_scope_link | predefined_command_scope_link | dynamic_command_scope_link
@@ -31,9 +31,9 @@ import org.jetbrains.kotlin.idea.base.codeInsight.handlers.fixers.*
  * predefined_command_field_link := TOKEN //predefined by CWT Config (see localisation commands)
  * dynamic_command_field_link ::= TOKEN //matching config expression "<scripted_loc>" or "value[variable]"
  * ```
- * 
+ *
  * 示例：
- * 
+ *
  * * `Root.GetName`
  * * `Root.Owner.event_target:some_event_target.var`
  */
@@ -42,7 +42,7 @@ class ParadoxCommandExpression private constructor(
     override val rangeInExpression: TextRange,
     override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup
-): ParadoxComplexExpression.Base(){
+) : ParadoxComplexExpression.Base() {
     override val errors by lazy { validate() }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -80,9 +80,9 @@ class ParadoxCommandExpression private constructor(
                         }
                         nodes += node
                     }
-                    run r2@{ 
+                    run r2@{
                         if(tokenIndex == textLength) return@r2
-                        val node = ParadoxOperatorNode(".", TextRange.from(tokenIndex, 1))
+                        val node = ParadoxOperatorNode(".", TextRange.from(tokenIndex, 1), configGroup)
                         nodes += node
                     }
                 }

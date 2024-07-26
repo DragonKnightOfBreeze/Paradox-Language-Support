@@ -110,7 +110,7 @@ class ParadoxVariableFieldExpression(
                 if(tokenIndex != -1 && expressionString.indexOf('|', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
                 val dotNode = if(tokenIndex != -1) {
                     val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
-                    ParadoxOperatorNode(".", dotRange)
+                    ParadoxOperatorNode(".", dotRange, configGroup)
                 } else {
                     null
                 }
@@ -123,7 +123,7 @@ class ParadoxVariableFieldExpression(
                 val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
                 startIndex = tokenIndex + 1
                 val node = when {
-                    isLast -> ParadoxDataSourceNode.resolve(nodeText, nodeTextRange, configGroup.linksAsVariable)
+                    isLast -> ParadoxDataSourceNode.resolve(nodeText, nodeTextRange, configGroup, configGroup.linksAsVariable)
                     else -> ParadoxScopeFieldNode.resolve(nodeText, nodeTextRange, configGroup)
                 }
                 //handle mismatch situation

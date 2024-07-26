@@ -6,6 +6,7 @@ import icu.windea.pls.config.configGroup.*
 class ParadoxDynamicCommandScopeLinkNode(
     override val text: String,
     override val rangeInExpression: TextRange,
+    override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode>
 ) : ParadoxComplexExpressionNode.Base(), ParadoxCommandScopeLinkNode {
     companion object Resolver {
@@ -30,7 +31,7 @@ class ParadoxDynamicCommandScopeLinkNode(
                     nodes += node
                 }
             }
-            return ParadoxDynamicCommandScopeLinkNode(text, textRange, nodes)
+            return ParadoxDynamicCommandScopeLinkNode(text, textRange, configGroup, nodes)
         }
     }
 }

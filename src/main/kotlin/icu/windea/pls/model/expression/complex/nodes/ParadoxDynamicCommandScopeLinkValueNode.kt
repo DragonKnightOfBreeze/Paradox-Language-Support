@@ -14,7 +14,7 @@ import icu.windea.pls.localisation.highlighter.*
 class ParadoxDynamicCommandScopeLinkValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    val configGroup: CwtConfigGroup
+    override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE_KEY

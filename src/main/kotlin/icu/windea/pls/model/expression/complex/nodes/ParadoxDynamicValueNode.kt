@@ -1,6 +1,5 @@
 package icu.windea.pls.model.expression.complex.nodes
 
-import com.intellij.lang.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -16,8 +15,8 @@ import icu.windea.pls.script.highlighter.*
 class ParadoxDynamicValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    val configs: List<CwtConfig<*>>,
-    val configGroup: CwtConfigGroup
+    override val configGroup: CwtConfigGroup,
+    val configs: List<CwtConfig<*>>
 ) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         val expression = configs.first().expression!! //first is ok
@@ -54,10 +53,10 @@ class ParadoxDynamicValueNode(
     }
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configs: List<CwtConfig<*>>, configGroup: CwtConfigGroup): ParadoxDynamicValueNode? {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueNode? {
             //text may contain parameters
             if(configs.any { c -> c.expression?.type !in CwtDataTypeGroups.DynamicValue }) return null
-            return ParadoxDynamicValueNode(text, textRange, configs, configGroup)
+            return ParadoxDynamicValueNode(text, textRange, configGroup, configs)
         }
     }
 }

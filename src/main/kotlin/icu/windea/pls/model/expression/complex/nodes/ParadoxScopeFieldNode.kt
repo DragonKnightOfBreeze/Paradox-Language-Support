@@ -10,7 +10,7 @@ sealed interface ParadoxScopeFieldNode : ParadoxComplexExpressionNode {
             ParadoxSystemLinkNode.resolve(text, textRange, configGroup)?.let { return it }
             ParadoxScopeLinkNode.resolve(text, textRange, configGroup)?.let { return it }
             ParadoxScopeLinkFromDataNode.resolve(text, textRange, configGroup)?.let { return it }
-            return ParadoxErrorScopeFieldNode(text, textRange)
+            return ParadoxErrorScopeFieldNode(text, textRange, configGroup)
         }
     }
 }

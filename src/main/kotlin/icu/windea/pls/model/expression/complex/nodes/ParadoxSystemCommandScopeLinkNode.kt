@@ -15,6 +15,7 @@ import icu.windea.pls.localisation.highlighter.*
 class ParadoxSystemCommandScopeLinkNode(
     override val text: String,
     override val rangeInExpression: TextRange,
+    override val configGroup: CwtConfigGroup,
     val config: CwtSystemLinkConfig
 ) : ParadoxComplexExpressionNode.Base(), ParadoxCommandScopeLinkNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
@@ -32,7 +33,7 @@ class ParadoxSystemCommandScopeLinkNode(
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxSystemCommandScopeLinkNode? {
             val config = configGroup.systemLinks[text] ?: return null
-            return ParadoxSystemCommandScopeLinkNode(text, textRange, config)
+            return ParadoxSystemCommandScopeLinkNode(text, textRange, configGroup, config)
         }
     }
 }

@@ -16,7 +16,6 @@ import icu.windea.pls.model.expression.complex.nodes.*
  */
 interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
     val errors: List<ParadoxComplexExpressionError>
-    val configGroup: CwtConfigGroup
     
     fun complete(context: ProcessingContext, result: CompletionResultSet) = pass()
     

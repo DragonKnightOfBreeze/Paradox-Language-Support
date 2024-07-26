@@ -148,7 +148,7 @@ class ParadoxScriptValueExpression private constructor(
                 if(tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
                 val pipeNode = if(tokenIndex != -1) {
                     val pipeRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
-                    ParadoxMarkerNode("|", pipeRange)
+                    ParadoxMarkerNode("|", pipeRange, configGroup)
                 } else {
                     null
                 }
@@ -162,15 +162,15 @@ class ParadoxScriptValueExpression private constructor(
                 startIndex = tokenIndex + 1
                 val node = when {
                     n == 0 -> {
-                        ParadoxScriptValueNode.resolve(nodeText, nodeRange, config, configGroup)
+                        ParadoxScriptValueNode.resolve(nodeText, nodeRange, configGroup, config)
                             .also { valueNode = it }
                     }
                     n % 2 == 1 -> {
-                        ParadoxScriptValueArgumentNode.resolve(nodeText, nodeRange, valueNode, configGroup)
+                        ParadoxScriptValueArgumentNode.resolve(nodeText, nodeRange, configGroup, valueNode)
                             .also { argumentNode = it }
                     }
                     n % 2 == 0 -> {
-                        ParadoxScriptValueArgumentValueNode.resolve(nodeText, nodeRange, valueNode, argumentNode, configGroup)
+                        ParadoxScriptValueArgumentValueNode.resolve(nodeText, nodeRange, configGroup, valueNode, argumentNode)
                     }
                     else -> throw InternalError()
                 }

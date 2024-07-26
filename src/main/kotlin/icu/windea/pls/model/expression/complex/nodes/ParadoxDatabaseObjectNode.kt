@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.inherit.*
@@ -22,8 +23,9 @@ import icu.windea.pls.script.psi.*
 class ParadoxDatabaseObjectNode(
     override val text: String,
     override val rangeInExpression: TextRange,
+    override val configGroup: CwtConfigGroup,
     val expression: ParadoxDatabaseObjectExpression,
-    val isBase: Boolean
+    val isBase: Boolean,
 ) : ParadoxComplexExpressionNode.Base() {
     val config = expression.typeNode?.config
     
@@ -141,8 +143,8 @@ class ParadoxDatabaseObjectNode(
     }
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, expression: ParadoxDatabaseObjectExpression, isBase: Boolean): ParadoxDatabaseObjectNode {
-            return ParadoxDatabaseObjectNode(text, textRange, expression, isBase)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDatabaseObjectExpression, isBase: Boolean): ParadoxDatabaseObjectNode {
+            return ParadoxDatabaseObjectNode(text, textRange, configGroup, expression, isBase)
         }
     }
 }

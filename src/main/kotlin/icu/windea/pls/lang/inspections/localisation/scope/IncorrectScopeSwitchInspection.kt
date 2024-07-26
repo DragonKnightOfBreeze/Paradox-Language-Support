@@ -1,18 +1,12 @@
 package icu.windea.pls.lang.inspections.localisation.scope
 
 import com.intellij.codeInspection.*
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
 class IncorrectScopeSwitchInspection : LocalInspectionTool() {
-    private var checkForSystemLink = false
+    private var checkForSystemLinks = false
     
     //TODO 1.3.15+
     //override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -65,8 +59,8 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
         return panel {
             row {
                 checkBox(PlsBundle.message("inspection.localisation.incorrectScopeSwitch.option.checkForSystemLink"))
-                    .bindSelected(::checkForSystemLink)
-                    .actionListener { _, component -> checkForSystemLink = component.isSelected }
+                    .bindSelected(::checkForSystemLinks)
+                    .actionListener { _, component -> checkForSystemLinks = component.isSelected }
             }
         }
     }

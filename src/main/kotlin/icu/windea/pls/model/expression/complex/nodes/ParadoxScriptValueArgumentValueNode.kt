@@ -1,6 +1,5 @@
 package icu.windea.pls.model.expression.complex.nodes
 
-import com.intellij.lang.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.configGroup.*
@@ -11,9 +10,9 @@ import icu.windea.pls.script.highlighter.*
 class ParadoxScriptValueArgumentValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
+    override val configGroup: CwtConfigGroup,
     val valueNode: ParadoxScriptValueNode?,
-    val argumentNode: ParadoxScriptValueArgumentNode?,
-    val configGroup: CwtConfigGroup
+    val argumentNode: ParadoxScriptValueArgumentNode?
 ) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         //为参数值提供基础代码高亮
@@ -62,8 +61,8 @@ class ParadoxScriptValueArgumentValueNode(
     //endregion
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, valueNode: ParadoxScriptValueNode?, argumentNode: ParadoxScriptValueArgumentNode?, configGroup: CwtConfigGroup): ParadoxScriptValueArgumentValueNode {
-            return ParadoxScriptValueArgumentValueNode(text, textRange, valueNode, argumentNode, configGroup)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, valueNode: ParadoxScriptValueNode?, argumentNode: ParadoxScriptValueArgumentNode?): ParadoxScriptValueArgumentValueNode {
+            return ParadoxScriptValueArgumentValueNode(text, textRange, configGroup, valueNode, argumentNode)
         }
     }
 }

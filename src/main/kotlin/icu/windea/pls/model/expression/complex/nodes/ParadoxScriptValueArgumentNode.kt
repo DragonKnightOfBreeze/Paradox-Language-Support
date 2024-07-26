@@ -15,8 +15,8 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptValueArgumentNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    val valueNode: ParadoxScriptValueNode?,
-    val configGroup: CwtConfigGroup
+    override val configGroup: CwtConfigGroup,
+    val valueNode: ParadoxScriptValueNode?
 ) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         if(text.isEmpty()) return null
@@ -52,8 +52,8 @@ class ParadoxScriptValueArgumentNode(
     }
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, valueNode: ParadoxScriptValueNode?, configGroup: CwtConfigGroup): ParadoxScriptValueArgumentNode {
-            return ParadoxScriptValueArgumentNode(text, textRange, valueNode, configGroup)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, valueNode: ParadoxScriptValueNode?): ParadoxScriptValueArgumentNode {
+            return ParadoxScriptValueArgumentNode(text, textRange, configGroup, valueNode)
         }
     }
 }

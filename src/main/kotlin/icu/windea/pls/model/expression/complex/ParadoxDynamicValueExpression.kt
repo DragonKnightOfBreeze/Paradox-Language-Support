@@ -117,12 +117,12 @@ class ParadoxDynamicValueExpression private constructor(
                 //resolve dynamicValueNode
                 val nodeText = expressionString.substring(0, tokenIndex)
                 val nodeTextRange = TextRange.create(offset, tokenIndex + offset)
-                val node = ParadoxDynamicValueNode.resolve(nodeText, nodeTextRange, configs, configGroup)
+                val node = ParadoxDynamicValueNode.resolve(nodeText, nodeTextRange, configGroup, configs)
                 if(node == null) return null //unexpected
                 nodes.add(node)
                 if(tokenIndex != textLength) {
                     //resolve at token
-                    val atNode = ParadoxMarkerNode("@", TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset))
+                    val atNode = ParadoxMarkerNode("@", TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset), configGroup)
                     nodes.add(atNode)
                     //resolve scope expression
                     val expText = expressionString.substring(tokenIndex + 1)

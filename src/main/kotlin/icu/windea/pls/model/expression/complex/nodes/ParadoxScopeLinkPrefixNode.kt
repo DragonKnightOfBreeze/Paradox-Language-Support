@@ -4,6 +4,7 @@ import com.intellij.lang.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.psi.*
@@ -13,6 +14,7 @@ import icu.windea.pls.script.highlighter.*
 class ParadoxScopeLinkPrefixNode(
     override val text: String,
     override val rangeInExpression: TextRange,
+    override val configGroup: CwtConfigGroup,
     override val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxComplexExpressionNode.Base(), ParadoxLinkPrefixNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
@@ -28,8 +30,8 @@ class ParadoxScopeLinkPrefixNode(
         PsiResolvedPolyVariantReference<CwtProperty>(element, rangeInElement, resolved)
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkPrefixNode {
-            return ParadoxScopeLinkPrefixNode(text, textRange, linkConfigs)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup,linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkPrefixNode {
+            return ParadoxScopeLinkPrefixNode(text, textRange, configGroup, linkConfigs)
         }
     }
 }

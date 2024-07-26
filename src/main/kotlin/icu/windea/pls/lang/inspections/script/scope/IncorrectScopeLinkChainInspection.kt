@@ -39,20 +39,23 @@ class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
             }
             
             fun checkExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
-                complexExpression.processAllNodes p1@{ node1 ->
-                    if(node1 !is ParadoxComplexExpression) return@p1 true
-                    val scopeNodes = node1.nodes.filterIsInstance<ParadoxScopeFieldNode>()
-                    val max = ParadoxScopeHandler.maxScopeLinkSize
-                    val actual = scopeNodes.size
-                    if(actual <= max) return@p1 true
-                    val offset = ParadoxExpressionHandler.getExpressionOffset(element)
-                    val startOffset = offset + scopeNodes.first().rangeInExpression.startOffset
-                    val endOffset = offset + scopeNodes.last().rangeInExpression.endOffset
-                    val range = TextRange.create(startOffset, endOffset)
-                    val description = PlsBundle.message("inspection.script.incorrectScopeLinkChain.desc.1", max, actual)
-                    holder.registerProblem(element, range, description)
+                complexExpression.processAllNodes p1@{ node ->
+                    if(node is ParadoxComplexExpression) doCheckExpression(element, node)
                     true
                 }
+            }
+            
+            private fun doCheckExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
+                val scopeNodes = complexExpression.nodes.filterIsInstance<ParadoxScopeFieldNode>()
+                val max = ParadoxScopeHandler.maxScopeLinkSize
+                val actual = scopeNodes.size
+                if(actual <= max) return
+                val offset = ParadoxExpressionHandler.getExpressionOffset(element)
+                val startOffset = offset + scopeNodes.first().rangeInExpression.startOffset
+                val endOffset = offset + scopeNodes.last().rangeInExpression.endOffset
+                val range = TextRange.create(startOffset, endOffset)
+                val description = PlsBundle.message("inspection.script.incorrectScopeLinkChain.desc.1", max, actual)
+                holder.registerProblem(element, range, description)
             }
         }
     }

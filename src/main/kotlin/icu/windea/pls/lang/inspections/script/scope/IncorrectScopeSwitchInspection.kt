@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 class IncorrectScopeSwitchInspection : LocalInspectionTool() {
-    private var checkForSystemLink = false
+    private var checkForSystemLinks = false
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
@@ -60,10 +60,10 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                             is ParadoxScopeLinkFromDataNode -> {
                                 
                             }
-                            //NOTE may depends on usages
+                            //NOTE may depend on usages
                             //check when root parent scope context is not from event, scripted_trigger or scripted_effect
                             is ParadoxSystemLinkNode -> {
-                                if(!checkForSystemLink) continue
+                                if(!checkForSystemLinks) continue
                                 if(scopeContext.scope.id == ParadoxScopeHandler.unknownScopeId) {
                                     val definitionType = definitionInfo?.type ?: continue
                                     if(config.configGroup.definitionTypesSkipCheckSystemLink.contains(definitionType)) continue
@@ -87,9 +87,9 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                checkBox(PlsBundle.message("inspection.script.incorrectScopeSwitch.option.checkForSystemLink"))
-                    .bindSelected(::checkForSystemLink)
-                    .actionListener { _, component -> checkForSystemLink = component.isSelected }
+                checkBox(PlsBundle.message("inspection.script.incorrectScopeSwitch.option.checkForSystemLinks"))
+                    .bindSelected(::checkForSystemLinks)
+                    .actionListener { _, component -> checkForSystemLinks = component.isSelected }
             }
         }
     }
