@@ -65,7 +65,7 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
                     it.withItemTextForeground(JBColor.GRAY) //将不匹配的语言区域的提示项置灰
                 }
                 .letIf(matched == true) {
-                    it.withPriority(ParadoxCompletionPriorities.pinnedPriority) //优先提示与文件名匹配的语言区域
+                    it.withPriority(ParadoxCompletionPriorities.pinned) //优先提示与文件名匹配的语言区域
                 }
             lookupElements.add(lookupElement)
         }

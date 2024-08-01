@@ -411,7 +411,7 @@ fun CompletionResultSet.addBlockScriptExpressionElement(context: ProcessingConte
             val lookupElement1 = LookupElementBuilder.create("")
                 .withPresentableText(tailText1)
                 .withExpandClauseTemplateInsertHandler(context, entryConfigs)
-            addElement(lookupElement1.withPriority(ParadoxCompletionPriorities.keywordPriority))
+            addElement(lookupElement1.withPriority(ParadoxCompletionPriorities.keyword))
         }
     }
 }

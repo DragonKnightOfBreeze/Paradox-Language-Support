@@ -294,7 +294,7 @@ object ParadoxCompletionManager {
                 .withTypeIcon(typeFile?.icon)
                 .withForceInsertCurlyBraces(tuples.isEmpty())
                 .caseInsensitive()
-                .withPriority(ParadoxCompletionPriorities.rootKeyPriority)
+                .withPriority(ParadoxCompletionPriorities.rootKey)
                 .build(context)
             result.addElement(lookupElement)
             context.config = null
@@ -500,7 +500,7 @@ object ParadoxCompletionManager {
                     .withTypeText(typeFile?.name)
                     .withTypeIcon(typeFile?.icon)
                     .caseInsensitive()
-                    .withPriority(ParadoxCompletionPriorities.enumPriority)
+                    .withPriority(ParadoxCompletionPriorities.enumValue)
                     .build(context)
                 result.addElement(lookupElement)
             }
@@ -524,7 +524,7 @@ object ParadoxCompletionManager {
                     .withTailText(tailText)
                     .withTypeText(typeFile?.name)
                     .withTypeIcon(typeFile?.icon)
-                    .withPriority(ParadoxCompletionPriorities.complexEnumPriority)
+                    .withPriority(ParadoxCompletionPriorities.complexEnumValue)
                     .build(context)
                 result.addElement(lookupElement)
                 true
@@ -588,7 +588,7 @@ object ParadoxCompletionManager {
             .withTypeIcon(typeFile?.icon)
             .caseInsensitive()
             .withScopeMatched(context.scopeMatched)
-            .withPriority(ParadoxCompletionPriorities.constantPriority)
+            .withPriority(ParadoxCompletionPriorities.constant)
             .build(context)
         result.addElement(lookupElement)
     }
@@ -747,7 +747,7 @@ object ParadoxCompletionManager {
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
-                .withPriority(ParadoxCompletionPriorities.systemScopePriority)
+                .withPriority(ParadoxCompletionPriorities.systemScope)
             result.addElement(lookupElement)
         }
     }
@@ -772,7 +772,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
                 .withScopeMatched(scopeMatched)
-                .withPriority(ParadoxCompletionPriorities.scopePriority)
+                .withPriority(ParadoxCompletionPriorities.scope)
             result.addElement(lookupElement)
         }
     }
@@ -796,7 +796,7 @@ object ParadoxCompletionManager {
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withScopeMatched(scopeMatched)
-                .withPriority(ParadoxCompletionPriorities.scopeLinkPrefixPriority)
+                .withPriority(ParadoxCompletionPriorities.linkPrefix)
             result.addElement(lookupElement)
         }
     }
@@ -876,7 +876,7 @@ object ParadoxCompletionManager {
                 .withBoldness(true)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(ParadoxCompletionPriorities.valueLinkPrefixPriority)
+                .withPriority(ParadoxCompletionPriorities.linkPrefix)
             result.addElement(lookupElement)
         }
     }
@@ -1001,7 +1001,7 @@ object ParadoxCompletionManager {
                 .withTailText(tailText)
                 .withTypeText(typeFile?.name)
                 .withTypeIcon(typeFile?.icon)
-                .withPriority(ParadoxCompletionPriorities.databaseObjectTypePriority)
+                .withPriority(ParadoxCompletionPriorities.databaseObjectType)
                 .build(context)
             result.addElement(lookupElement)
         }
@@ -1089,7 +1089,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
                 .withScopeMatched(scopeMatched)
-                .withPriority(ParadoxCompletionPriorities.scopePriority)
+                .withPriority(ParadoxCompletionPriorities.scope)
             result.addElement(lookupElement)
         }
     }
@@ -1201,7 +1201,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile?.name)
                 .withTypeIcon(typeFile?.icon)
                 .caseInsensitive()
-                .withPriority(ParadoxCompletionPriorities.constantPriority)
+                .withPriority(ParadoxCompletionPriorities.constant)
                 .build(context)
             result.addElement(lookupElement)
         }
