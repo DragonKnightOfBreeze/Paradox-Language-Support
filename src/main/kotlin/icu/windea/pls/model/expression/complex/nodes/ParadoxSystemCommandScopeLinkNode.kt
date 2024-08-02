@@ -1,6 +1,5 @@
 package icu.windea.pls.model.expression.complex.nodes
 
-import com.intellij.lang.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -19,7 +18,7 @@ class ParadoxSystemCommandScopeLinkNode(
     val config: CwtSystemLinkConfig
 ) : ParadoxComplexExpressionNode.Base(), ParadoxCommandScopeLinkNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.SYSTEM_COMMAND_SCOPE_KEY
+        return ParadoxLocalisationAttributesKeys.COMMAND_SYSTEM_SCOPE_KEY
     }
     
     override fun getReference(element: ParadoxExpressionElement): Reference {
