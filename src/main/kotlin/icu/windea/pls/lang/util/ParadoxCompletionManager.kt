@@ -1440,77 +1440,51 @@ object ParadoxCompletionManager {
         context.scopeMatched = true
     }
     
-    fun completeDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeCommandScope(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val config = context.config
-        val configs = context.configs
+        val configGroup = context.configGroup!!
+        val scopeContext = context.scopeContext
         
-        fun doComplete(config: CwtConfig<*>) {
-            val keyword = context.keyword
-            val contextElement = context.contextElement!!
-            val configGroup = context.configGroup!!
-            val project = configGroup.project
+        val localisationLinks = configGroup.localisationLinks
+        for(localisationScope in localisationLinks.values) {
+            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, localisationScope.inputScopes, configGroup)
+            if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
             
-            val configExpression = config.expression ?: return
-            val dynamicValueType = configExpression.value ?: return
-            //提示预定义的value
-            run {
-                ProgressManager.checkCanceled()
-                if(configExpression.type == CwtDataTypes.Value || configExpression.type == CwtDataTypes.DynamicValue) {
-                    completePredefinedDynamicValue(context, result, dynamicValueType)
-                }
-            }
-            //提示来自脚本文件的value
-            run {
-                ProgressManager.checkCanceled()
-                val tailText = " by $configExpression"
-                val selector = dynamicValueSelector(project, contextElement).distinctByName()
-                ParadoxDynamicValueSearch.search(dynamicValueType, selector).processQueryAsync p@{ info ->
-                    ProgressManager.checkCanceled()
-                    if(info.name == keyword) return@p true //排除和当前输入的同名的
-                    val element = ParadoxDynamicValueElement(contextElement, info, project)
-                    //去除后面的作用域信息
-                    val icon = PlsIcons.Nodes.DynamicValue(dynamicValueType)
-                    //不显示typeText
-                    val lookupElement = ParadoxLookupElementBuilder.create(element, info.name)
-                        .withIcon(icon)
-                        .withTailText(tailText)
-                        .build(context)
-                    result.addElement(lookupElement)
-                    true
-                }
-            }
-            
-            completeExtendedDynamicValue(context, result)
-        }
-        
-        if(configs.isNotNullOrEmpty()) {
-            for(c in configs) {
-                doComplete(c)
-            }
-        } else if(config != null) {
-            doComplete(config)
+            val name = localisationScope.name
+            val element = localisationScope.pointer.element ?: continue
+            val tailText = " from command scopes"
+            val typeFile = localisationScope.pointer.containingFile
+            val lookupElement = LookupElementBuilder.create(element, name)
+                .withIcon(PlsIcons.LocalisationNodes.CommandScope)
+                .withTailText(tailText, true)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withCaseSensitivity(false) //忽略大小写
+                .withScopeMatched(scopeMatched)
+                .withPriority(ParadoxCompletionPriorities.scope)
+            result.addElement(lookupElement)
         }
     }
     
-    fun completePredefinedDynamicValue(context: ProcessingContext, result: CompletionResultSet, dynamicValueType: String) {
+    fun completePredefinedCommandField(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
-        val config = context.config
+        val scopeContext = context.scopeContext
         
-        val tailText = getExpressionTailText(context, config)
-        val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
-        val dynamicValueTypeConfigs = valueConfig.valueConfigMap.values
-        for(dynamicValueTypeConfig in dynamicValueTypeConfigs) {
-            val name = dynamicValueTypeConfig.value
-            val element = dynamicValueTypeConfig.pointer.element ?: continue
-            val typeFile = valueConfig.pointer.containingFile
-            val lookupElement = ParadoxLookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.DynamicValue)
-                .withTailText(tailText)
-                .withTypeText(typeFile?.name)
-                .withTypeIcon(typeFile?.icon)
-                .build(context)
+        val localisationCommands = configGroup.localisationCommands
+        for(localisationCommand in localisationCommands.values) {
+            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, localisationCommand.supportedScopes, configGroup)
+            if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            
+            val name = localisationCommand.name
+            val element = localisationCommand.pointer.element ?: continue
+            val tailText = " from command fields"
+            val typeFile = localisationCommand.pointer.containingFile
+            val lookupElement = LookupElementBuilder.create(element, name)
+                .withIcon(PlsIcons.LocalisationNodes.CommandField)
+                .withTailText(tailText, true)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withCaseSensitivity(false) //忽略大小写
+                .withScopeMatched(scopeMatched)
             result.addElement(lookupElement)
         }
     }
@@ -1588,51 +1562,77 @@ object ParadoxCompletionManager {
         context.expressionTailText = oldTailText
     }
     
-    fun completeCommandScope(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup!!
-        val scopeContext = context.scopeContext
+        val config = context.config
+        val configs = context.configs
         
-        val localisationLinks = configGroup.localisationLinks
-        for(localisationScope in localisationLinks.values) {
-            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, localisationScope.inputScopes, configGroup)
-            if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+        fun doComplete(config: CwtConfig<*>) {
+            val keyword = context.keyword
+            val contextElement = context.contextElement!!
+            val configGroup = context.configGroup!!
+            val project = configGroup.project
             
-            val name = localisationScope.name
-            val element = localisationScope.pointer.element ?: continue
-            val tailText = " from command scopes"
-            val typeFile = localisationScope.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.LocalisationNodes.CommandScope)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false) //忽略大小写
-                .withScopeMatched(scopeMatched)
-                .withPriority(ParadoxCompletionPriorities.scope)
-            result.addElement(lookupElement)
+            val configExpression = config.expression ?: return
+            val dynamicValueType = configExpression.value ?: return
+            //提示预定义的value
+            run {
+                ProgressManager.checkCanceled()
+                if(configExpression.type == CwtDataTypes.Value || configExpression.type == CwtDataTypes.DynamicValue) {
+                    completePredefinedDynamicValue(context, result, dynamicValueType)
+                }
+            }
+            //提示来自脚本文件的value
+            run {
+                ProgressManager.checkCanceled()
+                val tailText = " by $configExpression"
+                val selector = dynamicValueSelector(project, contextElement).distinctByName()
+                ParadoxDynamicValueSearch.search(dynamicValueType, selector).processQueryAsync p@{ info ->
+                    ProgressManager.checkCanceled()
+                    if(info.name == keyword) return@p true //排除和当前输入的同名的
+                    val element = ParadoxDynamicValueElement(contextElement, info, project)
+                    //去除后面的作用域信息
+                    val icon = PlsIcons.Nodes.DynamicValue(dynamicValueType)
+                    //不显示typeText
+                    val lookupElement = ParadoxLookupElementBuilder.create(element, info.name)
+                        .withIcon(icon)
+                        .withTailText(tailText)
+                        .build(context)
+                    result.addElement(lookupElement)
+                    true
+                }
+            }
+            
+            completeExtendedDynamicValue(context, result)
+        }
+        
+        if(configs.isNotNullOrEmpty()) {
+            for(c in configs) {
+                doComplete(c)
+            }
+        } else if(config != null) {
+            doComplete(config)
         }
     }
     
-    fun completeCommandField(context: ProcessingContext, result: CompletionResultSet) {
+    fun completePredefinedDynamicValue(context: ProcessingContext, result: CompletionResultSet, dynamicValueType: String) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
-        val scopeContext = context.scopeContext
+        val config = context.config
         
-        val localisationCommands = configGroup.localisationCommands
-        for(localisationCommand in localisationCommands.values) {
-            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, localisationCommand.supportedScopes, configGroup)
-            if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
-            
-            val name = localisationCommand.name
-            val element = localisationCommand.pointer.element ?: continue
-            val tailText = " from command fields"
-            val typeFile = localisationCommand.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.LocalisationNodes.CommandField)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false) //忽略大小写
-                .withScopeMatched(scopeMatched)
+        val tailText = getExpressionTailText(context, config)
+        val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
+        val dynamicValueTypeConfigs = valueConfig.valueConfigMap.values
+        for(dynamicValueTypeConfig in dynamicValueTypeConfigs) {
+            val name = dynamicValueTypeConfig.value
+            val element = dynamicValueTypeConfig.pointer.element ?: continue
+            val typeFile = valueConfig.pointer.containingFile
+            val lookupElement = ParadoxLookupElementBuilder.create(element, name)
+                .withIcon(PlsIcons.Nodes.DynamicValue)
+                .withTailText(tailText)
+                .withTypeText(typeFile?.name)
+                .withTypeIcon(typeFile?.icon)
+                .build(context)
             result.addElement(lookupElement)
         }
     }
