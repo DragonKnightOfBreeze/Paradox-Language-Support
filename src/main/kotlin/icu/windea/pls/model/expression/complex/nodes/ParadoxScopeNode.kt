@@ -11,14 +11,14 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.highlighter.*
 
-class ParadoxValueLinkNode(
+class ParadoxScopeNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val config: CwtLinkConfig
-) : ParadoxComplexExpressionNode.Base(), ParadoxValueFieldNode {
+) : ParadoxComplexExpressionNode.Base(), ParadoxScopeLinkNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY
+        return ParadoxScriptAttributesKeys.SCOPE_KEY
     }
     
     override fun getReference(element: ParadoxExpressionElement): Reference {
@@ -30,9 +30,10 @@ class ParadoxValueLinkNode(
         PsiResolvedReference<CwtProperty>(element, rangeInElement, resolved)
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxValueLinkNode? {
-            val config = configGroup.linksAsValueNotData.get(text) ?: return null
-            return ParadoxValueLinkNode(text, textRange, configGroup, config)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScopeNode? {
+            val config = configGroup.linksAsScopeNotData.get(text)
+                ?: return null
+            return ParadoxScopeNode(text, textRange, configGroup, config)
         }
     }
 }

@@ -20,14 +20,14 @@ class ParadoxDynamicCommandScopeLinkNode(
                     if(!text.startsWith(hardCodedPrefix)) return@r2
                     val nodeText = hardCodedPrefix
                     val nodeTextRange = TextRange.from(offset, hardCodedPrefix.length)
-                    val node = ParadoxDynamicCommandScopeLinkPrefixNode.resolve(nodeText, nodeTextRange, configGroup) ?: return null
+                    val node = ParadoxCommandScopeLinkPrefixNode.resolve(nodeText, nodeTextRange, configGroup) ?: return null
                     nodes += node
                     startIndex = hardCodedPrefix.length
                 }
                 run r2@{
                     val nodeText = text.substring(startIndex)
                     val nodeTextRange = TextRange.from(offset + startIndex, nodeText.length)
-                    val node = ParadoxDynamicCommandScopeLinkValueNode.resolve(nodeText, nodeTextRange, configGroup) ?: return null
+                    val node = ParadoxCommandScopeLinkValueNode.resolve(nodeText, nodeTextRange, configGroup) ?: return null
                     nodes += node
                 }
             }

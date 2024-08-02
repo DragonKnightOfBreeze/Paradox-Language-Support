@@ -1,7 +1,7 @@
 # System link Config
 # Used to provide language features for predefined scope links
 
-system_links = {
+system_scopes = {
 	### Scopes to the current scope.
 	This = {}
 	### Scopes to the original scope of this context, e.g. the country of a country_event.

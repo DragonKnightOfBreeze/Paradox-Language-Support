@@ -8,10 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -20,7 +17,7 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 class IncorrectScopeSwitchInspection : LocalInspectionTool() {
-    private var checkForSystemLinks = false
+    private var checkForSystemScopes = false
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
@@ -44,7 +41,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                     for((scopeNode, scopeContext) in scopeFieldInfo) {
                         val rangeInExpression = scopeNode.rangeInExpression
                         when(scopeNode) {
-                            is ParadoxScopeLinkNode -> {
+                            is ParadoxScopeNode -> {
                                 val parentScopeContext = scopeContext.prev ?: continue
                                 val inputScopes = scopeNode.config.inputScopes
                                 val configGroup = config.configGroup
@@ -57,13 +54,13 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                 }
                             }
                             //TODO 1.3.0+ dynamic value (expression)
-                            is ParadoxScopeLinkFromDataNode -> {
+                            is ParadoxDynamicScopeLinkNode -> {
                                 
                             }
                             //NOTE may depend on usages
                             //check when root parent scope context is not from event, scripted_trigger or scripted_effect
-                            is ParadoxSystemLinkNode -> {
-                                if(!checkForSystemLinks) continue
+                            is ParadoxSystemScopeNode -> {
+                                if(!checkForSystemScopes) continue
                                 if(scopeContext.scope.id == ParadoxScopeHandler.unknownScopeId) {
                                     val definitionType = definitionInfo?.type ?: continue
                                     if(config.configGroup.definitionTypesSkipCheckSystemLink.contains(definitionType)) continue
@@ -74,9 +71,9 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                     holder.registerProblem(propertyKey, rangeInExpression, description)
                                 }
                             }
-                            is ParadoxParameterizedScopeFieldNode -> pass()
+                            is ParadoxParameterizedScopeLinkNode -> pass()
                             //error
-                            is ParadoxErrorScopeFieldNode -> break
+                            is ParadoxErrorScopeLinkNode -> break
                         }
                     }
                 }
@@ -87,9 +84,9 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                checkBox(PlsBundle.message("inspection.script.incorrectScopeSwitch.option.checkForSystemLinks"))
-                    .bindSelected(::checkForSystemLinks)
-                    .actionListener { _, component -> checkForSystemLinks = component.isSelected }
+                checkBox(PlsBundle.message("inspection.script.incorrectScopeSwitch.option.checkForSystemScope"))
+                    .bindSelected(::checkForSystemScopes)
+                    .actionListener { _, component -> checkForSystemScopes = component.isSelected }
             }
         }
     }

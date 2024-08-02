@@ -6,15 +6,15 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.model.expression.complex.*
 
-class ParadoxErrorScopeFieldNode(
+class ParadoxErrorScopeLinkNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup
-) : ParadoxComplexExpressionNode.Base(), ParadoxScopeFieldNode, ParadoxErrorNode {
+) : ParadoxComplexExpressionNode.Base(), ParadoxScopeLinkNode, ParadoxErrorNode {
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
         if(nodes.isNotEmpty()) return null
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
-        return ParadoxComplexExpressionErrors.unresolvedScopeField(rangeInExpression, text)
+        return ParadoxComplexExpressionErrors.unresolvedScopeLink(rangeInExpression, text)
     }
 }

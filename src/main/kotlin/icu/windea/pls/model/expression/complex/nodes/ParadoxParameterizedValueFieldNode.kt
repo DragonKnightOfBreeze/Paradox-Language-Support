@@ -1,6 +1,5 @@
 package icu.windea.pls.model.expression.complex.nodes
 
-import com.intellij.lang.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.configGroup.*
@@ -14,7 +13,7 @@ class ParadoxParameterizedValueFieldNode(
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNode.Base(), ParadoxValueFieldNode, ParadoxParameterizedNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.VALUE_LINK_VALUE_KEY
+        return ParadoxScriptAttributesKeys.VALUE_FIELD_KEY
     }
     
     companion object Resolver {

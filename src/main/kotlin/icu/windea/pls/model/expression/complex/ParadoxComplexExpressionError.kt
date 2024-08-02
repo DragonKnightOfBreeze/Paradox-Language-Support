@@ -22,7 +22,7 @@ object ParadoxComplexExpressionErrorCodes {
     const val MalformedGameObjectExpression = 105
     const val MalformedLocalisationCommandExpression = 106
     
-    const val UnresolvedScopeField = 200
+    const val UnresolvedScopeLink = 200
     const val UnresolvedValueField = 201
     const val UnresolvedDataSource = 202
     const val UnresolvedScriptValue = 203
@@ -31,11 +31,11 @@ object ParadoxComplexExpressionErrorCodes {
     const val UnresolvedCommandScope = 206
     const val UnresolvedCommandField = 207
     
-    const val MissingScopeField = 300
+    const val MissingScopeLink = 300
     const val MissingValueField = 301
     const val MissingVariable = 302
-    const val MissingScopeLinkDataSource = 303
-    const val MissingValueLinkDataSource = 304
+    const val MissingScopeLinkValue = 303
+    const val MissingValueFieldValue = 304
     const val MissingScopeFieldExpression = 305
     const val MissingParameterValue = 306
 }
@@ -97,9 +97,9 @@ object ParadoxComplexExpressionErrors {
     
     //unresolved
     
-    fun unresolvedScopeField(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.UnresolvedScopeField
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.unresolvedScopeField", value))
+    fun unresolvedScopeLink(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.UnresolvedScopeLink
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.unresolvedScopeLink", value))
     }
     
     fun unresolvedValueField(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
@@ -143,9 +143,9 @@ object ParadoxComplexExpressionErrors {
     
     //missing
     
-    fun missingScopeField(rangeInExpression: TextRange): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MissingScopeField
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingScopeField"))
+    fun missingScopeLink(rangeInExpression: TextRange): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.MissingScopeLink
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingScopeLink"))
     }
     
     fun missingValueField(rangeInExpression: TextRange): ParadoxComplexExpressionError {
@@ -158,14 +158,14 @@ object ParadoxComplexExpressionErrors {
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingVariable"))
     }
     
-    fun missingScopeLinkDataSource(rangeInExpression: TextRange, type: String): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MissingScopeLinkDataSource
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingScopeLinkDataSource", type))
+    fun missingScopeLinkValue(rangeInExpression: TextRange, type: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.MissingScopeLinkValue
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingScopeLinkValue", type))
     }
     
-    fun missingValueLinkDataSource(rangeInExpression: TextRange, type: String): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MissingValueLinkDataSource
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingValueLinkDataSource", type))
+    fun missingValueFieldValue(rangeInExpression: TextRange, type: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.MissingValueFieldValue
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingValueFieldValue", type))
     }
     
     fun missingScopeFieldExpression(rangeInExpression: TextRange): ParadoxComplexExpressionError {

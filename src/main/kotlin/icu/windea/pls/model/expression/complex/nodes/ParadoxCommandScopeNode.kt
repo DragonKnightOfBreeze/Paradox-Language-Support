@@ -1,6 +1,5 @@
 package icu.windea.pls.model.expression.complex.nodes
 
-import com.intellij.lang.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -12,7 +11,7 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.highlighter.*
 
-class ParadoxPredefinedCommandScopeLinkNode(
+class ParadoxCommandScopeNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
@@ -31,9 +30,9 @@ class ParadoxPredefinedCommandScopeLinkNode(
         PsiResolvedReference<CwtProperty>(element, rangeInElement, resolved)
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxPredefinedCommandScopeLinkNode? {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxCommandScopeNode? {
             val config = configGroup.localisationLinks[text] ?: return null
-            return ParadoxPredefinedCommandScopeLinkNode(text, textRange, configGroup, config)
+            return ParadoxCommandScopeNode(text, textRange, configGroup, config)
         }
     }
 }

@@ -184,7 +184,7 @@ enum class ParadoxResolveConstraint {
                     }
                 }
                 is ParadoxDynamicValueNode.Reference -> true
-                is ParadoxDynamicCommandScopeLinkValueNode.Reference -> true //value[event_target], value[global_event_target]
+                is ParadoxCommandScopeLinkValueNode.Reference -> true //value[event_target], value[global_event_target]
                 is ParadoxDynamicCommandFieldNode.Reference -> true //value[variable]
                 else -> false
             }
@@ -206,7 +206,7 @@ enum class ParadoxResolveConstraint {
                     configExpression.type in CwtDataTypeGroups.DynamicValue
                 }
                 is ParadoxDynamicValueNode.Reference -> true
-                is ParadoxDynamicCommandScopeLinkValueNode.Reference -> true //value[event_target], value[global_event_target]
+                is ParadoxCommandScopeLinkValueNode.Reference -> true //value[event_target], value[global_event_target]
                 is ParadoxDynamicCommandFieldNode.Reference -> true //value[variable]
                 else -> false
             }

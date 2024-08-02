@@ -11,7 +11,7 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.highlighter.*
 
-class ParadoxDynamicCommandScopeLinkValueNode(
+class ParadoxCommandScopeLinkValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup
@@ -46,9 +46,9 @@ class ParadoxDynamicCommandScopeLinkValueNode(
     }
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandScopeLinkValueNode? {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxCommandScopeLinkValueNode? {
             if(!text.isIdentifier()) return null
-            return ParadoxDynamicCommandScopeLinkValueNode(text, textRange, configGroup)
+            return ParadoxCommandScopeLinkValueNode(text, textRange, configGroup)
         }
     }
 }

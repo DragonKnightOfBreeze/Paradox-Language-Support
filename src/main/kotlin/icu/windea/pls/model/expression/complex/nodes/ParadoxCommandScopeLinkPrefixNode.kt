@@ -11,29 +11,29 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.highlighter.*
 
-class ParadoxDynamicCommandScopeLinkPrefixNode(
+class ParadoxCommandScopeLinkPrefixNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-    val configs: List<CwtLinkConfig>
-) : ParadoxComplexExpressionNode.Base() {
+    override val linkConfigs: List<CwtLinkConfig>
+) : ParadoxComplexExpressionNode.Base(), ParadoxLinkPrefixNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.COMMAND_LINK_PREFIX_KEY
+        return ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_PREFIX_KEY
     }
     
     override fun getReference(element: ParadoxExpressionElement): Reference {
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
-        return Reference(element, rangeInElement, configs.mapNotNull { it.pointer.element })
+        return Reference(element, rangeInElement, linkConfigs.mapNotNull { it.pointer.element })
     }
     
     class Reference(element: PsiElement, rangeInElement: TextRange, resolved: List<CwtProperty>) :
         PsiResolvedPolyVariantReference<CwtProperty>(element, rangeInElement, resolved)
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandScopeLinkPrefixNode? {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxCommandScopeLinkPrefixNode? {
             val configs = configGroup.linksAsScopeWithPrefixSorted.filter { it.prefix != null && text == it.prefix!! }
             if(configs.isEmpty()) return null
-            return ParadoxDynamicCommandScopeLinkPrefixNode(text, textRange, configGroup, configs)
+            return ParadoxCommandScopeLinkPrefixNode(text, textRange, configGroup, configs)
         }
     }
 }

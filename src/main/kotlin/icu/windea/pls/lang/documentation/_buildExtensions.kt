@@ -203,7 +203,7 @@ fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext,
     var appendSeparator = false
     scopeContext.toScopeMap().forEach { (systemLink, scope) ->
         if(appendSeparator) appendBr() else appendSeparator = true
-        appendCwtLink("${gameType.prefix}system_links/$systemLink", systemLink, contextElement)
+        appendCwtLink("${gameType.prefix}system_scopes/$systemLink", systemLink, contextElement)
         append(" = ")
         when {
             isUnsureScopeId(scope.id) -> append(scope)

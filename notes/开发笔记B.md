@@ -152,7 +152,7 @@ faith = {
 * 如果dataType为`scope[X]`，则需要匹配所拥有的scope_type匹配`X`的任意target。target可能是link_value或link。
   * 如果`X`为`any`，则表示匹配任意scope_type。 
   * scope_type：即作用域类型，需要匹配来自scopes（位于`scopes.cwt`中）的规则。
-  * link：类似`root.owner`的格式，即作用域，需要匹配来自`system_links`（位于`script_config.pls.cwt`中）和links（位于`links.cwt`中）的规则。
+  * link：类似`root.owner`的格式，即作用域，需要匹配来自`system_scopes`（位于`script_config.pls.cwt`中）和links（位于`links.cwt`中）的规则。
   * link_value：类似`trigger:xxx`的格式。需要匹配来自links（位于`links.cwt`中）的规则（匹配前缀`prefix`且`type`的值是`scope`或`both`）。
 * 如果dataType为`scope_field`，则等同于`scope[any]`。
 * 如果dataType为`scope_group[X]`，则需要匹配所拥有的scope_type匹配来自`scope_groups`（位于`scope_groups.cwt`中）的规则的target，target可能是link_value或link。
@@ -163,7 +163,7 @@ faith = {
 * 如果dataType为`alias_keys_field[X]`，则需要匹配规则`alias[X:Y] = ...`中的`Y`，`Y`可以是任意存在的值。
 * 如果key的dataType为`aliasName[X]`，value的dataType为`alias_match_left[X]`，则需要匹配规则`alias[X:Y] = ...`，`Y`可以是任意存在的值。处理时需要内联规则。
 * 如果value的dataType为`single_alias_right[X]`，则需要匹配规则`single_alias[X] = ...`。处理时需要内联规则。
-* 如果aliasName支持scopes，则需要额外匹配来自`system_links`（位于`script_config.pls.cwt`中）和links（位于`links.cwt`中）的规则。
+* 如果aliasName支持scopes，则需要额外匹配来自`system_scopes`（位于`script_config.pls.cwt`中）和links（位于`links.cwt`中）的规则。
   * 对应的CWT规则示例：`alias[trigger:scope_field] = { alias_name[trigger] = alias_match_left[trigger] }`
 * 如果aliasName支持modifiers，则需要额外匹配来自modifiers（位于`modifiers.cwt`中）的规则。
   * 会被添加到别名`modifier`中

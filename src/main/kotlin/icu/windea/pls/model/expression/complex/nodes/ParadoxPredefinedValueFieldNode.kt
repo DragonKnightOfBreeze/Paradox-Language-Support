@@ -9,16 +9,16 @@ import icu.windea.pls.core.references.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.highlighter.*
+import icu.windea.pls.script.highlighter.*
 
-class ParadoxSystemCommandScopeLinkNode(
+class ParadoxPredefinedValueFieldNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-    val config: CwtSystemLinkConfig
-) : ParadoxComplexExpressionNode.Base(), ParadoxCommandScopeLinkNode {
+    val config: CwtLinkConfig
+) : ParadoxComplexExpressionNode.Base(), ParadoxValueFieldNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.COMMAND_SYSTEM_SCOPE_KEY
+        return ParadoxScriptAttributesKeys.VALUE_FIELD_KEY
     }
     
     override fun getReference(element: ParadoxExpressionElement): Reference {
@@ -30,9 +30,9 @@ class ParadoxSystemCommandScopeLinkNode(
         PsiResolvedReference<CwtProperty>(element, rangeInElement, resolved)
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxSystemCommandScopeLinkNode? {
-            val config = configGroup.systemLinks[text] ?: return null
-            return ParadoxSystemCommandScopeLinkNode(text, textRange, configGroup, config)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxPredefinedValueFieldNode? {
+            val config = configGroup.linksAsValueNotData.get(text) ?: return null
+            return ParadoxPredefinedValueFieldNode(text, textRange, configGroup, config)
         }
     }
 }

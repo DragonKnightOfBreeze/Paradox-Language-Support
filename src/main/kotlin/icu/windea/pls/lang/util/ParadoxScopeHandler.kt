@@ -274,11 +274,11 @@ object ParadoxScopeHandler {
     fun getSwitchedScopeContext(element: ParadoxExpressionElement, scopeFieldExpression: ParadoxScopeFieldExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val scopeNodes = scopeFieldExpression.scopeNodes
         var result = inputScopeContext
-        val resolved = mutableListOf<Tuple2<ParadoxScopeFieldNode, ParadoxScopeContext>>()
+        val resolved = mutableListOf<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>()
         for(scopeNode in scopeNodes) {
             result = getSwitchedScopeContextOfNode(element, scopeNode, result) ?: getUnknownScopeContext(inputScopeContext)
             resolved.add(scopeNode to result)
-            if(scopeNode is ParadoxErrorScopeFieldNode) break
+            if(scopeNode is ParadoxErrorScopeLinkNode) break
         }
         result.scopeFieldInfo = resolved
         return result
@@ -286,26 +286,26 @@ object ParadoxScopeHandler {
     
     fun getSwitchedScopeContextOfNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
         when(node) {
-            is ParadoxScopeFieldNode -> {
+            is ParadoxScopeLinkNode -> {
                 when(node) {
                     //parameterized -> any (or inferred from extended configs)
-                    is ParadoxParameterizedScopeFieldNode -> {
+                    is ParadoxParameterizedScopeLinkNode -> {
                         return getSwitchedScopeContextOfParameterizedScopeLinkNode(element, node, inputScopeContext)
                     }
                     //system -> context sensitive
-                    is ParadoxSystemLinkNode -> {
+                    is ParadoxSystemScopeNode -> {
                         return getSwitchedScopeContextOfSystemScopeLinkNode(element, node, inputScopeContext)
                     }
                     //predefined -> static
-                    is ParadoxScopeLinkNode -> {
+                    is ParadoxScopeNode -> {
                         return getScopeContextOfScopeLinkNode(element, node, inputScopeContext)
                     }
                     //dynamic -> any (or inferred from extended configs)
-                    is ParadoxScopeLinkFromDataNode -> {
-                        return getScopeContextOfScopeLinkFromDataNode(element, node, inputScopeContext)
+                    is ParadoxDynamicScopeLinkNode -> {
+                        return getScopeContextOfDynamicScopeLinkNode(element, node, inputScopeContext)
                     }
                     //error -> unknown
-                    is ParadoxErrorScopeFieldNode -> {
+                    is ParadoxErrorScopeLinkNode -> {
                         return getUnknownScopeContext(inputScopeContext)
                     }
                 }
@@ -320,11 +320,11 @@ object ParadoxScopeHandler {
                         return getSwitchedScopeContextOfParameterizedScopeLinkNode(element, node, inputScopeContext)
                     }
                     //system -> context sensitive
-                    is ParadoxSystemCommandScopeLinkNode -> {
+                    is ParadoxSystemCommandScopeNode -> {
                         return getSwitchedScopeContextOfSystemScopeLinkNode(element, node, inputScopeContext)
                     }
                     //predefined -> static
-                    is ParadoxPredefinedCommandScopeLinkNode -> {
+                    is ParadoxCommandScopeNode -> {
                         return inputScopeContext.resolveNext(node.config.outputScope)
                     }
                     //dynamic -> any (or inferred from extended configs)
@@ -379,8 +379,8 @@ object ParadoxScopeHandler {
     
     private fun getSwitchedScopeContextOfSystemScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
         val systemLinkConfig = when {
-            node is ParadoxSystemLinkNode -> node.config
-            node is ParadoxSystemCommandScopeLinkNode -> node.config
+            node is ParadoxSystemScopeNode -> node.config
+            node is ParadoxSystemCommandScopeNode -> node.config
             else -> return null
         }
         val id = systemLinkConfig.id
@@ -407,12 +407,12 @@ object ParadoxScopeHandler {
         return inputScopeContext.resolveNext(linkConfig.outputScope)
     }
     
-    private fun getScopeContextOfScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxScopeLinkNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    private fun getScopeContextOfScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxScopeNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val outputScope = node.config.outputScope
         return inputScopeContext.resolveNext(outputScope)
     }
     
-    private fun getScopeContextOfScopeLinkFromDataNode(element: ParadoxExpressionElement, node: ParadoxScopeLinkFromDataNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
+    private fun getScopeContextOfDynamicScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxDynamicScopeLinkNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
         val linkConfig = node.linkConfigs.firstOrNull() ?: return null
         if(linkConfig.outputScope != null) return inputScopeContext.resolveNext(linkConfig.outputScope)
         
@@ -422,7 +422,7 @@ object ParadoxScopeHandler {
         when {
             //hidden:event_target:xxx = {...}
             dataType in CwtDataTypeGroups.ScopeField -> {
-                val nestedNode = node.dataSourceNode.nodes.findIsInstance<ParadoxScopeFieldNode>() ?: return null
+                val nestedNode = node.dataSourceNode.nodes.findIsInstance<ParadoxScopeLinkNode>() ?: return null
                 return getSwitchedScopeContextOfNode(element, nestedNode, inputScopeContext) ?: getUnknownScopeContext(inputScopeContext)
             }
             //event_target:xxx = {...}
@@ -453,11 +453,11 @@ object ParadoxScopeHandler {
             is ParadoxCommandScopeLinkNode -> {
                 when(node) {
                     //system -> any
-                    is ParadoxSystemCommandScopeLinkNode -> {
+                    is ParadoxSystemCommandScopeNode -> {
                         return anyScopeIdSet
                     }
                     //predefined -> static
-                    is ParadoxPredefinedCommandScopeLinkNode -> {
+                    is ParadoxCommandScopeNode -> {
                         return node.config.inputScopes
                     }
                     //parameterized -> any (NOTE cannot be inferred from extended configs, not supported yet)

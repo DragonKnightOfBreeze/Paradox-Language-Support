@@ -663,7 +663,7 @@ object ParadoxExpressionHandler {
         return resolved
     }
     
-    fun resolveValueLinkValue(name: String, configGroup: CwtConfigGroup): PsiElement? {
+    fun resolveValueField(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.linksAsValueNotData[name] ?: return null
         val resolved = linkConfig.pointer.element ?: return null
         resolved.putUserData(PlsKeys.cwtConfig, linkConfig)

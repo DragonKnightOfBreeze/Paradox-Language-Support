@@ -20,16 +20,16 @@ import org.jetbrains.kotlin.idea.base.codeInsight.handlers.fixers.*
  * 语法：
  *
  * ```bnf
- * command_expression ::= command_scope_link * (command_field_link)
- * command_scope_link := system_command_scope_link | predefined_command_scope_link | dynamic_command_scope_link
- * system_command_scope_link := TOKEN //predefined by CWT Config (see system links)
- * predefined_command_scope_link := TOKEN //predefined by CWT Config (see localisation links)
- * dynamic_command_scope_link := dynamic_command_scope_link_prefix ? dynamic_command_scope_link_value
- * dynamic_command_scope_link_prefix := TOKEN //"event_target:"
- * dynamic_command_scope_link_value := TOKEN //matching config expression "value[event_target]" or "value[global_event_target]"
- * command_field_link ::= predefined_command_field_link | dynamic_command_field_link
- * predefined_command_field_link := TOKEN //predefined by CWT Config (see localisation commands)
- * dynamic_command_field_link ::= TOKEN //matching config expression "<scripted_loc>" or "value[variable]"
+ * command_expression ::= command_scope_link * (command_field)
+ * command_scope_link := system_command_scope | command_scope | command_dynamic_scope_link
+ * system_command_scope := TOKEN //predefined by CWT Config (see system links)
+ * command_scope := TOKEN //predefined by CWT Config (see localisation links)
+ * command_dynamic_scope_link := command_dynamic_scope_link_prefix ? command_dynamic_scope_link_value
+ * command_dynamic_scope_link_prefix := TOKEN //"event_target:"
+ * command_dynamic_scope_link_value := TOKEN //matching config expression "value[event_target]" or "value[global_event_target]"
+ * command_field ::= command_predefined_field | command_dynamic_field
+ * command_predefined_field := TOKEN //predefined by CWT Config (see localisation commands)
+ * command_dynamic_field ::= TOKEN //matching config expression "<scripted_loc>" or "value[variable]"
  * ```
  *
  * 示例：

@@ -76,7 +76,7 @@ class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
                 val config = getConfigGroup(project, gameType).scopeAliasMap[name] ?: return null
                 return config.pointer.element
             }
-            "system_links" -> {
+            "system_scopes" -> {
                 if(tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
@@ -135,7 +135,7 @@ class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
             config is CwtSystemLinkConfig -> {
                 val gameType = config.configGroup.gameType
                 val name = config.name
-                val link = "${linkPrefix}${gameType.prefix}system_links/${name}"
+                val link = "${linkPrefix}${gameType.prefix}system_scopes/${name}"
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
             config is CwtLinkConfig -> {

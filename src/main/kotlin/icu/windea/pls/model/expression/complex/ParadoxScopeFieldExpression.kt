@@ -21,12 +21,12 @@ import icu.windea.pls.script.psi.*
  *
  * ```bnf
  * scope_field_expression ::= scope +
- * scope ::= system_link | scope_link | scope_link_from_data
- * system_link ::= TOKEN //predefined by CWT Config (see system_links.cwt)
+ * scope ::= system_scope | scope_link | scope_link_from_data
+ * system_scope ::= TOKEN //predefined by CWT Config (see system_scopes.cwt)
  * scope_link ::= TOKEN //predefined by CWT Config (see links.cwt)
- * scope_link_from_data ::= scope_link_prefix scope_link_data_source //predefined by CWT Config (see links.cwt)
+ * scope_link_from_data ::= scope_link_prefix scope_link_value //predefined by CWT Config (see links.cwt)
  * scope_link_prefix ::= TOKEN //e.g. "event_target:" while the link's prefix is "event_target:"
- * scope_link_data_source ::= EXPRESSION //e.g. "some_variable" while the link's data source is "value[variable]"
+ * scope_link_value ::= EXPRESSION //e.g. "some_variable" while the link's data source is "value[variable]"
  * expression ::= data_expression | dynamic_value_expression //see: ParadoxDataExpression, ParadoxDynamicValueExpression
  * ```
  *
@@ -42,8 +42,8 @@ class ParadoxScopeFieldExpression private constructor(
     override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpression.Base() {
-    val scopeNodes: List<ParadoxScopeFieldNode>
-        get() = nodes.filterIsInstance<ParadoxScopeFieldNode>()
+    val scopeNodes: List<ParadoxScopeLinkNode>
+        get() = nodes.filterIsInstance<ParadoxScopeLinkNode>()
     
     override val errors by lazy { validate() }
     
@@ -65,10 +65,10 @@ class ParadoxScopeFieldExpression private constructor(
                 //如果光标位置之前存在无法解析的scope（除非被解析为scopeLinkFromData，例如，"event_target:xxx"），不要进行补全
                 if(node is ParadoxErrorNode || node.text.isEmpty()) break
             }
-            if(node is ParadoxScopeFieldNode) {
+            if(node is ParadoxScopeLinkNode) {
                 if(inRange) {
                     context.scopeContext = scopeContextInExpression
-                    completeForScopeNode(node, context, result)
+                    ParadoxCompletionManager.completeForScopeLinkNode(node, context, result)
                     break
                 } else {
                     scopeContextInExpression = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
@@ -116,7 +116,7 @@ class ParadoxScopeFieldExpression private constructor(
                 val nodeText = expressionString.substring(startIndex, tokenIndex)
                 val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
                 startIndex = tokenIndex + 1
-                val node = ParadoxScopeFieldNode.resolve(nodeText, nodeTextRange, configGroup)
+                val node = ParadoxScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
                 //handle mismatch situation
                 if(!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
                 nodes.add(node)
@@ -131,15 +131,15 @@ class ParadoxScopeFieldExpression private constructor(
             for((i, node) in nodes.withIndex()) {
                 val isLast = i == nodes.lastIndex
                 when(node) {
-                    is ParadoxScopeFieldNode -> {
+                    is ParadoxScopeLinkNode -> {
                         if(node.text.isEmpty()) {
                             if(isLast) {
-                                errors += ParadoxComplexExpressionErrors.missingScopeField(rangeInExpression)
+                                errors += ParadoxComplexExpressionErrors.missingScopeLink(rangeInExpression)
                             } else if(!malformed) {
                                 malformed = true
                             }
                         } else {
-                            if(node is ParadoxScopeLinkFromDataNode) {
+                            if(node is ParadoxDynamicScopeLinkNode) {
                                 val dataSourceNode = node.dataSourceNode
                                 for(dataSourceChildNode in dataSourceNode.nodes) {
                                     when(dataSourceChildNode) {
@@ -147,7 +147,7 @@ class ParadoxScopeFieldExpression private constructor(
                                             if(dataSourceChildNode.text.isEmpty()) {
                                                 if(isLast) {
                                                     val expect = dataSourceChildNode.linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
-                                                    errors += ParadoxComplexExpressionErrors.missingScopeLinkDataSource(rangeInExpression, expect)
+                                                    errors += ParadoxComplexExpressionErrors.missingScopeLinkValue(rangeInExpression, expect)
                                                 } else if(!malformed) {
                                                     malformed = true
                                                 }
@@ -155,15 +155,15 @@ class ParadoxScopeFieldExpression private constructor(
                                                 malformed = true
                                             }
                                         }
-                                        is ParadoxScopeFieldNode -> {
+                                        is ParadoxScopeLinkNode -> {
                                             if(dataSourceChildNode.text.isEmpty()) {
                                                 if(isLast) {
-                                                    errors += ParadoxComplexExpressionErrors.missingScopeField(rangeInExpression)
+                                                    errors += ParadoxComplexExpressionErrors.missingScopeLink(rangeInExpression)
                                                 } else if(!malformed) {
                                                     malformed = true
                                                 }
                                             } else {
-                                                if(dataSourceChildNode is ParadoxScopeLinkFromDataNode) {
+                                                if(dataSourceChildNode is ParadoxDynamicScopeLinkNode) {
                                                     val nestedDataSourceNode = dataSourceChildNode.dataSourceNode
                                                     for(nestedDataSourceChildNode in nestedDataSourceNode.nodes) {
                                                         when(nestedDataSourceChildNode) {
@@ -171,7 +171,7 @@ class ParadoxScopeFieldExpression private constructor(
                                                                 if(nestedDataSourceChildNode.text.isEmpty()) {
                                                                     if(isLast) {
                                                                         val expect = nestedDataSourceChildNode.linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
-                                                                        errors += ParadoxComplexExpressionErrors.missingScopeLinkDataSource(rangeInExpression, expect)
+                                                                        errors += ParadoxComplexExpressionErrors.missingScopeLinkValue(rangeInExpression, expect)
                                                                     } else if(!malformed) {
                                                                         malformed = true
                                                                     }

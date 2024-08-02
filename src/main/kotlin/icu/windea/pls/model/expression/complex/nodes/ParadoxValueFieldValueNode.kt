@@ -1,6 +1,5 @@
 package icu.windea.pls.model.expression.complex.nodes
 
-import com.intellij.lang.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
@@ -11,7 +10,7 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.highlighter.*
 
-class ParadoxValueLinkDataSourceNode(
+class ParadoxValueFieldValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val nodes: List<ParadoxComplexExpressionNode>,
@@ -19,11 +18,11 @@ class ParadoxValueLinkDataSourceNode(
     val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.VALUE_LINK_DATA_SOURCE_KEY
+        return ParadoxScriptAttributesKeys.VALUE_FIELD_VALUE_KEY
     }
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxValueLinkDataSourceNode {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxValueFieldValueNode {
             val parameterRanges = text.getParameterRanges()
             
             //text may contain parameters
@@ -69,7 +68,7 @@ class ParadoxValueLinkDataSourceNode(
                 val node = ParadoxDataSourceNode.resolve(text, textRange, configGroup, linkConfigs)
                 nodes.add(node)
             }
-            return ParadoxValueLinkDataSourceNode(text, textRange, nodes, configGroup, linkConfigs)
+            return ParadoxValueFieldValueNode(text, textRange, nodes, configGroup, linkConfigs)
         }
     }
 }

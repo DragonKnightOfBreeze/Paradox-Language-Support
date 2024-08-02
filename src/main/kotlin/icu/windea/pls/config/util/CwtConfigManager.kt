@@ -153,7 +153,7 @@ object CwtConfigManager {
             element is CwtProperty && path.matchesAntPattern("database_object_types/*") -> {
                 CwtConfigType.DatabaseObjectType
             }
-            element is CwtProperty && path.matchesAntPattern("system_links/*") -> {
+            element is CwtProperty && path.matchesAntPattern("system_scopes/*") -> {
                 CwtConfigType.SystemLink
             }
             element is CwtProperty && path.matchesAntPattern("localisation_locales/*") -> {
