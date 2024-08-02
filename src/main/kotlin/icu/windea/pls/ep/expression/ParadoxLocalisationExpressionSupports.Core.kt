@@ -32,7 +32,7 @@ class ParadoxLocalisationCommandExpressionSupport: ParadoxLocalisationExpression
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        ParadoxCompletionManager.completeComplexExpression(context, result, ParadoxCommandExpression::class.java)
+        ParadoxCompletionManager.completeCommandExpression(context, result)
     }
 }
 
@@ -58,6 +58,6 @@ class ParadoxLocalisationDatabaseObjectExpressionSupport: ParadoxLocalisationExp
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        ParadoxCompletionManager.completeComplexExpression(context, result, ParadoxDatabaseObjectExpression::class.java)
+        ParadoxCompletionManager.completeDatabaseObjectExpression(context, result)
     }
 }

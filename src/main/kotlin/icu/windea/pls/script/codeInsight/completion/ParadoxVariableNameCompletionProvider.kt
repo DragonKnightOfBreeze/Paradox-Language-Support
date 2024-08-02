@@ -9,7 +9,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.CwtConfigMatcher.Options
-import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -51,6 +50,6 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         
         context.config = configGroup.mockVariableConfig
         
-        ParadoxCompletionManager.completeComplexExpression(context, result, ParadoxDynamicValueExpression::class.java)
+        ParadoxCompletionManager.completeDynamicValueExpression(context, result)
     }
 }

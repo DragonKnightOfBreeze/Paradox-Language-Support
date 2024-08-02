@@ -1,18 +1,13 @@
 package icu.windea.pls.model.expression.complex
 
-import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.nodes.*
-import icu.windea.pls.script.psi.*
 import kotlin.Pair
 
 /**
@@ -58,72 +53,6 @@ class ParadoxScriptValueExpression private constructor(
         }
     
     override val errors by lazy { validate() }
-    
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        val element = context.contextElement?.castOrNull<ParadoxScriptExpressionElement>() ?: return
-        val keyword = context.keyword
-        val keywordOffset = context.keywordOffset
-        val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
-        val scopeMatched = context.scopeMatched
-        val isKey = context.isKey
-        
-        context.scopeContext = null //skip check scope context here
-        context.isKey = null
-        
-        val offset = context.offsetInParent!! - context.expressionOffset
-        if(offset < 0) return //unexpected
-        for(node in nodes) {
-            val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
-            if(node is ParadoxScriptValueNode) {
-                if(inRange) {
-                    val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
-                    val resultToUse = result.withPrefixMatcher(keywordToUse)
-                    context.keyword = keywordToUse
-                    context.keywordOffset = node.rangeInExpression.startOffset
-                    val config = context.config
-                    val configs = context.configs
-                    context.config = this.config
-                    context.configs = emptyList()
-                    ParadoxCompletionManager.completeScriptExpression(context, resultToUse)
-                    context.config = config
-                    context.configs = configs
-                }
-            } else if(node is ParadoxScriptValueArgumentNode) {
-                if(inRange && scriptValueNode.text.isNotEmpty()) {
-                    val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
-                    val resultToUse = result.withPrefixMatcher(keywordToUse)
-                    context.keyword = keywordToUse
-                    context.keywordOffset = node.rangeInExpression.startOffset
-                    ParadoxParameterHandler.completeArguments(element, context, resultToUse)
-                }
-            } else if(node is ParadoxScriptValueArgumentValueNode && getSettings().inference.configContextForParameters) {
-                if(inRange && scriptValueNode.text.isNotEmpty()) {
-                    //尝试提示传入参数的值
-                    run {
-                        val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
-                        val resultToUse = result.withPrefixMatcher(keywordToUse)
-                        val parameterElement = node.argumentNode?.getReference(element)?.resolve() ?: return@run
-                        val inferredContextConfigs = ParadoxParameterHandler.getInferredContextConfigs(parameterElement)
-                        val inferredConfig = inferredContextConfigs.singleOrNull()?.castOrNull<CwtValueConfig>() ?: return@run
-                        val config = context.config
-                        val configs = context.configs
-                        context.keyword = keywordToUse
-                        context.keywordOffset = node.rangeInExpression.startOffset
-                        context.config = inferredConfig
-                        context.configs = emptyList()
-                        ParadoxCompletionManager.completeScriptExpression(context, resultToUse)
-                        context.config = config
-                        context.configs = configs
-                    }
-                }
-            }
-        }
-        context.keyword = keyword
-        context.keywordOffset = keywordOffset
-        context.scopeContext = scopeContext
-        context.scopeMatched = scopeMatched
-        context.isKey = isKey
-    }
     
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {

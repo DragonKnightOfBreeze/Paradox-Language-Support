@@ -47,7 +47,7 @@ class ParadoxScopeFieldExpression private constructor(
     
     override val errors by lazy { validate() }
     
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+    fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val element = context.contextElement?.castOrNull<ParadoxScriptExpressionElement>() ?: return
         val keyword = context.keyword
         val keywordOffset = context.keywordOffset

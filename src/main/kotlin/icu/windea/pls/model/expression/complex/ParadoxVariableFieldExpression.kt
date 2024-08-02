@@ -1,19 +1,15 @@
 package icu.windea.pls.model.expression.complex
 
-import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.model.expression.complex.nodes.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 变量字段表达式。作为[ParadoxValueFieldExpression]的子集。
@@ -35,51 +31,6 @@ class ParadoxVariableFieldExpression(
         get() = nodes.last().cast()
     
     override val errors by lazy { validate() }
-    
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        val element = context.contextElement?.castOrNull<ParadoxScriptExpressionElement>() ?: return
-        val keyword = context.keyword
-        val keywordOffset = context.keywordOffset
-        val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
-        val isKey = context.isKey
-        
-        context.isKey = null
-        
-        val offset = context.offsetInParent!! - context.expressionOffset
-        if(offset < 0) return //unexpected
-        var scopeContextInExpression = scopeContext
-        for(node in nodes) {
-            val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
-            if(!inRange) {
-                //如果光标位置之前存在无法解析的scope（除非被解析为scopeLinkFromData，例如，"event_target:xxx"），不要进行补全
-                if(node is ParadoxErrorNode || node.text.isEmpty()) break
-            }
-            if(node is ParadoxScopeLinkNode) {
-                if(inRange) {
-                    context.scopeContext = scopeContextInExpression
-                    ParadoxCompletionManager.completeForScopeLinkNode(node, context, result)
-                    break
-                } else {
-                    scopeContextInExpression = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
-                        ?: ParadoxScopeHandler.getUnknownScopeContext(scopeContextInExpression)
-                }
-            } else if(node is ParadoxDataSourceNode) {
-                if(inRange) {
-                    context.scopeContext = scopeContextInExpression
-                    val scopeNode = ParadoxScopeLinkNode.resolve(node.text, node.rangeInExpression, configGroup)
-                    val afterPrefix = ParadoxCompletionManager.completeForScopeLinkNode(scopeNode, context, result)
-                    if(afterPrefix) break
-                    ParadoxCompletionManager.completeForVariableFieldValueNode(node, context, result)
-                    break
-                }
-            }
-        }
-        
-        context.keyword = keyword
-        context.keywordOffset = keywordOffset
-        context.scopeContext = scopeContext
-        context.isKey = isKey
-    }
     
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {

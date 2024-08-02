@@ -1,12 +1,9 @@
 package icu.windea.pls.model.expression.complex
 
-import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
-import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
 /**
@@ -16,8 +13,6 @@ import icu.windea.pls.model.expression.complex.nodes.*
  */
 interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
     val errors: List<ParadoxComplexExpressionError>
-    
-    fun complete(context: ProcessingContext, result: CompletionResultSet) = pass()
     
     abstract class Base : ParadoxComplexExpression {
         override fun equals(other: Any?): Boolean {

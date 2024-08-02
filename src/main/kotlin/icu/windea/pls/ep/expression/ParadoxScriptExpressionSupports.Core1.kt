@@ -59,7 +59,7 @@ class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptExpressionSuppor
             ParadoxCompletionManager.completeDynamicValue(context, result)
             return
         }
-        ParadoxCompletionManager.completeComplexExpression(context, result, ParadoxDynamicValueExpression::class.java)
+        ParadoxCompletionManager.completeDynamicValueExpression(context, result)
     }
 }
 
@@ -96,7 +96,7 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport 
             }
             else -> {}
         }
-        ParadoxCompletionManager.completeComplexExpression(context, result, ParadoxScopeFieldExpression::class.java)
+        ParadoxCompletionManager.completeScopeFieldExpression(context, result)
         when(configExpression.type) {
             CwtDataTypes.Scope -> {
                 context.scopeName = null
@@ -139,7 +139,7 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport 
             }
             else -> {}
         }
-        ParadoxCompletionManager.completeComplexExpression(context, result, ParadoxValueFieldExpression::class.java)
+        ParadoxCompletionManager.completeValueFieldExpression(context, result)
         when(configExpression.type) {
             CwtDataTypes.IntValueField -> {
                 context.isInt = null
@@ -179,7 +179,7 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSuppo
             }
             else -> {}
         }
-        ParadoxCompletionManager.completeComplexExpression(context, result, ParadoxVariableFieldExpression::class.java)
+        ParadoxCompletionManager.completeVariableFieldExpression(context, result)
         when(configExpression.type) {
             CwtDataTypes.IntVariableField -> {
                 context.isInt = null
@@ -212,6 +212,6 @@ class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptExpressionSupp
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        ParadoxCompletionManager.completeComplexExpression(context, result, ParadoxDatabaseObjectExpression::class.java)
+        ParadoxCompletionManager.completeDatabaseObjectExpression(context, result)
     }
 }
