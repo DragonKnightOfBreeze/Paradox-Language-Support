@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package icu.windea.pls.lang.documentation
 
 import com.intellij.model.*
@@ -276,7 +278,7 @@ private fun DocumentationBuilder.addScope(element: PsiElement, name: String, con
                 sections.put(PlsBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
                 
                 val outputScope = linkConfig.outputScope ?: ParadoxScopeHandler.anyScopeId
-                sections.put(PlsBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
+                sections.put(PlsBundle.message("sectionTitle.outputScope"), getScopeText(outputScope, gameType, contextElement))
             }
         }
         CwtConfigType.LocalisationLink -> {
@@ -290,7 +292,7 @@ private fun DocumentationBuilder.addScope(element: PsiElement, name: String, con
                 sections.put(PlsBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
                 
                 val outputScope = linkConfig.outputScope?: ParadoxScopeHandler.anyScopeId
-                sections.put(PlsBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
+                sections.put(PlsBundle.message("sectionTitle.outputScope"), getScopeText(outputScope, gameType, contextElement))
             }
         }
         CwtConfigType.Modifier -> {
@@ -332,7 +334,9 @@ private fun DocumentationBuilder.addScope(element: PsiElement, name: String, con
                 sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
                 
                 val outputScope = aliasConfig.outputScope
-                if(outputScope != null) sections.put(PlsBundle.message("sectionTitle.outputScopes"), getScopeText(outputScope, gameType, contextElement))
+                if(outputScope != null) {
+                    sections.put(PlsBundle.message("sectionTitle.outputScope"), getScopeText(outputScope, gameType, contextElement))
+                }
             }
         }
         else -> pass()
