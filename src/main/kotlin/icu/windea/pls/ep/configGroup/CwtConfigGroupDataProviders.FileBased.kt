@@ -54,7 +54,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         when(filePath) {
             "settings/folding_settings.cwt" -> resolveFoldingSettingsInFile(fileConfig, configGroup)
             "settings/postfix_template_settings.cwt" -> resolvePostfixTemplateSettingsInFile(fileConfig, configGroup)
-            "builtin/system_scopes.cwt" -> resolveSystemLinks(fileConfig, configGroup)
+            "builtin/system_scopes.cwt" -> resolveSystemScopes(fileConfig, configGroup)
             "builtin/localisation_locales.cwt" -> resolveLocalisationLocalesInFile(fileConfig, configGroup)
             "builtin/localisation_predefined_parameters.cwt" -> resolveLocalisationPredefinedParametersInFile(fileConfig, configGroup)
         }
@@ -118,11 +118,11 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
     }
     
-    private fun resolveSystemLinks(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
+    private fun resolveSystemScopes(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         val configs = fileConfig.properties.find { it.key == "system_scopes" }?.properties ?: return
         configs.forEach { property ->
-            val systemLinkConfig = CwtSystemLinkConfig.resolve(property)
-            configGroup.systemLinks[systemLinkConfig.id] = systemLinkConfig
+            val systemScopeConfig = CwtSystemScopeConfig.resolve(property)
+            configGroup.systemScopes[systemScopeConfig.id] = systemScopeConfig
         }
     }
     

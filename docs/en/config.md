@@ -163,7 +163,7 @@ TODO
 >
 > These configs are currently read only, DO NOT try to modify or extend them.
 
-#### System Links
+#### System Scopes
 
 TODO
 

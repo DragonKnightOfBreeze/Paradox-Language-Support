@@ -22,7 +22,7 @@ class PredefinedCwtConfigGroupDataProvider: CwtConfigGroupDataProvider {
                 this += "on_action" //也支持，其中调用的事件的类型要匹配
                 this += "event" //事件
             }
-            with(configGroup.definitionTypesSkipCheckSystemLink) {
+            with(configGroup.definitionTypesSkipCheckSystemScope) {
                 this += "event"
                 this += "scripted_trigger"
                 this += "scripted_effect"

@@ -650,9 +650,9 @@ object ParadoxExpressionHandler {
     }
     
     fun resolvePredefinedScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val systemLink = configGroup.systemLinks[name] ?: return null
-        val resolved = systemLink.pointer.element ?: return null
-        resolved.putUserData(PlsKeys.cwtConfig, systemLink)
+        val systemScope = configGroup.systemScopes[name] ?: return null
+        val resolved = systemScope.pointer.element ?: return null
+        resolved.putUserData(PlsKeys.cwtConfig, systemScope)
         return resolved
     }
     

@@ -1,4 +1,4 @@
-# System link Config
+# System scope Config
 # Used to provide language features for predefined scope links
 
 system_scopes = {

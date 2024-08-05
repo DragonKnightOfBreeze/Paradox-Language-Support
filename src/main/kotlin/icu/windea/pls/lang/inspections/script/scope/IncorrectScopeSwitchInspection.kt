@@ -63,7 +63,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                 if(!checkForSystemScopes) continue
                                 if(scopeContext.scope.id == ParadoxScopeHandler.unknownScopeId) {
                                     val definitionType = definitionInfo?.type ?: continue
-                                    if(config.configGroup.definitionTypesSkipCheckSystemLink.contains(definitionType)) continue
+                                    if(config.configGroup.definitionTypesSkipCheckSystemScope.contains(definitionType)) continue
                                     val description = PlsBundle.message(
                                         "inspection.script.incorrectScopeSwitch.desc.3",
                                         scopeNode.text

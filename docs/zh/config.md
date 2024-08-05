@@ -154,7 +154,7 @@ TODO
 >
 > 这些规则目前是只读的，不要试图修改或扩展它们。
 
-#### System Links
+#### System Scopes
 
 TODO
 

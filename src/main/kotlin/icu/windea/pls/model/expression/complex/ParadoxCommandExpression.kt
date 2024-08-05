@@ -22,7 +22,7 @@ import org.jetbrains.kotlin.idea.base.codeInsight.handlers.fixers.*
  * ```bnf
  * command_expression ::= command_scope_link * (command_field)
  * command_scope_link := system_command_scope | command_scope | command_dynamic_scope_link
- * system_command_scope := TOKEN //predefined by CWT Config (see system links)
+ * system_command_scope := TOKEN //predefined by CWT Config (see system scopes)
  * command_scope := TOKEN //predefined by CWT Config (see localisation links)
  * command_dynamic_scope_link := command_dynamic_scope_link_prefix ? command_dynamic_scope_link_value
  * command_dynamic_scope_link_prefix := TOKEN //"event_target:"

@@ -312,7 +312,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             scopesBlockElement.processProperty(inline = true) pp@{
                                 ProgressManager.checkCanceled()
                                 val n = it.name.lowercase()
-                                if(configGroup.systemLinks.get(n)?.baseId?.lowercase() != "from") return@pp true
+                                if(configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@pp true
                                 
                                 if(scopeContextOfScopesElement == null) {
                                     map.put(n, ParadoxScopeHandler.anyScopeId)
@@ -463,7 +463,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             scopesBlockElement.processProperty(inline = true) pp@{
                                 ProgressManager.checkCanceled()
                                 val n = it.name.lowercase()
-                                if(configGroup.systemLinks.get(n)?.baseId?.lowercase() != "from") return@pp true
+                                if(configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@pp true
                                 
                                 if(scopeContextOfScopesElement == null) {
                                     map.put(n, ParadoxScopeHandler.anyScopeId)

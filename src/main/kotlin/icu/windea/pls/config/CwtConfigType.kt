@@ -103,7 +103,7 @@ enum class CwtConfigType(
         override val icon get() = PlsIcons.Nodes.DatabaseObjectType
     },
     
-    SystemLink("system link", true) {
+    SystemScope("system scope", true) {
         override val prefix get() = PlsBundle.message("prefix.systemScope")
         override val descriptionText get() = PlsBundle.message("cwt.description.systemScope")
         override val icon get() = PlsIcons.Nodes.SystemScope

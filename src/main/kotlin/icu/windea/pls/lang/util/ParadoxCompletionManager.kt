@@ -1190,12 +1190,12 @@ object ParadoxCompletionManager {
         val configGroup = context.configGroup!!
         
         //总是提示，无论作用域是否匹配
-        val systemLinkConfigs = configGroup.systemLinks
-        for(systemLinkConfig in systemLinkConfigs.values) {
-            val name = systemLinkConfig.id
-            val element = systemLinkConfig.pointer.element ?: continue
+        val systemScopeConfigs = configGroup.systemScopes
+        for(systemScopeConfig in systemScopeConfigs.values) {
+            val name = systemScopeConfig.id
+            val element = systemScopeConfig.pointer.element ?: continue
             val tailText = " from system scopes"
-            val typeFile = systemLinkConfig.pointer.containingFile
+            val typeFile = systemScopeConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withIcon(PlsIcons.Nodes.SystemScope)
                 .withTailText(tailText, true)

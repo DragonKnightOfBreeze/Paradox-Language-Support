@@ -17,7 +17,7 @@ val CwtConfigGroup.postfixTemplateSettings: MutableMap<String, MutableMap<@CaseI
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
 @Tags(Tag.BuiltIn)
-val CwtConfigGroup.systemLinks: MutableMap<@CaseInsensitive String, CwtSystemLinkConfig>
+val CwtConfigGroup.systemScopes: MutableMap<@CaseInsensitive String, CwtSystemScopeConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 @Tags(Tag.BuiltIn)
 val CwtConfigGroup.localisationLocalesById: MutableMap<String, CwtLocalisationLocaleConfig>
@@ -192,7 +192,7 @@ val CwtConfigGroup.definitionTypesIndirectSupportScope: MutableSet<String>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableSetOf() }
 //不需要检查系统作用域切换的定义类型（应当是固定的，不允许在检查选项中配置）
 @Tags(Tag.Computed)
-val CwtConfigGroup.definitionTypesSkipCheckSystemLink: MutableSet<String>
+val CwtConfigGroup.definitionTypesSkipCheckSystemScope: MutableSet<String>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableSetOf() }
 //支持参数的定义类型
 @Tags(Tag.Computed)

@@ -154,7 +154,7 @@ object CwtConfigManager {
                 CwtConfigType.DatabaseObjectType
             }
             element is CwtProperty && path.matchesAntPattern("system_scopes/*") -> {
-                CwtConfigType.SystemLink
+                CwtConfigType.SystemScope
             }
             element is CwtProperty && path.matchesAntPattern("localisation_locales/*") -> {
                 CwtConfigType.LocalisationLocale

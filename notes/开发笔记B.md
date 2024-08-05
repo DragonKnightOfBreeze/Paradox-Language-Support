@@ -118,7 +118,7 @@ faith = {
 
 * `for_definition = pop_faction`：表示此link只能在类型为`pop_faction`的定义的声明中使用，且引用的`data_source`也只能来自该定义的声明中
 
-内置的系统作用域连接（`system link`）：
+内置的系统作用域连接（`system scope`）：
 
 * `this`：当前scope
 * `root`：当前声明的初始scope（事件的初始默认scope）

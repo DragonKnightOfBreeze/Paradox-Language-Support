@@ -80,7 +80,7 @@ class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
                 if(tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroup(project, gameType).systemLinks[name] ?: return null
+                val config = getConfigGroup(project, gameType).systemScopes[name] ?: return null
                 return config.pointer.element
             }
             "links" -> {
@@ -132,7 +132,7 @@ class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
         //这里目前仅支持可能用到的那些
         val builder = StringBuilder()
         when {
-            config is CwtSystemLinkConfig -> {
+            config is CwtSystemScopeConfig -> {
                 val gameType = config.configGroup.gameType
                 val name = config.name
                 val link = "${linkPrefix}${gameType.prefix}system_scopes/${name}"

@@ -15,7 +15,7 @@ class ParadoxSystemCommandScopeNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-    val config: CwtSystemLinkConfig
+    val config: CwtSystemScopeConfig
 ) : ParadoxComplexExpressionNode.Base(), ParadoxCommandScopeLinkNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxLocalisationAttributesKeys.SYSTEM_COMMAND_SCOPE_KEY
@@ -31,7 +31,7 @@ class ParadoxSystemCommandScopeNode(
     
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxSystemCommandScopeNode? {
-            val config = configGroup.systemLinks[text] ?: return null
+            val config = configGroup.systemScopes[text] ?: return null
             return ParadoxSystemCommandScopeNode(text, textRange, configGroup, config)
         }
     }

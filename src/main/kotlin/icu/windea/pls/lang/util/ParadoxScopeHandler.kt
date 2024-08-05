@@ -378,15 +378,15 @@ object ParadoxScopeHandler {
     }
     
     private fun getSwitchedScopeContextOfSystemScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
-        val systemLinkConfig = when {
+        val systemScopeConfig = when {
             node is ParadoxSystemScopeNode -> node.config
             node is ParadoxSystemCommandScopeNode -> node.config
             else -> return null
         }
-        val id = systemLinkConfig.id
-        val baseId = systemLinkConfig.baseId
+        val id = systemScopeConfig.id
+        val baseId = systemScopeConfig.baseId
         val isFrom = baseId == "From"
-        val systemLinkContext = when {
+        val systemScopeContext = when {
             id == "This" -> inputScopeContext
             id == "Root" -> inputScopeContext.root
             id == "Prev" -> inputScopeContext.prev
@@ -399,7 +399,7 @@ object ParadoxScopeHandler {
             id == "FromFromFromFrom" -> inputScopeContext.fromFromFromFrom
             else -> null
         } ?: return getUnknownScopeContext(inputScopeContext, isFrom)
-        return inputScopeContext.resolveNext(systemLinkContext, isFrom)
+        return inputScopeContext.resolveNext(systemScopeContext, isFrom)
     }
     
     private fun getSwitchedScopeContextOfLinkPrefixNode(element: ParadoxExpressionElement, node: ParadoxLinkPrefixNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {

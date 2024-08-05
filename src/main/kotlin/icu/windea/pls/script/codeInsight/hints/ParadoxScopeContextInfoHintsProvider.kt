@@ -78,15 +78,15 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 			} else {
 				appendSeparator = true
 			}
-			presentations.add(systemLinkPresentation(key, configGroup))
+			presentations.add(systemScopePresentation(key, configGroup))
 			presentations.add(smallText(" = "))
 			presentations.add(scopeLinkPresentation(value, configGroup))
 		}
 		return SequencePresentation(presentations)
 	}
 	
-	private fun PresentationFactory.systemLinkPresentation(scope: String, configGroup: CwtConfigGroup): InlayPresentation {
-		return psiSingleReference(smallText(scope)) { configGroup.systemLinks[scope]?.pointer?.element }
+	private fun PresentationFactory.systemScopePresentation(scope: String, configGroup: CwtConfigGroup): InlayPresentation {
+		return psiSingleReference(smallText(scope)) { configGroup.systemScopes[scope]?.pointer?.element }
 	}
 	
 	private fun PresentationFactory.scopeLinkPresentation(scope: ParadoxScope, configGroup: CwtConfigGroup): InlayPresentation {
