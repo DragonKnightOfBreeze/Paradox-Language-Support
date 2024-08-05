@@ -46,11 +46,9 @@ class ParadoxScriptExpressionPsiReference(
     }
     
     override fun isReferenceTo(element: PsiElement): Boolean {
-        //必要的处理，否则查找使用时会出现问题（输入的PsiElement永远不会是propertyKey，只会是property）
-        //直接调用resolve()即可
-        val resolved = resolve()
-        val manager = element.manager
-        return manager.areElementsEquivalent(resolved, element) || (resolved is ParadoxScriptProperty && manager.areElementsEquivalent(resolved.propertyKey, element))
+        //兼容性处理（property VS propertyKey）
+        if(element is ParadoxScriptPropertyKey && isReferenceTo(element.parent)) return true
+        return super.isReferenceTo(element)
     }
     
     override fun getReferences(): Array<out PsiReference>? {

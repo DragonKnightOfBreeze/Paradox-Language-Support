@@ -83,7 +83,7 @@ class ParadoxDynamicCommandFieldNode(
             run {
                 val selector = definitionSelector(project, element).contextSensitive()
                 ParadoxDefinitionSearch.search(name, "scripted_loc", selector).findAll().orNull()
-                    ?.mapToArray { PsiElementResolveResult(it) }
+                    ?.let { return it.mapToArray { e -> PsiElementResolveResult(e) }  }
             }
             run {
                 val configExpression = configGroup.mockVariableConfig.expression
