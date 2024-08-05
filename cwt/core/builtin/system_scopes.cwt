@@ -1,5 +1,5 @@
 # System scope Config
-# Used to provide language features for predefined scope links
+# Used to provide language features for system scopes
 
 system_scopes = {
 	### Scopes to the current scope.
