@@ -46,7 +46,7 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
             .withIcon(PlsIcons.Nodes.ScriptedVariable)
             .withTailText(tailText)
             .withTypeText(typeFile.name, typeFile.icon, true)
-        result.addElement(lookupElement)
+        result.addSimpleElement(lookupElement, context)
         return true
     }
 }

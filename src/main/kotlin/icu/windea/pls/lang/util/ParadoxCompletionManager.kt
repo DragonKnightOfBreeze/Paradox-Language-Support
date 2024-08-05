@@ -916,7 +916,6 @@ object ParadoxCompletionManager {
     }
     
     fun completeCommandExpression(context: ProcessingContext, result: CompletionResultSet) {
-        //TODO 1.3.15
         ProgressManager.checkCanceled()
         val keyword = context.keyword
         val keywordOffset = context.keywordOffset
@@ -1038,6 +1037,7 @@ object ParadoxCompletionManager {
             completeScopeLinkValue(context, resultToUse, prefix, inDsNode)
             context.keyword = keyword
             context.keywordOffset = keywordOffset
+            context.scopeContext = scopeContext
             return true
         } else {
             val inFirstNode = dsNode == null || dsNode.nodes.isEmpty()
@@ -1087,6 +1087,7 @@ object ParadoxCompletionManager {
             completeValueFieldValue(context, resultToUse, prefix, inDsNode)
             context.keyword = keyword
             context.keywordOffset = keywordOffset
+            context.scopeContext = scopeContext
             return true
         } else {
             val inFirstNode = dsNode == null || dsNode.nodes.isEmpty()
@@ -1119,144 +1120,69 @@ object ParadoxCompletionManager {
      * @return 是否已经输入了前缀。
      */
     private fun completeForCommandScopeLinkNode(node: ParadoxCommandScopeLinkNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
-        return false
-        
-        //val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return true
-        //val offsetInParent = context.offsetInParent!!
+        val offsetInParent = context.offsetInParent!!
         //val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
-        //val nodeRange = node.rangeInExpression
-        //val dynamicValueFieldNode = node.castOrNull<ParadoxDynamicScopeLinkNode>()
-        //val prefixNode = dynamicValueFieldNode?.prefixNode
-        //val dsNode = dynamicValueFieldNode?.dsNode
-        //val inDsNode = dsNode?.nodes?.first()
-        //val endOffset = dsNode?.rangeInExpression?.startOffset ?: -1
-        //if(prefixNode != null && dsNode != null && offsetInParent >= dsNode.rangeInExpression.startOffset) {
-        //    context.scopeContext = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, scopeContext)
-        //        ?: ParadoxScopeHandler.getUnknownScopeContext(scopeContext)
-        //    
-        //    val keywordToUse = dsNode.text.substring(0, offsetInParent - endOffset)
-        //    val resultToUse = result.withPrefixMatcher(keywordToUse)
-        //    val keyword = context.keyword
-        //    val keywordOffset = context.keywordOffset
-        //    context.keyword = keywordToUse
-        //    context.keywordOffset = dsNode.rangeInExpression.startOffset
-        //    val prefix = prefixNode.text
-        //    completeScopeLinkValue(context, resultToUse, prefix, inDsNode)
-        //    context.keyword = keyword
-        //    context.keywordOffset = keywordOffset
-        //    return true
-        //} else {
-        //    val inFirstNode = dsNode == null || dsNode.nodes.isEmpty()
-        //        || offsetInParent <= dsNode.nodes.first().rangeInExpression.endOffset
-        //    val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
-        //    val resultToUse = result.withPrefixMatcher(keywordToUse)
-        //    val keyword = context.keyword
-        //    val keywordOffset = context.keywordOffset
-        //    context.keyword = keywordToUse
-        //    context.keywordOffset = node.rangeInExpression.startOffset
-        //    if(inFirstNode) {
-        //        completeSystemScope(context, resultToUse)
-        //        completeScope(context, resultToUse)
-        //        completeScopeLinkPrefix(context, resultToUse)
-        //    }
-        //    completeScopeLinkValue(context, resultToUse, null, inDsNode)
-        //    context.keyword = keyword
-        //    context.keywordOffset = keywordOffset
-        //    return false
-        //}
-        
-        //TODO 1.3.15+
-        //val element = parameters.position.parent.castOrNull<ParadoxLocalisationCommandIdentifier>() ?: return
-        //val offsetInParent = parameters.offset - element.startOffset
-        //val keyword = element.getKeyword(offsetInParent)
-        //
-        //context.initialize(parameters)
-        //context.contextElement = element
-        //context.offsetInParent = offsetInParent
-        //context.keyword = keyword
-        //context.scopeContext = ParadoxScopeHandler.getScopeContext(element)
-        //
-        ////提示scope
-        //ParadoxCompletionManager.completeSystemScope(context, result)
-        //ParadoxCompletionManager.completePredefinedLocalisationScope(context, result)
-        //
-        ////提示value[event_target]和value[global_event_target]
-        //ParadoxCompletionManager.completeEventTarget(context, result)
+        val nodeRange = node.rangeInExpression
+        val scopeLinkNode = node.castOrNull<ParadoxDynamicCommandScopeLinkNode>()
+        val prefixNode = scopeLinkNode?.prefixNode
+        val dsNode = scopeLinkNode?.dataSourceNode
+        val endOffset = dsNode?.rangeInExpression?.startOffset ?: -1
+        if(prefixNode != null && dsNode != null && offsetInParent >= dsNode.rangeInExpression.startOffset) {
+            //context.scopeContext = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, scopeContext)
+            //    ?: ParadoxScopeHandler.getUnknownScopeContext(scopeContext)
+
+            val keywordToUse = dsNode.text.substring(0, offsetInParent - endOffset)
+            val resultToUse = result.withPrefixMatcher(keywordToUse)
+            val keyword = context.keyword
+            val keywordOffset = context.keywordOffset
+            context.keyword = keywordToUse
+            context.keywordOffset = dsNode.rangeInExpression.startOffset
+            completeEventTarget(context, resultToUse)
+            context.keyword = keyword
+            context.keywordOffset = keywordOffset
+            //context.scopeContext = scopeContext
+            return true
+        } else {
+            val inFirstNode = dsNode == null || dsNode.nodes.isEmpty()
+                || offsetInParent <= dsNode.nodes.first().rangeInExpression.endOffset
+            val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+            val resultToUse = result.withPrefixMatcher(keywordToUse)
+            val keyword = context.keyword
+            val keywordOffset = context.keywordOffset
+            context.keyword = keywordToUse
+            context.keywordOffset = node.rangeInExpression.startOffset
+            completeSystemScope(context, resultToUse)
+            completeCommandScope(context, resultToUse)
+            if(inFirstNode) {
+                completeEventTargetPrefix(context, resultToUse)
+            }
+            completeEventTarget(context, resultToUse)
+            context.keyword = keyword
+            context.keywordOffset = keywordOffset
+            return false
+        }
     }
     
     /**
      * @return 是否已经输入了前缀。
      */
     private fun completeForCommandFieldNode(node: ParadoxCommandFieldNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
+        val keyword = context.keyword
+        val keywordOffset = context.keywordOffset
+        val offsetInParent = context.offsetInParent!!
+        val nodeRange = node.rangeInExpression
+        
+        val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+        val resultToUse = result.withPrefixMatcher(keywordToUse)
+        context.keyword = keywordToUse
+        context.keywordOffset = node.rangeInExpression.startOffset
+        completePredefinedCommandField(context, resultToUse)
+        completeScriptedLoc(context, resultToUse)
+        completeVariable(context, resultToUse)
+        context.keyword = keyword
+        context.keywordOffset = keywordOffset
+        
         return false
-        
-        //val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return true
-        //val keyword = context.keyword
-        //val keywordOffset = context.keywordOffset
-        //val offsetInParent = context.offsetInParent!!
-        //val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
-        //val nodeRange = node.rangeInExpression
-        //val dynamicValueFieldNode = node.castOrNull<ParadoxDynamicValueFieldNode>()
-        //val prefixNode = dynamicValueFieldNode?.prefixNode
-        //val dsNode = dynamicValueFieldNode?.dsNode
-        //val inDsNode = dsNode?.nodes?.first()
-        //val endOffset = dsNode?.rangeInExpression?.startOffset ?: -1
-        //if(prefixNode != null && dsNode != null && offsetInParent >= dsNode.rangeInExpression.startOffset) {
-        //    context.scopeContext = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, scopeContext)
-        //        ?: ParadoxScopeHandler.getUnknownScopeContext(scopeContext)
-        //    
-        //    val keywordToUse = dsNode.text.substring(0, offsetInParent - endOffset)
-        //    val resultToUse = result.withPrefixMatcher(keywordToUse)
-        //    context.keyword = keywordToUse
-        //    context.keywordOffset = dsNode.rangeInExpression.startOffset
-        //    val prefix = prefixNode.text
-        //    completeValueFieldValue(context, resultToUse, prefix, inDsNode)
-        //    context.keyword = keyword
-        //    context.keywordOffset = keywordOffset
-        //    return true
-        //} else {
-        //    val inFirstNode = dsNode == null || dsNode.nodes.isEmpty()
-        //        || offsetInParent <= dsNode.nodes.first().rangeInExpression.endOffset
-        //    val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
-        //    val resultToUse = result.withPrefixMatcher(keywordToUse)
-        //    context.keyword = keywordToUse
-        //    context.keywordOffset = node.rangeInExpression.startOffset
-        //    if(inFirstNode) {
-        //        completeValueField(context, resultToUse)
-        //        completeValueFieldPrefix(context, resultToUse)
-        //    }
-        //    completeValueFieldValue(context, resultToUse, null, inDsNode)
-        //    context.keyword = keyword
-        //    context.keywordOffset = keywordOffset
-        //    return false
-        //}
-        
-        //TODO 1.3.15+
-        //val element = parameters.position.parent.castOrNull<ParadoxLocalisationCommandIdentifier>() ?: return
-        //val offsetInParent = parameters.offset - element.startOffset
-        //val keyword = element.getKeyword(offsetInParent)
-        //
-        //context.initialize(parameters)
-        //context.contextElement = element
-        //context.offsetInParent = offsetInParent
-        //context.keyword = keyword
-        //context.scopeContext = ParadoxScopeHandler.getScopeContext(element)
-        //
-        ////提示scope
-        //ParadoxCompletionManager.completeSystemScope(context, result)
-        //ParadoxCompletionManager.completePredefinedLocalisationScope(context, result)
-        //
-        ////提示command
-        //ParadoxCompletionManager.completePredefinedLocalisationCommand(context, result)
-        //
-        ////提示<scripted_loc>
-        //ParadoxCompletionManager.completeScriptedLoc(context, result)
-        //
-        ////提示value[event_target]和value[global_event_target]
-        //ParadoxCompletionManager.completeEventTarget(context, result)
-        //
-        ////提示value[variable]
-        //ParadoxCompletionManager.completeVariable(context, result)
     }
     
     fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet) {
@@ -1276,7 +1202,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
                 .withPriority(ParadoxCompletionPriorities.systemScope)
-            result.addElement(lookupElement)
+            result.addSimpleElement(lookupElement, context)
         }
     }
     
@@ -1301,7 +1227,7 @@ object ParadoxCompletionManager {
                 .withCaseSensitivity(false) //忽略大小写
                 .withScopeMatched(scopeMatched)
                 .withPriority(ParadoxCompletionPriorities.scope)
-            result.addElement(lookupElement)
+            result.addSimpleElement(lookupElement, context)
         }
     }
     
@@ -1325,7 +1251,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withScopeMatched(scopeMatched)
                 .withPriority(ParadoxCompletionPriorities.linkPrefix)
-            result.addElement(lookupElement)
+            result.addSimpleElement(lookupElement, context)
         }
     }
     
@@ -1382,7 +1308,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
                 .withScopeMatched(scopeMatched)
-            result.addElement(lookupElement)
+            result.addSimpleElement(lookupElement, context)
         }
     }
     
@@ -1405,7 +1331,7 @@ object ParadoxCompletionManager {
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(ParadoxCompletionPriorities.linkPrefix)
-            result.addElement(lookupElement)
+            result.addSimpleElement(lookupElement, context)
         }
     }
     
@@ -1461,7 +1387,7 @@ object ParadoxCompletionManager {
                 .withCaseSensitivity(false) //忽略大小写
                 .withScopeMatched(scopeMatched)
                 .withPriority(ParadoxCompletionPriorities.scope)
-            result.addElement(lookupElement)
+            result.addSimpleElement(lookupElement, context)
         }
     }
     
@@ -1485,7 +1411,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
                 .withScopeMatched(scopeMatched)
-            result.addElement(lookupElement)
+            result.addSimpleElement(lookupElement, context)
         }
     }
     
@@ -1637,6 +1563,16 @@ object ParadoxCompletionManager {
         }
     }
     
+    fun completeEventTargetPrefix(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val tailText = " from command scope link event_target"
+        val lookupElement = LookupElementBuilder.create("event_target:")
+            .withBoldness(true)
+            .withTailText(tailText, true)
+            .withPriority(ParadoxCompletionPriorities.linkPrefix)
+        result.addSimpleElement(lookupElement, context)
+    }
+    
     fun completeEventTarget(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val file = context.parameters?.originalFile ?: return
@@ -1655,7 +1591,7 @@ object ParadoxCompletionManager {
                 .withIcon(icon)
                 .withTailText(tailText, true)
                 .withCaseSensitivity(false) //忽略大小写
-            result.addElement(lookupElement)
+            result.addSimpleElement(lookupElement, context)
             true
         }
     }
@@ -1676,7 +1612,7 @@ object ParadoxCompletionManager {
                 .withTailText(tailText, true)
                 .withTypeText(typeFile.name, typeFile.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
-            result.addElement(lookupElement)
+            result.addSimpleElement(lookupElement, context)
             true
         }
     }
@@ -1699,7 +1635,7 @@ object ParadoxCompletionManager {
                 .withIcon(icon)
                 .withTailText(tailText, true)
                 .withCaseSensitivity(false) //忽略大小写
-            result.addElement(lookupElement)
+            result.addSimpleElement(lookupElement, context)
             true
         }
     }
@@ -1722,7 +1658,7 @@ object ParadoxCompletionManager {
                 .withIcon(PlsIcons.Nodes.ScriptedVariable)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withItemTextUnderlined(true) //used for completions from extended configs
-            result.addElement(lookupElement)
+            result.addSimpleElement(lookupElement, context)
         }
     }
     

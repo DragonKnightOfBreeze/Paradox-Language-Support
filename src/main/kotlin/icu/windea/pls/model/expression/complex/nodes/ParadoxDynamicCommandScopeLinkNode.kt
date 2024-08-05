@@ -2,6 +2,7 @@ package icu.windea.pls.model.expression.complex.nodes
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.core.collections.*
 
 class ParadoxDynamicCommandScopeLinkNode(
     override val text: String,
@@ -9,6 +10,9 @@ class ParadoxDynamicCommandScopeLinkNode(
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode>
 ) : ParadoxComplexExpressionNode.Base(), ParadoxCommandScopeLinkNode {
+    val prefixNode get() = nodes.findIsInstance<ParadoxCommandScopeLinkPrefixNode>()
+    val dataSourceNode get() = nodes.findIsInstance<ParadoxCommandScopeLinkValueNode>()!!
+    
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandScopeLinkNode? {
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
