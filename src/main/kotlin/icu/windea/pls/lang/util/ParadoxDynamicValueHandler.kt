@@ -5,6 +5,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 
 object ParadoxDynamicValueHandler {
@@ -26,6 +27,7 @@ object ParadoxDynamicValueHandler {
     }
     
     fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxDynamicValueElement? {
+        if(!name.isIdentifier()) return null //skip invalid names
         val gameType = configGroup.gameType ?: return null
         val readWriteAccess = getReadWriteAccess(configExpression)
         val dynamicValueType = configExpression.value ?: return null
@@ -33,6 +35,7 @@ object ParadoxDynamicValueHandler {
     }
     
     fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpressions: Iterable<CwtDataExpression>, configGroup: CwtConfigGroup): ParadoxDynamicValueElement? {
+        if(!name.isIdentifier()) return null //skip invalid names
         val gameType = configGroup.gameType ?: return null
         val configExpression = configExpressions.firstOrNull() ?: return null
         val readWriteAccess = getReadWriteAccess(configExpression)
