@@ -320,10 +320,9 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                                 }
                                 
                                 val pv = it.propertyValue ?: return@pp true
-                                val scopeField = pv.text
-                                if(scopeField.isLeftQuoted()) return@pp true
-                                val textRange = TextRange.create(0, scopeField.length)
-                                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup) ?: return@pp true
+                                val expressionString = pv.value
+                                val textRange = TextRange.create(0, expressionString.length)
+                                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return@pp true
                                 val scopeContextOfEachScope = ParadoxScopeHandler.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
                                 map.put(n, scopeContextOfEachScope.scope.id)
                                 
@@ -471,10 +470,9 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                                 }
                                 
                                 val pv = it.propertyValue ?: return@pp true
-                                val scopeField = pv.text
-                                if(scopeField.isLeftQuoted()) return@pp true
-                                val textRange = TextRange.create(0, scopeField.length)
-                                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup) ?: return@pp true
+                                val expressionString = pv.value
+                                val textRange = TextRange.create(0, expressionString.length)
+                                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return@pp true
                                 val scopeContextOfEachScope = ParadoxScopeHandler.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
                                 map.put(n, scopeContextOfEachScope.scope.id)
                                 

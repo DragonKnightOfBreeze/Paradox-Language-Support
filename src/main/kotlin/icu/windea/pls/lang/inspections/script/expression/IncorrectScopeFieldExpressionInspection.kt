@@ -33,9 +33,9 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
                 val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return
                 val dataType = config.expression.type
                 if(dataType !in CwtDataTypeGroups.ScopeField) return
-                val value = element.value
-                val textRange = TextRange.create(0, value.length)
-                val expression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup) ?: return
+                val expressionString = element.value
+                val textRange = TextRange.create(0, expressionString.length)
+                val expression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return
                 handleErrors(element, expression)
             }
             

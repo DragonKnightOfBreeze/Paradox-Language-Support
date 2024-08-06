@@ -71,10 +71,10 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
         if(configExpression.type != CwtDataTypes.Scope) return
         if(element !is ParadoxScriptStringExpressionElement) return
         val expectedScope = configExpression.value ?: return
-        val text = element.text
-        val textRange = TextRange.create(0, text.length)
+        val value = element.value
+        val textRange = TextRange.create(0, value.length)
         val configGroup = config.configGroup
-        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup) ?: return
+        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup) ?: return
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
         val parentScopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement) ?: ParadoxScopeHandler.getAnyScopeContext()
         val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)
@@ -91,10 +91,10 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
         if(configExpression.type != CwtDataTypes.ScopeGroup) return
         if(element !is ParadoxScriptStringExpressionElement) return
         val expectedScopeGroup = configExpression.value ?: return
-        val text = element.text
-        val textRange = TextRange.create(0, text.length)
+        val value = element.value
+        val textRange = TextRange.create(0, value.length)
         val configGroup = config.configGroup
-        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup) ?: return
+        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup) ?: return
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
         val parentScopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement) ?: ParadoxScopeHandler.getAnyScopeContext()
         val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)

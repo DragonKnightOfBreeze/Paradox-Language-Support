@@ -10,7 +10,6 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.expression.complex.nodes.*
-import org.jetbrains.kotlin.idea.base.codeInsight.handlers.fixers.*
 
 /**
  * （本地化）命令表达式。

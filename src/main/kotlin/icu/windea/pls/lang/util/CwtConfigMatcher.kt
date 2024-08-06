@@ -20,6 +20,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.CwtConfigMatcher.Result
+import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.*
 import icu.windea.pls.model.expression.complex.*
 import icu.windea.pls.script.psi.*
@@ -125,15 +126,7 @@ object CwtConfigMatcher {
         configGroup: CwtConfigGroup,
         options: Int = Options.Default
     ): Result {
-        //prevent element text mismatch
-        val elementToMatch = when {
-            element is ParadoxScriptProperty -> if(configExpression.isKey) element.propertyKey else element.propertyValue
-            element is ParadoxScriptPropertyKey -> if(configExpression.isKey) element else element.propertyValue
-            element is ParadoxScriptValue -> if(configExpression.isKey) element.propertyKey else element
-            else -> element
-        }
-        if(elementToMatch == null) return Result.NotMatch
-        return CwtDataExpressionMatcher.matches(elementToMatch, expression, configExpression, config, configGroup, options)
+        return CwtDataExpressionMatcher.matches(element, expression, configExpression, config, configGroup, options)
     }
     
     private fun matchesScriptExpressionInBlock(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
@@ -226,11 +219,6 @@ object CwtConfigMatcher {
         }
         
         fun getScopeFieldMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
-            val expressionElement = when {
-                element is ParadoxScriptStringExpressionElement -> element
-                element is ParadoxScriptProperty -> element.propertyKey
-                else -> return Result.NotMatch
-            }
             val textRange = TextRange.create(0, expression.text.length)
             val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup)
             if(scopeFieldExpression == null) return Result.NotMatch
@@ -239,25 +227,34 @@ object CwtConfigMatcher {
                 CwtDataTypes.Scope -> {
                     val expectedScope = configExpression.value ?: return Result.ExactMatch
                     return Result.LazyScopeAwareMatch p@{
-                        val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
-                        val parentScopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement) ?: return@p true
-                        val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
-                        if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return@p true
-                        false
+                        val scopeContext = getSwitchedScopeContext(element, configExpression, scopeFieldExpression)
+                        ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)
                     }
                 }
                 CwtDataTypes.ScopeGroup -> {
                     val expectedScopeGroup = configExpression.value ?: return Result.ExactMatch
                     return Result.LazyScopeAwareMatch p@{
-                        val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@p true
-                        val parentScopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement) ?: return@p true
-                        val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
-                        if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return@p true
-                        false
+                        val scopeContext = getSwitchedScopeContext(element, configExpression, scopeFieldExpression)
+                        ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)
                     }
                 }
                 else -> return Result.NotMatch
             }
+        }
+        
+        private fun getSwitchedScopeContext(element: PsiElement, configExpression: CwtDataExpression, scopeFieldExpression: ParadoxScopeFieldExpression): ParadoxScopeContext? {
+            val memberElement = ParadoxScopeHandler.findParentMember(element, withSelf = true)
+            val parentMemberElement = ParadoxScopeHandler.findParentMember(element, withSelf = false)
+            val parentScopeContext = when {
+                parentMemberElement != null -> ParadoxScopeHandler.getSwitchedScopeContext(parentMemberElement) ?: ParadoxScopeHandler.getAnyScopeContext()
+                else -> ParadoxScopeHandler.getAnyScopeContext()
+            }
+            val expressionElement = when {
+                memberElement is ParadoxScriptProperty -> if(configExpression.isKey) memberElement.propertyKey else memberElement.propertyValue
+                memberElement is ParadoxScriptValue -> memberElement
+                else -> return null
+            } ?: return null
+            return ParadoxScopeHandler.getSwitchedScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
         }
         
         fun getModifierMatchResult(element: PsiElement, expression: ParadoxDataExpression, configGroup: CwtConfigGroup): Result {

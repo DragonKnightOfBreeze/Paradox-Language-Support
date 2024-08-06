@@ -75,9 +75,9 @@ class ParadoxDynamicValueExpression private constructor(
                     val atNode = ParadoxMarkerNode("@", TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset), configGroup)
                     nodes.add(atNode)
                     //resolve scope expression
-                    val expText = expressionString.substring(tokenIndex + 1)
+                    val expString = expressionString.substring(tokenIndex + 1)
                     val expTextRange = TextRange.create(tokenIndex + 1 + offset, textLength + offset)
-                    val expNode = ParadoxScopeFieldExpression.resolve(expText, expTextRange, configGroup)!!
+                    val expNode = ParadoxScopeFieldExpression.resolve(expString, expTextRange, configGroup)!!
                     nodes.add(expNode)
                 }
                 break

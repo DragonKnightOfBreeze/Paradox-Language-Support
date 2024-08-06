@@ -165,8 +165,8 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 if(expression.type.isBlockLikeType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 //dynamicValue的值必须合法
-                val name = ParadoxDynamicValueHandler.getName(expression.text)
-                if(name == null) return Result.NotMatch
+                val name = ParadoxDynamicValueHandler.getName(expression.text) ?: return Result.NotMatch
+                if(!name.isIdentifier()) return Result.NotMatch
                 val dynamicValueType = configExpression.value
                 if(dynamicValueType == null) return Result.NotMatch
                 CwtConfigMatcher.Impls.getDynamicValueMatchResult(element, name, dynamicValueType, project)
@@ -183,6 +183,7 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 } else if(configExpression.type == CwtDataTypes.IntValueField) {
                     if(expression.type.isIntType() || ParadoxType.resolve(expression.text).isIntType()) return Result.ExactMatch
                 }
+                
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val textRange = TextRange.create(0, expression.text.length)
@@ -197,6 +198,7 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 } else if(configExpression.type == CwtDataTypes.IntVariableField) {
                     if(expression.type.isIntType() || ParadoxType.resolve(expression.text).isIntType()) return Result.ExactMatch
                 }
+                
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val textRange = TextRange.create(0, expression.text.length)

@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.openapi.util.*
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
@@ -96,8 +97,8 @@ object ParadoxScopeHandler {
         return false //cwt config error
     }
     
-    fun findParentMember(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
-        return element.parents(withSelf = false)
+    fun findParentMember(element: PsiElement, withSelf: Boolean): ParadoxScriptMemberElement? {
+        return element.parents(withSelf)
             .find { it is ParadoxScriptDefinitionElement || (it is ParadoxScriptBlock && it.isBlockMember()) }
             .castOrNull<ParadoxScriptMemberElement>()
     }
@@ -164,7 +165,7 @@ object ParadoxScopeHandler {
     
     fun isScopeContextChanged(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeContext): Boolean {
         //does not have scope context -> changed always
-        val parentMember = findParentMember(element)
+        val parentMember = findParentMember(element, withSelf = false)
         if(parentMember == null) return true
         val parentScopeContext = getSwitchedScopeContext(parentMember)
         if(parentScopeContext == null) return true
@@ -211,7 +212,7 @@ object ParadoxScopeHandler {
     private fun doGetSwitchedScopeContextOfDefinitionMember(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
         //element could be a definition member only if after inlined
         
-        val parentMember = findParentMember(element)
+        val parentMember = findParentMember(element, withSelf = false)
         val parentScopeContext = if(parentMember != null) getSwitchedScopeContext(parentMember) else null
         val configs = ParadoxExpressionHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
         val config = configs.firstOrNull() ?: return null
@@ -221,16 +222,11 @@ object ParadoxScopeHandler {
         
         if(config is CwtPropertyConfig && config.expression.type == CwtDataTypes.ScopeField) {
             if(parentScopeContext == null) return null
-            val scopeField = element.castOrNull<ParadoxScriptProperty>()?.propertyKey?.text ?: return null
-            if(scopeField.isLeftQuoted()) return null
-            val textRange = TextRange.create(0, scopeField.length)
+            val expressionElement = element.castOrNull<ParadoxScriptProperty>()?.propertyKey ?: return null
+            val expressionString = expressionElement.value
+            val textRange = TextRange.create(0, expressionString.length)
             val configGroup = config.configGroup
-            val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(scopeField, textRange, configGroup) ?: return null
-            val expressionElement = when {
-                element is ParadoxScriptProperty -> element.propertyKey
-                element is ParadoxScriptValue -> element
-                else -> return null
-            }
+            val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return null
             val result = getSwitchedScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
             return result
         } else {

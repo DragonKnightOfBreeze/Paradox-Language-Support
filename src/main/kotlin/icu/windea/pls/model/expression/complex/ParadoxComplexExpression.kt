@@ -29,18 +29,6 @@ interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
     }
     
     companion object Resolver {
-        fun resolveByType(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>?, type: Class<out ParadoxComplexExpression>): ParadoxComplexExpression? {
-            return when {
-                type == ParadoxDynamicValueExpression::class.java -> ParadoxDynamicValueExpression.resolve(expressionString, range, configGroup, config ?: return null)
-                type == ParadoxScopeFieldExpression::class.java -> ParadoxScopeFieldExpression.resolve(expressionString, range, configGroup)
-                type == ParadoxValueFieldExpression::class.java -> ParadoxValueFieldExpression.resolve(expressionString, range, configGroup)
-                type == ParadoxVariableFieldExpression::class.java -> ParadoxVariableFieldExpression.resolve(expressionString, range, configGroup)
-                type == ParadoxCommandExpression::class.java -> ParadoxCommandExpression.resolve(expressionString, range, configGroup)
-                type == ParadoxDatabaseObjectExpression::class.java -> ParadoxDatabaseObjectExpression.resolve(expressionString, range, configGroup)
-                else -> null
-            }
-        }
-        
         fun resolveByConfig(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
             val dataType = config.expression?.type ?: return null
             return when {
