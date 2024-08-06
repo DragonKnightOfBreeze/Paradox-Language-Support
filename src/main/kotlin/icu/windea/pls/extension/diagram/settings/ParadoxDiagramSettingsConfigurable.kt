@@ -17,8 +17,11 @@ class ParadoxDiagramSettingsConfigurable(
     
     override fun createPanel(): DialogPanel {
         return panel {
+            row {
+                label(PlsDiagramBundle.message("settings.diagram.tooltip.selectSettings"))
+            }
             for(diagramSettings in getDiagramSettingsList()) {
-                val p = diagramSettings.buildConfigurablePanel(coroutineScope, this)
+                diagramSettings.buildConfigurablePanel(coroutineScope, this)
             }
         }
     }
