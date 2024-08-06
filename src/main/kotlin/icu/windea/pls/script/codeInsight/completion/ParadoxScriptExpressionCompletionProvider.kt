@@ -40,6 +40,7 @@ class ParadoxScriptExpressionCompletionProvider : CompletionProvider<CompletionP
         
         val resultToUse = result.withPrefixMatcher(keyword)
         if(mayBeKey) {
+            //向上得到block或者file
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
             val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
             if(memberElement != null) {

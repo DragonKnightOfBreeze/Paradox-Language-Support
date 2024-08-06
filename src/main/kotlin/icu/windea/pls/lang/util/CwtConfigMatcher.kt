@@ -125,7 +125,15 @@ object CwtConfigMatcher {
         configGroup: CwtConfigGroup,
         options: Int = Options.Default
     ): Result {
-        return CwtDataExpressionMatcher.matches(element, expression, configExpression, config, configGroup, options)
+        //prevent element text mismatch
+        val elementToMatch = when {
+            element is ParadoxScriptProperty -> if(configExpression.isKey) element.propertyKey else element.propertyValue
+            element is ParadoxScriptPropertyKey -> if(configExpression.isKey) element else element.propertyValue
+            element is ParadoxScriptValue -> if(configExpression.isKey) element.propertyKey else element
+            else -> element
+        }
+        if(elementToMatch == null) return Result.NotMatch
+        return CwtDataExpressionMatcher.matches(elementToMatch, expression, configExpression, config, configGroup, options)
     }
     
     private fun matchesScriptExpressionInBlock(element: PsiElement, config: CwtMemberConfig<*>): Boolean {

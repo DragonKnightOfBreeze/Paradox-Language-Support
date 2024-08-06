@@ -35,7 +35,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                 if(config is CwtPropertyConfig && config.expression.type == CwtDataTypes.ScopeField) {
                     val resultScopeContext = ParadoxScopeHandler.getSwitchedScopeContext(element)
                     if(resultScopeContext == null) return
-                    val scopeFieldInfo = resultScopeContext.scopeFieldInfo
+                    val scopeFieldInfo = resultScopeContext.scopeLinkInfo
                     if(scopeFieldInfo.isNullOrEmpty()) return
                     val propertyKey = element.propertyKey
                     for((scopeNode, scopeContext) in scopeFieldInfo) {

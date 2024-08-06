@@ -280,7 +280,7 @@ object ParadoxScopeHandler {
             resolved.add(scopeNode to result)
             if(scopeNode is ParadoxErrorScopeLinkNode) break
         }
-        result.scopeFieldInfo = resolved
+        result.scopeLinkInfo = resolved
         return result
     }
     
@@ -448,6 +448,15 @@ object ParadoxScopeHandler {
         }
     }
     
+    fun getSupportedScopes(categoryConfigMap: Map<String, CwtModifierCategoryConfig>): Set<String> {
+        val categoryConfigs = categoryConfigMap.values
+        if(categoryConfigs.any { it.supportedScopes == anyScopeIdSet }) {
+            return anyScopeIdSet
+        } else {
+            return categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
+        }
+    }
+    
     fun getSupportedScopesOfNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): Set<String>? {
         when(node) {
             is ParadoxCommandScopeLinkNode -> {
@@ -517,15 +526,6 @@ object ParadoxScopeHandler {
     fun getUnknownScopeContext(inputScopeContext: ParadoxScopeContext? = null, isFrom: Boolean = false): ParadoxScopeContext {
         if(inputScopeContext == null) return ParadoxScopeContext.resolve(unknownScopeId)
         return inputScopeContext.resolveNext(unknownScopeId, isFrom)
-    }
-    
-    fun getSupportedScopes(categoryConfigMap: Map<String, CwtModifierCategoryConfig>): Set<String> {
-        val categoryConfigs = categoryConfigMap.values
-        if(categoryConfigs.any { it.supportedScopes == anyScopeIdSet }) {
-            return anyScopeIdSet
-        } else {
-            return categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
-        }
     }
     
     fun mergeScopeId(scopeId: String?, otherScopeId: String?): String? {
