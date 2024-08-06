@@ -628,7 +628,6 @@ object ParadoxCompletionManager {
     
     fun completeInlineScriptInvocation(context: ProcessingContext, result: CompletionResultSet) {
         val configGroup = context.configGroup ?: return
-        val tailText = " from inline script invocations"
         configGroup.inlineConfigGroup["inline_script"]?.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
             context.config = config0
@@ -637,8 +636,7 @@ object ParadoxCompletionManager {
             val element = config0.pointer.element ?: return@f
             val typeFile = config0.pointer.containingFile
             val lookupElement = ParadoxLookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.Property)
-                .withTailText(tailText)
+                .withIcon(PlsIcons.Nodes.Inline)
                 .withTypeText(typeFile?.name)
                 .withTypeIcon(typeFile?.icon)
                 .caseInsensitive()
