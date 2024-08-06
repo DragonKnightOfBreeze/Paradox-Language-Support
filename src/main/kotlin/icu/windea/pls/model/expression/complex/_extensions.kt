@@ -1,14 +1,9 @@
 package icu.windea.pls.model.expression.complex
 
-import com.intellij.codeInsight.completion.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.complex.nodes.*
-import icu.windea.pls.script.psi.*
 
 fun ParadoxComplexExpression.processAllNodes(processor: Processor<ParadoxComplexExpressionNode>): Boolean {
     return doProcessAllNodes(processor)
