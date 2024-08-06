@@ -253,7 +253,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
     
     override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
         var expressionElement: ParadoxScriptStringExpressionElement? = null
-        var text: String? = null
+        var expressionString: String? = null
         var expressionElementConfig: CwtMemberConfig<*>? = null
         var completionOffset = -1
         when(from) {
@@ -266,9 +266,8 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
                     element is ParadoxScriptStringExpressionElement -> element
                     else -> return null
                 }
-                text = expressionElement.text ?: return null
-                if(text.isLeftQuoted()) return null
-                if(!text.contains("value:")) return null //快速判断
+                expressionString = expressionElement.value
+                if(!expressionString.contains("value:")) return null //快速判断
                 expressionElementConfig = config
             }
             //extraArgs: contextConfig
@@ -279,19 +278,17 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
                     element is ParadoxScriptStringExpressionElement -> element
                     else -> return null
                 }
-                text = expressionElement.text ?: return null
-                if(text.isLeftQuoted()) return null
-                if(!text.contains("value:")) return null //快速判断
+                expressionString = expressionElement.value
+                if(!expressionString.contains("value:")) return null //快速判断
                 expressionElementConfig = contextConfig
             }
             //extraArgs: offset?
             ParadoxParameterContextReferenceInfo.From.InContextReference -> {
                 val offset = extraArgs.getOrNull(0)?.castOrNull<Int>() ?: -1
                 expressionElement = element.parentOfType<ParadoxScriptStringExpressionElement>(withSelf = true) ?: return null
-                text = expressionElement.text ?: return null
-                if(text.isLeftQuoted()) return null
-                if(!text.contains("value:")) return null //快速判断
-                val pipeIndex = text.indexOf('|', text.indexOf("value:").let { if(it != -1) it + 6 else return null })
+                expressionString = expressionElement.value
+                if(!expressionString.contains("value:")) return null //快速判断
+                val pipeIndex = expressionString.indexOf('|', expressionString.indexOf("value:").let { if(it != -1) it + 6 else return null })
                 if(pipeIndex == -1) return null
                 if(offset != -1 && pipeIndex >= offset - expressionElement.startOffset) return null //要求光标在管道符之后（如果offset不为-1）
                 expressionElementConfig = ParadoxExpressionHandler.getConfigs(expressionElement).firstOrNull() ?: return null
@@ -301,8 +298,8 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val configGroup = expressionElementConfig.configGroup
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
-        val range = TextRange.create(0, text.length)
-        val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, range, configGroup) ?: return null
+        val range = TextRange.create(0, expressionString.length)
+        val valueFieldExpression = ParadoxValueFieldExpression.resolve(expressionString, range, configGroup) ?: return null
         val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
         val definitionName = scriptValueExpression.scriptValueNode.text.orNull() ?: return null
         if(definitionName.isParameterized()) return null //skip if context name is parameterized
@@ -334,12 +331,11 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         if(rangeInElement == null) return null
         if(config !is CwtMemberConfig<*>) return null
         if(config.expression.type !in CwtDataTypeGroups.ValueField) return null
-        val text = element.text
-        if(text.isLeftQuoted()) return null
-        if(!text.contains("value:")) return null //快速判断
-        val range = TextRange.create(0, text.length)
+        val expressionString = element.value
+        if(!expressionString.contains("value:")) return null //快速判断
+        val range = TextRange.create(0, expressionString.length)
         val configGroup = config.configGroup
-        val valueFieldExpression = ParadoxValueFieldExpression.resolve(text, range, configGroup) ?: return null
+        val valueFieldExpression = ParadoxValueFieldExpression.resolve(expressionString, range, configGroup) ?: return null
         val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
         val scriptValueNode = scriptValueExpression.scriptValueNode
         val definitionName = scriptValueNode.text
