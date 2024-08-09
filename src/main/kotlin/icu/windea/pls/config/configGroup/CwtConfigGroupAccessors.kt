@@ -2,17 +2,17 @@ package icu.windea.pls.config.configGroup
 
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.config.extended.*
-import icu.windea.pls.config.config.settings.*
+import icu.windea.pls.config.config.builtin.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.priority.*
 
-@Tags(Tag.Settings)
+@Tags(Tag.BuiltIn)
 val CwtConfigGroup.foldingSettings: MutableMap<@CaseInsensitive String, MutableMap<String, CwtFoldingSettingsConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-@Tags(Tag.Settings)
+@Tags(Tag.BuiltIn)
 val CwtConfigGroup.postfixTemplateSettings: MutableMap<String, MutableMap<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 

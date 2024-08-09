@@ -4,7 +4,7 @@ import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.config.config.settings.*
+import icu.windea.pls.config.config.builtin.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
@@ -13,7 +13,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
-@WithCwtSettings("settings/folding_settings.cwt", CwtFoldingSettingsConfig::class)
+@WithBuiltInConfig("builtin/folding_settings.cwt", CwtFoldingSettingsConfig::class)
 abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
     abstract fun getGroupName(): String
     

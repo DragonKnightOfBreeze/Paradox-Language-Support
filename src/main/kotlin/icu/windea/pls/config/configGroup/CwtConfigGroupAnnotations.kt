@@ -6,5 +6,5 @@ package icu.windea.pls.config.configGroup
 annotation class Tags(vararg val value: Tag)
 
 enum class Tag {
-    Settings, BuiltIn, Extended, Computed, Collected
+    BuiltIn, Extended, Computed, Collected
 }

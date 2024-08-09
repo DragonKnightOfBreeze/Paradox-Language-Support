@@ -3,8 +3,8 @@ package icu.windea.pls.ep.configGroup
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.config.builtin.*
 import icu.windea.pls.config.config.extended.*
-import icu.windea.pls.config.config.settings.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
@@ -45,71 +45,17 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return true
         val fileConfig = CwtConfigResolver.resolve(psiFile, configGroup)
         configGroup.files[filePath] = fileConfig
-        if(fileProcessor.isBuiltIn()) doProcessBuiltInFile(filePath, fileConfig, configGroup)
+        if(fileProcessor.isBuiltIn() && configGroup.gameType == null) {
+            doProcessFileForBuiltInConfigs(filePath, fileConfig, configGroup)
+        }
         doProcessFile(fileConfig, configGroup)
         return true
     }
     
-    private fun doProcessBuiltInFile(filePath: String, fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
+    private fun doProcessFileForBuiltInConfigs(filePath: String, fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         when(filePath) {
-            "settings/folding_settings.cwt" -> resolveFoldingSettingsInFile(fileConfig, configGroup)
-            "settings/postfix_template_settings.cwt" -> resolvePostfixTemplateSettingsInFile(fileConfig, configGroup)
-        }
-    }
-    
-    private fun resolveFoldingSettingsInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
-        val configs = fileConfig.properties
-        configs.forEach { groupProperty ->
-            val groupName = groupProperty.key
-            val map = caseInsensitiveStringKeyMap<CwtFoldingSettingsConfig>()
-            groupProperty.properties?.forEach { property ->
-                val id = property.key
-                var key: String? = null
-                var keys: List<String>? = null
-                var placeholder: String? = null
-                property.properties?.forEach { prop ->
-                    when {
-                        prop.key == "key" -> key = prop.stringValue
-                        prop.key == "keys" -> keys = prop.values?.mapNotNull { it.stringValue }
-                        prop.key == "placeholder" -> placeholder = prop.stringValue
-                    }
-                }
-                if(placeholder != null) {
-                    val foldingSetting = CwtFoldingSettingsConfig(id, key, keys, placeholder!!)
-                    map.put(id, foldingSetting)
-                }
-            }
-            configGroup.foldingSettings[groupName] = map
-        }
-    }
-    
-    private fun resolvePostfixTemplateSettingsInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
-        val configs = fileConfig.properties
-        configs.forEach { groupProperty ->
-            val groupName = groupProperty.key
-            val map = caseInsensitiveStringKeyMap<CwtPostfixTemplateSettingsConfig>()
-            groupProperty.properties?.forEach { property ->
-                val id = property.key
-                var key: String? = null
-                var example: String? = null
-                var variables: Map<String, String>? = null
-                var expression: String? = null
-                property.properties?.forEach { prop ->
-                    when {
-                        prop.key == "key" -> key = prop.stringValue
-                        prop.key == "example" -> example = prop.stringValue
-                        prop.key == "variables" -> variables = prop.properties?.let {
-                            buildMap { it.forEach { p -> put(p.key, p.value) } }
-                        }
-                        prop.key == "expression" -> expression = prop.stringValue
-                    }
-                }
-                if(key != null && expression != null) {
-                    val foldingSetting = CwtPostfixTemplateSettingsConfig(id, key!!, example, variables.orEmpty(), expression!!)
-                    map.put(id, foldingSetting)
-                }
-            }
-            configGroup.postfixTemplateSettings[groupName] = map
+            "builtin/folding_settings.cwt" -> CwtFoldingSettingsConfig.resolveInFile(fileConfig, configGroup)
+            "builtin/postfix_template_settings.cwt" -> CwtPostfixTemplateSettingsConfig.resolveInFile(fileConfig, configGroup)
         }
     }
     
