@@ -1,29 +1,22 @@
-## file_path = builtin/system_scopes.cwt
-## builtin
+priorities = {
+	$path = $enum:priority
+}
+$enum:priority = { fios lios ordered }
 sysstem_scopes = {
 	$system_scope$ = {
 		base_id = $system_scope$
 	}
 }
 
-## file_path = builtin/localisation_locales.cwt
-## builtin
 localisation_locales = {
 	$localisation_locale$ = {
 		codes = { $scalar }
 	}
 }
 
-## file_path = builtin/localisation_predefined_parameters.cwt
-## builtin
 localisation_predefined_parameters = {
 	$localisation_predefined_parameter$ = $scalar
 }
-
-priorities = {
-	$path = $enum:priority
-}
-$enum:priority = { fios lios ordered }
 
 types = {
 	type[$type$] = {
@@ -109,12 +102,12 @@ database_object_types = {
 
 ## extended
 scripted_variables = {
-	# TODO
+	$scripted_variable$
 }
 
 ## extended
 definitions = {
-	# TODO
+	$$
 }
 
 ## extended

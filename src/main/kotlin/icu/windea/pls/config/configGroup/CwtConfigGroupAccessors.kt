@@ -10,11 +10,14 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.priority.*
 
 @Tags(Tag.BuiltIn)
-val CwtConfigGroup.foldingSettings: MutableMap<@CaseInsensitive String, MutableMap<String, CwtFoldingSettingsConfig>>
-    by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
+val CwtConfigGroup.schemas: MutableList<CwtSchemaConfig>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableListOf() }
 @Tags(Tag.BuiltIn)
-val CwtConfigGroup.postfixTemplateSettings: MutableMap<String, MutableMap<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>>
-    by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
+val CwtConfigGroup.foldingSettings: MutableMap<String, MutableMap<String, CwtFoldingSettingsConfig>>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
+@Tags(Tag.BuiltIn)
+val CwtConfigGroup.postfixTemplateSettings: MutableMap<String, MutableMap<String, CwtPostfixTemplateSettingsConfig>>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
 val CwtConfigGroup.priorities: MutableMap<String, ParadoxPriority>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
