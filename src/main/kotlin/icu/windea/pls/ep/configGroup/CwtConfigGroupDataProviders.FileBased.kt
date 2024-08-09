@@ -54,7 +54,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         when(filePath) {
             "settings/folding_settings.cwt" -> resolveFoldingSettingsInFile(fileConfig, configGroup)
             "settings/postfix_template_settings.cwt" -> resolvePostfixTemplateSettingsInFile(fileConfig, configGroup)
-            "builtin/system_scopes.cwt" -> resolveSystemScopes(fileConfig, configGroup)
+            "builtin/system_scopes.cwt" -> resolveSystemScopesInFile(fileConfig, configGroup)
             "builtin/localisation_locales.cwt" -> resolveLocalisationLocalesInFile(fileConfig, configGroup)
             "builtin/localisation_predefined_parameters.cwt" -> resolveLocalisationPredefinedParametersInFile(fileConfig, configGroup)
         }
@@ -102,9 +102,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         prop.key == "key" -> key = prop.stringValue
                         prop.key == "example" -> example = prop.stringValue
                         prop.key == "variables" -> variables = prop.properties?.let {
-                            buildMap {
-                                it.forEach { p -> put(p.key, p.value) }
-                            }
+                            buildMap { it.forEach { p -> put(p.key, p.value) } }
                         }
                         prop.key == "expression" -> expression = prop.stringValue
                     }
@@ -118,7 +116,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
     }
     
-    private fun resolveSystemScopes(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
+    private fun resolveSystemScopesInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         val configs = fileConfig.properties.find { it.key == "system_scopes" }?.properties ?: return
         configs.forEach { property ->
             val systemScopeConfig = CwtSystemScopeConfig.resolve(property)
@@ -146,14 +144,6 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     }
     
     private fun doProcessFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
-        when(fileConfig.name) {
-            //解析要将其中的文件识别为脚本文件的目录列表（仅作记录，目前插件并不基于这个来判断文件是否要被识别为脚本文件）
-            "folders.cwt" -> {
-                fileConfig.values.mapTo(configGroup.folders) { it.value }
-                return
-            }
-        }
-        
         for(property in fileConfig.properties) {
             val key = property.key
             when {
@@ -165,7 +155,6 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.priorities[k] = v
                     }
                 }
-                
                 key == "types" -> {
                     val props = property.properties ?: continue
                     for(prop in props) {
@@ -200,7 +189,6 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         val linkConfig = CwtLinkConfig.resolve(prop) ?: continue
                         configGroup.links[linkConfig.name] = linkConfig
                         
-                        //要求data_source存在
                         val fromData = linkConfig.fromData && linkConfig.dataSource != null
                         val withPrefix = linkConfig.prefix != null
                         val type = linkConfig.type
@@ -344,7 +332,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                             configGroup.extendedDynamicValues.getOrInit(type)[dynamicValueConfig.name] = dynamicValueConfig
                         }
                     }
-                } 
+                }
                 else -> {
                     run {
                         val singleAliasConfig = CwtSingleAliasConfig.resolve(property) ?: return@run

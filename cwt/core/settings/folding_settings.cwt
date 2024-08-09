@@ -4,15 +4,12 @@
 # See: icu.windea.pls.lang.editor.folding.ParadoxFoldingOptionsProvider
 # See: icu.windea.pls.lang.editor.folding.ParadoxVariableOperationExpressionFoldingBuilder
 # 
-# Properties to folding must be valid (aka, matching some CWT config)
-# Properties to folding must contain and only contain properties whose name is specified by keys (ignore case) inside these clauses  
-# 
 # Format:
 # <folding group name> = {
-#   <key of the property to folding> = {
-#     key = <value reference name>
-#     keys = { <value reference names, the same as property keys> }
-#     placeholder = <folding placeholder, $k$ represents a value reference named "k">
+#   <property key, of the property to folding> = {
+#     key = <reference to the property value>
+#     keys = { <references to same-named property keys in the property value, while the property value is a clause> }
+#     placeholder = <folding placeholder, while $k$ represents a reference named "k">
 #   }
 #   ...
 # }

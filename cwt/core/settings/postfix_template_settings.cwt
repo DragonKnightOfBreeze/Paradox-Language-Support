@@ -1,5 +1,5 @@
 # Postfix Template Settings
-# Used to provide additional postfix completion rules for script files.
+# Used to provide additional postfix completion for script files.
 # 
 # See: icu.windea.pls.lang.codeInsight.template.postfix.ParadoxPostfixTemplateProvider
 # See: icu.windea.pls.lang.codeInsight.template.postfix.ParadoxVariableOperationExpressionPostfixTemplate

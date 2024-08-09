@@ -9,10 +9,10 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.priority.*
 
-@Tags(Tag.Settings, Tag.BuiltIn)
+@Tags(Tag.Settings)
 val CwtConfigGroup.foldingSettings: MutableMap<@CaseInsensitive String, MutableMap<String, CwtFoldingSettingsConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-@Tags(Tag.Settings, Tag.BuiltIn)
+@Tags(Tag.Settings)
 val CwtConfigGroup.postfixTemplateSettings: MutableMap<String, MutableMap<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
@@ -31,9 +31,6 @@ val CwtConfigGroup.localisationPredefinedParameters: MutableMap<String, CwtLocal
 
 val CwtConfigGroup.priorities: MutableMap<String, ParadoxPriority>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-//unused
-val CwtConfigGroup.folders: MutableSet<String>
-    by createKeyDelegate(CwtConfigGroup.Keys) { mutableSetOf() }
 
 //type - typeConfig
 val CwtConfigGroup.types: MutableMap<String, CwtTypeConfig>
