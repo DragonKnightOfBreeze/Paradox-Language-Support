@@ -80,7 +80,7 @@ prop = {
 
 正在更新中。
 
-以下列出的只是一些用于自定义规则的编写规范，关于更详细的编写规范，请参考下方的参考链接以及插件内置的那些规则文件。
+关于更详细的编写规范，请参考下方的参考链接以及插件内置的那些规则文件。
 
 参考链接：
 
@@ -107,6 +107,18 @@ priorities = {
     # ...
 }
 ```
+
+#### System Scopes
+
+TODO
+
+#### Localisation Locales
+
+TODO
+
+#### Localisation Predefined Parameters
+
+TODO
 
 #### Types and Subtypes
 
@@ -148,29 +160,11 @@ TODO
 
 TODO
 
-### 编写规范（内置的CWT规则）
-
-> [!warning]
->
-> 这些规则目前是只读的，不要试图修改或扩展它们。
-
-#### System Scopes
-
-TODO
-
-#### Localisation Locales
-
-TODO
-
-#### Localisation Predefined Parameters
-
-TODO
-
 ### 编写规范（扩展的CWT规则）
 
 > [!tip]
 >
-> 这些规则基本上由用户自行编写，用于强化插件的语言功能，例如提供扩展的快速文档、内嵌提示，以及提供额外的代码补全。
+> 这些规则基本上由用户自行编写，用于强化插件的各项语言功能，例如快速文档、内嵌提示、代码高亮与代码补全。
 
 #### Scripted Variables *(New in 1.3.5)*
 
@@ -359,7 +353,7 @@ dynamic_values = {
 
 ### FAQ
 
-#### 如何在规则文件中编写模版表达式
+#### 关于模版表达式
 
 模版表达式由字符串字面量以及限定类型的表达式（定义，枚举，动态值）组合而成，用来进行更加灵活的匹配。
 
@@ -375,7 +369,7 @@ a_enum[weight_or_base]_b
 a_value[anything]_b
 ```
 
-#### 如何在规则文件中编写ANT表达式 *(New in 1.3.6)*
+#### 如何在规则文件中使用ANT表达式 *(New in 1.3.6)*
 
 从1.3.6开始，可以通过ANT表达式进行更加灵活的匹配。
 
@@ -391,7 +385,7 @@ ant.i:/foo/bar?/*
 # '**' - used to match any characters
 ```
 
-#### 如何在规则文件中编写正则表达式 *(New in 1.3.6)*
+#### 如何在规则文件中使用正则表达式 *(New in 1.3.6)*
 
 从1.3.6开始，可以通过正则表达式进行更加灵活的匹配。
 

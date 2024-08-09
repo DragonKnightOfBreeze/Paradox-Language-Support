@@ -88,8 +88,7 @@ prop = {
 
 In progress.
 
-Listed below are just some of the writing specifications used for config customization,
-for more detailed writing specifications, please refer to the reference links below and the built-in config files.
+For more detailed specifications, please refer to the reference links below and the built-in config files.
 
 Reference Links:
 
@@ -116,6 +115,18 @@ priorities = {
     # ...
 }
 ```
+
+#### System Scopes
+
+TODO
+
+#### Localisation Locales
+
+TODO
+
+#### Localisation Predefined Parameters
+
+TODO
 
 #### Types and Subtypes
 
@@ -157,30 +168,13 @@ TODO
 
 TODO
 
-### Specifications (Builtin CWT Configs)
-
-> [!warning]
->
-> These configs are currently read only, DO NOT try to modify or extend them.
-
-#### System Scopes
-
-TODO
-
-#### Localisation Locales
-
-TODO
-
-#### Localisation Predefined Parameters
-
-TODO
-
 ### Specifications (Extended CWT Configs)
 
 > [!tip]
 >
-> These configs are basically provided by the users themselves, can be used to enhance plugin's language features,
-> such as providing extended quick documentations & inlay hints, and providing additional code completion.
+> These configs are mostly provided by users themselves,
+> they can be used to enhance plugin's various language features,
+> such as quick documentation, inlay hints, code highlighting and code completion.
 
 #### Scripted Variables *(New in 1.3.5)*
 
@@ -386,7 +380,7 @@ a_enum[weight_or_base]_b
 a_value[anything]_b
 ```
 
-#### How to Write an ANT Expression in Config Files *(New in 1.3.6)*
+#### How to Use the ANT Expression in Config Files *(New in 1.3.6)*
 
 Since 1.3.6, the ANT expression can be used for more flexible matching.
 
@@ -402,9 +396,9 @@ ant.i:/foo/bar?/*
 # '**' - used to match any characters
 ```
 
-#### How to Write a Regex in Config Files *(New in 1.3.6)*
+#### How to Us Regex in Config Files *(New in 1.3.6)*
 
-Since 1.3.6, the Regex can be used for more flexible matching.
+Since 1.3.6, Regex can be used for more flexible matching.
 
 ```cwt
 # a regex use prefix 're:'
