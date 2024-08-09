@@ -54,9 +54,6 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         when(filePath) {
             "settings/folding_settings.cwt" -> resolveFoldingSettingsInFile(fileConfig, configGroup)
             "settings/postfix_template_settings.cwt" -> resolvePostfixTemplateSettingsInFile(fileConfig, configGroup)
-            "builtin/system_scopes.cwt" -> resolveSystemScopesInFile(fileConfig, configGroup)
-            "builtin/localisation_locales.cwt" -> resolveLocalisationLocalesInFile(fileConfig, configGroup)
-            "builtin/localisation_predefined_parameters.cwt" -> resolveLocalisationPredefinedParametersInFile(fileConfig, configGroup)
         }
     }
     
@@ -116,77 +113,73 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
     }
     
-    private fun resolveSystemScopesInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
-        val configs = fileConfig.properties.find { it.key == "system_scopes" }?.properties ?: return
-        configs.forEach { property ->
-            val systemScopeConfig = CwtSystemScopeConfig.resolve(property)
-            configGroup.systemScopes[systemScopeConfig.id] = systemScopeConfig
-        }
-    }
-    
-    private fun resolveLocalisationLocalesInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
-        val configs = fileConfig.properties.find { it.key == "localisation_locales" }?.properties ?: return
-        configs.forEach { property ->
-            val localisationLocaleConfig = CwtLocalisationLocaleConfig.resolve(property)
-            configGroup.localisationLocalesById[localisationLocaleConfig.id] = localisationLocaleConfig
-            localisationLocaleConfig.codes.forEach { code ->
-                configGroup.localisationLocalesByCode[code] = localisationLocaleConfig
-            }
-        }
-    }
-    
-    private fun resolveLocalisationPredefinedParametersInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
-        val configs = fileConfig.properties.find { it.key == "localisation_predefined_parameters" }?.properties ?: return
-        configs.forEach { property ->
-            val localisationPredefinedParameterConfig = CwtLocalisationPredefinedParameterConfig.resolve(property)
-            configGroup.localisationPredefinedParameters[localisationPredefinedParameterConfig.id] = localisationPredefinedParameterConfig
-        }
-    }
-    
     private fun doProcessFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         for(property in fileConfig.properties) {
             val key = property.key
             when {
                 key == "priorities" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        val k = prop.key.orNull()?.trim('/') ?: continue
-                        val v = prop.stringValue?.orNull()?.let { ParadoxPriority.resolve(it) } ?: continue
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
+                        val k = config.key.orNull()?.trim('/') ?: continue
+                        val v = config.stringValue?.orNull()?.let { ParadoxPriority.resolve(it) } ?: continue
                         configGroup.priorities[k] = v
                     }
                 }
+                key == "system_scopes" -> {
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
+                        val systemScopeConfig = CwtSystemScopeConfig.resolve(config)
+                        configGroup.systemScopes[systemScopeConfig.id] = systemScopeConfig
+                    }
+                }
+                key == "localisation_locales" -> {
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
+                        val localisationLocaleConfig = CwtLocalisationLocaleConfig.resolve(config)
+                        configGroup.localisationLocalesById[localisationLocaleConfig.id] = localisationLocaleConfig
+                        localisationLocaleConfig.codes.forEach { code ->
+                            configGroup.localisationLocalesByCode[code] = localisationLocaleConfig
+                        }
+                    }
+                }
+                key == "localisation_predefined_parameters" -> {
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
+                        val localisationPredefinedParameterConfig = CwtLocalisationPredefinedParameterConfig.resolve(config)
+                        configGroup.localisationPredefinedParameters[localisationPredefinedParameterConfig.id] = localisationPredefinedParameterConfig
+                    }
+                }
                 key == "types" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        val typeConfig = CwtTypeConfig.resolve(prop) ?: continue
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
+                        val typeConfig = CwtTypeConfig.resolve(config) ?: continue
                         configGroup.types[typeConfig.name] = typeConfig
                     }
                 }
                 key == "enums" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
                         run {
-                            val enumConfig = CwtEnumConfig.resolve(prop) ?: return@run
+                            val enumConfig = CwtEnumConfig.resolve(config) ?: return@run
                             configGroup.enums[enumConfig.name] = enumConfig
                         }
-                        
                         run {
-                            val complexEnumConfig = CwtComplexEnumConfig.resolve(prop) ?: return@run
+                            val complexEnumConfig = CwtComplexEnumConfig.resolve(config) ?: return@run
                             configGroup.complexEnums[complexEnumConfig.name] = complexEnumConfig
                         }
                     }
                 }
                 key == "values" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        val dynamicValueTypeConfig = CwtDynamicValueTypeConfig.resolve(prop) ?: continue
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
+                        val dynamicValueTypeConfig = CwtDynamicValueTypeConfig.resolve(config) ?: continue
                         configGroup.dynamicValueTypes[dynamicValueTypeConfig.name] = dynamicValueTypeConfig
                     }
                 }
                 key == "links" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        val linkConfig = CwtLinkConfig.resolve(prop) ?: continue
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
+                        val linkConfig = CwtLinkConfig.resolve(config) ?: continue
                         configGroup.links[linkConfig.name] = linkConfig
                         
                         val fromData = linkConfig.fromData && linkConfig.dataSource != null
@@ -209,31 +202,31 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     }
                 }
                 key == "localisation_links" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        val localisationLinkConfig = CwtLocalisationLinkConfig.resolve(prop) ?: continue
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
+                        val localisationLinkConfig = CwtLocalisationLinkConfig.resolve(config) ?: continue
                         configGroup.localisationLinks[localisationLinkConfig.name] = localisationLinkConfig
                     }
                 }
                 key == "localisation_commands" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        val localisationCommandConfig = CwtLocalisationCommandConfig.resolve(prop)
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
+                        val localisationCommandConfig = CwtLocalisationCommandConfig.resolve(config)
                         configGroup.localisationCommands[localisationCommandConfig.name] = localisationCommandConfig
                     }
                 }
                 key == "modifier_categories" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        val modifierCategoryConfig = CwtModifierCategoryConfig.resolve(prop) ?: continue
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
+                        val modifierCategoryConfig = CwtModifierCategoryConfig.resolve(config) ?: continue
                         configGroup.modifierCategories[modifierCategoryConfig.name] = modifierCategoryConfig
                     }
                 }
                 key == "modifiers" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        val modifierName = prop.key
-                        val modifierConfig = CwtModifierConfig.resolve(prop, modifierName) ?: continue
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
+                        val modifierName = config.key
+                        val modifierConfig = CwtModifierConfig.resolve(config, modifierName) ?: continue
                         configGroup.modifiers[modifierName] = modifierConfig
                         for(snippetExpression in modifierConfig.template.snippetExpressions) {
                             if(snippetExpression.type == CwtDataTypes.Definition) {
@@ -244,9 +237,9 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     }
                 }
                 key == "scopes" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        val scopeConfig = CwtScopeConfig.resolve(prop) ?: continue
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
+                        val scopeConfig = CwtScopeConfig.resolve(config) ?: continue
                         configGroup.scopes[scopeConfig.name] = scopeConfig
                         for(alias in scopeConfig.aliases) {
                             configGroup.scopeAliasMap[alias] = scopeConfig
@@ -254,16 +247,16 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     }
                 }
                 key == "scope_groups" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        val scopeGroupConfig = CwtScopeGroupConfig.resolve(prop) ?: continue
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
+                        val scopeGroupConfig = CwtScopeGroupConfig.resolve(config) ?: continue
                         configGroup.scopeGroups[scopeGroupConfig.name] = scopeGroupConfig
                     }
                 }
                 key == "database_object_types" -> {
-                    val props = property.properties ?: continue
-                    for(prop in props) {
-                        val databaseObjectTypeConfig = CwtDatabaseObjectTypeConfig.resolve(prop) ?: continue
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
+                        val databaseObjectTypeConfig = CwtDatabaseObjectTypeConfig.resolve(config) ?: continue
                         configGroup.databaseObjectTypes[databaseObjectTypeConfig.name] = databaseObjectTypeConfig
                     }
                 }
@@ -338,18 +331,15 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         val singleAliasConfig = CwtSingleAliasConfig.resolve(property) ?: return@run
                         configGroup.singleAliases[singleAliasConfig.name] = singleAliasConfig
                     }
-                    
                     run {
                         val aliasConfig = CwtAliasConfig.resolve(property) ?: return@run
                         CwtConfigCollector.processConfigWithConfigExpression(aliasConfig, aliasConfig.expression)
                         configGroup.aliasGroups.getOrInit(aliasConfig.name).getOrInit(aliasConfig.subName) += aliasConfig
                     }
-                    
                     run {
                         val inlineConfig = CwtInlineConfig.resolve(property) ?: return@run
                         configGroup.inlineConfigGroup.getOrInit(inlineConfig.name) += inlineConfig
                     }
-                    
                     run {
                         val declarationConfig = CwtDeclarationConfig.resolve(property) ?: return@run
                         configGroup.declarations[key] = declarationConfig

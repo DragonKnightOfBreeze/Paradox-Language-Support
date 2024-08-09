@@ -16,20 +16,16 @@ val CwtConfigGroup.foldingSettings: MutableMap<@CaseInsensitive String, MutableM
 val CwtConfigGroup.postfixTemplateSettings: MutableMap<String, MutableMap<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
-@Tags(Tag.BuiltIn)
-val CwtConfigGroup.systemScopes: MutableMap<@CaseInsensitive String, CwtSystemScopeConfig>
-    by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-@Tags(Tag.BuiltIn)
-val CwtConfigGroup.localisationLocalesById: MutableMap<String, CwtLocalisationLocaleConfig>
-    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-@Tags(Tag.BuiltIn)
-val CwtConfigGroup.localisationLocalesByCode: MutableMap<String, CwtLocalisationLocaleConfig>
-    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-@Tags(Tag.BuiltIn)
-val CwtConfigGroup.localisationPredefinedParameters: MutableMap<String, CwtLocalisationPredefinedParameterConfig>
+val CwtConfigGroup.priorities: MutableMap<String, ParadoxPriority>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
-val CwtConfigGroup.priorities: MutableMap<String, ParadoxPriority>
+val CwtConfigGroup.systemScopes: MutableMap<@CaseInsensitive String, CwtSystemScopeConfig>
+    by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
+val CwtConfigGroup.localisationLocalesById: MutableMap<String, CwtLocalisationLocaleConfig>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
+val CwtConfigGroup.localisationLocalesByCode: MutableMap<String, CwtLocalisationLocaleConfig>
+    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
+val CwtConfigGroup.localisationPredefinedParameters: MutableMap<String, CwtLocalisationPredefinedParameterConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
 //type - typeConfig
