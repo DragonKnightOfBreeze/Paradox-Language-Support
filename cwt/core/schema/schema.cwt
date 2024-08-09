@@ -1,0 +1,160 @@
+## file_path = builtin/system_scopes.cwt
+## builtin
+sysstem_scopes = {
+	$system_scope$ = {
+		base_id = $system_scope$
+	}
+}
+
+## file_path = builtin/localisation_locales.cwt
+## builtin
+localisation_locales = {
+	$localisation_locale$ = {
+		codes = { $scalar }
+	}
+}
+
+## file_path = builtin/localisation_predefined_parameters.cwt
+## builtin
+localisation_predefined_parameters = {
+	$localisation_predefined_parameter$ = $scalar
+}
+
+priorities = {
+	$path = $enum:priority
+}
+$enum:priority = { fios lios ordered }
+
+types = {
+	type[$type$] = {
+		skip_root_key = { $scalar }
+		path = $path
+		path_file = $file_name
+		path_extension = $file_extension
+		type_per_file = $bool
+		name_field = $scalar
+		images = {
+			$scalar = $scalar
+		}
+	}
+}
+
+enums = {
+	enum[$enum$] = {
+		$scalar
+	}
+	complex_enum[$complex_enum$] = {
+		path = $path
+		path_file = $file_name
+		path_strict = $bool
+		start_from_root = $bool
+		name = $any
+	}
+}
+
+values = {
+	value[$dynamic_value_type$] = {
+		$dynamic_value$
+	}
+}
+
+links = {
+	$link$ = {
+		desc = $scalar
+		from_data = $bool
+		type = $enum:link_type
+		prefix = $scalar
+		data_source = $data_expression
+		for_definition_type = $type$
+		input_scopes = { $scope$ }
+		output_scope = $scope$
+	}
+}
+$enum:link_type = { scope value both }
+
+localisation_links = {
+	$localisation_link$ = {
+		input_scopes = { $scope$ }
+		output_scope = $scope$
+	}
+}
+
+localisation_commands = {
+	$localisation_command$ = $scope$
+	$localisation_command$ = { $scope$ }
+}
+
+modifier_categories = {
+	$modifier_category$ = {
+		supported_scopes = $scope$
+		supported_scopes = { $scope$ }
+	}
+}
+
+modifiers = {
+	$modifier$ = $scope$
+}
+
+scopes = {
+	# TODO
+}
+
+scope_groups = {
+	# TODO
+}
+
+database_object_types = {
+	# TODO
+}
+
+## extended
+scripted_variables = {
+	# TODO
+}
+
+## extended
+definitions = {
+	# TODO
+}
+
+## extended
+game_rules = {
+	# TODO
+}
+
+## extended
+on_actions = {
+	# TODO
+}
+
+## extended
+inline_scripts = {
+	# TODO
+}
+
+## extended
+parameters = {
+	# TODO
+}
+
+## extended
+complex_enum_values = {
+	$complex_enum$ = {
+		$complex_enum_value$
+	}
+}
+
+## extended
+dynamic_values = {
+	$dynamic_value_type$ = {
+		$dynamic_value$
+	}
+}
+
+single_alias[$single_alias$] = $any
+
+alias_name[$alias_name:alias_subname$] = $any
+
+inline[$inline$] = $any
+
+# $type$ = $any
