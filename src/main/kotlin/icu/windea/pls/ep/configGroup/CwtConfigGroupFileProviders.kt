@@ -8,6 +8,10 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
+fun CwtConfigGroupFileProvider.isBuiltIn(): Boolean {
+    return this is BuiltInCwtConfigGroupFileProvider
+}
+
 abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
     override fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean {
         val gameTypeId = configGroup.gameType.id
@@ -49,10 +53,6 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
  * 对应的路径：`config/${gameType}`（位于插件jar包中）
  */
 class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
-    override fun isBuiltIn(): Boolean {
-        return true
-    }
-    
     override fun getRootDirectory(project: Project): VirtualFile? {
         val rootPath = "/config"
         val rootUrl = rootPath.toClasspathUrl()

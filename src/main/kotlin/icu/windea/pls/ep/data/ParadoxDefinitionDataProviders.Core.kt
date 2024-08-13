@@ -10,4 +10,3 @@ class ParadoxSpriteData(data: ParadoxScriptData) : ParadoxDefinitionData {
     
     class Provider : ParadoxDefinitionDataProviderBase<ParadoxSpriteData>("sprite")
 }
-

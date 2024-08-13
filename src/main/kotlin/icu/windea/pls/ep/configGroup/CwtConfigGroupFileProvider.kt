@@ -9,8 +9,6 @@ import icu.windea.pls.config.configGroup.*
  * 用于获取规则分组中的文件。
  */
 interface CwtConfigGroupFileProvider {
-    fun isBuiltIn(): Boolean = false
-    
     fun getRootDirectory(project: Project): VirtualFile?
     
     fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean
