@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.config.builtin.*
+import icu.windea.pls.config.config.internal.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.util.*

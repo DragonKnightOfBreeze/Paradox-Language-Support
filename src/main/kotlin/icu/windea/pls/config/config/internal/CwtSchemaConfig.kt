@@ -1,4 +1,4 @@
-package icu.windea.pls.config.config.builtin
+package icu.windea.pls.config.config.internal
 
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*

@@ -2,7 +2,7 @@ package icu.windea.pls.config.configGroup
 
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.config.extended.*
-import icu.windea.pls.config.config.builtin.*
+import icu.windea.pls.config.config.internal.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*

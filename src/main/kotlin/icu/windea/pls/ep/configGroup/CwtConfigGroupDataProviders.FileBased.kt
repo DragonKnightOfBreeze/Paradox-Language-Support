@@ -3,7 +3,7 @@ package icu.windea.pls.ep.configGroup
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.config.builtin.*
+import icu.windea.pls.config.config.internal.*
 import icu.windea.pls.config.config.extended.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
@@ -46,16 +46,16 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         val fileConfig = CwtConfigResolver.resolve(psiFile, configGroup)
         configGroup.files[filePath] = fileConfig
         if(fileProcessor.isBuiltIn() && configGroup.gameType == null) {
-            doProcessFileForBuiltInConfigs(filePath, fileConfig, configGroup)
+            doProcessFileForInternalConfigs(filePath, fileConfig, configGroup)
         }
         doProcessFile(fileConfig, configGroup)
         return true
     }
     
-    private fun doProcessFileForBuiltInConfigs(filePath: String, fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
+    private fun doProcessFileForInternalConfigs(filePath: String, fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         when(filePath) {
-            "builtin/folding_settings.cwt" -> CwtFoldingSettingsConfig.resolveInFile(fileConfig, configGroup)
-            "builtin/postfix_template_settings.cwt" -> CwtPostfixTemplateSettingsConfig.resolveInFile(fileConfig, configGroup)
+            "internal/folding_settings.cwt" -> CwtFoldingSettingsConfig.resolveInFile(fileConfig, configGroup)
+            "internal/postfix_template_settings.cwt" -> CwtPostfixTemplateSettingsConfig.resolveInFile(fileConfig, configGroup)
         }
     }
     
