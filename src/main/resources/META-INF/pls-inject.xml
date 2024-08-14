@@ -26,24 +26,24 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
     
     <!--code injectors to optimize performance-->
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptPropertyCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptPropertyKeyCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptBooleanCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptIntCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptFloatCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptStringCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptColorCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptConditionParameterCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptParameterCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxScriptInlineMathParameterCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationLocaleCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationPropertyCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationPropertyKeyCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationStringCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationPropertyReferenceCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationIconCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationCommandTextCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationConceptCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ParadoxLocalisationConceptNameCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptPropertyCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptPropertyKeyCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptBooleanCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptIntCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptFloatCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptStringCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptColorCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptConditionParameterCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptParameterCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptInlineMathParameterCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationLocaleCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationPropertyCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationPropertyKeyCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationStringCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationPropertyReferenceCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationIconCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationCommandTextCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationConceptCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationConceptNameCodeInjector"/>
   </extensions>
 </idea-plugin>

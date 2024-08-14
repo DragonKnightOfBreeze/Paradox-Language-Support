@@ -1,4 +1,4 @@
-package icu.windea.pls.inject.injectors
+package icu.windea.pls.inject.injectors.psi
 
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*
