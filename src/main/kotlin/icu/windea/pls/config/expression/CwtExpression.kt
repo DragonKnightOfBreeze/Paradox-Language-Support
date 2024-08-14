@@ -1,5 +1,5 @@
 package icu.windea.pls.config.expression
 
-sealed interface CwtExpression {
+interface CwtExpression {
     val expressionString: String
 }

@@ -24,10 +24,12 @@
 ## 1.3.18
 
 * [ ] 新功能：适用于规则文件的代码补全（初步支持）
+* [X] 其他优化与BUG修复
 
 ***
 
 * [ ] New feature: Code completion for config files (initial support)
+* [X] Other optimizations and bug fixes
 
 ## 1.3.17
 
