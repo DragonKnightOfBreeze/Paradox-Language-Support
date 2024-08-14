@@ -4,6 +4,7 @@ import com.intellij.ide.plugins.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.extensions.*
+import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.inject.annotations.*
 import kotlin.reflect.full.*
@@ -12,7 +13,9 @@ import kotlin.reflect.full.*
  * @see InjectTarget
  * @see InjectMethod
  */
-abstract class CodeInjectorBase : CodeInjector() {
+abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
+    final override val id: String = javaClass.name
+    
     final override fun inject() {
         val codeInjectorInfo = getCodeInjectorInfo() ?: return
         
@@ -52,6 +55,9 @@ abstract class CodeInjectorBase : CodeInjector() {
         }
     }
     
+    /**
+     * 用于在（注入到目标方法之前的）注入方法中使用，让此方法不直接返回而继续执行目标方法中的代码。
+     */
     protected fun continueInvocation(): Nothing {
         throw CONTINUE_INVOCATION
     }
@@ -59,4 +65,6 @@ abstract class CodeInjectorBase : CodeInjector() {
     companion object {
         private val CONTINUE_INVOCATION = ContinueInvocationException()
     }
+    
+    private class ContinueInvocationException: RuntimeException()
 }
