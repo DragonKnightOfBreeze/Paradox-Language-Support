@@ -3,8 +3,8 @@ package icu.windea.pls.ep.configGroup
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.config.internal.*
 import icu.windea.pls.config.config.extended.*
+import icu.windea.pls.config.config.internal.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
@@ -53,9 +53,20 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     }
     
     private fun doProcessFileForInternalConfigs(filePath: String, fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
+        //internal config files should be removed from configGroup.files
         when(filePath) {
-            "internal/folding_settings.cwt" -> CwtFoldingSettingsConfig.resolveInFile(fileConfig, configGroup)
-            "internal/postfix_template_settings.cwt" -> CwtPostfixTemplateSettingsConfig.resolveInFile(fileConfig, configGroup)
+            "internal/schema.cwt" -> {
+                configGroup.files.remove(filePath)
+                CwtSchemaConfig.resolveInFile(fileConfig, configGroup)
+            }
+            "internal/folding_settings.cwt" -> {
+                configGroup.files.remove(filePath)
+                CwtFoldingSettingsConfig.resolveInFile(fileConfig, configGroup)
+            }
+            "internal/postfix_template_settings.cwt" -> {
+                configGroup.files.remove(filePath)
+                CwtPostfixTemplateSettingsConfig.resolveInFile(fileConfig, configGroup)
+            }
         }
     }
     

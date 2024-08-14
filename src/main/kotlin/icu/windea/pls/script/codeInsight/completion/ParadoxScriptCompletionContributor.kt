@@ -17,7 +17,6 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		//当用户可能正在输入一个scriptedVariableReference的名字时提示
 		val scriptedVariableReferencePattern = psiElement()
 			.withElementType(ParadoxScriptTokenSets.SCRIPTED_VARIABLE_REFERENCE_TOKENS)
-		
 		extend(scriptedVariableReferencePattern, ParadoxScriptedVariableCompletionProvider())
 		
 		//当用户可能正在输入一个scriptExpression时提示

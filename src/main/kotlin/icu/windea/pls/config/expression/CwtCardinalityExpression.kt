@@ -30,7 +30,7 @@ interface CwtCardinalityExpression : CwtExpression {
     fun isOptional() = min == 0
     fun isRequired() = min > 0
     
-    companion object {
+    companion object Resolver {
         val EmptyExpression: CwtCardinalityExpression = doResolveEmpty()
         
         fun resolve(expressionString: String): CwtCardinalityExpression = cache.get(expressionString)

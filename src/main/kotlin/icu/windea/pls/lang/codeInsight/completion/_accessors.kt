@@ -6,9 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
@@ -41,17 +39,3 @@ var ProcessingContext.dataSourceNodeToCheck: ParadoxComplexExpressionNode? by cr
 var ProcessingContext.contextKey: String? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.argumentNames: MutableSet<String>? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.node: ParadoxComplexExpressionNode? by createKeyDelegate(ParadoxCompletionKeys)
-
-fun ProcessingContext.initialize(parameters: CompletionParameters) {
-    this.parameters = parameters
-    this.completionIds = mutableSetOf<String>().synced()
-    
-    val gameType = selectGameType(parameters.originalFile)
-    this.gameType = gameType
-    
-    if(gameType != null) {
-        val project = parameters.originalFile.project
-        val configGroup = getConfigGroup(project, gameType)
-        this.configGroup = configGroup
-    }
-}

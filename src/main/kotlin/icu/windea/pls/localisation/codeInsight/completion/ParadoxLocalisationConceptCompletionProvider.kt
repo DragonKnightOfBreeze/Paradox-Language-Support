@@ -10,6 +10,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -24,7 +25,7 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
         val file = parameters.originalFile
         val project = file.project
         
-        context.initialize(parameters)
+        ParadoxCompletionManager.initializeContext(parameters, context)
         
         //提示concept的name或alias
         val conceptSelector = definitionSelector(project, file).contextSensitive().distinctByName()

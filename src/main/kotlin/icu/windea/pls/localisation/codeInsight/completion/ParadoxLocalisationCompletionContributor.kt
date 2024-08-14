@@ -33,6 +33,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
         val scriptedVariableReferencePattern = psiElement().withElementType(SCRIPTED_VARIABLE_REFERENCE_TOKEN)
         extend(scriptedVariableReferencePattern, ParadoxScriptedVariableCompletionProvider())
         
+        //当用户可能正在输入一个localisationExpression时提示
         val expressionPattern = psiElement().withElementType(ParadoxLocalisationTokenSets.EXPRESSION_TOKENS)
         extend(expressionPattern, ParadoxLocalisationExpressionCompletionProvider())
         

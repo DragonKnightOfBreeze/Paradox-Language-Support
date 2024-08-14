@@ -12,6 +12,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -26,7 +27,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
         val file = parameters.originalFile
         val project = file.project
         
-        context.initialize(parameters)
+        ParadoxCompletionManager.initializeContext(parameters, context)
         
         //根据spriteName进行提示
         val spriteSelector = definitionSelector(project, file).contextSensitive().distinctByName()

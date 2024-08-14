@@ -19,7 +19,7 @@ class ParadoxDataExpression private constructor(
     val quoted: Boolean,
     val isKey: Boolean?
 ) {
-    private val regexWhenIsParameterized by lazy { text.toRegexWhenIsParameterized() }
+    private val regex by lazy { text.toRegexWhenIsParameterized() }
     
     fun isParameterized(): Boolean {
         return type == ParadoxType.String && text.isParameterized()
@@ -32,7 +32,7 @@ class ParadoxDataExpression private constructor(
     fun matchesConstant(v: String): Boolean {
         if(text.isParameterized()) {
             //兼容带参数的情况（此时先转化为正则表达式，再进行匹配）
-            return regexWhenIsParameterized.matches(v)
+            return regex.matches(v)
         }
         return text.equals(v, true) //忽略大小写
     }

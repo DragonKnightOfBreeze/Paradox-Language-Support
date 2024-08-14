@@ -4,7 +4,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 
-data class CwtFoldingSettingsConfig(
+class CwtFoldingSettingsConfig(
     val id: String,
     val key: String?,
     val keys: List<String>?,

@@ -18,7 +18,7 @@ class ParadoxLocalisationExpressionCompletionProvider : CompletionProvider<Compl
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
         
-        context.initialize(parameters)
+        ParadoxCompletionManager.initializeContext(parameters, context)
         context.contextElement = element
         context.offsetInParent = offsetInParent
         context.keyword = keyword

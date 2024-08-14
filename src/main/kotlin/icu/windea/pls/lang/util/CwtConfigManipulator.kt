@@ -281,7 +281,7 @@ object CwtConfigManipulator {
             val e2 = config.expression //actual (e.g., from parameterized key)
             val e3 = mergeExpressionString(e1, e2) ?: continue //merged
             
-            //"scope_field" merge "scope[country]" = "scope[country]" -> true
+            //"scope_field" merge "scope[country]" -> "scope[country]" -> true
             
             //TODO 1.3.8+ optimize merge & match logic
             

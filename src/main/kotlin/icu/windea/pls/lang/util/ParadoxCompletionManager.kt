@@ -15,6 +15,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.ep.expression.*
@@ -36,6 +37,18 @@ import kotlin.collections.component2
 
 object ParadoxCompletionManager {
     //region Core Methods
+    fun initializeContext(parameters: CompletionParameters, context: ProcessingContext) {
+        context.parameters = parameters
+        context.completionIds = mutableSetOf<String>().synced()
+        
+        val gameType = selectGameType(parameters.originalFile)
+        context.gameType = gameType
+        
+        val project = parameters.originalFile.project
+        val configGroup = getConfigGroup(project, gameType)
+        context.configGroup = configGroup
+    }
+    
     fun addRootKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
         val elementPath = ParadoxElementPathHandler.get(memberElement, PlsConstants.maxDefinitionDepth) ?: return
         if(elementPath.path.isParameterized()) return //忽略元素路径带参数的情况

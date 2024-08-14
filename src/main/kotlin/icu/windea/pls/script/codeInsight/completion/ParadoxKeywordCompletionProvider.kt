@@ -30,7 +30,7 @@ class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters
             if(configContext != null && configContext.isRootOrMember()) return
         }
         
-        context.initialize(parameters)
+        ParadoxCompletionManager.initializeContext(parameters, context)
         
         lookupElements.forEach { lookupElement ->
             result.addSimpleElement(lookupElement, context)

@@ -44,7 +44,7 @@ dependencies {
 	//FROM DDS4J
 	implementation("ar.com.hjg:pngj:2.1.0")
 	//CSV
-	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.17.0") {
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.17.2") {
 		exclude(module = "jackson-annotations")
 		exclude(module = "jackson-core")
 		exclude(module = "jackson-databind")
@@ -57,10 +57,10 @@ dependencies {
 	//JUnit
 	testImplementation("junit:junit:4.13.2")
 	//Sqlite
-	testImplementation("org.xerial:sqlite-jdbc:3.45.3.0")
+	testImplementation("org.xerial:sqlite-jdbc:3.46.0.0")
 	//Byte Buddy
-	testImplementation("net.bytebuddy:byte-buddy:1.14.15")
-	testImplementation("net.bytebuddy:byte-buddy-agent:1.14.15")
+	testImplementation("net.bytebuddy:byte-buddy:1.14.17")
+	testImplementation("net.bytebuddy:byte-buddy-agent:1.14.18")
 	//Javassist
 	testImplementation("org.javassist:javassist:3.30.2-GA")
 	////JOGL

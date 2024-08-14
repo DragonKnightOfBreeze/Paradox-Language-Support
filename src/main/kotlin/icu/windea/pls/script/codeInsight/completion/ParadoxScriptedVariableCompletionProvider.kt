@@ -25,7 +25,7 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
         val file = parameters.originalFile
         val project = file.project
         
-        context.initialize(parameters)
+        ParadoxCompletionManager.initializeContext(parameters, context)
         
         //同时需要同时查找当前文件中的和全局的
         val selector = scriptedVariableSelector(project, element).contextSensitive().distinctByName()
