@@ -26,7 +26,7 @@ object CwtConfigManager {
     }
     
     fun getConfigPath(element: PsiElement): CwtConfigPath? {
-        if(element is CwtFile) return CwtConfigPath.Empty
+        if(element is CwtFile || element is CwtRootBlock) return CwtConfigPath.Empty
         if(element !is CwtMemberElement) return null
         return doGetConfigPathFromCache(element)
     }

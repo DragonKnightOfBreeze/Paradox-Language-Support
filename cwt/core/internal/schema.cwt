@@ -21,16 +21,32 @@ localisation_predefined_parameters = {
 types = {
 	type[$type$] = {
 		skip_root_key = { $scalar }
+		base_type = $type$
 		path = $path
 		path_file = $file_name
 		path_extension = $file_extension
-		type_per_file = $bool
+		path_strict = $bool
 		name_field = $scalar
+		name_from_file = $bool
+		type_per_file = $bool
+		unique = $bool
+		severity = $enum:severity
+		subtype[$subtype$] = $any$
+		localisation = {
+			subtype[$subtype$] = {
+				$scalar = $scalar
+			}
+			$scalar = $scalar
+		}
 		images = {
+			subtype[$subtype$] = {
+				$scalar = $scalar
+			}
 			$scalar = $scalar
 		}
 	}
 }
+$enum:severity = { error warning info hint }
 
 enums = {
 	enum[$enum$] = {
@@ -89,15 +105,21 @@ modifiers = {
 }
 
 scopes = {
-	# TODO
+	$scope_name$ = {
+		aliases = { $scope$ }
+		is_subscope_of = $scope$
+	}
 }
 
 scope_groups = {
-	# TODO
+	$scope_group$ = { $scope$ }
 }
 
 database_object_types = {
-	# TODO
+	$database_object_type$ = {
+		type = $type$
+		swap_type = $type$ # $swapped_type$
+	}
 }
 
 ## extended
@@ -107,27 +129,30 @@ scripted_variables = {
 
 ## extended
 definitions = {
-	$$
+	$definition$
 }
 
 ## extended
 game_rules = {
-	# TODO
+	$game_rule$
+	$game_rule$ = $any
 }
 
 ## extended
 on_actions = {
-	# TODO
+	$on_action$
 }
 
 ## extended
 inline_scripts = {
-	# TODO
+	$inline_script$
+	$inline_script$ = $any
 }
 
 ## extended
 parameters = {
-	# TODO
+	$parameter$
+	$parameter$ = $any
 }
 
 ## extended
@@ -149,5 +174,3 @@ single_alias[$single_alias$] = $any
 alias_name[$alias_name:alias_subname$] = $any
 
 inline[$inline$] = $any
-
-# $type$ = $any

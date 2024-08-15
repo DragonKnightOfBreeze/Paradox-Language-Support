@@ -17,7 +17,7 @@ import icu.windea.pls.model.*
  * @property nameField (property) name_field: string/propertyKey
  * @property nameFromFile (property) name_from_file: boolean
  * @property typePerFile (property) type_per_file: boolean
- * @property typeKeyFilter (property) type_key_filter: boolean
+ * @property typeKeyFilter (option*) type_key_filter: string | string[]
  * @property typeKeyRegex (option) type_key_regex: string
  * @property startsWith (option) starts_with: string
  * @property unique (property) unique: boolean
