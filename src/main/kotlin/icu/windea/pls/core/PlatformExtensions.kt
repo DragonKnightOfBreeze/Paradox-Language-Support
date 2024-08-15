@@ -1042,25 +1042,3 @@ fun getInspectionToolState(shortName: String, element: PsiElement?, project: Pro
 
 val ScopeToolState.enabledTool: InspectionProfileEntry? get() = if(isEnabled) tool.tool else null
 //endregion
-
-//region Xml Converters
-class CommaDelimitedStringListConverter : Converter<List<String>>() {
-    override fun fromString(value: String): List<String> {
-        return value.toCommaDelimitedStringList()
-    }
-    
-    override fun toString(value: List<String>): String {
-        return value.toCommaDelimitedString()
-    }
-}
-
-class CommaDelimitedStringSetConverter : Converter<Set<String>>() {
-    override fun fromString(value: String): Set<String> {
-        return value.toCommaDelimitedStringSet()
-    }
-    
-    override fun toString(value: Set<String>): String {
-        return value.toCommaDelimitedString()
-    }
-}
-//endregion
