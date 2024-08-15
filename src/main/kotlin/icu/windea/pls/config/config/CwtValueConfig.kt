@@ -10,7 +10,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
-interface CwtValueConfig : CwtMemberConfig<CwtValue>, CwtValueAware {
+interface CwtValueConfig : CwtMemberConfig<CwtValue> {
     val propertyConfig: CwtPropertyConfig?
     
     companion object
@@ -62,7 +62,7 @@ fun CwtValueConfig.copy(
     value: String = this.value,
     valueTypeId: @EnumId(CwtType::class) Byte = this.valueTypeId,
     configs: List<CwtMemberConfig<*>>? = this.configs,
-    options: List<CwtOptionMemberConfig<*>>? = this.options,
+    options: List<CwtOptionMemberConfig<*>>? = this.optionConfigs,
     documentation: String? = this.documentation,
     propertyConfig: CwtPropertyConfig? = this.propertyConfig,
 ): CwtValueConfig {
@@ -121,7 +121,7 @@ private object CwtValueConfigImpls {
         propertyConfig: CwtPropertyConfig? = null,
     ) : Impl(pointer, configGroup, value, valueTypeId, propertyConfig) {
         override val configs = configs?.toMutableIfNotEmptyInActual()
-        override val options = options?.toMutableIfNotEmptyInActual()
+        override val optionConfigs = options?.toMutableIfNotEmptyInActual()
         override val documentation = documentation
     }
     
@@ -135,7 +135,7 @@ private object CwtValueConfigImpls {
         propertyConfig: CwtPropertyConfig? = null,
     ) : Impl(pointer, configGroup, value, valueTypeId, propertyConfig) {
         override val configs = configs?.toMutableIfNotEmptyInActual()
-        override val options get() = null
+        override val optionConfigs get() = null
         override val documentation get() = null
     }
     
@@ -150,7 +150,7 @@ private object CwtValueConfigImpls {
         propertyConfig: CwtPropertyConfig? = null,
     ) : Impl(pointer, configGroup, value, valueTypeId, propertyConfig) {
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        override val options = options?.toMutableIfNotEmptyInActual()
+        override val optionConfigs = options?.toMutableIfNotEmptyInActual()
         override val documentation = documentation
     }
     
@@ -163,7 +163,7 @@ private object CwtValueConfigImpls {
         propertyConfig: CwtPropertyConfig? = null,
     ) : Impl(pointer, configGroup, value, valueTypeId, propertyConfig) {
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        override val options get() = null
+        override val optionConfigs get() = null
         override val documentation get() = null
     }
     
@@ -218,7 +218,7 @@ private object CwtValueConfigImpls {
         override val value: String get() = propertyConfig.value
         override val valueTypeId: Byte get() = propertyConfig.valueTypeId
         override val documentation: String? get() = propertyConfig.documentation
-        override val options: List<CwtOptionMemberConfig<*>>? get() = propertyConfig.options
+        override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = propertyConfig.optionConfigs
         override val configs: List<CwtMemberConfig<*>>? get() = propertyConfig.configs
         
         override var parentConfig: CwtMemberConfig<*>? = null

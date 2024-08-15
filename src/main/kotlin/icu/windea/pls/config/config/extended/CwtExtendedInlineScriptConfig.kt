@@ -2,13 +2,14 @@ package icu.windea.pls.config.config.extended
 
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.util.*
 
 /**
  * @property name template_expression
  * @property contextConfigsType (option) context_configs_type: string = "single" ("single" | "multiple")
  */
-interface CwtExtendedInlineScriptConfig : CwtExtendedConfig {
+interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
     val contextConfigsType: String
     

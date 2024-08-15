@@ -3,6 +3,7 @@ package icu.windea.pls.config.config.extended
 import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
@@ -14,7 +15,7 @@ import icu.windea.pls.script.psi.*
  * @property contextConfigsType (option) context_configs_type: string = "single" ("single" | "multiple")
  * @property inherit (option value) inherit
  */
-interface CwtExtendedParameterConfig : CwtExtendedConfig {
+interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
     val contextKey: String
     val contextConfigsType: String

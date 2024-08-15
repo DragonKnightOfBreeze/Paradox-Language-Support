@@ -10,7 +10,11 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
-interface CwtPropertyConfig : CwtMemberConfig<CwtProperty>, CwtKeyAware {
+interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
+    val key: String
+    val separatorTypeId: @EnumId(CwtSeparatorType::class) Byte //use enum id to optimize memory 
+    val separatorType: CwtSeparatorType get() = CwtSeparatorType.resolve(separatorTypeId)
+    
     val keyExpression: CwtDataExpression
     
     val valueConfig: CwtValueConfig?
@@ -66,7 +70,7 @@ fun CwtPropertyConfig.copy(
     valueTypeId: @EnumId(CwtType::class) Byte = this.valueTypeId,
     separatorTypeId: @EnumId(CwtSeparatorType::class) Byte = this.separatorTypeId,
     configs: List<CwtMemberConfig<*>>? = this.configs,
-    options: List<CwtOptionMemberConfig<*>>? = this.options,
+    options: List<CwtOptionMemberConfig<*>>? = this.optionConfigs,
     documentation: String? = this.documentation
 ): CwtPropertyConfig {
     return CwtPropertyConfig.resolve(pointer, this.configGroup, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
@@ -113,7 +117,7 @@ private object CwtPropertyConfigImpls {
         documentation: String? = null,
     ) : Impl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
         override val configs = configs?.toMutableIfNotEmptyInActual()
-        override val options = options?.toMutableIfNotEmptyInActual()
+        override val optionConfigs = options?.toMutableIfNotEmptyInActual()
         override val documentation = documentation
     }
     
@@ -128,7 +132,7 @@ private object CwtPropertyConfigImpls {
         configs: List<CwtMemberConfig<*>>? = null,
     ) : Impl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
         override val configs = configs?.toMutableIfNotEmptyInActual()
-        override val options get() = null
+        override val optionConfigs get() = null
         override val documentation get() = null
     }
     
@@ -144,7 +148,7 @@ private object CwtPropertyConfigImpls {
         documentation: String? = null,
     ) : Impl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        override val options = options?.toMutableIfNotEmptyInActual()
+        override val optionConfigs = options?.toMutableIfNotEmptyInActual()
         override val documentation = documentation
     }
     
@@ -158,7 +162,7 @@ private object CwtPropertyConfigImpls {
         separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
     ) : Impl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
         override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        override val options get() = null
+        override val optionConfigs get() = null
         override val documentation get() = null
     }
     

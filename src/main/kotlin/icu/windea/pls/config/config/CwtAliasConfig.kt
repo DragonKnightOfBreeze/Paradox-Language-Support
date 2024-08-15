@@ -56,7 +56,7 @@ private class CwtAliasConfigImpl(
             value = other.value,
             configs = CwtConfigManipulator.deepCopyConfigs(other),
             documentation = other.documentation,
-            options = other.options
+            options = other.optionConfigs
         )
         inlined.parentConfig = config.parentConfig
         inlined.configs?.forEach { it.parentConfig = inlined }

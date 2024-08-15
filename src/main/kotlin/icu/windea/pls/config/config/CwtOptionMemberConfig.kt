@@ -1,12 +1,52 @@
 package icu.windea.pls.config.config
 
 import com.intellij.psi.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.model.*
 
-sealed interface CwtOptionMemberConfig<out T : PsiElement> : CwtDetachedConfig, CwtValueAware, CwtOptionsAware
+sealed interface CwtOptionMemberConfig<out T : PsiElement> : CwtDetachedConfig {
+    val value: String
+    val valueType: CwtType
+    val optionConfigs: List<CwtOptionMemberConfig<*>>?
+}
 
-fun CwtOptionMemberConfig<*>.getOptionValue(): String? = stringValue?.intern()
+val CwtOptionMemberConfig<*>.booleanValue: Boolean? get() = if(valueType == CwtType.Boolean) value.toBooleanYesNo() else null
+val CwtOptionMemberConfig<*>.intValue: Int? get() = if(valueType == CwtType.Int) value.toIntOrNull() ?: 0 else null
+val CwtOptionMemberConfig<*>.floatValue: Float? get() = if(valueType == CwtType.Float) value.toFloatOrNull() ?: 0f else null
+val CwtOptionMemberConfig<*>.stringValue: String? get() = if(valueType == CwtType.String) value else null
 
-fun CwtOptionMemberConfig<*>.getOptionValues(): Set<String>? = findOptionValues()?.mapNotNullTo(mutableSetOf()) { it.stringValue?.intern() }
+val CwtOptionMemberConfig<*>.options: List<CwtOptionConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionConfig>()
+val CwtOptionMemberConfig<*>.optionValues: List<CwtOptionValueConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionValueConfig>()
 
-fun CwtOptionMemberConfig<*>.getOptionValueOrValues(): Set<String>? = getOptionValue()?.toSingletonSet() ?: getOptionValues()
+fun CwtOptionMemberConfig<*>.getOptionValue(): String? {
+    return stringValue?.intern()
+}
+
+fun CwtOptionMemberConfig<*>.getOptionValues(): Set<String>? {
+    return optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue?.intern() }
+}
+
+fun CwtOptionMemberConfig<*>.getOptionValueOrValues(): Set<String>? {
+    return getOptionValue()?.toSingletonSet() ?: getOptionValues()
+}
+
+fun CwtOptionMemberConfig<*>.findOption(key: String): CwtOptionConfig? {
+    return optionConfigs?.find { it is CwtOptionConfig && it.key == key }?.cast()
+}
+
+inline fun CwtOptionMemberConfig<*>.findOption(predicate: (CwtOptionConfig) -> Boolean): CwtOptionConfig? {
+    return optionConfigs?.find { it is CwtOptionConfig && predicate(it) }?.cast()
+}
+
+fun CwtOptionMemberConfig<*>.findOptions(key: String): List<CwtOptionConfig>? {
+    return optionConfigs?.filter { it is CwtOptionConfig && it.key == key }?.cast()
+}
+
+inline fun CwtOptionMemberConfig<*>.findOptions(predicate: (CwtOptionConfig) -> Boolean): List<CwtOptionConfig> {
+    return optionConfigs?.filter { it is CwtOptionConfig && predicate(it) }.orEmpty().cast()
+}
+
+fun CwtOptionMemberConfig<*>.findOptionValue(value: String): CwtOptionValueConfig? {
+    return optionConfigs?.find { it is CwtOptionValueConfig && it.value == value }?.cast()
+}

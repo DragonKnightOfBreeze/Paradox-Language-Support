@@ -142,7 +142,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
         }
     }
     
-    val options = config.options
+    val options = config.optionConfigs
     if(!options.isNullOrEmpty()) {
         for(option in options) {
             if(option !is CwtOptionConfig) continue

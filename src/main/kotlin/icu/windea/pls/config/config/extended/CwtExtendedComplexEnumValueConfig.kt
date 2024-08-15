@@ -1,13 +1,14 @@
 package icu.windea.pls.config.config.extended
 
 import icu.windea.pls.config.config.*
+import icu.windea.pls.cwt.psi.*
 
 /**
  * @property name template_expression
  * @property type string
  * @property hint (option) hint: string?
  */
-interface CwtExtendedComplexEnumValueConfig : CwtExtendedConfig {
+interface CwtExtendedComplexEnumValueConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
     val type: String
     val hint: String?

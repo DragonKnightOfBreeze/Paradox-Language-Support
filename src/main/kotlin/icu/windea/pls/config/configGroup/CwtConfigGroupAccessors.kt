@@ -9,13 +9,13 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.priority.*
 
-@Tags(Tag.BuiltIn)
+@Tags(Tag.Internal)
 val CwtConfigGroup.schemas: MutableList<CwtSchemaConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableListOf() }
-@Tags(Tag.BuiltIn)
+@Tags(Tag.Internal)
 val CwtConfigGroup.foldingSettings: MutableMap<String, MutableMap<String, CwtFoldingSettingsConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-@Tags(Tag.BuiltIn)
+@Tags(Tag.Internal)
 val CwtConfigGroup.postfixTemplateSettings: MutableMap<String, MutableMap<String, CwtPostfixTemplateSettingsConfig>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
@@ -112,7 +112,7 @@ val CwtConfigGroup.extendedDefinitions: MutableMap<String, MutableList<CwtExtend
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 //template_expression - config
 @Tags(Tag.Extended)
-val CwtConfigGroup.extendedGameRules: MutableMap<String, CwtGameRuleConfig>
+val CwtConfigGroup.extendedGameRules: MutableMap<String, CwtExtendedGameRuleConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 //template_expression - config
 @Tags(Tag.Extended)

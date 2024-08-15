@@ -86,7 +86,7 @@ object CwtConfigManipulator {
             value = PlsConstants.Folders.block,
             valueTypeId = CwtType.Block.id,
             configs = configs,
-            options = config?.options,
+            options = config?.optionConfigs,
             documentation = config?.documentation
         )
     }
@@ -183,13 +183,13 @@ object CwtConfigManipulator {
                 return when(c1) {
                     is CwtPropertyConfig -> c1.copy(
                         pointer = emptyPointer(),
-                        options = mergeOptions(c1, c2),
-                        documentation = mergeDocumentations(c1, c2)
+                        options = mergeOptions(c1.optionConfigs, c2.optionConfigs),
+                        documentation = mergeDocumentations(c1.documentation, c2.documentation)
                     )
                     is CwtValueConfig -> c1.copy(
                         pointer = emptyPointer(),
-                        options = mergeOptions(c1, c2),
-                        documentation = mergeDocumentations(c1, c2)
+                        options = mergeOptions(c1.optionConfigs, c2.optionConfigs),
+                        documentation = mergeDocumentations(c1.documentation, c2.documentation)
                     )
                 }
             }
@@ -207,8 +207,8 @@ object CwtConfigManipulator {
             pointer = emptyPointer(),
             configGroup = c1.configGroup,
             value = c1.value,
-            options = mergeOptions(c1, c2),
-            documentation = mergeDocumentations(c1, c2)
+            options = mergeOptions(c1.optionConfigs, c2.optionConfigs),
+            documentation = mergeDocumentations(c1.documentation, c2.documentation)
         )
     }
     
@@ -261,20 +261,7 @@ object CwtConfigManipulator {
         }
     }
     
-    private fun mergeOptions(c1: CwtOptionsAware, c2: CwtOptionsAware): List<CwtOptionMemberConfig<*>> {
-        //keep duplicate options here (no affect to features)
-        return merge(c1.options, c2.options)
-    }
-    
-    private fun mergeDocumentations(c1: CwtDocumentationAware, c2: CwtDocumentationAware): String? {
-        val d1 = c1.documentation?.orNull()
-        val d2 = c2.documentation?.orNull()
-        if(d1 == null || d2 == null) return d1 ?: d2
-        if(d1 == d2) return d1
-        return "$d1\n<br><br>\n$d2"
-    }
-    
-    fun mergeAndMatchesValueConfig(configs: List<CwtValueConfig>, configExpression: CwtDataExpression): Boolean {
+    fun mergeAndMatchValueConfig(configs: List<CwtValueConfig>, configExpression: CwtDataExpression): Boolean {
         if(configs.isEmpty()) return false
         for(config in configs) {
             val e1 = configExpression //expect
@@ -288,6 +275,19 @@ object CwtConfigManipulator {
             if(e3 == e2.expressionString) return true
         }
         return false
+    }
+    
+    private fun mergeOptions(a:  List<CwtOptionMemberConfig<*>>?, b:  List<CwtOptionMemberConfig<*>>?): List<CwtOptionMemberConfig<*>> {
+        //keep duplicate options here (no affect to features)
+        return merge(a, b)
+    }
+    
+    private fun mergeDocumentations(a: String?, b: String?): String? {
+        val d1 = a?.orNull()
+        val d2 = b?.orNull()
+        if(d1 == null || d2 == null) return d1 ?: d2
+        if(d1 == d2) return d1
+        return "$d1\n<br><br>\n$d2"
     }
     //endregion
 }

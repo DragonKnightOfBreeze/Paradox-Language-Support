@@ -2,12 +2,13 @@ package icu.windea.pls.config.config.extended
 
 
 import icu.windea.pls.config.config.*
+import icu.windea.pls.cwt.psi.*
 
 /**
  * @property name template_expression
  * @property hint (option) hint: string?
  */
-interface CwtExtendedScriptedVariableConfig : CwtExtendedConfig {
+interface CwtExtendedScriptedVariableConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
     val hint: String?
     

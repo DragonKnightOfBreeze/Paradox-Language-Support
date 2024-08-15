@@ -61,7 +61,7 @@ val CwtMemberConfig<*>.replaceScopes
     get() = getOrPutUserData(CwtMemberConfig.Keys.replaceScopes, emptyMap()) action@{
         val option = findOption { it.key == "replace_scope" || it.key == "replace_scopes" }
         if(option == null) return@action null
-        val options1 = option.findOptions() ?: return@action null
+        val options1 = option.options ?: return@action null
         buildMap {
             for(option1 in options1) {
                 val k = option1.key.lowercase()

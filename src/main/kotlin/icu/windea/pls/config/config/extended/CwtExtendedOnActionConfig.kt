@@ -1,12 +1,13 @@
 package icu.windea.pls.config.config.extended
 
 import icu.windea.pls.config.config.*
+import icu.windea.pls.cwt.psi.*
 
 /**
  * @property name template_expression
  * @property eventType (option) event_type: string
  */
-interface CwtExtendedOnActionConfig : CwtExtendedConfig {
+interface CwtExtendedOnActionConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
     val eventType: String
     

@@ -39,6 +39,7 @@ object CwtConfigManager {
     }
     
     private fun doGetConfigPath(element: CwtMemberElement): CwtConfigPath? {
+        //NOTE 1.3.18+ 规则路径不应当包含"/" "-"等必须考虑转义的特殊字符，目前也不支持这类情况
         var current: PsiElement = element
         var depth = 0
         val subPaths = LinkedList<String>()
@@ -191,8 +192,6 @@ object CwtConfigManager {
     }
     
     fun getConfigByPathExpression(configGroup: CwtConfigGroup, pathExpression: String): List<CwtMemberConfig<*>> {
-        //pathExpression vs keys - ignore case
-        
         val separatorIndex = pathExpression.indexOf('#')
         if(separatorIndex == -1) return emptyList()
         val filePath = pathExpression.substring(0, separatorIndex)
@@ -217,12 +216,12 @@ object CwtConfigManager {
                 }
             } else {
                 if(r.isEmpty()) {
-                    r = fileConfig.properties.filter { c -> c.key.equals(p, true) }
+                    r = fileConfig.properties.filter { c -> c.key == p }
                 } else {
                     r = buildList {
                         r.forEach { c1 ->
                             c1.configs?.forEach { c2 ->
-                                if(c2 is CwtPropertyConfig && c2.key.equals(p, true)) this += c2
+                                if(c2 is CwtPropertyConfig && c2.key == p) this += c2
                             }
                         }
                     }

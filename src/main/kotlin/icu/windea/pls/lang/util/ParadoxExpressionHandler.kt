@@ -327,7 +327,7 @@ object ParadoxExpressionHandler {
         
         if(pkConfigs == null) return null
         if(pkConfigs.size != 1) return null //must be unique yet
-        return CwtConfigManipulator.mergeAndMatchesValueConfig(pkConfigs, configExpression)
+        return CwtConfigManipulator.mergeAndMatchValueConfig(pkConfigs, configExpression)
     }
     
     private fun doGetFinalMatchedConfigs(matchResultValues: MutableList<ResultValue<CwtMemberConfig<*>>>, matchOptions: Int): List<CwtMemberConfig<*>> {

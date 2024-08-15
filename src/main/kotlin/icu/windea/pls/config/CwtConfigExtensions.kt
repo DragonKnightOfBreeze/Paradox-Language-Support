@@ -1,11 +1,14 @@
 package icu.windea.pls.config
 
+import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.expression.*
@@ -13,6 +16,9 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.path.*
+
+val Project.configGroupLibrary: CwtConfigGroupLibrary
+    get() = this.getOrPutUserData(PlsKeys.configGroupLibrary) { CwtConfigGroupLibrary(this) }
 
 inline fun CwtMemberConfig<*>.processParent(inline: Boolean = false, processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
     var parent = this.parentConfig

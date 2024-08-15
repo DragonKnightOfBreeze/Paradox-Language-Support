@@ -234,7 +234,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 key == "game_rules" -> {
                     val configs = property.configs ?: continue
                     for(config in configs) {
-                        val gameRuleConfig = CwtGameRuleConfig.resolve(config)
+                        val gameRuleConfig = CwtExtendedGameRuleConfig.resolve(config)
                         configGroup.extendedGameRules[gameRuleConfig.name] = gameRuleConfig
                     }
                 }

@@ -1,12 +1,13 @@
 package icu.windea.pls.config.config.extended
 
 import icu.windea.pls.config.config.*
+import icu.windea.pls.cwt.psi.*
 
 /**
  * @property name template_expression
  * @property type (option) type: string
  */
-interface CwtExtendedDefinitionConfig : CwtExtendedConfig {
+interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
     val type: String
     

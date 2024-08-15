@@ -8,6 +8,8 @@ import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.expression.*
 
+interface CwtConfigPatternAware
+
 private val patternResolvers by lazy { CwtDataExpressionResolver.EP_NAME.extensionList.filter { it is CwtConfigPatternAware } }
 private val patternMatchers by lazy { CwtDataExpressionMatcher.EP_NAME.extensionList.filter { it is CwtConfigPatternAware } }
 

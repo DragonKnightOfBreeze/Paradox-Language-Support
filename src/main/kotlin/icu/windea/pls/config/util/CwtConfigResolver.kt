@@ -216,7 +216,7 @@ object CwtConfigResolver {
         val value = optionValueElement.value.intern() //intern to optimize memory
         val valueType: CwtType
         val separatorType = optionElement.separatorType
-        var options: List<CwtOptionMemberConfig<*>>? = null
+        var optionConfigs: List<CwtOptionMemberConfig<*>>? = null
         
         when {
             optionValueElement is CwtBoolean -> {
@@ -237,30 +237,30 @@ object CwtConfigResolver {
                     when {
                         it is CwtOption -> {
                             val resolved = resolveOption(it, file, fileConfig) ?: return@f
-                            if(options == null) options = mutableListOf()
-                            options!!.asMutable().add(resolved)
+                            if(optionConfigs == null) optionConfigs = mutableListOf()
+                            optionConfigs!!.asMutable().add(resolved)
                         }
                         it is CwtValue -> {
                             val resolved = resolveOptionValue(it, file, fileConfig)
-                            if(options == null) options = mutableListOf()
-                            options!!.asMutable().add(resolved)
+                            if(optionConfigs == null) optionConfigs = mutableListOf()
+                            optionConfigs!!.asMutable().add(resolved)
                         }
                     }
                 }
-                if(options == null) options = emptyList()
+                if(optionConfigs == null) optionConfigs = emptyList()
             }
             else -> {
                 valueType = CwtType.Unknown
             }
         }
         
-        return CwtOptionConfig.resolve(key, value, valueType.id, separatorType.id, options)
+        return CwtOptionConfig.resolve(key, value, valueType, separatorType, optionConfigs)
     }
     
     private fun resolveOptionValue(optionValueElement: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionValueConfig {
         val value = optionValueElement.value.intern() //intern to optimize memory
         val valueType: CwtType
-        var options: List<CwtOptionMemberConfig<*>>? = null
+        var optionConfigs: List<CwtOptionMemberConfig<*>>? = null
         
         when {
             optionValueElement is CwtBoolean -> {
@@ -281,24 +281,24 @@ object CwtConfigResolver {
                     when {
                         it is CwtOption -> {
                             val resolved = resolveOption(it, file, fileConfig) ?: return@f
-                            if(options == null) options = mutableListOf()
-                            options!!.asMutable().add(resolved)
+                            if(optionConfigs == null) optionConfigs = mutableListOf()
+                            optionConfigs!!.asMutable().add(resolved)
                         }
                         it is CwtValue -> {
                             val resolved = resolveOptionValue(it, file, fileConfig)
-                            if(options == null) options = mutableListOf()
-                            options!!.asMutable().add(resolved)
+                            if(optionConfigs == null) optionConfigs = mutableListOf()
+                            optionConfigs!!.asMutable().add(resolved)
                         }
                     }
                 }
-                if(options == null) options = emptyList()
+                if(optionConfigs == null) optionConfigs = emptyList()
             }
             else -> {
                 valueType = CwtType.Unknown
             }
         }
         
-        return CwtOptionValueConfig.resolve(value, valueType.id, options)
+        return CwtOptionValueConfig.resolve(value, valueType, optionConfigs)
     }
     
     private fun <T : CwtMemberConfig<*>> applyInheritOptions(config: T): T {
