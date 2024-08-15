@@ -15,12 +15,15 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     val separatorTypeId: @EnumId(CwtSeparatorType::class) Byte //use enum id to optimize memory 
     val separatorType: CwtSeparatorType get() = CwtSeparatorType.resolve(separatorTypeId)
     
-    val keyExpression: CwtDataExpression
-    
     val valueConfig: CwtValueConfig?
+    
+    val keyExpression: CwtDataExpression get() = CwtDataExpression.resolve(key, true)
+    override val expression: CwtDataExpression get() = keyExpression
     
     companion object
 }
+
+//Resolve Methods
 
 fun CwtPropertyConfig.Companion.resolve(
     pointer: SmartPsiElementPointer<out CwtProperty>,
@@ -35,15 +38,15 @@ fun CwtPropertyConfig.Companion.resolve(
 ): CwtPropertyConfig {
     return if(configs != null) {
         if(options != null || documentation != null) {
-            CwtPropertyConfigImpls.Impl1(pointer, configGroup, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
+            CwtPropertyConfigImpl1(pointer, configGroup, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
         } else {
-            CwtPropertyConfigImpls.Impl2(pointer, configGroup, key, value, valueTypeId, separatorTypeId, configs)
+            CwtPropertyConfigImpl2(pointer, configGroup, key, value, valueTypeId, separatorTypeId, configs)
         }
     } else {
         if(options != null || documentation != null) {
-            CwtPropertyConfigImpls.Impl3(pointer, configGroup, key, value, valueTypeId, separatorTypeId, options, documentation)
+            CwtPropertyConfigImpl3(pointer, configGroup, key, value, valueTypeId, separatorTypeId, options, documentation)
         } else {
-            CwtPropertyConfigImpls.Impl4(pointer, configGroup, key, value, valueTypeId, separatorTypeId)
+            CwtPropertyConfigImpl4(pointer, configGroup, key, value, valueTypeId, separatorTypeId)
         }
     }
 }
@@ -53,14 +56,14 @@ fun CwtPropertyConfig.delegated(
     parentConfig: CwtMemberConfig<*>? = this.parentConfig
 ): CwtPropertyConfig {
     return if(configs != null) {
-        CwtPropertyConfigImpls.Delegate1(this, configs).apply { this.parentConfig = parentConfig }
+        CwtPropertyConfigDelegate1(this, configs).apply { this.parentConfig = parentConfig }
     } else {
-        CwtPropertyConfigImpls.Delegate2(this).apply { this.parentConfig = parentConfig }
+        CwtPropertyConfigDelegate2(this).apply { this.parentConfig = parentConfig }
     }
 }
 
 fun CwtPropertyConfig.delegatedWith(key: String, value: String): CwtPropertyConfig {
-    return CwtPropertyConfigImpls.DelegateWith(this, key, value)
+    return CwtPropertyConfigDelegateWith(this, key, value)
 }
 
 fun CwtPropertyConfig.copy(
@@ -78,139 +81,131 @@ fun CwtPropertyConfig.copy(
 
 //Implementations
 
-private object CwtPropertyConfigImpls {
-    abstract class Impl(
-        override val pointer: SmartPsiElementPointer<out CwtProperty>,
-        override val configGroup: CwtConfigGroup,
-        override val key: String,
-        override val value: String,
-        override val valueTypeId: Byte = CwtType.String.id,
-        override val separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
-    ) : UserDataHolderBase(), CwtPropertyConfig {
-        //use memory-optimized lazy property
-        private var _valueConfig: Any? = EMPTY_OBJECT
-        override val valueConfig @Synchronized get() = if(_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else getValueConfig().also { _valueConfig = it }
-        
-        override var parentConfig: CwtMemberConfig<*>? = null
-        override var inlineableConfig: CwtInlineableConfig<CwtProperty, CwtMemberConfig<CwtProperty>>? = null
-        
-        override val keyExpression: CwtDataExpression get() = CwtDataExpression.resolve(key, true)
-        override val valueExpression: CwtDataExpression get() = if(isBlock) CwtDataExpression.BlockExpression else CwtDataExpression.resolve(value, false)
-        override val expression: CwtDataExpression get() = keyExpression
-        
-        override fun resolved(): CwtPropertyConfig = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>() ?: this
-        override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>()
-        
-        override fun toString(): String = "$key ${separatorType.text} $value"
-    }
+private abstract class CwtPropertyConfigImpl(
+    override val pointer: SmartPsiElementPointer<out CwtProperty>,
+    override val configGroup: CwtConfigGroup,
+    override val key: String,
+    override val value: String,
+    override val valueTypeId: Byte = CwtType.String.id,
+    override val separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
+) : UserDataHolderBase(), CwtPropertyConfig {
+    //use memory-optimized lazy property
+    private var _valueConfig: Any? = EMPTY_OBJECT
+    override val valueConfig @Synchronized get() = if(_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else getValueConfig().also { _valueConfig = it }
     
-    //12 + 11 * 4 + 2 * 1 = 58 => 64
-    class Impl1(
-        pointer: SmartPsiElementPointer<out CwtProperty>,
-        configGroup: CwtConfigGroup,
-        key: String,
-        value: String,
-        valueTypeId: Byte = CwtType.String.id,
-        separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
-        configs: List<CwtMemberConfig<*>>? = null,
-        options: List<CwtOptionMemberConfig<*>>? = null,
-        documentation: String? = null,
-    ) : Impl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
-        override val configs = configs?.toMutableIfNotEmptyInActual()
-        override val optionConfigs = options?.toMutableIfNotEmptyInActual()
-        override val documentation = documentation
-    }
+    override var parentConfig: CwtMemberConfig<*>? = null
     
-    //12 + 9 * 4 + 2 * 1 = 50 => 56
-    class Impl2(
-        pointer: SmartPsiElementPointer<out CwtProperty>,
-        configGroup: CwtConfigGroup,
-        key: String,
-        value: String,
-        valueTypeId: Byte = CwtType.String.id,
-        separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
-        configs: List<CwtMemberConfig<*>>? = null,
-    ) : Impl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
-        override val configs = configs?.toMutableIfNotEmptyInActual()
-        override val optionConfigs get() = null
-        override val documentation get() = null
-    }
+    override fun toString(): String = "$key ${separatorType.text} $value"
+}
+
+//12 + 10 * 4 + 2 * 1 = 54 => 56
+private class CwtPropertyConfigImpl1(
+    pointer: SmartPsiElementPointer<out CwtProperty>,
+    configGroup: CwtConfigGroup,
+    key: String,
+    value: String,
+    valueTypeId: Byte = CwtType.String.id,
+    separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
+    configs: List<CwtMemberConfig<*>>? = null,
+    options: List<CwtOptionMemberConfig<*>>? = null,
+    documentation: String? = null,
+) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
+    override val configs = configs?.toMutableIfNotEmptyInActual()
+    override val optionConfigs = options?.toMutableIfNotEmptyInActual()
+    override val documentation = documentation
+}
+
+//12 + 8 * 4 + 2 * 1 = 46 => 48
+private class CwtPropertyConfigImpl2(
+    pointer: SmartPsiElementPointer<out CwtProperty>,
+    configGroup: CwtConfigGroup,
+    key: String,
+    value: String,
+    valueTypeId: Byte = CwtType.String.id,
+    separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
+    configs: List<CwtMemberConfig<*>>? = null,
+) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
+    override val configs = configs?.toMutableIfNotEmptyInActual()
+    override val optionConfigs get() = null
+    override val documentation get() = null
+}
+
+//12 + 9 * 4 + 2 * 1 = 50 => 56
+private class CwtPropertyConfigImpl3(
+    pointer: SmartPsiElementPointer<out CwtProperty>,
+    configGroup: CwtConfigGroup,
+    key: String,
+    value: String,
+    valueTypeId: Byte = CwtType.String.id,
+    separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
+    options: List<CwtOptionMemberConfig<*>>? = null,
+    documentation: String? = null,
+) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
+    override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+    override val optionConfigs = options?.toMutableIfNotEmptyInActual()
+    override val documentation = documentation
+}
+
+//12 + 7 * 4 + 2 * 1 = 42 => 48
+private class CwtPropertyConfigImpl4(
+    pointer: SmartPsiElementPointer<out CwtProperty>,
+    configGroup: CwtConfigGroup,
+    key: String,
+    value: String,
+    valueTypeId: Byte = CwtType.String.id,
+    separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
+) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
+    override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+    override val optionConfigs get() = null
+    override val documentation get() = null
+}
+
+private abstract class CwtPropertyConfigDelegate(
+    private val delegate: CwtPropertyConfig,
+) : UserDataHolderBase(), CwtPropertyConfig by delegate {
+    //use memory-optimized lazy property
+    private var _valueConfig: Any? = EMPTY_OBJECT
+    override val valueConfig @Synchronized get() = if(_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else getValueConfig().also { _valueConfig = it }
     
-    //12 + 10 * 4 + 2 * 1 = 54 => 66
-    class Impl3(
-        pointer: SmartPsiElementPointer<out CwtProperty>,
-        configGroup: CwtConfigGroup,
-        key: String,
-        value: String,
-        valueTypeId: Byte = CwtType.String.id,
-        separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
-        options: List<CwtOptionMemberConfig<*>>? = null,
-        documentation: String? = null,
-    ) : Impl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
-        override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        override val optionConfigs = options?.toMutableIfNotEmptyInActual()
-        override val documentation = documentation
-    }
+    override var parentConfig: CwtMemberConfig<*>? = null
     
-    //12 + 8 * 4 + 2 * 1 = 46 => 48
-    class Impl4(
-        pointer: SmartPsiElementPointer<out CwtProperty>,
-        configGroup: CwtConfigGroup,
-        key: String,
-        value: String,
-        valueTypeId: Byte = CwtType.String.id,
-        separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
-    ) : Impl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
-        override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-        override val optionConfigs get() = null
-        override val documentation get() = null
-    }
+    override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
+    override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
     
-    abstract class Delegate(
-        private val delegate: CwtPropertyConfig,
-    ) : UserDataHolderBase(), CwtPropertyConfig by delegate {
-        //use memory-optimized lazy property
-        private var _valueConfig: Any? = EMPTY_OBJECT
-        override val valueConfig @Synchronized get() = if(_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else getValueConfig().also { _valueConfig = it }
-        
-        override var parentConfig: CwtMemberConfig<*>? = null
-        override var inlineableConfig: CwtInlineableConfig<CwtProperty, CwtMemberConfig<CwtProperty>>? = null
-        
-        override fun resolved(): CwtPropertyConfig = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>() ?: this
-        override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config?.castOrNull<CwtPropertyConfig>()
-        
-        override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
-        override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
-        
-        override fun toString(): String = "$key ${separatorType.text} $value"
-    }
-    
-    //12 + 6 * 4 = 36 => 40
-    class Delegate1(
-        delegate: CwtPropertyConfig,
-        configs: List<CwtMemberConfig<*>>? = null,
-    ) : Delegate(delegate) {
-        override val configs = configs?.toMutableIfNotEmptyInActual()
-    }
-    
-    //12 + 5 * 4 = 32 => 32
-    class Delegate2(
-        delegate: CwtPropertyConfig,
-    ) : Delegate(delegate) {
-        override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
-    }
-    
-    //12 + 6 * 4 = 28 -> 40
-    class DelegateWith(
-        delegate: CwtPropertyConfig,
-        override val key: String,
-        override val value: String,
-        //configs should be always null here
-    ) : Delegate(delegate) {
-        override val keyExpression: CwtDataExpression get() = CwtDataExpression.resolve(key, true)
-        override val valueExpression: CwtDataExpression get() = CwtDataExpression.resolve(value, false)
-        override val expression: CwtDataExpression get() = keyExpression
-        
-        override fun toString(): String = "$key ${separatorType.text} $value"
-    }
+    override fun toString(): String = "$key ${separatorType.text} $value"
+}
+
+//12 + 5 * 4 = 32 => 32
+private class CwtPropertyConfigDelegate1(
+    delegate: CwtPropertyConfig,
+    configs: List<CwtMemberConfig<*>>? = null,
+) : CwtPropertyConfigDelegate(delegate) {
+    override val configs = configs?.toMutableIfNotEmptyInActual()
+}
+
+//12 + 4 * 4 = 28 => 32
+private class CwtPropertyConfigDelegate2(
+    delegate: CwtPropertyConfig,
+) : CwtPropertyConfigDelegate(delegate) {
+    override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.id) emptyList() else null
+}
+
+//12 + 6 * 4 = 36 -> 40
+private class CwtPropertyConfigDelegateWith(
+    delegate: CwtPropertyConfig,
+    override val key: String,
+    override val value: String,
+    //configs should be always null here
+) : CwtPropertyConfigDelegate(delegate) {
+    override fun toString(): String = "$key ${separatorType.text} $value"
+}
+
+private fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
+    //this function should be enough fast because there is no pointers to be created
+    val resolvedPointer = resolved().pointer
+    val valuePointer = when {
+        resolvedPointer is CwtPropertyPointer -> resolvedPointer.valuePointer
+        else -> resolvedPointer.element?.propertyValue?.createPointer()
+    } ?: return null
+    return CwtValueConfig.resolveFromPropertyConfig(valuePointer, this)
 }

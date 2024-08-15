@@ -11,14 +11,14 @@ import icu.windea.pls.lang.util.*
  * @property supportedScopes (option) scope/scopes: string | string[]
  * @property outputScope (option) push_scope: string?
  */
-interface CwtAliasConfig : CwtInlineableConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtInlineableConfig<CwtPropertyConfig> {
     val name: String
     val subName: String
     val supportedScopes: Set<String>
     val outputScope: String?
     
-    val subNameExpression: CwtDataExpression
-    override val expression: CwtDataExpression
+    val subNameExpression: CwtDataExpression get() = CwtDataExpression.resolve(subName, true)
+    override val expression: CwtDataExpression get() = subNameExpression
     
     fun inline(config: CwtPropertyConfig): CwtPropertyConfig
     
@@ -45,9 +45,6 @@ private class CwtAliasConfigImpl(
 ) : CwtAliasConfig {
     override val supportedScopes get() = config.supportedScopes
     override val outputScope get() = config.pushScope
-    
-    override val subNameExpression = CwtDataExpression.resolve(subName, true)
-    override val expression get() = subNameExpression
     
     override fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
         val other = this.config

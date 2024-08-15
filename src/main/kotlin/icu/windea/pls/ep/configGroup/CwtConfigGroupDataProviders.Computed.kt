@@ -82,10 +82,10 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
         
         run {
-            configGroup.linksAsScopeWithPrefixSorted += configGroup.linksAsScopeWithPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
-            configGroup.linksAsValueWithPrefixSorted += configGroup.linksAsValueWithPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
-            configGroup.linksAsScopeWithoutPrefixSorted += configGroup.linksAsScopeWithoutPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
-            configGroup.linksAsValueWithoutPrefixSorted += configGroup.linksAsValueWithoutPrefix.values.sortedByPriority({ it.dataSource!! }, { configGroup })
+            configGroup.linksAsScopeWithPrefixSorted += configGroup.linksAsScopeWithPrefix.values.sortedByPriority({ it.dataSourceExpression!! }, { configGroup })
+            configGroup.linksAsValueWithPrefixSorted += configGroup.linksAsValueWithPrefix.values.sortedByPriority({ it.dataSourceExpression!! }, { configGroup })
+            configGroup.linksAsScopeWithoutPrefixSorted += configGroup.linksAsScopeWithoutPrefix.values.sortedByPriority({ it.dataSourceExpression!! }, { configGroup })
+            configGroup.linksAsValueWithoutPrefixSorted += configGroup.linksAsValueWithoutPrefix.values.sortedByPriority({ it.dataSourceExpression!! }, { configGroup })
             configGroup.linksAsVariable += configGroup.linksAsValueWithoutPrefix["variable"].toSingletonListOrEmpty()
         }
         

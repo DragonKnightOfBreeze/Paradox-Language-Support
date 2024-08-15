@@ -54,5 +54,3 @@ val CwtConfigGroup.declarationConfigCache by createKeyDelegate(CwtConfigContext.
 
 var CwtDeclarationConfigContext.provider: CwtDeclarationConfigContextProvider? by createKeyDelegate(CwtDeclarationConfigContext.Keys)
 
-var CwtMemberConfig<*>.declarationConfigContext: CwtDeclarationConfigContext? by createKeyDelegate(CwtMemberConfig.Keys)
-var CwtMemberConfig<*>.declarationConfigCacheKey: String? by createKeyDelegate(CwtMemberConfig.Keys)

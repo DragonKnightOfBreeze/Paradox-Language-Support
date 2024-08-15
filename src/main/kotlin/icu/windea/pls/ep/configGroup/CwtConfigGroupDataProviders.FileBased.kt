@@ -139,7 +139,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         val linkConfig = CwtLinkConfig.resolve(config) ?: continue
                         configGroup.links[linkConfig.name] = linkConfig
                         
-                        val fromData = linkConfig.fromData && linkConfig.dataSource != null
+                        val fromData = linkConfig.fromData && linkConfig.dataSourceExpression != null
                         val withPrefix = linkConfig.prefix != null
                         val type = linkConfig.type
                         if(type == null || type == "scope" || type == "both") {

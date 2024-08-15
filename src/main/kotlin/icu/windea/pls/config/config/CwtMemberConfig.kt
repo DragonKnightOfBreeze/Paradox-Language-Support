@@ -1,12 +1,15 @@
 package icu.windea.pls.config.config
 
+import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
+import com.intellij.psi.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 sealed interface CwtMemberConfig<out T : CwtMemberElement> : UserDataHolder, CwtConfig<T> {
@@ -18,14 +21,9 @@ sealed interface CwtMemberConfig<out T : CwtMemberElement> : UserDataHolder, Cwt
     val documentation: String?
     
     var parentConfig: CwtMemberConfig<*>?
-    var inlineableConfig: CwtInlineableConfig<@UnsafeVariance T, CwtMemberConfig<@UnsafeVariance T>>?
     
-    val valueExpression: CwtDataExpression
-    override val expression: CwtDataExpression
-    
-    override fun resolved(): CwtMemberConfig<T> = inlineableConfig?.config?.castOrNull<CwtMemberConfig<T>>() ?: this
-    
-    override fun resolvedOrNull(): CwtMemberConfig<T>? = inlineableConfig?.config?.castOrNull<CwtMemberConfig<T>>()
+    val valueExpression: CwtDataExpression get() = if(isBlock) CwtDataExpression.BlockExpression else CwtDataExpression.resolve(value, false)
+    override val expression: CwtDataExpression get() = valueExpression
     
     override fun toString(): String
     
@@ -44,7 +42,7 @@ val CwtMemberConfig<*>.options: List<CwtOptionConfig>? get() = optionConfigs?.fi
 val CwtMemberConfig<*>.optionValues: List<CwtOptionValueConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionValueConfig>()
 
 fun CwtMemberConfig<*>.getOptionValue(): String? {
-    return stringValue?.intern()
+    return stringValue
 }
 
 fun CwtMemberConfig<*>.getOptionValues(): Set<String>? {
@@ -74,6 +72,48 @@ inline fun CwtMemberConfig<*>.findOptions(predicate: (CwtOptionConfig) -> Boolea
 fun CwtMemberConfig<*>.findOptionValue(value: String): CwtOptionValueConfig? {
     return optionConfigs?.find { it is CwtOptionValueConfig && it.value == value }?.cast()
 }
+
+val <T : CwtMemberElement> CwtMemberConfig<T>.isBlock: Boolean
+    get() = configs != null
+
+val CwtMemberConfig<*>.isRoot: Boolean
+    get() = when(this) {
+        is CwtPropertyConfig -> this.parentConfig == null
+        is CwtValueConfig -> this.parentConfig == null && this.propertyConfig == null
+    }
+
+val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<*>
+    get() = when(this) {
+        is CwtPropertyConfig -> this
+        is CwtValueConfig -> propertyConfig ?: this
+    }
+
+val CwtValueConfig.isTagConfig: Boolean
+    get() = findOptionValue("tag") != null
+
+fun <T : CwtMemberElement> CwtMemberConfig<T>.toOccurrence(contextElement: PsiElement, project: Project): Occurrence {
+    val cardinality = this.cardinality ?: return Occurrence(0, null, null, false)
+    val cardinalityMinDefine = this.cardinalityMinDefine
+    val cardinalityMaxDefine = this.cardinalityMaxDefine
+    val occurrence = Occurrence(0, cardinality.min, cardinality.max, cardinality.relaxMin)
+    if(cardinalityMinDefine != null) {
+        val defineValue = ParadoxDefineHandler.getDefineValue(contextElement, project, cardinalityMinDefine, Int::class.java)
+        if(defineValue != null) {
+            occurrence.min = defineValue
+            occurrence.minDefine = cardinalityMinDefine
+        }
+    }
+    if(cardinalityMaxDefine != null) {
+        val defineValue = ParadoxDefineHandler.getDefineValue(contextElement, project, cardinalityMaxDefine, Int::class.java)
+        if(defineValue != null) {
+            occurrence.max = defineValue
+            occurrence.maxDefine = cardinalityMaxDefine
+        }
+    }
+    return occurrence
+}
+
+//Resolve Methods
 
 fun CwtMemberConfig<*>.delegated(
     configs: List<CwtMemberConfig<*>>? = this.configs,

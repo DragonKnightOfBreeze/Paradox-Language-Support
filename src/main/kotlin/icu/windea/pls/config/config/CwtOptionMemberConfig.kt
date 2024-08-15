@@ -20,7 +20,7 @@ val CwtOptionMemberConfig<*>.options: List<CwtOptionConfig>? get() = optionConfi
 val CwtOptionMemberConfig<*>.optionValues: List<CwtOptionValueConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionValueConfig>()
 
 fun CwtOptionMemberConfig<*>.getOptionValue(): String? {
-    return stringValue?.intern()
+    return stringValue
 }
 
 fun CwtOptionMemberConfig<*>.getOptionValues(): Set<String>? {

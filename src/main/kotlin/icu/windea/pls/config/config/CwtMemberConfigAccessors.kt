@@ -8,6 +8,8 @@ import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
+var CwtMemberConfig<*>.inlineableConfig: CwtInlineableConfig<CwtMemberConfig<*>>? by createKeyDelegate(CwtMemberConfig.Keys)
+
 val CwtMemberConfig.Keys.cardinality by createKey<CwtCardinalityExpression>("cwt.memberConfig.cardinality")
 val CwtMemberConfig.Keys.cardinalityMinDefine by createKey<String>("cwt.memberConfig.cardinalityMinDefine")
 val CwtMemberConfig.Keys.cardinalityMaxDefine by createKey<String>("cwt.memberConfig.cardinalityMaxDefine")
@@ -90,7 +92,10 @@ val CwtMemberConfig<*>.supportedScopes
         if(r.isNullOrEmpty()) ParadoxScopeHandler.anyScopeIdSet else r
     }
 
-val CwtMemberConfig<*>.originalConfig 
-    get() = getUserData(CwtMemberConfig.Keys.originalConfig) ?: this 
-val CwtMemberConfig<*>.overriddenProvider 
-    get() = getUserData(CwtMemberConfig.Keys.overriddenProvider) 
+val CwtMemberConfig<*>.originalConfig
+    get() = getUserData(CwtMemberConfig.Keys.originalConfig) ?: this
+val CwtMemberConfig<*>.overriddenProvider
+    get() = getUserData(CwtMemberConfig.Keys.overriddenProvider)
+
+var CwtMemberConfig<*>.declarationConfigContext: CwtDeclarationConfigContext? by createKeyDelegate(CwtMemberConfig.Keys)
+var CwtMemberConfig<*>.declarationConfigCacheKey: String? by createKeyDelegate(CwtMemberConfig.Keys)

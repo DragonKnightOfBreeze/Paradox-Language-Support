@@ -22,10 +22,13 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val fromData: Boolean
     val type: String?
     val prefix: String?
-    val dataSource: CwtDataExpression?
+    val dataSource: String?
     val forDefinitionType: String?
     val inputScopes: Set<String>
     val outputScope: String?
+    
+    val dataSourceExpression: CwtDataExpression? get() = dataSource?.let { CwtDataExpression.resolve(it, false) }
+    override val expression: CwtDataExpression? get() = dataSourceExpression
     
     //output_scope = null -> transfer scope based on data source
     //e.g., for 'event_target', output_scope should be null
@@ -43,7 +46,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtLinkConfigImpl? {
     var fromData = false
     var type: String? = null
     var prefix: String? = null
-    var dataSource: CwtDataExpression? = null
+    var dataSource: String? = null
     var inputScopes: Set<String>? = null
     var outputScope: String? = null
     var forDefinitionType: String? = null
@@ -54,7 +57,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtLinkConfigImpl? {
             "from_data" -> fromData = prop.booleanValue ?: false
             "type" -> type = prop.stringValue
             "prefix" -> prefix = prop.stringValue
-            "data_source" -> dataSource = prop.valueExpression
+            "data_source" -> dataSource = prop.value
             "for_definition_type" -> forDefinitionType = prop.stringValue
             "input_scopes" -> inputScopes = buildSet {
                 prop.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
@@ -74,11 +77,8 @@ private class CwtLinkConfigImpl(
     override val fromData: Boolean = false,
     override val type: String? = null,
     override val prefix: String?,
-    override val dataSource: CwtDataExpression?,
+    override val dataSource: String?,
     override val forDefinitionType: String?,
     override val inputScopes: Set<String>,
     override val outputScope: String?
-) : CwtLinkConfig {
-    override val expression get() = dataSource
-}
-
+) : CwtLinkConfig

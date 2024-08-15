@@ -9,14 +9,26 @@ interface CwtConfig<out T : PsiElement> {
     val configGroup: CwtConfigGroup
     
     val expression: CwtDataExpression? get() = null
-    
-    /**
-     * 解析为被内联的CWT规则，或者返回自身。
-     */
-    fun resolved(): CwtConfig<*> = this
-    
-    /**
-     * 解析为被内联的规则，或者返回null。
-     */
-    fun resolvedOrNull(): CwtConfig<*>? = null
+}
+
+/**
+ * 解析为被内联的CWT规则，或者返回自身。
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T: CwtConfig<*>> T.resolved(): T {
+    return when {
+        this is CwtMemberConfig<*> -> inlineableConfig?.config as? T ?: this
+        else -> this
+    }
+}
+
+/**
+ * 解析为被内联的规则，或者返回null。
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T: CwtConfig<*>> T.resolvedOrNull(): T? {
+    return when {
+        this is CwtMemberConfig<*> -> inlineableConfig?.config as? T
+        else -> this
+    }
 }
