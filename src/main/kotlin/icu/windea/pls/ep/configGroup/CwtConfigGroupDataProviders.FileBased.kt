@@ -11,8 +11,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.priority.*
-import kotlin.collections.component1
-import kotlin.collections.component2
 import kotlin.collections.set
 
 /**
@@ -24,53 +22,45 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         //后加入的规则文件会覆盖先加入的同路径的规则文件
         //后加入的数据项会覆盖先加入的同名同类型的数据项
         
-        val allFiles = mutableMapOf<String, Tuple2<VirtualFile, CwtConfigGroupFileProvider>>()
+        val allInternalFiles = mutableMapOf<String, VirtualFile>()
+        val allFiles = mutableMapOf<String, VirtualFile>()
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.all f@{ fileProvider ->
-            fileProvider.processFiles(configGroup) { filePath, file ->
-                allFiles[filePath] = tupleOf(file, fileProvider)
+            fileProvider.processFiles(configGroup) p@{ filePath, file ->
+                //不允许覆盖内部的规则文件
+                if(fileProvider.isBuiltIn() && configGroup.gameType == null && filePath.startsWith("internal/")) {
+                    allInternalFiles.putIfAbsent(filePath, file)
+                    return@p true
+                }
+                
+                allFiles.put(filePath, file)
                 true
             }
         }
-        
-        allFiles.all f@{ (filePath, tuple) ->
-            val (file, fileProcessor) = tuple
-            processFile(filePath, file, fileProcessor, configGroup)
+        allInternalFiles.forEach f@{ filePath, file ->
+            val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
+            val fileConfig = CwtConfigResolver.resolve(psiFile, configGroup)
+            processInternalFile(filePath, fileConfig, configGroup)
+        }
+        allFiles.forEach f@{ filePath, file ->
+            val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
+            val fileConfig = CwtConfigResolver.resolve(psiFile, configGroup)
+            processFile(fileConfig, configGroup)
+            configGroup.files[filePath] = fileConfig
         }
         
         return true
     }
     
-    private fun processFile(filePath: String, file: VirtualFile, fileProcessor: CwtConfigGroupFileProvider, configGroup: CwtConfigGroup): Boolean {
-        val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return true
-        val fileConfig = CwtConfigResolver.resolve(psiFile, configGroup)
-        configGroup.files[filePath] = fileConfig
-        if(fileProcessor.isBuiltIn() && configGroup.gameType == null) {
-            doProcessFileForInternalConfigs(filePath, fileConfig, configGroup)
-        }
-        doProcessFile(fileConfig, configGroup)
-        return true
-    }
-    
-    private fun doProcessFileForInternalConfigs(filePath: String, fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
-        //internal config files should be removed from configGroup.files
+    private fun processInternalFile(filePath: String, fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         when(filePath) {
-            "internal/schema.cwt" -> {
-                configGroup.files.remove(filePath)
-                CwtSchemaConfig.resolveInFile(fileConfig, configGroup)
-            }
-            "internal/folding_settings.cwt" -> {
-                configGroup.files.remove(filePath)
-                CwtFoldingSettingsConfig.resolveInFile(fileConfig, configGroup)
-            }
-            "internal/postfix_template_settings.cwt" -> {
-                configGroup.files.remove(filePath)
-                CwtPostfixTemplateSettingsConfig.resolveInFile(fileConfig, configGroup)
-            }
+            "internal/schema.cwt" -> CwtSchemaConfig.resolveInFile(fileConfig, configGroup)
+            "internal/folding_settings.cwt" -> CwtFoldingSettingsConfig.resolveInFile(fileConfig, configGroup)
+            "internal/postfix_template_settings.cwt" -> CwtPostfixTemplateSettingsConfig.resolveInFile(fileConfig, configGroup)
         }
     }
     
-    private fun doProcessFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
+    private fun processFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         for(property in fileConfig.properties) {
             val key = property.key
             when {
