@@ -1,7 +1,6 @@
 package icu.windea.pls.model.path
 
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 
 /**
  * 定义或定义属性相对于所属文件或定义的路径。保留大小写。
@@ -15,7 +14,6 @@ import icu.windea.pls.lang.*
  *
  * @property path 使用"/"分隔的路径（预先移除括起的双引号）。
  * @property originalPath 使用"/"分隔的路径（保留括起的双引号）。
- * @property isParameterized 路径中是否带有参数（即使无法解析或者存在语法错误）。
  */
 interface ParadoxElementPath : Iterable<String> {
     val path: String

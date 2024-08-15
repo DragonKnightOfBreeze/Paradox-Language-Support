@@ -6,7 +6,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.util.*
 
 /**
- * CWT规则的领。保留大小写。忽略括起的双引号。
+ * CWT规则的路径。保留大小写。忽略括起的双引号。
  */
 interface CwtConfigPath : Iterable<String> {
     val path: String

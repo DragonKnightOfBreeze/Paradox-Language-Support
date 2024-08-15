@@ -39,7 +39,7 @@ object CwtConfigManager {
     }
     
     private fun doGetConfigPath(element: CwtMemberElement): CwtConfigPath? {
-        //NOTE 1.3.18+ 规则路径不应当包含"/" "-"等必须考虑转义的特殊字符，目前也不支持这类情况
+        //NOTE 1.3.18+ 通常情况下，规则路径不应当包含"/" "-"等必须考虑转义的特殊字符，目前也不支持这类情况
         var current: PsiElement = element
         var depth = 0
         val subPaths = LinkedList<String>()
