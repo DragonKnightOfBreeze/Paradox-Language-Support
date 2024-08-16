@@ -22,7 +22,7 @@ interface ParadoxScopeContext : UserDataHolder {
     
     companion object Resolver
     
-    object Keys : KeyRegistry("ParadoxScopeContext")
+    object Keys : KeyRegistry()
 }
 
 var ParadoxScopeContext.isExact: Boolean? by createKeyDelegate(ParadoxScopeContext.Keys)

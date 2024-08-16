@@ -23,8 +23,10 @@ import java.lang.invoke.*
 object ParadoxEconomicCategoryHandler {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
-    val cachedEconomicCategoryInfoKey = createKey<CachedValue<ParadoxEconomicCategoryInfo>>("paradox.cached.economicCategoryInfo")
-    val modifierCategoriesKey = createKey<Set<String>>("stellaris.economicCategory.modifierCategories")
+    object Keys: KeyRegistry() {
+        val cachedEconomicCategoryInfo by createKey<CachedValue<ParadoxEconomicCategoryInfo>>(this)
+        val modifierCategories by createKey<Set<String>>(this)
+    }
     
     /**
      * 输入[definition]的定义类型应当保证是`economic_category`。
@@ -36,7 +38,7 @@ object ParadoxEconomicCategoryHandler {
     
     private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxEconomicCategoryInfo? {
         if(definition !is ParadoxScriptProperty) return null
-        return CachedValuesManager.getCachedValue(definition, cachedEconomicCategoryInfoKey) {
+        return CachedValuesManager.getCachedValue(definition, Keys.cachedEconomicCategoryInfo) {
             ProgressManager.checkCanceled()
             val value = runReadAction { doGetInfo(definition) }
             CachedValueProvider.Result.create(value, definition)
@@ -139,7 +141,7 @@ object ParadoxEconomicCategoryHandler {
     
     private fun getModifierCategoryOptionValues(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
         val valueConfig = enumConfig.valueConfigMap.getValue(finalValue)
-        return valueConfig.getOrPutUserData(modifierCategoriesKey, emptySet()) {
+        return valueConfig.getOrPutUserData(Keys.modifierCategories, emptySet()) {
             valueConfig.findOption("modifier_categories")?.getOptionValues()
         }
     }

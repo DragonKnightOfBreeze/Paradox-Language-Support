@@ -17,7 +17,7 @@ val CwtConfigGroup.definitionParameterModificationTracker: ModificationTracker
 @Tags(Tag.Computed)
 val CwtConfigGroup.definitionScopeContextModificationTracker: ModificationTracker
     by createKeyDelegate(CwtConfigGroup.Keys) {
-        val definitionTypes = ParadoxBaseDefinitionInferredScopeContextProvider.Data.DEFINITION_TYPES
+        val definitionTypes = ParadoxBaseDefinitionInferredScopeContextProvider.Constants.DEFINITION_TYPES
         val configs = definitionTypes.mapNotNull { types[it] }
         val pattern = ParadoxModificationTrackers.getPatternFromTypeConfigs(configs)
         ParadoxModificationTrackers.ScriptFileTracker(pattern)

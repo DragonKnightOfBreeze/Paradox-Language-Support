@@ -25,13 +25,15 @@ import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxInlineScriptHandler {
+    object Keys: KeyRegistry() {
+        val cachedInlineScriptUsageInfo by createKey<CachedValue<ParadoxInlineScriptUsageInfo>>(this)
+    }
+    
     const val inlineScriptKey = "inline_script"
     const val inlineScriptExpressionOptionName = "inline_script_expression"
     const val inlineScriptPathExpressionString = "filepath[common/inline_scripts/,.txt]"
     
     val inlineScriptPathExpression = CwtDataExpression.resolve(inlineScriptPathExpressionString, false)
-    
-    val cachedInlineScriptUsageInfoKey = createKey<CachedValue<ParadoxInlineScriptUsageInfo>>("paradox.cached.inlineScriptUsageInfo")
     
     fun getUsageInfo(element: ParadoxScriptProperty): ParadoxInlineScriptUsageInfo? {
         val name = element.name.lowercase()
@@ -40,7 +42,7 @@ object ParadoxInlineScriptHandler {
     }
     
     private fun doGetUsageInfoFromCache(element: ParadoxScriptProperty): ParadoxInlineScriptUsageInfo? {
-        return CachedValuesManager.getCachedValue(element, cachedInlineScriptUsageInfoKey) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedInlineScriptUsageInfo) {
             ProgressManager.checkCanceled()
             val file = element.containingFile ?: return@getCachedValue null
             val value = runReadAction { doGetUsageInfo(element, file) }

@@ -27,7 +27,7 @@ sealed interface CwtMemberConfig<out T : CwtMemberElement> : UserDataHolder, Cwt
     
     override fun toString(): String
     
-    object Keys : KeyRegistry("CwtMemberConfig")
+    object Keys : KeyRegistry()
 }
 
 val CwtMemberConfig<*>.booleanValue: Boolean? get() = if(valueType == CwtType.Boolean) value.toBooleanYesNo() else null

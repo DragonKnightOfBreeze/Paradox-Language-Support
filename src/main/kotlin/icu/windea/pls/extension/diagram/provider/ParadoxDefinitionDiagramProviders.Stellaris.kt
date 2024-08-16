@@ -21,19 +21,19 @@ import java.awt.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Stellaris) {
-    object Data {
+    object Constants {
         const val ID = "Stellaris.EventTree"
         val ITEM_PROPERTY_KEYS = arrayOf("picture")
     }
     
-    override fun getID() = Data.ID
+    override fun getID() = Constants.ID
     
     @Suppress("DialogTitleCapitalization")
     override fun getPresentableName() = PlsDiagramBundle.message("stellaris.eventTree.name")
     
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
     
-    override fun getItemPropertyKeys() = Data.ITEM_PROPERTY_KEYS
+    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
     
     override fun getDiagramSettings(project: Project) = project.service<StellarisEventTreeDiagramSettings>()
     
@@ -101,16 +101,18 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvider(ParadoxGameType.Stellaris) {
-    object Data {
+    object Constants {
         const val ID = "Stellaris.TechnologyTree"
         val ITEM_PROPERTY_KEYS = arrayOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels")
-        
-        val nodeDataKey = createKey<StellarisTechnologyData>("stellaris.technologyTree.node.data")
+    }
+    
+    object Keys: KeyRegistry() {
+        val nodeData by createKey<StellarisTechnologyData>(this)
     }
     
     private val _colorManager = ColorManager()
     
-    override fun getID() = Data.ID
+    override fun getID() = Constants.ID
     
     @Suppress("DialogTitleCapitalization")
     override fun getPresentableName() = PlsDiagramBundle.message("stellaris.technologyTree.name")
@@ -119,7 +121,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
     
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
     
-    override fun getItemPropertyKeys() = Data.ITEM_PROPERTY_KEYS
+    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
     
     override fun getDiagramSettings(project: Project) = project.service<StellarisTechnologyTreeDiagramSettings>()
     
@@ -133,7 +135,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
         private fun doGetNodeBorderColor(node: Node): Color? {
             //这里使用的颜色是来自灰机wiki的特殊字体颜色
             //https://qunxing.huijiwiki.com/wiki/%E7%A7%91%E6%8A%80
-            val data = node.getUserData(Data.nodeDataKey) ?: return null
+            val data = node.getUserData(Keys.nodeData) ?: return null
             val definitionInfo = node.definitionInfo ?: return null
             val types = definitionInfo.subtypes
             return when {
@@ -164,7 +166,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
                 ProgressManager.checkCanceled()
                 if(!showNode(technology)) continue
                 val node = Node(technology, provider)
-                node.putUserData(Data.nodeDataKey, technology.getData())
+                node.putUserData(Keys.nodeData, technology.getData())
                 nodeMap.put(technology, node)
                 val name = technology.definitionInfo?.name.orAnonymous()
                 techMap.put(name, technology)

@@ -5,10 +5,12 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 
 object ParadoxFilePathHandler {
-    val fileExtensionsKey = createKey<Set<String>>("paradox.filePath.fileExtensions")
+    object Keys: KeyRegistry() {
+        val fileExtensions by createKey<Set<String>>(this)
+    }
     
     fun getFileExtensionOptionValues(config: CwtMemberConfig<*>) : Set<String> {
-        return config.getOrPutUserData(fileExtensionsKey) {
+        return config.getOrPutUserData(Keys.fileExtensions) {
             config.findOption("file_extensions")?.getOptionValueOrValues().orEmpty()
         }
     }

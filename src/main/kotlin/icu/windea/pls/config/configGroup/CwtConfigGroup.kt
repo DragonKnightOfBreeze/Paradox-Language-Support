@@ -21,5 +21,5 @@ class CwtConfigGroup(
     
     val files: MutableMap<String, CwtFileConfig> = mutableMapOf()
     
-    object Keys : KeyRegistry("CwtConfigGroup")
+    object Keys : KeyRegistry()
 }

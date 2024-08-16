@@ -178,7 +178,7 @@ object CwtConfigManipulator {
         val ic1 = c1.inlineableConfig
         val ic2 = c2.inlineableConfig
         if(ic1 != null && ic2 != null) {
-            if(ic1.pointer == ic2.pointer) {
+            if(ic1.config.pointer == ic2.config.pointer) {
                 //value equality after inline (should be)
                 return when(c1) {
                     is CwtPropertyConfig -> c1.copy(

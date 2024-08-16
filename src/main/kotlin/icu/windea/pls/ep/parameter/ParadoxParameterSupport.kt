@@ -130,15 +130,15 @@ interface ParadoxParameterSupport {
         }
     }
     
-    object Keys : KeyRegistry("ParadoxParameterSupport")
+    object Keys : KeyRegistry()
 }
 
-val ParadoxParameterSupport.Keys.support by createKey<ParadoxParameterSupport>("paradox.parameter.support.support")
-val ParadoxParameterSupport.Keys.containingContext by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>("paradox.parameter.support.containingContext")
-val ParadoxParameterSupport.Keys.containingContextReference by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>("paradox.parameter.support.contextReference")
-val ParadoxParameterSupport.Keys.definitionName by createKey<String>("paradox.parameter.support.definitionName")
-val ParadoxParameterSupport.Keys.definitionTypes by createKey<List<String>>("paradox.parameter.support.definitionTypes")
-val ParadoxParameterSupport.Keys.inlineScriptExpression by createKey<String>("paradox.parameter.support.inlineScriptExpression")
+val ParadoxParameterSupport.Keys.support by createKey<ParadoxParameterSupport>(ParadoxParameterSupport.Keys)
+val ParadoxParameterSupport.Keys.containingContext by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys)
+val ParadoxParameterSupport.Keys.containingContextReference by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys)
+val ParadoxParameterSupport.Keys.definitionName by createKey<String>(ParadoxParameterSupport.Keys)
+val ParadoxParameterSupport.Keys.definitionTypes by createKey<List<String>>(ParadoxParameterSupport.Keys)
+val ParadoxParameterSupport.Keys.inlineScriptExpression by createKey<String>(ParadoxParameterSupport.Keys)
 
 var ParadoxParameterInfo.support by ParadoxParameterSupport.Keys.support
 var ParadoxParameterInfo.containingContext by ParadoxParameterSupport.Keys.containingContext

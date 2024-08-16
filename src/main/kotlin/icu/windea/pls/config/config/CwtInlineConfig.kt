@@ -4,7 +4,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.util.*
 
-interface CwtInlineConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtInlineableConfig<CwtPropertyConfig> {
+interface CwtInlineConfig : CwtInlineableConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     
     fun inline(): CwtPropertyConfig

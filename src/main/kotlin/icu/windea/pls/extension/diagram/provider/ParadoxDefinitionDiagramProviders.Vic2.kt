@@ -18,19 +18,19 @@ import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Vic2)
 class Vic2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Vic2) {
-    object Data {
+    object Constants {
         const val ID = "Vic2.EventTree"
         val ITEM_PROPERTY_KEYS = arrayOf("picture")
     }
     
-    override fun getID() = Data.ID
+    override fun getID() = Constants.ID
     
     @Suppress("DialogTitleCapitalization")
     override fun getPresentableName() = PlsDiagramBundle.message("vic2.eventTree.name")
     
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
     
-    override fun getItemPropertyKeys() = Data.ITEM_PROPERTY_KEYS
+    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
     
     override fun getDiagramSettings(project: Project) = project.service<Vic2EventTreeDiagramSettings>()
     

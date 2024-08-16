@@ -43,10 +43,10 @@ class ParadoxScriptAllDataDelegateProvider<T>(
     }
 }
 
-private val ParadoxScriptData.Keys.propertyValuesKey by createKey<MutableMap<KType, Any?>>("paradox.data.property.values")
+private val ParadoxScriptData.Keys.propertyValues by createKey<MutableMap<KType, Any?>>(ParadoxScriptData.Keys)
 
 private fun getValueOfTypeFromCache(data: ParadoxScriptData, type: KType) : Any? {
-    val propertyValues = data.getUserData(ParadoxScriptData.Keys.propertyValuesKey)!!
+    val propertyValues = data.getUserData(ParadoxScriptData.Keys.propertyValues)!!
     return propertyValues.getOrPut(type) { getValueOfType(data, type) ?: EMPTY_OBJECT }.takeUnless { it == EMPTY_OBJECT }
 }
 

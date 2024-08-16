@@ -15,7 +15,7 @@ import org.intellij.plugins.markdown.lang.psi.impl.*
 @HiddenApi
 @Suppress("UnstableApiUsage")
 class MarkdownEmptyLinkFoldingBuilder: FoldingBuilderEx(), DumbAware {
-    object Data {
+    object Constants {
         const val GROUP_NAME = "markdown.emptyLink"
         val FOLDING_GROUP = FoldingGroup.newGroup(GROUP_NAME)
     }
@@ -28,7 +28,7 @@ class MarkdownEmptyLinkFoldingBuilder: FoldingBuilderEx(), DumbAware {
                     if(element.parent is MarkdownImage) return //排除Markdown图片链接
                     val linkText = element.linkText
                     if(linkText != null && linkText.contentElements.none()) {
-                        descriptors.add(FoldingDescriptor(element.node, element.textRange, Data.FOLDING_GROUP))
+                        descriptors.add(FoldingDescriptor(element.node, element.textRange, Constants.FOLDING_GROUP))
                     }
                     return
                 }

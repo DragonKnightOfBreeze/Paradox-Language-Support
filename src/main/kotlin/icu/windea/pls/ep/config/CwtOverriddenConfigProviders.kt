@@ -13,7 +13,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
-    object Data {
+    object Constants {
         const val CASE_KEY = "scalar"
         val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
         val CONTEXT_NAMES = arrayOf("switch", "inverted_switch")
@@ -25,11 +25,11 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
         //重载inverted_switch = {...}中对应的CWT规则为scalar的属性的键对应的CWT规则
         //兼容使用内联或者使用封装变量的情况
         if(config !is CwtPropertyConfig) return null
-        if(config.key != Data.CASE_KEY) return null
+        if(config.key != Constants.CASE_KEY) return null
         val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
-        if(aliasConfig.subName !in Data.CONTEXT_NAMES) return null
+        if(aliasConfig.subName !in Constants.CONTEXT_NAMES) return null
         ProgressManager.checkCanceled()
-        val triggerConfig = aliasConfig.config.configs?.find { it is CwtPropertyConfig && it.key in Data.TRIGGER_KEYS && it.value == "alias_keys_field[trigger]" } ?: return null
+        val triggerConfig = aliasConfig.config.configs?.find { it is CwtPropertyConfig && it.key in Constants.TRIGGER_KEYS && it.value == "alias_keys_field[trigger]" } ?: return null
         val triggerConfigKey = triggerConfig.castOrNull<CwtPropertyConfig>()?.key ?: return null
         val triggerProperty = contextElement.parentOfType<ParadoxScriptBlock>(withSelf = false)
             ?.findProperty(triggerConfigKey, inline = true)
@@ -49,7 +49,7 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
 }
 
 class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfigProvider {
-    object Data {
+    object Constants {
         const val TRIGGER_KEY = "trigger"
         const val PARAMETERS_KEY = "parameters"
         val CONTEXT_NAMES = arrayOf("complex_trigger_modifier", "export_trigger_value_to_variable")
@@ -61,15 +61,15 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
         //重载export_trigger_value_to_variable = {...}中属性parameters的值对应的CWT规则
         //兼容使用内联或者使用封装变量的情况
         if(config !is CwtPropertyConfig) return null
-        if(config.key != Data.PARAMETERS_KEY) return null
+        if(config.key != Constants.PARAMETERS_KEY) return null
         val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
-        if(aliasConfig.subName !in Data.CONTEXT_NAMES) return null
+        if(aliasConfig.subName !in Constants.CONTEXT_NAMES) return null
         ProgressManager.checkCanceled()
         val contextProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
-            .filter { it.name.lowercase() in Data.CONTEXT_NAMES }
+            .filter { it.name.lowercase() in Constants.CONTEXT_NAMES }
             .find { ParadoxExpressionHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
             ?: return null
-        val triggerProperty = contextProperty.findProperty(Data.TRIGGER_KEY, inline = true) ?: return null
+        val triggerProperty = contextProperty.findProperty(Constants.TRIGGER_KEY, inline = true) ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
         if(CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null //must be a predefined trigger
         val configGroup = config.configGroup

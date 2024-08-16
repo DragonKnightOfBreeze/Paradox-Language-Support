@@ -19,55 +19,55 @@ import java.awt.*
 
 object PlsKeys : KeyRegistry()
 
-val PlsKeys.library by createKey<ParadoxLibrary>("paradox.library")
-val PlsKeys.configGroupLibrary by createKey<CwtConfigGroupLibrary>("cwt.configGroup.library")
+val PlsKeys.library by createKey<ParadoxLibrary>(PlsKeys)
+val PlsKeys.configGroupLibrary by createKey<CwtConfigGroupLibrary>(PlsKeys)
 
-val PlsKeys.rootInfo by createKey<Any>("paradox.rootInfo")
-val PlsKeys.fileInfo by createKey<Any>("paradox.fileInfo")
-val PlsKeys.localeConfig by createKey<Any>("paradox.localeConfig")
+val PlsKeys.rootInfo by createKey<Any>(PlsKeys)
+val PlsKeys.fileInfo by createKey<Any>(PlsKeys)
+val PlsKeys.localeConfig by createKey<Any>(PlsKeys)
 
 //用于为临时文件（VirtualFile）嵌入根目录信息
-val PlsKeys.injectedRootInfo by createKey<ParadoxRootInfo>("paradox.injected.rootInfo")
+val PlsKeys.injectedRootInfo by createKey<ParadoxRootInfo>(PlsKeys)
 //用于为临时文件（VirtualFile）嵌入文件信息
-val PlsKeys.injectedFileInfo by createKey<ParadoxFileInfo>("paradox.injected.fileInfo")
+val PlsKeys.injectedFileInfo by createKey<ParadoxFileInfo>(PlsKeys)
 //用于为脚本文件（VirtualFile）嵌入语言区域
-val PlsKeys.injectedLocaleConfig by createKey<CwtLocalisationLocaleConfig>("paradox.injected.localeConfig")
+val PlsKeys.injectedLocaleConfig by createKey<CwtLocalisationLocaleConfig>(PlsKeys)
 //用于为脚本文件（VirtualFile）嵌入元素路径前缀
-val PlsKeys.injectedElementPathPrefix by createKey<ParadoxElementPath>("paradox.injected.elementPathPrefix")
+val PlsKeys.injectedElementPathPrefix by createKey<ParadoxElementPath>(PlsKeys)
 
-val PlsKeys.cachedDefinitionInfo by createKey<CachedValue<ParadoxDefinitionInfo>>("paradox.cached.definitionInfo")
-val PlsKeys.cachedDefinitionPrimaryLocalisationKey by createKey<CachedValue<String>>("paradox.cached.definition.primaryLocalisationKey")
-val PlsKeys.cachedDefinitionPrimaryLocalisation by createKey<CachedValue<ParadoxLocalisationProperty>>("paradox.cached.definition.primaryLocalisation")
-val PlsKeys.cachedDefinitionPrimaryLocalisations by createKey<CachedValue<Set<ParadoxLocalisationProperty>>>("paradox.cached.definition.primaryLocalisations")
-val PlsKeys.cachedDefinitionLocalizedNames by createKey<CachedValue<Set<String>>>("paradox.cached.definition.primaryLocalisations")
-val PlsKeys.cachedDefinitionPrimaryImage by createKey<CachedValue<PsiFile>>("paradox.cached.definition.primaryImage")
-val PlsKeys.cachedLocalisationInfo by createKey<CachedValue<ParadoxLocalisationInfo>>("paradox.cached.localisationInfo")
-val PlsKeys.cachedComplexEnumValueInfo by createKey<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cached.complexEnumValueInfo")
-val PlsKeys.cachedDynamicValueInfos by createKey<CachedValue<List<ParadoxDynamicValueInfo>>>("paradox.cached.dynamicValueInfos")
-val PlsKeys.cachedElementPath by createKey<CachedValue<ParadoxElementPath>>("paradox.cached.elementPath")
-val PlsKeys.cachedScopeContext by createKey<CachedValue<ParadoxScopeContext>>("paradox.cached.scopeContext")
-val PlsKeys.cachedTextColorInfo by createKey<CachedValue<ParadoxTextColorInfo>>("paradox.cached.textColorInfo")
-val PlsKeys.cachedDefineValues by createKey<CachedValue<MutableMap<String, Any?>>>("paradox.cached.defineValues")
-val PlsKeys.cachedColor by createKey<CachedValue<Color>>("paradox.cached.color")
-val PlsKeys.cachedParameterContextInfo by createKey<CachedValue<ParadoxParameterContextInfo>>("paradox.cached.parameterContextInfo")
-val PlsKeys.cachedGameConceptAlias by createKey<CachedValue<Set<String>>>("paradox.cached.gameConcept.alias")
-val PlsKeys.cachedParameterRanges by createKey<CachedValue<List<TextRange>>>("paradox.cached.parameterRanges")
+val PlsKeys.cachedDefinitionInfo by createKey<CachedValue<ParadoxDefinitionInfo>>(PlsKeys)
+val PlsKeys.cachedDefinitionPrimaryLocalisationKey by createKey<CachedValue<String>>(PlsKeys)
+val PlsKeys.cachedDefinitionPrimaryLocalisation by createKey<CachedValue<ParadoxLocalisationProperty>>(PlsKeys)
+val PlsKeys.cachedDefinitionPrimaryLocalisations by createKey<CachedValue<Set<ParadoxLocalisationProperty>>>(PlsKeys)
+val PlsKeys.cachedDefinitionLocalizedNames by createKey<CachedValue<Set<String>>>(PlsKeys)
+val PlsKeys.cachedDefinitionPrimaryImage by createKey<CachedValue<PsiFile>>(PlsKeys)
+val PlsKeys.cachedLocalisationInfo by createKey<CachedValue<ParadoxLocalisationInfo>>(PlsKeys)
+val PlsKeys.cachedComplexEnumValueInfo by createKey<CachedValue<ParadoxComplexEnumValueInfo>>(PlsKeys)
+val PlsKeys.cachedDynamicValueInfos by createKey<CachedValue<List<ParadoxDynamicValueInfo>>>(PlsKeys)
+val PlsKeys.cachedElementPath by createKey<CachedValue<ParadoxElementPath>>(PlsKeys)
+val PlsKeys.cachedScopeContext by createKey<CachedValue<ParadoxScopeContext>>(PlsKeys)
+val PlsKeys.cachedTextColorInfo by createKey<CachedValue<ParadoxTextColorInfo>>(PlsKeys)
+val PlsKeys.cachedDefineValues by createKey<CachedValue<MutableMap<String, Any?>>>(PlsKeys)
+val PlsKeys.cachedColor by createKey<CachedValue<Color>>(PlsKeys)
+val PlsKeys.cachedParameterContextInfo by createKey<CachedValue<ParadoxParameterContextInfo>>(PlsKeys)
+val PlsKeys.cachedGameConceptAlias by createKey<CachedValue<Set<String>>>(PlsKeys)
+val PlsKeys.cachedParameterRanges by createKey<CachedValue<List<TextRange>>>(PlsKeys)
 
-val PlsKeys.cachedConfigPath by createKey<CachedValue<CwtConfigPath>>("cwt.cached.configPath")
-val PlsKeys.cachedConfigType by createKey<CachedValue<CwtConfigType>>("cwt.cached.configType")
-val PlsKeys.cachedConfigContext by createKey<CachedValue<CwtConfigContext>>("cwt.cached.configContext")
-val PlsKeys.cachedConfigsCache by createKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>("cwt.cached.configs.cache")
-val PlsKeys.cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>("cwt.cached.childOccurrenceMap.cache")
+val PlsKeys.cachedConfigPath by createKey<CachedValue<CwtConfigPath>>(PlsKeys)
+val PlsKeys.cachedConfigType by createKey<CachedValue<CwtConfigType>>(PlsKeys)
+val PlsKeys.cachedConfigContext by createKey<CachedValue<CwtConfigContext>>(PlsKeys)
+val PlsKeys.cachedConfigsCache by createKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>(PlsKeys)
+val PlsKeys.cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>(PlsKeys)
 
-val PlsKeys.parameterValueInjectionInfos by createKey<List<ParameterValueInjectionInfo>>("paradox.injection.parameterValueInjectionInfos")
+val PlsKeys.parameterValueInjectionInfos by createKey<List<ParameterValueInjectionInfo>>(PlsKeys)
 
 //用于将CWT规则临时写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
-val PlsKeys.cwtConfig by createKey<CwtConfig<*>>("paradox.cwtConfig")
+val PlsKeys.cwtConfig by createKey<CwtConfig<*>>(PlsKeys)
 //用于标记快速文档使用的本地化语言区域
-val PlsKeys.documentationLocale by createKey<String>("paradox.documentationLocale")
+val PlsKeys.documentationLocale by createKey<String>(PlsKeys)
 //用于在进行代码补全时标记光标位置
-val PlsKeys.completionOffset by createKey<Int>("paradox.completionOffset")
+val PlsKeys.completionOffset by createKey<Int>(PlsKeys)
 //用于在进行代码补全时标记作用域不匹配
-val PlsKeys.scopeMismatched by createKey<Boolean>("paradox.scopeMismatched")
+val PlsKeys.scopeMismatched by createKey<Boolean>(PlsKeys)
 //用于标记图片的帧数信息以便后续进行切分
-val PlsKeys.frameInfo by createKey<FrameInfo>("paradox.frameInfo")
+val PlsKeys.frameInfo by createKey<FrameInfo>(PlsKeys)

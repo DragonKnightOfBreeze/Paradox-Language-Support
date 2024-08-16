@@ -129,7 +129,7 @@ class StellarisTechnologyWithLevelChecker : ParadoxIncorrectExpressionChecker {
 }
 
 class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
-    object Data {
+    object Constants {
         val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
         val CONTEXT_NAMES = arrayOf("switch", "inverted_switch")
     }
@@ -140,9 +140,9 @@ class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
         if(config !is CwtValueConfig || config.value != "alias_keys_field[trigger]") return
         
         val propertyConfig = config.propertyConfig ?: return
-        if(propertyConfig.key !in Data.TRIGGER_KEYS) return
+        if(propertyConfig.key !in Constants.TRIGGER_KEYS) return
         val aliasConfig = config.memberConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
-        if(aliasConfig.subName !in Data.CONTEXT_NAMES) return
+        if(aliasConfig.subName !in Constants.CONTEXT_NAMES) return
         
         val triggerName = element.stringValue() ?: return
         val configGroup = config.configGroup
@@ -154,7 +154,7 @@ class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
 }
 
 class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpressionChecker {
-    object Data {
+    object Constants {
         const val TRIGGER_KEY = "trigger"
         val CONTEXT_NAMES = arrayOf("complex_trigger_modifier", "export_trigger_value_to_variable")
     }
@@ -165,9 +165,9 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
         if(config !is CwtValueConfig || config.value != "alias_keys_field[trigger]") return
         
         val propertyConfig = config.propertyConfig ?: return
-        if(propertyConfig.key != Data.TRIGGER_KEY) return
+        if(propertyConfig.key != Constants.TRIGGER_KEY) return
         val aliasConfig = propertyConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
-        if(aliasConfig.subName !in Data.CONTEXT_NAMES) return
+        if(aliasConfig.subName !in Constants.CONTEXT_NAMES) return
         
         val triggerName = element.stringValue() ?: return
         val configGroup = config.configGroup

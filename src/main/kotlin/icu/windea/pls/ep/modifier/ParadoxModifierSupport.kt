@@ -103,11 +103,11 @@ interface ParadoxModifierSupport {
         }
     }
     
-    object Keys : KeyRegistry("ParadoxModifierSupport")
+    object Keys : KeyRegistry()
 }
 
-val ParadoxModifierSupport.Keys.support by createKey<ParadoxModifierSupport>("paradox.modifier.support.support")
-val ParadoxModifierSupport.Keys.modifierConfig by createKey<CwtModifierConfig>("paradox.modifier.support.modifierConfig")
+val ParadoxModifierSupport.Keys.support by createKey<ParadoxModifierSupport>(ParadoxModifierSupport.Keys)
+val ParadoxModifierSupport.Keys.modifierConfig by createKey<CwtModifierConfig>(ParadoxModifierSupport.Keys)
 
 var ParadoxModifierInfo.support by ParadoxModifierSupport.Keys.support
 var ParadoxModifierInfo.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig

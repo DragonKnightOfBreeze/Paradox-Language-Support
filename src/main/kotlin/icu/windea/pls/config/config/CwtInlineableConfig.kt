@@ -1,5 +1,5 @@
 package icu.windea.pls.config.config
 
-sealed interface CwtInlineableConfig<out C: CwtConfig<*>> {
-    val config: C
-}
+import com.intellij.psi.*
+
+sealed interface CwtInlineableConfig<out T : PsiElement, out C : CwtConfig<T>> : CwtDelegatedConfig<T, C>

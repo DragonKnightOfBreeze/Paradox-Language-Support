@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 class ParadoxInferredScopeContextAwareDefinitionIndexSupport : ParadoxExpressionIndexSupport<ParadoxInferredScopeContextAwareDefinitionInfo> {
-    object Data {
+    object Constants {
         val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect")
     }
     
@@ -28,7 +28,7 @@ class ParadoxInferredScopeContextAwareDefinitionIndexSupport : ParadoxExpression
             val dataType = config.expression.type
             if(dataType != CwtDataTypes.Definition) return
             val definitionType = config.expression.value?.substringBefore('.') ?: return
-            if(definitionType !in Data.DEFINITION_TYPES) return
+            if(definitionType !in Constants.DEFINITION_TYPES) return
         }
         
         val definitionName = element.value

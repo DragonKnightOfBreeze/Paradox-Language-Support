@@ -4,7 +4,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -18,6 +17,13 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxEventHandler {
+    object Keys : KeyRegistry() {
+        val cachedEventInvocations by createKey<CachedValue<Set<String>>>(this)
+        val eventEventTypes by createKey<Set<String>>(this)
+        val eventEventType by createKey<String>(this)
+        val eventEventScope by createKey<String>(this)
+    }
+    
     fun isValidEventNamespace(eventNamespace: String): Boolean {
         if(eventNamespace.isEmpty()) return false
         return eventNamespace.isIdentifier()
@@ -74,19 +80,19 @@ object ParadoxEventHandler {
      */
     fun getTypes(project: Project, gameType: ParadoxGameType): Set<String> {
         val eventConfig = getConfigGroup(project, gameType).types["event"] ?: return emptySet()
-        return eventConfig.config.getOrPutUserData(CwtMemberConfig.Keys.eventEventTypes) {
+        return eventConfig.config.getOrPutUserData(Keys.eventEventTypes) {
             eventConfig.subtypes.mapNotNullTo(mutableSetOf()) { (k, v) -> if(v.config.findOption("group")?.stringValue == "event_type") k else null }
         }
     }
     
     fun getType(definitionInfo: ParadoxDefinitionInfo): String? {
-        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventType, "") {
+        return definitionInfo.getOrPutUserData(Keys.eventEventType, "") {
             definitionInfo.subtypeConfigs.find { it.config.findOption("group")?.stringValue == "event_type" }?.name
         }
     }
     
-    fun getScope(definitionInfo: ParadoxDefinitionInfo): String? {
-        return definitionInfo.getOrPutUserData(ParadoxDefinitionInfo.Keys.eventEventScope) {
+    fun getScope(definitionInfo: ParadoxDefinitionInfo): String {
+        return definitionInfo.getOrPutUserData(Keys.eventEventScope) {
             definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.pushScope } ?: ParadoxScopeHandler.anyScopeId
         }
     }
@@ -106,7 +112,7 @@ object ParadoxEventHandler {
      * TODO 兼容内联和事件继承的情况。
      */
     fun getInvocations(definition: ParadoxScriptDefinitionElement): Set<String> {
-        return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedEventInvocations) {
+        return CachedValuesManager.getCachedValue(definition, Keys.cachedEventInvocations) {
             val value = doGetInvocations(definition)
             CachedValueProvider.Result(value, definition)
         }
@@ -140,8 +146,3 @@ object ParadoxEventHandler {
         return result
     }
 }
-
-private val PlsKeys.cachedEventInvocations by createKey<CachedValue<Set<String>>>("paradox.cached.event.invocations")
-private val CwtMemberConfig.Keys.eventEventTypes by createKey<Set<String>>("paradox.event.types")
-private val ParadoxDefinitionInfo.Keys.eventEventType by createKey<String>("paradox.event.type")
-private val ParadoxDefinitionInfo.Keys.eventEventScope by createKey<String>("paradox.event.scope") 

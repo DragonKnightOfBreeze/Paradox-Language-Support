@@ -4,27 +4,28 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
-var CwtMemberConfig<*>.inlineableConfig: CwtInlineableConfig<CwtMemberConfig<*>>? by createKeyDelegate(CwtMemberConfig.Keys)
+var CwtMemberConfig<*>.inlineableConfig: CwtInlineableConfig<CwtMemberElement, CwtMemberConfig<*>>? by createKeyDelegate(CwtMemberConfig.Keys)
 
-val CwtMemberConfig.Keys.cardinality by createKey<CwtCardinalityExpression>("cwt.memberConfig.cardinality")
-val CwtMemberConfig.Keys.cardinalityMinDefine by createKey<String>("cwt.memberConfig.cardinalityMinDefine")
-val CwtMemberConfig.Keys.cardinalityMaxDefine by createKey<String>("cwt.memberConfig.cardinalityMaxDefine")
-val CwtMemberConfig.Keys.hasScopeOption by createKey<Boolean>("cwt.memberConfig.hasScopeOption")
-val CwtMemberConfig.Keys.scopeContext by createKey<ParadoxScopeContext>("cwt.memberConfig.scopeContext")
-val CwtMemberConfig.Keys.replaceScopes by createKey<Map<String, String>>("cwt.memberConfig.replaceScopes")
-val CwtMemberConfig.Keys.pushScope by createKey<String>("cwt.memberConfig.pushScope")
-val CwtMemberConfig.Keys.supportedScopes by createKey<Set<String>>("cwt.memberConfig.supportedScopes")
-val CwtMemberConfig.Keys.originalConfig by createKey<CwtMemberConfig<*>>("cwt.memberConfig.originalConfig")
-val CwtMemberConfig.Keys.overriddenProvider by createKey<CwtOverriddenConfigProvider>("cwt.memberConfig.overriddenProvider")
+val CwtMemberConfig.Keys.cardinality by createKey<CwtCardinalityExpression>(CwtMemberConfig.Keys)
+val CwtMemberConfig.Keys.cardinalityMinDefine by createKey<String>(CwtMemberConfig.Keys)
+val CwtMemberConfig.Keys.cardinalityMaxDefine by createKey<String>(CwtMemberConfig.Keys)
+val CwtMemberConfig.Keys.hasScopeOption by createKey<Boolean>(CwtMemberConfig.Keys)
+val CwtMemberConfig.Keys.scopeContext by createKey<ParadoxScopeContext>(CwtMemberConfig.Keys)
+val CwtMemberConfig.Keys.replaceScopes by createKey<Map<String, String>>(CwtMemberConfig.Keys)
+val CwtMemberConfig.Keys.pushScope by createKey<String>(CwtMemberConfig.Keys)
+val CwtMemberConfig.Keys.supportedScopes by createKey<Set<String>>(CwtMemberConfig.Keys)
+val CwtMemberConfig.Keys.originalConfig by createKey<CwtMemberConfig<*>>(CwtMemberConfig.Keys)
+val CwtMemberConfig.Keys.overriddenProvider by createKey<CwtOverriddenConfigProvider>(CwtMemberConfig.Keys)
 
 //may on:
 // * a config expression in declaration config
 // * a config expression in subtype structure config
-val CwtMemberConfig<*>.cardinality
+val CwtMemberConfig<*>.cardinality: CwtCardinalityExpression?
     get() = getOrPutUserData(CwtMemberConfig.Keys.cardinality, CwtCardinalityExpression.EmptyExpression) action@{
         val option = findOption("cardinality")
         if(option == null) {
@@ -35,7 +36,7 @@ val CwtMemberConfig<*>.cardinality
         }
         option?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
     }
-val CwtMemberConfig<*>.cardinalityMinDefine
+val CwtMemberConfig<*>.cardinalityMinDefine: String?
     get() = getOrPutUserData(CwtMemberConfig.Keys.cardinalityMinDefine, "") action@{
         val option = findOption("cardinality_min_define")
         option?.stringValue
@@ -46,7 +47,7 @@ val CwtMemberConfig<*>.cardinalityMaxDefine
         option?.stringValue
     }
 
-val CwtMemberConfig<*>.scopeContext
+val CwtMemberConfig<*>.scopeContext: ParadoxScopeContext?
     get() = getOrPutUserData(CwtMemberConfig.Keys.scopeContext, ParadoxScopeContext.Empty) action@{
         val replaceScopes = replaceScopes
         val pushScope = pushScope
@@ -59,7 +60,7 @@ val CwtMemberConfig<*>.scopeContext
 // * a type config (e.g. "type[xxx] = { ... }")
 // * a subtype config (e.g. "subtype[xxx] = { ... }")
 // * an extended (definition/ game type / on action/ inline_script / parameter) config
-val CwtMemberConfig<*>.replaceScopes
+val CwtMemberConfig<*>.replaceScopes: Map<String, String>?
     get() = getOrPutUserData(CwtMemberConfig.Keys.replaceScopes, emptyMap()) action@{
         val option = findOption { it.key == "replace_scope" || it.key == "replace_scopes" }
         if(option == null) return@action null
@@ -78,23 +79,23 @@ val CwtMemberConfig<*>.replaceScopes
 // * a subtype config (e.g. "subtype[xxx] = { ... }")
 //* a definition / game type / on action config
 // * an extended (definition/ game type / on action/ inline_script / parameter) config
-val CwtMemberConfig<*>.pushScope
+val CwtMemberConfig<*>.pushScope: String?
     get() = getOrPutUserData(CwtMemberConfig.Keys.pushScope, "") action@{
         val option = findOption { it.key == "push_scope" }
         option?.getOptionValue()?.let { v -> ParadoxScopeHandler.getScopeId(v) }
     }
 //may on:
 // * a config expression in declaration config
-val CwtMemberConfig<*>.supportedScopes
+val CwtMemberConfig<*>.supportedScopes: Set<String>
     get() = getOrPutUserData(CwtMemberConfig.Keys.supportedScopes) action@{
         val option = findOption { it.key == "scope" || it.key == "scopes" }
         val r = option?.getOptionValueOrValues()?.mapTo(mutableSetOf()) { ParadoxScopeHandler.getScopeId(it) }
         if(r.isNullOrEmpty()) ParadoxScopeHandler.anyScopeIdSet else r
     }
 
-val CwtMemberConfig<*>.originalConfig
+val CwtMemberConfig<*>.originalConfig: CwtMemberConfig<CwtMemberElement>
     get() = getUserData(CwtMemberConfig.Keys.originalConfig) ?: this
-val CwtMemberConfig<*>.overriddenProvider
+val CwtMemberConfig<*>.overriddenProvider: CwtOverriddenConfigProvider?
     get() = getUserData(CwtMemberConfig.Keys.overriddenProvider)
 
 var CwtMemberConfig<*>.declarationConfigContext: CwtDeclarationConfigContext? by createKeyDelegate(CwtMemberConfig.Keys)

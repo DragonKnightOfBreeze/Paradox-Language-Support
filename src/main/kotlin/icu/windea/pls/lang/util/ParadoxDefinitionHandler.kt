@@ -648,12 +648,14 @@ object ParadoxDefinitionHandler {
         return node.firstChild(tree, STRING)?.firstChild(tree, ParadoxScriptTokenSets.STRING_TOKENS)?.internNode(tree)?.toString()?.unquote()
     }
     
+    @Suppress("UNUSED_PARAMETER")
     fun shouldCreateStub(node: ASTNode): Boolean {
-        return true
+        return true //just true
     }
     
+    @Suppress("UNUSED_PARAMETER")
     fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
-        return true
+        return true //just true
     }
     
     fun getInfoFromStub(element: ParadoxScriptDefinitionElement, project: Project): ParadoxDefinitionInfo? {

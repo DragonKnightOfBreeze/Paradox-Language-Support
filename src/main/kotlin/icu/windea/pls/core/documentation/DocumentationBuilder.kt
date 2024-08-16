@@ -14,6 +14,6 @@ class DocumentationBuilder : UserDataHolderBase() {
         return content.toString()
     }
     
-    object Keys : KeyRegistry("DocumentationBuilder")
+    object Keys : KeyRegistry()
 }
 

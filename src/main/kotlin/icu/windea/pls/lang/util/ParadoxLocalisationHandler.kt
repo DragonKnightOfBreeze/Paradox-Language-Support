@@ -67,10 +67,12 @@ object ParadoxLocalisationHandler {
         return node.firstChild(tree, PROPERTY_KEY)?.firstChild(tree, PROPERTY_KEY_TOKEN)?.internNode(tree)?.toString()
     }
     
+    @Suppress("UNUSED_PARAMETER")
     fun shouldCreateStub(node: ASTNode): Boolean {
         return true //just true
     }
     
+    @Suppress("UNUSED_PARAMETER")
     fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
         return true //just true
     }

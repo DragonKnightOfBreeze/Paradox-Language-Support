@@ -2,6 +2,7 @@ package icu.windea.pls.lang.index
 
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
@@ -35,6 +36,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         val NAME = ID.create<String, List<ParadoxExpressionInfo>>("paradox.expression.index")
         
         private const val VERSION = 53 //1.3.15
+        
         private val markerKey = createKey<Boolean>("paradox.expression.index.marker")
         
         fun <ID : ParadoxExpressionIndexId<T>, T : ParadoxExpressionInfo> processQuery(

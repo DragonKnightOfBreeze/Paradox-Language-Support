@@ -36,6 +36,11 @@ import icu.windea.pls.script.psi.*
 import java.util.*
 
 object ParadoxParameterHandler {
+    object Keys: KeyRegistry() {
+       val parameterInferredContextConfigs by createKey<List<CwtMemberConfig<*>>>(this)
+       val parameterInferredContextConfigsFromConfig by createKey<List<CwtMemberConfig<*>>>(this)
+    }
+    
     /**
      * 得到[element]对应的参数上下文信息。
      *
@@ -234,7 +239,7 @@ object ParadoxParameterHandler {
      */
     fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
         val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
-        return parameterInfo.getOrPutUserData(PlsKeys.parameterInferredContextConfigs) {
+        return parameterInfo.getOrPutUserData(Keys.parameterInferredContextConfigs) {
             ProgressManager.checkCanceled()
             withRecursionGuard("icu.windea.pls.lang.ParadoxParameterHandler.getInferredContextConfigs") {
                 withCheckRecursion(parameterElement) {
@@ -250,7 +255,7 @@ object ParadoxParameterHandler {
      */
     fun getInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
         val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
-        return parameterInfo.getOrPutUserData(PlsKeys.parameterInferredContextConfigsFromConfig) {
+        return parameterInfo.getOrPutUserData(Keys.parameterInferredContextConfigsFromConfig) {
             doGetInferredContextConfigsFromConfig(parameterElement)
                 .also { doOptimizeContextConfigsByLocation(parameterElement, it) }
         }
@@ -359,7 +364,3 @@ private val CwtConfigGroup.parameterInfoCache by createKeyDelegate(CwtConfigCont
         CacheBuilder.newBuilder().buildCache<String, ParadoxParameterInfo>().trackedBy { it.modificationTracker }
     }
 }
-
-private val PlsKeys.parameterInferredConfig by createKey<CwtValueConfig>("paradox.parameterInferredConfig")
-private val PlsKeys.parameterInferredContextConfigs by createKey<List<CwtMemberConfig<*>>>("paradox.parameterInferredContextConfigs")
-private val PlsKeys.parameterInferredContextConfigsFromConfig by createKey<List<CwtMemberConfig<*>>>("paradox.parameterInferredContextConfigsFromConfig")

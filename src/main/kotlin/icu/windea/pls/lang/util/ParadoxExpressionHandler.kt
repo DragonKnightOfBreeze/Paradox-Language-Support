@@ -34,6 +34,10 @@ import icu.windea.pls.script.psi.*
 import kotlin.collections.isNullOrEmpty
 
 object ParadoxExpressionHandler {
+    object Keys: KeyRegistry() {
+        val inBlockKeys by createKey<Set<String>>(this)
+    }
+    
     //region Common Methods
     fun getExpressionText(element: ParadoxExpressionElement, rangeInElement: TextRange? = null): String {
         return when {
@@ -769,10 +773,8 @@ object ParadoxExpressionHandler {
         }
     }
     
-    val inBlockKeysKey = createKey<Set<String>>("cwt.config.inBlockKeys")
-    
     fun getInBlockKeys(config: CwtMemberConfig<*>): Set<String> {
-        return config.getOrPutUserData(inBlockKeysKey) {
+        return config.getOrPutUserData(Keys.inBlockKeys) {
             val keys = caseInsensitiveStringSet()
             config.configs?.forEach {
                 if(it is CwtPropertyConfig && isInBlockKey(it)) {

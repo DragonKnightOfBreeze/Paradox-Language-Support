@@ -76,7 +76,7 @@ class CwtConfigContext(
         return provider!!.skipTooManyExpressionCheck(this)
     }
     
-    object Keys : KeyRegistry("CwtConfigContext")
+    object Keys : KeyRegistry()
 }
 
 //rootFile -> cacheKey -> configs

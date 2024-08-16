@@ -18,8 +18,8 @@ import icu.windea.pls.model.ParadoxGameType.*
  * 当打开项目中的模组文件时，检查模组的游戏目录是否已配置。如果未配置则弹出通知。
  */
 class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListener {
-    companion object {
-        val modPathsKey = createKey<MutableSet<String>>("paradox.modSettings.check.modPaths")
+    object Keys : KeyRegistry() {
+        val checkedModPaths by createKey<MutableSet<String>>(this)
     }
     
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
@@ -28,7 +28,7 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
         val rootInfo = fileInfo.rootInfo
         val rootFile = rootInfo.rootFile
         if(rootInfo !is ParadoxModRootInfo) return
-        val modPaths = project.getOrPutUserData(modPathsKey) { mutableSetOf() }
+        val modPaths = project.getOrPutUserData(Keys.checkedModPaths) { mutableSetOf() }
         val modPath = rootFile.path
         if(!rootFile.isValid) {
             modPaths.remove(modPath)

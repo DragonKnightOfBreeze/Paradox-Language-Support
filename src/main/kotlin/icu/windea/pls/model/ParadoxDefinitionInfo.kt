@@ -151,6 +151,6 @@ class ParadoxDefinitionInfo(
         return Objects.hash(name, typesText, gameType)
     }
     
-    object Keys : KeyRegistry("ParadoxDefinitionInfo")
+    object Keys : KeyRegistry()
 }
 

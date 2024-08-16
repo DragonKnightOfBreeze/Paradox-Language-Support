@@ -11,7 +11,7 @@ import icu.windea.pls.lang.util.*
  * @property supportedScopes (option) scope/scopes: string | string[]
  * @property outputScope (option) push_scope: string?
  */
-interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtInlineableConfig<CwtPropertyConfig> {
+interface CwtAliasConfig : CwtInlineableConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val subName: String
     val supportedScopes: Set<String>

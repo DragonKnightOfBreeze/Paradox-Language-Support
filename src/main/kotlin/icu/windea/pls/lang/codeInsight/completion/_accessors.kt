@@ -10,7 +10,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expression.complex.nodes.*
 
-object ParadoxCompletionKeys : KeyRegistry("PlsCompletion")
+object ParadoxCompletionKeys : KeyRegistry()
 
 var ProcessingContext.parameters: CompletionParameters? by createKeyDelegate(ParadoxCompletionKeys)
 var ProcessingContext.completionIds: MutableSet<String>? by createKeyDelegate(ParadoxCompletionKeys)

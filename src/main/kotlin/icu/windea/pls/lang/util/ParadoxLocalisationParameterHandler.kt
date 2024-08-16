@@ -20,14 +20,16 @@ import icu.windea.pls.script.psi.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationParameterHandler {
-    val cachedParameterNamesKey = createKey<CachedValue<Set<String>>>("paradox.localisation.property.cached.parameterNames")
+    object Keys: KeyRegistry() {
+        val cachedParameterNames by createKey<CachedValue<Set<String>>>(this)
+    }
     
     fun getParameterNames(element: ParadoxLocalisationProperty): Set<String> {
         return doGetParameterNamesFromCache(element)
     }
     
     private fun doGetParameterNamesFromCache(element: ParadoxLocalisationProperty): Set<String> {
-        return CachedValuesManager.getCachedValue(element, cachedParameterNamesKey) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedParameterNames) {
             val value = doGetParameters(element)
             //invalidated on element modification or ScriptFileTracker
             val tracker = ParadoxModificationTrackers.ScriptFileTracker

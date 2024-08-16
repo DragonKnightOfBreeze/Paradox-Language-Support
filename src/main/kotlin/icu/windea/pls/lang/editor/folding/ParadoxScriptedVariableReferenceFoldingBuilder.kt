@@ -11,17 +11,17 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
-    object Data {
+    object Constants {
         const val GROUP_NAME = "scripted_variable_references"
         val FOLDING_GROUP = FoldingGroup.newGroup(GROUP_NAME)
     }
     
     fun getGroupName(): String {
-        return Data.GROUP_NAME
+        return Constants.GROUP_NAME
     }
     
     fun getFoldingGroup(): FoldingGroup? {
-        return Data.FOLDING_GROUP
+        return Constants.FOLDING_GROUP
     }
     
     override fun getPlaceholderText(node: ASTNode): String {

@@ -15,10 +15,12 @@ import icu.windea.pls.script.psi.impl.*
  * 用于处理封装变量。
  */
 object ParadoxScriptedVariableHandler {
-    val localScriptedVariableKey = createKey<CachedValue<List<SmartPsiElementPointer<ParadoxScriptScriptedVariable>>>>("paradox.localScriptedVariables")
+    object Keys: KeyRegistry() {
+        val localScriptedVariable by createKey<CachedValue<List<SmartPsiElementPointer<ParadoxScriptScriptedVariable>>>>(this)
+    }
     
     fun getLocalScriptedVariables(file: ParadoxScriptFile): List<SmartPsiElementPointer<ParadoxScriptScriptedVariable>> {
-        return CachedValuesManager.getCachedValue(file, localScriptedVariableKey) {
+        return CachedValuesManager.getCachedValue(file, Keys.localScriptedVariable) {
             val value = doGetLocalScriptedVariables(file)
             CachedValueProvider.Result.create(value, file)
         }

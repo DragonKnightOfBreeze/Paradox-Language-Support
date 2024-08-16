@@ -29,6 +29,12 @@ import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxModifierHandler {
+    object Keys : KeyRegistry() {
+         val modifierNameKeys by createKey<Set<String>>(this)
+         val modifierDescKeys by createKey<Set<String>>(this)
+         val modifierIconPaths by createKey<Set<String>>(this)
+    }
+    
     //可通过运行游戏后输出的modifiers.log判断到底会生成哪些修正
     //不同的游戏类型存在一些通过不同逻辑生成的修正
     //插件使用的modifiers.cwt中应当去除生成的修正
@@ -108,21 +114,21 @@ object ParadoxModifierHandler {
     
     fun getModifierNameKeys(name: String, element: PsiElement): Set<String> {
         val modifierInfo = getModifierInfo(name, element) ?: return emptySet()
-        return modifierInfo.getOrPutUserData(PlsKeys.modifierNameKeys) {
+        return modifierInfo.getOrPutUserData(Keys.modifierNameKeys) {
             ParadoxModifierNameDescProvider.getModifierNameKeys(element, modifierInfo)
         }
     }
     
     fun getModifierDescKeys(name: String, element: PsiElement): Set<String> {
         val modifierInfo = getModifierInfo(name, element) ?: return emptySet()
-        return modifierInfo.getOrPutUserData(PlsKeys.modifierDescKeys) {
+        return modifierInfo.getOrPutUserData(Keys.modifierDescKeys) {
             ParadoxModifierNameDescProvider.getModifierDescKeys(element, modifierInfo)
         }
     }
     
     fun getModifierIconPaths(name: String, element: PsiElement): Set<String> {
         val modifierInfo = getModifierInfo(name, element) ?: return emptySet()
-        return modifierInfo.getOrPutUserData(PlsKeys.modifierIconPaths) {
+        return modifierInfo.getOrPutUserData(Keys.modifierIconPaths) {
             ParadoxModifierIconProvider.getModifierIconPaths(element, modifierInfo)
         }
     }
@@ -153,7 +159,3 @@ private val CwtConfigGroup.modifierInfoCache by createKeyDelegate(CwtConfigConte
         CacheBuilder.newBuilder().buildCache<String, ParadoxModifierInfo>().trackedBy { it.modificationTracker }
     }
 }
-
-private val PlsKeys.modifierNameKeys by createKey<Set<String>>("paradox.modifierNameKeys")
-private val PlsKeys.modifierDescKeys by createKey<Set<String>>("paradox.modifierDescKeys")
-private val PlsKeys.modifierIconPaths by createKey<Set<String>>("paradox.modifierIconPaths")

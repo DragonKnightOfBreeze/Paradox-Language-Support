@@ -25,14 +25,16 @@ import icu.windea.pls.script.psi.*
  * 推断scripted_trigger、scripted_effect等的作用域上下文（仅限this和root）。
  */
 class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
-    object Data {
-        val cachedScopeContextInferenceInfoKey = createKey<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo")
-        
+    object Constants {
         val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect")
     }
     
+    object Keys : KeyRegistry() {
+        val cachedScopeContextInferenceInfo by createKey<CachedValue<ParadoxScopeContextInferenceInfo>>(this)
+    }
+    
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
-        return definitionInfo.type in Data.DEFINITION_TYPES
+        return definitionInfo.type in Constants.DEFINITION_TYPES
     }
     
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
@@ -41,7 +43,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     }
     
     private fun doGetScopeContextFromCache(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
-        return CachedValuesManager.getCachedValue(definition, Data.cachedScopeContextInferenceInfoKey) {
+        return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
             val tracker0 = ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker
@@ -132,8 +134,8 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
  * 则将此on_action的from, fromfrom...作用域推断为此event的from, fromfrom...作用域。
  */
 class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
-    object Data {
-        val cachedScopeContextInferenceInfoKey = createKey<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.in.onAction")
+    object Keys : KeyRegistry() {
+        val cachedScopeContextInferenceInfo by createKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
     }
     
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
@@ -146,7 +148,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
     }
     
     private fun doGetScopeContextFromCache(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
-        return CachedValuesManager.getCachedValue(definition, Data.cachedScopeContextInferenceInfoKey) {
+        return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
             val tracker0 = ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker
@@ -238,8 +240,8 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
  * 依此类推直到fromfromfromfrom作用域。
  */
 class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
-    object Data {
-        val cachedScopeContextInferenceInfoKey = createKey<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.event.in.event")
+    object Keys : KeyRegistry() {
+        val cachedScopeContextInferenceInfo by createKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
     }
     
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
@@ -252,7 +254,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
     }
     
     private fun doGetScopeContextFromCache(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
-        return CachedValuesManager.getCachedValue(definition, Data.cachedScopeContextInferenceInfoKey) {
+        return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
             val tracker0 = ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker
@@ -265,7 +267,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
         val thisEventName = definitionInfo.name
-        val thisEventScope = ParadoxEventHandler.getScope(definitionInfo) ?: return null
+        val thisEventScope = ParadoxEventHandler.getScope(definitionInfo)
         //optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?: return null
@@ -385,8 +387,8 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
  * 依此类推直到fromfromfromfrom作用域。
  */
 class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
-    object Data {
-        val cachedScopeContextInferenceInfoKey = createKey<CachedValue<ParadoxScopeContextInferenceInfo>>("paradox.cached.scopeContextInferenceInfo.onAction.in.event")
+    object Keys : KeyRegistry() {
+        val cachedScopeContextInferenceInfo by createKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
     }
     
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
@@ -399,7 +401,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
     }
     
     private fun doGetScopeContextFromCache(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
-        return CachedValuesManager.getCachedValue(definition, Data.cachedScopeContextInferenceInfoKey) {
+        return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
             val tracker1 = ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker
