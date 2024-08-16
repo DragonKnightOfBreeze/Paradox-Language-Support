@@ -10,17 +10,21 @@ import icu.windea.pls.core.util.*
 sealed interface CwtSchemaExpression: CwtExpression {
     class Constant(
         override val expressionString: String
-    ): CwtSchemaExpression
+    ): CwtSchemaExpression {
+        override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
+        override fun hashCode() = expressionString.hashCode()
+        override fun toString() = expressionString
+    }
     
-    /**
-     * @property pattern 对应的ANT表达式。
-     * @property parameterRanges 参数在表达式字符串中的文本范围的列表。
-     */
     class Template(
         override val expressionString: String,
         val pattern: String,
         val parameterRanges: List<TextRange>
-    ): CwtSchemaExpression
+    ): CwtSchemaExpression {
+        override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
+        override fun hashCode() = expressionString.hashCode()
+        override fun toString() = expressionString
+    }
     
     /**
      * @property name 类型名。
@@ -28,7 +32,11 @@ sealed interface CwtSchemaExpression: CwtExpression {
     class Type(
         override val expressionString: String,
         val name: String
-    ): CwtSchemaExpression
+    ): CwtSchemaExpression {
+        override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
+        override fun hashCode() = expressionString.hashCode()
+        override fun toString() = expressionString
+    }
     
     /**
      * @property name 枚举名。
