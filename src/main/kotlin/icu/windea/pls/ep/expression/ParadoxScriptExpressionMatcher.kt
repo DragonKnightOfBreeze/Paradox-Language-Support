@@ -13,7 +13,7 @@ import icu.windea.pls.lang.expression.*
  * @see ParadoxExpressionMatcher
  * @see ParadoxExpressionMatcher.Result
  */
-interface CwtDataExpressionMatcher {
+interface ParadoxScriptExpressionMatcher {
     /**
      * 匹配脚本表达式和CWT规则表达式。
      * @param element 上下文PSI元素。
@@ -35,10 +35,10 @@ interface CwtDataExpressionMatcher {
     ): ParadoxExpressionMatcher.Result?
     
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<CwtDataExpressionMatcher>("icu.windea.pls.dataExpressionMatcher")
+        val EP_NAME = ExtensionPointName.create<ParadoxScriptExpressionMatcher>("icu.windea.pls.dataExpressionMatcher")
         
         /**
-         * @see CwtDataExpressionMatcher.matches
+         * @see ParadoxScriptExpressionMatcher.matches
          */
         fun matches(
             element: PsiElement,

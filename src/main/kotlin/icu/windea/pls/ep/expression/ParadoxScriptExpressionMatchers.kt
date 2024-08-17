@@ -15,7 +15,7 @@ import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.script.psi.*
 
-class BaseCwtDataExpressionMatcher : CwtDataExpressionMatcher {
+class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         return when {
             configExpression.type == CwtDataTypes.Block -> {
@@ -92,7 +92,7 @@ class BaseCwtDataExpressionMatcher : CwtDataExpressionMatcher {
     }
 }
 
-class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
+class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         val project = configGroup.project
         return when {
@@ -283,7 +283,7 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
     }
 }
 
-class ConstantCwtDataExpressionMatcher : CwtDataExpressionMatcher, CwtConfigPatternAware {
+class ConstantParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher, CwtConfigPatternAware {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         if(configExpression.type == CwtDataTypes.Constant) {
             val value = configExpression.value ?: return Result.NotMatch
@@ -300,7 +300,7 @@ class ConstantCwtDataExpressionMatcher : CwtDataExpressionMatcher, CwtConfigPatt
     }
 }
 
-class TemplateExpressionCwtDataExpressionMatcher : CwtDataExpressionMatcher, CwtConfigPatternAware {
+class TemplateExpressionParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher, CwtConfigPatternAware {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         if(configExpression.type == CwtDataTypes.TemplateExpression) {
             if(!expression.type.isStringLikeType()) return Result.NotMatch
@@ -312,7 +312,7 @@ class TemplateExpressionCwtDataExpressionMatcher : CwtDataExpressionMatcher, Cwt
     }
 }
 
-class AntExpressionCwtDataExpressionMatcher : CwtDataExpressionMatcher, CwtConfigPatternAware {
+class AntExpressionParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher, CwtConfigPatternAware {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         if(configExpression.type == CwtDataTypes.AntExpression) {
             val pattern = configExpression.value ?: return Result.NotMatch
@@ -324,7 +324,7 @@ class AntExpressionCwtDataExpressionMatcher : CwtDataExpressionMatcher, CwtConfi
     }
 }
 
-class RegexCwtDataExpressionMatcher : CwtDataExpressionMatcher, CwtConfigPatternAware {
+class RegexParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher, CwtConfigPatternAware {
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         if(configExpression.type == CwtDataTypes.Regex) {
             val pattern = configExpression.value ?: return Result.NotMatch

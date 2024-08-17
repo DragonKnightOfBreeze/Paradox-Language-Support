@@ -8,7 +8,7 @@ import icu.windea.pls.ep.expression.*
  * @see CwtDataTypes
  * @see CwtDataTypeGroups
  * @see CwtDataExpressionResolver
- * @see CwtDataExpressionMatcher
+ * @see ParadoxScriptExpressionMatcher
  */
 data class CwtDataType(
     val name: String

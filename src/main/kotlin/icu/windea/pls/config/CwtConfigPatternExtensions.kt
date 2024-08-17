@@ -11,7 +11,7 @@ import icu.windea.pls.lang.expression.*
 interface CwtConfigPatternAware
 
 private val patternResolvers by lazy { CwtDataExpressionResolver.EP_NAME.extensionList.filter { it is CwtConfigPatternAware } }
-private val patternMatchers by lazy { CwtDataExpressionMatcher.EP_NAME.extensionList.filter { it is CwtConfigPatternAware } }
+private val patternMatchers by lazy { ParadoxScriptExpressionMatcher.EP_NAME.extensionList.filter { it is CwtConfigPatternAware } }
 
 /**
  * 用当前键作为通配符来匹配指定的[key]。
