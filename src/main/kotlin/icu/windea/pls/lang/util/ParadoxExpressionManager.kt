@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.lang.annotation.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.colors.*
+import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -558,12 +559,17 @@ object ParadoxExpressionManager {
     
     private fun annotateExpressionNodeByAttributesKey(element: ParadoxExpressionElement, expressionNode: ParadoxComplexExpressionNode, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
         val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRange.unquote(element.text).startOffset)
-        //provide necessary foreground highlight for token nodes (in case it's not set)
+        
+        //merge text attributes from HighlighterColors.TEXT and attributesKey for token nodes (in case foreground is not set)
         if(expressionNode is ParadoxTokenNode) {
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeToAnnotate).textAttributes(HighlighterColors.TEXT).create()
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeToAnnotate).textAttributes(attributesKey).create()
+            val schema = EditorColorsManager.getInstance().schemeForCurrentUITheme
+            val textAttributes1 = schema.getAttributes(HighlighterColors.TEXT)
+            val textAttributes2 = schema.getAttributes(attributesKey)
+            val textAttributes = TextAttributes.merge(textAttributes1, textAttributes2)
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeToAnnotate).enforcedTextAttributes(textAttributes).create()
             return
         }
+        
         annotateExpressionByAttributesKey(element, rangeToAnnotate, attributesKey, holder)
     }
     //endregion
