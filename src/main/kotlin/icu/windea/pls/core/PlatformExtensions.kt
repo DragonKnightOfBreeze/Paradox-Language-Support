@@ -71,6 +71,7 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.psi.impl.*
 import icu.windea.pls.model.*
 import it.unimi.dsi.fastutil.*
 import it.unimi.dsi.fastutil.objects.*

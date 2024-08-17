@@ -16,6 +16,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.extension.translation.*
 import icu.windea.pls.lang.*
@@ -113,7 +114,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
                 snippets.toString()
             }
             if(failedKeys.isNotEmpty()) {
-                val failedKeysText = failedKeys.take(PlsConstants.Settings.itemLimit).joinToString { "'<code>$it</code>'" } + if(failedKeys.size > PlsConstants.Settings.itemLimit) ", ..." else ""
+                val failedKeysText = failedKeys.truncate(PlsConstants.Settings.itemLimit).joinToString()
                 TranslationNotifications.showTranslationErrorNotification(
                     project,
                     PlsTranslationBundle.message("notification.translate.failed.title"),
@@ -126,7 +127,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
             CopyPasteManager.getInstance().setContents(StringSelection(finalText))
             
             val keys = elements.mapTo(mutableSetOf()) { it.name }
-            val keysText = keys.take(PlsConstants.Settings.itemLimit).joinToString { "'$it'" } + if(keys.size > PlsConstants.Settings.itemLimit) ", ..." else ""
+            val keysText = keys.truncate(PlsConstants.Settings.itemLimit).joinToString()
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
                 PlsBundle.message("notification.copyLocalisationForLocale.success.title"),
                 PlsBundle.message("notification.copyLocalisationForLocale.success.content", keysText, targetLocale),

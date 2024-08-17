@@ -9,6 +9,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
 
@@ -59,7 +60,7 @@ class CopyLocalisationIntention : IntentionAction, PriorityAction {
 			CopyPasteManager.getInstance().setContents(StringSelection(text))
 		}
 		
-		val keysText = keys.take(PlsConstants.Settings.itemLimit).joinToString { "'<code>$it</code>'" } + if(keys.size > PlsConstants.Settings.itemLimit) ", ..." else ""
+		val keysText = keys.truncate(PlsConstants.Settings.itemLimit).joinToString()
 		NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
 			PlsBundle.message("notification.copyLocalisation.success.title"),
 			PlsBundle.message("notification.copyLocalisation.success.content", keysText),

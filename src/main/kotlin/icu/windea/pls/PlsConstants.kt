@@ -45,7 +45,6 @@ object PlsConstants {
     }
     
     object Folders {
-        const val ellipsis = "..."
         const val block = "{...}"
         val parameterCondition = { expression: String -> "[[$expression]...]" }
         const val inlineMath = "@[...]"

@@ -6,6 +6,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.impl.*
 
 val ParadoxScriptScriptedVariableName.idElement: PsiElement? get() = firstChild?.nextSibling?.takeIf { it.nextSibling == null && it.elementType == SCRIPTED_VARIABLE_NAME_TOKEN }
 
@@ -28,3 +29,25 @@ val ParadoxParameter.defaultValueToken: PsiElement? get() = findChild(ParadoxScr
 val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptValue? get() = siblings(forward = true, withSelf = false).findIsInstance()
 
 val ParadoxScriptValue.propertyKey: ParadoxScriptPropertyKey? get() = siblings(forward = false, withSelf = false).findIsInstance()
+
+val ParadoxScriptScriptedVariable.greenStub: ParadoxScriptScriptedVariableStub?
+    get() = this.castOrNull<ParadoxScriptScriptedVariableImpl>()?.greenStub ?: this.stub
+
+@Suppress("UNCHECKED_CAST")
+val <T : ParadoxScriptDefinitionElement> T.stub: ParadoxScriptDefinitionElementStub<T>?
+    get() = when {
+        this is ParadoxScriptFile -> this.stub
+        this is ParadoxScriptProperty -> this.stub
+        else -> throw IllegalStateException()
+    } as? ParadoxScriptDefinitionElementStub<T>?
+
+@Suppress("UNCHECKED_CAST")
+val <T : ParadoxScriptDefinitionElement> T.greenStub: ParadoxScriptDefinitionElementStub<T>?
+    get() = when {
+        this is ParadoxScriptFile -> this.greenStub
+        this is ParadoxScriptPropertyImpl -> this.greenStub
+        else -> throw IllegalStateException()
+    } as? ParadoxScriptDefinitionElementStub<T>?
+
+val ParadoxScriptProperty.greenStub: ParadoxScriptPropertyStub?
+    get() = this.castOrNull<ParadoxScriptPropertyImpl>()?.greenStub ?: this.stub

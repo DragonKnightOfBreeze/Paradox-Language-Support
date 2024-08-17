@@ -18,7 +18,7 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             BLOCK -> PlsConstants.Folders.block
             PARAMETER_CONDITION -> {
                 val expression = node.psi.castOrNull<ParadoxScriptParameterCondition>()?.conditionExpression
-                if(expression == null) return PlsConstants.Folders.ellipsis
+                if(expression == null) return "..."
                 PlsConstants.Folders.parameterCondition(expression)
             }
             INLINE_MATH -> PlsConstants.Folders.inlineMath

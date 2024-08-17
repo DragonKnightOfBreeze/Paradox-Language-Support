@@ -17,7 +17,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             PROPERTY_REFERENCE -> ""
             ICON -> ""
             COMMAND -> PlsConstants.Folders.command
-            CONCEPT_TEXT -> PlsConstants.Folders.ellipsis
+            CONCEPT_TEXT -> "..."
             else -> null
         }
     }

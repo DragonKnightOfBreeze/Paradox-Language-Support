@@ -15,7 +15,9 @@ import kotlin.contracts.*
 import kotlin.io.path.*
 import kotlin.math.*
 
-val EMPTY_OBJECT = Any()
+private data object EmptyObject
+
+val EMPTY_OBJECT: Any = EmptyObject
 
 inline fun pass() {}
 
@@ -413,6 +415,10 @@ fun CharSequence.indicesOf(char: Char, startIndex: Int = 0, ignoreCase: Boolean 
         lastIndex = indexOf(char, lastIndex + 1, ignoreCase)
     }
     return indices ?: emptyList()
+}
+
+fun Collection<String>.truncate(limit: Int, ellipsis: String = "...") : List<String> {
+    return take(limit).let { if(size > limit) it + ellipsis else it }
 }
 
 fun <K, V> Map<K, V>.find(predicate: (Map.Entry<K, V>) -> Boolean): V? {

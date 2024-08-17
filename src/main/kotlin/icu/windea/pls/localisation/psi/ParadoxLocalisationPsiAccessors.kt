@@ -4,6 +4,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.localisation.psi.impl.*
 
 val ParadoxLocalisationLocale.localeId: PsiElement get() = findChild(LOCALE_TOKEN)!!
 
@@ -39,3 +40,6 @@ val ParadoxLocalisationCommand.idElement: PsiElement? get() = findChildren(COMMA
 val ParadoxLocalisationConceptName.idElement: PsiElement? get() = findChildren(CONCEPT_NAME_TOKEN).singleOrNull()
 
 val ParadoxLocalisationScriptedVariableReference.idElement: PsiElement? get() = findChildren(SCRIPTED_VARIABLE_REFERENCE_TOKEN).singleOrNull()
+
+val ParadoxLocalisationProperty.greenStub: ParadoxLocalisationPropertyStub?
+    get() = this.castOrNull<ParadoxLocalisationPropertyImpl>()?.greenStub ?: this.stub
