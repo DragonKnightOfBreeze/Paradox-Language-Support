@@ -25,12 +25,14 @@
 
 * [ ] 新功能：适用于规则文件的代码补全（初步支持）
 * [X] #82 修复解析脚本文件时，会在特定情况下进入无限循环的问题
+* [ ] 修复与作用域解析相关的一些问题
 * [X] 其他优化与BUG修复
 
 ***
 
 * [ ] New feature: Code completion for config files (initial support)
 * [X] #82 Fix an issue that it will enter an infinite loop in specific situation when parsing script files.
+* [ ] Fix some problems about parsing scopes
 * [X] Other optimizations and bug fixes
 
 ## 1.3.17

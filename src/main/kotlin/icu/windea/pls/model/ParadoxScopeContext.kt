@@ -100,7 +100,7 @@ fun ParadoxScopeContext.Resolver.resolve(map: Map<String, String>): ParadoxScope
 fun ParadoxScopeContext.resolveNext(pushScope: String?, isFrom: Boolean = false): ParadoxScopeContext {
     if(pushScope == null) return this //transfer current scope context
     val scope = ParadoxScope.of(pushScope)
-    val root = this.root
+    val root = if(isFrom) null else this.root
     val from = if(isFrom) null else this.from
     val fromFrom = if(isFrom) null else this.fromFrom
     val fromFromFrom = if(isFrom) null else this.fromFromFrom
