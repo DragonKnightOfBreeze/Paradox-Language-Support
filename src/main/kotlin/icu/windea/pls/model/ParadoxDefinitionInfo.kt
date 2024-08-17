@@ -6,10 +6,10 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.api.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.path.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 import java.util.concurrent.*
@@ -63,44 +63,44 @@ class ParadoxDefinitionInfo(
     
     val declaration: CwtPropertyConfig? by lazy { getDeclaration() }
     
-    val localisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
+    val localisations: List<RelatedLocalisationInfo> by lazy {
         val mergedConfig = typeConfig.localisation?.getConfigs(subtypes) ?: return@lazy emptyList()
-        val result = mutableListOf<ParadoxDefinitionRelatedLocalisationInfo>()
+        val result = mutableListOf<RelatedLocalisationInfo>()
         //从已有的cwt规则
         for(config in mergedConfig) {
             val locationExpression = CwtLocalisationLocationExpression.resolve(config.value)
-            val info = ParadoxDefinitionRelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
+            val info = RelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
             result.add(info)
         }
         result
     }
     
-    val images: List<ParadoxDefinitionRelatedImageInfo> by lazy {
+    val images: List<RelatedImageInfo> by lazy {
         val mergedConfig = typeConfig.images?.getConfigs(subtypes) ?: return@lazy emptyList()
-        val result = mutableListOf<ParadoxDefinitionRelatedImageInfo>()
+        val result = mutableListOf<RelatedImageInfo>()
         //从已有的cwt规则
         for(config in mergedConfig) {
             val locationExpression = CwtImageLocationExpression.resolve(config.value)
-            val info = ParadoxDefinitionRelatedImageInfo(config.key, locationExpression, config.required, config.primary)
+            val info = RelatedImageInfo(config.key, locationExpression, config.required, config.primary)
             result.add(info)
         }
         result
     }
     
-    val modifiers: List<ParadoxDefinitionModifierInfo> by lazy {
+    val modifiers: List<ModifierInfo> by lazy {
         buildList {
-            configGroup.type2ModifiersMap.get(type)?.forEach { (_, v) -> add(ParadoxDefinitionModifierInfo(v.template.extract(name), v)) }
+            configGroup.type2ModifiersMap.get(type)?.forEach { (_, v) -> add(ModifierInfo(v.template.extract(name), v)) }
             for(subtype in subtypes) {
-                configGroup.type2ModifiersMap.get("$type.$subtype")?.forEach { (_, v) -> add(ParadoxDefinitionModifierInfo(v.template.extract(name), v)) }
+                configGroup.type2ModifiersMap.get("$type.$subtype")?.forEach { (_, v) -> add(ModifierInfo(v.template.extract(name), v)) }
             }
         }
     }
     
-    val primaryLocalisations: List<ParadoxDefinitionRelatedLocalisationInfo> by lazy {
+    val primaryLocalisations: List<RelatedLocalisationInfo> by lazy {
         localisations.filter { it.primary || it.primaryByInference }
     }
     
-    val primaryImages: List<ParadoxDefinitionRelatedImageInfo> by lazy {
+    val primaryImages: List<RelatedImageInfo> by lazy {
         images.filter { it.primary || it.primaryByInference }
     }
     
@@ -112,7 +112,7 @@ class ParadoxDefinitionInfo(
     
     val project get() = configGroup.project
     
-    fun getSubtypeConfigs(matchOptions: Int = CwtConfigMatcher.Options.Default): List<CwtSubtypeConfig> {
+    fun getSubtypeConfigs(matchOptions: Int = ParadoxExpressionMatcher.Options.Default): List<CwtSubtypeConfig> {
         return subtypeConfigsCache.getOrPut(matchOptions) { doGetSubtypeConfigs(matchOptions) }
     }
     
@@ -129,7 +129,7 @@ class ParadoxDefinitionInfo(
         return result
     }
     
-    fun getDeclaration(matchOptions: Int = CwtConfigMatcher.Options.Default): CwtPropertyConfig? {
+    fun getDeclaration(matchOptions: Int = ParadoxExpressionMatcher.Options.Default): CwtPropertyConfig? {
         return declarationConfigsCache.getOrPut(matchOptions) { doGetDeclaration(matchOptions) }
     }
     
@@ -152,5 +152,30 @@ class ParadoxDefinitionInfo(
     }
     
     object Keys : KeyRegistry()
+    
+    data class RelatedImageInfo(
+        val key: String,
+        val locationExpression: CwtImageLocationExpression,
+        val required: Boolean = false,
+        val primary: Boolean = false
+    ) {
+        @InferApi
+        val primaryByInference: Boolean = key.equals("icon", true)
+    }
+    
+    data class RelatedLocalisationInfo(
+        val key: String,
+        val locationExpression: CwtLocalisationLocationExpression,
+        val required: Boolean = false,
+        val primary: Boolean = false
+    ) {
+        @InferApi
+        val primaryByInference: Boolean = key.equals("name", true) || key.equals("title", true)
+    }
+    
+    data class ModifierInfo(
+        val name: String,
+        val config : CwtModifierConfig
+    )
 }
 

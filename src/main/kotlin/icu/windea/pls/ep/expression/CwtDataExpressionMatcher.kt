@@ -6,12 +6,12 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.expression.*
+import icu.windea.pls.lang.expression.*
 
 /**
  * 用于匹配脚本表达式和CWT规则表达式。
- * @see CwtConfigMatcher
- * @see CwtConfigMatcher.Result
+ * @see ParadoxExpressionMatcher
+ * @see ParadoxExpressionMatcher.Result
  */
 interface CwtDataExpressionMatcher {
     /**
@@ -21,9 +21,9 @@ interface CwtDataExpressionMatcher {
      * @param configExpression CWT规则表达式。
      * @param config 上下文CWT规则。
      * @param configGroup 规则分组。
-     * @return 匹配结果，类型必须为[CwtConfigMatcher.Result]或者[Boolean]，否则视为不匹配。
-     * @see CwtConfigMatcher
-     * @see CwtConfigMatcher.Result
+     * @return 匹配结果，类型必须为[ParadoxExpressionMatcher.Result]或者[Boolean]，否则视为不匹配。
+     * @see ParadoxExpressionMatcher
+     * @see ParadoxExpressionMatcher.Result
      */
     fun matches(
         element: PsiElement,
@@ -31,8 +31,8 @@ interface CwtDataExpressionMatcher {
         configExpression: CwtDataExpression,
         config: CwtConfig<*>?,
         configGroup: CwtConfigGroup,
-        options: Int = CwtConfigMatcher.Options.Default
-    ): CwtConfigMatcher.Result?
+        options: Int = ParadoxExpressionMatcher.Options.Default
+    ): ParadoxExpressionMatcher.Result?
     
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtDataExpressionMatcher>("icu.windea.pls.dataExpressionMatcher")
@@ -47,12 +47,12 @@ interface CwtDataExpressionMatcher {
             config: CwtConfig<*>?,
             configGroup: CwtConfigGroup,
             options: Int
-        ): CwtConfigMatcher.Result {
+        ): ParadoxExpressionMatcher.Result {
             EP_NAME.extensionList.forEach f@{ ep ->
                 val r = ep.matches(element, expression, configExpression, config, configGroup, options)
                 if(r != null) return r
             }
-            return CwtConfigMatcher.Result.FallbackMatch
+            return ParadoxExpressionMatcher.Result.FallbackMatch
         }
     }
 }

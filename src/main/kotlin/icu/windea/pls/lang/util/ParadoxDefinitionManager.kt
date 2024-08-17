@@ -17,8 +17,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expression.*
-import icu.windea.pls.model.path.*
+import icu.windea.pls.lang.expression.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
@@ -311,7 +310,7 @@ object ParadoxDefinitionManager {
         subtypeConfig: CwtSubtypeConfig,
         subtypeConfigs: MutableList<CwtSubtypeConfig>,
         configGroup: CwtConfigGroup,
-        matchOptions: Int = CwtConfigMatcher.Options.Default
+        matchOptions: Int = ParadoxExpressionMatcher.Options.Default
     ): Boolean {
         val fastResult = matchesSubtypeFast(rootKey, subtypeConfig, subtypeConfigs)
         if(fastResult != null) return fastResult
@@ -399,7 +398,7 @@ object ParadoxDefinitionManager {
                 //匹配值
                 propertyConfig.stringValue != null -> {
                     val expression = ParadoxDataExpression.resolve(propValue, matchOptions)
-                    return CwtConfigMatcher.matches(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchOptions).get(matchOptions)
+                    return ParadoxExpressionMatcher.matches(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchOptions).get(matchOptions)
                 }
                 //匹配single_alias
                 ParadoxExpressionManager.isSingleAliasEntryConfig(propertyConfig) -> {
@@ -438,7 +437,7 @@ object ParadoxDefinitionManager {
             val keyElement = propertyElement.propertyKey
             val expression = ParadoxDataExpression.resolve(keyElement, matchOptions)
             val propConfigs = propertyConfigs.filter {
-                CwtConfigMatcher.matches(keyElement, expression, it.keyExpression, it, configGroup, matchOptions).get(matchOptions)
+                ParadoxExpressionMatcher.matches(keyElement, expression, it.keyExpression, it, configGroup, matchOptions).get(matchOptions)
             }
             //如果没有匹配的规则则忽略
             if(propConfigs.isNotEmpty()) {
@@ -473,7 +472,7 @@ object ParadoxDefinitionManager {
             val expression = ParadoxDataExpression.resolve(valueElement, matchOptions)
             
             val matched = valueConfigs.any { valueConfig ->
-                val matched = CwtConfigMatcher.matches(valueElement, expression, valueConfig.valueExpression, valueConfig, configGroup, matchOptions).get(matchOptions)
+                val matched = ParadoxExpressionMatcher.matches(valueElement, expression, valueConfig.valueExpression, valueConfig, configGroup, matchOptions).get(matchOptions)
                 if(matched) minMap.compute(valueConfig.value) { _, v -> if(v == null) 1 else v - 1 }
                 matched
             }

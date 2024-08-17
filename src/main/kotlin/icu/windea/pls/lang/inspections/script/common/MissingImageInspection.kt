@@ -147,7 +147,7 @@ class MissingImageInspection : LocalInspectionTool() {
     }
     
     data class Context(
-        val info: ParadoxDefinitionRelatedImageInfo,
+        val info: ParadoxDefinitionInfo.RelatedImageInfo,
         val key: String?
     )
 }

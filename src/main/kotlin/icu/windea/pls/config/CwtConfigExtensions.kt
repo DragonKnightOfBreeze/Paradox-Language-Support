@@ -15,7 +15,7 @@ import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.path.*
+import icu.windea.pls.model.*
 
 val Project.configGroupLibrary: CwtConfigGroupLibrary
     get() = this.getOrPutUserData(PlsKeys.configGroupLibrary) { CwtConfigGroupLibrary(this) }
@@ -64,7 +64,7 @@ fun CwtTemplateExpression.extract(referenceNames: Map<CwtDataExpression, String>
     return CwtTemplateExpressionManager.extract(this, referenceNames)
 }
 
-fun CwtTemplateExpression.matches(text: String, contextElement: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int = CwtConfigMatcher.Options.Default): Boolean {
+fun CwtTemplateExpression.matches(text: String, contextElement: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): Boolean {
     return CwtTemplateExpressionManager.matches(text, contextElement, this, configGroup, matchOptions)
 }
 

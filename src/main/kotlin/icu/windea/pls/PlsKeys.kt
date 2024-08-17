@@ -13,7 +13,6 @@ import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.expressionInfo.*
-import icu.windea.pls.model.path.*
 import icu.windea.pls.script.injection.*
 import java.awt.*
 

@@ -26,12 +26,11 @@ import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.CwtConfigMatcher.Options
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expression.*
-import icu.windea.pls.model.expression.complex.*
-import icu.windea.pls.model.expression.complex.nodes.*
-import icu.windea.pls.model.path.*
+import icu.windea.pls.lang.expression.*
+import icu.windea.pls.lang.expression.complex.*
+import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.component1
 import kotlin.collections.component2

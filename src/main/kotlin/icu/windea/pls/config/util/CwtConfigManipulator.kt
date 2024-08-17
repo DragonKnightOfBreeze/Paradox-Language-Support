@@ -11,7 +11,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expression.*
+import icu.windea.pls.lang.expression.*
 
 object CwtConfigManipulator {
     //region Deep Copy Methods
@@ -92,7 +92,7 @@ object CwtConfigManipulator {
         )
     }
     
-    fun inlineSingleAliasOrAlias(element: PsiElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, matchOptions: Int = CwtConfigMatcher.Options.Default): List<CwtPropertyConfig> {
+    fun inlineSingleAliasOrAlias(element: PsiElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): List<CwtPropertyConfig> {
         //内联类型为single_alias_right或alias_match_left的规则
         val result = mutableListOf<CwtMemberConfig<*>>()
         run {

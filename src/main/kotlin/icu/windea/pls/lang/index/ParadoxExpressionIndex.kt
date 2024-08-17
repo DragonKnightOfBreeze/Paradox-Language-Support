@@ -97,7 +97,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
                     if(definitionInfoStack.isEmpty()) return@run
                     if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
                         ProgressManager.checkCanceled()
-                        val matchOptions = CwtConfigMatcher.Options.SkipIndex or CwtConfigMatcher.Options.SkipScope
+                        val matchOptions = ParadoxExpressionMatcher.Options.SkipIndex or ParadoxExpressionMatcher.Options.SkipScope
                         val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = matchOptions)
                         if(configs.isEmpty()) return@run
                         val definitionInfo = definitionInfoStack.lastOrNull() ?: return@run

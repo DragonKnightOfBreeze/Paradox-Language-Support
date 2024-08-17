@@ -6,7 +6,7 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.references.*
-import icu.windea.pls.model.expression.complex.nodes.*
+import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
 

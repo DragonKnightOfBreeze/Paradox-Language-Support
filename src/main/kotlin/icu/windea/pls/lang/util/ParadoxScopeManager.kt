@@ -12,10 +12,10 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.scope.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.util.CwtConfigMatcher.Options
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expression.complex.*
-import icu.windea.pls.model.expression.complex.nodes.*
+import icu.windea.pls.lang.expression.complex.*
+import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.set
 

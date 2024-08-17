@@ -2,7 +2,6 @@ package icu.windea.pls.model
 
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.model.path.*
 import java.util.*
 import javax.swing.*
 

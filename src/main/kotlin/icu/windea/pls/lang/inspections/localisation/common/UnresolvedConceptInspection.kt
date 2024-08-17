@@ -9,7 +9,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.expression.*
+import icu.windea.pls.lang.expression.*
 import javax.swing.*
 
 /**

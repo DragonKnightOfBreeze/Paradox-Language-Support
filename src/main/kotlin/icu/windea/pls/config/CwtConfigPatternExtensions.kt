@@ -6,7 +6,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.expression.*
+import icu.windea.pls.lang.expression.*
 
 interface CwtConfigPatternAware
 
@@ -23,7 +23,7 @@ fun String.matchFromPattern(
     key: String,
     contextElement: PsiElement,
     configGroup: CwtConfigGroup,
-    matchOptions: Int = CwtConfigMatcher.Options.Default,
+    matchOptions: Int = ParadoxExpressionMatcher.Options.Default,
     fromIndex: Int = 0,
 ): Boolean {
     if(this == key) return true
@@ -52,7 +52,7 @@ fun <V> Map<String, V>.findFromPattern(
     key: String,
     contextElement: PsiElement,
     configGroup: CwtConfigGroup,
-    matchOptions: Int = CwtConfigMatcher.Options.Default,
+    matchOptions: Int = ParadoxExpressionMatcher.Options.Default,
     fromIndex: Int = 0,
 ): V? {
     val fastResult = get(key)
@@ -70,7 +70,7 @@ fun <V> Map<String, V>.filterByPattern(
     key: String,
     contextElement: PsiElement,
     configGroup: CwtConfigGroup,
-    matchOptions: Int = CwtConfigMatcher.Options.Default,
+    matchOptions: Int = ParadoxExpressionMatcher.Options.Default,
     fromIndex: Int = 0,
 ): List<V> {
     val fastResult = get(key)

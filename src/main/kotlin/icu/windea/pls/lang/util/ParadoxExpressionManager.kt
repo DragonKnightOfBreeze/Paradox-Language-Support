@@ -22,14 +22,13 @@ import icu.windea.pls.ep.config.*
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.util.CwtConfigMatcher.Options
-import icu.windea.pls.lang.util.CwtConfigMatcher.ResultValue
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher.ResultValue
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expression.*
-import icu.windea.pls.model.expression.complex.*
-import icu.windea.pls.model.expression.complex.nodes.*
-import icu.windea.pls.model.path.*
+import icu.windea.pls.lang.expression.*
+import icu.windea.pls.lang.expression.complex.*
+import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.isNullOrEmpty
@@ -184,7 +183,7 @@ object ParadoxExpressionManager {
                             }
                             
                             if(subPath == "-") return@f3
-                            val matchesPropertyConfig = !matchesKey || CwtConfigMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)
+                            val matchesPropertyConfig = !matchesKey || ParadoxExpressionMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)
                             if(!matchesPropertyConfig) return@f3
                             val inlinedConfigs = CwtConfigManipulator.inlineSingleAliasOrAlias(element, subPath, isQuoted, config, matchOptions)
                             if(inlinedConfigs.isEmpty()) {
@@ -290,7 +289,7 @@ object ParadoxExpressionManager {
                         if(keyExpression == null) return@run true
                         if(isDefinition) return@run true
                         doMatchParameterizedKeyConfigs(parameterizedKeyConfigs, config.keyExpression)?.let { return@run it }
-                        CwtConfigMatcher.matches(element, keyExpression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)
+                        ParadoxExpressionMatcher.matches(element, keyExpression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)
                     }
                     
                     element is ParadoxScriptValue -> config is CwtValueConfig
@@ -308,8 +307,8 @@ object ParadoxExpressionManager {
         ProgressManager.checkCanceled()
         val matchResultValues = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
         contextConfigsToMatch.forEach f@{ config ->
-            val matchResult = CwtConfigMatcher.matches(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
-            if(matchResult == CwtConfigMatcher.Result.NotMatch) return@f
+            val matchResult = ParadoxExpressionMatcher.matches(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
+            if(matchResult == ParadoxExpressionMatcher.Result.NotMatch) return@f
             matchResultValues.add(ResultValue(config, matchResult))
         }
         //如果无结果且需要使用默认值，则返回所有可能匹配的规则
@@ -342,7 +341,7 @@ object ParadoxExpressionManager {
         //* 然后，尝试非回退的匹配，如果有结果，则直接返回
         //* 最后加入回退的匹配
         
-        val exactMatched = matchResultValues.filter { it.result is CwtConfigMatcher.Result.ExactMatch }
+        val exactMatched = matchResultValues.filter { it.result is ParadoxExpressionMatcher.Result.ExactMatch }
         if(exactMatched.isNotEmpty()) return exactMatched.map { it.value }
         
         val matched = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
@@ -359,19 +358,19 @@ object ParadoxExpressionManager {
             }
         }
         
-        addLazyMatchedConfigs { it.result is CwtConfigMatcher.Result.LazyBlockAwareMatch }
-        addLazyMatchedConfigs { it.result is CwtConfigMatcher.Result.LazyScopeAwareMatch }
+        addLazyMatchedConfigs { it.result is ParadoxExpressionMatcher.Result.LazyBlockAwareMatch }
+        addLazyMatchedConfigs { it.result is ParadoxExpressionMatcher.Result.LazyScopeAwareMatch }
         
         matchResultValues.filterTo(matched) p@{
-            if(it.result is CwtConfigMatcher.Result.LazyBlockAwareMatch) return@p false //已经匹配过
-            if(it.result is CwtConfigMatcher.Result.LazyScopeAwareMatch) return@p false //已经匹配过
-            if(it.result is CwtConfigMatcher.Result.LazySimpleMatch) return@p true //直接认为是匹配的
-            if(it.result is CwtConfigMatcher.Result.FallbackMatch) return@p false //之后再匹配
+            if(it.result is ParadoxExpressionMatcher.Result.LazyBlockAwareMatch) return@p false //已经匹配过
+            if(it.result is ParadoxExpressionMatcher.Result.LazyScopeAwareMatch) return@p false //已经匹配过
+            if(it.result is ParadoxExpressionMatcher.Result.LazySimpleMatch) return@p true //直接认为是匹配的
+            if(it.result is ParadoxExpressionMatcher.Result.FallbackMatch) return@p false //之后再匹配
             it.result.get(matchOptions)
         }
         if(matched.isNotEmpty()) return matched.map { it.value }
         
-        val fallbackMatched = matchResultValues.filter { it.result is CwtConfigMatcher.Result.FallbackMatch }
+        val fallbackMatched = matchResultValues.filter { it.result is ParadoxExpressionMatcher.Result.FallbackMatch }
         if(fallbackMatched.isNotEmpty()) return fallbackMatched.map { it.value }
         
         return emptyList()
@@ -393,7 +392,7 @@ object ParadoxExpressionManager {
                 if(overriddenConfigs.isNotNullOrEmpty()) {
                     //这里需要再次进行匹配
                     overriddenConfigs.forEach { overriddenConfig ->
-                        if(CwtConfigMatcher.matches(element, expression, overriddenConfig.expression, overriddenConfig, configGroup, matchOptions).get(matchOptions)) {
+                        if(ParadoxExpressionMatcher.matches(element, expression, overriddenConfig.expression, overriddenConfig, configGroup, matchOptions).get(matchOptions)) {
                             optimizedResult.add(overriddenConfig)
                         }
                     }
@@ -485,7 +484,7 @@ object ParadoxExpressionManager {
             val matched = childConfigs.find { childConfig ->
                 if(childConfig is CwtPropertyConfig && data !is ParadoxScriptProperty) return@find false
                 if(childConfig is CwtValueConfig && data !is ParadoxScriptValue) return@find false
-                CwtConfigMatcher.matches(data, expression, childConfig.expression, childConfig, configGroup).get()
+                ParadoxExpressionMatcher.matches(data, expression, childConfig.expression, childConfig, configGroup).get()
             }
             if(matched == null) return@p true
             val occurrence = occurrenceMap[matched.expression]
@@ -723,7 +722,7 @@ object ParadoxExpressionManager {
         if(constKey != null) return constKey
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
         val expression = ParadoxDataExpression.resolve(key, quoted, true)
-        return keys.find { CwtConfigMatcher.matches(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
+        return keys.find { ParadoxExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
     }
     
     fun getAliasSubNames(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = Options.Default): List<String> {
@@ -731,7 +730,7 @@ object ParadoxExpressionManager {
         if(constKey != null) return listOf(constKey)
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptyList()
         val expression = ParadoxDataExpression.resolve(key, quoted, true)
-        return keys.filter { CwtConfigMatcher.matches(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
+        return keys.filter { ParadoxExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
     }
     
     fun getEntryName(config: CwtConfig<*>): String? {

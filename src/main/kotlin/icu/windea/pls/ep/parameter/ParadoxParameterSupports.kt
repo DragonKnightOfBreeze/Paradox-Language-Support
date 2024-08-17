@@ -19,8 +19,8 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
-import icu.windea.pls.model.expression.complex.*
-import icu.windea.pls.model.expression.complex.nodes.*
+import icu.windea.pls.lang.expression.complex.*
+import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.script.psi.*
 
 open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {

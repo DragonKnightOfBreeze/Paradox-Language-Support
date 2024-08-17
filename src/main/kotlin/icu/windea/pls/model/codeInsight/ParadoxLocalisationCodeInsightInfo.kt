@@ -6,7 +6,7 @@ import icu.windea.pls.model.*
 data class ParadoxLocalisationCodeInsightInfo(
     val type: Type,
     val name: String?,
-    val relatedLocalisationInfo: ParadoxDefinitionRelatedLocalisationInfo?,
+    val relatedLocalisationInfo: ParadoxDefinitionInfo.RelatedLocalisationInfo?,
     val locale: CwtLocalisationLocaleConfig,
     val check: Boolean,
     val missing: Boolean,

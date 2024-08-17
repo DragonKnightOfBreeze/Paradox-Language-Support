@@ -26,7 +26,6 @@ import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.util.data.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.path.*
 import icu.windea.pls.script.psi.*
 import java.nio.file.*
 import kotlin.io.path.*

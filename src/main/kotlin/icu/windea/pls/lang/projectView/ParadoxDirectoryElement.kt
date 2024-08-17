@@ -6,7 +6,6 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.path.*
 import java.util.*
 
 class ParadoxDirectoryElement(

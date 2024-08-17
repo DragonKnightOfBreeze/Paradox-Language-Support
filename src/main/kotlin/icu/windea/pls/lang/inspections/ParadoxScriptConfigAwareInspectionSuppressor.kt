@@ -6,7 +6,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.CwtConfigMatcher.Options
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.script.psi.*
 
 //TODO 暂未使用，需要验证

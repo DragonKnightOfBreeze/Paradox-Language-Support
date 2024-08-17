@@ -10,7 +10,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.configGroup.*
-import icu.windea.pls.model.path.*
+import icu.windea.pls.model.*
 import java.util.*
 
 object CwtConfigManager {

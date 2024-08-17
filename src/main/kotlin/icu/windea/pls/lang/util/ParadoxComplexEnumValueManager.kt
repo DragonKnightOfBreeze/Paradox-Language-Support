@@ -12,8 +12,8 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.model.*
 import icu.windea.pls.model.expressionInfo.*
-import icu.windea.pls.model.path.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 

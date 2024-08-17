@@ -5,7 +5,7 @@ import com.intellij.util.ui.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 
-data class ParadoxTextColorInfo(
+class ParadoxTextColorInfo(
     val name: String,
     val gameType: ParadoxGameType,
     val pointer: SmartPsiElementPointer<ParadoxScriptProperty>,

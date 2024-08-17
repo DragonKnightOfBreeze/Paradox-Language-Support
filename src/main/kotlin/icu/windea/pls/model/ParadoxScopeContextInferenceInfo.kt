@@ -1,6 +1,6 @@
 package icu.windea.pls.model
 
-data class ParadoxScopeContextInferenceInfo(
+class ParadoxScopeContextInferenceInfo(
     val scopeContextMap: Map<String, String>,
     val hasConflict: Boolean
 )

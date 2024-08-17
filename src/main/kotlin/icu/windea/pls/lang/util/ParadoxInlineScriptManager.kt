@@ -20,8 +20,9 @@ import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.CwtConfigMatcher.Options
-import icu.windea.pls.model.expression.*
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
+import icu.windea.pls.lang.expression.*
+import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.psi.*
 
@@ -64,7 +65,7 @@ object ParadoxInlineScriptManager {
         val matchOptions = Options.SkipIndex or Options.SkipScope
         val inlineConfig = inlineConfigs.find {
             val expression = ParadoxDataExpression.resolve(propertyValue, matchOptions)
-            CwtConfigMatcher.matches(propertyValue, expression, it.config.valueExpression, it.config, configGroup).get(matchOptions)
+            ParadoxExpressionMatcher.matches(propertyValue, expression, it.config.valueExpression, it.config, configGroup).get(matchOptions)
         }
         if(inlineConfig == null) return null
         val expression = getInlineScriptExpressionFromInlineConfig(element, inlineConfig) ?: return null

@@ -6,7 +6,7 @@ data class ParadoxImageCodeInsightInfo(
     val type: Type,
     val filePath: String?,
     val gfxName: String?,
-    val relatedImageInfo: ParadoxDefinitionRelatedImageInfo?,
+    val relatedImageInfo: ParadoxDefinitionInfo.RelatedImageInfo?,
     val check: Boolean,
     val missing: Boolean,
     val dynamic: Boolean

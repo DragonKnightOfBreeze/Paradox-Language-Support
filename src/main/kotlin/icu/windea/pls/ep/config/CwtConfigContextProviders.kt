@@ -13,7 +13,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.path.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.injection.*
 import icu.windea.pls.script.psi.*
 

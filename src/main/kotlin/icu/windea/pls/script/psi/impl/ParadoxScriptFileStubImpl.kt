@@ -4,7 +4,6 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.path.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptFileStubImpl(

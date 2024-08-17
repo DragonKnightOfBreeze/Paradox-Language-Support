@@ -58,7 +58,7 @@ object ParadoxEconomicCategoryManager {
             val useForAiBudgetForMult = parentDataMap.values.any { it.useForAiBudget }
             
             val parents = parentDataMap.keys
-            val modifiers = mutableSetOf<ParadoxEconomicCategoryModifierInfo>()
+            val modifiers = mutableSetOf<ParadoxEconomicCategoryInfo.ModifierInfo>()
             
             // will generate when use_for_ai_budget = yes (inherited by parent property for _mult modifiers)
             // <economic_category>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
@@ -68,10 +68,10 @@ object ParadoxEconomicCategoryManager {
             fun addModifier(key: String, category: String, type: String, triggered: Boolean, useParentIcon: Boolean) {
                 if(key.isEmpty()) return //skip invalid keys
                 if(useForAiBudget || (type == "mult" && useForAiBudgetForMult)) {
-                    modifiers.add(ParadoxEconomicCategoryModifierInfo(key, null, category, type, triggered, useParentIcon))
+                    modifiers.add(ParadoxEconomicCategoryInfo.ModifierInfo(key, null, category, type, triggered, useParentIcon))
                 }
                 resources.forEach { resource ->
-                    modifiers.add(ParadoxEconomicCategoryModifierInfo(key, resource, category, type, triggered, useParentIcon))
+                    modifiers.add(ParadoxEconomicCategoryInfo.ModifierInfo(key, resource, category, type, triggered, useParentIcon))
                 }
             }
             

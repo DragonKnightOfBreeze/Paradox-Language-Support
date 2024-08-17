@@ -9,10 +9,10 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.CwtConfigMatcher.Result
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Result
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expression.*
-import icu.windea.pls.model.expression.complex.*
+import icu.windea.pls.lang.expression.*
+import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.script.psi.*
 
 class BaseCwtDataExpressionMatcher : CwtDataExpressionMatcher {
@@ -110,27 +110,27 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(!expression.text.isParameterAwareIdentifier('.', '-', '\'')) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                CwtConfigMatcher.Impls.getLocalisationMatchResult(element, expression, project)
+                ParadoxExpressionMatcher.Impls.getLocalisationMatchResult(element, expression, project)
             }
             configExpression.type == CwtDataTypes.SyncedLocalisation -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(!expression.text.isParameterAwareIdentifier('.', '-', '\'')) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                CwtConfigMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
+                ParadoxExpressionMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
             }
             configExpression.type == CwtDataTypes.InlineLocalisation -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.quoted) return Result.FallbackMatch //"quoted_string" -> any string
                 if(!expression.text.isParameterAwareIdentifier('.', '-', '\'')) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                CwtConfigMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
+                ParadoxExpressionMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
             }
             configExpression.type == CwtDataTypes.Definition -> {
                 //can be a integer here (e.g., for <technology_tier>)
                 if(!expression.type.isStringType() && expression.type != ParadoxType.Int) return Result.NotMatch
                 if(!expression.text.isParameterAwareIdentifier('.')) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                CwtConfigMatcher.Impls.getDefinitionMatchResult(element, expression, configExpression, project)
+                ParadoxExpressionMatcher.Impls.getDefinitionMatchResult(element, expression, configExpression, project)
             }
             configExpression.type == CwtDataTypes.AbsoluteFilePath -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
@@ -139,7 +139,7 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
             configExpression.type in CwtDataTypeGroups.PathReference -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                CwtConfigMatcher.Impls.getPathReferenceMatchResult(element, expression, configExpression, project)
+                ParadoxExpressionMatcher.Impls.getPathReferenceMatchResult(element, expression, configExpression, project)
             }
             configExpression.type == CwtDataTypes.EnumValue -> {
                 if(expression.type.isBlockLikeType()) return Result.NotMatch
@@ -157,7 +157,7 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 if(complexEnumConfig != null) {
                     //complexEnumValue的值必须合法
                     if(ParadoxComplexEnumValueManager.getName(expression.text) == null) return Result.NotMatch
-                    return CwtConfigMatcher.Impls.getComplexEnumValueMatchResult(element, name, enumName, complexEnumConfig, project)
+                    return ParadoxExpressionMatcher.Impls.getComplexEnumValueMatchResult(element, name, enumName, complexEnumConfig, project)
                 }
                 Result.NotMatch
             }
@@ -169,12 +169,12 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 if(!name.isIdentifier('.')) return Result.NotMatch
                 val dynamicValueType = configExpression.value
                 if(dynamicValueType == null) return Result.NotMatch
-                CwtConfigMatcher.Impls.getDynamicValueMatchResult(element, name, dynamicValueType, project)
+                ParadoxExpressionMatcher.Impls.getDynamicValueMatchResult(element, name, dynamicValueType, project)
             }
             configExpression.type in CwtDataTypeGroups.ScopeField -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                CwtConfigMatcher.Impls.getScopeFieldMatchResult(element, expression, configExpression, configGroup)
+                ParadoxExpressionMatcher.Impls.getScopeFieldMatchResult(element, expression, configExpression, configGroup)
             }
             configExpression.type in CwtDataTypeGroups.ValueField -> {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
@@ -218,7 +218,7 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 if(!expression.type.isStringType()) return Result.NotMatch
                 if(!expression.text.isParameterAwareIdentifier()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
-                CwtConfigMatcher.Impls.getModifierMatchResult(element, expression, configGroup)
+                ParadoxExpressionMatcher.Impls.getModifierMatchResult(element, expression, configGroup)
             }
             configExpression.type == CwtDataTypes.SingleAliasRight -> {
                 Result.NotMatch //不在这里处理
@@ -228,14 +228,14 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val aliasName = configExpression.value ?: return Result.NotMatch
                 val aliasSubName = ParadoxExpressionManager.getAliasSubName(element, expression.text, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
-                CwtConfigMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup)
+                ParadoxExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup)
             }
             configExpression.type == CwtDataTypes.AliasName -> {
                 if(!expression.type.isStringLikeType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val aliasName = configExpression.value ?: return Result.NotMatch
                 val aliasSubName = ParadoxExpressionManager.getAliasSubName(element, expression.text, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
-                CwtConfigMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup)
+                ParadoxExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup)
             }
             configExpression.type == CwtDataTypes.AliasMatchLeft -> {
                 return Result.NotMatch //不在这里处理
@@ -306,7 +306,7 @@ class TemplateExpressionCwtDataExpressionMatcher : CwtDataExpressionMatcher, Cwt
             if(!expression.type.isStringLikeType()) return Result.NotMatch
             if(expression.isParameterized()) return Result.ParameterizedMatch
             //允许用引号括起
-            return CwtConfigMatcher.Impls.getTemplateMatchResult(element, expression, configExpression, configGroup)
+            return ParadoxExpressionMatcher.Impls.getTemplateMatchResult(element, expression, configExpression, configGroup)
         }
         return null
     }
