@@ -498,13 +498,13 @@ object ParadoxExpressionHandler {
     
     //region Annotate Methods
     fun annotateExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, holder: AnnotationHolder) {
-        val expression = getExpressionText(element, rangeInElement)
-        ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expression, holder, config)
+        val expressionText = getExpressionText(element, rangeInElement)
+        ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expressionText, holder, config)
     }
     
     fun annotateExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder) {
-        val expression = getExpressionText(element, rangeInElement)
-        ParadoxLocalisationExpressionSupport.annotate(element, rangeInElement, expression, holder)
+        val expressionText = getExpressionText(element, rangeInElement)
+        ParadoxLocalisationExpressionSupport.annotate(element, rangeInElement, expressionText, holder)
     }
     
     fun annotateExpression(element: ParadoxExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
@@ -565,19 +565,19 @@ object ParadoxExpressionHandler {
     fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): Array<out PsiReference>? {
         ProgressManager.checkCanceled()
         if(configExpression == null) return null
-        val expression = getExpressionText(element, rangeInElement)
+        val expressionText = getExpressionText(element, rangeInElement)
         
-        val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expression, config, isKey)
+        val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expressionText, config, isKey)
         return result.orNull()
     }
     
     fun resolveExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
         ProgressManager.checkCanceled()
         if(configExpression == null) return null
-        val expression = getExpressionText(element, rangeInElement)
-        if(expression.isParameterized()) return null //排除引用文本带参数的情况
+        val expressionText = getExpressionText(element, rangeInElement)
+        if(expressionText.isParameterized()) return null //排除引用文本带参数的情况
         
-        val result = ParadoxScriptExpressionSupport.resolve(element, rangeInElement, expression, config, isKey, exact)
+        val result = ParadoxScriptExpressionSupport.resolve(element, rangeInElement, expressionText, config, isKey, exact)
         if(result != null) return result
         
         val configGroup = config.configGroup
@@ -590,10 +590,10 @@ object ParadoxExpressionHandler {
     fun multiResolveExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): Collection<PsiElement> {
         ProgressManager.checkCanceled()
         if(configExpression == null) return emptySet()
-        val expression = getExpressionText(element, rangeInElement)
-        if(expression.isParameterized()) return emptySet() //排除引用文本带参数的情况
+        val expressionText = getExpressionText(element, rangeInElement)
+        if(expressionText.isParameterized()) return emptySet() //排除引用文本带参数的情况
         
-        val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expression, config, isKey)
+        val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expressionText, config, isKey)
         if(result.isNotEmpty()) return result
         
         val configGroup = config.configGroup
@@ -616,27 +616,27 @@ object ParadoxExpressionHandler {
     
     fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): Array<out PsiReference>? {
         ProgressManager.checkCanceled()
-        val expression = getExpressionText(element, rangeInElement)
+        val expressionText = getExpressionText(element, rangeInElement)
         
-        val result = ParadoxLocalisationExpressionSupport.getReferences(element, rangeInElement, expression)
+        val result = ParadoxLocalisationExpressionSupport.getReferences(element, rangeInElement, expressionText)
         return result.orNull()
     }
     
     fun resolveExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): PsiElement? {
         ProgressManager.checkCanceled()
-        val expression = getExpressionText(element, rangeInElement)
-        if(expression.isParameterized()) return null //排除引用文本带参数的情况
+        val expressionText = getExpressionText(element, rangeInElement)
+        if(expressionText.isParameterized()) return null //排除引用文本带参数的情况
         
-        val result = ParadoxLocalisationExpressionSupport.resolve(element, rangeInElement, expression)
+        val result = ParadoxLocalisationExpressionSupport.resolve(element, rangeInElement, expressionText)
         return result
     }
     
     fun multiResolveExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): Collection<PsiElement> {
         ProgressManager.checkCanceled()
-        val expression = getExpressionText(element, rangeInElement)
-        if(expression.isParameterized()) return emptySet() //排除引用文本带参数的情况
+        val expressionText = getExpressionText(element, rangeInElement)
+        if(expressionText.isParameterized()) return emptySet() //排除引用文本带参数的情况
         
-        val result = ParadoxLocalisationExpressionSupport.multiResolve(element, rangeInElement, expression)
+        val result = ParadoxLocalisationExpressionSupport.multiResolve(element, rangeInElement, expressionText)
         return result
     }
     

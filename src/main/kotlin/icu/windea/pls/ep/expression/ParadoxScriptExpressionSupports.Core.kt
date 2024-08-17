@@ -26,25 +26,25 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         return config.expression?.type == CwtDataTypes.Localisation
     }
     
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionHandler.annotateExpression(element, range, attributesKey, holder)
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         val configGroup = config.configGroup
         val project = configGroup.project
         val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig(), exact)
-        return ParadoxLocalisationSearch.search(expression, selector).find()
+        return ParadoxLocalisationSearch.search(expressionText, selector).find()
     }
     
-    override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
+    override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
         val configGroup = config.configGroup
         val project = configGroup.project
         val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
-        return ParadoxLocalisationSearch.search(expression, selector).findAll()
+        return ParadoxLocalisationSearch.search(expressionText, selector).findAll()
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -59,25 +59,25 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
         return config.expression?.type == CwtDataTypes.Localisation
     }
     
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionHandler.annotateExpression(element, range, attributesKey, holder)
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         val configGroup = config.configGroup
         val project = configGroup.project
         val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig(), exact)
-        return ParadoxSyncedLocalisationSearch.search(expression, selector).find()
+        return ParadoxSyncedLocalisationSearch.search(expressionText, selector).find()
     }
     
-    override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
+    override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
         val configGroup = config.configGroup
         val project = configGroup.project
         val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
-        return ParadoxSyncedLocalisationSearch.search(expression, selector).findAll()
+        return ParadoxSyncedLocalisationSearch.search(expressionText, selector).findAll()
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -92,27 +92,27 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         return config.expression?.type == CwtDataTypes.InlineLocalisation
     }
     
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if(expression.isLeftQuoted()) return
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+        if(expressionText.isLeftQuoted()) return
         val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
         val range = rangeInElement?.shiftRight(element.startOffset) ?: element.textRange.unquote(element.text)
         ParadoxExpressionHandler.annotateExpression(element, range, attributesKey, holder)
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         if(element.text.isLeftQuoted()) return null //inline string
         val configGroup = config.configGroup
         val project = configGroup.project
         val selector = localisationSelector(project, element).contextSensitive(exact).preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig(), exact)
-        return ParadoxSyncedLocalisationSearch.search(expression, selector).find()
+        return ParadoxSyncedLocalisationSearch.search(expressionText, selector).find()
     }
     
-    override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
+    override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
         if(element.text.isLeftQuoted()) return emptySet() //specific expression
         val configGroup = config.configGroup
         val project = configGroup.project
         val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
-        return ParadoxLocalisationSearch.search(expression, selector).findAll()
+        return ParadoxLocalisationSearch.search(expressionText, selector).findAll()
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -128,27 +128,27 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport 
         return config.expression?.type == CwtDataTypes.Definition
     }
     
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         val attributesKey = ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionHandler.annotateExpression(element, range, attributesKey, holder)
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         val configGroup = config.configGroup
         val project = configGroup.project
         val typeExpression = config.expression?.value ?: return null
         val selector = definitionSelector(project, element).contextSensitive(exact)
-        return ParadoxDefinitionSearch.search(expression, typeExpression, selector).find()
+        return ParadoxDefinitionSearch.search(expressionText, typeExpression, selector).find()
     }
     
-    override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
+    override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
         val configGroup = config.configGroup
         val project = configGroup.project
         val typeExpression = config.expression?.value ?: return emptySet()
         val selector = definitionSelector(project, element).contextSensitive()
-        return ParadoxDefinitionSearch.search(expression, typeExpression, selector).findAll()
+        return ParadoxDefinitionSearch.search(expressionText, typeExpression, selector).findAll()
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -163,36 +163,36 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         return config.expression?.type in CwtDataTypeGroups.PathReference
     }
     
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         val attributesKey = ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionHandler.annotateExpression(element, range, attributesKey, holder)
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         val configExpression = config.expression ?: return null
         val configGroup = config.configGroup
         val project = configGroup.project
         if(configExpression.type == CwtDataTypes.AbsoluteFilePath) {
-            return expression.toVirtualFile(false)?.toPsiFile(project)
+            return expressionText.toVirtualFile(false)?.toPsiFile(project)
         } else {
             //if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
-            val pathReference = expression.normalizePath()
+            val pathReference = expressionText.normalizePath()
             val selector = fileSelector(project, element).contextSensitive()
             return ParadoxFilePathSearch.search(pathReference, configExpression, selector).find()?.toPsiFile(project)
         }
     }
     
-    override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
+    override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
         val configExpression = config.expression ?: return emptySet()
         val configGroup = config.configGroup
         val project = configGroup.project
         if(configExpression.type == CwtDataTypes.AbsoluteFilePath) {
-            return expression.toVirtualFile(false)?.toPsiFile(project).toSingletonSetOrEmpty()
+            return expressionText.toVirtualFile(false)?.toPsiFile(project).toSingletonSetOrEmpty()
         } else {
             //if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
-            val pathReference = expression.normalizePath()
+            val pathReference = expressionText.normalizePath()
             val selector = fileSelector(project, element).contextSensitive()
             return ParadoxFilePathSearch.search(pathReference, configExpression, selector).findAll().mapNotNull { it.toPsiFile(project) }
         }
@@ -210,7 +210,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
         return config.expression?.type == CwtDataTypes.EnumValue
     }
     
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         val configGroup = config.configGroup
         val enumName = config.expression?.value ?: return
         val attributesKey = when {
@@ -223,14 +223,14 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
         ParadoxExpressionHandler.annotateExpression(element, range, attributesKey, holder)
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         val enumName = config.expression?.value ?: return null
         val configGroup = config.configGroup
         val project = configGroup.project
         //尝试解析为简单枚举
         val enumConfig = configGroup.enums[enumName]
         if(enumConfig != null) {
-            return ParadoxExpressionHandler.resolvePredefinedEnumValue(expression, enumName, configGroup)
+            return ParadoxExpressionHandler.resolvePredefinedEnumValue(expressionText, enumName, configGroup)
         }
         //尝试解析为复杂枚举
         val complexEnumConfig = configGroup.complexEnums[enumName]
@@ -239,7 +239,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
             val selector = complexEnumValueSelector(project, element)
                 .withSearchScopeType(searchScope)
                 .contextSensitive(exact)
-            val info = ParadoxComplexEnumValueSearch.search(expression, enumName, selector).findFirst()
+            val info = ParadoxComplexEnumValueSearch.search(expressionText, enumName, selector).findFirst()
             if(info != null) {
                 val readWriteAccess = ReadWriteAccessDetector.Access.Read //usage
                 return ParadoxComplexEnumValueElement(element, info.name, info.enumName, readWriteAccess, info.gameType, project)
@@ -260,16 +260,16 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport {
         return config.expression?.type == CwtDataTypes.Modifier
     }
     
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         val attributesKey = ParadoxScriptAttributesKeys.MODIFIER_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionHandler.annotateExpression(element, range, attributesKey, holder)
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         val configGroup = config.configGroup
-        return ParadoxExpressionHandler.resolveModifier(element, expression, configGroup)
+        return ParadoxExpressionHandler.resolveModifier(element, expressionText, configGroup)
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -285,30 +285,30 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport {
         return type == CwtDataTypes.AliasName || type == CwtDataTypes.AliasKeysField
     }
     
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         val configGroup = config.configGroup
         val configExpression = config.expression
         val aliasName = configExpression?.value ?: return
         val aliasMap = configGroup.aliasGroups.get(aliasName) ?: return
-        val aliasSubName = ParadoxExpressionHandler.getAliasSubName(element, expression, false, aliasName, configGroup) ?: return
+        val aliasSubName = ParadoxExpressionHandler.getAliasSubName(element, expressionText, false, aliasName, configGroup) ?: return
         val aliasConfig = aliasMap[aliasSubName]?.first() ?: return
-        INSTANCE.annotate(element, rangeInElement, expression, holder, aliasConfig)
+        INSTANCE.annotate(element, rangeInElement, expressionText, holder, aliasConfig)
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         val aliasName = config.expression?.value ?: return null
         val configGroup = config.configGroup
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
-        val aliasSubName = ParadoxExpressionHandler.getAliasSubName(element, expression, element.text.isLeftQuoted(), aliasName, configGroup)
+        val aliasSubName = ParadoxExpressionHandler.getAliasSubName(element, expressionText, element.text.isLeftQuoted(), aliasName, configGroup)
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return null
         return ParadoxExpressionHandler.resolveExpression(element, rangeInElement, alias, alias.expression, isKey, exact)
     }
     
-    override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
+    override fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
         val aliasName = config.expression?.value ?: return emptySet()
         val configGroup = config.configGroup
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptySet()
-        val aliasSubName = ParadoxExpressionHandler.getAliasSubName(element, expression, element.text.isLeftQuoted(), aliasName, configGroup)
+        val aliasSubName = ParadoxExpressionHandler.getAliasSubName(element, expressionText, element.text.isLeftQuoted(), aliasName, configGroup)
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return emptySet()
         return ParadoxExpressionHandler.multiResolveExpression(element, rangeInElement, alias, alias.expression, isKey)
     }
@@ -323,7 +323,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport {
 }
 
 abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         val annotated = annotateByAliasName(element, rangeInElement, holder, config)
         if(annotated) return
         val configExpression = config.expression ?: return
@@ -368,7 +368,7 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptConstantLikeExpressi
         return config.expression?.type == CwtDataTypes.Constant
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         return when {
             config is CwtPropertyConfig && config.inlineableConfig is CwtSingleAliasConfig -> config.pointer.element
             config is CwtMemberConfig<*> -> config.resolved().pointer.element
@@ -388,10 +388,10 @@ class ParadoxScriptTemplateExpressionSupport : ParadoxScriptConstantLikeExpressi
         return config.expression?.type == CwtDataTypes.TemplateExpression
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         val configExpression = config.expression ?: return null
         val configGroup = config.configGroup
-        return ParadoxExpressionHandler.resolveTemplateExpression(element, expression, configExpression, configGroup)
+        return ParadoxExpressionHandler.resolveTemplateExpression(element, expressionText, configExpression, configGroup)
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {

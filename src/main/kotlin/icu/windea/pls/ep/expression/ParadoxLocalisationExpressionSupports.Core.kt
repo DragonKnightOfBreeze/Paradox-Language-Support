@@ -15,7 +15,7 @@ class ParadoxLocalisationCommandExpressionSupport: ParadoxLocalisationExpression
         return element.isCommandExpression()
     }
     
-    override fun annotate(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder) {
         val configGroup = getConfigGroup(element.project, selectGameType(element))
         val value = element.value
         val textRange = TextRange.create(0, value.length)
@@ -23,10 +23,10 @@ class ParadoxLocalisationCommandExpressionSupport: ParadoxLocalisationExpression
         ParadoxExpressionHandler.annotateComplexExpression(element, commandExpression, holder)
     }
     
-    override fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expression: String): Array<out PsiReference>? {
+    override fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {
         val configGroup = getConfigGroup(element.project, selectGameType(element))
-        val range = TextRange.create(0, expression.length)
-        val commandExpression = ParadoxCommandExpression.resolve(expression, range, configGroup)
+        val range = TextRange.create(0, expressionText.length)
+        val commandExpression = ParadoxCommandExpression.resolve(expressionText, range, configGroup)
         if(commandExpression == null) return PsiReference.EMPTY_ARRAY
         return commandExpression.getReferences(element)
     }
@@ -41,7 +41,7 @@ class ParadoxLocalisationDatabaseObjectExpressionSupport: ParadoxLocalisationExp
         return element.isDatabaseObjectExpression()
     }
     
-    override fun annotate(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder) {
         val configGroup = getConfigGroup(element.project, selectGameType(element))
         val value = element.value
         val textRange = TextRange.create(0, value.length)
@@ -49,10 +49,10 @@ class ParadoxLocalisationDatabaseObjectExpressionSupport: ParadoxLocalisationExp
         ParadoxExpressionHandler.annotateComplexExpression(element, databaseObjectExpression, holder)
     }
     
-    override fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expression: String): Array<out PsiReference>? {
+    override fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {
         val configGroup = getConfigGroup(element.project, selectGameType(element))
-        val range = TextRange.create(0, expression.length)
-        val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(expression, range, configGroup)
+        val range = TextRange.create(0, expressionText.length)
+        val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(expressionText, range, configGroup)
         if(databaseObjectExpression == null) return PsiReference.EMPTY_ARRAY
         return databaseObjectExpression.getReferences(element)
     }

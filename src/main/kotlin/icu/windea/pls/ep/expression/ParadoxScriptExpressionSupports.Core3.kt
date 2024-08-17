@@ -26,9 +26,9 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         return config.expression?.type == CwtDataTypes.TechnologyWithLevel
     }
     
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if(element !is ParadoxScriptStringExpressionElement) return
-        val separatorIndex = expression.indexOf('@')
+        val separatorIndex = expressionText.indexOf('@')
         if(separatorIndex == -1) return
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
@@ -46,21 +46,21 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range2).textAttributes(attributesKey).create()
         }
         run {
-            val offset = expression.length - separatorIndex - 1
+            val offset = expressionText.length - separatorIndex - 1
             if(offset <= 0) return@run
             //annotate only if snippet after '@' is number like
-            if(!expression.substring(separatorIndex + 1).all { it.isExactDigit() }) return@run
+            if(!expressionText.substring(separatorIndex + 1).all { it.isExactDigit() }) return@run
             val attributesKey = ParadoxScriptAttributesKeys.NUMBER_KEY
             val range3 = range.let { TextRange.create(it.endOffset - offset, it.endOffset) }
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range3).textAttributes(attributesKey).create()
         }
     }
     
-    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
         if(element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
-        val separatorIndex = expression.indexOf('@')
+        val separatorIndex = expressionText.indexOf('@')
         if(separatorIndex == -1) return PsiReference.EMPTY_ARRAY
-        val range = rangeInElement ?: TextRange.create(0, expression.length).unquote(expression)
+        val range = rangeInElement ?: TextRange.create(0, expressionText.length).unquote(expressionText)
         val offset = separatorIndex
         val range1 = range.let { TextRange.create(it.startOffset, it.startOffset + offset) }
         if(range1.isEmpty) return PsiReference.EMPTY_ARRAY

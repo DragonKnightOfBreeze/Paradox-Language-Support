@@ -20,14 +20,14 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport {
         return config.expression?.type == CwtDataTypes.Parameter
     }
     
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionHandler.annotateExpression(element, range, attributesKey, holder)
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         return ParadoxParameterSupport.resolveArgument(element, rangeInElement, config)
     }
     
@@ -43,14 +43,14 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
         return config.expression?.type == CwtDataTypes.LocalisationParameter
     }
     
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionHandler.annotateExpression(element, range, attributesKey, holder)
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         return ParadoxLocalisationParameterSupport.resolveArgument(element, rangeInElement, config)
     }
     

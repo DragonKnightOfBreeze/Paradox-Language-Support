@@ -25,9 +25,9 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                 if(!element.isCommandExpression()) return
                 val value = element.value
                 val textRange = TextRange.create(0, value.length)
-                val complexExpression = ParadoxCommandExpression.resolve(value, textRange, configGroup)
-                if(complexExpression == null) return
-                checkExpression(element, complexExpression)
+                val commandExpression = ParadoxCommandExpression.resolve(value, textRange, configGroup)
+                if(commandExpression == null) return
+                checkExpression(element, commandExpression)
             }
             
             fun checkExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {

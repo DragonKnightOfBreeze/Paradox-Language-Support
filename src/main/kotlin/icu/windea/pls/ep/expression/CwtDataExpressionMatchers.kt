@@ -166,7 +166,7 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 //dynamicValue的值必须合法
                 val name = ParadoxDynamicValueHandler.getName(expression.text) ?: return Result.NotMatch
-                if(!name.isIdentifier()) return Result.NotMatch
+                if(!name.isIdentifier('.')) return Result.NotMatch
                 val dynamicValueType = configExpression.value
                 if(dynamicValueType == null) return Result.NotMatch
                 CwtConfigMatcher.Impls.getDynamicValueMatchResult(element, name, dynamicValueType, project)

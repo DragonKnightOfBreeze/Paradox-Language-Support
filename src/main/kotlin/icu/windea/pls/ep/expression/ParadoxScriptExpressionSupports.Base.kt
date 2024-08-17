@@ -14,7 +14,7 @@ class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupport {
         return config.expression?.type == CwtDataTypes.Block
     }
     
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expression: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         return config.pointer.element
     }
     
