@@ -90,7 +90,7 @@ private abstract class CwtPropertyConfigImpl(
     override val separatorTypeId: Byte = CwtSeparatorType.EQUAL.id,
 ) : UserDataHolderBase(), CwtPropertyConfig {
     //use memory-optimized lazy property
-    private var _valueConfig: Any? = EMPTY_OBJECT
+    @Volatile private var _valueConfig: Any? = EMPTY_OBJECT
     override val valueConfig @Synchronized get() = if(_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else getValueConfig().also { _valueConfig = it }
     
     override var parentConfig: CwtMemberConfig<*>? = null
@@ -164,7 +164,7 @@ private abstract class CwtPropertyConfigDelegate(
     private val delegate: CwtPropertyConfig,
 ) : UserDataHolderBase(), CwtPropertyConfig by delegate {
     //use memory-optimized lazy property
-    private var _valueConfig: Any? = EMPTY_OBJECT
+    @Volatile private var _valueConfig: Any? = EMPTY_OBJECT
     override val valueConfig @Synchronized get() = if(_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else getValueConfig().also { _valueConfig = it }
     
     override var parentConfig: CwtMemberConfig<*>? = null
