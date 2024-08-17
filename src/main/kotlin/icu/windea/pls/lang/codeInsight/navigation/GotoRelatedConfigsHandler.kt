@@ -11,9 +11,9 @@ import icu.windea.pls.ep.config.*
 
 //com.intellij.testIntegration.GotoTestOrCodeHandler
 
-class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
+class GotoRelatedConfigsHandler : GotoTargetHandler() {
 	override fun getFeatureUsedKey(): String {
-		return "navigation.goto.paradoxRelatedCwtConfigs"
+		return "navigation.goto.paradoxRelatedConfigs"
 	}
     
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
@@ -33,15 +33,15 @@ class GotoRelatedCwtConfigsHandler : GotoTargetHandler() {
 	}
 	
 	override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-		return PlsBundle.message("script.goto.relatedCwtConfigs.chooseTitle")
+		return PlsBundle.message("script.goto.relatedConfigs.chooseTitle")
 	}
 	
 	override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-		return PlsBundle.message("script.goto.relatedCwtConfigs.findUsagesTitle")
+		return PlsBundle.message("script.goto.relatedConfigs.findUsagesTitle")
 	}
 	
 	override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-		return PlsBundle.message("script.goto.relatedCwtConfigs.notFoundMessage")
+		return PlsBundle.message("script.goto.relatedConfigs.notFoundMessage")
 	}
 	
 	override fun navigateToElement(descriptor: Navigatable) {

@@ -305,7 +305,7 @@
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
-      <action id="Pls.GoToRelatedCwtConfigs" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedCwtConfigsAction">
+      <action id="Pls.GoToRelatedConfigs" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedConfigsAction">
         <keyboard-shortcut first-keystroke="alt p" keymap="$default"/>
         <mouse-shortcut keymap="$default" keystroke="alt button1"/>
         <override-text place="MainMenu"/>

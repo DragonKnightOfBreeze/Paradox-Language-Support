@@ -10,8 +10,8 @@ import icu.windea.pls.lang.codeInsight.navigation.*
 /**
  * 用于基于上下文提供相关的CWT规则。
  *
- * @see GotoRelatedCwtConfigsAction
- * @see GotoRelatedCwtConfigsHandler
+ * @see GotoRelatedConfigsAction
+ * @see GotoRelatedConfigsHandler
  */
 @WithGameTypeEP
 interface CwtRelatedConfigProvider {
