@@ -76,7 +76,7 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
         val rootConfigs = declarationConfig.toSingletonList()
         val configGroup = context.configGroup
         val contextElement = context.element ?: return null
-        return ParadoxExpressionHandler.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+        return ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
     }
 }
 
@@ -93,7 +93,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         val vFile = selectFile(file) ?: return null
         
         //要求当前位置相对于文件的元素路径中包含子路径"inline_script"
-        val rootIndex = elementPath.indexOfFirst { it.equals(ParadoxInlineScriptHandler.inlineScriptKey, true) }
+        val rootIndex = elementPath.indexOfFirst { it.equals(ParadoxInlineScriptManager.inlineScriptKey, true) }
         if(rootIndex == -1) return null
         
         val gameType = selectGameType(file) ?: return null
@@ -116,10 +116,10 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
     override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
         val configGroup = context.configGroup
-        val inlineConfigs = configGroup.inlineConfigGroup[ParadoxInlineScriptHandler.inlineScriptKey] ?: return null
+        val inlineConfigs = configGroup.inlineConfigGroup[ParadoxInlineScriptManager.inlineScriptKey] ?: return null
         val contextElement = context.element ?: return null
         val rootConfigs = inlineConfigs.map { it.inline() }
-        return ParadoxExpressionHandler.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+        return ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
     }
 }
 
@@ -144,7 +144,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         val vFile = selectFile(file) ?: return null
         if(ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
         
-        val inlineScriptExpression = ParadoxInlineScriptHandler.getInlineScriptExpression(vFile)
+        val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(vFile)
         if(inlineScriptExpression == null) return null
         
         val gameType = selectGameType(file) ?: return null
@@ -153,7 +153,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         val configGroup = getConfigGroup(file.project, gameType)
         val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
         if(elementPathFromRoot.isNotEmpty()) {
-            configContext.inlineScriptRootConfigContext = ParadoxExpressionHandler.getConfigContext(file) ?: return null
+            configContext.inlineScriptRootConfigContext = ParadoxExpressionManager.getConfigContext(file) ?: return null
         }
         configContext.inlineScriptExpression = inlineScriptExpression
         configContext.elementPathFromRoot = elementPathFromRoot
@@ -180,11 +180,11 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
             val rootConfigContext = context.inlineScriptRootConfigContext ?: return null
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
             val configGroup = context.configGroup
-            return ParadoxExpressionHandler.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+            return ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         }
         
         val inlineScriptExpression = context.inlineScriptExpression ?: return null
-        return ParadoxInlineScriptHandler.getInferredContextConfigs(contextElement, inlineScriptExpression, context, matchOptions)
+        return ParadoxInlineScriptManager.getInferredContextConfigs(contextElement, inlineScriptExpression, context, matchOptions)
     }
     
     //skip MissingExpressionInspection and TooManyExpressionInspection at root level
@@ -234,7 +234,7 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         val configGroup = getConfigGroup(file.project, gameType)
         val configContext = CwtConfigContext(element, null, elementPath, gameType, configGroup)
         if(elementPathFromRoot.isNotEmpty()) {
-            configContext.parameterValueRootConfigContext = ParadoxExpressionHandler.getConfigContext(file) ?: return null
+            configContext.parameterValueRootConfigContext = ParadoxExpressionManager.getConfigContext(file) ?: return null
         }
         configContext.elementPathFromRoot = elementPathFromRoot
         configContext.parameterElement = parameterElement
@@ -279,11 +279,11 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
             val rootConfigContext = context.parameterValueRootConfigContext ?: return null
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
             val configGroup = context.configGroup
-            return ParadoxExpressionHandler.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+            return ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         }
         
         val parameterElement = context.parameterElement ?: return null
-        return ParadoxParameterHandler.getInferredContextConfigs(parameterElement)
+        return ParadoxParameterManager.getInferredContextConfigs(parameterElement)
     }
     
     //skip MissingExpressionInspection and TooManyExpressionInspection at root level

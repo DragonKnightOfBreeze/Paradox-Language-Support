@@ -56,10 +56,10 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
         if(element !is ParadoxScriptStringExpressionElement) return true
         if(!element.isExpression()) return true
-        val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull()
+        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull()
             ?.takeIf { it.expression.type in expressionTypes }
             ?: return true
-        val resolved = ParadoxExpressionHandler.resolveExpression(element, null, config, config.expression, true)
+        val resolved = ParadoxExpressionManager.resolveExpression(element, null, config, config.expression, true)
         if(resolved is ParadoxLocalisationProperty) {
             val localisationInfo = resolved.localisationInfo
             if(localisationInfo != null) {

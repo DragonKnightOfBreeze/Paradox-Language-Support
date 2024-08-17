@@ -25,15 +25,15 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
             //此内联操作也可以从"inline_script = {...}"中的"inline_script"发起
             if(element.elementType != ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN) return@run
             val contextReferenceElement = element.parentOfType<ParadoxScriptProperty>() ?: return@run
-            if(contextReferenceElement.name.lowercase() != ParadoxInlineScriptHandler.inlineScriptKey) return@run
-            val expressionElement = ParadoxInlineScriptHandler.getExpressionElement(contextReferenceElement) ?: return@run
+            if(contextReferenceElement.name.lowercase() != ParadoxInlineScriptManager.inlineScriptKey) return@run
+            val expressionElement = ParadoxInlineScriptManager.getExpressionElement(contextReferenceElement) ?: return@run
             val expressionElementReference = expressionElement.reference ?: return@run
             val resolved = expressionElementReference.resolve() ?: return@run
             return canInlineElement(resolved)
         }
 
         if(element !is ParadoxScriptFile) return false
-        if(ParadoxInlineScriptHandler.getInlineScriptExpression(element) == null) return false
+        if(ParadoxInlineScriptManager.getInlineScriptExpression(element) == null) return false
         return true
     }
     
@@ -43,13 +43,13 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
             //此内联操作也可以从"inline_script = {...}"中的"inline_script"发起 
             if(reference == null) return@run
             val contextReferenceElement = reference.element.castOrNull<ParadoxScriptPropertyKey>()?.parent?.castOrNull<ParadoxScriptProperty>() ?: return@run
-            if(contextReferenceElement.name.lowercase() != ParadoxInlineScriptHandler.inlineScriptKey) return@run
-            val expressionElement = ParadoxInlineScriptHandler.getExpressionElement(contextReferenceElement) ?: return@run
+            if(contextReferenceElement.name.lowercase() != ParadoxInlineScriptManager.inlineScriptKey) return@run
+            val expressionElement = ParadoxInlineScriptManager.getExpressionElement(contextReferenceElement) ?: return@run
             val expressionElementReference = expressionElement.reference ?: return@run
             val resolved = expressionElementReference.resolve() ?: return@run
             return canInlineElement(resolved)
         }
-        if(reference != null && ParadoxInlineScriptHandler.getContextReferenceElement(reference.element) == null) return false
+        if(reference != null && ParadoxInlineScriptManager.getContextReferenceElement(reference.element) == null) return false
         return canInlineElement(element)
     }
     
@@ -59,8 +59,8 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
             //此内联操作也可以从"inline_script = {...}"中的"inline_script"发起 
             if(reference == null) return@run
             val contextReferenceElement = reference.element.castOrNull<ParadoxScriptPropertyKey>()?.parent?.castOrNull<ParadoxScriptProperty>() ?: return@run
-            if(contextReferenceElement.name.lowercase() != ParadoxInlineScriptHandler.inlineScriptKey) return@run
-            val expressionElement = ParadoxInlineScriptHandler.getExpressionElement(contextReferenceElement) ?: return@run
+            if(contextReferenceElement.name.lowercase() != ParadoxInlineScriptManager.inlineScriptKey) return@run
+            val expressionElement = ParadoxInlineScriptManager.getExpressionElement(contextReferenceElement) ?: return@run
             val expressionElementReference = expressionElement.reference ?: return@run
             val resolved = expressionElementReference.resolve() ?: return@run
             return performInline(project, editor, resolved.castOrNull() ?: return, expressionElementReference)
@@ -70,7 +70,7 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
     
     private fun performInline(project: Project, editor: Editor?, element: ParadoxScriptFile, reference: PsiReference?) {
         
-        val configContext = ParadoxExpressionHandler.getConfigContext(element) ?: return //unexpected
+        val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return //unexpected
         if(configContext.inlineScriptHasRecursion == true) {
             val message = PlsBundle.message("refactoring.inlineScript.recursive", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)

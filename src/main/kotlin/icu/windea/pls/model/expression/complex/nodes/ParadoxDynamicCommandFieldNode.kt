@@ -29,7 +29,7 @@ class ParadoxDynamicCommandFieldNode(
     }
     
     override fun getReference(element: ParadoxExpressionElement): Reference {
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
+        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         return Reference(element, rangeInElement, text, configGroup)
     }
     
@@ -74,7 +74,7 @@ class ParadoxDynamicCommandFieldNode(
             }
             run {
                 val configExpression = configGroup.mockVariableConfig.expression
-                ParadoxDynamicValueHandler.resolveDynamicValue(element, name, configExpression, configGroup)?.let { return it }
+                ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpression, configGroup)?.let { return it }
             }
             return null
         }
@@ -87,7 +87,7 @@ class ParadoxDynamicCommandFieldNode(
             }
             run {
                 val configExpression = configGroup.mockVariableConfig.expression
-                ParadoxDynamicValueHandler.resolveDynamicValue(element, name, configExpression, configGroup)
+                ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpression, configGroup)
                     ?.let { return arrayOf(PsiElementResolveResult(it)) }
             }
             return ResolveResult.EMPTY_ARRAY

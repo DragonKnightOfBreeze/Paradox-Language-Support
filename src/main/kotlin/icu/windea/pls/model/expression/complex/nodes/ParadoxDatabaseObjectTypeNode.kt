@@ -40,7 +40,7 @@ class ParadoxDatabaseObjectTypeNode(
     override fun getReference(element: ParadoxExpressionElement): Reference? {
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
+        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         return Reference(element, rangeInElement, config?.pointer?.element)
     }
     

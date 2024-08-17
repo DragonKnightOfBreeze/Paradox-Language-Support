@@ -95,7 +95,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
                         if(eventType != definitionInfo.type) return@f //matches definition type
                         val e = psiFile.findElementAt(info.elementOffset) ?: return@f
                         val m = e.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@f
-                        val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(m) ?: return@f
+                        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(m) ?: return@f
                         val map = with(scopeContext) {
                             buildMap {
                                 put("this", scope.id)
@@ -103,7 +103,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
                             }
                         }
                         if(scopeContextMap.isNotEmpty()) {
-                            val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map, true)
+                            val mergedMap = ParadoxScopeManager.mergeScopeContextMap(scopeContextMap, map, true)
                             if(mergedMap != null) {
                                 scopeContextMap.clear()
                                 scopeContextMap.putAll(mergedMap)
@@ -162,7 +162,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
         val thisEventName = definitionInfo.name
-        val thisEventType = ParadoxEventHandler.getType(definitionInfo)
+        val thisEventType = ParadoxEventManager.getType(definitionInfo)
         //optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?.withFilePath("common/on_actions", "txt")
@@ -203,7 +203,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
                         if(config.eventType != thisEventType) return@f //invalid (mismatch)
                         val map = config.config.replaceScopes ?: return@f
                         if(scopeContextMap.isNotEmpty()) {
-                            val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map, true)
+                            val mergedMap = ParadoxScopeManager.mergeScopeContextMap(scopeContextMap, map, true)
                             if(mergedMap != null) {
                                 scopeContextMap.clear()
                                 scopeContextMap.putAll(mergedMap)
@@ -267,7 +267,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
         val thisEventName = definitionInfo.name
-        val thisEventScope = ParadoxEventHandler.getScope(definitionInfo)
+        val thisEventScope = ParadoxEventManager.getScope(definitionInfo)
         //optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?: return null
@@ -309,7 +309,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             ProgressManager.checkCanceled()
                             val scopesElement = psiFile.findElementAt(scopesElementOffset)?.parentOfType<ParadoxScriptProperty>() ?: return@p false
                             val scopesBlockElement = scopesElement.block ?: return@p false
-                            val scopeContextOfScopesElement = ParadoxScopeHandler.getSwitchedScopeContext(scopesElement)
+                            val scopeContextOfScopesElement = ParadoxScopeManager.getSwitchedScopeContext(scopesElement)
                             val map = mutableMapOf<String, String>()
                             scopesBlockElement.processProperty(inline = true) pp@{
                                 ProgressManager.checkCanceled()
@@ -317,7 +317,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                                 if(configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@pp true
                                 
                                 if(scopeContextOfScopesElement == null) {
-                                    map.put(n, ParadoxScopeHandler.anyScopeId)
+                                    map.put(n, ParadoxScopeManager.anyScopeId)
                                     return@pp true
                                 }
                                 
@@ -325,14 +325,14 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                                 val expressionString = pv.value
                                 val textRange = TextRange.create(0, expressionString.length)
                                 val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return@pp true
-                                val scopeContextOfEachScope = ParadoxScopeHandler.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
+                                val scopeContextOfEachScope = ParadoxScopeManager.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
                                 map.put(n, scopeContextOfEachScope.scope.id)
                                 
                                 true
                             }
                             
                             if(scopeContextMap.isNotEmpty()) {
-                                val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map, true)
+                                val mergedMap = ParadoxScopeManager.mergeScopeContextMap(scopeContextMap, map, true)
                                 if(mergedMap != null) {
                                     scopeContextMap.clear()
                                     scopeContextMap.putAll(mergedMap)
@@ -353,7 +353,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             if(oldRefScope == null) {
                                 scopeContextMap.put(toRef, newRefScope)
                             } else {
-                                val refScope = ParadoxScopeHandler.mergeScopeId(oldRefScope, newRefScope)
+                                val refScope = ParadoxScopeManager.mergeScopeId(oldRefScope, newRefScope)
                                 if(refScope == null) {
                                     return@p false
                                 }
@@ -422,8 +422,8 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?: return null
         val scopeContextMap = mutableMapOf<String, String>()
-        scopeContextMap.put("this", ParadoxScopeHandler.anyScopeId)
-        scopeContextMap.put("root", ParadoxScopeHandler.anyScopeId)
+        scopeContextMap.put("this", ParadoxScopeManager.anyScopeId)
+        scopeContextMap.put("root", ParadoxScopeManager.anyScopeId)
         var hasConflict = false
         val r = doProcessQuery(thisOnActionName, searchScope, scopeContextMap, configGroup)
         if(!r) hasConflict = true
@@ -459,7 +459,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             ProgressManager.checkCanceled()
                             val scopesElement = psiFile.findElementAt(scopesElementOffset)?.parentOfType<ParadoxScriptProperty>() ?: return@p false
                             val scopesBlockElement = scopesElement.block ?: return@p false
-                            val scopeContextOfScopesElement = ParadoxScopeHandler.getSwitchedScopeContext(scopesElement)
+                            val scopeContextOfScopesElement = ParadoxScopeManager.getSwitchedScopeContext(scopesElement)
                             val map = mutableMapOf<String, String>()
                             scopesBlockElement.processProperty(inline = true) pp@{
                                 ProgressManager.checkCanceled()
@@ -467,7 +467,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                                 if(configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@pp true
                                 
                                 if(scopeContextOfScopesElement == null) {
-                                    map.put(n, ParadoxScopeHandler.anyScopeId)
+                                    map.put(n, ParadoxScopeManager.anyScopeId)
                                     return@pp true
                                 }
                                 
@@ -475,14 +475,14 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                                 val expressionString = pv.value
                                 val textRange = TextRange.create(0, expressionString.length)
                                 val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return@pp true
-                                val scopeContextOfEachScope = ParadoxScopeHandler.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
+                                val scopeContextOfEachScope = ParadoxScopeManager.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
                                 map.put(n, scopeContextOfEachScope.scope.id)
                                 
                                 true
                             }
                             
                             if(scopeContextMap.isNotEmpty()) {
-                                val mergedMap = ParadoxScopeHandler.mergeScopeContextMap(scopeContextMap, map, true)
+                                val mergedMap = ParadoxScopeManager.mergeScopeContextMap(scopeContextMap, map, true)
                                 if(mergedMap != null) {
                                     scopeContextMap.clear()
                                     scopeContextMap.putAll(mergedMap)
@@ -503,7 +503,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             if(oldRefScope == null) {
                                 scopeContextMap.put(toRef, newRefScope)
                             } else {
-                                val refScope = ParadoxScopeHandler.mergeScopeId(oldRefScope, newRefScope)
+                                val refScope = ParadoxScopeManager.mergeScopeId(oldRefScope, newRefScope)
                                 if(refScope == null) {
                                     return@p false
                                 }

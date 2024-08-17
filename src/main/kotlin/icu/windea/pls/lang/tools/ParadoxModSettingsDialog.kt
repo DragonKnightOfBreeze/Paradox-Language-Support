@@ -20,7 +20,7 @@ class ParadoxModSettingsDialog(
 ) : DialogWrapper(project, true) {
     val oldGameType = settings.finalGameType
     
-    val defaultGameVersion get() = ParadoxGameHandler.getGameVersionFromGameDirectory(defaultGameDirectory)
+    val defaultGameVersion get() = ParadoxCoreManager.getGameVersionFromGameDirectory(defaultGameDirectory)
     val defaultGameDirectory get() = getSettings().defaultGameDirectories[oldGameType.id]
     
     val graph = PropertyGraph()
@@ -29,7 +29,7 @@ class ParadoxModSettingsDialog(
     val gameDirectoryProperty = graph.property(settings.gameDirectory.orEmpty())
     
     init {
-        gameVersionProperty.dependsOn(gameDirectoryProperty) { ParadoxGameHandler.getGameVersionFromGameDirectory(gameDirectory).orEmpty() }
+        gameVersionProperty.dependsOn(gameDirectoryProperty) { ParadoxCoreManager.getGameVersionFromGameDirectory(gameDirectory).orEmpty() }
     }
     
     var gameType by gameTypeProperty
@@ -97,11 +97,11 @@ class ParadoxModSettingsDialog(
                     .bindText(gameDirectoryProperty)
                     .columns(36)
                     .align(Align.FILL)
-                    .validationOnApply { ParadoxGameHandler.validateGameDirectory(this, gameType, gameDirectory) }
+                    .validationOnApply { ParadoxCoreManager.validateGameDirectory(this, gameType, gameDirectory) }
             }
             row {
                 link(PlsBundle.message("gameDirectory.quickSelect")) f@{
-                    val quickGameDirectory = ParadoxGameHandler.getQuickGameDirectory(gameType)?.orNull() ?: return@f
+                    val quickGameDirectory = ParadoxCoreManager.getQuickGameDirectory(gameType)?.orNull() ?: return@f
                     gameDirectory = quickGameDirectory
                 }
             }

@@ -18,9 +18,9 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.ep.data.*
+import icu.windea.pls.lang.io.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.io.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
@@ -157,7 +157,7 @@ fun String.toRegexWhenIsParameterized(): Regex {
 }
 
 fun String.isInlineUsage(): Boolean {
-    return this.equals(ParadoxInlineScriptHandler.inlineScriptKey, true)
+    return this.equals(ParadoxInlineScriptManager.inlineScriptKey, true)
 }
 
 /**
@@ -254,15 +254,15 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
         from == null -> null
         from is CwtLocalisationLocaleConfig -> from
         from is VirtualFile -> from.getUserData(PlsKeys.injectedLocaleConfig)
-        from is PsiDirectory -> ParadoxLocaleHandler.getPreferredLocaleConfig()
-        from is PsiFile -> ParadoxCoreHandler.getLocaleConfig(from.virtualFile ?: return null, from.project)
+        from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
+        from is PsiFile -> ParadoxCoreManager.getLocaleConfig(from.virtualFile ?: return null, from.project)
         from is ParadoxLocalisationLocale -> from.name.toLocale(from)
         from is ParadoxLocalisationPropertyList -> selectLocale(from.locale)
         from is ParadoxLocalisationProperty -> runCatchingCancelable { from.greenStub }.getOrNull()?.locale?.toLocale(from)
             ?: selectLocale(from.containingFile)
         from is StubBasedPsiElementBase<*> && from.language == ParadoxLocalisationLanguage -> selectLocale(from.containingFile)
         from is PsiElement && from.language == ParadoxLocalisationLanguage -> selectLocale(from.parent)
-        else -> ParadoxLocaleHandler.getPreferredLocaleConfig()
+        else -> ParadoxLocaleManager.getPreferredLocaleConfig()
     }
 }
 
@@ -277,29 +277,29 @@ val Project.paradoxLibrary: ParadoxLibrary
 //如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
 
 val VirtualFile.rootInfo: ParadoxRootInfo?
-    get() = ParadoxCoreHandler.getRootInfo(this)
+    get() = ParadoxCoreManager.getRootInfo(this)
 val VirtualFile.fileInfo: ParadoxFileInfo?
-    get() = ParadoxCoreHandler.getFileInfo(this)
+    get() = ParadoxCoreManager.getFileInfo(this)
 val PsiElement.fileInfo: ParadoxFileInfo?
-    get() = ParadoxCoreHandler.getFileInfo(this)
+    get() = ParadoxCoreManager.getFileInfo(this)
 
 val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
-    get() = ParadoxDefinitionHandler.getInfo(this)
+    get() = ParadoxDefinitionManager.getInfo(this)
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
-    get() = ParadoxLocalisationHandler.getInfo(this)
+    get() = ParadoxLocalisationManager.getInfo(this)
 val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo?
-    get() = ParadoxComplexEnumValueHandler.getInfo(this)
+    get() = ParadoxComplexEnumValueManager.getInfo(this)
 
 val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorInfo?
     get() {
         //大写或小写字母，不限定位置
         val colorId = this.propertyReferenceParameter?.text?.find { it.isExactLetter() } ?: return null
-        return ParadoxTextColorHandler.getInfo(colorId.toString(), project, this)
+        return ParadoxTextColorManager.getInfo(colorId.toString(), project, this)
     }
 val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorInfo?
     get() {
         val colorId = this.name ?: return null
-        return ParadoxTextColorHandler.getInfo(colorId, project, this)
+        return ParadoxTextColorManager.getInfo(colorId, project, this)
     }
 
 /**

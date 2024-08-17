@@ -25,7 +25,7 @@ class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisati
         
         doProcessFiles(scope) p@{ file ->
             ProgressManager.checkCanceled()
-            ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
+            ParadoxCoreManager.getFileInfo(file) ?: return@p true //ensure file info is resolved here
             if(selectGameType(file) != gameType) return@p true //check game type at file level
             
             val fileData = ParadoxExpressionIndex.INSTANCE.getFileData(file, project, ParadoxExpressionIndexId.LocalisationParameter)

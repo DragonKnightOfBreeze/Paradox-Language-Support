@@ -184,9 +184,9 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
     val contextElement = referenceElement
     val gameType = configGroup.gameType ?: return
     val project = configGroup.project
-    val usedLocale = ParadoxLocaleHandler.getUsedLocaleInDocumentation(element)
+    val usedLocale = ParadoxLocaleManager.getUsedLocaleInDocumentation(element)
     val nameLocalisation = run {
-        val keys = ParadoxModifierHandler.getModifierNameKeys(name, contextElement)
+        val keys = ParadoxModifierManager.getModifierNameKeys(name, contextElement)
         keys.firstNotNullOfOrNull { key ->
             val selector = localisationSelector(project, contextElement).contextSensitive()
                 .preferLocale(usedLocale)
@@ -195,7 +195,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
         }
     }
     val descLocalisation = run {
-        val keys = ParadoxModifierHandler.getModifierDescKeys(name, contextElement)
+        val keys = ParadoxModifierManager.getModifierDescKeys(name, contextElement)
         keys.firstNotNullOfOrNull { key ->
             val selector = localisationSelector(project, contextElement).contextSensitive()
                 .preferLocale(usedLocale)
@@ -233,7 +233,7 @@ private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceE
     val gameType = configGroup.gameType ?: return
     val project = configGroup.project
     val iconFile = run {
-        val paths = ParadoxModifierHandler.getModifierIconPaths(name, element)
+        val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
         paths.firstNotNullOfOrNull { path ->
             val iconSelector = fileSelector(project, element).contextSensitive()
             ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
@@ -277,7 +277,7 @@ private fun DocumentationBuilder.addScope(element: PsiElement, name: String, con
                 val inputScopes = linkConfig.inputScopes
                 sections.put(PlsBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
                 
-                val outputScope = linkConfig.outputScope ?: ParadoxScopeHandler.anyScopeId
+                val outputScope = linkConfig.outputScope ?: ParadoxScopeManager.anyScopeId
                 sections.put(PlsBundle.message("sectionTitle.outputScope"), getScopeText(outputScope, gameType, contextElement))
             }
         }
@@ -291,7 +291,7 @@ private fun DocumentationBuilder.addScope(element: PsiElement, name: String, con
                 val inputScopes = linkConfig.inputScopes
                 sections.put(PlsBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
                 
-                val outputScope = linkConfig.outputScope?: ParadoxScopeHandler.anyScopeId
+                val outputScope = linkConfig.outputScope?: ParadoxScopeManager.anyScopeId
                 sections.put(PlsBundle.message("sectionTitle.outputScope"), getScopeText(outputScope, gameType, contextElement))
             }
         }
@@ -353,8 +353,8 @@ private fun DocumentationBuilder.addScopeContext(element: PsiElement, referenceE
     val sections = getSections(0) ?: return
     val gameType = configGroup.gameType ?: return
     val memberElement = referenceElement.parentOfType<ParadoxScriptMemberElement>(true) ?: return
-    if(!ParadoxScopeHandler.isScopeContextSupported(memberElement, indirect = true)) return
-    val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement)
+    if(!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return
+    val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
     if(scopeContext == null) return
     //TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
     // 因为这里的referenceElement是整个stringExpression，得到的作用域上下文会是脚本表达式最终的作用域上下文

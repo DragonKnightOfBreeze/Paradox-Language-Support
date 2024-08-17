@@ -75,14 +75,14 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
             if(!modifierNames.add(modifierConfig.name)) continue
             
             //排除不匹配modifier的supported_scopes的情况
-            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
             val tailText = ParadoxCompletionManager.getExpressionTailText(context, modifierConfig.config, withConfigExpression = false)
             val template = modifierConfig.template
             if(template.expressionString.isNotEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
             val name = modifierConfig.name
-            val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxPredefinedModifierSupport)
+            val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxPredefinedModifierSupport)
             val lookupElement = ParadoxLookupElementBuilder.create(modifierElement, name)
                 .withIcon(PlsIcons.Nodes.Modifier)
                 .withTailText(tailText)
@@ -91,7 +91,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
                 .withScopeMatched(scopeMatched)
                 .letIf(getSettings().completion.completeByLocalizedName) {
                     //如果启用，也基于修正的本地化名字进行代码补全
-                    val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, element, configGroup.project)
+                    val localizedNames = ParadoxModifierManager.getModifierLocalizedNames(name, element, configGroup.project)
                     it.withLocalizedNames(localizedNames)
                 }
                 .build(context)
@@ -148,7 +148,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         
         for(modifierConfig in modifiers.values) {
             //排除不匹配modifier的supported_scopes的情况
-            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
             
             val tailText = ParadoxCompletionManager.getExpressionTailText(context, modifierConfig.config, withConfigExpression = true)
@@ -160,7 +160,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                 //排除重复的
                 if(!modifierNames.add(name)) return@p true
                 
-                val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
+                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
                 val lookupElement = ParadoxLookupElementBuilder.create(modifierElement, name)
                     .withIcon(PlsIcons.Nodes.Modifier)
                     .withTailText(tailText)
@@ -169,7 +169,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                     .withScopeMatched(scopeMatched)
                     .letIf(getSettings().completion.completeByLocalizedName) {
                         //如果启用，也基于修正的本地化名字进行代码补全
-                        val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, element, configGroup.project)
+                        val localizedNames = ParadoxModifierManager.getModifierLocalizedNames(name, element, configGroup.project)
                         it.withLocalizedNames(localizedNames)
                     }
                     .build(context)
@@ -307,7 +307,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val economicCategories = ParadoxDefinitionSearch.search("economic_category", selector).findAll()
         for(economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
-            val economicCategoryInfo = ParadoxEconomicCategoryHandler.getInfo(economicCategory) ?: continue
+            val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: continue
             for(economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
                 if(economicCategoryModifierInfo.name == modifierName) return true
             }
@@ -323,7 +323,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val economicCategories = ParadoxDefinitionSearch.search("economic_category", selector).findAll()
         for(economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
-            val economicCategoryInfo = ParadoxEconomicCategoryHandler.getInfo(economicCategory) ?: continue
+            val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: continue
             for(economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
                 if(economicCategoryModifierInfo.name == modifierName) {
                     val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
@@ -345,11 +345,11 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val selector = definitionSelector(configGroup.project, element).contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{ economicCategory ->
             ProgressManager.checkCanceled()
-            val economicCategoryInfo = ParadoxEconomicCategoryHandler.getInfo(economicCategory) ?: return@p true
+            val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return@p true
             //排除不匹配modifier的supported_scopes的情况
-            val modifierCategories = ParadoxEconomicCategoryHandler.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
-            val supportedScopes = ParadoxScopeHandler.getSupportedScopes(modifierCategories)
-            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
+            val modifierCategories = ParadoxEconomicCategoryManager.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
+            val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
             
             val tailText = " from economic category " + economicCategoryInfo.name
@@ -360,7 +360,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
                 //排除重复的
                 if(!modifierNames.add(name)) continue
                 
-                val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup, this@ParadoxEconomicCategoryModifierSupport)
+                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxEconomicCategoryModifierSupport)
                 val lookupElement = ParadoxLookupElementBuilder.create(modifierElement, name)
                     .withIcon(PlsIcons.Nodes.Modifier)
                     .withTailText(tailText)
@@ -369,7 +369,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
                     .withScopeMatched(scopeMatched)
                     .letIf(getSettings().completion.completeByLocalizedName) {
                         //如果启用，也基于修正的本地化名字进行代码补全
-                        val localizedNames = ParadoxModifierHandler.getModifierLocalizedNames(name, element, configGroup.project)
+                        val localizedNames = ParadoxModifierManager.getModifierLocalizedNames(name, element, configGroup.project)
                         it.withLocalizedNames(localizedNames)
                     }
                     .build(context)
@@ -387,7 +387,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val economicCategoryInfo = modifierElement.economicCategoryInfo ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory //may be null
         val configGroup = getConfigGroup(modifierElement.project, modifierElement.gameType)
-        return ParadoxEconomicCategoryHandler.resolveModifierCategory(modifierCategory, configGroup)
+        return ParadoxEconomicCategoryManager.resolveModifierCategory(modifierCategory, configGroup)
     }
     
     override fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: DocumentationBuilder): Boolean = with(builder) {
@@ -424,7 +424,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val economicCategory = ParadoxDefinitionSearch.search(definitionInfo.name, "economic_category", selector)
             .find()
             ?: return false
-        val economicCategoryInfo = ParadoxEconomicCategoryHandler.getInfo(economicCategory) ?: return false
+        val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return false
         for(modifierInfo in economicCategoryInfo.modifiers) {
             appendBr()
             append(PlsBundle.message("prefix.generatedModifier")).append(" ")

@@ -21,7 +21,7 @@ class ParadoxInlineScriptUsageIndexSupport : ParadoxExpressionIndexSupport<Parad
     
     override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         if(element !is ParadoxScriptProperty) return
-        val info = ParadoxInlineScriptHandler.getUsageInfo(element) ?: return
+        val info = ParadoxInlineScriptManager.getUsageInfo(element) ?: return
         addToFileData(info, fileData)
     }
     
@@ -51,7 +51,7 @@ class ParadoxComplexEnumValueIndexSupport : ParadoxExpressionIndexSupport<Parado
     override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
         if(element !is ParadoxScriptStringExpressionElement) return
         if(!element.isExpression()) return
-        val info = ParadoxComplexEnumValueHandler.getInfo(element) ?: return
+        val info = ParadoxComplexEnumValueManager.getInfo(element) ?: return
         addToFileData(info, fileData)
     }
     

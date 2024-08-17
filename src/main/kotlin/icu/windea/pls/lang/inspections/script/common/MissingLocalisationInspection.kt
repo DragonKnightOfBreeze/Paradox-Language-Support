@@ -45,9 +45,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField var checkModifierDescriptions = false
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val allLocaleMap = ParadoxLocaleHandler.getLocaleConfigs().associateBy { it.id }
+        val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
         val locales = mutableSetOf<CwtLocalisationLocaleConfig>()
-        if(checkForPreferredLocale) locales.add(ParadoxLocaleHandler.getPreferredLocaleConfig())
+        if(checkForPreferredLocale) locales.add(ParadoxLocaleManager.getPreferredLocaleConfig())
         if(checkForSpecificLocales) this.locales.mapNotNullTo(locales) { allLocaleMap.get(it) }
         if(locales.isEmpty()) return PsiElementVisitor.EMPTY_VISITOR
         return object : PsiElementVisitor() {
@@ -143,7 +143,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     .bindSelected(::checkForSpecificLocales)
                     .actionListener { _, component -> checkForSpecificLocales = component.isSelected }
                 cell(ActionLink(PlsBundle.message("inspection.script.missingLocalisation.option.checkForSpecificLocales.configure")) {
-                    val allLocaleMap = ParadoxLocaleHandler.getLocaleConfigs().associateBy { it.id }
+                    val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
                     val selectedLocales = locales.mapNotNull { allLocaleMap.get(it) }
                     val dialog = ParadoxLocaleCheckBoxDialog(selectedLocales, allLocaleMap.values)
                     if(dialog.showAndGet()) {

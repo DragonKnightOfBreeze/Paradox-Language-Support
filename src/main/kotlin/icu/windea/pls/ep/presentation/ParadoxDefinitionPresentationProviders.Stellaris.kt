@@ -78,23 +78,23 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
     }
     
     private fun getNameLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): JLabel? {
-        return ParadoxPresentationHandler.getNameLabel(definition, JBColor.WHITE)
+        return ParadoxPresentationManager.getNameLabel(definition, JBColor.WHITE)
     }
     
     private fun getCostLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): JLabel? {
         val cost = definition.getData<StellarisTechnologyData>()?.cost ?: 0
-        val color = ParadoxTextColorHandler.getInfo("G", definitionInfo.project, definition)?.color //Green
+        val color = ParadoxTextColorManager.getInfo("G", definitionInfo.project, definition)?.color //Green
         return ParadoxLocalisationTextUIRenderer.render(cost.toString(), color)
     }
     
     private fun getIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): Icon? {
-        return ParadoxPresentationHandler.getIcon(definition) ?: getUnknownIcon(definition, definitionInfo)
+        return ParadoxPresentationManager.getIcon(definition) ?: getUnknownIcon(definition, definitionInfo)
     }
     
     private fun getUnknownIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Icon? {
         val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()
         val sprite = ParadoxDefinitionSearch.search("GFX_technology_unknown", "sprite", selector).find() ?: return null
-        return ParadoxPresentationHandler.getIcon(sprite)
+        return ParadoxPresentationManager.getIcon(sprite)
     }
     
     private fun getBackgroundIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): Icon? {
@@ -108,7 +108,7 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
         }
         val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()
         val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
-        return ParadoxPresentationHandler.getIcon(sprite)
+        return ParadoxPresentationManager.getIcon(sprite)
     }
     
     private fun getBottomLineIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): Icon? {
@@ -116,20 +116,20 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
         val spriteName = "GFX_bottom_line_${area}"
         val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()
         val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
-        return ParadoxPresentationHandler.getIcon(sprite)
+        return ParadoxPresentationManager.getIcon(sprite)
     }
     
     private fun getCategoryIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): Icon? {
         val category = data.category?.firstOrNull() ?: return null
         val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()
         val categoryDef = ParadoxDefinitionSearch.search(category, "technology_category", selector).find() ?: return null
-        return ParadoxPresentationHandler.getIcon(categoryDef)
+        return ParadoxPresentationManager.getIcon(categoryDef)
     }
     
     private fun getGatewayIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Icon? {
         val spriteName = "GFX_tech_gateway"
         val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()
         val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
-        return ParadoxPresentationHandler.getIcon(sprite)
+        return ParadoxPresentationManager.getIcon(sprite)
     }
 }

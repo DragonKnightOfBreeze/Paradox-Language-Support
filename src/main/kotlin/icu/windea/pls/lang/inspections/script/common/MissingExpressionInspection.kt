@@ -35,9 +35,9 @@ class MissingExpressionInspection : LocalInspectionTool() {
             
             override fun visitFile(file: PsiFile) {
                 if(file !is ParadoxScriptFile) return
-                val configContext = ParadoxExpressionHandler.getConfigContext(file) ?: return
+                val configContext = ParadoxExpressionManager.getConfigContext(file) ?: return
                 if(configContext.skipMissingExpressionCheck()) return
-                val configs = ParadoxExpressionHandler.getConfigs(file, matchOptions = Options.Default or Options.AcceptDefinition)
+                val configs = ParadoxExpressionManager.getConfigs(file, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(file, file, configs)
             }
             
@@ -52,15 +52,15 @@ class MissingExpressionInspection : LocalInspectionTool() {
                     ?.also { if(it.text.isParameterized()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
-                val configContext = ParadoxExpressionHandler.getConfigContext(element) ?: return
+                val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return
                 if(configContext.skipMissingExpressionCheck()) return
-                val configs = ParadoxExpressionHandler.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
+                val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(element, position, configs)
             }
             
             private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement, configs: List<CwtMemberConfig<*>>) {
                 if(skipCheck(element, configs)) return
-                val occurrenceMap = ParadoxExpressionHandler.getChildOccurrenceMap(element, configs)
+                val occurrenceMap = ParadoxExpressionManager.getChildOccurrenceMap(element, configs)
                 if(occurrenceMap.isEmpty()) return
                 val overriddenProvider = getOverriddenProvider(configs)
                 occurrenceMap.forEach { (configExpression, occurrence) ->

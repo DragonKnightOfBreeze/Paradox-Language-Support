@@ -63,9 +63,9 @@ enum class ParadoxType(
         @JvmStatic
         fun resolve(expression: kotlin.String): ParadoxType {
             return when {
-                ParadoxTypeHandler.isBoolean(expression) -> Boolean
-                ParadoxTypeHandler.isInt(expression) -> Int
-                ParadoxTypeHandler.isFloat(expression) -> Float
+                ParadoxTypeManager.isBoolean(expression) -> Boolean
+                ParadoxTypeManager.isInt(expression) -> Int
+                ParadoxTypeManager.isFloat(expression) -> Float
                 else -> String
             }
         }

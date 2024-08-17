@@ -50,20 +50,20 @@ class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: S
             val newModifierName = info.config.template.extract(newName)
             run {
                 //use first key only -> $_name
-                val key = ParadoxModifierHandler.getModifierNameKeys(modifierName, element).firstOrNull() ?: return@run
-                val newKey = ParadoxModifierHandler.getModifierNameKeys(newModifierName, element).firstOrNull() ?: return@run
+                val key = ParadoxModifierManager.getModifierNameKeys(modifierName, element).firstOrNull() ?: return@run
+                val newKey = ParadoxModifierManager.getModifierNameKeys(newModifierName, element).firstOrNull() ?: return@run
                 val selector = localisationSelector(project, element)
-                    .preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
+                    .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                     .withConstraint(ParadoxLocalisationConstraint.Modifier)
                 val result = ParadoxLocalisationSearch.search(key, selector).findAll()
                 result.forEach { allRenames[it] =  newKey}
             }
             run {
                 //use first key only -> $_desc
-                val key = ParadoxModifierHandler.getModifierNameKeys(modifierName, element).firstOrNull() ?: return@run
-                val newKey = ParadoxModifierHandler.getModifierDescKeys(newModifierName, element).firstOrNull() ?: return@run
+                val key = ParadoxModifierManager.getModifierNameKeys(modifierName, element).firstOrNull() ?: return@run
+                val newKey = ParadoxModifierManager.getModifierDescKeys(newModifierName, element).firstOrNull() ?: return@run
                 val selector = localisationSelector(project, element)
-                    .preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
+                    .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                     .withConstraint(ParadoxLocalisationConstraint.Modifier)
                 val result = ParadoxLocalisationSearch.search(key, selector).findAll()
                 result.forEach { allRenames[it] =  newKey}

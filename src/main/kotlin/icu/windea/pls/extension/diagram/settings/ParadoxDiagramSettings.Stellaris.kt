@@ -47,7 +47,7 @@ class StellarisEventTreeDiagramSettings(
     
     override fun Panel.buildConfigurablePanel(coroutineScope: CoroutineScope) {
         val settings = state
-        val eventTypes = ParadoxEventHandler.getTypes(project, ParadoxGameType.Stellaris)
+        val eventTypes = ParadoxEventManager.getTypes(project, ParadoxGameType.Stellaris)
         eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
         settings.updateSettings()
         
@@ -134,18 +134,18 @@ class StellarisTechnologyTreeDiagramSettings(
     
     override fun Panel.buildConfigurablePanel(coroutineScope: CoroutineScope) {
         val settings = state
-        val tiers = ParadoxTechnologyHandler.Stellaris.getTechnologyTiers(project, null)
+        val tiers = ParadoxTechnologyManager.Stellaris.getTechnologyTiers(project, null)
         tiers.forEach { settings.tier.putIfAbsent(it.name, true) }
-        val areas = ParadoxTechnologyHandler.Stellaris.getResearchAreas()
+        val areas = ParadoxTechnologyManager.Stellaris.getResearchAreas()
         areas.forEach { settings.area.putIfAbsent(it, true) }
-        val categories = ParadoxTechnologyHandler.Stellaris.getTechnologyCategories(project, null)
+        val categories = ParadoxTechnologyManager.Stellaris.getTechnologyCategories(project, null)
         categories.forEach { settings.category.putIfAbsent(it.name, true) }
         settings.updateSettings()
         
         val areaNameProviders = mutableMapOf<String, () -> String?>()
-        areas.forEach { areaNameProviders.put(it) { ParadoxPresentationHandler.getText(it.uppercase(), project) } }
+        areas.forEach { areaNameProviders.put(it) { ParadoxPresentationManager.getText(it.uppercase(), project) } }
         val categoryNameProviders = mutableMapOf<String, () -> String?>()
-        categories.forEach { categoryNameProviders.put(it.name) { ParadoxPresentationHandler.getNameText(it) } }
+        categories.forEach { categoryNameProviders.put(it.name) { ParadoxPresentationManager.getNameText(it) } }
         
         collapsibleGroup(PlsDiagramBundle.message("stellaris.technologyTree.name")) {
             row {

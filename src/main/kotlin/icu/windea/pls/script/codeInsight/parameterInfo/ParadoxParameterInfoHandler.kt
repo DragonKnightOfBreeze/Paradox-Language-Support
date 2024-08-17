@@ -54,11 +54,11 @@ class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, ParadoxPara
                     parameterContextInfo.parameters.forEach { (parameterName, elements) ->
                         if(isFirst) isFirst = false else append(", ")
                         append(parameterName)
-                        if(ParadoxParameterHandler.isOptional(parameterContextInfo, parameterName)) append("?") //optional marker
+                        if(ParadoxParameterManager.isOptional(parameterContextInfo, parameterName)) append("?") //optional marker
                         //加上推断得到的类型信息
                         val parameterElement = elements.firstOrNull()?.parameterElement
                         if(parameterElement != null) {
-                            val inferredType = ParadoxParameterHandler.getInferredType(parameterElement)
+                            val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
                             if(inferredType != null) {
                                 append(": ").append(inferredType.escapeXml())
                             }

@@ -60,7 +60,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
             }
             for(event in events) {
                 ProgressManager.checkCanceled()
-                val invocations = ParadoxEventHandler.getInvocations(event)
+                val invocations = ParadoxEventManager.getInvocations(event)
                 if(invocations.isEmpty()) continue
                 //事件 --> 调用的事件
                 for(invocation in invocations) {

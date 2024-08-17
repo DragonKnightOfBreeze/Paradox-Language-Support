@@ -27,7 +27,7 @@ class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters
         ParadoxCompletionManager.initializeContext(parameters, context)
         
         //仅提示脚本文件中向上查找到的那个合法的事件命名空间
-        val eventNamespace = ParadoxEventHandler.getMatchedNamespace(event) ?: return //skip
+        val eventNamespace = ParadoxEventManager.getMatchedNamespace(event) ?: return //skip
         val name = eventNamespace.value ?: return
         val typeFile = eventNamespace.containingFile
         val lookupElement = LookupElementBuilder.create(eventNamespace, name)

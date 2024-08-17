@@ -32,7 +32,7 @@ class GotoLocalisationsHandler: GotoTargetHandler() {
         val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
             //need read action here
             runReadAction {
-                val selector = localisationSelector(project, localisation).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
+                val selector = localisationSelector(project, localisation).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                 val resolved = ParadoxLocalisationSearch.search(localisationInfo.name, selector).findAll()
                 targets.addAll(resolved)
             }

@@ -77,7 +77,7 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
     
     class Builder : LightStubBuilder() {
         override fun createStubForFile(file: PsiFile, tree: LighterAST): StubElement<*> {
-            return ParadoxDefinitionHandler.createStubForFile(file, tree) ?: super.createStubForFile(file, tree)
+            return ParadoxDefinitionManager.createStubForFile(file, tree) ?: super.createStubForFile(file, tree)
         }
         
         override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {

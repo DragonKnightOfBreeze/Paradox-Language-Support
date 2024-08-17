@@ -41,7 +41,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     ProgressManager.checkCanceled()
                     //need read action here
                     runReadAction {
-                        val selector = localisationSelector(project, definition).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
+                        val selector = localisationSelector(project, definition).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                         val resolved = locationExpression.resolveAll(definition, definitionInfo, selector)
                         if(resolved != null && resolved.elements.isNotEmpty()) {
                             targets.addAll(resolved.elements)
@@ -52,26 +52,26 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             if(!runResult) return null
             return GotoData(definition, targets.distinct().toTypedArray(), emptyList())
         }
-        val modifierElement = ParadoxModifierHandler.resolveModifier(element)
+        val modifierElement = ParadoxModifierManager.resolveModifier(element)
         if(modifierElement != null) {
             val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
             val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
                 runReadAction {
                     run {
-                        val keys = ParadoxModifierHandler.getModifierNameKeys(modifierElement.name, modifierElement)
+                        val keys = ParadoxModifierManager.getModifierNameKeys(modifierElement.name, modifierElement)
                         val result = keys.firstNotNullOfOrNull { key ->
                             val selector = localisationSelector(project, element).contextSensitive()
-                                .preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
+                                .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
                             ParadoxLocalisationSearch.search(key, selector).findAll().orNull()
                         }
                         if(result != null) targets.addAll(result)
                     }
                     run {
-                        val keys = ParadoxModifierHandler.getModifierDescKeys(modifierElement.name, modifierElement)
+                        val keys = ParadoxModifierManager.getModifierDescKeys(modifierElement.name, modifierElement)
                         val result = keys.firstNotNullOfOrNull { key ->
                             val selector = localisationSelector(project, element).contextSensitive()
-                                .preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
+                                .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
                             ParadoxLocalisationSearch.search(key, selector).findAll().orNull()
                         }
@@ -99,7 +99,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             val definitionName = definitionInfo.name.orAnonymous()
             return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.1", definitionName.escapeXml())
         }
-        val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.let { ParadoxModifierHandler.resolveModifier(it) }
+        val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.let { ParadoxModifierManager.resolveModifier(it) }
         if(modifierElement != null) {
             val modifierName = modifierElement.name
             return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.2", modifierName.escapeXml())
@@ -114,7 +114,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             val definitionName = definitionInfo.name.orAnonymous()
             return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.1", definitionName.escapeXml())
         }
-        val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.let { ParadoxModifierHandler.resolveModifier(it) }
+        val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.let { ParadoxModifierManager.resolveModifier(it) }
         if(modifierElement != null) {
             val modifierName = modifierElement.name
             return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.2", modifierName.escapeXml())

@@ -290,9 +290,9 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: Parado
     val render = getSettings().documentation.renderNameDescForModifiers
     val gameType = configGroup.gameType ?: return
     val project = configGroup.project
-    val usedLocale = ParadoxLocaleHandler.getUsedLocaleInDocumentation(element)
+    val usedLocale = ParadoxLocaleManager.getUsedLocaleInDocumentation(element)
     val nameLocalisation = run {
-        val keys = ParadoxModifierHandler.getModifierNameKeys(name, element)
+        val keys = ParadoxModifierManager.getModifierNameKeys(name, element)
         keys.firstNotNullOfOrNull { key ->
             val selector = localisationSelector(project, element).contextSensitive()
                 .preferLocale(usedLocale)
@@ -301,7 +301,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: Parado
         }
     }
     val descLocalisation = run {
-        val keys = ParadoxModifierHandler.getModifierDescKeys(name, element)
+        val keys = ParadoxModifierManager.getModifierDescKeys(name, element)
         keys.firstNotNullOfOrNull { key ->
             val selector = localisationSelector(project, element).contextSensitive()
                 .preferLocale(usedLocale)
@@ -338,7 +338,7 @@ private fun DocumentationBuilder.addModifierIcon(element: ParadoxModifierElement
     val gameType = configGroup.gameType ?: return
     val project = configGroup.project
     val iconFile = run {
-        val paths = ParadoxModifierHandler.getModifierIconPaths(name, element)
+        val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
         paths.firstNotNullOfOrNull { path ->
             val iconSelector = fileSelector(project, element).contextSensitive()
             ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
@@ -373,7 +373,7 @@ private fun DocumentationBuilder.addModifierScope(element: ParadoxModifierElemen
         sections.put(PlsBundle.message("sectionTitle.categories"), getModifierCategoriesText(categoryNames, gameType, contextElement))
     }
     
-    val supportedScopes = ParadoxScopeHandler.getSupportedScopes(modifierCategories)
+    val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
     sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
 }
 
@@ -387,8 +387,8 @@ private fun DocumentationBuilder.addScopeContext(element: PsiElement, name: Stri
     val sections = getSections(SECTIONS_INFO) ?: return
     val gameType = configGroup.gameType ?: return
     val memberElement = element.parentOfType<ParadoxScriptMemberElement>(true) ?: return
-    if(!ParadoxScopeHandler.isScopeContextSupported(memberElement, indirect = true)) return
-    val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement)
+    if(!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return
+    val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
     if(scopeContext == null) return
     //TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
     // 因为这里的referenceElement是整个stringExpression，得到的作用域上下文会是脚本表达式最终的作用域上下文
@@ -506,7 +506,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: P
     val localisationInfos = definitionInfo.localisations
     if(localisationInfos.isEmpty()) return
     val project = element.project
-    val usedLocale = ParadoxLocaleHandler.getUsedLocaleInDocumentation(element)
+    val usedLocale = ParadoxLocaleManager.getUsedLocaleInDocumentation(element)
     val map = mutableMapOf<String, String>()
     val sections = getSections(SECTIONS_LOC)
     val sectionKeys = mutableSetOf<String>()
@@ -602,7 +602,7 @@ private fun DocumentationBuilder.addModifierScopeForDefinition(element: ParadoxS
         sections.put(PlsBundle.message("sectionTitle.categories"), getModifierCategoriesText(categoryNames, gameType, element))
     }
     
-    val supportedScopes = ParadoxScopeHandler.getSupportedScopes(modifierCategories)
+    val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
     sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, element))
 }
 
@@ -615,8 +615,8 @@ private fun DocumentationBuilder.addScopeContextForDefinition(element: ParadoxSc
     
     val sections = getSections(SECTIONS_INFO) ?: return
     val gameType = definitionInfo.gameType
-    if(!ParadoxScopeHandler.isScopeContextSupported(element, indirect = true)) return
-    val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(element)
+    if(!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return
+    val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element)
     if(scopeContext == null) return
     sections.put(PlsBundle.message("sectionTitle.scopeContext"), getScopeContextText(scopeContext, gameType, element))
 }
@@ -634,11 +634,11 @@ private fun DocumentationBuilder.addParametersForDefinition(element: ParadoxScri
             append("<code>")
             append(parameterName)
             //加上推断得到的规则信息
-            if(ParadoxParameterHandler.isOptional(parameterContextInfo, parameterName)) append("?") //optional marker
+            if(ParadoxParameterManager.isOptional(parameterContextInfo, parameterName)) append("?") //optional marker
             //加上推断得到的类型信息
             val parameterElement = elements.firstOrNull()?.parameterElement
             if(parameterElement != null) {
-                val inferredType = ParadoxParameterHandler.getInferredType(parameterElement)
+                val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
                 if(inferredType != null) {
                     append(": ").append(inferredType.escapeXml())
                 }
@@ -691,7 +691,7 @@ private fun DocumentationBuilder.buildLocalisationSections(element: ParadoxLocal
     //加上渲染后的本地化文本
     if(!getSettings().documentation.renderLocalisationForLocalisations) return
     val locale = selectLocale(element)
-    val usedLocale = ParadoxLocaleHandler.getUsedLocaleInDocumentation(element, locale)
+    val usedLocale = ParadoxLocaleManager.getUsedLocaleInDocumentation(element, locale)
     val usedElement = when {
         usedLocale == locale -> element
         else -> {

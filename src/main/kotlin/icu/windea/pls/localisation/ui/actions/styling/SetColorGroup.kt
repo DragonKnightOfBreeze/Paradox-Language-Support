@@ -20,7 +20,7 @@ class SetColorGroup : DefaultActionGroup() {
         if(editor == null) return
         val file = e.getData(CommonDataKeys.PSI_FILE) ?: return
         if(file !is ParadoxLocalisationFile) return
-        val colorConfigs = ParadoxTextColorHandler.getInfos(file.project, file)
+        val colorConfigs = ParadoxTextColorManager.getInfos(file.project, file)
         if(colorConfigs.isEmpty()) return
         val actions = colorConfigs.map { setColorActionCache.get(it) }
         synchronized(this) {

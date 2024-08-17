@@ -75,7 +75,7 @@ class ParadoxModRootInfo(
     override val gameRootFile: VirtualFile get() = rootFile
     
     private fun doGetInferredGameType(): ParadoxGameType? {
-        return ParadoxCoreHandler.getInferredGameType(this)
+        return ParadoxCoreManager.getInferredGameType(this)
     }
     
     private fun doGetGameType(): ParadoxGameType {

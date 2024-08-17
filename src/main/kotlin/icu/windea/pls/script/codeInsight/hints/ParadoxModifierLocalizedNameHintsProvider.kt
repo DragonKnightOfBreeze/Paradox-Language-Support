@@ -50,7 +50,7 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Set
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
         if(element !is ParadoxScriptStringExpressionElement) return true
         if(!element.isExpression()) return true
-        val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return true
+        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return true
         val type = config.expression.type
         if(type == CwtDataTypes.Modifier) {
             val name = element.value
@@ -58,10 +58,10 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Set
             if(name.isParameterized()) return true
             val configGroup = config.configGroup
             val project = configGroup.project
-            val keys = ParadoxModifierHandler.getModifierNameKeys(name, element)
+            val keys = ParadoxModifierManager.getModifierNameKeys(name, element)
             val localisation = keys.firstNotNullOfOrNull { key ->
                 val selector = localisationSelector(project, element).contextSensitive()
-                    .preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
+                    .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                     .withConstraint(ParadoxLocalisationConstraint.Modifier)
                 ParadoxLocalisationSearch.search(key, selector).find()
             } ?: return true

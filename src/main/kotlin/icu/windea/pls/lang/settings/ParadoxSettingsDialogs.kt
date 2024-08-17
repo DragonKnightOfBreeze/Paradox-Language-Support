@@ -41,7 +41,7 @@ class ParadoxGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
                         .bindText(gameDirectoryProperty)
                         .columns(36)
                         .align(Align.FILL)
-                        .validationOnApply { ParadoxGameHandler.validateGameDirectory(this, gameType, gameDirectory) }
+                        .validationOnApply { ParadoxCoreManager.validateGameDirectory(this, gameType, gameDirectory) }
                 }
             }
             
@@ -49,7 +49,7 @@ class ParadoxGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
                 link(PlsBundle.message("gameDirectory.quickSelectAll")) {
                     properties.forEach f@{ (gameTypeId, gameDirectoryProperty) ->
                         val gameType = ParadoxGameType.resolve(gameTypeId) ?: return@f
-                        val quickGameDirectory = ParadoxGameHandler.getQuickGameDirectory(gameType)?.orNull() ?: return@f
+                        val quickGameDirectory = ParadoxCoreManager.getQuickGameDirectory(gameType)?.orNull() ?: return@f
                         var gameDirectory by gameDirectoryProperty
                         gameDirectory = quickGameDirectory
                     }

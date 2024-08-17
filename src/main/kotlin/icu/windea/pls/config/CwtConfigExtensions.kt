@@ -57,25 +57,25 @@ val CwtMemberElement.configType: CwtConfigType?
 
 
 fun CwtTemplateExpression.extract(referenceName: String): String {
-    return CwtTemplateExpressionHandler.extract(this, referenceName)
+    return CwtTemplateExpressionManager.extract(this, referenceName)
 }
 
 fun CwtTemplateExpression.extract(referenceNames: Map<CwtDataExpression, String>): String {
-    return CwtTemplateExpressionHandler.extract(this, referenceNames)
+    return CwtTemplateExpressionManager.extract(this, referenceNames)
 }
 
 fun CwtTemplateExpression.matches(text: String, contextElement: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int = CwtConfigMatcher.Options.Default): Boolean {
-    return CwtTemplateExpressionHandler.matches(text, contextElement, this, configGroup, matchOptions)
+    return CwtTemplateExpressionManager.matches(text, contextElement, this, configGroup, matchOptions)
 }
 
 fun CwtTemplateExpression.resolve(text: String, contextElement: PsiElement, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
-    return CwtTemplateExpressionHandler.resolve(text, contextElement, this, configGroup)
+    return CwtTemplateExpressionManager.resolve(text, contextElement, this, configGroup)
 }
 
 fun CwtTemplateExpression.resolveReferences(text: String, configGroup: CwtConfigGroup): List<ParadoxTemplateSnippetExpressionReference> {
-    return CwtTemplateExpressionHandler.resolveReferences(text, this, configGroup)
+    return CwtTemplateExpressionManager.resolveReferences(text, this, configGroup)
 }
 
 fun CwtTemplateExpression.processResolveResult(contextElement: PsiElement, configGroup: CwtConfigGroup, processor: Processor<String>) {
-    CwtTemplateExpressionHandler.processResolveResult(contextElement, this, configGroup, processor)
+    CwtTemplateExpressionManager.processResolveResult(contextElement, this, configGroup, processor)
 }

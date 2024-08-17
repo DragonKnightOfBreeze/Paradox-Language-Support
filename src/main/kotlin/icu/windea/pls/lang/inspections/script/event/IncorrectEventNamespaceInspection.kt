@@ -29,7 +29,7 @@ class IncorrectEventNamespaceInspection : LocalInspectionTool() {
                 if(definitionInfo.type != "event_namespace") return
                 val nameField = definitionInfo.typeConfig.nameField
                 val eventNamespace = definitionInfo.name
-                if(ParadoxEventHandler.isValidEventNamespace(eventNamespace)) return
+                if(ParadoxEventManager.isValidEventNamespace(eventNamespace)) return
                 val nameElement = if(nameField == null) element.propertyKey else element.findProperty(nameField)?.propertyValue
                 if(nameElement == null) return //忽略
                 holder.registerProblem(nameElement, PlsBundle.message("inspection.script.incorrectEventNamespace.desc", eventNamespace))

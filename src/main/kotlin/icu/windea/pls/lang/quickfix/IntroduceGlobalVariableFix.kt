@@ -26,7 +26,7 @@ class IntroduceGlobalVariableFix(
 	override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 		//打开对话框
 		val virtualFile = file.virtualFile ?: return
-		val scriptedVariablesDirectory = ParadoxFileHandler.getScriptedVariablesDirectory(virtualFile) ?: return //不期望的结果
+		val scriptedVariablesDirectory = ParadoxFileManager.getScriptedVariablesDirectory(virtualFile) ?: return //不期望的结果
 		val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, variableName, "0")
 		if(!dialog.showAndGet()) return //取消
 		

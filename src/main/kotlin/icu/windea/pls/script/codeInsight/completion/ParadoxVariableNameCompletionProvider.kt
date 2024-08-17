@@ -24,7 +24,7 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         if(element.text.isParameterized()) return
         if(!element.isBlockMember()) return
         val parentProperty = element.findParentProperty() ?: return
-        val configs = ParadoxExpressionHandler.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
+        val configs = ParadoxExpressionManager.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
         if(configs.isEmpty()) return
         val configGroup = configs.first().configGroup
         context.configGroup = configGroup
@@ -46,7 +46,7 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         context.keyword = keyword
         context.quoted = quoted
         context.rightQuoted = rightQuoted
-        context.expressionOffset = ParadoxExpressionHandler.getExpressionOffset(element)
+        context.expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
         
         context.config = configGroup.mockVariableConfig
         

@@ -38,7 +38,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
         context.keyword = keyword
         context.quoted = quoted
         context.rightQuoted = rightQuoted
-        context.expressionOffset = ParadoxExpressionHandler.getExpressionOffset(element)
+        context.expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
         
         val gameType = selectGameType(file) ?: return
         val configGroup = getConfigGroup(project, gameType)
@@ -51,11 +51,11 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
             element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockMember()) -> {
                 val fileInfo = file.fileInfo ?: return
                 val path = fileInfo.pathToEntry //这里使用pathToEntry
-                val elementPath = ParadoxElementPathHandler.get(element, PlsConstants.maxDefinitionDepth) ?: return
+                val elementPath = ParadoxElementPathManager.get(element, PlsConstants.maxDefinitionDepth) ?: return
                 if(elementPath.path.isParameterized()) return //忽略元素路径带参数的情况
                 for(typeConfig in configGroup.types.values) {
                     if(typeConfig.nameField != null) continue
-                    if(ParadoxDefinitionHandler.matchesTypeByUnknownDeclaration(path, elementPath, null, typeConfig)) {
+                    if(ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(path, elementPath, null, typeConfig)) {
                         val type = typeConfig.name
                         val declarationConfig = configGroup.declarations.get(type) ?: continue
                         //需要考虑不指定子类型的情况
@@ -115,7 +115,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
             .letIf(getSettings().completion.completeByLocalizedName) {
                 //如果启用，也基于定义的本地化名字进行代码补全
                 ProgressManager.checkCanceled()
-                val localizedNames = ParadoxDefinitionHandler.getLocalizedNames(definition)
+                val localizedNames = ParadoxDefinitionManager.getLocalizedNames(definition)
                 it.withLocalizedNames(localizedNames)
             }
             .build(context)

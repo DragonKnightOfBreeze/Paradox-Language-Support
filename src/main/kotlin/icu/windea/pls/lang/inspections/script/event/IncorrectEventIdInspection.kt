@@ -29,7 +29,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
                 if(definitionInfo.type != "event") return
                 val nameField = definitionInfo.typeConfig.nameField
                 val eventId = definitionInfo.name
-                if(ParadoxEventHandler.isValidEventId(eventId)) return
+                if(ParadoxEventManager.isValidEventId(eventId)) return
                 val nameElement = if(nameField == null) element.propertyKey else element.findProperty(nameField)?.propertyValue
                 if(nameElement == null) return //忽略
                 holder.registerProblem(nameElement, PlsBundle.message("inspection.script.incorrectEventId.desc", eventId))

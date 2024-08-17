@@ -120,7 +120,7 @@ class ParadoxEventInEventIndexSupport : ParadoxExpressionIndexSupport<ParadoxEve
         
         val eventName = element.value
         val containingEventName = definitionInfo.name
-        val containingEventScope = ParadoxEventHandler.getScope(definitionInfo)
+        val containingEventScope = ParadoxEventManager.getScope(definitionInfo)
         val scopesElementOffset = getScopesElementOffset(element, config) ?: return
         val info = ParadoxEventInEventInfo(eventName, containingEventName, containingEventScope, scopesElementOffset, element.startOffset, definitionInfo.gameType)
         addToFileData(info, fileData)
@@ -186,7 +186,7 @@ class ParadoxOnActionInEventIndexSupport : ParadoxExpressionIndexSupport<Paradox
         
         val onActionName = element.value
         val containingEventName = definitionInfo.name
-        val containingEventScope = ParadoxEventHandler.getScope(definitionInfo)
+        val containingEventScope = ParadoxEventManager.getScope(definitionInfo)
         val scopesElementOffset = getScopesElementOffset(element, config) ?: return
         val info = ParadoxOnActionInEventInfo(onActionName, containingEventName, containingEventScope, scopesElementOffset, element.startOffset, definitionInfo.gameType)
         addToFileData(info, fileData)

@@ -38,15 +38,15 @@ class ParadoxGenerateLocalisationsHandler(
             ParadoxLocalisationGenerator.generate(context, selectedElements, project, file, selected)
         }
         
-        val selectedLocale = ParadoxLocaleHandler.getPreferredLocaleConfig()
-        val allLocales = ParadoxLocaleHandler.getLocaleConfigs()
+        val selectedLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
+        val allLocales = ParadoxLocaleManager.getLocaleConfigs()
         val localePopup = ParadoxLocaleListPopup(selectedLocale, allLocales, onChosen)
         JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
     }
     
     private fun getFinalContext(file: PsiFile): ParadoxLocalisationCodeInsightContext? {
         if(forFile) {
-            val locales = ParadoxLocaleHandler.getLocaleConfigs()
+            val locales = ParadoxLocaleManager.getLocaleConfigs()
             return ParadoxLocalisationCodeInsightContext.fromFile(file, locales, fromInspection = fromInspection)
         }
         return context

@@ -27,7 +27,7 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
         //提示parameter
         val localisation = parameters.position.parentOfType<ParadoxLocalisationProperty>()
         if(localisation != null) {
-            ParadoxLocalisationParameterHandler.completeParameters(localisation, result)
+            ParadoxLocalisationParameterManager.completeParameters(localisation, result)
         }
         
         //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
@@ -36,7 +36,7 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
         //提示localisation或者synced_localisation
         val selector = localisationSelector(project, file)
             .contextSensitive()
-            .preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
+            .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         //.distinctByName() //这里selector不需要指定去重
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> {
             ProgressManager.checkCanceled()

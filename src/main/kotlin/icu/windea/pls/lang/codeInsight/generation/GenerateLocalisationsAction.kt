@@ -44,7 +44,7 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
     }
     
     private fun getContext(file: PsiFile, editor: Editor): ParadoxLocalisationCodeInsightContext? {
-        val locales = ParadoxLocaleHandler.getLocaleConfigs()
+        val locales = ParadoxLocaleManager.getLocaleConfigs()
         val element = findElement(file, editor.caretModel.offset)
         val contextElement = when {
             element == null -> null

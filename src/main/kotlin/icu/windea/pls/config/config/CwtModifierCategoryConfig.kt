@@ -27,12 +27,12 @@ private fun doResolve(config: CwtPropertyConfig): CwtModifierCategoryConfigImpl?
         when(prop.key) {
             //may be empty here (e.g., "AI Economy")
             "supported_scopes" -> supportedScopes = buildSet {
-                prop.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
-                prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
+                prop.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
+                prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
             }
         }
     }
-    supportedScopes = supportedScopes ?: ParadoxScopeHandler.anyScopeIdSet
+    supportedScopes = supportedScopes ?: ParadoxScopeManager.anyScopeIdSet
     return CwtModifierCategoryConfigImpl(config, name, supportedScopes)
 }
 

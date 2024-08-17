@@ -8,8 +8,11 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.testFramework.*
 import icu.windea.pls.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.ParadoxFileManager.Keys
 import icu.windea.pls.model.*
 import java.lang.invoke.*
 import java.nio.file.*
@@ -17,6 +20,43 @@ import java.util.*
 
 object ParadoxFileManager {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
+    
+    object Keys: KeyRegistry() {
+        val fileExtensions by createKey<Set<String>>(this)
+    }
+    
+    const val scriptedVariablesPath = "common/scripted_variables"
+    
+    fun getRootDirectory(context: VirtualFile): VirtualFile? {
+        return context.fileInfo?.rootInfo?.gameRootFile
+    }
+    
+    fun getScriptedVariablesDirectory(context: VirtualFile): VirtualFile? {
+        val root = getRootDirectory(context) ?: return null
+        VfsUtil.createDirectoryIfMissing(root, scriptedVariablesPath)
+        return root.findFileByRelativePath(scriptedVariablesPath)
+    }
+    
+    /**
+     * 判断目标文件能否引用另一个文件中的内容。
+     *
+     * 对于某些蠢驴游戏来说，游戏目录下可以存在多个入口目录（entryPaths）。
+     * 认为模组目录以及主要入口目录（根目录或者game目录）不能引用次要入口目录（非根目录或者game目录）下的文件中的内容。
+     */
+    fun canReference(targetFile: VirtualFile?, otherFile: VirtualFile?): Boolean {
+        val target = targetFile?.fileInfo ?: return true
+        val other = otherFile?.fileInfo ?: return true
+        if(target.isMainEntry()) {
+            if(!other.isMainEntry()) return false
+        }
+        return true
+    }
+    
+    fun getFileExtensionOptionValues(config: CwtMemberConfig<*>) : Set<String> {
+        return config.getOrPutUserData(Keys.fileExtensions) {
+            config.findOption("file_extensions")?.getOptionValueOrValues().orEmpty()
+        }
+    }
     
     /**
      * 基于指定的虚拟文件创建一个临时文件。

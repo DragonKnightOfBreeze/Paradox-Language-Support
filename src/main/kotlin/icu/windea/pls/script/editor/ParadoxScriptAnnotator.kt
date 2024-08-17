@@ -119,7 +119,7 @@ class ParadoxScriptAnnotator : Annotator {
         }
         
         val isKey = element is ParadoxScriptPropertyKey
-        val config = ParadoxExpressionHandler.getConfigs(element, orDefault = isKey).firstOrNull()
+        val config = ParadoxExpressionManager.getConfigs(element, orDefault = isKey).firstOrNull()
         if(config != null) {
             //如果不是字符串，除非是定义引用，否则不作高亮
             if(element !is ParadoxScriptStringExpressionElement && config.expression.type != CwtDataTypes.Definition) {
@@ -143,6 +143,6 @@ class ParadoxScriptAnnotator : Annotator {
     }
     
     private fun annotateExpression(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, config: CwtMemberConfig<*>) {
-        ParadoxExpressionHandler.annotateExpression(element, null, config, holder)
+        ParadoxExpressionManager.annotateExpression(element, null, config, holder)
     }
 }

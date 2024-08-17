@@ -85,7 +85,7 @@ object ParadoxLocalisationTextRenderer {
         //显示解析后的概念文本
         run r1@{
             val concept = element.concept ?: return@r1
-            val (_, textElement) = ParadoxGameConceptHandler.getReferenceElementAndTextElement(concept)
+            val (_, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(concept)
             val richTextList = when {
                 textElement is ParadoxLocalisationConceptText -> textElement.richTextList
                 textElement is ParadoxLocalisationProperty -> textElement.propertyValue?.richTextList

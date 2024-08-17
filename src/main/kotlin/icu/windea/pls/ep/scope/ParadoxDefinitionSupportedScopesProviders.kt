@@ -12,7 +12,7 @@ class StellarisScriptedModifierSupportedScopesProvider : ParadoxDefinitionSuppor
     }
     
     override fun getSupportedScopes(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String>? {
-        val modifierCategory = ParadoxScriptedModifierHandler.Stellaris.resolveModifierCategory(definition, definitionInfo) ?: return null
-        return ParadoxScopeHandler.getSupportedScopes(modifierCategory)
+        val modifierCategory = ParadoxScriptedModifierManager.Stellaris.resolveModifierCategory(definition, definitionInfo) ?: return null
+        return ParadoxScopeManager.getSupportedScopes(modifierCategory)
     }
 }

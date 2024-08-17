@@ -32,7 +32,7 @@ class ParadoxInlineScriptInlineDialog(
     }
     
     override fun getNameLabelText(): String {
-        val name = ParadoxInlineScriptHandler.getInlineScriptExpression(element).orAnonymous()
+        val name = ParadoxInlineScriptManager.getInlineScriptExpression(element).orAnonymous()
         return PlsBundle.message("inline.inlineScript.label", name)
     }
     

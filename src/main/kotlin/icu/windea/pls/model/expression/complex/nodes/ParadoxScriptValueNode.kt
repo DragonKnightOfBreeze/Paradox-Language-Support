@@ -40,7 +40,7 @@ class ParadoxScriptValueNode(
         if(element !is ParadoxScriptStringExpressionElement) return null //unexpected
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
+        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         return Reference(element, rangeInElement, text, config, configGroup)
     }
     
@@ -80,11 +80,11 @@ class ParadoxScriptValueNode(
         }
         
         private fun doResolve(): PsiElement? {
-            return ParadoxExpressionHandler.resolveExpression(element, rangeInElement, config, config.expression)
+            return ParadoxExpressionManager.resolveExpression(element, rangeInElement, config, config.expression)
         }
         
         private fun doMultiResolve(): Array<out ResolveResult> {
-            return ParadoxExpressionHandler.multiResolveExpression(element, rangeInElement, config, config.expression)
+            return ParadoxExpressionManager.multiResolveExpression(element, rangeInElement, config, config.expression)
                 .mapToArray { PsiElementResolveResult(it) }
         }
     }

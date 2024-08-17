@@ -30,7 +30,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
             
             val orDefault = element is ParadoxScriptPropertyKey
             val matchOptions = Options.Default or Options.AcceptDefinition
-            val configs = ParadoxExpressionHandler.getConfigs(element, orDefault, matchOptions)
+            val configs = ParadoxExpressionManager.getConfigs(element, orDefault, matchOptions)
             for(config in configs) {
                 result.add(config)
                 config.resolvedOrNull()?.also { result.add(it) }
@@ -52,7 +52,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
                         }
                     }
                     configExpression.type == CwtDataTypes.Modifier -> {
-                        val modifierElement = ParadoxModifierHandler.resolveModifier(name, element, configGroup)
+                        val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup)
                         modifierElement?.modifierConfig?.also { result.add(it) }
                     }
                 }
@@ -108,7 +108,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
         
         run r0@{
             val element = file.findElementAt(offset) {
-                it.parents(false).firstNotNullOfOrNull { p -> ParadoxParameterHandler.getParameterElement(p) }
+                it.parents(false).firstNotNullOfOrNull { p -> ParadoxParameterManager.getParameterElement(p) }
             } ?: return@r0
             val extendedConfigs = configGroup.extendedParameters.findFromPattern(element.name, element, configGroup).orEmpty()
                 .filterTo(result) { it.contextKey.matchFromPattern(element.contextKey, element, configGroup) }
@@ -147,11 +147,11 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             
             val orDefault = element is ParadoxScriptPropertyKey
             val matchOptions = Options.Default or Options.AcceptDefinition
-            val configs = ParadoxExpressionHandler.getConfigs(element, orDefault, matchOptions)
+            val configs = ParadoxExpressionManager.getConfigs(element, orDefault, matchOptions)
             for(config in configs) {
                 val configExpression = config.expression
                 when {
-                    configExpression.expressionString == ParadoxInlineScriptHandler.inlineScriptPathExpressionString -> {
+                    configExpression.expressionString == ParadoxInlineScriptManager.inlineScriptPathExpressionString -> {
                         val extendedConfig = configGroup.extendedInlineScripts.findFromPattern(name, element, configGroup) ?: continue
                         result.add(extendedConfig)
                     }

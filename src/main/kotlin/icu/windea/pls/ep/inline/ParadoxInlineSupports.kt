@@ -9,13 +9,13 @@ class ParadoxInlineScriptInlineSupport : ParadoxInlineSupport {
     
     override fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
         if(element !is ParadoxScriptProperty) return null
-        val info = ParadoxInlineScriptHandler.getUsageInfo(element) ?: return null
+        val info = ParadoxInlineScriptManager.getUsageInfo(element) ?: return null
         val expression = info.expression
         return withRecursionGuard("icu.windea.pls.lang.inline.ParadoxInlineScriptInlineSupport.inlineElement") a1@{
             withCheckRecursion(expression) a2@{
-                val configContext = ParadoxExpressionHandler.getConfigContext(element) ?: return@a2 null
+                val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return@a2 null
                 val project = configContext.configGroup.project
-                ParadoxInlineScriptHandler.getInlineScriptFile(expression, element, project)
+                ParadoxInlineScriptManager.getInlineScriptFile(expression, element, project)
             }
         }
     }

@@ -55,10 +55,10 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 		val offset = leftCurlyBrace.endOffset
 		val isAtLineEnd = editor.document.isAtLineEnd(offset, true)
 		if(!isAtLineEnd) return true //show only if there are no non-blank characters after '{'
-		if(!ParadoxScopeHandler.isScopeContextSupported(element, indirect = true)) return true
-		val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(element)
+		if(!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return true
+		val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element)
 		if(scopeContext != null) {
-			if(settings.showOnlyIfScopeIsChanged && !ParadoxScopeHandler.isScopeContextChanged(element, scopeContext)) return true
+			if(settings.showOnlyIfScopeIsChanged && !ParadoxScopeManager.isScopeContextChanged(element, scopeContext)) return true
 			
 			val gameType = selectGameType(file) ?: return true
 			val configGroup = getConfigGroup(file.project, gameType)
@@ -91,7 +91,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 	
 	private fun PresentationFactory.scopeLinkPresentation(scope: ParadoxScope, configGroup: CwtConfigGroup): InlayPresentation {
 		return when {
-			ParadoxScopeHandler.isUnsureScopeId(scope.id) -> smallText(scope.id)
+			ParadoxScopeManager.isUnsureScopeId(scope.id) -> smallText(scope.id)
 			else -> psiSingleReference(smallText(scope.id)) { getScopeElement(configGroup, scope) }
 		}
 	}

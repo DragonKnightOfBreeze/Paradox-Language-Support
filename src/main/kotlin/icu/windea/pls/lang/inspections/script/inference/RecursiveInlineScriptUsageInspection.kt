@@ -12,8 +12,8 @@ import icu.windea.pls.lang.util.*
  */
 class RecursiveInlineScriptUsageInspection: LocalInspectionTool() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        val inlineScriptExpression = ParadoxInlineScriptHandler.getInlineScriptExpression(file) ?: return null
-        val configContext = ParadoxExpressionHandler.getConfigContext(file) ?: return null
+        val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return null
+        val configContext = ParadoxExpressionManager.getConfigContext(file) ?: return null
         if(configContext.inlineScriptHasRecursion != true) return null
         
         val holder = ProblemsHolder(manager, file, isOnTheFly)

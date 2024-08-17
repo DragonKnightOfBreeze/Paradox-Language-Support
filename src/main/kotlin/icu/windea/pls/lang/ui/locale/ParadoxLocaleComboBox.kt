@@ -10,12 +10,12 @@ import icu.windea.pls.lang.util.*
 fun Row.localeComboBox(addAuto: Boolean = false): Cell<ComboBox<String>> {
     val localeList = buildList {
         if(addAuto) add("auto")
-        addAll(ParadoxLocaleHandler.getLocaleConfigs(pingPreferred = false).map { it.id })
+        addAll(ParadoxLocaleManager.getLocaleConfigs(pingPreferred = false).map { it.id })
     }
     return comboBox(localeList, SimpleListCellRenderer.create { label, value: String, _ ->
         when(value) {
             "auto" -> label.text = PlsBundle.message("locale.auto")
-            else -> label.text = ParadoxLocaleHandler.getLocaleConfig(value).description
+            else -> label.text = ParadoxLocaleManager.getLocaleConfig(value).description
         }
     })
 }

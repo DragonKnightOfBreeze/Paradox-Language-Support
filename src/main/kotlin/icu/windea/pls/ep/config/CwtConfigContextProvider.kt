@@ -33,7 +33,7 @@ interface CwtConfigContextProvider {
         
         fun getContext(element: ParadoxScriptMemberElement): CwtConfigContext? {
             val file = element.containingFile ?: return null
-            val elementPath = ParadoxElementPathHandler.get(element) ?: return null
+            val elementPath = ParadoxElementPathManager.get(element) ?: return null
             val gameType = selectGameType(file)
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null

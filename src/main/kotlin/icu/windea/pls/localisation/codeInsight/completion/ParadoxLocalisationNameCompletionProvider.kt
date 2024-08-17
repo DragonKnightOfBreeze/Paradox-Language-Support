@@ -35,7 +35,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
         //排除正在输入的那一个
         val selector = localisationSelector(project, file)
             .contextSensitive()
-            .preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
+            .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             .notSamePosition(element)
         //.distinctByName() //这里selector不需要指定去重
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> {

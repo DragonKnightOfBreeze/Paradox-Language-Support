@@ -48,7 +48,7 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
         if(element !is ParadoxScriptStringExpressionElement) return true
         if(!element.isExpression()) return true
-        val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return true
+        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return true
         val type = config.expression.type
         if(type == CwtDataTypes.Modifier) {
             val name = element.value
@@ -56,7 +56,7 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
             if(name.isParameterized()) return true
             val configGroup = config.configGroup
             val project = configGroup.project
-            val paths = ParadoxModifierHandler.getModifierIconPaths(name, element)
+            val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
             val iconFile = paths.firstNotNullOfOrNull { path ->
                 val iconSelector = fileSelector(project, element).contextSensitive()
                 ParadoxFilePathSearch.searchIcon(path, iconSelector).find()

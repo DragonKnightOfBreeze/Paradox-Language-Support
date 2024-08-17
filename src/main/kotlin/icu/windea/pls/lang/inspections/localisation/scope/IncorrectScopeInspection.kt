@@ -35,24 +35,24 @@ class IncorrectScopeInspection : LocalInspectionTool() {
             }
             
             private fun doCheckExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
-                var inputScopeContext = ParadoxScopeHandler.getAnyScopeContext()
+                var inputScopeContext = ParadoxScopeManager.getAnyScopeContext()
                 when(complexExpression) {
                     is ParadoxCommandExpression -> {
                         for(node in complexExpression.nodes) {
                             when(node) {
                                 is ParadoxCommandScopeLinkNode -> {
-                                    val outputScopeContext = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, inputScopeContext)
-                                    inputScopeContext = outputScopeContext ?: ParadoxScopeHandler.getUnknownScopeContext(inputScopeContext)
+                                    val outputScopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, inputScopeContext)
+                                    inputScopeContext = outputScopeContext ?: ParadoxScopeManager.getUnknownScopeContext(inputScopeContext)
                                 }
                                 is ParadoxCommandFieldNode -> {
-                                    val supportedScopes = ParadoxScopeHandler.getSupportedScopesOfNode(element, node, inputScopeContext)
-                                    val matched = ParadoxScopeHandler.matchesScope(inputScopeContext, supportedScopes, configGroup)
-                                    val outputScopeContext = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, inputScopeContext)
-                                    inputScopeContext = outputScopeContext ?: ParadoxScopeHandler.getUnknownScopeContext(inputScopeContext)
+                                    val supportedScopes = ParadoxScopeManager.getSupportedScopesOfNode(element, node, inputScopeContext)
+                                    val matched = ParadoxScopeManager.matchesScope(inputScopeContext, supportedScopes, configGroup)
+                                    val outputScopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, inputScopeContext)
+                                    inputScopeContext = outputScopeContext ?: ParadoxScopeManager.getUnknownScopeContext(inputScopeContext)
                                     
                                     if(supportedScopes.isNullOrEmpty() || outputScopeContext == null) continue
                                     if(matched) continue
-                                    val offset = ParadoxExpressionHandler.getExpressionOffset(element)
+                                    val offset = ParadoxExpressionManager.getExpressionOffset(element)
                                     val startOffset = offset + node.rangeInExpression.startOffset
                                     val endOffset = offset + node.rangeInExpression.endOffset
                                     val range = TextRange.create(startOffset, endOffset)

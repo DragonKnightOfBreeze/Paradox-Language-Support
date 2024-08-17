@@ -55,10 +55,10 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 //skip checking property if property key is parameterized
                 val propertyKey = element.propertyKey
                 if(propertyKey.text.isParameterized()) return false
-                val configContext = ParadoxExpressionHandler.getConfigContext(element) ?: return true
+                val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return true
                 if(configContext.isDefinition()) return true
                 if(configContext.getConfigs().isEmpty()) return true
-                val configs = ParadoxExpressionHandler.getConfigs(element)
+                val configs = ParadoxExpressionManager.getConfigs(element)
                 if(configs.isEmpty()) {
                     val expectedConfigs = getExpectedConfigs(element)
                     if(expectedConfigs.isNotEmpty()) {
@@ -91,10 +91,10 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 //skip checking value if it is parameterized
                 if(element is ParadoxScriptString && element.text.isParameterized()) return false
                 if(element is ParadoxScriptScriptedVariableReference && element.text.isParameterized()) return false
-                val configContext = ParadoxExpressionHandler.getConfigContext(element) ?: return true
+                val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return true
                 if(configContext.isDefinition()) return true
                 if(configContext.getConfigs().isEmpty()) return true
-                val configs = ParadoxExpressionHandler.getConfigs(element, orDefault = false)
+                val configs = ParadoxExpressionManager.getConfigs(element, orDefault = false)
                 if(configs.isEmpty()) {
                     val expectedConfigs = getExpectedConfigs(element, configContext)
                     if(expectedConfigs.isNotEmpty()) {
@@ -121,7 +121,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             private fun getExpectedConfigs(element: ParadoxScriptProperty): List<CwtPropertyConfig> {
                 //这里使用合并后的子规则，即使parentProperty可以精确匹配
                 val parentMemberElement = element.parentOfType<ParadoxScriptMemberElement>() ?: return emptyList()
-                val parentConfigContext = ParadoxExpressionHandler.getConfigContext(parentMemberElement) ?: return emptyList()
+                val parentConfigContext = ParadoxExpressionManager.getConfigContext(parentMemberElement) ?: return emptyList()
                 return buildList {
                     val contextConfigs = parentConfigContext.getConfigs()
                     contextConfigs.forEach f@{ contextConfig ->
@@ -195,7 +195,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         else -> null
                     }
                     if(expressionElement != null) {
-                        val locales = ParadoxLocaleHandler.getLocaleConfigs()
+                        val locales = ParadoxLocaleManager.getLocaleConfigs()
                         val context = expectedConfigs.firstNotNullOfOrNull {
                             ParadoxLocalisationCodeInsightContext.fromReference(expressionElement, it, locales, fromInspection = true)
                         }

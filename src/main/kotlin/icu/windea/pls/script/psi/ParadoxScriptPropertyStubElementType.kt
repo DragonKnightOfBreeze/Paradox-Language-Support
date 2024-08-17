@@ -22,11 +22,11 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     }
     
     override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-        return ParadoxDefinitionHandler.createStub(psi, parentStub) ?: createDefaultStub(parentStub)
+        return ParadoxDefinitionManager.createStub(psi, parentStub) ?: createDefaultStub(parentStub)
     }
     
     override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-        return ParadoxDefinitionHandler.createStub(tree, node, parentStub) ?: createDefaultStub(parentStub)
+        return ParadoxDefinitionManager.createStub(tree, node, parentStub) ?: createDefaultStub(parentStub)
     }
     
     private fun createDefaultStub(parentStub: StubElement<*>): ParadoxScriptPropertyStub {
@@ -34,11 +34,11 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     }
     
     override fun shouldCreateStub(node: ASTNode): Boolean {
-        return ParadoxDefinitionHandler.shouldCreateStub(node)
+        return ParadoxDefinitionManager.shouldCreateStub(node)
     }
     
     override fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
-        return ParadoxDefinitionHandler.shouldCreateStub(tree, node, parentStub)
+        return ParadoxDefinitionManager.shouldCreateStub(tree, node, parentStub)
     }
     
     override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {

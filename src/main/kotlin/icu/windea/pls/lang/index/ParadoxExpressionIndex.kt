@@ -98,7 +98,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
                     if(element is ParadoxScriptStringExpressionElement && element.isExpression()) {
                         ProgressManager.checkCanceled()
                         val matchOptions = CwtConfigMatcher.Options.SkipIndex or CwtConfigMatcher.Options.SkipScope
-                        val configs = ParadoxExpressionHandler.getConfigs(element, matchOptions = matchOptions)
+                        val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = matchOptions)
                         if(configs.isEmpty()) return@run
                         val definitionInfo = definitionInfoStack.lastOrNull() ?: return@run
                         extensionList.forEach { ep ->
@@ -191,7 +191,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
     
     override fun useLazyIndex(file: VirtualFile): Boolean {
         if(ParadoxFileManager.isInjectedFile(file)) return true
-        if(ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null) return true
+        if(ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true
         return false
     }
     

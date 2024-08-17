@@ -27,7 +27,7 @@ class ParadoxEventNamespacePsiReference(
 		val element = element
 		val event = event.element ?: return null
 		//val definitionInfo = event.definitionInfo ?: return null
-		val preferredEventNamespace = ParadoxEventHandler.getMatchedNamespace(event)
+		val preferredEventNamespace = ParadoxEventManager.getMatchedNamespace(event)
 		if(preferredEventNamespace != null) return preferredEventNamespace
 		
 		val name = element.value.substringBefore('.')
@@ -41,7 +41,7 @@ class ParadoxEventNamespacePsiReference(
 		val event = event.element ?: return ResolveResult.EMPTY_ARRAY
 		//val definitionInfo = event.definitionInfo ?: return ResolveResult.EMPTY_ARRAY
 		val result = mutableSetOf<PsiElement>()
-		val preferredEventNamespace = ParadoxEventHandler.getMatchedNamespace(event)
+		val preferredEventNamespace = ParadoxEventManager.getMatchedNamespace(event)
 		if(preferredEventNamespace != null) result.add(preferredEventNamespace)
 		
 		val name = element.value.substringBefore('.')

@@ -28,7 +28,7 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
     private fun doGetColor(element: ParadoxScriptColor): Color? {
         val colorType = element.colorType
         val colorArgs = element.colorArgs
-        return ParadoxColorHandler.getColor(colorType, colorArgs)
+        return ParadoxColorManager.getColor(colorType, colorArgs)
     }
     
     override fun setColor(element: PsiElement, color: Color): Boolean {
@@ -96,9 +96,9 @@ class ParadoxScriptStringColorSupport : ParadoxColorSupport {
     private fun doGetColor(element: ParadoxScriptString): Color? {
         val hex = element.value.lowercase().removePrefixOrNull("0x") ?: return null
         if(hex.length != 6 && hex.length != 8) return null
-        val colorType = ParadoxColorHandler.getColorType(element) ?: return null
+        val colorType = ParadoxColorManager.getColorType(element) ?: return null
         if(colorType != "hex") return null
-        return ParadoxColorHandler.getColor(hex)
+        return ParadoxColorManager.getColor(hex)
     }
     
     override fun setColor(element: PsiElement, color: Color): Boolean {
@@ -147,7 +147,7 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
         val colorType = getColorType(element)
         val colorArgs = getColorArgs(element)
         if(colorType == null || colorArgs == null) return null
-        return ParadoxColorHandler.getColor(colorType, colorArgs)
+        return ParadoxColorManager.getColor(colorType, colorArgs)
     }
     
     private fun getColorType(element: ParadoxScriptBlock): String? {
@@ -157,7 +157,7 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
             else -> null
         }
         if(elementToGetOption == null) return null
-        return ParadoxColorHandler.getColorType(elementToGetOption)
+        return ParadoxColorManager.getColorType(elementToGetOption)
     }
     
     private fun getColorArgs(element: ParadoxScriptBlock): List<String>? {

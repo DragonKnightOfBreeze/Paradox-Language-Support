@@ -21,9 +21,9 @@ interface CwtLocalisationCommandConfig : CwtDelegatedConfig<CwtProperty, CwtProp
 private fun doResolve(config: CwtPropertyConfig): CwtLocalisationCommandConfigImpl {
     val name = config.key
     val supportedScopes = buildSet {
-        config.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
-        config.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
-    }.ifEmpty { ParadoxScopeHandler.anyScopeIdSet }
+        config.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
+        config.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
+    }.ifEmpty { ParadoxScopeManager.anyScopeIdSet }
     return CwtLocalisationCommandConfigImpl(config, name, supportedScopes)
 }
 

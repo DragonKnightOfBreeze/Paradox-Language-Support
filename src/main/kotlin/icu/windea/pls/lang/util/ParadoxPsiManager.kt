@@ -274,7 +274,7 @@ object ParadoxPsiManager {
         if(element !is ParadoxScriptValue) return
         
         var newText = declaration.text.trim()
-        val contextReferenceElement = ParadoxInlineScriptHandler.getContextReferenceElement(element) ?: return
+        val contextReferenceElement = ParadoxInlineScriptManager.getContextReferenceElement(element) ?: return
         val valueElement = contextReferenceElement.propertyValue?.resolved() ?: return
         when(valueElement) {
             is ParadoxScriptString -> pass()

@@ -7,4 +7,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_STRING" value="--add-exports=java.desktop/sun.awt=ALL-UNNAMED --add-opens=java.desktop/sun.awt=ALL-UNNAMED" />
   </component>
+  <component name="TypeScriptCompiler">
+    <option name="useTypesFromServer" value="true" />
+  </component>
 </project>

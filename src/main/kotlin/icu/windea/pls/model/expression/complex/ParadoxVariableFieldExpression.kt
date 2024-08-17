@@ -42,7 +42,7 @@ class ParadoxVariableFieldExpression(
             val parameterRanges = expressionString.getParameterRanges()
             
             //skip if text is a parameter with unary operator prefix
-            if(ParadoxExpressionHandler.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
+            if(ParadoxExpressionManager.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
             
             val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
             

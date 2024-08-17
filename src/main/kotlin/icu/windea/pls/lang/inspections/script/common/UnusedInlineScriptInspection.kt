@@ -14,7 +14,7 @@ class UnusedInlineScriptInspection : LocalInspectionTool() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         //still check if inference.inlineScriptConfig is not checked
         //if(!getSettings().inference.inlineScriptConfig) return null
-        val inlineScriptExpression = ParadoxInlineScriptHandler.getInlineScriptExpression(file) ?: return null
+        val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return null
         val selector = inlineScriptSelector(file.project, file)
         val hasUsages = ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).find() != null
         if(hasUsages) return null

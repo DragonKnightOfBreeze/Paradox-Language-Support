@@ -80,7 +80,7 @@ class BaseCwtDataExpressionMatcher : CwtDataExpressionMatcher {
         } ?: return false
         //简单判断：如果block中包含configsInBlock声明的必须的任意propertyKey（作为常量字符串，忽略大小写），则认为匹配
         //注意：不同的子句规则可以拥有部分相同的propertyKey
-        val keys = ParadoxExpressionHandler.getInBlockKeys(config)
+        val keys = ParadoxExpressionManager.getInBlockKeys(config)
         if(keys.isEmpty()) return true
         val actualKeys = mutableSetOf<String>()
         //注意这里需要考虑内联和可选的情况
@@ -98,12 +98,12 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
         return when {
             configExpression.type == CwtDataTypes.PercentageField -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
-                val r = ParadoxTypeHandler.isPercentageField(expression.text)
+                val r = ParadoxTypeManager.isPercentageField(expression.text)
                 Result.of(r)
             }
             configExpression.type == CwtDataTypes.DateField -> {
                 if(!expression.type.isStringType()) return Result.NotMatch
-                val r = ParadoxTypeHandler.isDateField(expression.text)
+                val r = ParadoxTypeManager.isDateField(expression.text)
                 Result.of(r)
             }
             configExpression.type == CwtDataTypes.Localisation -> {
@@ -156,7 +156,7 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 val complexEnumConfig = configGroup.complexEnums[enumName]
                 if(complexEnumConfig != null) {
                     //complexEnumValue的值必须合法
-                    if(ParadoxComplexEnumValueHandler.getName(expression.text) == null) return Result.NotMatch
+                    if(ParadoxComplexEnumValueManager.getName(expression.text) == null) return Result.NotMatch
                     return CwtConfigMatcher.Impls.getComplexEnumValueMatchResult(element, name, enumName, complexEnumConfig, project)
                 }
                 Result.NotMatch
@@ -165,7 +165,7 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 if(expression.type.isBlockLikeType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 //dynamicValue的值必须合法
-                val name = ParadoxDynamicValueHandler.getName(expression.text) ?: return Result.NotMatch
+                val name = ParadoxDynamicValueManager.getName(expression.text) ?: return Result.NotMatch
                 if(!name.isIdentifier('.')) return Result.NotMatch
                 val dynamicValueType = configExpression.value
                 if(dynamicValueType == null) return Result.NotMatch
@@ -227,14 +227,14 @@ class CoreCwtDataExpressionMatcher : CwtDataExpressionMatcher {
                 if(!expression.type.isStringLikeType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val aliasName = configExpression.value ?: return Result.NotMatch
-                val aliasSubName = ParadoxExpressionHandler.getAliasSubName(element, expression.text, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
+                val aliasSubName = ParadoxExpressionManager.getAliasSubName(element, expression.text, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
                 CwtConfigMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup)
             }
             configExpression.type == CwtDataTypes.AliasName -> {
                 if(!expression.type.isStringLikeType()) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 val aliasName = configExpression.value ?: return Result.NotMatch
-                val aliasSubName = ParadoxExpressionHandler.getAliasSubName(element, expression.text, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
+                val aliasSubName = ParadoxExpressionManager.getAliasSubName(element, expression.text, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
                 CwtConfigMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup)
             }
             configExpression.type == CwtDataTypes.AliasMatchLeft -> {

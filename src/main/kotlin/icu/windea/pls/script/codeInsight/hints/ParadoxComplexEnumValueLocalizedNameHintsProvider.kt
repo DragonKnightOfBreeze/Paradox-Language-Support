@@ -52,7 +52,7 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
         if(name.isEmpty()) return true
         if(name.isParameterized()) return true
         
-        val info = ParadoxComplexEnumValueHandler.getInfo(element)
+        val info = ParadoxComplexEnumValueManager.getInfo(element)
         if(info != null) {
             val configGroup = getConfigGroup(file.project, info.gameType)
             val presentation = doCollect(info.name, info.enumName, configGroup, file, editor, settings) ?: return true
@@ -62,7 +62,7 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
             return true
         }
         
-        val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return true
+        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return true
         val configGroup = config.configGroup
         val type = config.expression.type
         if(type != CwtDataTypes.EnumValue) return true

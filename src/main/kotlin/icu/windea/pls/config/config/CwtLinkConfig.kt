@@ -60,13 +60,13 @@ private fun doResolve(config: CwtPropertyConfig): CwtLinkConfigImpl? {
             "data_source" -> dataSource = prop.value
             "for_definition_type" -> forDefinitionType = prop.stringValue
             "input_scopes" -> inputScopes = buildSet {
-                prop.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
-                prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
+                prop.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
+                prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
             }
-            "output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) }
+            "output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeManager.getScopeId(v) }
         }
     }
-    inputScopes = inputScopes.orNull() ?: ParadoxScopeHandler.anyScopeIdSet
+    inputScopes = inputScopes.orNull() ?: ParadoxScopeManager.anyScopeIdSet
     return CwtLinkConfigImpl(config, name, desc, fromData, type, prefix, dataSource, forDefinitionType, inputScopes, outputScope)
 }
 

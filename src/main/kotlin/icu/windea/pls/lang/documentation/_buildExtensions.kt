@@ -13,7 +13,7 @@ import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.ep.documentation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.ParadoxScopeHandler.isUnsureScopeId
+import icu.windea.pls.lang.util.ParadoxScopeManager.isUnsureScopeId
 import icu.windea.pls.model.*
 
 fun DocumentationBuilder.appendBr(): DocumentationBuilder {

@@ -78,14 +78,14 @@ class ParadoxCoreFileListener : AsyncFileListener {
             events.forEach { event ->
                 when(event) {
                     is VFileMoveEvent -> {
-                        if(ParadoxInlineScriptHandler.getInlineScriptExpression(event.file) != null) {
+                        if(ParadoxInlineScriptManager.getInlineScriptExpression(event.file) != null) {
                             refreshInlineScripts = true
                             return@run
                         }
                     }
                     is VFilePropertyChangeEvent -> {
                         if(event.propertyName == VirtualFile.PROP_NAME) {
-                            if(ParadoxInlineScriptHandler.getInlineScriptExpression(event.file) != null) {
+                            if(ParadoxInlineScriptManager.getInlineScriptExpression(event.file) != null) {
                                 refreshInlineScripts = true
                                 return@run
                             }
@@ -146,15 +146,15 @@ class ParadoxCoreFileListener : AsyncFileListener {
     
     private fun reparseOpenedFiles() {
         //重新解析所有项目的所有已打开的文件
-        val openedFiles = ParadoxCoreHandler.findOpenedFiles()
-        ParadoxCoreHandler.reparseFiles(openedFiles)
+        val openedFiles = ParadoxCoreManager.findOpenedFiles()
+        ParadoxCoreManager.reparseFiles(openedFiles)
     }
     
     private fun refreshInlineScripts() {
         ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
         ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
         //重新解析内联脚本文件
-        val files = ParadoxCoreHandler.findOpenedFiles { file, _ -> ParadoxInlineScriptHandler.getInlineScriptExpression(file) != null }
-        ParadoxCoreHandler.reparseFiles(files)
+        val files = ParadoxCoreManager.findOpenedFiles { file, _ -> ParadoxInlineScriptManager.getInlineScriptExpression(file) != null }
+        ParadoxCoreManager.reparseFiles(files)
     }
 }

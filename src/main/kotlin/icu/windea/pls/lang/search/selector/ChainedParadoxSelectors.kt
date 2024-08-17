@@ -28,7 +28,7 @@ fun definitionSelector(project: Project, context: Any? = null) = ChainedParadoxS
 
 @JvmName("distinctByName_definitionSelector")
 fun ChainedParadoxSelector<ParadoxScriptDefinitionElement>.distinctByName() =
-    distinctBy { ParadoxDefinitionHandler.getName(it) }
+    distinctBy { ParadoxDefinitionManager.getName(it) }
 //endregion
 
 //region localisationSelector

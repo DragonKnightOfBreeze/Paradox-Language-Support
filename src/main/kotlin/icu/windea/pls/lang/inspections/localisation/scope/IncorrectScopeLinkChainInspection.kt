@@ -36,10 +36,10 @@ class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
             
             private fun doCheckExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
                 val scopeNodes = complexExpression.nodes.filterIsInstance<ParadoxCommandScopeLinkNode>()
-                val max = ParadoxScopeHandler.maxScopeLinkSize
+                val max = ParadoxScopeManager.maxScopeLinkSize
                 val actual = scopeNodes.size
                 if(actual <= max) return
-                val offset = ParadoxExpressionHandler.getExpressionOffset(element)
+                val offset = ParadoxExpressionManager.getExpressionOffset(element)
                 val startOffset = offset + scopeNodes.first().rangeInExpression.startOffset
                 val endOffset = offset + scopeNodes.last().rangeInExpression.endOffset
                 val range = TextRange.create(startOffset, endOffset)

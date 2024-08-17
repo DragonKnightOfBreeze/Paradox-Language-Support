@@ -29,7 +29,7 @@ class ParadoxLocalisationExpressionPsiReference(
     }
     
     override fun getReferences(): Array<out PsiReference>? {
-        return ParadoxExpressionHandler.getReferences(element, rangeInElement)
+        return ParadoxExpressionManager.getReferences(element, rangeInElement)
     }
     
     //缓存解析结果以优化性能
@@ -56,12 +56,12 @@ class ParadoxLocalisationExpressionPsiReference(
     
     private fun doResolve(): PsiElement? {
         //根据对应的expression进行解析
-        return ParadoxExpressionHandler.resolveExpression(element, rangeInElement)
+        return ParadoxExpressionManager.resolveExpression(element, rangeInElement)
     }
     
     private fun doMultiResolve(): Array<out ResolveResult> {
         //根据对应的expression进行解析
-        return ParadoxExpressionHandler.multiResolveExpression(element, rangeInElement)
+        return ParadoxExpressionManager.multiResolveExpression(element, rangeInElement)
             .mapToArray { PsiElementResolveResult(it) }
     }
 }

@@ -22,11 +22,11 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
     }
     
     override fun createStub(psi: ParadoxLocalisationProperty, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
-        return ParadoxLocalisationHandler.createStub(psi, parentStub) ?: createDefaultStub(parentStub)
+        return ParadoxLocalisationManager.createStub(psi, parentStub) ?: createDefaultStub(parentStub)
     }
     
     override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
-        return ParadoxLocalisationHandler.createStub(tree, node, parentStub) ?: createDefaultStub(parentStub)
+        return ParadoxLocalisationManager.createStub(tree, node, parentStub) ?: createDefaultStub(parentStub)
     }
     
     private fun createDefaultStub(parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
@@ -34,11 +34,11 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
     }
     
     override fun shouldCreateStub(node: ASTNode): Boolean {
-        return ParadoxLocalisationHandler.shouldCreateStub(node)
+        return ParadoxLocalisationManager.shouldCreateStub(node)
     }
     
     override fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
-        return ParadoxLocalisationHandler.shouldCreateStub(tree, node, parentStub)
+        return ParadoxLocalisationManager.shouldCreateStub(tree, node, parentStub)
     }
     
     override fun indexStub(stub: ParadoxLocalisationPropertyStub, sink: IndexSink) {

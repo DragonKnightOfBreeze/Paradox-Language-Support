@@ -32,7 +32,7 @@ class ParadoxScriptValueArgumentValueNode(
     //override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
     //    if(!getSettings().inference.parameterConfig) return null
     //    val parameterElement = argumentNode?.getReference(element)?.resolve() ?: return null
-    //    return ParadoxParameterHandler.getInferredConfig(parameterElement)
+    //    return ParadoxParameterManager.getInferredConfig(parameterElement)
     //}
     //
     //override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
@@ -41,7 +41,7 @@ class ParadoxScriptValueArgumentValueNode(
     //    if(text.isEmpty()) return null
     //    val reference = valueNode.getReference(element)
     //    if(reference?.resolve() == null) return null //skip if script value cannot be resolved
-    //    val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
+    //    val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
     //    return Reference(element, rangeInElement, this)
     //}
     //

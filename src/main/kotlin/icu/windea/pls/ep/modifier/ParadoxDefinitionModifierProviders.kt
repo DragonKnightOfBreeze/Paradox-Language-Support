@@ -10,6 +10,6 @@ import icu.windea.pls.script.psi.*
 class StellarisScriptedModifierDefinitionModifierProvider : ParadoxDefinitionModifierProvider {
     override fun getModifierCategories(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>? {
         if(definitionInfo.type != "scripted_modifier") return null
-        return ParadoxScriptedModifierHandler.Stellaris.resolveModifierCategory(definition, definitionInfo)
+        return ParadoxScriptedModifierManager.Stellaris.resolveModifierCategory(definition, definitionInfo)
     }
 }

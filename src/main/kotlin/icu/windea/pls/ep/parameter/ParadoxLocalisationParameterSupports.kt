@@ -33,7 +33,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val file = localisationElement.containingFile
         val gameType = selectGameType(file) ?: return null
         val project = file.project
-        val parameterNames = ParadoxLocalisationParameterHandler.getParameterNames(localisationElement)
+        val parameterNames = ParadoxLocalisationParameterManager.getParameterNames(localisationElement)
         if(name !in parameterNames) return null
         val rangeInParent = TextRange.create(0, element.textLength)
         val readWriteAccess = ReadWriteAccessDetector.Access.Read
@@ -43,7 +43,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
     
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxLocalisationParameterElement? {
         if(config !is CwtPropertyConfig || config.expression.type != CwtDataTypes.LocalisationParameter) return null
-        val localisationReferenceElement = ParadoxLocalisationParameterHandler.getLocalisationReferenceElement(element, config) ?: return null
+        val localisationReferenceElement = ParadoxLocalisationParameterManager.getLocalisationReferenceElement(element, config) ?: return null
         val name = rangeInElement?.substring(element.text) ?: element.name
         val localisationName = localisationReferenceElement.name
         val rangeInParent = rangeInElement ?: TextRange.create(0, element.textLength)

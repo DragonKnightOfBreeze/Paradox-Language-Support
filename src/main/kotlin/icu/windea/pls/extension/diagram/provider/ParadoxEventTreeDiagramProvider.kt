@@ -91,7 +91,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             ProgressManager.checkCanceled()
             return when(element) {
                 is PsiDirectory -> element.name
-                is ParadoxScriptProperty -> ParadoxEventHandler.getName(element)
+                is ParadoxScriptProperty -> ParadoxEventManager.getName(element)
                 else -> null
             }
         }
@@ -109,9 +109,9 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                     if(typeElement != null) result.add(typeElement)
                     val properties = getProperties(nodeElement)
                     result.addAll(properties)
-                    val name = ParadoxEventHandler.getLocalizedName(nodeElement)
+                    val name = ParadoxEventManager.getLocalizedName(nodeElement)
                     if(name != null) result.add(name)
-                    val icon = ParadoxEventHandler.getIconFile(nodeElement)
+                    val icon = ParadoxEventManager.getIconFile(nodeElement)
                     if(icon != null) result.add(icon)
                     result.toTypedArray()
                 }

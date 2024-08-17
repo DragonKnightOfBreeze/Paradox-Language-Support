@@ -19,8 +19,8 @@ class ParadoxScriptExpressionReferenceProvider : PsiReferenceProvider() {
         //尝试解析为复杂枚举值声明
         run {
             if(element !is ParadoxScriptStringExpressionElement) return@run
-            val complexEnumValueInfo = ParadoxComplexEnumValueHandler.getInfo(element) ?: return@run
-            val textRange = ParadoxExpressionHandler.getExpressionTextRange(element) //unquoted text
+            val complexEnumValueInfo = ParadoxComplexEnumValueManager.getInfo(element) ?: return@run
+            val textRange = ParadoxExpressionManager.getExpressionTextRange(element) //unquoted text
             val reference = ParadoxComplexEnumValuePsiReference(element, textRange, complexEnumValueInfo, element.project)
             return arrayOf(reference)
         }
@@ -28,9 +28,9 @@ class ParadoxScriptExpressionReferenceProvider : PsiReferenceProvider() {
         //尝试基于CWT规则进行解析
         run {
             val isKey = element is ParadoxScriptPropertyKey
-            val configs = ParadoxExpressionHandler.getConfigs(element, orDefault = isKey)
+            val configs = ParadoxExpressionManager.getConfigs(element, orDefault = isKey)
             val config = configs.firstOrNull() ?: return@run
-            val textRange = ParadoxExpressionHandler.getExpressionTextRange(element) //unquoted text
+            val textRange = ParadoxExpressionManager.getExpressionTextRange(element) //unquoted text
             val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
             return reference.collectReferences()
         }

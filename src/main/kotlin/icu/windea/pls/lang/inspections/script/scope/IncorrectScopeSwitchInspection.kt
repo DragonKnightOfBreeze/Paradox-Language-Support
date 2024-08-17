@@ -28,12 +28,12 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
             
             private fun visitScriptProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
-                val configs = ParadoxExpressionHandler.getConfigs(element)
+                val configs = ParadoxExpressionManager.getConfigs(element)
                 val config = configs.firstOrNull()
                 if(config == null) return
                 val definitionInfo by lazy { element.findParentDefinition()?.definitionInfo }
                 if(config is CwtPropertyConfig && config.expression.type == CwtDataTypes.ScopeField) {
-                    val resultScopeContext = ParadoxScopeHandler.getSwitchedScopeContext(element)
+                    val resultScopeContext = ParadoxScopeManager.getSwitchedScopeContext(element)
                     if(resultScopeContext == null) return
                     val scopeFieldInfo = resultScopeContext.scopeLinkInfo
                     if(scopeFieldInfo.isNullOrEmpty()) return
@@ -45,7 +45,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                 val parentScopeContext = scopeContext.prev ?: continue
                                 val inputScopes = scopeNode.config.inputScopes
                                 val configGroup = config.configGroup
-                                if(!ParadoxScopeHandler.matchesScope(parentScopeContext, inputScopes, configGroup)) {
+                                if(!ParadoxScopeManager.matchesScope(parentScopeContext, inputScopes, configGroup)) {
                                     val description = PlsBundle.message(
                                         "inspection.script.incorrectScopeSwitch.desc.1",
                                         scopeNode.text, inputScopes.joinToString(), parentScopeContext.scope.id
@@ -61,7 +61,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                             //check when root parent scope context is not from event, scripted_trigger or scripted_effect
                             is ParadoxSystemScopeNode -> {
                                 if(!checkForSystemScopes) continue
-                                if(scopeContext.scope.id == ParadoxScopeHandler.unknownScopeId) {
+                                if(scopeContext.scope.id == ParadoxScopeManager.unknownScopeId) {
                                     val definitionType = definitionInfo?.type ?: continue
                                     if(config.configGroup.definitionTypesSkipCheckSystemScope.contains(definitionType)) continue
                                     val description = PlsBundle.message(

@@ -323,7 +323,7 @@ class ParadoxModifierLinkProvider: ParadoxDocumentationLinkProvider {
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
         val name = link.drop(LINK_PREFIX.length)
-        return ParadoxModifierHandler.resolveModifier(name, contextElement)
+        return ParadoxModifierManager.resolveModifier(name, contextElement)
     }
     
     override fun getUnresolvedMessage(link: String): String {

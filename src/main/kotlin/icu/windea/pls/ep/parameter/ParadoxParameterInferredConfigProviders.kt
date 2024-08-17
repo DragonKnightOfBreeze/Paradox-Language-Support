@@ -4,6 +4,7 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
@@ -58,7 +59,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return null
         if(!expressionElement.value.isFullParameterized()) return null
-        val expressionContextConfigs = ParadoxExpressionHandler.getConfigContext(expressionElement)?.getConfigs().orEmpty()
+        val expressionContextConfigs = ParadoxExpressionManager.getConfigContext(expressionElement)?.getConfigs().orEmpty()
         val contextConfigs = getContextConfigsFromExpressionContextConfigs(expressionContextConfigs, parameterInfo)
         return contextConfigs
     }
@@ -72,7 +73,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return emptyList()
             val argumentNameConfig = expressionContextConfig.propertyConfig ?: return emptyList()
             val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return emptyList()
-            val passingContextConfigs = ParadoxParameterHandler.getInferredContextConfigs(passingParameterElement)
+            val passingContextConfigs = ParadoxParameterManager.getInferredContextConfigs(passingParameterElement)
             return passingContextConfigs
         }
         val finalConfigs = expressionContextConfigs.map { config ->
@@ -148,7 +149,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
             node is ParadoxScriptValueArgumentValueNode -> {
                 val argumentNode = node.argumentNode ?: return null
                 val passingParameterElement = ParadoxParameterSupport.resolveArgument(expressionElement, argumentNode.rangeInExpression, expressionConfig) ?: return null
-                val passingContextConfigs = ParadoxParameterHandler.getInferredContextConfigs(passingParameterElement)
+                val passingContextConfigs = ParadoxParameterManager.getInferredContextConfigs(passingParameterElement)
                 val passingConfig = passingContextConfigs.singleOrNull()?.castOrNull<CwtValueConfig>()
                 passingConfig
             }

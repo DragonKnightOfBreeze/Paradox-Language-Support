@@ -40,7 +40,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 ProgressManager.checkCanceled()
                 val text = element.text
                 if(text.isParameterized()) return //skip if expression is parameterized
-                val valueConfig = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return //match or single
+                val valueConfig = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return //match or single
                 if(isIgnoredByConfigs(element, valueConfig)) return
                 val configExpression = valueConfig.expression
                 val location = element
@@ -71,7 +71,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 if(!ignoredByConfigs) return false
                 val value = element.value
                 val configExpression = memberConfig.expression
-                if(configExpression.expressionString != ParadoxInlineScriptHandler.inlineScriptPathExpressionString) {
+                if(configExpression.expressionString != ParadoxInlineScriptManager.inlineScriptPathExpressionString) {
                     val config = configGroup.extendedInlineScripts.findFromPattern(value, element, configGroup)
                     if(config != null) return true
                 }

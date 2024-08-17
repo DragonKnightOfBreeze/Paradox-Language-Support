@@ -29,7 +29,7 @@ class ParadoxDynamicValueNode(
     
     override fun getReference(element: ParadoxExpressionElement): Reference? {
         if(text.isParameterized()) return null
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
+        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         return Reference(element, rangeInElement, text, configs, configGroup)
     }
     
@@ -48,7 +48,7 @@ class ParadoxDynamicValueNode(
         
         override fun resolve(): PsiElement? {
             val configExpressions = configs.mapNotNullTo(mutableSetOf()) { it.expression }
-            return ParadoxDynamicValueHandler.resolveDynamicValue(element, name, configExpressions, configGroup)
+            return ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
         }
     }
     

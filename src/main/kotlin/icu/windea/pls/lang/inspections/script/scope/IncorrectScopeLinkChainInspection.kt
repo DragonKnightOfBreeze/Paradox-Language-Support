@@ -23,7 +23,7 @@ class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
             }
             
             private fun visitExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return
+                val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return
                 val dataType = config.expression.type
                 val value = element.value
                 val textRange = TextRange.create(0, value.length)
@@ -47,10 +47,10 @@ class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
             
             private fun doCheckExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
                 val scopeNodes = complexExpression.nodes.filterIsInstance<ParadoxScopeLinkNode>()
-                val max = ParadoxScopeHandler.maxScopeLinkSize
+                val max = ParadoxScopeManager.maxScopeLinkSize
                 val actual = scopeNodes.size
                 if(actual <= max) return
-                val offset = ParadoxExpressionHandler.getExpressionOffset(element)
+                val offset = ParadoxExpressionManager.getExpressionOffset(element)
                 val startOffset = offset + scopeNodes.first().rangeInExpression.startOffset
                 val endOffset = offset + scopeNodes.last().rangeInExpression.endOffset
                 val range = TextRange.create(startOffset, endOffset)

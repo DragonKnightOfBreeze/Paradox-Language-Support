@@ -137,7 +137,7 @@ object CwtConfigMatcher {
         } ?: return false
         //简单判断：如果block中包含configsInBlock声明的必须的任意propertyKey（作为常量字符串，忽略大小写），则认为匹配
         //注意：不同的子句规则可以拥有部分相同的propertyKey
-        val keys = ParadoxExpressionHandler.getInBlockKeys(config)
+        val keys = ParadoxExpressionManager.getInBlockKeys(config)
         if(keys.isEmpty()) return true
         val actualKeys = mutableSetOf<String>()
         //注意这里需要考虑内联和可选的情况
@@ -228,14 +228,14 @@ object CwtConfigMatcher {
                     val expectedScope = configExpression.value ?: return Result.ExactMatch
                     return Result.LazyScopeAwareMatch p@{
                         val scopeContext = getSwitchedScopeContext(element, configExpression, scopeFieldExpression)
-                        ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)
+                        ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)
                     }
                 }
                 CwtDataTypes.ScopeGroup -> {
                     val expectedScopeGroup = configExpression.value ?: return Result.ExactMatch
                     return Result.LazyScopeAwareMatch p@{
                         val scopeContext = getSwitchedScopeContext(element, configExpression, scopeFieldExpression)
-                        ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)
+                        ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)
                     }
                 }
                 else -> return Result.NotMatch
@@ -243,25 +243,25 @@ object CwtConfigMatcher {
         }
         
         private fun getSwitchedScopeContext(element: PsiElement, configExpression: CwtDataExpression, scopeFieldExpression: ParadoxScopeFieldExpression): ParadoxScopeContext? {
-            val memberElement = ParadoxScopeHandler.findParentMember(element, withSelf = true)
-            val parentMemberElement = ParadoxScopeHandler.findParentMember(element, withSelf = false)
+            val memberElement = ParadoxScopeManager.findParentMember(element, withSelf = true)
+            val parentMemberElement = ParadoxScopeManager.findParentMember(element, withSelf = false)
             val parentScopeContext = when {
-                parentMemberElement != null -> ParadoxScopeHandler.getSwitchedScopeContext(parentMemberElement) ?: ParadoxScopeHandler.getAnyScopeContext()
-                else -> ParadoxScopeHandler.getAnyScopeContext()
+                parentMemberElement != null -> ParadoxScopeManager.getSwitchedScopeContext(parentMemberElement) ?: ParadoxScopeManager.getAnyScopeContext()
+                else -> ParadoxScopeManager.getAnyScopeContext()
             }
             val expressionElement = when {
                 memberElement is ParadoxScriptProperty -> if(configExpression.isKey) memberElement.propertyKey else memberElement.propertyValue
                 memberElement is ParadoxScriptValue -> memberElement
                 else -> return null
             } ?: return null
-            return ParadoxScopeHandler.getSwitchedScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
+            return ParadoxScopeManager.getSwitchedScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
         }
         
         fun getModifierMatchResult(element: PsiElement, expression: ParadoxDataExpression, configGroup: CwtConfigGroup): Result {
             val name = expression.text
             val cacheKey = "m#${name}"
             return getCachedMatchResult(element, cacheKey) {
-                ParadoxModifierHandler.matchesModifier(name, element, configGroup)
+                ParadoxModifierManager.matchesModifier(name, element, configGroup)
             }
         }
         

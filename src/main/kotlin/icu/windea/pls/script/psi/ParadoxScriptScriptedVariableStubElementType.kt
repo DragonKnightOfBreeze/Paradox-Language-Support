@@ -21,11 +21,11 @@ object ParadoxScriptScriptedVariableStubElementType : ILightStubElementType<Para
     }
     
     override fun createStub(psi: ParadoxScriptScriptedVariable, parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub {
-        return ParadoxScriptedVariableHandler.createStub(psi, parentStub) ?: createDefaultStub(parentStub)
+        return ParadoxScriptedVariableManager.createStub(psi, parentStub) ?: createDefaultStub(parentStub)
     }
     
     override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub {
-        return ParadoxScriptedVariableHandler.createStub(tree, node, parentStub) ?: createDefaultStub(parentStub)
+        return ParadoxScriptedVariableManager.createStub(tree, node, parentStub) ?: createDefaultStub(parentStub)
     }
     
     private fun createDefaultStub(parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub {
@@ -33,11 +33,11 @@ object ParadoxScriptScriptedVariableStubElementType : ILightStubElementType<Para
     }
     
     override fun shouldCreateStub(node: ASTNode): Boolean {
-        return ParadoxScriptedVariableHandler.shouldCreateStub(node)
+        return ParadoxScriptedVariableManager.shouldCreateStub(node)
     }
     
     override fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
-        return ParadoxScriptedVariableHandler.shouldCreateStub(tree, node, parentStub)
+        return ParadoxScriptedVariableManager.shouldCreateStub(tree, node, parentStub)
     }
     
     override fun indexStub(stub: ParadoxScriptScriptedVariableStub, sink: IndexSink) {

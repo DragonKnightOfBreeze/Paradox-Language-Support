@@ -37,7 +37,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
             }
             
             private fun visitProperty(element: ParadoxScriptProperty) {
-                val configs = ParadoxExpressionHandler.getConfigs(element)
+                val configs = ParadoxExpressionManager.getConfigs(element)
                 if(configs.isEmpty()) return  //must match
                 val propertyKey = element.name.lowercase()
                 val settings = settingsMap.get(propertyKey) ?: return

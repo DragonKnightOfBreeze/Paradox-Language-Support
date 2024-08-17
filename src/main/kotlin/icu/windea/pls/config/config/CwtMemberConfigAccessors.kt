@@ -68,7 +68,7 @@ val CwtMemberConfig<*>.replaceScopes: Map<String, String>?
         buildMap {
             for(option1 in options1) {
                 val k = option1.key.lowercase()
-                val v = option1.stringValue?.let { ParadoxScopeHandler.getScopeId(it) } ?: continue
+                val v = option1.stringValue?.let { ParadoxScopeManager.getScopeId(it) } ?: continue
                 put(k, v)
             }
         }
@@ -82,15 +82,15 @@ val CwtMemberConfig<*>.replaceScopes: Map<String, String>?
 val CwtMemberConfig<*>.pushScope: String?
     get() = getOrPutUserData(CwtMemberConfig.Keys.pushScope, "") action@{
         val option = findOption { it.key == "push_scope" }
-        option?.getOptionValue()?.let { v -> ParadoxScopeHandler.getScopeId(v) }
+        option?.getOptionValue()?.let { v -> ParadoxScopeManager.getScopeId(v) }
     }
 //may on:
 // * a config expression in declaration config
 val CwtMemberConfig<*>.supportedScopes: Set<String>
     get() = getOrPutUserData(CwtMemberConfig.Keys.supportedScopes) action@{
         val option = findOption { it.key == "scope" || it.key == "scopes" }
-        val r = option?.getOptionValueOrValues()?.mapTo(mutableSetOf()) { ParadoxScopeHandler.getScopeId(it) }
-        if(r.isNullOrEmpty()) ParadoxScopeHandler.anyScopeIdSet else r
+        val r = option?.getOptionValueOrValues()?.mapTo(mutableSetOf()) { ParadoxScopeManager.getScopeId(it) }
+        if(r.isNullOrEmpty()) ParadoxScopeManager.anyScopeIdSet else r
     }
 
 val CwtMemberConfig<*>.originalConfig: CwtMemberConfig<CwtMemberElement>

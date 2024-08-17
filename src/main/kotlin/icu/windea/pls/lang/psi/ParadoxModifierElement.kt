@@ -17,7 +17,7 @@ import javax.swing.*
  * （生成的）修正可能并不存在一个真正意义上的声明处，用这个模拟。
  *
  * @see ParadoxModifierSupport
- * @see ParadoxModifierHandler
+ * @see ParadoxModifierManager
  */
 class ParadoxModifierElement(
     parent: PsiElement,

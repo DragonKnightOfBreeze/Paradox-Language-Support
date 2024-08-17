@@ -21,7 +21,7 @@ class GotoInlineScriptUsagesFix: IntentionAndQuickFixAction() {
     override fun applyFix(project: Project, file: PsiFile?, editor: Editor?) {
         if(file == null || editor == null) return
         if(file !is ParadoxScriptFile) return
-        val expression = ParadoxInlineScriptHandler.getInlineScriptExpression(file)
+        val expression = ParadoxInlineScriptManager.getInlineScriptExpression(file)
         if(expression == null) return
         GotoDeclarationAction.startFindUsages(editor, project, file)
     }

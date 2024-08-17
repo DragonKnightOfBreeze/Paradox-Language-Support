@@ -61,7 +61,7 @@ private class CwtModifierConfigImpl(
     
     override val supportedScopes: Set<String> by lazy {
         if(categoryConfigMap.isNotEmpty()) {
-            ParadoxScopeHandler.getSupportedScopes(categoryConfigMap)
+            ParadoxScopeManager.getSupportedScopes(categoryConfigMap)
         } else {
             //没有注明categories时从scopes选项中获取
             config.supportedScopes

@@ -76,9 +76,9 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
         val configGroup = config.configGroup
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup) ?: return
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
-        val parentScopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement) ?: ParadoxScopeHandler.getAnyScopeContext()
-        val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)
-        if(ParadoxScopeHandler.matchesScope(scopeContext, expectedScope, configGroup)) return
+        val parentScopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement) ?: ParadoxScopeManager.getAnyScopeContext()
+        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)
+        if(ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)) return
         val expression = element.expression ?: return
         val message = PlsBundle.message("incorrectExpressionChecker.expect.scope", expression, expectedScope, scopeContext.scope.id)
         holder.registerProblem(element, message)
@@ -96,9 +96,9 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
         val configGroup = config.configGroup
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup) ?: return
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return
-        val parentScopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement) ?: ParadoxScopeHandler.getAnyScopeContext()
-        val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)
-        if(ParadoxScopeHandler.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return
+        val parentScopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement) ?: ParadoxScopeManager.getAnyScopeContext()
+        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)
+        if(ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return
         val expression = element.expression ?: return
         val message = PlsBundle.message("incorrectExpressionChecker.expect.scopeGroup", expression, expectedScopeGroup, scopeContext.scope.id)
         holder.registerProblem(element, message)

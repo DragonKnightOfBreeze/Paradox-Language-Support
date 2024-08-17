@@ -22,12 +22,12 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
                 //忽略可能包含参数的表达式
                 if(element.text.isParameterized()) return
                 //得到完全匹配的CWT规则
-                val config = ParadoxExpressionHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return
+                val config = ParadoxExpressionManager.getConfigs(element, orDefault = false).firstOrNull() ?: return
                 val configExpression = config.expression
                 val dataType = configExpression.type
                 if(dataType == CwtDataTypes.AbsoluteFilePath) return
                 if(dataType !in CwtDataTypeGroups.PathReference) return
-                val fileExtensions = ParadoxFilePathHandler.getFileExtensionOptionValues(config)
+                val fileExtensions = ParadoxFileManager.getFileExtensionOptionValues(config)
                 if(fileExtensions.isEmpty()) return
                 val value = element.value
                 if(fileExtensions.any { value.endsWith(it, true) }) return

@@ -117,7 +117,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
         val project = definitionInfo.project
         var newFrameInfo = frameInfo
         if(definitionInfo.type == "sprite") {
-            newFrameInfo = newFrameInfo.merge(ParadoxSpriteHandler.getFrameInfo(definition))
+            newFrameInfo = newFrameInfo.merge(ParadoxSpriteManager.getFrameInfo(definition))
         }
         if(placeholder != null) {
             if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
@@ -153,7 +153,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
             //propertyName可以为空字符串，这时直接查找定义的字符串类型的值（如果存在）
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
-            val config = ParadoxExpressionHandler.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
+            val config = ParadoxExpressionManager.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
             if(config.expression.type !in CwtDataTypeGroups.ImageLocationResolved) {
                 return ResolveResult("", null, null, PlsBundle.message("dynamic"))
             }
@@ -163,7 +163,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
             if(propertyValue.text.isParameterized()) {
                 return ResolveResult("", null, null, PlsBundle.message("parameterized"))
             }
-            val resolved = ParadoxExpressionHandler.resolveExpression(propertyValue, null, config, config.expression, false)
+            val resolved = ParadoxExpressionManager.resolveExpression(propertyValue, null, config, config.expression, false)
             when {
                 //由filePath解析为图片文件
                 resolved is PsiFile && resolved.fileType == DdsFileType -> {
@@ -206,7 +206,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
         val project = definitionInfo.project
         var newFrameInfo = frameInfo
         if(definitionInfo.type == "sprite") {
-            newFrameInfo = newFrameInfo.merge(ParadoxSpriteHandler.getFrameInfo(definition))
+            newFrameInfo = newFrameInfo.merge(ParadoxSpriteManager.getFrameInfo(definition))
         }
         if(placeholder != null) {
             if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
@@ -251,7 +251,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
             //dynamic -> returns ("", null, 0)
             val property = definition.findProperty(propertyName, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
-            val config = ParadoxExpressionHandler.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
+            val config = ParadoxExpressionManager.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
             if(config.expression.type !in CwtDataTypeGroups.ImageLocationResolved) {
                 return ResolveAllResult("", emptySet(), null, PlsBundle.message("dynamic"))
             }
@@ -261,7 +261,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
             if(propertyValue.text.isParameterized()) {
                 return ResolveAllResult("", emptySet(), null, PlsBundle.message("parameterized"))
             }
-            val resolved = ParadoxExpressionHandler.resolveExpression(propertyValue, null, config, config.expression, false)
+            val resolved = ParadoxExpressionManager.resolveExpression(propertyValue, null, config, config.expression, false)
             when {
                 //由filePath解析为图片文件
                 resolved is PsiFile && resolved.fileType == DdsFileType -> {

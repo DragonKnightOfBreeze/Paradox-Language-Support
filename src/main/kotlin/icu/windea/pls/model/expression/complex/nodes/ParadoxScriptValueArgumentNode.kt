@@ -28,7 +28,7 @@ class ParadoxScriptValueArgumentNode(
         if(text.isEmpty()) return null
         val reference = valueNode.getReference(element)
         if(reference?.resolve() == null) return null //skip if script value cannot be resolved
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
+        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         return Reference(element, rangeInElement, this)
     }
     
@@ -45,7 +45,7 @@ class ParadoxScriptValueArgumentNode(
         }
         
         override fun resolve(): ParadoxParameterElement? {
-            val config = ParadoxExpressionHandler.getConfigs(element, orDefault = false).firstOrNull() ?: return null
+            val config = ParadoxExpressionManager.getConfigs(element, orDefault = false).firstOrNull() ?: return null
             return ParadoxParameterSupport.resolveArgument(element, rangeInElement, config)
         }
     }

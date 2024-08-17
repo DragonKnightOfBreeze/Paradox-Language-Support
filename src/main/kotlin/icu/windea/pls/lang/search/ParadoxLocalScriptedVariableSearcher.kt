@@ -28,7 +28,7 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
 		val psiFile = file.toPsiFile(selector.project) ?: return
 		if(psiFile !is ParadoxScriptFile) return
 		val startOffset = selector.context?.castOrNull<PsiElement>()?.startOffset
-		ParadoxScriptedVariableHandler.getLocalScriptedVariables(psiFile).process p@{ 
+		ParadoxScriptedVariableManager.getLocalScriptedVariables(psiFile).process p@{ 
 			ProgressManager.checkCanceled()
 			//仅查找在上下文位置之前声明的封装本地变量
 			val element = it.element ?: return@p true

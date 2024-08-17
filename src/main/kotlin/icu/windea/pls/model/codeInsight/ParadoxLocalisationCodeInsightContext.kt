@@ -105,7 +105,7 @@ data class ParadoxLocalisationCodeInsightContext(
                 run {
                     val type = ParadoxLocalisationCodeInsightInfo.Type.GeneratedModifierName
                     val check = inspection == null || inspection.checkGeneratedModifierNamesForDefinitions
-                    val keys = ParadoxModifierHandler.getModifierNameKeys(modifierName, definition)
+                    val keys = ParadoxModifierManager.getModifierNameKeys(modifierName, definition)
                     val keyToUse = keys.firstOrNull() ?: return@run
                     for(locale in locales) {
                         ProgressManager.checkCanceled()
@@ -117,7 +117,7 @@ data class ParadoxLocalisationCodeInsightContext(
                 run {
                     val type = ParadoxLocalisationCodeInsightInfo.Type.GeneratedModifierDesc
                     val check = inspection == null || inspection.checkGeneratedModifierDescriptionsForDefinitions
-                    val keys = ParadoxModifierHandler.getModifierDescKeys(modifierName, definition)
+                    val keys = ParadoxModifierManager.getModifierDescKeys(modifierName, definition)
                     val keyToUse = keys.firstOrNull() ?: return@run
                     for(locale in locales) {
                         ProgressManager.checkCanceled()
@@ -140,7 +140,7 @@ data class ParadoxLocalisationCodeInsightContext(
             if(!element.isExpression()) return null
             val expression = element.value
             if(expression.isEmpty() || expression.isParameterized()) return null
-            val config = ParadoxExpressionHandler.getConfigs(element).firstOrNull() ?: return null
+            val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
             fromModifier(element, config, locales, fromInspection = fromInspection)?.let { return it }
             if(forReference) {
                 fromReference(element, config, locales, fromInspection = fromInspection)?.let { return it }
@@ -165,7 +165,7 @@ data class ParadoxLocalisationCodeInsightContext(
             run {
                 val type = ParadoxLocalisationCodeInsightInfo.Type.ModifierName
                 val check = inspection == null || inspection.checkModifierNames
-                val keys = ParadoxModifierHandler.getModifierNameKeys(modifierName, element)
+                val keys = ParadoxModifierManager.getModifierNameKeys(modifierName, element)
                 val keyToUse = keys.firstOrNull() ?: return@run
                 for(locale in locales) {
                     ProgressManager.checkCanceled()
@@ -177,7 +177,7 @@ data class ParadoxLocalisationCodeInsightContext(
             run {
                 val type = ParadoxLocalisationCodeInsightInfo.Type.ModifierDesc
                 val check = inspection == null || inspection.checkModifierDescriptions
-                val keys = ParadoxModifierHandler.getModifierDescKeys(modifierName, element)
+                val keys = ParadoxModifierManager.getModifierDescKeys(modifierName, element)
                 val keyToUse = keys.firstOrNull() ?: return@run
                 for(locale in locales) {
                     ProgressManager.checkCanceled()

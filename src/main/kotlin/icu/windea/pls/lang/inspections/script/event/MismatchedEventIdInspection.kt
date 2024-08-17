@@ -50,7 +50,7 @@ class MismatchedEventIdInspection : LocalInspectionTool() {
                     else -> event.findProperty(eventIdField)?.propertyValue
                 } ?: continue
                 val eventId = eventIdProperty.stringValue() ?: continue
-                if(!ParadoxEventHandler.isMatchedEventId(eventId, namespace)) {
+                if(!ParadoxEventManager.isMatchedEventId(eventId, namespace)) {
                     holder.registerProblem(eventIdProperty, PlsBundle.message("inspection.script.mismatchedEventId.desc", eventId, namespace))
                 }
             }

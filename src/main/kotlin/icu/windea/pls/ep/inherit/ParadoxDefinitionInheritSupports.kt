@@ -42,7 +42,7 @@ class StellarisEventInheritSupport: ParadoxDefinitionInheritSupport {
         val parentDefinition = ParadoxDefinitionSearch.search(parentDefinitionName, "event", selector).find() ?: return null
         val parentDefinitionInfo = parentDefinition.definitionInfo ?: return null
         //事件类型不匹配 - 不处理
-        if(ParadoxEventHandler.getType(definitionInfo) != ParadoxEventHandler.getType(parentDefinitionInfo)) return null
+        if(ParadoxEventManager.getType(definitionInfo) != ParadoxEventManager.getType(parentDefinitionInfo)) return null
         return parentDefinition
     }
     

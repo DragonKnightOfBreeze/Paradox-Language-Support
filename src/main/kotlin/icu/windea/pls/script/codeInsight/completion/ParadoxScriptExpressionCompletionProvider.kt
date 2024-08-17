@@ -29,11 +29,11 @@ class ParadoxScriptExpressionCompletionProvider : CompletionProvider<CompletionP
         context.keyword = keyword
         context.quoted = quoted
         context.rightQuoted = rightQuoted
-        context.expressionOffset = ParadoxExpressionHandler.getExpressionOffset(element)
+        context.expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
         
         //兼容参数值（包括整行或多行参数值）和内联脚本文件中内容
         
-        val parameterValueQuoted = ParadoxExpressionHandler.getConfigContext(file)?.parameterValueQuoted
+        val parameterValueQuoted = ParadoxExpressionManager.getConfigContext(file)?.parameterValueQuoted
         val mayBeKey = parameterValueQuoted != false && (element is ParadoxScriptPropertyKey || (element is ParadoxScriptValue && element.isBlockMember()))
         val mayBeValue = element is ParadoxScriptString && element.isBlockMember()
         val mayBePropertyValue = parameterValueQuoted != false && (element is ParadoxScriptString && element.isPropertyValue())

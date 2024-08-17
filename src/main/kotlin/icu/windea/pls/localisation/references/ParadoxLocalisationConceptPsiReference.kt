@@ -38,6 +38,6 @@ class ParadoxLocalisationConceptPsiReference(
     private fun doResolve(): ParadoxScriptDefinitionElement? {
         val element = element
         val nameOrAlias = element.name
-        return ParadoxGameConceptHandler.get(nameOrAlias, project, element)
+        return ParadoxGameConceptManager.get(nameOrAlias, project, element)
     }
 }

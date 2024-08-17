@@ -181,7 +181,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         //创建临时文件
         //val file = localisation.containingFile ?: return null
         val fileInfo = documentContent.highlightFile?.fileInfo ?: return null
-        val localeConfig = selectLocale(localisation) ?: ParadoxLocaleHandler.getPreferredLocaleConfig()
+        val localeConfig = selectLocale(localisation) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
         val text = localisation.text
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), text, fileInfo) }
         tempFile.putUserData(PlsKeys.injectedLocaleConfig, localeConfig)

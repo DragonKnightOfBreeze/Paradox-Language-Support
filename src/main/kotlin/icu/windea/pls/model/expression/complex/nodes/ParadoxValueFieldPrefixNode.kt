@@ -21,7 +21,7 @@ class ParadoxValueFieldPrefixNode(
     }
     
     override fun getReference(element: ParadoxExpressionElement): Reference {
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
+        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         return Reference(element, rangeInElement, linkConfigs.mapNotNull { it.pointer.element })
     }
     

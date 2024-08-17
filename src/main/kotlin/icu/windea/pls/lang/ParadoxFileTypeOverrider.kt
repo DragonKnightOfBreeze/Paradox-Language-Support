@@ -22,7 +22,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
         //不需要重载无法获取内容的文件的文件类型
         if(file is VirtualFileWithoutContent) return null
         
-        val fileInfo = ParadoxCoreHandler.getFileInfo(file) ?: return null
+        val fileInfo = ParadoxCoreManager.getFileInfo(file) ?: return null
         return getFileType(fileInfo)
     }
     

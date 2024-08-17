@@ -35,13 +35,13 @@ private fun doResolve(config: CwtPropertyConfig): CwtLocalisationLinkConfig? {
         when(prop.key) {
             "desc" -> desc = prop.stringValue?.trim() //排除占位码 & 去除首尾空白
             "input_scopes" -> inputScopes = buildSet {
-                prop.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) }
-                prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeHandler.getScopeId(v)) } }
+                prop.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
+                prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
             }
-            "output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeHandler.getScopeId(v) }
+            "output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeManager.getScopeId(v) }
         }
     }
-    inputScopes = inputScopes.orNull() ?: ParadoxScopeHandler.anyScopeIdSet
+    inputScopes = inputScopes.orNull() ?: ParadoxScopeManager.anyScopeIdSet
     return CwtLocalisationLinkConfigImpl(config, name, desc, inputScopes, outputScope)
 }
 

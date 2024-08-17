@@ -13,6 +13,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.core.collections.*
@@ -50,7 +51,7 @@ object ParadoxCompletionManager {
     }
     
     fun addRootKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
-        val elementPath = ParadoxElementPathHandler.get(memberElement, PlsConstants.maxDefinitionDepth) ?: return
+        val elementPath = ParadoxElementPathManager.get(memberElement, PlsConstants.maxDefinitionDepth) ?: return
         if(elementPath.path.isParameterized()) return //忽略元素路径带参数的情况
         
         context.isKey = true
@@ -59,7 +60,7 @@ object ParadoxCompletionManager {
     }
     
     fun addKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
-        val configContext = ParadoxExpressionHandler.getConfigContext(memberElement)
+        val configContext = ParadoxExpressionManager.getConfigContext(memberElement)
         if(configContext == null) return
         if(!configContext.isRootOrMember()) {
             //仅提示不在定义声明中的rootKey    
@@ -70,7 +71,7 @@ object ParadoxCompletionManager {
         val configGroup = configContext.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
-        val parentConfigs = ParadoxExpressionHandler.getConfigs(memberElement, matchOptions = matchOptions)
+        val parentConfigs = ParadoxExpressionManager.getConfigs(memberElement, matchOptions = matchOptions)
         val configs = mutableListOf<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
@@ -82,11 +83,11 @@ object ParadoxCompletionManager {
             }
         }
         if(configs.isEmpty()) return
-        val occurrenceMap = ParadoxExpressionHandler.getChildOccurrenceMap(memberElement, parentConfigs)
+        val occurrenceMap = ParadoxExpressionManager.getChildOccurrenceMap(memberElement, parentConfigs)
         
         context.isKey = true
         context.configGroup = configGroup
-        context.scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement)
+        context.scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
         
         configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
             for(config in configsWithSameKey) {
@@ -112,14 +113,14 @@ object ParadoxCompletionManager {
     }
     
     fun addValueCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
-        val configContext = ParadoxExpressionHandler.getConfigContext(memberElement)
+        val configContext = ParadoxExpressionManager.getConfigContext(memberElement)
         if(configContext == null) return
         if(!configContext.isRootOrMember()) return
         
         val configGroup = configContext.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
-        val parentConfigs = ParadoxExpressionHandler.getConfigs(memberElement, matchOptions = matchOptions)
+        val parentConfigs = ParadoxExpressionManager.getConfigs(memberElement, matchOptions = matchOptions)
         val configs = mutableListOf<CwtValueConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
@@ -129,11 +130,11 @@ object ParadoxCompletionManager {
             }
         }
         if(configs.isEmpty()) return
-        val occurrenceMap = ParadoxExpressionHandler.getChildOccurrenceMap(memberElement, parentConfigs)
+        val occurrenceMap = ParadoxExpressionManager.getChildOccurrenceMap(memberElement, parentConfigs)
         
         context.isKey = false
         context.configGroup = configGroup
-        context.scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(memberElement)
+        context.scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
         
         for(config in configs) {
             if(shouldComplete(config, occurrenceMap)) {
@@ -156,7 +157,7 @@ object ParadoxCompletionManager {
     }
     
     fun addPropertyValueCompletions(element: ParadoxScriptStringExpressionElement, propertyElement: ParadoxScriptProperty, context: ProcessingContext, result: CompletionResultSet) {
-        val configContext = ParadoxExpressionHandler.getConfigContext(element)
+        val configContext = ParadoxExpressionManager.getConfigContext(element)
         if(configContext == null) return
         if(!configContext.isRootOrMember()) return
         
@@ -166,7 +167,7 @@ object ParadoxCompletionManager {
         
         context.isKey = false
         context.configGroup = configGroup
-        context.scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(propertyElement)
+        context.scopeContext = ParadoxScopeManager.getSwitchedScopeContext(propertyElement)
         
         for(config in configs) {
             if(config is CwtValueConfig) {
@@ -243,7 +244,7 @@ object ParadoxCompletionManager {
         val path = fileInfo.pathToEntry //这里使用pathToEntry
         val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
         for(typeConfig in configGroup.types.values) {
-            if(ParadoxDefinitionHandler.matchesTypeByUnknownDeclaration(path, null, null, typeConfig)) {
+            if(ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(path, null, null, typeConfig)) {
                 val skipRootKeyConfig = typeConfig.skipRootKey
                 if(skipRootKeyConfig.isNullOrEmpty()) {
                     if(elementPath.isEmpty()) {
@@ -334,7 +335,7 @@ object ParadoxCompletionManager {
             }
             val scopeMatched1 = when {
                 scopeContext == null -> true
-                else -> ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
+                else -> ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
             }
             if(!scopeMatched1 && getSettings().completion.completeOnlyScopeIsMatched) return
             context.scopeMatched = scopeMatched1
@@ -367,7 +368,7 @@ object ParadoxCompletionManager {
         val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
         //这里selector不需要指定去重
-        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
+        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, LimitedCompletionProcessor { localisation ->
             val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = localisation.containingFile
@@ -394,7 +395,7 @@ object ParadoxCompletionManager {
         val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
         //这里selector不需要指定去重
-        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleHandler.getPreferredLocaleConfig())
+        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector) { syncedLocalisation ->
             val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = syncedLocalisation.containingFile
@@ -428,7 +429,7 @@ object ParadoxCompletionManager {
             
             //排除不匹配可能存在的supported_scopes的情况
             val supportedScopes = ParadoxDefinitionSupportedScopesProvider.getSupportedScopes(definition, definitionInfo)
-            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, supportedScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
             
             val name = definitionInfo.name
@@ -458,7 +459,7 @@ object ParadoxCompletionManager {
         if(pathReferenceExpressionSupport != null) {
             val tailText = getExpressionTailText(context, config)
             val fileExtensions = when(config) {
-                is CwtMemberConfig<*> -> ParadoxFilePathHandler.getFileExtensionOptionValues(config)
+                is CwtMemberConfig<*> -> ParadoxFileManager.getFileExtensionOptionValues(config)
                 else -> emptySet()
             }
             //仅提示匹配file_extensions选项指定的扩展名的，如果存在
@@ -471,7 +472,7 @@ object ParadoxCompletionManager {
                 val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
                 val name = pathReferenceExpressionSupport.extract(configExpression, contextFile, filePath) ?: return@p true
                 val icon = when {
-                    ParadoxInlineScriptHandler.isInlineScriptExpressionConfig(config) -> PlsIcons.Nodes.InlineScript
+                    ParadoxInlineScriptManager.isInlineScriptExpressionConfig(config) -> PlsIcons.Nodes.InlineScript
                     else -> PlsIcons.Nodes.PathReference
                 }
                 val lookupElement = ParadoxLookupElementBuilder.create(file, name)
@@ -484,7 +485,7 @@ object ParadoxCompletionManager {
                 true
             }
             
-            if(ParadoxInlineScriptHandler.isInlineScriptExpressionConfig(config)) {
+            if(ParadoxInlineScriptManager.isInlineScriptExpressionConfig(config)) {
                 completeExtendedInlineScript(context, result)
             }
         }
@@ -548,7 +549,7 @@ object ParadoxCompletionManager {
     }
     
     fun completeModifier(context: ProcessingContext, result: CompletionResultSet) {
-        ParadoxModifierHandler.completeModifier(context, result)
+        ParadoxModifierManager.completeModifier(context, result)
     }
     
     fun completeAliasName(context: ProcessingContext, result: CompletionResultSet, aliasName: String) {
@@ -618,7 +619,7 @@ object ParadoxCompletionManager {
         val template = CwtTemplateExpression.resolve(configExpression.expressionString)
         val tailText = getExpressionTailText(context, config)
         template.processResolveResult(contextElement, configGroup) { expression ->
-            val templateExpressionElement = ParadoxExpressionHandler.resolveTemplateExpression(contextElement, expression, configExpression, configGroup)
+            val templateExpressionElement = ParadoxExpressionManager.resolveTemplateExpression(contextElement, expression, configExpression, configGroup)
             val lookupElement = ParadoxLookupElementBuilder.create(templateExpressionElement, expression)
                 .withIcon(PlsIcons.Nodes.TemplateExpression)
                 .withTailText(tailText)
@@ -636,7 +637,7 @@ object ParadoxCompletionManager {
         val contextElement = context.contextElement!!
         val isKey = context.isKey
         if(isKey != true || config !is CwtPropertyConfig) return
-        ParadoxParameterHandler.completeArguments(contextElement, context, result)
+        ParadoxParameterManager.completeArguments(contextElement, context, result)
     }
     
     fun completeInlineScriptInvocation(context: ProcessingContext, result: CompletionResultSet) {
@@ -681,7 +682,7 @@ object ParadoxCompletionManager {
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         val expression = markIncomplete { ParadoxDynamicValueExpression.resolve(keyword, textRange, configGroup, configs.toList()) } ?: return
         
-        val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
         val isKey = context.isKey
         context.config = expression.configs.first()
         context.configs = expression.configs
@@ -731,7 +732,7 @@ object ParadoxCompletionManager {
         val expression = markIncomplete { ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup) } ?: return
         
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
         val isKey = context.isKey
         context.isKey = null
         
@@ -749,8 +750,8 @@ object ParadoxCompletionManager {
                     completeForScopeLinkNode(node, context, result)
                     break
                 } else {
-                    scopeContextInExpression = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
-                        ?: ParadoxScopeHandler.getUnknownScopeContext(scopeContextInExpression)
+                    scopeContextInExpression = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
+                        ?: ParadoxScopeManager.getUnknownScopeContext(scopeContextInExpression)
                 }
             }
         }
@@ -773,7 +774,7 @@ object ParadoxCompletionManager {
         val expression = markIncomplete { ParadoxScriptValueExpression.resolve(keyword, textRange, configGroup, config) } ?: return
         
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
         val isKey = context.isKey
         context.scopeContext = null //skip check scope context here
         context.isKey = null
@@ -800,7 +801,7 @@ object ParadoxCompletionManager {
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
                     context.keywordOffset = node.rangeInExpression.startOffset
-                    ParadoxParameterHandler.completeArguments(element, context, resultToUse)
+                    ParadoxParameterManager.completeArguments(element, context, resultToUse)
                 }
             } else if(node is ParadoxScriptValueArgumentValueNode && getSettings().inference.configContextForParameters) {
                 if(inRange && expression.scriptValueNode.text.isNotEmpty()) {
@@ -809,7 +810,7 @@ object ParadoxCompletionManager {
                         val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                         val resultToUse = result.withPrefixMatcher(keywordToUse)
                         val parameterElement = node.argumentNode?.getReference(element)?.resolve() ?: return@run
-                        val inferredContextConfigs = ParadoxParameterHandler.getInferredContextConfigs(parameterElement)
+                        val inferredContextConfigs = ParadoxParameterManager.getInferredContextConfigs(parameterElement)
                         val inferredConfig = inferredContextConfigs.singleOrNull()?.castOrNull<CwtValueConfig>() ?: return@run
                         context.keyword = keywordToUse
                         context.keywordOffset = node.rangeInExpression.startOffset
@@ -838,7 +839,7 @@ object ParadoxCompletionManager {
         val expression = markIncomplete { ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup) } ?: return
         
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
         val isKey = context.isKey
         context.isKey = null
         
@@ -856,8 +857,8 @@ object ParadoxCompletionManager {
                     completeForScopeLinkNode(node, context, result)
                     break
                 } else {
-                    scopeContextInExpression = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
-                        ?: ParadoxScopeHandler.getUnknownScopeContext(scopeContextInExpression)
+                    scopeContextInExpression = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
+                        ?: ParadoxScopeManager.getUnknownScopeContext(scopeContextInExpression)
                 }
             } else if(node is ParadoxValueFieldNode) {
                 if(inRange) {
@@ -887,7 +888,7 @@ object ParadoxCompletionManager {
         val expression = markIncomplete { ParadoxVariableFieldExpression.resolve(keyword, textRange, configGroup) } ?: return
         
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
         val isKey = context.isKey
         context.isKey = null
         
@@ -905,8 +906,8 @@ object ParadoxCompletionManager {
                     completeForScopeLinkNode(node, context, result)
                     break
                 } else {
-                    scopeContextInExpression = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
-                        ?: ParadoxScopeHandler.getUnknownScopeContext(scopeContextInExpression)
+                    scopeContextInExpression = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
+                        ?: ParadoxScopeManager.getUnknownScopeContext(scopeContextInExpression)
                 }
             } else if(node is ParadoxDataSourceNode) {
                 if(inRange) {
@@ -936,7 +937,7 @@ object ParadoxCompletionManager {
         val expression = markIncomplete { ParadoxCommandExpression.resolve(keyword, textRange, configGroup) } ?: return
         
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
         val isKey = context.isKey
         context.isKey = null
         
@@ -954,8 +955,8 @@ object ParadoxCompletionManager {
                     completeForCommandScopeLinkNode(node, context, result)
                     break
                 } else {
-                    scopeContextInExpression = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
-                        ?: ParadoxScopeHandler.getUnknownScopeContext(scopeContextInExpression)
+                    scopeContextInExpression = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
+                        ?: ParadoxScopeManager.getUnknownScopeContext(scopeContextInExpression)
                 }
             } else if(node is ParadoxCommandFieldNode) {
                 if(inRange) {
@@ -1027,7 +1028,7 @@ object ParadoxCompletionManager {
     private fun completeForScopeLinkNode(node: ParadoxScopeLinkNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return false
         val offsetInParent = context.offsetInParent!!
-        val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
         val nodeRange = node.rangeInExpression
         val scopeLinkNode = node.castOrNull<ParadoxDynamicScopeLinkNode>()
         val prefixNode = scopeLinkNode?.prefixNode
@@ -1035,8 +1036,8 @@ object ParadoxCompletionManager {
         val inDsNode = dsNode?.nodes?.first()
         val endOffset = dsNode?.rangeInExpression?.startOffset ?: -1
         if(prefixNode != null && dsNode != null && offsetInParent >= dsNode.rangeInExpression.startOffset) {
-            context.scopeContext = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, scopeContext)
-                ?: ParadoxScopeHandler.getUnknownScopeContext(scopeContext)
+            context.scopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContext)
+                ?: ParadoxScopeManager.getUnknownScopeContext(scopeContext)
             
             val keywordToUse = dsNode.text.substring(0, offsetInParent - endOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
@@ -1079,7 +1080,7 @@ object ParadoxCompletionManager {
         val keyword = context.keyword
         val keywordOffset = context.keywordOffset
         val offsetInParent = context.offsetInParent!!
-        val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
         val nodeRange = node.rangeInExpression
         val valueFieldNode = node.castOrNull<ParadoxDynamicValueFieldNode>()
         val prefixNode = valueFieldNode?.prefixNode
@@ -1087,8 +1088,8 @@ object ParadoxCompletionManager {
         val inDsNode = dsNode?.nodes?.first()
         val endOffset = dsNode?.rangeInExpression?.startOffset ?: -1
         if(prefixNode != null && dsNode != null && offsetInParent >= dsNode.rangeInExpression.startOffset) {
-            context.scopeContext = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, scopeContext)
-                ?: ParadoxScopeHandler.getUnknownScopeContext(scopeContext)
+            context.scopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContext)
+                ?: ParadoxScopeManager.getUnknownScopeContext(scopeContext)
             
             val keywordToUse = dsNode.text.substring(0, offsetInParent - endOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
@@ -1132,15 +1133,15 @@ object ParadoxCompletionManager {
      */
     private fun completeForCommandScopeLinkNode(node: ParadoxCommandScopeLinkNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
         val offsetInParent = context.offsetInParent!!
-        //val scopeContext = context.scopeContext ?: ParadoxScopeHandler.getAnyScopeContext()
+        //val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
         val nodeRange = node.rangeInExpression
         val scopeLinkNode = node.castOrNull<ParadoxDynamicCommandScopeLinkNode>()
         val prefixNode = scopeLinkNode?.prefixNode
         val dsNode = scopeLinkNode?.dataSourceNode
         val endOffset = dsNode?.rangeInExpression?.startOffset ?: -1
         if(prefixNode != null && dsNode != null && offsetInParent >= dsNode.rangeInExpression.startOffset) {
-            //context.scopeContext = ParadoxScopeHandler.getSwitchedScopeContextOfNode(element, node, scopeContext)
-            //    ?: ParadoxScopeHandler.getUnknownScopeContext(scopeContext)
+            //context.scopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContext)
+            //    ?: ParadoxScopeManager.getUnknownScopeContext(scopeContext)
 
             val keywordToUse = dsNode.text.substring(0, offsetInParent - endOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
@@ -1224,7 +1225,7 @@ object ParadoxCompletionManager {
         
         val linkConfigs = configGroup.linksAsScopeNotData
         for(scope in linkConfigs.values) {
-            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, scope.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, scope.inputScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
             
             val name = scope.name
@@ -1249,7 +1250,7 @@ object ParadoxCompletionManager {
         
         val linkConfigs = configGroup.linksAsScopeWithPrefix
         for(linkConfig in linkConfigs.values) {
-            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
             
             val name = linkConfig.prefix ?: continue
@@ -1306,7 +1307,7 @@ object ParadoxCompletionManager {
         val linkConfigs = configGroup.linksAsValueNotData
         for(linkConfig in linkConfigs.values) {
             //排除input_scopes不匹配前一个scope的output_scope的情况
-            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
             
             val name = linkConfig.name
@@ -1330,7 +1331,7 @@ object ParadoxCompletionManager {
         
         val linkConfigs = configGroup.linksAsValueWithPrefix
         for(linkConfig in linkConfigs.values) {
-            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
             
             val name = linkConfig.prefix ?: continue
@@ -1384,7 +1385,7 @@ object ParadoxCompletionManager {
         
         val localisationLinks = configGroup.localisationLinks
         for(localisationScope in localisationLinks.values) {
-            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, localisationScope.inputScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, localisationScope.inputScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
             
             val name = localisationScope.name
@@ -1409,7 +1410,7 @@ object ParadoxCompletionManager {
         
         val localisationCommands = configGroup.localisationCommands
         for(localisationCommand in localisationCommands.values) {
-            val scopeMatched = ParadoxScopeHandler.matchesScope(scopeContext, localisationCommand.supportedScopes, configGroup)
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, localisationCommand.supportedScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
             
             val name = localisationCommand.name
@@ -1592,7 +1593,7 @@ object ParadoxCompletionManager {
         val keyword = context.keyword
         
         val eventTargetSelector = dynamicValueSelector(project, file).contextSensitive().distinctByName()
-        ParadoxDynamicValueSearch.search(ParadoxDynamicValueHandler.EVENT_TARGETS, eventTargetSelector).processQueryAsync p@{ info ->
+        ParadoxDynamicValueSearch.search(ParadoxDynamicValueManager.EVENT_TARGETS, eventTargetSelector).processQueryAsync p@{ info ->
             ProgressManager.checkCanceled()
             if(info.name == keyword) return@p true //排除和当前输入的同名的
             val element = ParadoxDynamicValueElement(contextElement, info, project)

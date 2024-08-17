@@ -21,7 +21,7 @@ class ParadoxCommandScopeLinkValueNode(
     }
     
     override fun getReference(element: ParadoxExpressionElement): Reference {
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
+        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         return Reference(element, rangeInElement, text, configGroup)
     }
     
@@ -41,7 +41,7 @@ class ParadoxCommandScopeLinkValueNode(
         }
         
         override fun resolve(): PsiElement? {
-            return ParadoxDynamicValueHandler.resolveDynamicValue(element, name, configExpressions, configGroup)
+            return ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
         }
     }
     

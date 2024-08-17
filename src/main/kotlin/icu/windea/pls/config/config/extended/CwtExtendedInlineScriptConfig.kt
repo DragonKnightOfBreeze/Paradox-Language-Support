@@ -1,6 +1,7 @@
 package icu.windea.pls.config.config.extended
 
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.util.*

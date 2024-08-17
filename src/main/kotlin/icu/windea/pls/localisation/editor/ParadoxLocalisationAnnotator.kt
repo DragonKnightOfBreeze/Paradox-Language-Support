@@ -60,7 +60,7 @@ class ParadoxLocalisationAnnotator : Annotator {
         if(location != null) {
             val text = location.text
             val colorId = text.find { it.isExactLetter() } ?: return
-            val colorConfig = ParadoxTextColorHandler.getInfo(colorId.toString(), element.project, element) ?: return
+            val colorConfig = ParadoxTextColorManager.getInfo(colorId.toString(), element.project, element) ?: return
             val attributesKey = Keys.getColorKey(colorConfig.color) ?: return
             val colorIdOffset = location.startOffset + text.indexOf(colorId)
             val range = TextRange.create(colorIdOffset, colorIdOffset + 1)
@@ -76,6 +76,6 @@ class ParadoxLocalisationAnnotator : Annotator {
     }
     
     private fun annotateExpression(element: ParadoxLocalisationExpressionElement, holder: AnnotationHolder) {
-        ParadoxExpressionHandler.annotateExpression(element, null, holder)
+        ParadoxExpressionManager.annotateExpression(element, null, holder)
     }
 }

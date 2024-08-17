@@ -47,8 +47,8 @@ class AutomaticGeneratedModifiersIconRenamer(element: PsiElement, newName: Strin
             val newModifierName = info.config.template.extract(newName)
             run {
                 //use first key only -> gfx/interface/icons/modifiers/mod_$
-                val iconPath = ParadoxModifierHandler.getModifierIconPaths(modifierName, element).firstOrNull() ?: return@run
-                val newIconPath = ParadoxModifierHandler.getModifierIconPaths(newModifierName, element).firstOrNull() ?: return@run
+                val iconPath = ParadoxModifierManager.getModifierIconPaths(modifierName, element).firstOrNull() ?: return@run
+                val newIconPath = ParadoxModifierManager.getModifierIconPaths(newModifierName, element).firstOrNull() ?: return@run
                 val newIconName = newIconPath.substringAfterLast('/')
                 val iconSelector = fileSelector(project, element)
                 val result = ParadoxFilePathSearch.searchIcon(iconPath, iconSelector).findAll()

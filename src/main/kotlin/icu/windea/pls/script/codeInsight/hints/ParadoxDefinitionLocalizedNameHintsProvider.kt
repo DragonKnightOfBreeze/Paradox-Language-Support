@@ -52,7 +52,7 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<S
 	}
 	
 	private fun PresentationFactory.doCollect(element: ParadoxScriptDefinitionElement, editor: Editor, settings: Settings): InlayPresentation? {
-		val primaryLocalisation = ParadoxDefinitionHandler.getPrimaryLocalisation(element) ?: return null
+		val primaryLocalisation = ParadoxDefinitionManager.getPrimaryLocalisation(element) ?: return null
 		return ParadoxLocalisationTextInlayRenderer.render(primaryLocalisation, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
 	}
 }

@@ -42,7 +42,7 @@ class IrEventTreeDiagramSettings(
     
     override fun Panel.buildConfigurablePanel(coroutineScope: CoroutineScope) {
         val settings = state
-        val eventTypes = ParadoxEventHandler.getTypes(project, ParadoxGameType.Ir)
+        val eventTypes = ParadoxEventManager.getTypes(project, ParadoxGameType.Ir)
         eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
         settings.updateSettings()
         

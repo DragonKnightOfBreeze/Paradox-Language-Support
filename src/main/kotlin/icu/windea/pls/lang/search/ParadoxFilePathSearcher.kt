@@ -31,7 +31,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 val keys = FileBasedIndex.getInstance().getAllKeys(ParadoxFilePathIndex.NAME, project)
                 FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
-                    ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
+                    ParadoxCoreManager.getFileInfo(file) ?: return@p true //ensure file info is resolved here
                     if(gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level
                     consumer.process(file)
                 }
@@ -39,7 +39,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 val keys = getFilePaths(filePath, queryParameters)
                 FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
-                    ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
+                    ParadoxCoreManager.getFileInfo(file) ?: return@p true //ensure file info is resolved here
                     if(gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level
                     consumer.process(file)
                 }
@@ -54,7 +54,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 }, scope, null)
                 FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
-                    ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
+                    ParadoxCoreManager.getFileInfo(file) ?: return@p true //ensure file info is resolved here
                     if(gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level
                     consumer.process(file)
                 }
@@ -64,7 +64,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                     val keys = resolvedPaths
                     FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) p@{ file ->
                         ProgressManager.checkCanceled()
-                        ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
+                        ParadoxCoreManager.getFileInfo(file) ?: return@p true //ensure file info is resolved here
                         if(gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level
                         consumer.process(file)
                     }
@@ -74,7 +74,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 if(resolvedFileNames.isNotNullOrEmpty()) {
                     FilenameIndex.processFilesByNames(resolvedFileNames, false, scope, null) p@{ file ->
                         ProgressManager.checkCanceled()
-                        val fileInfo = ParadoxCoreHandler.getFileInfo(file) ?: return@p true //ensure file info is resolved here
+                        val fileInfo = ParadoxCoreManager.getFileInfo(file) ?: return@p true //ensure file info is resolved here
                         if(gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level
                         val p = fileInfo.path.path
                         if(!support.matches(configExpression, contextElement, p)) return@p true
@@ -95,7 +95,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
     
     private fun getFilePathsIgnoreLocale(filePath: String): Set<String>? {
         if(!filePath.endsWith(".yml", true)) return null //仅限本地化文件
-        val localeStrings = ParadoxLocaleHandler.getLocaleConfigs().map { it.shortId }
+        val localeStrings = ParadoxLocaleManager.getLocaleConfigs().map { it.shortId }
         var index = 0
         var usedLocaleString: String? = null
         for(localeString in localeStrings) {

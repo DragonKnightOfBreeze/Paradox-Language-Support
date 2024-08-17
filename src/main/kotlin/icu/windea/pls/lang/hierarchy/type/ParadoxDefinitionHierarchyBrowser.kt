@@ -69,7 +69,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     }
     
     override fun getComparator(): Comparator<NodeDescriptor<*>>? {
-        return ParadoxHierarchyHandler.getComparator(myProject)
+        return ParadoxHierarchyManager.getComparator(myProject)
     }
     
     override fun getPresentableNameMap(): MutableMap<String, Supplier<String>> {

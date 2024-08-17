@@ -101,14 +101,14 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
     }
     
     private fun matchesName(element: ParadoxScriptDefinitionElement, name: String): Boolean {
-        return ParadoxDefinitionHandler.getName(element) == name
+        return ParadoxDefinitionManager.getName(element) == name
     }
     
     private fun matchesType(element: ParadoxScriptDefinitionElement, type: String): Boolean {
-        return ParadoxDefinitionHandler.getType(element) == type
+        return ParadoxDefinitionManager.getType(element) == type
     }
     
     private fun matchesSubtypes(element: ParadoxScriptDefinitionElement, subtypes: List<String>): Boolean {
-        return ParadoxDefinitionHandler.getSubtypes(element)?.containsAll(subtypes) == true
+        return ParadoxDefinitionManager.getSubtypes(element)?.containsAll(subtypes) == true
     }
 }

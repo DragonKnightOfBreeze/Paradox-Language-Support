@@ -43,7 +43,7 @@ class Eu4EventTreeDiagramSettings(
     
     override fun Panel.buildConfigurablePanel(coroutineScope: CoroutineScope) {
         val settings = state
-        val eventTypes = ParadoxEventHandler.getTypes(project, ParadoxGameType.Eu4)
+        val eventTypes = ParadoxEventManager.getTypes(project, ParadoxGameType.Eu4)
         eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
         settings.updateSettings()
         

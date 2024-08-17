@@ -45,7 +45,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     
     override fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
         if(!isContext(element)) return null
-        return ParadoxParameterHandler.getContextInfo(element)
+        return ParadoxParameterManager.getContextInfo(element)
     }
     
     override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
@@ -77,7 +77,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
                 val parentProperties = parentBlock.parentsOfType<ParadoxScriptProperty>(withSelf = false)
                 for(prop in parentProperties) {
                     //infer context config
-                    val propConfig = ParadoxExpressionHandler.getConfigs(prop).firstOrNull() as? CwtPropertyConfig ?: continue
+                    val propConfig = ParadoxExpressionManager.getConfigs(prop).firstOrNull() as? CwtPropertyConfig ?: continue
                     if(propConfig.expression.type != CwtDataTypes.Definition) continue
                     if(propConfig.configs?.any { it is CwtPropertyConfig && it.expression.type == CwtDataTypes.Parameter } != true) continue
                     contextConfig = propConfig
@@ -135,7 +135,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val contextIcon = PlsIcons.Nodes.Definition(definitionInfo.type)
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
         val rangeInParent = TextRange.create(0, element.textLength)
-        val readWriteAccess = ParadoxParameterHandler.getReadWriteAccess(element)
+        val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = definitionInfo.gameType
         val project = definitionInfo.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
@@ -162,7 +162,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
         val rangeInParent = rangeInElement ?: TextRange.create(0, element.textLength)
-        val readWriteAccess = ParadoxParameterHandler.getReadWriteAccess(element)
+        val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = config.configGroup.gameType ?: return null
         val project = config.configGroup.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
@@ -210,7 +210,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val name = parameterElement.name
         append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上推断得到的类型信息
-        val inferredType = ParadoxParameterHandler.getInferredType(parameterElement)
+        val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
         if(inferredType != null) {
             append(": ").append(inferredType.escapeXml())
         }
@@ -291,7 +291,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
                 val pipeIndex = expressionString.indexOf('|', expressionString.indexOf("value:").let { if(it != -1) it + 6 else return null })
                 if(pipeIndex == -1) return null
                 if(offset != -1 && pipeIndex >= offset - expressionElement.startOffset) return null //要求光标在管道符之后（如果offset不为-1）
-                expressionElementConfig = ParadoxExpressionHandler.getConfigs(expressionElement).firstOrNull() ?: return null
+                expressionElementConfig = ParadoxExpressionManager.getConfigs(expressionElement).firstOrNull() ?: return null
             }
         }
         if(expressionElementConfig.expression.type !in CwtDataTypeGroups.ValueField) return null
@@ -368,7 +368,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
 open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     override fun isContext(element: ParadoxScriptDefinitionElement): Boolean {
         if(element !is ParadoxScriptFile) return false
-        return ParadoxInlineScriptHandler.getInlineScriptExpression(element) != null
+        return ParadoxInlineScriptManager.getInlineScriptExpression(element) != null
     }
     
     override fun findContext(element: PsiElement): ParadoxScriptDefinitionElement? {
@@ -380,13 +380,13 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     
     override fun getContextKeyFromContext(context: ParadoxScriptDefinitionElement): String? {
         if(context !is ParadoxScriptFile) return null
-        val expression = ParadoxInlineScriptHandler.getInlineScriptExpression(context) ?: return null
+        val expression = ParadoxInlineScriptManager.getInlineScriptExpression(context) ?: return null
         return "inline_script@$expression"
     }
     
     override fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
         if(!isContext(element)) return null
-        return ParadoxParameterHandler.getContextInfo(element)
+        return ParadoxParameterManager.getContextInfo(element)
     }
     
     override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
@@ -401,13 +401,13 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
                 if(config !is CwtPropertyConfig || config.expression.type != CwtDataTypes.Parameter) return null
                 //infer inline config
                 val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
-                inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptHandler.inlineScriptKey } ?: return null
+                inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptManager.inlineScriptKey } ?: return null
                 contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
             }
             //extraArgs: contextConfig
             ParadoxParameterContextReferenceInfo.From.ContextReference -> {
                 val contextConfig = extraArgs.getOrNull(0)?.castOrNull<CwtPropertyConfig>() ?: return null
-                inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptHandler.inlineScriptKey } ?: return null
+                inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptManager.inlineScriptKey } ?: return null
                 contextReferenceElement = element.castOrNull() ?: return null
             }
             //extraArgs: offset?
@@ -419,8 +419,8 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
                 val parentProperties = parentBlock.parentsOfType<ParadoxScriptProperty>(withSelf = false)
                 for(prop in parentProperties) {
                     //infer context config
-                    val propConfig = ParadoxExpressionHandler.getConfigs(prop).firstOrNull() ?: continue
-                    val propInlineConfig = propConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptHandler.inlineScriptKey } ?: continue
+                    val propConfig = ParadoxExpressionManager.getConfigs(prop).firstOrNull() ?: continue
+                    val propInlineConfig = propConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptManager.inlineScriptKey } ?: continue
                     if(propInlineConfig.config.configs?.any { it is CwtPropertyConfig && it.expression.type == CwtDataTypes.Parameter } != true) continue
                     inlineConfig = propInlineConfig
                     contextReferenceElement = prop
@@ -432,7 +432,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val configGroup = inlineConfig.configGroup
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
-        val expression = ParadoxInlineScriptHandler.getInlineScriptExpressionFromInlineConfig(contextReferenceElement, inlineConfig) ?: return null
+        val expression = ParadoxInlineScriptManager.getInlineScriptExpressionFromInlineConfig(contextReferenceElement, inlineConfig) ?: return null
         if(expression.isParameterized()) return null //skip if context name is parameterized
         val contextName = expression
         val contextIcon = PlsIcons.Nodes.InlineScript
@@ -469,12 +469,12 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     
     private fun doResolveParameter(element: PsiElement, name: String): ParadoxParameterElement? {
         val context = findContext(element) as? ParadoxScriptFile ?: return null
-        val expression = ParadoxInlineScriptHandler.getInlineScriptExpression(context) ?: return null
+        val expression = ParadoxInlineScriptManager.getInlineScriptExpression(context) ?: return null
         val contextName = expression
         val contextIcon = PlsIcons.Nodes.InlineScript
         val contextKey = "inline_script@$expression"
         val rangeInParent = TextRange.create(0, element.textLength)
-        val readWriteAccess = ParadoxParameterHandler.getReadWriteAccess(element)
+        val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = selectGameType(context) ?: return null
         val project = context.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
@@ -490,9 +490,9 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     
     private fun doResolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtPropertyConfig): ParadoxParameterElement? {
         val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
-        val inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptHandler.inlineScriptKey } ?: return null
+        val inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptManager.inlineScriptKey } ?: return null
         val contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
-        val expression = ParadoxInlineScriptHandler.getInlineScriptExpressionFromInlineConfig(contextReferenceElement, inlineConfig) ?: return null
+        val expression = ParadoxInlineScriptManager.getInlineScriptExpressionFromInlineConfig(contextReferenceElement, inlineConfig) ?: return null
         if(expression.isParameterized()) return null //skip if context name is parameterized
         val name = element.name
         val contextName = expression
@@ -512,7 +512,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val expression = parameterElement.inlineScriptExpression ?: return false
         if(expression.isParameterized()) return false //skip if context name is parameterized
         val project = parameterElement.project
-        ParadoxInlineScriptHandler.processInlineScriptFile(expression, parameterElement, project, onlyMostRelevant, processor)
+        ParadoxInlineScriptManager.processInlineScriptFile(expression, parameterElement, project, onlyMostRelevant, processor)
         return true
     }
     
@@ -520,7 +520,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val expression = contextReferenceInfo.inlineScriptExpression ?: return false
         if(expression.isParameterized()) return false //skip if context name is parameterized
         val project = contextReferenceInfo.project
-        ParadoxInlineScriptHandler.processInlineScriptFile(expression, element, project, onlyMostRelevant, processor)
+        ParadoxInlineScriptManager.processInlineScriptFile(expression, element, project, onlyMostRelevant, processor)
         return true
     }
     
@@ -531,7 +531,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: DocumentationBuilder): Boolean = with(builder) {
         val inlineScriptExpression = parameterElement.inlineScriptExpression ?: return false
         if(inlineScriptExpression.isEmpty()) return false
-        val filePath = ParadoxInlineScriptHandler.getInlineScriptFilePath(inlineScriptExpression) ?: return false
+        val filePath = ParadoxInlineScriptManager.getInlineScriptFilePath(inlineScriptExpression) ?: return false
         
         //不加上文件信息
         
@@ -539,7 +539,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val name = parameterElement.name
         append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上推断得到的类型信息
-        val inferredType = ParadoxParameterHandler.getInferredType(parameterElement)
+        val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
         if(inferredType != null) {
             append(": ").append(inferredType.escapeXml())
         }

@@ -30,7 +30,7 @@ class ParadoxInlineScriptInlineProcessor(
     private val keepTheDeclaration: Boolean,
 ) : BaseRefactoringProcessor(project, scope, null) {
     //do not use DescriptiveNameUtil.getDescriptiveName(element) here
-    private val descriptiveName = ParadoxInlineScriptHandler.getInlineScriptExpression(element).orAnonymous()
+    private val descriptiveName = ParadoxInlineScriptManager.getInlineScriptExpression(element).orAnonymous()
     
     override fun getCommandName() = PlsBundle.message("inline.inlineScript.command", descriptiveName)
     
@@ -44,7 +44,7 @@ class ParadoxInlineScriptInlineProcessor(
         if(!inlineThisOnly) {
             for(reference in ReferencesSearch.search(element, myRefactoringScope, true)) {
                 ProgressManager.checkCanceled()
-                if(ParadoxInlineScriptHandler.getContextReferenceElement(reference.element) == null) continue
+                if(ParadoxInlineScriptManager.getContextReferenceElement(reference.element) == null) continue
                 usages.add(UsageInfo(reference.element))
             }
         }

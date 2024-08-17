@@ -26,7 +26,7 @@ class CwtOnActionConfigFromCsvGenerator(
                 scopesRegex.findAll(scopes).forEach {
                     val k = it.groupValues.get(1)
                     val v = it.groupValues.get(2)
-                    put(k.lowercase(), ParadoxScopeHandler.getScopeId(v))
+                    put(k.lowercase(), ParadoxScopeManager.getScopeId(v))
                 }
             }
             ParadoxScopeContext.resolve(map)

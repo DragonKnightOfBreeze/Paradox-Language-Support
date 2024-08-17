@@ -102,7 +102,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
             ProgressManager.checkCanceled()
             return when(element) {
                 is PsiDirectory -> element.name
-                is ParadoxScriptProperty -> ParadoxTechnologyHandler.getName(element)
+                is ParadoxScriptProperty -> ParadoxTechnologyManager.getName(element)
                 else -> null
             }
         }
@@ -120,9 +120,9 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
                     if(typeElement != null) result.add(typeElement)
                     val properties = getProperties(nodeElement)
                     result.addAll(properties)
-                    val name = ParadoxTechnologyHandler.getLocalizedName(nodeElement)
+                    val name = ParadoxTechnologyManager.getLocalizedName(nodeElement)
                     if(name != null) result.add(name)
-                    val icon = ParadoxTechnologyHandler.getIconFile(nodeElement)
+                    val icon = ParadoxTechnologyManager.getIconFile(nodeElement)
                     if(icon != null) result.add(icon)
                     result.add(nodeElement)
                     result.toTypedArray()

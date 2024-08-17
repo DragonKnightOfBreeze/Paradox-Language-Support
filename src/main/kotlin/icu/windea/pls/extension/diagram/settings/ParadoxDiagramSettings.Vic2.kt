@@ -43,7 +43,7 @@ class Vic2EventTreeDiagramSettings(
     
     override fun Panel.buildConfigurablePanel(coroutineScope: CoroutineScope) {
         val settings = state
-        val eventTypes = ParadoxEventHandler.getTypes(project, ParadoxGameType.Vic2)
+        val eventTypes = ParadoxEventManager.getTypes(project, ParadoxGameType.Vic2)
         eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
         settings.updateSettings()
         

@@ -27,7 +27,7 @@ class ParadoxDataSourceNode(
         if(element !is ParadoxScriptStringExpressionElement) return null //unexpected
         if(text.isParameterized()) return null
         return linkConfigs.find { linkConfig ->
-            ParadoxExpressionHandler.resolveExpression(element, rangeInExpression, linkConfig, linkConfig.expression, exact = false) != null
+            ParadoxExpressionManager.resolveExpression(element, rangeInExpression, linkConfig, linkConfig.expression, exact = false) != null
         } ?: linkConfigs.firstOrNull()
     }
     
@@ -49,7 +49,7 @@ class ParadoxDataSourceNode(
         if(element !is ParadoxScriptStringExpressionElement) return null //unexpected
         if(linkConfigs.isEmpty()) return null
         if(text.isParameterized()) return null
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionHandler.getExpressionOffset(element))
+        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         return Reference(element, rangeInElement, linkConfigs)
     }
     
@@ -72,7 +72,7 @@ class ParadoxDataSourceNode(
         
         override fun getReferences(): Array<out PsiReference>? {
             return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-                ParadoxExpressionHandler.getReferences(element, rangeInElement, linkConfig, linkConfig.expression).orNull()
+                ParadoxExpressionManager.getReferences(element, rangeInElement, linkConfig, linkConfig.expression).orNull()
             }
         }
         
@@ -101,14 +101,14 @@ class ParadoxDataSourceNode(
         private fun doResolve(): PsiElement? {
             val element = element
             return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-                ParadoxExpressionHandler.resolveExpression(element, rangeInElement, linkConfig, linkConfig.expression)
+                ParadoxExpressionManager.resolveExpression(element, rangeInElement, linkConfig, linkConfig.expression)
             }
         }
         
         private fun doMultiResolve(): Array<out ResolveResult> {
             val element = element
             return linkConfigs.flatMap { linkConfig ->
-                ParadoxExpressionHandler.multiResolveExpression(element, rangeInElement, linkConfig, configExpression = linkConfig.expression)
+                ParadoxExpressionManager.multiResolveExpression(element, rangeInElement, linkConfig, configExpression = linkConfig.expression)
             }.mapToArray { PsiElementResolveResult(it) }
         }
     }

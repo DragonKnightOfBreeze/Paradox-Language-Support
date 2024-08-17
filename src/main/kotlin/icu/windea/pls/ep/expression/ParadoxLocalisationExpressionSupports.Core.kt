@@ -20,7 +20,7 @@ class ParadoxLocalisationCommandExpressionSupport: ParadoxLocalisationExpression
         val value = element.value
         val textRange = TextRange.create(0, value.length)
         val commandExpression = ParadoxCommandExpression.resolve(value, textRange, configGroup) ?: return
-        ParadoxExpressionHandler.annotateComplexExpression(element, commandExpression, holder)
+        ParadoxExpressionManager.annotateComplexExpression(element, commandExpression, holder)
     }
     
     override fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {
@@ -46,7 +46,7 @@ class ParadoxLocalisationDatabaseObjectExpressionSupport: ParadoxLocalisationExp
         val value = element.value
         val textRange = TextRange.create(0, value.length)
         val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(value, textRange, configGroup) ?: return
-        ParadoxExpressionHandler.annotateComplexExpression(element, databaseObjectExpression, holder)
+        ParadoxExpressionManager.annotateComplexExpression(element, databaseObjectExpression, holder)
     }
     
     override fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {

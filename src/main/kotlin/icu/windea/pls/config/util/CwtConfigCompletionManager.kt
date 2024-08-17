@@ -38,8 +38,6 @@ object CwtConfigCompletionManager {
     }
     
     fun addConfigCompletions(context: ProcessingContext, result: CompletionResultSet) {
-        //TODO 1.3.18
-        
         val contextElement = context.contextElement ?: return //typing key / value
         val configGroup = context.configGroup ?: return
         

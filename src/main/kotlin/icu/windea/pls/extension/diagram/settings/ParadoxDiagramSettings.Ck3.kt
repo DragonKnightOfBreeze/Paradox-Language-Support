@@ -42,7 +42,7 @@ class Ck3EventTreeDiagramSettings(
     
     override fun Panel.buildConfigurablePanel(coroutineScope: CoroutineScope) {
         val settings = state
-        val eventTypes = ParadoxEventHandler.getTypes(project, ParadoxGameType.Ck3)
+        val eventTypes = ParadoxEventManager.getTypes(project, ParadoxGameType.Ck3)
         eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
         settings.updateSettings()
         

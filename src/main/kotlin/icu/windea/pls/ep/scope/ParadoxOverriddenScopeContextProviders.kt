@@ -34,7 +34,7 @@ class ParadoxSwitchOverriddenScopeContextProvider: ParadoxOverriddenScopeContext
         ProgressManager.checkCanceled()
         val containerProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
             .filter { it.name.lowercase() in Constants.CONTEXT_NAMES }
-            .find { ParadoxExpressionHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
+            .find { ParadoxExpressionManager.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
             ?: return null
         //基于trigger的值得到最终的scopeContext，然后推断目标属性的scopeContext
         val triggerProperty = containerProperty.findProperty(inline = true) { it in Constants.TRIGGER_KEYS }  ?: return null
@@ -43,7 +43,7 @@ class ParadoxSwitchOverriddenScopeContextProvider: ParadoxOverriddenScopeContext
         val configGroup = config1.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val pushScope = resultTriggerConfigs.firstOrNull()?.config?.pushScope
-        return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeHandler.getAnyScopeContext().resolveNext(pushScope)
+        return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeManager.getAnyScopeContext().resolveNext(pushScope)
     }
 }
 
@@ -67,18 +67,18 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         ProgressManager.checkCanceled()
         val containerProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
             .filter { it.name.lowercase() in Constants.CONTEXT_NAMES }
-            .find { ParadoxExpressionHandler.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
+            .find { ParadoxExpressionManager.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
             ?: return null
         if(config1.key == Constants.TRIGGER_KEY) {
             //基于trigger_scope的值得到最终的scopeContext，然后推断属性trigger的值的scopeContext
             val triggerScopeProperty = containerProperty.findProperty(Constants.TRIGGER_SCOPE_KEY, inline = true) ?: return null
-            val scopeContext = ParadoxScopeHandler.getSwitchedScopeContext(triggerScopeProperty) ?: return null
+            val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(triggerScopeProperty) ?: return null
             val pv = triggerScopeProperty.propertyValue ?: return null
             val expressionString = pv.value
             val textRange =  TextRange.create(0, expressionString.length)
             val configGroup = config1.configGroup
             val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return null
-            return ParadoxScopeHandler.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContext)
+            return ParadoxScopeManager.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContext)
         }
         //基于trigger的值得到最终的scopeContext，然后推断属性parameters的scopeContext
         val triggerProperty = containerProperty.findProperty(Constants.TRIGGER_KEY, inline = true) ?: return null
@@ -87,6 +87,6 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         val configGroup = config1.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val pushScope = resultTriggerConfigs.firstOrNull()?.config?.pushScope
-        return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeHandler.getAnyScopeContext().resolveNext(pushScope)
+        return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeManager.getAnyScopeContext().resolveNext(pushScope)
     }
 }

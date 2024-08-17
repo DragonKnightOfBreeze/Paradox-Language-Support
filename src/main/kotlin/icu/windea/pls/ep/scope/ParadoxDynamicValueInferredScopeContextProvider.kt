@@ -32,7 +32,7 @@ interface ParadoxDynamicValueInferredScopeContextProvider {
                 if(map == null) {
                     map = info.scopeContextMap
                 } else {
-                    map = ParadoxScopeHandler.mergeScopeContextMap(map!!, info.scopeContextMap)
+                    map = ParadoxScopeManager.mergeScopeContextMap(map!!, info.scopeContextMap)
                 }
             }
             val resultMap = map ?: return null

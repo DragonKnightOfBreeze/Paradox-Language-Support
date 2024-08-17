@@ -26,7 +26,7 @@ class ParadoxParameterContextInfo(
     ) {
         val element: PsiElement? get() = elementPointer.element
         val parentElement: PsiElement? get() = elementPointer.element?.parent
-        val parameterElement: ParadoxParameterElement? get() = elementPointer.element?.let { ParadoxParameterHandler.getParameterElement(it) }
+        val parameterElement: ParadoxParameterElement? get() = elementPointer.element?.let { ParadoxParameterManager.getParameterElement(it) }
         
         /**
          * 获取此参数对应的脚本表达式所对应的CWT规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
@@ -37,12 +37,12 @@ class ParadoxParameterContextInfo(
                 if(expressionElement == null) return emptyList()
                 return when {
                     expressionElement is ParadoxScriptPropertyKey -> {
-                        val configs = ParadoxExpressionHandler.getConfigs(expressionElement)
+                        val configs = ParadoxExpressionManager.getConfigs(expressionElement)
                         configs.mapNotNull { if(it is CwtPropertyConfig) it else null }
                         configs
                     }
                     expressionElement is ParadoxScriptString && expressionElement.isExpression() -> {
-                        val configs = ParadoxExpressionHandler.getConfigs(expressionElement)
+                        val configs = ParadoxExpressionManager.getConfigs(expressionElement)
                         configs.mapNotNull { if(it is CwtValueConfig) it else null }
                     }
                     else -> {

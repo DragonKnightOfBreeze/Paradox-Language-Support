@@ -23,14 +23,14 @@ class IncorrectScopeInspection : LocalInspectionTool() {
             }
             
             private fun visitMemberElement(element: ParadoxScriptMemberElement) {
-                val configs = ParadoxExpressionHandler.getConfigs(element)
+                val configs = ParadoxExpressionManager.getConfigs(element)
                 val config = configs.firstOrNull() ?: return
-                if(!ParadoxScopeHandler.isScopeContextSupported(element)) return
-                val parentMember = ParadoxScopeHandler.findParentMember(element, withSelf = false) ?: return
-                val parentScopeContext = ParadoxScopeHandler.getSwitchedScopeContext(parentMember) ?: return
+                if(!ParadoxScopeManager.isScopeContextSupported(element)) return
+                val parentMember = ParadoxScopeManager.findParentMember(element, withSelf = false) ?: return
+                val parentScopeContext = ParadoxScopeManager.getSwitchedScopeContext(parentMember) ?: return
                 val supportedScopes = getSupportedScopes(element, config) ?: return
                 val configGroup = config.configGroup
-                if(!ParadoxScopeHandler.matchesScope(parentScopeContext, supportedScopes, configGroup)) {
+                if(!ParadoxScopeManager.matchesScope(parentScopeContext, supportedScopes, configGroup)) {
                     if(element is ParadoxScriptProperty) {
                         val propertyKey = element.propertyKey
                         val description = PlsBundle.message(
@@ -64,7 +64,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                     val resolved = expressionElement.reference?.resolve() ?: return null
                     if(resolved !is ParadoxModifierElement) return null
                     val modifierCategories = ParadoxModifierSupport.getModifierCategories(resolved)
-                    return modifierCategories?.let { ParadoxScopeHandler.getSupportedScopes(it) }
+                    return modifierCategories?.let { ParadoxScopeManager.getSupportedScopes(it) }
                 }
                 if(config.expression.type == CwtDataTypes.Definition) {
                     val expressionElement = getExpressionElement(element) ?: return null

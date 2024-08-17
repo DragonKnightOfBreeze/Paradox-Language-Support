@@ -50,12 +50,12 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
             if(!runResult) return null
             return GotoData(definition, targets.distinct().toTypedArray(), emptyList())
         }
-        val modifierElement = ParadoxModifierHandler.resolveModifier(element)
+        val modifierElement = ParadoxModifierManager.resolveModifier(element)
         if(modifierElement != null) {
             val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
             val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
                 runReadAction {
-                    val paths = ParadoxModifierHandler.getModifierIconPaths(modifierElement.name, modifierElement)
+                    val paths = ParadoxModifierManager.getModifierIconPaths(modifierElement.name, modifierElement)
                     val iconFiles = paths.firstNotNullOfOrNull { path ->
                         val iconSelector = fileSelector(project, element).contextSensitive()
                         ParadoxFilePathSearch.searchIcon(path, iconSelector).findAll().orNull()
@@ -83,7 +83,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
             val definitionName = definitionInfo.name.orAnonymous()
             return PlsBundle.message("script.goto.relatedImages.chooseTitle.1", definitionName.escapeXml())
         }
-        val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.let { ParadoxModifierHandler.resolveModifier(it) }
+        val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.let { ParadoxModifierManager.resolveModifier(it) }
         if(modifierElement != null) {
             val modifierName = modifierElement.name
             return PlsBundle.message("script.goto.relatedImages.chooseTitle.2", modifierName.escapeXml())
@@ -98,7 +98,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
             val definitionName = definitionInfo.name.orAnonymous()
             return PlsBundle.message("script.goto.relatedImages.findUsagesTitle.1", definitionName.escapeXml())
         }
-        val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.let { ParadoxModifierHandler.resolveModifier(it) }
+        val modifierElement = sourceElement.castOrNull<ParadoxScriptStringExpressionElement>()?.let { ParadoxModifierManager.resolveModifier(it) }
         if(modifierElement != null) {
             val modifierName = modifierElement.name
             return PlsBundle.message("script.goto.relatedImages.findUsagesTitle.2", modifierName.escapeXml())
