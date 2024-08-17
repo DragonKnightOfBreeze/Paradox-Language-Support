@@ -31,7 +31,7 @@ import java.util.concurrent.*
 class CwtConfigContext(
     element: ParadoxScriptMemberElement,
     val fileInfo: ParadoxFileInfo?,
-    val elementPath: ParadoxElementPath?,
+    val elementPath: ParadoxExpressionPath?,
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {
@@ -96,7 +96,7 @@ private val CwtConfigGroup.configsCache by createKeyDelegate(CwtConfigContext.Ke
 }
 
 var CwtConfigContext.definitionInfo: ParadoxDefinitionInfo? by createKeyDelegate(CwtConfigContext.Keys)
-var CwtConfigContext.elementPathFromRoot: ParadoxElementPath? by createKeyDelegate(CwtConfigContext.Keys)
+var CwtConfigContext.elementPathFromRoot: ParadoxExpressionPath? by createKeyDelegate(CwtConfigContext.Keys)
 var CwtConfigContext.provider: CwtConfigContextProvider? by createKeyDelegate(CwtConfigContext.Keys)
 
 fun CwtConfigContext.isDefinition(): Boolean {

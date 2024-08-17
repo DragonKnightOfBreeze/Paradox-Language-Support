@@ -123,7 +123,7 @@ object ParadoxExpressionManager {
     fun getConfigsForConfigContext(
         element: ParadoxScriptMemberElement,
         rootConfigs: List<CwtMemberConfig<*>>,
-        elementPathFromRoot: ParadoxElementPath,
+        elementPathFromRoot: ParadoxExpressionPath,
         configGroup: CwtConfigGroup,
         matchOptions: Int = Options.Default
     ): List<CwtMemberConfig<*>> {
@@ -134,7 +134,7 @@ object ParadoxExpressionManager {
     private fun doGetConfigsForConfigContext(
         element: ParadoxScriptMemberElement,
         rootConfigs: List<CwtMemberConfig<*>>,
-        elementPathFromRoot: ParadoxElementPath,
+        elementPathFromRoot: ParadoxExpressionPath,
         configGroup: CwtConfigGroup,
         matchOptions: Int
     ): List<CwtMemberConfig<*>> {

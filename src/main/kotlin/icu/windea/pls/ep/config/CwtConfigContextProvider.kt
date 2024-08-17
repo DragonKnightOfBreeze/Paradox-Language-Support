@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.*
  */
 @WithGameTypeEP
 interface CwtConfigContextProvider {
-    fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext?
+    fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext?
     
     fun getCacheKey(context: CwtConfigContext, matchOptions: Int = Options.Default): String?
     
@@ -33,7 +33,7 @@ interface CwtConfigContextProvider {
         
         fun getContext(element: ParadoxScriptMemberElement): CwtConfigContext? {
             val file = element.containingFile ?: return null
-            val elementPath = ParadoxElementPathManager.get(element) ?: return null
+            val elementPath = ParadoxExpressionPathManager.get(element) ?: return null
             val gameType = selectGameType(file)
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if(!gameType.supportsByAnnotation(ep)) return@f null

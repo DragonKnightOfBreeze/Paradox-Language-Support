@@ -31,8 +31,8 @@ val PlsKeys.injectedRootInfo by createKey<ParadoxRootInfo>(PlsKeys)
 val PlsKeys.injectedFileInfo by createKey<ParadoxFileInfo>(PlsKeys)
 //用于为脚本文件（VirtualFile）嵌入语言区域
 val PlsKeys.injectedLocaleConfig by createKey<CwtLocalisationLocaleConfig>(PlsKeys)
-//用于为脚本文件（VirtualFile）嵌入元素路径前缀
-val PlsKeys.injectedElementPathPrefix by createKey<ParadoxElementPath>(PlsKeys)
+//用于为脚本文件（VirtualFile）嵌入表达式路径前缀
+val PlsKeys.injectedElementPathPrefix by createKey<ParadoxExpressionPath>(PlsKeys)
 
 val PlsKeys.cachedDefinitionInfo by createKey<CachedValue<ParadoxDefinitionInfo>>(PlsKeys)
 val PlsKeys.cachedDefinitionPrimaryLocalisationKey by createKey<CachedValue<String>>(PlsKeys)
@@ -43,7 +43,7 @@ val PlsKeys.cachedDefinitionPrimaryImage by createKey<CachedValue<PsiFile>>(PlsK
 val PlsKeys.cachedLocalisationInfo by createKey<CachedValue<ParadoxLocalisationInfo>>(PlsKeys)
 val PlsKeys.cachedComplexEnumValueInfo by createKey<CachedValue<ParadoxComplexEnumValueInfo>>(PlsKeys)
 val PlsKeys.cachedDynamicValueInfos by createKey<CachedValue<List<ParadoxDynamicValueInfo>>>(PlsKeys)
-val PlsKeys.cachedElementPath by createKey<CachedValue<ParadoxElementPath>>(PlsKeys)
+val PlsKeys.cachedElementPath by createKey<CachedValue<ParadoxExpressionPath>>(PlsKeys)
 val PlsKeys.cachedScopeContext by createKey<CachedValue<ParadoxScopeContext>>(PlsKeys)
 val PlsKeys.cachedTextColorInfo by createKey<CachedValue<ParadoxTextColorInfo>>(PlsKeys)
 val PlsKeys.cachedDefineValues by createKey<CachedValue<MutableMap<String, Any?>>>(PlsKeys)

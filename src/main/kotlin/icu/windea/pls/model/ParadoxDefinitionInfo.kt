@@ -26,7 +26,7 @@ class ParadoxDefinitionInfo(
     typeConfig0: CwtTypeConfig,
     subtypeConfigs0: List<CwtSubtypeConfig>?, //null -> lazy get
     val rootKey: String,
-    val elementPath: ParadoxElementPath,
+    val elementPath: ParadoxExpressionPath,
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
     val element: ParadoxScriptDefinitionElement,

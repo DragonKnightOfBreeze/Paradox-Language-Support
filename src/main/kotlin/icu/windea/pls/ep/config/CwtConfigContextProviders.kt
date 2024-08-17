@@ -33,7 +33,7 @@ var CwtConfigContext.parameterValueQuoted: Boolean? by createKeyDelegate(CwtConf
  * 用于获取直接的CWT规则上下文。
  */
 class CwtBaseConfigContextProvider : CwtConfigContextProvider {
-    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
+    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
         val vFile = selectFile(file) ?: return null
         if(ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
@@ -88,17 +88,17 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
 class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
     //注意：内联脚本调用可以在定义声明之外
     
-    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
+    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
         val vFile = selectFile(file) ?: return null
         
-        //要求当前位置相对于文件的元素路径中包含子路径"inline_script"
+        //要求当前位置相对于文件的表达式路径中包含子路径"inline_script"
         val rootIndex = elementPath.indexOfFirst { it.equals(ParadoxInlineScriptManager.inlineScriptKey, true) }
         if(rootIndex == -1) return null
         
         val gameType = selectGameType(file) ?: return null
         val fileInfo = vFile.fileInfo //注意这里的fileInfo可能为null，例如，在内联脚本参数的多行参数值中
-        val elementPathFromRoot = ParadoxElementPath.resolve(elementPath.originalSubPaths.let { it.subList(rootIndex + 1, it.size) })
+        val elementPathFromRoot = ParadoxExpressionPath.resolve(elementPath.originalSubPaths.let { it.subList(rootIndex + 1, it.size) })
         val configGroup = getConfigGroup(file.project, gameType)
         val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
         configContext.elementPathFromRoot = elementPathFromRoot
@@ -138,7 +138,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
     //首先推断内联脚本文件的CWT规则上下文：汇总内联脚本调用处的上下文，然后合并得到最终的CWT规则上下文
     //然后再得到当前位置的CWT规则上下文
     
-    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
+    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
         
         val vFile = selectFile(file) ?: return null
@@ -213,7 +213,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
  * @see ParadoxScriptLanguageInjector
  */
 class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
-    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
+    override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
         
         //兼容适用语言注入功能的 VirtualFileWindow

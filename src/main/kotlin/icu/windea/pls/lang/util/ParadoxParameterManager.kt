@@ -339,7 +339,7 @@ object ParadoxParameterManager {
     }
     
     /**
-     * @param shift 从[element]开始向上的偏移，偏移量与[ParadoxElementPath]的长度的判定方式是一致的。
+     * @param shift 从[element]开始向上的偏移，偏移量与[ParadoxExpressionPath]的长度的判定方式是一致的。
      */
     fun getParameterizedKeyConfigs(element: PsiElement, shift: Int): List<CwtValueConfig>? {
         val parameterizedProperty = element.parentsOfType<ParadoxScriptMemberElement>()

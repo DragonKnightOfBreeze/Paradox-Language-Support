@@ -12,15 +12,13 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import java.util.*
 
 /**
- * 用于处理元素路径。
- *
- * @see ParadoxElementPath
+ * @see ParadoxExpressionPath
  */
-object ParadoxElementPathManager {
+object ParadoxExpressionPathManager {
     /**
-     * 解析指定定义相对于所属文件的属性路径。
+     * 解析指定定义相对于所属文件的表达式路径。
      */
-    fun get(element: PsiElement, maxDepth: Int = -1): ParadoxElementPath? {
+    fun get(element: PsiElement, maxDepth: Int = -1): ParadoxExpressionPath? {
         var current: PsiElement = element
         var depth = 0
         val originalSubPaths = LinkedList<String>()
@@ -47,13 +45,13 @@ object ParadoxElementPathManager {
                 originalSubPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }
-        return ParadoxElementPath.resolve(originalSubPaths)
+        return ParadoxExpressionPath.resolve(originalSubPaths)
     }
     
     /**
-     * 解析指定定义相对于所属文件的属性路径。
+     * 解析指定定义相对于所属文件的表达式路径。
      */
-    fun get(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int = -1): ParadoxElementPath? {
+    fun get(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int = -1): ParadoxExpressionPath? {
         var current: LighterASTNode = node
         var depth = 0
         val originalSubPaths = LinkedList<String>()
@@ -82,6 +80,6 @@ object ParadoxElementPathManager {
                 originalSubPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }
-        return ParadoxElementPath.resolve(originalSubPaths)
+        return ParadoxExpressionPath.resolve(originalSubPaths)
     }
 }

@@ -50,8 +50,8 @@ object ParadoxCompletionManager {
     }
     
     fun addRootKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
-        val elementPath = ParadoxElementPathManager.get(memberElement, PlsConstants.Settings.maxDefinitionDepth) ?: return
-        if(elementPath.path.isParameterized()) return //忽略元素路径带参数的情况
+        val elementPath = ParadoxExpressionPathManager.get(memberElement, PlsConstants.Settings.maxDefinitionDepth) ?: return
+        if(elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
         
         context.isKey = true
         
@@ -235,7 +235,7 @@ object ParadoxCompletionManager {
     //endregion
     
     //region Base Completion Methods
-    fun completeRootKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxElementPath) {
+    fun completeRootKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxExpressionPath) {
         val originalFile = context.parameters?.originalFile ?: return
         val fileInfo = originalFile.fileInfo ?: return
         val gameType = context.gameType ?: return

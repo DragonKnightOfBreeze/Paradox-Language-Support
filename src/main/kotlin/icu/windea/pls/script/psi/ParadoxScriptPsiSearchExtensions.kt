@@ -285,7 +285,7 @@ fun PsiElement.findParentProperty(
  * 基于路径向下查找指定的属性或值。如果路径为空，则返回查找到的第一个属性或值。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
- * @see ParadoxElementPath
+ * @see ParadoxExpressionPath
  * @see ParadoxScriptMemberElement
  */
 fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
@@ -298,7 +298,7 @@ fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
     if(language != ParadoxScriptLanguage) return null
     var current: ParadoxScriptMemberElement = this
     if(path.isNotEmpty()) {
-        val elementPath = ParadoxElementPath.resolve(path)
+        val elementPath = ParadoxExpressionPath.resolve(path)
         for(subPath in elementPath.subPaths) {
             if(subPath == "-") return null //TODO 暂不支持
             current = current.findProperty(subPath, ignoreCase, conditional, inline) ?: return null
@@ -320,7 +320,7 @@ fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
 /**
  * 基于路径向上查找指定的属性。如果路径为空，则返回查找到的第一个属性或值。
  * @param definitionType 如果不为null则在查找到指定的属性之后再向上查找一层属性，并要求其是定义，如果接着不为空字符串则要求匹配该定义类型表达式。
- * @see ParadoxElementPath
+ * @see ParadoxExpressionPath
  * @see ParadoxScriptMemberElement
  * @see ParadoxDefinitionTypeExpression
  */
@@ -332,7 +332,7 @@ fun ParadoxScriptMemberElement.findParentByPath(
     if(language != ParadoxScriptLanguage) return null
     var current: ParadoxScriptMemberElement = this
     if(path.isNotEmpty()) {
-        val elementPath = ParadoxElementPath.resolve(path)
+        val elementPath = ParadoxExpressionPath.resolve(path)
         for(subPath in elementPath.subPaths.reversed()) {
             if(subPath == "-") {
                 

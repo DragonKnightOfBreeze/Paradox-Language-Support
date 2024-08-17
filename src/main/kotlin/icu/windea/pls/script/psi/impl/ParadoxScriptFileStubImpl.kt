@@ -13,7 +13,7 @@ class ParadoxScriptFileStubImpl(
     override val subtypes: List<String>?,
     override val gameType: ParadoxGameType
 ) : PsiFileStubImpl<ParadoxScriptFile>(file), ParadoxScriptFileStub {
-    override val elementPath: ParadoxElementPath get() = ParadoxElementPath.Empty
+    override val elementPath: ParadoxExpressionPath get() = ParadoxExpressionPath.Empty
     override val rootKey: String get() = name
     
     override fun toString(): String {

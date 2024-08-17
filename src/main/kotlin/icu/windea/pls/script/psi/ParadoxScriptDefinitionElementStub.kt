@@ -10,7 +10,7 @@ interface ParadoxScriptDefinitionElementStub<T : ParadoxScriptDefinitionElement>
 	val type: String
 	val subtypes: List<String>? //null -> 无法在索引时获取（需要访问定义索引）
 	val rootKey: String
-	val elementPath: ParadoxElementPath
+	val elementPath: ParadoxExpressionPath
 	val gameType: ParadoxGameType
     
     val isValidDefinition: Boolean get() = type.isNotEmpty()

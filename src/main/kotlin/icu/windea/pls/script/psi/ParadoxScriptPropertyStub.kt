@@ -19,7 +19,7 @@ interface ParadoxScriptPropertyStub : ParadoxScriptDefinitionElementStub<Paradox
         override val type: String,
         override val subtypes: List<String>?,
         override val rootKey: String,
-        override val elementPath: ParadoxElementPath,
+        override val elementPath: ParadoxExpressionPath,
         override val gameType: ParadoxGameType,
     ) : Base(parent)
     
@@ -31,7 +31,7 @@ interface ParadoxScriptPropertyStub : ParadoxScriptDefinitionElementStub<Paradox
         override val type: String get() = ""
         override val subtypes: List<String>? get() = null
         override val rootKey: String get() = ""
-        override val elementPath: ParadoxElementPath get() = ParadoxElementPath.Empty
+        override val elementPath: ParadoxExpressionPath get() = ParadoxExpressionPath.Empty
         override val gameType: ParadoxGameType get() = ParadoxGameType.placeholder()
         
         override fun toString(): String {

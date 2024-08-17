@@ -61,8 +61,8 @@ object ParadoxDefinitionManager {
         
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.pathToEntry //这里使用pathToEntry
-        val elementPath = ParadoxElementPathManager.get(element, PlsConstants.Settings.maxDefinitionDepth) ?: return null
-        if(elementPath.path.isParameterized()) return null //忽略元素路径带参数的情况
+        val elementPath = ParadoxExpressionPathManager.get(element, PlsConstants.Settings.maxDefinitionDepth) ?: return null
+        if(elementPath.path.isParameterized()) return null //忽略表达式路径带参数的情况
         val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
         val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val typeConfig = getMatchedTypeConfig(element, path, elementPath, rootKey, configGroup)
@@ -73,7 +73,7 @@ object ParadoxDefinitionManager {
     fun getMatchedTypeConfig(
         element: ParadoxScriptDefinitionElement,
         path: ParadoxPath,
-        elementPath: ParadoxElementPath,
+        elementPath: ParadoxExpressionPath,
         rootKey: String,
         configGroup: CwtConfigGroup
     ): CwtTypeConfig? {
@@ -89,7 +89,7 @@ object ParadoxDefinitionManager {
         node: LighterASTNode,
         tree: LighterAST,
         path: ParadoxPath,
-        elementPath: ParadoxElementPath,
+        elementPath: ParadoxExpressionPath,
         rootKey: String,
         configGroup: CwtConfigGroup
     ): CwtTypeConfig? {
@@ -104,7 +104,7 @@ object ParadoxDefinitionManager {
     fun matchesType(
         element: ParadoxScriptDefinitionElement,
         path: ParadoxPath,
-        elementPath: ParadoxElementPath,
+        elementPath: ParadoxExpressionPath,
         rootKey: String,
         typeConfig: CwtTypeConfig,
         configGroup: CwtConfigGroup
@@ -141,7 +141,7 @@ object ParadoxDefinitionManager {
         node: LighterASTNode,
         tree: LighterAST,
         path: ParadoxPath,
-        elementPath: ParadoxElementPath,
+        elementPath: ParadoxExpressionPath,
         rootKey: String,
         typeConfig: CwtTypeConfig,
         configGroup: CwtConfigGroup
@@ -172,7 +172,7 @@ object ParadoxDefinitionManager {
     
     fun matchesTypeFast(
         path: ParadoxPath,
-        elementPath: ParadoxElementPath,
+        elementPath: ParadoxExpressionPath,
         rootKey: String,
         typeConfig: CwtTypeConfig
     ): Boolean? {
@@ -234,7 +234,7 @@ object ParadoxDefinitionManager {
     
     fun matchesTypeByUnknownDeclaration(
         path: ParadoxPath,
-        elementPath: ParadoxElementPath?,
+        elementPath: ParadoxExpressionPath?,
         rootKey: String?,
         typeConfig: CwtTypeConfig
     ): Boolean {
@@ -539,7 +539,7 @@ object ParadoxDefinitionManager {
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.pathToEntry //这里使用pathToEntry
-        val elementPath = ParadoxElementPathManager.get(node, tree, vFile) ?: return null
+        val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile) ?: return null
         val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
         if(typeConfig == null) return null
@@ -578,7 +578,7 @@ object ParadoxDefinitionManager {
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.pathToEntry //这里使用pathToEntry
-        val elementPath = ParadoxElementPathManager.get(node, tree, vFile) ?: return null
+        val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile) ?: return null
         val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
         if(typeConfig == null) return null

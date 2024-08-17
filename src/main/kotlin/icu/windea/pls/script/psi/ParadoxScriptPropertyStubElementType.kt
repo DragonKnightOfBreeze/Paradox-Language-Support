@@ -29,7 +29,7 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     }
     
     private fun createDefaultStub(parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-        return ParadoxScriptPropertyStub.Impl(parentStub, "", "", null, "", ParadoxElementPath.Empty, ParadoxGameType.placeholder())
+        return ParadoxScriptPropertyStub.Impl(parentStub, "", "", null, "", ParadoxExpressionPath.Empty, ParadoxGameType.placeholder())
     }
     
     override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -67,7 +67,7 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
         val subtypesSize = dataStream.readInt()
         val subtypes = if(subtypesSize == -1) null else MutableList(subtypesSize) { dataStream.readNameString().orEmpty() }
         val rootKey = dataStream.readNameString().orEmpty()
-        val elementPath = dataStream.readNameString().orEmpty().let { ParadoxElementPath.resolve(it) }
+        val elementPath = dataStream.readNameString().orEmpty().let { ParadoxExpressionPath.resolve(it) }
         val gameType = dataStream.readByte().deoptimizeValue<ParadoxGameType>()
         return ParadoxScriptPropertyStub.Impl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
     }
