@@ -10,7 +10,6 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
@@ -68,8 +67,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if(isIgnoredByConfigs(element.propertyKey, expectedConfigs)) return true
                     }
                     val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.expression }
-                    expectedExpressions.orNull()?.joinToString()
-                    val expect = if(showExpectInfo) expectedExpressions.joinToString() else null
+                    val expect = if(showExpectInfo) expectedExpressions.take(PlsConstants.Settings.itemLimit).joinToString() else null
                     val message = when {
                         expect == null -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.1", propertyKey.expression)
                         expect.isNotEmpty() -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.2", propertyKey.expression, expect)

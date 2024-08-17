@@ -12,3 +12,14 @@ interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationPrope
     fun isValid() = name.isNotEmpty()
 }
 
+class ParadoxLocalisationPropertyStubImpl(
+    parent: StubElement<*>,
+    override val name: String,
+    override val category: ParadoxLocalisationCategory,
+    override val locale: String?,
+    override val gameType: ParadoxGameType
+) : StubBase<ParadoxLocalisationProperty>(parent, ParadoxLocalisationStubElementTypes.PROPERTY), ParadoxLocalisationPropertyStub {
+    override fun toString(): String {
+        return "ParadoxLocalisationPropertyStub(name=$name, category=$category, locale=$locale, gameType=$gameType)"
+    }
+}

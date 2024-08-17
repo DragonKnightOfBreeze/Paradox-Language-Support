@@ -21,15 +21,17 @@ object PlsConstants {
     
     const val dummyIdentifier = "windea"
     
-    const val defaultScriptedVariableName = "var"
-    
-    //定义相对于脚本文件的最大深度（目前指定为4，即最多跳过3个rootKey） - 用于优化性能
-    const val maxDefinitionDepth = 4
-    //在提示信息中最多显示的键的个数
-    const val keysTruncateLimit = 5
-    
     //val eraseMarker = TextAttributes()
     //val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
+    
+    object Settings {
+        /** 默认的封装变量的名字（执行重构与生成操作时会用到） */
+        const val defaultScriptedVariableName = "var"
+        /** 定义相对于脚本文件的最大深度（用于优化性能） */
+        const val maxDefinitionDepth = 4
+        /** 在提示信息中显示的条目的数量限制 */
+        const val itemLimit = 5
+    }
     
     object Samples {
         val cwtColorSettings = "/samples/Cwt.colorSettings.txt".toClasspathUrl().readText()

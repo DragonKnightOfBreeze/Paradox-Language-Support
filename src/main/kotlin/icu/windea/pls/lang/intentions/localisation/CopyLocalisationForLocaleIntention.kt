@@ -113,7 +113,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
                 snippets.toString()
             }
             if(failedKeys.isNotEmpty()) {
-                val failedKeysText = failedKeys.take(PlsConstants.keysTruncateLimit).joinToString { "'<code>$it</code>'" } + if(failedKeys.size > PlsConstants.keysTruncateLimit) ", ..." else ""
+                val failedKeysText = failedKeys.take(PlsConstants.Settings.itemLimit).joinToString { "'<code>$it</code>'" } + if(failedKeys.size > PlsConstants.Settings.itemLimit) ", ..." else ""
                 TranslationNotifications.showTranslationErrorNotification(
                     project,
                     PlsTranslationBundle.message("notification.translate.failed.title"),
@@ -126,7 +126,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
             CopyPasteManager.getInstance().setContents(StringSelection(finalText))
             
             val keys = elements.mapTo(mutableSetOf()) { it.name }
-            val keysText = keys.take(PlsConstants.keysTruncateLimit).joinToString { "'$it'" } + if(keys.size > PlsConstants.keysTruncateLimit) ", ..." else ""
+            val keysText = keys.take(PlsConstants.Settings.itemLimit).joinToString { "'$it'" } + if(keys.size > PlsConstants.Settings.itemLimit) ", ..." else ""
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
                 PlsBundle.message("notification.copyLocalisationForLocale.success.title"),
                 PlsBundle.message("notification.copyLocalisationForLocale.success.content", keysText, targetLocale),

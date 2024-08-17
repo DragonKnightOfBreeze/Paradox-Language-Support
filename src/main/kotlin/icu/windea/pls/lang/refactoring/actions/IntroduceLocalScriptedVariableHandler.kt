@@ -30,7 +30,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
 	override fun invokeAction(project: Project, editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
 		val offset = editor.caretModel.offset
 		val element = findElement(file, offset) ?: return false
-		val name = PlsConstants.defaultScriptedVariableName
+		val name = PlsConstants.Settings.defaultScriptedVariableName
 		
 		//将光标移到所在PSI元素的结束位置并选中
 		editor.caretModel.moveToOffset(element.endOffset)

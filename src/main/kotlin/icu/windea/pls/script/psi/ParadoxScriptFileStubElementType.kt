@@ -110,7 +110,7 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
             //优化：跳过深度过高的属性（认为它们不可能是定义）
             var current = node
             var i = 1
-            val max = PlsConstants.maxDefinitionDepth
+            val max = PlsConstants.Settings.maxDefinitionDepth
             while(true) {
                 current = current.parentProvider() ?: break
                 if(current.typeProvider() == BLOCK) i++

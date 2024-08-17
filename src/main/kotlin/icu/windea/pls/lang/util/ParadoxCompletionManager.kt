@@ -50,7 +50,7 @@ object ParadoxCompletionManager {
     }
     
     fun addRootKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
-        val elementPath = ParadoxElementPathManager.get(memberElement, PlsConstants.maxDefinitionDepth) ?: return
+        val elementPath = ParadoxElementPathManager.get(memberElement, PlsConstants.Settings.maxDefinitionDepth) ?: return
         if(elementPath.path.isParameterized()) return //忽略元素路径带参数的情况
         
         context.isKey = true
