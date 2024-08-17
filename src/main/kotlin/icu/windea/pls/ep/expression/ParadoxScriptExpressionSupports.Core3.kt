@@ -37,7 +37,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
             if(offset <= 0) return@run
             val attributesKey = ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
             val range1 = range.let { TextRange.create(it.startOffset, it.startOffset + offset) }
-            ParadoxExpressionManager.annotateExpression(element, range1, attributesKey, holder)
+            ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range1, attributesKey, holder)
         }
         run {
             val offset = separatorIndex

@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.lang.annotation.*
+import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
@@ -507,9 +508,42 @@ object ParadoxExpressionManager {
         ParadoxLocalisationExpressionSupport.annotate(element, rangeInElement, expressionText, holder)
     }
     
-    fun annotateExpression(element: ParadoxExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
+    fun annotateComplexExpression(element: ParadoxExpressionElement, expression: ParadoxComplexExpression, holder: AnnotationHolder, config: CwtConfig<*>? = null) {
+        doAnnotateComplexExpression(element, expression, holder, config)
+    }
+    
+    private fun doAnnotateComplexExpression(element: ParadoxExpressionElement, expressionNode: ParadoxComplexExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>? = null) {
+        val attributesKey = expressionNode.getAttributesKey(element)
+        
+        run {
+            val mustUseAttributesKey = attributesKey != ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY && attributesKey != ParadoxScriptAttributesKeys.STRING_KEY
+            if(attributesKey != null && mustUseAttributesKey) {
+                annotateExpressionNodeByAttributesKey(element, expressionNode, attributesKey, holder)
+                return@run
+            }
+            if(element is ParadoxScriptStringExpressionElement) {
+                val attributesKeyConfig = expressionNode.getAttributesKeyConfig(element)
+                if(attributesKeyConfig != null) {
+                    val rangeInElement = expressionNode.rangeInExpression.shiftRight(if(element.text.isLeftQuoted()) 1 else 0)
+                    annotateExpression(element, rangeInElement, attributesKeyConfig, holder)
+                    return@run
+                }
+            }
+            if(attributesKey != null) {
+                annotateExpressionNodeByAttributesKey(element, expressionNode, attributesKey, holder)
+            }
+        }
+        
+        if(expressionNode.nodes.isNotEmpty()) {
+            for(node in expressionNode.nodes) {
+                doAnnotateComplexExpression(element, node, holder, config)
+            }
+        }
+    }
+    
+    fun annotateExpressionByAttributesKey(element: ParadoxExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
         if(range.isEmpty) return
-        //进行特殊代码高亮时，可能需要跳过字符串表达式中的参数部分
+        //skip parameter ranges
         val parameterRanges = getParameterRangesInExpression(element)
         if(parameterRanges.isEmpty()) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
@@ -522,42 +556,15 @@ object ParadoxExpressionManager {
         }
     }
     
-    fun annotateComplexExpression(element: ParadoxExpressionElement, expression: ParadoxComplexExpression, holder: AnnotationHolder, config: CwtConfig<*>? = null) {
-        doAnnotateComplexExpression(element, expression, holder, config)
-    }
-    
-    private fun doAnnotateComplexExpression(element: ParadoxExpressionElement, expressionNode: ParadoxComplexExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>? = null) {
-        val attributesKey = expressionNode.getAttributesKey(element)
-        
-        run {
-            val mustUseAttributesKey = attributesKey != ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY && attributesKey != ParadoxScriptAttributesKeys.STRING_KEY
-            if(attributesKey != null && mustUseAttributesKey) {
-                doAnnotateComplexExpressionByAttributesKey(element, expressionNode, holder, attributesKey)
-                return@run
-            }
-            if(element is ParadoxScriptStringExpressionElement) {
-                val attributesKeyConfig = expressionNode.getAttributesKeyConfig(element)
-                if(attributesKeyConfig != null) {
-                    val rangeInElement = expressionNode.rangeInExpression.shiftRight(if(element.text.isLeftQuoted()) 1 else 0)
-                    annotateExpression(element, rangeInElement, attributesKeyConfig, holder)
-                    return@run
-                }
-            }
-            if(attributesKey != null) {
-                doAnnotateComplexExpressionByAttributesKey(element, expressionNode, holder, attributesKey)
-            }
-        }
-        
-        if(expressionNode.nodes.isNotEmpty()) {
-            for(node in expressionNode.nodes) {
-                doAnnotateComplexExpression(element, node, holder, config)
-            }
-        }
-    }
-    
-    private fun doAnnotateComplexExpressionByAttributesKey(element: ParadoxExpressionElement, expressionNode: ParadoxComplexExpressionNode, holder: AnnotationHolder, attributesKey: TextAttributesKey) {
+    private fun annotateExpressionNodeByAttributesKey(element: ParadoxExpressionElement, expressionNode: ParadoxComplexExpressionNode, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
         val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRange.unquote(element.text).startOffset)
-        annotateExpression(element, rangeToAnnotate, attributesKey, holder)
+        //provide necessary foreground highlight for token nodes (in case it's not set)
+        if(expressionNode is ParadoxTokenNode) {
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeToAnnotate).textAttributes(HighlighterColors.TEXT).create()
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeToAnnotate).textAttributes(attributesKey).create()
+            return
+        }
+        annotateExpressionByAttributesKey(element, rangeToAnnotate, attributesKey, holder)
     }
     //endregion
     
