@@ -30,13 +30,18 @@ object CwtConfigResolver {
     }
     
     private fun resolveProperty(propertyElement: CwtProperty, file: CwtFile, fileConfig: CwtFileConfig): CwtPropertyConfig? {
+        val configGroup = fileConfig.configGroup
         val valueElement = propertyElement.propertyValue
         if(valueElement == null) {
             logger.warn("Incorrect CWT config in ${file.virtualFile.path}")
             return null
         }
-        //use CwtPropertyPointer to optimize performance and memory
-        val pointer = propertyElement.createPointer(file).let { CwtPropertyPointer(it) }
+        //1. ues EmptyPointer for default project to optimize memory
+        //2. use CwtPropertyPointer to optimize performance and memory
+        val pointer = when {
+            configGroup.project.isDefault -> emptyPointer()
+            else -> propertyElement.createPointer(file).let { CwtPropertyPointer(it) }
+        }
         val key = propertyElement.name.intern() //intern to optimize memory
         val value: String = valueElement.value.intern() //intern to optimize memory
         val valueType: CwtType
@@ -114,7 +119,7 @@ object CwtConfigResolver {
         }
         val documentation = getDocumentation(documentationLines, html)
         
-        val config = CwtPropertyConfig.resolve(pointer, fileConfig.configGroup, key, value, valueType.id, separatorType.id, configs, options, documentation)
+        val config = CwtPropertyConfig.resolve(pointer, configGroup, key, value, valueType.id, separatorType.id, configs, options, documentation)
             .let { applyInheritOptions(it) }
         CwtConfigCollector.processConfigWithConfigExpression(config, config.keyExpression)
         CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
@@ -123,7 +128,12 @@ object CwtConfigResolver {
     }
     
     private fun resolveValue(valueElement: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): CwtValueConfig {
-        val pointer = valueElement.createPointer(file)
+        val configGroup = fileConfig.configGroup
+        //1. ues EmptyPointer for default project to optimize memory
+        val pointer = when {
+            configGroup.project.isDefault -> emptyPointer()
+            else -> valueElement.createPointer(file)
+        }
         val value: String = valueElement.value.intern() //intern to optimize memory
         val valueType: CwtType
         var configs: List<CwtMemberConfig<*>>? = null
@@ -199,7 +209,7 @@ object CwtConfigResolver {
         }
         val documentation = getDocumentation(documentationLines, html)
         
-        val config = CwtValueConfig.resolve(pointer, fileConfig.configGroup, value, valueType.id, configs, options, documentation)
+        val config = CwtValueConfig.resolve(pointer, configGroup, value, valueType.id, configs, options, documentation)
             .let { applyInheritOptions(it) }
         CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
         configs?.forEach { it.parentConfig = config }
@@ -302,6 +312,7 @@ object CwtConfigResolver {
     }
     
     private fun <T : CwtMemberConfig<*>> applyInheritOptions(config: T): T {
+        //TODO 1.3.18+
         //val configGroup = config.configGroup
         //
         //var inheritConfigsValue: String? = null
