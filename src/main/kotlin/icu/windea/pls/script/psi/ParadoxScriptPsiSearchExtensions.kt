@@ -8,8 +8,8 @@ import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.inline.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
 import icu.windea.pls.lang.expression.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 
 /**

@@ -1,6 +1,8 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.stubs.*
+import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 interface ParadoxScriptDefinitionElementStub<T : ParadoxScriptDefinitionElement> : StubElement<T> {
@@ -10,7 +12,7 @@ interface ParadoxScriptDefinitionElementStub<T : ParadoxScriptDefinitionElement>
 	val rootKey: String
 	val elementPath: ParadoxElementPath
 	val gameType: ParadoxGameType
-	
-	val isValidDefinition: Boolean
-	val nestedTypeRootKeys: Set<String>
+    
+    val isValidDefinition: Boolean get() = type.isNotEmpty()
+    val nestedTypeRootKeys: Set<String> get() = getConfigGroup(gameType).types.get(type)?.possibleNestedTypeRootKeys.orEmpty()
 }

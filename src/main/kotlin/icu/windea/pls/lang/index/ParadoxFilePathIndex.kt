@@ -57,13 +57,13 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
         return object : DataExternalizer<ParadoxFilePathInfo> {
             override fun save(storage: DataOutput, value: ParadoxFilePathInfo) {
                 storage.writeUTFFast(value.directory)
-                storage.writeByte(value.gameType.toByte())
+                storage.writeByte(value.gameType.optimizeValue())
                 storage.writeBoolean(value.included)
             }
             
             override fun read(storage: DataInput): ParadoxFilePathInfo {
                 val path = storage.readUTFFast()
-                val gameType = storage.readByte().toGameType()
+                val gameType = storage.readByte().deoptimizeValue<ParadoxGameType>()
                 val included = storage.readBoolean()
                 return ParadoxFilePathInfo(path, gameType, included)
             }

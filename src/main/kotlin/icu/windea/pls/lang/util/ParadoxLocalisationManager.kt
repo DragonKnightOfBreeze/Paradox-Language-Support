@@ -9,7 +9,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.localisation.psi.impl.*
 import icu.windea.pls.model.*
 
 /**
@@ -50,7 +49,7 @@ object ParadoxLocalisationManager {
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
         val name = psi.name
         val locale = selectLocale(file)?.id
-        return ParadoxLocalisationPropertyStubImpl(parentStub, name, category, locale, gameType)
+        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, category, locale, gameType)
     }
     
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub? {
@@ -60,7 +59,7 @@ object ParadoxLocalisationManager {
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
         val name = getNameFromNode(node, tree) ?: return null
         val locale = selectLocale(file)?.id
-        return ParadoxLocalisationPropertyStubImpl(parentStub, name, category, locale, gameType)
+        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, category, locale, gameType)
     }
     
     private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {

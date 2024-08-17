@@ -562,7 +562,7 @@ object ParadoxDefinitionManager {
         val subtypes = runCatchingCancelable { definitionInfo.subtypes }.getOrNull() //如果无法在索引时获取，之后再懒加载
         val elementPath = definitionInfo.elementPath
         val gameType = definitionInfo.gameType
-        return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
+        return ParadoxScriptPropertyStub.Impl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
     }
     
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptPropertyStub? {
@@ -586,7 +586,7 @@ object ParadoxDefinitionManager {
         val name = getNameWhenCreateDefinitionStub(typeConfig, rootKey, node, tree)
         val type = typeConfig.name
         val subtypes = getSubtypesWhenCreateDefinitionStub(typeConfig, rootKey) //如果无法在索引时获取，之后再懒加载
-        return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
+        return ParadoxScriptPropertyStub.Impl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
     }
     
     private fun checkParentStubWhenCreateDefinitionStub(parentStub: StubElement<*>): Boolean {

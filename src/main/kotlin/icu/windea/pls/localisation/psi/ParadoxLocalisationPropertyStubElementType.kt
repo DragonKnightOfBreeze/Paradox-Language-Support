@@ -30,7 +30,7 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
     }
     
     private fun createDefaultStub(parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
-        return ParadoxLocalisationPropertyStubImpl(parentStub, "", ParadoxLocalisationCategory.placeholder(), null, ParadoxGameType.placeholder())
+        return ParadoxLocalisationPropertyStub.Dummy(parentStub)
     }
     
     override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -60,16 +60,16 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
     
     override fun serialize(stub: ParadoxLocalisationPropertyStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name)
-        dataStream.writeByte(stub.category.toByte())
+        dataStream.writeByte(stub.category.optimizeValue())
         dataStream.writeName(stub.locale)
-        dataStream.writeByte(stub.gameType.toByte())
+        dataStream.writeByte(stub.gameType.optimizeValue())
     }
     
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
         val name = dataStream.readNameString().orEmpty()
-        val category = dataStream.readByte().toLocalisationCategory()
+        val category = dataStream.readByte().deoptimizeValue<ParadoxLocalisationCategory>()
         val locale = dataStream.readNameString()
-        val gameType = dataStream.readByte().toGameType()
-        return ParadoxLocalisationPropertyStubImpl(parentStub, name, category, locale, gameType)
+        val gameType = dataStream.readByte().deoptimizeValue<ParadoxGameType>()
+        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, category, locale, gameType)
     }
 }

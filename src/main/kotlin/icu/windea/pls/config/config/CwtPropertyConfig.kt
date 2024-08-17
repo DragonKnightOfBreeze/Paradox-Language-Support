@@ -98,7 +98,7 @@ private abstract class CwtPropertyConfigImpl(
     override fun toString(): String = "$key ${separatorType.text} $value"
 }
 
-//12 + 10 * 4 + 2 * 1 = 54 => 56
+//12 + 10 * 4 + 2 * 1 = 54 -> 56
 private class CwtPropertyConfigImpl1(
     pointer: SmartPsiElementPointer<out CwtProperty>,
     configGroup: CwtConfigGroup,
@@ -115,7 +115,7 @@ private class CwtPropertyConfigImpl1(
     override val documentation = documentation
 }
 
-//12 + 8 * 4 + 2 * 1 = 46 => 48
+//12 + 8 * 4 + 2 * 1 = 46 -> 48
 private class CwtPropertyConfigImpl2(
     pointer: SmartPsiElementPointer<out CwtProperty>,
     configGroup: CwtConfigGroup,
@@ -130,7 +130,7 @@ private class CwtPropertyConfigImpl2(
     override val documentation get() = null
 }
 
-//12 + 9 * 4 + 2 * 1 = 50 => 56
+//12 + 9 * 4 + 2 * 1 = 50 -> 56
 private class CwtPropertyConfigImpl3(
     pointer: SmartPsiElementPointer<out CwtProperty>,
     configGroup: CwtConfigGroup,
@@ -146,7 +146,7 @@ private class CwtPropertyConfigImpl3(
     override val documentation = documentation
 }
 
-//12 + 7 * 4 + 2 * 1 = 42 => 48
+//12 + 7 * 4 + 2 * 1 = 42 -> 48
 private class CwtPropertyConfigImpl4(
     pointer: SmartPsiElementPointer<out CwtProperty>,
     configGroup: CwtConfigGroup,
@@ -175,7 +175,7 @@ private abstract class CwtPropertyConfigDelegate(
     override fun toString(): String = "$key ${separatorType.text} $value"
 }
 
-//12 + 5 * 4 = 32 => 32
+//12 + 5 * 4 = 32 -> 32
 private class CwtPropertyConfigDelegate1(
     delegate: CwtPropertyConfig,
     configs: List<CwtMemberConfig<*>>? = null,
@@ -183,7 +183,7 @@ private class CwtPropertyConfigDelegate1(
     override val configs = configs?.toMutableIfNotEmptyInActual()
 }
 
-//12 + 4 * 4 = 28 => 32
+//12 + 4 * 4 = 28 -> 32
 private class CwtPropertyConfigDelegate2(
     delegate: CwtPropertyConfig,
 ) : CwtPropertyConfigDelegate(delegate) {

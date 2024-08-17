@@ -11,27 +11,35 @@ interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationPrope
     
     fun isValid() = name.isNotEmpty()
     
-    class Impl(
-        parent: StubElement<*>,
-        override val name: String,
-        override val category: ParadoxLocalisationCategory,
-        override val locale: String?,
-        override val gameType: ParadoxGameType
+    abstract class Base(
+        parent: StubElement<*>
     ) : StubBase<ParadoxLocalisationProperty>(parent, ParadoxLocalisationStubElementTypes.PROPERTY), ParadoxLocalisationPropertyStub {
         override fun toString(): String {
             return "ParadoxLocalisationPropertyStub(name=$name, category=$category, locale=$locale, gameType=$gameType)"
         }
     }
-}
-
-class ParadoxLocalisationPropertyStubImpl(
-    parent: StubElement<*>,
-    override val name: String,
-    override val category: ParadoxLocalisationCategory,
-    override val locale: String?,
-    override val gameType: ParadoxGameType
-) : StubBase<ParadoxLocalisationProperty>(parent, ParadoxLocalisationStubElementTypes.PROPERTY), ParadoxLocalisationPropertyStub {
-    override fun toString(): String {
-        return "ParadoxLocalisationPropertyStub(name=$name, category=$category, locale=$locale, gameType=$gameType)"
+    
+    //12 + 20 + 4 * 4 = 48 -> 48
+    class Impl(
+        parent: StubElement<*>,
+        override val name: String,
+        override val category: ParadoxLocalisationCategory,
+        override val locale: String?,
+        override val gameType: ParadoxGameType,
+    ) : Base(parent)
+    
+    //12 + 20 = 32 -> 32
+    
+    class Dummy(
+        parent: StubElement<*>
+    ) : Base(parent) {
+        override val name: String get() = ""
+        override val category: ParadoxLocalisationCategory get() = ParadoxLocalisationCategory.placeholder()
+        override val locale: String? get() = null
+        override val gameType: ParadoxGameType get() = ParadoxGameType.placeholder()
+        
+        override fun toString(): String {
+            return "ParadoxLocalisationPropertyStub.Dummy"
+        }
     }
 }

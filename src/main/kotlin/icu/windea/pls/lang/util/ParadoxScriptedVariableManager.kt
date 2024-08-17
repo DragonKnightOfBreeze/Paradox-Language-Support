@@ -45,7 +45,7 @@ object ParadoxScriptedVariableManager {
         val file = selectFile(psi) ?: return null
         val gameType = selectGameType(file) ?: return null
         val name = psi.name ?: return null
-        return ParadoxScriptScriptedVariableStubImpl(parentStub, name, gameType)
+        return ParadoxScriptScriptedVariableStub.Impl(parentStub, name, gameType)
     }
     
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub? {
@@ -53,7 +53,7 @@ object ParadoxScriptedVariableManager {
         val file = selectFile(psi) ?: return null
         val gameType = selectGameType(file) ?: return null
         val name = getNameFromNode(node, tree) ?: return null
-        return ParadoxScriptScriptedVariableStubImpl(parentStub, name, gameType)
+        return ParadoxScriptScriptedVariableStub.Impl(parentStub, name, gameType)
     }
     
     private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {

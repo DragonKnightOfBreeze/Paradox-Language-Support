@@ -1,5 +1,6 @@
 package icu.windea.pls.ep.index
 
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.index.*
@@ -62,14 +63,14 @@ class ParadoxComplexEnumValueIndexSupport : ParadoxExpressionIndexSupport<Parado
     override fun writeData(storage: DataOutput, info: ParadoxComplexEnumValueInfo, previousInfo: ParadoxComplexEnumValueInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.enumName }, { storage.writeUTFFast(it) })
-        storage.writeByte(info.readWriteAccess.toByte())
+        storage.writeByte(info.readWriteAccess.optimizeValue())
         storage.writeIntFast(info.elementOffset)
     }
     
     override fun readData(storage: DataInput, previousInfo: ParadoxComplexEnumValueInfo?, gameType: ParadoxGameType): ParadoxComplexEnumValueInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
         val enumName = storage.readOrReadFrom(previousInfo, { it.enumName }, { storage.readUTFFast() })
-        val readWriteAccess = storage.readByte().toReadWriteAccess()
+        val readWriteAccess = storage.readByte().deoptimizeValue<ReadWriteAccessDetector.Access>()
         val elementOffset = storage.readIntFast()
         return ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, elementOffset, gameType)
     }
@@ -117,14 +118,14 @@ class ParadoxDynamicValueIndexSupport : ParadoxExpressionIndexSupport<ParadoxDyn
     override fun writeData(storage: DataOutput, info: ParadoxDynamicValueInfo, previousInfo: ParadoxDynamicValueInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.dynamicValueType }, { storage.writeUTFFast(it) })
-        storage.writeByte(info.readWriteAccess.toByte())
+        storage.writeByte(info.readWriteAccess.optimizeValue())
         storage.writeIntFast(info.elementOffset)
     }
     
     override fun readData(storage: DataInput, previousInfo: ParadoxDynamicValueInfo?, gameType: ParadoxGameType): ParadoxDynamicValueInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
         val dynamicValueType = storage.readOrReadFrom(previousInfo, { it.dynamicValueType }, { storage.readUTFFast() })
-        val readWriteAccess = storage.readByte().toReadWriteAccess()
+        val readWriteAccess = storage.readByte().deoptimizeValue<ReadWriteAccessDetector.Access>()
         val elementOffset = storage.readIntFast()
         return ParadoxDynamicValueInfo(name, dynamicValueType, readWriteAccess, elementOffset, gameType)
     }
@@ -157,14 +158,14 @@ class ParadoxParameterIndexSupport : ParadoxExpressionIndexSupport<ParadoxParame
     override fun writeData(storage: DataOutput, info: ParadoxParameterInfo, previousInfo: ParadoxParameterInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.contextKey }, { storage.writeUTFFast(it) })
-        storage.writeByte(info.readWriteAccess.toByte())
+        storage.writeByte(info.readWriteAccess.optimizeValue())
         storage.writeIntFast(info.elementOffset)
     }
     
     override fun readData(storage: DataInput, previousInfo: ParadoxParameterInfo?, gameType: ParadoxGameType): ParadoxParameterInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
         val contextKey = storage.readOrReadFrom(previousInfo, { it.contextKey }, { storage.readUTFFast() })
-        val readWriteAccess = storage.readByte().toReadWriteAccess()
+        val readWriteAccess = storage.readByte().deoptimizeValue<ReadWriteAccessDetector.Access>()
         val elementOffset = storage.readIntFast()
         return ParadoxParameterInfo(name, contextKey, readWriteAccess, elementOffset, gameType)
     }

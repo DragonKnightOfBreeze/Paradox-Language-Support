@@ -11,6 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
@@ -61,7 +62,7 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
                 dataStream.writeInt(subtypes.size)
                 subtypes.forEach { subtype -> dataStream.writeName(subtype) }
             }
-            dataStream.writeByte(stub.gameType.toByte())
+            dataStream.writeByte(stub.gameType.optimizeValue())
         }
         super.serialize(stub, dataStream)
     }
@@ -71,7 +72,7 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
         val type = dataStream.readNameString().orEmpty()
         val subtypesSize = dataStream.readInt()
         val subtypes = if(subtypesSize == -1) null else MutableList(subtypesSize) { dataStream.readNameString().orEmpty() }
-        val gameType = dataStream.readByte().toGameType()
+        val gameType = dataStream.readByte().deoptimizeValue<ParadoxGameType>()
         return ParadoxScriptFileStubImpl(null, name, type, subtypes, gameType)
     }
     

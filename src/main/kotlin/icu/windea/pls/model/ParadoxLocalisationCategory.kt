@@ -18,8 +18,6 @@ enum class ParadoxLocalisationCategory(
 	}
 	
 	companion object {
-		val values = entries
-		
 		@JvmStatic
 		fun resolve(id: Byte): ParadoxLocalisationCategory {
 			return entries[id.toInt()]

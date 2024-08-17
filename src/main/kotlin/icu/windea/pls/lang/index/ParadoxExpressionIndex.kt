@@ -2,7 +2,6 @@ package icu.windea.pls.lang.index
 
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
@@ -156,9 +155,9 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         val support = ParadoxExpressionIndexSupport.EP_NAME.extensionList.find { it.type() == type }
             ?.castOrNull<ParadoxExpressionIndexSupport<ParadoxExpressionInfo>>()
             ?: throw UnsupportedOperationException()
-        storage.writeByte(support.id().toInt())
+        storage.writeByte(support.id())
         val gameType = value.first().gameType
-        storage.writeByte(gameType.toByte())
+        storage.writeByte(gameType.optimizeValue())
         var previousInfo: ParadoxExpressionInfo? = null
         value.forEach { info ->
             support.writeData(storage, info, previousInfo, gameType)
@@ -174,7 +173,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         val support = ParadoxExpressionIndexSupport.EP_NAME.extensionList.find { it.id() == id }
             ?.castOrNull<ParadoxExpressionIndexSupport<ParadoxExpressionInfo>>()
             ?: throw UnsupportedOperationException()
-        val gameType = storage.readByte().toGameType()
+        val gameType = storage.readByte().deoptimizeValue<ParadoxGameType>()
         var previousInfo: ParadoxExpressionInfo? = null
         return MutableList(size) {
             support.readData(storage, previousInfo, gameType)

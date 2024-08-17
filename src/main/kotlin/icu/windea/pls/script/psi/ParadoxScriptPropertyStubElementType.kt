@@ -29,7 +29,7 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     }
     
     private fun createDefaultStub(parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-        return ParadoxScriptPropertyStubImpl(parentStub, "", "", null, "", ParadoxElementPath.Empty, ParadoxGameType.placeholder())
+        return ParadoxScriptPropertyStub.Impl(parentStub, "", "", null, "", ParadoxElementPath.Empty, ParadoxGameType.placeholder())
     }
     
     override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -58,7 +58,7 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
         }
         dataStream.writeName(stub.rootKey)
         dataStream.writeName(stub.elementPath.path)
-        dataStream.writeByte(stub.gameType.toByte())
+        dataStream.writeByte(stub.gameType.optimizeValue())
     }
     
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
@@ -68,7 +68,7 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
         val subtypes = if(subtypesSize == -1) null else MutableList(subtypesSize) { dataStream.readNameString().orEmpty() }
         val rootKey = dataStream.readNameString().orEmpty()
         val elementPath = dataStream.readNameString().orEmpty().let { ParadoxElementPath.resolve(it) }
-        val gameType = dataStream.readByte().toGameType()
-        return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
+        val gameType = dataStream.readByte().deoptimizeValue<ParadoxGameType>()
+        return ParadoxScriptPropertyStub.Impl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
     }
 }
