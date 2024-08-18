@@ -9,7 +9,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.config.internal.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.internal.*
-import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
@@ -123,7 +122,7 @@ object CwtConfigCompletionManager {
                 schema.enums[schemaExpression.name]?.values?.any { it.stringValue == value } ?: false
             }
             is CwtSchemaExpression.Template -> {
-                schemaExpression.pattern.matchesPattern(value)
+                value.matchesPattern(schemaExpression.pattern)
             }
             is CwtSchemaExpression.Type -> {
                 true //TODO 1.3.19+ 
@@ -150,8 +149,8 @@ object CwtConfigCompletionManager {
                 val v = schemaExpression.expressionString
                 if(!shouldComplete(context, p + v)) return true
                 val lookupElement = LookupElementBuilder.create(element, v)
-                    .withIcon(icon)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
+                    .withIcon(icon)
                 processor.process(lookupElement)
             }
             is CwtSchemaExpression.Enum -> {
@@ -160,8 +159,8 @@ object CwtConfigCompletionManager {
                     val v = it.stringValue ?: return@forEach
                     if(!shouldComplete(context, p + v)) return true
                     val lookupElement = LookupElementBuilder.create(element, v)
-                        .withIcon(icon)
                         .withTypeText(typeFile?.name, typeFile?.icon, true)
+                        .withIcon(icon)
                         .withTailText(tailText, true)
                     processor.process(lookupElement)
                 }

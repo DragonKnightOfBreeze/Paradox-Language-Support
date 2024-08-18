@@ -151,7 +151,6 @@ object ParadoxCompletionManager {
         }
         
         context.config = null
-        context.configs = emptyList()
         return
     }
     
@@ -545,8 +544,8 @@ object ParadoxCompletionManager {
     
     fun completeAliasName(context: ProcessingContext, result: CompletionResultSet, aliasName: String) {
         ProgressManager.checkCanceled()
-        val configGroup = context.configGroup!!
-        val config = context.config!!
+        val configGroup = context.configGroup ?: return
+        val config = context.config ?: return
         val configs = context.configs
         
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return
@@ -668,8 +667,11 @@ object ParadoxCompletionManager {
         val config = context.config
         val configs = context.configs
         
+        val finalConfigs = if(configs.isNotEmpty()) configs.toListOrThis() else config.toSingletonListOrEmpty()
+        if(finalConfigs.isEmpty()) return
+        
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
-        val expression = markIncomplete { ParadoxDynamicValueExpression.resolve(keyword, textRange, configGroup, configs.toList()) } ?: return
+        val expression = markIncomplete { ParadoxDynamicValueExpression.resolve(keyword, textRange, configGroup, finalConfigs) } ?: return
         
         val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
         val isKey = context.isKey

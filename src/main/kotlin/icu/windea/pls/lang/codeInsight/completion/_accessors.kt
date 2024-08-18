@@ -13,42 +13,44 @@ import icu.windea.pls.model.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import javax.swing.Icon
 
-object PlsCompletionKeys : KeyRegistry()
+object PlsProcessingContextKeys : KeyRegistry()
 
-var ProcessingContext.parameters: CompletionParameters? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.completionIds: MutableSet<String>? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.contextElement: PsiElement? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.offsetInParent: Int? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.keyword: String by createKeyDelegate(PlsCompletionKeys) { "" }
-var ProcessingContext.keywordOffset: Int by createKeyDelegate(PlsCompletionKeys) { 0 }
-var ProcessingContext.quoted: Boolean by createKeyDelegate(PlsCompletionKeys) { false }
-var ProcessingContext.rightQuoted: Boolean? by createKeyDelegate(PlsCompletionKeys)
+var ProcessingContext.parameters: CompletionParameters? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.completionIds: MutableSet<String>? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.contextElement: PsiElement? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.offsetInParent: Int? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.keyword: String by createKeyDelegate(PlsProcessingContextKeys) { "" }
+var ProcessingContext.keywordOffset: Int by createKeyDelegate(PlsProcessingContextKeys) { 0 }
+var ProcessingContext.quoted: Boolean by createKeyDelegate(PlsProcessingContextKeys) { false }
+var ProcessingContext.rightQuoted: Boolean? by createKeyDelegate(PlsProcessingContextKeys)
 
-var ProcessingContext.gameType: ParadoxGameType? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.configGroup: CwtConfigGroup? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.expressionOffset: Int by createKeyDelegate(PlsCompletionKeys) { 0 }
-var ProcessingContext.extraFilter: ((PsiElement) -> Boolean)? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.isKey: Boolean? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.config: CwtConfig<*>? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.configs: Collection<CwtConfig<*>> by createKeyDelegate(PlsCompletionKeys) { emptyList() }
-var ProcessingContext.scopeContext: ParadoxScopeContext? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.scopeMatched: Boolean by createKeyDelegate(PlsCompletionKeys) { true }
-var ProcessingContext.scopeName: String? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.scopeGroupName: String? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.isInt: Boolean? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.prefix: String? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.expressionTailText: String? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.dataSourceNodeToCheck: ParadoxComplexExpressionNode? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.contextKey: String? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.argumentNames: MutableSet<String>? by createKeyDelegate(PlsCompletionKeys)
-var ProcessingContext.node: ParadoxComplexExpressionNode? by createKeyDelegate(PlsCompletionKeys)
+var ProcessingContext.gameType: ParadoxGameType? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.configGroup: CwtConfigGroup? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.expressionOffset: Int by createKeyDelegate(PlsProcessingContextKeys) { 0 }
+var ProcessingContext.extraFilter: ((PsiElement) -> Boolean)? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.isKey: Boolean? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.config: CwtConfig<*>? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.configs: Collection<CwtConfig<*>> by createKeyDelegate(PlsProcessingContextKeys) { emptyList() }
+var ProcessingContext.scopeContext: ParadoxScopeContext? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.scopeMatched: Boolean by createKeyDelegate(PlsProcessingContextKeys) { true }
+var ProcessingContext.scopeName: String? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.scopeGroupName: String? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.isInt: Boolean? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.prefix: String? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.expressionTailText: String? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.dataSourceNodeToCheck: ParadoxComplexExpressionNode? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.contextKey: String? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.argumentNames: MutableSet<String>? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.node: ParadoxComplexExpressionNode? by createKeyDelegate(PlsProcessingContextKeys)
 
-var LookupElement.completionId: String? by createKeyDelegate(PlsCompletionKeys)
-var LookupElement.extraLookupElements: List<LookupElement>? by createKeyDelegate(PlsKeys)
+object PlsLookupElementKeys: KeyRegistry()
 
-var LookupElement.priority: Double? by createKeyDelegate(PlsCompletionKeys)
-var LookupElement.patchableIcon: Icon? by createKeyDelegate(PlsCompletionKeys)
-var LookupElement.patchableTailText: String? by createKeyDelegate(PlsCompletionKeys)
-var LookupElement.localizedNames: Set<String>? by createKeyDelegate(PlsCompletionKeys)
-var LookupElement.scopeMatched: Boolean by createKeyDelegate(PlsCompletionKeys) { true }
-var LookupElement.forceInsertCurlyBraces: Boolean by createKeyDelegate(PlsCompletionKeys) { false }
+var LookupElement.completionId: String? by createKeyDelegate(PlsLookupElementKeys)
+var LookupElement.extraLookupElements: List<LookupElement>? by createKeyDelegate(PlsLookupElementKeys)
+
+var LookupElement.priority: Double? by createKeyDelegate(PlsLookupElementKeys)
+var LookupElement.patchableIcon: Icon? by createKeyDelegate(PlsLookupElementKeys)
+var LookupElement.patchableTailText: String? by createKeyDelegate(PlsLookupElementKeys)
+var LookupElement.localizedNames: Set<String>? by createKeyDelegate(PlsLookupElementKeys)
+var LookupElement.scopeMatched: Boolean by createKeyDelegate(PlsLookupElementKeys) { true }
+var LookupElement.forceInsertCurlyBraces: Boolean by createKeyDelegate(PlsLookupElementKeys) { false }

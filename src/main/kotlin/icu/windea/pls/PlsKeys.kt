@@ -1,6 +1,5 @@
 package icu.windea.pls
 
-import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -67,6 +66,3 @@ val PlsKeys.cwtConfig by createKey<CwtConfig<*>>(PlsKeys)
 val PlsKeys.documentationLocale by createKey<String>(PlsKeys)
 //用于标记图片的帧数信息以便后续进行切分
 val PlsKeys.frameInfo by createKey<FrameInfo>(PlsKeys)
-
-//用于在进行代码补全时标记作用域不匹配
-val PlsKeys.scopeMismatched by createKey<Boolean>(PlsKeys)

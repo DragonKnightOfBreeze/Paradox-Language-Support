@@ -35,11 +35,6 @@ class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptExpressionSuppor
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        //not key/value or quoted -> only dynamic value name, no scope info
-        if(context.config !is CwtMemberConfig<*> || context.quoted) {
-            ParadoxCompletionManager.completeDynamicValue(context, result)
-            return
-        }
         ParadoxCompletionManager.completeDynamicValueExpression(context, result)
     }
 }
