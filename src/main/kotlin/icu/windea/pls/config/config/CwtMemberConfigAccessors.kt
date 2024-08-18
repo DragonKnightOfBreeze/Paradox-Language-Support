@@ -19,8 +19,6 @@ val CwtMemberConfig.Keys.scopeContext by createKey<ParadoxScopeContext>(CwtMembe
 val CwtMemberConfig.Keys.replaceScopes by createKey<Map<String, String>>(CwtMemberConfig.Keys)
 val CwtMemberConfig.Keys.pushScope by createKey<String>(CwtMemberConfig.Keys)
 val CwtMemberConfig.Keys.supportedScopes by createKey<Set<String>>(CwtMemberConfig.Keys)
-val CwtMemberConfig.Keys.originalConfig by createKey<CwtMemberConfig<*>>(CwtMemberConfig.Keys)
-val CwtMemberConfig.Keys.overriddenProvider by createKey<CwtOverriddenConfigProvider>(CwtMemberConfig.Keys)
 
 //may on:
 // * a config expression in declaration config
@@ -93,10 +91,8 @@ val CwtMemberConfig<*>.supportedScopes: Set<String>
         if(r.isNullOrEmpty()) ParadoxScopeManager.anyScopeIdSet else r
     }
 
-val CwtMemberConfig<*>.originalConfig: CwtMemberConfig<CwtMemberElement>
-    get() = getUserData(CwtMemberConfig.Keys.originalConfig) ?: this
-val CwtMemberConfig<*>.overriddenProvider: CwtOverriddenConfigProvider?
-    get() = getUserData(CwtMemberConfig.Keys.overriddenProvider)
+var CwtMemberConfig<*>.originalConfig: CwtMemberConfig<CwtMemberElement>? by createKeyDelegate(CwtMemberConfig.Keys)
+var CwtMemberConfig<*>.overriddenProvider: CwtOverriddenConfigProvider? by createKeyDelegate(CwtMemberConfig.Keys)
 
 var CwtMemberConfig<*>.declarationConfigContext: CwtDeclarationConfigContext? by createKeyDelegate(CwtMemberConfig.Keys)
 var CwtMemberConfig<*>.declarationConfigCacheKey: String? by createKeyDelegate(CwtMemberConfig.Keys)

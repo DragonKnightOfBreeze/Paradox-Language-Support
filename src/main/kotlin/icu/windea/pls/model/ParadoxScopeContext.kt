@@ -4,6 +4,7 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.scope.*
+import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 
 interface ParadoxScopeContext : UserDataHolder {
@@ -20,15 +21,16 @@ interface ParadoxScopeContext : UserDataHolder {
     val prevPrevPrev: ParadoxScopeContext? get() = prevStack.getOrNull(2)
     val prevPrevPrevPrev: ParadoxScopeContext? get() = prevStack.getOrNull(3)
     
+    /** 对应的表达式为[ParadoxScopeFieldExpression]时，其中的各个[ParadoxScopeLinkNode]以及对应的作用域上下文的列表。 */
+    val links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>
+    
     companion object Resolver
     
     object Keys : KeyRegistry()
 }
 
-var ParadoxScopeContext.isExact: Boolean? by createKeyDelegate(ParadoxScopeContext.Keys)
-
-//scope context list of scope field expression nodes
-var ParadoxScopeContext.scopeLinkInfo: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>? by createKeyDelegate(ParadoxScopeContext.Keys)
+/** 当前作用域上下文是否是精确的 - 这意味着不需要再进一步推断其中的各个作用域。 */
+var ParadoxScopeContext.isExact: Boolean by createKeyDelegate(ParadoxScopeContext.Keys) { true }
 
 var ParadoxScopeContext.overriddenProvider: ParadoxOverriddenScopeContextProvider? by createKeyDelegate(ParadoxScopeContext.Keys)
 
@@ -93,7 +95,13 @@ fun ParadoxScopeContext.Resolver.resolve(map: Map<String, String>): ParadoxScope
     val prevPrev = map.get("prevprev")?.let { ParadoxScopeContext.resolve(it) }
     val prevPrevPrev = map.get("prevprevprev")?.let { ParadoxScopeContext.resolve(it) }
     val prevPrevPrevPrev = map.get("prevprevprevprev")?.let { ParadoxScopeContext.resolve(it) }
-    val prevStack = listOfNotNull(prev, prevPrev, prevPrevPrev, prevPrevPrevPrev)
+    val prevStack = buildList b@{
+        //break if previous-prev is null (but next-prev is null or not null)
+        prev?.let { add(it) } ?: return@b
+        prevPrev?.let { add(it) } ?: return@b
+        prevPrevPrev?.let { add(it) } ?: return@b
+        prevPrevPrevPrev?.let { add(it) } ?: return@b
+    }
     return DefaultParadoxScopeContext(scope, root, from, fromFrom, fromFromFrom, fromFromFromFrom, prevStack)
 }
 
@@ -120,6 +128,11 @@ fun ParadoxScopeContext.resolveNext(scopeContext: ParadoxScopeContext, isFrom: B
     return DefaultParadoxScopeContext(scope, root, from, fromFrom, fromFromFrom, fromFromFromFrom, prevStack)
 }
 
+fun ParadoxScopeContext.resolveNext(links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>): ParadoxScopeContext {
+    val prevStack = this.prevStack.toMutableList().also { it.add(0, this) }
+    return LinkedParadoxScopeContext(links, prevStack)
+}
+
 private class SimpleParadoxScopeContext(
     override val scope: ParadoxScope
 ) : UserDataHolderBase(), ParadoxScopeContext {
@@ -129,6 +142,7 @@ private class SimpleParadoxScopeContext(
     override val fromFromFrom: ParadoxScopeContext? get() = null
     override val fromFromFromFrom: ParadoxScopeContext? get() = null
     override val prevStack: List<ParadoxScopeContext> get() = emptyList()
+    override val links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>> get() = emptyList()
     
     override fun toString(): String {
         return toScopeMap().toString()
@@ -144,6 +158,26 @@ private class DefaultParadoxScopeContext(
     override val fromFromFromFrom: ParadoxScopeContext? = null,
     override val prevStack: List<ParadoxScopeContext> = emptyList()
 ) : UserDataHolderBase(), ParadoxScopeContext {
+    override val links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>> get() = emptyList()
+    
+    override fun toString(): String {
+        return toScopeMap().toString()
+    }
+}
+
+private class LinkedParadoxScopeContext(
+    override val links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>,
+    override val prevStack: List<ParadoxScopeContext> = emptyList()
+): UserDataHolderBase(), ParadoxScopeContext {
+    private val last = links.lastOrNull()?.second ?: throw IllegalArgumentException()
+    
+    override val scope: ParadoxScope get() = last.scope
+    override val root: ParadoxScopeContext? get() = last.root
+    override val from: ParadoxScopeContext? get() = last.from
+    override val fromFrom: ParadoxScopeContext? get() = last.fromFrom
+    override val fromFromFrom: ParadoxScopeContext? get() = last.fromFromFrom
+    override val fromFromFromFrom: ParadoxScopeContext? get() = last.fromFromFromFrom
+    
     override fun toString(): String {
         return toScopeMap().toString()
     }

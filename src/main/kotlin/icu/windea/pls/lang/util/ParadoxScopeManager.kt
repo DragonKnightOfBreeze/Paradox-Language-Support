@@ -11,11 +11,11 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.scope.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expression.complex.*
+import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.model.*
-import icu.windea.pls.lang.expression.complex.*
-import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.set
 
@@ -269,18 +269,18 @@ object ParadoxScopeManager {
     
     fun getSwitchedScopeContext(element: ParadoxExpressionElement, scopeFieldExpression: ParadoxScopeFieldExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val scopeNodes = scopeFieldExpression.scopeNodes
+        if(scopeNodes.isEmpty()) return inputScopeContext //unexpected -> unchanged
         var result = inputScopeContext
-        val resolved = mutableListOf<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>()
+        val links = mutableListOf<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>()
         for(scopeNode in scopeNodes) {
-            result = getSwitchedScopeContextOfNode(element, scopeNode, result) ?: getUnknownScopeContext(inputScopeContext)
-            resolved.add(scopeNode to result)
+            result = getSwitchedScopeContextOfNode(element, scopeNode, result)
+            links.add(scopeNode to result)
             if(scopeNode is ParadoxErrorScopeLinkNode) break
         }
-        result.scopeLinkInfo = resolved
-        return result
+        return inputScopeContext.resolveNext(links)
     }
     
-    fun getSwitchedScopeContextOfNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
+    fun getSwitchedScopeContextOfNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         when(node) {
             is ParadoxScopeLinkNode -> {
                 when(node) {
@@ -334,12 +334,12 @@ object ParadoxScopeManager {
                 }
             }
             is ParadoxCommandFieldNode -> return inputScopeContext
-            else -> return null
+            else -> return getUnknownScopeContext(inputScopeContext)
         }
     }
     
-    private fun getSwitchedScopeContextOfParameterizedScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
-        if(node !is ParadoxParameterizedNode) return null
+    private fun getSwitchedScopeContextOfParameterizedScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+        if(node !is ParadoxParameterizedNode) return getUnknownScopeContext(inputScopeContext)
         run r1@{
             //only support full parameterized node
             if(!node.text.isFullParameterized()) return@r1
@@ -373,11 +373,11 @@ object ParadoxScopeManager {
         return inputScopeContext.resolveNext(getAnyScopeContext())
     }
     
-    private fun getSwitchedScopeContextOfSystemScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
+    private fun getSwitchedScopeContextOfSystemScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val systemScopeConfig = when {
             node is ParadoxSystemScopeNode -> node.config
             node is ParadoxSystemCommandScopeNode -> node.config
-            else -> return null
+            else -> return getUnknownScopeContext(inputScopeContext)
         }
         val id = systemScopeConfig.id
         val baseId = systemScopeConfig.baseId
@@ -398,8 +398,8 @@ object ParadoxScopeManager {
         return inputScopeContext.resolveNext(systemScopeContext, isFrom)
     }
     
-    private fun getSwitchedScopeContextOfLinkPrefixNode(element: ParadoxExpressionElement, node: ParadoxLinkPrefixNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
-        val linkConfig = node.linkConfigs.firstOrNull() ?: return null
+    private fun getSwitchedScopeContextOfLinkPrefixNode(element: ParadoxExpressionElement, node: ParadoxLinkPrefixNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+        val linkConfig = node.linkConfigs.firstOrNull() ?: return getUnknownScopeContext(inputScopeContext)
         return inputScopeContext.resolveNext(linkConfig.outputScope)
     }
     
@@ -408,8 +408,8 @@ object ParadoxScopeManager {
         return inputScopeContext.resolveNext(outputScope)
     }
     
-    private fun getScopeContextOfDynamicScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxDynamicScopeLinkNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
-        val linkConfig = node.linkConfigs.firstOrNull() ?: return null
+    private fun getScopeContextOfDynamicScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxDynamicScopeLinkNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+        val linkConfig = node.linkConfigs.firstOrNull() ?: return getUnknownScopeContext(inputScopeContext)
         if(linkConfig.outputScope != null) return inputScopeContext.resolveNext(linkConfig.outputScope)
         
         //output_scope = null -> transfer scope based on data source
@@ -418,12 +418,14 @@ object ParadoxScopeManager {
         when {
             //hidden:event_target:xxx = {...}
             dataType in CwtDataTypeGroups.ScopeField -> {
-                val nestedNode = node.dataSourceNode.nodes.findIsInstance<ParadoxScopeLinkNode>() ?: return null
-                return getSwitchedScopeContextOfNode(element, nestedNode, inputScopeContext) ?: getUnknownScopeContext(inputScopeContext)
+                val nestedNode = node.dataSourceNode.nodes.findIsInstance<ParadoxScopeLinkNode>()
+                    ?: return getUnknownScopeContext(inputScopeContext)
+                return getSwitchedScopeContextOfNode(element, nestedNode, inputScopeContext)
             }
             //event_target:xxx = {...}
             dataType in CwtDataTypeGroups.DynamicValue -> {
-                val dynamicValueExpression = node.dataSourceNode.nodes.findIsInstance<ParadoxDynamicValueExpression>() ?: return null
+                val dynamicValueExpression = node.dataSourceNode.nodes.findIsInstance<ParadoxDynamicValueExpression>()
+                    ?: return getUnknownScopeContext(inputScopeContext)
                 val configGroup = dynamicValueExpression.configGroup
                 val dynamicValueNode = dynamicValueExpression.dynamicValueNode
                 val name = dynamicValueNode.text

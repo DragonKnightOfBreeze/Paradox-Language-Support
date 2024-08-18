@@ -21,9 +21,7 @@ class ParadoxDefaultDefinitionScopeContextProvider: ParadoxDefinitionScopeContex
         val scopeContextOnDeclaration = declarationConfig.scopeContext
         if(scopeContextOnType == null) return scopeContextOnDeclaration
         if(scopeContextOnDeclaration == null) return scopeContextOnType
-        val result = scopeContextOnType.resolveNext(scopeContextOnDeclaration)
-        result.isExact = false
-        return result
+        return scopeContextOnType.resolveNext(scopeContextOnDeclaration).also { it.isExact = false }
     }
 }
 
@@ -36,9 +34,7 @@ class ParadoxBaseDefinitionScopeContextProvider: ParadoxDefinitionScopeContextPr
         val configGroup = definitionInfo.configGroup
         val configs = configGroup.extendedDefinitions.findFromPattern(definitionInfo.name, definition, configGroup).orEmpty()
         val config = configs.findLast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) } ?: return null
-        val result = config.config.scopeContext ?: return null
-        result.isExact = true
-        return result
+        return config.config.scopeContext
     }
 }
 
@@ -50,9 +46,7 @@ class ParadoxGameRuleScopeContextProvider : ParadoxDefinitionScopeContextProvide
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val configGroup = definitionInfo.configGroup
         val config = configGroup.extendedGameRules.findFromPattern(definitionInfo.name, definition, configGroup)
-        val result = config?.config?.scopeContext ?: return null
-        result.isExact = true
-        return result
+        return config?.config?.scopeContext
     }
 }
 
@@ -64,8 +58,6 @@ class ParadoxOnActionScopeContextProvider : ParadoxDefinitionScopeContextProvide
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val configGroup = definitionInfo.configGroup
         val config = configGroup.extendedOnActions.findFromPattern(definitionInfo.name, definition, configGroup)
-        val result = config?.config?.scopeContext ?: return null
-        result.isExact = true
-        return result
+        return config?.config?.scopeContext
     }
 }

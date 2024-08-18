@@ -750,7 +750,6 @@ object ParadoxCompletionManager {
                     break
                 } else {
                     scopeContextInExpression = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
-                        ?: ParadoxScopeManager.getUnknownScopeContext(scopeContextInExpression)
                 }
             }
         }
@@ -857,7 +856,6 @@ object ParadoxCompletionManager {
                     break
                 } else {
                     scopeContextInExpression = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
-                        ?: ParadoxScopeManager.getUnknownScopeContext(scopeContextInExpression)
                 }
             } else if(node is ParadoxValueFieldNode) {
                 if(inRange) {
@@ -906,7 +904,6 @@ object ParadoxCompletionManager {
                     break
                 } else {
                     scopeContextInExpression = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
-                        ?: ParadoxScopeManager.getUnknownScopeContext(scopeContextInExpression)
                 }
             } else if(node is ParadoxDataSourceNode) {
                 if(inRange) {
@@ -955,7 +952,6 @@ object ParadoxCompletionManager {
                     break
                 } else {
                     scopeContextInExpression = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
-                        ?: ParadoxScopeManager.getUnknownScopeContext(scopeContextInExpression)
                 }
             } else if(node is ParadoxCommandFieldNode) {
                 if(inRange) {
@@ -1036,7 +1032,6 @@ object ParadoxCompletionManager {
         val endOffset = dsNode?.rangeInExpression?.startOffset ?: -1
         if(prefixNode != null && dsNode != null && offsetInParent >= dsNode.rangeInExpression.startOffset) {
             context.scopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContext)
-                ?: ParadoxScopeManager.getUnknownScopeContext(scopeContext)
             
             val keywordToUse = dsNode.text.substring(0, offsetInParent - endOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
@@ -1088,7 +1083,6 @@ object ParadoxCompletionManager {
         val endOffset = dsNode?.rangeInExpression?.startOffset ?: -1
         if(prefixNode != null && dsNode != null && offsetInParent >= dsNode.rangeInExpression.startOffset) {
             context.scopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContext)
-                ?: ParadoxScopeManager.getUnknownScopeContext(scopeContext)
             
             val keywordToUse = dsNode.text.substring(0, offsetInParent - endOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)

@@ -11,7 +11,6 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -35,10 +34,10 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                 if(config is CwtPropertyConfig && config.expression.type == CwtDataTypes.ScopeField) {
                     val resultScopeContext = ParadoxScopeManager.getSwitchedScopeContext(element)
                     if(resultScopeContext == null) return
-                    val scopeFieldInfo = resultScopeContext.scopeLinkInfo
-                    if(scopeFieldInfo.isNullOrEmpty()) return
+                    val links = resultScopeContext.links
+                    if(links.isEmpty()) return
                     val propertyKey = element.propertyKey
-                    for((scopeNode, scopeContext) in scopeFieldInfo) {
+                    for((scopeNode, scopeContext) in links) {
                         val rangeInExpression = scopeNode.rangeInExpression
                         when(scopeNode) {
                             is ParadoxScopeNode -> {
@@ -53,12 +52,13 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                     holder.registerProblem(propertyKey, rangeInExpression, description)
                                 }
                             }
-                            //TODO 1.3.0+ dynamic value (expression)
+                            //TODO 1.3.0+ dynamic value
                             is ParadoxDynamicScopeLinkNode -> {
                                 
                             }
                             //NOTE may depend on usages
-                            //check when root parent scope context is not from event, scripted_trigger or scripted_effect
+                            //skip if checkForSystemScopes is false
+                            //skip if root parent scope context is not from event, scripted_trigger or scripted_effect
                             is ParadoxSystemScopeNode -> {
                                 if(!checkForSystemScopes) continue
                                 if(scopeContext.scope.id == ParadoxScopeManager.unknownScopeId) {
