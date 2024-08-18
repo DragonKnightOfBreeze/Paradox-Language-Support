@@ -1,7 +1,9 @@
 package icu.windea.pls.lang.util
 
+import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.patterns.*
@@ -31,11 +33,35 @@ import icu.windea.pls.model.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.expression.complex.nodes.*
+import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 
 object ParadoxCompletionManager {
+    //region Predefined Lookup Elements
+    val yesLookupElement = LookupElementBuilder.create("yes").bold()
+        .withPriority(ParadoxCompletionPriorities.keyword)
+        .withCompletionId()
+    
+    val noLookupElement = LookupElementBuilder.create("no").bold()
+        .withPriority(ParadoxCompletionPriorities.keyword)
+        .withCompletionId()
+    
+    val blockLookupElement = LookupElementBuilder.create("")
+        .withPresentableText("{...}")
+        .withInsertHandler { c, _ ->
+            val editor = c.editor
+            val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
+            val spaceWithinBraces = customSettings.SPACE_WITHIN_BRACES
+            val text = if(spaceWithinBraces) "{  }" else "{}"
+            val length = if(spaceWithinBraces) text.length - 2 else text.length - 1
+            EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
+        }
+        .withPriority(ParadoxCompletionPriorities.keyword)
+        .withCompletionId()
+    //endregion
+    
     //region Core Methods
     fun initializeContext(parameters: CompletionParameters, context: ProcessingContext) {
         context.parameters = parameters
@@ -75,9 +101,7 @@ object ParadoxCompletionManager {
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
                 if(c2 is CwtPropertyConfig) {
-                    //这里需要进行必要的内联
-                    val c3 = CwtConfigManipulator.inlineSingleAlias(c2) ?: c2
-                    configs.add(c3)
+                    configs += CwtConfigManipulator.inlineSingleAlias(c2) ?: c2 //这里需要进行必要的内联
                 }
             }
         }
@@ -124,7 +148,7 @@ object ParadoxCompletionManager {
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
                 if(c2 is CwtValueConfig) {
-                    configs.add(c2)
+                    configs += c2
                 }
             }
         }
@@ -575,12 +599,12 @@ object ParadoxCompletionManager {
             //常量的值也可能是yes/no
             if(name == "yes") {
                 if(context.quoted) return
-                result.addElement(ParadoxLookupElements.yesLookupElement, context)
+                result.addElement(yesLookupElement, context)
                 return
             }
             if(name == "no") {
                 if(context.quoted) return
-                result.addElement(ParadoxLookupElements.noLookupElement, context)
+                result.addElement(noLookupElement, context)
                 return
             }
         }
@@ -610,9 +634,9 @@ object ParadoxCompletionManager {
         template.processResolveResult(contextElement, configGroup) { expression ->
             val templateExpressionElement = ParadoxExpressionManager.resolveTemplateExpression(contextElement, expression, configExpression, configGroup)
             val lookupElement = LookupElementBuilder.create(expression).withPsiElement(templateExpressionElement)
-                .withTailText(tailText)
                 .withCaseSensitivity(false)
                 .withPatchableIcon(PlsIcons.Nodes.TemplateExpression)
+                .withPatchableTailText(tailText)
                 .withScopeMatched(scopeMatched)
                 .forScriptExpression(context)
             result.addElement(lookupElement, context)

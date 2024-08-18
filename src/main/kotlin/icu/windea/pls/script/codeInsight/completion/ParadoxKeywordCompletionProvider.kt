@@ -14,9 +14,9 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters>() {
     private val lookupElements = listOf(
-        ParadoxLookupElements.yesLookupElement,
-        ParadoxLookupElements.noLookupElement,
-        ParadoxLookupElements.blockLookupElement,
+        ParadoxCompletionManager.yesLookupElement,
+        ParadoxCompletionManager.noLookupElement,
+        ParadoxCompletionManager.blockLookupElement,
     )
     
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

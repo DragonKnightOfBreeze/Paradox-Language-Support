@@ -7,10 +7,10 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 
-sealed interface CwtSchemaExpression: CwtExpression {
+sealed interface CwtSchemaExpression : CwtExpression {
     class Constant(
         override val expressionString: String
-    ): CwtSchemaExpression {
+    ) : CwtSchemaExpression {
         override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
         override fun hashCode() = expressionString.hashCode()
         override fun toString() = expressionString
@@ -20,7 +20,7 @@ sealed interface CwtSchemaExpression: CwtExpression {
         override val expressionString: String,
         val pattern: String,
         val parameterRanges: List<TextRange>
-    ): CwtSchemaExpression {
+    ) : CwtSchemaExpression {
         override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
         override fun hashCode() = expressionString.hashCode()
         override fun toString() = expressionString
@@ -32,7 +32,7 @@ sealed interface CwtSchemaExpression: CwtExpression {
     class Type(
         override val expressionString: String,
         val name: String
-    ): CwtSchemaExpression {
+    ) : CwtSchemaExpression {
         override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
         override fun hashCode() = expressionString.hashCode()
         override fun toString() = expressionString
@@ -44,7 +44,11 @@ sealed interface CwtSchemaExpression: CwtExpression {
     class Enum(
         override val expressionString: String,
         val name: String
-    ): CwtSchemaExpression
+    ) : CwtSchemaExpression {
+        override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
+        override fun hashCode() = expressionString.hashCode()
+        override fun toString() = expressionString
+    }
     
     companion object Resolver {
         private val cache = CacheBuilder.newBuilder().buildCache<String, CwtSchemaExpression> { doResolve(it) }
@@ -58,7 +62,7 @@ sealed interface CwtSchemaExpression: CwtExpression {
                 return Constant(expressionString)
             }
             if(indices.size == 1) {
-                run { 
+                run {
                     val name = expressionString.removePrefixOrNull("\$enum:") ?: return@run
                     return Enum(expressionString, name)
                 }
@@ -72,9 +76,8 @@ sealed interface CwtSchemaExpression: CwtExpression {
                 return Constant(expressionString)
             }
             val pattern = expressionString.replace(parameterRegex, "*")
-            val parameterRanges = indices.windowed(2) { (i1, i2) ->
-                TextRange.create(i1, i2 + 1)
-            }
+            val parameterRanges = indices
+                .windowed(2) { (i1, i2) -> TextRange.create(i1, i2 + 1) }
             return Template(expressionString, pattern, parameterRanges)
         }
     }

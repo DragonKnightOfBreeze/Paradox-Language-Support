@@ -1,3 +1,5 @@
+@file:Suppress("KotlinConstantConditions")
+
 package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.application.options.*
@@ -17,11 +19,16 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.config.expression.internal.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.*
+import icu.windea.pls.cwt.codeStyle.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -72,7 +79,153 @@ fun LookupElementBuilder.withScopeMatched(scopeMatched: Boolean): LookupElementB
     return withItemTextForeground(JBColor.GRAY)
 }
 
-//for script expressions
+//extensions for generic lookup elements
+
+private fun applyKeyOrValueInsertHandler(c: InsertionContext, context: ProcessingContext, isKey: Boolean?) {
+    //这里的isKey需要在创建LookupElement时就预先获取（之后可能会有所变更）
+    //这里的isKey如果是null，表示已经填充的只是KEY或VALUE的其中一部分
+    if(!context.quoted) return
+    val editor = c.editor
+    val caretOffset = editor.caretModel.offset
+    val charsSequence = editor.document.charsSequence
+    val rightQuoted = charsSequence.get(caretOffset) == '"' && charsSequence.get(caretOffset - 1) != '\\'
+    if(rightQuoted) {
+        //在必要时将光标移到右双引号之后
+        if(isKey != null) editor.caretModel.moveToOffset(caretOffset + 1)
+    } else {
+        //插入缺失的右双引号，且在必要时将光标移到右双引号之后
+        EditorModificationUtil.insertStringAtCaret(editor, "\"", false, isKey != null)
+    }
+}
+
+private fun applyKeyWithValueInsertHandler(c: InsertionContext, context: ProcessingContext, isKey: Boolean?, constantValue: String?, insertCurlyBraces: Boolean) {
+    val editor = c.editor
+    applyKeyOrValueInsertHandler(c, context, isKey)
+    val customSettings = when(c.file) {
+        is CwtFile -> CodeStyle.getCustomSettings(c.file, CwtCodeStyleSettings::class.java)
+        is ParadoxScriptFile -> CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
+        else -> null
+    }
+    val spaceAroundPropertySeparator = when(customSettings) {
+        is CwtCodeStyleSettings -> customSettings.SPACE_AROUND_PROPERTY_SEPARATOR
+        is ParadoxScriptCodeStyleSettings -> customSettings.SPACE_AROUND_PROPERTY_SEPARATOR
+        else -> true
+    }
+    val spaceWithinBraces = when(customSettings) {
+        is CwtCodeStyleSettings -> customSettings.SPACE_WITHIN_BRACES
+        is ParadoxScriptCodeStyleSettings -> customSettings.SPACE_WITHIN_BRACES
+        else -> true
+    }
+    val text = buildString {
+        if(spaceAroundPropertySeparator) append(" ")
+        append("=")
+        if(spaceAroundPropertySeparator) append(" ")
+        if(constantValue != null) append(constantValue)
+        if(insertCurlyBraces) {
+            if(spaceWithinBraces) append("{  }") else append("{}")
+        }
+    }
+    val length = when {
+        insertCurlyBraces -> if(spaceWithinBraces) text.length - 2 else text.length - 1
+        else -> text.length
+    }
+    EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
+}
+
+private fun applyClauseInsertHandler(c: InsertionContext) {
+    val customSettings = when(c.file) {
+        is CwtFile -> CodeStyle.getCustomSettings(c.file, CwtCodeStyleSettings::class.java)
+        is ParadoxScriptFile -> CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
+        else -> null
+    }
+    val spaceWithinBraces = when(customSettings) {
+        is CwtCodeStyleSettings -> customSettings.SPACE_WITHIN_BRACES
+        is ParadoxScriptCodeStyleSettings -> customSettings.SPACE_WITHIN_BRACES
+        else -> true
+    }
+    val text = if(spaceWithinBraces) "{  }" else "{}"
+    val length = if(spaceWithinBraces) text.length - 2 else text.length - 1
+    EditorModificationUtil.insertStringAtCaret(c.editor, text, false, true, length)
+}
+
+//extensions for configs
+
+fun LookupElementBuilder.forConfig(context: ProcessingContext, config: CwtMemberConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {
+    val contextElement = context.contextElement ?: return null
+    val isKey = contextElement is CwtPropertyKey || contextElement is CwtString && contextElement.isBlockValue()
+    val isKeyOnly = contextElement is CwtPropertyKey/* && isKey*/
+    val isValueOnly = contextElement is CwtString && !isKey
+    val constantValue = null
+    val insertCurlyBraces = config.valueType == CwtType.Block
+    
+    //这里应当不需要再排除重复项
+    
+    var lookupElement = this
+    
+    val patchableTailText = this.patchableTailText
+    val tailText = buildString {
+        if(!isKeyOnly && !isValueOnly) {
+            if(insertCurlyBraces) append(" = {...}")
+        }
+        if(patchableTailText != null) append(patchableTailText)
+    }
+    lookupElement = lookupElement.withTailText(tailText, true)
+    
+    if(isKeyOnly || isValueOnly) { //key or value only
+        lookupElement = lookupElement.withInsertHandler { c, _ -> applyKeyOrValueInsertHandler(c, context, isKey) }
+    } else if(isKey) { // key with value
+        lookupElement = lookupElement.withInsertHandler { c, _ -> applyKeyWithValueInsertHandler(c, context, isKey, constantValue, insertCurlyBraces) }
+    }
+    
+    if(schemaExpression is CwtSchemaExpression.Template) {
+        val insertHandler0 = lookupElement.insertHandler
+        lookupElement = lookupElement.withInsertHandler { c, item ->
+            val caretOffset1 = c.editor.caretModel.offset
+            insertHandler0?.handleInsert(c, item)
+            val caretOffset2 = c.editor.caretModel.offset
+            val caretMarker = c.editor.document.createRangeMarker(caretOffset1, caretOffset2)
+            caretMarker.isGreedyToRight = true
+            c.editor.caretModel.moveToOffset(caretMarker.startOffset)
+            applyExpandTemplateInsertHandler(c, context, schemaExpression, caretMarker)
+        }
+    }
+    
+    return lookupElement
+}
+
+private fun applyExpandTemplateInsertHandler(c: InsertionContext, context: ProcessingContext, schemaExpression: CwtSchemaExpression.Template, caretMarker: RangeMarker) {
+    val file = context.parameters?.originalFile ?: return
+    c.laterRunnable = Runnable {
+        val project = file.project
+        val editor = c.editor
+        val documentManager = PsiDocumentManager.getInstance(project)
+        val command = Runnable c@{
+            documentManager.commitDocument(editor.document)
+            val elementOffset = caretMarker.startOffset - 1
+            val element = file.findElementAt(elementOffset)?.parent
+            if(element !is CwtPropertyKey && element !is CwtString) return@c
+            val startAction = StartMarkAction.start(editor, project, PlsBundle.message("config.command.expandTemplate.name"))
+            val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(element)
+            val shift = element.startOffset + if(context.quoted) 1 else 0
+            schemaExpression.parameterRanges.forEach { parameterRange ->
+                //TODO 1.3.19+
+                val parameterText = parameterRange.substring(schemaExpression.expressionString)
+                val expression = TextExpression(parameterText)
+                templateBuilder.replaceRange(parameterRange.shiftRight(shift), expression)
+            }
+            val textRange = element.textRange
+            editor.caretModel.moveToOffset(textRange.startOffset)
+            val template = templateBuilder.buildInlineTemplate()
+            TemplateManager.getInstance(project).startTemplate(editor, template, TemplateEditingFinishedListener { _, _ ->
+                c.editor.caretModel.moveToOffset(caretMarker.endOffset)
+                FinishMarkAction.finish(project, editor, startAction)
+            })
+        }
+        WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("config.command.expandTemplate.name"), null, command, file)
+    }
+}
+
+//extensions for script expressions
 
 fun <T : LookupElement> T.withForceInsertCurlyBraces(forceInsertCurlyBraces: Boolean): T {
     this.forceInsertCurlyBraces = forceInsertCurlyBraces
@@ -107,21 +260,21 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
         config is CwtSingleAliasConfig -> config.config
         config is CwtInlineConfig -> config.config
         else -> null
-    }
+    }?.let { CwtConfigManipulator.inlineSingleAlias(it) ?: it } //这里需要进行必要的内联
+
+    val isKey = context.isKey
+    val isKeyOnly = context.contextElement is ParadoxScriptPropertyKey && isKey != false
+    val isValueOnly = context.contextElement is ParadoxScriptValue && isKey != true
+    val isBlock = targetConfig?.isBlock ?: false
     val constantValue = when {
         completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value
         else -> null
     }
     val insertCurlyBraces = when {
         forceInsertCurlyBraces -> true
-        completeWithValue -> targetConfig?.isBlock ?: false
+        completeWithValue -> isBlock
         else -> false
     }
-    
-    val isKey = context.isKey
-    val isKeyOnly = context.contextElement is ParadoxScriptPropertyKey && isKey != false
-    val isValueOnly = context.contextElement is ParadoxScriptValue && isKey != true
-    val isBlock = targetConfig?.isBlock ?: false
     
     //排除重复项
     val completionId = when {
@@ -169,7 +322,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
                 if(patchableTailText != null) append(patchableTailText)
             }
             val extraElement = lookupElement
-                .withTailText(extraTailText)
+                .withTailText(extraTailText, true)
                 .withExpandClauseTemplateInsertHandler(context, entryConfigs)
                 .withPriority(priority)
             extraElements.add(extraElement)
@@ -202,52 +355,6 @@ private fun getIconToUse(icon: Icon?, config: CwtConfig<*>?): Icon? {
     return icon
 }
 
-private fun applyKeyOrValueInsertHandler(c: InsertionContext, context: ProcessingContext, isKey: Boolean?) {
-    skipOrInsertRightQuote(context, c.editor, isKey)
-}
-
-private fun applyKeyWithValueInsertHandler(c: InsertionContext, context: ProcessingContext, isKey: Boolean?, constantValue: String?, insertCurlyBraces: Boolean) {
-    val editor = c.editor
-    skipOrInsertRightQuote(context, c.editor, isKey)
-    val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
-    val text = buildString {
-        append(if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "=")
-        if(constantValue != null) append(constantValue)
-        if(insertCurlyBraces) append(if(customSettings.SPACE_WITHIN_BRACES) "{  }" else "{}")
-    }
-    val length = when {
-        insertCurlyBraces -> if(customSettings.SPACE_WITHIN_BRACES) text.length - 2 else text.length - 1
-        else -> text.length
-    }
-    EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
-}
-
-@Suppress("UNUSED_PARAMETER", "SameParameterValue")
-private fun applyValueInsertHandler(c: InsertionContext, context: ProcessingContext, insertCurlyBraces: Boolean) {
-    if(!insertCurlyBraces) return
-    val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
-    val text = if(customSettings.SPACE_WITHIN_BRACES) "{  }" else "{}"
-    val length = if(customSettings.SPACE_WITHIN_BRACES) text.length - 2 else text.length - 1
-    EditorModificationUtil.insertStringAtCaret(c.editor, text, false, true, length)
-}
-
-private fun skipOrInsertRightQuote(context: ProcessingContext, editor: Editor, isKey: Boolean?) {
-    //这里的isKey需要在创建LookupElement时就预先获取（之后可能会有所变更）
-    //这里的isKey如果是null，表示已经填充的只是KEY或VALUE的其中一部分
-    if(context.quoted) {
-        val offset = editor.caretModel.offset
-        val charsSequence = editor.document.charsSequence
-        val rightQuoted = charsSequence.get(offset) == '"' && charsSequence.get(offset - 1) != '\\'
-        if(rightQuoted) {
-            //在必要时将光标移到右双引号之后
-            if(isKey != null) editor.caretModel.moveToOffset(offset + 1)
-        } else {
-            //插入缺失的右双引号，且在必要时将光标移到右双引号之后
-            EditorModificationUtil.insertStringAtCaret(editor, "\"", false, isKey != null)
-        }
-    }
-}
-
 @Suppress("UnstableApiUsage")
 private fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(context: ProcessingContext, entryConfigs: List<CwtMemberConfig<*>>): LookupElementBuilder {
     //如果补全位置所在的子句为空或者都不精确匹配，显示对话框时默认列出的属性/值应该有数种情况，因此这里需要传入entryConfigs
@@ -278,7 +385,7 @@ private fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(context: 
         if(isKey == true) {
             applyKeyWithValueInsertHandler(c, context, isKey, null, true)
         } else {
-            applyValueInsertHandler(c, context, true)
+            applyClauseInsertHandler(c)
         }
         
         c.laterRunnable = Runnable {
@@ -304,10 +411,9 @@ private fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(context: 
             val documentManager = PsiDocumentManager.getInstance(project)
             val command = Runnable {
                 documentManager.commitDocument(editor.document)
-                val offset = editor.caretModel.offset
-                val blockOffset = if(around) offset + 1 else offset
-                
-                val elementAtCaret = file.findElementAt(blockOffset)?.parent as ParadoxScriptValue
+                val caretOffset = editor.caretModel.offset
+                val elementOffset = if(around) caretOffset + 1 else caretOffset
+                val elementAtCaret = file.findElementAt(elementOffset)?.parent as ParadoxScriptValue
                 val clauseText = buildString {
                     append("{")
                     if(multiline) append("\n")
@@ -355,10 +461,8 @@ private fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(context: 
                 val template = templateBuilder.buildInlineTemplate()
                 TemplateManager.getInstance(project).startTemplate(editor, template, TemplateEditingFinishedListener { _, _ ->
                     try {
-                        //如果从句中没有其他可能的元素，将光标移到子句之后的位置
-                        if(!hasRemain) {
-                            editor.caretModel.moveToOffset(caretMarker.endOffset)
-                        }
+                        //如果从句中没有其他可能的元素，将光标移到子句的末尾
+                        if(!hasRemain) editor.caretModel.moveToOffset(caretMarker.endOffset)
                         editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
                     } finally {
                         FinishMarkAction.finish(project, editor, startAction)
@@ -396,7 +500,7 @@ private fun getDescriptors(constantConfigGroup: Map<CwtDataExpression, List<CwtM
 fun CompletionResultSet.addBlockScriptExpressionElement(context: ProcessingContext) {
     val id = "{...}"
     if(context.completionIds?.add(id) == false) return
-    val lookupElement = ParadoxLookupElements.blockLookupElement
+    val lookupElement = ParadoxCompletionManager.blockLookupElement
     addElement(lookupElement)
     
     //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）

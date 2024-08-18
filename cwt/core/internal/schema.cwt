@@ -31,7 +31,7 @@ types = {
 		type_per_file = $bool
 		unique = $bool
 		severity = $enum:severity
-		subtype[$subtype$] = $any$
+		subtype[$subtype$] = $any
 		localisation = {
 			subtype[$subtype$] = {
 				$scalar = $scalar
@@ -171,6 +171,6 @@ dynamic_values = {
 
 single_alias[$single_alias$] = $any
 
-alias_name[$alias_name:alias_subname$] = $any
+alias_name[$alias_name$:$alias_subname$] = $any
 
 inline[$inline$] = $any

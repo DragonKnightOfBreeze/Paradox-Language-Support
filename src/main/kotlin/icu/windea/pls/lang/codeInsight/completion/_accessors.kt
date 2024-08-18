@@ -4,14 +4,13 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.model.*
 import icu.windea.pls.lang.expression.complex.nodes.*
-import javax.swing.Icon
+import icu.windea.pls.model.*
+import javax.swing.*
 
 object PlsProcessingContextKeys : KeyRegistry()
 
@@ -22,7 +21,7 @@ var ProcessingContext.offsetInParent: Int? by createKeyDelegate(PlsProcessingCon
 var ProcessingContext.keyword: String by createKeyDelegate(PlsProcessingContextKeys) { "" }
 var ProcessingContext.keywordOffset: Int by createKeyDelegate(PlsProcessingContextKeys) { 0 }
 var ProcessingContext.quoted: Boolean by createKeyDelegate(PlsProcessingContextKeys) { false }
-var ProcessingContext.rightQuoted: Boolean? by createKeyDelegate(PlsProcessingContextKeys)
+var ProcessingContext.rightQuoted: Boolean by createKeyDelegate(PlsProcessingContextKeys) { false }
 
 var ProcessingContext.gameType: ParadoxGameType? by createKeyDelegate(PlsProcessingContextKeys)
 var ProcessingContext.configGroup: CwtConfigGroup? by createKeyDelegate(PlsProcessingContextKeys)
@@ -43,7 +42,7 @@ var ProcessingContext.contextKey: String? by createKeyDelegate(PlsProcessingCont
 var ProcessingContext.argumentNames: MutableSet<String>? by createKeyDelegate(PlsProcessingContextKeys)
 var ProcessingContext.node: ParadoxComplexExpressionNode? by createKeyDelegate(PlsProcessingContextKeys)
 
-object PlsLookupElementKeys: KeyRegistry()
+object PlsLookupElementKeys : KeyRegistry()
 
 var LookupElement.completionId: String? by createKeyDelegate(PlsLookupElementKeys)
 var LookupElement.extraLookupElements: List<LookupElement>? by createKeyDelegate(PlsLookupElementKeys)

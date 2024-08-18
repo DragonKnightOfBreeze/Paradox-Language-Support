@@ -5,7 +5,9 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.config.internal.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.expression.internal.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
@@ -39,7 +41,6 @@ object CwtConfigManager {
     }
     
     private fun doGetConfigPath(element: CwtMemberElement): CwtConfigPath? {
-        //NOTE 1.3.18+ 通常情况下，规则路径不应当包含"/" "-"等必须考虑转义的特殊字符，目前也不支持这类情况
         var current: PsiElement = element
         var depth = 0
         val subPaths = LinkedList<String>()
@@ -57,7 +58,7 @@ object CwtConfigManager {
             current = current.parent ?: break
         }
         if(current !is CwtFile) return null //unexpected
-        return CwtConfigPath.resolve(subPaths.joinToString("/"))
+        return CwtConfigPath.resolve(subPaths)
     }
     
     fun getConfigType(element: PsiElement): CwtConfigType? {
@@ -230,5 +231,49 @@ object CwtConfigManager {
             if(r.isEmpty()) return emptyList()
         }
         return r
+    }
+    
+    fun getContextConfigs(element: PsiElement, containerElement: PsiElement, schema: CwtSchemaConfig): List<CwtMemberConfig<*>> {
+        val configPath = getConfigPath(containerElement) ?: return emptyList()
+        
+        var contextConfigs = mutableListOf<CwtMemberConfig<*>>()
+        contextConfigs += schema.properties
+        configPath.forEachIndexed f1@{ i, path ->
+            val flatten = i != configPath.length - 1 || !(element is CwtString && element.isPropertyValue())
+            val nextContextConfigs = mutableListOf<CwtMemberConfig<*>>()
+            contextConfigs.forEach f2@{ config ->
+                when(config) {
+                    is CwtPropertyConfig -> {
+                        val schemaExpression = CwtSchemaExpression.resolve(config.key)
+                        if(!matchesSchemaExpression(path, schemaExpression, schema)) return@f2
+                        nextContextConfigs += config
+                    }
+                    is CwtValueConfig -> {
+                        if(path != "-") return@f2
+                        nextContextConfigs += config
+                    }
+                }
+            }
+            contextConfigs = nextContextConfigs
+            if(flatten) contextConfigs = contextConfigs.flatMapTo(mutableListOf()) { it.configs.orEmpty() }
+        }
+        return contextConfigs
+    }
+    
+    fun matchesSchemaExpression(value: String, schemaExpression: CwtSchemaExpression, schema: CwtSchemaConfig): Boolean {
+        return when(schemaExpression) {
+            is CwtSchemaExpression.Constant -> {
+                schemaExpression.expressionString == value
+            }
+            is CwtSchemaExpression.Enum -> {
+                schema.enums[schemaExpression.name]?.values?.any { it.stringValue == value } ?: false
+            }
+            is CwtSchemaExpression.Template -> {
+                value.matchesPattern(schemaExpression.pattern)
+            }
+            is CwtSchemaExpression.Type -> {
+                true //TODO 1.3.19+ 
+            }
+        }
     }
 }

@@ -1,10 +1,5 @@
 package icu.windea.pls.model
 
-import com.google.common.cache.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
-
 /**
  * CWT规则的路径。保留大小写。忽略括起的双引号。
  */
@@ -22,24 +17,22 @@ interface CwtConfigPath : Iterable<String> {
     companion object Resolver {
         val Empty: CwtConfigPath = EmptyCwtConfigPath
         
-        fun resolve(path: String): CwtConfigPath = cache.get(path)
+        fun resolve(subPaths: List<String>): CwtConfigPath = doResolve(subPaths)
     }
 }
 
-//Implementations (cached & interned)
+//Implementations (interned)
 
-private val cache = CacheBuilder.newBuilder().buildCache<String, _> { doResolve(it) }
-
-private fun doResolve(path: String): CwtConfigPath {
-    if(path.isEmpty()) return EmptyCwtConfigPath
-    return CwtConfigPathImpl(path)
+private fun doResolve(subPaths: List<String>): CwtConfigPath {
+    if(subPaths.isEmpty()) return EmptyCwtConfigPath
+    return CwtConfigPathImpl(subPaths)
 }
 
 private class CwtConfigPathImpl(
-    path: String
+    subPaths: List<String>
 ) : CwtConfigPath {
-    override val path: String = path.intern()
-    override val subPaths: List<String> = path.split('/').map { it.intern() }
+    override val path: String = subPaths.joinToString("/") { it.replace("/", "\\/") }.intern()
+    override val subPaths: List<String> = subPaths.map { it.intern() }
     override val length: Int = subPaths.size
     
     override fun equals(other: Any?) = this === other || other is CwtConfigPath && path == other.path
@@ -47,7 +40,7 @@ private class CwtConfigPathImpl(
     override fun toString() = path
 }
 
-private object EmptyCwtConfigPath: CwtConfigPath {
+private object EmptyCwtConfigPath : CwtConfigPath {
     override val path: String = ""
     override val subPaths: List<String> = emptyList()
     override val length: Int = 0

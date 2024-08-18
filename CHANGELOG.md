@@ -9,6 +9,7 @@
 * [ ] 优化：导入规则分组后，尝试优化为仅需重新解析和重新索引必要的文件
 * [ ] 优化：为Stellaris提供较为完善的适用于`define`的CWT规则文件
 * [ ] 优化：基于覆盖顺序对本地化进行排序时，位于`replace`及其子目录下的同名本地化应当拥有更高的优先级（尽管目前没有相关的代码检查）
+* [ ] 优化：对于`K = V`中的`K`，进行代码补全时，也需要先匹配其中的`V`
 * [ ] BUG修复：修复通过扩展的规则文件推断作为整个表达式的参数的规则上下文的场合，如果与表达式所在位置的规则上下文不匹配，相关的代码检查不生效的问题
 * [ ] BUG修复：修复通过扩展的规则文件推断内联脚本参数中的内联脚本参数中的规则上下文的场合，相关功能可能不生效的问题（如代码补全）
   * 搁置 - IDEA不支持嵌套的语言注入
@@ -23,16 +24,16 @@
 
 ## 1.3.18
 
-* [ ] 新功能：适用于规则文件的代码补全（初步支持）
+* [X] 新功能：适用于规则文件的代码补全（初步支持）
 * [X] #82 修复解析脚本文件时，会在特定情况下进入无限循环的问题
-* [ ] 修复与作用域解析相关的一些问题
+* [X] 修复与作用域解析相关的一些问题
 * [X] 其他优化与BUG修复
 
 ***
 
-* [ ] New feature: Code completion for config files (initial support)
+* [X] New feature: Code completion for config files (initial support)
 * [X] #82 Fix an issue that it will enter an infinite loop in specific situation when parsing script files.
-* [ ] Fix some problems about parsing scopes
+* [X] Fix some problems about parsing scopes
 * [X] Other optimizations and bug fixes
 
 ## 1.3.17

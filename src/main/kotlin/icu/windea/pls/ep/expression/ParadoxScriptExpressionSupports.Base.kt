@@ -7,6 +7,7 @@ import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.codeInsight.completion.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupport {
@@ -29,7 +30,7 @@ class ParadoxScriptBoolExpressionSupport: ParadoxScriptExpressionSupport {
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        result.addElement(ParadoxLookupElements.yesLookupElement, context)
-        result.addElement(ParadoxLookupElements.noLookupElement, context)
+        result.addElement(ParadoxCompletionManager.yesLookupElement, context)
+        result.addElement(ParadoxCompletionManager.noLookupElement, context)
     }
 }
