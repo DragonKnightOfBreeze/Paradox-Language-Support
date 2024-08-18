@@ -348,18 +348,6 @@ fun <T> T.withDependencyItems(dependencyItems: List<Any>): CachedValueProvider.R
 //endregion
 
 //region Code Insight Extensions
-fun createIntentionAction(name: String, action: (project: Project, editor: Editor?, file: PsiFile?) -> Unit): IntentionAction {
-    return object : AbstractIntentionAction() {
-        override fun getText(): String {
-            return name
-        }
-        
-        override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-            return action(project, editor, file)
-        }
-    }
-}
-
 fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
 
 fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
@@ -372,19 +360,6 @@ fun PsiElement.getFullKeyword(offsetInParent: Int): String {
     return (text.substring(0, offsetInParent) + text.substring(offsetInParent + PlsConstants.dummyIdentifier.length)).unquote()
 }
 
-fun PsiElement.isIncomplete(): Boolean {
-    val file = containingFile
-    val originalFile = file.originalFile
-    if(originalFile === file) return false
-    val startOffset = startOffset
-    file.findElementAt(startOffset)
-    val e1 = file.findElementAt(startOffset) ?: return false
-    val e2 = originalFile.findElementAt(startOffset) ?: return true
-    if(e1.elementType != e2.elementType) return true
-    if(e1.textLength != e2.textLength) return true
-    return false
-}
-
 /**
  * 如果不指定[CompletionType]，IDE的默认实现会让对应的[CompletionProvider]相比指定[CompletionType]的后执行。
  */
@@ -392,13 +367,6 @@ fun CompletionContributor.extend(place: ElementPattern<out PsiElement>, provider
     extend(CompletionType.BASIC, place, provider)
     extend(CompletionType.SMART, place, provider)
 }
-
-fun CompletionResultSet.addElement(lookupElement: CompositeLookupElement?) {
-    if(lookupElement == null) return
-    addElement(lookupElement.element)
-    lookupElement.extraElements.forEach { extraElement -> addElement(extraElement) }
-}
-
 //endregion
 
 //region Editor & Document Extensions
@@ -911,6 +879,20 @@ fun <E : PsiElement> E.createPointer(file: PsiFile?, project: Project = this.pro
         emptyPointer()
     }
 }
+
+fun PsiElement.isIncomplete(): Boolean {
+    val file = containingFile
+    val originalFile = file.originalFile
+    if(originalFile === file) return false
+    val startOffset = startOffset
+    file.findElementAt(startOffset)
+    val e1 = file.findElementAt(startOffset) ?: return false
+    val e2 = originalFile.findElementAt(startOffset) ?: return true
+    if(e1.elementType != e2.elementType) return true
+    if(e1.textLength != e2.textLength) return true
+    return false
+}
+
 
 fun PsiElement.isSpaceOrSingleLineBreak(): Boolean {
     return this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) <= 1

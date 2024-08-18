@@ -40,9 +40,9 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
                 val lookupElement = LookupElementBuilder.create(concept, key)
                     .withIcon(icon)
                     .withTailText(tailText, true)
-                    .withTypeText(typeFile?.name)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
-                result.addSimpleElement(lookupElement, context)
+                    .withCompletionId()
+                result.addElement(lookupElement, context)
             }
             concept.getData<StellarisGameConceptData>()?.alias?.forEach action@{ alias ->
                 val key = alias
@@ -51,7 +51,8 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
                     .withIcon(icon)
                     .withTailText(tailText, true)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
-                result.addSimpleElement(lookupElement, context)
+                    .withCompletionId()
+                result.addElement(lookupElement, context)
             }
             true
         }

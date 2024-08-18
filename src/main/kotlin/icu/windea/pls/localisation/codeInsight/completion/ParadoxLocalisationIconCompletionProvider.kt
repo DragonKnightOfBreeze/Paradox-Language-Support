@@ -75,7 +75,8 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
                 val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
                     .withTailText(tailText, true)
                     .withTypeText(typeFile.name, typeFile.icon, true)
-                result.addSimpleElement(lookupElement, context)
+                    .withCompletionId()
+                result.addElement(lookupElement, context)
             }
             is PsiFile -> {
                 val icon = PlsIcons.LocalisationNodes.Icon //使用特定图标
@@ -83,7 +84,8 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
                 val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
                     .withTailText(tailText, true)
                     .withTypeText(element.name, element.icon, true)
-                result.addSimpleElement(lookupElement, context)
+                    .withCompletionId()
+                result.addElement(lookupElement, context)
             }
             else -> pass()
         }

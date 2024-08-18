@@ -6,8 +6,12 @@ import com.intellij.openapi.editor.*
 import icu.windea.pls.script.codeStyle.*
 
 object ParadoxLookupElements {
-	val yesLookupElement = LookupElementBuilder.create("yes").bold().withPriority(ParadoxCompletionPriorities.keyword)
-	val noLookupElement = LookupElementBuilder.create("no").bold().withPriority(ParadoxCompletionPriorities.keyword)
+	val yesLookupElement = LookupElementBuilder.create("yes").bold()
+        .withPriority(ParadoxCompletionPriorities.keyword)
+        .withCompletionId()
+	val noLookupElement = LookupElementBuilder.create("no").bold()
+        .withPriority(ParadoxCompletionPriorities.keyword)
+        .withCompletionId()
 	val blockLookupElement = LookupElementBuilder.create("")
 		.withPresentableText("{...}")
 		.withInsertHandler { c, _ ->
@@ -18,4 +22,5 @@ object ParadoxLookupElements {
 			EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
 		}
 		.withPriority(ParadoxCompletionPriorities.keyword)
+        .withCompletionId()
 }

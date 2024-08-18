@@ -1,6 +1,7 @@
 package icu.windea.pls.script.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icons.*
@@ -108,18 +109,12 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
         if(definitionInfo.name.isEmpty()) return true //ignore anonymous definitions
         val icon = PlsIcons.Nodes.Definition(definitionInfo.type)
         val typeFile = definition.containingFile
-        val lookupElement = ParadoxLookupElementBuilder.create(definition, definitionInfo.name)
-            .withIcon(icon)
-            .withTypeText(typeFile?.name)
-            .withTypeIcon(typeFile?.icon)
-            .letIf(getSettings().completion.completeByLocalizedName) {
-                //如果启用，也基于定义的本地化名字进行代码补全
-                ProgressManager.checkCanceled()
-                val localizedNames = ParadoxDefinitionManager.getLocalizedNames(definition)
-                it.withLocalizedNames(localizedNames)
-            }
-            .build(context)
-        result.addElement(lookupElement)
+        val lookupElement = LookupElementBuilder.create(definition, definitionInfo.name)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withPatchableIcon(icon)
+            .withDefinitionLocalizedNamesIfNecessary(definition)
+            .forScriptExpression(context)
+        result.addElement(lookupElement, context)
         return true
     }
 }

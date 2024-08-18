@@ -25,7 +25,7 @@ class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters
         if(element.text.isLeftQuoted()) return
         if(element.text.isParameterized()) return
         if(element.isExpression()) {
-            //判断光标位置是否在定义声明中，更加准确，更具兼容性
+            //判断光标位置是否在定义声明中，更加准确，兼容性更好
             val configContext = ParadoxExpressionManager.getConfigContext(element)
             if(configContext != null && configContext.isRootOrMember()) return
         }
@@ -33,7 +33,7 @@ class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters
         ParadoxCompletionManager.initializeContext(parameters, context)
         
         lookupElements.forEach { lookupElement ->
-            result.addSimpleElement(lookupElement, context)
+            result.addElement(lookupElement, context)
         }
     }
 }

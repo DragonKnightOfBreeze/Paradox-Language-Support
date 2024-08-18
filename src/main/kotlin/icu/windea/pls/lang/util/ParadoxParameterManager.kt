@@ -142,12 +142,11 @@ object ParadoxParameterManager {
                 parameter is ParadoxParameter -> ParadoxParameterSupport.resolveParameter(parameter)
                 else -> null
             } ?: continue
-            val lookupElement = ParadoxLookupElementBuilder.create(parameterElement, parameterName)
-                .withIcon(PlsIcons.Nodes.Parameter)
-                .withTypeText(parameterElement.contextName)
-                .withTypeIcon(parameterElement.contextIcon)
-                .build(context)
-            result.addElement(lookupElement)
+            val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
+                .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
+                .withPatchableIcon(PlsIcons.Nodes.Parameter)
+                .forScriptExpression(context)
+            result.addElement(lookupElement, context)
         }
         
         val contextKey = ParadoxParameterSupport.getContextKeyFromContext(parameterContext) ?: return
@@ -178,12 +177,11 @@ object ParadoxParameterManager {
                     parameter is ParadoxParameter -> ParadoxParameterSupport.resolveParameter(parameter)
                     else -> null
                 } ?: continue
-                val lookupElement = ParadoxLookupElementBuilder.create(parameterElement, parameterName)
-                    .withIcon(PlsIcons.Nodes.Parameter)
-                    .withTypeText(parameterElement.contextName)
-                    .withTypeIcon(parameterElement.contextIcon)
-                    .build(context)
-                result.addElement(lookupElement)
+                val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
+                    .withTypeText(parameterElement.contextName, parameterElement.contextIcon, true)
+                    .withPatchableIcon(PlsIcons.Nodes.Parameter)
+                    .forScriptExpression(context)
+                result.addElement(lookupElement, context)
             }
             true
         }

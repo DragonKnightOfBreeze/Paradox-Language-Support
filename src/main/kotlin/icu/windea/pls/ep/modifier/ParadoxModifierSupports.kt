@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.modifier
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -83,19 +84,14 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
             val typeFile = modifierConfig.pointer.containingFile
             val name = modifierConfig.name
             val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxPredefinedModifierSupport)
-            val lookupElement = ParadoxLookupElementBuilder.create(modifierElement, name)
-                .withIcon(PlsIcons.Nodes.Modifier)
-                .withTailText(tailText)
-                .withTypeText(typeFile?.name)
-                .withTypeIcon(typeFile?.icon)
+            val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withPatchableIcon(PlsIcons.Nodes.Modifier)
+                .withPatchableTailText(tailText)
                 .withScopeMatched(scopeMatched)
-                .letIf(getSettings().completion.completeByLocalizedName) {
-                    //如果启用，也基于修正的本地化名字进行代码补全
-                    val localizedNames = ParadoxModifierManager.getModifierLocalizedNames(name, element, configGroup.project)
-                    it.withLocalizedNames(localizedNames)
-                }
-                .build(context)
-            result.addElement(lookupElement)
+                .withModifierLocalizedNamesIfNecessary(name, element)
+                .forScriptExpression(context)
+            result.addElement(lookupElement, context)
         }
     }
     
@@ -161,19 +157,14 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                 if(!modifierNames.add(name)) return@p true
                 
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
-                val lookupElement = ParadoxLookupElementBuilder.create(modifierElement, name)
-                    .withIcon(PlsIcons.Nodes.Modifier)
-                    .withTailText(tailText)
-                    .withTypeText(typeFile?.name)
-                    .withTypeIcon(typeFile?.icon)
+                val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
+                    .withTypeText(typeFile?.name, typeFile?.icon, true)
+                    .withPatchableIcon(PlsIcons.Nodes.Modifier)
+                    .withPatchableTailText(tailText)
                     .withScopeMatched(scopeMatched)
-                    .letIf(getSettings().completion.completeByLocalizedName) {
-                        //如果启用，也基于修正的本地化名字进行代码补全
-                        val localizedNames = ParadoxModifierManager.getModifierLocalizedNames(name, element, configGroup.project)
-                        it.withLocalizedNames(localizedNames)
-                    }
-                    .build(context)
-                result.addElement(lookupElement)
+                    .withModifierLocalizedNamesIfNecessary(name, element)
+                    .forScriptExpression(context)
+                result.addElement(lookupElement, context)
                 true
             }
         }
@@ -361,19 +352,13 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
                 if(!modifierNames.add(name)) continue
                 
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxEconomicCategoryModifierSupport)
-                val lookupElement = ParadoxLookupElementBuilder.create(modifierElement, name)
-                    .withIcon(PlsIcons.Nodes.Modifier)
-                    .withTailText(tailText)
-                    .withTypeText(typeText)
-                    .withTypeIcon(typeIcon)
-                    .withScopeMatched(scopeMatched)
-                    .letIf(getSettings().completion.completeByLocalizedName) {
-                        //如果启用，也基于修正的本地化名字进行代码补全
-                        val localizedNames = ParadoxModifierManager.getModifierLocalizedNames(name, element, configGroup.project)
-                        it.withLocalizedNames(localizedNames)
-                    }
-                    .build(context)
-                result.addElement(lookupElement)
+                val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
+                    .withTypeText(typeText, typeIcon, true)
+                    .withPatchableIcon(PlsIcons.Nodes.Modifier)
+                    .withPatchableTailText(tailText)
+                    .withModifierLocalizedNamesIfNecessary(name, element)
+                    .forScriptExpression(context)
+                result.addElement(lookupElement, context)
             }
             true
         }

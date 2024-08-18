@@ -45,9 +45,10 @@ class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<Complet
         val typeFile = element.containingFile
         val lookupElement = LookupElementBuilder.create(element, name)
             .withIcon(PlsIcons.Nodes.ScriptedVariable)
-            .withTailText(tailText)
+            .withTailText(tailText, true)
             .withTypeText(typeFile.name, typeFile.icon, true)
-        result.addSimpleElement(lookupElement, context)
+            .withCompletionId()
+        result.addElement(lookupElement, context)
         return true
     }
 }

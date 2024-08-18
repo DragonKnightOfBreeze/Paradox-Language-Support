@@ -33,6 +33,7 @@ class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters
         val lookupElement = LookupElementBuilder.create(eventNamespace, name)
             .withIcon(PlsIcons.Nodes.EventNamespace)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
-        result.addSimpleElement(lookupElement, context)
+            .withCompletionId()
+        result.addElement(lookupElement, context)
     }
 }

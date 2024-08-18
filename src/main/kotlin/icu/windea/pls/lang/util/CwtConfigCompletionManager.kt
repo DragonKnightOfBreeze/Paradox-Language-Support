@@ -1,4 +1,4 @@
-package icu.windea.pls.config.util
+package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
@@ -9,10 +9,12 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.config.internal.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.internal.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.codeInsight.completion.*
+import icu.windea.pls.model.*
 
 object CwtConfigCompletionManager {
     fun initializeContext(parameters: CompletionParameters, context: ProcessingContext, contextElement: PsiElement): Boolean {
@@ -51,38 +53,15 @@ object CwtConfigCompletionManager {
         val containerConfigPath = CwtConfigManager.getConfigPath(containerElement) ?: return
         
         val schema = configGroup.schemas.firstOrNull() ?: return
-        var configsToMatch = mutableListOf<CwtMemberConfig<*>>()
-        configsToMatch += schema.properties
-        var isRoot = true
-        containerConfigPath.forEach f1@{ path ->
-            when {
-                isRoot -> isRoot = false
-                else -> configsToMatch = configsToMatch.flatMapTo(mutableListOf()) { it.configs.orEmpty() }
-            }
-            val nextConfigsToMatch = mutableListOf<CwtMemberConfig<*>>()
-            configsToMatch.forEach f2@{ config ->
-                when(config) {
-                    is CwtPropertyConfig -> {
-                        val schemaExpression = CwtSchemaExpression.resolve(config.key)
-                        if(!matchesSchemaExpression(path, schemaExpression, schema)) return@f2
-                        nextConfigsToMatch += config
-                    }
-                    is CwtValueConfig -> {
-                        if(path != "-") return@f2
-                        nextConfigsToMatch += config
-                    }
-                }
-            }
-            configsToMatch = nextConfigsToMatch
-        }
-        if(configsToMatch.isEmpty()) return
+        val contextConfigs = getContextConfigs(containerConfigPath, schema)
+        if(contextConfigs.isEmpty()) return
         
         val completeKey = contextElement is CwtPropertyKey || contextElement is CwtString && contextElement.isBlockValue()
         val completeKeyWithValue = contextElement is CwtString && contextElement.isBlockValue()
         val completeBlockValue = contextElement is CwtString && contextElement.isBlockValue()
         val completePropertyValue = contextElement is CwtString && contextElement.isPropertyValue()
         
-        configsToMatch.forEach { config ->
+        contextConfigs.forEach { config ->
             when(config) {
                 is CwtPropertyConfig -> {
                     if(completeKey) {
@@ -110,6 +89,29 @@ object CwtConfigCompletionManager {
                 }
             }
         }
+    }
+    
+    fun getContextConfigs(configPath: CwtConfigPath, schema: CwtSchemaConfig): List<CwtMemberConfig<*>> {
+        var contextConfigs = mutableListOf<CwtMemberConfig<*>>()
+        contextConfigs += schema.properties
+        configPath.forEach f1@{ path ->
+            val nextContextConfigs = mutableListOf<CwtMemberConfig<*>>()
+            contextConfigs.forEach f2@{ config ->
+                when(config) {
+                    is CwtPropertyConfig -> {
+                        val schemaExpression = CwtSchemaExpression.resolve(config.key)
+                        if(!matchesSchemaExpression(path, schemaExpression, schema)) return@f2
+                        nextContextConfigs += config
+                    }
+                    is CwtValueConfig -> {
+                        if(path != "-") return@f2
+                        nextContextConfigs += config
+                    }
+                }
+            }
+            contextConfigs = nextContextConfigs.flatMapTo(mutableListOf()) { it.configs.orEmpty() }
+        }
+        return contextConfigs
     }
     
     fun matchesSchemaExpression(value: String, schemaExpression: CwtSchemaExpression, schema: CwtSchemaConfig): Boolean {
@@ -160,7 +162,7 @@ object CwtConfigCompletionManager {
                     val lookupElement = LookupElementBuilder.create(element, v)
                         .withIcon(icon)
                         .withTypeText(typeFile?.name, typeFile?.icon, true)
-                        .withTailText(tailText)
+                        .withTailText(tailText, true)
                     processor.process(lookupElement)
                 }
                 true

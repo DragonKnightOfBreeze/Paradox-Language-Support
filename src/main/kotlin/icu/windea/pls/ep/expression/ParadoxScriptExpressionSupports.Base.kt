@@ -29,7 +29,7 @@ class ParadoxScriptBoolExpressionSupport: ParadoxScriptExpressionSupport {
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        result.addSimpleElement(ParadoxLookupElements.yesLookupElement, context)
-        result.addSimpleElement(ParadoxLookupElements.noLookupElement, context)
+        result.addElement(ParadoxLookupElements.yesLookupElement, context)
+        result.addElement(ParadoxLookupElements.noLookupElement, context)
     }
 }
