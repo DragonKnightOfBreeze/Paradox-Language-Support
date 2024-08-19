@@ -104,7 +104,7 @@ val cwtConfigDirs = listOf(
 	"cwtools-ir-config" to "ir",
 	"cwtools-stellaris-config" to "stellaris",
 	"cwtools-vic2-config" to "vic2",
-	"cwtools-vic2-config" to "vic3",
+	"cwtools-vic3-config" to "vic3",
 )
 
 tasks {
