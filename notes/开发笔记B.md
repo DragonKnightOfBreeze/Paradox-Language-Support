@@ -1,4 +1,4 @@
-# 开发笔记
+# 开发笔记B
 
 ## 语言支持
 
@@ -62,15 +62,14 @@ alias[trigger:exists] = scope[any]
 ## push_scope = country
 ```
 
-* 选项在subtype声明上时：如果此subtype合法，scope将会设为push_scope，以验证此类型
-* 选项在alias声明上时：scope将会转为push_scope（进栈）
+* 选项在subtype声明上时：如果此subtype合法，scope将会设为push_scope的值，以验证此类型
+* 选项在alias声明上时：scope将会转为push_scope的值（进栈）
 
 ```
 ## replace_scope = { this = planet root = planet from = ship fromfrom = country }
 ```
 
-* 下面的规则的scope上下文会被给定的scope所替换
-* 有效值：`this`,`root`,`from`,`fromfrom`,`fromfromfrom`, `fromfromfromfrom`
+* 对应system scope的scope会被给定的scope所替换
 
 ```
 ## scope == country
@@ -118,7 +117,7 @@ faith = {
 
 * `for_definition = pop_faction`：表示此link只能在类型为`pop_faction`的定义的声明中使用，且引用的`data_source`也只能来自该定义的声明中
 
-内置的系统作用域连接（`system scope`）：
+内置的系统作用域（`system scope`）：
 
 * `this`：当前scope
 * `root`：当前声明的初始scope（事件的初始默认scope）
@@ -126,10 +125,6 @@ faith = {
 * `prev` `prevprev` `prevprevprev` `prevprevprevprev`
 * `from`：调用处的scope（如事件A调用事件B，事件B中的`from`对应事件A中的调用处的scope）（触发该事件的上级scope）
 * `fromfrom` `fromfromfrom` `fromfromfromfrom`
-
-作用域连接包括：
-* CWT规则中提供的作用域连接，来自`links = {...}`，一般在`links.cwt`文件中
-* 内置的系统作用域连接
 
 链式作用域最多嵌套5层。
 
@@ -143,8 +138,8 @@ faith = {
 * 如果dataType为`filepath[some/path/]`，则需要在加上前缀`some/path/`后，匹配任意路径（相对于游戏或模组根路径）。
 * 如果dataType为`filepath[some/path/,.ext]`，则需要在加上前缀`some/path/`和后缀`.ext`后，匹配任意路径（相对于游戏或模组根路径）。
 * 如果dataType为`filename`，则需要匹配直接位于脚本文件所在目录下的文件`X`，`X`表示输入值。
-* 如果dataType为`filename[some/path]`，则需要匹配位于路径`some/path`或其子目录中的文件`X`，`X`表示输入值。
-* 如果dataType为`icon[gfx/interfaces/ships]`，则需要匹配位于路径`gfx/interfaces/ships`或其子目录中的DDS文件`X.dds`，`X`表示输入值。
+* 如果dataType为`filename[some/path]`，则需要匹配位于目录`some/path`中的文件`X`，`X`表示输入值。
+* 如果dataType为`icon[gfx/interfaces/ships]`，则需要匹配位于目录`gfx/interfaces/ships`中的DDS文件`X.dds`，`X`表示输入值。
 * 如果dataType为`<X>`，则需要匹配类型为`X`的定义。`<X.Y>`需要匹配类型为`X`，子类型包含`Y`的定义。
 * 如果dataType为`a_<X>_b`，同上，但是需要带有前缀`a_`和后缀`_b`。
 * 如果dataType为`enum[X]`，则需要匹配规则`enum[X] = {...}`中的任意一项（忽略大小写）。
@@ -240,7 +235,7 @@ enums = {
 
 * 放到类型规则、子类型规则上时，不会对对应类型和子类型的定义进行特定的代码检查（目前仅限`ParadoxScriptUnresolvedExpression`）
 * 放到定义声明规则中的规则上时，不会读对应的成员或表达式进行特定的代码检查
-* 参见：`icu.windea.pls.script.inspections.CwtConfigAwareInspectionSuppressor`
+* 参见：`icu.windea.pls.lang.inspections.ParadoxScriptConfigAwareInspectionSuppressor`（暂未使用，需要验证）
 
 另见CHANGELOG。
 
@@ -319,21 +314,14 @@ effect（效果）：
   * png文件保存在`~/dds2png/tmp`这个目录中 
 * 未知图标（`unknown.png`，44x44）需要保存到`~/dds2png/tmp`的顶级目录下，以便必要时直接使用
 
-```
-spriteType = {
-    name = "GFX_text_army_ship"
-    texturefile = "gfx/interface/icons/text_icons/text_icon_military_transport.dds"
-}
-```
-
 #### 方案2（选用）
 
 使用`DDS4J`（高效，但仍然不兼容某些dds图片）
 
 [vincentzhang96/DDS4J](https://github.com/vincentzhang96/DDS4J)
 
-* 根据图标名解析：基于形如`£unity£`的本地化文本中的图标的名字，查找对应的名称为`GFX_text_${iconName}`、类型为`sprite`或`spriteType`的定义，然后得到名为`textureFile`的属性的值，将其作为相对于游戏或模组目录的路径，得到对应的DDS文件路径。如果无法获取，则查找文件名为`${iconName}.dds`（大小写敏感），位于游戏或模组目录中（或者其子目录中）的DDS文件，得到对应的DDS文件路径。
-* 根据类型为`sprite`的定义解析：得到名为`textureFile`（不区分大小写）的属性的值，将其作为相对于游戏或模组目录的路径，得到对应的DDS文件路径。
-* 根据文件名为`${iconName}.dds`（不区分大小写），位于游戏或模组目录中（或者其子目录中）的DDS文件解析：得到对应的DDS文件路径。
-* 得到DDS文件路径后，将其转化为PNG文件，然后保存到`~/.pls/images`目录中（或者其子目录中，如果存在相对于游戏或模组目录的父路径的话）。
+* 根据图标名解析：基于形如`£unity£`的本地化文本中的图标的名字，查找对应的名称为`GFX_text_${iconName}`、类型为`sprite`或`spriteType`的定义，然后得到名为`textureFile`的属性的值，将其作为相对于游戏或模组目录的路径，得到对应的DDS文件路径。如果无法获取，则查找文件名为`${iconName}.dds`（大小写敏感），位于游戏或模组目录中的DDS文件，得到对应的DDS文件路径。
+* 根据类型为`sprite`的定义解析：得到名为`textureFile`（不区分大小写）的属性的值，将其作为相对于游戏或模组根目录的路径，得到对应的DDS文件路径。
+* 根据文件名为`${iconName}.dds`（不区分大小写），位于游戏或模组根目录中的DDS文件解析：得到对应的DDS文件路径。
+* 得到DDS文件路径后，将其转化为PNG文件，然后保存到`~/.pls/images`目录中，保留相对路径，并在文件名中加上UUID后缀。
 * 渲染图标时，使用PNG文件的绝对路径。

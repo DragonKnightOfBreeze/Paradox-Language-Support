@@ -14,9 +14,9 @@ import icu.windea.pls.localisation.psi.*
  * 本地化图标的PSI引用。
  *
  * 图标的名字可以对应：
- * * 名字为"GFX_text_${iconName}"，类型为sprite的定义。
- * * 名字为"GFX_${iconName}"，类型为sprite的定义。
- * * "gfx/interface/icons"及其子目录中，文件名为iconName（去除后缀名）的DDS文件。
+ * * 名字为`GFX_text_${iconName}`，类型为`sprite`的定义。
+ * * 名字为`GFX_${iconName}`，类型为`sprite`的定义。
+ * * 位于目录`gfx/interface/icons`中，文件名为`iconName`（去除后缀名）的DDS文件。
  * * 生成的图标。例如定义`job_head_researcher`拥有定义属性`icon = researcher`，将会生成图标`job_head_researcher`。
  *
  * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationIconCompletionProvider
@@ -65,7 +65,7 @@ class ParadoxLocalisationIconPsiReference(
         val spriteSelector = definitionSelector(project, element).contextSensitive()
         val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite", spriteSelector).find()
         if(sprite != null) return sprite
-        //如果不能解析为spriteType，则尝试解析为gfx/interface/icons及其子目录中为相同名字的dds文件
+        //如果不能解析为spriteType，则尝试解析为gfx/interface/icons中为相同名字的dds文件
         val fileSelector = fileSelector(project, element).contextSensitive()
         val ddsFileExpression = CwtDataExpression.resolve("icon[gfx/interface/icons]", false)
         val ddsFile = ParadoxFilePathSearch.search(iconName, ddsFileExpression, fileSelector).find()
@@ -93,7 +93,7 @@ class ParadoxLocalisationIconPsiReference(
         val spriteSelector = definitionSelector(project, element).contextSensitive()
         val sprites = ParadoxDefinitionSearch.search(spriteName, "sprite", spriteSelector).findAll()
         if(sprites.isNotEmpty()) return sprites.mapToArray { PsiElementResolveResult(it) }
-        //如果不能解析为spriteType，则尝试解析为gfx/interface/icons及其子目录中为相同名字的dds文件
+        //如果不能解析为spriteType，则尝试解析为gfx/interface/icons中相同名字的dds文件
         val fileSelector = fileSelector(project, element).contextSensitive()
         val ddsFileExpression = CwtDataExpression.resolve("icon[gfx/interface/icons/]", false)
         val ddsFiles = ParadoxFilePathSearch.search(iconName, ddsFileExpression, fileSelector).findAll()

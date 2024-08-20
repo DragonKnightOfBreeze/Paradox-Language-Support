@@ -31,7 +31,7 @@
 
 结论：
 
-应当是调用`Loading.get`或者`ConcurrentMap.computeIfAbsent`导致，尝试改为调用`ConcurrentMap.getOrPut`，避免改变锁行为
+应当是调用`LoadingCache.get`或者`ConcurrentMap.computeIfAbsent`导致，尝试改为调用`ConcurrentMap.getOrPut`，避免改变锁行为
 
 堆栈：
 

@@ -1,4 +1,4 @@
-# 开发笔记
+# 开发笔记A
 
 ## 全局
 
@@ -19,7 +19,7 @@
 * 需要提供方案验证结果的等效性。
 * 避免无限循环调用。
 
-方案2：对于`CompositePsiElement`），声明带有`volatile`修饰符的字段，重载`subtreeChanged`方法，在里面清空缓存。
+方案2：（对于`CompositePsiElement`）声明带有`volatile`修饰符的字段，重载`subtreeChanged`方法，在里面清空缓存。
 
 ### UI
 
@@ -52,8 +52,9 @@
 
 这里操作可能被取消：`com.intellij.util.indexing.FileBasedIndexImpl.ensureUpToDate`
 
+IDEA进行代码补全时，显示的提示项的最大数目存在限制，由以下系统属性决定：
+
 ```
-# IDEA进行代码补全时，不会显示超过以下自定义属性的值的的提示项
 ide.completion.variant.limit=1000
 ```
 

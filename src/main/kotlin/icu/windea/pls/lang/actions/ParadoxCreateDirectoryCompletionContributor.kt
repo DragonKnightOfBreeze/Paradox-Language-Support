@@ -13,7 +13,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 
 /**
- * 在游戏目录或模组根目录下（或其子目录下）创建目录时，可以提示目录名称。
+ * 用于在游戏或模组目录中创建目录时，提示可用项。
  */
 class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionContributor {
     val defaultVariants = setOf(
