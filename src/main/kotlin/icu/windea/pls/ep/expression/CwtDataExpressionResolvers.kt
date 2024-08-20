@@ -82,12 +82,12 @@ class CoreCwtDataExpressionResolver : CwtDataExpressionResolver {
             return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.FilePath)
         }
         expressionString.removeSurroundingOrNull("filepath[", "]")?.let { v ->
-            val value = v.orNull()
+            val value = v.removePrefix("game/").trim('/').orNull()
             return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.FilePath, value)
         }
         
         expressionString.removeSurroundingOrNull("icon[", "]")?.let { v ->
-            val value = v.orNull()
+            val value = v.removePrefix("game/").trim('/').orNull()
             return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Icon, value)
         }
         

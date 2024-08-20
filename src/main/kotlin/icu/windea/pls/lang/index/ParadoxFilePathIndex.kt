@@ -19,7 +19,8 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
         val INSTANCE by lazy { findIndex<ParadoxFilePathIndex>() }
         val NAME = ID.create<String, ParadoxFilePathInfo>("paradox.file.path.index")
         
-        private const val VERSION = 52 //1.3.14
+        private const val VERSION = 53 //1.3.19
+        
         private val EXCLUDED_DIRECTORIES = listOf(
             "_CommonRedist",
             "crash_reporter",
@@ -38,8 +39,9 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
     
     override fun getIndexer(): DataIndexer<String, ParadoxFilePathInfo, FileContent> {
         return DataIndexer { inputData ->
+            //这里索引的路径，使用相对于游戏或模组根目录的路径，但需要移除"game/"路径前缀
             val fileInfo = inputData.file.fileInfo ?: return@DataIndexer emptyMap()
-            val path = fileInfo.path.path
+            val path = fileInfo.path.path.removePrefix("game/")
             val directoryPath = fileInfo.path.parent
             val gameType = fileInfo.rootInfo.gameType
             val included = isIncluded(inputData.file)

@@ -7,9 +7,6 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import java.util.*
 
-private val NAME = ID.create<String, Void>("paradox.file.locale.index")
-private const val VERSION = 52 //1.3.14
-
 /**
  * 用于索引文件的语言区域。
  *
