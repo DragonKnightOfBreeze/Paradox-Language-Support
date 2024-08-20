@@ -8,6 +8,7 @@
 ***
 
 * [X] #83 Fix an issue that builtin VIC3 config files are VIC2's
+* [X] #84 Remove path prefix "game/" when resolve paths in config files
 
 ## 1.3.18
 
