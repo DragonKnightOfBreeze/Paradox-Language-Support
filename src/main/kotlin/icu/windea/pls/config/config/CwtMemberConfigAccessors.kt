@@ -53,11 +53,14 @@ val CwtMemberConfig<*>.scopeContext: ParadoxScopeContext?
         scopeContext?.resolveNext(pushScope) ?: pushScope?.let { ParadoxScopeContext.resolve(it, it) }
     }
 
+//ignore case for both system scopes and scopes (to lowercase)
 //may on:
-// * a config expression in declaration config (include root expression, e.g. "army = { ... }")
-// * a type config (e.g. "type[xxx] = { ... }")
-// * a subtype config (e.g. "subtype[xxx] = { ... }")
-// * an extended (definition/ game type / on action/ inline_script / parameter) config
+//* a data expression
+//* a declaration config
+//* a type config
+//* a subtype config
+//* an extended (definition / game_rule / on_action / inline_script / parameter) config
+
 val CwtMemberConfig<*>.replaceScopes: Map<String, String>?
     get() = getOrPutUserData(CwtMemberConfig.Keys.replaceScopes, emptyMap()) action@{
         val option = findOption { it.key == "replace_scope" || it.key == "replace_scopes" }
@@ -71,19 +74,16 @@ val CwtMemberConfig<*>.replaceScopes: Map<String, String>?
             }
         }
     }
-//may on:
-// * a config expression in declaration config (include root expression, e.g. "army = { ... }")
-// * a type config (e.g. "type[xxx] = { ... }")
-// * a subtype config (e.g. "subtype[xxx] = { ... }")
-//* a definition / game type / on action config
-// * an extended (definition/ game type / on action/ inline_script / parameter) config
 val CwtMemberConfig<*>.pushScope: String?
     get() = getOrPutUserData(CwtMemberConfig.Keys.pushScope, "") action@{
         val option = findOption { it.key == "push_scope" }
         option?.getOptionValue()?.let { v -> ParadoxScopeManager.getScopeId(v) }
     }
+
+//ignore case for scopes (to lowercase)
 //may on:
-// * a config expression in declaration config
+//* a data expression
+
 val CwtMemberConfig<*>.supportedScopes: Set<String>
     get() = getOrPutUserData(CwtMemberConfig.Keys.supportedScopes) action@{
         val option = findOption { it.key == "scope" || it.key == "scopes" }
