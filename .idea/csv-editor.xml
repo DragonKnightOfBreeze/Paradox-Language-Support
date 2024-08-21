@@ -24,13 +24,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\cwt\cwtools-hoi4-config\Config\on_actions.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
       </map>
     </option>
   </component>

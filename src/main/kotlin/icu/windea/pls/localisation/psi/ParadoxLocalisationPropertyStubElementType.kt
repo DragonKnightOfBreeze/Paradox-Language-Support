@@ -2,6 +2,7 @@ package icu.windea.pls.localisation.psi
 
 import com.intellij.lang.*
 import com.intellij.psi.stubs.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
