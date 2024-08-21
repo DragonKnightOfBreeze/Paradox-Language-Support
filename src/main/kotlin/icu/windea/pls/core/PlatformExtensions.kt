@@ -171,6 +171,21 @@ fun <V> caseInsensitiveStringKeyMap(): MutableMap<@CaseInsensitive String, V> {
     return Object2ObjectLinkedOpenCustomHashMap(CaseInsensitiveStringHashingStrategy)
 }
 
+inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {
+    val oldValue = this.get()
+    val newValue = value
+    if(newValue == null) {
+        return true
+    } else if(oldValue == null) {
+        this.set(newValue)
+        return true
+    } else {
+        val mergedValue = mergeAction(oldValue, newValue)
+        this.set(mergedValue)
+        return mergedValue != null
+    }
+}
+
 fun TextRange.unquote(text: String): TextRange {
     val leftQuoted = text.isLeftQuoted()
     val rightQuoted = text.isRightQuoted()

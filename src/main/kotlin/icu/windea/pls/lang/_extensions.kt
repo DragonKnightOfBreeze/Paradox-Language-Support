@@ -51,6 +51,8 @@ fun FileType.isParadoxFileType() = this == ParadoxScriptFileType || this == Para
 
 fun Language.isParadoxLanguage() = this.isKindOf(ParadoxScriptLanguage) || this.isKindOf(ParadoxLocalisationLanguage)
 
+fun String.normalizeParadoxPath() = this.removePrefix("game/").trim('/').intern()
+
 fun Char.isIdentifierChar(): Boolean {
     return StringUtil.isJavaIdentifierPart(this)
 }
@@ -160,48 +162,10 @@ fun String.isInlineUsage(): Boolean {
     return this.equals(ParadoxInlineScriptManager.inlineScriptKey, true)
 }
 
-/**
- * 基于注解[WithGameType]判断目标对象是否支持当前游戏类型。
- */
-fun ParadoxGameType?.supportsByAnnotation(target: Any): Boolean {
-    if(this == null) return true
-    val targetGameType = target.javaClass.getAnnotation(WithGameType::class.java)?.value
-    return targetGameType == null || this in targetGameType
-}
-
-inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {
-    val oldValue = this.get()
-    val newValue = value
-    if(newValue == null) {
-        return true
-    } else if(oldValue == null) {
-        this.set(newValue)
-        return true
-    } else {
-        val mergedValue = mergeAction(oldValue, newValue)
-        this.set(mergedValue)
-        return mergedValue != null
-    }
-}
-
-/**
- * 比较游戏版本。允许通配符，如："3.3.*"
- */
-infix fun String.compareGameVersion(otherVersion: String): Int {
-    val versionSnippets = this.split('.')
-    val otherVersionSnippets = otherVersion.split('.')
-    val minSnippetSize = min(versionSnippets.size, otherVersionSnippets.size)
-    for(i in 0 until minSnippetSize) {
-        val versionSnippet = versionSnippets[i]
-        val otherVersionSnippet = otherVersionSnippets[i]
-        if(versionSnippet == otherVersionSnippet || versionSnippet == "*" || otherVersion == "*") continue
-        return versionSnippet.compareTo(otherVersionSnippet)
-    }
-    return 0
-}
-
 fun String?.orAnonymous() = if(isNullOrEmpty()) PlsConstants.anonymousString else this
+
 fun String?.orUnknown() = if(isNullOrEmpty()) PlsConstants.unknownString else this
+
 fun String?.orUnresolved() = if(isNullOrEmpty()) PlsConstants.unresolvedString else this
 
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
@@ -270,6 +234,31 @@ private fun String.toLocale(from: PsiElement): CwtLocalisationLocaleConfig? {
     return getConfigGroup(from.project, null).localisationLocalesById.get(this)
 }
 
+/**
+ * 基于注解[WithGameType]判断目标对象是否支持当前游戏类型。
+ */
+fun ParadoxGameType?.supportsByAnnotation(target: Any): Boolean {
+    if(this == null) return true
+    val targetGameType = target.javaClass.getAnnotation(WithGameType::class.java)?.value
+    return targetGameType == null || this in targetGameType
+}
+
+/**
+ * 比较游戏版本。允许通配符，如："3.3.*"
+ */
+infix fun String.compareGameVersion(otherVersion: String): Int {
+    val versionSnippets = this.split('.')
+    val otherVersionSnippets = otherVersion.split('.')
+    val minSnippetSize = min(versionSnippets.size, otherVersionSnippets.size)
+    for(i in 0 until minSnippetSize) {
+        val versionSnippet = versionSnippets[i]
+        val otherVersionSnippet = otherVersionSnippets[i]
+        if(versionSnippet == otherVersionSnippet || versionSnippet == "*" || otherVersion == "*") continue
+        return versionSnippet.compareTo(otherVersionSnippet)
+    }
+    return 0
+}
+
 val Project.paradoxLibrary: ParadoxLibrary
     get() = this.getOrPutUserData(PlsKeys.library) { ParadoxLibrary(this) }
 
@@ -278,29 +267,27 @@ val Project.paradoxLibrary: ParadoxLibrary
 
 val VirtualFile.rootInfo: ParadoxRootInfo?
     get() = ParadoxCoreManager.getRootInfo(this)
+
 val VirtualFile.fileInfo: ParadoxFileInfo?
     get() = ParadoxCoreManager.getFileInfo(this)
+
 val PsiElement.fileInfo: ParadoxFileInfo?
     get() = ParadoxCoreManager.getFileInfo(this)
 
 val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
     get() = ParadoxDefinitionManager.getInfo(this)
+
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
     get() = ParadoxLocalisationManager.getInfo(this)
+
 val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo?
     get() = ParadoxComplexEnumValueManager.getInfo(this)
 
 val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorInfo?
-    get() {
-        //大写或小写字母，不限定位置
-        val colorId = this.propertyReferenceParameter?.text?.find { it.isExactLetter() } ?: return null
-        return ParadoxTextColorManager.getInfo(colorId.toString(), project, this)
-    }
+    get() = ParadoxTextColorManager.getInfo(this)
+
 val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorInfo?
-    get() {
-        val colorId = this.name ?: return null
-        return ParadoxTextColorManager.getInfo(colorId, project, this)
-    }
+    get() = ParadoxTextColorManager.getInfo(this)
 
 /**
  * 获取定义的指定类型的数据。

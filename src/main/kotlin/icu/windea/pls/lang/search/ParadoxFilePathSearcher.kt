@@ -20,7 +20,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
         if(SearchScope.isEmptyScope(scope)) return
-        val filePath = queryParameters.filePath?.trimEnd('/')
+        val filePath = queryParameters.filePath?.normalizeParadoxPath()
         val configExpression = queryParameters.configExpression
         val project = queryParameters.project
         val gameType = queryParameters.selector.gameType

@@ -18,7 +18,7 @@ class ParadoxWithFilePathSearchScope(
     
     override fun contains(file: VirtualFile): Boolean {
         val contextFile0 = file.findTopHostFileOrThis()
-        val path = contextFile0.fileInfo?.path?.path ?: return false
+        val path = contextFile0.fileInfo?.pathToEntry?.path ?: return false
         if(!filePath.matchesPath(path)) return false
         if(fileExtension != null && fileExtension != contextFile0.extension) return false
         return delegate.contains(contextFile0)

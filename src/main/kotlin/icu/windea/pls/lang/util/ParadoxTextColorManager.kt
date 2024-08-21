@@ -8,10 +8,23 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxTextColorManager {
+    fun getInfo(element: PsiElement): ParadoxTextColorInfo? {
+        val colorId = when {
+            //单个大写或小写字母，不限定位置
+            element is ParadoxLocalisationPropertyReference -> element.propertyReferenceParameter?.text?.find { it.isExactLetter() }?.toString()
+            //单个大写或小写字母
+            element is ParadoxLocalisationColorfulText -> element.name
+            else -> null
+        }
+        if(colorId.isNullOrEmpty()) return null
+        return getInfo(colorId, element.project, element)
+    }
+    
     fun getInfo(name: String, project: Project, contextElement: PsiElement? = null): ParadoxTextColorInfo? {
         val selector = definitionSelector(project, contextElement).contextSensitive()
         val definition = ParadoxDefinitionSearch.search(name, "textcolor", selector).find()

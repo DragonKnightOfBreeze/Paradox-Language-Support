@@ -4,6 +4,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.*
 
 /**
  * @property name string
@@ -44,7 +45,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
     for(prop in props) {
         when(prop.key) {
             //这里的path一般"game/"开始，这里需要忽略
-            "path" -> prop.stringValue?.removePrefix("game")?.trim('/')?.let { path.add(it.intern()) }
+            "path" -> prop.stringValue?.normalizeParadoxPath()?.let { path += it }
             "path_file" -> pathFile = prop.stringValue?.intern()
             "path_strict" -> pathStrict = prop.booleanValue ?: false
             "start_from_root" -> startFromRoot = prop.booleanValue ?: false
