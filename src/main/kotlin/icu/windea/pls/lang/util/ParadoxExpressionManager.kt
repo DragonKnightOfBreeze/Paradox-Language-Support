@@ -3,7 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.lang.annotation.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.colors.*
-import com.intellij.openapi.editor.markup.TextAttributes
+import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -23,20 +23,20 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expression.*
+import icu.windea.pls.lang.expression.complex.*
+import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.ResultValue
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.expression.complex.*
-import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.isNullOrEmpty
 
 object ParadoxExpressionManager {
-    object Keys: KeyRegistry() {
+    object Keys : KeyRegistry() {
         val inBlockKeys by createKey<Set<String>>(this)
     }
     
@@ -171,38 +171,33 @@ object ParadoxExpressionManager {
                     val configs = parentConfig.configs
                     if(configs.isNullOrEmpty()) return@f2
                     
-                    var count = 0
+                    var relaxMatchKeyCount = 0
                     configs.forEach f3@{ config ->
                         if(config is CwtPropertyConfig) {
-                            fun processFinalConfig(config: CwtPropertyConfig) {
-                                doMatchParameterizedKeyConfigs(parameterizedKeyConfigs, config.keyExpression)?.let {
-                                    if(!it) return
-                                    nextResult.add(config)
-                                    return
-                                }
-                                count++
-                                nextResult.add(config)
-                            }
-                            
                             if(subPath == "-") return@f3
-                            val matchesPropertyConfig = !matchesKey || ParadoxExpressionMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)
-                            if(!matchesPropertyConfig) return@f3
-                            val inlinedConfigs = CwtConfigManipulator.inlineSingleAliasOrAlias(element, subPath, isQuoted, config, matchOptions)
+                            if(matchesKey && !ParadoxExpressionMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) return@f3
+                            val nextConfigs = mutableListOf<CwtMemberConfig<*>>()
+                            val inlinedConfigs = doInlineConfigForConfigContext(element, subPath, isQuoted, config, matchOptions)
                             if(inlinedConfigs.isEmpty()) {
-                                processFinalConfig(config)
+                                nextConfigs += config
                             } else {
-                                inlinedConfigs.forEach { processFinalConfig(it) }
+                                nextConfigs += inlinedConfigs
+                            }
+                            nextConfigs.forEach f4@{ nextConfig ->
+                                val m = doMatchParameterizedKeyConfigs(parameterizedKeyConfigs, config.keyExpression)
+                                if(m != true) relaxMatchKeyCount++
+                                nextResult += nextConfig
                             }
                         } else if(config is CwtValueConfig) {
                             if(subPath != "-") return@f3
-                            nextResult.add(config)
+                            nextResult += config
                         }
                     }
                     
                     //如果需要匹配键，且匹配带参数的子路径时，初始能够匹配到多个结果，则直接返回空列表
                     //因为参数值可能是任意值，此时实际上并不能确定具体的上下文是什么
                     
-                    if(matchesKey && isParameterized && count > 1) {
+                    if(matchesKey && isParameterized && relaxMatchKeyCount > 1) {
                         return emptyList()
                     }
                 }
@@ -214,9 +209,38 @@ object ParadoxExpressionManager {
         }
         
         if(isPropertyValue) {
-            result = result.mapNotNullTo(mutableListOf<CwtMemberConfig<*>>()) { if(it is CwtPropertyConfig) it.valueConfig else null }
+            result = result.mapNotNull { if(it is CwtPropertyConfig) it.valueConfig else null }
         }
         
+        return result
+    }
+    
+    private fun doInlineConfigForConfigContext(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, matchOptions: Int): List<CwtMemberConfig<*>> {
+        val configGroup = config.configGroup
+        val result = mutableListOf<CwtMemberConfig<*>>()
+        run {
+            if(config.valueExpression.type == CwtDataTypes.SingleAliasRight) {
+                result += CwtConfigManipulator.inlineSingleAlias(config) ?: return@run
+            } else if(config.valueExpression.type == CwtDataTypes.AliasMatchLeft) {
+                val aliasName = config.valueExpression.value ?: return@run
+                val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
+                val aliasSubNames = getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchOptions)
+                aliasSubNames.forEach f1@{ aliasSubName ->
+                    val aliasConfigs = aliasGroup[aliasSubName] ?: return@f1
+                    aliasConfigs.forEach f2@{ aliasConfig ->
+                        val aliasConfigInlined = aliasConfig.inline(config)
+                        if(aliasConfigInlined.valueExpression.type == CwtDataTypes.SingleAliasRight) {
+                            result += CwtConfigManipulator.inlineSingleAlias(config) ?: return@f2
+                        } else {
+                            result += aliasConfigInlined
+                        }
+                    }
+                }
+            }
+        }
+        if(result.isEmpty()) return emptyList()
+        val parentConfig = config.parentConfig
+        if(parentConfig != null) CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
         return result
     }
     

@@ -80,7 +80,7 @@ object CwtConfigManipulator {
         return inlined
     }
     
-    fun inlineAsValueConfig(config: CwtMemberConfig<*>?, configs: List<CwtMemberConfig<*>>?, configGroup: CwtConfigGroup): CwtValueConfig {
+    fun inlineWithConfigs(config: CwtMemberConfig<*>?, configs: List<CwtMemberConfig<*>>?, configGroup: CwtConfigGroup): CwtValueConfig {
         return CwtValueConfig.resolve(
             pointer = emptyPointer(),
             configGroup = configGroup,
@@ -92,59 +92,13 @@ object CwtConfigManipulator {
         )
     }
     
-    fun inlineSingleAliasOrAlias(element: PsiElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): List<CwtPropertyConfig> {
-        //内联类型为single_alias_right或alias_match_left的规则
-        val result = mutableListOf<CwtMemberConfig<*>>()
-        run {
-            val configGroup = config.configGroup
-            val valueExpression = config.valueExpression
-            when(valueExpression.type) {
-                CwtDataTypes.SingleAliasRight -> {
-                    val singleAliasName = valueExpression.value ?: return@run
-                    val singleAlias = configGroup.singleAliases[singleAliasName] ?: return@run
-                    result.add(singleAlias.inline(config))
-                }
-                CwtDataTypes.AliasMatchLeft -> {
-                    val aliasName = valueExpression.value ?: return@run
-                    val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
-                    val aliasSubNames = ParadoxExpressionManager.getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchOptions)
-                    aliasSubNames.forEach f1@{ aliasSubName ->
-                        val aliases = aliasGroup[aliasSubName] ?: return@f1
-                        aliases.forEach f2@{ alias ->
-                            var inlinedConfig = alias.inline(config)
-                            if(inlinedConfig.valueExpression.type == CwtDataTypes.SingleAliasRight) {
-                                val singleAliasName = inlinedConfig.valueExpression.value ?: return@f2
-                                val singleAlias = configGroup.singleAliases[singleAliasName] ?: return@f2
-                                inlinedConfig = singleAlias.inline(inlinedConfig)
-                            }
-                            result.add(inlinedConfig)
-                        }
-                    }
-                }
-            }
-        }
-        if(result.isEmpty()) return emptyList()
-        val parentConfig = config.parentConfig
-        if(parentConfig != null) {
-            CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
-        }
-        result.removeIf { it !is CwtPropertyConfig }
-        return result.cast()
-    }
-    
     fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
-        //内联类型为single_alias_right的规则
         val configGroup = config.configGroup
         val valueExpression = config.valueExpression
-        when(valueExpression.type) {
-            CwtDataTypes.SingleAliasRight -> {
-                val singleAliasName = valueExpression.value ?: return null
-                val singleAlias = configGroup.singleAliases[singleAliasName] ?: return null
-                val result = singleAlias.inline(config)
-                return result
-            }
-            else -> return null
-        }
+        if(valueExpression.type != CwtDataTypes.SingleAliasRight) return null
+        val singleAliasName = valueExpression.value ?: return null
+        val singleAliasConfig = configGroup.singleAliases[singleAliasName] ?: return null
+        return singleAliasConfig.inline(config)
     }
     //endregion
     

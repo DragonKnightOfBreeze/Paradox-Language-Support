@@ -12,7 +12,7 @@ import icu.windea.pls.lang.expression.*
  */
 interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
-    val rootConfig: CwtPropertyConfig
+    val configForDeclaration: CwtPropertyConfig
     val subtypesUsedInDeclaration: Set<String>
     
     companion object Resolver {
@@ -31,7 +31,7 @@ private class CwtDeclarationConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
 ) : CwtDeclarationConfig {
-    override val rootConfig: CwtPropertyConfig by lazy {
+    override val configForDeclaration: CwtPropertyConfig by lazy {
         CwtConfigManipulator.inlineSingleAlias(config) ?: config
     }
     

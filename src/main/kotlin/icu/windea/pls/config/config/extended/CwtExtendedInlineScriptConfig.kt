@@ -4,7 +4,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.util.*
 
 /**
  * @property name template_expression
@@ -71,7 +70,7 @@ private class CwtExtendedInlineScriptConfigImpl(
             else -> containerConfig.valueConfig.toSingletonListOrEmpty()
         }
         if(r.isEmpty()) return emptyList()
-        val contextConfig = CwtConfigManipulator.inlineAsValueConfig(config, r, config.configGroup)
+        val contextConfig = CwtConfigManipulator.inlineWithConfigs(config, r, config.configGroup)
         return listOf(contextConfig)
     }
 }

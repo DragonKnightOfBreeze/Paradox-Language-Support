@@ -83,7 +83,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             }
         }
         val configGroup = expressionContextConfigs.first().configGroup
-        val contextConfig = CwtConfigManipulator.inlineAsValueConfig(null, finalConfigs, configGroup)
+        val contextConfig = CwtConfigManipulator.inlineWithConfigs(null, finalConfigs, configGroup)
         return listOf(contextConfig)
     }
 }
