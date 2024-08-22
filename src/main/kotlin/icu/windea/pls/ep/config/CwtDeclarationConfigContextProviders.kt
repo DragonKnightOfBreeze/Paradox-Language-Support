@@ -8,7 +8,6 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 //region Extensions
@@ -33,7 +32,7 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
     }
     
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        val rootConfig = declarationConfig.config
+        val rootConfig = declarationConfig.rootConfig
         val configs = if(rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
         val finalRootConfig = rootConfig.delegated(configs, null)
         finalRootConfig.declarationConfigContext = context
@@ -64,8 +63,7 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         //如果存在，使用重载的声明规则
-        val rootConfig = context.gameRuleConfig!!.config.castOrNull<CwtPropertyConfig>()?.takeIf { it.isBlock }
-            ?: declarationConfig.config
+        val rootConfig = context.gameRuleConfig?.rootConfig ?: declarationConfig.rootConfig
         val configs = if(rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
         val finalRootConfig = rootConfig.delegated(configs, null)
         finalRootConfig.declarationConfigContext = context
@@ -95,7 +93,7 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     }
     
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        val rootConfig = declarationConfig.config
+        val rootConfig = declarationConfig.rootConfig
         val configs = if(rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
         val finalRootConfig = rootConfig.delegated(configs, null)
         finalRootConfig.declarationConfigContext = context

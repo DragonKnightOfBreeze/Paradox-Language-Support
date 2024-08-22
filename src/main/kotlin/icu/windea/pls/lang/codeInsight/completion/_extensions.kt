@@ -260,7 +260,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
         config is CwtSingleAliasConfig -> config.config
         config is CwtInlineConfig -> config.config
         else -> null
-    }?.let { CwtConfigManipulator.inlineSingleAlias(it) ?: it } //这里需要进行必要的内联
+    }?.let { c -> CwtConfigManipulator.inlineSingleAlias(c) ?: c } //这里需要进行必要的内联
 
     val isKey = context.isKey
     val isKeyOnly = context.contextElement is ParadoxScriptPropertyKey && isKey != false

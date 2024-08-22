@@ -4,11 +4,13 @@
 
 * [X] #83 修复插件内置的VIC3的规则文件实际上是VIC2的规则文件的问题
 * [X] #84 解析规则文件中的路径时需要移除"game/"路径前缀
+* [X] #85 允许在声明规则的顶级使用`single_alias_right[x]`
 
 ***
 
 * [X] #83 Fix an issue that builtin VIC3 config files are VIC2's
 * [X] #84 Remove path prefix "game/" when resolve paths in config files
+* [X] #85 Allow to use `single_alias_right[x]` on top level of declaration config
 
 ## 1.3.18
 

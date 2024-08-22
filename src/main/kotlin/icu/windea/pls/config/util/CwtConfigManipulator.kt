@@ -146,7 +146,6 @@ object CwtConfigManipulator {
             else -> return null
         }
     }
-
     //endregion
     
     //region Merge Methods

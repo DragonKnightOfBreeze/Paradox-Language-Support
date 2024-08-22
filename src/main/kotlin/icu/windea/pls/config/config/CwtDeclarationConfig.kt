@@ -1,6 +1,7 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.config.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
@@ -11,6 +12,7 @@ import icu.windea.pls.lang.expression.*
  */
 interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
+    val rootConfig: CwtPropertyConfig
     val subtypesUsedInDeclaration: Set<String>
     
     companion object Resolver {
@@ -29,6 +31,10 @@ private class CwtDeclarationConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
 ) : CwtDeclarationConfig {
+    override val rootConfig: CwtPropertyConfig by lazy {
+        CwtConfigManipulator.inlineSingleAlias(config) ?: config
+    }
+    
     override val subtypesUsedInDeclaration by lazy {
         val result = sortedSetOf<String>()
         config.processDescendants {
