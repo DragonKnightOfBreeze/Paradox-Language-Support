@@ -188,14 +188,13 @@ object ParadoxCoreManager {
         if(cachedFileInfoOrEmpty != null) return cachedFileInfo
         
         try {
-            val fileName = file.name
             val filePath = file.path
             var currentFilePath = filePath.toPathOrNull() ?: return null
             var currentFile = doGetFile(file, currentFilePath)
             while(true) {
                 val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
                 if(rootInfo != null) {
-                    val fileInfo = doGetFileInfo(file, filePath, fileName, rootInfo)
+                    val fileInfo = doGetFileInfo(file, filePath, rootInfo)
                     file.tryPutUserData(PlsKeys.fileInfo, fileInfo)
                     return fileInfo
                 }
@@ -224,25 +223,24 @@ object ParadoxCoreManager {
         return file
     }
     
-    private fun doGetFileInfo(file: VirtualFile, filePath: String, fileName: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo {
+    private fun doGetFileInfo(file: VirtualFile, filePath: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo {
         val path = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimStart('/'))
         val entry = resolveEntry(path, rootInfo)
         val pathToEntry = if(entry == null) path else ParadoxPath.resolve(path.path.removePrefix("$entry/"))
         val fileType = ParadoxFileType.resolve(file, pathToEntry, rootInfo)
-        val fileInfo = ParadoxFileInfo(fileName, path, entry, pathToEntry, fileType, rootInfo)
+        val fileInfo = ParadoxFileInfo(path, entry, pathToEntry, fileType, rootInfo)
         return fileInfo
     }
     
     fun getFileInfo(filePath: FilePath): ParadoxFileInfo? {
         try {
             //直接尝试通过filePath获取fileInfo
-            val fileName = filePath.name
             var currentFilePath = filePath.path.toPathOrNull() ?: return null
             var currentFile = VfsUtil.findFile(currentFilePath, false)
             while(true) {
                 val rootInfo = if(currentFile == null) null else getRootInfo(currentFile)
                 if(rootInfo != null) {
-                    val newFileInfo = doGetFileInfo(filePath, fileName, rootInfo)
+                    val newFileInfo = doGetFileInfo(filePath, rootInfo)
                     return newFileInfo
                 }
                 currentFilePath = currentFilePath.parent ?: break
@@ -256,12 +254,12 @@ object ParadoxCoreManager {
         }
     }
     
-    private fun doGetFileInfo(filePath: FilePath, fileName: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo {
+    private fun doGetFileInfo(filePath: FilePath, rootInfo: ParadoxRootInfo): ParadoxFileInfo {
         val path = ParadoxPath.resolve(filePath.path.removePrefix(rootInfo.rootFile.path).trimStart('/'))
         val entry = resolveEntry(path, rootInfo)
         val pathToEntry = if(entry == null) path else ParadoxPath.resolve(path.path.removePrefix("$entry/"))
         val fileType = ParadoxFileType.resolve(filePath, pathToEntry, rootInfo)
-        val fileInfo = ParadoxFileInfo(fileName, path, entry, pathToEntry, fileType, rootInfo)
+        val fileInfo = ParadoxFileInfo(path, entry, pathToEntry, fileType, rootInfo)
         return fileInfo
     }
     

@@ -11,7 +11,6 @@ import javax.swing.*
  * @property pathToEntry 相对于作为入口的目录的路径。
  */
 class ParadoxFileInfo(
-    val name: String,
     val path: ParadoxPath,
     val entryPath: String?,
     val pathToEntry: ParadoxPath,
@@ -39,7 +38,7 @@ class ParadoxFileInfo(
     
     fun getIcon(): Icon? {
         return when {
-            fileType == ParadoxFileType.ParadoxScript && name.equals(PlsConstants.descriptorFileName, true) -> PlsIcons.FileTypes.ModeDescriptor
+            fileType == ParadoxFileType.ParadoxScript && pathToEntry.fileName.equals(PlsConstants.descriptorFileName, true) -> PlsIcons.FileTypes.ModeDescriptor
             fileType == ParadoxFileType.ParadoxScript -> PlsIcons.FileTypes.ParadoxScript
             fileType == ParadoxFileType.ParadoxLocalisation -> PlsIcons.FileTypes.ParadoxLocalisation
             else -> null
