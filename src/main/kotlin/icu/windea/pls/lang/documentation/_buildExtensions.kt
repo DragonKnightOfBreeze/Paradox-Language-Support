@@ -96,7 +96,7 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
     }
     append("</span>")
     appendBr()
-    //文件信息（相对于游戏或模组根目录的路径）
+    //文件信息（路径）
     append("[").append(fileInfo.path).append("]")
     appendBr()
     return this

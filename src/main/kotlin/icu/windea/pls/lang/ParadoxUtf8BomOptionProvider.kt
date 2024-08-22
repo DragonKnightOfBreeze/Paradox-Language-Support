@@ -5,7 +5,7 @@ import com.intellij.openapi.vfs.encoding.*
 import icu.windea.pls.model.*
 
 /**
- * 基于文件后缀名以及相对于游戏或模组根目录的路径，判断创建新的脚本文件或本地化文件时，是否需要添加BOM。
+ * 基于文件的扩展名以及相对于入口目录的路径，判断创建新的脚本文件或本地化文件时，是否需要添加BOM。
  */
 class ParadoxUtf8BomOptionProvider : Utf8BomOptionProvider {
 	override fun shouldAddBOMForNewUtf8File(file: VirtualFile): Boolean {

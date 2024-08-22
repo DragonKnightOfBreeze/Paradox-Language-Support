@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 为游戏或模组根目录，以及模组描述符文件，提供特定的图标。
+ * 为游戏或模组目录，以及模组描述符文件，提供特定的图标。
  */
 class ParadoxIconProvider : IconProvider(), DumbAware {
     override fun getIcon(element: PsiElement, flags: Int): Icon? {

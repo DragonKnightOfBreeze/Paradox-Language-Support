@@ -14,7 +14,7 @@ import icu.windea.pls.lang.*
  */
 @InjectTarget("com.intellij.openapi.fileChooser.tree.FileRenderer")
 class FileRenderCodeInjector : CodeInjectorBase() {
-    //渲染文件节点时，为游戏或模组根目录提供提供额外的信息文本
+    //渲染文件节点时，为游戏或模组目录提供提供额外的信息文本
     
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER, static = true)
     fun customize(renderer: SimpleColoredComponent, value: Any) {

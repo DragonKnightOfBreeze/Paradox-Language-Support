@@ -17,7 +17,6 @@ class ParadoxInlineScriptInvocationCompletionProvider: CompletionProvider<Comple
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         if(!getSettings().completion.completeInlineScriptInvocations) return
         
-        //要求位于脚本文件中且此文件位于游戏或模组目录下
         val file = parameters.originalFile
         if(file !is ParadoxScriptFile || selectRootFile(file) == null) return
         

@@ -7,7 +7,7 @@ import icu.windea.pls.cwt.psi.*
 
 /**
  * @property name string
- * @property path (property*) path: string 相对于游戏或模组根路径的路径。
+ * @property path (property*) path: string 相对于入口目录的路径。
  * @property pathFile (property) path_file: string 路径下的文件名。
  * @property pathStrict (property) path_strict: boolean
  * @property startFromRoot (property) start_from_root: boolean

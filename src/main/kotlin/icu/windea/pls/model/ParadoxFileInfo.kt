@@ -6,9 +6,9 @@ import java.util.*
 import javax.swing.*
 
 /**
- * @property path 相对于游戏或模组根目录的路径。
- * @property entryPath 作为入口的根目录相对于游戏根目录的路径。匹配CWT规则时，除了游戏根目录之外，也需要基于这些目录。
- * @property pathToEntry 相对于作为入口的根目录的路径。
+ * @property path 相对于游戏或模组目录的路径。
+ * @property entryPath 作为入口的目录相对于游戏目录的路径。匹配CWT规则时，除了游戏根目录之外，也需要基于这些目录。
+ * @property pathToEntry 相对于作为入口的目录的路径。
  */
 class ParadoxFileInfo(
     val name: String,

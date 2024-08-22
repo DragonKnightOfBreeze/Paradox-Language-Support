@@ -12,7 +12,7 @@ import icu.windea.pls.lang.*
 import kotlin.experimental.*
 
 /**
- * 文件（相对于游戏或模组根目录）的使用的查询。
+ * （游戏或模组）文件的使用的查询。
  */
 class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {

@@ -39,7 +39,7 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
     
     override fun getIndexer(): DataIndexer<String, ParadoxFilePathInfo, FileContent> {
         return DataIndexer { inputData ->
-            //这里索引的路径，使用相对于游戏或模组根目录的路径，但需要移除"game/"路径前缀
+            //这里索引的路径，使用相对于入口目录的路径
             val fileInfo = inputData.file.fileInfo ?: return@DataIndexer emptyMap()
             val path = fileInfo.pathToEntry.path
             val directoryPath = fileInfo.pathToEntry.parent

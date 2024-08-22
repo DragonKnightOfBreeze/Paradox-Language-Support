@@ -33,11 +33,10 @@ abstract class ParadoxItemPresentation<T : PsiElement>(
 	//com.intellij.psi.presentation.java.SymbolPresentationUtil.getSymbolContainerText
 	
 	override fun getLocationString(): String? {
-		//使用相对于游戏或模组根目录的路径，或者使用虚拟文件的绝对路径
+		//使用相对于游戏或模组目录的路径，或者使用虚拟文件的绝对路径
 		val element = element
 		if(element == null) return null
 		return element.fileInfo?.path?.path
 			?: element.containingFile?.virtualFile?.path
 	}
 }
-

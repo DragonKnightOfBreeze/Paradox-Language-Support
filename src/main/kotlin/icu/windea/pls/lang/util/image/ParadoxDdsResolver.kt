@@ -19,7 +19,7 @@ object ParadoxDdsResolver {
     /**
      * 将DDS文件转化为PNG文件，然后返回PNG文件的绝对路径。如果发生异常，则返回null。
      * @param absPath DDS文件的绝对路径。
-     * @param relPath DDS文件相对于游戏或模组根路径的路径（如果可以获取）。
+     * @param relPath DDS文件相对于游戏或模组目录的路径（如果可以获取）。
      * @param frameInfo 帧数信息，用于切分图片。
      */
     fun resolveUrl(absPath: String, relPath: String? = null, frameInfo: FrameInfo? = null): String? {

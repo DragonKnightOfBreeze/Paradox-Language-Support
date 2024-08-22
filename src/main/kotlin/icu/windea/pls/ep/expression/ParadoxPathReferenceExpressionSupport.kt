@@ -16,7 +16,7 @@ interface ParadoxPathReferenceExpressionSupport {
     fun supports(configExpression: CwtDataExpression): Boolean
     
     /**
-     * 判断指定的文件路径表达式是否匹配另一个相对于游戏或模组目录根路径的路径。
+     * 判断指定的文件路径表达式是否匹配另一个相对于入口目录的路径。
      */
     fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean
     
