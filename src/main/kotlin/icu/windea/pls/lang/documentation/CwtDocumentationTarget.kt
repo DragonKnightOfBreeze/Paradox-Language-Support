@@ -241,7 +241,7 @@ private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceE
     }
     //如果没找到的话，不要在文档中显示相关信息
     if(iconFile != null) {
-        val iconPath = iconFile.fileInfo?.path?.path ?: return
+        val iconPath = iconFile.fileInfo?.pathToEntry?.path ?: return
         appendBr()
         append(PlsBundle.message("prefix.relatedImage")).append(" ")
         append("icon = ").appendFilePathLink(gameType, iconPath, iconPath, contextElement)

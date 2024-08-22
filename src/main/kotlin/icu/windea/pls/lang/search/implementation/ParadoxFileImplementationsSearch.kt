@@ -18,15 +18,15 @@ class ParadoxFileImplementationsSearch : QueryExecutor<PsiElement, DefinitionsSc
         //得到解析后的PSI元素
         val sourceElement = queryParameters.element
         if(sourceElement !is PsiFile) return true
-        val fileInfo = sourceElement.fileInfo
-        val path = fileInfo?.path
-        if(path == null || path.isEmpty()) return true
+        val fileInfo = sourceElement.fileInfo ?: return true
+        val path = fileInfo.pathToEntry.path
+        if(path.isEmpty()) return true
         val project = queryParameters.project
         DumbService.getInstance(project).runReadActionInSmartMode {
             //这里不进行排序
             val selector = fileSelector(project, sourceElement)
                 .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
-            ParadoxFilePathSearch.search(path.path, null, selector).forEach(Processor {
+            ParadoxFilePathSearch.search(path, null, selector).forEach(Processor {
                 consumer.process(it.toPsiFile(project))
             })
         }

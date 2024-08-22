@@ -58,7 +58,7 @@ class ParadoxCallHierarchyNodeDescriptor(
                 val path = fileInfo.path.path
                 val qualifiedName = fileInfo.rootInfo.qualifiedName
                 val location = " " + PlsBundle.message("hierarchy.call.descriptor.scriptedVariable.location", path, qualifiedName)
-                myHighlightedText.ending.addText(location, ParadoxCallHierarchyNodeDescriptor.Companion.getLocationAttributes())
+                myHighlightedText.ending.addText(location, getLocationAttributes())
             }
             is ParadoxScriptDefinitionElement -> {
                 val definitionInfo = element.definitionInfo ?: return invalidElement()
@@ -69,7 +69,7 @@ class ParadoxCallHierarchyNodeDescriptor(
                 val path = fileInfo.path.path
                 val qualifiedName = fileInfo.rootInfo.qualifiedName
                 val location = " " + PlsBundle.message("hierarchy.call.descriptor.definition.location", type, path, qualifiedName)
-                myHighlightedText.ending.addText(location, ParadoxCallHierarchyNodeDescriptor.Companion.getLocationAttributes())
+                myHighlightedText.ending.addText(location, getLocationAttributes())
             }
             is ParadoxLocalisationProperty -> {
                 val fileInfo = element.fileInfo ?: return invalidElement()
@@ -78,12 +78,12 @@ class ParadoxCallHierarchyNodeDescriptor(
                 val path = fileInfo.path.path
                 val qualifiedName = fileInfo.rootInfo.qualifiedName
                 val location = " " + PlsBundle.message("hierarchy.call.descriptor.localisation.location", path, qualifiedName)
-                myHighlightedText.ending.addText(location, ParadoxCallHierarchyNodeDescriptor.Companion.getLocationAttributes())
+                myHighlightedText.ending.addText(location, getLocationAttributes())
             }
         }
         if(usageCount > 1) {
             val text = IdeBundle.message("node.call.hierarchy.N.usages", usageCount)
-            myHighlightedText.ending.addText(" " + text, getUsageCountPrefixAttributes())
+            myHighlightedText.ending.addText(" $text", getUsageCountPrefixAttributes())
         }
         myName = myHighlightedText.text
         

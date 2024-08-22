@@ -486,7 +486,7 @@ object ParadoxCompletionManager {
             ParadoxFilePathSearch.search(configExpression, selector).processQueryAsync p@{ virtualFile ->
                 ProgressManager.checkCanceled()
                 val file = virtualFile.toPsiFile(project) ?: return@p true
-                val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
+                val filePath = virtualFile.fileInfo?.pathToEntry?.path ?: return@p true
                 val name = pathReferenceExpressionSupport.extract(configExpression, contextFile, filePath) ?: return@p true
                 val icon = when {
                     ParadoxInlineScriptManager.isInlineScriptExpressionConfig(config) -> PlsIcons.Nodes.InlineScript

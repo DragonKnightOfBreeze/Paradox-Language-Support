@@ -59,7 +59,7 @@ fun ChainedParadoxSelector<VirtualFile>.withFileExtensions(fileExtensions: Set<S
     if(fileExtensions.isNotEmpty()) filterBy { it.extension?.let { e -> ".$e" }.orEmpty() in fileExtensions } else this
 
 fun ChainedParadoxSelector<VirtualFile>.distinctByFilePath() =
-    distinctBy { it.fileInfo?.path }
+    distinctBy { it.fileInfo?.pathToEntry }
 //endregion
 
 //region complexEnumValueSelector

@@ -167,7 +167,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
             when {
                 //由filePath解析为图片文件
                 resolved is PsiFile && resolved.fileType == DdsFileType -> {
-                    val filePath = resolved.fileInfo?.path?.path ?: return null
+                    val filePath = resolved.fileInfo?.pathToEntry?.path ?: return null
                     val selector = fileSelector(project, definition).contextSensitive()
                     val file = ParadoxFilePathSearch.search(filePath, null, selector).find()
                         ?.toPsiFile(project)
@@ -265,7 +265,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
             when {
                 //由filePath解析为图片文件
                 resolved is PsiFile && resolved.fileType == DdsFileType -> {
-                    val filePath = resolved.fileInfo?.path?.path ?: return null
+                    val filePath = resolved.fileInfo?.pathToEntry?.path ?: return null
                     val selector = fileSelector(project, definition).contextSensitive()
                     val files = ParadoxFilePathSearch.search(filePath, null, selector).findAll()
                         .mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }

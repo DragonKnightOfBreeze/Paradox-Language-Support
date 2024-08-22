@@ -67,7 +67,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         var expression = configExpression.value ?: return true
         val expressionRel = expression.removePrefixOrNull("./")
         if(expressionRel != null) {
-            val contextParentPath = element?.fileInfo?.path?.parent ?: return false
+            val contextParentPath = element?.fileInfo?.pathToEntry?.parent ?: return false
             expression = "$contextParentPath/$expressionRel"
         }
         val index = expression.lastIndexOf(',') //","应当最多出现一次
@@ -87,7 +87,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         var expression = configExpression.value ?: return filePath
         val expressionRel = expression.removePrefixOrNull("./")
         if(expressionRel != null) {
-            val contextParentPath = element?.fileInfo?.path?.parent ?: return null
+            val contextParentPath = element?.fileInfo?.pathToEntry?.parent ?: return null
             expression = "$contextParentPath/$expressionRel"
         }
         val index = expression.lastIndexOf(',') //","应当最多出现一次

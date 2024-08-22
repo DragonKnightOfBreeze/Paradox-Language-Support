@@ -65,7 +65,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         val project = e.project ?: return null
         val file = findFile(e) ?: return null
-        val path = file.fileInfo?.path?.path ?: return null
+        val path = file.fileInfo?.pathToEntry?.path ?: return null
         val virtualFiles = Collections.synchronizedList(mutableListOf<VirtualFile>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
             runReadAction {

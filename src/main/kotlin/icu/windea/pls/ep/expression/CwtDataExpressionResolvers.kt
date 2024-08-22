@@ -3,7 +3,6 @@ package icu.windea.pls.ep.expression
 import icu.windea.pls.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 
 class BaseCwtDataExpressionResolver : CwtDataExpressionResolver {
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
@@ -83,12 +82,12 @@ class CoreCwtDataExpressionResolver : CwtDataExpressionResolver {
             return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.FilePath)
         }
         expressionString.removeSurroundingOrNull("filepath[", "]")?.let { v ->
-            val value = v.normalizeParadoxPath().orNull()
+            val value = v.removePrefix("game/").normalizePath().orNull()
             return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.FilePath, value)
         }
         
         expressionString.removeSurroundingOrNull("icon[", "]")?.let { v ->
-            val value = v.normalizeParadoxPath().orNull()
+            val value = v.removePrefix("game/").normalizePath().orNull()
             return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Icon, value)
         }
         

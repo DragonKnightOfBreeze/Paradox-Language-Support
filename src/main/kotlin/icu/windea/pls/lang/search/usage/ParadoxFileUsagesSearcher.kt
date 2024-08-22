@@ -22,7 +22,7 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
         val fileInfo = target.fileInfo
         if(fileInfo == null) return
         val gameType = fileInfo.rootInfo.gameType
-        val filePath = fileInfo.path.toString()
+        val filePath = fileInfo.pathToEntry.path
         val project = queryParameters.project
         val configGroup = getConfigGroup(project, gameType)
         val extraWords = mutableSetOf<String>()

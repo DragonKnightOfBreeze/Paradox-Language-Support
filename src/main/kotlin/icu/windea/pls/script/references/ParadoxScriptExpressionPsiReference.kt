@@ -35,7 +35,7 @@ class ParadoxScriptExpressionPsiReference(
                 val configExpression = config.expression ?: throw IncorrectOperationException()
                 val ep = get(configExpression) ?: throw IncorrectOperationException()
                 val fileInfo = resolved.fileInfo ?: throw IncorrectOperationException()
-                val newFilePath = fileInfo.path.parent + "/" + newElementName
+                val newFilePath = fileInfo.pathToEntry.parent + "/" + newElementName
                 val pathReference = ep.extract(configExpression, element, newFilePath) ?: throw IncorrectOperationException()
                 element.setValue(pathReference)
             }

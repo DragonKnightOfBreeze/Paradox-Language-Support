@@ -5,7 +5,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 /**
@@ -90,7 +89,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
             when(key) {
                 "base_type" -> baseType = prop.stringValue
                 //这里的path一般以"game/"开始，需要去除
-                "path" -> path = prop.stringValue?.normalizeParadoxPath() ?: continue
+                "path" -> path = prop.stringValue?.let { it.removePrefix("game/").normalizePath() } ?: continue
                 "path_file" -> pathFile = prop.stringValue ?: continue
                 //这里的path_extension一般以"."开始，需要去除
                 "path_extension" -> pathExtension = prop.stringValue?.removePrefix(".") ?: continue

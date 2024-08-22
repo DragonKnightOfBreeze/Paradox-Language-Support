@@ -579,7 +579,7 @@ fun String.normalizePath(): String {
             builder.append(c)
         }
     }
-    return builder.toString()
+    return builder.toString().intern()
 }
 
 /**
@@ -599,7 +599,7 @@ fun String.normalizeAbsolutePath(): String {
             builder.append(c)
         }
     }
-    return builder.toString()
+    return builder.toString().intern()
 }
 
 fun Path.exists(): Boolean {

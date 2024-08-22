@@ -51,8 +51,6 @@ fun FileType.isParadoxFileType() = this == ParadoxScriptFileType || this == Para
 
 fun Language.isParadoxLanguage() = this.isKindOf(ParadoxScriptLanguage) || this.isKindOf(ParadoxLocalisationLanguage)
 
-fun String.normalizeParadoxPath() = this.removePrefix("game/").trim('/').intern()
-
 fun Char.isIdentifierChar(): Boolean {
     return StringUtil.isJavaIdentifierPart(this)
 }

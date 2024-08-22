@@ -32,7 +32,7 @@ class OverriddenForFileInspection : LocalInspectionTool() {
             override fun visitFile(file: PsiFile) {
                 ProgressManager.checkCanceled()
                 val selector = fileSelector(project, virtualFile)
-                val path = fileInfo.path.path
+                val path = fileInfo.pathToEntry.path
                 val results = ParadoxFilePathSearch.search(path, null, selector).findAll().mapNotNull { it.toPsiFile(project) }
                 if(results.size < 2) return //no override -> skip
                 
