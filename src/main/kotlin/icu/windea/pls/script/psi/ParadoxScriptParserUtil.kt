@@ -10,7 +10,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun checkRightTemplate(b: PsiBuilder, l: Int): Boolean {
-        //cannot be parsed to a string or scripted variable reference when with a trailing separator
+        //a token should not be parsed to a value when with a trailing separator
         var s = -1
         var end = false
         while(true) {

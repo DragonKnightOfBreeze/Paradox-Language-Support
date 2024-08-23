@@ -83,8 +83,9 @@ DOCUMENTATION_TOKEN=[^\s][^\r\n]*
 COMMENT=(#)|(#[^#\r\n][^\r\n]*)
 RELAX_COMMENT=#[^\r\n]*
 
-CHECK_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?\s*((=)|(\!=)|(<>))
-CHECK_OPTION_KEY=({OPTION_KEY_TOKEN})?\s*((=)|(\!=)|(<>))
+CHECK_SEPARATOR=(=)|(\!=)|(<>)
+CHECK_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?\s*{CHECK_SEPARATOR}
+CHECK_OPTION_KEY=({OPTION_KEY_TOKEN})?\s*{CHECK_SEPARATOR}
 
 PROPERTY_KEY_TOKEN=([^#={}\s\"]+\"?)|(\"([^\"\\\r\n]|\\.)*\"?)
 OPTION_KEY_TOKEN=([^#={}\s\"]+\"?)|(\"([^\"\\\r\n]|\\.)*\"?)

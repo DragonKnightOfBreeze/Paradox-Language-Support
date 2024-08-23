@@ -21,7 +21,7 @@ enum class ParadoxSeparatorType(
         fun resolve(text: String): ParadoxSeparatorType? {
             return when(text) {
                 "=" -> EQUAL
-                "!=" -> NOT_EQUAL
+                "!=", "<>" -> NOT_EQUAL
                 "<" -> LT
                 ">" -> GT
                 "<=" -> LE
