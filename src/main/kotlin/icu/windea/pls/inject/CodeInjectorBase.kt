@@ -66,5 +66,5 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         private val CONTINUE_INVOCATION = ContinueInvocationException()
     }
     
-    private class ContinueInvocationException: RuntimeException()
+    private class ContinueInvocationException: RuntimeException("CONTINUE_INVOCATION")
 }

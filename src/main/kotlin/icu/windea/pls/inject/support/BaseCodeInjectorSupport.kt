@@ -84,7 +84,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
                         try {
                             return $expr;
                         } catch(InvocationTargetException __e__) {
-                            if(!__e__.getCause().getCause().getClass().getName().equals("icu.windea.pls.inject.ContinueInvocationException")) throw __e__;
+                            if(!"CONTINUE_INVOCATION".equals(__e__.getCause().getCause().getMessage())) throw __e__;
                         }
                     }
                     """.trimIndent()
