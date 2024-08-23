@@ -1,6 +1,5 @@
 package icu.windea.pls.ep.config
 
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.annotations.*
@@ -14,8 +13,8 @@ abstract class ExpressionStringBasedCwtInjectedConfigProvider : CwtInjectedConfi
             val config = configs[i]
             when(config) {
                 is CwtPropertyConfig -> {
-                    val key = config.keyExpression.expressionString
-                    val value = config.valueExpression.expressionString
+                    val key = config.key
+                    val value = config.value
                     val injectedKeys = doInjectKey(config, key)
                     val injectedValues = doInjectValue(config, value)
                     r = r || (injectedKeys != null || injectedValues != null)
@@ -30,7 +29,7 @@ abstract class ExpressionStringBasedCwtInjectedConfigProvider : CwtInjectedConfi
                     if(!keepOrigin(config)) configs.removeAt(i)
                 }
                 is CwtValueConfig -> {
-                    val value = config.valueExpression.expressionString
+                    val value = config.value
                     val injectedValues = doInjectValue(config, value)
                     r = r || injectedValues != null
                     if(injectedValues == null) continue

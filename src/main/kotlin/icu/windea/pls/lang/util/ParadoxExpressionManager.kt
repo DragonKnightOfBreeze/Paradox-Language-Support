@@ -175,7 +175,8 @@ object ParadoxExpressionManager {
                     configs.forEach f3@{ config ->
                         if(config is CwtPropertyConfig) {
                             if(subPath == "-") return@f3
-                            if(matchesKey && !ParadoxExpressionMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) return@f3
+                            val configKeyExpression = config.keyExpression
+                            if(matchesKey && !ParadoxExpressionMatcher.matches(element, expression, configKeyExpression, config, configGroup, matchOptions).get(matchOptions)) return@f3
                             val nextConfigs = mutableListOf<CwtMemberConfig<*>>()
                             val inlinedConfigs = doInlineConfigForConfigContext(element, subPath, isQuoted, config, matchOptions)
                             if(inlinedConfigs.isEmpty()) {
@@ -184,7 +185,7 @@ object ParadoxExpressionManager {
                                 nextConfigs += inlinedConfigs
                             }
                             nextConfigs.forEach f4@{ nextConfig ->
-                                val m = doMatchParameterizedKeyConfigs(parameterizedKeyConfigs, config.keyExpression)
+                                val m = doMatchParameterizedKeyConfigs(parameterizedKeyConfigs, configKeyExpression)
                                 if(m != true) relaxMatchKeyCount++
                                 nextResult += nextConfig
                             }
@@ -219,10 +220,11 @@ object ParadoxExpressionManager {
         val configGroup = config.configGroup
         val result = mutableListOf<CwtMemberConfig<*>>()
         run {
-            if(config.valueExpression.type == CwtDataTypes.SingleAliasRight) {
+            val configValueExpression = config.valueExpression
+            if(configValueExpression.type == CwtDataTypes.SingleAliasRight) {
                 result += CwtConfigManipulator.inlineSingleAlias(config) ?: return@run
-            } else if(config.valueExpression.type == CwtDataTypes.AliasMatchLeft) {
-                val aliasName = config.valueExpression.value ?: return@run
+            } else if(configValueExpression.type == CwtDataTypes.AliasMatchLeft) {
+                val aliasName = configValueExpression.value ?: return@run
                 val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
                 val aliasSubNames = getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchOptions)
                 aliasSubNames.forEach f1@{ aliasSubName ->

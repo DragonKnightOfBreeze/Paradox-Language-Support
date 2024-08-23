@@ -69,7 +69,7 @@ private class ParadoxPathImplA(
     override val subPaths: List<String> = path.split('/').map { it.intern() }
     override val parent: String = path.substringBeforeLast('/', "").intern()
     override val root: String = path.substringBefore('/', "").intern()
-    override val fileName: String = subPaths.lastOrNull()?.intern().orEmpty()
+    override val fileName: String = subPaths.lastOrNull().orEmpty()
     override val fileExtension: String? = fileName.substringAfterLast('.', "").intern().orNull()
     override val length: Int = subPaths.size
     
