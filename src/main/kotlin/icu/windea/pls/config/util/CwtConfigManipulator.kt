@@ -85,7 +85,7 @@ object CwtConfigManipulator {
             pointer = emptyPointer(),
             configGroup = configGroup,
             value = PlsConstants.Folders.block,
-            valueTypeId = CwtType.Block.id,
+            valueType = CwtType.Block,
             configs = configs,
             options = config?.optionConfigs,
             documentation = config?.documentation

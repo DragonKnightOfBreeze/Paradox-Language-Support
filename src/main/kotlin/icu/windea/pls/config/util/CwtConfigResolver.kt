@@ -119,7 +119,7 @@ object CwtConfigResolver {
         }
         val documentation = getDocumentation(documentationLines, html)
         
-        val config = CwtPropertyConfig.resolve(pointer, configGroup, key, value, valueType.id, separatorType.id, configs, options, documentation)
+        val config = CwtPropertyConfig.resolve(pointer, configGroup, key, value, valueType, separatorType, configs, options, documentation)
             .let { applyInheritOptions(it) }
         CwtConfigCollector.processConfigWithConfigExpression(config, config.keyExpression)
         CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
@@ -209,7 +209,7 @@ object CwtConfigResolver {
         }
         val documentation = getDocumentation(documentationLines, html)
         
-        val config = CwtValueConfig.resolve(pointer, configGroup, value, valueType.id, configs, options, documentation)
+        val config = CwtValueConfig.resolve(pointer, configGroup, value, valueType, configs, options, documentation)
             .let { applyInheritOptions(it) }
         CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
         configs?.forEach { it.parentConfig = config }

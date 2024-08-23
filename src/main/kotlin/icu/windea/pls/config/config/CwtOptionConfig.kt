@@ -25,24 +25,25 @@ private val cache = ConcurrentHashMap<String, CwtOptionConfig>()
 
 private fun doResolve(key: String, value: String, valueType: CwtType, separatorType: CwtSeparatorType, options: List<CwtOptionMemberConfig<*>>?): CwtOptionConfig {
     //use cache if possible to optimize memory
-    val valueTypeId = valueType.optimizeValue()
-    val separatorTypeId = separatorType.optimizeValue()
     if(options.isNullOrEmpty()) {
-        val cacheKey = "$valueTypeId#$separatorTypeId#${key}#${value}"
+        val cacheKey = "${valueType.ordinal}#${separatorType.ordinal}#${key}#${value}"
         return cache.getOrPut(cacheKey) {
-            CwtOptionConfigImpl(key, value, valueTypeId, separatorTypeId, options)
+            CwtOptionConfigImpl(key, value, valueType, separatorType, options)
         }
     }
-    return CwtOptionConfigImpl(key, value, valueTypeId, separatorTypeId, options)
+    return CwtOptionConfigImpl(key, value, valueType, separatorType, options)
 }
 
 private class CwtOptionConfigImpl(
     override val key: String,
     override val value: String,
-    private val valueTypeId: Byte, //use enum id as field to optimize memory 
-    private val separatorTypeId: Byte, //use enum id as field to optimize memory 
+    valueType: CwtType,
+    separatorType: CwtSeparatorType,
     override val optionConfigs: List<CwtOptionMemberConfig<*>>?,
 ) : CwtOptionConfig {
+    private val valueTypeId: Byte = valueType.optimizeValue() //use enum id as field to optimize memory 
     override val valueType: CwtType get() = valueTypeId.deoptimizeValue()
+    
+    private val separatorTypeId: Byte = separatorType.optimizeValue() //use enum id as field to optimize memory
     override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimizeValue()
 }

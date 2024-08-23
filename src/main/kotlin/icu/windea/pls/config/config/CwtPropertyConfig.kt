@@ -5,15 +5,13 @@ import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
 interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     val key: String
-    val separatorTypeId: @EnumId(CwtSeparatorType::class) Byte //use enum id to optimize memory 
-    val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimizeValue()
+    val separatorType: CwtSeparatorType
     
     val valueConfig: CwtValueConfig?
     
@@ -30,23 +28,23 @@ fun CwtPropertyConfig.Companion.resolve(
     configGroup: CwtConfigGroup,
     key: String,
     value: String,
-    valueTypeId: @EnumId(CwtType::class) Byte = CwtType.String.optimizeValue(),
-    separatorTypeId: @EnumId(CwtSeparatorType::class) Byte = CwtSeparatorType.EQUAL.optimizeValue(),
+    valueType: CwtType = CwtType.String,
+    separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
     configs: List<CwtMemberConfig<*>>? = null,
     options: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null
 ): CwtPropertyConfig {
     return if(configs != null) {
         if(options != null || documentation != null) {
-            CwtPropertyConfigImpl1(pointer, configGroup, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
+            CwtPropertyConfigImpl1(pointer, configGroup, key, value, valueType, separatorType, configs, options, documentation)
         } else {
-            CwtPropertyConfigImpl2(pointer, configGroup, key, value, valueTypeId, separatorTypeId, configs)
+            CwtPropertyConfigImpl2(pointer, configGroup, key, value, valueType, separatorType, configs)
         }
     } else {
         if(options != null || documentation != null) {
-            CwtPropertyConfigImpl3(pointer, configGroup, key, value, valueTypeId, separatorTypeId, options, documentation)
+            CwtPropertyConfigImpl3(pointer, configGroup, key, value, valueType, separatorType, options, documentation)
         } else {
-            CwtPropertyConfigImpl4(pointer, configGroup, key, value, valueTypeId, separatorTypeId)
+            CwtPropertyConfigImpl4(pointer, configGroup, key, value, valueType, separatorType)
         }
     }
 }
@@ -70,13 +68,13 @@ fun CwtPropertyConfig.copy(
     pointer: SmartPsiElementPointer<out CwtProperty> = this.pointer,
     key: String = this.key,
     value: String = this.value,
-    valueTypeId: @EnumId(CwtType::class) Byte = this.valueTypeId,
-    separatorTypeId: @EnumId(CwtSeparatorType::class) Byte = this.separatorTypeId,
+    valueType: CwtType = this.valueType,
+    separatorType: CwtSeparatorType = this.separatorType,
     configs: List<CwtMemberConfig<*>>? = this.configs,
     options: List<CwtOptionMemberConfig<*>>? = this.optionConfigs,
     documentation: String? = this.documentation
 ): CwtPropertyConfig {
-    return CwtPropertyConfig.resolve(pointer, this.configGroup, key, value, valueTypeId, separatorTypeId, configs, options, documentation)
+    return CwtPropertyConfig.resolve(pointer, this.configGroup, key, value, valueType, separatorType, configs, options, documentation)
 }
 
 //Implementations
@@ -86,9 +84,15 @@ private abstract class CwtPropertyConfigImpl(
     override val configGroup: CwtConfigGroup,
     override val key: String,
     override val value: String,
-    override val valueTypeId: Byte = CwtType.String.optimizeValue(),
-    override val separatorTypeId: Byte = CwtSeparatorType.EQUAL.optimizeValue(),
+    valueType: CwtType = CwtType.String,
+    separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
 ) : UserDataHolderBase(), CwtPropertyConfig {
+    private val valueTypeId: Byte = valueType.optimizeValue() //use enum id as field to optimize memory 
+    override val valueType: CwtType get() = valueTypeId.deoptimizeValue()
+    
+    private val separatorTypeId: Byte = separatorType.optimizeValue() //use enum id as field to optimize memory
+    override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimizeValue()
+    
     //use memory-optimized lazy property
     @Volatile private var _valueConfig: Any? = EMPTY_OBJECT
     override val valueConfig @Synchronized get() = if(_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else getValueConfig().also { _valueConfig = it }
@@ -104,12 +108,12 @@ private class CwtPropertyConfigImpl1(
     configGroup: CwtConfigGroup,
     key: String,
     value: String,
-    valueTypeId: Byte = CwtType.String.optimizeValue(),
-    separatorTypeId: Byte = CwtSeparatorType.EQUAL.optimizeValue(),
+    valueType: CwtType = CwtType.String,
+    separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
     configs: List<CwtMemberConfig<*>>? = null,
     options: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null,
-) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
+) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueType, separatorType) {
     override val configs = configs?.toMutableIfNotEmptyInActual()
     override val optionConfigs = options?.toMutableIfNotEmptyInActual()
     override val documentation = documentation
@@ -121,10 +125,10 @@ private class CwtPropertyConfigImpl2(
     configGroup: CwtConfigGroup,
     key: String,
     value: String,
-    valueTypeId: Byte = CwtType.String.optimizeValue(),
-    separatorTypeId: Byte = CwtSeparatorType.EQUAL.optimizeValue(),
+    valueType: CwtType = CwtType.String,
+    separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
     configs: List<CwtMemberConfig<*>>? = null,
-) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
+) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueType, separatorType) {
     override val configs = configs?.toMutableIfNotEmptyInActual()
     override val optionConfigs get() = null
     override val documentation get() = null
@@ -136,12 +140,12 @@ private class CwtPropertyConfigImpl3(
     configGroup: CwtConfigGroup,
     key: String,
     value: String,
-    valueTypeId: Byte = CwtType.String.optimizeValue(),
-    separatorTypeId: Byte = CwtSeparatorType.EQUAL.optimizeValue(),
+    valueType: CwtType = CwtType.String,
+    separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
     options: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null,
-) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
-    override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.optimizeValue()) emptyList() else null
+) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueType, separatorType) {
+    override val configs: List<CwtMemberConfig<*>>? get() = if(valueType == CwtType.Block) emptyList() else null
     override val optionConfigs = options?.toMutableIfNotEmptyInActual()
     override val documentation = documentation
 }
@@ -152,10 +156,10 @@ private class CwtPropertyConfigImpl4(
     configGroup: CwtConfigGroup,
     key: String,
     value: String,
-    valueTypeId: Byte = CwtType.String.optimizeValue(),
-    separatorTypeId: Byte = CwtSeparatorType.EQUAL.optimizeValue(),
-) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueTypeId, separatorTypeId) {
-    override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.optimizeValue()) emptyList() else null
+    valueType: CwtType = CwtType.String,
+    separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
+) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueType, separatorType) {
+    override val configs: List<CwtMemberConfig<*>>? get() = if(valueType == CwtType.Block) emptyList() else null
     override val optionConfigs get() = null
     override val documentation get() = null
 }
@@ -187,7 +191,7 @@ private class CwtPropertyConfigDelegate1(
 private class CwtPropertyConfigDelegate2(
     delegate: CwtPropertyConfig,
 ) : CwtPropertyConfigDelegate(delegate) {
-    override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.optimizeValue()) emptyList() else null
+    override val configs: List<CwtMemberConfig<*>>? get() = if(valueType == CwtType.Block) emptyList() else null
 }
 
 //12 + 6 * 4 = 36 -> 40

@@ -4,7 +4,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
@@ -21,7 +20,7 @@ fun CwtValueConfig.Companion.resolve(
     pointer: SmartPsiElementPointer<out CwtValue>,
     configGroup: CwtConfigGroup,
     value: String,
-    valueTypeId: @EnumId(CwtType::class) Byte = CwtType.String.optimizeValue(),
+    valueType: CwtType = CwtType.String,
     configs: List<CwtMemberConfig<*>>? = null,
     options: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null,
@@ -29,15 +28,15 @@ fun CwtValueConfig.Companion.resolve(
 ): CwtValueConfig {
     return if(configs != null) {
         if(options != null || documentation != null) {
-            CwtValueConfigImpl1(pointer, configGroup, value, valueTypeId, configs, options, documentation, propertyConfig)
+            CwtValueConfigImpl1(pointer, configGroup, value, valueType, configs, options, documentation, propertyConfig)
         } else {
-            CwtValueConfigImpl2(pointer, configGroup, value, valueTypeId, configs, propertyConfig)
+            CwtValueConfigImpl2(pointer, configGroup, value, valueType, configs, propertyConfig)
         }
     } else {
         if(options != null || documentation != null) {
-            CwtValueConfigImpl3(pointer, configGroup, value, valueTypeId, options, documentation, propertyConfig)
+            CwtValueConfigImpl3(pointer, configGroup, value, valueType, options, documentation, propertyConfig)
         } else {
-            CwtValueConfigImpl4(pointer, configGroup, value, valueTypeId, propertyConfig)
+            CwtValueConfigImpl4(pointer, configGroup, value, valueType, propertyConfig)
         }
     }
 }
@@ -67,13 +66,13 @@ fun CwtValueConfig.delegatedWith(value: String): CwtValueConfig {
 fun CwtValueConfig.copy(
     pointer: SmartPsiElementPointer<out CwtValue> = this.pointer,
     value: String = this.value,
-    valueTypeId: @EnumId(CwtType::class) Byte = this.valueTypeId,
+    valueType: CwtType = this.valueType,
     configs: List<CwtMemberConfig<*>>? = this.configs,
     options: List<CwtOptionMemberConfig<*>>? = this.optionConfigs,
     documentation: String? = this.documentation,
     propertyConfig: CwtPropertyConfig? = this.propertyConfig,
 ): CwtValueConfig {
-    return CwtValueConfig.resolve(pointer, this.configGroup, value, valueTypeId, configs, options, documentation, propertyConfig)
+    return CwtValueConfig.resolve(pointer, this.configGroup, value, valueType, configs, options, documentation, propertyConfig)
 }
 
 class CwtPropertyPointer(
@@ -88,9 +87,12 @@ private abstract class CwtValueConfigImpl(
     override val pointer: SmartPsiElementPointer<out CwtValue>,
     override val configGroup: CwtConfigGroup,
     override val value: String,
-    override val valueTypeId: Byte = CwtType.String.optimizeValue(),
+    valueType: CwtType = CwtType.String,
     propertyConfig: CwtPropertyConfig? = null,
 ) : UserDataHolderBase(), CwtValueConfig {
+    private val valueTypeId = valueType.optimizeValue() //use enum id to optimize memory
+    override val valueType: CwtType get() = valueTypeId.deoptimizeValue()
+    
     override val propertyConfig = propertyConfig
     
     override var parentConfig: CwtMemberConfig<*>? = null
@@ -98,60 +100,60 @@ private abstract class CwtValueConfigImpl(
     override fun toString(): String = value
 }
 
-//12 + 9 * 4 + 2 * 1 = 50 -> 56
+//12 + 9 * 4 + 1 * 1 = 49 -> 56
 private class CwtValueConfigImpl1(
     pointer: SmartPsiElementPointer<out CwtValue>,
     configGroup: CwtConfigGroup,
     value: String,
-    valueTypeId: Byte = CwtType.String.optimizeValue(),
+    valueType: CwtType = CwtType.String,
     configs: List<CwtMemberConfig<*>>? = null,
     options: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null,
     propertyConfig: CwtPropertyConfig? = null,
-) : CwtValueConfigImpl(pointer, configGroup, value, valueTypeId, propertyConfig) {
+) : CwtValueConfigImpl(pointer, configGroup, value, valueType, propertyConfig) {
     override val configs = configs?.toMutableIfNotEmptyInActual()
     override val optionConfigs = options?.toMutableIfNotEmptyInActual()
     override val documentation = documentation
 }
 
-//12 + 7 * 4 + 2 * 1 = 42 -> 48
+//12 + 7 * 4 + 1 * 1 = 41 -> 48
 private class CwtValueConfigImpl2(
     pointer: SmartPsiElementPointer<out CwtValue>,
     configGroup: CwtConfigGroup,
     value: String,
-    valueTypeId: Byte = CwtType.String.optimizeValue(),
+    valueType: CwtType = CwtType.String,
     configs: List<CwtMemberConfig<*>>? = null,
     propertyConfig: CwtPropertyConfig? = null,
-) : CwtValueConfigImpl(pointer, configGroup, value, valueTypeId, propertyConfig) {
+) : CwtValueConfigImpl(pointer, configGroup, value, valueType, propertyConfig) {
     override val configs = configs?.toMutableIfNotEmptyInActual()
     override val optionConfigs get() = null
     override val documentation get() = null
 }
 
-//12 + 8 * 4 + 2 * 1 = 46 -> 48
+//12 + 8 * 4 + 1 * 1 = 45 -> 48
 private class CwtValueConfigImpl3(
     pointer: SmartPsiElementPointer<out CwtValue>,
     configGroup: CwtConfigGroup,
     value: String,
-    valueTypeId: Byte = CwtType.String.optimizeValue(),
+    valueType: CwtType = CwtType.String,
     options: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null,
     propertyConfig: CwtPropertyConfig? = null,
-) : CwtValueConfigImpl(pointer, configGroup, value, valueTypeId, propertyConfig) {
-    override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.optimizeValue()) emptyList() else null
+) : CwtValueConfigImpl(pointer, configGroup, value, valueType, propertyConfig) {
+    override val configs: List<CwtMemberConfig<*>>? get() = if(valueType == CwtType.Block) emptyList() else null
     override val optionConfigs = options?.toMutableIfNotEmptyInActual()
     override val documentation = documentation
 }
 
-//12 + 6 * 4 + 2 * 1 = 38 -> 40
+//12 + 6 * 4 + 1 * 1 = 37 -> 40
 private class CwtValueConfigImpl4(
     pointer: SmartPsiElementPointer<out CwtValue>,
     configGroup: CwtConfigGroup,
     value: String,
-    valueTypeId: Byte = CwtType.String.optimizeValue(),
+    valueType: CwtType = CwtType.String,
     propertyConfig: CwtPropertyConfig? = null,
-) : CwtValueConfigImpl(pointer, configGroup, value, valueTypeId, propertyConfig) {
-    override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.optimizeValue()) emptyList() else null
+) : CwtValueConfigImpl(pointer, configGroup, value, valueType, propertyConfig) {
+    override val configs: List<CwtMemberConfig<*>>? get() = if(valueType == CwtType.Block) emptyList() else null
     override val optionConfigs get() = null
     override val documentation get() = null
 }
@@ -179,7 +181,7 @@ private class CwtValueConfigDelegate1(
 private class CwtValueConfigDelegate2(
     delegate: CwtValueConfig,
 ) : CwtValueConfigDelegate(delegate) {
-    override val configs: List<CwtMemberConfig<*>>? get() = if(valueTypeId == CwtType.Block.optimizeValue()) emptyList() else null
+    override val configs: List<CwtMemberConfig<*>>? get() = if(valueType == CwtType.Block) emptyList() else null
 }
 
 //12 + 4 * 4 = 28 -> 32
@@ -198,7 +200,7 @@ private class CwtValueConfigFromPropertyConfig(
 ) : UserDataHolderBase(), CwtValueConfig {
     override val configGroup: CwtConfigGroup get() = propertyConfig.configGroup
     override val value: String get() = propertyConfig.value
-    override val valueTypeId: Byte get() = propertyConfig.valueTypeId
+    override val valueType: CwtType get() = propertyConfig.valueType
     override val documentation: String? get() = propertyConfig.documentation
     override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = propertyConfig.optionConfigs
     override val configs: List<CwtMemberConfig<*>>? get() = propertyConfig.configs
