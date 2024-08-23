@@ -273,7 +273,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getType(element: ParadoxScriptPropertyKey): ParadoxType {
-        return ParadoxType.resolve(element.value)
+        return ParadoxTypeManager.resolve(element.value)
     }
     
     @JvmStatic
@@ -716,7 +716,7 @@ object ParadoxScriptPsiImplUtil {
     
     @JvmStatic
     fun getType(element: ParadoxScriptInlineMathNumber): ParadoxType {
-        return ParadoxType.resolve(element.text)
+        return ParadoxTypeManager.resolve(element.text)
     }
     
     @JvmStatic

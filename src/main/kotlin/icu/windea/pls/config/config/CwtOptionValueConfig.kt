@@ -26,7 +26,7 @@ private val cache = ConcurrentHashMap<String, CwtOptionValueConfig>()
 
 private fun doResolve(value: String, valueType: CwtType, options: List<CwtOptionMemberConfig<*>>?): CwtOptionValueConfig {
     //use cache if possible to optimize memory
-    val valueTypeId = valueType.id
+    val valueTypeId = valueType.optimizeValue()
     if(options.isNullOrEmpty()) {
         val cacheKey = "$valueTypeId#${value}"
         return cache.getOrPut(cacheKey) {
@@ -41,5 +41,5 @@ private class CwtOptionValueConfigImpl(
     private val valueTypeId: Byte, //use enum id as field to optimize memory 
     override val optionConfigs: List<CwtOptionMemberConfig<*>>?
 ) : CwtOptionValueConfig {
-    override val valueType: CwtType get() = CwtType.resolve(valueTypeId)
+    override val valueType: CwtType get() = valueTypeId.deoptimizeValue()
 }

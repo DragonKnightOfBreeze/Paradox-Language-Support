@@ -74,13 +74,13 @@ class ParadoxDataExpression private constructor(
         }
         
         fun resolve(value: String, isQuoted: Boolean, isKey: Boolean? = null): ParadoxDataExpression {
-            val expressionType = ParadoxType.resolve(value)
+            val expressionType = ParadoxTypeManager.resolve(value)
             return ParadoxDataExpression(value, expressionType, isQuoted, isKey)
         }
         
         fun resolve(text: String, isKey: Boolean? = null): ParadoxDataExpression {
             val value = text.unquote()
-            val expressionType = ParadoxType.resolve(text)
+            val expressionType = ParadoxTypeManager.resolve(text)
             val quoted = text.isLeftQuoted()
             return ParadoxDataExpression(value, expressionType, quoted, isKey)
         }

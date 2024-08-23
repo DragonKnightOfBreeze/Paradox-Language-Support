@@ -32,7 +32,7 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             }
             configExpression.type == CwtDataTypes.Int -> {
                 //quoted number (e.g. "1") -> ok according to vanilla game files
-                if(expression.type.isIntType() || ParadoxType.resolve(expression.text).isIntType()) {
+                if(expression.type.isIntType() || ParadoxTypeManager.resolve(expression.text).isIntType()) {
                     val (min, max) = configExpression.extraValue<Tuple2<Int?, Int?>>() ?: return Result.ExactMatch
                     return Result.LazySimpleMatch p@{
                         val value = expression.text.toIntOrNull() ?: return@p true
@@ -43,7 +43,7 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             }
             configExpression.type == CwtDataTypes.Float -> {
                 //quoted number (e.g. "1") -> ok according to vanilla game files
-                if(expression.type.isFloatType() || ParadoxType.resolve(expression.text).isFloatType()) {
+                if(expression.type.isFloatType() || ParadoxTypeManager.resolve(expression.text).isFloatType()) {
                     val (min, max) = configExpression.extraValue<Tuple2<Float?, Float?>>() ?: return Result.ExactMatch
                     return Result.LazySimpleMatch p@{
                         val value = expression.text.toFloatOrNull() ?: return@p true
@@ -179,9 +179,9 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             configExpression.type in CwtDataTypeGroups.ValueField -> {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
                 if(configExpression.type == CwtDataTypes.ValueField) {
-                    if(expression.type.isFloatType() || ParadoxType.resolve(expression.text).isFloatType()) return Result.ExactMatch
+                    if(expression.type.isFloatType() || ParadoxTypeManager.resolve(expression.text).isFloatType()) return Result.ExactMatch
                 } else if(configExpression.type == CwtDataTypes.IntValueField) {
-                    if(expression.type.isIntType() || ParadoxType.resolve(expression.text).isIntType()) return Result.ExactMatch
+                    if(expression.type.isIntType() || ParadoxTypeManager.resolve(expression.text).isIntType()) return Result.ExactMatch
                 }
                 
                 if(!expression.type.isStringType()) return Result.NotMatch
@@ -194,9 +194,9 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             configExpression.type in CwtDataTypeGroups.VariableField -> {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
                 if(configExpression.type == CwtDataTypes.VariableField) {
-                    if(expression.type.isFloatType() || ParadoxType.resolve(expression.text).isFloatType()) return Result.ExactMatch
+                    if(expression.type.isFloatType() || ParadoxTypeManager.resolve(expression.text).isFloatType()) return Result.ExactMatch
                 } else if(configExpression.type == CwtDataTypes.IntVariableField) {
-                    if(expression.type.isIntType() || ParadoxType.resolve(expression.text).isIntType()) return Result.ExactMatch
+                    if(expression.type.isIntType() || ParadoxTypeManager.resolve(expression.text).isIntType()) return Result.ExactMatch
                 }
                 
                 if(!expression.type.isStringType()) return Result.NotMatch

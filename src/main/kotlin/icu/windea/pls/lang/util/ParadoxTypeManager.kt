@@ -1,12 +1,24 @@
 package icu.windea.pls.lang.util
 
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import icu.windea.pls.model.ParadoxType.Float
+import icu.windea.pls.model.ParadoxType.Int
 import java.time.format.*
 
 object ParadoxTypeManager {
     private val percentageFieldRegex = """[1-9]?[0-9]+%""".toRegex()
     private val colorFieldRegex = """(?:rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d. \t]*}""".toRegex()
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
+    
+    fun resolve(value: String): ParadoxType {
+        return when {
+            ParadoxTypeManager.isBoolean(expression) -> ParadoxType.Boolean
+            ParadoxTypeManager.isInt(expression) -> Int
+            ParadoxTypeManager.isFloat(expression) -> Float
+            else -> ParadoxType.String
+        }
+    }
     
     fun isBoolean(value: String): Boolean {
         return value == "yes" || value == "no"

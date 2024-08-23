@@ -15,7 +15,7 @@ import icu.windea.pls.model.*
 sealed interface CwtMemberConfig<out T : CwtMemberElement> : UserDataHolder, CwtConfig<T> {
     val value: String
     val valueTypeId: @EnumId(CwtType::class) Byte //use enum id to optimize memory
-    val valueType: CwtType get() = CwtType.resolve(valueTypeId)
+    val valueType: CwtType get() = valueTypeId.deoptimizeValue()
     val configs: List<CwtMemberConfig<*>>?
     val optionConfigs: List<CwtOptionMemberConfig<*>>?
     val documentation: String?

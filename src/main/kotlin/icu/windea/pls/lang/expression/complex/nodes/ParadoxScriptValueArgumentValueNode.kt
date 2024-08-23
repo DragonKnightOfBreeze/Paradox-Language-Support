@@ -4,7 +4,7 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.model.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.highlighter.*
 
 class ParadoxScriptValueArgumentValueNode(
@@ -16,7 +16,7 @@ class ParadoxScriptValueArgumentValueNode(
 ) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         //为参数值提供基础代码高亮
-        val type = ParadoxType.resolve(text)
+        val type = ParadoxTypeManager.resolve(text)
         return when {
             type.isBooleanType() -> ParadoxScriptAttributesKeys.KEYWORD_KEY
             type.isFloatType() -> ParadoxScriptAttributesKeys.NUMBER_KEY

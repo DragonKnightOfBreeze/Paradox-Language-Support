@@ -2,44 +2,39 @@ package icu.windea.pls.model
 
 import com.intellij.codeInsight.highlighting.*
 
-fun ReadWriteAccessDetector.Access.optimizeValue() = fromAccess(this)
+fun CwtType.optimizeValue() = fromCwtType(this)
+fun CwtSeparatorType.optimizeValue() = fromCwtSeparatorType(this)
 fun ParadoxGameType.optimizeValue() = fromGameType(this)
 fun ParadoxLocalisationCategory.optimizeValue() = fromLocalisationCategory(this)
+fun ReadWriteAccessDetector.Access.optimizeValue() = fromAccess(this)
 
 inline fun <reified T> Byte.deoptimizeValue() = deoptimizeValue(T::class.java)
 @Suppress("UNCHECKED_CAST") fun <T> Byte.deoptimizeValue(type: Class<T>): T {
     return when(type) {
-        ReadWriteAccessDetector.Access::class.java -> toAccess(this)
+        CwtType::class.java -> toCwtType(this)
+        CwtSeparatorType::class.java -> toCwtSeparatorType(this)
         ParadoxGameType::class.java -> toGameType(this)
         ParadoxLocalisationCategory::class.java -> toLocalisationCategory(this)
+        ReadWriteAccessDetector.Access::class.java -> toAccess(this)
         else -> throw UnsupportedOperationException()
     } as T
 }
 
-private fun fromAccess(value: ReadWriteAccessDetector.Access): Byte {
-    return value.ordinal.toByte()
-}
+private fun fromCwtType(value: CwtType) = value.ordinal.toByte()
+private fun toCwtType(value: Byte) = CwtType.entries[value.toInt()]
 
-private fun toAccess(value: Byte): ReadWriteAccessDetector.Access {
-    return when {
-        value == 0.toByte() -> ReadWriteAccessDetector.Access.Read
-        value == 1.toByte() -> ReadWriteAccessDetector.Access.Write
-        else -> ReadWriteAccessDetector.Access.ReadWrite
-    }
-}
+private fun fromCwtSeparatorType(value: CwtSeparatorType) = value.ordinal.toByte()
+private fun toCwtSeparatorType(value: Byte) = CwtSeparatorType.entries[value.toInt()]
 
-private fun fromGameType(value: ParadoxGameType): Byte {
-    return value.ordinal.toByte()
-}
+private fun fromGameType(value: ParadoxGameType) = value.ordinal.toByte()
+private fun toGameType(value: Byte) = ParadoxGameType.entries[value.toInt()]
 
-private fun toGameType(value: Byte): ParadoxGameType {
-    return ParadoxGameType.entries[value.toInt()]
-}
+private fun fromLocalisationCategory(value: ParadoxLocalisationCategory) = value.ordinal.toByte()
+private fun toLocalisationCategory(value: Byte) = ParadoxLocalisationCategory.resolve(value)
 
-private fun fromLocalisationCategory(value: ParadoxLocalisationCategory): Byte {
-    return value.ordinal.toByte()
-} 
-
-private fun toLocalisationCategory(value: Byte): ParadoxLocalisationCategory {
-    return ParadoxLocalisationCategory.resolve(value)
+private fun fromAccess(value: ReadWriteAccessDetector.Access) = value.ordinal.toByte()
+private fun toAccess(value: Byte) = when {
+    value == 0.toByte() -> ReadWriteAccessDetector.Access.Read
+    value == 1.toByte() -> ReadWriteAccessDetector.Access.Write
+    else -> ReadWriteAccessDetector.Access.ReadWrite
 }

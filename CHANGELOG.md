@@ -5,12 +5,14 @@
 * [X] #83 修复插件内置的VIC3的规则文件实际上是VIC2的规则文件的问题
 * [X] #84 解析规则文件中的路径时需要移除"game/"路径前缀
 * [X] #85 允许在声明规则的顶级使用`single_alias_right[x]`
+* [X] #86 Date Validation and ?= does not work for Victoria 3
 
 ***
 
 * [X] #83 Fix an issue that builtin VIC3 config files are VIC2's
 * [X] #84 Remove path prefix "game/" when resolve paths in config files
 * [X] #85 Allow to use `single_alias_right[x]` on top level of declaration config
+* [X] #86 Date Validation and ?= does not work for Victoria 3
 
 ## 1.3.18
 
@@ -319,8 +321,7 @@
 
 ## 1.2.1
 
-* [X] 支持语法`@a = @[ 1 + 2 ]` -
-  参见：[The tool cannot recognize in-script flag variables (Vic3) · Issue #76)](https://github.com/cwtools/cwtools-vscode/issues/76)
+* [X] 支持语法`@a = @[ 1 + 2 ]` - 参见：[The tool cannot recognize in-script flag variables (Vic3) · Issue #76)](https://github.com/cwtools/cwtools-vscode/issues/76)
 * [X] （仅限VIC3）支持操作符`?=` - 参见：[Parsing issues in Vic3 · Issue #53](https://github.com/cwtools/cwtools/issues/53)
 * [X] 其他优化与BUG修复
 
