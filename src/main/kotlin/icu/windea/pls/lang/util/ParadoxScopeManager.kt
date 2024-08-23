@@ -36,7 +36,7 @@ object ParadoxScopeManager {
      * 得到作用域的ID（全小写+下划线）。
      */
     fun getScopeId(scope: String): String {
-        val scopeId = scope.lowercase().replace(' ', '_')
+        val scopeId = scope.lowercase().replace(' ', '_').intern() //intern to optimize memory
         //"all" scope are always resolved as "any" scope
         if(scopeId == allScopeId) return anyScopeId
         return scopeId
@@ -52,7 +52,7 @@ object ParadoxScopeManager {
         //a scope may not have aliases, or not defined in scopes.cwt
         return configGroup.scopes[scope]?.name
             ?: configGroup.scopeAliasMap[scope]?.name
-            ?: scope.toCapitalizedWords()
+            ?: scope.toCapitalizedWords().intern() //intern to optimize memory
     }
     
     fun isUnsureScopeId(scopeId: String): Boolean {

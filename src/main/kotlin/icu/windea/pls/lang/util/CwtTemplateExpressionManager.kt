@@ -106,7 +106,7 @@ object CwtTemplateExpressionManager {
             ProgressManager.checkCanceled()
             if(snippetExpression.type != CwtDataTypes.Constant) {
                 val matchGroup = matchResult.groups.get(i++) ?: return emptyList()
-                val referenceName = matchGroup.value
+                val referenceName = matchGroup.value.intern() //intern to optimize memory
                 val range = TextRange.create(matchGroup.range.first, matchGroup.range.last)
                 val reference = ParadoxTemplateSnippetExpressionReference(templateElement, range, referenceName, snippetExpression, configGroup)
                 templateReferences.add(reference)

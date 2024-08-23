@@ -47,9 +47,9 @@ object CwtConfigResolver {
         val valueType: CwtType
         val separatorType = propertyElement.separatorType
         var configs: List<CwtMemberConfig<*>>? = null
-        var documentationLines: LinkedList<String>? = null
+        var options: MutableList<CwtOptionMemberConfig<*>>? = null
+        var documentationLines: MutableList<String>? = null
         var html = false
-        var options: LinkedList<CwtOptionMemberConfig<*>>? = null
         
         when {
             valueElement is CwtBoolean -> {
@@ -70,12 +70,12 @@ object CwtConfigResolver {
                     when {
                         it is CwtProperty -> {
                             val resolved = resolveProperty(it, file, fileConfig) ?: return@f
-                            if(configs == null) configs = mutableListOf()
+                            if(configs == null) configs = mutableListOf() //use ArrayList to optimize memory
                             configs!!.asMutable().add(resolved)
                         }
                         it is CwtValue -> {
                             val resolved = resolveValue(it, file, fileConfig)
-                            if(configs == null) configs = mutableListOf()
+                            if(configs == null) configs = mutableListOf() //use ArrayList to optimize memory
                             configs!!.asMutable().add(resolved)
                         }
                     }
@@ -91,26 +91,26 @@ object CwtConfigResolver {
         while(true) {
             current = current.prevSibling ?: break
             when {
+                current is CwtOptionComment -> {
+                    val option = current.option
+                    if(option != null) {
+                        if(option.name == "format" && option.value == "html") html = true
+                        if(options == null) options = mutableListOf() //use ArrayList to optimize memory
+                        val resolved = resolveOption(option, file, fileConfig) ?: continue
+                        options.add(0, resolved)
+                    } else {
+                        val optionValue = current.value ?: continue
+                        if(options == null) options = mutableListOf() //use ArrayList to optimize memory
+                        val resolved = resolveOptionValue(optionValue, file, fileConfig)
+                        options.add(0, resolved)
+                    }
+                }
                 current is CwtDocumentationComment -> {
                     val documentationText = current.documentationText
                     if(documentationText != null) {
                         if(documentationLines == null) documentationLines = LinkedList()
                         val docText = documentationText.text.trimStart('#').trim() //这里接受HTML
-                        documentationLines.addFirst(docText)
-                    }
-                }
-                current is CwtOptionComment -> {
-                    val option = current.option
-                    if(option != null) {
-                        if(option.name == "format" && option.value == "html") html = true
-                        if(options == null) options = LinkedList()
-                        val resolved = resolveOption(option, file, fileConfig) ?: continue
-                        options.addFirst(resolved)
-                    } else {
-                        val optionValue = current.value ?: continue
-                        if(options == null) options = LinkedList()
-                        val resolved = resolveOptionValue(optionValue, file, fileConfig)
-                        options.addFirst(resolved)
+                        documentationLines.add(0, docText)
                     }
                 }
                 current is PsiWhiteSpace || current is PsiComment -> continue
@@ -137,9 +137,9 @@ object CwtConfigResolver {
         val value: String = valueElement.value.intern() //intern to optimize memory
         val valueType: CwtType
         var configs: List<CwtMemberConfig<*>>? = null
-        var documentationLines: LinkedList<String>? = null
+        var documentationLines: MutableList<String>? = null
         var html = false
-        var options: LinkedList<CwtOptionMemberConfig<*>>? = null
+        var options: MutableList<CwtOptionMemberConfig<*>>? = null
         
         when {
             valueElement is CwtBoolean -> {
@@ -181,26 +181,26 @@ object CwtConfigResolver {
         while(true) {
             current = current.prevSibling ?: break
             when {
+                current is CwtOptionComment -> {
+                    val option = current.option
+                    if(option != null) {
+                        if(option.name == "format" && option.value == "html") html = true
+                        if(options == null) options = mutableListOf()
+                        val resolved = resolveOption(option, file, fileConfig) ?: continue
+                        options.add(0, resolved)
+                    } else {
+                        val optionValue = current.value ?: continue
+                        if(options == null) options = mutableListOf()
+                        val resolved = resolveOptionValue(optionValue, file, fileConfig)
+                        options.add(0, resolved)
+                    }
+                }
                 current is CwtDocumentationComment -> {
                     val documentationText = current.documentationText
                     if(documentationText != null) {
                         if(documentationLines == null) documentationLines = LinkedList()
                         val docText = documentationText.text.trimStart('#').trim() //这里接受HTML
-                        documentationLines.addFirst(docText)
-                    }
-                }
-                current is CwtOptionComment -> {
-                    val option = current.option
-                    if(option != null) {
-                        if(option.name == "format" && option.value == "html") html = true
-                        if(options == null) options = LinkedList()
-                        val resolved = resolveOption(option, file, fileConfig) ?: continue
-                        options.addFirst(resolved)
-                    } else {
-                        val optionValue = current.value ?: continue
-                        if(options == null) options = LinkedList()
-                        val resolved = resolveOptionValue(optionValue, file, fileConfig)
-                        options.addFirst(resolved)
+                        documentationLines.add(0, docText)
                     }
                 }
                 current is PsiWhiteSpace || current is PsiComment -> continue
