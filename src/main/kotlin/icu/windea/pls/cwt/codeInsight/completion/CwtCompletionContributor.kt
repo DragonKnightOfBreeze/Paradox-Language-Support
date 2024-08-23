@@ -5,9 +5,14 @@ import com.intellij.patterns.PlatformPatterns.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.script.psi.*
 
 class CwtCompletionContributor: CompletionContributor() {
     init {
+        val keywordPattern = psiElement()
+            .withElementType(CwtTokenSets.STRING_TOKENS)
+        extend(CompletionType.BASIC, keywordPattern, CwtKeywordCompletionProvider())
+        
         val configPattern = psiElement()
             .withElementType(CwtTokenSets.KEY_OR_STRING_TOKENS)
         extend(configPattern, CwtConfigCompletionProvider())

@@ -45,6 +45,7 @@ object CwtConfigCompletionManager {
     //region Core Methods
     fun initializeContext(parameters: CompletionParameters, context: ProcessingContext, contextElement: PsiElement): Boolean {
         context.parameters = parameters
+        context.completionIds = mutableSetOf<String>().synced()
         
         val configGroup = CwtConfigManager.getContainingConfigGroup(parameters.originalFile) ?: return false
         context.configGroup = configGroup
@@ -59,8 +60,6 @@ object CwtConfigCompletionManager {
         context.keyword = keyword
         context.quoted = quoted
         context.rightQuoted = rightQuoted
-        
-        context.completionIds = mutableSetOf<String>().synced()
         
         return true
     }

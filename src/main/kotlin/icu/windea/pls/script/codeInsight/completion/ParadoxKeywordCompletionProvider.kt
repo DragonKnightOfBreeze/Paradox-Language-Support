@@ -24,8 +24,9 @@ class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters
         val element = position.parent?.castOrNull<ParadoxScriptString>() ?: return
         if(element.text.isLeftQuoted()) return
         if(element.text.isParameterized()) return
+        
+        //判断光标位置是否在定义声明中（这里的代码逻辑更加准确，兼容性更好）
         if(element.isExpression()) {
-            //判断光标位置是否在定义声明中，更加准确，兼容性更好
             val configContext = ParadoxExpressionManager.getConfigContext(element)
             if(configContext != null && configContext.isRootOrMember()) return
         }

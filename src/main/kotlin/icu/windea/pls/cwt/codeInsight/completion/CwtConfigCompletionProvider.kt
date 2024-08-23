@@ -24,3 +24,4 @@ class CwtConfigCompletionProvider: CompletionProvider<CompletionParameters>() {
         CwtConfigCompletionManager.addConfigCompletions(context, result)
     }
 }
+

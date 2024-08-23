@@ -14,5 +14,6 @@ object CwtTokenSets {
 	@JvmField val COMMENT_TOKENS = TokenSet.create(COMMENT, DOCUMENTATION_TOKEN)
 	@JvmField val LITERAL_TOKENS = TokenSet.EMPTY
     
+    @JvmField val STRING_TOKENS = TokenSet.create(STRING_TOKEN)
     @JvmField val KEY_OR_STRING_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, STRING_TOKEN)
 }
