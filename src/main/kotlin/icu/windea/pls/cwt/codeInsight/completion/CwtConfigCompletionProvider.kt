@@ -6,7 +6,7 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.codeInsight.completion.*
 
 class CwtConfigCompletionProvider: CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
@@ -24,19 +24,16 @@ import icu.windea.pls.ep.config.*
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.ep.scope.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.model.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.expression.complex.nodes.*
+import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.search.*
+import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 object ParadoxCompletionManager {
     //region Predefined Lookup Elements
@@ -95,7 +92,7 @@ object ParadoxCompletionManager {
         
         val configGroup = configContext.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
+        val matchOptions = ParadoxExpressionMatcher.Options.Default or ParadoxExpressionMatcher.Options.Relax or ParadoxExpressionMatcher.Options.AcceptDefinition
         val parentConfigs = ParadoxExpressionManager.getConfigs(memberElement, matchOptions = matchOptions)
         val configs = mutableListOf<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
@@ -142,7 +139,7 @@ object ParadoxCompletionManager {
         
         val configGroup = configContext.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
+        val matchOptions = ParadoxExpressionMatcher.Options.Default or ParadoxExpressionMatcher.Options.Relax or ParadoxExpressionMatcher.Options.AcceptDefinition
         val parentConfigs = ParadoxExpressionManager.getConfigs(memberElement, matchOptions = matchOptions)
         val configs = mutableListOf<CwtValueConfig>()
         parentConfigs.forEach { c1 ->
@@ -695,7 +692,7 @@ object ParadoxCompletionManager {
         if(finalConfigs.isEmpty()) return
         
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
-        val expression = markIncomplete { ParadoxDynamicValueExpression.resolve(keyword, textRange, configGroup, finalConfigs) } ?: return
+        val expression = markIncomplete { ParadoxDynamicValueExpression.Resolver.resolve(keyword, textRange, configGroup, finalConfigs) } ?: return
         
         val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
         val isKey = context.isKey

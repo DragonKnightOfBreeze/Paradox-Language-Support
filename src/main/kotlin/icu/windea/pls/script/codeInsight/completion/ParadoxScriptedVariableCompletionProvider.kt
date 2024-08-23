@@ -11,7 +11,6 @@ import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 /**

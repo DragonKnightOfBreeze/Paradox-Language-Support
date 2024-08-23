@@ -7,7 +7,6 @@ import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupport {

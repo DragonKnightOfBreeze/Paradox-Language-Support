@@ -5,7 +5,6 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 
 /**

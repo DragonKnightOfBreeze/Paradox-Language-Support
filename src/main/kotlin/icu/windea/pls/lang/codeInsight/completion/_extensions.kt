@@ -208,9 +208,9 @@ private fun applyExpandTemplateInsertHandler(c: InsertionContext, context: Proce
             val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(element)
             val shift = element.startOffset + if(context.quoted) 1 else 0
             schemaExpression.parameterRanges.forEach { parameterRange ->
-                //TODO 1.3.19+
                 val parameterText = parameterRange.substring(schemaExpression.expressionString)
-                val expression = TextExpression(parameterText)
+                val expression = CwtConfigTemplateExpression.resolve(context, schemaExpression, parameterRange, parameterText)
+                    ?: TextExpression(parameterText)
                 templateBuilder.replaceRange(parameterRange.shiftRight(shift), expression)
             }
             val textRange = element.textRange

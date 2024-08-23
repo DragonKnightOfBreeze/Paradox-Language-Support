@@ -171,6 +171,6 @@ dynamic_values = {
 
 single_alias[$single_alias$] = $any
 
-alias_name[$alias_name$:$alias_subname$] = $any
+alias_name[$alias_name$:$alias_sub_name$] = $any
 
 inline[$inline$] = $any

@@ -77,7 +77,7 @@ sealed interface CwtSchemaExpression : CwtExpression {
             }
             val pattern = expressionString.replace(parameterRegex, "*")
             val parameterRanges = indices
-                .windowed(2) { (i1, i2) -> TextRange.create(i1, i2 + 1) }
+                .windowed(2, 2) { (i1, i2) -> TextRange.create(i1, i2 + 1) }
             return Template(expressionString, pattern, parameterRanges)
         }
     }

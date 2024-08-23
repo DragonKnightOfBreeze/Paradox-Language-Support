@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
@@ -15,7 +15,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.codeStyle.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.codeInsight.completion.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 object CwtConfigCompletionManager {
