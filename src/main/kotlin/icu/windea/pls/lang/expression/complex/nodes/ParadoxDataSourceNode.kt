@@ -12,9 +12,9 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxDataSourceNode(

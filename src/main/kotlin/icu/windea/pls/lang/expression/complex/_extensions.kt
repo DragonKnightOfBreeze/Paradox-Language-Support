@@ -2,8 +2,8 @@ package icu.windea.pls.lang.expression.complex
 
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.expression.complex.nodes.*
+import icu.windea.pls.lang.psi.*
 
 fun icu.windea.pls.lang.expression.complex.ParadoxComplexExpression.processAllNodes(processor: Processor<ParadoxComplexExpressionNode>): Boolean {
     return doProcessAllNodes(processor)

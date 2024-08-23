@@ -2,10 +2,9 @@ package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.codeInsight.lookup.*
 import com.intellij.codeInsight.template.*
-import com.intellij.icons.AllIcons
+import com.intellij.icons.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
-import com.intellij.ui.*
 import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -14,7 +13,7 @@ import icu.windea.pls.config.expression.internal.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
-import javax.swing.Icon
+import javax.swing.*
 
 sealed class CwtConfigTemplateExpression(
     val context: ProcessingContext,

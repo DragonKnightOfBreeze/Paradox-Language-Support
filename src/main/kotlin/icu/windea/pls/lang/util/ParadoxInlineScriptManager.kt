@@ -18,11 +18,10 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.psi.*
 

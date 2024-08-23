@@ -1,6 +1,5 @@
 package icu.windea.pls.config.util
 
-import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -9,9 +8,8 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.config.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
 import icu.windea.pls.lang.expression.*
+import icu.windea.pls.model.*
 
 object CwtConfigManipulator {
     //region Deep Copy Methods

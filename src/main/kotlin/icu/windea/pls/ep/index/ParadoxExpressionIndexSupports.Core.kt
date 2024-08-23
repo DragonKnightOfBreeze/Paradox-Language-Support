@@ -1,9 +1,8 @@
 package icu.windea.pls.ep.index
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.codeInsight.highlighting.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*

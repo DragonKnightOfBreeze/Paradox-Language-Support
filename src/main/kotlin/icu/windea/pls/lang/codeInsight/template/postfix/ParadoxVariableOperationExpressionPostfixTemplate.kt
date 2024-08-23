@@ -9,9 +9,9 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.config.internal.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.lang.expression.*
 import icu.windea.pls.script.psi.*
 
 /**

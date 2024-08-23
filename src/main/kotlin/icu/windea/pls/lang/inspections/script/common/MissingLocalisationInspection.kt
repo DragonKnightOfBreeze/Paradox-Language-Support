@@ -15,17 +15,8 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
-import kotlin.collections.List
-import kotlin.collections.associateBy
-import kotlin.collections.buildList
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.mapNotNull
-import kotlin.collections.mapNotNullTo
-import kotlin.collections.mutableMapOf
-import kotlin.collections.mutableSetOf
-import kotlin.collections.plusAssign
-import kotlin.collections.toTypedArray
 
 /**
  * 缺失的本地化的检查。

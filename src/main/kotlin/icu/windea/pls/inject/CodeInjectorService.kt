@@ -4,7 +4,6 @@ import com.intellij.ide.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.util.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.inject.support.*
 import javassist.*

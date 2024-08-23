@@ -2,11 +2,11 @@ package icu.windea.pls.model.constraints
 
 import com.intellij.psi.*
 import icu.windea.pls.config.*
+import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.references.*
-import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
 

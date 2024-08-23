@@ -8,11 +8,11 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.modifier.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.model.constraints.*
-import icu.windea.pls.lang.expression.*
 import icu.windea.pls.script.psi.*
 
 class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {

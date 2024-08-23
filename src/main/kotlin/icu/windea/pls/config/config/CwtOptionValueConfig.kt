@@ -1,7 +1,7 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.CwtOption
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 import java.util.concurrent.*
 

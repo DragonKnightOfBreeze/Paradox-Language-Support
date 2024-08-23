@@ -14,11 +14,11 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.index.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.script.psi.*
 
 /**

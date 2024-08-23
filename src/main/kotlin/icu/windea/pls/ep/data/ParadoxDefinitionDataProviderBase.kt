@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.data
 
-import icu.windea.pls.model.*
 import icu.windea.pls.lang.expression.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 abstract class ParadoxDefinitionDataProviderBase<T: ParadoxDefinitionData>(

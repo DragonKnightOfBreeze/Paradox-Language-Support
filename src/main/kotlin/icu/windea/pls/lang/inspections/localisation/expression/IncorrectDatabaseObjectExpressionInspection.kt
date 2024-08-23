@@ -7,8 +7,8 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.lang.expression.complex.*
+import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
 /**

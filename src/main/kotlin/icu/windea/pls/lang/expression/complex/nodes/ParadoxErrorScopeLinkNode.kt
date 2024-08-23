@@ -3,8 +3,8 @@ package icu.windea.pls.lang.expression.complex.nodes
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.expression.complex.*
+import icu.windea.pls.lang.psi.*
 
 class ParadoxErrorScopeLinkNode(
     override val text: String,
