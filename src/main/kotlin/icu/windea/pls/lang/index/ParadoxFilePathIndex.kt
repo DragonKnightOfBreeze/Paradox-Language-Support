@@ -29,6 +29,7 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
             "pdx_launcher",
             "pdx_online_assets",
             "previewer_assets",
+            "tweakergui_assets",
             "jomini",
         )
     }

@@ -16,7 +16,7 @@ enum class ParadoxGameType(
     val steamId: String,
 ) {
     Stellaris("stellaris", "Stellaris", "stellaris", "281990") {
-        override val entryPaths = setOf("pdx_launcher/game", "pdx_launcher/common", "pdx_online_assets", "previewer_assets")
+        override val entryPaths = setOf("pdx_launcher/game", "pdx_launcher/common", "pdx_online_assets", "previewer_assets", "tweakergui_assets")
     },
     Ck2("ck2", "Crusader Kings II", "ck2", "203770") {
         override val entryPaths = setOf("jomini")

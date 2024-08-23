@@ -96,5 +96,8 @@ class ParadoxFilesViewPane(project: Project) : AbstractProjectViewPaneWithAsyncS
     //  icu.windea.pls.core.projectView.ParadoxGameElementNode
     //    icu.windea.pls.core.projectView.ParadoxDirectoryElementNode / PsiFiles
     
+    //only include main entry directories and game files under them
+    //e.g., DO NOT include directory "previewer_assets" and game files under it
+    
     override fun getWeight() = 100 //very low
 }

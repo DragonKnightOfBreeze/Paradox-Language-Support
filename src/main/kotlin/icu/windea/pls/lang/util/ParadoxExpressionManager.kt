@@ -230,7 +230,7 @@ object ParadoxExpressionManager {
                     aliasConfigs.forEach f2@{ aliasConfig ->
                         val aliasConfigInlined = aliasConfig.inline(config)
                         if(aliasConfigInlined.valueExpression.type == CwtDataTypes.SingleAliasRight) {
-                            result += CwtConfigManipulator.inlineSingleAlias(config) ?: return@f2
+                            result += CwtConfigManipulator.inlineSingleAlias(aliasConfigInlined) ?: return@f2
                         } else {
                             result += aliasConfigInlined
                         }

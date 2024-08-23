@@ -60,7 +60,7 @@ class ParadoxDirectoryElementNode(
                 if(!fileData.values.single().included) return@p true
                 files.add(file)
             } else {
-                //直接位于游戏或模组目录中
+                //直接位于入口目录中
                 files.add(file)
             }
             true

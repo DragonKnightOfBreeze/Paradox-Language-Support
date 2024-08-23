@@ -191,11 +191,6 @@ SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
     "@["|"@\\[" { enterState(stack, yystate()); yybegin(IN_INLINE_MATH); return INLINE_MATH_START; }
-    {BOOLEAN_TOKEN} { enterState(templateStateRef, yystate()); return BOOLEAN_TOKEN; }
-    {INT_TOKEN} { enterState(templateStateRef, yystate()); return INT_TOKEN; }
-    {FLOAT_TOKEN} { enterState(templateStateRef, yystate()); return FLOAT_TOKEN; }
-    {STRING_TOKEN} { enterState(templateStateRef, yystate()); return STRING_TOKEN; }
-    {WILDCARD_QUOTED_STRING_TOKEN} { enterState(templateStateRef, yystate()); return STRING_TOKEN; }
     {COMMENT} { return COMMENT; }
 }
 
@@ -331,6 +326,30 @@ SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
     {COMMENT} { return COMMENT; }
 }
 
+//scripted variable separator
+<IN_SCRIPTED_VARIABLE_NAME> {
+    "=" { exitState(templateStateRef); yybegin(IN_SCRIPTED_VARIABLE_VALUE); return EQUAL_SIGN; }
+}
+
+<IN_SCRIPTED_VARIABLE_VALUE> {
+    {BOOLEAN_TOKEN} { enterState(templateStateRef, yystate()); return BOOLEAN_TOKEN; }
+    {INT_TOKEN} { enterState(templateStateRef, yystate()); return INT_TOKEN; }
+    {FLOAT_TOKEN} { enterState(templateStateRef, yystate()); return FLOAT_TOKEN; }
+    {STRING_TOKEN} { enterState(templateStateRef, yystate()); return STRING_TOKEN; }
+    {WILDCARD_QUOTED_STRING_TOKEN} { enterState(templateStateRef, yystate()); return STRING_TOKEN; }
+}
+
+//property separator
+<YYINITIAL, IN_SCRIPTED_VARIABLE, IN_PROPERTY_OR_VALUE, IN_KEY> {
+    "=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
+    "!="|"<>" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
+    "<" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return LT_SIGN; }
+    ">" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GT_SIGN; }
+    "<=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return LE_SIGN; }
+    ">=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GE_SIGN; }
+    "?=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return QUESTION_EQUAL_SIGN; }
+}
+
 <YYINITIAL, IN_PROPERTY_OR_VALUE, IN_PROPERTY_VALUE, IN_PARAMETER_CONDITION_BODY> {
     "@["|"@\\[" { enterState(stack, yystate()); leftAbsSign = true; yybegin(IN_INLINE_MATH); return INLINE_MATH_START; }
     {CHECK_PROPERTY_KEY} {
@@ -408,21 +427,6 @@ SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
         }
         return STRING_TOKEN;
     }
-}
-
-//scripted variable separator
-<IN_SCRIPTED_VARIABLE_NAME> {
-    "=" { exitState(templateStateRef); yybegin(IN_SCRIPTED_VARIABLE_VALUE); return EQUAL_SIGN; }
-}
-//property separator
-<YYINITIAL, IN_SCRIPTED_VARIABLE, IN_PROPERTY_OR_VALUE, IN_KEY> {
-    "=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
-    "!="|"<>" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
-    "<" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return LT_SIGN; }
-    ">" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GT_SIGN; }
-    "<=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return LE_SIGN; }
-    ">=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GE_SIGN; }
-    "?=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return QUESTION_EQUAL_SIGN; }
 }
 
 <YYINITIAL> {
