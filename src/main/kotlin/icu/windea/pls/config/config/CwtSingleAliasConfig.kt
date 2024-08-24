@@ -37,7 +37,7 @@ private class CwtSingleAliasConfigImpl(
         )
         inlined.parentConfig = config.parentConfig
         inlined.configs?.forEach { it.parentConfig = inlined }
-        inlined.inlineableConfig = config.inlineableConfig //should not set to this - a single alias config do not inline property key  
+        inlined.inlineableConfig = this
         return inlined
     }
 }

@@ -57,7 +57,7 @@ private class CwtAliasConfigImpl(
         )
         inlined.parentConfig = config.parentConfig
         inlined.configs?.forEach { it.parentConfig = inlined }
-        inlined.inlineableConfig = config.inlineableConfig ?: this
+        inlined.inlineableConfig = this
         return inlined
     }
 }

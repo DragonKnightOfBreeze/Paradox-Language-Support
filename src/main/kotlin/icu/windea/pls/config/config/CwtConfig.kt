@@ -17,7 +17,7 @@ interface CwtConfig<out T : PsiElement> {
 @Suppress("UNCHECKED_CAST")
 fun <T: CwtConfig<*>> T.resolved(): T {
     return when {
-        this is CwtMemberConfig<*> -> inlineableConfig?.config as? T ?: this
+        this is CwtMemberConfig<*> -> inlineableConfig?.takeIf { it !is CwtSingleAliasConfig }?.config as? T ?: this
         else -> this
     }
 }
@@ -28,7 +28,7 @@ fun <T: CwtConfig<*>> T.resolved(): T {
 @Suppress("UNCHECKED_CAST")
 fun <T: CwtConfig<*>> T.resolvedOrNull(): T? {
     return when {
-        this is CwtMemberConfig<*> -> inlineableConfig?.config as? T
+        this is CwtMemberConfig<*> -> inlineableConfig?.takeIf { it !is CwtSingleAliasConfig }?.config as? T
         else -> this
     }
 }
